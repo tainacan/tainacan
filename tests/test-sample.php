@@ -14,15 +14,25 @@ class TestCollections extends WP_UnitTestCase {
 	 * A single example test.
 	 */
 	function test_add() {
-		// Replace this with some actual testing code.
-		global $TainacanCollections;
-        $testTitle = 'Teste';
-        $newId = $TainacanCollections->add($testTitle);
+		
+        $x = new TainacanCollection();
         
-        $check = $TainacanCollections->getCollectionById($newId);
+        $x->set_name('teste');
+        $x->set_description('adasdasdsa');
+        $x->set_itens_per_page(23);
         
-        $this->assertEquals($check->ID, $newId);
-        $this->assertEquals($check->post_title, $testTitle);
+        global $TainacanCollections;
+        $id = $TainacanCollections->insert($x);
+        
+        //
+        
+        $test = $TainacanCollections->get_collection_by_id($id);
+        
+        
+        $this->assertEquals($test->get_name(), 'teste');
+        $this->assertEquals($test->get_description(), 'adasdasdsa');
+        $this->assertEquals($test->get_itens_per_page(), 23);
+        
         
 	}
 }

@@ -7,64 +7,74 @@ Author: MediaLab UFG
 Version: 10.9.8.7.6.5.4
 */
 
+include('classes/Repositories/Collections.php');
+include('classes/Repositories/Items.php');
+include('classes/Entity.php');
+include('classes/Entities/Collection.php');
 
-class TainacanCollections {
-    
-    const POST_TYPE = 'tainacan-collections';
-    
-    function __construct() {
-        add_action('init', array(&$this, 'register_post_types'));
-    }
-    
-    function register_post_types() {
-        $labels = array(
-            'name' => 'Collections',
-            'singular_name' => 'Collections',
-            'add_new' => 'Adicionar Novo',
-            'add_new_item' =>'Adicionar Collections',
-            'edit_item' => 'Editar',
-            'new_item' => 'Novo Collections',
-            'view_item' => 'Visualizar',
-            'search_items' => 'Pesquisar',
-            'not_found' => 'Nenhum ticket encontrado',
-            'not_found_in_trash' => 'Nenhum Collections encontrado na lixeira',
-            'parent_item_colon' => 'Collections acima:',
-            'menu_name' => 'Collections'
-        );
-        $args = array(
-            'labels' => $labels,
-            'hierarchical' => true,
-            //'supports' => array('title'),
-            //'taxonomies' => array(self::TAXONOMY),
-            'public' => true,
-            'show_ui' => false,
-            'show_in_menu' => false,
-            //'menu_position' => 5,
-            //'show_in_nav_menus' => false,
-            'publicly_queryable' => true,
-            'exclude_from_search' => true,
-            'has_archive' => true,
-            'query_var' => true,
-            'can_export' => true,
-            'rewrite' => true,
-            'capability_type' => 'post',
-        );
-        register_post_type(self::POST_TYPE, $args);
-    }
-    
-    function add($title) {
-        $post = [
-            'post_title' => $title,
-            'post_type' => self::POST_TYPE
-        ];
-        return wp_insert_post($post);
-    }
-    
-    function getCollectionById($id) {
-        return get_post($id);
-    }
-    
+/**
+ * 
+ *
+ * nos loops instancia a Classes
+ *
+ * as classes no plural em repositories (talvez troccar esse nome pra não confundir) 
+ * lidam com registro de post type, incialiação
+ * e tem o metodo find() pra busca, q usa o WP_Query, mas itera e substitui por objetos
+ * certos, aí talvez não precise instanciar na mão
+ * Nessas classes tb vão ter metodos, sõ ativos se quisermos ver a interface dev padrao do WP
+ * q vai criar os metaboxes
+ * e tb os pre_get_posts... 
+ * 
+ *
+ * 
+ * as classe em entities mapeiam suas propriedades para o esquema do WP, e não tem nenhuma lõgica,
+ * sõ são objetos com propriedades, collection pode acessar seus metadados. item pode 
+ * aessar sua coleção e metdados
+ * talvez ter um getter que tenta passar a propriedade buscada pra dentro da propriedade o objeto wp,
+ * usando o mapeamento ao contrãrio. assim um tema padrão não quebra
+ *
+ * 
+ * Repository (não confundir) tem as opções gerais do repo, como o slug padrão das coisas (colecoes, item...)
+ *
+ * Vai no banco:
+ * Collections**
+ * Metadata
+ * Taxonomies
+ * Items**
+ * Filters
+ * 
+ * ** Items e Collections vão aparecer na hierarquia de templates e podem ter loops
+ *
+ * $collections ou $items registra os post types das coleções?
+ *
+ * db_identifier das coleções não pode mudar, mesmo q mude nome e slug
+ *
+ * essas classes tem q ter um esquema de validação, (filtro, unicidade)
+ * 
+ * $Collections->add(), find(), get()
+ *
+ * $collection->getItems(), getItem(), addItem(), deleteItem()
+ *
+ * metadados registrado via codigo deinem ibase_add_user
+ * colecoes registradas via cõdigo passam o objeto inteiro e marcamos de algum jeito q não são editaveis
+ * (source)
+ *
+ * 
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function tnc_enable_dev_wp_interface() {
+    return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }
-
-global $TainacanCollections;
-$TainacanCollections = new TainacanCollections();
