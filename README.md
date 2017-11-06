@@ -15,7 +15,7 @@ Nesse repositorio temos duas pastas:
 * src/ - onde fica o código do plugins
 * tests/ - onde ficam as ferramentas de testes
 
-Na pasta `src` temos os arquivos normais de um plugin de WP. Essa será a pasta base do plugin e apenas o que estiver aí dentro é o que vai pra distribuição final do plugin. Já criei uns métodos quaisquer lá pra poder testar uma classe fictícia `TainacanCollections`.
+Na pasta `src` temos os arquivos normais de um plugin de WP. Essa será a pasta base do plugin e apenas o que estiver aí dentro é o que vai pra distribuição final do plugin. 
 
 Aí dentro podem haver arquivos sass e js que ainda serão compilados no build.
 
@@ -23,9 +23,10 @@ Na pasta `tests` temos a suíte de testes e as ferramentas para configurá-la. J
 
 Na raíz temos alguns scripts importantes:
 
-* build.sh - é o que faz o build (tá bem tosco ainda)
+* build.sh - é o que faz o build (basicamente compila sass e o q precisar e copia os arquivos pro destino)
+* build-watch.sh - para ficar observando a pasta `src` por mudançar e rodar automaticamente o buid. Útil para quando estivermos desenvolvendo para não precisar rodar o build na mão a cada mudança
+* build-config-sample.cfg - Arquivo exemplo, deve ser duplicado e salvo como `build-config.cfg`
 * compile-sass.sh - compila os arquivos scss do plugin
-* run-tests.sh - monta o ambiente de testes e roda os testes 
 * outros arquivos do phpunit que podemos testar pra ver se precisam ficar assim na raíz mesmo.
 
 
@@ -52,7 +53,11 @@ Os parâmetros são:
 
 Esse comando só precisa rodar uma vez. pra instalar o ambiente.
 
-Depois disso, pra rodar os testes, é só rodar o comando `phpunit`.
+Por padrão, ele instala o wordpress em `/tmp`, mas vc pode alterá-lo para instalar em qq lugar. Caso faça isso, será preciso alterar o bootstrap.php também para apontar para esse novo lugar.
+
+Dessa maneira vc pode ter o seu ambiente de testes instalado em um lugar q não se destrua (como o `/tmp`) e fia ali pra sempre. Vamos melhorar esses scripts de inicialização pra deixar isso mais fácil.
+
+Depois disso, pra rodar os testes, é só rodar o comando `phpunit` a partir da raíz do repositorio.
 
 **Extras**
 

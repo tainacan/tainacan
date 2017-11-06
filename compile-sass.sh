@@ -11,7 +11,6 @@ echo "Compilando Sass..."
 cd src/scss
  
 sass -E 'UTF-8' style.scss:../style.css
-echo "Sass Compilado"
- 
+
 echo "Compilação do Sass Concluído!"
 exit 0
