@@ -3,14 +3,19 @@
 
 class Entity {
     
+    var $repository;
     
     function get_mapped_property($prop) {
+        
+        
+        global ${$this->repository};
+        $map = ${$this->repository}->map;
         
         if (isset($this->$prop) && !empty($this->$prop))
             return $this->$prop;
         
         
-        $map = $this->map_properties();
+        //$map = $this->map_properties();
         
         if (!array_key_exists($prop, $map)) 
             return null;
@@ -33,6 +38,6 @@ class Entity {
         
         
     }
-    
+
     
 }

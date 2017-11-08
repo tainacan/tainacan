@@ -10,6 +10,15 @@ class TainacanCollections {
     const POST_TYPE = 'tainacan-collections';
     const DB_IDENTIFIER_META = '_db_identifier';
     
+    var $map = [
+        'ID' => 'ID',
+        'name' => 'post_title',
+        'order' => 'menu_order',
+        'parent' => 'parent',
+        'description' => 'post_content',
+        'itens_per_page' => 'meta'
+    ];
+    
     function __construct() {
         add_action('init', array(&$this, 'register_post_type'));
     }
@@ -52,7 +61,7 @@ class TainacanCollections {
     
     function insert(TainacanCollection $collection) {
         // First iterate through the native post properties
-        $map = $collection->map_properties();
+        $map = $this->map;
         foreach ($map as $prop => $mapped) {
             if ($mapped != 'meta') {
                 $collection->WP_Post->$mapped = $collection->get_mapped_property($prop);

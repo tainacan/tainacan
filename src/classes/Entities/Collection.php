@@ -10,8 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class TainacanCollection extends Entity {
     
     
-    
     function __construct($which = 0) {
+        
+        $this->repository = 'TainacanCollections';
         
         if (is_numeric($which) && $which > 0) {
             $post = get_post($which);
@@ -26,21 +27,7 @@ class TainacanCollection extends Entity {
         }
         
     }
-    
-    function map_properties() {
-        return [
-            'ID' => 'ID',
-            'name' => 'post_title',
-            'order' => 'menu_order',
-            'parent' => 'parent',
-            'description' => 'post_content',
-            'itens_per_page' => 'meta'
-        ];
-        
-    }
-    
-    
-    
+
     // Getters
     //
     function get_id() {
