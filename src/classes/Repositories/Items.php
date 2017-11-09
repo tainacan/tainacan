@@ -24,7 +24,8 @@ class TainacanItems {
         global $TainacanCollections;
         
         $collections = $TainacanCollections->get_collections();
-        
+        $taxonomies = $TainacanCollections->get_taxonomies();
+
         $labels = array(
             'name' => 'Item',
             'singular_name' => 'Item',
@@ -67,10 +68,10 @@ class TainacanItems {
                 'capability_type' => 'post',
             );
             register_post_type($cpt_slug, $args);
+            foreach ($taxonomies as $taxonomy) {
+                register_taxonomy_for_object_type( $taxonomy, $cpt_slug );
+            }
         }
-        
-        
-        
     }
     
     

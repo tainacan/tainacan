@@ -129,6 +129,11 @@ class TainacanCollections {
     function get_collection_by_id($id) {
         return new TainacanCollection($id);
     }
+
+    function get_taxonomies(){
+        $array = get_taxonomies();
+        return ( is_array( $array ) ) ? $array : [];
+    }
     
 }
 
