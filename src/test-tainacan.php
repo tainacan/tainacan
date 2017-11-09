@@ -14,6 +14,9 @@ include('classes/Entity.php');
 include('classes/Entities/Collection.php');
 include('classes/Entities/Metadata.php');
 
+require_once('tainacan-api-controllers/class-tainacan-api.php');
+$tainacan_api = new Tainacan_API();
+
 /**
  * 
  *
