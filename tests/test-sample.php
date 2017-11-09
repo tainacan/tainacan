@@ -62,8 +62,6 @@ class TestCollections extends WP_UnitTestCase {
                 $this->assertEquals($collections[0]->get_name(), $name2);
                 $this->assertEquals($collections[1]->get_name(), $name);
         }
-
-	}
     
     function test_item() {
         
