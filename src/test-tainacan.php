@@ -12,7 +12,10 @@ include('classes/Repositories/Items.php');
 include('classes/Repositories/Metatadas.php');
 include('classes/Entity.php');
 include('classes/Entities/Collection.php');
+include('classes/Entities/Item.php');
 include('classes/Entities/Metadata.php');
+include('classes/Entities/FieldType.php');
+include('classes/Entities/TextFieldType.php');
 
 require_once('tainacan-api-controllers/class-tainacan-api.php');
 $tainacan_api = new Tainacan_API();
