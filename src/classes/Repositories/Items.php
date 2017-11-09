@@ -7,6 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class TainacanItems {
     
+    var $map = [
+        'ID' => 'ID',
+        'title' => 'post_title',
+        'description' => 'post_content',
+        'collection_id' => 'meta',
+        //'collection' => 'relation...'
+    ];
+    
     function __construct() {
         add_action('init', array(&$this, 'register_post_types'));
     }
@@ -65,10 +73,21 @@ class TainacanItems {
         
     }
     
-    /*
+    
     function insert(TainacanItem $item) {
-        // First iterate through the native post properties
-        $map = $item->map_properties();
+        
+        
+        $map = $this->map;
+        
+        // get collection to determine post type
+        $collection = $item->get_collection();
+        
+        if (!$collection)
+            return false;
+        
+        $cpt = $collection->get_db_identifier();
+        
+        // iterate through the native post properties
         foreach ($map as $prop => $mapped) {
             if ($mapped != 'meta') {
                 $item->WP_Post->$mapped = $item->get_mapped_property($prop);
@@ -76,7 +95,7 @@ class TainacanItems {
         }
         
         // save post and geet its ID
-        $item->WP_Post->post_type = self::POST_TYPE;
+        $item->WP_Post->post_type = $cpt;
         $id = wp_insert_post($item->WP_Post);
         
         // Now run through properties stored as postmeta
@@ -86,11 +105,16 @@ class TainacanItems {
             }
         }
         
+        // TODO - save item medatada
+        // get collection Metadata
+        // foreach metadata...
+        
+        
         return $id;
     }
-    */
+    
    
-    function getItemById($id) {
+    function get_item_by_id($id) {
         return new TainacanItem($id);
     }
     

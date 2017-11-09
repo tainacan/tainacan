@@ -15,8 +15,6 @@ class Entity {
             return $this->$prop;
         
         
-        //$map = $this->map_properties();
-        
         if (!array_key_exists($prop, $map)) 
             return null;
         

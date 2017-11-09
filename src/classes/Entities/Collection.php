@@ -49,6 +49,15 @@ class TainacanCollection extends Entity {
         return $this->get_mapped_property('itens_per_page');
     }
     
+    // special Getters
+    // 
+    
+    function get_db_identifier() {
+        global $TainacanCollections;
+        return $TainacanCollections->get_collection_db_identifier($this->get_id());
+    }
+    
+    
     // Setters
     // 
     

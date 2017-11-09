@@ -11,6 +11,7 @@ include('classes/Repositories/Collections.php');
 include('classes/Repositories/Items.php');
 include('classes/Entity.php');
 include('classes/Entities/Collection.php');
+include('classes/Entities/Item.php');
 
 /**
  * 
