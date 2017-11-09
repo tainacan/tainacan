@@ -14,6 +14,8 @@ include('classes/Entity.php');
 include('classes/Entities/Collection.php');
 include('classes/Entities/Item.php');
 include('classes/Entities/Metadata.php');
+include('classes/Entities/FieldType.php');
+include('classes/Entities/TextFieldType.php');
 
 /**
  * 

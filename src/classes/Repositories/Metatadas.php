@@ -19,6 +19,11 @@ class Tainacan_Metadatas {
         'description' => 'post_content',
         'type' => 'meta',
         'required' => 'meta',
+        'cardinality' => 'meta',
+        'privacy' => 'meta',
+        'mask' => 'meta',
+        'default_value' => 'meta',
+        'option' => 'meta',
         'collection' => 'meta',
     ];
 
@@ -65,7 +70,7 @@ class Tainacan_Metadatas {
 
     /**
      * @param Tainacan_Metadata $metadata
-     * @return int O id do metadado criado
+     * @return int
      */
     function insert( Tainacan_Metadata $metadata ) {
         // First iterate through the native post properties
@@ -102,11 +107,12 @@ class Tainacan_Metadatas {
     }
 
     /**
-     * @param int $collection_id
+     * @param ( TainacanCollection ) $collection_id
      * @param array $args
      * @return array
      */
-    function get_collection_metadata($collection_id,$args = array()) {
+    function get_collection_metadata( $collection, $args = array()) {
+        $collection_id = ( is_object( $collection ) )  ? $collection->get_id() : $collection;
 
         $args = array_merge([
             'post_type' => self::POST_TYPE,
