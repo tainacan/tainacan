@@ -9,9 +9,11 @@ Version: 10.9.8.7.6.5.4
 
 include('classes/Repositories/Collections.php');
 include('classes/Repositories/Items.php');
+include('classes/Repositories/Metatadas.php');
 include('classes/Entity.php');
 include('classes/Entities/Collection.php');
 include('classes/Entities/Item.php');
+include('classes/Entities/Metadata.php');
 
 /**
  * 
