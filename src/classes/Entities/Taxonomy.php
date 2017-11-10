@@ -53,7 +53,7 @@ class Tainacan_Taxonomy extends Entity {
 
 
 
-
+    // TODO: Uma taxonomia pode estar vinculada a mais de uma coleção
     function get_collection() {
         return new TainacanCollection( $this->get_mapped_property('collection') );
     }
@@ -80,6 +80,8 @@ class Tainacan_Taxonomy extends Entity {
 
     /**
      * @param TainacanCollection
+     *
+     * TODO: Uma taxonomia pode estar vinculada a mais de uma coleção
      */
     function set_collection($value) {
         $ID = ($value instanceof  TainacanCollection ) ? $value->get_id() : $value;

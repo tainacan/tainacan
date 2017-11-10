@@ -63,9 +63,24 @@ class Tainacan_Taxonomies {
         register_post_type(self::POST_TYPE, $args);
     }
 
-    function get_taxonomies(){
-        $array = get_taxonomies();
-        return ( is_array( $array ) ) ? $array : [];
+    function get_taxonomies($args = []){
+        $args = array_merge([
+            'post_type' => self::POST_TYPE,
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+        ], $args);
+        
+        $posts = get_posts($args);
+        
+        $return = [];
+        
+        foreach ($posts as $post) {
+            $return[] = new Tainacan_Taxonomy($post);
+        }
+        
+        // TODO: Pegar taxonomias registradas via código
+        
+        return $return;
     }
 
     function get_taxonomy_db_identifier($id) {

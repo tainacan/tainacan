@@ -26,7 +26,7 @@ class TainacanItems {
         $collections = $TainacanCollections->get_collections();
         $taxonomies = $Tainacan_Taxonomies->get_taxonomies();
 
-        $labels = array(
+        $cpt_labels = array(
             'name' => 'Item',
             'singular_name' => 'Item',
             'add_new' => 'Adicionar Novo',
@@ -44,9 +44,14 @@ class TainacanItems {
         if (!is_array($collections))
             return;
             
+        
+        
+        
+        
+        // register collections post type and associate taxonomies
         foreach ($collections as $collection) {
             
-            $labels['menu_name'] = $collection->get_name();
+            $cpt_labels['menu_name'] = $collection->get_name();
             $cpt_slug = $TainacanCollections->get_collection_db_identifier($collection->get_id());
             
             $args = array(
@@ -68,16 +73,42 @@ class TainacanItems {
                 'capability_type' => 'post',
             );
             register_post_type($cpt_slug, $args);
-            $this->register_post_type_taxonomies( $cpt_slug, $taxonomies );
         }
-    }
-
-
-    function register_post_type_taxonomies( $cpt_slug, $taxonomies ){
+        
+        
+        // register taxonomies
         foreach ($taxonomies as $taxonomy) {
-            register_taxonomy_for_object_type( $taxonomy, $cpt_slug );
+            $labels = array(
+                'name'              => __( 'Taxonomies', 'textdomain' ),
+                'singular_name'     => __( 'Taxonomy','textdomain' ),
+                'search_items'      => __( 'Search taxonomies', 'textdomain' ),
+                'all_items'         => __( 'All taxonomies', 'textdomain' ),
+                'parent_item'       => __( 'Parent taxonomy', 'textdomain' ),
+                'parent_item_colon' => __( 'Parent taxonomy:', 'textdomain' ),
+                'edit_item'         => __( 'Edit taxonomy', 'textdomain' ),
+                'update_item'       => __( 'Update taxonomy', 'textdomain' ),
+                'add_new_item'      => __( 'Add New taxonomy', 'textdomain' ),
+                'new_item_name'     => __( 'New Genre taxonomy', 'textdomain' ),
+                'menu_name'         => __( 'Genre', 'textdomain' ),
+            );
+
+            $args = array(
+                'hierarchical'      => true,
+                'labels'            => $labels,
+                'show_ui'           => tnc_enable_dev_wp_interface(),
+                'show_admin_column' => tnc_enable_dev_wp_interface(),
+            );
+            
+            // TODO Uma taxonomia pode estar vinculada a mais de uma coleção
+            register_taxonomy( 
+                $Tainacan_Taxonomies->get_taxonomy_db_identifier($taxonomy), 
+                array( $TainacanCollections->get_collection_db_identifier($taxonomy->get_collection()->get_id()) ), $args 
+            );
         }
+        
+        
     }
+
     
     
     function insert(TainacanItem $item) {
