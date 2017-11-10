@@ -20,11 +20,14 @@ class Entity {
         
         $mapped = $map[$prop];
         
-        if ($mapped == 'meta') {
+        if ( $mapped == 'meta') {
             return get_post_meta($this->WP_Post->ID, $prop, true);
-        } else {
+        }elseif ( $mapped == 'termmeta' ){
+            return get_term_meta($this->WP_Term->term_id, $prop, true);
+        }elseif ( isset( $this->WP_Post )) {
             return isset($this->WP_Post->$mapped) ? $this->WP_Post->$mapped : null;
-                
+        } else{
+            return isset($this->WP_Term->$mapped) ? $this->WP_Term->$mapped : null;
         }
         
     }

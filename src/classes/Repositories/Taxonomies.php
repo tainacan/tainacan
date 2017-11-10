@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Tainacan_Metadatas
+ * Class Tainacan_Taxonomies
  */
 class Tainacan_Taxonomies {
 
@@ -64,6 +64,19 @@ class Tainacan_Taxonomies {
     }
 
     function get_taxonomy_db_identifier($id) {
+        $meta = get_post_meta($id, self::DB_IDENTIFIER_META, true);
+
+        if (!$meta) {
+            $p = get_post($id);
+            add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
+            return $p->post_name;
+        }
+
+        return $meta;
+    }
+
+
+    function get_metadata_db_identifier($id) {
         $meta = get_post_meta($id, self::DB_IDENTIFIER_META, true);
 
         if (!$meta) {
@@ -141,19 +154,6 @@ class Tainacan_Taxonomies {
 
     function get_taxonomy_by_id($id) {
         return new Tainacan_Taxonomy($id);
-    }
-
-    function insert_term( $name, $taxonomy, $args  = array() ){
-       $term = wp_insert_term( $name, $taxonomy, $args );
-       return $term['term_id'];
-    }
-
-    function get_terms( $taxonomies, $args ){
-       return get_terms( $taxonomies, $args );
-    }
-
-    function get_term_by($field,$value,$taxonomy){
-         return get_term_by($field,$value,$taxonomy);
     }
 }
 

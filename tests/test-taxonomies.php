@@ -37,10 +37,11 @@ class TestTaxonomies extends WP_UnitTestCase {
     }
 
     function test_add_term_taxonomy(){
-        global $Tainacan_Taxonomies;
+        global $Tainacan_Taxonomies,$Tainacan_Terms;
         $taxonomy = new Tainacan_Taxonomy();
+        $term = new Tainacan_Term();
 
-        //setando os valores na classe do tainacan
+        //setando os valores na classe de taxonomia
         $taxonomy->set_name('genero');
 
         //insere a taxonomia
@@ -49,12 +50,16 @@ class TestTaxonomies extends WP_UnitTestCase {
         //retorna a taxonomia
         $taxonomy_test = $Tainacan_Taxonomies->get_taxonomy_by_id($taxonomy_id);
 
-        //insere um termo na taxonmia
-        $term_id = $Tainacan_Taxonomies->insert_term('Rock', $taxonomy_test->get_taxonomy_name());
+        //insere um termo na taxonomia
+        $term->set_taxonomy( $taxonomy_test->get_taxonomy_name() );
+        $term->set_name('Rock');
+        $term->set_user(56);
+        $term_id = $Tainacan_Terms->insert( $term ) ;
 
-        //retorna o termo
-        $term = $Tainacan_Taxonomies->get_term_by('id', $term_id, $taxonomy_test->get_taxonomy_name());
+        //retorna um objeto da classe Tainacan_Term
+        $test =  $Tainacan_Terms->get_term_by('id', $term_id, $taxonomy_test->get_taxonomy_name());
 
-        $this->assertEquals( $term->name, 'Rock' );
+        $this->assertEquals( $test->get_name(), 'Rock' );
+        $this->assertEquals( $test->get_user(), 56 );
     }
 }
