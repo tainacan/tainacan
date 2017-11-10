@@ -10,12 +10,14 @@ Version: 10.9.8.7.6.5.4
 include('classes/Repositories/Collections.php');
 include('classes/Repositories/Items.php');
 include('classes/Repositories/Metatadas.php');
+include('classes/Repositories/Taxonomies.php');
 include('classes/Entity.php');
 include('classes/Entities/Collection.php');
 include('classes/Entities/Item.php');
 include('classes/Entities/Metadata.php');
-include('classes/Entities/FieldType.php');
-include('classes/Entities/TextFieldType.php');
+include('classes/Entities/Taxonomy.php');
+include('classes/FieldTypes/FieldType.php');
+include('classes/FieldTypes/TextFieldType.php');
 
 require_once('tainacan-api-controllers/class-tainacan-api.php');
 $tainacan_api = new Tainacan_API();

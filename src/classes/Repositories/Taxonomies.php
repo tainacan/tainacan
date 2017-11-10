@@ -16,6 +16,7 @@ class Tainacan_Taxonomies {
         'name' => 'post_title',
         'parent' => 'parent',
         'description' => 'post_content',
+        'taxonomy_name' => 'post_name',
         'allow_insert' => 'meta',
         'collection' => 'meta',
     ];
@@ -107,7 +108,7 @@ class Tainacan_Taxonomies {
         if (!get_post_meta($id, self::DB_IDENTIFIER_META, true)) {
             $p = get_post($id);
             add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
-            registerTainacanTaxonomy( $p->post_name );
+            $this->registerTainacanTaxonomy( $p->post_name );
         }
 
         return $id;
@@ -137,4 +138,24 @@ class Tainacan_Taxonomies {
 
         register_taxonomy( $taxonomy_name, array( ), $args );
     }
+
+    function get_taxonomy_by_id($id) {
+        return new Tainacan_Taxonomy($id);
+    }
+
+    function insert_term( $name, $taxonomy, $args  = array() ){
+       $term = wp_insert_term( $name, $taxonomy, $args );
+       return $term['term_id'];
+    }
+
+    function get_terms( $taxonomies, $args ){
+       return get_terms( $taxonomies, $args );
+    }
+
+    function get_term_by($field,$value,$taxonomy){
+         return get_term_by($field,$value,$taxonomy);
+    }
 }
+
+global $Tainacan_Taxonomies;
+$Tainacan_Taxonomies = new Tainacan_Taxonomies();
