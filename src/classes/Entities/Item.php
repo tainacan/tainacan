@@ -65,6 +65,16 @@ class TainacanItem extends Entity {
         return null;
         
     }
+
+    function get_metadata(){
+        global $TainacanItems;
+
+        if(isset($this->metadata)) {
+            return $this->metadata;
+        }
+
+        return $TainacanItems->get_metadata( $this );
+    }
     
     // Setters
     // 
@@ -92,6 +102,10 @@ class TainacanItem extends Entity {
         $this->set_collection_id($collection->get_id());
     }
 
+
+    function set_metadata( $metadata ){
+
+    }
     
     
 }

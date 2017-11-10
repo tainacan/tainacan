@@ -21,10 +21,10 @@ class TainacanItems {
     
     function register_post_types() {
         
-        global $TainacanCollections;
+        global $TainacanCollections, $Tainacan_Taxonomies;
         
         $collections = $TainacanCollections->get_collections();
-        $taxonomies = $TainacanCollections->get_taxonomies();
+        $taxonomies = $Tainacan_Taxonomies->get_taxonomies();
 
         $labels = array(
             'name' => 'Item',
@@ -122,6 +122,32 @@ class TainacanItems {
    
     function get_item_by_id($id) {
         return new TainacanItem($id);
+    }
+
+
+    function get_metadata( TainacanItem $item ){
+        global $TainacanCollections;
+        $values = [];
+
+        $collection_metadata = $TainacanCollections->get_metadata( $item->get_collection() );
+        foreach ($collection_metadata as $metadata) {
+            $values[] = [
+                'metadata_id' =>  $metadata->get_id(),
+                'value' => get_post_meta( $item->get_id(), $metadata->get_id()),
+            ];
+        }
+
+        return $values;
+    }
+
+
+    function set_metadata( TainacanItem $item, $values){
+        global $TainacanCollections;
+
+        $collection_metadata = $TainacanCollections->get_metadata( $item->get_collection() );
+        foreach ($collection_metadata as $metadata) {
+
+        }
     }
     
 }

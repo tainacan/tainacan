@@ -63,6 +63,11 @@ class Tainacan_Taxonomies {
         register_post_type(self::POST_TYPE, $args);
     }
 
+    function get_taxonomies(){
+        $array = get_taxonomies();
+        return ( is_array( $array ) ) ? $array : [];
+    }
+
     function get_taxonomy_db_identifier($id) {
         $meta = get_post_meta($id, self::DB_IDENTIFIER_META, true);
 

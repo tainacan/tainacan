@@ -130,9 +130,9 @@ class TainacanCollections {
         return new TainacanCollection($id);
     }
 
-    function get_taxonomies(){
-        $array = get_taxonomies();
-        return ( is_array( $array ) ) ? $array : [];
+    function get_metadata( $collection ){
+        global $Tainacan_Metadatas;
+        return $Tainacan_Metadatas->get_collection_metadata( $collection );
     }
     
 }
