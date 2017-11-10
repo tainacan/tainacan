@@ -68,9 +68,14 @@ class TainacanItems {
                 'capability_type' => 'post',
             );
             register_post_type($cpt_slug, $args);
-            foreach ($taxonomies as $taxonomy) {
-                register_taxonomy_for_object_type( $taxonomy, $cpt_slug );
-            }
+            $this->register_post_type_taxonomies( $cpt_slug, $taxonomies );
+        }
+    }
+
+
+    function register_post_type_taxonomies( $cpt_slug, $taxonomies ){
+        foreach ($taxonomies as $taxonomy) {
+            register_taxonomy_for_object_type( $taxonomy, $cpt_slug );
         }
     }
     
