@@ -21,9 +21,6 @@ include('classes/Entities/Term.php');
 include('classes/FieldTypes/FieldType.php');
 include('classes/FieldTypes/TextFieldType.php');
 
-require_once('tainacan-api-controllers/class-tainacan-api.php');
-$tainacan_api = new Tainacan_API();
-
 /**
  * 
  *

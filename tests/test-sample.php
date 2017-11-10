@@ -34,34 +34,7 @@ class TestCollections extends WP_UnitTestCase {
         $this->assertEquals($test->get_itens_per_page(), 23);
         
         
-        }
-        
-        function test_insert_and_get(){
-                $controller = new Tainacan_API();
-                $name = 'Code';
-                $description = 'Show me the code!';
-
-                $name2 = 'Again';
-                $description2 = 'Showing the code again!';
-
-                $id = $controller->insert_collection($name, $description);
-                $id2 = $controller->insert_collection($name2, $description2);
-                
-                $this->assertNotFalse($id);
-                $this->assertNotFalse($id2);
-
-                // Getting one collection
-                $collection = $controller->get_collection($id);
-
-                $this->assertEquals($collection->get_name(), $name);
-                $this->assertEquals($collection->get_description(), $description);
-
-                // Getting all collections
-                $collections = $controller->get_collections(array('include' => array($id, $id2)));
-                
-                $this->assertEquals($collections[0]->get_name(), $name2);
-                $this->assertEquals($collections[1]->get_name(), $name);
-        }
+    }
     
     function test_item() {
         
