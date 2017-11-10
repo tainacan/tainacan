@@ -2,5 +2,5 @@ build-config.cfg
 src/style.css
 src/style.css.map
 src/scss/.sass-cache
-tests/bootstrap.php
+tests/bootstrap-config.php
 .idea
