@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class TainacanItem extends Entity {
     
+    use EntityCollectionRelation;
     
     function __construct($which = 0) {
         
@@ -45,26 +46,7 @@ class TainacanItem extends Entity {
     function get_description() {
         return $this->get_mapped_property('description');
     }
-    function get_collection_id() {
-        return $this->get_mapped_property('collection_id');
-    }
     
-    // sepecial Getters
-    function get_collection() {
-        if (isset($this->collection) && $this->collection instanceof TainacanCollection)
-            return $this->collection;
-        
-        if (is_numeric($this->get_collection_id())) {
-            $collection = get_post($this->get_collection_id());
-            if ($collection instanceof WP_Post) {
-                $this->collection = new TainacanCollection($collection);
-                return $this->collection;
-            }
-        }
-        
-        return null;
-        
-    }
 
     function get_metadata(){
         global $TainacanItems;
@@ -91,16 +73,11 @@ class TainacanItem extends Entity {
     function set_description($value) {
         return $this->set_mapped_property('description', $value);
     }
-    function set_collection_id($value) {
-        return $this->set_mapped_property('collection_id', $value);
-    }
+    
     
     // sepecial Setters
     
-    function set_collection(TainacanCollection $collection) {
-        $this->collection = $collection;
-        $this->set_collection_id($collection->get_id());
-    }
+    
 
 
     function set_metadata( $metadata ){

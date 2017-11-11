@@ -25,7 +25,7 @@ class TestMetadata extends WP_UnitTestCase {
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');
         $metadata->set_description('descricao');
-        $metadata->set_collection( new TainacanCollection( $id ) );
+        $metadata->set_collection_id( $id );
 
         //inserindo o metadado
         $metadata_id = $Tainacan_Metadatas->insert($metadata);
@@ -53,7 +53,7 @@ class TestMetadata extends WP_UnitTestCase {
 
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');
-        $metadata->set_collection( new TainacanCollection( $id ) );
+        $metadata->set_collection_id( $id );
         $metadata->set_type( $type );
 
         //inserindo o metadado

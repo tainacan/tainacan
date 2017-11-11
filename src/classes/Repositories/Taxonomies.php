@@ -9,16 +9,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Tainacan_Taxonomies {
 
     const POST_TYPE = 'tainacan-taxonomies';
-    const DB_IDENTIFIER_META = '_db_identifier';
 
     var $map = [
         'ID' => 'ID',
         'name' => 'post_title',
         'parent' => 'parent',
         'description' => 'post_content',
-        'taxonomy_name' => 'post_name',
+        'slug' => 'post_name',
         'allow_insert' => 'meta',
-        'collection' => 'meta',
+        'collections_ids' => 'meta_multi',
     ];
 
 
@@ -52,9 +51,9 @@ class Tainacan_Taxonomies {
             'show_in_menu' => tnc_enable_dev_wp_interface(),
             //'menu_position' => 5,
             //'show_in_nav_menus' => false,
-            'publicly_queryable' => true,
+            'publicly_queryable' => false,
             'exclude_from_search' => true,
-            'has_archive' => true,
+            'has_archive' => false,
             'query_var' => true,
             'can_export' => true,
             'rewrite' => true,
@@ -83,30 +82,6 @@ class Tainacan_Taxonomies {
         return $return;
     }
 
-    function get_taxonomy_db_identifier($id) {
-        $meta = get_post_meta($id, self::DB_IDENTIFIER_META, true);
-
-        if (!$meta) {
-            $p = get_post($id);
-            add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
-            return $p->post_name;
-        }
-
-        return $meta;
-    }
-
-
-    function get_metadata_db_identifier($id) {
-        $meta = get_post_meta($id, self::DB_IDENTIFIER_META, true);
-
-        if (!$meta) {
-            $p = get_post($id);
-            add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
-            return $p->post_name;
-        }
-
-        return $meta;
-    }
 
     /**
      * @param Tainacan_Taxonomy $metadata
@@ -125,25 +100,23 @@ class Tainacan_Taxonomies {
         $taxonomy->WP_Post->post_type = self::POST_TYPE;
         $taxonomy->WP_Post->post_status = 'publish';
         $id = wp_insert_post($taxonomy->WP_Post);
+        $taxonomy->WP_Post = get_post($id);
 
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
             if ($mapped == 'meta') {
                 update_post_meta($id, $prop, $taxonomy->get_mapped_property($prop));
+            } elseif ($mapped == 'meta_multi') {
+                $values = $taxonomy->get_mapped_property($prop);
+                delete_post_meta($id, $prop);
+                if (is_array($values))
+                    foreach ($values as $value)
+                        add_post_meta($id, $prop, $value);
             }
         }
-
-        // DB Identifier
-        // the first time a collection is saved, save the slug as a db Identifier,
-        // This will be the slug of the post type that will be created for this collection
-        // Later, if the slug is changed (and thus the URL of this collection) the db Identifier
-        // does not change and we dont lose all the items
-        if (!get_post_meta($id, self::DB_IDENTIFIER_META, true)) {
-            $p = get_post($id);
-            add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
-            $this->registerTainacanTaxonomy( $p->post_name );
-        }
-
+        
+        $taxonomy->register_taxonomy();
+        
         return $id;
     }
 

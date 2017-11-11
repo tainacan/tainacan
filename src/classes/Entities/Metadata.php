@@ -5,6 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Tainacan_Metadata extends Entity {
 
+    use EntityCollectionRelation;
+    
     function __construct( $which = 0 ) {
 
         $this->repository = 'Tainacan_Metadatas';
@@ -76,12 +78,6 @@ class Tainacan_Metadata extends Entity {
     }
 
 
-
-
-    function get_collection() {
-        return new TainacanCollection( $this->get_mapped_property('collection') );
-    }
-
     // Setters
 
 
@@ -132,12 +128,5 @@ class Tainacan_Metadata extends Entity {
         return $this->set_mapped_property('option',  serialize($value) ) ;
     }
 
-    /**
-     * @param TainacanCollection
-     */
-    function set_collection($value) {
-        $ID = ($value instanceof  TainacanCollection ) ? $value->get_id() : $value;
-        return $this->set_mapped_property('collection', $ID);
-    }
 
 }

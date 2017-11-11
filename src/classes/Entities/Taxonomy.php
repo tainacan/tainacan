@@ -5,6 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Tainacan_Taxonomy extends Entity {
 
+    use EntityCollectionsRelation;
+    
     function __construct( $which = 0 ) {
 
         $this->repository = 'Tainacan_Taxonomies';
@@ -21,6 +23,49 @@ class Tainacan_Taxonomy extends Entity {
             $this->WP_Post = new StdClass();
         }
 
+    }
+    
+    function register_taxonomy() {
+        $labels = array(
+            'name'              => $this->get_name(),
+            'singular_name'     => __( 'Taxonomy','textdomain' ),
+            'search_items'      => __( 'Search taxonomies', 'textdomain' ),
+            'all_items'         => __( 'All taxonomies', 'textdomain' ),
+            'parent_item'       => __( 'Parent taxonomy', 'textdomain' ),
+            'parent_item_colon' => __( 'Parent taxonomy:', 'textdomain' ),
+            'edit_item'         => __( 'Edit taxonomy', 'textdomain' ),
+            'update_item'       => __( 'Update taxonomy', 'textdomain' ),
+            'add_new_item'      => __( 'Add New taxonomy', 'textdomain' ),
+            'new_item_name'     => __( 'New Genre taxonomy', 'textdomain' ),
+            'menu_name'         => __( 'Genre', 'textdomain' ),
+        );
+
+        $args = array(
+            'hierarchical'      => true,
+            'labels'            => $labels,
+            'show_ui'           => tnc_enable_dev_wp_interface(),
+            'show_admin_column' => tnc_enable_dev_wp_interface(),
+            'rewrite' => [
+                'slug' => $this->get_slug()
+            ],
+        );
+        
+        
+        $tax_cpts = [];
+        if (is_array($this->get_collections()))
+            foreach ($this->get_collections() as $tax_col)
+                $tax_cpts[] = $tax_col->get_db_identifier();
+        
+        if (taxonomy_exists($this->get_db_identifier())) 
+            unregister_taxonomy($this->get_db_identifier());
+        
+        register_taxonomy( 
+            $this->get_db_identifier(), 
+            $tax_cpts, 
+            $args 
+        );
+        
+        return true;
     }
 
     // Getters
@@ -47,16 +92,17 @@ class Tainacan_Taxonomy extends Entity {
         return ( boolean ) $this->get_mapped_property('allow_insert');
     }
 
-    function get_taxonomy_name() {
-        return $this->get_mapped_property('taxonomy_name');
+    function get_slug() {
+        return $this->get_mapped_property('slug');
     }
 
-
-
-    // TODO: Uma taxonomia pode estar vinculada a mais de uma coleção
-    function get_collection() {
-        return new TainacanCollection( $this->get_mapped_property('collection') );
+    // special Getters
+    // 
+    
+    function get_db_identifier() {
+        return $this->get_id() ? 'tnc_tax_' . $this->get_id() : false;
     }
+
 
     // Setters
 
@@ -68,6 +114,10 @@ class Tainacan_Taxonomy extends Entity {
     function set_parent($value) {
         return $this->set_mapped_property('parent', $value);
     }
+    
+    function set_slug($value) {
+        return $this->set_mapped_property('slug', $value);
+    }
 
 
     function set_description($value) {
@@ -78,13 +128,4 @@ class Tainacan_Taxonomy extends Entity {
         return $this->set_mapped_property('allow_insert', $value);
     }
 
-    /**
-     * @param TainacanCollection
-     *
-     * TODO: Uma taxonomia pode estar vinculada a mais de uma coleção
-     */
-    function set_collection($value) {
-        $ID = ($value instanceof  TainacanCollection ) ? $value->get_id() : $value;
-        return $this->set_mapped_property('collection', $ID);
-    }
 }

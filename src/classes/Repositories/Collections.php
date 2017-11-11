@@ -8,7 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class TainacanCollections {
     
     const POST_TYPE = 'tainacan-collections';
-    const DB_IDENTIFIER_META = '_db_identifier';
     
     var $map = [
         'ID' => 'ID',
@@ -16,6 +15,7 @@ class TainacanCollections {
         'order' => 'menu_order',
         'parent' => 'parent',
         'description' => 'post_content',
+        'slug' => 'post_name',
         'itens_per_page' => 'meta'
     ];
     
@@ -71,24 +71,27 @@ class TainacanCollections {
         // save post and geet its ID
         $collection->WP_Post->post_type = self::POST_TYPE;
         $collection->WP_Post->post_status = 'publish';
+        
+        // TODO verificar se salvou mesmo
         $id = wp_insert_post($collection->WP_Post);
+        
+        // reset object
+        $collection->WP_Post = get_post($id);
         
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
             if ($mapped == 'meta') {
                 update_post_meta($id, $prop, $collection->get_mapped_property($prop));
+            } elseif ($mapped == 'meta_multi') {
+                $values = $collection->get_mapped_property($prop);
+                delete_post_meta($id, $prop);
+                if (is_array($values))
+                    foreach ($values as $value)
+                        add_post_meta($id, $prop, $value);
             }
         }
         
-        // DB Identifier
-        // the first time a collection is saved, save the slug as a db Identifier,
-        // This will be the slug of the post type that will be created for this collection
-        // Later, if the slug is changed (and thus the URL of this collection) the db Identifier
-        // does not change and we dont lose all the items
-        if (!get_post_meta($id, self::DB_IDENTIFIER_META, true)) {
-            $p = get_post($id);
-            add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
-        }
+        $collection->register_post_type();
         
         return $id;
     }
@@ -114,26 +117,10 @@ class TainacanCollections {
         return $return;
     }
     
-    function get_collection_db_identifier($id) {
-        $meta = get_post_meta($id, self::DB_IDENTIFIER_META, true);
-        
-        if (!$meta) {
-            $p = get_post($id);
-            add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
-            return $p->post_name;
-        }
-        
-        return $meta;
-    }
-    
     function get_collection_by_id($id) {
         return new TainacanCollection($id);
     }
 
-    function get_metadata( $collection ){
-        global $Tainacan_Metadatas;
-        return $Tainacan_Metadatas->get_collection_metadata( $collection );
-    }
     
 }
 

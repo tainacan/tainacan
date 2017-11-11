@@ -9,7 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Tainacan_Metadatas {
 
     const POST_TYPE = 'tainacan-metadata';
-    const DB_IDENTIFIER_META = '_db_identifier';
 
     var $map = [
         'ID' => 'ID',
@@ -24,7 +23,7 @@ class Tainacan_Metadatas {
         'mask' => 'meta',
         'default_value' => 'meta',
         'option' => 'meta',
-        'collection' => 'meta',
+        'collection_id' => 'meta',
     ];
 
     function __construct() {
@@ -85,22 +84,19 @@ class Tainacan_Metadatas {
         $metadata->WP_Post->post_type = self::POST_TYPE;
         $metadata->WP_Post->post_status = 'publish';
         $id = wp_insert_post($metadata->WP_Post);
+        $metadata->WP_Post = get_post($id);
 
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
             if ($mapped == 'meta') {
                 update_post_meta($id, $prop, $metadata->get_mapped_property($prop));
+            } elseif ($mapped == 'meta_multi') {
+                $values = $metadata->get_mapped_property($prop);
+                delete_post_meta($id, $prop);
+                if (is_array($values))
+                    foreach ($values as $value)
+                        add_post_meta($id, $prop, $value);
             }
-        }
-
-        // DB Identifier
-        // the first time a collection is saved, save the slug as a db Identifier,
-        // This will be the slug of the post type that will be created for this collection
-        // Later, if the slug is changed (and thus the URL of this collection) the db Identifier
-        // does not change and we dont lose all the items
-        if (!get_post_meta($id, self::DB_IDENTIFIER_META, true)) {
-            $p = get_post($id);
-            add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
         }
 
         return $id;
@@ -111,7 +107,7 @@ class Tainacan_Metadatas {
      * @param array $args
      * @return array
      */
-    function get_collection_metadata( $collection, $args = array()) {
+    function get_metadata_by_collection( $collection, $args = array()) {
         $collection_id = ( is_object( $collection ) )  ? $collection->get_id() : $collection;
 
         $args = array_merge([
@@ -133,17 +129,7 @@ class Tainacan_Metadatas {
         return $return;
     }
 
-    function get_metadata_db_identifier($id) {
-        $meta = get_post_meta($id, self::DB_IDENTIFIER_META, true);
-
-        if (!$meta) {
-            $p = get_post($id);
-            add_post_meta($id, self::DB_IDENTIFIER_META, $p->post_name);
-            return $p->post_name;
-        }
-
-        return $meta;
-    }
+    
     /**
      * @param int $id
      * @return Tainacan_Metadata
