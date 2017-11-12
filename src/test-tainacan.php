@@ -14,12 +14,14 @@ include('classes/Repositories/Items.php');
 include('classes/Repositories/Metatadas.php');
 include('classes/Repositories/Taxonomies.php');
 include('classes/Repositories/Terms.php');
+include('classes/Repositories/ItemMetadata.php');
 include('classes/Entity.php');
 include('classes/Entities/Collection.php');
 include('classes/Entities/Item.php');
 include('classes/Entities/Metadata.php');
 include('classes/Entities/Taxonomy.php');
 include('classes/Entities/Term.php');
+include('classes/Entities/Item_Metadata_Entity.php');
 include('classes/FieldTypes/FieldType.php');
 include('classes/FieldTypes/TextFieldType.php');
 

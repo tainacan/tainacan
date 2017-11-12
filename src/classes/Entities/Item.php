@@ -48,15 +48,7 @@ class TainacanItem extends Entity {
     }
     
 
-    function get_metadata(){
-        global $TainacanItems;
 
-        if(isset($this->metadata)) {
-            return $this->metadata;
-        }
-
-        return $TainacanItems->get_metadata( $this );
-    }
     
     // Setters
     // 
@@ -73,16 +65,39 @@ class TainacanItem extends Entity {
     function set_description($value) {
         return $this->set_mapped_property('description', $value);
     }
-    
-    
-    // sepecial Setters
-    
-    
 
 
-    function set_metadata( $metadata ){
-
+    // Metadata
+    
+    function get_metadata() {
+        if (isset($this->metadata))
+            return $this->metadata;
+        
+        $collection = $this->get_collection();
+        $return = [];
+        if ($collection) {
+            $metaList = $collection->get_metadata();
+            
+            foreach ($metaList as $meta) {
+                $return[$meta->get_id()] = new Tainacan_Item_Metadata_Entity($this, $meta);
+            }
+        }
+        return $return;
     }
     
+    function add_metadata(Tainacan_Metadata $new_metadata, $value) {
+        
+        //TODO Multiple metadata must receive an array as value
+        
+        $item_metadata = new Tainacan_Item_Metadata_Entity($this, $new_metadata);
+        $item_metadata->set_value($value);
+        $current_meta = $this->get_metadata();
+        $current_meta[$new_metadata->get_id()] = $item_metadata;
+        $this->set_metadata($current_meta);
+    }
+    
+    function set_metadata(Array $metadata) {
+        $this->metadata = $metadata;
+    }
     
 }

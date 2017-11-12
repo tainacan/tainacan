@@ -104,6 +104,11 @@ class TainacanCollection extends Entity  {
         return $this->get_id() ? 'tnc_col_' . $this->get_id() : false;
     }
     
+    // metadata
+    function get_metadata() {
+        global $Tainacan_Metadatas;
+        return $Tainacan_Metadatas->get_metadata_by_collection($this);
+    }
     
     // Setters
     // 
@@ -126,21 +131,5 @@ class TainacanCollection extends Entity  {
     function set_itens_per_page($value) {
         return $this->set_mapped_property('itens_per_page', $value);
     }
-    
-    
-    // Relation methods
-    
-    
-    
-    
-    
-    
-    
-    
-    function get_metadata( $collection ){
-        global $Tainacan_Metadatas;
-        return $Tainacan_Metadatas->get_collection_metadata( $collection );
-    }
-    
-    
+
 }

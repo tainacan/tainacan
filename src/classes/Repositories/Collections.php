@@ -84,7 +84,7 @@ class TainacanCollections {
         // First iterate through the native post properties
         $map = $this->map;
         foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta') {
+            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
                 $collection->WP_Post->{$mapped['map']} = $collection->get_mapped_property($prop);
             }
         }
@@ -114,7 +114,8 @@ class TainacanCollections {
         
         $collection->register_post_type();
         
-        return $id;
+        // return a brand new object
+        return new TainacanCollection($collection->WP_Post);
     }
     
     function get_collections($args = array()) {

@@ -37,11 +37,23 @@ class Tainacan_Metadatas {
         ],
         'required' => [
             'map' => 'meta',
-            'validation' => ''
+            'validation' => '', // yes or no
+            'default' => 'no'
+        ],
+        'collection_key' => [
+            'map' => 'meta',
+            'validation' => '', // yes or no. it cant be key if its multiple
+            'default' => 'no'
+        ],
+        'multiple' => [
+            'map' => 'meta',
+            'validation' => '', // yes or no. It cant be multiple if its collection_key
+            'default' => 'no'
         ],
         'cardinality' => [
             'map' => 'meta',
-            'validation' => ''
+            'validation' => '',
+            'default' => 1
         ],
         'privacy' => [
             'map' => 'meta',
@@ -114,7 +126,7 @@ class Tainacan_Metadatas {
         // First iterate through the native post properties
         $map = $this->map;
         foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta') {
+            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
                 $metadata->WP_Post->{$mapped['map']} = $metadata->get_mapped_property($prop);
             }
         }
@@ -137,8 +149,9 @@ class Tainacan_Metadatas {
                         add_post_meta($id, $prop, $value);
             }
         }
-
-        return $id;
+        
+        // return a brand new object
+        return new Tainacan_Metadata($metadata->WP_Post);
     }
 
     /**

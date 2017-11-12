@@ -22,11 +22,11 @@ class TestCollections extends WP_UnitTestCase {
         $x->set_itens_per_page(23);
         
         global $TainacanCollections;
-        $id = $TainacanCollections->insert($x);
+        $col = $TainacanCollections->insert($x);
         
         //
         
-        $test = $TainacanCollections->get_collection_by_id($id);
+        $test = $TainacanCollections->get_collection_by_id($col->get_id());
         
         
         $this->assertEquals($test->get_name(), 'teste');
@@ -46,9 +46,9 @@ class TestCollections extends WP_UnitTestCase {
         $x->set_itens_per_page(23);
         
         global $TainacanCollections;
-        $cid = $TainacanCollections->insert($x);
+        $col = $TainacanCollections->insert($x);
         
-        $collection = $TainacanCollections->get_collection_by_id($cid);
+        $collection = $TainacanCollections->get_collection_by_id($col->get_id());
         
         
         
@@ -59,13 +59,13 @@ class TestCollections extends WP_UnitTestCase {
         $i->set_collection($collection);
         
         global $TainacanItems;
-        $id = $TainacanItems->insert($i);
+        $item = $TainacanItems->insert($i);
         
-        $item = $TainacanItems->get_item_by_id($id);
+        $item = $TainacanItems->get_item_by_id($item->get_id());
         
         $this->assertEquals($item->get_title(), 'item teste');
         $this->assertEquals($item->get_description(), 'adasdasdsa');
-        $this->assertEquals($item->get_collection_id(), $cid);
+        $this->assertEquals($item->get_collection_id(), $collection->get_id());
         
     }
 }

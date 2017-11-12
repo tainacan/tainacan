@@ -4,9 +4,9 @@
 class Entity {
     
     var $repository;
+    var $errors = [];
     
     function get_mapped_property($prop) {
-        
         
         global ${$this->repository};
         $map = ${$this->repository}->map;
@@ -21,17 +21,21 @@ class Entity {
         $mapped = $map[$prop]['map'];
         
         if ( $mapped == 'meta') {
-            return get_post_meta($this->WP_Post->ID, $prop, true);
+            $return = get_post_meta($this->WP_Post->ID, $prop, true);
         }elseif ( $mapped == 'meta_multi') {
-            return get_post_meta($this->WP_Post->ID, $prop, false);
+            $return = get_post_meta($this->WP_Post->ID, $prop, false);
         }elseif ( $mapped == 'termmeta' ){
-            return get_term_meta($this->WP_Term->term_id, $prop, true);
+            $return = get_term_meta($this->WP_Term->term_id, $prop, true);
         }elseif ( isset( $this->WP_Post )) {
-            return isset($this->WP_Post->$mapped) ? $this->WP_Post->$mapped : null;
+            $return = isset($this->WP_Post->$mapped) ? $this->WP_Post->$mapped : null;
         } elseif ( isset( $this->WP_Term )) {
-            return isset($this->WP_Term->$mapped) ? $this->WP_Term->$mapped : null;
+            $return = isset($this->WP_Term->$mapped) ? $this->WP_Term->$mapped : null;
         }
         
+        if (empty($return) && isset($map[$prop]['default']) && !empty($map[$prop]['default']))
+            $return = $map[$prop]['default'];
+            
+        return $return;
     }
     
     function set_mapped_property($prop, $value) {
@@ -53,12 +57,20 @@ class Entity {
         
     }
 
-    function validate($value) {
+    function validate() {
         return true;
     }
     
-    function get_validation_errors() {
-        return [];
+    function get_errors() {
+        return $this->errors;
+    }
+    
+    function add_error($type, $message) {
+        $this->errors[] = [$type => $message];
+    }
+    
+    function reset_errors() {
+        $this->errors = [];
     }
         
 }

@@ -25,10 +25,10 @@ class TestTaxonomies extends WP_UnitTestCase {
         $taxonomy->set_allow_insert(true);
 
         //inserindo
-        $taxonomy_id = $Tainacan_Taxonomies->insert($taxonomy);
+        $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
 
         //retorna a taxonomia
-        $test = $Tainacan_Taxonomies->get_taxonomy_by_id($taxonomy_id);
+        $test = $Tainacan_Taxonomies->get_taxonomy_by_id($taxonomy->get_id());
 
         $this->assertEquals( $test->get_name(), 'genero' );
         $this->assertEquals( $test->get_description(), 'tipos de musica' );
@@ -45,10 +45,10 @@ class TestTaxonomies extends WP_UnitTestCase {
         $taxonomy->set_name('genero');
 
         //insere a taxonomia
-        $taxonomy_id = $Tainacan_Taxonomies->insert($taxonomy);
+        $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
 
         //retorna a taxonomia
-        $taxonomy_test = $Tainacan_Taxonomies->get_taxonomy_by_id($taxonomy_id);
+        $taxonomy_test = $Tainacan_Taxonomies->get_taxonomy_by_id($taxonomy->get_id());
 
         //insere um termo na taxonomia
         $term->set_taxonomy( $taxonomy_test->get_db_identifier() );

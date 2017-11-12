@@ -24,8 +24,9 @@ trait EntityCollectionRelation {
     }
     
     function set_collection_id($value) {
-        return $this->set_mapped_property('collection_id', $value);
         $this->collection = null;
+        return $this->set_mapped_property('collection_id', $value);
+        
     }
     
     function set_collection(TainacanCollection $collection) {

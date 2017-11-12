@@ -79,13 +79,14 @@ class TainacanItems {
         
         // iterate through the native post properties
         foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta') {
+            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
                 $item->WP_Post->{$mapped['map']} = $item->get_mapped_property($prop);
             }
         }
         
         // save post and geet its ID
         $item->WP_Post->post_type = $cpt;
+        $item->WP_Post->post_status = 'publish';
         $id = wp_insert_post($item->WP_Post);
         $item->WP_Post = get_post($id);
         
@@ -102,45 +103,118 @@ class TainacanItems {
             }
         }
         
-        // TODO - save item medatada
-        // get collection Metadata
-        // foreach metadata...
+        // save metadata
+        $metadata = $item->get_metadata();
+        global $Tainacan_Item_Metadata;
+        foreach ($metadata as $meta) {
+            $Tainacan_Item_Metadata->insert($meta);
+        }
         
-        
-        return $id;
+        // return a brand new object
+        return new TainacanItem($item->WP_Post);
     }
     
+    // collections id or array of ids; collection object or array of objects
+    function get_items($args = array(), $collections = []) {
+        
+        global $TainacanCollections;
+        
+        if (empty($collections)) {
+            $collections = $TainacanCollections->get_collections();
+        }
+        
+        if (is_numeric($collections)) 
+            $collections = $TainacanCollections->get_collection_by_id($collection);
+        
+        if ($collections instanceof TainacanCollection) {
+            $cpt = $collections->get_db_identifier();
+        } elseif (is_array($collections)) {
+            $cpt = [];
+            
+            foreach ($collections as $collection) {
+                if (is_numeric($collection)) 
+                    $collection = $TainacanCollections->get_collection_by_id($collection);
+                
+                if ($collection instanceof TainacanCollection)
+                    $cpt[] = $collection->get_db_identifier();
+            }
+            
+        } else {
+            return [];
+        }
+        
+        if (empty($cpt))
+            return [];
+
+        $args = array_merge([
+            'post_type' => $cpt,
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+        ], $args);
+
+        $posts = get_posts($args);
+        
+        $return = [];
+        
+        foreach ($posts as $post) {
+            $return[] = new TainacanItem($post);
+        }
+        
+        return $return;
+    }
+    
+    // same as WP_Query with few paramaters more:
+    // collections ID or array of IDs, object or array of objects
+    // metadata - array of metadata in meta_query format
+    // other item properties, present in the "map"
+    function query($args) {
+        
+        $map = $this->map;
+        $wp_query_exceptions = [
+            'ID' => 'p',
+            'post_title' => 'title'
+        ];
+        
+        $meta_query = [];
+        
+        foreach ($map as $prop => $mapped) {
+            if (array_key_exists($prop, $args)) {
+                $prop_value = $args[$prop];
+                unset($args[$prop]);
+                if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
+                    $meta_query[] = [
+                        'key' => $prop,
+                        'value' => $prop_value
+                    ];
+                } else {
+                    $prop_search_name = array_key_exists($mapped['map'], $wp_query_exceptions) ? $wp_query_exceptions[$mapped['map']] : $mapped['map'];
+                    $args[$prop_search_name] = $prop_value;
+                }
+                
+            }
+        }
+        
+        if ( isset($args['metadata']) && is_array($args['metadata']) && !empty($args['metadata'])) {
+            $meta_query = $args['metadata'];
+        }
+        
+        $args['meta_query'] = $meta_query;
+        
+        unset($args['metadata']);
+        
+        $collections = !empty($args['collections']) ? $args['collections'] : [];
+        unset($args['collections']);
+        
+        return $this->get_items($args, $collections);
+        ### TODO I think its better if we return a WP_Query object. easier for loop and debugging
+        
+    }
    
     function get_item_by_id($id) {
         return new TainacanItem($id);
     }
 
 
-    function get_metadata( TainacanItem $item ){
-        global $TainacanCollections;
-        $values = [];
-
-        $collection_metadata = $TainacanCollections->get_metadata( $item->get_collection() );
-        foreach ($collection_metadata as $metadata) {
-            $values[] = [
-                'metadata_id' =>  $metadata->get_id(),
-                'value' => get_post_meta( $item->get_id(), $metadata->get_id()),
-            ];
-        }
-
-        return $values;
-    }
-
-
-    function set_metadata( TainacanItem $item, $values){
-        global $TainacanCollections;
-
-        $collection_metadata = $TainacanCollections->get_metadata( $item->get_collection() );
-        foreach ($collection_metadata as $metadata) {
-
-        }
-    }
-    
 }
 
 global $TainacanItems;

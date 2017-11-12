@@ -53,8 +53,20 @@ class Tainacan_Metadata extends Entity {
     }
 
 
+    function get_required(){
+        return $this->get_mapped_property('required');
+    }
+    
+    function get_multiple(){
+        return $this->get_mapped_property('multiple');
+    }
+    
     function get_cardinality(){
         return $this->get_mapped_property('cardinality');
+    }
+    
+    function get_collection_key(){
+        return $this->get_mapped_property('collection_key');
     }
 
     function get_mask(){
@@ -100,8 +112,20 @@ class Tainacan_Metadata extends Entity {
     }
 
 
+    function set_required( $value ){
+        return $this->set_mapped_property('required', $value);
+    }
+    
+    function set_multiple( $value ){
+        return $this->set_mapped_property('multiple', $value);
+    }
+    
     function set_cardinality( $value ){
         return $this->set_mapped_property('cardinality', $value);
+    }
+    
+    function set_collection_key( $value ){
+        return $this->set_mapped_property('collection_key', $value);
     }
 
     function set_mask( $value ){
@@ -128,5 +152,19 @@ class Tainacan_Metadata extends Entity {
         return $this->set_mapped_property('option',  serialize($value) ) ;
     }
 
+    
+    // helpers
+    
+    function is_multiple() {
+        return $this->get_multiple() === 'yes';
+    }
+    
+    function is_collection_key() {
+        return $this->get_collection_key() === 'yes';
+    }
+    
+    function is_required() {
+        return $this->get_required() === 'yes';
+    }
 
 }

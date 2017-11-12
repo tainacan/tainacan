@@ -112,7 +112,7 @@ class Tainacan_Taxonomies {
         // First iterate through the native post properties
         $map = $this->map;
         foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta') {
+            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
                 $taxonomy->WP_Post->{$mapped['map']} = $taxonomy->get_mapped_property($prop);
             }
         }
@@ -138,7 +138,8 @@ class Tainacan_Taxonomies {
         
         $taxonomy->register_taxonomy();
         
-        return $id;
+        // return a brand new object
+        return new Tainacan_Taxonomy($taxonomy->WP_Post);
     }
 
     function registerTainacanTaxonomy( $taxonomy_name ){
