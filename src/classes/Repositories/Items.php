@@ -8,11 +8,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 class TainacanItems {
     
     var $map = [
-        'ID' => 'ID',
-        'title' => 'post_title',
-        'description' => 'post_content',
-        'collection_id' => 'meta',
-        //'collection' => 'relation...'
+        'ID' => [
+            'map' => 'ID',
+            'validation' => ''
+        ],
+        'title' =>  [
+            'map' => 'post_title',
+            'validation' => ''
+        ],
+        'description' =>  [
+            'map' => 'post_content',
+            'validation' => ''
+        ],
+        'collection_id' =>  [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        //'collection' => 'relation...',
+        // metadata .. metadata...
     ];
     
     function __construct() {
@@ -66,8 +79,8 @@ class TainacanItems {
         
         // iterate through the native post properties
         foreach ($map as $prop => $mapped) {
-            if ($mapped != 'meta') {
-                $item->WP_Post->$mapped = $item->get_mapped_property($prop);
+            if ($mapped['map'] != 'meta') {
+                $item->WP_Post->{$mapped['map']} = $item->get_mapped_property($prop);
             }
         }
         
@@ -78,9 +91,9 @@ class TainacanItems {
         
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
-            if ($mapped == 'meta') {
+            if ($mapped['map'] == 'meta') {
                 update_post_meta($id, $prop, $item->get_mapped_property($prop));
-            } elseif ($mapped == 'meta_multi') {
+            } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $item->get_mapped_property($prop);
                 delete_post_meta($id, $prop);
                 if (is_array($values))

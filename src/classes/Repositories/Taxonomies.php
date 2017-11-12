@@ -11,13 +11,34 @@ class Tainacan_Taxonomies {
     const POST_TYPE = 'tainacan-taxonomies';
 
     var $map = [
-        'ID' => 'ID',
-        'name' => 'post_title',
-        'parent' => 'parent',
-        'description' => 'post_content',
-        'slug' => 'post_name',
-        'allow_insert' => 'meta',
-        'collections_ids' => 'meta_multi',
+        'ID' =>  [
+            'map' => 'ID',
+            'validation' => ''
+        ],
+        'name' =>  [
+            'map' => 'post_title',
+            'validation' => ''
+        ],
+        'parent' =>  [
+            'map' => 'parent',
+            'validation' => ''
+        ],
+        'description' =>  [
+            'map' => 'post_content',
+            'validation' => ''
+        ],
+        'slug' =>  [
+            'map' => 'post_name',
+            'validation' => ''
+        ],
+        'allow_insert' =>  [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'collections_ids' =>  [
+            'map' => 'meta_multi',
+            'validation' => ''
+        ],
     ];
 
 
@@ -91,8 +112,8 @@ class Tainacan_Taxonomies {
         // First iterate through the native post properties
         $map = $this->map;
         foreach ($map as $prop => $mapped) {
-            if ($mapped != 'meta') {
-                $taxonomy->WP_Post->$mapped = $taxonomy->get_mapped_property($prop);
+            if ($mapped['map'] != 'meta') {
+                $taxonomy->WP_Post->{$mapped['map']} = $taxonomy->get_mapped_property($prop);
             }
         }
 
@@ -104,9 +125,9 @@ class Tainacan_Taxonomies {
 
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
-            if ($mapped == 'meta') {
+            if ($mapped['map'] == 'meta') {
                 update_post_meta($id, $prop, $taxonomy->get_mapped_property($prop));
-            } elseif ($mapped == 'meta_multi') {
+            } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $taxonomy->get_mapped_property($prop);
                 delete_post_meta($id, $prop);
                 if (is_array($values))

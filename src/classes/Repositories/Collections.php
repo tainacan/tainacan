@@ -10,13 +10,34 @@ class TainacanCollections {
     const POST_TYPE = 'tainacan-collections';
     
     var $map = [
-        'ID' => 'ID',
-        'name' => 'post_title',
-        'order' => 'menu_order',
-        'parent' => 'parent',
-        'description' => 'post_content',
-        'slug' => 'post_name',
-        'itens_per_page' => 'meta'
+        'ID' => [
+            'map' => 'ID',
+            'validation' => ''
+        ],
+        'name' =>  [
+            'map' => 'post_title',
+            'validation' => ''
+        ],
+        'order' =>  [
+            'map' => 'menu_order',
+            'validation' => ''
+        ],
+        'parent' =>  [
+            'map' => 'parent',
+            'validation' => ''
+        ],
+        'description' =>  [
+            'map' => 'post_content',
+            'validation' => ''
+        ],
+        'slug' =>  [
+            'map' => 'post_name',
+            'validation' => ''
+        ],
+        'itens_per_page' =>  [
+            'map' => 'meta',
+            'validation' => ''
+        ],
     ];
     
     function __construct() {
@@ -63,8 +84,8 @@ class TainacanCollections {
         // First iterate through the native post properties
         $map = $this->map;
         foreach ($map as $prop => $mapped) {
-            if ($mapped != 'meta') {
-                $collection->WP_Post->$mapped = $collection->get_mapped_property($prop);
+            if ($mapped['map'] != 'meta') {
+                $collection->WP_Post->{$mapped['map']} = $collection->get_mapped_property($prop);
             }
         }
         
@@ -80,9 +101,9 @@ class TainacanCollections {
         
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
-            if ($mapped == 'meta') {
+            if ($mapped['map'] == 'meta') {
                 update_post_meta($id, $prop, $collection->get_mapped_property($prop));
-            } elseif ($mapped == 'meta_multi') {
+            } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $collection->get_mapped_property($prop);
                 delete_post_meta($id, $prop);
                 if (is_array($values))

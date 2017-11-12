@@ -11,19 +11,58 @@ class Tainacan_Metadatas {
     const POST_TYPE = 'tainacan-metadata';
 
     var $map = [
-        'ID' => 'ID',
-        'name' => 'post_title',
-        'order' => 'menu_order',
-        'parent' => 'parent',
-        'description' => 'post_content',
-        'type' => 'meta',
-        'required' => 'meta',
-        'cardinality' => 'meta',
-        'privacy' => 'meta',
-        'mask' => 'meta',
-        'default_value' => 'meta',
-        'option' => 'meta',
-        'collection_id' => 'meta',
+        'ID' => [
+            'map' => 'ID',
+            'validation' => ''
+        ],
+        'name' => [
+            'map' => 'post_title',
+            'validation' => ''
+        ],
+        'order' => [
+            'map' => 'menu_order',
+            'validation' => ''
+        ],
+        'parent' => [
+            'map' => 'parent',
+            'validation' => ''
+        ],
+        'description' => [
+            'map' => 'post_content',
+            'validation' => ''
+        ],
+        'type' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'required' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'cardinality' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'privacy' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'mask' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'default_value' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'option' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'collection_id' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
     ];
 
     function __construct() {
@@ -75,8 +114,8 @@ class Tainacan_Metadatas {
         // First iterate through the native post properties
         $map = $this->map;
         foreach ($map as $prop => $mapped) {
-            if ($mapped != 'meta') {
-                $metadata->WP_Post->$mapped = $metadata->get_mapped_property($prop);
+            if ($mapped['map'] != 'meta') {
+                $metadata->WP_Post->{$mapped['map']} = $metadata->get_mapped_property($prop);
             }
         }
 
@@ -88,9 +127,9 @@ class Tainacan_Metadatas {
 
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
-            if ($mapped == 'meta') {
+            if ($mapped['map'] == 'meta') {
                 update_post_meta($id, $prop, $metadata->get_mapped_property($prop));
-            } elseif ($mapped == 'meta_multi') {
+            } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $metadata->get_mapped_property($prop);
                 delete_post_meta($id, $prop);
                 if (is_array($values))
@@ -108,13 +147,16 @@ class Tainacan_Metadatas {
      * @return array
      */
     function get_metadata_by_collection( $collection, $args = array()) {
+        
+        // TODO: get metadata from parent collections
+        
         $collection_id = ( is_object( $collection ) )  ? $collection->get_id() : $collection;
 
         $args = array_merge([
             'post_type' => self::POST_TYPE,
             'posts_per_page' => -1,
             'post_status' => 'publish',
-            'meta_key' => 'collection',
+            'meta_key' => 'collection_id',
             'meta_value' => $collection_id
         ], $args);
 

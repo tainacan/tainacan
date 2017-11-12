@@ -18,7 +18,7 @@ class Entity {
         if (!array_key_exists($prop, $map)) 
             return null;
         
-        $mapped = $map[$prop];
+        $mapped = $map[$prop]['map'];
         
         if ( $mapped == 'meta') {
             return get_post_meta($this->WP_Post->ID, $prop, true);
@@ -28,7 +28,7 @@ class Entity {
             return get_term_meta($this->WP_Term->term_id, $prop, true);
         }elseif ( isset( $this->WP_Post )) {
             return isset($this->WP_Post->$mapped) ? $this->WP_Post->$mapped : null;
-        } else{
+        } elseif ( isset( $this->WP_Term )) {
             return isset($this->WP_Term->$mapped) ? $this->WP_Term->$mapped : null;
         }
         
@@ -53,5 +53,12 @@ class Entity {
         
     }
 
+    function validate($value) {
+        return true;
+    }
     
+    function get_validation_errors() {
+        return [];
+    }
+        
 }
