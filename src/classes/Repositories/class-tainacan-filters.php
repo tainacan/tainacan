@@ -22,44 +22,47 @@ class Tainacan_Filters {
             'map' => 'menu_order',
             'validation' => ''
         ],
-        'parent' => [
-            'map' => 'parent',
-            'validation' => ''
-        ],
         'description' => [
             'map' => 'post_content',
             'validation' => ''
         ],
-        'slug' => [
-            'map' => 'post_name',
+        'widget' => [
+            'map' => 'meta',
             'validation' => ''
         ],
-        'itens_per_page' => [
+        'mask' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'option' => [
+            'map' => 'meta',
+            'validation' => ''
+        ],
+        'collection_id' => [
             'map' => 'meta',
             'validation' => ''
         ],
     ];
 
-    function __construct()
-    {
+    function __construct(){
         add_action('init', array(&$this, 'register_post_type'));
     }
 
     function register_post_type()
     {
         $labels = array(
-            'name' => 'Collections',
-            'singular_name' => 'Collections',
+            'name' => 'Filter',
+            'singular_name' => 'Filter',
             'add_new' => 'Adicionar Novo',
-            'add_new_item' => 'Adicionar Collections',
+            'add_new_item' => 'Adicionar Filters',
             'edit_item' => 'Editar',
-            'new_item' => 'Novo Collections',
+            'new_item' => 'Novo Filter',
             'view_item' => 'Visualizar',
             'search_items' => 'Pesquisar',
             'not_found' => 'Nenhum ticket encontrado',
-            'not_found_in_trash' => 'Nenhum Collections encontrado na lixeira',
-            'parent_item_colon' => 'Collections acima:',
-            'menu_name' => 'Collections'
+            'not_found_in_trash' => 'Nenhum Filter encontrado na lixeira',
+            'parent_item_colon' => 'Filter acima:',
+            'menu_name' => 'Filters'
         );
         $args = array(
             'labels' => $labels,
