@@ -4,3 +4,7 @@ src/style.css.map
 src/scss/.sass-cache
 tests/bootstrap-config.php
 .idea
+.buildpath
+.project
+.settings
+
