@@ -53,6 +53,9 @@ $Tainacan_Items = new Tainacan_Items();
 global $Tainacan_Terms;
 $Tainacan_Terms = new Tainacan_Terms();
 
+global $Tainacan_Logs;
+$Tainacan_Logs = new Tainacan_Logs();
+
 /**
  * 
  *
