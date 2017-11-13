@@ -30,8 +30,8 @@ class Tainacan_Item_Metadata {
     }
     
     function insert(Tainacan_Item_Metadata_Entity $item_metadata) {
-        
-        $unique = $item_metadata->get_metadata()->get_cardinality() > 1 ? false : true;
+
+        $unique = ! $item_metadata->is_multiple();
         
         if ($unique) {
             update_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $item_metadata->get_value());

@@ -195,7 +195,7 @@ class TainacanItems {
         }
         
         if ( isset($args['metadata']) && is_array($args['metadata']) && !empty($args['metadata'])) {
-            $meta_query = $args['metadata'];
+            $meta_query = array_merge($args['metadata'],$meta_query);
         }
         
         $args['meta_query'] = $meta_query;

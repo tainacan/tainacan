@@ -138,21 +138,7 @@ class Tainacan_Item_Metadata_Entity extends Entity  {
         }
         
     }
-    
-    protected function validate_one_multiple_value($value) {
-        $metadata = $this->get_metadata();
-        
-        if (empty($value) && $this->is_required())
-            return false;
-        
-        // This method is only called for multiple Metadata
-        // therefore it can not be collection_key
-        
-        // TODO: call fieldType validation
-        
-        return true;
-        
-    }
+
     
     
 }
