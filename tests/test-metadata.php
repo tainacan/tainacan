@@ -8,19 +8,19 @@
 /**
  * Sample test case.
  */
-class TestMetadata extends WP_UnitTestCase {
+class Test_Metadata extends WP_UnitTestCase {
 
     /**
      * Teste da insercao de um metadado simples sem o tipo
      */
     function test_add() {
-        global $TainacanCollections, $Tainacan_Metadatas;
+        global $Tainacan_Collections, $Tainacan_Metadatas;
 
-        $collection = new TainacanCollection();
+        $collection = new Tainacan_Collection();
         $metadata = new Tainacan_Metadata();
 
         $collection->set_name('teste');
-        $collection = $TainacanCollections->insert($collection);
+        $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');
@@ -42,14 +42,14 @@ class TestMetadata extends WP_UnitTestCase {
      * Teste da insercao de um metadado simples com o tipo
      */
     function teste_add_type(){
-        global $TainacanCollections, $Tainacan_Metadatas;
+        global $Tainacan_Collections, $Tainacan_Metadatas;
 
-        $collection = new TainacanCollection();
+        $collection = new Tainacan_Collection();
         $metadata = new Tainacan_Metadata();
         $type = new Tainacan_Text_Field_Type();
 
         $collection->set_name('teste');
-        $collection = $TainacanCollections->insert($collection);
+        $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');

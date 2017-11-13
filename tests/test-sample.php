@@ -8,25 +8,25 @@
 /**
  * Sample test case.
  */
-class TestCollections extends WP_UnitTestCase {
+class Test_Collections extends WP_UnitTestCase {
 
 	/**
 	 * A single example test.
 	 */
 	function test_add() {
 		
-        $x = new TainacanCollection();
+        $x = new Tainacan_Collection();
         
         $x->set_name('teste');
         $x->set_description('adasdasdsa');
         $x->set_itens_per_page(23);
         
-        global $TainacanCollections;
-        $col = $TainacanCollections->insert($x);
+        global $Tainacan_Collections;
+        $col = $Tainacan_Collections->insert($x);
         
         //
         
-        $test = $TainacanCollections->get_collection_by_id($col->get_id());
+        $test = $Tainacan_Collections->get_collection_by_id($col->get_id());
         
         
         $this->assertEquals($test->get_name(), 'teste');
@@ -39,29 +39,29 @@ class TestCollections extends WP_UnitTestCase {
     function test_item() {
         
         
-        $x = new TainacanCollection();
+        $x = new Tainacan_Collection();
         
         $x->set_name('teste');
         $x->set_description('adasdasdsa');
         $x->set_itens_per_page(23);
         
-        global $TainacanCollections;
-        $col = $TainacanCollections->insert($x);
+        global $Tainacan_Collections;
+        $col = $Tainacan_Collections->insert($x);
         
-        $collection = $TainacanCollections->get_collection_by_id($col->get_id());
+        $collection = $Tainacan_Collections->get_collection_by_id($col->get_id());
         
         
         
-        $i = new TainacanItem();
+        $i = new Tainacan_Item();
         
         $i->set_title('item teste');
         $i->set_description('adasdasdsa');
         $i->set_collection($collection);
         
-        global $TainacanItems;
-        $item = $TainacanItems->insert($i);
+        global $Tainacan_Items;
+        $item = $Tainacan_Items->insert($i);
         
-        $item = $TainacanItems->get_item_by_id($item->get_id());
+        $item = $Tainacan_Items->get_item_by_id($item->get_id());
         
         $this->assertEquals($item->get_title(), 'item teste');
         $this->assertEquals($item->get_description(), 'adasdasdsa');

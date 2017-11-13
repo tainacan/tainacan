@@ -8,20 +8,20 @@
 /**
  * Sample test case.
  */
-class TestItemMetadata extends WP_UnitTestCase {
+class Test_Item_Metadata extends WP_UnitTestCase {
 
     /**
      * Teste da insercao de um metadado simples sem o tipo
      */
     function test_add() {
         
-        global $TainacanCollections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new TainacanCollection();
+        $collection = new Tainacan_Collection();
         $metadata = new Tainacan_Metadata();
 
         $collection->set_name('teste');
-        $collection = $TainacanCollections->insert($collection);
+        $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');
@@ -33,16 +33,16 @@ class TestItemMetadata extends WP_UnitTestCase {
 
         $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
         
-        $i = new TainacanItem();
+        $i = new Tainacan_Item();
         
         $i->set_title('item teste');
         $i->set_description('adasdasdsa');
         $i->set_collection($collection);
         
-        global $TainacanItems;
-        $item = $TainacanItems->insert($i);
+        global $Tainacan_Items;
+        $item = $Tainacan_Items->insert($i);
         
-        $item = $TainacanItems->get_item_by_id($item->get_id());
+        $item = $Tainacan_Items->get_item_by_id($item->get_id());
 
         $item_metadata = new Tainacan_Item_Metadata_Entity($item, $metadata);
         
@@ -60,13 +60,13 @@ class TestItemMetadata extends WP_UnitTestCase {
      * Teste da insercao de um metadado simples com o tipo
      */
     function teste_required(){
-        global $TainacanCollections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new TainacanCollection();
+        $collection = new Tainacan_Collection();
         $metadata = new Tainacan_Metadata();
 
         $collection->set_name('teste');
-        $collection = $TainacanCollections->insert($collection);
+        $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');
@@ -79,16 +79,16 @@ class TestItemMetadata extends WP_UnitTestCase {
 
         $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
         
-        $i = new TainacanItem();
+        $i = new Tainacan_Item();
         
         $i->set_title('item teste');
         $i->set_description('adasdasdsa');
         $i->set_collection($collection);
         
-        global $TainacanItems;
-        $item = $TainacanItems->insert($i);
+        global $Tainacan_Items;
+        $item = $Tainacan_Items->insert($i);
         
-        $item = $TainacanItems->get_item_by_id($item->get_id());
+        $item = $Tainacan_Items->get_item_by_id($item->get_id());
 
         $item_metadata = new Tainacan_Item_Metadata_Entity($item, $metadata);
         
@@ -105,13 +105,13 @@ class TestItemMetadata extends WP_UnitTestCase {
     }
     
     function teste_collection_key(){
-        global $TainacanCollections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new TainacanCollection();
+        $collection = new Tainacan_Collection();
         $metadata = new Tainacan_Metadata();
 
         $collection->set_name('teste');
-        $collection = $TainacanCollections->insert($collection);
+        $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');
@@ -124,16 +124,16 @@ class TestItemMetadata extends WP_UnitTestCase {
 
         $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
         
-        $i = new TainacanItem();
+        $i = new Tainacan_Item();
         
         $i->set_title('item teste');
         $i->set_description('adasdasdsa');
         $i->set_collection($collection);
         
-        global $TainacanItems;
-        $item = $TainacanItems->insert($i);
+        global $Tainacan_Items;
+        $item = $Tainacan_Items->insert($i);
         
-        $item = $TainacanItems->get_item_by_id($item->get_id());
+        $item = $Tainacan_Items->get_item_by_id($item->get_id());
 
         
         

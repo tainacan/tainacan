@@ -19,7 +19,7 @@ Na pasta `src` temos os arquivos normais de um plugin de WP. Essa será a pasta 
 
 Aí dentro podem haver arquivos sass e js que ainda serão compilados no build.
 
-Na pasta `tests` temos a suíte de testes e as ferramentas para configurá-la. Já tem uns primeiros testes lá de exemplo que testa a classe `TainacanCollections`.
+Na pasta `tests` temos a suíte de testes e as ferramentas para configurá-la. Já tem uns primeiros testes lá de exemplo que testa a classe `Tainacan_Collections`.
 
 Na raíz temos alguns scripts importantes:
 
