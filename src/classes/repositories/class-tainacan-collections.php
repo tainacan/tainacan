@@ -3,39 +3,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
-
 class Tainacan_Collections {
     
     const POST_TYPE = 'tainacan-collections';
     
     var $map = [
-        'ID' => [
-            'map' => 'ID',
+        'ID'             => [
+            'map'        => 'ID',
             'validation' => ''
         ],
-        'name' =>  [
-            'map' => 'post_title',
+        'name'           =>  [
+            'map'        => 'post_title',
             'validation' => ''
         ],
-        'order' =>  [
-            'map' => 'menu_order',
+        'order'          =>  [
+            'map'        => 'menu_order',
             'validation' => ''
         ],
-        'parent' =>  [
-            'map' => 'parent',
+        'parent'         =>  [
+            'map'        => 'parent',
             'validation' => ''
         ],
-        'description' =>  [
-            'map' => 'post_content',
+        'description'    =>  [
+            'map'        => 'post_content',
             'validation' => ''
         ],
-        'slug' =>  [
-            'map' => 'post_name',
+        'slug'           =>  [
+            'map'        => 'post_name',
             'validation' => ''
         ],
         'itens_per_page' =>  [
-            'map' => 'meta',
+            'map'        => 'meta',
             'validation' => ''
         ],
     ];
@@ -46,36 +44,36 @@ class Tainacan_Collections {
     
     function register_post_type() {
         $labels = array(
-            'name' => 'Collections',
-            'singular_name' => 'Collections',
-            'add_new' => 'Adicionar Novo',
-            'add_new_item' =>'Adicionar Collections',
-            'edit_item' => 'Editar',
-            'new_item' => 'Novo Collections',
-            'view_item' => 'Visualizar',
-            'search_items' => 'Pesquisar',
-            'not_found' => 'Nenhum ticket encontrado',
+            'name'               => 'Collections',
+            'singular_name'      => 'Collections',
+            'add_new'            => 'Adicionar Novo',
+            'add_new_item'       =>'Adicionar Collections',
+            'edit_item'          => 'Editar',
+            'new_item'           => 'Novo Collections',
+            'view_item'          => 'Visualizar',
+            'search_items'       => 'Pesquisar',
+            'not_found'          => 'Nenhum ticket encontrado',
             'not_found_in_trash' => 'Nenhum Collections encontrado na lixeira',
-            'parent_item_colon' => 'Collections acima:',
-            'menu_name' => 'Collections'
+            'parent_item_colon'  => 'Collections acima:',
+            'menu_name'          => 'Collections'
         );
         $args = array(
-            'labels' => $labels,
-            'hierarchical' => true,
-            //'supports' => array('title'),
-            //'taxonomies' => array(self::TAXONOMY),
-            'public' => true,
-            'show_ui' => tnc_enable_dev_wp_interface(),
-            'show_in_menu' => tnc_enable_dev_wp_interface(),
-            //'menu_position' => 5,
+            'labels'              => $labels,
+            'hierarchical'        => true,
+            //'supports'          => array('title'),
+            //'taxonomies'        => array(self::TAXONOMY),
+            'public'              => true,
+            'show_ui'             => tnc_enable_dev_wp_interface(),
+            'show_in_menu'        => tnc_enable_dev_wp_interface(),
+            //'menu_position'     => 5,
             //'show_in_nav_menus' => false,
-            'publicly_queryable' => true,
+            'publicly_queryable'  => true,
             'exclude_from_search' => true,
-            'has_archive' => true,
-            'query_var' => true,
-            'can_export' => true,
-            'rewrite' => true,
-            'capability_type' => 'post',
+            'has_archive'         => true,
+            'query_var'           => true,
+            'can_export'          => true,
+            'rewrite'             => true,
+            'capability_type'     => 'post',
         );
         register_post_type(self::POST_TYPE, $args);
     }
@@ -105,10 +103,14 @@ class Tainacan_Collections {
                 update_post_meta($id, $prop, $collection->get_mapped_property($prop));
             } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $collection->get_mapped_property($prop);
+                
                 delete_post_meta($id, $prop);
-                if (is_array($values))
-                    foreach ($values as $value)
+                
+                if (is_array($values)){
+                    foreach ($values as $value){
                         add_post_meta($id, $prop, $value);
+                    }
+                }
             }
         }
         
@@ -121,9 +123,9 @@ class Tainacan_Collections {
     function get_collections($args = array()) {
         
         $args = array_merge([
-            'post_type' => self::POST_TYPE,
+            'post_type'      => self::POST_TYPE,
             'posts_per_page' => -1,
-            'post_status' => 'publish',
+            'post_status'    => 'publish',
         ], $args);
         
         $posts = get_posts($args);

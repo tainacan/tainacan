@@ -3,13 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
-
-
-
 class Tainacan_Collection extends Tainacan_Entity  {
-    
-    
+      
     function __construct($which = 0) {
         
         $this->repository = 'Tainacan_Collections';
@@ -25,46 +20,45 @@ class Tainacan_Collection extends Tainacan_Entity  {
         } else {
             $this->WP_Post = new StdClass();
         }
-        
     }
     
     function register_post_type() {
         $cpt_labels = array(
-            'name' => 'Item',
-            'singular_name' => 'Item',
-            'add_new' => 'Adicionar Novo',
-            'add_new_item' =>'Adicionar Item',
-            'edit_item' => 'Editar',
-            'new_item' => 'Novo Item',
-            'view_item' => 'Visualizar',
-            'search_items' => 'Pesquisar',
-            'not_found' => 'Nenhum Item encontrado',
+            'name'               => 'Item',
+            'singular_name'      => 'Item',
+            'add_new'            => 'Adicionar Novo',
+            'add_new_item'       =>'Adicionar Item',
+            'edit_item'          => 'Editar',
+            'new_item'           => 'Novo Item',
+            'view_item'          => 'Visualizar',
+            'search_items'       => 'Pesquisar',
+            'not_found'          => 'Nenhum Item encontrado',
             'not_found_in_trash' => 'Nenhum Item encontrado na lixeira',
-            'parent_item_colon' => 'Item acima:',
-            'menu_name' => $this->get_name()
+            'parent_item_colon'  => 'Item acima:',
+            'menu_name'          => $this->get_name()
         );
         
         $cpt_slug = $this->get_db_identifier();
         
         $args = array(
-            'labels' => $cpt_labels,
-            'hierarchical' => true,
-            //'supports' => array('title'),
-            //'taxonomies' => array(self::TAXONOMY),
-            'public' => true,
-            'show_ui' => tnc_enable_dev_wp_interface(),
-            'show_in_menu' => tnc_enable_dev_wp_interface(),
-            //'menu_position' => 5,
+            'labels'              => $cpt_labels,
+            'hierarchical'        => true,
+            //'supports'          => array('title'),
+            //'taxonomies'        => array(self::TAXONOMY),
+            'public'              => true,
+            'show_ui'             => tnc_enable_dev_wp_interface(),
+            'show_in_menu'        => tnc_enable_dev_wp_interface(),
+            //'menu_position'     => 5,
             //'show_in_nav_menus' => false,
-            'publicly_queryable' => true,
+            'publicly_queryable'  => true,
             'exclude_from_search' => true,
-            'has_archive' => true,
-            'query_var' => true,
-            'can_export' => true,
-            'rewrite' => [
+            'has_archive'         => true,
+            'query_var'           => true,
+            'can_export'          => true,
+            'rewrite'             => [
                 'slug' => $this->get_slug()
             ],
-            'capability_type' => 'post',
+            'capability_type'     => 'post',
         );
         
         if (post_type_exists($this->get_db_identifier())) 
@@ -74,7 +68,6 @@ class Tainacan_Collection extends Tainacan_Entity  {
     }
 
     // Getters
-    //
     function get_id() {
         return $this->get_mapped_property('ID');
     }
@@ -98,8 +91,6 @@ class Tainacan_Collection extends Tainacan_Entity  {
     }
     
     // special Getters
-    // 
-    
     function get_db_identifier() {
         return $this->get_id() ? 'tnc_col_' . $this->get_id() : false;
     }
@@ -111,8 +102,6 @@ class Tainacan_Collection extends Tainacan_Entity  {
     }
     
     // Setters
-    // 
-    
     function set_name($value) {
         return $this->set_mapped_property('name', $value);
     }
@@ -131,5 +120,4 @@ class Tainacan_Collection extends Tainacan_Entity  {
     function set_itens_per_page($value) {
         return $this->set_mapped_property('itens_per_page', $value);
     }
-
 }

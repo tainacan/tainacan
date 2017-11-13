@@ -9,28 +9,28 @@ exit;
 class Tainacan_Terms {
 
     var $map = [
-        'term_id' => [
-            'map' => 'term_id',
+        'term_id'     => [
+            'map'        => 'term_id',
             'validation' => ''
         ],
-        'name' => [
-            'map' => 'name',
+        'name'        => [
+            'map'        => 'name',
             'validation' => ''
         ],
-        'parent' => [
-            'map' => 'parent',
+        'parent'      => [
+            'map'        => 'parent',
             'validation' => ''
         ],
         'description' => [
-            'map' => 'description',
+            'map'        => 'description',
             'validation' => ''
         ],
-        'taxonomy' => [
-            'map' => 'taxonomy',
+        'taxonomy'    => [
+            'map'        => 'taxonomy',
             'validation' => ''
         ],
-        'user' => [
-            'map' => 'termmeta',
+        'user'        => [
+            'map'        => 'termmeta',
             'validation' => ''
         ],
     ];
@@ -46,7 +46,7 @@ class Tainacan_Terms {
 
         // save post and get its ID
         $term_inserted = wp_insert_term( $term->WP_Term->name, $term->WP_Term->taxonomy, [
-            'parent' => ( isset( $term->WP_Term->parent ) ) ? $term->WP_Term->parent : 0,
+            'parent'      => ( isset( $term->WP_Term->parent ) ) ? $term->WP_Term->parent : 0,
             'description' => ( isset( $term->WP_Term->description ) ) ? $term->WP_Term->description : '',
         ]);
 

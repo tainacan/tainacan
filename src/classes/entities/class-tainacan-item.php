@@ -3,10 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
-
-
-
 class Tainacan_Item extends Tainacan_Entity {
     
     use Tainacan_Entity_Collection_Relation;
@@ -30,7 +26,6 @@ class Tainacan_Item extends Tainacan_Entity {
     }
 
     // Getters
-    //
     function get_id() {
         return $this->get_mapped_property('ID');
     }
@@ -47,12 +42,7 @@ class Tainacan_Item extends Tainacan_Entity {
         return $this->get_mapped_property('description');
     }
     
-
-
-    
     // Setters
-    // 
-    
     function set_title($value) {
         return $this->set_mapped_property('title', $value);
     }
@@ -66,9 +56,7 @@ class Tainacan_Item extends Tainacan_Entity {
         return $this->set_mapped_property('description', $value);
     }
 
-
     // Metadata
-    
     function get_metadata() {
         if (isset($this->metadata))
             return $this->metadata;
@@ -88,11 +76,11 @@ class Tainacan_Item extends Tainacan_Entity {
     function add_metadata(Tainacan_Metadata $new_metadata, $value) {
         
         //TODO Multiple metadata must receive an array as value
-        
         $item_metadata = new Tainacan_Item_Metadata_Entity($this, $new_metadata);
         $item_metadata->set_value($value);
         $current_meta = $this->get_metadata();
         $current_meta[$new_metadata->get_id()] = $item_metadata;
+        
         $this->set_metadata($current_meta);
     }
     

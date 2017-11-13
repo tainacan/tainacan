@@ -3,10 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-
-
-
-
 class Tainacan_Filter extends Entity  {
 
     use EntityCollectionRelation;
@@ -29,18 +25,14 @@ class Tainacan_Filter extends Entity  {
 
     }
 
-
     // Getters
-
     function get_id() {
         return $this->get_mapped_property('ID');
     }
 
-
     function get_name() {
         return $this->get_mapped_property('name');
     }
-
 
     function get_order() {
         return $this->get_mapped_property('order');
@@ -49,16 +41,16 @@ class Tainacan_Filter extends Entity  {
     function get_widget( $output = 'object' ){
         if( $output === 'object'){
             return unserialize( $this->get_mapped_property('option') );
-        }else{
+        } else{
             return $this->get_mapped_property('widget');
         }
     }
 
     //Setters
-
     function set_widget($value){
         if( is_object( $value ) && is_subclass_of( $value, 'Tainacan_Filter_Type' ) ){
             $this->set_option( $value );
+           
             return $this->set_mapped_property('widget', get_class( $value ) ) ;
         }
         return null;

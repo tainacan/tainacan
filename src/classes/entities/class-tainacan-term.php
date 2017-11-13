@@ -12,6 +12,7 @@ class Tainacan_Term extends Tainacan_Entity {
 
         if ( is_numeric( $which ) && $which > 0) {
             $post = get_term_by('id', $which, $taxonomy);
+            
             if ( $post instanceof WP_Term) {
                 $this->WP_Term = get_term_by('id', $which, $taxonomy);
             }
@@ -21,15 +22,12 @@ class Tainacan_Term extends Tainacan_Entity {
         } else {
             $this->WP_Term = new StdClass();
         }
-
     }
 
     // Getters
-
     function get_id() {
         return $this->get_mapped_property('term_id');
     }
-
 
     function get_name() {
         return $this->get_mapped_property('name');
@@ -38,7 +36,6 @@ class Tainacan_Term extends Tainacan_Entity {
     function get_parent() {
         return $this->get_mapped_property('parent');
     }
-
 
     function get_description() {
         return $this->get_mapped_property('description');
@@ -53,8 +50,6 @@ class Tainacan_Term extends Tainacan_Entity {
     }
 
     // Setters
-
-
     function set_name($value) {
         return $this->set_mapped_property('name', $value);
     }
@@ -62,7 +57,6 @@ class Tainacan_Term extends Tainacan_Entity {
     function set_parent($value) {
         return $this->set_mapped_property('parent', $value);
     }
-
 
     function set_description($value) {
         return $this->set_mapped_property('description', $value);

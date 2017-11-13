@@ -11,33 +11,33 @@ class Tainacan_Taxonomies {
     const POST_TYPE = 'tainacan-taxonomies';
 
     var $map = [
-        'ID' =>  [
-            'map' => 'ID',
-            'validation' => ''
+        'ID'              =>  [
+            'map'         => 'ID',
+            'validation'  => ''
         ],
-        'name' =>  [
-            'map' => 'post_title',
-            'validation' => ''
+        'name'            =>  [
+            'map'         => 'post_title',
+            'validation'  => ''
         ],
-        'parent' =>  [
-            'map' => 'parent',
-            'validation' => ''
+        'parent'          =>  [
+            'map'         => 'parent',
+            'validation'  => ''
         ],
-        'description' =>  [
-            'map' => 'post_content',
-            'validation' => ''
+        'description'     =>  [
+            'map'         => 'post_content',
+            'validation'  => ''
         ],
-        'slug' =>  [
-            'map' => 'post_name',
-            'validation' => ''
+        'slug'            =>  [
+            'map'         => 'post_name',
+            'validation'  => ''
         ],
-        'allow_insert' =>  [
-            'map' => 'meta',
-            'validation' => ''
+        'allow_insert'    =>  [
+            'map'         => 'meta',
+            'validation'  => ''
         ],
         'collections_ids' =>  [
-            'map' => 'meta_multi',
-            'validation' => ''
+            'map'         => 'meta_multi',
+            'validation'  => ''
         ],
     ];
 
@@ -48,46 +48,46 @@ class Tainacan_Taxonomies {
 
     function register_post_type() {
         $labels = array(
-            'name' => 'Taxonomy',
-            'singular_name' => 'Taxonomy',
-            'add_new' => 'Adicionar Taxonomy',
-            'add_new_item' =>'Adicionar Taxonomy',
-            'edit_item' => 'Editar',
-            'new_item' => 'Novo Taxonomy',
-            'view_item' => 'Visualizar',
-            'search_items' => 'Pesquisar',
-            'not_found' => 'Nenhum ticket encontrado',
+            'name'               => 'Taxonomy',
+            'singular_name'      => 'Taxonomy',
+            'add_new'            => 'Adicionar Taxonomy',
+            'add_new_item'       =>'Adicionar Taxonomy',
+            'edit_item'          => 'Editar',
+            'new_item'           => 'Novo Taxonomy',
+            'view_item'          => 'Visualizar',
+            'search_items'       => 'Pesquisar',
+            'not_found'          => 'Nenhum ticket encontrado',
             'not_found_in_trash' => 'Nenhum Taxonomy encontrado na lixeira',
-            'parent_item_colon' => 'Taxonomy acima:',
-            'menu_name' => 'Taxonomy'
+            'parent_item_colon'  => 'Taxonomy acima:',
+            'menu_name'          => 'Taxonomy'
         );
 
         $args = array(
-            'labels' => $labels,
-            'hierarchical' => true,
-            //'supports' => array('title'),
-            //'taxonomies' => array(self::TAXONOMY),
-            'public' => true,
-            'show_ui' => tnc_enable_dev_wp_interface(),
-            'show_in_menu' => tnc_enable_dev_wp_interface(),
-            //'menu_position' => 5,
+            'labels'              => $labels,
+            'hierarchical'        => true,
+            //'supports'          => array('title'),
+            //'taxonomies'        => array(self::TAXONOMY),
+            'public'              => true,
+            'show_ui'             => tnc_enable_dev_wp_interface(),
+            'show_in_menu'        => tnc_enable_dev_wp_interface(),
+            //'menu_position'     => 5,
             //'show_in_nav_menus' => false,
-            'publicly_queryable' => false,
+            'publicly_queryable'  => false,
             'exclude_from_search' => true,
-            'has_archive' => false,
-            'query_var' => true,
-            'can_export' => true,
-            'rewrite' => true,
-            'capability_type' => 'post',
+            'has_archive'         => false,
+            'query_var'           => true,
+            'can_export'          => true,
+            'rewrite'             => true,
+            'capability_type'     => 'post',
         );
         register_post_type(self::POST_TYPE, $args);
     }
 
     function get_taxonomies($args = []){
         $args = array_merge([
-            'post_type' => self::POST_TYPE,
+            'post_type'      => self::POST_TYPE,
             'posts_per_page' => -1,
-            'post_status' => 'publish',
+            'post_status'    => 'publish',
         ], $args);
         
         $posts = get_posts($args);
@@ -102,7 +102,6 @@ class Tainacan_Taxonomies {
         
         return $return;
     }
-
 
     /**
      * @param Tainacan_Taxonomy $metadata
@@ -120,6 +119,7 @@ class Tainacan_Taxonomies {
         // save post and get its ID
         $taxonomy->WP_Post->post_type = self::POST_TYPE;
         $taxonomy->WP_Post->post_status = 'publish';
+        
         $id = wp_insert_post($taxonomy->WP_Post);
         $taxonomy->WP_Post = get_post($id);
 
@@ -129,10 +129,14 @@ class Tainacan_Taxonomies {
                 update_post_meta($id, $prop, $taxonomy->get_mapped_property($prop));
             } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $taxonomy->get_mapped_property($prop);
+                
                 delete_post_meta($id, $prop);
-                if (is_array($values))
-                    foreach ($values as $value)
+
+                if (is_array($values)){
+                    foreach ($values as $value){
                         add_post_meta($id, $prop, $value);
+                    }
+                }
             }
         }
         

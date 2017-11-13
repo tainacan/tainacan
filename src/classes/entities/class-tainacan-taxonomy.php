@@ -13,6 +13,7 @@ class Tainacan_Taxonomy extends Tainacan_Entity {
 
         if ( is_numeric( $which ) && $which > 0) {
             $post = get_post( $which );
+
             if ( $post instanceof WP_Post) {
                 $this->WP_Post = get_post( $which );
             }
@@ -22,7 +23,6 @@ class Tainacan_Taxonomy extends Tainacan_Entity {
         } else {
             $this->WP_Post = new StdClass();
         }
-
     }
     
     function register_taxonomy() {
@@ -45,19 +45,22 @@ class Tainacan_Taxonomy extends Tainacan_Entity {
             'labels'            => $labels,
             'show_ui'           => tnc_enable_dev_wp_interface(),
             'show_admin_column' => tnc_enable_dev_wp_interface(),
-            'rewrite' => [
+            'rewrite'           => [
                 'slug' => $this->get_slug()
             ],
         );
         
         
         $tax_cpts = [];
-        if (is_array($this->get_collections()))
-            foreach ($this->get_collections() as $tax_col)
+        if (is_array($this->get_collections())){
+            foreach ($this->get_collections() as $tax_col){
                 $tax_cpts[] = $tax_col->get_db_identifier();
+            }
+        }
         
-        if (taxonomy_exists($this->get_db_identifier())) 
+        if (taxonomy_exists($this->get_db_identifier())){
             unregister_taxonomy($this->get_db_identifier());
+        }
         
         register_taxonomy( 
             $this->get_db_identifier(), 
@@ -69,11 +72,9 @@ class Tainacan_Taxonomy extends Tainacan_Entity {
     }
 
     // Getters
-
     function get_id() {
         return $this->get_mapped_property('ID');
     }
-
 
     function get_name() {
         return $this->get_mapped_property('name');
@@ -82,7 +83,6 @@ class Tainacan_Taxonomy extends Tainacan_Entity {
     function get_parent() {
         return $this->get_mapped_property('parent');
     }
-
 
     function get_description() {
         return $this->get_mapped_property('description');
@@ -97,16 +97,11 @@ class Tainacan_Taxonomy extends Tainacan_Entity {
     }
 
     // special Getters
-    // 
-    
     function get_db_identifier() {
         return $this->get_id() ? 'tnc_tax_' . $this->get_id() : false;
     }
 
-
     // Setters
-
-
     function set_name($value) {
         return $this->set_mapped_property('name', $value);
     }
@@ -118,7 +113,6 @@ class Tainacan_Taxonomy extends Tainacan_Entity {
     function set_slug($value) {
         return $this->set_mapped_property('slug', $value);
     }
-
 
     function set_description($value) {
         return $this->set_mapped_property('description', $value);

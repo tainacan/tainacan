@@ -12,8 +12,9 @@ class Tainacan_Item_Metadata {
         
         $collection = $item->get_collection();
         
-        if (!$collection instanceof Tainacan_Collection)
+        if (!$collection instanceof Tainacan_Collection){
             return [];
+        }
         
         $meta_list = $Tainacan_Metadatas->get_metadata_by_collection($collection);
         
@@ -37,9 +38,12 @@ class Tainacan_Item_Metadata {
             update_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $item_metadata->get_value());
         } else {
             delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id());
-            if (is_array($item_metadata->get_value())) 
-                foreach ($item_metadata->get_value() as $value)
+            
+            if (is_array($item_metadata->get_value())){
+                foreach ($item_metadata->get_value() as $value){
                     add_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $value);
+                }
+            }
         }
         
         // return a brand new object
@@ -51,8 +55,7 @@ class Tainacan_Item_Metadata {
         
         $unique = ! $item_metadata->is_multiple();
             
-        return get_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $unique);
-        
+        return get_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $unique);    
     }
     
 }

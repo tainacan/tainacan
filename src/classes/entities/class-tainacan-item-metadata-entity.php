@@ -3,12 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
-
-
-
 class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
-    
     
     function __construct(Tainacan_Item $item, Tainacan_Metadata $metadata) {
         
@@ -16,7 +11,6 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
         
         $this->set_item($item);
         $this->set_metadata($metadata);
-        
     }
     
     function set_item(Tainacan_Item $item) {
@@ -40,17 +34,13 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
     }
     
     function get_value() {
-        
         if (isset($this->value))
             return $this->value;
         
         $Tainacan_Item_Metadata = new Tainacan_Item_Metadata();
         return $Tainacan_Item_Metadata->get_item_metadata_value($this);
     }
-    
-    
-    //////////////////
-    
+        
     function is_multiple() {
         return $this->get_metadata()->is_multiple();
     }
@@ -63,8 +53,7 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
         return $this->get_metadata()->is_required();
     }
     
-    function validate() {
-        
+    function validate() {   
         $value = $this->get_value();
         $metadata = $this->get_metadata();
         $item = $this->get_item();
@@ -114,13 +103,11 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
             
             if ($this->is_collection_key()) {
                 $Tainacan_Items = new Tainacan_Items();
+                
                 $test = $Tainacan_Items->query([
                     'collections' => $item->get_collection(),
-                    'metadata' => [
-                        [
-                            'key' => $this->metadata->get_id(),
-                            'value' => $value
-                        ]
+                    'metadata'    => [
+                        ['key' => $this->metadata->get_id(), 'value' => $value],
                     ]
                 ]);
 
@@ -133,12 +120,7 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
             // TODO: call fieldType validation
             // 
             $this->reset_errors();
-            return true;
-            
-        }
-        
+            return true;   
+        }   
     }
-
-    
-    
 }

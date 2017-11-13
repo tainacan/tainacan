@@ -25,9 +25,7 @@ class Tainacan_Metadata extends Tainacan_Entity {
 
     }
 
-
     // Getters
-
     function get_id() {
         return $this->get_mapped_property('ID');
     }
@@ -37,21 +35,17 @@ class Tainacan_Metadata extends Tainacan_Entity {
         return $this->get_mapped_property('name');
     }
 
-
     function get_order() {
         return $this->get_mapped_property('order');
     }
-
 
     function get_parent() {
         return $this->get_mapped_property('parent');
     }
 
-
     function get_description() {
         return $this->get_mapped_property('description');
     }
-
 
     function get_required(){
         return $this->get_mapped_property('required');
@@ -89,10 +83,7 @@ class Tainacan_Metadata extends Tainacan_Entity {
         }
     }
 
-
     // Setters
-
-
     function set_name($value) {
         return $this->set_mapped_property('name', $value);
     }
@@ -101,16 +92,13 @@ class Tainacan_Metadata extends Tainacan_Entity {
         return $this->set_mapped_property('order', $value);
     }
 
-
     function set_parent($value) {
         return $this->set_mapped_property('parent', $value);
     }
 
-
     function set_description($value) {
         return $this->set_mapped_property('description', $value);
     }
-
 
     function set_required( $value ){
         return $this->set_mapped_property('required', $value);
@@ -152,9 +140,7 @@ class Tainacan_Metadata extends Tainacan_Entity {
         return $this->set_mapped_property('option',  serialize($value) ) ;
     }
 
-    
     // helpers
-    
     function is_multiple() {
         return $this->get_multiple() === 'yes';
     }
@@ -166,5 +152,4 @@ class Tainacan_Metadata extends Tainacan_Entity {
     function is_required() {
         return $this->get_required() === 'yes';
     }
-
 }

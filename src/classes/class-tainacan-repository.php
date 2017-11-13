@@ -7,11 +7,9 @@ class Tainacan_Repository {
         
         $map = $this->map;
         
-        if (!key_exists($prop, $map))
+        if (!key_exists($prop, $map)){
             return null;
-        
-        
-        
+        }
     }
         
 }

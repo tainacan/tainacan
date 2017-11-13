@@ -3,10 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-
-
-
-
 abstract class Tainacan_Filter_Type extends Entity  {
 
     abstract function render( $metadata );

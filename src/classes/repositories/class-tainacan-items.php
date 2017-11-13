@@ -3,25 +3,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
-
 class Tainacan_Items {
     
     var $map = [
-        'ID' => [
-            'map' => 'ID',
+        'ID'            => [
+            'map'        => 'ID',
             'validation' => ''
         ],
-        'title' =>  [
-            'map' => 'post_title',
+        'title'         =>  [
+            'map'        => 'post_title',
             'validation' => ''
         ],
-        'description' =>  [
-            'map' => 'post_content',
+        'description'   =>  [
+            'map'        => 'post_content',
             'validation' => ''
         ],
         'collection_id' =>  [
-            'map' => 'meta',
+            'map'        => 'meta',
             'validation' => ''
         ],
         //'collection' => 'relation...',
@@ -39,41 +37,32 @@ class Tainacan_Items {
         $collections = $Tainacan_Collections->get_collections();
         $taxonomies = $Tainacan_Taxonomies->get_taxonomies();
 
-        if (!is_array($collections))
+        if (!is_array($collections)){
             return;
-            
-        
-        
-        
-        
+        }
+
         // register collections post type and associate taxonomies
         foreach ($collections as $collection) {
             
             $collection->register_post_type();
             
         }
-        
-        
+         
         // register taxonomies
         foreach ($taxonomies as $taxonomy) {
             $taxonomy->register_taxonomy();
-        }
-        
-        
+        }  
     }
-
-    
-    
+ 
     function insert(Tainacan_Item $item) {
-        
-        
         $map = $this->map;
         
         // get collection to determine post type
         $collection = $item->get_collection();
         
-        if (!$collection)
+        if (!$collection){
             return false;
+        }
         
         $cpt = $collection->get_db_identifier();
         
@@ -96,16 +85,21 @@ class Tainacan_Items {
                 update_post_meta($id, $prop, $item->get_mapped_property($prop));
             } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $item->get_mapped_property($prop);
+                
                 delete_post_meta($id, $prop);
-                if (is_array($values))
-                    foreach ($values as $value)
+                
+                if (is_array($values)){
+                    foreach ($values as $value){
                         add_post_meta($id, $prop, $value);
+                    }
+                }
             }
         }
         
         // save metadata
         $metadata = $item->get_metadata();
         global $Tainacan_Item_Metadata;
+        
         foreach ($metadata as $meta) {
             $Tainacan_Item_Metadata->insert($meta);
         }
@@ -123,8 +117,9 @@ class Tainacan_Items {
             $collections = $Tainacan_Collections->get_collections();
         }
         
-        if (is_numeric($collections)) 
+        if (is_numeric($collections)){
             $collections = $Tainacan_Collections->get_collection_by_id($collection);
+        }
         
         if ($collections instanceof Tainacan_Collection) {
             $cpt = $collections->get_db_identifier();
@@ -132,24 +127,26 @@ class Tainacan_Items {
             $cpt = [];
             
             foreach ($collections as $collection) {
-                if (is_numeric($collection)) 
+                if (is_numeric($collection)){
                     $collection = $Tainacan_Collections->get_collection_by_id($collection);
-                
-                if ($collection instanceof Tainacan_Collection)
+                }
+                if ($collection instanceof Tainacan_Collection){
                     $cpt[] = $collection->get_db_identifier();
+                }
             }
             
         } else {
             return [];
         }
         
-        if (empty($cpt))
+        if (empty($cpt)){
             return [];
+        }
 
         $args = array_merge([
-            'post_type' => $cpt,
+            'post_type'      => $cpt,
             'posts_per_page' => -1,
-            'post_status' => 'publish',
+            'post_status'    => 'publish',
         ], $args);
 
         $posts = get_posts($args);
@@ -171,7 +168,7 @@ class Tainacan_Items {
         
         $map = $this->map;
         $wp_query_exceptions = [
-            'ID' => 'p',
+            'ID'         => 'p',
             'post_title' => 'title'
         ];
         
@@ -180,10 +177,12 @@ class Tainacan_Items {
         foreach ($map as $prop => $mapped) {
             if (array_key_exists($prop, $args)) {
                 $prop_value = $args[$prop];
+                
                 unset($args[$prop]);
+                
                 if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
                     $meta_query[] = [
-                        'key' => $prop,
+                        'key'   => $prop,
                         'value' => $prop_value
                     ];
                 } else {
@@ -207,12 +206,9 @@ class Tainacan_Items {
         
         return $this->get_items($args, $collections);
         ### TODO I think its better if we return a WP_Query object. easier for loop and debugging
-        
     }
    
     function get_item_by_id($id) {
         return new Tainacan_Item($id);
     }
-
-
 }
