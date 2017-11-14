@@ -7,4 +7,5 @@ tests/bootstrap-config.php
 .buildpath
 .project
 .settings
+vendor
 
