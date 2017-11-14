@@ -48,12 +48,12 @@ class Tainacan_Filter extends Tainacan_Entity  {
         return new Tainacan_Metadata( $id );
     }
 
-    function get_widget( $output = 'object' ){
-        if( $output === 'object'){
-            return unserialize( $this->get_mapped_property('option') );
-        } else{
-            return $this->get_mapped_property('widget');
-        }
+    function get_filter_type_object(){
+        return unserialize( $this->get_mapped_property('filter_type_object') );
+    }
+
+    function get_filter_type(){
+        return $this->get_mapped_property('filter_type');
     }
 
     // Setters
@@ -82,21 +82,22 @@ class Tainacan_Filter extends Tainacan_Entity  {
         return $this->set_mapped_property('metadata', $id);
     }
 
-    function set_widget($value){
-        if( is_object( $value ) && is_subclass_of( $value, 'Tainacan_Filter_Type' ) && $this->get_metadata() ){
-            $type = $this->get_metadata()->get_type();
-
-            //if filter matches the metadata type
-            if( in_array( $type->get_primitive_type(), $value->get_supported_types() ) ){
-                $this->set_option( $value );
-                return $this->set_mapped_property('widget', get_class( $value ) ) ;
-            }
-
-        }
-        return null;
+    function set_filter_type_object( Tainacan_Filter_Type $value ){
+        // TODO: validate primitive type with filter
+        //if filter matches the metadata type
+        //if( in_array( $type->get_primitive_type(), $value->get_supported_types() ) ){
+        $this->set_filter_type( get_class( $value ) );
+        return $this->set_mapped_property('filter_type_object',serialize($value)  ) ;
+        //}
     }
 
-    function set_option($value){
-        return $this->set_mapped_property('option',  serialize($value) ) ;
+    /**
+     * este metodo eh privado pois eh setado automaticamente pelo metodo set_filter_type_object
+     *
+     * @param $value
+     *
+     */
+    private function set_filter_type($value){
+        return $this->set_mapped_property('filter_type', $value );
     }
 }

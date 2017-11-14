@@ -75,12 +75,12 @@ class Tainacan_Metadata extends Tainacan_Entity {
         return $this->get_mapped_property('default_value');
     }
 
-    function get_type( $output = 'object' ){
-        if( $output === 'object'){
-            return unserialize( $this->get_mapped_property('option') );
-        }else{
-            return $this->get_mapped_property('type');
-        }
+    function get_field_type_object(){
+        return unserialize( $this->get_mapped_property('field_type_object') );
+    }
+
+    function get_field_type(){
+        return $this->get_mapped_property('field_type');
     }
 
     // Setters
@@ -128,16 +128,19 @@ class Tainacan_Metadata extends Tainacan_Entity {
         return $this->set_mapped_property('default_property', $value);
     }
 
-    function set_type($value){
-        if( is_object( $value ) && is_subclass_of( $value, 'Tainacan_Field_Type' ) ){
-            $this->set_option( $value );
-            return $this->set_mapped_property('type', get_class( $value ) ) ;
-        }
-        return null;
+    function set_field_type_object(Tainacan_Field_Type $value){
+            $this->set_field_type( get_class( $value )  );
+            return $this->set_mapped_property('field_type_object', serialize($value) ) ;
     }
 
-    function set_option($value){
-        return $this->set_mapped_property('option',  serialize($value) ) ;
+    /**
+     * este metodo eh privado pois eh setado automaticamente pelo metodo set_field_type_object
+     *
+     * @param $value
+     *
+     */
+    private function set_field_type($value){
+        return $this->set_mapped_property('field_type',  $value ) ;
     }
 
     // helpers

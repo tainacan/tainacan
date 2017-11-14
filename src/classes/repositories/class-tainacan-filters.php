@@ -24,11 +24,11 @@ class Tainacan_Filters {
             'map'        => 'post_content',
             'validation' => ''
         ],
-        'widget'        => [
+        'filter_type_object'        => [
             'map'        => 'meta',
             'validation' => ''
         ],
-        'option' => [
+        'filter_type' => [
             'map' => 'meta',
             'validation' => ''
         ],

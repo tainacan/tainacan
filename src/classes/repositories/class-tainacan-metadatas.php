@@ -31,7 +31,7 @@ class Tainacan_Metadatas {
             'map'        => 'post_content',
             'validation' => ''
         ],
-        'type'           => [
+        'field_type'     => [
             'map'        => 'meta',
             'validation' => ''
         ],
@@ -67,7 +67,7 @@ class Tainacan_Metadatas {
             'map'        => 'meta',
             'validation' => ''
         ],
-        'option'         => [
+        'field_type_object' => [
             'map'        => 'meta',
             'validation' => ''
         ],
