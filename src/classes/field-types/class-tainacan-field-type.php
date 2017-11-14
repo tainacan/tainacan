@@ -19,4 +19,8 @@ abstract class Tainacan_Field_Type  {
     function get_validation_errors() {
         return [];
     }
+
+    function get_primitive_type(){
+        return $this->primitive_type;
+    }
 }

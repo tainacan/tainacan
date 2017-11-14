@@ -40,6 +40,10 @@ class Tainacan_Filters {
             'map'        => 'meta',
             'validation' => ''
         ],
+        'metadata' => [
+            'map'        => 'meta',
+            'validation' => ''
+        ],
     ];
 
     function __construct(){
@@ -150,5 +154,37 @@ class Tainacan_Filters {
      */
     function get_filter_by_id($id) {
         return new Tainacan_Filter($id);
+    }
+
+    /**
+     * @param string $type
+     * @return array
+     */
+    function get_filters_by_metadata_type( $type ){
+        $result = array();
+        $filters_type = $this->get_all_filters_type();
+
+        foreach ( $filters_type as $filter_type ){
+            if( in_array( $type,  $filter_type->get_supported_types() ) ){
+                $result[] = $filter_type;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    function get_all_filters_type() {
+        $result = array();
+
+        foreach (get_declared_classes() as $class) {
+            if (is_subclass_of($class, 'Tainacan_Filter_Type')){
+                $result[] = new $class();
+            }
+        }
+
+        return $result;
     }
 }

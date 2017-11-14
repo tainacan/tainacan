@@ -21,37 +21,68 @@ class Test_Filters extends WP_UnitTestCase {
         $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
-        $filter->set_name('metadado');
-        $filter->set_description('descricao');
+        $filter->set_name('filtro');
         $filter->set_collection( $collection );
+
+        //inserindo o metadado
+        $filter = $Tainacan_Filters->insert( $filter );
+
+        $test = $Tainacan_Filters->get_filter_by_id( $filter->get_id() );
+
+        $this->assertEquals($test->get_name(), 'filtro');
+        $this->assertEquals($test->get_collection_id(), $collection->get_id());
+    }
+
+    function test_add_with_metadata_and_type(){
+        global $Tainacan_Collections, $Tainacan_Filters,$Tainacan_Metadatas;
+
+        $collection = new Tainacan_Collection();
+        $metadata = new Tainacan_Metadata();
+        $filter = new Tainacan_Filter();
+        $type = new Tainacan_Text_Field_Type();
+        $filter_list_type = new Tainacan_List_Filter_Type();
+        $filter_range_type = new Tainacan_Range_Filter_Type();
+
+        $collection->set_name('teste');
+        $collection = $Tainacan_Collections->insert($collection);
+
+        //setando os valores na classe do metadado
+        $metadata->set_name('metadado');
+        $metadata->set_collection_id( $collection->get_id() );
+        $metadata->set_type( $type );
+
 
         //inserindo o metadado
         $metadata = $Tainacan_Metadatas->insert($metadata);
 
-        $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
+        //inserindo o filtro
+        $filter->set_name('filtro');
+        $filter->set_collection( $collection );
+        $filter->set_metadata( $metadata );
 
-        $i = new Tainacan_Item();
+        //nao devera permitir um filtro Range para o tipo string
+        $this->assertTrue( $filter->set_widget( $filter_range_type ) === null );
 
-        $i->set_title('item teste');
-        $i->set_description('adasdasdsa');
-        $i->set_collection($collection);
+        $filter->set_widget( $filter_list_type );
 
-        global $Tainacan_Items;
-        $item = $Tainacan_Items->insert($i);
+        $filter = $Tainacan_Filters->insert( $filter );
 
-        $item = $Tainacan_Items->get_item_by_id($item->get_id());
+        $test = $Tainacan_Filters->get_filter_by_id( $filter->get_id() );
 
+        $this->assertEquals( $test->get_name(), 'filtro');
+        $this->assertEquals( $test->get_collection_id(), $collection->get_id() );
+        $this->assertEquals( $test->get_metadata()->get_id(),  $metadata->get_id() );
+        $this->assertEquals( get_class( $test->get_widget() ),  get_class( $filter_list_type ) );
 
+    }
 
-        $value = 'teste_val';
+    function test_get_filters_type(){
+        global $Tainacan_Filters;
 
-        $item_metadata = new Tainacan_Item_Metadata_Entity($item, $metadata);
-        $item_metadata->set_value($value);
-        $this->assertTrue($item_metadata->validate());
-        $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
+        $all_filter_types = $Tainacan_Filters->get_all_filters_type();
+        $this->assertEquals( count( $all_filter_types ), 2 );
 
-        $n_item_metadata = new Tainacan_Item_Metadata_Entity($item, $metadata);
-        $n_item_metadata->set_value($value);
-        $this->assertFalse($n_item_metadata->validate());
+        $float_filters = $Tainacan_Filters->get_filters_by_metadata_type('float');
+        $this->assertTrue( count( $float_filters ) > 0 );
     }
 }

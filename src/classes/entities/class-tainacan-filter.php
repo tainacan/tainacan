@@ -3,9 +3,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Tainacan_Filter extends Entity  {
+class Tainacan_Filter extends Tainacan_Entity  {
 
-    use EntityCollectionRelation;
+    use Tainacan_Entity_Collection_Relation;
 
     function __construct( $which = 0 ) {
 
@@ -43,6 +43,11 @@ class Tainacan_Filter extends Entity  {
         return $this->get_mapped_property('color');
     }
 
+    function get_metadata() {
+        $id = $this->get_mapped_property('metadata');
+        return new Tainacan_Metadata( $id );
+    }
+
     function get_widget( $output = 'object' ){
         if( $output === 'object'){
             return unserialize( $this->get_mapped_property('option') );
@@ -64,15 +69,29 @@ class Tainacan_Filter extends Entity  {
         return $this->set_mapped_property('description', $value);
     }
 
-    function set_color($value) {
+    function set_color( $value ) {
         return $this->set_mapped_property('parent', $value);
     }
 
+    /**
+     * @param Tainacan_Metadata / int $value
+     */
+    function set_metadata( $value ){
+        $id = ( $value instanceof Tainacan_Metadata ) ? $value->get_id() : $value;
+
+        return $this->set_mapped_property('metadata', $id);
+    }
+
     function set_widget($value){
-        if( is_object( $value ) && is_subclass_of( $value, 'Tainacan_Filter_Type' ) ){
-            $this->set_option( $value );
-           
-            return $this->set_mapped_property('widget', get_class( $value ) ) ;
+        if( is_object( $value ) && is_subclass_of( $value, 'Tainacan_Filter_Type' ) && $this->get_metadata() ){
+            $type = $this->get_metadata()->get_type();
+
+            //if filter matches the metadata type
+            if( in_array( $type->get_primitive_type(), $value->get_supported_types() ) ){
+                $this->set_option( $value );
+                return $this->set_mapped_property('widget', get_class( $value ) ) ;
+            }
+
         }
         return null;
     }
