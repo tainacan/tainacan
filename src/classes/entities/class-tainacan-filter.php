@@ -38,6 +38,11 @@ class Tainacan_Filter extends Entity  {
         return $this->get_mapped_property('order');
     }
 
+
+    function get_color() {
+        return $this->get_mapped_property('color');
+    }
+
     function get_widget( $output = 'object' ){
         if( $output === 'object'){
             return unserialize( $this->get_mapped_property('option') );
@@ -46,7 +51,23 @@ class Tainacan_Filter extends Entity  {
         }
     }
 
-    //Setters
+    // Setters
+    function set_name($value) {
+        return $this->set_mapped_property('name', $value);
+    }
+
+    function set_order($value) {
+        return $this->set_mapped_property('order', $value);
+    }
+
+    function set_description($value) {
+        return $this->set_mapped_property('description', $value);
+    }
+
+    function set_color($value) {
+        return $this->set_mapped_property('parent', $value);
+    }
+
     function set_widget($value){
         if( is_object( $value ) && is_subclass_of( $value, 'Tainacan_Filter_Type' ) ){
             $this->set_option( $value );

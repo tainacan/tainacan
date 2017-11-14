@@ -8,6 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class Tainacan_Field_Type  {
 
+    var $primitive_type;
+
     abstract function render( $metadata );
     
     function validate($value) {

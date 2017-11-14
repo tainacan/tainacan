@@ -6,10 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Tainacan_Text_Field_Type extends Tainacan_Field_Type {
+class Tainacan_Radio_Field_Type extends Tainacan_Field_Type {
 
     function __construct(){
-        $this->primitive_type = 'string';
+        $this->primitive_type = '';
     }
 
     /**
@@ -18,6 +18,6 @@ class Tainacan_Text_Field_Type extends Tainacan_Field_Type {
      */
 
     function render( $metadata ){
-        return '<tainacan-text name="'.$metadata->get_name().'"></tainacan-text>';
+        return '<tainacan-radio name="'.$metadata->get_name().'"></tainacan-radio>';
     }
 }

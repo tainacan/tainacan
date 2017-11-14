@@ -28,15 +28,15 @@ class Tainacan_Filters {
             'map'        => 'meta',
             'validation' => ''
         ],
-        'mask'          => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'option'        => [
-            'map'        => 'meta',
+        'option' => [
+            'map' => 'meta',
             'validation' => ''
         ],
         'collection_id' => [
+            'map'        => 'meta',
+            'validation' => ''
+        ],
+        'color' => [
             'map'        => 'meta',
             'validation' => ''
         ],
@@ -46,8 +46,7 @@ class Tainacan_Filters {
         add_action('init', array(&$this, 'register_post_type'));
     }
 
-    function register_post_type()
-    {
+    function register_post_type(){
         $labels = array(
             'name'               => 'Filter',
             'singular_name'      => 'Filter',
@@ -81,5 +80,75 @@ class Tainacan_Filters {
             'capability_type'     => 'post',
         );
         register_post_type(self::POST_TYPE, $args);
+    }
+
+
+    /**
+     * @param Tainacan_Metadata $metadata
+     * @return int
+     */
+    function insert( Tainacan_Filter $metadata ) {
+        // First iterate through the native post properties
+        $map = $this->map;
+        foreach ($map as $prop => $mapped) {
+            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
+                $metadata->WP_Post->{$mapped['map']} = $metadata->get_mapped_property($prop);
+            }
+        }
+
+        // save post and get its ID
+        $metadata->WP_Post->post_type = self::POST_TYPE;
+        $metadata->WP_Post->post_status = 'publish';
+        $id = wp_insert_post($metadata->WP_Post);
+        $metadata->WP_Post = get_post($id);
+
+        // Now run through properties stored as postmeta
+        foreach ($map as $prop => $mapped) {
+            if ($mapped['map'] == 'meta') {
+                update_post_meta($id, $prop, $metadata->get_mapped_property($prop));
+            } elseif ($mapped['map'] == 'meta_multi') {
+                $values = $metadata->get_mapped_property($prop);
+                delete_post_meta($id, $prop);
+                if (is_array($values))
+                    foreach ($values as $value)
+                        add_post_meta($id, $prop, $value);
+            }
+        }
+
+        // return a brand new object
+        return new Tainacan_Filter($metadata->WP_Post);
+    }
+
+
+    /**
+     * @param ( Tainacan_Collection ) $collection_id
+     * @param array $args
+     * @return WP_Query
+     */
+    function get_filter_by_collection( $collection, $args = array()) {
+
+        // TODO: get filters from parent collections
+
+        $collection_id = ( is_object( $collection ) ) ? $collection->get_id() : $collection;
+
+        $args = array_merge([
+            'post_type'      => self::POST_TYPE,
+            'posts_per_page' => -1,
+            'post_status'    => 'publish',
+            'meta_key'       => 'collection_id',
+            'meta_value'     => $collection_id
+        ], $args);
+
+        $wp_query = new WP_Query($args);
+
+        return $wp_query;
+    }
+
+    /**
+     * @param int $id
+     * @return Tainacan_Filter
+     */
+    function get_filter_by_id($id) {
+        return new Tainacan_Filter($id);
     }
 }

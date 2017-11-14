@@ -10,6 +10,7 @@ Version: 10.9.8.7.6.5.4
 
 const ENTITIES_DIR = __DIR__ . '/classes/entities/';
 const FIELD_TYPES_DIR = __DIR__ . '/classes/field-types/';
+const FILTER_TYPES_DIR = __DIR__ . '/classes/filter-types/';
 const REPOSITORIES_DIR = __DIR__ . '/classes/repositories/';
 const TRAITS_DIR = __DIR__ . '/classes/traits/';
 const CLASSES_DIR = __DIR__ . '/classes/';
@@ -17,7 +18,8 @@ const CLASSES_DIR = __DIR__ . '/classes/';
 const DIRS = [
     CLASSES_DIR, 
     ENTITIES_DIR, 
-    FIELD_TYPES_DIR, 
+    FIELD_TYPES_DIR,
+    FILTER_TYPES_DIR,
     REPOSITORIES_DIR, 
     TRAITS_DIR,
 ];
@@ -43,6 +45,9 @@ $Tainacan_Item_Metadata = new Tainacan_Item_Metadata();
 
 global $Tainacan_Metadatas;
 $Tainacan_Metadatas = new Tainacan_Metadatas();
+
+global $Tainacan_Filters;
+$Tainacan_Filters = new Tainacan_Filters();
 
 global $Tainacan_Taxonomies;
 $Tainacan_Taxonomies = new Tainacan_Taxonomies();

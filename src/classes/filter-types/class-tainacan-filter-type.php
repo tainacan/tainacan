@@ -5,13 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 abstract class Tainacan_Filter_Type extends Entity  {
 
+    var $supported_types = [];
+
     abstract function render( $metadata );
-
-    function validate( $value ) {
-        return true;
-    }
-
-    function get_validation_errors() {
-        return [];
-    }
 }
