@@ -1,0 +1,9 @@
+{
+    "name": "medialabufg/tainacan-test-repo",
+    "description": "Protótipo",
+    "type": "wordpress-plugin",
+    "require": {
+        "respect/validation": "^1.1"
+    },
+    "minimum-stability": "dev"
+}

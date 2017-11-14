@@ -9,5 +9,6 @@ sh compile-sass.sh
 echo "Atualizando arquivos em $destination"
 rm -r $destination
 mkdir $destination
-cp -R src/* $destination/
+cp -R src/ $destination/
+cp -R vendor/ $destination/
 rm -rf $destination/scss

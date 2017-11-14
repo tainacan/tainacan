@@ -27,7 +27,7 @@ class Tainacan_Collection extends Tainacan_Entity  {
             'name'               => 'Item',
             'singular_name'      => 'Item',
             'add_new'            => 'Adicionar Novo',
-            'add_new_item'       =>'Adicionar Item',
+            'add_new_item'       => 'Adicionar Item',
             'edit_item'          => 'Editar',
             'new_item'           => 'Novo Item',
             'view_item'          => 'Visualizar',

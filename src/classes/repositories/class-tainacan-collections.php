@@ -3,45 +3,48 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use Respect\Validation\Validator as v;
+
 class Tainacan_Collections {
     
     const POST_TYPE = 'tainacan-collections';
-    
-    var $map = [
-        'ID'             => [
-            'map'        => 'ID',
-            'validation' => ''
-        ],
-        'name'           =>  [
-            'map'        => 'post_title',
-            'validation' => ''
-        ],
-        'order'          =>  [
-            'map'        => 'menu_order',
-            'validation' => ''
-        ],
-        'parent'         =>  [
-            'map'        => 'parent',
-            'validation' => ''
-        ],
-        'description'    =>  [
-            'map'        => 'post_content',
-            'validation' => ''
-        ],
-        'slug'           =>  [
-            'map'        => 'post_name',
-            'validation' => ''
-        ],
-        'itens_per_page' =>  [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-    ];
-    
+    var $map;
+
     function __construct() {
         add_action('init', array(&$this, 'register_post_type'));
+        
+        $this->map = [
+            'ID'             => [
+                'map'        => 'ID',
+                'validation' => v::numeric(),
+            ],
+            'name'           =>  [
+                'map'        => 'post_title',
+                'validation' => v::stringType(),
+            ],
+            'order'          =>  [
+                'map'        => 'menu_order',
+                'validation' => v::stringType(),
+            ],
+            'parent'         =>  [
+                'map'        => 'parent',
+                'validation' => v::stringType(),
+            ],
+            'description'    =>  [
+                'map'        => 'post_content',
+                'validation' => v::stringType(),
+            ],
+            'slug'           =>  [
+                'map'        => 'post_name',
+                'validation' => v::stringType(),
+            ],
+            'itens_per_page' =>  [
+                'map'        => 'meta',
+                'validation' => v::intVal()->positive(),
+            ],
+        ];
     }
-    
+
     function register_post_type() {
         $labels = array(
             'name'               => 'Collections',
@@ -80,10 +83,24 @@ class Tainacan_Collections {
     
     function insert(Tainacan_Collection $collection) {
         // First iterate through the native post properties
+
         $map = $this->map;
+        $count = 0;
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $collection->WP_Post->{$mapped['map']} = $collection->get_mapped_property($prop);
+                $prop_value = $collection->get_mapped_property($prop);
+                
+                $validation = $mapped['validation'];
+
+                if($validation->validate($prop_value)){
+                    var_dump($prop_value);
+                    var_dump($validation->validate($prop_value));
+                    
+                    $collection->WP_Post->{$mapped['map']} = $prop_value;
+                } else {
+                    $count++;
+                    //throw new Exception("Prop ". $prop ." with this value ". $prop_value ." is invalid", 1);
+                }
             }
         }
         
@@ -92,8 +109,13 @@ class Tainacan_Collections {
         $collection->WP_Post->post_status = 'publish';
         
         // TODO verificar se salvou mesmo
-        $id = wp_insert_post($collection->WP_Post);
-        
+        // if($count == 0){
+            $id = wp_insert_post($collection->WP_Post);
+        // }
+        // else {
+            // throw new Exception("Error Processing Request", 1);
+        // }
+
         // reset object
         $collection->WP_Post = get_post($id);
         
