@@ -98,6 +98,10 @@ class Taxonomy extends \Tainacan\Entity {
     function get_slug() {
         return $this->get_mapped_property('slug');
     }
+    
+    function get_collections() {
+    	return $this->get_mapped_property('collections');
+    }
 
     // special Getters
     function get_db_identifier() {
@@ -123,6 +127,10 @@ class Taxonomy extends \Tainacan\Entity {
 
     function set_allow_insert($value) {
         return $this->set_mapped_property('allow_insert', $value);
+    }
+    
+    function set_collections($value) {
+    	return $this->set_mapped_property('collections', $value);
     }
 
 }
