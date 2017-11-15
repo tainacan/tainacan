@@ -5,6 +5,7 @@ source build-config.cfg
 #destination=~/devel/wordpress/wp-content/plugins/test-tainacan
 
 sh compile-sass.sh
+composer install
 
 echo "Atualizando arquivos em $destination"
 rm -r $destination
