@@ -32,8 +32,8 @@ class Filters extends \WP_UnitTestCase {
 
         $test = $Tainacan_Filters->get_filter_by_id( $filter->get_id() );
 
-        $this->assertEquals($test->get_name(), 'filtro');
-        $this->assertEquals($test->get_collection_id(), $collection->get_id());
+        $this->assertEquals('filtro', $test->get_name());
+        $this->assertEquals($collection->get_id(), $test->get_collection_id());
     }
 
     function test_add_with_metadata_and_type(){
@@ -72,10 +72,12 @@ class Filters extends \WP_UnitTestCase {
 
         $test = $Tainacan_Filters->get_filter_by_id( $filter->get_id() );
 
-        $this->assertEquals( $test->get_name(), 'filtro');
-        $this->assertEquals( $test->get_collection_id(), $collection->get_id() );
-        $this->assertEquals( $test->get_metadata()->get_id(),  $metadata->get_id() );
-        $this->assertEquals( get_class( $test->get_filter_type_object() ),  get_class( $filter_list_type ) );
+        $this->assertEquals( 'filtro', $test->get_name() );
+        $this->assertEquals( $collection->get_id(), $test->get_collection_id() );
+        $this->assertEquals( $metadata->get_id(), $test->get_metadata()->get_id() );
+        $objClass = get_class( $filter_list_type );
+        $storedObjClass = get_class( $test->get_filter_type_object() );
+        $this->assertEquals($objClass , $storedObjClass );
 
     }
 
@@ -83,7 +85,7 @@ class Filters extends \WP_UnitTestCase {
         global $Tainacan_Filters;
 
         $all_filter_types = $Tainacan_Filters->get_all_filters_type();
-        $this->assertEquals( count( $all_filter_types ), 2 );
+        $this->assertEquals( 2, count( $all_filter_types ) );
 
         $float_filters = $Tainacan_Filters->get_filters_by_metadata_type('float');
         $this->assertTrue( count( $float_filters ) > 0 );
