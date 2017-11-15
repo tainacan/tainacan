@@ -132,7 +132,7 @@ class Filters {
     /**
      * @param ( Tainacan_Collection ) $collection_id
      * @param array $args
-     * @return WP_Query
+     * @return \WP_Query
      */
     function get_filter_by_collection( $collection, $args = array()) {
 
@@ -183,9 +183,9 @@ class Filters {
      */
     function get_all_filters_type() {
         $result = array();
-
+        
         foreach (get_declared_classes() as $class) {
-            if (is_subclass_of($class, 'Tainacan_Filter_Type')){
+            if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
                 $result[] = new $class();
             }
         }
