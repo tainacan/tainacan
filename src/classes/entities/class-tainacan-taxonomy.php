@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Taxonomy extends \Tainacan\Entity {
 
-	use \Tainacan\Traits\Entity_Collection_Relation;
+	use \Tainacan\Traits\Entity_Collections_Relation;
     
     function __construct( $which = 0 ) {
 
@@ -99,10 +99,6 @@ class Taxonomy extends \Tainacan\Entity {
         return $this->get_mapped_property('slug');
     }
     
-    function get_collections() {
-    	return $this->get_mapped_property('collections');
-    }
-
     // special Getters
     function get_db_identifier() {
         return $this->get_id() ? 'tnc_tax_' . $this->get_id() : false;
@@ -128,9 +124,4 @@ class Taxonomy extends \Tainacan\Entity {
     function set_allow_insert($value) {
         return $this->set_mapped_property('allow_insert', $value);
     }
-    
-    function set_collections($value) {
-    	return $this->set_mapped_property('collections', $value);
-    }
-
 }
