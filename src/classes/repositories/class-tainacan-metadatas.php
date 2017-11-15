@@ -10,75 +10,77 @@ class Tainacan_Metadatas {
 
     const POST_TYPE = 'tainacan-metadata';
 
-    var $map = [
-        'ID'             => [
-            'map'        => 'ID',
-            'validation' => ''
-        ],
-        'name'           => [
-            'map'        => 'post_title',
-            'validation' => ''
-        ],
-        'order'          => [
-            'map'        => 'menu_order',
-            'validation' => ''
-        ],
-        'parent'         => [
-            'map'        => 'parent',
-            'validation' => ''
-        ],
-        'description'    => [
-            'map'        => 'post_content',
-            'validation' => ''
-        ],
-        'field_type'     => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'required'       => [
-            'map'        => 'meta',
-            'validation' => '', // yes or no
-            'default'    => 'no'
-        ],
-        'collection_key' => [
-            'map'        => 'meta',
-            'validation' => '', // yes or no. it cant be key if its multiple
-            'default'    => 'no'
-        ],
-        'multiple'       => [
-            'map'        => 'meta',
-            'validation' => '', // yes or no. It cant be multiple if its collection_key
-            'default'    => 'no'
-        ],
-        'cardinality'    => [
-            'map'        => 'meta',
-            'validation' => '',
-            'default'    => 1
-        ],
-        'privacy'        => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'mask'           => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'default_value'  => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'field_type_object' => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'collection_id'  => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-    ];
-
     function __construct() {
         add_action('init', array(&$this, 'register_post_type'));
+    }
+    
+    function get_map() {
+        return [
+            'id'             => [
+                'map'        => 'ID',
+                //'validation' => ''
+            ],
+            'name'           => [
+                'map'        => 'post_title',
+                'validation' => ''
+            ],
+            'order'          => [
+                'map'        => 'menu_order',
+                'validation' => ''
+            ],
+            'parent'         => [
+                'map'        => 'parent',
+                'validation' => ''
+            ],
+            'description'    => [
+                'map'        => 'post_content',
+                'validation' => ''
+            ],
+            'field_type'     => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            'required'       => [
+                'map'        => 'meta',
+                'validation' => '', // yes or no
+                'default'    => 'no'
+            ],
+            'collection_key' => [
+                'map'        => 'meta',
+                'validation' => '', // yes or no. it cant be key if its multiple
+                'default'    => 'no'
+            ],
+            'multiple'       => [
+                'map'        => 'meta',
+                'validation' => '', // yes or no. It cant be multiple if its collection_key
+                'default'    => 'no'
+            ],
+            'cardinality'    => [
+                'map'        => 'meta',
+                'validation' => '',
+                'default'    => 1
+            ],
+            'privacy'        => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            'mask'           => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            'default_value'  => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            'field_type_object' => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            'collection_id'  => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+        ];
     }
 
     function register_post_type() {
@@ -124,7 +126,7 @@ class Tainacan_Metadatas {
      */
     function insert( Tainacan_Metadata $metadata ) {
         // First iterate through the native post properties
-        $map = $this->map;
+        $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
                 $metadata->WP_Post->{$mapped['map']} = $metadata->get_mapped_property($prop);

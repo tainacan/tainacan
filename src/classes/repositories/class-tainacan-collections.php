@@ -12,11 +12,13 @@ class Tainacan_Collections {
 
     function __construct() {
         add_action('init', array(&$this, 'register_post_type'));
-        
-        $this->map = [
-            'ID'             => [
+    }
+    
+    function get_map() {
+        return [
+            'id'             => [
                 'map'        => 'ID',
-                'validation' => v::numeric(),
+                //'validation' => v::numeric(),
             ],
             'name'           =>  [
                 'map'        => 'post_title',
@@ -24,22 +26,23 @@ class Tainacan_Collections {
             ],
             'order'          =>  [
                 'map'        => 'menu_order',
-                'validation' => v::stringType(),
+                //'validation' => v::stringType(),
             ],
             'parent'         =>  [
                 'map'        => 'parent',
-                'validation' => v::stringType(),
+                //'validation' => v::stringType(),
             ],
             'description'    =>  [
                 'map'        => 'post_content',
-                'validation' => v::stringType(),
+                //'validation' => v::stringType(),
             ],
             'slug'           =>  [
                 'map'        => 'post_name',
-                'validation' => v::stringType(),
+                //'validation' => v::stringType(),
             ],
             'itens_per_page' =>  [
                 'map'        => 'meta',
+                'default'    => 10,
                 'validation' => v::intVal()->positive(),
             ],
         ];
@@ -82,25 +85,17 @@ class Tainacan_Collections {
     }
     
     function insert(Tainacan_Collection $collection) {
+        
+        // validate
+        if (!$collection->validate())
+            return $collection->get_errors();
+        
+        $map = $this->get_map();
+        
         // First iterate through the native post properties
-
-        $map = $this->map;
-        $count = 0;
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $prop_value = $collection->get_mapped_property($prop);
-                
-                $validation = $mapped['validation'];
-
-                if($validation->validate($prop_value)){
-                    var_dump($prop_value);
-                    var_dump($validation->validate($prop_value));
-                    
-                    $collection->WP_Post->{$mapped['map']} = $prop_value;
-                } else {
-                    $count++;
-                    //throw new Exception("Prop ". $prop ." with this value ". $prop_value ." is invalid", 1);
-                }
+                $collection->WP_Post->{$mapped['map']} = $collection->get_mapped_property($prop);
             }
         }
         

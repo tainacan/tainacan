@@ -10,40 +10,41 @@ class Tainacan_Taxonomies {
 
     const POST_TYPE = 'tainacan-taxonomies';
 
-    var $map = [
-        'ID'              =>  [
-            'map'         => 'ID',
-            'validation'  => ''
-        ],
-        'name'            =>  [
-            'map'         => 'post_title',
-            'validation'  => ''
-        ],
-        'parent'          =>  [
-            'map'         => 'parent',
-            'validation'  => ''
-        ],
-        'description'     =>  [
-            'map'         => 'post_content',
-            'validation'  => ''
-        ],
-        'slug'            =>  [
-            'map'         => 'post_name',
-            'validation'  => ''
-        ],
-        'allow_insert'    =>  [
-            'map'         => 'meta',
-            'validation'  => ''
-        ],
-        'collections_ids' =>  [
-            'map'         => 'meta_multi',
-            'validation'  => ''
-        ],
-    ];
-
-
     function __construct() {
         add_action('init', array(&$this, 'register_post_type'));
+    }
+    
+    function get_map() {
+        return [
+            'id'              =>  [
+                'map'         => 'ID',
+                //'validation'  => ''
+            ],
+            'name'            =>  [
+                'map'         => 'post_title',
+                'validation'  => ''
+            ],
+            'parent'          =>  [
+                'map'         => 'parent',
+                'validation'  => ''
+            ],
+            'description'     =>  [
+                'map'         => 'post_content',
+                'validation'  => ''
+            ],
+            'slug'            =>  [
+                'map'         => 'post_name',
+                'validation'  => ''
+            ],
+            'allow_insert'    =>  [
+                'map'         => 'meta',
+                'validation'  => ''
+            ],
+            'collections_ids' =>  [
+                'map'         => 'meta_multi',
+                'validation'  => ''
+            ],
+        ];
     }
 
     function register_post_type() {
@@ -109,7 +110,7 @@ class Tainacan_Taxonomies {
      */
     function insert( Tainacan_Taxonomy $taxonomy ) {
         // First iterate through the native post properties
-        $map = $this->map;
+        $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
                 $taxonomy->WP_Post->{$mapped['map']} = $taxonomy->get_mapped_property($prop);

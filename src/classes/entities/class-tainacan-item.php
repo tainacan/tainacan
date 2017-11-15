@@ -27,7 +27,7 @@ class Tainacan_Item extends Tainacan_Entity {
 
     // Getters
     function get_id() {
-        return $this->get_mapped_property('ID');
+        return $this->get_mapped_property('id');
     }
     function get_title() {
         return $this->get_mapped_property('title');

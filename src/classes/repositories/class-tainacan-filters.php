@@ -7,47 +7,49 @@ class Tainacan_Filters {
 
     const POST_TYPE = 'tainacan-filters';
 
-    var $map = [
-        'ID'            => [
-            'map'        => 'ID',
-            'validation' => ''
-        ],
-        'name'          => [
-            'map'        => 'post_title',
-            'validation' => ''
-        ],
-        'order'         => [
-            'map'        => 'menu_order',
-            'validation' => ''
-        ],
-        'description'   => [
-            'map'        => 'post_content',
-            'validation' => ''
-        ],
-        'filter_type_object'        => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'filter_type' => [
-            'map' => 'meta',
-            'validation' => ''
-        ],
-        'collection_id' => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'color' => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        'metadata' => [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-    ];
-
     function __construct(){
         add_action('init', array(&$this, 'register_post_type'));
+    }
+    
+    function get_map() {
+        return [
+            'id'            => [
+                'map'        => 'ID',
+                //'validation' => ''
+            ],
+            'name'          => [
+                'map'        => 'post_title',
+                'validation' => ''
+            ],
+            'order'         => [
+                'map'        => 'menu_order',
+                'validation' => ''
+            ],
+            'description'   => [
+                'map'        => 'post_content',
+                'validation' => ''
+            ],
+            'filter_type_object'        => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            'filter_type' => [
+                'map' => 'meta',
+                'validation' => ''
+            ],
+            'collection_id' => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            'color' => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            'metadata' => [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+        ];
     }
 
     function register_post_type(){
@@ -93,7 +95,7 @@ class Tainacan_Filters {
      */
     function insert( Tainacan_Filter $metadata ) {
         // First iterate through the native post properties
-        $map = $this->map;
+        $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
                 $metadata->WP_Post->{$mapped['map']} = $metadata->get_mapped_property($prop);

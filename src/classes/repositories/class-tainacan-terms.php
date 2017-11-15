@@ -8,36 +8,38 @@ exit;
 */
 class Tainacan_Terms {
 
-    var $map = [
-        'term_id'     => [
-            'map'        => 'term_id',
-            'validation' => ''
-        ],
-        'name'        => [
-            'map'        => 'name',
-            'validation' => ''
-        ],
-        'parent'      => [
-            'map'        => 'parent',
-            'validation' => ''
-        ],
-        'description' => [
-            'map'        => 'description',
-            'validation' => ''
-        ],
-        'taxonomy'    => [
-            'map'        => 'taxonomy',
-            'validation' => ''
-        ],
-        'user'        => [
-            'map'        => 'termmeta',
-            'validation' => ''
-        ],
-    ];
-
+    function get_map() {
+        return [
+            'term_id'     => [
+                'map'        => 'term_id',
+                //'validation' => ''
+            ],
+            'name'        => [
+                'map'        => 'name',
+                'validation' => ''
+            ],
+            'parent'      => [
+                'map'        => 'parent',
+                'validation' => ''
+            ],
+            'description' => [
+                'map'        => 'description',
+                'validation' => ''
+            ],
+            'taxonomy'    => [
+                'map'        => 'taxonomy',
+                'validation' => ''
+            ],
+            'user'        => [
+                'map'        => 'termmeta',
+                'validation' => ''
+            ],
+        ];
+    }
+    
     function insert( Tainacan_Term $term ){
         // First iterate through the native post properties
-        $map = $this->map;
+        $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'termmeta') {
                 $term->WP_Term->{$mapped['map']} = $term->get_mapped_property($prop);

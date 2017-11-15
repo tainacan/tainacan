@@ -68,4 +68,23 @@ class Test_Collections extends WP_UnitTestCase {
         $this->assertEquals($item->get_collection_id(), $collection->get_id());
         
     }
+    
+    function test_validation() {
+		
+        $x = new Tainacan_Collection();
+        
+        $x->set_name('teste');
+        $x->set_description('adasdasdsa');
+        $x->set_itens_per_page('blah');
+        
+        $this->assertFalse($x->validate());
+        $this->assertTrue(sizeof($x->get_errors()) > 0);
+        
+        $x->set_itens_per_page(15);
+        $this->assertTrue($x->validate());
+        $this->assertTrue(empty($x->get_errors()));
+        
+        
+        
+    }
 }

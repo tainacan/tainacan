@@ -9,7 +9,7 @@ class Tainacan_Entity {
     function get_mapped_property($prop) {
         
         global ${$this->repository};
-        $map = ${$this->repository}->map;
+        $map = ${$this->repository}->get_map();
         
         if (isset($this->$prop) && !empty($this->$prop)){
             return $this->$prop;
@@ -22,9 +22,9 @@ class Tainacan_Entity {
         $mapped = $map[$prop]['map'];
         
         if ( $mapped == 'meta') {
-            $return = get_post_meta($this->WP_Post->ID, $prop, true);
+            $return = isset($this->WP_Post->ID) ? get_post_meta($this->WP_Post->ID, $prop, true) : null;
         } elseif ( $mapped == 'meta_multi') {
-            $return = get_post_meta($this->WP_Post->ID, $prop, false);
+            $return = isset($this->WP_Post->ID) ? get_post_meta($this->WP_Post->ID, $prop, false) : null;
         } elseif ( $mapped == 'termmeta' ){
             $return = get_term_meta($this->WP_Term->term_id, $prop, true);
         } elseif ( isset( $this->WP_Post )) {
@@ -54,7 +54,55 @@ class Tainacan_Entity {
     }
 
     function validate() {
-        return true;
+        
+        global ${$this->repository};
+        $map = ${$this->repository}->get_map();
+        $valid = true;
+        $this->reset_errors();
+        
+        foreach ($map as $prop => $mapped) {
+            if (!$this->validate_prop($prop))
+                $valid = false;
+        }
+        
+        return $valid;
+    }
+    
+    function validate_prop($prop) {
+        global ${$this->repository};
+        $map = ${$this->repository}->get_map();
+        $mapped = $map[$prop];
+        
+        
+        $return = true;
+        
+        if (
+            isset($mapped['validation']) && 
+            is_object($mapped['validation']) &&
+            method_exists($mapped['validation'], 'validate')
+        ) {
+            $validation = $mapped['validation'];
+            $prop_value = $this->get_mapped_property($prop);
+            
+            if (is_array($prop_value)) {
+                foreach ($prop_value as $val) {
+                    if (!$validation->validate($val)) {
+                        //
+                        $this->add_error('invalid', $prop . ' is invalid');
+                        $return = false;
+                    }
+                }
+            } else {
+                if (!$validation->validate($prop_value)) {
+                    //
+                    $this->add_error('invalid', $prop . ' is invalid');
+                    $return = false;
+                }
+            }
+        }
+        
+        return $return;
+
     }
     
     function get_errors() {

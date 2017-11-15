@@ -5,29 +5,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Tainacan_Items {
     
-    var $map = [
-        'ID'            => [
-            'map'        => 'ID',
-            'validation' => ''
-        ],
-        'title'         =>  [
-            'map'        => 'post_title',
-            'validation' => ''
-        ],
-        'description'   =>  [
-            'map'        => 'post_content',
-            'validation' => ''
-        ],
-        'collection_id' =>  [
-            'map'        => 'meta',
-            'validation' => ''
-        ],
-        //'collection' => 'relation...',
-        // metadata .. metadata...
-    ];
-    
     function __construct() {
         add_action('init', array(&$this, 'register_post_types'));
+    }
+    
+    function get_map() {
+        return [
+            'id'            => [
+                'map'        => 'ID',
+                //'validation' => ''
+            ],
+            'title'         =>  [
+                'map'        => 'post_title',
+                'validation' => ''
+            ],
+            'description'   =>  [
+                'map'        => 'post_content',
+                'validation' => ''
+            ],
+            'collection_id' =>  [
+                'map'        => 'meta',
+                'validation' => ''
+            ],
+            //'collection' => 'relation...',
+            // metadata .. metadata...
+        ];
     }
     
     function register_post_types() {
@@ -55,7 +57,7 @@ class Tainacan_Items {
     }
  
     function insert(Tainacan_Item $item) {
-        $map = $this->map;
+        $map = $this->get_map();
         
         // get collection to determine post type
         $collection = $item->get_collection();
@@ -166,7 +168,7 @@ class Tainacan_Items {
     // other item properties, present in the "map"
     function query($args) {
         
-        $map = $this->map;
+        $map = $this->get_map();
         $wp_query_exceptions = [
             'ID'         => 'p',
             'post_title' => 'title'

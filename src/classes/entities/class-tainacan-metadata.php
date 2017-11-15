@@ -27,7 +27,7 @@ class Tainacan_Metadata extends Tainacan_Entity {
 
     // Getters
     function get_id() {
-        return $this->get_mapped_property('ID');
+        return $this->get_mapped_property('id');
     }
 
 

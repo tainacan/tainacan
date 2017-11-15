@@ -9,43 +9,45 @@ class Tainacan_Logs extends Tainacan_Repository {
     
     const POST_TYPE = 'tainacan-logs';
     
-    var $map = [
-        'ID' => [
-            'map' => 'ID',
-            'validation' => ''
-        ],
-        'title' =>  [
-            'map' => 'post_title',
-            'validation' => ''
-        ],
-        'order' =>  [
-            'map' => 'menu_order',
-            'validation' => ''
-        ],
-        'parent' =>  [
-            'map' => 'parent',
-            'validation' => ''
-        ],
-        'description' =>  [
-            'map' => 'post_content',
-            'validation' => ''
-        ],
-        'slug' =>  [
-            'map' => 'post_name',
-            'validation' => ''
-        ],
-        'itens_per_page' =>  [
-            'map' => 'meta',
-            'validation' => ''
-        ],
-    	'user_id' => [
-    		'map' => 'post_author',
-    		'validation' => ''
-    	],
-    ];
-    
     function __construct() {
         add_action('init', array(&$this, 'register_post_type'));
+    }
+    
+    function get_map() {
+        return [
+            'id' => [
+                'map' => 'ID',
+                //'validation' => ''
+            ],
+            'title' =>  [
+                'map' => 'post_title',
+                'validation' => ''
+            ],
+            'order' =>  [
+                'map' => 'menu_order',
+                'validation' => ''
+            ],
+            'parent' =>  [
+                'map' => 'parent',
+                'validation' => ''
+            ],
+            'description' =>  [
+                'map' => 'post_content',
+                'validation' => ''
+            ],
+            'slug' =>  [
+                'map' => 'post_name',
+                'validation' => ''
+            ],
+            'itens_per_page' =>  [
+                'map' => 'meta',
+                'validation' => ''
+            ],
+        	'user_id' => [
+        		'map' => 'post_author',
+        		'validation' => ''
+        	],
+        ];
     }
     
     function register_post_type() {
@@ -86,7 +88,7 @@ class Tainacan_Logs extends Tainacan_Repository {
     
     function insert(Tainacan_Log $log) {
         // First iterate through the native post properties
-        $map = $this->map;
+        $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
                 $log->WP_Post->{$mapped['map']} = $log->get_mapped_property($prop);
