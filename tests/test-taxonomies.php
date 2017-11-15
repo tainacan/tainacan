@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Tests;
+
 /**
  * Class TestCollections
  *
@@ -8,7 +11,7 @@
 /**
  * Sample test case.
  */
-class Test_Taxonomies extends WP_UnitTestCase {
+class Taxonomies extends \WP_UnitTestCase {
 
 
     /**

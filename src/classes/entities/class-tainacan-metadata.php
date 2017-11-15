@@ -79,11 +79,11 @@ class Metadata extends \Tainacan\Entity {
     }
 
     function get_field_type_object(){
-        return unserialize( $this->get_mapped_property('field_type_object') );
+    	return unserialize(base64_decode( $this->get_mapped_property('field_type_object') ) );
     }
 
     function get_field_type(){
-        return $this->get_mapped_property('field_type');
+    	return base64_decode($this->get_mapped_property('field_type'));
     }
 
     // Setters
@@ -133,7 +133,7 @@ class Metadata extends \Tainacan\Entity {
 
     function set_field_type_object(\Tainacan\Field_Types\Field_Type $value){
             $this->set_field_type( get_class( $value )  );
-            return $this->set_mapped_property('field_type_object', serialize($value) ) ;
+            return $this->set_mapped_property('field_type_object', base64_encode( serialize($value) ) ); // Encode to avoid backslaches removal
     }
 
     /**
@@ -143,7 +143,7 @@ class Metadata extends \Tainacan\Entity {
      *
      */
     private function set_field_type($value){
-        return $this->set_mapped_property('field_type',  $value ) ;
+    	return $this->set_mapped_property('field_type',   base64_encode($value) ) ; // Encode to avoid backslaches removal
     }
 
     // helpers
