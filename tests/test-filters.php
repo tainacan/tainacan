@@ -49,7 +49,7 @@ class Test_Filters extends WP_UnitTestCase {
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');
         $metadata->set_collection_id( $collection->get_id() );
-        $metadata->set_type( $type );
+        $metadata->set_field_type_object( $type );
 
 
         //inserindo o metadado
@@ -61,9 +61,9 @@ class Test_Filters extends WP_UnitTestCase {
         $filter->set_metadata( $metadata );
 
         //nao devera permitir um filtro Range para o tipo string
-        $this->assertTrue( $filter->set_widget( $filter_range_type ) === null );
+        $this->assertTrue( $filter->set_filter_type_object( $filter_range_type ) === null );
 
-        $filter->set_widget( $filter_list_type );
+        $filter->set_filter_type_object( $filter_list_type );
 
         $filter = $Tainacan_Filters->insert( $filter );
 
@@ -72,7 +72,7 @@ class Test_Filters extends WP_UnitTestCase {
         $this->assertEquals( $test->get_name(), 'filtro');
         $this->assertEquals( $test->get_collection_id(), $collection->get_id() );
         $this->assertEquals( $test->get_metadata()->get_id(),  $metadata->get_id() );
-        $this->assertEquals( get_class( $test->get_widget() ),  get_class( $filter_list_type ) );
+        $this->assertEquals( get_class( $test->get_filter_type_object() ),  get_class( $filter_list_type ) );
 
     }
 

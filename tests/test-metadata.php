@@ -54,7 +54,7 @@ class Test_Metadata extends WP_UnitTestCase {
         //setando os valores na classe do metadado
         $metadata->set_name('metadado');
         $metadata->set_collection_id( $collection->get_id() );
-        $metadata->set_type( $type );
+        $metadata->set_field_type_object( $type );
 
 
         //inserindo o metadado
@@ -64,7 +64,7 @@ class Test_Metadata extends WP_UnitTestCase {
 
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_collection_id(), $collection->get_id());
-        $this->assertEquals($test->get_type('name'), 'Tainacan_Text_Field_Type');
-        $this->assertEquals($test->get_type(), $type);
+        $this->assertEquals($test->get_field_type(), 'Tainacan_Text_Field_Type');
+        $this->assertEquals($test->get_field_type_object(), $type);
     }
 }
