@@ -67,7 +67,7 @@ class Metadata extends \WP_UnitTestCase {
 
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_collection_id(), $collection->get_id());
-        $this->assertEquals($test->get_field_type(), 'Tainacan_Text_Field_Type');
+        $this->assertEquals('Tainacan\Field_Types\Text_Field_Type', $test->get_field_type());
         $this->assertEquals($test->get_field_type_object(), $type);
     }
 }
