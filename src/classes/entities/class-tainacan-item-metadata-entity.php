@@ -40,7 +40,7 @@ class Item_Metadata_Entity extends \Tainacan\Entity {
         if (isset($this->value))
             return $this->value;
         
-        $Tainacan_Item_Metadata = new Item_Metadata_Entity();
+        global $Tainacan_Item_Metadata;
         return $Tainacan_Item_Metadata->get_item_metadata_value($this);
     }
         
