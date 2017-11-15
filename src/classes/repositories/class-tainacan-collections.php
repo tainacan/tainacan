@@ -89,6 +89,7 @@ class Tainacan_Collections {
         // validate
         if (!$collection->validate())
             return $collection->get_errors();
+            // TODO: Throw Warning saying you must validate object before insert()
         
         $map = $this->get_map();
         
