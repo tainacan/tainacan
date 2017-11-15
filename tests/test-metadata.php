@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Tests;
+
 /**
  * Class TestCollections
  *
@@ -8,7 +11,7 @@
 /**
  * Sample test case.
  */
-class Test_Metadata extends WP_UnitTestCase {
+class Metadata extends \WP_UnitTestCase {
 
     /**
      * Teste da insercao de um metadado simples sem o tipo
@@ -16,8 +19,8 @@ class Test_Metadata extends WP_UnitTestCase {
     function test_add() {
         global $Tainacan_Collections, $Tainacan_Metadatas;
 
-        $collection = new Tainacan_Collection();
-        $metadata = new Tainacan_Metadata();
+        $collection = new \Tainacan\Entities\Collection();
+        $metadata = new \Tainacan\Entities\Metadata();
 
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);
@@ -44,9 +47,9 @@ class Test_Metadata extends WP_UnitTestCase {
     function teste_add_type(){
         global $Tainacan_Collections, $Tainacan_Metadatas;
 
-        $collection = new Tainacan_Collection();
-        $metadata = new Tainacan_Metadata();
-        $type = new Tainacan_Text_Field_Type();
+        $collection = new \Tainacan\Entities\Collection();
+        $metadata = new \Tainacan\Entities\Metadata();
+        $type = new \Tainacan\Field_Types\Text_Field_Type();
 
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);

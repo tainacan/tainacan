@@ -1,7 +1,8 @@
 <?php
 
+namespace Tainacan;
 
-class Tainacan_Repository {
+class Repository {
     
     function find_by($prop, $value) {
         

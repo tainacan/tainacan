@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Tests;
+
 /**
  * Class TestCollections
  *
@@ -8,14 +11,14 @@
 /**
  * Sample test case.
  */
-class Test_Filters extends WP_UnitTestCase {
+class Filters extends \WP_UnitTestCase {
 
 
     function teste_add(){
         global $Tainacan_Collections, $Tainacan_Filters;
 
-        $collection = new Tainacan_Collection();
-        $filter = new Tainacan_Filter();
+        $collection = new \Tainacan\Entities\Collection();
+        $filter = new \Tainacan\Entities\Filter();
 
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);
@@ -36,12 +39,12 @@ class Test_Filters extends WP_UnitTestCase {
     function test_add_with_metadata_and_type(){
         global $Tainacan_Collections, $Tainacan_Filters,$Tainacan_Metadatas;
 
-        $collection = new Tainacan_Collection();
-        $metadata = new Tainacan_Metadata();
-        $filter = new Tainacan_Filter();
-        $type = new Tainacan_Text_Field_Type();
-        $filter_list_type = new Tainacan_List_Filter_Type();
-        $filter_range_type = new Tainacan_Range_Filter_Type();
+        $collection = new \Tainacan\Entities\Collection();
+        $metadata = new \Tainacan\Entities\Metadata();
+        $filter = new \Tainacan\Entities\Filter();
+        $type = new \Tainacan\Field_Types\Text_Field_Type();
+        $filter_list_type = new \Tainacan\Filter_Types\List_Filter_Type();
+        $filter_range_type = new \Tainacan\Filter_Types\Range_Filter_Type();
 
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);

@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Field_Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -6,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Tainacan_Relationship_Field_Type extends Tainacan_Field_Type {
+class Relationship_Field_Type extends Field_Type {
 
     function __construct(){
         $this->primitive_type = '';

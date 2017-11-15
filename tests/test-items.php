@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Tests;
+
 /**
  * Class TestCollections
  *
@@ -8,23 +11,23 @@
 /**
  * Sample test case.
  */
-class Test_Items extends WP_UnitTestCase {
+class Items extends \WP_UnitTestCase {
 
     
     function teste_query(){
         global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new Tainacan_Collection();
-        $collection2 = new Tainacan_Collection();
+        $collection = new \Tainacan\Entities\Collection();
+        $collection2 = new \Tainacan\Entities\Collection();
         
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);
         $collection2->set_name('teste2');
         $collection2 = $Tainacan_Collections->insert($collection2);
         
-        $metadata = new Tainacan_Metadata();
-        $metadata2 = new Tainacan_Metadata();
-        $metadata3 = new Tainacan_Metadata();
+        $metadata = new \Tainacan\Entities\Metadata();
+        $metadata2 = new \Tainacan\Entities\Metadata();
+        $metadata3 = new \Tainacan\Entities\Metadata();
         
         $metadata->set_name('metadado');
         $metadata->set_collection( $collection );
@@ -37,7 +40,7 @@ class Test_Items extends WP_UnitTestCase {
         $metadata3 = $Tainacan_Metadatas->insert($metadata3);
 
         global $Tainacan_Items;
-        $i = new Tainacan_Item();
+        $i = new \Tainacan\Entities\Item();
         $i->set_title('orange');
         $i->set_collection($collection);
         $i->add_metadata($metadata, 'value_1');
@@ -47,17 +50,17 @@ class Test_Items extends WP_UnitTestCase {
         $meta_test = $item->get_metadata();
         
         $this->assertTrue( isset($meta_test[$metadata->get_id()]) );
-        $this->assertTrue( $meta_test[$metadata->get_id()] instanceof Tainacan_Item_Metadata_Entity );
+        $this->assertTrue( $meta_test[$metadata->get_id()] instanceof \Tainacan\Entities\Item_Metadata_Entity );
         $this->assertEquals( $meta_test[$metadata->get_id()]->get_value(), 'value_1');
         
-        $i = new Tainacan_Item();
+        $i = new \Tainacan\Entities\Item();
         $i->set_title('apple');
         $i->set_collection($collection2);
         $i->add_metadata($metadata2, 'value_2');
         $i->add_metadata($metadata3, 'value_2');
         $item = $Tainacan_Items->insert($i);
         
-        $i = new Tainacan_Item();
+        $i = new \Tainacan\Entities\Item();
         $i->set_title('lemon');
         $i->set_collection($collection2);
         $i->add_metadata($metadata2, 'value_2');
@@ -65,7 +68,7 @@ class Test_Items extends WP_UnitTestCase {
         $i->add_metadata($metadata3, 'value_3');
         $item = $Tainacan_Items->insert($i);
         
-        $i = new Tainacan_Item();
+        $i = new \Tainacan\Entities\Item();
         $i->set_title('pinapple');
         $i->set_collection($collection2);
         $i->add_metadata($metadata2, 'value_3');

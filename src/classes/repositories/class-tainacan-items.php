@@ -1,9 +1,12 @@
 <?php
+
+namespace Tainacan\Repositories;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Tainacan_Items {
+class Items {
     
     function __construct() {
         add_action('init', array(&$this, 'register_post_types'));
@@ -56,7 +59,7 @@ class Tainacan_Items {
         }  
     }
  
-    function insert(Tainacan_Item $item) {
+    function insert(\Tainacan\Entities\Item $item) {
         $map = $this->get_map();
         
         // get collection to determine post type
@@ -107,7 +110,7 @@ class Tainacan_Items {
         }
         
         // return a brand new object
-        return new Tainacan_Item($item->WP_Post);
+        return new \Tainacan\Entities\Item($item->WP_Post);
     }
     
     // collections id or array of ids; collection object or array of objects
@@ -123,7 +126,7 @@ class Tainacan_Items {
             $collections = $Tainacan_Collections->get_collection_by_id($collection);
         }
         
-        if ($collections instanceof Tainacan_Collection) {
+        if ($collections instanceof \Tainacan\Entities\Collection) {
             $cpt = $collections->get_db_identifier();
         } elseif (is_array($collections)) {
             $cpt = [];
@@ -132,7 +135,7 @@ class Tainacan_Items {
                 if (is_numeric($collection)){
                     $collection = $Tainacan_Collections->get_collection_by_id($collection);
                 }
-                if ($collection instanceof Tainacan_Collection){
+                if ($collection instanceof \Tainacan\Entities\Collection){
                     $cpt[] = $collection->get_db_identifier();
                 }
             }
@@ -156,7 +159,7 @@ class Tainacan_Items {
         $return = [];
         
         foreach ($posts as $post) {
-            $return[] = new Tainacan_Item($post);
+        	$return[] = new \Tainacan\Entities\Item($post);
         }
         
         return $return;
@@ -211,6 +214,6 @@ class Tainacan_Items {
     }
    
     function get_item_by_id($id) {
-        return new Tainacan_Item($id);
+    	return new \Tainacan\Entities\Item($id);
     }
 }

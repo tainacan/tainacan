@@ -29,40 +29,54 @@ require_once(VENDOR_DIR . 'autoload.php');
 spl_autoload_register('tainacan_autoload');    
 
 function tainacan_autoload($class_name){
-    foreach(DIRS as $dir){
-        $file = $dir . 'class-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
-        if(file_exists($file)){
-            require_once($file);
-        }
-        // else if($class_name == 'Respect\Validation\Validator'){
-        //     requiere_once(VENDOR_DIR . 'autoload.php');
-        // }
-    }
+	$class_path = explode('\\', $class_name);
+	$class_name = end($class_path);
+	if(count($class_path) == 1 ) {
+		foreach(DIRS as $dir) {
+				$file = $dir . 'class-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
+				if(file_exists($file)) {
+					require_once($file);
+				}
+				// else if($class_name == 'Respect\Validation\Validator'){
+				//     requiere_once(VENDOR_DIR . 'autoload.php');
+				// }
+		}
+	}
+	elseif ($class_path[0] == 'Tainacan') {
+		$dir = strtolower(CLASSES_DIR.implode(DIRECTORY_SEPARATOR, array_slice($class_path, 1, count($class_path) -2) )).'/';
+		$dir = str_replace('_', '-', $dir);
+		//var_dump($dir);
+		$file = $dir . 'class-tainacan-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
+		//var_dump($file);
+		if(file_exists($file)) {
+			require_once($file);
+		}
+	}
 }
 
 global $Tainacan_Collections;
-$Tainacan_Collections = new Tainacan_Collections();
+$Tainacan_Collections = new \Tainacan\Repositories\Collections();
 
 global $Tainacan_Item_Metadata;
-$Tainacan_Item_Metadata = new Tainacan_Item_Metadata();
+$Tainacan_Item_Metadata = new \Tainacan\Repositories\Item_Metadata();
 
 global $Tainacan_Metadatas;
-$Tainacan_Metadatas = new Tainacan_Metadatas();
+$Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
 
 global $Tainacan_Filters;
-$Tainacan_Filters = new Tainacan_Filters();
+$Tainacan_Filters = new \Tainacan\Repositories\Filters();
 
 global $Tainacan_Taxonomies;
-$Tainacan_Taxonomies = new Tainacan_Taxonomies();
+$Tainacan_Taxonomies = new \Tainacan\Repositories\Taxonomies();
 
 global $Tainacan_Items;
-$Tainacan_Items = new Tainacan_Items();
+$Tainacan_Items = new \Tainacan\Repositories\Items();
 
 global $Tainacan_Terms;
-$Tainacan_Terms = new Tainacan_Terms();
+$Tainacan_Terms = new \Tainacan\Repositories\Terms();
 
 global $Tainacan_Logs;
-$Tainacan_Logs = new Tainacan_Logs();
+$Tainacan_Logs = new \Tainacan\Repositories\Logs();
 
 /**
  * 

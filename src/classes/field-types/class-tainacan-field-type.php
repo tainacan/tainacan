@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Field_Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -6,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-abstract class Tainacan_Field_Type  {
+abstract class Field_Type  {
 
     var $primitive_type;
 

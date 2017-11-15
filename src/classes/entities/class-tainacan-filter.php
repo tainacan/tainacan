@@ -1,11 +1,14 @@
 <?php
+
+namespace Tainacan\Entities;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Tainacan_Filter extends Tainacan_Entity  {
+class Filter extends \Tainacan\Entity {
 
-    use Tainacan_Entity_Collection_Relation;
+    use \Tainacan\Traits\Entity_Collection_Relation;
 
     function __construct( $which = 0 ) {
 
@@ -13,14 +16,14 @@ class Tainacan_Filter extends Tainacan_Entity  {
 
         if ( is_numeric( $which ) && $which > 0) {
             $post = get_post( $which );
-            if ( $post instanceof WP_Post) {
+            if ( $post instanceof \WP_Post) {
                 $this->WP_Post = get_post( $which );
             }
 
-        } elseif ( $which instanceof WP_Post ) {
+        } elseif ( $which instanceof \WP_Post ) {
             $this->WP_Post = $which;
         } else {
-            $this->WP_Post = new StdClass();
+            $this->WP_Post = new \StdClass();
         }
 
     }
@@ -45,7 +48,7 @@ class Tainacan_Filter extends Tainacan_Entity  {
 
     function get_metadata() {
         $id = $this->get_mapped_property('metadata');
-        return new Tainacan_Metadata( $id );
+        return new \Tainacan\Entities\Metadata( $id );
     }
 
     function get_filter_type_object(){
@@ -77,12 +80,12 @@ class Tainacan_Filter extends Tainacan_Entity  {
      * @param Tainacan_Metadata / int $value
      */
     function set_metadata( $value ){
-        $id = ( $value instanceof Tainacan_Metadata ) ? $value->get_id() : $value;
+    	$id = ( $value instanceof \Tainacan\Entities\Metadata ) ? $value->get_id() : $value;
 
         return $this->set_mapped_property('metadata', $id);
     }
 
-    function set_filter_type_object( Tainacan_Filter_Type $value ){
+    function set_filter_type_object( \Tainacan\Filter_Types\Filter_Type $value ){
         // TODO: validate primitive type with filter
         //if filter matches the metadata type
         //if( in_array( $type->get_primitive_type(), $value->get_supported_types() ) ){

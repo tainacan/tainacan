@@ -1,9 +1,12 @@
 <?php
+
+namespace Tainacan\Repositories;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Tainacan_Filters {
+class Filters {
 
     const POST_TYPE = 'tainacan-filters';
 
@@ -90,10 +93,10 @@ class Tainacan_Filters {
 
 
     /**
-     * @param Tainacan_Metadata $metadata
+     * @param \Tainacan\Entities\Metadata $metadata
      * @return int
      */
-    function insert( Tainacan_Filter $metadata ) {
+    function insert( \Tainacan\Entities\Filter $metadata ) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -122,7 +125,7 @@ class Tainacan_Filters {
         }
 
         // return a brand new object
-        return new Tainacan_Filter($metadata->WP_Post);
+        return new \Tainacan\Entities\Filter($metadata->WP_Post);
     }
 
 
@@ -145,17 +148,17 @@ class Tainacan_Filters {
             'meta_value'     => $collection_id
         ], $args);
 
-        $wp_query = new WP_Query($args);
+        $wp_query = new \WP_Query($args);
 
         return $wp_query;
     }
 
     /**
      * @param int $id
-     * @return Tainacan_Filter
+     * @return \Tainacan\Entities\Filter
      */
     function get_filter_by_id($id) {
-        return new Tainacan_Filter($id);
+    	return new \Tainacan\Entities\Filter($id);
     }
 
     /**

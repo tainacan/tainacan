@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Tests;
+
 /**
  * Class TestCollections
  *
@@ -8,14 +11,14 @@
 /**
  * Sample test case.
  */
-class Test_Collections extends WP_UnitTestCase {
+class Collections extends \WP_UnitTestCase {
 
 	/**
 	 * A single example test.
 	 */
 	function test_add() {
 		
-        $x = new Tainacan_Collection();
+		$x = new \Tainacan\Entities\Collection();
         
         $x->set_name('teste');
         $x->set_description('adasdasdsa');
@@ -39,7 +42,7 @@ class Test_Collections extends WP_UnitTestCase {
     function test_item() {
         
         
-        $x = new Tainacan_Collection();
+    	$x = new \Tainacan\Entities\Collection();
         
         $x->set_name('teste');
         $x->set_description('adasdasdsa');
@@ -52,7 +55,7 @@ class Test_Collections extends WP_UnitTestCase {
         
         
         
-        $i = new Tainacan_Item();
+        $i = new \Tainacan\Entities\Item();
         
         $i->set_title('item teste');
         $i->set_description('adasdasdsa');
@@ -71,7 +74,7 @@ class Test_Collections extends WP_UnitTestCase {
     
     function test_validation() {
 		
-        $x = new Tainacan_Collection();
+    	$x = new \Tainacan\Entities\Collection();
         
         $x->set_name('teste');
         $x->set_description('adasdasdsa');

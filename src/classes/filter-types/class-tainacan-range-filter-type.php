@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Filter_Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -6,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Tainacan_Range_Filter_Type extends Tainacan_Filter_Type {
+class Range_Filter_Type extends Filter_Type {
 
     function __construct(){
         $this->supported_types = ['float','date'];

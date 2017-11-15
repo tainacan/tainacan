@@ -1,11 +1,13 @@
 <?php
+namespace Tainacan\Repositories;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 
 
-class Tainacan_Logs extends Tainacan_Repository {
+class Logs extends \Tainacan\Repository {
     
     const POST_TYPE = 'tainacan-logs';
     
@@ -86,7 +88,7 @@ class Tainacan_Logs extends Tainacan_Repository {
         register_post_type(self::POST_TYPE, $args);
     }
     
-    function insert(Tainacan_Log $log) {
+    function insert(\Tainacan\Entities\Log $log) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -118,7 +120,7 @@ class Tainacan_Logs extends Tainacan_Repository {
         }*/
         
         // return a brand new object
-        return new Tainacan_Log($log->WP_Post);
+        return new \Tainacan\Entities\Log($log->WP_Post);
     }
     
     function get_logs($args = array()) {
@@ -134,7 +136,7 @@ class Tainacan_Logs extends Tainacan_Repository {
         $return = [];
         
         foreach ($posts as $post) {
-            $return[] = new Tainacan_Log($post);
+        	$return[] = new \Tainacan\Entities\Log($post);
         }
         
         // TODO: Pegar coleções registradas via código
@@ -143,7 +145,7 @@ class Tainacan_Logs extends Tainacan_Repository {
     }
     
     function get_log_by_id($id) {
-        return new Tainacan_Log($id);
+    	return new \Tainacan\Entities\Log($id);
     }
 
     

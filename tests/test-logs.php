@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Tests;
+
 /**
  * Class TestCollections
  *
@@ -8,7 +11,7 @@
 /**
  * Sample test case.
  */
-class Test_Logs extends WP_UnitTestCase {
+class Logs extends \WP_UnitTestCase {
 
 
     /**
@@ -17,7 +20,7 @@ class Test_Logs extends WP_UnitTestCase {
     function test_add() {
         global $Tainacan_Logs;
 
-        $log = new Tainacan_Log();
+        $log = new \Tainacan\Entities\Log();
 
         //setando os valores na classe do tainacan
         $log->set_title('blame someone');

@@ -1,11 +1,14 @@
 <?php
+
+namespace Tainacan\Entities;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
+class Item_Metadata_Entity extends \Tainacan\Entity {
     
-    function __construct(Tainacan_Item $item, Tainacan_Metadata $metadata) {
+    function __construct(Item $item, Metadata $metadata) {
         
         $this->repository = 'Tainacan_Item_Metadata';
         
@@ -13,7 +16,7 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
         $this->set_metadata($metadata);
     }
     
-    function set_item(Tainacan_Item $item) {
+    function set_item(Item $item) {
         $this->item = $item;
     }
     
@@ -21,7 +24,7 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
         $this->value = $value;
     }
     
-    function set_metadata(Tainacan_Metadata $metadata) {
+    function set_metadata(Metadata $metadata) {
         $this->metadata = $metadata;
     }
     
@@ -37,7 +40,7 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
         if (isset($this->value))
             return $this->value;
         
-        $Tainacan_Item_Metadata = new Tainacan_Item_Metadata();
+        $Tainacan_Item_Metadata = new Item_Metadata_Entity();
         return $Tainacan_Item_Metadata->get_item_metadata_value($this);
     }
         
@@ -102,7 +105,7 @@ class Tainacan_Item_Metadata_Entity extends Tainacan_Entity  {
         } else {
             
             if ($this->is_collection_key()) {
-                $Tainacan_Items = new Tainacan_Items();
+            	$Tainacan_Items = new \Tainacan\Repositories\Items();
                 
                 $test = $Tainacan_Items->query([
                     'collections' => $item->get_collection(),

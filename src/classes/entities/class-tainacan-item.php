@@ -1,11 +1,14 @@
 <?php
+
+namespace Tainacan\Entities;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Tainacan_Item extends Tainacan_Entity {
+class Item extends \Tainacan\Entity {
     
-    use Tainacan_Entity_Collection_Relation;
+	use \Tainacan\Traits\Entity_Collection_Relation;
     
     function __construct($which = 0) {
         
@@ -13,14 +16,14 @@ class Tainacan_Item extends Tainacan_Entity {
         
         if (is_numeric($which) && $which > 0) {
             $post = get_post($which);
-            if ($post instanceof WP_Post) {
+            if ($post instanceof \WP_Post) {
                 $this->WP_Post = get_post($which);
             }
             
-        } elseif ($which instanceof WP_Post) {
+        } elseif ($which instanceof \WP_Post) {
             $this->WP_Post = $which;
         } else {
-            $this->WP_Post = new StdClass();
+            $this->WP_Post = new \StdClass();
         }
         
     }
@@ -67,16 +70,16 @@ class Tainacan_Item extends Tainacan_Entity {
             $metaList = $collection->get_metadata();
             
             foreach ($metaList as $meta) {
-                $return[$meta->get_id()] = new Tainacan_Item_Metadata_Entity($this, $meta);
+                $return[$meta->get_id()] = new Item_Metadata_Entity($this, $meta);
             }
         }
         return $return;
     }
     
-    function add_metadata(Tainacan_Metadata $new_metadata, $value) {
+    function add_metadata(Metadata $new_metadata, $value) {
         
         //TODO Multiple metadata must receive an array as value
-        $item_metadata = new Tainacan_Item_Metadata_Entity($this, $new_metadata);
+        $item_metadata = new Item_Metadata_Entity($this, $new_metadata);
         $item_metadata->set_value($value);
         $current_meta = $this->get_metadata();
         $current_meta[$new_metadata->get_id()] = $item_metadata;

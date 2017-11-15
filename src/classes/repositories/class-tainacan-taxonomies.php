@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Repositories;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -6,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Tainacan_Taxonomies
  */
-class Tainacan_Taxonomies {
+class Taxonomies {
 
     const POST_TYPE = 'tainacan-taxonomies';
 
@@ -96,7 +99,7 @@ class Tainacan_Taxonomies {
         $return = [];
         
         foreach ($posts as $post) {
-            $return[] = new Tainacan_Taxonomy($post);
+        	$return[] = new \Tainacan\Entities\Taxonomy($post);
         }
         
         // TODO: Pegar taxonomias registradas via código
@@ -105,10 +108,10 @@ class Tainacan_Taxonomies {
     }
 
     /**
-     * @param Tainacan_Taxonomy $metadata
+     * @param \Tainacan\Entities\Taxonomy $metadata
      * @return int
      */
-    function insert( Tainacan_Taxonomy $taxonomy ) {
+    function insert( \Tainacan\Entities\Taxonomy $taxonomy ) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -144,7 +147,7 @@ class Tainacan_Taxonomies {
         $taxonomy->register_taxonomy();
         
         // return a brand new object
-        return new Tainacan_Taxonomy($taxonomy->WP_Post);
+        return new\Tainacan\Entities\Taxonomy($taxonomy->WP_Post);
     }
 
     function registerTainacanTaxonomy( $taxonomy_name ){
@@ -173,6 +176,6 @@ class Tainacan_Taxonomies {
     }
 
     function get_taxonomy_by_id($id) {
-        return new Tainacan_Taxonomy($id);
+    	return new \Tainacan\Entities\Taxonomy($id);
     }
 }

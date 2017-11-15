@@ -1,12 +1,15 @@
 <?php
+
+namespace Tainacan\Repositories;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 /**
- * Class Tainacan_Metadatas
+ * Class Metadatas
  */
-class Tainacan_Metadatas {
+class Metadatas {
 
     const POST_TYPE = 'tainacan-metadata';
 
@@ -121,10 +124,10 @@ class Tainacan_Metadatas {
     }
 
     /**
-     * @param Tainacan_Metadata $metadata
+     * @param \Tainacan\Entities\Metadata $metadata
      * @return int
      */
-    function insert( Tainacan_Metadata $metadata ) {
+    function insert( \Tainacan\Entities\Metadata $metadata ) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -158,7 +161,7 @@ class Tainacan_Metadatas {
         }
         
         // return a brand new object
-        return new Tainacan_Metadata($metadata->WP_Post);
+        return new \Tainacan\Entities\Metadata($metadata->WP_Post);
     }
 
     /**
@@ -185,7 +188,7 @@ class Tainacan_Metadatas {
         $return = [];
 
         foreach ($posts as $post) {
-            $return[] = new Tainacan_Metadata($post);
+        	$return[] = new \Tainacan\Entities\Metadata($post);
         }
 
         return $return;
@@ -193,9 +196,9 @@ class Tainacan_Metadatas {
 
     /**
      * @param int $id
-     * @return Tainacan_Metadata
+     * @return \Tainacan\Entities\Metadata
      */
     function get_metadata_by_id($id) {
-        return new Tainacan_Metadata($id);
+    	return new \Tainacan\Entities\Metadata($id);
     }
 }

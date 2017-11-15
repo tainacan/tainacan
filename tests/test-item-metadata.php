@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan\Tests;
+
 /**
  * Class TestCollections
  *
@@ -8,7 +11,7 @@
 /**
  * Sample test case.
  */
-class Test_Item_Metadata extends WP_UnitTestCase {
+class Item_Metadata extends \WP_UnitTestCase {
 
     /**
      * Teste da insercao de um metadado simples sem o tipo
@@ -17,8 +20,8 @@ class Test_Item_Metadata extends WP_UnitTestCase {
         
         global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new Tainacan_Collection();
-        $metadata = new Tainacan_Metadata();
+        $collection = new \Tainacan\Entities\Collection();
+        $metadata = new \Tainacan\Entities\Metadata();
 
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);
@@ -33,7 +36,7 @@ class Test_Item_Metadata extends WP_UnitTestCase {
 
         $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
         
-        $i = new Tainacan_Item();
+        $i = new \Tainacan\Entities\Item();
         
         $i->set_title('item teste');
         $i->set_description('adasdasdsa');
@@ -44,7 +47,7 @@ class Test_Item_Metadata extends WP_UnitTestCase {
         
         $item = $Tainacan_Items->get_item_by_id($item->get_id());
 
-        $item_metadata = new Tainacan_Item_Metadata_Entity($item, $metadata);
+        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
         
         $item_metadata->set_value('teste_value');
         
@@ -62,8 +65,8 @@ class Test_Item_Metadata extends WP_UnitTestCase {
     function teste_required(){
         global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new Tainacan_Collection();
-        $metadata = new Tainacan_Metadata();
+        $collection = new \Tainacan\Entities\Collection();
+        $metadata = new \Tainacan\Entities\Metadata();
 
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);
@@ -79,7 +82,7 @@ class Test_Item_Metadata extends WP_UnitTestCase {
 
         $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
         
-        $i = new Tainacan_Item();
+        $i = new \Tainacan\Entities\Item();
         
         $i->set_title('item teste');
         $i->set_description('adasdasdsa');
@@ -90,7 +93,7 @@ class Test_Item_Metadata extends WP_UnitTestCase {
         
         $item = $Tainacan_Items->get_item_by_id($item->get_id());
 
-        $item_metadata = new Tainacan_Item_Metadata_Entity($item, $metadata);
+        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
         
         // false because its required
         $this->assertFalse($item_metadata->validate());
@@ -107,8 +110,8 @@ class Test_Item_Metadata extends WP_UnitTestCase {
     function teste_collection_key(){
         global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new Tainacan_Collection();
-        $metadata = new Tainacan_Metadata();
+        $collection = new \Tainacan\Entities\Collection();
+        $metadata = new \Tainacan\Entities\Metadata();
 
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);
@@ -124,7 +127,7 @@ class Test_Item_Metadata extends WP_UnitTestCase {
 
         $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
         
-        $i = new Tainacan_Item();
+        $i = new \Tainacan\Entities\Item();
         
         $i->set_title('item teste');
         $i->set_description('adasdasdsa');
@@ -139,12 +142,12 @@ class Test_Item_Metadata extends WP_UnitTestCase {
         
         $value = 'teste_val';
         
-        $item_metadata = new Tainacan_Item_Metadata_Entity($item, $metadata);
+        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
         $item_metadata->set_value($value);
         $this->assertTrue($item_metadata->validate());
         $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 
-        $n_item_metadata = new Tainacan_Item_Metadata_Entity($item, $metadata);
+        $n_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
         $n_item_metadata->set_value($value);
         $this->assertFalse($n_item_metadata->validate());
     }

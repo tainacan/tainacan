@@ -1,4 +1,6 @@
 <?php
+namespace Tainacan\Filter_Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -6,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Tainacan_List_Filter_Type extends Tainacan_Filter_Type {
+class List_Filter_Type extends Filter_Type {
 
     function __construct(){
         $this->supported_types[] = 'string';

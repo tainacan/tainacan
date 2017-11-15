@@ -1,9 +1,12 @@
 <?php
+
+namespace Tainacan\Entities;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Tainacan_Collection extends Tainacan_Entity  {
+class Collection extends \Tainacan\Entity  {
       
     function __construct($which = 0) {
         
@@ -11,14 +14,14 @@ class Tainacan_Collection extends Tainacan_Entity  {
         
         if (is_numeric($which) && $which > 0) {
             $post = get_post($which);
-            if ($post instanceof WP_Post) {
+            if ($post instanceof \WP_Post) {
                 $this->WP_Post = get_post($which);
             }
             
-        } elseif ($which instanceof WP_Post) {
+        } elseif ($which instanceof \WP_Post) {
             $this->WP_Post = $which;
         } else {
-            $this->WP_Post = new StdClass();
+            $this->WP_Post = new \StdClass();
         }
     }
     
@@ -97,7 +100,7 @@ class Tainacan_Collection extends Tainacan_Entity  {
     
     // metadata
     function get_metadata() {
-        $Tainacan_Metadatas = new Tainacan_Metadatas();
+        $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
         return $Tainacan_Metadatas->get_metadata_by_collection($this);
     }
     

@@ -1,8 +1,10 @@
 <?php
 
+namespace Tainacan\Traits;
+
 // used by Taxonomy
 
-trait Tainacan_Entity_Collections_Relation {
+trait Entity_Collections_Relation {
 
     function get_collections_ids() {
         return $this->get_mapped_property('collections_ids');

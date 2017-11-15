@@ -1,9 +1,12 @@
 <?php
+
+namespace Tainacan\Entities;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Tainacan_Term extends Tainacan_Entity {
+class Term extends \Tainacan\Entity {
 
     function __construct($which = 0, $taxonomy = '' ) {
 
@@ -13,14 +16,14 @@ class Tainacan_Term extends Tainacan_Entity {
         if ( is_numeric( $which ) && $which > 0) {
             $post = get_term_by('id', $which, $taxonomy);
             
-            if ( $post instanceof WP_Term) {
+            if ( $post instanceof \WP_Term) {
                 $this->WP_Term = get_term_by('id', $which, $taxonomy);
             }
 
-        } elseif ( $which instanceof WP_Term ) {
+        } elseif ( $which instanceof \WP_Term ) {
             $this->WP_Term = $which;
         } else {
-            $this->WP_Term = new StdClass();
+            $this->WP_Term = new \StdClass();
         }
     }
 

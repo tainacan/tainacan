@@ -1,9 +1,12 @@
 <?php
+
+namespace Tainacan\Filter_Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-abstract class Tainacan_Filter_Type extends Tainacan_Entity  {
+abstract class Filter_Type extends \Tainacan\Entity  {
 
     var $supported_types = [];
 

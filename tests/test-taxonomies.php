@@ -17,7 +17,7 @@ class Test_Taxonomies extends WP_UnitTestCase {
     function test_add() {
         global $Tainacan_Taxonomies;
 
-        $taxonomy = new Tainacan_Taxonomy();
+        $taxonomy = new \Tainacan\Entities\Taxonomy();
 
         //setando os valores na classe do tainacan
         $taxonomy->set_name('genero');
@@ -38,8 +38,8 @@ class Test_Taxonomies extends WP_UnitTestCase {
 
     function test_add_term_taxonomy(){
         global $Tainacan_Taxonomies, $Tainacan_Terms;
-        $taxonomy = new Tainacan_Taxonomy();
-        $term = new Tainacan_Term();
+        $taxonomy = new \Tainacan\Entities\Taxonomy();
+        $term = new \Tainacan\Entities\Term();
 
         //setando os valores na classe de taxonomia
         $taxonomy->set_name('genero');

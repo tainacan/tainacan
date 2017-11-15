@@ -1,7 +1,8 @@
 <?php
 
+namespace Tainacan;
 
-class Tainacan_Entity {
+class Entity {
     
     var $repository;
     var $errors = [];

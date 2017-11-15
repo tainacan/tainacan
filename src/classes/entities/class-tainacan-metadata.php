@@ -1,11 +1,14 @@
 <?php
+
+namespace Tainacan\Entities;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Tainacan_Metadata extends Tainacan_Entity {
+class Metadata extends \Tainacan\Entity {
 
-    use Tainacan_Entity_Collection_Relation;
+	use \Tainacan\Traits\Entity_Collection_Relation;
     
     function __construct( $which = 0 ) {
 
@@ -13,14 +16,14 @@ class Tainacan_Metadata extends Tainacan_Entity {
 
         if ( is_numeric( $which ) && $which > 0) {
             $post = get_post( $which );
-            if ( $post instanceof WP_Post) {
+            if ( $post instanceof \WP_Post) {
                 $this->WP_Post = get_post( $which );
             }
 
-        } elseif ( $which instanceof WP_Post ) {
+        } elseif ( $which instanceof \WP_Post ) {
             $this->WP_Post = $which;
         } else {
-            $this->WP_Post = new StdClass();
+            $this->WP_Post = new \StdClass();
         }
 
     }
@@ -128,7 +131,7 @@ class Tainacan_Metadata extends Tainacan_Entity {
         return $this->set_mapped_property('default_property', $value);
     }
 
-    function set_field_type_object(Tainacan_Field_Type $value){
+    function set_field_type_object(\Tainacan\Field_Types\Field_Type $value){
             $this->set_field_type( get_class( $value )  );
             return $this->set_mapped_property('field_type_object', serialize($value) ) ;
     }
