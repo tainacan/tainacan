@@ -52,7 +52,7 @@ class Filter extends \Tainacan\Entity {
     }
 
     function get_filter_type_object(){
-        return unserialize( $this->get_mapped_property('filter_type_object') );
+    	return unserialize( base64_decode( $this->get_mapped_property('filter_type_object') ) );
     }
 
     function get_filter_type(){
@@ -90,7 +90,7 @@ class Filter extends \Tainacan\Entity {
         //if filter matches the metadata type
         //if( in_array( $type->get_primitive_type(), $value->get_supported_types() ) ){
         $this->set_filter_type( get_class( $value ) );
-        return $this->set_mapped_property('filter_type_object',serialize($value)  ) ;
+        return $this->set_mapped_property('filter_type_object', base64_encode( serialize($value) ) );
         //}
     }
 
