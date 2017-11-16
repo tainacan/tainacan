@@ -43,10 +43,6 @@ class Taxonomies {
                 'map'         => 'meta',
                 'validation'  => ''
             ],
-            'collections' =>  [
-                'map'         => 'meta_multi',
-                'validation'  => ''
-            ],
         	'collections_ids' =>  [
         		'map'         => 'meta_multi',
         		'validation'  => ''
