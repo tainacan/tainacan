@@ -48,9 +48,7 @@ class Items {
 
         // register collections post type and associate taxonomies
         foreach ($collections as $collection) {
-            
             $collection->register_post_type();
-            
         }
          
         // register taxonomies
@@ -81,6 +79,7 @@ class Items {
         // save post and geet its ID
         $item->WP_Post->post_type = $cpt;
         $item->WP_Post->post_status = 'publish';
+        
         $id = wp_insert_post($item->WP_Post);
         $item->WP_Post = get_post($id);
         
@@ -172,6 +171,7 @@ class Items {
     function query($args) {
         
         $map = $this->get_map();
+
         $wp_query_exceptions = [
             'ID'         => 'p',
             'post_title' => 'title'

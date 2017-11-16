@@ -108,12 +108,7 @@ class Collections {
         $collection->WP_Post->post_status = 'publish';
         
         // TODO verificar se salvou mesmo
-        // if($count == 0){
-            $id = wp_insert_post($collection->WP_Post);
-        // }
-        // else {
-            // throw new Exception("Error Processing Request", 1);
-        // }
+        $id = wp_insert_post($collection->WP_Post);
 
         // reset object
         $collection->WP_Post = get_post($id);

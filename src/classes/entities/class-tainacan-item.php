@@ -67,9 +67,9 @@ class Item extends \Tainacan\Entity {
         $collection = $this->get_collection();
         $return = [];
         if ($collection) {
-            $metaList = $collection->get_metadata();
+            $meta_list = $collection->get_metadata();
             
-            foreach ($metaList as $meta) {
+            foreach ($meta_list as $meta) {
                 $return[$meta->get_id()] = new Item_Metadata_Entity($this, $meta);
             }
         }

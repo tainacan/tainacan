@@ -3,7 +3,7 @@
 namespace Tainacan\Repositories;
 
 if ( ! defined( 'ABSPATH' ) ) {
-exit;
+    exit;
 }
 
 /**

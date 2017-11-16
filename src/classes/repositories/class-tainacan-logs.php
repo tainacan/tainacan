@@ -126,9 +126,9 @@ class Logs extends \Tainacan\Repository {
     function get_logs($args = array()) {
         
         $args = array_merge([
-            'post_type' => self::POST_TYPE,
+            'post_type'      => self::POST_TYPE,
             'posts_per_page' => -1,
-            'post_status' => 'publish',
+            'post_status'    => 'publish',
         ], $args);
         
         $posts = get_posts($args);

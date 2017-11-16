@@ -16,39 +16,39 @@ class Filters {
     
     function get_map() {
         return [
-            'id'            => [
+            'id'                 => [
                 'map'        => 'ID',
                 //'validation' => ''
             ],
-            'name'          => [
+            'name'               => [
                 'map'        => 'post_title',
                 'validation' => ''
             ],
-            'order'         => [
+            'order'              => [
                 'map'        => 'menu_order',
                 'validation' => ''
             ],
-            'description'   => [
+            'description'        => [
                 'map'        => 'post_content',
                 'validation' => ''
             ],
-            'filter_type_object'        => [
+            'filter_type_object' => [
                 'map'        => 'meta',
                 'validation' => ''
             ],
-            'filter_type' => [
+            'filter_type'        => [
                 'map' => 'meta',
                 'validation' => ''
             ],
-            'collection_id' => [
+            'collection_id'      => [
                 'map'        => 'meta',
                 'validation' => ''
             ],
-            'color' => [
+            'color'              => [
                 'map'        => 'meta',
                 'validation' => ''
             ],
-            'metadata' => [
+            'metadata'           => [
                 'map'        => 'meta',
                 'validation' => ''
             ],
@@ -117,10 +117,14 @@ class Filters {
                 update_post_meta($id, $prop, $metadata->get_mapped_property($prop));
             } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $metadata->get_mapped_property($prop);
+                
                 delete_post_meta($id, $prop);
-                if (is_array($values))
-                    foreach ($values as $value)
+                
+                if (is_array($values)){
+                    foreach ($values as $value){
                         add_post_meta($id, $prop, $value);
+                    }
+                }
             }
         }
 

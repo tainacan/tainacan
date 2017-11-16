@@ -10,7 +10,6 @@ trait Entity_Collections_Relation {
         return $this->get_mapped_property('collections_ids');
     }
     
-
     function get_collections() {
         if (isset($this->collection) && !empty($this->collection) && is_array($this->collection)){
             return $this->collection;

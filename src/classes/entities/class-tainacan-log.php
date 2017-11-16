@@ -51,10 +51,7 @@ class Log extends \Tainacan\Entity {
     function get_user_id() {
     	return $this->get_mapped_property('user_id');
     }
-    
-
-
-    
+        
     // Setters
     // 
     
@@ -70,6 +67,4 @@ class Log extends \Tainacan\Entity {
     function set_description($value) {
         return $this->set_mapped_property('description', $value);
     }
-
-    
 }

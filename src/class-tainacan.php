@@ -7,13 +7,13 @@ Author: MediaLab UFG
 Version: 10.9.8.7.6.5.4
 */
 
-const ENTITIES_DIR = __DIR__ . '/classes/entities/';
-const FIELD_TYPES_DIR = __DIR__ . '/classes/field-types/';
+const ENTITIES_DIR 	   = __DIR__ . '/classes/entities/';
+const FIELD_TYPES_DIR  = __DIR__ . '/classes/field-types/';
 const FILTER_TYPES_DIR = __DIR__ . '/classes/filter-types/';
 const REPOSITORIES_DIR = __DIR__ . '/classes/repositories/';
-const TRAITS_DIR = __DIR__ . '/classes/traits/';
-const CLASSES_DIR = __DIR__ . '/classes/';
-const VENDOR_DIR = __DIR__ . '/../vendor/';
+const TRAITS_DIR 	   = __DIR__ . '/classes/traits/';
+const CLASSES_DIR 	   = __DIR__ . '/classes/';
+const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
 
 const DIRS = [
     CLASSES_DIR, 
@@ -33,13 +33,11 @@ function tainacan_autoload($class_name){
 	$class_name = end($class_path);
 	if(count($class_path) == 1 ) {
 		foreach(DIRS as $dir) {
-				$file = $dir . 'class-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
-				if(file_exists($file)) {
-					require_once($file);
-				}
-				// else if($class_name == 'Respect\Validation\Validator'){
-				//     requiere_once(VENDOR_DIR . 'autoload.php');
-				// }
+			$file = $dir . 'class-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
+			
+			if(file_exists($file)) {
+				require_once($file);
+			}
 		}
 	}
 	elseif ($class_path[0] == 'Tainacan') {

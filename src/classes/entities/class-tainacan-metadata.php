@@ -33,7 +33,6 @@ class Metadata extends \Tainacan\Entity {
         return $this->get_mapped_property('id');
     }
 
-
     function get_name() {
         return $this->get_mapped_property('name');
     }
