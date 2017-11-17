@@ -2,10 +2,12 @@
 
 namespace Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/**
+ * Representa a entidade Collection
+ * @author
+ */
 class Collection extends \Tainacan\Entity  {
       
     function __construct($which = 0) {
@@ -14,6 +16,7 @@ class Collection extends \Tainacan\Entity  {
         
         if (is_numeric($which) && $which > 0) {
             $post = get_post($which);
+            
             if ($post instanceof \WP_Post) {
                 $this->WP_Post = get_post($which);
             }
@@ -24,7 +27,12 @@ class Collection extends \Tainacan\Entity  {
             $this->WP_Post = new \StdClass();
         }
     }
-    
+
+    /**
+     * Registra novo tipo de post (post type)
+     *
+     * @return void
+     */
     function register_post_type() {
         $cpt_labels = array(
             'name'               => 'Item',
@@ -70,57 +78,144 @@ class Collection extends \Tainacan\Entity  {
         register_post_type($cpt_slug, $args);
     }
 
-    // Getters
+    /**
+     * Retorna ID da coleção
+     *
+     * @return integer
+     */
     function get_id() {
         return $this->get_mapped_property('id');
     }
+    /**
+     * Retorna post_title da coleção
+     *
+     * @return string
+     */
     function get_name() {
         return $this->get_mapped_property('name');
     }
+
+    /**
+     * Retorna slug da coleção
+     *
+     * @return string
+     */
     function get_slug() {
         return $this->get_mapped_property('slug');
     }
+
+    /**
+     * Retorna ordenação da coleção
+     *
+     * @return integer
+     */
     function get_order() {
         return $this->get_mapped_property('order');
     }
+
+    /**
+     * Retorna id do parent da coleção
+     *
+     * @return integer
+     */
     function get_parent() {
         return $this->get_mapped_property('parent');
     }
+
+    /**
+     * Retorna descrição da coleção
+     *
+     * @return string
+     */
     function get_description() {
         return $this->get_mapped_property('description');
     }
+
+    /**
+     * Retorna quantidade de itens por página
+     *
+     * @return integer
+     */
     function get_itens_per_page() {
         return $this->get_mapped_property('itens_per_page');
     }
     
-    // special Getters
+    /**
+     * Retorna identificador imutável de referência ao post type
+     *
+     * @return string
+     */
     function get_db_identifier() {
         return $this->get_id() ? 'tnc_col_' . $this->get_id() : false;
     }
     
-    // metadata
+    /**
+     * Retorna os metadados da coleção
+     *
+     * @return array
+     */
     function get_metadata() {
         $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
         return $Tainacan_Metadatas->get_metadata_by_collection($this);
     }
     
-    // Setters
+    /**
+     * Atribui valor ao nome da coleção
+     *
+     * @param [string] $value
+     * @return void
+     */
     function set_name($value) {
-        return $this->set_mapped_property('name', $value);
+        $this->set_mapped_property('name', $value);
     }
+
+    /**
+     * Atribui valor ao slug da coleção
+     *
+     * @param [string] $value
+     * @return void
+     */
     function set_slug($value) {
-        return $this->set_mapped_property('slug', $value);
+        $this->set_mapped_property('slug', $value);
     }
+
+    /**
+     * Atribui valor ao tipo de ordenação da coleção
+     *
+     * @param [string] $value
+     * @return void
+     */
     function set_order($value) {
-        return $this->set_mapped_property('order', $value);
+        $this->set_mapped_property('order', $value);
     }
+
+    /**
+     * Atribui valor ao parent da coleção
+     *
+     * @param [integer] $value
+     * @return void
+     */
     function set_parent($value) {
-        return $this->set_mapped_property('parent', $value);
+        $this->set_mapped_property('parent', $value);
     }
+
+    /**
+     * Atribui valor à descrição da coleção
+     *
+     * @param [string] $value
+     * @return void
+     */
     function set_description($value) {
-        return $this->set_mapped_property('description', $value);
+        $this->set_mapped_property('description', $value);
     }
+
+    /**
+     * Define a quantidade de itens por página na coleção
+     *
+     * @param [integer] $value
+     * @return void
+     */
     function set_itens_per_page($value) {
-        return $this->set_mapped_property('itens_per_page', $value);
+        $this->set_mapped_property('itens_per_page', $value);
     }
 }

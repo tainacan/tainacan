@@ -23,22 +23,22 @@ class Entity {
         $mapped = $map[$prop]['map'];
         
         if ( $mapped == 'meta') {
-            $return = isset($this->WP_Post->ID) ? get_post_meta($this->WP_Post->ID, $prop, true) : null;
+            $property = isset($this->WP_Post->ID) ? get_post_meta($this->WP_Post->ID, $prop, true) : null;
         } elseif ( $mapped == 'meta_multi') {
-            $return = isset($this->WP_Post->ID) ? get_post_meta($this->WP_Post->ID, $prop, false) : null;
+            $property = isset($this->WP_Post->ID) ? get_post_meta($this->WP_Post->ID, $prop, false) : null;
         } elseif ( $mapped == 'termmeta' ){
-            $return = get_term_meta($this->WP_Term->term_id, $prop, true);
+            $property = get_term_meta($this->WP_Term->term_id, $prop, true);
         } elseif ( isset( $this->WP_Post )) {
-            $return = isset($this->WP_Post->$mapped) ? $this->WP_Post->$mapped : null;
+            $property = isset($this->WP_Post->$mapped) ? $this->WP_Post->$mapped : null;
         } elseif ( isset( $this->WP_Term )) {
-            $return = isset($this->WP_Term->$mapped) ? $this->WP_Term->$mapped : null;
+            $property = isset($this->WP_Term->$mapped) ? $this->WP_Term->$mapped : null;
         }
         
-        if (empty($return) && isset($map[$prop]['default']) && !empty($map[$prop]['default'])){
-            $return = $map[$prop]['default'];
+        if (empty($property) && isset($map[$prop]['default']) && !empty($map[$prop]['default'])){
+            $property = $map[$prop]['default'];
         }
             
-        return $return;
+        return $property;
     }
     
     function set_mapped_property($prop, $value) {
@@ -58,15 +58,17 @@ class Entity {
         
         global ${$this->repository};
         $map = ${$this->repository}->get_map();
-        $valid = true;
+        
+        $is_valid = true;
+
         $this->reset_errors();
         
         foreach ($map as $prop => $mapped) {
             if (!$this->validate_prop($prop))
-                $valid = false;
+                $is_valid = false;
         }
         
-        return $valid;
+        return $is_valid;
     }
     
     function validate_prop($prop) {
@@ -74,8 +76,7 @@ class Entity {
         $map = ${$this->repository}->get_map();
         $mapped = $map[$prop];
         
-        
-        $return = true;
+        $is_valid = true;
         
         if (
             isset($mapped['validation']) && 
@@ -90,19 +91,19 @@ class Entity {
                     if (!$validation->validate($val)) {
                         //
                         $this->add_error('invalid', $prop . ' is invalid');
-                        $return = false;
+                        $is_valid = false;
                     }
                 }
             } else {
                 if (!$validation->validate($prop_value)) {
                     //
                     $this->add_error('invalid', $prop . ' is invalid');
-                    $return = false;
+                    $is_valid = false;
                 }
             }
         }
         
-        return $return;
+        return $is_valid;
 
     }
     

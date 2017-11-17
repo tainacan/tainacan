@@ -31,6 +31,7 @@ spl_autoload_register('tainacan_autoload');
 function tainacan_autoload($class_name){
 	$class_path = explode('\\', $class_name);
 	$class_name = end($class_path);
+	
 	if(count($class_path) == 1 ) {
 		foreach(DIRS as $dir) {
 			$file = $dir . 'class-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';

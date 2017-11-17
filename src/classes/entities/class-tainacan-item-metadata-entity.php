@@ -2,10 +2,11 @@
 
 namespace Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/**
+ * Representa a entidade Item Metadata
+ */
 class Item_Metadata_Entity extends \Tainacan\Entity {
     
     function __construct(Item $item, Metadata $metadata) {
@@ -16,26 +17,59 @@ class Item_Metadata_Entity extends \Tainacan\Entity {
         $this->set_metadata($metadata);
     }
     
+    /**
+     * Atribui o item
+     *
+     * @param Item $item
+     * @return void
+     */
     function set_item(Item $item) {
         $this->item = $item;
     }
     
+    /**
+     * Define o valor do metadado
+     *
+     * @param [integer || string] $value
+     * @return void
+     */
     function set_value($value) {
         $this->value = $value;
     }
     
+    /**
+     * Atribui o Metadado
+     *
+     * @param Metadata $metadata
+     * @return void
+     */
     function set_metadata(Metadata $metadata) {
         $this->metadata = $metadata;
     }
     
+    /**
+     * Retorna o Item
+     *
+     * @return Item
+     */
     function get_item() {
         return $this->item;
     }
     
+    /**
+     * Retorna o Metadado
+     *
+     * @return Metadata
+     */
     function get_metadata() {
         return $this->metadata;
     }
     
+    /**
+     * Retorna o valor do metadado
+     *
+     * @return string || integer
+     */
     function get_value() {
         if (isset($this->value))
             return $this->value;
@@ -43,19 +77,39 @@ class Item_Metadata_Entity extends \Tainacan\Entity {
         global $Tainacan_Item_Metadata;
         return $Tainacan_Item_Metadata->get_item_metadata_value($this);
     }
-        
+    
+    /**
+     * Retorna se metado é multiplo ou não
+     *
+     * @return boolean
+     */
     function is_multiple() {
         return $this->get_metadata()->is_multiple();
     }
     
+    /**
+     * Retorna se metadado é chave (seu valor não deve se repetir)
+     *
+     * @return boolean
+     */
     function is_collection_key() {
         return $this->get_metadata()->is_collection_key();
     }
     
+    /**
+     * Retorna se metadado é obrigatório
+     *
+     * @return boolean
+     */
     function is_required() {
         return $this->get_metadata()->is_required();
     }
     
+    /**
+     * Valida atributos
+     *
+     * @return boolean
+     */
     function validate() {   
         $value = $this->get_value();
         $metadata = $this->get_metadata();
@@ -93,15 +147,11 @@ class Item_Metadata_Entity extends \Tainacan\Entity {
                 }
                 
                 $this->reset_errors();
-                return true;
-                
-                
+                return true;   
             } else {
                 $this->add_error('invalid', $metadata->get_name() . ' is invalid');
                 return false;
             }
-            
-            
         } else {
             
             if ($this->is_collection_key()) {
@@ -110,7 +160,10 @@ class Item_Metadata_Entity extends \Tainacan\Entity {
                 $test = $Tainacan_Items->query([
                     'collections' => $item->get_collection(),
                     'metadata'    => [
-                        ['key' => $this->metadata->get_id(), 'value' => $value],
+                        [
+                            'key' => $this->metadata->get_id(), 
+                            'value' => $value
+                        ],
                     ]
                 ]);
 
