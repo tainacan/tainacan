@@ -1,6 +1,7 @@
 <?php
 
 namespace Tainacan\Repositories;
+use Tainacan\Entities;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -57,7 +58,7 @@ class Items {
         }  
     }
  
-    function insert(\Tainacan\Entities\Item $item) {
+    function insert(Entities\Item $item) {
         $map = $this->get_map();
         
         // get collection to determine post type
@@ -109,7 +110,7 @@ class Items {
         }
         
         // return a brand new object
-        return new \Tainacan\Entities\Item($item->WP_Post);
+        return new Entities\Item($item->WP_Post);
     }
     
     // collections id or array of ids; collection object or array of objects
@@ -125,7 +126,7 @@ class Items {
             $collections = $Tainacan_Collections->get_collection_by_id($collection);
         }
         
-        if ($collections instanceof \Tainacan\Entities\Collection) {
+        if ($collections instanceof Entities\Collection) {
             $cpt = $collections->get_db_identifier();
         } elseif (is_array($collections)) {
             $cpt = [];
@@ -134,7 +135,7 @@ class Items {
                 if (is_numeric($collection)){
                     $collection = $Tainacan_Collections->get_collection_by_id($collection);
                 }
-                if ($collection instanceof \Tainacan\Entities\Collection){
+                if ($collection instanceof Entities\Collection){
                     $cpt[] = $collection->get_db_identifier();
                 }
             }
@@ -158,7 +159,7 @@ class Items {
         $return = [];
         
         foreach ($posts as $post) {
-        	$return[] = new \Tainacan\Entities\Item($post);
+        	$return[] = new Entities\Item($post);
         }
         
         return $return;
@@ -214,6 +215,6 @@ class Items {
     }
    
     function get_item_by_id($id) {
-    	return new \Tainacan\Entities\Item($id);
+    	return new Entities\Item($id);
     }
 }

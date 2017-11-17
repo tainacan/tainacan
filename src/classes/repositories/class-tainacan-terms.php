@@ -1,6 +1,7 @@
 <?php
 
 namespace Tainacan\Repositories;
+use Tainacan\Entities;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -40,7 +41,7 @@ class Terms {
         ];
     }
     
-    function insert( \Tainacan\Entities\Term $term ){
+    function insert( Entities\Term $term ){
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -72,7 +73,7 @@ class Terms {
     function get_term_by($field,$value,$taxonomy){
         $wp_term = get_term_by($field,$value,$taxonomy);
 
-        $tainacan_term = new \Tainacan\Entities\Term( $wp_term );
+        $tainacan_term = new Entities\Term( $wp_term );
         $tainacan_term->set_user( get_term_meta($tainacan_term->get_id() , 'user', true ) );
 
         return $tainacan_term;

@@ -1,6 +1,7 @@
 <?php
 
 namespace Tainacan\Repositories;
+use Tainacan\Entities;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -87,7 +88,7 @@ class Collections {
         register_post_type(self::POST_TYPE, $args);
     }
     
-    function insert(\Tainacan\Entities\Collection $collection) {
+    function insert(Entities\Collection $collection) {
         
         // validate
         if (!$collection->validate())
@@ -133,7 +134,7 @@ class Collections {
         $collection->register_post_type();
         
         // return a brand new object
-        return new \Tainacan\Entities\Collection($collection->WP_Post);
+        return new Entities\Collection($collection->WP_Post);
     }
     
     function get_collections($args = array()) {
@@ -149,7 +150,7 @@ class Collections {
         $return = [];
         
         foreach ($posts as $post) {
-        	$return[] = new \Tainacan\Entities\Collection($post);
+        	$return[] = new Entities\Collection($post);
         }
         
         // TODO: Pegar coleções registradas via código
@@ -158,7 +159,7 @@ class Collections {
     }
     
     function get_collection_by_id($id) {
-    	return new \Tainacan\Entities\Collection($id);
+    	return new Entities\Collection($id);
     }
 
     

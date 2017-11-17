@@ -1,6 +1,7 @@
 <?php
 
 namespace Tainacan\Repositories;
+use Tainacan\Entities;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -93,10 +94,10 @@ class Filters {
 
 
     /**
-     * @param \Tainacan\Entities\Metadata $metadata
+     * @param Entities\Metadata $metadata
      * @return int
      */
-    function insert( \Tainacan\Entities\Filter $metadata ) {
+    function insert( Entities\Filter $metadata ) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -129,7 +130,7 @@ class Filters {
         }
 
         // return a brand new object
-        return new \Tainacan\Entities\Filter($metadata->WP_Post);
+        return new Entities\Filter($metadata->WP_Post);
     }
 
 
@@ -159,10 +160,10 @@ class Filters {
 
     /**
      * @param int $id
-     * @return \Tainacan\Entities\Filter
+     * @return Entities\Filter
      */
     function get_filter_by_id($id) {
-    	return new \Tainacan\Entities\Filter($id);
+    	return new Entities\Filter($id);
     }
 
     /**

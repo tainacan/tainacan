@@ -1,6 +1,7 @@
 <?php
 
 namespace Tainacan\Repositories;
+use Tainacan\Entities;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -8,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Item_Metadata {
     
-	function get_item_metadata_by_item(\Tainacan\Entities\Item $item) {
+	function get_item_metadata_by_item(Entities\Item $item) {
         global $Tainacan_Items, $Tainacan_Metadatas;
         
         $collection = $item->get_collection();
         
-        if (!$collection instanceof \Tainacan\Entities\Collection){
+        if (!$collection instanceof Entities\Collection){
             return [];
         }
         
@@ -23,7 +24,7 @@ class Item_Metadata {
         
         if (is_array($meta_list)) {
             foreach ($meta_list as $meta) {
-            	$return = new \Tainacan\Entities\Item_Metadata_Entity($item, $meta);
+            	$return = new Entities\Item_Metadata_Entity($item, $meta);
             }
         }
         
@@ -31,7 +32,7 @@ class Item_Metadata {
         
     }
     
-    function insert(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+    function insert(Entities\Item_Metadata_Entity $item_metadata) {
 
         $unique = ! $item_metadata->is_multiple();
         
@@ -48,11 +49,11 @@ class Item_Metadata {
         }
         
         // return a brand new object
-        return new \Tainacan\Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_metadata());
+        return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_metadata());
         
     }
     
-    function get_item_metadata_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+    function get_item_metadata_value(Entities\Item_Metadata_Entity $item_metadata) {
         
         $unique = ! $item_metadata->is_multiple();
             

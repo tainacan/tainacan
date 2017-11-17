@@ -1,6 +1,7 @@
 <?php
 
 namespace Tainacan\Entities;
+use Tainacan\Entities;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -48,7 +49,7 @@ class Filter extends \Tainacan\Entity {
 
     function get_metadata() {
         $id = $this->get_mapped_property('metadata');
-        return new \Tainacan\Entities\Metadata( $id );
+        return new Entities\Metadata( $id );
     }
 
     function get_filter_type_object(){
@@ -80,7 +81,7 @@ class Filter extends \Tainacan\Entity {
      * @param Tainacan_Metadata / int $value
      */
     function set_metadata( $value ){
-    	$id = ( $value instanceof \Tainacan\Entities\Metadata ) ? $value->get_id() : $value;
+    	$id = ( $value instanceof Entities\Metadata ) ? $value->get_id() : $value;
 
         return $this->set_mapped_property('metadata', $id);
     }
