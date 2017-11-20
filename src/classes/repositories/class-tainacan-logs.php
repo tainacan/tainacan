@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Logs extends \Tainacan\Repository {
+class Logs {
     
     const POST_TYPE = 'tainacan-logs';
     

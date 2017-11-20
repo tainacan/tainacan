@@ -1,16 +1,16 @@
 <?php
 
-namespace Tainacan;
+// namespace Tainacan;
 
-class Repository {
+// class Repository {
     
-    function find_by($prop, $value) {
+//     function find_by($prop, $value) {
         
-        $map = $this->map;
+//         $map = $this->map;
         
-        if (!key_exists($prop, $map)){
-            return null;
-        }
-    }
+//         if (!key_exists($prop, $map)){
+//             return null;
+//         }
+//     }
         
-}
+// }

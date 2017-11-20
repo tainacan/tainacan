@@ -9,6 +9,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * @author
  */
 class Collection extends \Tainacan\Entity  {
+    const POST_TYPE = 'tainacan-collections';    
       
     function __construct($which = 0) {
         
@@ -28,12 +29,12 @@ class Collection extends \Tainacan\Entity  {
         }
     }
 
-    /**
+        /**
      * Registra novo tipo de post (post type)
      *
      * @return void
      */
-    function register_post_type() {
+    function tainacan_register_post_type() {
         $cpt_labels = array(
             'name'               => 'Item',
             'singular_name'      => 'Item',

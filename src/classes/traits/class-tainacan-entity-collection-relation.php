@@ -18,7 +18,7 @@ trait Entity_Collection_Relation {
         if (is_numeric($this->get_collection_id())) {
             global $Tainacan_Collections;
 
-            $this->collection = $Tainacan_Collections->get_collection_by_id($this->get_collection_id());
+            $this->collection = $Tainacan_Collections->fetch($this->get_collection_id());
             return $this->collection;
         }
         

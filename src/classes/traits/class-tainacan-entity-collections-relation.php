@@ -6,22 +6,22 @@ namespace Tainacan\Traits;
 
 trait Entity_Collections_Relation {
 
-    function get_collections_ids() {
+    function fetch_ids() {
         return $this->get_mapped_property('collections_ids');
     }
     
-    function get_collections() {
+    function fetch() {
         if (isset($this->collection) && !empty($this->collection) && is_array($this->collection)){
             return $this->collection;
         }
         
-        if (is_array($this->get_collections_ids()) && !empty(is_array($this->get_collections_ids()))) {
+        if (is_array($this->fetch_ids()) && !empty(is_array($this->fetch_ids()))) {
             
             global $Tainacan_Collections;
             $collections = [];
             
-            foreach ($this->get_collections_ids() as $col_id) {
-                $collections[] = $Tainacan_Collections->get_collection_by_id($col_id);
+            foreach ($this->fetch_ids() as $col_id) {
+                $collections[] = $Tainacan_Collections->fetch($col_id);
             }
             
             return $collections;

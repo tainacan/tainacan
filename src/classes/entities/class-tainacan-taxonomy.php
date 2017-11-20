@@ -55,8 +55,8 @@ class Taxonomy extends \Tainacan\Entity {
         
         
         $tax_cpts = [];
-        if (is_array($this->get_collections())){
-            foreach ($this->get_collections() as $tax_col){
+        if (is_array($this->fetch())){
+            foreach ($this->fetch() as $tax_col){
                 $tax_cpts[] = $tax_col->get_db_identifier();
             }
         }

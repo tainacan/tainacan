@@ -40,7 +40,7 @@ class Items {
         
         global $Tainacan_Collections, $Tainacan_Taxonomies;
         
-        $collections = $Tainacan_Collections->get_collections();
+        $collections = $Tainacan_Collections->fetch();
         $taxonomies = $Tainacan_Taxonomies->get_taxonomies();
 
         if (!is_array($collections)){
@@ -119,11 +119,11 @@ class Items {
         global $Tainacan_Collections;
         
         if (empty($collections)) {
-            $collections = $Tainacan_Collections->get_collections();
+            $collections = $Tainacan_Collections->fetch();
         }
         
         if (is_numeric($collections)){
-            $collections = $Tainacan_Collections->get_collection_by_id($collection);
+            $collections = $Tainacan_Collections->fetch($collection);
         }
         
         if ($collections instanceof Entities\Collection) {
@@ -133,7 +133,7 @@ class Items {
             
             foreach ($collections as $collection) {
                 if (is_numeric($collection)){
-                    $collection = $Tainacan_Collections->get_collection_by_id($collection);
+                    $collection = $Tainacan_Collections->fetch($collection);
                 }
                 if ($collection instanceof Entities\Collection){
                     $cpt[] = $collection->get_db_identifier();

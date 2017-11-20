@@ -29,7 +29,7 @@ class Collections extends \WP_UnitTestCase {
         
         //
         
-        $test = $Tainacan_Collections->get_collection_by_id($col->get_id());
+        $test = $Tainacan_Collections->fetch($col->get_id());
         
         
         $this->assertEquals($test->get_name(), 'teste');
@@ -51,7 +51,7 @@ class Collections extends \WP_UnitTestCase {
         global $Tainacan_Collections;
         $col = $Tainacan_Collections->insert($x);
         
-        $collection = $Tainacan_Collections->get_collection_by_id($col->get_id());
+        $collection = $Tainacan_Collections->fetch($col->get_id());
         
         
         

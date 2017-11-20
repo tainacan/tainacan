@@ -9,13 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use \Respect\Validation\Validator as v;
 
-class Collections {
+class Collections implements Repository {
     
-    const POST_TYPE = 'tainacan-collections';
     var $map;
 
     function __construct() {
-        add_action('init', array(&$this, 'register_post_type'));
+        add_action('init', array(&$this, 'tainacan_register_post_type'));
     }
     
     function get_map() {
@@ -52,12 +51,12 @@ class Collections {
         ];
     }
 
-    function register_post_type() {
+    function tainacan_register_post_type() {
         $labels = array(
             'name'               => 'Collections',
             'singular_name'      => 'Collections',
             'add_new'            => 'Adicionar Novo',
-            'add_new_item'       =>'Adicionar Collections',
+            'add_new_item'       => 'Adicionar Collections',
             'edit_item'          => 'Editar',
             'new_item'           => 'Novo Collections',
             'view_item'          => 'Visualizar',
@@ -85,14 +84,15 @@ class Collections {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(self::POST_TYPE, $args);
+        register_post_type(Entities\Collection::POST_TYPE, $args);
     }
     
-    function insert(Entities\Collection $collection) {
+    function insert($collection) {
         
         // validate
-        if (!$collection->validate())
+        if (!$collection->validate()){
             return $collection->get_errors();
+        }
             // TODO: Throw Warning saying you must validate object before insert()
         
         $map = $this->get_map();
@@ -105,7 +105,7 @@ class Collections {
         }
         
         // save post and geet its ID
-        $collection->WP_Post->post_type = self::POST_TYPE;
+        $collection->WP_Post->post_type = Entities\Collection::POST_TYPE;
         $collection->WP_Post->post_status = 'publish';
         
         // TODO verificar se salvou mesmo
@@ -131,36 +131,46 @@ class Collections {
             }
         }
         
-        $collection->register_post_type();
+        $collection->tainacan_register_post_type();
         
         // return a brand new object
         return new Entities\Collection($collection->WP_Post);
     }
-    
-    function get_collections($args = array()) {
-        
-        $args = array_merge([
-            'post_type'      => self::POST_TYPE,
-            'posts_per_page' => -1,
-            'post_status'    => 'publish',
-        ], $args);
-        
-        $posts = get_posts($args);
-        
-        $return = [];
-        
-        foreach ($posts as $post) {
-        	$return[] = new Entities\Collection($post);
-        }
-        
-        // TODO: Pegar coleções registradas via código
-        
-        return $return;
-    }
-    
-    function get_collection_by_id($id) {
-    	return new Entities\Collection($id);
+
+    public function update($object){
+
     }
 
-    
+    public function delete($object){
+
+    }
+
+    /**
+     * Obtém um coleção específica pelo ID ou várias coleções
+     *
+     * @param array $object || int $object
+     * @return Array || Collection 
+     */
+    public function fetch($object = []){
+        if(is_numeric($object)){
+            return new Entities\Collection($object);
+        } elseif(is_array($object)) {
+            $args = array_merge([
+                'post_type'      => Entities\Collection::POST_TYPE,
+                'posts_per_page' => -1,
+                'post_status'    => 'publish',
+            ], $object);
+            
+            $posts = get_posts($args);
+            
+            $collections = [];
+            foreach ($posts as $post) {
+                $collections[] = new Entities\Collection($post);
+            }
+            
+            // TODO: Pegar coleções registradas via código
+            
+            return $collections;
+        }
+    }
 }
