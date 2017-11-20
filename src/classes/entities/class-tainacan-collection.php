@@ -5,12 +5,15 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Representa a entidade Collection
- * @author
+ * Class that represetns the Collection entity
  */
 class Collection extends \Tainacan\Entity  {
     const POST_TYPE = 'tainacan-collections';    
       
+    /**
+     * Create an instance of Collection
+     * @param integer|\WP_Post optional $which Collection ID or a WP_Post object for existing collections. Leave empty to create a new collection.
+     */
     function __construct($which = 0) {
         
         $this->repository = 'Tainacan_Collections';
@@ -29,8 +32,12 @@ class Collection extends \Tainacan\Entity  {
         }
     }
 
-        /**
-     * Registra novo tipo de post (post type)
+    /**
+     * Register the post type for this collection
+     *
+     * Each collection is a post type, and each item inside a collection is a post of this post type
+     *
+     * This method register the post type for a collection, so that items can be created.
      *
      * @return void
      */
@@ -80,7 +87,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Retorna ID da coleção
+     * Get the collection ID
      *
      * @return integer
      */
@@ -88,7 +95,7 @@ class Collection extends \Tainacan\Entity  {
         return $this->get_mapped_property('id');
     }
     /**
-     * Retorna post_title da coleção
+     * Get collection name
      *
      * @return string
      */
@@ -97,7 +104,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Retorna slug da coleção
+     * Get collection slug
      *
      * @return string
      */
@@ -106,7 +113,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Retorna ordenação da coleção
+     * Get collection order
      *
      * @return integer
      */
@@ -115,7 +122,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Retorna id do parent da coleção
+     * Get collection parent ID
      *
      * @return integer
      */
@@ -124,7 +131,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Retorna descrição da coleção
+     * Get collection description
      *
      * @return string
      */
@@ -133,7 +140,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Retorna quantidade de itens por página
+     * Get collection items per page option
      *
      * @return integer
      */
@@ -142,7 +149,9 @@ class Collection extends \Tainacan\Entity  {
     }
     
     /**
-     * Retorna identificador imutável de referência ao post type
+     * Get collection DB identifier
+     *
+     * This identifier is used to register the collection post type and never changes, even if you change the name and the slug of the collection.
      *
      * @return string
      */
@@ -151,7 +160,11 @@ class Collection extends \Tainacan\Entity  {
     }
     
     /**
-     * Retorna os metadados da coleção
+     * Get collection metadata.
+     *
+     * Returns an array of \Entity\Metadata objects, representing all the metadata of the collection.
+     *
+     * @see \Tainacan\Repositories\Metadatas->get_metadata_by_collection()
      *
      * @return array
      */
@@ -161,7 +174,7 @@ class Collection extends \Tainacan\Entity  {
     }
     
     /**
-     * Atribui valor ao nome da coleção
+     * Set the collection name
      *
      * @param [string] $value
      * @return void
@@ -171,7 +184,13 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Atribui valor ao slug da coleção
+     * Set the collection slug
+     *
+     * If you dont set the collection slug, it will be set automatically based on the name and 
+     * following WordPress default behavior of creating slugs for posts.
+     *
+     * If you set the slug for an existing one, WordPress will append a number at the end of in order
+     * to make it unique (e.g slug-1, slug-2)
      *
      * @param [string] $value
      * @return void
@@ -181,7 +200,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Atribui valor ao tipo de ordenação da coleção
+     * Set collection order
      *
      * @param [string] $value
      * @return void
@@ -191,7 +210,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Atribui valor ao parent da coleção
+     * Set collection parent ID
      *
      * @param [integer] $value
      * @return void
@@ -201,7 +220,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Atribui valor à descrição da coleção
+     * Set collection description
      *
      * @param [string] $value
      * @return void
@@ -211,7 +230,7 @@ class Collection extends \Tainacan\Entity  {
     }
 
     /**
-     * Define a quantidade de itens por página na coleção
+     * Set collection itens per page option
      *
      * @param [integer] $value
      * @return void

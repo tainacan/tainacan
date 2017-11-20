@@ -44,15 +44,6 @@ class Entity {
     function set_mapped_property($prop, $value) {
         $this->$prop = $value;
     }
-    
-    function save() {
-        
-        // validate
-        
-        global ${$this->repository};
-        
-        return ${$this->repository}->insert($this); 
-    }
 
     function validate() {
         
