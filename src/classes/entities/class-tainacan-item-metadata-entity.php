@@ -75,7 +75,7 @@ class Item_Metadata_Entity extends \Tainacan\Entity {
             return $this->value;
         
         global $Tainacan_Item_Metadata;
-        return $Tainacan_Item_Metadata->get_item_metadata_value($this);
+        return $Tainacan_Item_Metadata->fetch($this);
     }
     
     /**

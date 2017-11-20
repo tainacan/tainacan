@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Items {
+class Items implements Repository {
     
     function __construct() {
         add_action('init', array(&$this, 'register_post_types'));
@@ -58,7 +58,7 @@ class Items {
         }  
     }
  
-    function insert(Entities\Item $item) {
+    function insert($item) {
         $map = $this->get_map();
         
         // get collection to determine post type
@@ -112,26 +112,29 @@ class Items {
         // return a brand new object
         return new Entities\Item($item->WP_Post);
     }
-    
-    // collections id or array of ids; collection object or array of objects
-    function get_items($args = array(), $collections = []) {
-        
+
+    public function fetch($args = [], $object = []){
+
         global $Tainacan_Collections;
         
-        if (empty($collections)) {
-            $collections = $Tainacan_Collections->fetch();
+        if(is_numeric($args)){
+            return new Entities\Item($args);            
+        }
+
+        if (empty($object)) {
+            $object = $Tainacan_Collections->fetch();
         }
         
-        if (is_numeric($collections)){
-            $collections = $Tainacan_Collections->fetch($collection);
+        if (is_numeric($object)){
+            $object = $Tainacan_Collections->fetch($collection);
         }
         
-        if ($collections instanceof Entities\Collection) {
-            $cpt = $collections->get_db_identifier();
-        } elseif (is_array($collections)) {
+        if ($object instanceof Entities\Collection) {
+            $cpt = $object->get_db_identifier();
+        } elseif (is_array($object)) {
             $cpt = [];
             
-            foreach ($collections as $collection) {
+            foreach ($object as $collection) {
                 if (is_numeric($collection)){
                     $collection = $Tainacan_Collections->fetch($collection);
                 }
@@ -163,6 +166,14 @@ class Items {
         }
         
         return $return;
+    }
+
+    public function update($object){
+
+    }
+
+    public function delete($object){
+
     }
     
     // same as WP_Query with few paramaters more:
@@ -210,11 +221,7 @@ class Items {
         $collections = !empty($args['collections']) ? $args['collections'] : [];
         unset($args['collections']);
         
-        return $this->get_items($args, $collections);
+        return $this->fetch($args, $collections);
         ### TODO I think its better if we return a WP_Query object. easier for loop and debugging
-    }
-   
-    function get_item_by_id($id) {
-    	return new Entities\Item($id);
     }
 }

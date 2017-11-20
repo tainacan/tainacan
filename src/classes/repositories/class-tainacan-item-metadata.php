@@ -7,32 +7,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Item_Metadata {
+class Item_Metadata implements Repository {
     
-	function get_item_metadata_by_item(Entities\Item $item) {
-        global $Tainacan_Items, $Tainacan_Metadatas;
-        
-        $collection = $item->get_collection();
-        
-        if (!$collection instanceof Entities\Collection){
-            return [];
-        }
-        
-        $meta_list = $Tainacan_Metadatas->get_metadata_by_collection($collection);
-        
-        $return = [];
-        
-        if (is_array($meta_list)) {
-            foreach ($meta_list as $meta) {
-            	$return = new Entities\Item_Metadata_Entity($item, $meta);
-            }
-        }
-        
-        return $return;
-        
-    }
-    
-    function insert(Entities\Item_Metadata_Entity $item_metadata) {
+    function insert($item_metadata) {
 
         $unique = ! $item_metadata->is_multiple();
         
@@ -52,12 +29,43 @@ class Item_Metadata {
         return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_metadata());
         
     }
-    
-    function get_item_metadata_value(Entities\Item_Metadata_Entity $item_metadata) {
-        
-        $unique = ! $item_metadata->is_multiple();
+
+    public function update($object){
+
+    }
+
+    public function delete($object){
+
+    }
+
+    public function fetch($object){
+        if($object instanceof Entities\Item){
+            global $Tainacan_Items, $Tainacan_Metadatas;
             
-        return get_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $unique);    
+            $collection = $object->get_collection();
+            
+            if (!$collection instanceof Entities\Collection){
+                return [];
+            }
+            
+            $meta_list = $Tainacan_Metadatas->get_metadata_by_collection($collection);
+            
+            $return = [];
+            
+            if (is_array($meta_list)) {
+                foreach ($meta_list as $meta) {
+                    $return[] = new Entities\Item_Metadata_Entity($object, $meta);
+                }
+            }
+            
+            return $return;
+        } elseif($object instanceof Entities\Item_Metadata_Entity){
+            // Retorna o valor do metadado
+
+            $unique = ! $object->is_multiple();
+            
+            return get_post_meta($object->item->get_id(), $object->metadata->get_id(), $unique);  
+        }
     }
     
 }

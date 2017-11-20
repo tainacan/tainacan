@@ -46,7 +46,7 @@ class Items extends \WP_UnitTestCase {
         $i->add_metadata($metadata, 'value_1');
         $item = $Tainacan_Items->insert($i);
         
-        $item = $Tainacan_Items->get_item_by_id($item->get_id());
+        $item = $Tainacan_Items->fetch($item->get_id());
         $meta_test = $item->get_metadata();
         
         $this->assertTrue( isset($meta_test[$metadata->get_id()]) );

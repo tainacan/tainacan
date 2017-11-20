@@ -45,7 +45,7 @@ class Item_Metadata extends \WP_UnitTestCase {
         global $Tainacan_Items;
         $item = $Tainacan_Items->insert($i);
         
-        $item = $Tainacan_Items->get_item_by_id($item->get_id());
+        $item = $Tainacan_Items->fetch($item->get_id());
 
         $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
         
@@ -91,7 +91,7 @@ class Item_Metadata extends \WP_UnitTestCase {
         global $Tainacan_Items;
         $item = $Tainacan_Items->insert($i);
         
-        $item = $Tainacan_Items->get_item_by_id($item->get_id());
+        $item = $Tainacan_Items->fetch($item->get_id());
 
         $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
         
@@ -136,7 +136,7 @@ class Item_Metadata extends \WP_UnitTestCase {
         global $Tainacan_Items;
         $item = $Tainacan_Items->insert($i);
         
-        $item = $Tainacan_Items->get_item_by_id($item->get_id());
+        $item = $Tainacan_Items->fetch($item->get_id());
 
         
         
