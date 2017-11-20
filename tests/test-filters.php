@@ -30,7 +30,7 @@ class Filters extends \WP_UnitTestCase {
         //inserindo o metadado
         $filter = $Tainacan_Filters->insert( $filter );
 
-        $test = $Tainacan_Filters->get_filter_by_id( $filter->get_id() );
+        $test = $Tainacan_Filters->fetch( $filter->get_id() );
 
         $this->assertEquals('filtro', $test->get_name());
         $this->assertEquals($collection->get_id(), $test->get_collection_id());
@@ -70,7 +70,7 @@ class Filters extends \WP_UnitTestCase {
 
         $filter = $Tainacan_Filters->insert( $filter );
 
-        $test = $Tainacan_Filters->get_filter_by_id( $filter->get_id() );
+        $test = $Tainacan_Filters->fetch( $filter->get_id() );
 
         $this->assertEquals( 'filtro', $test->get_name() );
         $this->assertEquals( $collection->get_id(), $test->get_collection_id() );
@@ -84,10 +84,10 @@ class Filters extends \WP_UnitTestCase {
     function test_get_filters_type(){
         global $Tainacan_Filters;
 
-        $all_filter_types = $Tainacan_Filters->get_all_filters_type();
+        $all_filter_types = $Tainacan_Filters->fetch();
         $this->assertEquals( 2, count( $all_filter_types ) );
 
-        $float_filters = $Tainacan_Filters->get_filters_by_metadata_type('float');
+        $float_filters = $Tainacan_Filters->fetch('float');
         $this->assertTrue( count( $float_filters ) > 0 );
     }
 }

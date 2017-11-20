@@ -7,9 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Filters {
-
-    const POST_TYPE = 'tainacan-filters';
+class Filters implements Repository {
 
     function __construct(){
         add_action('init', array(&$this, 'register_post_type'));
@@ -89,7 +87,7 @@ class Filters {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(self::POST_TYPE, $args);
+        register_post_type(Entities\Filter::POST_TYPE, $args);
     }
 
 
@@ -97,7 +95,7 @@ class Filters {
      * @param Entities\Metadata $metadata
      * @return int
      */
-    function insert( Entities\Filter $metadata ) {
+    function insert($metadata) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -107,7 +105,7 @@ class Filters {
         }
 
         // save post and get its ID
-        $metadata->WP_Post->post_type = self::POST_TYPE;
+        $metadata->WP_Post->post_type = Entities\Filter::POST_TYPE;
         $metadata->WP_Post->post_status = 'publish';
         $id = wp_insert_post($metadata->WP_Post);
         $metadata->WP_Post = get_post($id);
@@ -133,68 +131,60 @@ class Filters {
         return new Entities\Filter($metadata->WP_Post);
     }
 
+    public function delete($object){
 
-    /**
-     * @param ( Tainacan_Collection ) $collection_id
-     * @param array $args
-     * @return \WP_Query
-     */
-    function get_filter_by_collection( $collection, $args = array()) {
-
-        // TODO: get filters from parent collections
-
-        $collection_id = ( is_object( $collection ) ) ? $collection->get_id() : $collection;
-
-        $args = array_merge([
-            'post_type'      => self::POST_TYPE,
-            'posts_per_page' => -1,
-            'post_status'    => 'publish',
-            'meta_key'       => 'collection_id',
-            'meta_value'     => $collection_id
-        ], $args);
-
-        $wp_query = new \WP_Query($args);
-
-        return $wp_query;
     }
 
-    /**
-     * @param int $id
-     * @return Entities\Filter
-     */
-    function get_filter_by_id($id) {
-    	return new Entities\Filter($id);
+    public function update($object){
+
     }
 
-    /**
-     * @param string $type
-     * @return array
-     */
-    function get_filters_by_metadata_type( $type ){
-        $result = array();
-        $filters_type = $this->get_all_filters_type();
+    public function fetch($object = [], $args = []){
+        /**
+         * Se for numérico retorna o objeto filtro
+         * Se não, mas se há valor em $object e $args retorna filtro de coleção especifica
+         * Se não, mas se for string retorna os filtros pelo tipo de metadado
+         * Se não, retorna todos os filtros
+         */
+        if(is_numeric($object)){
+            return new Entities\Filter($object);
+        } elseif (!empty($object) && !empty($args)) {
+            // TODO: get filters from parent collections
 
-        foreach ( $filters_type as $filter_type ){
-            if( in_array( $type,  $filter_type->get_supported_types() ) ){
-                $result[] = $filter_type;
+            $collection_id = ( is_object( $object ) ) ? $object->get_id() : $object;
+
+            $args = array_merge([
+                'post_type'      => Entities\Filter::POST_TYPE,
+                'posts_per_page' => -1,
+                'post_status'    => 'publish',
+                'meta_key'       => 'collection_id',
+                'meta_value'     => $collection_id
+            ], $args);
+
+            $wp_query = new \WP_Query($args);
+
+            return $wp_query;
+        } elseif(is_string($object)) {
+            $filters = array();
+            $filters_type = $this->fetch();
+    
+            foreach ( $filters_type as $filter_type ){
+                if( in_array( $object,  $filter_type->get_supported_types() ) ){
+                    $filters[] = $filter_type;
+                }
             }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return array
-     */
-    function get_all_filters_type() {
-        $result = array();
+    
+            return $filters;
+        } else {
+            $filters = array();
         
-        foreach (get_declared_classes() as $class) {
-            if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
-                $result[] = new $class();
+            foreach (get_declared_classes() as $class) {
+                if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
+                    $filters[] = new $class();
+                }
             }
-        }
 
-        return $result;
+            return $filters;
+        }
     }
 }

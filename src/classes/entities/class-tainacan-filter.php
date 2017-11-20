@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * 
  */
 class Filter extends \Tainacan\Entity {
+    const POST_TYPE = 'tainacan-filters';    
 
     use \Tainacan\Traits\Entity_Collection_Relation;
 
