@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Selectbox_Field_Type extends Field_Type {
+class Radio extends Field_Type {
 
     function __construct(){
         $this->primitive_type = '';
@@ -21,6 +21,6 @@ class Selectbox_Field_Type extends Field_Type {
      */
 
     function render( $metadata ){
-        return '<tainacan-selectbox name="'.$metadata->get_name().'"></tainacan-selectbox>';
+        return '<tainacan-radio name="'.$metadata->get_name().'"></tainacan-radio>';
     }
 }

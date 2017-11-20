@@ -9,10 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Field_Type extends Field_Type {
+class Selectbox extends Field_Type {
 
     function __construct(){
-        $this->primitive_type = 'string';
+        $this->primitive_type = '';
     }
 
     /**
@@ -21,6 +21,6 @@ class Field_Type extends Field_Type {
      */
 
     function render( $metadata ){
-        return '<tainacan-textarea name="'.$metadata->get_name().'"></tainacan-textarea>';
+        return '<tainacan-selectbox name="'.$metadata->get_name().'"></tainacan-selectbox>';
     }
 }

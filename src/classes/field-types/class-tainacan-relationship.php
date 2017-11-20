@@ -9,10 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Numeric_Field_Type extends Field_Type {
+class Relationship extends Field_Type {
 
     function __construct(){
-        $this->primitive_type = 'float';
+        $this->primitive_type = '';
     }
 
     /**
@@ -21,6 +21,6 @@ class Numeric_Field_Type extends Field_Type {
      */
 
     function render( $metadata ){
-        return '<tainacan-numeric name="'.$metadata->get_name().'"></tainacan-numeric>';
+        return '<tainacan-relationship name="'.$metadata->get_name().'"></tainacan-relationship>';
     }
 }

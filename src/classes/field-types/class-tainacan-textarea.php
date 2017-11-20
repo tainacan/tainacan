@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Text_Field_Type extends Field_Type {
+class Textarea extends Field_Type {
 
     function __construct(){
         $this->primitive_type = 'string';
@@ -21,6 +21,6 @@ class Text_Field_Type extends Field_Type {
      */
 
     function render( $metadata ){
-        return '<tainacan-text name="'.$metadata->get_name().'"></tainacan-text>';
+        return '<tainacan-textarea name="'.$metadata->get_name().'"></tainacan-textarea>';
     }
 }

@@ -7,8 +7,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Class TainacanFieldType
+ * List_Filter because List is reseved
  */
-class List_Filter_Type extends Filter_Type {
+class List_Filter extends Filter_Type {
 
     function __construct(){
         $this->supported_types[] = 'string';

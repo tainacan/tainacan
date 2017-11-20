@@ -9,10 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Radio_Field_Type extends Field_Type {
+class Checkbox extends Field_Type {
 
     function __construct(){
-        $this->primitive_type = '';
+        $this->primitive_type = 'date';
     }
 
     /**
@@ -21,6 +21,6 @@ class Radio_Field_Type extends Field_Type {
      */
 
     function render( $metadata ){
-        return '<tainacan-radio name="'.$metadata->get_name().'"></tainacan-radio>';
+        return '<tainacan-checkbox name="'.$metadata->get_name().'"></tainacan-checkbox>';
     }
 }

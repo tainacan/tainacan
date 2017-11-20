@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Range_Filter_Type extends Filter_Type {
+class Range extends Filter_Type {
 
     function __construct(){
         $this->supported_types = ['float','date'];

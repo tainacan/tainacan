@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class TainacanFieldType
  */
-class Textarea_Field_Type extends Field_Type {
+class Textarea extends Field_Type {
 
     function __construct(){
         $this->primitive_type = 'date';

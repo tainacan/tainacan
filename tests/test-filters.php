@@ -42,9 +42,9 @@ class Filters extends \WP_UnitTestCase {
         $collection = new \Tainacan\Entities\Collection();
         $metadata = new \Tainacan\Entities\Metadata();
         $filter = new \Tainacan\Entities\Filter();
-        $type = new \Tainacan\Field_Types\Text_Field_Type();
-        $filter_list_type = new \Tainacan\Filter_Types\List_Filter_Type();
-        $filter_range_type = new \Tainacan\Filter_Types\Range_Filter_Type();
+        $type = new \Tainacan\Field_Types\Text();
+        $filter_list_type = new \Tainacan\Filter_Types\List_Filter();
+        $filter_range_type = new \Tainacan\Filter_Types\Range();
 
         $collection->set_name('teste');
         $collection = $Tainacan_Collections->insert($collection);
