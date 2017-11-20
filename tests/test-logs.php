@@ -30,7 +30,7 @@ class Logs extends \WP_UnitTestCase {
         $log = $Tainacan_Logs->insert($log);
 
         //retorna a taxonomia
-        $test = $Tainacan_Logs->get_log_by_id($log->get_id());
+        $test = $Tainacan_Logs->fetch($log->get_id());
 
         $this->assertEquals( 'blame someone', $test->get_title() );
         $this->assertEquals( 'someone did that', $test->get_description() );

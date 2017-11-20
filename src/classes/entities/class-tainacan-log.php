@@ -8,6 +8,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Representa a entidade Log
  */
 class Log extends \Tainacan\Entity {
+
+    const POST_TYPE = 'tainacan-logs';    
     
     function __construct($which = 0) {
         
