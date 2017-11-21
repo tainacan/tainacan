@@ -8,7 +8,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Taxonomy extends \Tainacan\Entity {
 
-	use \Tainacan\Traits\Entity_Collections_Relation;
+    use \Tainacan\Traits\Entity_Collections_Relation;
+    
+    const POST_TYPE = 'tainacan-taxonomies';
     
     function __construct( $which = 0 ) {
 

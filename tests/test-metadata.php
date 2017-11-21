@@ -33,7 +33,7 @@ class Metadata extends \WP_UnitTestCase {
         //inserindo o metadado
         $metadata = $Tainacan_Metadatas->insert($metadata);
 
-        $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
+        $test = $Tainacan_Metadatas->fetch($metadata->get_id());
 
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_description(), 'descricao');
@@ -63,7 +63,7 @@ class Metadata extends \WP_UnitTestCase {
         //inserindo o metadado
         $metadata = $Tainacan_Metadatas->insert($metadata);
 
-        $test = $Tainacan_Metadatas->get_metadata_by_id($metadata->get_id());
+        $test = $Tainacan_Metadatas->fetch($metadata->get_id());
 
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_collection_id(), $collection->get_id());

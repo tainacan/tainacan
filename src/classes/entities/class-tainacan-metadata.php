@@ -5,16 +5,14 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Metada entity
+ * Representa a entidade Metadata e extende a super classe Entity
  */
 class Metadata extends \Tainacan\Entity {
+    
+    const POST_TYPE = 'tainacan-metadata';    
 
 	use \Tainacan\Traits\Entity_Collection_Relation;
     
-    /**
-     * Create an instance of Metadata
-     * @param integer|\WP_Post optional $which Metadata ID or a WP_Post object for existing metadata. Leave empty to create a new metadata.
-     */
     function __construct( $which = 0 ) {
 
         $this->repository = 'Tainacan_Metadatas';
@@ -34,7 +32,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata ID
+     * Retorna o ID do metadado
      *
      * @return integer
      */
@@ -43,7 +41,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata name
+     * Retorna o nome do metadado
      *
      * @return string
      */
@@ -52,7 +50,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata order
+     * Retorna a forma de ordenação do metadado
      *
      * @return string
      */
@@ -61,7 +59,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata parent ID
+     * Retorna o parent do metadado
      *
      * @return string
      */
@@ -70,7 +68,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata description
+     * Retorna a descrição do metado
      *
      * @return string
      */
@@ -79,7 +77,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata required option
+     * Retorna se é metadado obrigatório
      *
      * @return boolean
      */
@@ -88,16 +86,16 @@ class Metadata extends \Tainacan\Entity {
     }
     
     /**
-     * Get metadata multiple option
+     * Retorna se é metado multiplo
      *
-     * @return string 'yes or no'
+     * @return boolean
      */
     function get_multiple(){
         return $this->get_mapped_property('multiple');
     }
     
     /**
-     * Get metadata cardinality option
+     * Retorna a cardinalidade
      *
      * @return string
      */
@@ -106,16 +104,16 @@ class Metadata extends \Tainacan\Entity {
     }
     
     /**
-     * Get metadata collection key option
+     * Retorna se é metadado chave
      *
-     * @return string 'yes or no'
+     * @return boolean
      */
     function get_collection_key(){
         return $this->get_mapped_property('collection_key');
     }
 
     /**
-     * Get metadata mask option
+     * Retorna a máscara
      *
      * @return string
      */
@@ -124,7 +122,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata privacy option
+     * Retorna o nível de privacidade
      *
      * @return string
      */
@@ -133,7 +131,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata default value option
+     * Retorna valor padrão do metadado
      *
      * @return string || integer
      */
@@ -142,25 +140,25 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Get metadata field type object with its options
+     * Retorna o objeto Metadado
      *
-     * @return object
+     * @return array || object
      */
     function get_field_type_object(){
     	return unserialize(base64_decode( $this->get_mapped_property('field_type_object') ) );
     }
 
     /**
-     * Get metadata field type
+     * Retorna o objeto field type
      *
-     * @return string The Field Type class name
+     * @return array || object
      */
     function get_field_type(){
     	return base64_decode($this->get_mapped_property('field_type'));
     }
 
     /**
-     * Set metadata name
+     * Atribui nome
      *
      * @param [string] $value
      * @return void
@@ -170,7 +168,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Set metadata order
+     * Atribui o tipo de ordenação
      *
      * @param [string] $value
      * @return void
@@ -180,7 +178,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Set metadata parent ID
+     * Atribui ID do parent
      *
      * @param [integer] $value
      * @return void
@@ -190,7 +188,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Set metadata description
+     * Atribui descrição
      *
      * @param [string] $value
      * @return void
@@ -200,9 +198,9 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Set metadata required option
+     * Define se é obrigatório
      *
-     * @param [string] $value yes or no
+     * @param [boolean] $value
      * @return void
      */
     function set_required( $value ){
@@ -210,9 +208,9 @@ class Metadata extends \Tainacan\Entity {
     }
     
     /**
-     * Set metadata multiple option
+     * Define se é multiplo
      *
-     * @param [string] $value yes or no
+     * @param [boolean] $value
      * @return void
      */
     function set_multiple( $value ){
@@ -220,9 +218,9 @@ class Metadata extends \Tainacan\Entity {
     }
     
     /**
-     * Set metadata cardinality
+     * Define a cardinalidade
      *
-     * @param [int] $value
+     * @param [string] $value
      * @return void
      */
     function set_cardinality( $value ){
@@ -230,14 +228,9 @@ class Metadata extends \Tainacan\Entity {
     }
     
     /**
-     * Set metadata collection key option
+     * Define se é chave
      *
-     * Set to yes if you want this metadata to have a unique value inside the collection.
-     *
-     * This means that whenever you create or update an item, Tainacan will check and make sure there is no
-     * other item with the same value for this metadata.
-     *
-     * @param [string] $value yes or no
+     * @param [string] $value
      * @return void
      */
     function set_collection_key( $value ){
@@ -245,7 +238,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Set metadata mask option
+     * Atribui máscara
      *
      * @param [string] $value
      * @return void
@@ -255,7 +248,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Set metadata privacy option
+     * Define o nível de privacidade
      *
      * @param [string] $value
      * @return void
@@ -265,7 +258,7 @@ class Metadata extends \Tainacan\Entity {
     }
 
     /**
-     * Set metadata default value
+     * Define o valor padrão
      *
      * @param [string || integer] $value
      * @return void
@@ -274,22 +267,13 @@ class Metadata extends \Tainacan\Entity {
         $this->set_mapped_property('default_property', $value);
     }
 
-
-    /**
-     * Set metadata field type object
-     *
-     * stores the Field Type object with all its options.
-     *
-     * @param [\Tainacan\Field_Types\Field_Type] $value An object of a Field Type. Must be an instace of a class child of Field_Type
-     * @return void
-     */
     function set_field_type_object(\Tainacan\Field_Types\Field_Type $value){
         $this->set_field_type( get_class( $value )  );
         $this->set_mapped_property('field_type_object', base64_encode( serialize($value) ) ); // Encode to avoid backslaches removal
     }
 
     /**
-     * This is a private methos, called by @method set_field_type_object() to set the field type 
+     * Este metodo é privado, porque é utilizado apenas neste contexto pelo @method set_field_type_object()
      *
      * @param $value
      */
@@ -298,27 +282,14 @@ class Metadata extends \Tainacan\Entity {
     }
 
     // helpers
-    // 
-    /**
-     * Returns wether this metadata is multiple or not (has the multiple option set to yes or no)
-     * @return boolean true if multiple, false if not multiple
-     */
     function is_multiple() {
         return $this->get_multiple() === 'yes';
     }
     
-    /**
-     * Returns wether this metadata is a collection key or not (has the collection key option set to yes or no)
-     * @return boolean true if collection key, false if not collection key
-     */
     function is_collection_key() {
         return $this->get_collection_key() === 'yes';
     }
     
-    /**
-     * Returns wether this metadata is required or not (has the required option set to yes or no)
-     * @return boolean true if required, false if not required
-     */
     function is_required() {
         return $this->get_required() === 'yes';
     }

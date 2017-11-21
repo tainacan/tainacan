@@ -10,9 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Tainacan_Taxonomies
  */
-class Taxonomies {
-
-    const POST_TYPE = 'tainacan-taxonomies';
+class Taxonomies implements Repository {
 
     function __construct() {
         add_action('init', array(&$this, 'register_post_type'));
@@ -85,12 +83,12 @@ class Taxonomies {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(self::POST_TYPE, $args);
+        register_post_type(Entities\Taxonomy::POST_TYPE, $args);
     }
 
     function get_taxonomies($args = []){
         $args = array_merge([
-            'post_type'      => self::POST_TYPE,
+            'post_type'      => Entities\Taxonomy::POST_TYPE,
             'posts_per_page' => -1,
             'post_status'    => 'publish',
         ], $args);
@@ -112,7 +110,7 @@ class Taxonomies {
      * @param Entities\Taxonomy $metadata
      * @return int
      */
-    function insert( Entities\Taxonomy $taxonomy ) {
+    function insert($taxonomy) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -122,7 +120,7 @@ class Taxonomies {
         }
 
         // save post and get its ID
-        $taxonomy->WP_Post->post_type = self::POST_TYPE;
+        $taxonomy->WP_Post->post_type = Entities\Taxonomy::POST_TYPE;
         $taxonomy->WP_Post->post_status = 'publish';
         
         $id = wp_insert_post($taxonomy->WP_Post);
@@ -176,7 +174,15 @@ class Taxonomies {
         register_taxonomy( $taxonomy_name, array( ), $args );
     }
 
-    function get_taxonomy_by_id($id) {
-    	return new Entities\Taxonomy($id);
+    public function fetch($object) {
+    	return new Entities\Taxonomy($object);
+    }
+
+    public function update($object){
+
+    }
+
+    public function delete($object){
+
     }
 }

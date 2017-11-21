@@ -48,7 +48,7 @@ class Item_Metadata implements Repository {
                 return [];
             }
             
-            $meta_list = $Tainacan_Metadatas->get_metadata_by_collection($collection);
+            $meta_list = $Tainacan_Metadatas->fetch($collection);
             
             $return = [];
             

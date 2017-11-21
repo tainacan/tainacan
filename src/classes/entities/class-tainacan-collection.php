@@ -164,13 +164,13 @@ class Collection extends \Tainacan\Entity  {
      *
      * Returns an array of \Entity\Metadata objects, representing all the metadata of the collection.
      *
-     * @see \Tainacan\Repositories\Metadatas->get_metadata_by_collection()
+     * @see \Tainacan\Repositories\Metadatas->fetch()
      *
      * @return array
      */
     function get_metadata() {
         $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
-        return $Tainacan_Metadatas->get_metadata_by_collection($this);
+        return $Tainacan_Metadatas->fetch($this);
     }
     
     /**

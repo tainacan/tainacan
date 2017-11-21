@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
 * Class Tainacan_Terms
 */
-class Terms {
+class Terms implements Repository {
 
     function get_map() {
         return [
@@ -41,7 +41,7 @@ class Terms {
         ];
     }
     
-    function insert( Entities\Term $term ){
+    function insert($term){
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -66,16 +66,32 @@ class Terms {
         return $term_inserted['term_id'];
     }
 
-    function get_terms( $taxonomies, $args ){
-        return get_terms( $taxonomies, $args );
+    /**
+     * Get a term or all terms
+     *
+     * @param string || Array $object1
+     * @param string || Array || interger $object2
+     * @param string $object3
+     * @return Array of WP_Term || WP_Term
+     */
+    public function fetch( $object1 = '', $object2 = '', $object3  = ''){
+        if(!empty($object1) && !empty($object2) && empty($object3)){
+            return get_terms( $object1, $object2 );
+        } elseif(!empty($object1) && !empty($object2) && !empty($object3)){
+            $wp_term = get_term_by($object1, $object2, $object3);
+
+            $tainacan_term = new Entities\Term( $wp_term );
+            $tainacan_term->set_user( get_term_meta($tainacan_term->get_id() , 'user', true ) );
+
+            return $tainacan_term;
+        }
     }
 
-    function get_term_by($field,$value,$taxonomy){
-        $wp_term = get_term_by($field,$value,$taxonomy);
+    public function update($object){
 
-        $tainacan_term = new Entities\Term( $wp_term );
-        $tainacan_term->set_user( get_term_meta($tainacan_term->get_id() , 'user', true ) );
+    }
 
-        return $tainacan_term;
+    public function delete($object){
+
     }
 }

@@ -31,7 +31,7 @@ class Taxonomies extends \WP_UnitTestCase {
         $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
 
         //retorna a taxonomia
-        $test = $Tainacan_Taxonomies->get_taxonomy_by_id($taxonomy->get_id());
+        $test = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
 
         $this->assertEquals( $test->get_name(), 'genero' );
         $this->assertEquals( $test->get_description(), 'tipos de musica' );
@@ -51,7 +51,7 @@ class Taxonomies extends \WP_UnitTestCase {
         $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
 
         //retorna a taxonomia
-        $taxonomy_test = $Tainacan_Taxonomies->get_taxonomy_by_id($taxonomy->get_id());
+        $taxonomy_test = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
 
         //insere um termo na taxonomia
         $term->set_taxonomy( $taxonomy_test->get_db_identifier() );
@@ -60,7 +60,7 @@ class Taxonomies extends \WP_UnitTestCase {
         $term_id = $Tainacan_Terms->insert( $term ) ;
 
         //retorna um objeto da classe Tainacan_Term
-        $test =  $Tainacan_Terms->get_term_by('id', $term_id, $taxonomy_test->get_db_identifier());
+        $test =  $Tainacan_Terms->fetch('id', $term_id, $taxonomy_test->get_db_identifier());
 
         $this->assertEquals( $test->get_name(), 'Rock' );
         $this->assertEquals( $test->get_user(), 56 );

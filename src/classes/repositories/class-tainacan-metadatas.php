@@ -10,9 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Metadatas
  */
-class Metadatas {
-
-    const POST_TYPE = 'tainacan-metadata';
+class Metadatas implements Repository {
 
     function __construct() {
         add_action('init', array(&$this, 'register_post_type'));
@@ -121,14 +119,14 @@ class Metadatas {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(self::POST_TYPE, $args);
+        register_post_type(Entities\Metadata::POST_TYPE, $args);
     }
 
     /**
      * @param Entities\Metadata $metadata
      * @return int
      */
-    function insert( Entities\Metadata $metadata ) {
+    function insert($metadata) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -138,7 +136,7 @@ class Metadatas {
         }
 
         // save post and get its ID
-        $metadata->WP_Post->post_type = self::POST_TYPE;
+        $metadata->WP_Post->post_type = Entities\Metadata::POST_TYPE;
         $metadata->WP_Post->post_status = 'publish';
         
         $id = wp_insert_post($metadata->WP_Post);
@@ -165,41 +163,38 @@ class Metadatas {
         return new Entities\Metadata($metadata->WP_Post);
     }
 
-    /**
-     * @param ( Tainacan_Collection ) $collection_id
-     * @param array $args
-     * @return array
-     */
-    function get_metadata_by_collection( $collection, $args = array()) {
-        
+    public function fetch($object, $args = []){
         // TODO: get metadata from parent collections
+        if(is_numeric($object)){
+            return new Entities\Metadata($object);            
+        } else {
+            $collection_id = ( is_object( $object ) ) ? $object->get_id() : $object;
 
-        $collection_id = ( is_object( $collection ) ) ? $collection->get_id() : $collection;
+            $args = array_merge([
+                'post_type'      => Entities\Metadata::POST_TYPE,
+                'posts_per_page' => -1,
+                'post_status'    => 'publish',
+                'meta_key'       => 'collection_id',
+                'meta_value'     => $collection_id
+            ], $args);
 
-        $args = array_merge([
-            'post_type'      => self::POST_TYPE,
-            'posts_per_page' => -1,
-            'post_status'    => 'publish',
-            'meta_key'       => 'collection_id',
-            'meta_value'     => $collection_id
-        ], $args);
+            $posts = get_posts($args);
 
-        $posts = get_posts($args);
+            $return = [];
 
-        $return = [];
+            foreach ($posts as $post) {
+                $return[] = new Entities\Metadata($post);
+            }
 
-        foreach ($posts as $post) {
-        	$return[] = new Entities\Metadata($post);
+            return $return;
         }
-
-        return $return;
     }
 
-    /**
-     * @param int $id
-     * @return Entities\Metadata
-     */
-    function get_metadata_by_id($id) {
-    	return new Entities\Metadata($id);
+    public function update($object){
+
+    }
+
+    public function delete($object){
+
     }
 }
