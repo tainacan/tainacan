@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Checkbox extends Field_Type {
 
     function __construct(){
-        $this->primitive_type = 'date';
+        parent::set_primitive_type('date');
     }
 
     /**

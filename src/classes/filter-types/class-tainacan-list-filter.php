@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class List_Filter extends Filter_Type {
 
     function __construct(){
-        $this->supported_types[] = 'string';
+        parent::set_supported_types(['string']);
     }
 
     /**

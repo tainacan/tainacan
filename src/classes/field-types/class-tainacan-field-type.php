@@ -11,19 +11,24 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class Field_Type  {
 
-    var $primitive_type;
+    private $primitive_type;
 
     abstract function render( $metadata );
     
-    function validate($value) {
+    public function validate($value) {
         return true;
     }
     
-    function get_validation_errors() {
+    public function get_validation_errors() {
         return [];
     }
 
-    function get_primitive_type(){
+    public function get_primitive_type(){
         return $this->primitive_type;
     }
+
+    public function set_primitive_type($primitive_type){
+        $this->primitive_type = $primitive_type;
+    }
+
 }

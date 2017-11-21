@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Range extends Filter_Type {
 
     function __construct(){
-        $this->supported_types = ['float','date'];
+        parent::set_supported_types(['float','date']);
     }
 
     /**

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Text extends Field_Type {
 
     function __construct(){
-        $this->primitive_type = 'string';
+        parent::set_primitive_type('string');
     }
 
     /**

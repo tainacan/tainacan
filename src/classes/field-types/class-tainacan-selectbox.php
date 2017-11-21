@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Selectbox extends Field_Type {
 
     function __construct(){
-        $this->primitive_type = '';
+        parent::set_primitive_type('');
     }
 
     /**

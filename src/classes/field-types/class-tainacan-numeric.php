@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Numeric extends Field_Type {
 
     function __construct(){
-        $this->primitive_type = 'float';
+        parent::set_primitive_type('float');
     }
 
     /**

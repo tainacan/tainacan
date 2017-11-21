@@ -8,11 +8,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 abstract class Filter_Type extends \Tainacan\Entity  {
 
-    var $supported_types = [];
+    private $supported_types = [];
 
     abstract function render( $metadata );
 
-    function get_supported_types(){
+    public function get_supported_types(){
         return $this->supported_types;
+    }
+
+    public function set_supported_types($supported_types){
+        $this->supported_types = $supported_types;
     }
 }
