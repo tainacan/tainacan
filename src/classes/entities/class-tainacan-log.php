@@ -27,6 +27,10 @@ class Log extends \Tainacan\Entity {
             $this->WP_Post = new \StdClass();
         }
         
+        if( is_int($which) && $which == 0) {
+        	$this->set_user_id();
+        	$this->set_blog_id();
+        }
     }
 
     /**
@@ -75,6 +79,15 @@ class Log extends \Tainacan\Entity {
     }
     
     /**
+     * Retorn the ID of blog
+     *
+     * @return integer
+     */
+    function get_blog_id() {
+    	return $this->get_mapped_property('blog_id');
+    }
+    
+    /**
      * Return User Id of who make the action
      * 
      * @return int User Id of logged action
@@ -84,9 +97,9 @@ class Log extends \Tainacan\Entity {
     }
         
     /**
-     * Atribui titulo ao log
+     * Set log tittle
      *
-     * @param [type] $value
+     * @param string $value
      * @return void
      */
     function set_title($value) {
@@ -121,5 +134,27 @@ class Log extends \Tainacan\Entity {
      */
     function set_description($value) {
         $this->set_mapped_property('description', $value);
+    }
+    
+    /**
+     * user_id of log entry
+     *
+     * @param integer $value
+     * @return void
+     */
+    protected function set_user_id($value = 0) {
+    	if(0 == $value) $value = get_current_user_id();
+    	$this->set_mapped_property('user_id', $value);
+    }
+    
+    /**
+     * blog_id of log entry
+     *
+     * @param integer $value
+     * @return void
+     */
+    protected function set_blog_id($value = 0) {
+    	if(0 == $value) $value = get_current_blog_id();
+    	$this->set_mapped_property('blog_id', $value);
     }
 }

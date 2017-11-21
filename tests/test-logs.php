@@ -25,6 +25,9 @@ class Logs extends \WP_UnitTestCase {
         //setando os valores na classe do tainacan
         $log->set_title('blame someone');
         $log->set_description('someone did that');
+        
+        $user_id = get_current_user_id();
+        $blog_id = get_current_blog_id();
 
         //inserindo
         $log = $Tainacan_Logs->insert($log);
@@ -34,6 +37,7 @@ class Logs extends \WP_UnitTestCase {
 
         $this->assertEquals( 'blame someone', $test->get_title() );
         $this->assertEquals( 'someone did that', $test->get_description() );
+        $this->assertEquals( $user_id, $test->get_user_id() );
+        $this->assertEquals( $blog_id, $test->get_blog_id() ); 
     }
-
 }

@@ -6,6 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Implement a Logs system
+ *  
+ * @author medialab
+ *
+ */
 class Logs implements Repository {
     
     function __construct() {
@@ -46,6 +52,10 @@ class Logs implements Repository {
         		'map'        => 'post_author',
         		'validation' => ''
         	],
+        	'blog_id'        => [
+        		'map'        => 'meta',
+        		'validation' => ''
+        	],
         ];
     }
     
@@ -54,7 +64,7 @@ class Logs implements Repository {
             'name'               => 'logs',
             'singular_name'      => 'logs',
             'add_new'            => 'Adicionar Novo',
-            'add_new_item'       =>'Adicionar Log',
+            'add_new_item'       => 'Adicionar Log',
             'edit_item'          => 'Editar',
             'new_item'           => 'Novo Log',
             'view_item'          => 'Visualizar',
@@ -85,6 +95,14 @@ class Logs implements Repository {
         register_post_type(Entities\Log::POST_TYPE, $args);
     }
     
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Tainacan\Repositories\Repository::insert()
+     * 
+     * @param \Tainacan\Entities\Log $log
+     * 
+     */
     function insert($log) {
         // First iterate through the native post properties
         $map = $this->get_map();
@@ -100,10 +118,9 @@ class Logs implements Repository {
         
         // TODO verificar se salvou mesmo
         $id = wp_insert_post($log->WP_Post);
-        //$log->WP_Post->ID = $id;
         $log->WP_Post = get_post($id);
         
-        /* Now run through properties stored as postmeta TODO maybe a parent class function leave for future use
+        /* Now run through properties stored as postmeta TODO maybe a parent class function leave for future use */
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] == 'meta') {
                 update_post_meta($id, $prop, $log->get_mapped_property($prop));
@@ -114,7 +131,7 @@ class Logs implements Repository {
                     foreach ($values as $value)
                         add_post_meta($id, $prop, $value);
             }
-        }*/
+        }
         
         // return a brand new object
         return new Entities\Log($log->WP_Post);
