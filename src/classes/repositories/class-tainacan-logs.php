@@ -2,9 +2,7 @@
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Implement a Logs system
@@ -15,10 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Logs implements Repository {
     
     function __construct() {
-        add_action('init', array(&$this, 'register_post_type'));
+        add_action('init', array(&$this, 'tainacan_register_post_type'));
     }
     
-    function get_map() {
+    public function get_map() {
         return [
             'id'             => [
                 'map'        => 'ID',
@@ -59,7 +57,7 @@ class Logs implements Repository {
         ];
     }
     
-    function register_post_type() {
+    public function tainacan_register_post_type() {
         $labels = array(
             'name'               => 'logs',
             'singular_name'      => 'logs',
@@ -103,7 +101,7 @@ class Logs implements Repository {
      * @param \Tainacan\Entities\Log $log
      * 
      */
-    function insert($log) {
+    public function insert($log) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {

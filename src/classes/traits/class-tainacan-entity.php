@@ -1,13 +1,15 @@
 <?php
 
-namespace Tainacan;
+namespace Tainacan\Traits;
 
-class Entity {
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+trait Entity {
     
-    var $repository;
-    var $errors = [];
+    private $repository;
+    private $errors = [];
     
-    function get_mapped_property($prop) {
+    public function get_mapped_property($prop) {
         
         global ${$this->repository};
         $map = ${$this->repository}->get_map();
@@ -41,11 +43,11 @@ class Entity {
         return $property;
     }
     
-    function set_mapped_property($prop, $value) {
+    public function set_mapped_property($prop, $value) {
         $this->$prop = $value;
     }
 
-    function validate() {
+    public function validate() {
         
         global ${$this->repository};
         $map = ${$this->repository}->get_map();
@@ -62,7 +64,7 @@ class Entity {
         return $is_valid;
     }
     
-    function validate_prop($prop) {
+    public function validate_prop($prop) {
         global ${$this->repository};
         $map = ${$this->repository}->get_map();
         $mapped = $map[$prop];
@@ -98,16 +100,16 @@ class Entity {
 
     }
     
-    function get_errors() {
+    public function get_errors() {
         return $this->errors;
     }
     
-    function add_error($type, $message) {
+    public function add_error($type, $message) {
         $this->errors[] = [$type => $message];
     }
     
-    function reset_errors() {
+    public function reset_errors() {
         $this->errors = [];
     }
-        
+ 
 }

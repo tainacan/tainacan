@@ -3,9 +3,7 @@
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class Tainacan_Taxonomies
@@ -13,10 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Taxonomies implements Repository {
 
     function __construct() {
-        add_action('init', array(&$this, 'register_post_type'));
+        add_action('init', array(&$this, 'tainacan_register_post_type'));
     }
     
-    function get_map() {
+    public function get_map() {
         return [
             'id'              =>  [
                 'map'         => 'ID',
@@ -49,7 +47,7 @@ class Taxonomies implements Repository {
         ];
     }
 
-    function register_post_type() {
+    public function tainacan_register_post_type() {
         $labels = array(
             'name'               => 'Taxonomy',
             'singular_name'      => 'Taxonomy',
@@ -86,7 +84,7 @@ class Taxonomies implements Repository {
         register_post_type(Entities\Taxonomy::POST_TYPE, $args);
     }
 
-    function get_taxonomies($args = []){
+    public function get_taxonomies($args = []){
         $args = array_merge([
             'post_type'      => Entities\Taxonomy::POST_TYPE,
             'posts_per_page' => -1,
@@ -110,7 +108,7 @@ class Taxonomies implements Repository {
      * @param Entities\Taxonomy $metadata
      * @return int
      */
-    function insert($taxonomy) {
+    public function insert($taxonomy) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -149,7 +147,7 @@ class Taxonomies implements Repository {
         return new Entities\Taxonomy($taxonomy->WP_Post);
     }
 
-    function registerTainacanTaxonomy( $taxonomy_name ){
+    public function register_tainacan_taxonomy( $taxonomy_name ){
         $labels = array(
             'name'              => __( 'Taxonomies', 'textdomain' ),
             'singular_name'     => __( 'Taxonomy','textdomain' ),

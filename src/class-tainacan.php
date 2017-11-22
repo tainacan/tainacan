@@ -7,6 +7,8 @@ Author: MediaLab UFG
 Version: 10.9.8.7.6.5.4
 */
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 const ENTITIES_DIR 	   = __DIR__ . '/classes/entities/';
 const FIELD_TYPES_DIR  = __DIR__ . '/classes/field-types/';
 const FILTER_TYPES_DIR = __DIR__ . '/classes/filter-types/';
@@ -44,9 +46,9 @@ function tainacan_autoload($class_name){
 	elseif ($class_path[0] == 'Tainacan') {
 		$dir = strtolower(CLASSES_DIR.implode(DIRECTORY_SEPARATOR, array_slice($class_path, 1, count($class_path) -2) )).'/';
 		$dir = str_replace('_', '-', $dir);
-		//var_dump($dir);
+		
 		$file = $dir . 'class-tainacan-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
-		//var_dump($file);
+
 		if(file_exists($file)) {
 			require_once($file);
 		}

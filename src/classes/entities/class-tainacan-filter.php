@@ -9,10 +9,11 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Representa a entidade Filter
  * 
  */
-class Filter extends \Tainacan\Entity {
-    const POST_TYPE = 'tainacan-filters';    
-
+class Filter {
+    use \Tainacan\Traits\Entity;
     use \Tainacan\Traits\Entity_Collection_Relation;
+    
+    const POST_TYPE = 'tainacan-filters';    
 
     function __construct( $which = 0 ) {
 

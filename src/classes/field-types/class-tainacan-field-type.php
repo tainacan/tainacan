@@ -2,9 +2,7 @@
 
 namespace Tainacan\Field_Types;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class TainacanFieldType

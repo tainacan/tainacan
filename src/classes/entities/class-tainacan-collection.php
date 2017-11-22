@@ -7,7 +7,9 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class that represetns the Collection entity
  */
-class Collection extends \Tainacan\Entity  {
+class Collection {
+    use \Tainacan\Traits\Entity;
+
     const POST_TYPE = 'tainacan-collections';    
       
     /**

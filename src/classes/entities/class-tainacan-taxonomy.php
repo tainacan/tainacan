@@ -2,12 +2,10 @@
 
 namespace Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class Taxonomy extends \Tainacan\Entity {
-
+class Taxonomy {
+    use \Tainacan\Traits\Entity;
     use \Tainacan\Traits\Entity_Collections_Relation;
     
     const POST_TYPE = 'tainacan-taxonomies';

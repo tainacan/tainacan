@@ -7,8 +7,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Representa a entidade Item Metadata
  */
-class Item_Metadata_Entity extends \Tainacan\Entity {
-    
+class Item_Metadata_Entity {
+    use \Tainacan\Traits\Entity;
     function __construct(Item $item, Metadata $metadata) {
         
         $this->repository = 'Tainacan_Item_Metadata';

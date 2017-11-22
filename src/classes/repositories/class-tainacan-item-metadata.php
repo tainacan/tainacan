@@ -3,13 +3,11 @@
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Item_Metadata implements Repository {
     
-    function insert($item_metadata) {
+    public function insert($item_metadata) {
 
         $unique = ! $item_metadata->is_multiple();
         

@@ -7,8 +7,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Representa a entidade Item
  */
-class Item extends \Tainacan\Entity {
-    
+class Item {
+    use \Tainacan\Traits\Entity;
 	use \Tainacan\Traits\Entity_Collection_Relation;
     
     function __construct($which = 0) {

@@ -1,9 +1,7 @@
 <?php
 namespace Tainacan\Filter_Types;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class TainacanFieldType
@@ -20,7 +18,7 @@ class List_Filter extends Filter_Type {
      * @return string
      */
 
-    function render( $filter ){
+    public function render( $filter ){
         return '<tainacan-filter-list name="'.$filter->get_name().'"></tainacan-filter-list>';
     }
 }

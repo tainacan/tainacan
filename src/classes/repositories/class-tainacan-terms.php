@@ -3,16 +3,14 @@
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
 * Class Tainacan_Terms
 */
 class Terms implements Repository {
 
-    function get_map() {
+    public function get_map() {
         return [
             'term_id'     => [
                 'map'        => 'term_id',
@@ -41,7 +39,7 @@ class Terms implements Repository {
         ];
     }
     
-    function insert($term){
+    public function insert($term){
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {

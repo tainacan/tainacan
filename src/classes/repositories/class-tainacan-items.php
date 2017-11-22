@@ -3,9 +3,7 @@
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Items implements Repository {
     
@@ -13,7 +11,7 @@ class Items implements Repository {
         add_action('init', array(&$this, 'register_post_types'));
     }
     
-    function get_map() {
+    public function get_map() {
         return [
             'id'            => [
                 'map'        => 'ID',
@@ -36,7 +34,7 @@ class Items implements Repository {
         ];
     }
     
-    function register_post_types() {
+    public function register_post_types() {
         
         global $Tainacan_Collections, $Tainacan_Taxonomies;
         
@@ -58,7 +56,7 @@ class Items implements Repository {
         }  
     }
  
-    function insert($item) {
+    public function insert($item) {
         $map = $this->get_map();
         
         // get collection to determine post type
@@ -180,7 +178,7 @@ class Items implements Repository {
     // collections ID or array of IDs, object or array of objects
     // metadata - array of metadata in meta_query format
     // other item properties, present in the "map"
-    function query($args) {
+    public function query($args) {
         
         $map = $this->get_map();
 

@@ -2,12 +2,10 @@
 
 namespace Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class Term extends \Tainacan\Entity {
-
+class Term {
+    use \Tainacan\Traits\Entity;
     function __construct($which = 0, $taxonomy = '' ) {
 
         $this->repository = 'Tainacan_Terms';

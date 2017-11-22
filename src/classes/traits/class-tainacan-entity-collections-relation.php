@@ -2,15 +2,16 @@
 
 namespace Tainacan\Traits;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 // used by Taxonomy
 
 trait Entity_Collections_Relation {
 
-    function fetch_ids() {
+    public function fetch_ids() {
         return $this->get_mapped_property('collections_ids');
     }
     
-    function fetch() {
+    public function fetch() {
         if (isset($this->collection) && !empty($this->collection) && is_array($this->collection)){
             return $this->collection;
         }
@@ -31,12 +32,12 @@ trait Entity_Collections_Relation {
         
     }
     
-    function set_collections_ids(Array $value) {
+    public function set_collections_ids(Array $value) {
         return $this->set_mapped_property('collection_id', $value);
         $this->collections = null;
     }
     
-    function set_collections(Array $collections) {
+    public function set_collections(Array $collections) {
         $collections_ids = [];
         $this->collections = $collections;
         

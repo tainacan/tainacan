@@ -3,17 +3,15 @@
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Filters implements Repository {
 
     function __construct(){
-        add_action('init', array(&$this, 'register_post_type'));
+        add_action('init', array(&$this, 'tainacan_register_post_type'));
     }
     
-    function get_map() {
+    public function get_map() {
         return [
             'id'                 => [
                 'map'        => 'ID',
@@ -54,7 +52,7 @@ class Filters implements Repository {
         ];
     }
 
-    function register_post_type(){
+    public function tainacan_register_post_type(){
         $labels = array(
             'name'               => 'Filter',
             'singular_name'      => 'Filter',
@@ -95,7 +93,7 @@ class Filters implements Repository {
      * @param Entities\Metadata $metadata
      * @return int
      */
-    function insert($metadata) {
+    public function insert($metadata) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {

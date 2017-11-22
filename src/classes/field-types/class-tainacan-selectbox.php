@@ -2,9 +2,7 @@
 
 namespace Tainacan\Field_Types;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class TainacanFieldType
@@ -20,7 +18,7 @@ class Selectbox extends Field_Type {
      * @return string
      */
 
-    function render( $metadata ){
+    public function render( $metadata ){
         return '<tainacan-selectbox name="'.$metadata->get_name().'"></tainacan-selectbox>';
     }
 }

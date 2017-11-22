@@ -2,9 +2,7 @@
 
 namespace Tainacan\Field_Types;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class TainacanFieldType
@@ -20,7 +18,7 @@ class Radio extends Field_Type {
      * @return string
      */
 
-    function render( $metadata ){
+    public function render( $metadata ){
         return '<tainacan-radio name="'.$metadata->get_name().'"></tainacan-radio>';
     }
 }

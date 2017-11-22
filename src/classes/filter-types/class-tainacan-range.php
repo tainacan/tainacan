@@ -2,9 +2,7 @@
 
 namespace Tainacan\Filter_Types;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class TainacanFieldType
@@ -19,8 +17,7 @@ class Range extends Filter_Type {
      * @param $metadata
      * @return string
      */
-
-    function render( $filter ){
+    public function render( $filter ){
         return '<tainacan-filter-range name="'.$filter->get_name().'"></tainacan-filter-range>';
     }
 }

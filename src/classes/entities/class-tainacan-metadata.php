@@ -7,8 +7,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Representa a entidade Metadata e extende a super classe Entity
  */
-class Metadata extends \Tainacan\Entity {
-    
+class Metadata {
+    use \Tainacan\Traits\Entity;
     const POST_TYPE = 'tainacan-metadata';    
 
 	use \Tainacan\Traits\Entity_Collection_Relation;

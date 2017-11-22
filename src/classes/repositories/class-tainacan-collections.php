@@ -3,21 +3,17 @@
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use \Respect\Validation\Validator as v;
 
 class Collections implements Repository {
     
-    var $map;
-
     function __construct() {
         add_action('init', array(&$this, 'tainacan_register_post_type'));
     }
     
-    function get_map() {
+    public function get_map() {
         return [
             'id'             => [
                 'map'        => 'ID',
@@ -51,7 +47,7 @@ class Collections implements Repository {
         ];
     }
 
-    function tainacan_register_post_type() {
+    public function tainacan_register_post_type() {
         $labels = array(
             'name'               => 'Collections',
             'singular_name'      => 'Collections',
@@ -87,7 +83,7 @@ class Collections implements Repository {
         register_post_type(Entities\Collection::POST_TYPE, $args);
     }
     
-    function insert($collection) {
+    public function insert($collection) {
         
         // validate
         if (!$collection->validate()){

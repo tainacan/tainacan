@@ -2,11 +2,9 @@
 
 namespace Tainacan\Filter_Types;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-abstract class Filter_Type extends \Tainacan\Entity  {
+abstract class Filter_Type {
 
     private $supported_types = [];
 
