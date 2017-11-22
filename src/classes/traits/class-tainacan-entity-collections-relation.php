@@ -33,7 +33,7 @@ trait Entity_Collections_Relation {
     }
     
     public function set_collections_ids(Array $value) {
-        return $this->set_mapped_property('collection_id', $value);
+        $this->set_mapped_property('collection_id', $value);
         $this->collections = null;
     }
     

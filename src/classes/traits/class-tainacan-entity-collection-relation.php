@@ -28,7 +28,7 @@ trait Entity_Collection_Relation {
     
     public function set_collection_id($value) {
         $this->collection = null;
-        return $this->set_mapped_property('collection_id', $value);  
+        $this->set_mapped_property('collection_id', $value);  
     }
     
     public function set_collection(Entities\Collection $collection) {
