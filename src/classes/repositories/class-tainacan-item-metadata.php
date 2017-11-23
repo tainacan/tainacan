@@ -5,7 +5,7 @@ use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class Item_Metadata implements Repository {
+class Item_Metadata extends Repository {
     
     public function insert($item_metadata) {
 
@@ -65,5 +65,5 @@ class Item_Metadata implements Repository {
             return get_post_meta($object->item->get_id(), $object->metadata->get_id(), $unique);  
         }
     }
-    
+    public function register_post_type() { }
 }

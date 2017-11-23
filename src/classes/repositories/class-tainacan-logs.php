@@ -10,11 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * @author medialab
  *
  */
-class Logs implements Repository {
-    
-    function __construct() {
-        add_action('init', array(&$this, 'tainacan_register_post_type'));
-    }
+class Logs extends Repository {
     
     public function get_map() {
         return [
@@ -57,7 +53,7 @@ class Logs implements Repository {
         ];
     }
     
-    public function tainacan_register_post_type() {
+    public function register_post_type() {
         $labels = array(
             'name'               => 'logs',
             'singular_name'      => 'logs',

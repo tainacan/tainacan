@@ -1,7 +1,6 @@
 <?php
 
 namespace Tainacan\Entities;
-use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -9,8 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Representa a entidade Filter
  * 
  */
-class Filter {
-    use \Tainacan\Traits\Entity;
+class Filter extends Entity {
     use \Tainacan\Traits\Entity_Collection_Relation;
     
     const POST_TYPE = 'tainacan-filters';    
@@ -72,11 +70,11 @@ class Filter {
     /**
      * Retorna o metadado
      *
-     * @return Entities\Metadata
+     * @return Metadata
      */
     function get_metadata() {
         $id = $this->get_mapped_property('metadata');
-        return new Entities\Metadata( $id );
+        return new Metadata( $id );
     }
 
     /**
@@ -144,7 +142,7 @@ class Filter {
      * @return void
      */
     function set_metadata( $value ){
-    	$id = ( $value instanceof Entities\Metadata ) ? $value->get_id() : $value;
+    	$id = ( $value instanceof Metadata ) ? $value->get_id() : $value;
 
         $this->set_mapped_property('metadata', $id);
     }

@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
 * Class Tainacan_Terms
 */
-class Terms implements Repository {
+class Terms extends Repository {
 
     public function get_map() {
         return [
@@ -92,4 +92,6 @@ class Terms implements Repository {
     public function delete($object){
 
     }
+    
+    public function register_post_type() { }
 }

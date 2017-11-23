@@ -7,12 +7,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use \Respect\Validation\Validator as v;
 
-class Collections implements Repository {
-    
-    function __construct() {
-        add_action('init', array(&$this, 'tainacan_register_post_type'));
-    }
-    
+class Collections extends Repository {
+	protected $entities_type = '\Tainacan\Entities\Collection';
     public function get_map() {
         return [
             'id'             => [
@@ -47,7 +43,7 @@ class Collections implements Repository {
         ];
     }
 
-    public function tainacan_register_post_type() {
+    public function register_post_type() {
         $labels = array(
             'name'               => 'Collections',
             'singular_name'      => 'Collections',
@@ -80,59 +76,9 @@ class Collections implements Repository {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(Entities\Collection::POST_TYPE, $args);
+        register_post_type(Entities\Collection::get_post_type(), $args);
     }
     
-    public function insert($collection) {
-        
-        // validate
-        if (!$collection->validate()){
-            return $collection->get_errors();
-        }
-            // TODO: Throw Warning saying you must validate object before insert()
-        
-        $map = $this->get_map();
-        
-        // First iterate through the native post properties
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $collection->WP_Post->{$mapped['map']} = $collection->get_mapped_property($prop);
-            }
-        }
-        
-        // save post and geet its ID
-        $collection->WP_Post->post_type = Entities\Collection::POST_TYPE;
-        $collection->WP_Post->post_status = 'publish';
-        
-        // TODO verificar se salvou mesmo
-        $id = wp_insert_post($collection->WP_Post);
-
-        // reset object
-        $collection->WP_Post = get_post($id);
-        
-        // Now run through properties stored as postmeta
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] == 'meta') {
-                update_post_meta($id, $prop, $collection->get_mapped_property($prop));
-            } elseif ($mapped['map'] == 'meta_multi') {
-                $values = $collection->get_mapped_property($prop);
-                
-                delete_post_meta($id, $prop);
-                
-                if (is_array($values)){
-                    foreach ($values as $value){
-                        add_post_meta($id, $prop, $value);
-                    }
-                }
-            }
-        }
-        
-        $collection->tainacan_register_post_type();
-        
-        // return a brand new object
-        return new Entities\Collection($collection->WP_Post);
-    }
-
     public function update($object){
 
     }
@@ -152,7 +98,7 @@ class Collections implements Repository {
             return new Entities\Collection($object);
         } elseif(is_array($object)) {
             $args = array_merge([
-                'post_type'      => Entities\Collection::POST_TYPE,
+                'post_type'      => Entities\Collection::get_post_type(),
                 'posts_per_page' => -1,
                 'post_status'    => 'publish',
             ], $object);

@@ -7,19 +7,16 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class that represetns the Collection entity
  */
-class Collection {
-    use \Tainacan\Traits\Entity;
+class Collection extends Entity {
 
-    const POST_TYPE = 'tainacan-collections';    
+    protected static $post_type = 'tainacan-collections';
+    protected $repository = 'Tainacan_Collections';
       
     /**
      * Create an instance of Collection
      * @param integer|\WP_Post optional $which Collection ID or a WP_Post object for existing collections. Leave empty to create a new collection.
      */
     function __construct($which = 0) {
-        
-        $this->repository = 'Tainacan_Collections';
-        
         if (is_numeric($which) && $which > 0) {
             $post = get_post($which);
             
@@ -42,7 +39,7 @@ class Collection {
      * This method register the post type for a collection, so that items can be created.
      *
      * @return void
-     */
+     *
     function tainacan_register_post_type() {
         $cpt_labels = array(
             'name'               => 'Item',
@@ -86,7 +83,7 @@ class Collection {
             unregister_post_type($this->get_db_identifier());
         
         register_post_type($cpt_slug, $args);
-    }
+    }*/
 
     /**
      * Get the collection ID

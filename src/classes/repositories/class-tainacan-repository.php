@@ -5,20 +5,22 @@ namespace Tainacan\Repositories;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 abstract class Repository {
-	protected $entity_type = '\Tainacan\Traits\Entity'; 
+	protected $entities_type = '\Tainacan\Entities\Entity';
 	
-	public function get_map()
-	{
+	function __construct() {
+		add_action('init', array(&$this, 'register_post_type'));
+	}
+	
+	public function get_map() {
 		return array();
 	}
 	
 	/**
 	 * 
-	 * @param \Tainacan\Traits\Entity $obj
-	 * @return \Tainacan\Traits\Entity
+	 * @param \Tainacan\Entities\Entity $obj
+	 * @return \Tainacan\Entities\Entity
 	 */
 	public function insert($obj) {
-		
 		// validate
 		if (!$obj->validate()){
 			return $obj->get_errors();
@@ -35,7 +37,7 @@ abstract class Repository {
 		}
 		
 		// save post and geet its ID
-		$obj->WP_Post->post_type = $obj->get_post_type();//$this->ObjectType::POST_TYPE;
+		$obj->WP_Post->post_type = $obj::get_post_type();
 		$obj->WP_Post->post_status = 'publish';
 		
 		// TODO verificar se salvou mesmo
@@ -62,13 +64,14 @@ abstract class Repository {
 		}
 		
 		// return a brand new object
-		return new $this->entity_type($obj->WP_Post);
+		return new $this->entities_type($obj->WP_Post);
 	}
     
     public abstract function delete($object);
     public abstract function fetch($object);
     public abstract function update($object);
-
+    public abstract function register_post_type();
+    
 }
 
 ?>

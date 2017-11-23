@@ -4,8 +4,7 @@ namespace Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class Taxonomy {
-    use \Tainacan\Traits\Entity;
+class Taxonomy extends Entity {
     use \Tainacan\Traits\Entity_Collections_Relation;
     
     const POST_TYPE = 'tainacan-taxonomies';

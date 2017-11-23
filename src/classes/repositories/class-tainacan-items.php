@@ -5,11 +5,7 @@ use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class Items implements Repository {
-    
-    function __construct() {
-        add_action('init', array(&$this, 'register_post_types'));
-    }
+class Items extends Repository {
     
     public function get_map() {
         return [
@@ -34,7 +30,7 @@ class Items implements Repository {
         ];
     }
     
-    public function register_post_types() {
+    public function register_post_type() {
         
         global $Tainacan_Collections, $Tainacan_Taxonomies;
         

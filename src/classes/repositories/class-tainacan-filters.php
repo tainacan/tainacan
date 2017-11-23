@@ -5,12 +5,7 @@ use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class Filters implements Repository {
-
-    function __construct(){
-        add_action('init', array(&$this, 'tainacan_register_post_type'));
-    }
-    
+class Filters extends Repository {
     public function get_map() {
         return [
             'id'                 => [
@@ -52,7 +47,7 @@ class Filters implements Repository {
         ];
     }
 
-    public function tainacan_register_post_type(){
+    public function register_post_type(){
         $labels = array(
             'name'               => 'Filter',
             'singular_name'      => 'Filter',

@@ -8,12 +8,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class Metadatas
  */
-class Metadatas implements Repository {
+class Metadatas extends Repository {
 
-    function __construct() {
-        add_action('init', array(&$this, 'tainacan_register_post_type'));
-    }
-    
     public function get_map() {
         return [
             'id'             => [
@@ -83,7 +79,7 @@ class Metadatas implements Repository {
         ];
     }
 
-    public function tainacan_register_post_type() {
+    public function register_post_type() {
         $labels = array(
             'name'               => 'Metadata',
             'singular_name'      => 'Metadata',

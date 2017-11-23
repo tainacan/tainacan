@@ -8,12 +8,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class Tainacan_Taxonomies
  */
-class Taxonomies implements Repository {
+class Taxonomies extends Repository {
 
-    function __construct() {
-        add_action('init', array(&$this, 'tainacan_register_post_type'));
-    }
-    
     public function get_map() {
         return [
             'id'              =>  [
@@ -47,7 +43,7 @@ class Taxonomies implements Repository {
         ];
     }
 
-    public function tainacan_register_post_type() {
+    public function register_post_type() {
         $labels = array(
             'name'               => 'Taxonomy',
             'singular_name'      => 'Taxonomy',
@@ -147,7 +143,7 @@ class Taxonomies implements Repository {
         return new Entities\Taxonomy($taxonomy->WP_Post);
     }
 
-    public function register_tainacan_taxonomy( $taxonomy_name ){
+    public function tainacan_taxonomy( $taxonomy_name ){
         $labels = array(
             'name'              => __( 'Taxonomies', 'textdomain' ),
             'singular_name'     => __( 'Taxonomy','textdomain' ),

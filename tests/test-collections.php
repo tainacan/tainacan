@@ -27,6 +27,8 @@ class Collections extends \WP_UnitTestCase {
         global $Tainacan_Collections;
         $col = $Tainacan_Collections->insert($x);
         
+        $this->assertEquals('Tainacan\Entities\Collection', get_class($col));
+        
         //
         
         $test = $Tainacan_Collections->fetch($col->get_id());

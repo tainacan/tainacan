@@ -1,13 +1,18 @@
 <?php
 
-namespace Tainacan\Traits;
+namespace Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-trait Entity {
-    
-    private $repository;
+class Entity {
+	protected $repository;
     private $errors = [];
+    protected static $post_type = 'post';
+    /**
+     * 
+     * @var \WP_Post
+     */
+    public $WP_Post;
     
     public function get_mapped_property($prop) {
         
@@ -102,6 +107,10 @@ trait Entity {
     
     public function get_errors() {
         return $this->errors;
+    }
+    
+    public static function get_post_type() {
+    	return static::$post_type;
     }
     
     public function add_error($type, $message) {
