@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Filter extends Entity {
     use \Tainacan\Traits\Entity_Collection_Relation;
     
-    const POST_TYPE = 'tainacan-filters';    
+    protected static $post_type = 'tainacan-filters';
 
     function __construct( $which = 0 ) {
 

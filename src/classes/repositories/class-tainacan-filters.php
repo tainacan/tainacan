@@ -6,6 +6,8 @@ use Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Filters extends Repository {
+	protected $entities_type = '\Tainacan\Entities\Filter';
+	
     public function get_map() {
         return [
             'id'                 => [
@@ -80,14 +82,14 @@ class Filters extends Repository {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(Entities\Filter::POST_TYPE, $args);
+        register_post_type(Entities\Filter::get_post_type(), $args);
     }
 
 
     /**
      * @param Entities\Metadata $metadata
      * @return int
-     */
+     *
     public function insert($metadata) {
         // First iterate through the native post properties
         $map = $this->get_map();
@@ -98,7 +100,7 @@ class Filters extends Repository {
         }
 
         // save post and get its ID
-        $metadata->WP_Post->post_type = Entities\Filter::POST_TYPE;
+        $metadata->WP_Post->post_type = Entities\Filter::get_post_type();
         $metadata->WP_Post->post_status = 'publish';
         $id = wp_insert_post($metadata->WP_Post);
         $metadata->WP_Post = get_post($id);
@@ -122,7 +124,7 @@ class Filters extends Repository {
 
         // return a brand new object
         return new Entities\Filter($metadata->WP_Post);
-    }
+    }*/
 
     public function delete($object){
 
@@ -147,7 +149,7 @@ class Filters extends Repository {
             $collection_id = ( is_object( $object ) ) ? $object->get_id() : $object;
 
             $args = array_merge([
-                'post_type'      => Entities\Filter::POST_TYPE,
+                'post_type'      => Entities\Filter::get_post_type(),
                 'posts_per_page' => -1,
                 'post_status'    => 'publish',
                 'meta_key'       => 'collection_id',
