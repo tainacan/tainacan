@@ -117,47 +117,6 @@ class Metadatas extends Repository {
         register_post_type(Entities\Metadata::get_post_type(), $args);
     }
 
-    /**
-     * @param Entities\Metadata $metadata
-     * @return int
-     *
-    public function insert($metadata) {
-        // First iterate through the native post properties
-        $map = $this->get_map();
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $metadata->WP_Post->{$mapped['map']} = $metadata->get_mapped_property($prop);
-            }
-        }
-
-        // save post and get its ID
-        $metadata->WP_Post->post_type = Entities\Metadata::POST_TYPE;
-        $metadata->WP_Post->post_status = 'publish';
-        
-        $id = wp_insert_post($metadata->WP_Post);
-        $metadata->WP_Post = get_post($id);
-
-        // Now run through properties stored as postmeta
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] == 'meta') {
-                update_post_meta($id, $prop, $metadata->get_mapped_property($prop));
-            } elseif ($mapped['map'] == 'meta_multi') {
-                $values = $metadata->get_mapped_property($prop);
-                
-                delete_post_meta($id, $prop);
-                
-                if (is_array($values)){
-                    foreach ($values as $value){
-                        add_post_meta($id, $prop, $value);
-                    }
-                }
-            }
-        }
-        
-        // return a brand new object
-        return new Entities\Metadata($metadata->WP_Post);
-    }*/
-
     public function fetch($object, $args = []){
         // TODO: get metadata from parent collections
         if(is_numeric($object)){
