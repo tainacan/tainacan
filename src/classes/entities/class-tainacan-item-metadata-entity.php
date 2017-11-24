@@ -8,6 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Representa a entidade Item Metadata
  */
 class Item_Metadata_Entity extends Entity {
+	protected static $post_type = false;
     function __construct(Item $item, Metadata $metadata) {
         
         $this->repository = 'Tainacan_Item_Metadata';
