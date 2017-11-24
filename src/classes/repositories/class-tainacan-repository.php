@@ -1,11 +1,25 @@
 <?php
 
 namespace Tainacan\Repositories;
+use Tainacan\Entities;
+use Tainacan\Entities\Entity;
+use Tainacan;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 abstract class Repository {
 	protected $entities_type = '\Tainacan\Entities\Entity';
+	/**
+	 * 
+	 * @var string Text to put on log Title, false to use default 
+	 */
+	protected $log_message = false;
+	
+	/**
+	 *
+	 * @var string Text to put on log Description, false for no description
+	 */
+	protected $log_description = false;
 	
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
@@ -73,6 +87,9 @@ abstract class Repository {
 				}
 			}
 		}
+		
+		//not log the log 
+		if($this->entities_type != '\Tainacan\Entities\Log') Entities\Log::create($this->log_message, $this->log_description, $obj);
 		
 		// return a brand new object
 		return new $this->entities_type($obj->WP_Post);

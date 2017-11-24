@@ -51,6 +51,14 @@ class Logs extends Repository {
         		'map'        => 'meta',
         		'validation' => ''
         	],
+        	'value'        => [
+        		'map'        => 'meta',
+        		'validation' => ''
+        	],
+        	'old_value'        => [
+        		'map'        => 'meta',
+        		'validation' => ''
+        	],
         ];
     }
     
@@ -90,48 +98,6 @@ class Logs extends Repository {
         register_post_type(Entities\Log::get_post_type(), $args);
     }
     
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Tainacan\Repositories\Repository::insert()
-     * 
-     * @param \Tainacan\Entities\Log $log
-     * 
-     *
-    public function insert($log) {
-        // First iterate through the native post properties
-        $map = $this->get_map();
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $log->WP_Post->{$mapped['map']} = $log->get_mapped_property($prop);
-            }
-        }
-        
-        // save post and geet its ID
-        $log->WP_Post->post_type = Entities\Log::POST_TYPE;
-        $log->WP_Post->post_status = 'publish';
-        
-        // TODO verificar se salvou mesmo
-        $id = wp_insert_post($log->WP_Post);
-        $log->WP_Post = get_post($id);
-        
-        /* Now run through properties stored as postmeta TODO maybe a parent class function leave for future use /
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] == 'meta') {
-                update_post_meta($id, $prop, $log->get_mapped_property($prop));
-            } elseif ($mapped['map'] == 'meta_multi') {
-                $values = $log->get_mapped_property($prop);
-                delete_post_meta($id, $prop);
-                if (is_array($values))
-                    foreach ($values as $value)
-                        add_post_meta($id, $prop, $value);
-            }
-        }
-        
-        // return a brand new object
-        return new Entities\Log($log->WP_Post);
-    }*/
-    
     public function fetch($object = []){
         if(is_numeric($object)){
     	    return new Entities\Log($object);
@@ -160,5 +126,21 @@ class Logs extends Repository {
 
     public function update($object){
 
+    }
+    
+    public function fetch_last() {
+    	$args = [
+    		'post_type'      => Entities\Log::get_post_type(),
+    		'posts_per_page' => 1,
+    		'post_status'    => 'publish',
+    	];
+    	
+    	$posts = get_posts($args);
+    	
+    	foreach ($posts as $post) {
+    		$log = new Entities\Log($post);
+    	}
+    	// TODO: Pegar coleções registradas via código
+    	return $log;
     }
 }
