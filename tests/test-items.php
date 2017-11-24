@@ -51,7 +51,7 @@ class Items extends \WP_UnitTestCase {
         
         $this->assertTrue( isset($meta_test[$metadata->get_id()]) );
         $this->assertTrue( $meta_test[$metadata->get_id()] instanceof \Tainacan\Entities\Item_Metadata_Entity );
-        $this->assertEquals( $meta_test[$metadata->get_id()]->get_value(), 'value_1');
+        $this->assertEquals( 'value_1', $meta_test[$metadata->get_id()]->get_value());
         
         $i = new \Tainacan\Entities\Item();
         $i->set_title('apple');
