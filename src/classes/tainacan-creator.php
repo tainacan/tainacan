@@ -5,7 +5,6 @@ const FIELD_TYPES_DIR  = __DIR__ . '/field-types/';
 const FILTER_TYPES_DIR = __DIR__ . '/filter-types/';
 const REPOSITORIES_DIR = __DIR__ . '/repositories/';
 const TRAITS_DIR 	   = __DIR__ . '/traits/';
-const CLASSES_DIR 	   = __DIR__;
 const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
 
 const DIRS = [
