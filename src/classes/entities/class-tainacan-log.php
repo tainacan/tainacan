@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Representa a entidade Log
  */
 class Log extends Entity {
-    const POST_TYPE = 'tainacan-logs';    
+	protected static $post_type = 'tainacan-logs';
     
     function __construct($which = 0) {
         

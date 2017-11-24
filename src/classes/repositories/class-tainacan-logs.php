@@ -11,7 +11,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  *
  */
 class Logs extends Repository {
-    
+	protected $entities_type = '\Tainacan\Entities\Log';
+	
     public function get_map() {
         return [
             'id'             => [
@@ -86,7 +87,7 @@ class Logs extends Repository {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(Entities\Log::POST_TYPE, $args);
+        register_post_type(Entities\Log::get_post_type(), $args);
     }
     
     /**
@@ -96,7 +97,7 @@ class Logs extends Repository {
      * 
      * @param \Tainacan\Entities\Log $log
      * 
-     */
+     *
     public function insert($log) {
         // First iterate through the native post properties
         $map = $this->get_map();
@@ -114,7 +115,7 @@ class Logs extends Repository {
         $id = wp_insert_post($log->WP_Post);
         $log->WP_Post = get_post($id);
         
-        /* Now run through properties stored as postmeta TODO maybe a parent class function leave for future use */
+        /* Now run through properties stored as postmeta TODO maybe a parent class function leave for future use /
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] == 'meta') {
                 update_post_meta($id, $prop, $log->get_mapped_property($prop));
@@ -129,14 +130,14 @@ class Logs extends Repository {
         
         // return a brand new object
         return new Entities\Log($log->WP_Post);
-    }
+    }*/
     
     public function fetch($object = []){
         if(is_numeric($object)){
     	    return new Entities\Log($object);
         } else {
             $args = array_merge([
-                'post_type'      => Entities\Log::POST_TYPE,
+                'post_type'      => Entities\Log::get_post_type(),
                 'posts_per_page' => -1,
                 'post_status'    => 'publish',
             ], $object);
