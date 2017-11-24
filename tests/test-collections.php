@@ -32,8 +32,7 @@ class Collections extends \WP_UnitTestCase {
         //
         
         $test = $Tainacan_Collections->fetch($col->get_id());
-        
-        
+
         $this->assertEquals($test->get_name(), 'teste');
         $this->assertEquals($test->get_description(), 'adasdasdsa');
         $this->assertEquals($test->get_itens_per_page(), 23);

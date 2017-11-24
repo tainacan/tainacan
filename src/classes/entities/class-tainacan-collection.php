@@ -31,6 +31,19 @@ class Collection extends Entity {
         }
     }
 
+    public function  __toString(){
+        return 'Hello, I\'m the Collection Entity';
+    }
+
+    public function  __toJSON(){
+        return json_encode(
+            [
+                'name'           => $this->get_name(),
+                'description'    => $this->get_description(),
+                'items_per_page' => $this->get_itens_per_page(),
+            ]
+        );
+    }
     /**
      * Register the post type for this collection
      *

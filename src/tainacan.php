@@ -1,10 +1,11 @@
 <?php
+
 /*
-Plugin Name: Tainacan
-Plugin URI: 
-Description: Lorem Ipsum
-Author: MediaLab UFG
-Version: 10.9.8.7.6.5.4
+ * Plugin Name: Tainacan
+ * Plugin URI: https://github.com/tainacan/tainacan
+ * Description: Transforme seu site Wordpress em um repositório digital
+ * Author: Media Lab / UFG
+ * Version: 1.0
 */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
@@ -15,7 +16,8 @@ const FILTER_TYPES_DIR = __DIR__ . '/classes/filter-types/';
 const REPOSITORIES_DIR = __DIR__ . '/classes/repositories/';
 const TRAITS_DIR 	   = __DIR__ . '/classes/traits/';
 const CLASSES_DIR 	   = __DIR__ . '/classes/';
-const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
+const VENDOR_DIR 	   = __DIR__ . '/vendor/';
+const ENDPOINTS_DIR    = __DIR__ . '/api/endpoints/';
 
 const DIRS = [
     CLASSES_DIR, 
@@ -28,16 +30,16 @@ const DIRS = [
 
 require_once(VENDOR_DIR . 'autoload.php');
 
-spl_autoload_register('tainacan_autoload');    
+spl_autoload_register('tainacan_autoload');
 
 function tainacan_autoload($class_name){
 	$class_path = explode('\\', $class_name);
 	$class_name = end($class_path);
-	
+
 	if(count($class_path) == 1 ) {
 		foreach(DIRS as $dir) {
 			$file = $dir . 'class-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
-			
+
 			if(file_exists($file)) {
 				require_once($file);
 			}
@@ -46,7 +48,7 @@ function tainacan_autoload($class_name){
 	elseif ($class_path[0] == 'Tainacan') {
 		$dir = strtolower(CLASSES_DIR.implode(DIRECTORY_SEPARATOR, array_slice($class_path, 1, count($class_path) -2) )).'/';
 		$dir = str_replace('_', '-', $dir);
-		
+
 		$file = $dir . 'class-tainacan-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
 
 		if(file_exists($file)) {
@@ -78,6 +80,10 @@ $Tainacan_Terms = new \Tainacan\Repositories\Terms();
 
 global $Tainacan_Logs;
 $Tainacan_Logs = new \Tainacan\Repositories\Logs();
+
+
+require_once(ENDPOINTS_DIR . 'class-tainacan-rest-collections-controller.php');
+$rest_collections_controller = new TAINACAN_REST_Collections_Controller();
 
 /**
  * 
