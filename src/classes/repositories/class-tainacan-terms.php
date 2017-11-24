@@ -61,7 +61,9 @@ class Terms extends Repository {
                 update_term_meta($term_inserted['term_id'], $prop, $term->get_mapped_property($prop));
             }
         }
-
+        
+        Entities\Log::create($this->log_message, $this->log_description, $term);
+        
         return $term_inserted['term_id'];
     }
 
