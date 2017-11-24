@@ -36,8 +36,19 @@ abstract class Repository {
 			}
 		}
 		
-		// save post and geet its ID
-		$obj->WP_Post->post_type = $obj::get_post_type();
+		// If implement trait \Tainacan\Traits\Entity_Collection_Relation get its collection relation, else get post type from entity
+		if ( method_exists($obj, 'get_collection') ) {
+			$collection = $obj->get_collection();
+			
+			if (!$collection){
+				return false;
+			}
+			$cpt = $collection->get_db_identifier();
+			$obj->WP_Post->post_type = $cpt;
+		}
+		else {
+			$obj->WP_Post->post_type = $obj::get_post_type();
+		}
 		$obj->WP_Post->post_status = 'publish';
 		
 		// TODO verificar se salvou mesmo
