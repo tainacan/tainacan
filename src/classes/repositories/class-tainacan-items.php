@@ -6,7 +6,7 @@ use Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Items extends Repository {
-    
+	protected $entities_type = '\Tainacan\Entities\Item';
     public function get_map() {
         return [
             'id'            => [
@@ -53,47 +53,7 @@ class Items extends Repository {
     }
  
     public function insert($item) {
-        $map = $this->get_map();
-        
-        // get collection to determine post type
-        $collection = $item->get_collection();
-        
-        if (!$collection){
-            return false;
-        }
-        
-        $cpt = $collection->get_db_identifier();
-        
-        // iterate through the native post properties
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $item->WP_Post->{$mapped['map']} = $item->get_mapped_property($prop);
-            }
-        }
-        
-        // save post and geet its ID
-        $item->WP_Post->post_type = $cpt;
-        $item->WP_Post->post_status = 'publish';
-        
-        $id = wp_insert_post($item->WP_Post);
-        $item->WP_Post = get_post($id);
-        
-        // Now run through properties stored as postmeta
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] == 'meta') {
-                update_post_meta($id, $prop, $item->get_mapped_property($prop));
-            } elseif ($mapped['map'] == 'meta_multi') {
-                $values = $item->get_mapped_property($prop);
-                
-                delete_post_meta($id, $prop);
-                
-                if (is_array($values)){
-                    foreach ($values as $value){
-                        add_post_meta($id, $prop, $value);
-                    }
-                }
-            }
-        }
+        $new_item = parent::insert($item);
         
         // save metadata
         $metadata = $item->get_metadata();
@@ -103,8 +63,7 @@ class Items extends Repository {
             $Tainacan_Item_Metadata->insert($meta);
         }
         
-        // return a brand new object
-        return new Entities\Item($item->WP_Post);
+        return $new_item;
     }
 
     public function fetch($args = [], $object = []){
