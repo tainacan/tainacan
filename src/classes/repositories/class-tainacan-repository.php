@@ -36,8 +36,8 @@ abstract class Repository {
 			}
 		}
 		
-		// If implement trait \Tainacan\Traits\Entity_Collection_Relation get its collection relation, else get post type from entity
-		if ( method_exists($obj, 'get_collection') ) {
+		// not have a post_type get its collection relation, else get post type from entity
+		if ( $obj->get_post_type() === false ) {
 			$collection = $obj->get_collection();
 			
 			if (!$collection){

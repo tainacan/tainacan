@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Entity {
 	protected $repository;
     private $errors = [];
-    protected static $post_type = 'post';
+    protected static $post_type = false;
     /**
      * 
      * @var \WP_Post
