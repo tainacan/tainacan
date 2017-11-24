@@ -9,7 +9,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 * Class Tainacan_Terms
 */
 class Terms extends Repository {
-
+	
+	protected $entities_type = '\Tainacan\Entities\Term';
     public function get_map() {
         return [
             'term_id'     => [

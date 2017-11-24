@@ -5,6 +5,7 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Term extends Entity {
+	protected static $post_type = false;
     function __construct($which = 0, $taxonomy = '' ) {
 
         $this->repository = 'Tainacan_Terms';
