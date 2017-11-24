@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Taxonomy extends Entity {
     use \Tainacan\Traits\Entity_Collections_Relation;
     
-    const POST_TYPE = 'tainacan-taxonomies';
+    protected static $post_type = 'tainacan-taxonomies';
     
     function __construct( $which = 0 ) {
 

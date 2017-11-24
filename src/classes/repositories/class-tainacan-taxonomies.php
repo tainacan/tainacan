@@ -9,6 +9,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Class Tainacan_Taxonomies
  */
 class Taxonomies extends Repository {
+	protected $entities_type = '\Tainacan\Entities\Taxonomy';
 
     public function get_map() {
         return [
@@ -77,12 +78,12 @@ class Taxonomies extends Repository {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(Entities\Taxonomy::POST_TYPE, $args);
+        register_post_type(Entities\Taxonomy::get_post_type(), $args);
     }
 
     public function get_taxonomies($args = []){
         $args = array_merge([
-            'post_type'      => Entities\Taxonomy::POST_TYPE,
+            'post_type'      => Entities\Taxonomy::get_post_type(),
             'posts_per_page' => -1,
             'post_status'    => 'publish',
         ], $args);
@@ -101,46 +102,16 @@ class Taxonomies extends Repository {
     }
 
     /**
-     * @param Entities\Taxonomy $metadata
+     * @param Entities\Taxonomy $taxonomy
      * @return int
      */
     public function insert($taxonomy) {
-        // First iterate through the native post properties
-        $map = $this->get_map();
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $taxonomy->WP_Post->{$mapped['map']} = $taxonomy->get_mapped_property($prop);
-            }
-        }
 
-        // save post and get its ID
-        $taxonomy->WP_Post->post_type = Entities\Taxonomy::POST_TYPE;
-        $taxonomy->WP_Post->post_status = 'publish';
-        
-        $id = wp_insert_post($taxonomy->WP_Post);
-        $taxonomy->WP_Post = get_post($id);
-
-        // Now run through properties stored as postmeta
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] == 'meta') {
-                update_post_meta($id, $prop, $taxonomy->get_mapped_property($prop));
-            } elseif ($mapped['map'] == 'meta_multi') {
-                $values = $taxonomy->get_mapped_property($prop);
-                
-                delete_post_meta($id, $prop);
-
-                if (is_array($values)){
-                    foreach ($values as $value){
-                        add_post_meta($id, $prop, $value);
-                    }
-                }
-            }
-        }
-        
+    	$new_taxonomy = parent::insert($taxonomy);
         $taxonomy->register_taxonomy();
         
         // return a brand new object
-        return new Entities\Taxonomy($taxonomy->WP_Post);
+        return $new_taxonomy;
     }
 
     public function tainacan_taxonomy( $taxonomy_name ){
