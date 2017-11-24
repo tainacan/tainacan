@@ -8,10 +8,10 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Representa a entidade Metadata e extende a super classe Entity
  */
 class Metadata extends Entity {
-    const POST_TYPE = 'tainacan-metadata';    
-
 	use \Tainacan\Traits\Entity_Collection_Relation;
-    
+
+	protected static $post_type = 'tainacan-metadata';
+	
     function __construct( $which = 0 ) {
 
         $this->repository = 'Tainacan_Metadatas';

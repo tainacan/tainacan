@@ -9,7 +9,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Class Metadatas
  */
 class Metadatas extends Repository {
-
+	protected $entities_type = '\Tainacan\Entities\Metadata';
+	
     public function get_map() {
         return [
             'id'             => [
@@ -113,13 +114,13 @@ class Metadatas extends Repository {
             'rewrite'             => true,
             'capability_type'     => 'post',
         );
-        register_post_type(Entities\Metadata::POST_TYPE, $args);
+        register_post_type(Entities\Metadata::get_post_type(), $args);
     }
 
     /**
      * @param Entities\Metadata $metadata
      * @return int
-     */
+     *
     public function insert($metadata) {
         // First iterate through the native post properties
         $map = $this->get_map();
@@ -155,7 +156,7 @@ class Metadatas extends Repository {
         
         // return a brand new object
         return new Entities\Metadata($metadata->WP_Post);
-    }
+    }*/
 
     public function fetch($object, $args = []){
         // TODO: get metadata from parent collections
@@ -165,7 +166,7 @@ class Metadatas extends Repository {
             $collection_id = ( is_object( $object ) ) ? $object->get_id() : $object;
 
             $args = array_merge([
-                'post_type'      => Entities\Metadata::POST_TYPE,
+                'post_type'      => Entities\Metadata::get_post_type(),
                 'posts_per_page' => -1,
                 'post_status'    => 'publish',
                 'meta_key'       => 'collection_id',
