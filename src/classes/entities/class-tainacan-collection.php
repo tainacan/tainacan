@@ -11,7 +11,7 @@ class Collection extends Entity {
 
     protected static $post_type = 'tainacan-collections';
     protected $repository = 'Tainacan_Collections';
-      
+
     /**
      * Create an instance of Collection
      * @param integer|\WP_Post optional $which Collection ID or a WP_Post object for existing collections. Leave empty to create a new collection.
@@ -19,11 +19,11 @@ class Collection extends Entity {
     function __construct($which = 0) {
         if (is_numeric($which) && $which > 0) {
             $post = get_post($which);
-            
+
             if ($post instanceof \WP_Post) {
                 $this->WP_Post = get_post($which);
             }
-            
+
         } elseif ($which instanceof \WP_Post) {
             $this->WP_Post = $which;
         } else {
@@ -41,7 +41,9 @@ class Collection extends Entity {
                 'name'           => $this->get_name(),
                 'description'    => $this->get_description(),
                 'items_per_page' => $this->get_itens_per_page(),
-            ]
+            ],
+            JSON_NUMERIC_CHECK,
+            JSON_UNESCAPED_UNICODE
         );
     }
     /**
@@ -68,9 +70,9 @@ class Collection extends Entity {
             'parent_item_colon'  => 'Item acima:',
             'menu_name'          => $this->get_name()
         );
-        
+
         $cpt_slug = $this->get_db_identifier();
-        
+
         $args = array(
             'labels'              => $cpt_labels,
             'hierarchical'        => true,
@@ -91,10 +93,10 @@ class Collection extends Entity {
             ],
             'capability_type'     => 'post',
         );
-        
-        if (post_type_exists($this->get_db_identifier())) 
+
+        if (post_type_exists($this->get_db_identifier()))
             unregister_post_type($this->get_db_identifier());
-        
+
         register_post_type($cpt_slug, $args);
     }*/
 
@@ -159,7 +161,7 @@ class Collection extends Entity {
     function get_itens_per_page() {
         return $this->get_mapped_property('itens_per_page');
     }
-    
+
     /**
      * Get collection DB identifier
      *
@@ -170,7 +172,7 @@ class Collection extends Entity {
     function get_db_identifier() {
         return $this->get_id() ? 'tnc_col_' . $this->get_id() : false;
     }
-    
+
     /**
      * Get collection metadata.
      *
@@ -184,7 +186,7 @@ class Collection extends Entity {
         $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
         return $Tainacan_Metadatas->fetch($this);
     }
-    
+
     /**
      * Set the collection name
      *
@@ -198,7 +200,7 @@ class Collection extends Entity {
     /**
      * Set the collection slug
      *
-     * If you dont set the collection slug, it will be set automatically based on the name and 
+     * If you dont set the collection slug, it will be set automatically based on the name and
      * following WordPress default behavior of creating slugs for posts.
      *
      * If you set the slug for an existing one, WordPress will append a number at the end of in order
