@@ -160,6 +160,7 @@ class Logs extends Repository {
    			$type = get_class($new_value);
    			$msn = sprintf( esc_html__( 'a %s has been created/modified.', 'tainacan' ), $type );
    		}
+   		$msn = apply_filters('tainacan-insert-log-message-title', $msn, $type, $new_value);
     	Entities\Log::create($msn, '', $new_value, $value);
     }
 }

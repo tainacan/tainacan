@@ -62,7 +62,8 @@ class Terms extends Repository {
             }
         }
         
-        Entities\Log::create($this->log_message, $this->log_description, $term);
+        do_action('tainacan-insert', $term);
+        do_action('tainacan-insert-Term', $term);
         
         return $term_inserted['term_id'];
     }
