@@ -149,11 +149,14 @@ class Logs extends Repository {
     	return $log;
     }
     
-    public function log_inserts($new_value, $value)
+    public function log_inserts($new_value, $value = null)
     {
     	$msn = "";
    		if(is_object($new_value))
    		{
+   			// do not log a log
+   			if(method_exists($new_value, 'get_post_type') && $new_value->get_post_type() == 'tainacan-logs') return;
+   			
    			$type = get_class($new_value);
    			$msn = sprintf( esc_html__( 'a %s has been created/modified.', 'tainacan' ), $type );
    		}
