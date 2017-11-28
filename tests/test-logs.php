@@ -45,7 +45,7 @@ class Logs extends \WP_UnitTestCase {
         $value = new Collection();
         $value->set_name('testeLogs');
         $value->set_description('adasdasdsa123');
-        $value->set_itens_per_page(23);
+        $value->set_default_order('DESC');
         
         global $Tainacan_Collections;
         $value = $Tainacan_Collections->insert($value);
@@ -72,6 +72,6 @@ class Logs extends \WP_UnitTestCase {
         
         $this->assertEquals($collection->get_name(), 'new_testeLogs');
         $this->assertEquals($collection->get_description(), 'adasdasdsa123');
-        $this->assertEquals($collection->get_itens_per_page(), 23);
+        $this->assertEquals($collection->get_default_order(), 'DESC');
     }
 }
