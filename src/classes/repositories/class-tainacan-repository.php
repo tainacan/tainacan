@@ -88,8 +88,8 @@ abstract class Repository {
 			}
 		}
 		
-		//not log the log 
-		if($this->entities_type != '\Tainacan\Entities\Log') Entities\Log::create($this->log_message, $this->log_description, $obj);
+		do_action('tainacan-insert', $obj);
+		do_action('tainacan-insert-'.$obj->get_post_type(), $obj);
 		
 		// return a brand new object
 		return new $this->entities_type($obj->WP_Post);
