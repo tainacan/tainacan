@@ -9,17 +9,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 abstract class Repository {
 	protected $entities_type = '\Tainacan\Entities\Entity';
-	/**
-	 * 
-	 * @var string Text to put on log Title, false to use default 
-	 */
-	protected $log_message = false;
-	
-	/**
-	 *
-	 * @var string Text to put on log Description, false for no description
-	 */
-	protected $log_description = false;
 	
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
@@ -49,20 +38,7 @@ abstract class Repository {
 				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
 			}
 		}
-		
-		// not have a post_type get its collection relation, else get post type from entity
-		if ( $obj->get_post_type() === false ) {
-			$collection = $obj->get_collection();
-			
-			if (!$collection){
-				return false;
-			}
-			$cpt = $collection->get_db_identifier();
-			$obj->WP_Post->post_type = $cpt;
-		}
-		else {
-			$obj->WP_Post->post_type = $obj::get_post_type();
-		}
+		$obj->WP_Post->post_type = $obj::get_post_type();
 		$obj->WP_Post->post_status = 'publish';
 		
 		// TODO verificar se salvou mesmo
@@ -88,8 +64,8 @@ abstract class Repository {
 			}
 		}
 		
-		//not log the log 
-		if($this->entities_type != '\Tainacan\Entities\Log') Entities\Log::create($this->log_message, $this->log_description, $obj);
+		do_action('tainacan-insert', $obj);
+		do_action('tainacan-insert-'.$obj->get_post_type(), $obj);
 		
 		// return a brand new object
 		return new $this->entities_type($obj->WP_Post);

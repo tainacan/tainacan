@@ -6,6 +6,7 @@ use Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use \Respect\Validation\Validator as v;
+use Tainacan\Entities\Collection;
 
 class Collections extends Repository {
 	protected $entities_type = '\Tainacan\Entities\Collection';
@@ -133,6 +134,17 @@ class Collections extends Repository {
             'capability_type'     => 'post',
         );
         register_post_type(Entities\Collection::get_post_type(), $args);
+    }
+    
+    /**
+     * @param Tainacan\Entities\Collection $collection
+     * {@inheritDoc}
+     * @see \Tainacan\Repositories\Repository::insert()
+     */
+    public function insert($collection){
+    	$new_collection = parent::insert($collection);
+    	$collection->register_collection_item_post_type();
+    	return $new_collection;
     }
     
     public function update($object){

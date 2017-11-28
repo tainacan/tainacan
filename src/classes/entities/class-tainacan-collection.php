@@ -53,8 +53,8 @@ class Collection extends Entity {
      * This method register the post type for a collection, so that items can be created.
      *
      * @return void
-     *
-    function tainacan_register_post_type() {
+     */
+    function register_collection_item_post_type() {
         $cpt_labels = array(
             'name'               => 'Item',
             'singular_name'      => 'Item',
@@ -97,7 +97,7 @@ class Collection extends Entity {
             unregister_post_type($this->get_db_identifier());
 
         register_post_type($cpt_slug, $args);
-    }*/
+    }
 
     /**
      * Get the collection ID

@@ -13,6 +13,11 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Logs extends Repository {
 	protected $entities_type = '\Tainacan\Entities\Log';
 	
+	public function __construct() {
+		parent::__construct();
+		add_action('tainacan-insert', array($this, 'log_inserts'));
+	}
+	
     public function get_map() {
         return [
             'id'             => [
@@ -142,5 +147,20 @@ class Logs extends Repository {
     	}
     	// TODO: Pegar coleções registradas via código
     	return $log;
+    }
+    
+    public function log_inserts($new_value, $value = null)
+    {
+    	$msn = "";
+   		if(is_object($new_value))
+   		{
+   			// do not log a log
+   			if(method_exists($new_value, 'get_post_type') && $new_value->get_post_type() == 'tainacan-logs') return;
+   			
+   			$type = get_class($new_value);
+   			$msn = sprintf( esc_html__( 'a %s has been created/modified.', 'tainacan' ), $type );
+   		}
+   		$msn = apply_filters('tainacan-insert-log-message-title', $msn, $type, $new_value);
+    	Entities\Log::create($msn, '', $new_value, $value);
     }
 }

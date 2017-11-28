@@ -23,7 +23,8 @@ class Item_Metadata extends Repository {
             }
         }
         
-        Entities\Log::create($this->log_message, $this->log_description, $item_metadata);
+        do_action('tainacan-insert', $item_metadata);
+        do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
         // return a brand new object
         return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_metadata());
         

@@ -216,14 +216,6 @@ class Log extends Entity {
     	{
 	    	$type = gettype($new_value);
 	    	
-	    	if($msn === false)
-	    	{
-	    		if(is_object($new_value))
-	    		{
-	    			$type = get_class($new_value);
-	    		}
-	    		$msn = sprintf( esc_html__( 'a %s has been created/modified.', 'tainacan' ), $type );
-	    	}
 	    	$log->set_value($new_value);
 	    	if(!is_null($old_value)) $log->set_old_value($old_value);
     	}
