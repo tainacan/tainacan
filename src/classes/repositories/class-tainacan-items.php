@@ -103,6 +103,9 @@ class Items extends Repository {
     		$Tainacan_Item_Metadata->insert($meta);
     	}
     	
+    	do_action('tainacan-insert', $item);
+    	do_action('tainacan-insert-Item', $item);
+    	
     	// return a brand new object
     	return new Entities\Item($item->WP_Post);
     }
