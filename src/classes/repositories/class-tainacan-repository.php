@@ -38,20 +38,7 @@ abstract class Repository {
 				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
 			}
 		}
-		
-		// not have a post_type get its collection relation, else get post type from entity
-		if ( $obj->get_post_type() === false ) {
-			$collection = $obj->get_collection();
-			
-			if (!$collection){
-				return false;
-			}
-			$cpt = $collection->get_db_identifier();
-			$obj->WP_Post->post_type = $cpt;
-		}
-		else {
-			$obj->WP_Post->post_type = $obj::get_post_type();
-		}
+		$obj->WP_Post->post_type = $obj::get_post_type();
 		$obj->WP_Post->post_status = 'publish';
 		
 		// TODO verificar se salvou mesmo
