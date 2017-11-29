@@ -63,19 +63,36 @@ Create a new MySQL database for your tests. This database will be cleaned and re
 Install the WordPress Tests library running the provided script.
 
 ```
-tests/bin/install-wp-tests.sh wordpress_test root '' localhost latest
+tests/bin/install-wp-tests.sh wordpress_test root root /path/to/webserver/document/root localhost latest
 ```
 The parameters are:
 
 * Database name
 * MySQL username
 * MySQL password
+* Test Directory (This should be your web server document root)
 * MySQL host
 * WordPress version
 
-By default, this script installs a copy of WordPress in your /tmp folder. If you want to install it in a different location, edit the file and run it again. (TODO: make a config for that).
-
 Inside `tests` folder, edit the file called `bootstrap-config-sample.php` and inform the folder where you installed your WordPress Test Library. Save the file as `bootstrap-config.php`.
+
+##### To test the API
+
+Go to the `wordpress-test-lib` directory located in your test directory, open the file `wordpress-tests-config.php` and change the <domain-root> (could be different) with your configs, like the following:
+
+```
+define( 'WP_TESTS_DOMAIN', '<domain-root>/wordpress-test/' );
+define( 'WP_TESTS_EMAIL', 'test@<domain-root>' );
+define( 'WP_TESTS_TITLE', 'Tainacan Tests' );
+```
+
+With it done, go to `wordpress-test` directory. Make a copy of the `wp-config-sample.php` to `wp-config.php`, open that new file and add the MySQL settings, which you informed on installation script.
+
+Now go to the URL of the wordpress installation test (example: localhost/wordpress-test) and make the wordpress common installation.
+
+Execute the build script, go to Wordpress plugins page and active Tainacan plugin.
+
+Obs: Don't forget, the URL used in API tests should be the same in constant `WP_TESTS_DOMAIN`, of course, with the prefix `http://` (like http://localhost/wordpress-test/).
 
 You are done! Now, to run your tests, simply go to the root directory of the repository and type:
 

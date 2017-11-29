@@ -43,7 +43,7 @@ class Items extends Repository {
 
         // register collections post type and associate taxonomies
         foreach ($collections as $collection) {
-            $collection->register_post_type();
+            $collection->register_collection_item_post_type();
         }
          
         // register taxonomies

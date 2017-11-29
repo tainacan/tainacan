@@ -38,6 +38,7 @@ class Collection extends Entity {
     public function  __toJSON(){
         return json_encode(
             [
+            	'id'             => $this->get_id(),
                 'name'           => $this->get_name(),
                 'description'    => $this->get_description(),
             ],

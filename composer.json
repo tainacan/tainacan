@@ -3,8 +3,7 @@
     "description": "Protótipo",
     "type": "wordpress-plugin",
     "require": {
-        "respect/validation": "^1.1",
-        "guzzlehttp/guzzle": "^6.2@dev"
+        "respect/validation": "^1.1"
     },
     "minimum-stability": "dev",
     "config": {
