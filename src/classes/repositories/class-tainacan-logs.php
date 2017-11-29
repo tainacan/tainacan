@@ -67,6 +67,11 @@ class Logs extends Repository {
         ];
     }
     
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Tainacan\Repositories\Repository::register_post_type()
+     */
     public function register_post_type() {
         $labels = array(
             'name'               => 'logs',

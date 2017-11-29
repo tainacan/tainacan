@@ -4,16 +4,37 @@ namespace Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/**
+ * Entity Super class
+ *
+ */
 class Entity {
+	/**
+	 * The repository of that entity 
+	 * @var \Tainacan\Repositories\Repository
+	 */
 	protected $repository;
+	/**
+	 * Array of errors, for example, register validations errors
+	 * @var array
+	 */
     private $errors = [];
+    /**
+     * The WordPress post_type for store this class if is needed, false otherwise
+     * @var string
+     */
     protected static $post_type = false;
     /**
-     * 
+     * Store the WordPress post object 
      * @var \WP_Post
      */
     public $WP_Post;
-    
+
+    /**
+     * return the value for a mapped property
+     * @param string $prop id of property
+     * @return mixed property value
+     */
     public function get_mapped_property($prop) {
         
         global ${$this->repository};
@@ -48,10 +69,19 @@ class Entity {
         return $property;
     }
     
+    /**
+     * set the value of a mapped property
+     * @param string $prop id of the property
+     * @param mixed $value the value to be setted
+     */
     public function set_mapped_property($prop, $value) {
         $this->$prop = $value;
     }
 
+    /**
+     * Validate the class values/properties, to be used before insert/save/update
+     * @return boolean
+     */
     public function validate() {
         
         global ${$this->repository};
@@ -69,6 +99,11 @@ class Entity {
         return $is_valid;
     }
     
+    /**
+     * Validate a single property
+     * @param string $prop id of the property to be validate
+     * @return boolean
+     */
     public function validate_prop($prop) {
         global ${$this->repository};
         $map = ${$this->repository}->get_map();
@@ -117,6 +152,9 @@ class Entity {
         $this->errors[] = [$type => $message];
     }
     
+    /**
+     * Clear the errors array
+     */
     public function reset_errors() {
         $this->errors = [];
     }

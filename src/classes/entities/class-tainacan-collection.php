@@ -9,7 +9,17 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Collection extends Entity {
 
+	/**
+	 * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::post_type
+	 * @var string
+	 */
     protected static $post_type = 'tainacan-collections';
+    /**
+     * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::repository
+     * @var string
+     */
     protected $repository = 'Tainacan_Collections';
 
     /**
