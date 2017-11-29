@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
 
-if [ $# -lt 3 ]; then
-	echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
+if [ $# -lt 5 ]; then
+	echo "usage: $0 <db-name> <db-user> <db-pass> <test-dir> [db-host] [wp-version] [skip-database-creation]"
 	exit 1
 fi
 
 DB_NAME=$1
 DB_USER=$2
 DB_PASS=$3
-DB_HOST=${4-localhost}
-WP_VERSION=${5-latest}
-SKIP_DB_CREATE=${6-false}
-
-WP_TESTS_DIR=${WP_TESTS_DIR-/tmp/wordpress-tests-lib}
-WP_CORE_DIR=${WP_CORE_DIR-/tmp/wordpress/}
+WP_TESTS_DIR=$4/wordpress-tests-lib
+WP_CORE_DIR=$4/wordpress-test
+DB_HOST=${5-localhost}
+WP_VERSION=${6-latest}
+SKIP_DB_CREATE=${7-false}
 
 download() {
     if [ `which curl` ]; then

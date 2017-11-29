@@ -22,7 +22,7 @@ class Collections extends \WP_UnitTestCase {
         
         $x->set_name('teste');
         $x->set_description('adasdasdsa');
-        $x->set_itens_per_page(23);
+        $x->set_default_order('DESC');
         
         global $Tainacan_Collections;
         $col = $Tainacan_Collections->insert($x);
@@ -35,7 +35,7 @@ class Collections extends \WP_UnitTestCase {
 
         $this->assertEquals($test->get_name(), 'teste');
         $this->assertEquals($test->get_description(), 'adasdasdsa');
-        $this->assertEquals($test->get_itens_per_page(), 23);
+        $this->assertEquals($test->get_default_order(), 'DESC');
         
         
     }
@@ -47,7 +47,7 @@ class Collections extends \WP_UnitTestCase {
         
         $x->set_name('teste');
         $x->set_description('adasdasdsa');
-        $x->set_itens_per_page(23);
+        $x->set_default_order('DESC');
         
         global $Tainacan_Collections;
         $col = $Tainacan_Collections->insert($x);
@@ -79,12 +79,17 @@ class Collections extends \WP_UnitTestCase {
         
         $x->set_name('teste');
         $x->set_description('adasdasdsa');
-        $x->set_itens_per_page('blah');
+        $x->set_default_order(13);
         
         $this->assertFalse($x->validate());
         $this->assertTrue(sizeof($x->get_errors()) > 0);
         
-        $x->set_itens_per_page(15);
+        $x->set_default_order('ASDASD');
+        
+        $this->assertFalse($x->validate());
+        $this->assertTrue(sizeof($x->get_errors()) > 0);
+        
+        $x->set_default_order('DESC');
         $this->assertTrue($x->validate());
         $this->assertTrue(empty($x->get_errors()));
         

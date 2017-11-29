@@ -2,37 +2,46 @@
 
 namespace Tainacan\Tests;
 
-use \GuzzleHttp\Client;
+class TAINACAN_REST_Collections_Controller extends \WP_UnitTestCase {
+    const URL = 'http://localhost/wordpress-test/';
 
-class TAINACAN_REST_Collections_Controller extends \PHPUnit_Framework_TestCase {
-    protected $client;
+    public function test_create_and_fetch_collection_by_id(){
 
-    const URL = 'http://localhost/wordpress/';
-
-    protected function setUp(){
-        $this->client = new Client([
-            'base_uri' => self::URL,
+        $collection_JSON = json_encode([
+            'name'         => 'Teste',
+            'description'  => 'Teste JSON',
+            'itemsPerPage' => 10,
         ]);
-    }
 
-    public function test_fetch_collection_by_id(){
-        $id = 1;
-        $response = $this->client->request('GET', 'wp-json/tainacan/v2/collections/'. $id);
+        $collection = wp_remote_post(self::URL . 'wp-json/tainacan/v2/collections/', array(
+            'body' => $collection_JSON
+        ));
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $collection = json_decode(json_decode($collection['body'], true), true);
 
-        $data = json_decode(json_decode($response->getBody(), true));
-        var_dump($data);
-        $this->assertEquals('teste', $data->name);
+        $id = $collection['id'];
+
+        $response = wp_remote_get(self::URL . 'wp-json/tainacan/v2/collections/'. $id);
+
+        $this->assertEquals(200, $response['response']['code']);
+
+        $data = json_decode(json_decode($response['body'], true), true);
+
+        $this->assertEquals('Teste', $data['name']);
     }
 
     public function test_fetch_collections(){
-        $response = $this->client->request('GET', 'wp-json/tainacan/v2/collections/');
+        $response = wp_remote_get(self::URL . 'wp-json/tainacan/v2/collections/');
 
-        $this->assertEquals(200, $response->getStatusCode());
+	    $this->assertEquals(200, $response['response']['code']);
 
-        $data = json_decode($response->getBody(), true);
-        var_dump($data);
+        $data = json_decode(json_decode($response['body'], true), true);
+
+        $this->assertContainsOnly('string', $data);
+
+        $one_collection = json_decode($data[0], true);
+
+        $this->assertEquals('Teste', $one_collection['name']);
     }
 
 }

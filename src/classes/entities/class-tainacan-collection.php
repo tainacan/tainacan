@@ -48,9 +48,9 @@ class Collection extends Entity {
     public function  __toJSON(){
         return json_encode(
             [
+            	'id'             => $this->get_id(),
                 'name'           => $this->get_name(),
                 'description'    => $this->get_description(),
-                'items_per_page' => $this->get_itens_per_page(),
             ],
             JSON_NUMERIC_CHECK,
             JSON_UNESCAPED_UNICODE
@@ -162,14 +162,41 @@ class Collection extends Entity {
     function get_description() {
         return $this->get_mapped_property('description');
     }
-
+    
     /**
-     * Get collection items per page option
+     * Get collection default order
      *
-     * @return integer
+     * @return string
      */
-    function get_itens_per_page() {
-        return $this->get_mapped_property('itens_per_page');
+    function get_default_order() {
+        return $this->get_mapped_property('default_order');
+    }
+    
+    /**
+     * Get collection default orderby
+     *
+     * @return string
+     */
+    function get_default_orderby() {
+        return $this->get_mapped_property('default_orderby');
+    }
+    
+    /**
+     * Get collection columns option
+     *
+     * @return string
+     */
+    function get_columns() {
+        return $this->get_mapped_property('columns');
+    }
+    
+    /**
+     * Get collection default_view_mode option
+     *
+     * @return string
+     */
+    function get_default_view_mode() {
+        return $this->get_mapped_property('default_view_mode');
     }
 
     /**
@@ -252,14 +279,45 @@ class Collection extends Entity {
     function set_description($value) {
         $this->set_mapped_property('description', $value);
     }
-
+    
     /**
-     * Set collection itens per page option
+     * Set collection default order option
      *
-     * @param [integer] $value
+     * @param [string] $value
      * @return void
      */
-    function set_itens_per_page($value) {
-        $this->set_mapped_property('itens_per_page', $value);
+    function set_default_order($value) {
+        $this->set_mapped_property('default_order', $value);
     }
+    
+    /**
+     * Set collection default_orderby option
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_default_orderby($value) {
+        $this->set_mapped_property('default_orderby', $value);
+    }
+    
+    /**
+     * Set collection columns option
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_columns($value) {
+        $this->set_mapped_property('columns', $value);
+    }
+    
+    /**
+     * Set collection default_view_mode option
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_default_view_mode($value) {
+        $this->set_mapped_property('default_view_mode', $value);
+    }
+
 }
