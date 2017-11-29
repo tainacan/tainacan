@@ -70,10 +70,28 @@ abstract class Repository {
 		// return a brand new object
 		return new $this->entities_type($obj->WP_Post);
 	}
-    
+
+    /**
+     * @param $object
+     * @return mixed
+     */
     public abstract function delete($object);
-    public abstract function fetch($object);
+
+    /**
+     * @param $args
+     * @return mixed
+     */
+    public abstract function fetch($args);
+
+    /**
+     * @param $object
+     * @return mixed
+     */
     public abstract function update($object);
+
+    /**
+     * @return mixed
+     */
     public abstract function register_post_type();
     
 }

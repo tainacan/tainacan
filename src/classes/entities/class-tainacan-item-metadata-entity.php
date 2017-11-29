@@ -75,7 +75,7 @@ class Item_Metadata_Entity extends Entity {
             return $this->value;
         
         global $Tainacan_Item_Metadata;
-        return $Tainacan_Item_Metadata->fetch($this);
+        return $Tainacan_Item_Metadata->get_value($this);
     }
     
     /**
@@ -167,7 +167,7 @@ class Item_Metadata_Entity extends Entity {
                     ]
                 ]);
 
-                if (!empty($test)) {
+                if ($test->have_posts()) {
                     $this->add_error('key_exists', $metadata->get_name() . ' is a collection key and there is another item with the same value');
                     return false;
                 }

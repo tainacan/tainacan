@@ -84,10 +84,10 @@ class Filters extends \WP_UnitTestCase {
     function test_get_filters_type(){
         global $Tainacan_Filters;
 
-        $all_filter_types = $Tainacan_Filters->fetch();
+        $all_filter_types = $Tainacan_Filters->fetch_filter_types();
         $this->assertEquals( 2, count( $all_filter_types ) );
 
-        $float_filters = $Tainacan_Filters->fetch('float');
+        $float_filters = $Tainacan_Filters->fetch_supported_filter_types('float');
         $this->assertTrue( count( $float_filters ) > 0 );
     }
 }

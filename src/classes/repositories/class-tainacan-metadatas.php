@@ -117,31 +117,60 @@ class Metadatas extends Repository {
         register_post_type(Entities\Metadata::get_post_type(), $args);
     }
 
-    public function fetch($object, $args = []){
-        // TODO: get metadata from parent collections
-        if(is_numeric($object)){
-            return new Entities\Metadata($object);            
-        } else {
-            $collection_id = ( is_object( $object ) ) ? $object->get_id() : $object;
+
+    /**
+     * fetch metadata based on ID or WP_Query args
+     *
+     * metadata are stored as posts. Check WP_Query docs
+     * to learn all args accepted in the $args parameter
+     *
+     * @param array $args WP_Query args || int $args the metadata id
+     * @return \WP_Query an instance of wp query
+     */
+    public function fetch( $args ) {
+
+        if( is_numeric($args) ){
+            return new Entities\Metadata($args);
+        } elseif (!empty($args)) {
 
             $args = array_merge([
-                'post_type'      => Entities\Metadata::get_post_type(),
                 'posts_per_page' => -1,
-                'post_status'    => 'publish',
-                'meta_key'       => 'collection_id',
-                'meta_value'     => $collection_id
+                'post_status'    => 'publish'
             ], $args);
 
-            $posts = get_posts($args);
+            $args['post_type'] = Entities\Metadata::get_post_type();
 
-            $return = [];
-
-            foreach ($posts as $post) {
-                $return[] = new Entities\Metadata($post);
-            }
-
-            return $return;
+            return new \WP_Query($args);
         }
+    }
+
+    /**
+     * fetch metadata by collection
+     *
+     * @param Entities\Collection $collection
+     * @param array $args
+     * @return Array Entities\Metadata
+     */
+    public function fetch_by_collection(Entities\Collection $collection, $args = []){
+        $metadata = [];
+        $collection_id = $collection->get_id();
+
+        $args = array_merge([
+            'meta_key'       => 'collection_id',
+            'meta_value'     => $collection_id
+        ], $args);
+
+        $wp_query = $this->fetch($args);
+
+        if ( $wp_query->have_posts() ){
+            while ( $wp_query->have_posts() ) {
+                $wp_query->the_post();
+                $metadata[] = new Entities\Metadata(  get_the_ID() );
+            }
+        }
+
+        return $metadata;
+
     }
 
     public function update($object){

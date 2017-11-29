@@ -63,9 +63,9 @@ class Collections extends \WP_UnitTestCase {
         $i->set_collection($collection);
         
         global $Tainacan_Items;
-        $item = $Tainacan_Items->insert($i);
+        $item = $Tainacan_Items->insert( $i );
         
-        $item = $Tainacan_Items->fetch($item->get_id());
+        $item = $Tainacan_Items->fetch( $item->get_id() );
         
         $this->assertEquals($item->get_title(), 'item teste');
         $this->assertEquals($item->get_description(), 'adasdasdsa');

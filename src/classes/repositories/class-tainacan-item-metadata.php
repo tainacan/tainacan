@@ -38,6 +38,12 @@ class Item_Metadata extends Repository {
 
     }
 
+    /**
+     * Fetch Item Metadata objects related to an Item
+     *
+     * @param Entities\Item $object
+     * @return array
+     */
     public function fetch($object){
         if($object instanceof Entities\Item){
             global $Tainacan_Items, $Tainacan_Metadatas;
@@ -48,7 +54,7 @@ class Item_Metadata extends Repository {
                 return [];
             }
             
-            $meta_list = $Tainacan_Metadatas->fetch($collection);
+            $meta_list = $Tainacan_Metadatas->fetch_by_collection($collection);
             
             $return = [];
             
@@ -59,13 +65,22 @@ class Item_Metadata extends Repository {
             }
             
             return $return;
-        } elseif($object instanceof Entities\Item_Metadata_Entity){
-            // Retorna o valor do metadado
-
-            $unique = ! $object->is_multiple();
-            
-            return get_post_meta($object->item->get_id(), $object->metadata->get_id(), $unique);  
+        }else{
+            return [];
         }
     }
+
+    /**
+     * Get the value for a Item metadata.
+     *
+     * @param Entities\Item_Metadata_Entity $item_metadata
+     * @return mixed
+     */
+    public function get_value(Entities\Item_Metadata_Entity $item_metadata) {
+        $unique = ! $item_metadata->is_multiple();
+
+        return get_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $unique);
+    }
+
     public function register_post_type() { }
 }

@@ -107,16 +107,26 @@ class Logs extends Repository {
         );
         register_post_type(Entities\Log::get_post_type(), $args);
     }
-    
-    public function fetch($object = []){
-        if(is_numeric($object)){
-    	    return new Entities\Log($object);
+
+
+    /**
+     * fetch logs based on ID or WP_Query args
+     *
+     * Logs are stored as posts. Check WP_Query docs
+     * to learn all args accepted in the $args parameter
+     *
+     * @param array $args WP_Query args || int $args the log id
+     * @return Array of Entities\Log objects || Entities\Log
+     */
+    public function fetch($args = []){
+        if(is_numeric($args)){
+    	    return new Entities\Log($args);
         } else {
             $args = array_merge([
-                'post_type'      => Entities\Log::get_post_type(),
-                'posts_per_page' => -1,
                 'post_status'    => 'publish',
-            ], $object);
+            ], $args);
+
+            $args['post_type'] =  Entities\Log::get_post_type();
             
             $posts = get_posts($args);
             
@@ -125,7 +135,7 @@ class Logs extends Repository {
             foreach ($posts as $post) {
                 $logs[] = new Entities\Log($post);
             }
-            // TODO: Pegar coleções registradas via código
+
             return $logs;
         }
     }

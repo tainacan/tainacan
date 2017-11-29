@@ -156,31 +156,28 @@ class Collections extends Repository {
     }
 
     /**
-     * Obtém um coleção específica pelo ID ou várias coleções
+     * fetch collection based on ID or WP_Query args
      *
-     * @param array $object || int $object
-     * @return Array || Collection 
+     * Collections are stored as posts. Check WP_Query docs
+     * to learn all args accepted in the $args parameter
+     *
+     * @param array $args WP_Query args || int $args the collection id
+     * @return \WP_Query an instance of wp query
      */
-    public function fetch($object = []){
-        if(is_numeric($object)){
-            return new Entities\Collection($object);
-        } elseif(is_array($object)) {
+    public function fetch($args = []){
+        if(is_numeric( $args )){
+            return new Entities\Collection($args);
+        } elseif(is_array($args)) {
             $args = array_merge([
-                'post_type'      => Entities\Collection::get_post_type(),
                 'posts_per_page' => -1,
                 'post_status'    => 'publish',
-            ], $object);
-            
-            $posts = get_posts($args);
-            
-            $collections = [];
-            foreach ($posts as $post) {
-                $collections[] = new Entities\Collection($post);
-            }
-            
+            ], $args);
+
+            $args['post_type'] = Entities\Collection::get_post_type();
+
             // TODO: Pegar coleções registradas via código
-            
-            return $collections;
+
+            return new \WP_Query($args);
         }
     }
 }

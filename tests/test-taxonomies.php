@@ -60,8 +60,7 @@ class Taxonomies extends \WP_UnitTestCase {
         $term_id = $Tainacan_Terms->insert( $term ) ;
 
         //retorna um objeto da classe Tainacan_Term
-        $test =  $Tainacan_Terms->fetch('id', $term_id, $taxonomy_test->get_db_identifier());
-
+        $test =  $Tainacan_Terms->fetch($term_id, $taxonomy_test);
         $this->assertEquals( $test->get_name(), 'Rock' );
         $this->assertEquals( $test->get_user(), 56 );
     }

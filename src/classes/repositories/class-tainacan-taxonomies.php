@@ -139,8 +139,30 @@ class Taxonomies extends Repository {
         register_taxonomy( $taxonomy_name, array( ), $args );
     }
 
-    public function fetch($object) {
-    	return new Entities\Taxonomy($object);
+    /**
+     * fetch taxonomies based on ID or WP_Query args
+     *
+     * Taxonomies are stored as posts. Check WP_Query docs
+     * to learn all args accepted in the $args parameter
+     *
+     * @param array $args WP_Query args || int $args the taxonomy id
+     * @return Array of Entities\Taxonomy objects || Entities\Taxonomy
+     */
+    public function fetch( $args ) {
+
+        if( is_numeric($args) ){
+            return new Entities\Taxonomy($args);
+        } elseif (!empty($args)) {
+
+            $args = array_merge([
+                'posts_per_page' => -1,
+                'post_status'    => 'publish'
+            ], $args);
+
+            $args['post_type'] = Entities\Taxonomy::get_post_type();
+
+            return new \WP_Query($args);;
+        }
     }
 
     public function update($object){

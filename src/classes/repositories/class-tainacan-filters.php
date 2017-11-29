@@ -134,52 +134,100 @@ class Filters extends Repository {
 
     }
 
-    public function fetch($object = [], $args = []){
+    /**
+     * fetch filter based on ID or WP_Query args
+     *
+     * Filters are stored as posts. Check WP_Query docs
+     * to learn all args accepted in the $args parameter
+     *
+     * @param array $args WP_Query args || int $args the filter id
+     * @rreturn new \WP_Query($args);
+     */
+    public function fetch($args = []){
         /**
          * Se for numérico retorna o objeto filtro
          * Se não, mas se há valor em $object e $args retorna filtro de coleção especifica
          * Se não, mas se for string retorna os filtros pelo tipo de metadado
          * Se não, retorna todos os filtros
          */
-        if(is_numeric($object)){
-            return new Entities\Filter($object);
-        } elseif (!empty($object) && !empty($args)) {
+        if( is_numeric($args) ){
+            return new Entities\Filter($args);
+        } elseif (!empty($args)) {
             // TODO: get filters from parent collections
-
-            $collection_id = ( is_object( $object ) ) ? $object->get_id() : $object;
-
             $args = array_merge([
-                'post_type'      => Entities\Filter::get_post_type(),
                 'posts_per_page' => -1,
-                'post_status'    => 'publish',
-                'meta_key'       => 'collection_id',
-                'meta_value'     => $collection_id
+                'post_status'    => 'publish'
             ], $args);
 
-            $wp_query = new \WP_Query($args);
+            $args['post_type'] = Entities\Filter::get_post_type();
 
-            return $wp_query;
-        } elseif(is_string($object)) {
-            $filters = array();
-            $filters_type = $this->fetch();
-    
-            foreach ( $filters_type as $filter_type ){
-                if( in_array( $object,  $filter_type->get_supported_types() ) ){
-                    $filters[] = $filter_type;
-                }
-            }
-    
-            return $filters;
-        } else {
-            $filters = array();
-        
-            foreach (get_declared_classes() as $class) {
-                if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
-                    $filters[] = new $class();
-                }
-            }
-
-            return $filters;
+            return new \WP_Query($args);;
         }
+// elseif(is_string($object)) {
+//            $filters = array();
+//            $filters_type = $this->fetch();
+//
+//            foreach ( $filters_type as $filter_type ){
+//                if( in_array( $object,  $filter_type->get_supported_types() ) ){
+//                    $filters[] = $filter_type;
+//                }
+//            }
+//
+//            return $filters;
+//        } else {
+//            $filters = array();
+//
+//            foreach (get_declared_classes() as $class) {
+//                if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
+//                    $filters[] = new $class();
+//                }
+//            }
+//
+//            return $filters;
+//        }
+    }
+
+    /**
+     * fetch all declared filter type classes
+     *
+     * @return Array of Entities\Filter_Types\Filter_Type objects
+     */
+    public function fetch_filter_types(){
+        $filters = array();
+
+        foreach (get_declared_classes() as $class) {
+            if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
+                $filters[] = new $class();
+            }
+        }
+
+        return $filters;
+    }
+
+    /**
+     * fetch only supported filters for the type specified
+     *
+     * @param ( string || array )  $types Primitve types of metadata ( float, string, int)
+     * @return array Filters supported by the primitive types passed in $types
+     */
+    public function fetch_supported_filter_types($types){
+        $filter_types = $this->fetch_filter_types();
+        $supported_filter_types = [];
+
+        foreach ( $filter_types as $filter_type){
+            $filter = new $filter_type();
+
+            if( ( is_array( $types ) )){
+                foreach ( $types as $single_type ) {
+                    if( in_array( $single_type ,$filter->get_supported_types() )){
+                          $supported_filter_types[] = $filter;
+                    }
+                }
+            }else if( in_array( $types ,$filter->get_supported_types() )){
+                $supported_filter_types[] = $filter;
+            }
+        }
+
+        return $supported_filter_types;
     }
 }

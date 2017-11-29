@@ -69,23 +69,58 @@ class Terms extends Repository {
     }
 
     /**
-     * Get a term or all terms
+     * fetch terms based on ID or get terms args
      *
-     * @param string || Array $object1
-     * @param string || Array || interger $object2
-     * @param string $object3
-     * @return Array of WP_Term || WP_Term
+     * Terms are stored as terms. Check get_terms() docs
+     * to learn all args accepted in the $args parameter
+     *
+     * The second paramater specifies from which taxonomies should be fetched.
+     * You can pass the Taxonomy ID or object, or an Array of IDs or taxonomies objects
+     *
+     * @param array $args WP_Query args || int $args the term id
+     * @param array $taxonomies Array Entities\Taxonomy || Array int terms IDs || int collection id || Entities\Taxonomy taxonomy object
+     * @return Array of Entities\Term objects || Entities\Term
      */
-    public function fetch( $object1 = '', $object2 = '', $object3  = ''){
-        if(!empty($object1) && !empty($object2) && empty($object3)){
-            return get_terms( $object1, $object2 );
-        } elseif(!empty($object1) && !empty($object2) && !empty($object3)){
-            $wp_term = get_term_by($object1, $object2, $object3);
+    public function fetch( $args = [], $taxonomies = []){
 
+        global $Tainacan_Taxonomies;
+
+        if ( $taxonomies instanceof Entities\Taxonomy ) {
+            $cpt = $taxonomies->get_db_identifier();
+        } elseif (is_array( $taxonomies )) {
+            $cpt = [];
+
+            foreach ($taxonomies as $taxonomy) {
+                if (is_numeric($taxonomy)){
+                    $taxonomy = $Tainacan_Taxonomies->fetch( $taxonomy );
+                }
+                if ($taxonomy instanceof Entities\Taxonomy){
+                    $cpt[] = $taxonomy->get_db_identifier();
+                }
+            }
+
+        } else {
+            return [];
+        }
+
+        if(is_array( $args ) && !empty( $cpt ) ){ // if an array of arguments is
+            $terms = get_terms( $cpt, $args );
+            $return = [];
+
+            foreach ($terms as $term) {
+                $tainacan_term = new Entities\Term( $term );
+                $tainacan_term->set_user( get_term_meta($tainacan_term->get_id() , 'user', true ) );
+                $return[] = $tainacan_term;
+            }
+            return $return;
+        } elseif( is_numeric($args) && !empty($cpt) && !is_array( $cpt ) ){ // if an id is passed taxonomy cannot be an array
+            $wp_term = get_term_by('id', $args, $cpt);
             $tainacan_term = new Entities\Term( $wp_term );
             $tainacan_term->set_user( get_term_meta($tainacan_term->get_id() , 'user', true ) );
 
             return $tainacan_term;
+        }else{
+            return [];
         }
     }
 

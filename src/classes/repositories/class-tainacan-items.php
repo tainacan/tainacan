@@ -53,6 +53,9 @@ class Items extends Repository {
     }
  
     public function insert($item) {
+
+        global $Tainacan_Metadatas;
+
     	$map = $this->get_map();
     	
     	// get collection to determine post type
@@ -110,28 +113,47 @@ class Items extends Repository {
     	return new Entities\Item($item->WP_Post);
     }
 
-    public function fetch($args = [], $object = []){
+    /**
+     * fetch items based on ID or WP_Query args
+     *
+     * Items are stored as posts. Check WP_Query docs
+     * to learn all args accepted in the $args parameter
+     *
+     * The second paramater specifies from which collections item should be fetched.
+     * You can pass the Collection ID or object, or an Array of IDs or collection objects
+     *
+     * @param array $args WP_Query args || int $args the item id
+     * @param array $collections Array Entities\Collection || Array int collections IDs || int collection id || Entities\Collection collection object
+     * @return \WP_Query an instance of wp query
+     */
+    public function fetch($args = [],$collections = []){
 
         global $Tainacan_Collections;
-        
+
         if(is_numeric($args)){
-            return new Entities\Item($args);            
+            return new Entities\Item($args);
         }
 
-        if (empty($object)) {
-            $object = $Tainacan_Collections->fetch();
+        if (empty($collections)){
+            $wp_query = $Tainacan_Collections->fetch();
+            if( $wp_query->have_posts() ){
+                while ( $wp_query->have_posts() ){
+                    $wp_query->the_post();
+                    $collections[] = new Entities\Collection(  get_the_ID() );
+                }
+            }
         }
-        
-        if (is_numeric($object)){
-            $object = $Tainacan_Collections->fetch($collection);
+
+        if (is_numeric($collections)){
+            $collections = $Tainacan_Collections->fetch($collections);
         }
-        
-        if ($object instanceof Entities\Collection) {
-            $cpt = $object->get_db_identifier();
-        } elseif (is_array($object)) {
+
+        if ($collections instanceof Entities\Collection) {
+            $cpt = $collections->get_db_identifier();
+        } elseif (is_array($collections)) {
             $cpt = [];
-            
-            foreach ($object as $collection) {
+
+            foreach ($collections as $collection) {
                 if (is_numeric($collection)){
                     $collection = $Tainacan_Collections->fetch($collection);
                 }
@@ -139,30 +161,24 @@ class Items extends Repository {
                     $cpt[] = $collection->get_db_identifier();
                 }
             }
-            
+
         } else {
             return [];
         }
-        
+
         if (empty($cpt)){
             return [];
         }
 
+        //TODO: get collection order and order by options
+
         $args = array_merge([
-            'post_type'      => $cpt,
-            'posts_per_page' => -1,
             'post_status'    => 'publish',
         ], $args);
 
-        $posts = get_posts($args);
-        
-        $return = [];
-        
-        foreach ($posts as $post) {
-        	$return[] = new Entities\Item($post);
-        }
-        
-        return $return;
+        $args['post_type'] = $cpt;
+
+        return new \WP_Query($args);
     }
 
     public function update($object){
@@ -217,7 +233,7 @@ class Items extends Repository {
         
         $collections = !empty($args['collections']) ? $args['collections'] : [];
         unset($args['collections']);
-        
+
         return $this->fetch($args, $collections);
         ### TODO I think its better if we return a WP_Query object. easier for loop and debugging
     }
