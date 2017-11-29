@@ -63,30 +63,33 @@ Create a new MySQL database for your tests. This database will be cleaned and re
 Install the WordPress Tests library running the provided script.
 
 ```
-tests/bin/install-wp-tests.sh wordpress_test root root /path/to/webserver/document/root localhost latest
+tests/bin/install-wp-tests.sh wordpress_test root root /path/to/wordpress-test-folder localhost latest
 ```
 The parameters are:
 
 * Database name
 * MySQL username
 * MySQL password
-* Test Directory (This should be your web server document root)
+* WordPress Test Directory (In order to test the API, this folder must be inside your local webserver)
 * MySQL host
 * WordPress version
 
-Inside `tests` folder, edit the file called `bootstrap-config-sample.php` and inform the folder where you installed your WordPress Test Library. Save the file as `bootstrap-config.php`.
+`WordPress Test Directory` will be created with 2 sub folders: 
 
-##### To test the API
+* `wordpress-test` - An installation of WordPress
+* `wordpress-tests-lib` - As the name says, the WordPress Tests Library
 
-Go to the `wordpress-test-lib` directory located in your test directory, open the file `wordpress-tests-config.php` and change the <domain-root> (could be different) with your configs, like the following:
+Inside `tests` folder, edit the file called `bootstrap-config-sample.php` and inform the folder where you installed your WordPress Test Library. This will be `/path/to/wordpress-test-folder/wodpress-tests-lib`. Save the file as `bootstrap-config.php`.
+
+### Setting up API tests (work in progress)
+
+Go to the `wordpress-test-lib` directory located in your test directory, open the file `wordpress-tests-config.php` and edit the value of `WP_TESTS_DOMAIN` contant to the web address pointing to your `wordpress-test` folder located inside the WordPress Test Directory. For example:
 
 ```
-define( 'WP_TESTS_DOMAIN', '<domain-root>/wordpress-test/' );
-define( 'WP_TESTS_EMAIL', 'test@<domain-root>' );
-define( 'WP_TESTS_TITLE', 'Tainacan Tests' );
+define( 'WP_TESTS_DOMAIN', 'localhost/wordpress-test-folder/wordpress-test/' );
 ```
 
-With it done, go to `wordpress-test` directory. Make a copy of the `wp-config-sample.php` to `wp-config.php`, open that new file and add the MySQL settings, which you informed on installation script.
+Go to `wordpress-test` directory. Make a copy of the `wp-config-sample.php` to `wp-config.php`, open that new file and add the MySQL settings, which you informed on installation script. (tip: copy and paste it from `wordpress-tests-lib/wp-tests-config.php`).
 
 Now go to the URL of the wordpress installation test (example: localhost/wordpress-test) and make the wordpress common installation.
 

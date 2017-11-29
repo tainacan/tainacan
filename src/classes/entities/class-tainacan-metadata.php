@@ -5,10 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Representa a entidade Metadata e extende a super classe Entity
+ * Represents the Metadata Entity
  */
 class Metadata extends Entity {
-	use \Tainacan\Traits\Entity_Collection_Relation;
+	
+    // Collection getter and setter declared here
+    use \Tainacan\Traits\Entity_Collection_Relation;
 
 	protected static $post_type = 'tainacan-metadata';
 	

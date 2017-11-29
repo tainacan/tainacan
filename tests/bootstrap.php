@@ -10,6 +10,10 @@ $_tests_dir = getenv( 'WP_TESTS_DIR' );
 if ( ! $_tests_dir ) {
     $_tests_dir = $bootstrap_cfg['tests_dir'];
 }
+
+if (isset($bootstrap_cfg['tests_url']))
+    define('TAINACAN_TESTS_URL', $bootstrap_cfg['tests_url']);
+
 // Give access to tests_add_filter() function.
 require_once $_tests_dir . '/includes/functions.php';
 /**
