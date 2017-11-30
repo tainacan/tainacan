@@ -127,7 +127,7 @@ class Item extends Entity {
         $collection = $this->get_collection();
         $all_metadata = [];
         if ($collection) {
-            $meta_list = $Tainacan_Metadatas->fetch_by_collection( $collection );
+            $meta_list = $Tainacan_Metadatas->fetch_by_collection( $collection, [], 'OBJECT' );
             
             foreach ($meta_list as $meta) {
                 $all_metadata[$meta->get_id()] = new Item_Metadata_Entity($this, $meta);

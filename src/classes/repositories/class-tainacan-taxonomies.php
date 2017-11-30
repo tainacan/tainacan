@@ -145,10 +145,11 @@ class Taxonomies extends Repository {
      * Taxonomies are stored as posts. Check WP_Query docs
      * to learn all args accepted in the $args parameter
      *
-     * @param array $args WP_Query args || int $args the taxonomy id
-     * @return Array of Entities\Taxonomy objects || Entities\Taxonomy
+     * @param array $args WP_Query args | int $args the taxonomy id
+     * @param string $output One of 2 pre-defined constants 'WP_Query' | 'OBJECT' . Defaults to WP_Query
+     * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
-    public function fetch( $args ) {
+    public function fetch( $args, $output = 'WP_Query' ) {
 
         if( is_numeric($args) ){
             return new Entities\Taxonomy($args);
@@ -161,7 +162,8 @@ class Taxonomies extends Repository {
 
             $args['post_type'] = Entities\Taxonomy::get_post_type();
 
-            return new \WP_Query($args);;
+            $wp_query = new \WP_Query($args);
+            return $this->fetch_output($wp_query, $output);
         }
     }
 

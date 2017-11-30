@@ -3,18 +3,18 @@
 namespace Tainacan\Tests;
 
 /**
- * Class TestCollections
+ * Class Metadata
  *
  * @package Test_Tainacan
  */
 
 /**
- * Sample test case.
+ * Metadata test case.
  */
 class Metadata extends \WP_UnitTestCase {
 
     /**
-     * Teste da insercao de um metadado simples sem o tipo
+     * Test insert a regular metadata with type
      */
     function test_add() {
         global $Tainacan_Collections, $Tainacan_Metadatas;
@@ -42,9 +42,9 @@ class Metadata extends \WP_UnitTestCase {
     }
 
     /**
-     * Teste da insercao de um metadado simples com o tipo
+     * Test insert a regular metadata with type
      */
-    function teste_add_type(){
+    function test_add_type(){
         global $Tainacan_Collections, $Tainacan_Metadatas;
 
         $collection = new \Tainacan\Entities\Collection();
@@ -69,5 +69,66 @@ class Metadata extends \WP_UnitTestCase {
         $this->assertEquals($test->get_collection_id(), $collection->get_id());
         $this->assertEquals('Tainacan\Field_Types\Text', $test->get_field_type());
         $this->assertEquals($test->get_field_type_object(), $type);
+    }
+
+
+    function test_hierarchy_metadata(){
+        global $Tainacan_Collections, $Tainacan_Metadatas;
+
+        $metadata_default = new \Tainacan\Entities\Metadata();
+        $collection_grandfather = new \Tainacan\Entities\Collection();
+        $metadata_grandfather = new \Tainacan\Entities\Metadata();
+        $collection_father = new \Tainacan\Entities\Collection();
+        $metadata_father = new \Tainacan\Entities\Metadata();
+        $collection_son = new \Tainacan\Entities\Collection();
+        $metadata_son = new \Tainacan\Entities\Metadata();
+        $type = new \Tainacan\Field_Types\Text();
+
+        //creating metadata default
+        $metadata_default->set_name('metadata default');
+        $metadata_default->set_collection_id( $Tainacan_Metadatas->get_default_metadata_attribute() );
+        $metadata_default->set_field_type_object( $type );
+        $Tainacan_Metadatas->insert($metadata_default);
+
+        //creating collection grandfather
+        $collection_grandfather->set_name('collection grandfather');
+        $collection_grandfather = $Tainacan_Collections->insert($collection_grandfather);
+
+        //creating metadata grandfather
+        $metadata_grandfather->set_name('metadata grandfather');
+        $metadata_grandfather->set_collection_id( $collection_grandfather->get_id() );
+        $metadata_grandfather->set_field_type_object( $type );
+        $Tainacan_Metadatas->insert($metadata_grandfather);
+
+        //creating collection father
+        $collection_father->set_name('collection father');
+        $collection_father->set_parent( $collection_grandfather->get_id() );
+        $collection_father = $Tainacan_Collections->insert( $collection_father );
+
+        $this->assertEquals( $collection_grandfather->get_id(), $collection_father->get_parent() );
+
+        //creating metadata father
+        $metadata_father->set_name('metadata father');
+        $metadata_father->set_collection_id( $collection_father->get_id() );
+        $metadata_father->set_field_type_object( $type );
+        $Tainacan_Metadatas->insert($metadata_father);
+
+        //creating collection son
+        $collection_son->set_name('collection son');
+        $collection_son->set_parent( $collection_father->get_id() );
+        $collection_son = $Tainacan_Collections->insert($collection_son);
+
+        $this->assertEquals( $collection_father->get_id(), $collection_son->get_parent() );
+
+        //creating metadata son
+        $metadata_son->set_name('metadata son');
+        $metadata_son->set_collection_id( $collection_son->get_id() );
+        $metadata_son->set_field_type_object( $type );
+        $Tainacan_Metadatas->insert($metadata_son);
+
+        $retrieve_metadata =  $Tainacan_Metadatas->fetch_by_collection( $collection_son, [], 'OBJECT' );
+
+        $this->assertEquals( 4, sizeof( $retrieve_metadata ) );
+
     }
 }

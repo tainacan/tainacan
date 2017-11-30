@@ -116,9 +116,10 @@ class Logs extends Repository {
      * to learn all args accepted in the $args parameter
      *
      * @param array $args WP_Query args || int $args the log id
-     * @return Array of Entities\Log objects || Entities\Log
+     * @param string $output One of 2 pre-defined constants 'WP_Query' | 'OBJECT' . Defaults to WP_Query
+     * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
-    public function fetch($args = []){
+    public function fetch($args = [], $output = 'WP_Query'){
         if(is_numeric($args)){
     	    return new Entities\Log($args);
         } else {
@@ -127,16 +128,9 @@ class Logs extends Repository {
             ], $args);
 
             $args['post_type'] =  Entities\Log::get_post_type();
-            
-            $posts = get_posts($args);
-            
-            $logs = [];
-            
-            foreach ($posts as $post) {
-                $logs[] = new Entities\Log($post);
-            }
 
-            return $logs;
+            $wp_query = new \WP_Query($args);
+            return $this->fetch_output($wp_query, $output);
         }
     }
 

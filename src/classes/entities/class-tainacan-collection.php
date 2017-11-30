@@ -221,7 +221,7 @@ class Collection extends Entity {
      */
     function get_metadata() {
         $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
-        return $Tainacan_Metadatas->fetch_by_collection( $this );
+        return $Tainacan_Metadatas->fetch_by_collection( $this,  [], 'OBJECT'  );
     }
 
     /**

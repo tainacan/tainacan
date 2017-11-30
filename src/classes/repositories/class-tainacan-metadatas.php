@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Metadatas extends Repository {
 	protected $entities_type = '\Tainacan\Entities\Metadata';
+	protected $default_metadata = 'default';
 	
     public function get_map() {
         return [
@@ -117,6 +118,15 @@ class Metadatas extends Repository {
         register_post_type(Entities\Metadata::get_post_type(), $args);
     }
 
+    /**
+     * constant used in default metadata in attribute collection_id
+     *
+     * @return string the value of constant
+     */
+    public function get_default_metadata_attribute(){
+        return $this->default_metadata;
+    }
+
 
     /**
      * fetch metadata based on ID or WP_Query args
@@ -125,9 +135,10 @@ class Metadatas extends Repository {
      * to learn all args accepted in the $args parameter
      *
      * @param array $args WP_Query args || int $args the metadata id
-     * @return \WP_Query an instance of wp query
+     * @param string $output One of 2 pre-defined constants 'WP_Query' | 'OBJECT' . Defaults to WP_Query
+     * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
-    public function fetch( $args ) {
+    public function fetch( $args, $output = 'WP_Query' ) {
 
         if( is_numeric($args) ){
             return new Entities\Metadata($args);
@@ -140,37 +151,43 @@ class Metadatas extends Repository {
 
             $args['post_type'] = Entities\Metadata::get_post_type();
 
-            return new \WP_Query($args);
+            $wp_query = new \WP_Query($args);
+            return $this->fetch_output($wp_query, $output);
         }
     }
 
     /**
-     * fetch metadata by collection
+     * fetch metadata by collection, searches all metadata available
      *
      * @param Entities\Collection $collection
      * @param array $args
      * @return Array Entities\Metadata
      */
-    public function fetch_by_collection(Entities\Collection $collection, $args = []){
-        $metadata = [];
+    public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = 'WP_Query'){
         $collection_id = $collection->get_id();
 
-        $args = array_merge([
-            'meta_key'       => 'collection_id',
-            'meta_value'     => $collection_id
-        ], $args);
+        //get parent collections
+        $parents = get_post_ancestors( $collection_id );
 
-        $wp_query = $this->fetch($args);
+        //insert the actual collection
+        $parents[] = $collection_id;
 
-        if ( $wp_query->have_posts() ){
-            while ( $wp_query->have_posts() ) {
-                $wp_query->the_post();
-                $metadata[] = new Entities\Metadata(  get_the_ID() );
-            }
+        //search for default metadata
+        $parents[] = $this->get_default_metadata_attribute();
+
+        $meta_query = array(
+            'key'     => 'collection_id',
+            'value'   => $parents,
+            'compare' => 'IN',
+        );
+
+        if( isset( $args['meta_query'] ) ){
+            $args['meta_query'][] = $meta_query;
+        }else{
+            $args['meta_query'] = array( $meta_query );
         }
 
-        return $metadata;
-
+        return $this->fetch( $args, $output );
     }
 
     public function update($object){

@@ -141,15 +141,10 @@ class Filters extends Repository {
      * to learn all args accepted in the $args parameter
      *
      * @param array $args WP_Query args || int $args the filter id
-     * @rreturn new \WP_Query($args);
+     * @param string $output One of 2 pre-defined constants 'WP_Query' | 'OBJECT' . Defaults to WP_Query
+     * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
-    public function fetch($args = []){
-        /**
-         * Se for numérico retorna o objeto filtro
-         * Se não, mas se há valor em $object e $args retorna filtro de coleção especifica
-         * Se não, mas se for string retorna os filtros pelo tipo de metadado
-         * Se não, retorna todos os filtros
-         */
+    public function fetch($args = [], $output = 'WP_Query'){
         if( is_numeric($args) ){
             return new Entities\Filter($args);
         } elseif (!empty($args)) {
@@ -161,30 +156,9 @@ class Filters extends Repository {
 
             $args['post_type'] = Entities\Filter::get_post_type();
 
-            return new \WP_Query($args);;
+            $wp_query = new \WP_Query($args);
+            return $this->fetch_output($wp_query, $output);
         }
-// elseif(is_string($object)) {
-//            $filters = array();
-//            $filters_type = $this->fetch();
-//
-//            foreach ( $filters_type as $filter_type ){
-//                if( in_array( $object,  $filter_type->get_supported_types() ) ){
-//                    $filters[] = $filter_type;
-//                }
-//            }
-//
-//            return $filters;
-//        } else {
-//            $filters = array();
-//
-//            foreach (get_declared_classes() as $class) {
-//                if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
-//                    $filters[] = new $class();
-//                }
-//            }
-//
-//            return $filters;
-//        }
     }
 
     /**

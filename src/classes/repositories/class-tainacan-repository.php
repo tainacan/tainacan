@@ -72,6 +72,28 @@ abstract class Repository {
 	}
 
     /**
+     * @param \WP_Query $WP_Query
+     * @param string $output
+     * @return array|\WP_Query
+     */
+	public function fetch_output(\WP_Query $WP_Query, $output = 'WP_Query' ){
+        if( $output === 'WP_Query'){
+            return $WP_Query;
+        }else if( $output === 'OBJECT' ) {
+            $result = [];
+
+            if (  $WP_Query->have_posts() ){
+                while ( $WP_Query->have_posts() ) {
+                    $WP_Query->the_post();
+                    $result[] = new $this->entities_type(  get_the_ID() );
+                }
+            }
+
+            return $result;
+        }
+    }
+
+    /**
      * @param $object
      * @return mixed
      */

@@ -31,7 +31,7 @@ class Collections extends Repository {
                 //'validation' => v::stringType(),
             ],
             'parent'         =>  [
-                'map'        => 'parent',
+                'map'        => 'post_parent',
                 'name'       => __('Parent Collection', 'tainacan'),
                 'description'=> __('Parent collection ID', 'tainacan'),
                 //'validation' => v::stringType(),
@@ -138,6 +138,7 @@ class Collections extends Repository {
     
     /**
      * @param Tainacan\Entities\Collection $collection
+     * @return \Tainacan\Entities\Collection
      * {@inheritDoc}
      * @see \Tainacan\Repositories\Repository::insert()
      */
@@ -162,9 +163,10 @@ class Collections extends Repository {
      * to learn all args accepted in the $args parameter
      *
      * @param array $args WP_Query args || int $args the collection id
-     * @return \WP_Query an instance of wp query
+     * @param string $output One of 2 pre-defined constants 'WP_Query' | 'OBJECT' . Defaults to WP_Query
+     * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
-    public function fetch($args = []){
+    public function fetch($args = [], $output = 'WP_Query'){
         if(is_numeric( $args )){
             return new Entities\Collection($args);
         } elseif(is_array($args)) {
@@ -177,7 +179,8 @@ class Collections extends Repository {
 
             // TODO: Pegar coleções registradas via código
 
-            return new \WP_Query($args);
+            $wp_query = new \WP_Query($args);
+            return $this->fetch_output($wp_query, $output);
         }
     }
 }

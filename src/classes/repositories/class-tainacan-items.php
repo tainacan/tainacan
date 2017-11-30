@@ -124,9 +124,10 @@ class Items extends Repository {
      *
      * @param array $args WP_Query args || int $args the item id
      * @param array $collections Array Entities\Collection || Array int collections IDs || int collection id || Entities\Collection collection object
-     * @return \WP_Query an instance of wp query
+     * @param string $output One of 2 pre-defined constants 'WP_Query' | 'OBJECT' . Defaults to WP_Query
+     * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
-    public function fetch($args = [],$collections = []){
+    public function fetch($args = [],$collections = [], $output = 'WP_Query'){
 
         global $Tainacan_Collections;
 
@@ -178,7 +179,8 @@ class Items extends Repository {
 
         $args['post_type'] = $cpt;
 
-        return new \WP_Query($args);
+        $wp_query = new \WP_Query($args);
+        return $this->fetch_output($wp_query, $output);
     }
 
     public function update($object){
