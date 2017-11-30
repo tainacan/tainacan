@@ -44,7 +44,7 @@ class Item_Metadata extends Repository {
      * @param Entities\Item $object
      * @return array
      */
-    public function fetch($object){
+    public function fetch($object, $output = null ){
         if($object instanceof Entities\Item){
             global $Tainacan_Items, $Tainacan_Metadatas;
             
