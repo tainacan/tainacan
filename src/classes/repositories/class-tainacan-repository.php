@@ -112,7 +112,7 @@ abstract class Repository {
      * @param $args
      * @return mixed
      */
-    public abstract function fetch( $args = [], $output = null );
+    public abstract function fetch( $args , $output = null );
 
     /**
      * @param $object
