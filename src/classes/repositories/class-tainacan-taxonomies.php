@@ -88,7 +88,7 @@ class Taxonomies extends Repository {
     public function insert($taxonomy) {
 
     	$new_taxonomy = parent::insert($taxonomy);
-        $taxonomy->register_taxonomy();
+        $new_taxonomy->register_taxonomy();
         
         // return a brand new object
         return $new_taxonomy;
