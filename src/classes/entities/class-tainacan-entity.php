@@ -110,7 +110,7 @@ class Entity {
         $mapped = $map[$prop];
         
         $is_valid = true;
-        
+
         if (
             isset($mapped['validation']) && 
             is_object($mapped['validation']) &&
@@ -118,7 +118,7 @@ class Entity {
         ) {
             $validation = $mapped['validation'];
             $prop_value = $this->get_mapped_property($prop);
-            
+
             if (is_array($prop_value)) {
                 foreach ($prop_value as $val) {
                     if (!$validation->validate($val)) {
