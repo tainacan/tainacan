@@ -21,6 +21,7 @@ class Filters extends \WP_UnitTestCase {
         $filter = new \Tainacan\Entities\Filter();
 
         $collection->set_name('teste');
+        $collection->validate();
         $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
@@ -28,6 +29,7 @@ class Filters extends \WP_UnitTestCase {
         $filter->set_collection( $collection );
 
         //inserindo o metadado
+        $filter->validate();
         $filter = $Tainacan_Filters->insert( $filter );
 
         $test = $Tainacan_Filters->fetch( $filter->get_id() );
@@ -47,6 +49,7 @@ class Filters extends \WP_UnitTestCase {
         $filter_range_type = new \Tainacan\Filter_Types\Range();
 
         $collection->set_name('teste');
+        $collection->validate();
         $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
@@ -56,6 +59,7 @@ class Filters extends \WP_UnitTestCase {
 
 
         //inserindo o metadado
+        $metadata->validate();
         $metadata = $Tainacan_Metadatas->insert($metadata);
 
         //inserindo o filtro
@@ -68,6 +72,7 @@ class Filters extends \WP_UnitTestCase {
 
         $filter->set_filter_type_object( $filter_list_type );
 
+        $filter->validate();
         $filter = $Tainacan_Filters->insert( $filter );
 
         $test = $Tainacan_Filters->fetch( $filter->get_id() );

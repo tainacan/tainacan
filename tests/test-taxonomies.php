@@ -28,6 +28,7 @@ class Taxonomies extends \WP_UnitTestCase {
         $taxonomy->set_allow_insert(true);
 
         //inserindo
+        $taxonomy->validate();
         $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
 
         //retorna a taxonomia
@@ -48,6 +49,7 @@ class Taxonomies extends \WP_UnitTestCase {
         $taxonomy->set_name('genero');
 
         //insere a taxonomia
+        $taxonomy->validate();
         $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
 
         //retorna a taxonomia

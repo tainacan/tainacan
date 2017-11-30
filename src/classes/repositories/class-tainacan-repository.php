@@ -25,10 +25,11 @@ abstract class Repository {
 	 */
 	public function insert($obj) {
 		// validate
-		if (!$obj->validate()){
-			return $obj->get_errors();
+		if (!$obj->get_validated()){
+			throw new \Exception('Entities must be validated before you can save them');
+            // TODO: Throw Warning saying you must validate object before insert()
 		}
-		// TODO: Throw Warning saying you must validate object before insert()
+		
 		
 		$map = $this->get_map();
 		
