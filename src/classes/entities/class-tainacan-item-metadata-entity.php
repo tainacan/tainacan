@@ -157,15 +157,14 @@ class Item_Metadata_Entity extends Entity {
             if ($this->is_collection_key()) {
             	$Tainacan_Items = new \Tainacan\Repositories\Items();
                 
-                $test = $Tainacan_Items->query([
-                    'collections' => $item->get_collection(),
-                    'metadata'    => [
+                $test = $Tainacan_Items->fetch([
+                    'meta_query'    => [
                         [
                             'key' => $this->metadata->get_id(), 
                             'value' => $value
                         ],
                     ]
-                ]);
+                ], $item->get_collection());
 
                 if ($test->have_posts()) {
                     $this->add_error('key_exists', $metadata->get_name() . ' is a collection key and there is another item with the same value');

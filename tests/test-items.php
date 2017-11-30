@@ -78,22 +78,26 @@ class Items extends \WP_UnitTestCase {
         $item = $Tainacan_Items->insert($i);
         
         // should return all 4 items
-        $test_query = $Tainacan_Items->query([]);
+        $test_query = $Tainacan_Items->fetch([]);
         $this->assertEquals(4, $test_query->post_count );
         
         // should also return all 4 items
-        $test_query = $Tainacan_Items->query(['collections' => [$collection, $collection2]]);
+        $test_query = $Tainacan_Items->fetch([], [$collection, $collection2]);
         $this->assertEquals(4, $test_query->post_count);
         
+        // should return 2 items
+        $test_query = $Tainacan_Items->fetch(['posts_per_page' => 2], [$collection, $collection2]);
+        $this->assertEquals(2, $test_query->post_count);
+        
         // should return only the first item
-        $test_query = $Tainacan_Items->query(['collections' => $collection]);
+        $test_query = $Tainacan_Items->fetch([], $collection);
         $this->assertEquals(1,$test_query->post_count);
 
         $test_query->the_post();
         $item = new \Tainacan\Entities\Item( get_the_ID() );
         $this->assertEquals('orange', $item->get_title() );
 
-        $test_query = $Tainacan_Items->query(['title' => 'orange']);
+        $test_query = $Tainacan_Items->fetch(['title' => 'orange']);
         $test_query->the_post();
         $item = new \Tainacan\Entities\Item( get_the_ID() );
 
@@ -101,10 +105,10 @@ class Items extends \WP_UnitTestCase {
         $this->assertEquals('orange', $item->get_title());
         
         // should return the other 3 items
-        $test_query = $Tainacan_Items->query(['collections' => $collection2]);
+        $test_query = $Tainacan_Items->fetch([], $collection2);
         $this->assertEquals(3,$test_query->post_count);
         
-        $test_query = $Tainacan_Items->query(['title' => 'apple']);
+        $test_query = $Tainacan_Items->fetch(['title' => 'apple']);
         $test_query->the_post();
         $item = new \Tainacan\Entities\Item( get_the_ID() );
 
@@ -118,40 +122,37 @@ class Items extends \WP_UnitTestCase {
         }
         
         // should return 1 item
-        $test_query = $Tainacan_Items->query([
-            'collections' => $collection2,
-            'metadata' => [
+        $test_query = $Tainacan_Items->fetch([
+            'meta_query' => [
                 [
                     'key' => $metadata2->get_id(),
                     'value' => 'value_2'
                 ]
             ]
-        ]);
+        ], $collection2);
         $this->assertEquals(1, $test_query->post_count);
         
         // should return 2 items
-        $test_query = $Tainacan_Items->query([
-            'collections' => $collection2,
-            'metadata' => [
+        $test_query = $Tainacan_Items->fetch([
+            'meta_query' => [
                 [
                     'key' => $metadata2->get_id(),
                     'value' => 'value_3'
                 ]
             ]
-        ]);
+        ], $collection2);
         $this->assertEquals(2, $test_query->post_count);
         
         // should return 2 item
-        $test_query = $Tainacan_Items->query([
-            'collections' => $collection2,
-            'metadata' => [
+        $test_query = $Tainacan_Items->fetch([
+            'meta_query' => [
                 [
                     'key' => $metadata3->get_id(),
                     'value' => 'value_2',
                     'compare' => '>'
                 ]
             ]
-        ]);
+        ], $collection2);
         $this->assertEquals(2, $test_query->post_count);
 
     }

@@ -101,6 +101,71 @@ abstract class Repository {
             return $result;
         }
     }
+    
+    /**
+     * Maps repository mapped properties to WP_Query arguments.
+     *
+     * This allows to build fetch arguments using both WP_Query arguments
+     * and the mapped properties for the repository.
+     *
+     * For example, you can use any of the following methods to browse collections by name:
+     * $TaincanCollections->fetch(['title' => 'test']);
+     * $TaincanCollections->fetch(['name' => 'test']);
+     *
+     * The property `name` is transformed into the native WordPress property `post_title`. (actually only title for query purpouses)
+     *
+     * Example 2, this also works with properties mapped to postmeta. The following methods are the same:
+     * $TaincanMetadatas->fetch(['required' => 'yes']);
+     * $TaincanMetadatas->fetch(['meta_query' => [
+     *     [
+     *         'key' => 'required',
+     *         'value' => 'yes'
+     *     ]
+     * ]]);
+     *
+     * 
+     * @param  array  $args [description]
+     * @return Array $args new $args array with mapped properties
+     */
+    public function parse_fetch_args($args = []) {
+        
+        $map = $this->get_map();
+
+        $wp_query_exceptions = [
+            'ID'         => 'p',
+            'post_title' => 'title'
+        ];
+        
+        $meta_query = [];
+        
+        foreach ($map as $prop => $mapped) {
+            if (array_key_exists($prop, $args)) {
+                $prop_value = $args[$prop];
+                
+                unset($args[$prop]);
+                
+                if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
+                    $meta_query[] = [
+                        'key'   => $prop,
+                        'value' => $prop_value
+                    ];
+                } else {
+                    $prop_search_name = array_key_exists($mapped['map'], $wp_query_exceptions) ? $wp_query_exceptions[$mapped['map']] : $mapped['map'];
+                    $args[$prop_search_name] = $prop_value;
+                }
+                
+            }
+        }
+        
+        if ( isset($args['meta_query']) && is_array($args['meta_query']) && !empty($args['meta_query'])) {
+            $meta_query = array_merge($args['meta_query'],$meta_query);
+        }
+        
+        $args['meta_query'] = $meta_query;
+        
+        return $args;
+        
+    }
 
     /**
      * @param $object

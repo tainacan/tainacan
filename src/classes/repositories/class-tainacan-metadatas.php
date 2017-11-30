@@ -132,7 +132,9 @@ class Metadatas extends Repository {
      * fetch metadata based on ID or WP_Query args
      *
      * metadata are stored as posts. Check WP_Query docs
-     * to learn all args accepted in the $args parameter
+     * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+     * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+     * appropriate WP_Query argument
      *
      * @param array $args WP_Query args || int $args the metadata id
      * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)

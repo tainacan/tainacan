@@ -123,7 +123,9 @@ class Taxonomies extends Repository {
      * fetch taxonomies based on ID or WP_Query args
      *
      * Taxonomies are stored as posts. Check WP_Query docs
-     * to learn all args accepted in the $args parameter
+     * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+     * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+     * appropriate WP_Query argument
      *
      * @param array $args WP_Query args | int $args the taxonomy id
      * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
@@ -141,6 +143,8 @@ class Taxonomies extends Repository {
                 'posts_per_page' => -1,
                 'post_status'    => 'publish'
             ], $args);
+
+            $args = $this->parse_fetch_args($args);
 
             $args['post_type'] = Entities\Taxonomy::get_post_type();
 
