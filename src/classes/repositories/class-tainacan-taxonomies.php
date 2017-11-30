@@ -81,26 +81,6 @@ class Taxonomies extends Repository {
         register_post_type(Entities\Taxonomy::get_post_type(), $args);
     }
 
-    public function get_taxonomies($args = []){
-        $args = array_merge([
-            'post_type'      => Entities\Taxonomy::get_post_type(),
-            'posts_per_page' => -1,
-            'post_status'    => 'publish',
-        ], $args);
-        
-        $posts = get_posts($args);
-        
-        $return = [];
-        
-        foreach ($posts as $post) {
-        	$return[] = new Entities\Taxonomy($post);
-        }
-        
-        // TODO: Pegar taxonomias registradas via código
-        
-        return $return;
-    }
-
     /**
      * @param Entities\Taxonomy $taxonomy
      * @return int
@@ -150,7 +130,9 @@ class Taxonomies extends Repository {
      * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
     public function fetch( $args = [], $output = null ) {
-
+        
+        // TODO: Pegar taxonomias registradas via código
+        
         if( is_numeric($args) ){
             return new Entities\Taxonomy($args);
         } elseif (!empty($args)) {
