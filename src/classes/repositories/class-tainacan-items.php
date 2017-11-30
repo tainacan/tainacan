@@ -117,7 +117,9 @@ class Items extends Repository {
      * fetch items based on ID or WP_Query args
      *
      * Items are stored as posts. Check WP_Query docs
-     * to learn all args accepted in the $args parameter
+     * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+     * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+     * appropriate WP_Query argument
      *
      * The second paramater specifies from which collections item should be fetched.
      * You can pass the Collection ID or object, or an Array of IDs or collection objects
@@ -172,7 +174,9 @@ class Items extends Repository {
         }
 
         //TODO: get collection order and order by options
-
+        
+        $args = $this->parse_fetch_args($args);
+        
         $args = array_merge([
             'post_status'    => 'publish',
         ], $args);
@@ -191,52 +195,4 @@ class Items extends Repository {
 
     }
     
-    // same as WP_Query with few paramaters more:
-    // collections ID or array of IDs, object or array of objects
-    // metadata - array of metadata in meta_query format
-    // other item properties, present in the "map"
-    public function query($args) {
-        
-        $map = $this->get_map();
-
-        $wp_query_exceptions = [
-            'ID'         => 'p',
-            'post_title' => 'title'
-        ];
-        
-        $meta_query = [];
-        
-        foreach ($map as $prop => $mapped) {
-            if (array_key_exists($prop, $args)) {
-                $prop_value = $args[$prop];
-                
-                unset($args[$prop]);
-                
-                if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
-                    $meta_query[] = [
-                        'key'   => $prop,
-                        'value' => $prop_value
-                    ];
-                } else {
-                    $prop_search_name = array_key_exists($mapped['map'], $wp_query_exceptions) ? $wp_query_exceptions[$mapped['map']] : $mapped['map'];
-                    $args[$prop_search_name] = $prop_value;
-                }
-                
-            }
-        }
-        
-        if ( isset($args['metadata']) && is_array($args['metadata']) && !empty($args['metadata'])) {
-            $meta_query = array_merge($args['metadata'],$meta_query);
-        }
-        
-        $args['meta_query'] = $meta_query;
-        
-        unset($args['metadata']);
-        
-        $collections = !empty($args['collections']) ? $args['collections'] : [];
-        unset($args['collections']);
-
-        return $this->fetch($args, $collections);
-        ### TODO I think its better if we return a WP_Query object. easier for loop and debugging
-    }
 }

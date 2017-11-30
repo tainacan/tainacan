@@ -170,7 +170,9 @@ class Collections extends Repository {
      * fetch collection based on ID or WP_Query args
      *
      * Collections are stored as posts. Check WP_Query docs
-     * to learn all args accepted in the $args parameter
+     * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+     * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+     * appropriate WP_Query argument
      *
      * @param array $args WP_Query args || int $args the collection id
      * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
@@ -184,7 +186,9 @@ class Collections extends Repository {
                 'posts_per_page' => -1,
                 'post_status'    => 'publish',
             ], $args);
-
+            
+            $args = $this->parse_fetch_args($args);
+            
             $args['post_type'] = Entities\Collection::get_post_type();
 
             // TODO: Pegar coleções registradas via código
