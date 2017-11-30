@@ -124,10 +124,10 @@ class Items extends Repository {
      *
      * @param array $args WP_Query args || int $args the item id
      * @param array $collections Array Entities\Collection || Array int collections IDs || int collection id || Entities\Collection collection object
-     * @param string $output One of 2 pre-defined constants 'WP_Query' | 'OBJECT' . Defaults to WP_Query
+     * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
      * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
-    public function fetch($args = [],$collections = [], $output = 'WP_Query'){
+    public function fetch($args = [],$collections = [], $output = null){
 
         global $Tainacan_Collections;
 

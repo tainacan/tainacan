@@ -141,10 +141,10 @@ class Filters extends Repository {
      * to learn all args accepted in the $args parameter
      *
      * @param array $args WP_Query args || int $args the filter id
-     * @param string $output One of 2 pre-defined constants 'WP_Query' | 'OBJECT' . Defaults to WP_Query
+     * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
      * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
-    public function fetch($args = [], $output = 'WP_Query'){
+    public function fetch($args = [], $output = null){
         if( is_numeric($args) ){
             return new Entities\Filter($args);
         } elseif (!empty($args)) {

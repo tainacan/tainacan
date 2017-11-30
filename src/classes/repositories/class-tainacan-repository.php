@@ -72,11 +72,20 @@ abstract class Repository {
 	}
 
     /**
+     * Prepare the output for the fetch() methods.
+     *
+     * Possible outputs are:
+     * WP_Query (default) - returns the WP_Object itself
+     * OBJECT - return an Array of Tainacan\Entities
+     * 
      * @param \WP_Query $WP_Query
-     * @param string $output
+     * @param string $output `WP_Query` for a single WP_Query object or `OBJECT` for an array of Tainacan\Entities
      * @return array|\WP_Query
      */
 	public function fetch_output(\WP_Query $WP_Query, $output = 'WP_Query' ){
+        
+        if (is_null($output)) $output = 'WP_Query';
+
         if( $output === 'WP_Query'){
             return $WP_Query;
         }else if( $output === 'OBJECT' ) {
