@@ -13,7 +13,7 @@ class Metadatas extends Repository {
 	protected $default_metadata = 'default';
 	
     public function get_map() {
-        return [
+    	return apply_filters('tainacan-get-map', [
             'id'             => [
                 'map'        => 'ID',
                 //'validation' => ''
@@ -78,7 +78,7 @@ class Metadatas extends Repository {
                 'map'        => 'meta',
                 'validation' => ''
             ],
-        ];
+        ]);
     }
 
     public function register_post_type() {

@@ -12,7 +12,7 @@ class Taxonomies extends Repository {
 	protected $entities_type = '\Tainacan\Entities\Taxonomy';
 
     public function get_map() {
-        return [
+    	return apply_filters('tainacan-get-map', [
             'id'              =>  [
                 'map'         => 'ID',
                 //'validation'  => ''
@@ -41,7 +41,7 @@ class Taxonomies extends Repository {
         		'map'         => 'meta_multi',
         		'validation'  => ''
         	],
-        ];
+        ]);
     }
 
     public function register_post_type() {

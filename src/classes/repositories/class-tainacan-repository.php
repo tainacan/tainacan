@@ -4,6 +4,7 @@ namespace Tainacan\Repositories;
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 use Tainacan;
+use \Respect\Validation\Validator as v;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -15,7 +16,7 @@ abstract class Repository {
 	 */
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
-		//add_filter('tainacan-get-map')
+		add_filter('tainacan-get-map', array($this, 'get_default_properties'));
 	}
 	
 	/**
@@ -44,7 +45,7 @@ abstract class Repository {
      *      ],
 	 */
 	public function get_map() {
-		return array();
+		return apply_filters('tainacan-get-map', array());
 	}
 	
 	/**
@@ -69,7 +70,7 @@ abstract class Repository {
 			}
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
-		$obj->WP_Post->post_status = 'publish';
+		//$obj->WP_Post->post_status = 'publish';
 		
 		// TODO verificar se salvou mesmo
 		$id = wp_insert_post($obj->WP_Post);
@@ -195,6 +196,21 @@ abstract class Repository {
         
         return $args;
         
+    }
+    
+    public function get_default_properties($map)
+    {
+    	if(is_array($map))
+    	{
+    		$map['status']	=  [
+    			'map'			=> 'post_status',
+    			'title'			=> __('Status', 'tainacan'),
+    			'type'			=> 'string',
+    			'description'	=> __('Status', 'tainacan'),
+    			//'validation'	=> v::stringType(),
+    		];
+    	}
+    	return $map;
     }
 
     /**

@@ -11,7 +11,7 @@ use Tainacan\Entities\Collection;
 class Collections extends Repository {
 	protected $entities_type = '\Tainacan\Entities\Collection';
     public function get_map() {
-        return [
+        return apply_filters('tainacan-get-map', [
             'id'             => [
                 'map'        => 'ID',
                 'title'       => __('ID', 'tainacan'),
@@ -107,7 +107,7 @@ class Collections extends Repository {
              * 
              */
 
-        ];
+        ]);
     }
 
     public function register_post_type() {

@@ -9,7 +9,7 @@ class Filters extends Repository {
 	protected $entities_type = '\Tainacan\Entities\Filter';
 	
     public function get_map() {
-        return [
+    	return apply_filters('tainacan-get-map',  [
             'id'                 => [
                 'map'        => 'ID',
                 //'validation' => ''
@@ -46,7 +46,7 @@ class Filters extends Repository {
                 'map'        => 'meta',
                 'validation' => ''
             ],
-        ];
+        ]);
     }
 
     public function register_post_type(){

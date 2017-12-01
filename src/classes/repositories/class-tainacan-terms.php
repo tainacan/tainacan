@@ -12,7 +12,7 @@ class Terms extends Repository {
 	
 	protected $entities_type = '\Tainacan\Entities\Term';
     public function get_map() {
-        return [
+    	return apply_filters('tainacan-get-map', [
             'term_id'     => [
                 'map'        => 'term_id',
                 //'validation' => ''
@@ -37,7 +37,7 @@ class Terms extends Repository {
                 'map'        => 'termmeta',
                 'validation' => ''
             ],
-        ];
+        ]);
     }
     
     public function insert($term){

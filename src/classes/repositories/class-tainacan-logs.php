@@ -19,7 +19,7 @@ class Logs extends Repository {
 	}
 	
     public function get_map() {
-        return [
+    	return apply_filters('tainacan-get-map', [
             'id'             => [
                 'map'        => 'ID',
                 //'validation' => ''
@@ -64,7 +64,7 @@ class Logs extends Repository {
         		'map'        => 'meta',
         		'validation' => ''
         	],
-        ];
+        ]);
     }
     
     /**
@@ -153,13 +153,9 @@ class Logs extends Repository {
     		'post_status'    => 'publish',
     	];
     	
-    	$posts = get_posts($args);
-    	
-    	foreach ($posts as $post) {
-    		$log = new Entities\Log($post);
-    	}
+    	$logs = $this->fetch($args, 'OBJECT');
 
-    	return $log;
+    	return array_pop($logs);
     }
     
     public function log_inserts($new_value, $value = null)
