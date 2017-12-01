@@ -45,17 +45,6 @@ class Collection extends Entity {
         return 'Hello, I\'m the Collection Entity';
     }
 
-    public function  __toJSON(){
-        return json_encode(
-            [
-            	'id'             => $this->get_id(),
-                'name'           => $this->get_name(),
-                'description'    => $this->get_description(),
-            ],
-            JSON_NUMERIC_CHECK,
-            JSON_UNESCAPED_UNICODE
-        );
-    }
     /**
      * Register the post type for this collection
      *
@@ -210,15 +199,15 @@ class Collection extends Entity {
         return $this->get_id() ? 'tnc_col_' . $this->get_id() : false;
     }
 
-    /**
-     * Get collection metadata.
-     *
-     * Returns an array of \Entity\Metadata objects, representing all the metadata of the collection.
-     *
-     * @see \Tainacan\Repositories\Metadatas->fetch()
-     *
-     * @return array
-     */
+	/**
+	 * Get collection metadata.
+	 *
+	 * Returns an array of \Entity\Metadata objects, representing all the metadata of the collection.
+	 *
+	 * @see \Tainacan\Repositories\Metadatas->fetch()
+	 *
+	 * @return \Tainacan\Repositories\Array
+	 */
     function get_metadata() {
         $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
         return $Tainacan_Metadatas->fetch_by_collection( $this,  [], 'OBJECT'  );
