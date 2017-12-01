@@ -48,7 +48,7 @@ class Items extends Repository {
         
         global $Tainacan_Collections, $Tainacan_Taxonomies;
         
-        $collections = $Tainacan_Collections->fetch();
+        $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         $taxonomies = $Tainacan_Taxonomies->fetch([], 'OBJECT');
 
         if (!is_array($collections)){
