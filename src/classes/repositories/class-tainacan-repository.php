@@ -56,13 +56,7 @@ abstract class Repository {
 	public function insert($obj) {
 		// validate
 		if (!$obj->get_validated()){
-
-            foreach ($obj->get_errors() as $error) {
-                $type = key($error);
-                throw new \Exception('Entities must be validated before you can save them'.PHP_EOL.
-                    ' Type:'.$type.PHP_EOL.' Message: '.$error[$type] );
-		    }
-			//throw new \Exception('Entities must be validated before you can save them: '. implode(PHP_EOL,$obj->get_errors()));
+			throw new \Exception('Entities must be validated before you can save them');
             // TODO: Throw Warning saying you must validate object before insert()
 		}
 		
