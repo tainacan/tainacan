@@ -19,6 +19,8 @@ class Items extends \WP_UnitTestCase {
     function teste_query(){
         global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
+        $type = new \Tainacan\Field_Types\Text();
+
         $collection = new \Tainacan\Entities\Collection();
         $collection2 = new \Tainacan\Entities\Collection();
         
@@ -38,16 +40,19 @@ class Items extends \WP_UnitTestCase {
         $metadata->set_name('metadado');
         $metadata->set_collection( $collection );
         $metadata->set_status('publish');
+        $metadata->set_field_type_object( $type );
         $metadata->validate();
         $metadata = $Tainacan_Metadatas->insert($metadata);
         $metadata2->set_name('metadado2');
         $metadata2->set_collection( $collection2 );
         $metadata2->set_status('publish');
+        $metadata2->set_field_type_object( $type );
         $metadata2->validate();
         $metadata2 = $Tainacan_Metadatas->insert($metadata2);
         $metadata3->set_name('metadado3');
         $metadata3->set_collection( $collection2 );
         $metadata3->set_status('publish');
+        $metadata3->set_field_type_object( $type );
         $metadata3->validate();
         $metadata3 = $Tainacan_Metadatas->insert($metadata3);
 

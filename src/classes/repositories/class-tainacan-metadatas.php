@@ -20,8 +20,8 @@ class Metadatas extends Repository {
                 'title'      => __('ID', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('Unique identifier', 'tainacan'),
-                'on_error'   => __('The ID should be numeric', 'tainacan'),
-                'validation' => v::numeric(),
+               // 'on_error'   => __('The ID should be numeric', 'tainacan'),
+               // 'validation' => v::numeric(),
             ],
             'name'           => [
                 'map'        => 'post_title',
@@ -44,8 +44,8 @@ class Metadatas extends Repository {
                 'title'      => __('Parent', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('Parent metadata', 'tainacan'),
-                'on_error'   => __('The Parent should be numeric value', 'tainacan'),
-                'validation' => v::numeric(),
+                //'on_error'   => __('The Parent should be numeric value', 'tainacan'),
+                //'validation' => v::numeric(),
             ],
             'description'    => [
                 'map'        => 'post_content',
@@ -60,7 +60,7 @@ class Metadatas extends Repository {
                 'title'      => __('Type', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('The metadata type', 'tainacan'),
-                'on_error'   => __('Metadata type is invalid', 'tainacan'),
+                'on_error'   => __('Metadata type is empty', 'tainacan'),
                 'validation' => v::stringType()->notEmpty(),
             ],
             'required'       => [

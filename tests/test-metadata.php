@@ -21,6 +21,7 @@ class Metadata extends \WP_UnitTestCase {
 
         $collection = new \Tainacan\Entities\Collection();
         $metadata = new \Tainacan\Entities\Metadata();
+        $type = new \Tainacan\Field_Types\Text();
 
         $collection->set_name('teste');
         $collection->validate();
@@ -30,6 +31,7 @@ class Metadata extends \WP_UnitTestCase {
         $metadata->set_name('metadado');
         $metadata->set_description('descricao');
         $metadata->set_collection( $collection );
+        $metadata->set_field_type_object( $type );
 
         //inserindo o metadado
         $metadata->validate();
