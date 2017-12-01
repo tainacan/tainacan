@@ -11,7 +11,8 @@ use \Respect\Validation\Validator as v;
 */
 class Terms extends Repository {
 	
-	protected $entities_type = '\Tainacan\Entities\Term';
+	public $entities_type = '\Tainacan\Entities\Term';
+    
     public function get_map() {
     	return apply_filters('tainacan-get-map', [
             'term_id'     => [

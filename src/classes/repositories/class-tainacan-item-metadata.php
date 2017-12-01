@@ -6,7 +6,7 @@ use Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Item_Metadata extends Repository {
-	protected $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
+	public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
     public function insert($item_metadata) {
 
         $unique = ! $item_metadata->is_multiple();

@@ -9,7 +9,7 @@ use \Respect\Validation\Validator as v;
 use Tainacan\Entities\Collection;
 
 class Collections extends Repository {
-	protected $entities_type = '\Tainacan\Entities\Collection';
+	public $entities_type = '\Tainacan\Entities\Collection';
     public function get_map() {
         return apply_filters('tainacan-get-map', [
             'id'             => [

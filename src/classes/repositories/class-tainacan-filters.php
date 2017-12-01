@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use \Respect\Validation\Validator as v;
 class Filters extends Repository {
-	protected $entities_type = '\Tainacan\Entities\Filter';
+	public $entities_type = '\Tainacan\Entities\Filter';
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map',  [

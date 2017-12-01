@@ -9,7 +9,7 @@ use \Respect\Validation\Validator as v;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 abstract class Repository {
-	protected $entities_type = '\Tainacan\Entities\Entity';
+	public $entities_type = '\Tainacan\Entities\Entity';
 	
 	/**
 	 * Register hooks

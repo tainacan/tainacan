@@ -10,7 +10,7 @@ use \Respect\Validation\Validator as v;
  * Class Metadatas
  */
 class Metadatas extends Repository {
-	protected $entities_type = '\Tainacan\Entities\Metadata';
+	public $entities_type = '\Tainacan\Entities\Metadata';
 	protected $default_metadata = 'default';
 	
     public function get_map() {

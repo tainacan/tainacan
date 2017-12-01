@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  *
  */
 class Logs extends Repository {
-	protected $entities_type = '\Tainacan\Entities\Log';
+	public $entities_type = '\Tainacan\Entities\Log';
 	
 	public function __construct() {
 		parent::__construct();

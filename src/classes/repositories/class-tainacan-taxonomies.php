@@ -11,7 +11,7 @@ use \Respect\Validation\Validator as v;
  * Class Tainacan_Taxonomies
  */
 class Taxonomies extends Repository {
-	protected $entities_type = '\Tainacan\Entities\Taxonomy';
+	public $entities_type = '\Tainacan\Entities\Taxonomy';
 
     public function get_map() {
     	return apply_filters('tainacan-get-map', [

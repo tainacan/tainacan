@@ -7,7 +7,7 @@ use \Respect\Validation\Validator as v;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Items extends Repository {
-	protected $entities_type = '\Tainacan\Entities\Item';
+	public $entities_type = '\Tainacan\Entities\Item';
     public function get_map() {
     	return apply_filters('tainacan-get-map', [
             'id'            => [
