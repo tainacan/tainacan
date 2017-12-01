@@ -90,6 +90,11 @@ class Entity {
         $this->set_validated(false);
         $this->$prop = $value;
     }
+    
+    public function set_status($value){
+    	$value = apply_filters('tainacan-set-post-status', $value);
+    	$this->set_mapped_property('status', $value);
+    }
 
     /**
      * Validate the class values/properties, to be used before insert/save/update
@@ -160,6 +165,12 @@ class Entity {
     
     public static function get_post_type() {
     	return static::$post_type;
+    }
+    
+    public function get_status(){
+   		$value = $this->get_mapped_property('status');
+   		if(empty($value)) $value = 'draft';
+   		return apply_filters('tainacan-get-post-status', $value);
     }
     
     public function add_error($type, $message) {
