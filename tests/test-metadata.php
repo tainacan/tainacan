@@ -23,6 +23,7 @@ class Metadata extends \WP_UnitTestCase {
         $metadata = new \Tainacan\Entities\Metadata();
 
         $collection->set_name('teste');
+        $collection->validate();
         $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
@@ -31,6 +32,7 @@ class Metadata extends \WP_UnitTestCase {
         $metadata->set_collection( $collection );
 
         //inserindo o metadado
+        $metadata->validate();
         $metadata = $Tainacan_Metadatas->insert($metadata);
 
         $test = $Tainacan_Metadatas->fetch($metadata->get_id());
@@ -52,6 +54,7 @@ class Metadata extends \WP_UnitTestCase {
         $type = new \Tainacan\Field_Types\Text();
 
         $collection->set_name('teste');
+        $collection->validate();
         $collection = $Tainacan_Collections->insert($collection);
 
         //setando os valores na classe do metadado
@@ -61,6 +64,7 @@ class Metadata extends \WP_UnitTestCase {
 
 
         //inserindo o metadado
+        $metadata->validate();
         $metadata = $Tainacan_Metadatas->insert($metadata);
 
         $test = $Tainacan_Metadatas->fetch($metadata->get_id());
@@ -88,21 +92,25 @@ class Metadata extends \WP_UnitTestCase {
         $metadata_default->set_name('metadata default');
         $metadata_default->set_collection_id( $Tainacan_Metadatas->get_default_metadata_attribute() );
         $metadata_default->set_field_type_object( $type );
+        $metadata_default->validate();
         $Tainacan_Metadatas->insert($metadata_default);
 
         //creating collection grandfather
         $collection_grandfather->set_name('collection grandfather');
+        $collection_grandfather->validate();
         $collection_grandfather = $Tainacan_Collections->insert($collection_grandfather);
 
         //creating metadata grandfather
         $metadata_grandfather->set_name('metadata grandfather');
         $metadata_grandfather->set_collection_id( $collection_grandfather->get_id() );
         $metadata_grandfather->set_field_type_object( $type );
+        $metadata_grandfather->validate();
         $Tainacan_Metadatas->insert($metadata_grandfather);
 
         //creating collection father
         $collection_father->set_name('collection father');
         $collection_father->set_parent( $collection_grandfather->get_id() );
+        $collection_father->validate();
         $collection_father = $Tainacan_Collections->insert( $collection_father );
 
         $this->assertEquals( $collection_grandfather->get_id(), $collection_father->get_parent() );
@@ -111,11 +119,13 @@ class Metadata extends \WP_UnitTestCase {
         $metadata_father->set_name('metadata father');
         $metadata_father->set_collection_id( $collection_father->get_id() );
         $metadata_father->set_field_type_object( $type );
+        $metadata_father->validate();
         $Tainacan_Metadatas->insert($metadata_father);
 
         //creating collection son
         $collection_son->set_name('collection son');
         $collection_son->set_parent( $collection_father->get_id() );
+        $collection_son->validate();
         $collection_son = $Tainacan_Collections->insert($collection_son);
 
         $this->assertEquals( $collection_father->get_id(), $collection_son->get_parent() );
@@ -124,6 +134,7 @@ class Metadata extends \WP_UnitTestCase {
         $metadata_son->set_name('metadata son');
         $metadata_son->set_collection_id( $collection_son->get_id() );
         $metadata_son->set_field_type_object( $type );
+        $metadata_son->validate();
         $Tainacan_Metadatas->insert($metadata_son);
 
         $retrieve_metadata =  $Tainacan_Metadatas->fetch_by_collection( $collection_son, [], 'OBJECT' );

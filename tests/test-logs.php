@@ -32,6 +32,7 @@ class Logs extends \WP_UnitTestCase {
         $blog_id = get_current_blog_id();
 
         //inserindo
+        $log->validate();
         $log = $Tainacan_Logs->insert($log);
 
         //retorna a taxonomia
@@ -48,9 +49,11 @@ class Logs extends \WP_UnitTestCase {
         $value->set_default_order('DESC');
         
         global $Tainacan_Collections;
+        $value->validate();
         $value = $Tainacan_Collections->insert($value);
         
         $value->set_name('new_testeLogs');
+        $value->validate();
         $new_value = $Tainacan_Collections->insert($value);
         
         $create_log = Log::create('teste create', 'testing a log creation function', $new_value, $value);

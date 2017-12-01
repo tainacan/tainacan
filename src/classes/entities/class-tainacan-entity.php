@@ -14,22 +14,34 @@ class Entity {
 	 * @var \Tainacan\Repositories\Repository
 	 */
 	protected $repository;
+    
 	/**
 	 * Array of errors, for example, register validations errors
 	 * @var array
 	 */
     private $errors = [];
+    
     /**
      * The WordPress post_type for store this class if is needed, false otherwise
      * @var string
      */
     protected static $post_type = false;
+    
     /**
      * Store the WordPress post object 
      * @var \WP_Post
      */
     public $WP_Post;
-
+    
+    /**
+     * Indicates wether an entity was validated, calling the validate() method
+     *
+     * Entities MUST be validated before attempt to save
+     * 
+     * @var boolean
+     */
+    private $validated = false;
+    
     /**
      * return the value for a mapped property
      * @param string $prop id of property
@@ -75,6 +87,7 @@ class Entity {
      * @param mixed $value the value to be setted
      */
     public function set_mapped_property($prop, $value) {
+        $this->set_validated(false);
         $this->$prop = $value;
     }
 
@@ -96,6 +109,7 @@ class Entity {
                 $is_valid = false;
         }
         
+        $this->set_validated($is_valid);
         return $is_valid;
     }
     
@@ -157,6 +171,20 @@ class Entity {
      */
     public function reset_errors() {
         $this->errors = [];
+    }
+    
+    public function get_validated() {
+        return $this->validated;
+    }
+    
+    protected function set_validated($value) {
+        $this->validated = $value;
+    }
+    
+    protected function set_as_valid() {
+        $this->reset_errors();
+        $this->set_validated(true);
+        return true;
     }
  
 }

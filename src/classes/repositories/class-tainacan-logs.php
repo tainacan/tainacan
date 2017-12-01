@@ -158,7 +158,7 @@ class Logs extends Repository {
     	foreach ($posts as $post) {
     		$log = new Entities\Log($post);
     	}
-    	// TODO: Pegar coleções registradas via código
+
     	return $log;
     }
     

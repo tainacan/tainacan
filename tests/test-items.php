@@ -23,8 +23,10 @@ class Items extends \WP_UnitTestCase {
         $collection2 = new \Tainacan\Entities\Collection();
         
         $collection->set_name('teste');
+        $collection->validate();
         $collection = $Tainacan_Collections->insert($collection);
         $collection2->set_name('teste2');
+        $collection2->validate();
         $collection2 = $Tainacan_Collections->insert($collection2);
         
         $metadata = new \Tainacan\Entities\Metadata();
@@ -33,12 +35,15 @@ class Items extends \WP_UnitTestCase {
         
         $metadata->set_name('metadado');
         $metadata->set_collection( $collection );
+        $metadata->validate();
         $metadata = $Tainacan_Metadatas->insert($metadata);
         $metadata2->set_name('metadado2');
         $metadata2->set_collection( $collection2 );
+        $metadata2->validate();
         $metadata2 = $Tainacan_Metadatas->insert($metadata2);
         $metadata3->set_name('metadado3');
         $metadata3->set_collection( $collection2 );
+        $metadata3->validate();
         $metadata3 = $Tainacan_Metadatas->insert($metadata3);
 
         global $Tainacan_Items;
@@ -46,6 +51,7 @@ class Items extends \WP_UnitTestCase {
         $i->set_title('orange');
         $i->set_collection($collection);
         $i->add_metadata($metadata, 'value_1');
+        $i->validate();
         $item = $Tainacan_Items->insert($i);
         
         $item = $Tainacan_Items->fetch($item->get_id());
@@ -60,6 +66,7 @@ class Items extends \WP_UnitTestCase {
         $i->set_collection($collection2);
         $i->add_metadata($metadata2, 'value_2');
         $i->add_metadata($metadata3, 'value_2');
+        $i->validate();
         $item = $Tainacan_Items->insert($i);
         
         $i = new \Tainacan\Entities\Item();
@@ -68,6 +75,7 @@ class Items extends \WP_UnitTestCase {
         $i->add_metadata($metadata2, 'value_2');
         $i->add_metadata($metadata2, 'value_3'); // if we set twice, value is overridden
         $i->add_metadata($metadata3, 'value_3');
+        $i->validate();
         $item = $Tainacan_Items->insert($i);
         
         $i = new \Tainacan\Entities\Item();
@@ -75,6 +83,7 @@ class Items extends \WP_UnitTestCase {
         $i->set_collection($collection2);
         $i->add_metadata($metadata2, 'value_3');
         $i->add_metadata($metadata3, 'value_6');
+        $i->validate();
         $item = $Tainacan_Items->insert($i);
         
         // should return all 4 items

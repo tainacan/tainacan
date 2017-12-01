@@ -25,6 +25,7 @@ class Collections extends \WP_UnitTestCase {
         $x->set_default_order('DESC');
         
         global $Tainacan_Collections;
+        $x->validate();
         $col = $Tainacan_Collections->insert($x);
         
         $this->assertEquals('Tainacan\Entities\Collection', get_class($col));
@@ -50,6 +51,7 @@ class Collections extends \WP_UnitTestCase {
         $x->set_default_order('DESC');
         
         global $Tainacan_Collections;
+        $x->validate();
         $col = $Tainacan_Collections->insert($x);
         
         $collection = $Tainacan_Collections->fetch($col->get_id());
@@ -63,6 +65,7 @@ class Collections extends \WP_UnitTestCase {
         $i->set_collection($collection);
         
         global $Tainacan_Items;
+        $i->validate();
         $item = $Tainacan_Items->insert( $i );
         
         $item = $Tainacan_Items->fetch( $item->get_id() );

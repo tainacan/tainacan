@@ -146,7 +146,7 @@ class Item_Metadata_Entity extends Entity {
                     return false;
                 }
                 
-                $this->reset_errors();
+                $this->set_as_valid();
                 return true;   
             } else {
                 $this->add_error('invalid', $metadata->get_name() . ' is invalid');
@@ -174,7 +174,7 @@ class Item_Metadata_Entity extends Entity {
             
             // TODO: call fieldType validation
             // 
-            $this->reset_errors();
+            $this->set_as_valid();
             return true;   
         }   
     }

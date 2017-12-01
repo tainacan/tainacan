@@ -224,7 +224,11 @@ class Log extends Entity {
 			throw new \Exception('msn or new_value is need to log');
 		}
 		global $Tainacan_Logs;
-		return $Tainacan_Logs->insert($log);
+		if ($log->validate()) {
+            return $Tainacan_Logs->insert($log);
+        } else {
+            throw new \Exception('Invalid log');
+        }
 		
     }
 }
