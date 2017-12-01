@@ -10,5 +10,5 @@ composer install
 echo "Atualizando arquivos em $destination"
 rm -rf $destination
 mkdir $destination
-cp -R src/ $destination/
+cp -R src/* $destination/
 rm -rf $destination/scss

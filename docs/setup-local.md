@@ -52,6 +52,10 @@ And that's pretty much all. Now you will want to set up your tests and your buil
 
 When we want to build the plugin, we run `build.sh` that basically compiles all the assets (sass), installs any dependence and moves the files to the plugin directory. This compiled version of the plugin will be then added to the official WordPress Plugin repository.
 
+```
+./build.sh
+```
+
 In order to use it, make a copy of `build-config-sample.sh` and name it only `build-config.sh`. Edit it and set the folder in which you want the build to be made.
 
 If you are running a local environment, you might want to check `build-watch.sh`. This script will watch your development folder for changes and automatically build the plugin so you don't have to do it manually every time you modify a file.
