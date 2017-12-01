@@ -124,7 +124,7 @@ class Logs extends Repository {
     public function fetch($args = [], $output = null){
         if(is_numeric($args)){
     	    return new Entities\Log($args);
-        } else {
+        } elseif (is_array($args)) {
             $args = array_merge([
                 'post_status'    => 'publish',
             ], $args);

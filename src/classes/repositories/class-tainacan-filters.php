@@ -178,7 +178,7 @@ class Filters extends Repository {
     public function fetch($args = [], $output = null){
         if( is_numeric($args) ){
             return new Entities\Filter($args);
-        } elseif (!empty($args)) {
+        } elseif (is_array($args)) {
             // TODO: get filters from parent collections
             $args = array_merge([
                 'posts_per_page' => -1,

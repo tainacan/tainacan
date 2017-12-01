@@ -163,7 +163,7 @@ class Taxonomies extends Repository {
         
         if( is_numeric($args) ){
             return new Entities\Taxonomy($args);
-        } elseif (!empty($args)) {
+        } elseif (is_array($args)) {
 
             $args = array_merge([
                 'posts_per_page' => -1,

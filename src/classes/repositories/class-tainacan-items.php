@@ -61,9 +61,11 @@ class Items extends Repository {
         }
          
         // register taxonomies
-        foreach ($taxonomies as $taxonomy) {
-            $taxonomy->register_taxonomy();
-        }  
+        if (is_array($taxonomies) && sizeof($taxonomies) > 0) {
+            foreach ($taxonomies as $taxonomy) {
+                $taxonomy->register_taxonomy();
+            }  
+        }
     }
  
     public function insert($item) {
