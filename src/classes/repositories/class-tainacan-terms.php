@@ -5,6 +5,7 @@ use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+use \Respect\Validation\Validator as v;
 /**
 * Class Tainacan_Terms
 */
@@ -15,27 +16,48 @@ class Terms extends Repository {
     	return apply_filters('tainacan-get-map', [
             'term_id'     => [
                 'map'        => 'term_id',
+                'title'      => __('ID', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Unique identifier', 'tainacan'),
                 //'validation' => ''
             ],
             'name'        => [
                 'map'        => 'name',
-                'validation' => ''
+                'title'      => __('Name', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Name of the term', 'tainacan'),
+                'on_error'   => __('The name is empty', 'tainacan'),
+                'validation' => v::stringType()->notEmpty(),
             ],
             'parent'      => [
                 'map'        => 'parent',
+                'title'      => __('Parent', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('The parent of the term', 'tainacan'),
                 'validation' => ''
             ],
             'description' => [
                 'map'        => 'description',
+                'title'      => __('Description', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The term description', 'tainacan'),
                 'validation' => ''
             ],
             'taxonomy'    => [
                 'map'        => 'taxonomy',
-                'validation' => ''
+                'title'      => __('Taxonomy', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The term taxonomy', 'tainacan'),
+                'on_error'   => __('The taxonomy is empty', 'tainacan'),
+                'validation' => v::stringType()->notEmpty(),
             ],
             'user'        => [
                 'map'        => 'termmeta',
-                'validation' => ''
+                'title'      => __('User', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('The term creator', 'tainacan'),
+                'on_error'   => __('The user is empty or invalid', 'tainacan'),
+                'validation' => v::numeric()->positive(),
             ],
         ]);
     }

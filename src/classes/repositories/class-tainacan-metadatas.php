@@ -124,13 +124,17 @@ class Metadatas extends Repository {
             ],
             'field_type_object' => [ // not showed in form
                 'map'        => 'meta',
+                'title'      => __('Type', 'tainacan'),
                 'type'       => 'string',
-                'validation' => ''
+                'description'=> __('The object type', 'tainacan'),
+               // 'validation' => ''
             ],
             'collection_id'  => [ // not showed in form
                 'map'        => 'meta',
+                'title'      => __('Collection', 'tainacan'),
                 'type'       => 'integer',
-                'validation' => ''
+                'description'=> __('The collection ID', 'tainacan'),
+                //'validation' => ''
             ],
         ]);
     }

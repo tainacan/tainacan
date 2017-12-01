@@ -2,6 +2,7 @@
 
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
+use \Respect\Validation\Validator as v;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -11,18 +12,31 @@ class Items extends Repository {
     	return apply_filters('tainacan-get-map', [
             'id'            => [
                 'map'        => 'ID',
+                'title'      => __('ID', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Unique identifier', 'tainacan'),
                 //'validation' => ''
             ],
             'title'         =>  [
                 'map'        => 'post_title',
-                'validation' => ''
+                'title'       => __('Title', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Title of the item', 'tainacan'),
+                'on_error'   => __('The title should be a text value and not empty', 'tainacan'),
+                'validation' => v::stringType()->notEmpty()
             ],
             'description'   =>  [
                 'map'        => 'post_content',
+                'title'      => __('Description', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The item description', 'tainacan'),
                 'validation' => ''
             ],
             'collection_id' =>  [
                 'map'        => 'meta',
+                'title'      => __('Collection', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('The collection ID', 'tainacan'),
                 'validation' => ''
             ],
             //'collection' => 'relation...',

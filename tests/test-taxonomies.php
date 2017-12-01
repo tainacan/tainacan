@@ -25,10 +25,11 @@ class Taxonomies extends \WP_UnitTestCase {
         //setando os valores na classe do tainacan
         $taxonomy->set_name('genero');
         $taxonomy->set_description('tipos de musica');
-        $taxonomy->set_allow_insert(true);
+        $taxonomy->set_allow_insert('yes');
 
         //inserindo
         $taxonomy->validate();
+
         $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
 
         //retorna a taxonomia
@@ -36,7 +37,7 @@ class Taxonomies extends \WP_UnitTestCase {
 
         $this->assertEquals( $test->get_name(), 'genero' );
         $this->assertEquals( $test->get_description(), 'tipos de musica' );
-        $this->assertEquals( $test->get_allow_insert(), true );
+        $this->assertEquals( $test->get_allow_insert(), 'yes' );
         $this->assertEquals( taxonomy_exists( $test->get_db_identifier() ) , true );
     }
 

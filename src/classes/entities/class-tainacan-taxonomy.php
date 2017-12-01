@@ -91,7 +91,7 @@ class Taxonomy extends Entity {
     }
 
     function get_allow_insert() {
-        return ( boolean ) $this->get_mapped_property('allow_insert');
+        return $this->get_mapped_property('allow_insert');
     }
 
     function get_slug() {

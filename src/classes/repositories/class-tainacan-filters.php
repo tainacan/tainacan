@@ -5,6 +5,7 @@ use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+use \Respect\Validation\Validator as v;
 class Filters extends Repository {
 	protected $entities_type = '\Tainacan\Entities\Filter';
 	
@@ -12,38 +13,66 @@ class Filters extends Repository {
     	return apply_filters('tainacan-get-map',  [
             'id'                 => [
                 'map'        => 'ID',
+                'title'      => __('ID', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Unique identifier', 'tainacan'),
                 //'validation' => ''
             ],
             'name'               => [
                 'map'        => 'post_title',
-                'validation' => ''
+                'title'       => __('Name', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Name of the filter', 'tainacan'),
+                'on_error'   => __('The filter name should be a text value and not empty', 'tainacan'),
+                'validation' => v::stringType()->notEmpty(),
             ],
             'order'              => [
                 'map'        => 'menu_order',
+                'title'       => __('Order', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Filter order. Field used if filters are manually ordered', 'tainacan'),
                 'validation' => ''
             ],
             'description'        => [
                 'map'        => 'post_content',
-                'validation' => ''
+                'title'      => __('Description', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The filter description', 'tainacan'),
+                'validation'  => ''
             ],
             'filter_type_object' => [
                 'map'        => 'meta',
+                'title'      => __('Type', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The filter type object', 'tainacan'),
                 'validation' => ''
             ],
             'filter_type'        => [
                 'map' => 'meta',
+                'title'      => __('Type', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The filter type', 'tainacan'),
                 'validation' => ''
             ],
             'collection_id'      => [
                 'map'        => 'meta',
+                'title'      => __('Collection', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('The collection ID', 'tainacan'),
                 'validation' => ''
             ],
             'color'              => [
                 'map'        => 'meta',
+                'title'      => __('Color', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Filter color', 'tainacan'),
                 'validation' => ''
             ],
             'metadata'           => [
                 'map'        => 'meta',
+                'title'      => __('Metadata', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Filter metadata', 'tainacan'),
                 'validation' => ''
             ],
         ]);

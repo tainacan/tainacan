@@ -5,6 +5,8 @@ use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+
+use \Respect\Validation\Validator as v;
 /**
  * Class Tainacan_Taxonomies
  */
@@ -15,30 +17,54 @@ class Taxonomies extends Repository {
     	return apply_filters('tainacan-get-map', [
             'id'              =>  [
                 'map'         => 'ID',
+                'title'      => __('ID', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Unique identifier', 'tainacan'),
                 //'validation'  => ''
             ],
             'name'            =>  [
                 'map'         => 'post_title',
-                'validation'  => ''
+                'title'       => __('Name', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Name of the taxonomy', 'tainacan'),
+                'on_error'   => __('The taxonomy should be a text value and not empty', 'tainacan'),
+                'validation' => v::stringType()->notEmpty(),
             ],
             'parent'          =>  [
                 'map'         => 'parent',
+                'title'      => __('Parent', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Parent taxonomy', 'tainacan'),
                 'validation'  => ''
             ],
             'description'     =>  [
                 'map'         => 'post_content',
+                'title'      => __('Description', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The taxonomy description', 'tainacan'),
                 'validation'  => ''
             ],
             'slug'            =>  [
                 'map'         => 'post_name',
+                'title'      => __('Slug', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The taxonomy slug', 'tainacan'),
                 'validation'  => ''
             ],
             'allow_insert'    =>  [
                 'map'         => 'meta',
-                'validation'  => ''
+                'title'      => __('Allow insert', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Allow/Deny the creation of new terms in the taxonomy', 'tainacan'),
+                'on_error'   => __('Allow insert is invalid, allowed values ( yes/no )', 'tainacan'),
+                'validation' => v::stringType()->in(['yes', 'no']), // yes or no
+                'default'    => 'yes'
             ],
         	'collections_ids' =>  [
         		'map'         => 'meta_multi',
+                'title'      => __('Collections', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The IDs of collection where the taxonomy is used', 'tainacan'),
         		'validation'  => ''
         	],
         ]);
