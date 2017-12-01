@@ -30,15 +30,12 @@ class Collections extends \WP_UnitTestCase {
         
         $this->assertEquals('Tainacan\Entities\Collection', get_class($col));
         
-        //
-        
         $test = $Tainacan_Collections->fetch($col->get_id());
 
         $this->assertEquals($test->get_name(), 'teste');
         $this->assertEquals($test->get_description(), 'adasdasdsa');
         $this->assertEquals($test->get_default_order(), 'DESC');
-        
-        
+        $this->assertEquals('draft', $test->get_status());
     }
     
     function test_item() {
