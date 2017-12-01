@@ -23,9 +23,11 @@ class Items extends \WP_UnitTestCase {
         $collection2 = new \Tainacan\Entities\Collection();
         
         $collection->set_name('teste');
+        $collection->set_status('publish');
         $collection->validate();
         $collection = $Tainacan_Collections->insert($collection);
         $collection2->set_name('teste2');
+        $collection2->set_status('publish');
         $collection2->validate();
         $collection2 = $Tainacan_Collections->insert($collection2);
         
@@ -35,14 +37,17 @@ class Items extends \WP_UnitTestCase {
         
         $metadata->set_name('metadado');
         $metadata->set_collection( $collection );
+        $metadata->set_status('publish');
         $metadata->validate();
         $metadata = $Tainacan_Metadatas->insert($metadata);
         $metadata2->set_name('metadado2');
         $metadata2->set_collection( $collection2 );
+        $metadata2->set_status('publish');
         $metadata2->validate();
         $metadata2 = $Tainacan_Metadatas->insert($metadata2);
         $metadata3->set_name('metadado3');
         $metadata3->set_collection( $collection2 );
+        $metadata3->set_status('publish');
         $metadata3->validate();
         $metadata3 = $Tainacan_Metadatas->insert($metadata3);
 
@@ -52,6 +57,9 @@ class Items extends \WP_UnitTestCase {
         $i->set_collection($collection);
         $i->add_metadata($metadata, 'value_1');
         $i->validate();
+        /**
+         * @var \Tainacan\Entities\Item $item
+         */
         $item = $Tainacan_Items->insert($i);
         
         $item = $Tainacan_Items->fetch($item->get_id());

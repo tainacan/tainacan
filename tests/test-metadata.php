@@ -92,6 +92,7 @@ class Metadata extends \WP_UnitTestCase {
         $metadata_default->set_name('metadata default');
         $metadata_default->set_collection_id( $Tainacan_Metadatas->get_default_metadata_attribute() );
         $metadata_default->set_field_type_object( $type );
+        $metadata_default->set_status('publish');
         $metadata_default->validate();
         $Tainacan_Metadatas->insert($metadata_default);
 
@@ -104,6 +105,7 @@ class Metadata extends \WP_UnitTestCase {
         $metadata_grandfather->set_name('metadata grandfather');
         $metadata_grandfather->set_collection_id( $collection_grandfather->get_id() );
         $metadata_grandfather->set_field_type_object( $type );
+        $metadata_grandfather->set_status('publish');
         $metadata_grandfather->validate();
         $Tainacan_Metadatas->insert($metadata_grandfather);
 
@@ -119,6 +121,7 @@ class Metadata extends \WP_UnitTestCase {
         $metadata_father->set_name('metadata father');
         $metadata_father->set_collection_id( $collection_father->get_id() );
         $metadata_father->set_field_type_object( $type );
+        $metadata_father->set_status('publish');
         $metadata_father->validate();
         $Tainacan_Metadatas->insert($metadata_father);
 
@@ -134,6 +137,7 @@ class Metadata extends \WP_UnitTestCase {
         $metadata_son->set_name('metadata son');
         $metadata_son->set_collection_id( $collection_son->get_id() );
         $metadata_son->set_field_type_object( $type );
+        $metadata_son->set_status('publish');
         $metadata_son->validate();
         $Tainacan_Metadatas->insert($metadata_son);
 
