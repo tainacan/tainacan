@@ -211,6 +211,7 @@ class Log extends Entity {
     	$log = new Log();
     	$log->set_title($msn);
     	$log->set_description($desc);
+    	$log->set_status('publish'); //TODO may be private
     	
     	if(!is_null($new_value))
     	{
