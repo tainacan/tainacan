@@ -71,6 +71,7 @@ class Logs extends \WP_UnitTestCase {
         $this->assertEquals( $value, $testDB->get_old_value() );
         
         $last_log = $Tainacan_Logs->fetch_last();
+        $this->assertTrue(is_object($last_log));
         $collection = $last_log->get_value();
         
         $this->assertEquals($collection->get_name(), 'new_testeLogs');
