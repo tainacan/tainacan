@@ -10,10 +10,39 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 abstract class Repository {
 	protected $entities_type = '\Tainacan\Entities\Entity';
 	
+	/**
+	 * Register hooks
+	 */
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
+		//add_filter('tainacan-get-map')
 	}
 	
+	/**
+	 * return properties map
+	 * 		@return array properties map array, format like:
+	 * 		'id'             => [
+     *          'map'        => 'ID',
+     *          'title'       => __('ID', 'tainacan'),
+	 *          'type'       => 'integer',
+     *          'description'=> __('Unique identifier', 'tainacan'),
+     *          'validation' => v::numeric(),
+     *      ],
+     *      'name'           =>  [
+     *          'map'        => 'post_title',
+     *          'title'       => __('Name', 'tainacan'),
+     *          'type'       => 'string',
+     *          'description'=> __('Name of the collection', 'tainacan'),
+     *          'validation' => v::stringType(),
+     *      ],
+     *      'slug'           =>  [
+     *          'map'        => 'post_name',
+     *          'title'       => __('Slug', 'tainacan'),
+     *          'type'       => 'string',
+     *          'description'=> __('A unique and santized string representation of the collection, used to build the collection URL', 'tainacan'),
+     *          'validation' => v::stringType(),
+     *      ],
+	 */
 	public function get_map() {
 		return array();
 	}
