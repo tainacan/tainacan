@@ -5,6 +5,7 @@ use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+use \Respect\Validation\Validator as v;
 /**
  * Class Metadatas
  */
@@ -16,66 +17,119 @@ class Metadatas extends Repository {
     	return apply_filters('tainacan-get-map', [
             'id'             => [
                 'map'        => 'ID',
-                //'validation' => ''
+                'title'      => __('ID', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Unique identifier', 'tainacan'),
+                'on_error'   => __('The ID should be numeric', 'tainacan'),
+                'validation' => v::numeric(),
             ],
             'name'           => [
                 'map'        => 'post_title',
-                'validation' => ''
+                'title'       => __('Name', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Name of the metadata', 'tainacan'),
+                'on_error'   => __('The name should be a text value and not empty', 'tainacan'),
+                'validation' => v::stringType()->notEmpty(),
             ],
             'order'          => [
                 'map'        => 'menu_order',
-                'validation' => ''
+                'title'       => __('Order', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Metadata order. Field used if collections are manually ordered', 'tainacan'),
+                'on_error'   => __('The menu order should be a numeric value', 'tainacan'),
+                //'validation' => v::numeric(),
             ],
             'parent'         => [
                 'map'        => 'parent',
-                'validation' => ''
+                'title'      => __('Parent', 'tainacan'),
+                'type'       => 'integer',
+                'description'=> __('Parent metadata', 'tainacan'),
+                'on_error'   => __('The Parent should be numeric value', 'tainacan'),
+                'validation' => v::numeric(),
             ],
             'description'    => [
                 'map'        => 'post_content',
-                'validation' => ''
+                'title'      => __('Description', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The metadata description', 'tainacan'),
+                //'on_error'   => __('The description should be a text value', 'tainacan'),
+                //'validation' => v::stringType()->notEmpty(),
             ],
             'field_type'     => [
                 'map'        => 'meta',
-                'validation' => ''
+                'title'      => __('Type', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The metadata type', 'tainacan'),
+                'on_error'   => __('Metadata type is invalid', 'tainacan'),
+                'validation' => v::stringType()->notEmpty(),
             ],
             'required'       => [
                 'map'        => 'meta',
-                'validation' => '', // yes or no
+                'title'      => __('Required', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The metadata is required', 'tainacan'),
+                'on_error'   => __('Metadata required field is invalid', 'tainacan'),
+                'validation' => v::stringType()->in(['yes', 'no']), // yes or no
                 'default'    => 'no'
             ],
             'collection_key' => [
                 'map'        => 'meta',
-                'validation' => '', // yes or no. it cant be key if its multiple
+                'title'      => __('Collection key', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Metadata value should not be repeated', 'tainacan'),
+                'on_error'   => __('Collection key is invalid', 'tainacan'),
+                'validation' => v::stringType()->in(['yes', 'no']), // yes or no
                 'default'    => 'no'
             ],
             'multiple'       => [
                 'map'        => 'meta',
-                'validation' => '', // yes or no. It cant be multiple if its collection_key
+                'title'      => __('Multiple', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Allow multiple fields for the metadata', 'tainacan'),
+                'on_error'   => __('Multiple fields is invalid', 'tainacan'),
+                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
                 'default'    => 'no'
             ],
             'cardinality'    => [
                 'map'        => 'meta',
-                'validation' => '',
+                'title'      => __('Cardinality', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Number of multiples possible fields', 'tainacan'),
+                'on_error'   => __('The number of fields not allowed', 'tainacan'),
+                'validation' => v::numeric()->positive(),
                 'default'    => 1
             ],
             'privacy'        => [
                 'map'        => 'meta',
-                'validation' => ''
+                'title'      => __('Privacy', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The metadata should be omitted in item view', 'tainacan'),
+                'on_error'   => __('Privacy is invalid', 'tainacan'),
+                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
+                'default'    => 'no'
             ],
             'mask'           => [
                 'map'        => 'meta',
-                'validation' => ''
+                'title'      => __('Mask', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The mask to be used in the metadata', 'tainacan'),
+                //'on_error'   => __('Mask is invalid', 'tainacan'),
+                //'validation' => ''
             ],
             'default_value'  => [
                 'map'        => 'meta',
+                'title'      => __('Default value', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The value default fot the metadata', 'tainacan'),
+            ],
+            'field_type_object' => [ // not showed in form
+                'map'        => 'meta',
+                'type'       => 'string',
                 'validation' => ''
             ],
-            'field_type_object' => [
+            'collection_id'  => [ // not showed in form
                 'map'        => 'meta',
-                'validation' => ''
-            ],
-            'collection_id'  => [
-                'map'        => 'meta',
+                'type'       => 'integer',
                 'validation' => ''
             ],
         ]);
