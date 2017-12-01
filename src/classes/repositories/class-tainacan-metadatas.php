@@ -141,18 +141,18 @@ class Metadatas extends Repository {
 
     public function register_post_type() {
         $labels = array(
-            'name'               => 'Metadata',
-            'singular_name'      => 'Metadata',
-            'add_new'            => 'Adicionar Metadata',
-            'add_new_item'       =>'Adicionar Metadata',
-            'edit_item'          => 'Editar',
-            'new_item'           => 'Novo Metadata',
-            'view_item'          => 'Visualizar',
-            'search_items'       => 'Pesquisar',
-            'not_found'          => 'Nenhum ticket encontrado',
-            'not_found_in_trash' => 'Nenhum Collections encontrado na lixeira',
-            'parent_item_colon'  => 'Metadata acima:',
-            'menu_name'          => 'Metadata'
+            'name'               => __('Metadata', 'tainacan'),
+            'singular_name'      => __('Metadata', 'tainacan'),
+            'add_new'            => __('Add new', 'tainacan'),
+            'add_new_item'       => __('Add new Metadata', 'tainacan'),
+            'edit_item'          => __('Edit Metadata', 'tainacan'),
+            'new_item'           => __('New Metadata', 'tainacan'),
+            'view_item'          => __('View Metadata', 'tainacan'),
+            'search_items'       => __('Search Metadata', 'tainacan'),
+            'not_found'          => __('No Metadata found ', 'tainacan'),
+            'not_found_in_trash' => __('No Metadata found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent Metadata:', 'tainacan'),
+            'menu_name'          => __('Metadata', 'tainacan')
         );
 
         $args = array(

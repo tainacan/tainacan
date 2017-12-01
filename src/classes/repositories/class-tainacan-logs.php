@@ -74,18 +74,18 @@ class Logs extends Repository {
      */
     public function register_post_type() {
         $labels = array(
-            'name'               => 'logs',
-            'singular_name'      => 'logs',
-            'add_new'            => 'Adicionar Novo',
-            'add_new_item'       => 'Adicionar Log',
-            'edit_item'          => 'Editar',
-            'new_item'           => 'Novo Log',
-            'view_item'          => 'Visualizar',
-            'search_items'       => 'Pesquisar',
-            'not_found'          => 'Nenhum log encontrado',
-            'not_found_in_trash' => 'Nenhum log encontrado na lixeira',
-            'parent_item_colon'  => 'Log aterior:',
-            'menu_name'          => 'Logs'
+            'name'               => __('Logs', 'tainacan'),
+            'singular_name'      => __('Log', 'tainacan'),
+            'add_new'            => __('Add new', 'tainacan'),
+            'add_new_item'       => __('Add new Log', 'tainacan'),
+            'edit_item'          => __('Edit Log', 'tainacan'),
+            'new_item'           => __('New Log', 'tainacan'),
+            'view_item'          => __('View Log', 'tainacan'),
+            'search_items'       => __('Search Logs', 'tainacan'),
+            'not_found'          => __('No Logs found ', 'tainacan'),
+            'not_found_in_trash' => __('No Logs found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent Log:', 'tainacan'),
+            'menu_name'          => __('Logs', 'tainacan')
         );
         $args = array(
             'labels'              => $labels,

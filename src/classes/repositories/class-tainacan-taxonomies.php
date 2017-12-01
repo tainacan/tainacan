@@ -72,18 +72,18 @@ class Taxonomies extends Repository {
 
     public function register_post_type() {
         $labels = array(
-            'name'               => 'Taxonomy',
-            'singular_name'      => 'Taxonomy',
-            'add_new'            => 'Adicionar Taxonomy',
-            'add_new_item'       =>'Adicionar Taxonomy',
-            'edit_item'          => 'Editar',
-            'new_item'           => 'Novo Taxonomy',
-            'view_item'          => 'Visualizar',
-            'search_items'       => 'Pesquisar',
-            'not_found'          => 'Nenhum ticket encontrado',
-            'not_found_in_trash' => 'Nenhum Taxonomy encontrado na lixeira',
-            'parent_item_colon'  => 'Taxonomy acima:',
-            'menu_name'          => 'Taxonomy'
+            'name'               => __('Taxonomies', 'tainacan'),
+            'singular_name'      => __('Taxonomy', 'tainacan'),
+            'add_new'            => __('Add new', 'tainacan'),
+            'add_new_item'       => __('Add new Taxonomy', 'tainacan'),
+            'edit_item'          => __('Edit Taxonomy', 'tainacan'),
+            'new_item'           => __('New Taxonomy', 'tainacan'),
+            'view_item'          => __('View Taxonomy', 'tainacan'),
+            'search_items'       => __('Search Taxonomies', 'tainacan'),
+            'not_found'          => __('No Taxonomies found ', 'tainacan'),
+            'not_found_in_trash' => __('No Taxonomies found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent Taxonomy:', 'tainacan'),
+            'menu_name'          => __('Taxonomies', 'tainacan')
         );
 
         $args = array(

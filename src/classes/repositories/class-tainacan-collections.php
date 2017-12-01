@@ -112,18 +112,18 @@ class Collections extends Repository {
 
     public function register_post_type() {
         $labels = array(
-            'name'               => 'Collections',
-            'singular_name'      => 'Collections',
-            'add_new'            => 'Adicionar Novo',
-            'add_new_item'       => 'Adicionar Collections',
-            'edit_item'          => 'Editar',
-            'new_item'           => 'Novo Collections',
-            'view_item'          => 'Visualizar',
-            'search_items'       => 'Pesquisar',
-            'not_found'          => 'Nenhum ticket encontrado',
-            'not_found_in_trash' => 'Nenhum Collections encontrado na lixeira',
-            'parent_item_colon'  => 'Collections acima:',
-            'menu_name'          => 'Collections'
+            'name'               => __('Collections', 'tainacan'),
+            'singular_name'      => __('Collection', 'tainacan'),
+            'add_new'            => __('Add new', 'tainacan'),
+            'add_new_item'       => __('Add new Collection', 'tainacan'),
+            'edit_item'          => __('Edit Collection', 'tainacan'),
+            'new_item'           => __('New Collection', 'tainacan'),
+            'view_item'          => __('View Collection', 'tainacan'),
+            'search_items'       => __('Search Collections', 'tainacan'),
+            'not_found'          => __('No Collections found ', 'tainacan'),
+            'not_found_in_trash' => __('No Collections found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent Collection:', 'tainacan'),
+            'menu_name'          => __('Collections', 'tainacan')
         );
         $args = array(
             'labels'              => $labels,

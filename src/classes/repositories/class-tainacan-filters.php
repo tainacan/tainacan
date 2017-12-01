@@ -80,18 +80,18 @@ class Filters extends Repository {
 
     public function register_post_type(){
         $labels = array(
-            'name'               => 'Filter',
-            'singular_name'      => 'Filter',
-            'add_new'            => 'Adicionar Novo',
-            'add_new_item'       => 'Adicionar Filters',
-            'edit_item'          => 'Editar',
-            'new_item'           => 'Novo Filter',
-            'view_item'          => 'Visualizar',
-            'search_items'       => 'Pesquisar',
-            'not_found'          => 'Nenhum ticket encontrado',
-            'not_found_in_trash' => 'Nenhum Filter encontrado na lixeira',
-            'parent_item_colon'  => 'Filter acima:',
-            'menu_name'          => 'Filters'
+            'name'               => __('Filters', 'tainacan'),
+            'singular_name'      => __('Filter', 'tainacan'),
+            'add_new'            => __('Add new', 'tainacan'),
+            'add_new_item'       => __('Add new Filter', 'tainacan'),
+            'edit_item'          => __('Edit Filter', 'tainacan'),
+            'new_item'           => __('New Filter', 'tainacan'),
+            'view_item'          => __('View Filter', 'tainacan'),
+            'search_items'       => __('Search Filters', 'tainacan'),
+            'not_found'          => __('No Filters found ', 'tainacan'),
+            'not_found_in_trash' => __('No Filters found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent Filter:', 'tainacan'),
+            'menu_name'          => __('Filters', 'tainacan')
         );
         $args = array(
             'labels'              => $labels,

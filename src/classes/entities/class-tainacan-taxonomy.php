@@ -30,16 +30,16 @@ class Taxonomy extends Entity {
     function register_taxonomy() {
         $labels = array(
             'name'              => $this->get_name(),
-            'singular_name'     => __( 'Taxonomy','textdomain' ),
-            'search_items'      => __( 'Search taxonomies', 'textdomain' ),
-            'all_items'         => __( 'All taxonomies', 'textdomain' ),
-            'parent_item'       => __( 'Parent taxonomy', 'textdomain' ),
-            'parent_item_colon' => __( 'Parent taxonomy:', 'textdomain' ),
-            'edit_item'         => __( 'Edit taxonomy', 'textdomain' ),
-            'update_item'       => __( 'Update taxonomy', 'textdomain' ),
-            'add_new_item'      => __( 'Add New taxonomy', 'textdomain' ),
-            'new_item_name'     => __( 'New Genre taxonomy', 'textdomain' ),
-            'menu_name'         => __( 'Genre', 'textdomain' ),
+            'singular_name'     => $this->get_name(),
+            'search_items'      => __( sprintf('Search terms in %s', $this->get_name()), 'tainacan' ),
+            'all_items'         => __( sprintf('All terms in %s', $this->get_name()), 'tainacan' ),
+            'parent_item'       => __( 'Parent term', 'tainacan' ),
+            'parent_item_colon' => __( 'Parent term:', 'tainacan' ),
+            'edit_item'         => __( 'Edit term', 'tainacan' ),
+            'update_item'       => __( 'Update term', 'tainacan' ),
+            'add_new_item'      => __( 'Add New term', 'tainacan' ),
+            'new_item_name'     => __( 'New Genre term', 'tainacan' ),
+            'menu_name'         => $this->get_name(),
         );
 
         $args = array(

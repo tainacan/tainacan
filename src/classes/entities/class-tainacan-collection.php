@@ -56,17 +56,17 @@ class Collection extends Entity {
      */
     function register_collection_item_post_type() {
         $cpt_labels = array(
-            'name'               => 'Item',
-            'singular_name'      => 'Item',
-            'add_new'            => 'Adicionar Novo',
-            'add_new_item'       => 'Adicionar Item',
-            'edit_item'          => 'Editar',
-            'new_item'           => 'Novo Item',
-            'view_item'          => 'Visualizar',
-            'search_items'       => 'Pesquisar',
-            'not_found'          => 'Nenhum Item encontrado',
-            'not_found_in_trash' => 'Nenhum Item encontrado na lixeira',
-            'parent_item_colon'  => 'Item acima:',
+            'name'               => __('Items', 'tainacan'),
+            'singular_name'      => __('Item', 'tainacan'),
+            'add_new'            => __('Add new', 'tainacan'),
+            'add_new_item'       => __('Add new', 'tainacan'),
+            'edit_item'          => __('Edit Item', 'tainacan'),
+            'new_item'           => __('New Item', 'tainacan'),
+            'view_item'          => __('View Item', 'tainacan'),
+            'search_items'       => __('Search items', 'tainacan'),
+            'not_found'          => __('No items found', 'tainacan'),
+            'not_found_in_trash' => __('No items found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent item:', 'tainacan'),
             'menu_name'          => $this->get_name()
         );
 
