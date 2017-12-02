@@ -105,7 +105,15 @@ class DevInterface {
                                 <small><?php echo $mapped['description']; ?></small>
                             </td>
                             <td>
-                                <textarea name="tnc_prop_<?php echo $prop; ?>"><?php echo htmlspecialchars($value); ?></textarea>
+                                <?php if ($prop == 'collection_id'): ?>
+                                    <?php $this->collections_dropdown($value); ?>
+                                <?php elseif ($prop == 'collections_ids'): ?>
+                                    <?php $this->collections_checkbox_list($value); ?>
+                                <?php else: ?>
+                                        <textarea name="tnc_prop_<?php echo $prop; ?>"><?php echo htmlspecialchars($value); ?></textarea>
+                                <?php endif; ?>    
+                                
+                                
                             </td>
                         </tr>
                         
@@ -118,6 +126,32 @@ class DevInterface {
         <?php
 
         
+    }
+    
+    function collections_dropdown($selected) {
+        global $Tainacan_Collections;
+        $collections = $Tainacan_Collections->fetch([], 'OBJECT');
+        ?>
+            <select name="tnc_prop_collection_id">
+                <?php foreach ($collections as $col): ?>
+                    <option value="<?php echo $col->get_id(); ?>" <?php selected($col->get_id(), $selected) ?>><?php echo $col->get_name(); ?></option>
+                <?php endforeach; ?>
+            </select>
+        <?php
+    }
+    
+    function collections_checkbox_list($selected) {
+        global $Tainacan_Collections;
+        $collections = $Tainacan_Collections->fetch([], 'OBJECT');
+        $selected = json_decode($selected);
+        ?>
+            <?php foreach ($collections as $col): ?>
+                
+                <input type="checkbox" name="tnc_prop_collections_ids[]" value="<?php echo $col->get_id(); ?>" <?php checked(in_array($col->get_id(), $selected)); ?> style="width: 15px;">
+                <?php echo $col->get_name(); ?>
+                <br/>
+            <?php endforeach; ?>
+        <?php
     }
     
     function save_post($post_id) {
@@ -143,8 +177,11 @@ class DevInterface {
                     continue; 
                     
                 $value = $_POST["tnc_prop_" . $prop];
-                if ($mapped['map'] == 'meta_multi')
-                    $value = json_decode($value);
+                if ($mapped['map'] == 'meta_multi') {
+                    if (!is_array($value))
+                        $value = json_decode($value);
+                }
+                
                 
                 $entity->set_mapped_property($prop, $value);
                 if ($entity->validate_prop($prop)) {
