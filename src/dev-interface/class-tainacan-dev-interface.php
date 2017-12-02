@@ -4,10 +4,23 @@ namespace Tainacan\DevInterface;
 
 class DevInterface {
     
+    var $repositories = [];
+    var $has_errors = false;
     
     public function __construct() {
         
         add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
+        add_action('save_post', array(&$this, 'save_post'));
+        add_action('admin_notices', array(&$this, 'display_error'));
+        
+        global $Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies;
+        
+        $repositories = [$Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies];
+        
+        foreach ($repositories as $repo) {
+            $cpt = $repo->entities_type::get_post_type();
+            $this->repositories[$cpt] = $repo;
+        }
         
     }
     
@@ -20,21 +33,13 @@ class DevInterface {
      */
     function register_metaboxes() {
         
-        global $Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies;
         
-        $repositories = [$Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies];
-        
-        foreach ($repositories as $repo) {
-            
-            // get repository post type
-            $cpt = $repo->entities_type::get_post_type();
-            
-            $slug = str_replace('Tainacan\Repositories\\', '', get_class($repo));
+        foreach ($this->repositories as $cpt => $repo) {
             
             add_meta_box(
                 $slug . '_properties', 
                 __('Properties', 'tainacan'), 
-                array(&$this, 'properties_metabox_' . $slug),
+                array(&$this, 'properties_metabox_' . $repo->get_name()),
                 $cpt, 
                 'normal' 
                 
@@ -72,6 +77,8 @@ class DevInterface {
         
         $entity = new $repo->entities_type($post);
         
+        wp_nonce_field( 'save_'.$repo->get_name(), $repo->get_name().'_noncename' );
+        
         ?>
         <div id="postcustomstuff">
             <table>
@@ -87,13 +94,18 @@ class DevInterface {
                     
                     <?php foreach ($map as $prop => $mapped): ?>
                         
+                        <?php if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') continue; ?>
+                        <?php 
+                            $value = $entity->get_mapped_property($prop); 
+                            if (is_array($value)) $value = json_encode($value);
+                        ?>
                         <tr>
                             <td>
                                 <label><?php echo $mapped['title']; ?></label><br/>
                                 <small><?php echo $mapped['description']; ?></small>
                             </td>
                             <td>
-                                <textarea name="<?php echo $prop; ?>"><?php echo htmlspecialchars($entity->get_mapped_property($prop)); ?></textarea>
+                                <textarea name="tnc_prop_<?php echo $prop; ?>"><?php echo htmlspecialchars($value); ?></textarea>
                             </td>
                         </tr>
                         
@@ -108,8 +120,64 @@ class DevInterface {
         
     }
     
+    function save_post($post_id) {
+        
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+            return;
+        
+        $post = get_post($post_id);
+        $post_type = $post->post_type;
+        
+        if (array_key_exists($post_type, $this->repositories)) {
+            $repo = $this->repositories[$post_type];
+            
+            if (!isset($_POST[$repo->get_name().'_noncename']) || !wp_verify_nonce($_POST[$repo->get_name().'_noncename'], 'save_'.$repo->get_name()))
+                return;
+            
+            $map = $repo->get_map();
+            $entity = new $repo->entities_type($post);
+            
+            foreach ($map as $prop => $mapped) {
+                
+                if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') 
+                    continue; 
+                    
+                $value = $_POST["tnc_prop_" . $prop];
+                if ($mapped['map'] == 'meta_multi')
+                    $value = json_decode($value);
+                
+                $entity->set_mapped_property($prop, $value);
+                if ($entity->validate_prop($prop)) {
+                    // we cannot user repository->insert here, it would create an infinite loop
+                    if ($mapped['map'] == 'meta') {
+        				update_post_meta($post_id, $prop, $value);
+        			} elseif ($mapped['map'] == 'meta_multi') {
+        				
+        				delete_post_meta($post_id, $prop);
+        				
+        				if (is_array($value)){
+        					foreach ($value as $v){
+        						add_post_meta($post_id, $prop, $v);
+        					}
+        				}
+        			}
+                }
+                // TODO: display validation errors somehow
+                // TODO: Actually we will replace it saving via ajax using API
+            }
+        }
+        
+    }
     
-    
+    function display_error() {
+        if ($this->has_errors === false)
+            return;
+        ?>
+        <div class="notice notice-success is-dismissible">
+            <p><?php _e('Congratulations, you did it!', 'shapeSpace'); ?></p>
+        </div>
+        <?php
+    }
     
 }
 

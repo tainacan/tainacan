@@ -47,6 +47,15 @@ abstract class Repository {
 	public function get_map() {
 		return apply_filters('tainacan-get-map', array());
 	}
+    
+    /**
+     * Return repository name
+     * 
+     * @return string The repository name
+     */
+    public function get_name() {
+        return str_replace('Tainacan\Repositories\\', '', get_class($this));
+    }
 	
 	/**
 	 * 
