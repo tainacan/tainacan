@@ -21,6 +21,12 @@ class Collection extends Entity {
      * @var string
      */
     protected $repository = 'Tainacan_Collections';
+    
+    /**
+     * Prefix used to create the db_identifier
+     * @var string
+     */
+    static $db_identifier_prefix = 'tnc_col_';
 
     /**
      * Create an instance of Collection
@@ -196,7 +202,7 @@ class Collection extends Entity {
      * @return string
      */
     function get_db_identifier() {
-        return $this->get_id() ? 'tnc_col_' . $this->get_id() : false;
+        return $this->get_id() ? Collection::$db_identifier_prefix . $this->get_id() : false;
     }
 
 	/**

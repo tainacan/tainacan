@@ -167,4 +167,47 @@ class Item_Metadata extends \WP_UnitTestCase {
         $n_item_metadata->set_value($value);
         $this->assertFalse($n_item_metadata->validate());
     }
+    
+    function teste_fetch(){
+        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+
+        $collection = new \Tainacan\Entities\Collection();
+        $metadata = new \Tainacan\Entities\Metadata();
+        $type = new \Tainacan\Field_Types\Text();
+
+        $collection->set_name('teste');
+        $collection->validate();
+        $collection = $Tainacan_Collections->insert($collection);
+
+        //setando os valores na classe do metadado
+        $metadata->set_name('metadado');
+        $metadata->set_description('descricao');
+        $metadata->set_collection( $collection );
+        $metadata->set_status('publish');
+        $metadata->set_field_type_object( $type );
+
+        //inserindo o metadado
+        $metadata->validate();
+        $metadata = $Tainacan_Metadatas->insert($metadata);
+
+        //$test = $Tainacan_Metadatas->fetch($metadata->get_id());
+        
+        $i = new \Tainacan\Entities\Item();
+        
+        $i->set_title('item teste');
+        $i->set_description('adasdasdsa');
+        $i->set_collection($collection);
+        
+        global $Tainacan_Items;
+        $i->validate();
+        $item = $Tainacan_Items->insert($i);
+        
+
+        $ItemMetadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT');
+        
+        $this->assertTrue(is_array($ItemMetadatas));
+        $this->assertEquals(1, sizeof($ItemMetadatas));
+        $this->assertEquals('metadado', $ItemMetadatas[0]->get_metadata()->get_name());
+        
+    }
 }

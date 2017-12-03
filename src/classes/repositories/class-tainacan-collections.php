@@ -197,4 +197,9 @@ class Collections extends Repository {
             return $this->fetch_output($wp_query, $output);
         }
     }
+    
+    // TODO: Implement this method
+    public fetch_by_db_identifier($db_identifier) {
+        
+    }
 }

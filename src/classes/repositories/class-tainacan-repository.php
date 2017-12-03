@@ -132,9 +132,12 @@ abstract class Repository {
             $result = [];
 
             if (  $WP_Query->have_posts() ){
-                while ( $WP_Query->have_posts() ) {
-                    $WP_Query->the_post();
-                    $result[] = new $this->entities_type(  get_the_ID() );
+                /**
+                 * Using WordPress Loop here would cause problems
+                 * @see https://core.trac.wordpress.org/ticket/18408
+                 */
+                foreach ($WP_Query->get_posts() as $p) {
+                    $result[] = new $this->entities_type(  $p->ID );
                 }
             }
 
