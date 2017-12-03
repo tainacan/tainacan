@@ -142,6 +142,13 @@ class Collections extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
             'capability_type'     => 'post',
+            'supports'            => [
+                'title',
+                'editor',
+                'thumbnail',
+                'revisions',
+                'page-attributes'
+            ]
         );
         register_post_type(Entities\Collection::get_post_type(), $args);
     }
@@ -199,7 +206,7 @@ class Collections extends Repository {
     }
     
     // TODO: Implement this method
-    public fetch_by_db_identifier($db_identifier) {
+    public function fetch_by_db_identifier($db_identifier) {
         
     }
 }

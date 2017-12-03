@@ -97,6 +97,14 @@ class Collection extends Entity {
                 'slug' => $this->get_slug()
             ],
             'capability_type'     => 'post',
+            'supports'            => [
+                'title',
+                'editor',
+                'thumbnail',
+                'revisions',
+                'page-attributes',
+                'post-formats'
+            ]
         );
 
         if (post_type_exists($this->get_db_identifier()))

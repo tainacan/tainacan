@@ -110,6 +110,11 @@ class Filters extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
             'capability_type'     => 'post',
+            'supports'            => [
+                'title',
+                'editor',
+                'page-attributes'
+            ]
         );
         register_post_type(Entities\Filter::get_post_type(), $args);
     }

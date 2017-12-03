@@ -172,6 +172,11 @@ class Metadatas extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
             'capability_type'     => 'post',
+            'supports'            => [
+                'title',
+                'editor',
+                'page-attributes'
+            ]
         );
         register_post_type(Entities\Metadata::get_post_type(), $args);
     }

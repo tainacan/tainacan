@@ -104,6 +104,11 @@ class Logs extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
             'capability_type'     => 'post',
+            'supports'            => [
+                'title',
+                'editor',
+                'thumbnail',
+            ]
         );
         register_post_type(Entities\Log::get_post_type(), $args);
     }
