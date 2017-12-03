@@ -32,6 +32,10 @@ class Log extends Entity {
         }
     }
 
+	public function  __toString(){
+		return 'Hello, I\'m the Log Entity';
+	}
+
     /**
      * Retorna ID do Log
      *

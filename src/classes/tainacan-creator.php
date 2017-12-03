@@ -6,6 +6,7 @@ const FILTER_TYPES_DIR = __DIR__ . '/filter-types/';
 const REPOSITORIES_DIR = __DIR__ . '/repositories/';
 const TRAITS_DIR 	   = __DIR__ . '/traits/';
 const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
+const ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
 
 const DIRS = [
     CLASSES_DIR,
@@ -14,6 +15,7 @@ const DIRS = [
     FILTER_TYPES_DIR,
     REPOSITORIES_DIR,
     TRAITS_DIR,
+	ENDPOINTS_DIR,
 ];
 
 require_once(VENDOR_DIR . 'autoload.php');

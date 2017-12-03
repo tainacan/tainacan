@@ -25,6 +25,10 @@ class Term extends Entity {
         }
     }
 
+	public function  __toString(){
+		return 'Hello, I\'m the Term Entity';
+	}
+
     // Getters
     function get_id() {
         return $this->get_mapped_property('term_id');

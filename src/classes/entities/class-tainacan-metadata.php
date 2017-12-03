@@ -32,6 +32,10 @@ class Metadata extends Entity {
 
     }
 
+	public function  __toString(){
+		return 'Hello, I\'m the Metadata Entity';
+	}
+
     /**
      * Retorna o ID do metadado
      *

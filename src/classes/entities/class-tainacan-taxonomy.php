@@ -26,6 +26,10 @@ class Taxonomy extends Entity {
             $this->WP_Post = new \StdClass();
         }
     }
+
+	public function  __toString(){
+		return 'Hello, I\'m the Taxonomy Entity';
+	}
     
     function register_taxonomy() {
         $labels = array(
