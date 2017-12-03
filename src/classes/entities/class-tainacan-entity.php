@@ -203,17 +203,12 @@ class Entity {
 		global ${$this->repository};
 		$map = ${$this->repository}->get_map();
 
-		$attributes_names = [];
-		$attributes_values = [];
-
-		foreach ($map as $prop => $content){
-			array_push($attributes_names, $prop);
-			array_push($attributes_values, $this->get_mapped_property($prop));
+		$attributes = [];
+		foreach($map as $prop => $content) {
+			$attributes[$prop] = $this->get_mapped_property($prop);
 		}
 
-		$entity_as_json = array_combine($attributes_names, $attributes_values);
-
-		return json_encode($entity_as_json, JSON_NUMERIC_CHECK, JSON_UNESCAPED_UNICODE);
+		return json_encode($attributes, JSON_NUMERIC_CHECK, JSON_UNESCAPED_UNICODE);
 	}
  
 }

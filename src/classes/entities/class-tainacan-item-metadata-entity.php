@@ -16,6 +16,10 @@ class Item_Metadata_Entity extends Entity {
         $this->set_item($item);
         $this->set_metadata($metadata);
     }
+
+	public function  __toString(){
+		return 'Hello, I\'m the Item Metadata Entity';
+	}
     
     /**
      * Atribui o item

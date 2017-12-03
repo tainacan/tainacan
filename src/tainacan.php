@@ -14,7 +14,7 @@ const API_DIR     = __DIR__ . '/api/';
 const CLASSES_DIR = __DIR__ . '/classes/';
 
 require_once(CLASSES_DIR . 'tainacan-creator.php');
-require_once(API_DIR . 'tainacan-rest-creator.php');
+require_once(API_DIR     . 'tainacan-rest-creator.php');
 
 require_once('dev-interface/class-tainacan-dev-interface.php');
 $Tainacan_Dev_interface = new \Tainacan\DevInterface\DevInterface();

@@ -28,6 +28,10 @@ class Item extends Entity {
         
     }
 
+	public function  __toString(){
+		return 'Hello, I\'m the Item Entity';
+	}
+
     /**
      * Retorna o ID do item
      *

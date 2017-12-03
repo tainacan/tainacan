@@ -11,8 +11,9 @@ if ( ! $_tests_dir ) {
     $_tests_dir = $bootstrap_cfg['tests_dir'];
 }
 
-if (isset($bootstrap_cfg['tests_url']))
-    define('TAINACAN_TESTS_URL', $bootstrap_cfg['tests_url']);
+if (isset($bootstrap_cfg['tests_url'])) {
+	define( 'TAINACAN_TESTS_URL', $bootstrap_cfg['tests_url'] );
+}
 
 // Give access to tests_add_filter() function.
 require_once $_tests_dir . '/includes/functions.php';
@@ -23,5 +24,10 @@ function _manually_load_plugin() {
     require dirname( dirname( __FILE__ ) ) . '/src/tainacan.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+
 // Start up the WP testing environment.
 require $_tests_dir . '/includes/bootstrap.php';
+
+require_once(__DIR__ . '/factories/class-tainacan-entity-factory.php');
+require_once(__DIR__ . '/tainacan-unit-test-case.php');
+

@@ -206,7 +206,7 @@ class Collection extends Entity {
 	 *
 	 * @see \Tainacan\Repositories\Metadatas->fetch()
 	 *
-	 * @return \Tainacan\Repositories\Array
+	 * @return Array
 	 */
     function get_metadata() {
         $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();

@@ -31,7 +31,11 @@ class Filter extends Entity {
 
     }
 
-    /**
+	public function  __toString(){
+		return 'Hello, I\'m the Filter Entity';
+	}
+
+	/**
      * Retorna o ID do filtro
      *
      * @return integer

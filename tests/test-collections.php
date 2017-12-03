@@ -11,26 +11,29 @@ namespace Tainacan\Tests;
 /**
  * Sample test case.
  */
-class Collections extends \WP_UnitTestCase {
+class Collections extends TAINACAN_UnitTestCase {
 
 	/**
 	 * A single example test.
 	 */
 	function test_add() {
-		
-		$x = new \Tainacan\Entities\Collection();
-        
-        $x->set_name('teste');
-        $x->set_description('adasdasdsa');
-        $x->set_default_order('DESC');
+		$this->tainacan_entity_factory->create_entity(
+			'Collection',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC'
+			),
+			true
+		);
+
+		$x = $this->tainacan_entity_factory->get_entity();;
         
         global $Tainacan_Collections;
-        $x->validate();
-        $col = $Tainacan_Collections->insert($x);
         
-        $this->assertEquals('Tainacan\Entities\Collection', get_class($col));
+        $this->assertEquals('Tainacan\Entities\Collection', get_class($x));
         
-        $test = $Tainacan_Collections->fetch($col->get_id());
+        $test = $Tainacan_Collections->fetch($x->get_id());
 
         $this->assertEquals($test->get_name(), 'teste');
         $this->assertEquals($test->get_description(), 'adasdasdsa');
