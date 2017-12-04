@@ -12,6 +12,17 @@ use \Respect\Validation\Validator as v;
 class Metadatas extends Repository {
 	public $entities_type = '\Tainacan\Entities\Metadata';
 	protected $default_metadata = 'default';
+
+	public $field_types = [
+	    '\Tainacan\Filter_Types\Checkbox',
+	    '\Tainacan\Filter_Types\Date',
+	    '\Tainacan\Filter_Types\Numeric',
+	    '\Tainacan\Filter_Types\Radio',
+	    '\Tainacan\Filter_Types\Relationship',
+	    '\Tainacan\Filter_Types\Selectbox',
+	    '\Tainacan\Filter_Types\Text',
+	    '\Tainacan\Filter_Types\Textatrea',
+    ];
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map', [
@@ -190,6 +201,37 @@ class Metadatas extends Repository {
         return $this->default_metadata;
     }
 
+    /**
+     * register field types class on array of types
+     *
+     * @param $class_name string | object The class name or the instance
+     */
+    public function register_field_type( $class_name ){
+        if( is_object( $class_name ) ){
+            $class_name = get_class( $class_name );
+        }
+
+        if(!in_array( $class_name, $this->field_types)){
+            $this->field_types[] = $class_name;
+        }
+    }
+
+    /**
+     * register field types class on array of types
+     *
+     * @param $class_name string | object The class name or the instance
+     */
+    public function unregister_field_type( $class_name ){
+        if( is_object( $class_name ) ){
+            $class_name = get_class( $class_name );
+        }
+
+        $key = array_search( $class_name, $this->field_types );
+        if($key !== false){
+            unset( $this->field_types[$key] );
+        }
+    }
+
 
     /**
      * fetch metadata based on ID or WP_Query args
@@ -262,5 +304,17 @@ class Metadatas extends Repository {
 
     public function delete($object){
 
+    }
+
+    /**
+     * fetch all registered field type classes
+     *
+     * @return Array of Entities\Filter_Types\Filter_Type objects
+     */
+    public function fetch_field_types(){
+
+        do_action('register_field_types');
+
+        return $this->field_types;
     }
 }
