@@ -17,8 +17,8 @@ class Collections extends TAINACAN_UnitTestCase {
 	 * A single example test.
 	 */
 	function test_add() {
-		$this->tainacan_entity_factory->create_entity(
-			'Collection',
+		$x = $this->tainacan_entity_factory->create_entity(
+			'collection',
 			array(
 				'name'          => 'teste',
 				'description'   => 'adasdasdsa',
@@ -27,8 +27,6 @@ class Collections extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$x = $this->tainacan_entity_factory->get_entity();;
-        
         global $Tainacan_Collections;
         
         $this->assertEquals('Tainacan\Entities\Collection', get_class($x));
@@ -42,48 +40,49 @@ class Collections extends TAINACAN_UnitTestCase {
     }
     
     function test_item() {
-        
-        
-    	$x = new \Tainacan\Entities\Collection();
-        
-        $x->set_name('teste');
-        $x->set_description('adasdasdsa');
-        $x->set_default_order('DESC');
-        
+	    $x = $this->tainacan_entity_factory->create_entity(
+		    'collection',
+		    array(
+			    'name'          => 'teste',
+			    'description'   => 'adasdasdsa',
+			    'default_order' => 'DESC'
+		    ),
+		    true
+	    );
+
         global $Tainacan_Collections;
-        $x->validate();
-        $col = $Tainacan_Collections->insert($x);
-        
-        $collection = $Tainacan_Collections->fetch($col->get_id());
-        
-        
-        
-        $i = new \Tainacan\Entities\Item();
-        
-        $i->set_title('item teste');
-        $i->set_description('adasdasdsa');
-        $i->set_collection($collection);
-        
+        $collection = $Tainacan_Collections->fetch($x->get_id());
+
+	    $i = $this->tainacan_entity_factory->create_entity(
+		    'item',
+		    array(
+			    'title'         => 'item test',
+			    'description'   => 'adasdasdsa',
+			    'order'         => 'DESC',
+			    'collection'    => $collection
+		    ),
+		    true
+	    );
+
         global $Tainacan_Items;
-        $i->validate();
-        $item = $Tainacan_Items->insert( $i );
+        $item = $Tainacan_Items->fetch( $i->get_id() );
         
-        $item = $Tainacan_Items->fetch( $item->get_id() );
-        
-        $this->assertEquals($item->get_title(), 'item teste');
+        $this->assertEquals($item->get_title(), 'item test');
         $this->assertEquals($item->get_description(), 'adasdasdsa');
         $this->assertEquals($item->get_collection_id(), $collection->get_id());
         
     }
     
     function test_validation() {
-		
-    	$x = new \Tainacan\Entities\Collection();
-        
-        $x->set_name('teste');
-        $x->set_description('adasdasdsa');
-        $x->set_default_order(13);
-        
+	    $x = $this->tainacan_entity_factory->create_entity(
+		    'collection',
+		    array(
+			    'name'          => 'teste',
+			    'description'   => 'adasdasdsa',
+			    'default_order' => 13
+		    )
+	    );
+
         $this->assertFalse($x->validate());
         $this->assertTrue(sizeof($x->get_errors()) > 0);
         

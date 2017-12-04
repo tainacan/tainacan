@@ -11,99 +11,104 @@ namespace Tainacan\Tests;
 /**
  * Sample test case.
  */
-class Item_Metadata extends \WP_UnitTestCase {
+class Item_Metadata extends TAINACAN_UnitTestCase {
 
     /**
      * Teste da insercao de um metadado simples sem o tipo
      */
     function test_add() {
         
-        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+        global $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new \Tainacan\Entities\Collection();
-        $metadata = new \Tainacan\Entities\Metadata();
-        $type = new \Tainacan\Field_Types\Text();
+        $collection = $this->tainacan_entity_factory->create_entity(
+        	'collection',
+	        array(
+	        	'name' => 'teste'
+	        ),
+	        true
+        );
 
-        $collection->set_name('teste');
-        $collection->validate();
-        $collection = $Tainacan_Collections->insert($collection);
+	    $type = $this->tainacan_field_factory->create_field('text');
 
-        //setando os valores na classe do metadado
-        $metadata->set_name('metadado');
-        $metadata->set_description('descricao');
-        $metadata->set_collection( $collection );
-        $metadata->set_field_type_object( $type );
-
-        //inserindo o metadado
-        $metadata->validate();
-        $metadata = $Tainacan_Metadatas->insert($metadata);
+	    $metadata = $this->tainacan_entity_factory->create_entity(
+        	'metadata',
+	        array(
+	        	'name'              => 'metadado',
+		        'description'       => 'descricao',
+		        'collection'        => $collection,
+		        'field_type_object' => $type
+	        ),
+	        true
+        );
 
         $test = $Tainacan_Metadatas->fetch($metadata->get_id());
         
-        $i = new \Tainacan\Entities\Item();
-        
-        $i->set_title('item teste');
-        $i->set_description('adasdasdsa');
-        $i->set_collection($collection);
+        $i = $this->tainacan_entity_factory->create_entity(
+        	'item',
+	        array(
+	        	'title'       => 'item teste',
+		        'description' => 'adasdasdsa',
+		        'collection'  => $collection
+	        ),
+	        true
+        );
         
         global $Tainacan_Items;
-        $i->validate();
-        $item = $Tainacan_Items->insert($i);
         
-        $item = $Tainacan_Items->fetch($item->get_id());
+        $item = $Tainacan_Items->fetch($i->get_id());
 
-        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
-        
+        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
         $item_metadata->set_value('teste_value');
-        
+
         $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
         
         $this->assertEquals('teste_value', $item_metadata->get_value());
-        
-        
-
     }
 
     /**
      * Teste da insercao de um metadado simples com o tipo
      */
     function teste_required(){
-        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+        global $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new \Tainacan\Entities\Collection();
-        $metadata = new \Tainacan\Entities\Metadata();
-        $type = new \Tainacan\Field_Types\Text();
+        $collection = $this->tainacan_entity_factory->create_entity(
+        	'collection',
+	        array(
+	        	'name' => 'teste'
+	        ),
+	        true
+        );
 
-        $collection->set_name('teste');
-        $collection->validate();
-        $collection = $Tainacan_Collections->insert($collection);
+	    $type = $this->tainacan_field_factory->create_field('text');
 
-        //setando os valores na classe do metadado
-        $metadata->set_name('metadado');
-        $metadata->set_description('descricao');
-        $metadata->set_collection( $collection );
-        $metadata->set_required( 'yes' );
-        $metadata->set_field_type_object( $type );
-
-        //inserindo o metadado
-        $metadata->validate();
-        $metadata = $Tainacan_Metadatas->insert($metadata);
+	    $metadata = $this->tainacan_entity_factory->create_entity(
+	    	'metadata',
+		    array(
+		    	'name'              => 'metadado',
+			    'description'       => 'descricao',
+			    'collection'        => $collection,
+			    'required'          => 'yes',
+			    'field_type_object' => $type
+		    ),
+		    true
+	    );
 
         $test = $Tainacan_Metadatas->fetch($metadata->get_id());
         
-        $i = new \Tainacan\Entities\Item();
-        
-        $i->set_title('item teste');
-        $i->set_description('adasdasdsa');
-        $i->set_collection($collection);
+        $i = $this->tainacan_entity_factory->create_entity(
+        	'item',
+	        array(
+	        	'title'       => 'item teste',
+		        'description' => 'adasdasdsa',
+		        'collection'  => $collection
+	        ),
+	        true
+        );
         
         global $Tainacan_Items;
-        $i->validate();
-        $item = $Tainacan_Items->insert($i);
         
-        $item = $Tainacan_Items->fetch($item->get_id());
-
-        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
+        $item = $Tainacan_Items->fetch($i->get_id());
+        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
         
         // false because its required
         $this->assertFalse($item_metadata->validate());
@@ -118,96 +123,105 @@ class Item_Metadata extends \WP_UnitTestCase {
     }
     
     function teste_collection_key(){
-        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+        global $Tainacan_Metadatas, $Tainacan_Item_Metadata;
 
-        $collection = new \Tainacan\Entities\Collection();
-        $metadata = new \Tainacan\Entities\Metadata();
-        $type = new \Tainacan\Field_Types\Text();
+        $collection = $this->tainacan_entity_factory->create_entity(
+	        'collection',
+	        array(
+		        'name' => 'teste'
+	        ),
+	        true
+        );
 
-        $collection->set_name('teste');
-        $collection->validate();
-        $collection = $Tainacan_Collections->insert($collection);
+	    $type = $this->tainacan_field_factory->create_field('text');
 
-        //setando os valores na classe do metadado
-        $metadata->set_name('metadado');
-        $metadata->set_description('descricao');
-        $metadata->set_collection( $collection );
-        $metadata->set_collection_key( 'yes' );
-        $metadata->set_field_type_object( $type );
-
-        //inserindo o metadado
-        $metadata->validate();
-        $metadata = $Tainacan_Metadatas->insert($metadata);
+	    $metadata = $this->tainacan_entity_factory->create_entity(
+		    'metadata',
+		    array(
+			    'name'              => 'metadado',
+			    'description'       => 'descricao',
+			    'collection'        => $collection,
+			    'collection_key'    => 'yes',
+			    'field_type_object' => $type
+		    ),
+		    true
+	    );
 
         $test = $Tainacan_Metadatas->fetch($metadata->get_id());
-        
-        $i = new \Tainacan\Entities\Item();
-        
-        $i->set_title('item teste');
-        $i->set_description('adasdasdsa');
-        $i->set_collection($collection);
+
+	    $i = $this->tainacan_entity_factory->create_entity(
+		    'item',
+		    array(
+			    'title'       => 'item teste',
+			    'description' => 'adasdasdsa',
+			    'collection'  => $collection
+		    ),
+		    true
+	    );
         
         global $Tainacan_Items;
-        $i->validate();
-        $item = $Tainacan_Items->insert($i);
-        
-        $item = $Tainacan_Items->fetch($item->get_id());
 
-        
-        
+        $item = $Tainacan_Items->fetch($i->get_id());
+
         $value = 'teste_val';
         
-        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
+        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
         $item_metadata->set_value($value);
+
         $this->assertTrue($item_metadata->validate());
+
         $item_metadata->validate();
         $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 
-        $n_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadata);
+        $n_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
         $n_item_metadata->set_value($value);
+
         $this->assertFalse($n_item_metadata->validate());
     }
     
     function teste_fetch(){
-        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+        global $Tainacan_Item_Metadata;
 
-        $collection = new \Tainacan\Entities\Collection();
-        $metadata = new \Tainacan\Entities\Metadata();
-        $type = new \Tainacan\Field_Types\Text();
+        $collection = $this->tainacan_entity_factory->create_entity(
+        	'collection',
+	        array(
+	        	'name' => 'teste'
+	        ),
+	        true
+        );
 
-        $collection->set_name('teste');
-        $collection->validate();
-        $collection = $Tainacan_Collections->insert($collection);
 
-        //setando os valores na classe do metadado
-        $metadata->set_name('metadado');
-        $metadata->set_description('descricao');
-        $metadata->set_collection( $collection );
-        $metadata->set_status('publish');
-        $metadata->set_field_type_object( $type );
+	    $type = $this->tainacan_field_factory->create_field('text');
 
-        //inserindo o metadado
-        $metadata->validate();
-        $metadata = $Tainacan_Metadatas->insert($metadata);
+        $metadata = $this->tainacan_entity_factory->create_entity(
+        	'metadata',
+            array(
+            	'name'              => 'metadado',
+	            'description'       => 'descricao',
+	            'collection'        => $collection,
+	            'status'            => 'publish',
+	            'field_type_object' => $type
+            ),
+	        true
+        );
 
         //$test = $Tainacan_Metadatas->fetch($metadata->get_id());
         
-        $i = new \Tainacan\Entities\Item();
-        
-        $i->set_title('item teste');
-        $i->set_description('adasdasdsa');
-        $i->set_collection($collection);
-        
-        global $Tainacan_Items;
-        $i->validate();
-        $item = $Tainacan_Items->insert($i);
-        
+        $i = $this->tainacan_entity_factory->create_entity(
+        	'item',
+	        array(
+	        	'title' => 'item teste',
+		        'description' => 'adasdasdsa',
+		        'collection' => $collection
+	        ),
+	        true
+        );
 
-        $ItemMetadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT');
+        $item_metadatas = $Tainacan_Item_Metadata->fetch($i, 'OBJECT');
         
-        $this->assertTrue(is_array($ItemMetadatas));
-        $this->assertEquals(1, sizeof($ItemMetadatas));
-        $this->assertEquals('metadado', $ItemMetadatas[0]->get_metadata()->get_name());
+        $this->assertTrue(is_array($item_metadatas));
+        $this->assertEquals(1, sizeof($item_metadatas));
+        $this->assertEquals('metadado', $item_metadatas[0]->get_metadata()->get_name());
         
     }
 }

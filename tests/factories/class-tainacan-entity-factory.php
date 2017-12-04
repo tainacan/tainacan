@@ -2,7 +2,6 @@
 
 namespace Tainacan\Tests\Factories;
 
-
 class Entity_Factory {
 
 	private   $entity;
@@ -13,60 +12,90 @@ class Entity_Factory {
 	/**
 	 * Receive a type of the collection as string, an associative array,
 	 * a boolean that say if the values need to be validated and inserted in database, and then
-	 * create the entity type ordered.
+	 * create the entity type ordered and return it.
 	 *
 	 * @param $type
 	 * @param array $args
 	 * @param bool $is_validated_and_in_db
+	 *
+	 * @return mixed
+	 * @throws \ErrorException
 	 */
 	public function create_entity($type, $args = [], $is_validated_and_in_db = false){
 		try {
-			$this->entity_type     = "\Tainacan\Entities\\$type";
-			$this->repository_type = "\Tainacan\Repositories\\$type".'s';
+			if(empty($type)){
+				throw new \InvalidArgumentException(__('The type can\'t be empty'));
+			} elseif(!strrchr($type, '_')){
+				$type = ucfirst(strtolower($type));
+			} else {
+				$type = ucwords(strtolower($type), '_');
+			}
+
+			$this->entity_type = "\Tainacan\Entities\\$type";
+
+			$type_size = strlen($type);
+			if($type[$type_size-1] == 'y'){
+				$type[$type_size-1] = 'ies';
+			} else {
+				$this->repository_type = "\Tainacan\Repositories\\$type".'s';
+			}
 
 			$this->entity     = new $this->entity_type();
 			$this->repository = new $this->repository_type();
 
-			if ( ! empty( $args ) && $is_validated_and_in_db ) {
-				foreach ( $args as $attribute => $content ) {
-					$this->entity->set_mapped_property( $attribute, $content );
+			if (!empty($args) && $is_validated_and_in_db) {
+				foreach ($args as $attribute => $content) {
+					$set_ = 'set_'.$attribute;
+					$this->entity->$set_($content);
 				}
 
-				if ( $this->entity->validate() ) {
-					$this->entity = $this->repository->insert( $this->entity );
+				if ($this->entity->validate()) {
+					$this->entity = $this->repository->insert($this->entity);
 				} else {
-					throw new Exception( __( 'The entity wasn\'t validated.' ) );
+					throw new \ErrorException( __( 'The entity wasn\'t validated.' ) );
 				}
-			} elseif ( empty( $args ) && ! $is_validated_and_in_db ) {
-				$this->entity->set_name( "$type" . random_int( 0, 10000 ) .  " for test" );
-				$this->entity->set_description( 'It is only for test' );
-			} elseif ( empty( $args ) && $is_validated_and_in_db ) {
-				$this->entity->set_name( "$type" . random_int( 0, 10000 ) .  " for test" );
-				$this->entity->set_description( 'It is only for test' );
 
-				if ( $this->entity->validate() ) {
+			} elseif (!empty($args) && !$is_validated_and_in_db){
+				foreach ($args as $attribute => $content) {
+					$set_ = 'set_'.$attribute;
+					$this->entity->$set_($content);
+				}
+
+			} elseif (empty($args) && !$is_validated_and_in_db) {
+				try {
+					$this->entity->set_name( "$type" . random_int( 0, 10000 ) . " for test" );
+					$this->entity->set_description( 'It is only for test' );
+				} catch (\Error $exception){
+					$this->entity->set_title( "$type" . random_int( 0, 10000 ) . " for test" );
+					$this->entity->set_description( 'It is only for test' );
+				}
+
+			} elseif (empty($args) && $is_validated_and_in_db) {
+				try {
+					$this->entity->set_name( "$type" . random_int( 0, 10000 ) . " for test" );
+					$this->entity->set_description( 'It is only for test' );
+				} catch (\Error $exception){
+					$this->entity->set_title( "$type" . random_int( 0, 10000 ) . " for test" );
+					$this->entity->set_description( 'It is only for test' );
+				}
+
+				$this->entity->validate();
+				if ($this->entity->validate()) {
 					$this->entity = $this->repository->insert( $this->entity );
 				} else {
-					throw new Exception( __( 'The entity wasn\'t validated.' ) );
+					throw new \ErrorException( __( 'The entity wasn\'t validated.' ) );
 				}
+
 			} else {
-				throw new InvalidArgumentException( __( 'One or more arguments are invalid.', 'tainacan' ) );
+				throw new \InvalidArgumentException( __( 'One or more arguments are invalid.', 'tainacan' ) );
 			}
-		} catch (Error $exception){
+		} catch (\Error $exception){
 			echo($exception->getMessage());
 			echo($exception->getTraceAsString());
 		}
-	}
 
-	/**
-	 * Return the entity type ordered
-	 *
-	 * @return mixed
-	 */
-	public function get_entity(){
 		return $this->entity;
 	}
 }
-
 
 ?>
