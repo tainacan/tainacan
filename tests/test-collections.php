@@ -94,10 +94,10 @@ class Collections extends TAINACAN_UnitTestCase {
         $x->set_default_order('DESC');
         $this->assertTrue($x->validate());
         $this->assertTrue(empty($x->get_errors()));
-        
-        global $Tainacan_Collections;
-        
-        $this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
-        
+    }
+    
+    function test_hooks() {
+    	global $Tainacan_Collections;
+    	$this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
     }
 }
