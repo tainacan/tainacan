@@ -34,8 +34,10 @@ class Entity_Factory {
 			$this->entity_type = "\Tainacan\Entities\\$type";
 
 			$type_size = strlen($type);
+
 			if($type[$type_size-1] == 'y'){
-				$type[$type_size-1] = 'ies';
+				$type[$type_size-1] = 'i';
+				$this->repository_type = "\Tainacan\Repositories\\$type".'es';
 			} else {
 				$this->repository_type = "\Tainacan\Repositories\\$type".'s';
 			}
@@ -45,8 +47,14 @@ class Entity_Factory {
 
 			if (!empty($args) && $is_validated_and_in_db) {
 				foreach ($args as $attribute => $content) {
-					$set_ = 'set_'.$attribute;
-					$this->entity->$set_($content);
+					if($attribute == 'add_metadata'){
+						foreach ($content as $in){
+							$this->entity->$attribute($in[0], $in[1]);
+						}
+					} else {
+						$set_ = 'set_' . $attribute;
+						$this->entity->$set_( $content );
+					}
 				}
 
 				if ($this->entity->validate()) {
@@ -57,15 +65,21 @@ class Entity_Factory {
 
 			} elseif (!empty($args) && !$is_validated_and_in_db){
 				foreach ($args as $attribute => $content) {
-					$set_ = 'set_'.$attribute;
-					$this->entity->$set_($content);
+					if($attribute == 'add_metadata'){
+						foreach ($content as $in){
+							$this->entity->$attribute($in[0], $in[1]);
+						}
+					} else {
+						$set_ = 'set_' . $attribute;
+						$this->entity->$set_( $content );
+					}
 				}
 
 			} elseif (empty($args) && !$is_validated_and_in_db) {
 				try {
 					$this->entity->set_name( "$type" . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
-				} catch (\Error $exception){
+				} catch (\Exception $exception){
 					$this->entity->set_title( "$type" . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				}
@@ -74,7 +88,7 @@ class Entity_Factory {
 				try {
 					$this->entity->set_name( "$type" . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
-				} catch (\Error $exception){
+				} catch (\Exception $exception){
 					$this->entity->set_title( "$type" . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				}
@@ -89,7 +103,7 @@ class Entity_Factory {
 			} else {
 				throw new \InvalidArgumentException( __( 'One or more arguments are invalid.', 'tainacan' ) );
 			}
-		} catch (\Error $exception){
+		} catch (\Exception $exception){
 			echo($exception->getMessage());
 			echo($exception->getTraceAsString());
 		}

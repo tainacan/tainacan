@@ -193,7 +193,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
 	    $type = $this->tainacan_field_factory->create_field('text');
 
-        $metadata = $this->tainacan_entity_factory->create_entity(
+        $this->tainacan_entity_factory->create_entity(
         	'metadata',
             array(
             	'name'              => 'metadado',

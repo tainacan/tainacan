@@ -2,7 +2,6 @@
 
 namespace Tainacan\Tests;
 use Tainacan\Entities\Log;
-use Tainacan\Entities\Collection;
 
 /**
  * Class TestCollections
@@ -13,7 +12,7 @@ use Tainacan\Entities\Collection;
 /**
  * Sample test case.
  */
-class Logs extends \WP_UnitTestCase {
+class Logs extends TAINACAN_UnitTestCase {
 
 
     /**
@@ -22,18 +21,17 @@ class Logs extends \WP_UnitTestCase {
     function test_add() {
         global $Tainacan_Logs;
 
-        $log = new Log();
-
-        //setando os valores na classe do tainacan
-        $log->set_title('blame someone');
-        $log->set_description('someone did that');
+        $log = $this->tainacan_entity_factory->create_entity(
+        	'log',
+	        array(
+	        	'title'       => 'blame someone',
+		        'description' => 'someone did that'
+	        ),
+	        true
+        );
         
         $user_id = get_current_user_id();
         $blog_id = get_current_blog_id();
-
-        //inserindo
-        $log->validate();
-        $log = $Tainacan_Logs->insert($log);
 
         //retorna a taxonomia
         $test = $Tainacan_Logs->fetch($log->get_id());
@@ -43,14 +41,17 @@ class Logs extends \WP_UnitTestCase {
         $this->assertEquals( $user_id, $test->get_user_id() );
         $this->assertEquals( $blog_id, $test->get_blog_id() );
         
-        $value = new Collection();
-        $value->set_name('testeLogs');
-        $value->set_description('adasdasdsa123');
-        $value->set_default_order('DESC');
+        $value = $this->tainacan_entity_factory->create_entity(
+        	'collection',
+	        array(
+	        	'name'          => 'testeLogs',
+		        'description'   => 'adasdasdsa123',
+		        'default_order' => 'DESC'
+	        ),
+	        true
+        );
         
         global $Tainacan_Collections;
-        $value->validate();
-        $value = $Tainacan_Collections->insert($value);
         
         $value->set_name('new_testeLogs');
         $value->validate();

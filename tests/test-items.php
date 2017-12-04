@@ -8,97 +8,129 @@ namespace Tainacan\Tests;
  * @package Test_Tainacan
  */
 
-use Tainacan\Entities\Entity;
+use Tainacan\Entities;
 
 /**
  * Sample test case.
  */
-class Items extends \WP_UnitTestCase {
+class Items extends TAINACAN_UnitTestCase {
 
     
     function teste_query(){
-        global $Tainacan_Collections, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+        $type = $this->tainacan_field_factory->create_field('text');
 
-        $type = new \Tainacan\Field_Types\Text();
+        $collection = $this->tainacan_entity_factory->create_entity(
+        	'collection',
+        	array(
+        	    'name'   => 'teste',
+	            'status' => 'publish'
+	        ),
+	        true
+        );
 
-        $collection = new \Tainacan\Entities\Collection();
-        $collection2 = new \Tainacan\Entities\Collection();
-        
-        $collection->set_name('teste');
-        $collection->set_status('publish');
-        $collection->validate();
-        $collection = $Tainacan_Collections->insert($collection);
-        $collection2->set_name('teste2');
-        $collection2->set_status('publish');
-        $collection2->validate();
-        $collection2 = $Tainacan_Collections->insert($collection2);
-        
-        $metadata = new \Tainacan\Entities\Metadata();
-        $metadata2 = new \Tainacan\Entities\Metadata();
-        $metadata3 = new \Tainacan\Entities\Metadata();
-        
-        $metadata->set_name('metadado');
-        $metadata->set_collection( $collection );
-        $metadata->set_status('publish');
-        $metadata->set_field_type_object( $type );
-        $metadata->validate();
-        $metadata = $Tainacan_Metadatas->insert($metadata);
-        $metadata2->set_name('metadado2');
-        $metadata2->set_collection( $collection2 );
-        $metadata2->set_status('publish');
-        $metadata2->set_field_type_object( $type );
-        $metadata2->validate();
-        $metadata2 = $Tainacan_Metadatas->insert($metadata2);
-        $metadata3->set_name('metadado3');
-        $metadata3->set_collection( $collection2 );
-        $metadata3->set_status('publish');
-        $metadata3->set_field_type_object( $type );
-        $metadata3->validate();
-        $metadata3 = $Tainacan_Metadatas->insert($metadata3);
+	    $collection2 = $this->tainacan_entity_factory->create_entity(
+		    'collection',
+		    array(
+			    'name'   => 'teste2',
+			    'status' => 'publish'
+		    ),
+		    true
+	    );
+
+	    $metadata = $this->tainacan_entity_factory->create_entity(
+		    'metadata',
+		    array(
+			    'name'   => 'metadado',
+			    'status' => 'publish',
+			    'collection' => $collection,
+			    'field_type_object' => $type
+		    ),
+		    true
+	    );
+
+	    $metadata2 = $this->tainacan_entity_factory->create_entity(
+		    'metadata',
+		    array(
+			    'name'   => 'metadado2',
+			    'status' => 'publish',
+			    'collection' => $collection,
+			    'field_type_object' => $type
+		    ),
+		    true
+	    );
+
+	    $metadata3 = $this->tainacan_entity_factory->create_entity(
+		    'metadata',
+		    array(
+			    'name'              => 'metadado3',
+			    'status'            => 'publish',
+			    'collection'        => $collection,
+			    'field_type_object' => $type
+		    ),
+		    true
+	    );
 
         global $Tainacan_Items;
-        $i = new \Tainacan\Entities\Item();
-        $i->set_title('orange');
-        $i->set_collection($collection);
-        $i->add_metadata($metadata, 'value_1');
-        $i->validate();
-        /**
-         * @var \Tainacan\Entities\Item $item
-         */
-        $item = $Tainacan_Items->insert($i);
-        
-        $item = $Tainacan_Items->fetch($item->get_id());
+
+        $i = $this->tainacan_entity_factory->create_entity(
+        	'item',
+	        array(
+	        	'title'      => 'orange',
+		        'collection' => $collection,
+		        'add_metadata' => [
+		        	[$metadata, 'value_1']
+		        ]
+	        ),
+	        true
+        );
+
+        $item = $Tainacan_Items->fetch($i->get_id());
         $meta_test = $item->get_metadata();
-        
+
         $this->assertTrue( isset($meta_test[$metadata->get_id()]) );
-        $this->assertTrue( $meta_test[$metadata->get_id()] instanceof \Tainacan\Entities\Item_Metadata_Entity );
+        $this->assertTrue( $meta_test[$metadata->get_id()] instanceof Entities\Item_Metadata_Entity );
         $this->assertEquals( 'value_1', $meta_test[$metadata->get_id()]->get_value());
-        
-        $i = new \Tainacan\Entities\Item();
-        $i->set_title('apple');
-        $i->set_collection($collection2);
-        $i->add_metadata($metadata2, 'value_2');
-        $i->add_metadata($metadata3, 'value_2');
-        $i->validate();
-        $item = $Tainacan_Items->insert($i);
-        
-        $i = new \Tainacan\Entities\Item();
-        $i->set_title('lemon');
-        $i->set_collection($collection2);
-        $i->add_metadata($metadata2, 'value_2');
-        $i->add_metadata($metadata2, 'value_3'); // if we set twice, value is overridden
-        $i->add_metadata($metadata3, 'value_3');
-        $i->validate();
-        $item = $Tainacan_Items->insert($i);
-        
-        $i = new \Tainacan\Entities\Item();
-        $i->set_title('pinapple');
-        $i->set_collection($collection2);
-        $i->add_metadata($metadata2, 'value_3');
-        $i->add_metadata($metadata3, 'value_6');
-        $i->validate();
-        $item = $Tainacan_Items->insert($i);
-        
+
+	    $this->tainacan_entity_factory->create_entity(
+		    'item',
+		    array(
+			    'title'        => 'apple',
+			    'collection'   => $collection2,
+			    'add_metadata' => [
+			    	[$metadata2, 'value_2'],
+				    [$metadata3, 'value_2']
+			    ]
+		    ),
+		    true
+	    );
+
+	    $this->tainacan_entity_factory->create_entity(
+		    'item',
+		    array(
+			    'title'        => 'lemon',
+			    'collection'   => $collection2,
+			    'add_metadata' => [
+			    	[$metadata2, 'value_2'],
+				    [$metadata2, 'value_3'],
+				    [$metadata3, 'value_3']
+			    ]
+		    ),
+		    true
+	    );
+
+	    $this->tainacan_entity_factory->create_entity(
+		    'item',
+		    array(
+			    'title'        => 'pineapple',
+			    'collection'   => $collection2,
+			    'add_metadata' => [
+			    	[$metadata2, 'value_3'],
+				    [$metadata3, 'value_6']
+			    ]
+		    ),
+		    true
+	    );
+
         // should return all 4 items
         $test_query = $Tainacan_Items->fetch([]);
         $this->assertEquals(4, $test_query->post_count );
@@ -116,15 +148,15 @@ class Items extends \WP_UnitTestCase {
         $this->assertEquals(1,$test_query->post_count);
 
         $test_query->the_post();
-        $item = new \Tainacan\Entities\Item( get_the_ID() );
-        $this->assertEquals('orange', $item->get_title() );
+        $item1 = new Entities\Item( get_the_ID() );
+        $this->assertEquals('orange', $item1->get_title() );
 
         $test_query = $Tainacan_Items->fetch(['title' => 'orange']);
         $test_query->the_post();
-        $item = new \Tainacan\Entities\Item( get_the_ID() );
+        $item2 = new Entities\Item( get_the_ID() );
 
         $this->assertEquals(1, $test_query->post_count);
-        $this->assertEquals('orange', $item->get_title());
+        $this->assertEquals('orange', $item2->get_title());
         
         // should return the other 3 items
         $test_query = $Tainacan_Items->fetch([], $collection2);
@@ -132,16 +164,10 @@ class Items extends \WP_UnitTestCase {
         
         $test_query = $Tainacan_Items->fetch(['title' => 'apple']);
         $test_query->the_post();
-        $item = new \Tainacan\Entities\Item( get_the_ID() );
+        $item3 = new Entities\Item( get_the_ID() );
 
         $this->assertEquals(1, $test_query->post_count);
-        $this->assertEquals('apple', $item->get_title());
-        $apple_meta = $item->get_metadata();
-        $this->assertEquals(2, sizeof( $apple_meta ));
-        $apple_meta_values = [];
-        foreach ($apple_meta as $am) {
-            $this->assertEquals('value_2', $am->get_value());
-        }
+        $this->assertEquals('apple', $item3->get_title());
         
         // should return 1 item
         $test_query = $Tainacan_Items->fetch([
