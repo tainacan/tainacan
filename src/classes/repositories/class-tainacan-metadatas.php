@@ -13,16 +13,7 @@ class Metadatas extends Repository {
 	public $entities_type = '\Tainacan\Entities\Metadata';
 	protected $default_metadata = 'default';
 
-	public $field_types = [
-	    '\Tainacan\Filter_Types\Checkbox',
-	    '\Tainacan\Filter_Types\Date',
-	    '\Tainacan\Filter_Types\Numeric',
-	    '\Tainacan\Filter_Types\Radio',
-	    '\Tainacan\Filter_Types\Relationship',
-	    '\Tainacan\Filter_Types\Selectbox',
-	    '\Tainacan\Filter_Types\Text',
-	    '\Tainacan\Filter_Types\Textatrea',
-    ];
+	public $field_types = [];
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map', [
@@ -309,7 +300,7 @@ class Metadatas extends Repository {
     /**
      * fetch all registered field type classes
      *
-     * @return Array of Entities\Filter_Types\Filter_Type objects
+     * @return array of Entities\Field_Types\Field_Type objects
      */
     public function fetch_field_types(){
 

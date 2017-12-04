@@ -1,7 +1,6 @@
 <?php
 
 namespace Tainacan\Tests;
-
 /**
  * Class Metadata
  *
@@ -82,7 +81,9 @@ class Metadata extends TAINACAN_UnitTestCase {
         $this->assertEquals($test->get_field_type_object(), $type);
     }
 
-
+    /**
+     * test if parent metadata are visible for children collection
+     */
     function test_hierarchy_metadata(){
         global $Tainacan_Metadatas;
 
@@ -164,4 +165,21 @@ class Metadata extends TAINACAN_UnitTestCase {
         $retrieve_metadata =  $Tainacan_Metadatas->fetch_by_collection( $collection_son, [], 'OBJECT' );
         $this->assertEquals( 4, sizeof( $retrieve_metadata ) );
     }
+
+    /**
+     * test if the defaults types are registered
+     */
+    function test_metadata_field_type(){
+        global $Tainacan_Metadatas;
+        $this->assertEquals( 8, sizeof( $Tainacan_Metadatas->fetch_field_types() ) );
+    }
+
+    /**
+     * test if the defaults types are registered
+     */
+//    function test_metadata_field_type_insert(){
+//        global $Tainacan_Metadatas;
+//        $class = new \;
+//        $this->assertEquals( 9, sizeof( $Tainacan_Metadatas->fetch_field_types() ) );
+//    }
 }

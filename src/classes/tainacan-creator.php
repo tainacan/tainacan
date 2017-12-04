@@ -60,6 +60,16 @@ $Tainacan_Item_Metadata = new \Tainacan\Repositories\Item_Metadata();
 global $Tainacan_Metadatas;
 $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
 
+//register field types
+$Tainacan_Metadatas->register_field_type('\Tainacan\Field_type\Text');
+$Tainacan_Metadatas->register_field_type('\Tainacan\Field_type\Textarea');
+$Tainacan_Metadatas->register_field_type('\Tainacan\Field_type\Date');
+$Tainacan_Metadatas->register_field_type('\Tainacan\Field_type\Numeric');
+$Tainacan_Metadatas->register_field_type('\Tainacan\Field_type\Selectbox');
+$Tainacan_Metadatas->register_field_type('\Tainacan\Field_type\Relationship');
+$Tainacan_Metadatas->register_field_type('\Tainacan\Field_type\Radio');
+$Tainacan_Metadatas->register_field_type('\Tainacan\Field_type\Checkbox');
+
 global $Tainacan_Filters;
 $Tainacan_Filters = new \Tainacan\Repositories\Filters();
 
