@@ -26,12 +26,5 @@ class TAINACAN_UnitApiTestCase extends TAINACAN_UnitTestCase {
 		global $wp_rest_server;
 		$this->server = $wp_rest_server = new \WP_REST_Server;
 		do_action( 'rest_api_init' );
-		
-		//add_action( 'init', array($this, 'activate_plugin_via_php' ) );
-	}
-	public function activate_plugin_via_php() {
-		$active_plugins = get_option( 'active_plugins' );
-		array_push($active_plugins, 'tainacan/tainacan.php'); /* Here just replace unyson plugin directory and plugin file*/
-		update_option( 'active_plugins', $active_plugins );
 	}
 }
