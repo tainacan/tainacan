@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 const API_DIR     = __DIR__ . '/api/';
 const CLASSES_DIR = __DIR__ . '/classes/';
+$TAINACAN_BASE_URL = plugins_url('', __FILE__);
 
 require_once(CLASSES_DIR . 'tainacan-creator.php');
 require_once(API_DIR     . 'tainacan-rest-creator.php');
