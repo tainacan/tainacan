@@ -39,6 +39,10 @@ function tainacan_autoload($class_name){
         $dir = strtolower(CLASSES_DIR.implode(DIRECTORY_SEPARATOR, array_slice($class_path, 1, count($class_path) -2) )).'/';
         $dir = str_replace('_', '-', $dir);
 
+        if( in_array('Field_Types', $class_path) ){
+            $dir.= strtolower(str_replace('_', '-' , $class_name)).'/';
+        }
+
         $file = $dir . 'class-tainacan-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
 
         if(file_exists($file)) {

@@ -7,10 +7,21 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanFieldType
  */
-class Relationship extends Field_Type {
+class Selectbox extends Field_Type {
+
+    public $term_root;
 
     function __construct(){
         parent::set_primitive_type('');
+    }
+
+    /**
+     * get the term root to mount the type
+     *
+     * @return mixed
+     */
+    public function get_term_root(){
+        return $this->term_root;
     }
 
     /**
@@ -19,6 +30,6 @@ class Relationship extends Field_Type {
      */
 
     public function render( $metadata ){
-        return '<tainacan-relationship name="'.$metadata->get_name().'"></tainacan-relationship>';
+        return '<tainacan-selectbox name="'.$metadata->get_name().'"></tainacan-selectbox>';
     }
 }

@@ -9,3 +9,5 @@ tests/bootstrap-config.php
 .settings
 vendor
 src/vendor
+node_modules
+npm-debug.log
