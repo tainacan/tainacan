@@ -1,0 +1,37 @@
+<?php
+
+namespace Tainacan\Tests;
+
+/**
+ * Basic test case for api calls
+ * @author jacson
+ *
+ */
+class TAINACAN_UnitApiTestCase extends TAINACAN_UnitTestCase {
+	/**
+	 * Test REST Server
+	 * @var \WP_REST_Server
+	 */
+	protected $server;
+	
+	/**
+	 * Default Tainacan Namespace
+	 * @var string default '/tainacan/v2'
+	 */
+	protected $namespaced_route = '/tainacan/v2';
+
+	public function setUp(){
+		parent::setUp();
+		
+		global $wp_rest_server;
+		$this->server = $wp_rest_server = new \WP_REST_Server;
+		do_action( 'rest_api_init' );
+		
+		//add_action( 'init', array($this, 'activate_plugin_via_php' ) );
+	}
+	public function activate_plugin_via_php() {
+		$active_plugins = get_option( 'active_plugins' );
+		array_push($active_plugins, 'tainacan/tainacan.php'); /* Here just replace unyson plugin directory and plugin file*/
+		update_option( 'active_plugins', $active_plugins );
+	}
+}
