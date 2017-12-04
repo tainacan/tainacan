@@ -11,7 +11,7 @@ class DevInterface {
         
         add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
         add_action('save_post', array(&$this, 'save_post'));
-        add_action('admin_notices', array(&$this, 'display_error'));
+        add_action('admin_enqueue_scripts', array(&$this, 'add_admin_js'));
         
         global $Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies;
         
@@ -22,6 +22,11 @@ class DevInterface {
             $this->repositories[$cpt] = $repo;
         }
         
+    }
+    
+    function add_admin_js() {
+        global $TAINACAN_BASE_URL;
+        wp_enqueue_script('tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/web-components.js');
     }
     
     /**
@@ -55,6 +60,15 @@ class DevInterface {
                 $col->get_db_identifier() . '_metadata', 
                 __('Metadata', 'tainacan'), 
                 array(&$this, 'metadata_metabox'),
+                $col->get_db_identifier(), //post type
+                'normal' 
+                
+            );
+            
+            add_meta_box(
+                $col->get_db_identifier() . '_metadata_js', 
+                __('Metadata Components', 'tainacan'), 
+                array(&$this, 'metadata_components_metabox'),
                 $col->get_db_identifier(), //post type
                 'normal' 
                 
@@ -215,6 +229,76 @@ class DevInterface {
         
     }
     
+    function metadata_components_metabox() {
+        global $Tainacan_Collections, $Tainacan_Item_Metadata, $pagenow, $typenow, $post;
+        
+        $collections = $Tainacan_Collections->fetch([], 'OBJECT');
+        
+        // get current collection
+        $current_collection = false;
+        foreach ($collections as $col) {
+            if ($col->get_db_identifier() == $typenow) {
+                $current_collection = $col;
+                break;
+            }
+        }
+        
+        if (false === $current_collection)
+            return;
+            
+        $entity = new \Tainacan\Entities\Item($post);
+        
+        //for new Items
+        if (!$entity->get_collection_id())
+            $entity->set_collection($current_collection);
+        
+        $metadata = $Tainacan_Item_Metadata->fetch($entity, 'OBJECT');
+        
+        wp_nonce_field( 'save_metadata_'.$typenow, $typenow.'_metadata_noncename' );
+        
+        ?>
+        
+        <input type="hidden" name="tnc_prop_collection_id" value="<?php echo $current_collection->get_id(); ?>" />
+        
+        <div id="postcustomstuff">
+            <table>
+                
+                <thead>
+                    <tr>
+                        <th class="left"><?php _e('Metadata', 'tainacan'); ?></th>
+                        <th><?php _e('Value', 'tainacan'); ?></th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    
+                    <?php foreach ($metadata as $item_meta): ?>
+                        
+                        <?php 
+                            $value = $item_meta->get_value();
+                            if (is_array($value)) $value = json_encode($value);
+                        ?>
+                        <tr>
+                            <td>
+                                <label><?php echo $item_meta->get_metadata()->get_name(); ?></label><br/>
+                                <small><?php echo $item_meta->get_metadata()->get_description(); ?></small>
+                            </td>
+                            <td>
+                                <?php echo '<tainacan-text name="'.$item_meta->get_metadata()->get_name().'"></tainacan-text>'; ?>
+                            </td>
+                        </tr>
+                        
+                    <?php endforeach; ?>
+                    
+                </tbody>
+                
+            </table>
+        </div>
+        <?php
+
+        
+    }
+    
     function collections_dropdown($selected) {
         global $Tainacan_Collections;
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
@@ -303,16 +387,7 @@ class DevInterface {
         }
         
     }
-    
-    function display_error() {
-        if ($this->has_errors === false)
-            return;
-        ?>
-        <div class="notice notice-success is-dismissible">
-            <p><?php _e('Congratulations, you did it!', 'shapeSpace'); ?></p>
-        </div>
-        <?php
-    }
+
     
 }
 
