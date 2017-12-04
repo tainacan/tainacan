@@ -2,6 +2,10 @@
 
 namespace Tainacan\Tests;
 
+/**
+ * @group api 
+ *
+ */
 class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 	
 	public function test_register_route() {
