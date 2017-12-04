@@ -10,6 +10,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Textarea extends Field_Type {
 
     function __construct(){
+        // call field type constructor
+        parent::__construct();
         parent::set_primitive_type('string');
     }
 

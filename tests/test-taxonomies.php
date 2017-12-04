@@ -11,7 +11,7 @@ namespace Tainacan\Tests;
 /**
  * Sample test case.
  */
-class Taxonomies extends \WP_UnitTestCase {
+class Taxonomies extends TAINACAN_UnitTestCase {
 
 
     /**
@@ -20,17 +20,15 @@ class Taxonomies extends \WP_UnitTestCase {
     function test_add() {
         global $Tainacan_Taxonomies;
 
-        $taxonomy = new \Tainacan\Entities\Taxonomy();
-
-        //setando os valores na classe do tainacan
-        $taxonomy->set_name('genero');
-        $taxonomy->set_description('tipos de musica');
-        $taxonomy->set_allow_insert('yes');
-
-        //inserindo
-        $taxonomy->validate();
-
-        $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
+        $taxonomy = $this->tainacan_entity_factory->create_entity(
+        	'taxonomy',
+	        array(
+	        	'name'         => 'genero',
+		        'description'  => 'tipos de musica',
+		        'allow_insert' => 'yes'
+	        ),
+	        true
+        );
 
         //retorna a taxonomia
         $test = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
@@ -43,27 +41,30 @@ class Taxonomies extends \WP_UnitTestCase {
 
     function test_add_term_taxonomy(){
         global $Tainacan_Taxonomies, $Tainacan_Terms;
-        $taxonomy = new \Tainacan\Entities\Taxonomy();
-        $term = new \Tainacan\Entities\Term();
 
-        //setando os valores na classe de taxonomia
-        $taxonomy->set_name('genero');
-
-        //insere a taxonomia
-        $taxonomy->validate();
-        $taxonomy = $Tainacan_Taxonomies->insert($taxonomy);
+	    $taxonomy = $this->tainacan_entity_factory->create_entity(
+		    'taxonomy',
+		    array(
+			    'name' => 'genero',
+		    ),
+		    true
+	    );
 
         //retorna a taxonomia
         $taxonomy_test = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
 
-        //insere um termo na taxonomia
-        $term->set_taxonomy( $taxonomy_test->get_db_identifier() );
-        $term->set_name('Rock');
-        $term->set_user(56);
-        $term_id = $Tainacan_Terms->insert( $term ) ;
+	    $term = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $taxonomy_test->get_db_identifier(),
+			    'name'     => 'Rock',
+			    'user'     => 56
+		    ),
+		    true
+	    );
 
         //retorna um objeto da classe Tainacan_Term
-        $test =  $Tainacan_Terms->fetch($term_id, $taxonomy_test);
+        $test =  $Tainacan_Terms->fetch($term, $taxonomy_test);
         $this->assertEquals( $test->get_name(), 'Rock' );
         $this->assertEquals( $test->get_user(), 56 );
     }

@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanFieldType
  */
-class Textarea extends Field_Type {
+class Date extends Field_Type {
 
     function __construct(){
         parent::set_primitive_type('date');
