@@ -23,9 +23,10 @@ You wil also need:
 * `composer` to manage dependencies
 * `sass` to compile sass into css files
 * `phpunit` to run tests
+* `node` to work with Vue.js
 
 ```
-sudo apt-get install phpunit composer ruby
+sudo apt-get install phpunit composer ruby nodejs npm
 sudo gem install sass
 ```
 
@@ -44,6 +45,7 @@ Install dependencies via composer
 
 ```
 composer install
+npm install
 ```
 
 And that's pretty much all. Now you will want to set up your tests and your build.
