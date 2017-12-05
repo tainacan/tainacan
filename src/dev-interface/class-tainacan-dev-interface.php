@@ -138,6 +138,10 @@ class DevInterface {
                                     <?php $this->collections_dropdown($value); ?>
                                 <?php elseif ($prop == 'collections_ids'): ?>
                                     <?php $this->collections_checkbox_list($value); ?>
+                                <?php elseif ($prop == 'field_type'): ?>
+                                    <?php $this->field_type_dropdown($value); ?>
+                                <?php elseif ($prop == 'field_type_object'): ?>
+                                    <?php echo $value; ?>
                                 <?php else: ?>
                                         <textarea name="tnc_prop_<?php echo $prop; ?>"><?php echo htmlspecialchars($value); ?></textarea>
                                 <?php endif; ?>    
@@ -310,6 +314,24 @@ class DevInterface {
             </select>
         <?php
     }
+
+    function field_type_dropdown($selected) {
+        global $Tainacan_Metadatas;
+        $field_types = $Tainacan_Metadatas->fetch_field_types();
+        ?>
+            <select name="tnc_prop_field_type">
+                <?php foreach ($field_types as $field_type): ?>
+                    <option value="<?php echo $field_type; ?>" <?php selected($field_type, $selected) ?>><?php echo $field_type; ?></option>
+                <?php endforeach; ?>
+            </select>
+            <?php
+             if( $selected ){
+                 $type = new $selected();
+                 echo $type->form();
+             }
+            ?>
+        <?php
+    }
     
     function collections_checkbox_list($selected) {
         global $Tainacan_Collections;
@@ -355,6 +377,13 @@ class DevInterface {
                 
                 
                 $entity->set_mapped_property($prop, $value);
+
+//                if ($prop == 'field_type') {
+//                    $ft = new $value();
+//                    $ft->set_options = $_POST['field_type_'$value];
+//                    update_post_meta($post_id, 'field_type_object', $ft);
+//                }
+
                 if ($entity->validate_prop($prop)) {
                     // we cannot user repository->insert here, it would create an infinite loop
                     if ($mapped['map'] == 'meta') {
@@ -378,7 +407,7 @@ class DevInterface {
         } else {
             
             // TODO properly handle Items metadata
-            
+
             if (isset($_POST['tnc_prop_collection_id'])) {
                 update_post_meta($post_id, 'collection_id', $_POST['tnc_prop_collection_id']);
             }

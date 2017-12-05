@@ -16,6 +16,8 @@ class Relationship extends Field_Type {
     public $inverse;
 
     function __construct(){
+        // call field type constructor
+        parent::__construct();
         parent::set_primitive_type('');
     }
 
@@ -62,5 +64,21 @@ class Relationship extends Field_Type {
 
     public function render( $metadata ){
         return '<tainacan-relationship name="'.$metadata->get_name().'"></tainacan-relationship>';
+    }
+
+    /**
+     * generate the fields for this field type
+     */
+    public function form(){
+        ?>
+        <tr>
+            <td>
+                <label><?php echo __('Options','tainacan'); ?></label><br/>
+            </td>
+            <td>
+                <textarea name="tnc_metadata_options"><?php echo ( $this->options ) ? $this->options : ''; ?></textarea>
+            </td>
+        </tr>
+        <?php
     }
 }
