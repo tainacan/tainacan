@@ -21,7 +21,8 @@ class Selectbox extends Field_Type {
      */
 
     public function render( $metadata ){
-        return '<tainacan-selectbox name="'.$metadata->get_name().'"></tainacan-selectbox>';
+        $options = ( isset( $this->options['options'] ) ) ? $this->options['options'] : '';
+        return '<tainacan-selectbox options="'.$options.'" name="'.$metadata->get_name().'"></tainacan-selectbox>';
     }
 
     /**

@@ -288,7 +288,8 @@ class DevInterface {
                                 <small><?php echo $item_meta->get_metadata()->get_description(); ?></small>
                             </td>
                             <td>
-                                <?php echo '<tainacan-text name="'.$item_meta->get_metadata()->get_name().'"></tainacan-text>'; ?>
+                                <?php //echo '<tainacan-text name="'.$item_meta->get_metadata()->get_name().'"></tainacan-text>'; ?>
+                                <?php echo  $item_meta->get_metadata()->get_field_type_object()->render( $item_meta->get_metadata() ); ?>
                             </td>
                         </tr>
                         

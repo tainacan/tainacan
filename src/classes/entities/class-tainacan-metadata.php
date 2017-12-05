@@ -171,7 +171,7 @@ class Metadata extends Entity {
      * @return array Configurations for the field type object
      */
     function get_field_options(){
-        return $this->get_mapped_property('get_field_options');
+        return $this->get_mapped_property('field_type_options');
     }
 
     /**
