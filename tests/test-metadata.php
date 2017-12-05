@@ -1,6 +1,7 @@
 <?php
 
 namespace Tainacan\Tests;
+use Tainacan\Field_Types;
 /**
  * Class Metadata
  *
@@ -177,9 +178,26 @@ class Metadata extends TAINACAN_UnitTestCase {
     /**
      * test if the defaults types are registered
      */
-//    function test_metadata_field_type_insert(){
-//        global $Tainacan_Metadatas;
-//        $class = new \;
-//        $this->assertEquals( 9, sizeof( $Tainacan_Metadatas->fetch_field_types() ) );
-//    }
+    function test_metadata_field_type_insert(){
+        global $Tainacan_Metadatas;
+        $class = new RandomType;
+        $this->assertEquals( 9, sizeof( $Tainacan_Metadatas->fetch_field_types() ) );
+    }
+}
+
+/**
+ * Class TainacanFieldType
+ */
+class RandomType extends Field_Types\Field_Type {
+
+    function __construct(){
+        parent::__construct();
+    }
+
+    /**
+     * @param $metadata
+     * @return string
+     */
+
+    public function render( $metadata ){}
 }
