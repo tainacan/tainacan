@@ -22,6 +22,8 @@ class Entity_Factory {
 	 * @throws \ErrorException
 	 */
 	public function create_entity($type, $args = [], $is_validated_and_in_db = false){
+		ini_set('display_errors', 1);
+
 		try {
 			if(empty($type)){
 				throw new \InvalidArgumentException(__('The type can\'t be empty'));
@@ -79,7 +81,7 @@ class Entity_Factory {
 				try {
 					$this->entity->set_name( "$type" . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
-				} catch (\Exception $exception){
+				} catch (\Error $exception){
 					$this->entity->set_title( "$type" . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				}
@@ -88,7 +90,7 @@ class Entity_Factory {
 				try {
 					$this->entity->set_name( "$type" . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
-				} catch (\Exception $exception){
+				} catch (\Error $exception){
 					$this->entity->set_title( "$type" . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				}
@@ -103,9 +105,8 @@ class Entity_Factory {
 			} else {
 				throw new \InvalidArgumentException( __( 'One or more arguments are invalid.', 'tainacan' ) );
 			}
-		} catch (\Exception $exception){
-			echo($exception->getMessage());
-			echo($exception->getTraceAsString());
+		} catch (\Error $exception){
+			echo "\n" . $exception->getMessage() . "\n";
 		}
 
 		return $this->entity;

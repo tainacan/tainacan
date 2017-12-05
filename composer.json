@@ -1,6 +1,6 @@
 {
-    "name": "medialabufg/tainacan-test-repo",
-    "description": "Protótipo",
+    "name": "medialabufg/tainacan",
+    "description": "Transforme seu site wordpress em um repositório digital.",
     "type": "wordpress-plugin",
     "require": {
         "respect/validation": "^1.1"
