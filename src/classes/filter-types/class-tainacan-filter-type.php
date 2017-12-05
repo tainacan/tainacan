@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 abstract class Filter_Type {
 
     private $supported_types = [];
+    public $options;
 
     abstract function render( $metadata );
 
@@ -16,5 +17,12 @@ abstract class Filter_Type {
 
     public function set_supported_types($supported_types){
         $this->supported_types = $supported_types;
+    }
+
+    /**
+     * @param $options
+     */
+    public function set_options( $options ){
+        $this->options = ( is_array( $options ) ) ? $options : unserialize( $options );
     }
 }

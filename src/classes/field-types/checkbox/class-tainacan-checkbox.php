@@ -9,8 +9,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Checkbox extends Field_Type {
 
-    public $options;
-
     function __construct(){
         // call field type constructor
         parent::__construct();
@@ -34,7 +32,7 @@ class Checkbox extends Field_Type {
         <tr>
             <td>
                 <label><?php echo __('Options','tainacan'); ?></label><br/>
-                <small><?php echo __('Insert the options, separate by ";" for the metadata value','tainacan'); ?></small>
+                <small><?php echo __('Insert the options, separate by lines for the metadata value','tainacan'); ?></small>
             </td>
             <td>
                 <textarea name="tnc_metadata_options"><?php echo ( $this->options ) ? $this->options : ''; ?></textarea>

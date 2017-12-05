@@ -100,7 +100,7 @@ class Items extends Repository {
     	// Now run through properties stored as postmeta
     	foreach ($map as $prop => $mapped) {
     		if ($mapped['map'] == 'meta') {
-    			update_post_meta($id, $prop, $item->get_mapped_property($prop));
+    			update_post_meta($id, $prop,  wp_slash( $item->get_mapped_property($prop) ));
     		} elseif ($mapped['map'] == 'meta_multi') {
     			$values = $item->get_mapped_property($prop);
     			
@@ -108,7 +108,7 @@ class Items extends Repository {
     			
     			if (is_array($values)){
     				foreach ($values as $value){
-    					add_post_meta($id, $prop, $value);
+    					add_post_meta($id, $prop, wp_slash( $value ));
     				}
     			}
     		}

@@ -35,7 +35,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	        	'name' => 'metadado',
 		        'description' => 'descricao',
 		        'collection' => $collection,
-		        'field_type_object' => $type
+		        'field_type' => $type
 	        ),
 	        true
         );
@@ -69,7 +69,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		        'name'              => 'metadado',
 		        'description'       => 'descricao',
 		        'collection_id'     => $collection->get_id(),
-		        'field_type_object' => $type
+		        'field_type' => $type
 	        ),
 	        true
         );
@@ -95,7 +95,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	        array(
 	        	'name'              => 'metadata default',
 		        'collection_id'     => $Tainacan_Metadatas->get_default_metadata_attribute(),
-		        'field_type_object' => $type,
+		        'field_type' => $type,
 		        'status'            => 'publish'
 	        ),
 	        true
@@ -114,7 +114,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	        array(
 	        	'name'              => 'metadata grandfather',
 		        'collection_id'     => $collection_grandfather->get_id(),
-		        'field_type_object' => $type,
+		        'field_type' => $type,
 		        'status'            => 'publish'
 	        ),
 	        true
@@ -134,7 +134,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		    array(
 			    'name'              => 'metadata father',
 			    'collection_id'     => $collection_father->get_id(),
-			    'field_type_object' => $type,
+			    'field_type' => $type,
 			    'status'            => 'publish'
 		    ),
 		    true
@@ -157,7 +157,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		    array(
 			    'name'              => 'metadata son',
 			    'collection_id'     => $collection_son->get_id(),
-			    'field_type_object' => $type,
+			    'field_type' => $type,
 			    'status'            => 'publish'
 		    ),
 		    true

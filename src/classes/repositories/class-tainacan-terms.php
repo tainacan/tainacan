@@ -81,7 +81,7 @@ class Terms extends Repository {
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] == 'termmeta') {
-                update_term_meta($term_inserted['term_id'], $prop, $term->get_mapped_property($prop));
+                update_term_meta($term_inserted['term_id'], $prop, wp_slash( $term->get_mapped_property($prop) ));
             }
         }
         

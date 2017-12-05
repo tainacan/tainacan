@@ -58,7 +58,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		    array(
 		    	'name'              => 'metadado',
 			    'collection_id'     => $collection->get_id(),
-			    'field_type_object' => $type
+			    'field_type' => $type
 		    ),
 		    true
 	    );
@@ -71,7 +71,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		    	'name'               => 'filtro',
 			    'collection'         => $collection,
 			    'metadata'           => $metadata,
-			    'filter_type_object' => $filter_list_type
+			    'filter_type' => $filter_list_type
 		    ),
 		    true
 	    );
@@ -79,7 +79,7 @@ class Filters extends TAINACAN_UnitTestCase {
         $filter_range_type = $this->tainacan_filter_factory->create_filter('range');
 
         //nao devera permitir um filtro Range para o tipo string
-        $this->assertTrue( $filter->set_filter_type_object( $filter_range_type ) === null );
+         $this->assertTrue( $filter->set_filter_type( $filter_range_type ) === null );
 
         $test = $Tainacan_Filters->fetch( $filter->get_id() );
 

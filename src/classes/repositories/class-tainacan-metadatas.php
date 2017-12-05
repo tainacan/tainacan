@@ -124,11 +124,11 @@ class Metadatas extends Repository {
                 'type'       => 'string',
                 'description'=> __('The value default fot the metadata', 'tainacan'),
             ],
-            'field_type_object' => [ // not showed in form
+            'field_type_options' => [ // not showed in form
                 'map'        => 'meta',
-                'title'      => __('Type', 'tainacan'),
+                'title'      => __('Field Type options', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The object type', 'tainacan'),
+                'description'=> __('Options specific for field type', 'tainacan'),
                // 'validation' => ''
             ],
             'collection_id'  => [ // not showed in form
@@ -300,11 +300,25 @@ class Metadatas extends Repository {
     /**
      * fetch all registered field type classes
      *
-     * @return array of Entities\Field_Types\Field_Type objects
+     * Possible outputs are:
+     * CLASS (default) - returns the Class name of of field types registered
+     * NAME - return an Array of the names of field types registered
+     *
+     * @param $output string CLASS | NAME
+     * @return array of Entities\Field_Types\Field_Type classes path name
      */
-    public function fetch_field_types(){
+    public function fetch_field_types( $output = 'CLASS'){
+        $return = [];
 
         do_action('register_field_types');
+
+        if( $output === 'NAME' ){
+            foreach ($this->field_types as $field_type) {
+                $return[] = str_replace('Tainacan\Field_Types\\','', $field_type);
+            }
+
+            return $return;
+        }
 
         return $this->field_types;
     }

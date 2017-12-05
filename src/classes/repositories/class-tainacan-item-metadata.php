@@ -12,13 +12,13 @@ class Item_Metadata extends Repository {
         $unique = ! $item_metadata->is_multiple();
         
         if ($unique) {
-            update_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $item_metadata->get_value());
+            update_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash( $item_metadata->get_value() ) );
         } else {
             delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id());
             
             if (is_array($item_metadata->get_value())){
                 foreach ($item_metadata->get_value() as $value){
-                    add_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $value);
+                    add_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash( $value ));
                 }
             }
         }

@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 abstract class Field_Type  {
 
     private $primitive_type;
+    public $options;
 
     abstract function render( $metadata );
 
@@ -36,6 +37,13 @@ abstract class Field_Type  {
 
     public function set_primitive_type($primitive_type){
         $this->primitive_type = $primitive_type;
+    }
+
+    /**
+     * @param $options
+     */
+    public function set_options( $options ){
+        $this->options = ( is_array( $options ) ) ? $options : unserialize( $options );
     }
 
 }
