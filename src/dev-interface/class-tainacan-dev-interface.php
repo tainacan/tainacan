@@ -138,10 +138,10 @@ class DevInterface {
                                     <?php $this->collections_dropdown($value); ?>
                                 <?php elseif ($prop == 'collections_ids'): ?>
                                     <?php $this->collections_checkbox_list($value); ?>
-                                <?php elseif ($prop == 'field_type'): ?>
+                                <?php elseif ($prop == 'field_type_options'): ?>
                                     <?php echo $value; ?>
-                                <?php elseif ($prop == 'field_type_object'): ?>
-                                    <?php echo $this->field_type_dropdown($value); ?>
+                                <?php elseif ($prop == 'field_type'): ?>
+                                    <?php echo $this->field_type_dropdown($post->ID,$value); ?>
                                 <?php else: ?>
                                         <textarea name="tnc_prop_<?php echo $prop; ?>"><?php echo htmlspecialchars($value); ?></textarea>
                                 <?php endif; ?>    
@@ -315,11 +315,11 @@ class DevInterface {
         <?php
     }
 
-    function field_type_dropdown($selected) {
+    function field_type_dropdown($id,$selected) {
 
         global $Tainacan_Metadatas;
 
-        $class = ( $selected ) ? unserialize( base64_decode( $selected ) ) : '';
+        $class = ( class_exists( $selected ) ) ? new $selected() : '';
 
         if(is_object( $class )){
             $selected =  str_replace('Tainacan\Field_Types\\','', get_class( $class ) );
@@ -327,13 +327,15 @@ class DevInterface {
 
         $field_types = $Tainacan_Metadatas->fetch_field_types('NAME');
         ?>
-            <select name="tnc_prop_field_type_object">
+            <select name="tnc_prop_field_type">
                 <?php foreach ($field_types as $field_type): ?>
                     <option value="<?php echo $field_type; ?>" <?php selected($field_type, $selected) ?>><?php echo $field_type; ?></option>
                 <?php endforeach; ?>
             </select>
             <?php
              if( $class ){
+                 $options = get_post_meta($id,'field_type_options',true);
+                 $class->set_options($options);
                  echo $class->form();
              }
             ?>
@@ -388,12 +390,12 @@ class DevInterface {
 
                 if ($entity->validate_prop($prop)) {
 
-                    if ($prop == 'field_type_object') {
+                    if ($prop == 'field_type') {
                         $class = '\Tainacan\Field_Types\\'.$value;
-                        $ft = new $class();
-                        $ft->set_options( $_POST['field_type_'.strtolower( $value )] );
-                        update_post_meta($post_id, 'field_type_object',  base64_encode(serialize($ft)) );
-                        update_post_meta($post_id, 'field_type',  base64_encode(get_class( $ft )) );
+                        update_post_meta($post_id, 'field_type_options', $_POST['field_type_'.strtolower( $value ) ] );
+                        update_post_meta($post_id, 'field_type',  wp_slash( get_class( new $class() ) ) );
+                    }else if($prop == 'field_type_options'){
+                        continue;
                     }
                     // we cannot user repository->insert here, it would create an infinite loop
                     else if ($mapped['map'] == 'meta') {

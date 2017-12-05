@@ -124,11 +124,11 @@ class Metadatas extends Repository {
                 'type'       => 'string',
                 'description'=> __('The value default fot the metadata', 'tainacan'),
             ],
-            'field_type_object' => [ // not showed in form
+            'field_type_options' => [ // not showed in form
                 'map'        => 'meta',
-                'title'      => __('Type', 'tainacan'),
+                'title'      => __('Field Type options', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The object type', 'tainacan'),
+                'description'=> __('Options specific for field type', 'tainacan'),
                // 'validation' => ''
             ],
             'collection_id'  => [ // not showed in form

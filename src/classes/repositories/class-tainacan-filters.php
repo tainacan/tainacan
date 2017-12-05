@@ -40,11 +40,11 @@ class Filters extends Repository {
                 'description'=> __('The filter description', 'tainacan'),
                 'validation'  => ''
             ],
-            'filter_type_object' => [
+            'filter_type_options' => [
                 'map'        => 'meta',
-                'title'      => __('Type', 'tainacan'),
+                'title'      => __('Filter type options', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The filter type object', 'tainacan'),
+                'description'=> __('The filter type options', 'tainacan'),
                 'validation' => ''
             ],
             'filter_type'        => [

@@ -36,7 +36,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        	'name'              => 'metadado',
 		        'description'       => 'descricao',
 		        'collection'        => $collection,
-		        'field_type_object' => $type
+		        'field_type' => $type
 	        ),
 	        true
         );
@@ -88,7 +88,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			    'description'       => 'descricao',
 			    'collection'        => $collection,
 			    'required'          => 'yes',
-			    'field_type_object' => $type
+			    'field_type' => $type
 		    ),
 		    true
 	    );
@@ -142,7 +142,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			    'description'       => 'descricao',
 			    'collection'        => $collection,
 			    'collection_key'    => 'yes',
-			    'field_type_object' => $type
+			    'field_type' => $type
 		    ),
 		    true
 	    );
@@ -200,7 +200,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	            'description'       => 'descricao',
 	            'collection'        => $collection,
 	            'status'            => 'publish',
-	            'field_type_object' => $type
+	            'field_type' => $type
             ),
 	        true
         );

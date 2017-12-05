@@ -150,7 +150,10 @@ class Metadata extends Entity {
      * @return array || object
      */
     function get_field_type_object(){
-    	return unserialize(base64_decode( $this->get_mapped_property('field_type_object') ) );
+        $class_name = $this->get_field_type();
+        $object_type = new $class_name();
+        $object_type->set_options(  $this->get_field_options() );
+    	return $object_type;
     }
 
     /**
@@ -159,7 +162,16 @@ class Metadata extends Entity {
      * @return array || object
      */
     function get_field_type(){
-    	return base64_decode($this->get_mapped_property('field_type'));
+    	return $this->get_mapped_property('field_type');
+    }
+
+    /**
+     * Retorna o objeto Metadado
+     *
+     * @return array || object
+     */
+    function get_field_options(){
+        return $this->get_mapped_property('get_field_options');
     }
 
     /**
@@ -272,18 +284,13 @@ class Metadata extends Entity {
         $this->set_mapped_property('default_property', $value);
     }
 
-    function set_field_type_object(\Tainacan\Field_Types\Field_Type $value){
-        $this->set_field_type( get_class( $value )  );
-        $this->set_mapped_property('field_type_object', base64_encode( serialize($value) ) ); // Encode to avoid backslaches removal
-    }
-
     /**
-     * Este metodo é privado, porque é utilizado apenas neste contexto pelo @method set_field_type_object()
+     * save the class  field class name
      *
      * @param $value
      */
-    private function set_field_type($value){
-    	$this->set_mapped_property('field_type',   base64_encode($value) ) ; // Encode to avoid backslaches removal
+    public function set_field_type($value){
+    	$this->set_mapped_property('field_type',   get_class( $value ) ) ; // Encode to avoid backslaches removal
     }
 
     // helpers

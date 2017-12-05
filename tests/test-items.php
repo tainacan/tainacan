@@ -43,7 +43,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'   => 'metadado',
 			    'status' => 'publish',
 			    'collection' => $collection,
-			    'field_type_object' => $type
+			    'field_type' => $type
 		    ),
 		    true
 	    );
@@ -54,7 +54,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'   => 'metadado2',
 			    'status' => 'publish',
 			    'collection' => $collection,
-			    'field_type_object' => $type
+			    'field_type' => $type
 		    ),
 		    true
 	    );
@@ -65,7 +65,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'              => 'metadado3',
 			    'status'            => 'publish',
 			    'collection'        => $collection,
-			    'field_type_object' => $type
+			    'field_type' => $type
 		    ),
 		    true
 	    );

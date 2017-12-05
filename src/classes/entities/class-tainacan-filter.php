@@ -82,21 +82,33 @@ class Filter extends Entity {
     }
 
     /**
-     * Retorna o objeto filtro
+     * Retorna o objeto Filter Type
      *
-     * @return Filter
+     * @return array || object
      */
     function get_filter_type_object(){
-    	return unserialize( base64_decode( $this->get_mapped_property('filter_type_object') ) );
+        $class_name = $this->get_filter_type();
+        $object_type = new $class_name();
+        $object_type->set_options(  $this->get_filter_options() );
+        return $object_type;
     }
 
     /**
-     * Retorna o filtro
+     * Retorna o objeto field type
      *
-     * @return string
+     * @return array || object
      */
     function get_filter_type(){
         return $this->get_mapped_property('filter_type');
+    }
+
+    /**
+     * Retorna o objeto Metadado
+     *
+     * @return array || object
+     */
+    function get_filter_options(){
+        return $this->get_mapped_property('filter_type_options');
     }
 
     /**
@@ -157,14 +169,14 @@ class Filter extends Entity {
      * @param \Tainacan\Filter_Types\Filter_Type $value
      * @return void
      */
-    function set_filter_type_object( \Tainacan\Filter_Types\Filter_Type $value ){
-        // TODO: validate primitive type with filter
-        //if filter matches the metadata type
-        //if( in_array( $type->get_primitive_type(), $value->get_supported_types() ) ){
-        $this->set_filter_type( get_class( $value ) );
-        $this->set_mapped_property('filter_type_object', base64_encode( serialize($value) ) );
-        //}
-    }
+//    function set_filter_type_object( \Tainacan\Filter_Types\Filter_Type $value ){
+//        // TODO: validate primitive type with filter
+//        //if filter matches the metadata type
+//        //if( in_array( $type->get_primitive_type(), $value->get_supported_types() ) ){
+//        $this->set_filter_type( get_class( $value ) );
+//        $this->set_mapped_property('filter_type_object', base64_encode( serialize($value) ) );
+//        //}
+//    }
 
     /**
      * Atribui o filter type.
@@ -173,7 +185,7 @@ class Filter extends Entity {
      * @param string
      *
      */
-    private function set_filter_type($value){
-        $this->set_mapped_property('filter_type', $value );
+    public function set_filter_type($value){
+        $this->set_mapped_property('filter_type',  get_class( $value ) );
     }
 }
