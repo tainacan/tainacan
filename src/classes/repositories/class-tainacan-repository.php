@@ -56,11 +56,13 @@ abstract class Repository {
     public function get_name() {
         return str_replace('Tainacan\Repositories\\', '', get_class($this));
     }
-	
+
 	/**
-	 * 
+	 *
 	 * @param \Tainacan\Entities\Entity $obj
+	 *
 	 * @return \Tainacan\Entities\Entity
+	 * @throws \Exception
 	 */
 	public function insert($obj) {
 		// validate
@@ -168,7 +170,7 @@ abstract class Repository {
      *
      * 
      * @param  array  $args [description]
-     * @return Array $args new $args array with mapped properties
+     * @return array $args new $args array with mapped properties
      */
     public function parse_fetch_args($args = []) {
         
@@ -209,11 +211,16 @@ abstract class Repository {
         return $args;
         
     }
-    
-    public function get_default_properties($map)
-    {
-    	if(is_array($map))
-    	{
+
+	/**
+	 * Return default properties
+	 *
+	 * @param $map
+	 *
+	 * @return array
+	 */
+	public function get_default_properties($map) {
+    	if(is_array($map)) {
     		$map['status']	=  [
     			'map'			=> 'post_status',
     			'title'			=> __('Status', 'tainacan'),

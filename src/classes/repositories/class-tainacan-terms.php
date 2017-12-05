@@ -102,7 +102,7 @@ class Terms extends Repository {
      *
      * @param array $args WP_Query args || int $args the term id
      * @param array $taxonomies Array Entities\Taxonomy || Array int terms IDs || int collection id || Entities\Taxonomy taxonomy object
-     * @return Array of Entities\Term objects || Entities\Term
+     * @return array of Entities\Term objects || Entities\Term
      */
     public function fetch( $args = [], $taxonomies = []){
 

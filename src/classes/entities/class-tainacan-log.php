@@ -210,25 +210,24 @@ class Log extends Entity {
      * @throws \Exception
      * @return \Tainacan\Entities\Log
      */
-    public static function create($msn = false, $desc = '', $new_value = null, $old_value = null)
-    {
+    public static function create($msn = false, $desc = '', $new_value = null, $old_value = null) {
     	$log = new Log();
     	$log->set_title($msn);
     	$log->set_description($desc);
     	$log->set_status('publish'); //TODO may be private
     	
-    	if(!is_null($new_value))
-    	{
+    	if(!is_null($new_value)) {
 	    	$type = gettype($new_value);
 	    	
 	    	$log->set_value($new_value);
 	    	if(!is_null($old_value)) $log->set_old_value($old_value);
     	}
-		elseif($msn === false)
-		{
+		elseif($msn === false) {
 			throw new \Exception('msn or new_value is need to log');
 		}
+
 		global $Tainacan_Logs;
+
 		if ($log->validate()) {
             return $Tainacan_Logs->insert($log);
         } else {
