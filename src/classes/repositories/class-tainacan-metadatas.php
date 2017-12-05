@@ -314,7 +314,7 @@ class Metadatas extends Repository {
 
         if( $output === 'NAME' ){
             foreach ($this->field_types as $field_type) {
-                $return[] = str_replace('\Tainacan\Field_Types\\','', $field_type);
+                $return[] = str_replace('Tainacan\Field_Types\\','', $field_type);
             }
 
             return $return;
