@@ -20,49 +20,83 @@ class Logs extends Repository {
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map', [
-            'id'             => [
-                'map'        => 'ID',
+            'id'              => [
+                'map'         => 'ID',
+                'title'       => 'ID',
+                'type'        => 'integer',
+                'description' => __('Unique identifier', 'tainacan'),
                 //'validation' => ''
             ],
-            'title'          =>  [
-                'map'        => 'post_title',
-                'validation' => ''
+            'title'           =>  [
+                'map'         => 'post_title',
+                'title'       => __('Title', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('The title of the log'),
+                'on_error'    => __('The title should be a text value and not empty', 'tainacan'),
+                'validation'  => ''
             ],
-            'order'          =>  [
-                'map'        => 'menu_order',
-                'validation' => ''
+            'order'           =>  [
+                'map'         => 'menu_order',
+                'title'       => __('Menu order', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('Log order'),
+                'validation'  => ''
             ],
-            'parent'         =>  [
-                'map'        => 'parent',
-                'validation' => ''
+            'parent'          =>  [
+                'map'         => 'parent',
+                'title'       => __('Parent', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('Log order'),
+                'validation'  => ''
             ],
-            'description'    =>  [
-                'map'        => 'post_content',
-                'validation' => ''
+            'description'     =>  [
+                'map'         => 'post_content',
+                'title'       => __('Description', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('The log description'),
+                'validation'  => ''
             ],
-            'slug'           =>  [
-                'map'        => 'post_name',
-                'validation' => ''
+            'slug'            =>  [
+                'map'         => 'post_name',
+                'title'       => __('Slug', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('The log slug'),
+                'validation'  => ''
             ],
-            'itens_per_page' =>  [
-                'map'        => 'meta',
-                'validation' => ''
+            'itens_per_page'  =>  [
+                'map'         => 'meta',
+                'title'       => __('Itens per page', 'tainacan'),
+                'type'        => 'integer',
+                'description' => __('The quantity of items that should be load'),
+                'validation'  => ''
             ],
-        	'user_id'        => [
-        		'map'        => 'post_author',
-        		'validation' => ''
+        	'user_id'         => [
+        		'map'         => 'post_author',
+		        'title'       => __('User ID', 'tainacan'),
+		        'type'        => 'integer',
+		        'description' => __('Unique identifier'),
+        		'validation'  => ''
         	],
-        	'blog_id'        => [
-        		'map'        => 'meta',
-        		'validation' => ''
+        	'blog_id'         => [
+        		'map'         => 'meta',
+		        'title'       => __('Blog ID', 'tainacan'),
+		        'type'        => 'integer',
+		        'description' => __('Unique identifier'),
+        		'validation'  => ''
         	],
-        	'value'        => [
-        		'map'        => 'meta',
-        		'validation' => ''
+        	'value'           => [
+        		'map'         => 'meta',
+		        'title'       => __('Actual value', 'tainacan'),
+		        'type'        => 'string',
+		        'description' => __('The actual log value'),
+        		'validation'  => ''
         	],
-        	'old_value'        => [
-        		'map'        => 'meta',
-        		'validation' => ''
+        	'old_value'       => [
+        		'map'         => 'meta',
+		        'title'       => __('Old value', 'tainacan'),
+		        'type'        => 'string',
+		        'description' => __('The old log value'),
+        		'validation'  => ''
         	],
         ]);
     }
@@ -163,17 +197,18 @@ class Logs extends Repository {
     	return array_pop($logs);
     }
     
-    public function log_inserts($new_value, $value = null)
-    {
+    public function log_inserts($new_value, $value = null) {
     	$msn = "";
-   		if(is_object($new_value))
-   		{
+   		if(is_object($new_value)) {
    			// do not log a log
-   			if(method_exists($new_value, 'get_post_type') && $new_value->get_post_type() == 'tainacan-logs') return;
+   			if(method_exists($new_value, 'get_post_type') && $new_value->get_post_type() == 'tainacan-logs'){
+   			    return;
+		    }
    			
    			$type = get_class($new_value);
    			$msn = sprintf( esc_html__( 'a %s has been created/modified.', 'tainacan' ), $type );
    		}
+
    		$msn = apply_filters('tainacan-insert-log-message-title', $msn, $type, $new_value);
     	Entities\Log::create($msn, '', $new_value, $value);
     }
