@@ -82,9 +82,9 @@ class Filter extends Entity {
     }
 
     /**
-     * Retorna o objeto Filter Type
+     * Return the an object child of \Tainacan\Filter_Types\Filter_Type with options
      *
-     * @return array || object
+     * @return \Tainacan\Filter_Types\Filter_Type The filter type class with filled options
      */
     function get_filter_type_object(){
         $class_name = $this->get_filter_type();
@@ -94,18 +94,18 @@ class Filter extends Entity {
     }
 
     /**
-     * Retorna o objeto field type
+     * Return the class name for the filter type
      *
-     * @return array || object
+     * @return string The
      */
     function get_filter_type(){
         return $this->get_mapped_property('filter_type');
     }
 
     /**
-     * Retorna o objeto Metadado
+     * Return the actual options for the current filter type
      *
-     * @return array || object
+     * @return array Configurations for the filter type object
      */
     function get_filter_options(){
         return $this->get_mapped_property('filter_type_options');
@@ -164,28 +164,11 @@ class Filter extends Entity {
     }
 
     /**
-     * Atribui o próprio objeto do filter type de forma serializada
+     * save the filter type class name
      *
-     * @param \Tainacan\Filter_Types\Filter_Type $value
-     * @return void
-     */
-//    function set_filter_type_object( \Tainacan\Filter_Types\Filter_Type $value ){
-//        // TODO: validate primitive type with filter
-//        //if filter matches the metadata type
-//        //if( in_array( $type->get_primitive_type(), $value->get_supported_types() ) ){
-//        $this->set_filter_type( get_class( $value ) );
-//        $this->set_mapped_property('filter_type_object', base64_encode( serialize($value) ) );
-//        //}
-//    }
-
-    /**
-     * Atribui o filter type.
-     * Este metodo é privado, porque é é utilizado apenas neste contexto pelo metodo set_filter_type_object
-     *
-     * @param string
-     *
+     * @param string | \Tainacan\Filter_Types\Filter_Type $value The name of the class or the instance
      */
     public function set_filter_type($value){
-        $this->set_mapped_property('filter_type',  get_class( $value ) );
+        $this->set_mapped_property('filter_type', ( is_object( $value ) ) ? get_class( $value ) : $value );
     }
 }

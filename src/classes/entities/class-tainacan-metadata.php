@@ -145,9 +145,9 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna o objeto Metadado
+     * Return the an object child of \Tainacan\Field_Types\Field_Type with options
      *
-     * @return array || object
+     * @return \Tainacan\Field_Types\Field_Type The field type class with filled options
      */
     function get_field_type_object(){
         $class_name = $this->get_field_type();
@@ -157,25 +157,25 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna o objeto field type
+     * Return the class name for the field type
      *
-     * @return array || object
+     * @return string The
      */
     function get_field_type(){
     	return $this->get_mapped_property('field_type');
     }
 
     /**
-     * Retorna o objeto Metadado
+     * Return the actual options for the current field type
      *
-     * @return array || object
+     * @return array Configurations for the field type object
      */
     function get_field_options(){
         return $this->get_mapped_property('get_field_options');
     }
 
     /**
-     * Atribui nome
+     * Set the metadata name
      *
      * @param [string] $value
      * @return void
@@ -185,7 +185,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Atribui o tipo de ordenação
+     * Set manually the order of the metadata
      *
      * @param [string] $value
      * @return void
@@ -195,9 +195,9 @@ class Metadata extends Entity {
     }
 
     /**
-     * Atribui ID do parent
+     * Set the metadata parent ID
      *
-     * @param [integer] $value
+     * @param [integer] $value The ID from parent
      * @return void
      */
     function set_parent($value) {
@@ -205,9 +205,9 @@ class Metadata extends Entity {
     }
 
     /**
-     * Atribui descrição
+     * Set metadata description
      *
-     * @param [string] $value
+     * @param [string] $value The text description
      * @return void
      */
     function set_description($value) {
@@ -215,7 +215,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Define se é obrigatório
+     * Allow the metadata be required
      *
      * @param [boolean] $value
      * @return void
@@ -225,7 +225,7 @@ class Metadata extends Entity {
     }
     
     /**
-     * Define se é multiplo
+     * Allow multiple fields
      *
      * @param [boolean] $value
      * @return void
@@ -235,7 +235,7 @@ class Metadata extends Entity {
     }
     
     /**
-     * Define a cardinalidade
+     * The number of  possible fields
      *
      * @param [string] $value
      * @return void
@@ -245,7 +245,7 @@ class Metadata extends Entity {
     }
     
     /**
-     * Define se é chave
+     * Define if the value is key on the collection
      *
      * @param [string] $value
      * @return void
@@ -255,7 +255,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Atribui máscara
+     * Set mask for the metadata
      *
      * @param [string] $value
      * @return void
@@ -265,7 +265,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Define o nível de privacidade
+     * Set privacy
      *
      * @param [string] $value
      * @return void
@@ -275,7 +275,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Define o valor padrão
+     * Set default value
      *
      * @param [string || integer] $value
      * @return void
@@ -285,12 +285,12 @@ class Metadata extends Entity {
     }
 
     /**
-     * save the class  field class name
+     * save the field type class name
      *
-     * @param $value
+     * @param string | \Tainacan\Field_Types\Field_Type $value The name of the class or the instance
      */
-    public function set_field_type($value){
-    	$this->set_mapped_property('field_type',   get_class( $value ) ) ; // Encode to avoid backslaches removal
+    public function set_field_type( $value ){
+    	$this->set_mapped_property('field_type', ( is_object( $value ) ) ?  get_class( $value ) : $value ) ; // Encode to avoid backslaches removal
     }
 
     // helpers
