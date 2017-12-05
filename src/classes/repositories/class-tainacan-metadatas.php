@@ -300,11 +300,25 @@ class Metadatas extends Repository {
     /**
      * fetch all registered field type classes
      *
-     * @return array of Entities\Field_Types\Field_Type objects
+     * Possible outputs are:
+     * CLASS (default) - returns the Class name of of field types registered
+     * NAME - return an Array of the names of field types registered
+     *
+     * @param $output string CLASS | NAME
+     * @return array of Entities\Field_Types\Field_Type classes path name
      */
-    public function fetch_field_types(){
+    public function fetch_field_types( $output = 'CLASS'){
+        $return = [];
 
         do_action('register_field_types');
+
+        if( $output === 'NAME' ){
+            foreach ($this->field_types as $field_type) {
+                $return[] = str_replace('\Tainacan\Field_Types\\','', $field_type);
+            }
+
+            return $return;
+        }
 
         return $this->field_types;
     }

@@ -9,8 +9,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Radio extends Field_Type {
 
-    public $options;
-
     function __construct(){
         // call field type constructor
         parent::__construct();
