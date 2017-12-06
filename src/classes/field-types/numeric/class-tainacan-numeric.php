@@ -23,4 +23,11 @@ class Numeric extends Field_Type {
     public function render( $metadata ){
         return '<tainacan-numeric name="'.$metadata->get_name().'"></tainacan-numeric>';
     }
+
+    /**
+     * generate the fields for this field type
+     */
+    public function form(){
+
+    }
 }

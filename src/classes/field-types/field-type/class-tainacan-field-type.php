@@ -46,4 +46,11 @@ abstract class Field_Type  {
         $this->options = ( is_array( $options ) ) ? $options : unserialize( $options );
     }
 
+    /**
+     * generate the fields for this field type
+     */
+    public function form(){
+
+    }
+
 }
