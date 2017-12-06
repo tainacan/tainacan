@@ -233,6 +233,41 @@ abstract class Repository {
     }
 
     /**
+     * return the value for a mapped property from database
+     * @param Tainacan\Entities\Entity
+     * @param string $prop id of property
+     * @return mixed property value
+     */
+    public function get_mapped_property($entity, $prop) {
+    	
+    	$map = $this->get_map();
+    	
+    	if (!array_key_exists($prop, $map)){
+    		return null;
+    	}
+    	
+    	$mapped = $map[$prop]['map'];
+    	
+    	if ( $mapped == 'meta') {
+    		$property = isset($entity->WP_Post->ID) ? get_post_meta($entity->WP_Post->ID, $prop, true) : null;
+    	} elseif ( $mapped == 'meta_multi') {
+    		$property = isset($entity->WP_Post->ID) ? get_post_meta($entity->WP_Post->ID, $prop, false) : null;
+    	} elseif ( $mapped == 'termmeta' ){
+    		$property = get_term_meta($entity->WP_Term->term_id, $prop, true);
+    	} elseif ( isset( $entity->WP_Post )) {
+    		$property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
+    	} elseif ( isset( $entity->WP_Term )) {
+    		$property = isset($entity->WP_Term->$mapped) ? $entity->WP_Term->$mapped : null;
+    	}
+    	
+    	if (empty($property) && isset($map[$prop]['default']) && !empty($map[$prop]['default'])){
+    		$property = $map[$prop]['default'];
+    	}
+    	
+    	return $property;
+    }
+    
+    /**
      * @param $object
      * @return mixed
      */

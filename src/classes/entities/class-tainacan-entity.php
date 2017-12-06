@@ -48,37 +48,12 @@ class Entity {
      * @return mixed property value
      */
     public function get_mapped_property($prop) {
-        
+    	if (isset($this->$prop) && !empty($this->$prop)){
+    		return $this->$prop;
+    	}
+    	//prop is not set at object, try to get from database
         global ${$this->repository};
-        $map = ${$this->repository}->get_map();
-        
-        if (isset($this->$prop) && !empty($this->$prop)){
-            return $this->$prop;
-        }
-        
-        if (!array_key_exists($prop, $map)){
-            return null;
-        }
-        
-        $mapped = $map[$prop]['map'];
-        
-        if ( $mapped == 'meta') {
-            $property = isset($this->WP_Post->ID) ? get_post_meta($this->WP_Post->ID, $prop, true) : null;
-        } elseif ( $mapped == 'meta_multi') {
-            $property = isset($this->WP_Post->ID) ? get_post_meta($this->WP_Post->ID, $prop, false) : null;
-        } elseif ( $mapped == 'termmeta' ){
-            $property = get_term_meta($this->WP_Term->term_id, $prop, true);
-        } elseif ( isset( $this->WP_Post )) {
-            $property = isset($this->WP_Post->$mapped) ? $this->WP_Post->$mapped : null;
-        } elseif ( isset( $this->WP_Term )) {
-            $property = isset($this->WP_Term->$mapped) ? $this->WP_Term->$mapped : null;
-        }
-        
-        if (empty($property) && isset($map[$prop]['default']) && !empty($map[$prop]['default'])){
-            $property = $map[$prop]['default'];
-        }
-            
-        return $property;
+        return ${$this->repository}->get_mapped_property($this, $prop);
     }
     
     /**
