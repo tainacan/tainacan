@@ -21,5 +21,5 @@ require_once('dev-interface/class-tainacan-dev-interface.php');
 $Tainacan_Dev_interface = new \Tainacan\DevInterface\DevInterface();
 
 function tnc_enable_dev_wp_interface() {
-    return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
+    //return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }

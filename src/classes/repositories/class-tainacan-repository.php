@@ -130,10 +130,10 @@ abstract class Repository {
 
         if( $output === 'WP_Query'){
             return $WP_Query;
-        }else if( $output === 'OBJECT' ) {
+        } else if( $output === 'OBJECT' ) {
             $result = [];
 
-            if (  $WP_Query->have_posts() ){
+            if ( $WP_Query->have_posts() ){
                 /**
                  * Using WordPress Loop here would cause problems
                  * @see https://core.trac.wordpress.org/ticket/18408
@@ -154,14 +154,14 @@ abstract class Repository {
      * and the mapped properties for the repository.
      *
      * For example, you can use any of the following methods to browse collections by name:
-     * $TaincanCollections->fetch(['title' => 'test']);
-     * $TaincanCollections->fetch(['name' => 'test']);
+     * $TainacanCollections->fetch(['title' => 'test']);
+     * $TainacanCollections->fetch(['name' => 'test']);
      *
      * The property `name` is transformed into the native WordPress property `post_title`. (actually only title for query purpouses)
      *
      * Example 2, this also works with properties mapped to postmeta. The following methods are the same:
-     * $TaincanMetadatas->fetch(['required' => 'yes']);
-     * $TaincanMetadatas->fetch(['meta_query' => [
+     * $TainacanMetadatas->fetch(['required' => 'yes']);
+     * $TainacanMetadatas->fetch(['meta_query' => [
      *     [
      *         'key' => 'required',
      *         'value' => 'yes'
