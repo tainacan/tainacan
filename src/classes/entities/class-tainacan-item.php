@@ -9,25 +9,13 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Item extends Entity {
 	use \Tainacan\Traits\Entity_Collection_Relation;
-    
-    function __construct($which = 0) {
-        
-        $this->repository = 'Tainacan_Items';
-        
-        if (is_numeric($which) && $which > 0) {
-            $post = get_post($which);
-            if ($post instanceof \WP_Post) {
-                $this->WP_Post = get_post($which);
-            }
-            
-        } elseif ($which instanceof \WP_Post) {
-            $this->WP_Post = $which;
-        } else {
-            $this->WP_Post = new \StdClass();
-        }
-        
-    }
-
+	/**
+	 * {@inheritDoc}
+	 * @see \Tainacan\Entities\Entity::repository
+	 * @var string
+	 */
+	protected $repository = 'Tainacan_Items';
+	
 	public function  __toString(){
 		return 'Hello, I\'m the Item Entity';
 	}

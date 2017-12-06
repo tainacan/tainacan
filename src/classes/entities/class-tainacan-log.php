@@ -9,29 +9,23 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Log extends Entity {
 	protected static $post_type = 'tainacan-logs';
-    
-    function __construct($which = 0) {
-        
-        $this->repository = 'Tainacan_Logs';
-        
-        if (is_numeric($which) && $which > 0) {
-            $post = get_post($which);
-            if ($post instanceof \WP_Post) {
-                $this->WP_Post = get_post($which);
-            }
-            
-        } elseif ($which instanceof \WP_Post) {
-            $this->WP_Post = $which;
-        } else {
-            $this->WP_Post = new \StdClass();
-        }
-        
-        if( is_int($which) && $which == 0) {
-        	$this->set_user_id();
-        	$this->set_blog_id();
-        }
-    }
-
+	/**
+	 * {@inheritDoc}
+	 * @see \Tainacan\Entities\Entity::repository
+	 * @var string
+	 */
+	protected $repository = 'Tainacan_Logs';
+	
+	public function __construct($which=0)
+	{
+		parent::__construct($which);
+		
+		if( is_int($which) && $which == 0) {
+			$this->set_user_id();
+			$this->set_blog_id();
+		}
+	}
+	
 	public function  __toString(){
 		return 'Hello, I\'m the Log Entity';
 	}

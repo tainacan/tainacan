@@ -28,25 +28,6 @@ class Collection extends Entity {
      */
     static $db_identifier_prefix = 'tnc_col_';
 
-    /**
-     * Create an instance of Collection
-     * @param integer|\WP_Post optional $which Collection ID or a WP_Post object for existing collections. Leave empty to create a new collection.
-     */
-    function __construct($which = 0) {
-        if (is_numeric($which) && $which > 0) {
-            $post = get_post($which);
-
-            if ($post instanceof \WP_Post) {
-                $this->WP_Post = get_post($which);
-            }
-
-        } elseif ($which instanceof \WP_Post) {
-            $this->WP_Post = $which;
-        } else {
-            $this->WP_Post = new \StdClass();
-        }
-    }
-
     public function  __toString(){
         return 'Hello, I\'m the Collection Entity';
     }

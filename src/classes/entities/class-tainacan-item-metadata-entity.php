@@ -9,9 +9,14 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Item_Metadata_Entity extends Entity {
 	protected static $post_type = false;
+	/**
+	 * {@inheritDoc}
+	 * @see \Tainacan\Entities\Entity::repository
+	 * @var string
+	 */
+	protected $repository = 'Tainacan_Item_Metadata';
+	
     function __construct(Item $item, Metadata $metadata) {
-        
-        $this->repository = 'Tainacan_Item_Metadata';
         
         $this->set_item($item);
         $this->set_metadata($metadata);

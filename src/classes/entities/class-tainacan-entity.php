@@ -43,6 +43,25 @@ class Entity {
     private $validated = false;
     
     /**
+     * Create an instance of Entity and get post data from database or create a new StdClass if $which is 0 
+     * @param integer|\WP_Post optional $which Entity ID or a WP_Post object for existing Entities. Leave empty to create a new Entity.
+     */
+    function __construct($which = 0) {
+    	if (is_numeric($which) && $which > 0) {
+    		$post = get_post($which);
+    		
+    		if ($post instanceof \WP_Post) {
+    			$this->WP_Post = get_post($which);
+    		}
+    		
+    	} elseif ($which instanceof \WP_Post) {
+    		$this->WP_Post = $which;
+    	} else {
+    		$this->WP_Post = new \StdClass();
+    	}
+    }
+    
+    /**
      * return the value for a mapped property
      * @param string $prop id of property
      * @return mixed property value

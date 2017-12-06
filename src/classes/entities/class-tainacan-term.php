@@ -6,9 +6,15 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Term extends Entity {
 	protected static $post_type = false;
+	/**
+	 * {@inheritDoc}
+	 * @see \Tainacan\Entities\Entity::repository
+	 * @var string
+	 */
+	protected $repository = 'Tainacan_Terms';
+	
     function __construct($which = 0, $taxonomy = '' ) {
 
-        $this->repository = 'Tainacan_Terms';
         $this->set_taxonomy( $taxonomy );
 
         if ( is_numeric( $which ) && $which > 0) {

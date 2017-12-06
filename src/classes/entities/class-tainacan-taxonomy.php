@@ -8,6 +8,12 @@ class Taxonomy extends Entity {
     use \Tainacan\Traits\Entity_Collections_Relation;
     
     protected static $post_type = 'tainacan-taxonomies';
+    /**
+     * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::repository
+     * @var string
+     */
+    protected $repository = 'Tainacan_Taxonomies';
     
     function __construct( $which = 0 ) {
 
