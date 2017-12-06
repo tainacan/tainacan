@@ -2,6 +2,8 @@
 
 namespace Tainacan\DevInterface;
 
+use Tainacan\Helpers;
+
 class DevInterface {
     
     var $repositories = [];
@@ -42,7 +44,7 @@ class DevInterface {
         foreach ($this->repositories as $cpt => $repo) {
             
             add_meta_box(
-                $slug . '_properties', 
+                $cpt . '_properties',
                 __('Properties', 'tainacan'), 
                 array(&$this, 'properties_metabox_' . $repo->get_name()),
                 $cpt, 
@@ -135,9 +137,9 @@ class DevInterface {
                             </td>
                             <td>
                                 <?php if ($prop == 'collection_id'): ?>
-                                    <?php $this->collections_dropdown($value); ?>
+                                    <?php  Helpers\HtmlHelpers::collections_dropdown( $value ); ?>
                                 <?php elseif ($prop == 'collections_ids'): ?>
-                                    <?php $this->collections_checkbox_list($value); ?>
+                                    <?php  Helpers\HtmlHelpers::collections_checkbox_list( $value ); ?>
                                 <?php elseif ($prop == 'field_type_options'): ?>
                                     <?php echo $value; ?>
                                 <?php elseif ($prop == 'field_type'): ?>
@@ -302,18 +304,6 @@ class DevInterface {
         <?php
 
         
-    }
-    
-    function collections_dropdown($selected) {
-        global $Tainacan_Collections;
-        $collections = $Tainacan_Collections->fetch([], 'OBJECT');
-        ?>
-            <select name="tnc_prop_collection_id">
-                <?php foreach ($collections as $col): ?>
-                    <option value="<?php echo $col->get_id(); ?>" <?php selected($col->get_id(), $selected) ?>><?php echo $col->get_name(); ?></option>
-                <?php endforeach; ?>
-            </select>
-        <?php
     }
 
     function field_type_dropdown($id,$selected) {
