@@ -5,8 +5,7 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Representa a entidade Filter
- * 
+ * Represents the entity Filter
  */
 class Filter extends Entity {
     use \Tainacan\Traits\Entity_Collection_Relation;
@@ -21,11 +20,11 @@ class Filter extends Entity {
     protected $repository = 'Tainacan_Filters';
 
 	public function  __toString(){
-		return 'Hello, I\'m the Filter Entity';
+		return 'Hello, my name is '. $this->get_name();
 	}
 
 	/**
-     * Retorna o ID do filtro
+     * Return the filter ID
      *
      * @return integer
      */
@@ -34,7 +33,7 @@ class Filter extends Entity {
     }
 
     /**
-     * Retorna o nome do filtro
+     * Return the filter name
      *
      * @return string
      */
@@ -43,7 +42,7 @@ class Filter extends Entity {
     }
 
     /**
-     * Retorna a forma de ordeção do filtro
+     * Return the filter order type
      *
      * @return string
      */
@@ -52,7 +51,7 @@ class Filter extends Entity {
     }
 
     /**
-     * Retorna a cor do fitro
+     * Return the filter color
      *
      * @return string
      */
@@ -61,7 +60,7 @@ class Filter extends Entity {
     }
 
     /**
-     * Retorna o metadado
+     * Return the metadata
      *
      * @return Metadata
      */
@@ -101,7 +100,7 @@ class Filter extends Entity {
     }
 
     /**
-     * Atribui nome ao filtro
+     * Define the filter name
      *
      * @param [string] $value
      * @return void
@@ -111,7 +110,7 @@ class Filter extends Entity {
     }
 
     /**
-     * Atribui tipo de ordenação do filtro
+     * Define the filter order type
      *
      * @param [string] $value
      * @return void
@@ -121,7 +120,7 @@ class Filter extends Entity {
     }
 
     /**
-     * Atribui descrição ao filtro
+     * Define the filter description
      *
      * @param [string] $value
      * @return void
@@ -131,7 +130,7 @@ class Filter extends Entity {
     }
 
     /**
-     * Atribui cor ao filtro
+     * Define the filter color
      *
      * @param [string] $value
      * @return void
@@ -141,9 +140,9 @@ class Filter extends Entity {
     }
 
     /**
-     * Atribui metadado ao filtro
+     * Define the filter metadata
      * 
-     * @param \Entities\Metadata
+     * @param \Tainacan\Entities\Metadata
      * @return void
      */
     function set_metadata( $value ){
@@ -153,7 +152,7 @@ class Filter extends Entity {
     }
 
     /**
-     * save the filter type class name
+     * Save the filter type class name
      *
      * @param string | \Tainacan\Filter_Types\Filter_Type $value The name of the class or the instance
      */

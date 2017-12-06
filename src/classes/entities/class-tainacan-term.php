@@ -4,6 +4,9 @@ namespace Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/**
+ * Represents the Entity Term
+*/
 class Term extends Entity {
 	protected static $post_type = false;
 	/**
@@ -12,8 +15,14 @@ class Term extends Entity {
 	 * @var string
 	 */
 	protected $repository = 'Tainacan_Terms';
-	
-    function __construct($which = 0, $taxonomy = '' ) {
+
+	/**
+	 * Term constructor.
+	 *
+	 * @param int $which
+	 * @param string $taxonomy
+	 */
+	function __construct($which = 0, $taxonomy = '' ) {
 
         $this->set_taxonomy( $taxonomy );
 
@@ -32,52 +41,109 @@ class Term extends Entity {
     }
 
 	public function  __toString(){
-		return 'Hello, I\'m the Term Entity';
+		return 'Hello, my name is '. $this->get_name();
 	}
 
     // Getters
-    function get_id() {
+
+	/**
+	 * Return the unique identifier
+	 *
+	 * @return integer
+	 */
+	function get_id() {
         return $this->get_mapped_property('term_id');
     }
 
-    function get_name() {
+	/**
+	 * Return the name
+	 *
+	 * @return string
+	 */
+	function get_name() {
         return $this->get_mapped_property('name');
     }
 
-    function get_parent() {
+	/**
+	 * Return the parent ID
+	 *
+	 * @return integer
+	 */
+	function get_parent() {
         return $this->get_mapped_property('parent');
     }
 
-    function get_description() {
+	/**
+	 * Return the description
+	 *
+	 * @return string
+	 */
+	function get_description() {
         return $this->get_mapped_property('description');
     }
 
-    function get_user() {
+	/**
+	 * Return the user ID
+	 *
+	 * @return integer
+	 */
+	function get_user() {
         return $this->get_mapped_property('user');
     }
 
-    function get_taxonomy() {
+	/**
+	 * Return the taxonomy
+	 *
+	 * @return integer
+	 */
+	function get_taxonomy() {
         return $this->get_mapped_property('taxonomy');
     }
 
     // Setters
-    function set_name($value) {
-        return $this->set_mapped_property('name', $value);
+
+	/**
+	 * Define the name
+	 *
+	 * @param [string] $value
+	 */
+	function set_name($value) {
+        $this->set_mapped_property('name', $value);
     }
 
-    function set_parent($value) {
-        return $this->set_mapped_property('parent', $value);
+	/**
+	 * Define the parent ID
+	 *
+	 * @param [integer] $value
+	 */
+	function set_parent($value) {
+        $this->set_mapped_property('parent', $value);
     }
 
-    function set_description($value) {
-        return $this->set_mapped_property('description', $value);
+	/**
+	 * Define the description
+	 *
+	 * @param [string] $value
+	 */
+	function set_description($value) {
+        $this->set_mapped_property('description', $value);
     }
 
-    function set_user($value) {
-        return $this->set_mapped_property('user', $value);
+	/**
+	 * Define the user associated
+	 *
+	 * @param [integer] $value
+	 */
+	function set_user($value) {
+        $this->set_mapped_property('user', $value);
     }
 
-    function set_taxonomy($value) {
-        return $this->set_mapped_property('taxonomy', $value);
+	/**
+	 * Define the taxonomy associated
+	 *
+	 * @param [integer] $value
+	 */
+	function set_taxonomy($value) {
+        $this->set_mapped_property('taxonomy', $value);
     }
 }

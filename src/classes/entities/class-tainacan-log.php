@@ -5,7 +5,7 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Representa a entidade Log
+ * Represents entity Log
  */
 class Log extends Entity {
 	protected static $post_type = 'tainacan-logs';
@@ -27,11 +27,11 @@ class Log extends Entity {
 	}
 	
 	public function  __toString(){
-		return 'Hello, I\'m the Log Entity';
+		return 'Hello, my title is '. $this->get_title();
 	}
 
     /**
-     * Retorna ID do Log
+     * Return the Log ID
      *
      * @return integer
      */
@@ -40,7 +40,7 @@ class Log extends Entity {
     }
 
     /**
-     * Retorna titulo do Log
+     * Return the Log title
      *
      * @return string
      */
@@ -49,7 +49,7 @@ class Log extends Entity {
     }
 
     /**
-     * Retorna tipo de ordenação do Log
+     * Return the log order type
      *
      * @return string
      */
@@ -58,7 +58,7 @@ class Log extends Entity {
     }
 
     /**
-     * Retorna ID do parent do Log
+     * Retun the parent ID
      *
      * @return integer
      */
@@ -67,7 +67,7 @@ class Log extends Entity {
     }
 
     /**
-     * Retorna descrição do Log
+     * Return the Log description
      *
      * @return string
      */
@@ -76,7 +76,7 @@ class Log extends Entity {
     }
     
     /**
-     * Retorn the ID of blog
+     * Return the ID of blog
      *
      * @return integer
      */
@@ -94,7 +94,7 @@ class Log extends Entity {
     }
     
     /**
-     * get value of log entry
+     * Get value of log entry
      *
      * @param mixed $value
      * @return void
@@ -104,7 +104,7 @@ class Log extends Entity {
     }
     
     /**
-     * get old value of log entry object
+     * Get old value of log entry object
      *
      * @param mixed $value
      * @return void
@@ -124,7 +124,7 @@ class Log extends Entity {
     }
 
     /**
-     * Atribui tipo de ordenação
+     * Define the order type
      *
      * @param [string] $value
      * @return void
@@ -134,7 +134,7 @@ class Log extends Entity {
     }
 
     /**
-     * Atribui ID do parent ao log
+     * Define the parent ID
      *
      * @param [integer] $value
      * @return void
@@ -144,7 +144,7 @@ class Log extends Entity {
     }
 
     /**
-     * Atribui descrição ao log
+     * Define the Log description
      *
      * @param [string] $value
      * @return void
@@ -152,11 +152,11 @@ class Log extends Entity {
     function set_description($value) {
         $this->set_mapped_property('description', $value);
     }
-    
+
     /**
-     * user_id of log entry
+     * Define the user ID of log entry
      *
-     * @param integer $value
+     * @param [integer] $value
      * @return void
      */
     protected function set_user_id($value = 0) {
@@ -165,9 +165,9 @@ class Log extends Entity {
     }
     
     /**
-     * blog_id of log entry
+     * Define the blog ID of log entry
      *
-     * @param integer $value
+     * @param [integer] $value
      * @return void
      */
     protected function set_blog_id($value = 0) {
@@ -176,9 +176,9 @@ class Log extends Entity {
     }
     
     /**
-     * value of log entry
+     * Define the value of log entry
      *
-     * @param mixed $value
+     * @param [mixed] $value
      * @return void
      */
     protected function set_value($value = null) {
@@ -186,9 +186,9 @@ class Log extends Entity {
     }
     
     /**
-     * set old value of log entry
+     * Set old value of log entry
      *
-     * @param mixed $value
+     * @param [mixed] $value
      * @return void
      */
     protected function set_old_value($value = null) {

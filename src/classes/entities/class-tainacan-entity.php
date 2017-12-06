@@ -6,7 +6,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Entity Super class
- *
  */
 class Entity {
 	/**
@@ -84,8 +83,13 @@ class Entity {
         $this->set_validated(false);
         $this->$prop = $value;
     }
-    
-    public function set_status($value){
+
+	/**
+	 * Define the entity status
+	 *
+	 * @param [string] $value
+	 */
+	public function set_status($value){
     	$value = apply_filters('tainacan-set-post-status', $value);
     	$this->set_mapped_property('status', $value);
     }
@@ -153,22 +157,43 @@ class Entity {
         return $is_valid;
 
     }
-    
-    public function get_errors() {
+
+	/**
+	 * Return the array of error messages
+	 *
+	 * @return array
+	 */
+	public function get_errors() {
         return $this->errors;
     }
-    
-    public static function get_post_type() {
+
+	/**
+	 * Return the entity post type
+	 *
+	 * @return string
+	 */
+	public static function get_post_type() {
     	return static::$post_type;
     }
-    
-    public function get_status(){
+
+	/**
+	 * Return the entity status
+	 *
+	 * @return mixed
+	 */
+	public function get_status(){
    		$value = $this->get_mapped_property('status');
    		if(empty($value)) $value = 'draft';
    		return apply_filters('tainacan-get-post-status', $value);
     }
-    
-    public function add_error($type, $message) {
+
+	/**
+	 * Make a array of error messages
+	 *
+	 * @param $type
+	 * @param $message
+	 */
+	public function add_error($type, $message) {
         $this->errors[] = [$type => $message];
     }
     
@@ -178,21 +203,41 @@ class Entity {
     public function reset_errors() {
         $this->errors = [];
     }
-    
-    public function get_validated() {
+
+	/**
+	 * Return true if is validated or false if not validated
+	 *
+	 * @return boolean
+	 */
+	public function get_validated() {
         return $this->validated;
     }
-    
-    protected function set_validated($value) {
+
+	/**
+	 * Define validated
+	 *
+	 * @param [boolean] $value
+	 */
+	protected function set_validated($value) {
         $this->validated = $value;
     }
-    
-    protected function set_as_valid() {
+
+	/**
+	 * Define as valid
+	 *
+	 * @return boolean
+	 */
+	protected function set_as_valid() {
         $this->reset_errors();
         $this->set_validated(true);
         return true;
     }
 
+	/**
+	 * Return the attributes of the entity in JSON
+	 *
+	 * @return JSON
+	 */
 	public function  __toJSON(){
 		global ${$this->repository};
 		$map = ${$this->repository}->get_map();

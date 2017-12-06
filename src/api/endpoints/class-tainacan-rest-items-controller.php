@@ -3,10 +3,19 @@
 use Tainacan\Repositories;
 use Tainacan\Entities;
 
+/**
+ * Represents the Items REST Controller
+ * @uses Tainacan\Repositories\
+ * @uses Tainacan\Entities\
+*/
 class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	private $items_repository;
 	private $item;
 
+	/**
+	 * TAINACAN_REST_Items_Controller constructor.
+	 * Define the namespace, rest base and instantiate your attributes.
+	 */
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'items';
@@ -16,6 +25,9 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 		add_action('rest_api_init', array($this, 'register_routes'));
 	}
 
+	/**
+	 * Register items routes, and their endpoints
+	 */
 	public function register_routes() {
 		register_rest_route(
 			$this->namespace,

@@ -4,7 +4,7 @@ use Tainacan\Repositories;
 use Tainacan\Entities;
 
 /**
- * Class that represents the Collections REST Controller
+ * Represents the Collections REST Controller
  *
  * @uses Entities\Collection and Repositories\Collections
  * */

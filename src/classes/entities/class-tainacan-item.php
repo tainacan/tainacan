@@ -5,7 +5,7 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Representa a entidade Item
+ * Represents the Entity Item
  */
 class Item extends Entity {
 	use \Tainacan\Traits\Entity_Collection_Relation;
@@ -17,11 +17,11 @@ class Item extends Entity {
 	protected $repository = 'Tainacan_Items';
 	
 	public function  __toString(){
-		return 'Hello, I\'m the Item Entity';
+		return 'Hello, my name is '. $this->get_name();
 	}
 
     /**
-     * Retorna o ID do item
+     * Return the item ID
      *
      * @return integer
      */
@@ -30,7 +30,7 @@ class Item extends Entity {
     }
 
     /**
-     * Retorna o titulo do item
+     * Return the item title
      *
      * @return string
      */
@@ -39,7 +39,7 @@ class Item extends Entity {
     }
 
     /**
-     * Retorna o tipo de ordenação do item
+     * Return the item order type
      *
      * @return string
      */
@@ -48,7 +48,7 @@ class Item extends Entity {
     }
 
     /**
-     * Retorna o ID do parent do item
+     * Return the parent ID
      *
      * @return integer
      */
@@ -57,7 +57,7 @@ class Item extends Entity {
     }
 
     /**
-     * Retorna a descrição do item
+     * Return the item description
      *
      * @return string
      */
@@ -66,7 +66,7 @@ class Item extends Entity {
     }
     
     /**
-     * Atribui o título
+     * Define the title
      *
      * @param [string] $value
      * @return void
@@ -76,7 +76,7 @@ class Item extends Entity {
     }
 
     /**
-     * Atribui o tipo de ordenação
+     * Define the order type
      *
      * @param [string] $value
      * @return void
@@ -86,7 +86,7 @@ class Item extends Entity {
     }
 
     /**
-     * Atribui o ID do parent
+     * Define the parent ID
      *
      * @param [integer] $value
      * @return void
@@ -96,7 +96,7 @@ class Item extends Entity {
     }
 
     /**
-     * Atribui a descrição
+     * Define the description
      *
      * @param [string] $value
      * @return void
@@ -106,9 +106,9 @@ class Item extends Entity {
     }
 
     /**
-     * Retorna um metadado ou lista de metadados
+     * Return a Metadata or a List of Metadata
      *
-     * @return Array || Metadata
+     * @return array || Metadata
      */
     function get_metadata() {
         global $Tainacan_Metadatas;
@@ -129,7 +129,7 @@ class Item extends Entity {
     }
     
     /**
-     * Atribui Metadado
+     * Define the Metadata
      *
      * @param Metadata $new_metadata
      * @param [string || integer || array] $value
@@ -149,9 +149,9 @@ class Item extends Entity {
     }
     
     /**
-     * Função auxiliar à @method add_metadata
+     * Aux function for @method add_metadata
      *
-     * @param Array $metadata
+     * @param array $metadata
      * @return void
      */
     function set_metadata(Array $metadata) {

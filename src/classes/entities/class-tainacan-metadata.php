@@ -5,7 +5,7 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Metadata Entity
+ * Represents the Entity Metadata
  */
 class Metadata extends Entity {
 	
@@ -21,11 +21,11 @@ class Metadata extends Entity {
 	protected $repository = 'Tainacan_Metadatas';
 	
 	public function  __toString(){
-		return 'Hello, I\'m the Metadata Entity';
+		return 'Hello, my name is '. $this->get_name();
 	}
 
     /**
-     * Retorna o ID do metadado
+     * Return the metadata ID
      *
      * @return integer
      */
@@ -34,7 +34,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna o nome do metadado
+     * Return the metadata name
      *
      * @return string
      */
@@ -43,7 +43,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna a forma de ordenação do metadado
+     * Return the metadata order type
      *
      * @return string
      */
@@ -52,7 +52,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna o parent do metadado
+     * Return the parent ID
      *
      * @return string
      */
@@ -61,7 +61,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna a descrição do metado
+     * Return the metadata description
      *
      * @return string
      */
@@ -70,7 +70,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna se é metadado obrigatório
+     * Return if is a required metadata
      *
      * @return boolean
      */
@@ -79,7 +79,7 @@ class Metadata extends Entity {
     }
     
     /**
-     * Retorna se é metado multiplo
+     * Return if is a multiple metadata
      *
      * @return boolean
      */
@@ -88,7 +88,7 @@ class Metadata extends Entity {
     }
     
     /**
-     * Retorna a cardinalidade
+     * Return the cardinality
      *
      * @return string
      */
@@ -97,7 +97,7 @@ class Metadata extends Entity {
     }
     
     /**
-     * Retorna se é metadado chave
+     * Return if metadata is key
      *
      * @return boolean
      */
@@ -106,7 +106,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna a máscara
+     * Return the mask
      *
      * @return string
      */
@@ -115,7 +115,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna o nível de privacidade
+     * Return the privacy type
      *
      * @return string
      */
@@ -124,7 +124,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Retorna valor padrão do metadado
+     * Return the metadata default value
      *
      * @return string || integer
      */
@@ -282,15 +282,31 @@ class Metadata extends Entity {
     }
 
     // helpers
-    function is_multiple() {
+
+	/**
+	 * Return true if is multiple, else return false
+	 *
+	 * @return boolean
+	 */
+	function is_multiple() {
         return $this->get_multiple() === 'yes';
     }
-    
-    function is_collection_key() {
+
+	/**
+	 * Return true if is collection key, else return false
+	 *
+	 * @return boolean
+	 */
+	function is_collection_key() {
         return $this->get_collection_key() === 'yes';
     }
-    
-    function is_required() {
+
+	/**
+	 * Return true if is required, else return false
+	 * 
+	 * @return boolean
+	 */
+	function is_required() {
         return $this->get_required() === 'yes';
     }
 }
