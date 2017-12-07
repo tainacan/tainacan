@@ -4,51 +4,78 @@ namespace Tainacan\Tests;
 
 class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
-public function test_fetch_items_from_a_collection(){
-	$collection = $this->tainacan_entity_factory->create_entity(
-		'collection',
-		array(
-			'name'        => 'Agile',
-			'description' => 'Agile methods'
-		),
-		true
-	);
+	public function test_create_item_in_a_collection(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Javascript Frameworks',
+				'description' => 'The best framework to javascript'
+			),
+			true
+		);
 
-	$item1 = $this->tainacan_entity_factory->create_entity(
-		'item',
-		array(
-			'title'       => 'Lean Startup',
-			'description' => 'Um processo ágio de criação de novos negócios.',
-			'collection'  => $collection
-		),
-		true
-	);
+		$item_json = json_encode([
+			'title'       => 'Vue JS 2',
+			'description' => 'The Progressive JavasScript Framework'
+		]);
 
-	$item2 = $this->tainacan_entity_factory->create_entity(
-		'item',
-		array(
-			'title'       => 'SCRUM',
-			'description' => 'Um framework ágio para gerenciamento de tarefas.',
-			'collection'  => $collection
-		),
-		true
-	);
+		$request  = new \WP_REST_Request('POST', $this->namespaced_route . '/items/collection/' . $collection->get_id());
+		$request->set_body($item_json);
 
-	$request  = new \WP_REST_Request('GET', $this->namespaced_route . '/items/collection/' . $collection->get_id());
-	$response = $this->server->dispatch($request);
+		$response = $this->server->dispatch($request);
 
-	$this->assertEquals(201, $response->get_status());
+		$this->assertEquals(201, $response->get_status());
 
-	$data = json_decode($response->get_data(), true);
+		$data = json_decode($response->get_data(), true);
 
-	$this->assertContainsOnly('string', $data);
+		$this->assertEquals('Vue JS 2', $data['title']);
+	}
 
-	$first_item  = json_decode($data[0], true);
-	$second_item = json_decode($data[1], true);
+	public function test_fetch_items_from_a_collection(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Agile',
+				'description' => 'Agile methods'
+			),
+			true
+		);
 
-	$this->assertEquals($item2->get_title(), $first_item['title']);
-	$this->assertEquals($item1->get_title(), $second_item['title']);
-}
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Lean Startup',
+				'description' => 'Um processo ágio de criação de novos negócios.',
+				'collection'  => $collection
+			),
+			true
+		);
+
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'SCRUM',
+				'description' => 'Um framework ágio para gerenciamento de tarefas.',
+				'collection'  => $collection
+			),
+			true
+		);
+
+		$request  = new \WP_REST_Request('GET', $this->namespaced_route . '/items/collection/' . $collection->get_id());
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+
+		$data = json_decode($response->get_data(), true);
+
+		$this->assertContainsOnly('string', $data);
+
+		$first_item  = json_decode($data[0], true);
+		$second_item = json_decode($data[1], true);
+
+		$this->assertEquals($item2->get_title(), $first_item['title']);
+		$this->assertEquals($item1->get_title(), $second_item['title']);
+	}
 
 }
 
