@@ -381,25 +381,18 @@ class DevInterface {
 
                 if ($entity->validate_prop($prop)) {
 
+                    // we cannot user repository->insert here, it would create an infinite loop
                     if ($prop == 'field_type') {
+                        //TODO: This can be better
                         $class = '\Tainacan\Field_Types\\'.$value;
                         update_post_meta($post_id, 'field_type_options', $_POST['field_type_'.strtolower( $value ) ] );
                         update_post_meta($post_id, 'field_type',  wp_slash( get_class( new $class() ) ) );
-                    }else if($prop == 'field_type_options'){
+                    } elseif($prop == 'field_type_options') {
                         continue;
-                    }
-                    // we cannot user repository->insert here, it would create an infinite loop
-                    else if ($mapped['map'] == 'meta') {
-        				update_post_meta($post_id, $prop, $value);
-        			} elseif ($mapped['map'] == 'meta_multi') {
-        				
-        				delete_post_meta($post_id, $prop);
-        				
-        				if (is_array($value)){
-        					foreach ($value as $v){
-        						add_post_meta($post_id, $prop, $v);
-        					}
-        				}
+                    } elseif ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
+                        
+                        $repo->insert_metadata($entity, $prop);
+                        
         			}
                 }
                 
