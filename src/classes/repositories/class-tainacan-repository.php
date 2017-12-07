@@ -91,19 +91,11 @@ abstract class Repository {
 		
 		// Now run through properties stored as postmeta
 		foreach ($map as $prop => $mapped) {
-			if ($mapped['map'] == 'meta') {
-				update_post_meta($id, $prop,  wp_slash( $obj->get_mapped_property($prop) ));
-			} elseif ($mapped['map'] == 'meta_multi') {
-				$values = $obj->get_mapped_property($prop);
-				
-				delete_post_meta($id, $prop);
-				
-				if (is_array($values)){
-					foreach ($values as $value){
-						add_post_meta($id, $prop, wp_slash( $value ));
-					}
-				}
-			}
+			
+            if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
+                $this->insert_metadata($obj, $prop);
+            }
+            
 		}
 		
 		do_action('tainacan-insert', $obj);
@@ -112,6 +104,33 @@ abstract class Repository {
 		// return a brand new object
 		return new $this->entities_type($obj->WP_Post);
 	}
+    
+    /**
+     * Insert object property stored as postmeta into the database
+     * @param  \Tainacan\Entities  $obj    The entity object
+     * @param  string  $prop   the property name, as declared in the map of the repository
+     * @return null|false on error
+     */
+    public function insert_metadata($obj, $prop) {
+        $map = $this->get_map();
+        
+        if (!array_key_exists($prop, $map))
+            return false;
+        
+        if ($map[$prop]['map'] == 'meta') {
+            update_post_meta($obj->get_id(), $prop,  wp_slash( $obj->get_mapped_property($prop) ));
+        } elseif($map[$prop]['map'] == 'meta_multi') {
+            $values = $obj->get_mapped_property($prop);
+            
+            delete_post_meta($obj->get_id(), $prop);
+            
+            if (is_array($values)){
+                foreach ($values as $value){
+                    add_post_meta($obj->get_id(), $prop, wp_slash( $value ));
+                }
+            }
+        }
+    }
 
     /**
      * Prepare the output for the fetch() methods.
