@@ -43,6 +43,7 @@ class Relationship extends Field_Type {
             <tr>
                 <td>
                     <label><?php echo __('Metadata for search','tainacan'); ?></label><br/>
+                    <small><?php echo __('Selected metadata to help in the search','tainacan'); ?></small>
                 </td>
                 <td>
                     <?php Helpers\HtmlHelpers::metadata_checkbox_list(
@@ -59,7 +60,7 @@ class Relationship extends Field_Type {
                 <small><?php echo __('Allow/Block selected items in this relationship','tainacan'); ?></small>
             </td>
             <td>
-                <textarea name="field_type_relationship[repeated]"><?php echo ( isset( $this->options['repeated'] ) ) ? $this->options['repeated'] : 'yes'; ?></textarea>
+                <?php Helpers\HtmlHelpers::radio_field( ( isset( $this->options['repeated'] ) ) ? $this->options['repeated'] : 'yes', 'field_type_relationship[repeated]' ) ?>
             </td>
         </tr>
         <?php if( isset( $this->options['collection_id'] ) ): ?>

@@ -56,7 +56,7 @@ use Tainacan\Entities;
          $metadata = $Tainacan_Metadatas->fetch_by_collection( $collection, $args, 'OBJECT');
          ?>
          <select name="<?php echo $name_field ?>">
-             <option value=""><?php echo __('Select','tainacan') ?></option>
+             <option value=""><?php echo __('Select an option','tainacan') ?>...</option>
              <?php foreach ($metadata as $col): ?>
                  <option value="<?php echo $col->get_id(); ?>" <?php selected($col->get_id(), $selected) ?>><?php echo $col->get_name(); ?></option>
              <?php endforeach; ?>
@@ -88,5 +88,19 @@ use Tainacan\Entities;
          <?php
      }
 
+     /**
+      * generates the radio button with options
+      *
+      * @param string $selected The value to be selectred
+      * @param string $name_field (optional) the radio field name
+      * @param array $options (optional) Associative array, indexes are the radio values and the values are the labels. Default yes and no
+      */
+     public static function radio_field( $selected, $name_field = 'radio_field', $options = [ 'yes' => 'Yes',  'no' => 'No' ]){
+         foreach ($options as $value => $option): ?>
+            <input type="radio" name="<?php echo $name_field ?>" value="<?php echo $value; ?>" <?php checked($value == $selected); ?> style="width: 15px;">
+            <?php echo $option; ?>
+            <br/>
+        <?php endforeach;
+     }
 
 }
