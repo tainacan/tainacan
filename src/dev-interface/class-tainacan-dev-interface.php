@@ -12,7 +12,7 @@ class DevInterface {
     public function __construct() {
         
         add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
-        add_action('save_post', array(&$this, 'save_post'));
+        add_action('save_post', array(&$this, 'save_post'), 10, 2);
         add_action('admin_enqueue_scripts', array(&$this, 'add_admin_js'));
         
         global $Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies;
@@ -347,12 +347,11 @@ class DevInterface {
         <?php
     }
     
-    function save_post($post_id) {
+    function save_post($post_id, $post) {
         
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
             return;
         
-        $post = get_post($post_id);
         $post_type = $post->post_type;
         
         if (array_key_exists($post_type, $this->repositories)) {
@@ -402,11 +401,47 @@ class DevInterface {
             //die;
         } else {
             
-            // TODO properly handle Items metadata
-
-            if (isset($_POST['tnc_prop_collection_id'])) {
-                update_post_meta($post_id, 'collection_id', $_POST['tnc_prop_collection_id']);
+            // Check if post type is an item from a collection
+            // TODO: there should ve a method in the repository to find this out
+            // or I could try to initialize an entity and find out what type it is
+            
+            global $Tainacan_Collections, $Tainacan_Items, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+            $collections = $Tainacan_Collections->fetch([], 'OBJECT');
+            $cpts = [];
+            foreach($collections as $col) {
+                $cpts[$col->get_db_identifier()] = $col;
             }
+            
+            if (array_key_exists($post_type, $cpts)) {
+                
+                $entity = new \Tainacan\Entities\Item($post);
+                
+                // for new Items
+                if (!$entity->get_collection_id()) {
+                    $entity->set_collection($cpts[$post_type]);
+                    $Tainacan_Items->insert_metadata($entity, 'collection_id');
+                }
+                
+                
+                $metalist = $Tainacan_Metadatas->fetch_by_collection($cpts[$post_type], [], 'OBJECT');
+                
+                foreach ($metalist as $meta) {
+                    $item_meta = new \Tainacan\Entities\Item_Metadata_Entity($entity, $meta);
+                    if (isset($_POST['tnc_metadata_' . $meta->get_id()])) {
+                        $item_meta->set_value($_POST['tnc_metadata_' . $meta->get_id()]);
+                        if ($item_meta->validate()) {
+                            $Tainacan_Item_Metadata->insert($item_meta);
+                        } else {
+                            
+                        }
+                        
+                    }
+                }
+                
+                
+            }
+
+            
             
             
         }
