@@ -47,7 +47,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
         $collection = json_decode($response->get_data());
         $id = $collection->id;
         
-        $requestGet  = new \WP_REST_Request( 'GET', $this->namespaced_route.'/collections/'.$id );
+        $requestGet  = new \WP_REST_Request( 'GET', $this->namespaced_route . '/collections/'.$id );
         $responseGet = $this->server->dispatch( $requestGet );
         
         $this->assertEquals( 200, $responseGet->get_status() );
@@ -69,7 +69,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
     		),
     		true
 		);
-    	$request  = new \WP_REST_Request( 'GET', $this->namespaced_route.'/collections' );
+    	$request  = new \WP_REST_Request( 'GET', $this->namespaced_route . '/collections' );
     	$response = $this->server->dispatch( $request );
     	$this->assertEquals( 200, $response->get_status() );
     	
@@ -83,6 +83,57 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
     	$this->assertEquals('testeApi', $one_collection['name']);
     }
 
+    public function test_delete_or_trash_a_collection(){
+		$collection1 = $this->tainacan_entity_factory->create_entity('collection', '', true);
+
+		// Delete permanently
+		$delete_permanently = json_encode(['is_permanently' => true]);
+
+		$request  = new \WP_REST_Request(
+			'DELETE',
+			$this->namespaced_route . '/collections/' . $collection1->get_id()
+		);
+		$request->set_body($delete_permanently);
+
+		$response = $this->server->dispatch($request);
+
+		// To be removed
+		if($response->get_status() != 200){
+			$this->markTestSkipped('Need method delete implemented.');
+		}
+
+		$this->assertEquals(200, $response->get_status());
+
+		$data = $response->get_data();
+
+		$this->assertTrue($data);
+
+		#######################################################################################
+
+	    $collection2 = $this->tainacan_entity_factory->create_entity('collection', '', true);
+
+	    // Move to trash
+	    $delete_permanently = json_encode(['is_permanently' => false]);
+
+	    $request  = new \WP_REST_Request(
+		    'DELETE',
+		    $this->namespaced_route . '/collections/' . $collection2->get_id()
+	    );
+	    $request->set_body($delete_permanently);
+
+	    $response = $this->server->dispatch($request);
+
+	    // To be removed
+	    if($response->get_status() != 200){
+		    $this->markTestSkipped('Need method delete implemented.');
+	    }
+
+	    $this->assertEquals(200, $response->get_status());
+
+	    $data = json_decode($response->get_data(), true);
+
+	    $this->assertEquals('trash', $data['status']);
+    }
 }
 
 ?>
