@@ -267,6 +267,17 @@ abstract class Repository {
     	return $property;
     }
     
+    public static function get_collections_db_identifier()
+    {
+    	global $Tainacan_Collections;
+    	$collections = $Tainacan_Collections->fetch([], 'OBJECT');
+    	$cpts = [];
+		foreach($collections as $col) {
+			$cpts[$col->get_db_identifier()] = $col;
+		}
+		return $cpts;
+    }
+    
     /**
      * @param $object
      * @return mixed
