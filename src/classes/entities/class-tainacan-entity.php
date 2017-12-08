@@ -59,6 +59,9 @@ class Entity {
     	} else {
     		$this->WP_Post = new \StdClass();
     	}
+    	if(is_int($which) && $which != 0 && $this->WP_Post->post_type != $this->get_post_type() ) {
+    		throw new \Exception('the returned post is not the same type of the entity! expected: '.$this->get_post_type().' and actual: '.$this->WP_Post->post_type );
+    	}
     }
     
     /**
