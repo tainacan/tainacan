@@ -95,22 +95,21 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request  = new \WP_REST_Request(
 			'DELETE',
-			$this->namespaced_route . '/items/collection/' . $collection->get_id() . '/' . $item1->get_id()
+			$this->namespaced_route . '/items/' . $item1->get_id()
 		);
 		$request->set_body($delete_permanently);
 
 		$response = $this->server->dispatch($request);
 
-		// To be removed
-		if($response->get_status() != 200){
-			$this->markTestSkipped('Need method delete implemented.');
-		}
-
 		$this->assertEquals(200, $response->get_status());
 
 		$data = json_decode($response->get_data(), true);
 
-		$this->assertEquals('trash', $data['status']);
+		$this->assertEquals($item1->get_title(), $data['title']);
+
+		$post_meta = get_post_meta($item1->get_id(), '_wp_trash_meta_status', true);
+
+		$this->assertNotEmpty($post_meta);
 
 		#######################################################################################
 
@@ -129,22 +128,21 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request  = new \WP_REST_Request(
 			'DELETE',
-			$this->namespaced_route . '/items/collection/' . $collection->get_id() . '/' . $item2->get_id()
+			$this->namespaced_route . '/items/' . $item2->get_id()
 		);
 		$request->set_body($delete_permanently);
 
 		$response = $this->server->dispatch($request);
 
-		// To be removed
-		if($response->get_status() != 200){
-			$this->markTestSkipped('Need method delete implemented.');
-		}
-
 		$this->assertEquals(200, $response->get_status());
 
 		$data = json_decode($response->get_data(), true);
 
-		$this->assertTrue($data);
+		$this->assertEquals($item2->get_title(), $data['title']);
+
+		$no_post = get_post($item2->get_id());
+
+		$this->assertNull($no_post);
 	}
 }
 
