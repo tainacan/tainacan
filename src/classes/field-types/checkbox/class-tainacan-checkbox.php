@@ -21,7 +21,8 @@ class Checkbox extends Field_Type {
      */
 
     public function render( $metadata ){
-        return '<tainacan-checkbox name="'.$metadata->get_name().'"></tainacan-checkbox>';
+        $options = ( isset( $this->options['options'] ) ) ? $this->options['options'] : '';
+        return '<tainacan-checkbox options="'.$options.'" name="'.$metadata->get_name().'"></tainacan-checkbox>';
     }
 
     /**
@@ -35,7 +36,7 @@ class Checkbox extends Field_Type {
                 <small><?php echo __('Insert the options, separate by lines for the metadata value','tainacan'); ?></small>
             </td>
             <td>
-                <textarea name="tnc_metadata_options"><?php echo ( $this->options ) ? $this->options : ''; ?></textarea>
+                <textarea name="field_type_checkbox[options]"><?php echo ( isset( $this->options['options'] ) ) ? $this->options['options'] : ''; ?></textarea>
             </td>
         </tr>
         <?php
