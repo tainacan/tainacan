@@ -26,7 +26,7 @@
         },
         computed: {
             getOptions(){
-                const values = this.options.split("\n");
+                const values = ( this.options ) ? this.options.split("\n") : '';
                 return values;
             }
         }

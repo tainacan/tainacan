@@ -23,4 +23,11 @@ class Textarea extends Field_Type {
     public function render( $metadata ){
         return '<tainacan-textarea name="'.$metadata->get_name().'"></tainacan-textarea>';
     }
+
+    /**
+     * generate the fields for this field type
+     */
+    public function form(){
+
+    }
 }

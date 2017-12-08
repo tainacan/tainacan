@@ -207,8 +207,12 @@ class Items extends Repository {
 
     }
 
-    public function delete($object){
+    public function delete($args){
+    	if($args[1]['is_permanently'] === true){
+    		return new Entities\Item(wp_delete_post($args[0], $args[1]['is_permanently']));
+	    }
 
+	    return new Entities\Item(wp_trash_post($args[0]));
     }
     
 }

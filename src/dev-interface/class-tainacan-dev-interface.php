@@ -2,6 +2,8 @@
 
 namespace Tainacan\DevInterface;
 
+use Tainacan\Helpers;
+
 class DevInterface {
     
     var $repositories = [];
@@ -10,7 +12,7 @@ class DevInterface {
     public function __construct() {
         
         add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
-        add_action('save_post', array(&$this, 'save_post'));
+        add_action('save_post', array(&$this, 'save_post'), 10, 2);
         add_action('admin_enqueue_scripts', array(&$this, 'add_admin_js'));
         
         global $Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies;
@@ -42,7 +44,7 @@ class DevInterface {
         foreach ($this->repositories as $cpt => $repo) {
             
             add_meta_box(
-                $slug . '_properties', 
+                $cpt . '_properties',
                 __('Properties', 'tainacan'), 
                 array(&$this, 'properties_metabox_' . $repo->get_name()),
                 $cpt, 
@@ -135,9 +137,9 @@ class DevInterface {
                             </td>
                             <td>
                                 <?php if ($prop == 'collection_id'): ?>
-                                    <?php $this->collections_dropdown($value); ?>
+                                    <?php  Helpers\HtmlHelpers::collections_dropdown( $value ); ?>
                                 <?php elseif ($prop == 'collections_ids'): ?>
-                                    <?php $this->collections_checkbox_list($value); ?>
+                                    <?php  Helpers\HtmlHelpers::collections_checkbox_list( $value ); ?>
                                 <?php elseif ($prop == 'field_type_options'): ?>
                                     <?php echo $value; ?>
                                 <?php elseif ($prop == 'field_type'): ?>
@@ -303,18 +305,6 @@ class DevInterface {
 
         
     }
-    
-    function collections_dropdown($selected) {
-        global $Tainacan_Collections;
-        $collections = $Tainacan_Collections->fetch([], 'OBJECT');
-        ?>
-            <select name="tnc_prop_collection_id">
-                <?php foreach ($collections as $col): ?>
-                    <option value="<?php echo $col->get_id(); ?>" <?php selected($col->get_id(), $selected) ?>><?php echo $col->get_name(); ?></option>
-                <?php endforeach; ?>
-            </select>
-        <?php
-    }
 
     function field_type_dropdown($id,$selected) {
 
@@ -357,12 +347,11 @@ class DevInterface {
         <?php
     }
     
-    function save_post($post_id) {
+    function save_post($post_id, $post) {
         
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
             return;
         
-        $post = get_post($post_id);
         $post_type = $post->post_type;
         
         if (array_key_exists($post_type, $this->repositories)) {
@@ -391,25 +380,18 @@ class DevInterface {
 
                 if ($entity->validate_prop($prop)) {
 
+                    // we cannot user repository->insert here, it would create an infinite loop
                     if ($prop == 'field_type') {
+                        //TODO: This can be better
                         $class = '\Tainacan\Field_Types\\'.$value;
                         update_post_meta($post_id, 'field_type_options', $_POST['field_type_'.strtolower( $value ) ] );
                         update_post_meta($post_id, 'field_type',  wp_slash( get_class( new $class() ) ) );
-                    }else if($prop == 'field_type_options'){
+                    } elseif($prop == 'field_type_options') {
                         continue;
-                    }
-                    // we cannot user repository->insert here, it would create an infinite loop
-                    else if ($mapped['map'] == 'meta') {
-        				update_post_meta($post_id, $prop, $value);
-        			} elseif ($mapped['map'] == 'meta_multi') {
-        				
-        				delete_post_meta($post_id, $prop);
-        				
-        				if (is_array($value)){
-        					foreach ($value as $v){
-        						add_post_meta($post_id, $prop, $v);
-        					}
-        				}
+                    } elseif ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
+                        
+                        $repo->insert_metadata($entity, $prop);
+                        
         			}
                 }
                 
@@ -419,11 +401,47 @@ class DevInterface {
             //die;
         } else {
             
-            // TODO properly handle Items metadata
-
-            if (isset($_POST['tnc_prop_collection_id'])) {
-                update_post_meta($post_id, 'collection_id', $_POST['tnc_prop_collection_id']);
+            // Check if post type is an item from a collection
+            // TODO: there should ve a method in the repository to find this out
+            // or I could try to initialize an entity and find out what type it is
+            
+            global $Tainacan_Collections, $Tainacan_Items, $Tainacan_Metadatas, $Tainacan_Item_Metadata;
+            $collections = $Tainacan_Collections->fetch([], 'OBJECT');
+            $cpts = [];
+            foreach($collections as $col) {
+                $cpts[$col->get_db_identifier()] = $col;
             }
+            
+            if (array_key_exists($post_type, $cpts)) {
+                
+                $entity = new \Tainacan\Entities\Item($post);
+                
+                // for new Items
+                if (!$entity->get_collection_id()) {
+                    $entity->set_collection($cpts[$post_type]);
+                    $Tainacan_Items->insert_metadata($entity, 'collection_id');
+                }
+                
+                
+                $metalist = $Tainacan_Metadatas->fetch_by_collection($cpts[$post_type], [], 'OBJECT');
+                
+                foreach ($metalist as $meta) {
+                    $item_meta = new \Tainacan\Entities\Item_Metadata_Entity($entity, $meta);
+                    if (isset($_POST['tnc_metadata_' . $meta->get_id()])) {
+                        $item_meta->set_value($_POST['tnc_metadata_' . $meta->get_id()]);
+                        if ($item_meta->validate()) {
+                            $Tainacan_Item_Metadata->insert($item_meta);
+                        } else {
+                            
+                        }
+                        
+                    }
+                }
+                
+                
+            }
+
+            
             
             
         }

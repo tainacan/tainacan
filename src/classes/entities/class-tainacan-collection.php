@@ -5,7 +5,7 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class that represetns the Collection entity
+ * Class that represents the Collection entity
  */
 class Collection extends Entity {
 
@@ -29,7 +29,7 @@ class Collection extends Entity {
     static $db_identifier_prefix = 'tnc_col_';
 
     public function  __toString(){
-        return 'Hello, I\'m the Collection Entity';
+	    return 'Hello, my name is '. $this->get_name();
     }
 
     /**
@@ -201,7 +201,7 @@ class Collection extends Entity {
 	 *
 	 * @see \Tainacan\Repositories\Metadatas->fetch()
 	 *
-	 * @return Array
+	 * @return [\Tainacan\Entities\Metadata] array
 	 */
     function get_metadata() {
         $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();

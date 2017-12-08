@@ -91,19 +91,11 @@ abstract class Repository {
 		
 		// Now run through properties stored as postmeta
 		foreach ($map as $prop => $mapped) {
-			if ($mapped['map'] == 'meta') {
-				update_post_meta($id, $prop,  wp_slash( $obj->get_mapped_property($prop) ));
-			} elseif ($mapped['map'] == 'meta_multi') {
-				$values = $obj->get_mapped_property($prop);
-				
-				delete_post_meta($id, $prop);
-				
-				if (is_array($values)){
-					foreach ($values as $value){
-						add_post_meta($id, $prop, wp_slash( $value ));
-					}
-				}
-			}
+			
+            if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
+                $this->insert_metadata($obj, $prop);
+            }
+            
 		}
 		
 		do_action('tainacan-insert', $obj);
@@ -112,6 +104,33 @@ abstract class Repository {
 		// return a brand new object
 		return new $this->entities_type($obj->WP_Post);
 	}
+    
+    /**
+     * Insert object property stored as postmeta into the database
+     * @param  \Tainacan\Entities  $obj    The entity object
+     * @param  string  $prop   the property name, as declared in the map of the repository
+     * @return null|false on error
+     */
+    public function insert_metadata($obj, $prop) {
+        $map = $this->get_map();
+        
+        if (!array_key_exists($prop, $map))
+            return false;
+        
+        if ($map[$prop]['map'] == 'meta') {
+            update_post_meta($obj->get_id(), $prop,  wp_slash( $obj->get_mapped_property($prop) ));
+        } elseif($map[$prop]['map'] == 'meta_multi') {
+            $values = $obj->get_mapped_property($prop);
+            
+            delete_post_meta($obj->get_id(), $prop);
+            
+            if (is_array($values)){
+                foreach ($values as $value){
+                    add_post_meta($obj->get_id(), $prop, wp_slash( $value ));
+                }
+            }
+        }
+    }
 
     /**
      * Prepare the output for the fetch() methods.
@@ -130,10 +149,10 @@ abstract class Repository {
 
         if( $output === 'WP_Query'){
             return $WP_Query;
-        }else if( $output === 'OBJECT' ) {
+        } else if( $output === 'OBJECT' ) {
             $result = [];
 
-            if (  $WP_Query->have_posts() ){
+            if ( $WP_Query->have_posts() ){
                 /**
                  * Using WordPress Loop here would cause problems
                  * @see https://core.trac.wordpress.org/ticket/18408
@@ -154,14 +173,14 @@ abstract class Repository {
      * and the mapped properties for the repository.
      *
      * For example, you can use any of the following methods to browse collections by name:
-     * $TaincanCollections->fetch(['title' => 'test']);
-     * $TaincanCollections->fetch(['name' => 'test']);
+     * $TainacanCollections->fetch(['title' => 'test']);
+     * $TainacanCollections->fetch(['name' => 'test']);
      *
      * The property `name` is transformed into the native WordPress property `post_title`. (actually only title for query purpouses)
      *
      * Example 2, this also works with properties mapped to postmeta. The following methods are the same:
-     * $TaincanMetadatas->fetch(['required' => 'yes']);
-     * $TaincanMetadatas->fetch(['meta_query' => [
+     * $TainacanMetadatas->fetch(['required' => 'yes']);
+     * $TainacanMetadatas->fetch(['meta_query' => [
      *     [
      *         'key' => 'required',
      *         'value' => 'yes'

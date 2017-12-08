@@ -5,7 +5,7 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Representa a entidade Item Metadata
+ * Represents the Item Metadata Entity
  */
 class Item_Metadata_Entity extends Entity {
 	protected static $post_type = false;
@@ -27,7 +27,7 @@ class Item_Metadata_Entity extends Entity {
 	}
     
     /**
-     * Atribui o item
+     * Define the item
      *
      * @param Item $item
      * @return void
@@ -37,9 +37,9 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Define o valor do metadado
+     * Define the metadata value
      *
-     * @param [integer || string] $value
+     * @param [integer | string] $value
      * @return void
      */
     function set_value($value) {
@@ -47,7 +47,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Atribui o Metadado
+     * Define the metadata
      *
      * @param Metadata $metadata
      * @return void
@@ -57,7 +57,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Retorna o Item
+     * Return the item
      *
      * @return Item
      */
@@ -66,7 +66,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Retorna o Metadado
+     * Return the metadata
      *
      * @return Metadata
      */
@@ -75,9 +75,9 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Retorna o valor do metadado
+     * Return the metadata value
      *
-     * @return string || integer
+     * @return string | integer
      */
     function get_value() {
         if (isset($this->value))
@@ -88,7 +88,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Retorna se metado é multiplo ou não
+     * Return true if metadata is multiple, else return false
      *
      * @return boolean
      */
@@ -97,7 +97,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Retorna se metadado é chave (seu valor não deve se repetir)
+     * Return true if metadata is key
      *
      * @return boolean
      */
@@ -106,7 +106,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Retorna se metadado é obrigatório
+     * Return true if metadata is required
      *
      * @return boolean
      */
@@ -115,7 +115,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Valida atributos
+     * Validate attributes
      *
      * @return boolean
      */

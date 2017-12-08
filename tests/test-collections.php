@@ -33,9 +33,9 @@ class Collections extends TAINACAN_UnitTestCase {
         
         $test = $Tainacan_Collections->fetch($x->get_id());
 
-        $this->assertEquals($test->get_name(), 'teste');
-        $this->assertEquals($test->get_description(), 'adasdasdsa');
-        $this->assertEquals($test->get_default_order(), 'DESC');
+        $this->assertEquals('teste', $test->get_name());
+        $this->assertEquals('adasdasdsa', $test->get_description());
+        $this->assertEquals('DESC', $test->get_default_order());
         $this->assertEquals('draft', $test->get_status());
     }
     

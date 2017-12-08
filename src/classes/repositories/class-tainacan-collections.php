@@ -154,7 +154,7 @@ class Collections extends Repository {
     }
     
     /**
-     * @param Tainacan\Entities\Collection $collection
+     * @param \Tainacan\Entities\Collection $collection
      * @return \Tainacan\Entities\Collection
      * {@inheritDoc}
      * @see \Tainacan\Repositories\Repository::insert()
@@ -169,8 +169,12 @@ class Collections extends Repository {
 
     }
 
-    public function delete($object){
+    public function delete($args){
+	    if($args[1]['is_permanently'] === true){
+		    return new Entities\Collection(wp_delete_post($args[0], $args[1]['is_permanently']));
+	    }
 
+	    return new Entities\Collection(wp_trash_post($args[0]));
     }
 
     /**

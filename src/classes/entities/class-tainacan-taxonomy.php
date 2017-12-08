@@ -4,9 +4,12 @@ namespace Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/**
+ * Represents the Entity Taxonomy
+ */
 class Taxonomy extends Entity {
     use \Tainacan\Traits\Entity_Collections_Relation;
-    
+
     protected static $post_type = 'tainacan-taxonomies';
     /**
      * {@inheritDoc}
@@ -14,8 +17,13 @@ class Taxonomy extends Entity {
      * @var string
      */
     protected $repository = 'Tainacan_Taxonomies';
-    
-    function __construct( $which = 0 ) {
+
+	/**
+	 * Taxonomy constructor.
+	 *
+	 * @param int $which
+	 */
+	function __construct( $which = 0 ) {
 
         $this->repository = 'Tainacan_Taxonomies';
 
@@ -34,10 +42,15 @@ class Taxonomy extends Entity {
     }
 
 	public function  __toString(){
-		return 'Hello, I\'m the Taxonomy Entity';
+		return 'Hello, my name is '. $this->get_name();
 	}
-    
-    function register_taxonomy() {
+
+	/**
+	 * Register the taxonomy
+	 *
+	 * @return bool
+	 */
+	function register_taxonomy() {
         $labels = array(
             'name'              => $this->get_name(),
             'singular_name'     => $this->get_name(),
@@ -84,53 +97,116 @@ class Taxonomy extends Entity {
     }
 
     // Getters
-    function get_id() {
+
+	/**
+	 * Return the unique identifier
+	 *
+	 * @return integer
+	 */
+	function get_id() {
         return $this->get_mapped_property('id');
     }
 
-    function get_name() {
+	/**
+	 * Return the name
+	 *
+	 * @return string
+	 */
+	function get_name() {
         return $this->get_mapped_property('name');
     }
 
-    function get_parent() {
+	/**
+	 * Return the parent id
+	 *
+	 * @return integer
+	 */
+	function get_parent() {
         return $this->get_mapped_property('parent');
     }
 
-    function get_description() {
+	/**
+	 * Return the description
+	 *
+	 * @return string
+	 */
+	function get_description() {
         return $this->get_mapped_property('description');
     }
 
-    function get_allow_insert() {
+	/**
+	 * Return true if allow insert or false if not allow insert
+	 *
+	 * @return boolean
+	 */
+	function get_allow_insert() {
         return $this->get_mapped_property('allow_insert');
     }
 
-    function get_slug() {
+	/**
+	 * Return the slug
+	 *
+	 * @return string
+	 */
+	function get_slug() {
         return $this->get_mapped_property('slug');
     }
     
     // special Getters
-    function get_db_identifier() {
+
+	/**
+	 * Return the DB ID
+	 *
+	 * @return bool|string
+	 */
+	function get_db_identifier() {
         return $this->get_id() ? 'tnc_tax_' . $this->get_id() : false;
     }
 
     // Setters
-    function set_name($value) {
-        return $this->set_mapped_property('name', $value);
+
+	/**
+	 * Define the name of taxonomy
+	 *
+	 * @param [string] $value
+	 */
+	function set_name($value) {
+        $this->set_mapped_property('name', $value);
     }
 
-    function set_parent($value) {
-        return $this->set_mapped_property('parent', $value);
-    }
-    
-    function set_slug($value) {
-        return $this->set_mapped_property('slug', $value);
-    }
-
-    function set_description($value) {
-        return $this->set_mapped_property('description', $value);
+	/**
+	 * Define the parent ID
+	 *
+	 * @param [integer] $value
+	 */
+	function set_parent($value) {
+        $this->set_mapped_property('parent', $value);
     }
 
-    function set_allow_insert($value) {
-        return $this->set_mapped_property('allow_insert', $value);
+	/**
+	 * Define the slug
+	 *
+	 * @param [string] $value
+	 */
+	function set_slug($value) {
+        $this->set_mapped_property('slug', $value);
+    }
+
+	/**
+	 * Define the description
+	 *
+	 * @param [string] $value
+	 */
+	function set_description($value) {
+        $this->set_mapped_property('description', $value);
+    }
+
+	/**
+	 * Define if allow insert or not
+	 *
+	 * @param [boolean] $value
+	 */
+	function set_allow_insert($value) {
+        $this->set_mapped_property('allow_insert', $value);
     }
 }

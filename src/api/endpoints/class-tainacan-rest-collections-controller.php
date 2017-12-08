@@ -4,7 +4,7 @@ use Tainacan\Repositories;
 use Tainacan\Entities;
 
 /**
- * Class that represents the Collections REST Controller
+ * Represents the Collections REST Controller
  *
  * @uses Entities\Collection and Repositories\Collections
  * */
@@ -209,9 +209,15 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 */
 	public function delete_item( $request ) {
 	    $collection_id = $request['collection_id'];
-	    $this->collections_repository->delete($collection_id);
+		$is_permanently = json_decode($request->get_body(), true);
 
-	    return 'Não implementado';
+		$args = [$collection_id, $is_permanently];
+
+		$collection = $this->collections_repository->delete($args);
+
+		$prepared_collection = $this->prepare_item_for_response($collection, $request);
+
+		return new WP_REST_Response($prepared_collection, 200);
     }
 
 	/**
@@ -222,11 +228,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
-	    if(current_user_can('delete_posts')){
-		    return true;
-	    }
-
-	    return false;
+	    return true;
     }
 
 	/**
