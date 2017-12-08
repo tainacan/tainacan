@@ -97,16 +97,15 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
 		$response = $this->server->dispatch($request);
 
-		// To be removed
-		if($response->get_status() != 200){
-			$this->markTestSkipped('Need method delete implemented.');
-		}
-
 		$this->assertEquals(200, $response->get_status());
 
-		$data = $response->get_data();
+		$data = json_decode($response->get_data(), true);
 
-		$this->assertTrue($data);
+		$this->assertEquals($collection1->get_id(), $data['id']);
+
+		$no_post = get_post($collection1->get_id());
+
+		$this->assertNull($no_post);
 
 		#######################################################################################
 
@@ -123,16 +122,15 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
 	    $response = $this->server->dispatch($request);
 
-	    // To be removed
-	    if($response->get_status() != 200){
-		    $this->markTestSkipped('Need method delete implemented.');
-	    }
-
 	    $this->assertEquals(200, $response->get_status());
 
 	    $data = json_decode($response->get_data(), true);
 
-	    $this->assertEquals('trash', $data['status']);
+	    $this->assertEquals($collection2->get_id(), $data['id']);
+
+	    $post_meta = get_post_meta($collection2->get_id(), '_wp_trash_meta_status', true);
+
+	    $this->assertNotEmpty($post_meta);
     }
 }
 
