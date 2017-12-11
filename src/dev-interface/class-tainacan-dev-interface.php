@@ -44,7 +44,7 @@ class DevInterface {
         
         $collection_post_type = \Tainacan\Entities\Collection::get_post_type();
         
-            if ($post->post_type == $collection_post_type) {
+        if (!is_admin() && $post->post_type == $collection_post_type) {
             
             $collection = new \Tainacan\Entities\Collection($post);
             $items_post_type = $collection->get_db_identifier();
