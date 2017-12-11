@@ -4,7 +4,15 @@ namespace Tainacan\Tests\Factories;
 
 class Entity_Factory {
 
+	/**
+	 * 
+	 * @var \Tainacan\Entities\Entity
+	 */
 	private   $entity;
+	/**
+	 * 
+	 * @var \Tainacan\Repositories\Repository
+	 */
 	protected $repository;
 	protected $entity_type;
 	protected $repository_type;
