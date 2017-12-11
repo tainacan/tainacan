@@ -15,6 +15,8 @@ class DevInterface {
         add_action('save_post', array(&$this, 'save_post'), 10, 2);
         add_action('admin_enqueue_scripts', array(&$this, 'add_admin_js'));
         
+        add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
+        
         global $Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies;
         
         $repositories = [$Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Metadatas, $Tainacan_Taxonomies];
@@ -29,6 +31,35 @@ class DevInterface {
     function add_admin_js() {
         global $TAINACAN_BASE_URL;
         wp_enqueue_script('tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/web-components.js');
+    }
+    
+    /**
+     * Filters the permalink for posts to:
+     *
+     * * Replace Collectino single permalink with the link to the post type archive for items of that collection
+     * 
+     * @return string new permalink
+     */
+    function permalink_filter($permalink, $post, $leavename) {
+        
+        $collection_post_type = \Tainacan\Entities\Collection::get_post_type();
+        
+            if ($post->post_type == $collection_post_type) {
+            
+            $collection = new \Tainacan\Entities\Collection($post);
+            $items_post_type = $collection->get_db_identifier();
+            
+            $post_type_object = get_post_type_object($items_post_type);
+            
+            if (isset($post_type_object->rewrite) && is_array($post_type_object->rewrite) && isset($post_type_object->rewrite['slug']))
+                return site_url($post_type_object->rewrite['slug']);
+                
+        }
+        
+        return $permalink;
+        
+        
+        
     }
     
     /**
