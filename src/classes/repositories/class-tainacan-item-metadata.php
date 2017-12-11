@@ -83,4 +83,8 @@ class Item_Metadata extends Repository {
     }
 
     public function register_post_type() { }
+    
+    public function get_map() { return []; }
+    public function get_default_properties($map) { return []; }
+    
 }

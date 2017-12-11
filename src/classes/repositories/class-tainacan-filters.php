@@ -10,14 +10,7 @@ class Filters extends Repository {
 	public $entities_type = '\Tainacan\Entities\Filter';
 	
     public function get_map() {
-    	return apply_filters('tainacan-get-map',  [
-            'id'                 => [
-                'map'        => 'ID',
-                'title'      => __('ID', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('Unique identifier', 'tainacan'),
-                //'validation' => ''
-            ],
+    	return apply_filters('tainacan-get-map-'.$this->get_name(),  [
             'name'               => [
                 'map'        => 'post_title',
                 'title'       => __('Name', 'tainacan'),

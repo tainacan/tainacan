@@ -28,14 +28,14 @@ class Item extends Entity {
     function get_id() {
         return $this->get_mapped_property('id');
     }
-
+    
     /**
      * Return the item title
      *
      * @return string
      */
     function get_title() {
-        return $this->get_mapped_property('title');
+		return $this->get_mapped_property('title');
     }
 
     /**
@@ -63,6 +63,15 @@ class Item extends Entity {
      */
     function get_description() {
         return $this->get_mapped_property('description');
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::get_db_identifier()
+     */
+    public function get_db_identifier() {
+    	return $this->get_mapped_property('collection_id');
     }
     
     /**

@@ -95,14 +95,6 @@ class Collection extends Entity {
     }
 
     /**
-     * Get the collection ID
-     *
-     * @return integer
-     */
-    function get_id() {
-        return $this->get_mapped_property('id');
-    }
-    /**
      * Get collection name
      *
      * @return string

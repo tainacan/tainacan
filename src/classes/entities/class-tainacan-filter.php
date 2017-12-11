@@ -23,15 +23,6 @@ class Filter extends Entity {
 		return 'Hello, my name is '. $this->get_name();
 	}
 
-	/**
-     * Return the filter ID
-     *
-     * @return integer
-     */
-    function get_id() {
-        return $this->get_mapped_property('id');
-    }
-
     /**
      * Return the filter name
      *

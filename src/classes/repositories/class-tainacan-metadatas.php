@@ -16,15 +16,7 @@ class Metadatas extends Repository {
 	public $field_types = [];
 	
     public function get_map() {
-    	return apply_filters('tainacan-get-map', [
-            'id'             => [
-                'map'        => 'ID',
-                'title'      => __('ID', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('Unique identifier', 'tainacan'),
-               // 'on_error'   => __('The ID should be numeric', 'tainacan'),
-               // 'validation' => v::numeric(),
-            ],
+    	return apply_filters('tainacan-get-map-'.$this->get_name(), [
             'name'           => [
                 'map'        => 'post_title',
                 'title'       => __('Name', 'tainacan'),

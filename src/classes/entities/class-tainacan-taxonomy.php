@@ -99,15 +99,6 @@ class Taxonomy extends Entity {
     // Getters
 
 	/**
-	 * Return the unique identifier
-	 *
-	 * @return integer
-	 */
-	function get_id() {
-        return $this->get_mapped_property('id');
-    }
-
-	/**
 	 * Return the name
 	 *
 	 * @return string

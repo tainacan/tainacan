@@ -25,15 +25,6 @@ class Metadata extends Entity {
 	}
 
     /**
-     * Return the metadata ID
-     *
-     * @return integer
-     */
-    function get_id() {
-        return $this->get_mapped_property('id');
-    }
-
-    /**
      * Return the metadata name
      *
      * @return string

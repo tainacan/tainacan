@@ -6,6 +6,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Entity Super class
+ *
  */
 class Entity {
 	/**
@@ -58,8 +59,21 @@ class Entity {
     	} else {
     		$this->WP_Post = new \StdClass();
     	}
-    	if(is_int($which) && $which != 0 && $this->WP_Post->post_type != $this->get_post_type() ) {
-    		throw new \Exception('the returned post is not the same type of the entity! expected: '.$this->get_post_type().' and actual: '.$this->WP_Post->post_type );
+    	if(
+    		is_int($which) &&
+    		$which != 0 &&
+    		( 
+    			( $this->get_post_type() !== false && $this->WP_Post->post_type != $this->get_post_type() ) ||
+    			// Lets check if it is a collection and have rigth post_type
+    			( $this->get_post_type() === false && $this->WP_Post->post_type != Collection::$db_identifier_prefix.$this->get_db_identifier() ) // TODO check if we can use only get_db_identifier for this
+    		)
+    	) {
+    		if($this->get_post_type() === false) {
+    			throw new \Exception('the returned post is not the same type of the entity! expected: '.Collection::$db_identifier_prefix.$this->get_db_identifier().' and actual: '.$this->WP_Post->post_type );
+    		}
+    		else {
+    			throw new \Exception('the returned post is not the same type of the entity! expected: '.$this->get_post_type().' and actual: '.$this->WP_Post->post_type );
+    		}
     	}
     }
     
@@ -86,13 +100,12 @@ class Entity {
         $this->set_validated(false);
         $this->$prop = $value;
     }
-
-	/**
-	 * Define the entity status
-	 *
-	 * @param [string] $value
-	 */
-	public function set_status($value){
+    
+    /**
+     * set the status of the entity
+     * @param string $value
+     */
+    public function set_status($value){
     	$value = apply_filters('tainacan-set-post-status', $value);
     	$this->set_mapped_property('status', $value);
     }
@@ -160,43 +173,42 @@ class Entity {
         return $is_valid;
 
     }
-
-	/**
-	 * Return the array of error messages
-	 *
-	 * @return array
-	 */
-	public function get_errors() {
+    
+    public function get_errors() {
         return $this->errors;
     }
-
-	/**
-	 * Return the entity post type
-	 *
-	 * @return string
-	 */
-	public static function get_post_type() {
+    
+    public static function get_post_type() {
     	return static::$post_type;
     }
-
-	/**
-	 * Return the entity status
-	 *
-	 * @return mixed
-	 */
-	public function get_status(){
+    
+    public function get_status(){
    		$value = $this->get_mapped_property('status');
    		if(empty($value)) $value = 'draft';
    		return apply_filters('tainacan-get-post-status', $value);
     }
-
-	/**
-	 * Make a array of error messages
-	 *
-	 * @param $type
-	 * @param $message
-	 */
-	public function add_error($type, $message) {
+    
+    /**
+     * Get entity DB identifier
+     *
+     * This identifier is used to register the entity on database, ex.: post_type
+     *
+     * @return string
+     */
+    function get_db_identifier() {
+    	return self::get_post_type();
+    }
+    
+    /**
+     * Get the entity ID
+     *
+     * @return integer
+     */
+    public function get_id() {
+    	return $this->get_mapped_property('id');
+    }
+    
+    public function add_error($type, $message) {
         $this->errors[] = [$type => $message];
     }
     
@@ -206,41 +218,21 @@ class Entity {
     public function reset_errors() {
         $this->errors = [];
     }
-
-	/**
-	 * Return true if is validated or false if not validated
-	 *
-	 * @return boolean
-	 */
-	public function get_validated() {
+    
+    public function get_validated() {
         return $this->validated;
     }
-
-	/**
-	 * Define validated
-	 *
-	 * @param [boolean] $value
-	 */
-	protected function set_validated($value) {
+    
+    protected function set_validated($value) {
         $this->validated = $value;
     }
-
-	/**
-	 * Define as valid
-	 *
-	 * @return boolean
-	 */
-	protected function set_as_valid() {
+    
+    protected function set_as_valid() {
         $this->reset_errors();
         $this->set_validated(true);
         return true;
     }
 
-	/**
-	 * Return the attributes of the entity in JSON
-	 *
-	 * @return JSON
-	 */
 	public function  __toJSON(){
 		global ${$this->repository};
 		$map = ${$this->repository}->get_map();

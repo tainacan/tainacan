@@ -16,7 +16,7 @@ abstract class Repository {
 	 */
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
-		add_filter('tainacan-get-map', array($this, 'get_default_properties'));
+		add_filter('tainacan-get-map-'.$this->get_name(), array($this, 'get_default_properties'));
 	}
 	
 	/**
@@ -44,9 +44,7 @@ abstract class Repository {
      *          'validation' => v::stringType(),
      *      ],
 	 */
-	public function get_map() {
-		return apply_filters('tainacan-get-map', array());
-	}
+	public abstract function get_map();
     
     /**
      * Return repository name
@@ -234,21 +232,31 @@ abstract class Repository {
 	/**
 	 * Return default properties
 	 *
-	 * @param $map
+	 * @param array $map
 	 *
 	 * @return array
 	 */
 	public function get_default_properties($map) {
-    	if(is_array($map)) {
-    		$map['status']	=  [
-    			'map'			=> 'post_status',
-    			'title'			=> __('Status', 'tainacan'),
-    			'type'			=> 'string',
-    			'description'	=> __('Status', 'tainacan'),
-    			//'validation'	=> v::stringType(),
-    		];
-    	}
-    	return $map;
+		if(is_array($map)) {
+	    	$defaults = array(
+	    		'status'	=>  array(
+		   			'map'			=> 'post_status',
+		   			'title'			=> __('Status', 'tainacan'),
+		   			'type'			=> 'string',
+		   			'description'	=> __('Status', 'tainacan'),
+		   			//'validation'	=> v::stringType(),
+	   			),
+	    		'id'             => array(
+	    			'map'        => 'ID',
+	    			'title'       => __('ID', 'tainacan'),
+	    			'type'       => 'integer',
+	    			'description'=> __('Unique identifier', 'tainacan'),
+	    			//'validation' => v::numeric(),
+	    		),
+	    	);
+	    	return array_merge($defaults, $map);
+		}
+		return $map;
     }
 
     /**
@@ -286,8 +294,11 @@ abstract class Repository {
     	return $property;
     }
     
-    public static function get_collections_db_identifier()
-    {
+    /**
+     * Return array of collections db identifiers
+     * @return array[]
+     */
+    public static function get_collections_db_identifier() {
     	global $Tainacan_Collections;
     	$collections = $Tainacan_Collections->fetch([], 'OBJECT');
     	$cpts = [];
@@ -295,6 +306,35 @@ abstract class Repository {
 			$cpts[$col->get_db_identifier()] = $col;
 		}
 		return $cpts;
+    }
+    
+    public static function get_entity_by_post($post) {
+    	$post_type = $post->post_type;
+    	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
+    	
+    	// its is a collection Item?
+    	if($prefix == Entities\Collection::$db_identifier_prefix) {
+    		$cpts = self::get_collections_db_identifier();
+    		if(array_key_exists($post_type, $cpts)) {
+    			return $entity = new \Tainacan\Entities\Item($post);
+    		}
+    		else {
+    			throw new \Exception('Collection object not found for this post');
+    		}
+    	}
+    	else {
+    		global $Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
+    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
+    		foreach ($tnc_globals as $tnc_repository)
+    		{
+    			$entity_post_type = $tnc_repository->entities_type::get_post_type();
+    			if($entity_post_type == $post_type)
+    			{
+    				return new $tnc_repository->entities_type($post);
+    			}
+    		}
+    	}
+    	return false;
     }
     
     /**

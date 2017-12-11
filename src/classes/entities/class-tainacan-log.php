@@ -31,15 +31,6 @@ class Log extends Entity {
 	}
 
     /**
-     * Return the Log ID
-     *
-     * @return integer
-     */
-    function get_id() {
-        return $this->get_mapped_property('id');
-    }
-
-    /**
      * Return the Log title
      *
      * @return string
