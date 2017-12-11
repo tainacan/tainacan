@@ -11,6 +11,7 @@ use Tainacan\Entities;
 class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	private $items_repository;
 	private $item;
+	private $item_metadata;
 
 	/**
 	 * TAINACAN_REST_Items_Controller constructor.
@@ -21,6 +22,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 		$this->rest_base = 'items';
 		$this->items_repository = new Repositories\Items();
 		$this->item = new Entities\Item();
+		$this->item_metadata = new Repositories\Item_Metadata();
 
 		add_action('rest_api_init', array($this, 'register_routes'));
 	}
@@ -142,12 +144,27 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 		$this->item->set_title($request[0]['title']);
 		$this->item->set_description($request[0]['description']);
 
-		$collection_wp_post = get_post($request[1]);
-		$collection = new Entities\Collection($collection_wp_post);
+		$collection = new Entities\Collection($request[1]);
 
 		$this->item->set_collection($collection);
 
-		return $this->item;
+		$metadata = get_post_meta($collection->get_id());
+
+		if(!empty($metadata)) {
+			foreach ($metadata as $key => $value){
+				$new_metadata = new Entities\Metadata();
+
+				try {
+					$set_ = 'set_' . $key;
+					$new_metadata->$set_( $value );
+				} catch (\Error $exception){
+					//echo $exception->getMessage();
+				}
+			}
+
+		}
+
+		return $new_metadata;
 	}
 
 	/**
@@ -159,15 +176,18 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 		$collection_id = $request['collection_id'];
 		$item = json_decode($request->get_body(), true);
 
-		$prepared_item = $this->prepare_item_for_database([$item, $collection_id]);
+		$metadata = $this->prepare_item_for_database([$item, $collection_id]);
 
-		if($prepared_item->validate()){
-			$item = $this->items_repository->insert($prepared_item);
+		if($this->item->validate()) {
+			$item = $this->items_repository->insert($this->item );
 
-			return new WP_REST_Response($item->__toJSON(), 201);
+			$item_metadata  = new Entities\Item_Metadata_Entity($item, $metadata );
+			$metadata_added = $this->item_metadata->insert( $item_metadata );
+
+			return new WP_REST_Response($metadata_added->get_item()->__toJSON(), 201 );
 		}
 
-		return new WP_REST_Response($prepared_item->get_errors(), 400);
+		return new WP_REST_Response($item->get_errors(), 400);
 	}
 
 	/**
