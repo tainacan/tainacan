@@ -10,7 +10,7 @@ class DevInterface {
     var $has_errors = false;
     
     public function __construct() {
-        
+
         add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
         add_action('save_post', array(&$this, 'save_post'), 10, 2);
         add_action('admin_enqueue_scripts', array(&$this, 'add_admin_js'));
@@ -30,6 +30,8 @@ class DevInterface {
     
     function add_admin_js() {
         global $TAINACAN_BASE_URL;
+        wp_enqueue_script('wp-settings',$TAINACAN_BASE_URL . '/js/wp-settings.js');
+        wp_localize_script( 'wp-settings', 'wpApiSettings', array( 'root' => esc_url_raw( rest_url() ), 'nonce' => wp_create_nonce( 'wp_rest' ) ) );
         wp_enqueue_script('tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/web-components.js');
     }
     
