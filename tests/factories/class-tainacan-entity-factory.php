@@ -107,7 +107,7 @@ class Entity_Factory {
 				if ($this->entity->validate()) {
 					$this->entity = $this->repository->insert( $this->entity );
 				} else {
-					throw new \ErrorException( __( 'The entity wasn\'t validated.' ) );
+					throw new \ErrorException( __( 'The entity wasn\'t validated.'.print_r($this->entity->get_errors(), true) ) );
 				}
 
 			} else {
