@@ -29,7 +29,7 @@ class Entity_Factory {
 	 * @return mixed
 	 * @throws \ErrorException
 	 */
-	public function create_entity($type, $args = [], $is_validated_and_in_db = false){
+	public function create_entity($type, $args = [], $is_validated_and_in_db = false, $publish = false){
 		ini_set('display_errors', 1);
 
 		try {
@@ -54,6 +54,11 @@ class Entity_Factory {
 
 			$this->entity     = new $this->entity_type();
 			$this->repository = new $this->repository_type();
+			
+			if($publish)
+			{
+				$this->entity->set_status('publish');
+			}
 
 			if (!empty($args) && $is_validated_and_in_db) {
 				foreach ($args as $attribute => $content) {
@@ -116,7 +121,7 @@ class Entity_Factory {
 		} catch (\Error $exception){
 			echo "\n" . $exception->getMessage() . "\n";
 		}
-
+		
 		return $this->entity;
 	}
 }
