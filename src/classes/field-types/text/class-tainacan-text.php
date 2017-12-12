@@ -16,14 +16,15 @@ class Text extends Field_Type {
     }
 
     /**
-     * @param $metadata
+     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */
 
-    public function render( $metadata ){
-        return '<tainacan-text metadata="'.$metadata->get_id().'" 
-                               item="'.get_the_ID().'"      
-                               name="'.$metadata->get_name().'"></tainacan-text>';
+    public function render( $itemMetadata ){
+        return '<tainacan-text metadata_id ="'.$itemMetadata->get_metadata()->get_id().'" 
+                               item_id="'.$itemMetadata->get_item()->get_id().'"    
+                               value=\''.json_encode( $itemMetadata->get_value() ).'\'  
+                               name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-text>';
     }
 
     /**

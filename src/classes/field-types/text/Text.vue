@@ -1,37 +1,42 @@
 <template>
     <div class="component">
-        <p>{{ name }}</p>
-        <input type="text" v-model.lazy="value" >
+        <input :placeholder="name" type="text" v-model.lazy="manageValue" >
     </div>
 </template>
 
 <script>
-    import store from '../../../js/store/store'
-    import { mapGetters } from 'vuex';
-
+    import store from '../../../js/store/store';
 
     export default {
         store,
         props: {
             name: { type: String },
-            item: { type: Number },
-            metadata: { type: Number },
+            item_id: { type: Number },
+            metadata_id: { type: Number },
+            value: { type: [ String,Number ]  },
+        },
+        created(){
+            this.setInitValueOnStore();
         },
         computed:{
-            value : {
+            manageValue : {
                 get(){
-                    let metadata = this.$store.getters['item/getMetadata'].find(metadata => metadata.metadata_id === this.metadata );
+                    let metadata = this.$store.getters['item/getMetadata'].find(metadata => metadata.metadata_id === this.metadata_id );
                     if( metadata ){
                         return  metadata.values;
+                    }else if( this.value ){
+                        return JSON.parse(  this.value );
                     }
                 },
                 set( value ){
-                    let metadata = this.$store.getters['item/getMetadata'].find(metadata => metadata.metadata_id === this.metadata );
-                    if( ! metadata ){
-                        this.$store.dispatch('item/addMetadata', { item_id: this.item, metadata_id: this.metadata, values: value });
-                    }else{
-                        this.$store.dispatch('item/updateMetadata', { item_id: this.item, metadata_id: this.metadata, values: value });
-                    }
+                    this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: value });
+                }
+            }
+        },
+        methods: {
+            setInitValueOnStore(){
+                if ( this.value ){
+                    this.$store.dispatch('item/setSingleMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: JSON.parse(  this.value ) });
                 }
             }
         }
@@ -40,15 +45,13 @@
 
 <style scoped>
     input[type="text"] {
-        display: block;
-        margin: 0;
-        width: 100%;
-        border-radius: 6px;
-        font-family: sans-serif;
-        font-size: 18px;
-        appearance: none;
-        box-shadow: none;
-        color:green;
+        background: transparent;
+        font-size:18px;
+        padding:10px 10px 10px 5px;
+        display:block;
+        width:300px;
+        border-top-color:transparent;
+        border-bottom:1px solid #757575;
     }
     input[type="text"]:focus {
         outline: none;

@@ -12,7 +12,7 @@ abstract class Field_Type  {
     private $primitive_type;
     public $options;
 
-    abstract function render( $metadata );
+    abstract function render( $itemMetadata );
 
     public function __construct(){
         add_action('register_field_types', array(&$this, 'register_field_type'));

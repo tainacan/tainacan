@@ -16,13 +16,13 @@ class Radio extends Field_Type {
     }
 
     /**
-     * @param $metadata
+     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */
 
-    public function render( $metadata ){
+    public function render( $itemMetadata ){
         $options = ( isset( $this->options['options'] ) ) ? $this->options['options'] : '';
-        return '<tainacan-radio  options="'.$options.'" name="'.$metadata->get_name().'"></tainacan-radio>';
+        return '<tainacan-radio  options="'.$options.'" name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-radio>';
     }
 
     /**

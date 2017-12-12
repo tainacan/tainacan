@@ -31,7 +31,13 @@ class DevInterface {
     function add_admin_js() {
         global $TAINACAN_BASE_URL;
         wp_enqueue_script('wp-settings',$TAINACAN_BASE_URL . '/js/wp-settings.js');
-        wp_localize_script( 'wp-settings', 'wpApiSettings', array( 'root' => esc_url_raw( rest_url() ), 'nonce' => wp_create_nonce( 'wp_rest' ) ) );
+
+        $settings = [
+            'root' => esc_url_raw( rest_url() ).'tainacan/v2',
+            'nonce' => wp_create_nonce( 'wp_rest' )
+        ];
+
+        wp_localize_script( 'wp-settings', 'wpApiSettings', $settings );
         wp_enqueue_script('tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/web-components.js');
     }
     
@@ -324,7 +330,7 @@ class DevInterface {
                             </td>
                             <td>
                                 <?php //echo '<tainacan-text name="'.$item_meta->get_metadata()->get_name().'"></tainacan-text>'; ?>
-                                <?php echo  $item_meta->get_metadata()->get_field_type_object()->render( $item_meta->get_metadata() ); ?>
+                                <?php echo  $item_meta->get_metadata()->get_field_type_object()->render( $item_meta ); ?>
                             </td>
                         </tr>
                         
