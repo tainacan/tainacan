@@ -17,12 +17,12 @@ class Date extends Field_Type {
     }
 
     /**
-     * @param $metadata
+     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */
 
-    public function render( $metadata ){
-        return '<tainacan-date name="'.$metadata->get_name().'"></tainacan-date>';
+    public function render( $itemMetadata ){
+        return '<tainacan-date name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-date>';
     }
 
     /**

@@ -16,13 +16,14 @@ class Relationship extends Field_Type {
         parent::__construct();
         parent::set_primitive_type('');
     }
+
     /**
-     * @param $metadata
+     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */
 
-    public function render( $metadata ){
-        return '<tainacan-relationship name="'.$metadata->get_name().'"></tainacan-relationship>';
+    public function render( $itemMetadata ){
+        return '<tainacan-relationship name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-relationship>';
     }
 
     /**

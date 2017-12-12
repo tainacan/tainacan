@@ -16,12 +16,12 @@ class Numeric extends Field_Type {
     }
 
     /**
-     * @param $metadata
+     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */
 
-    public function render( $metadata ){
-        return '<tainacan-numeric name="'.$metadata->get_name().'"></tainacan-numeric>';
+    public function render( $itemMetadata ){
+        return '<tainacan-numeric name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-numeric>';
     }
 
     /**
