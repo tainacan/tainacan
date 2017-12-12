@@ -7,7 +7,7 @@
                     type="checkbox"
                     :id="option.replace(' ','-') + '-checkbox'"
                     :value="option"
-                    :checked="isChecked"
+                    :checked="isChecked(option)"
                     @change="sendValue($event)"> {{ option }} <br>
         </label>
     </div>
