@@ -151,16 +151,58 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 	}
 
 	public function prepare_item_for_response( $item, $request ) {
+		$metadata_as_json = [];
 
+		if($request['item_id']) {
+			foreach ( $item as $metadata ) {
+
+				$metadata_as_json[] = json_encode(
+					array_merge(
+						json_decode($metadata->get_metadata()->__toJSON(), true),
+						['value' => $metadata->get_value()]
+					)
+				);
+			}
+		} else {
+			foreach ( $item as $metadata ) {
+				$metadata_as_json[] = $metadata->__toJSON();
+			}
+		}
+
+		return $metadata_as_json;
 	}
 
 	public function get_items( $request ) {
-		$id = !empty($request['collection_id']) ? $request['collection_id'] : (!empty($request['item_id']) ? $request['item_id'] : '');
+		if(!empty($request['collection_id'])){
+			$collection_id = $request['collection_id'];
 
-		$this->metadata_repository;
+			$collection = new Entities\Collection($collection_id);
+
+			$collection_metadata = $this->metadata_repository->fetch_by_collection($collection, [], 'OBJECT');
+
+			$prepared_item = $this->prepare_item_for_response($collection_metadata, $request);
+
+			return new WP_REST_Response($prepared_item, 200);
+		} elseif(!empty($request['item_id'])){
+			$item_id = $request['item_id'];
+
+			$item = new Entities\Item($item_id);
+
+			$item_metadata = $this->item_metadata_repository->fetch($item, 'OBJECT');
+
+			$prepared_item = $this->prepare_item_for_response($item_metadata, $request);
+
+			return new WP_REST_Response($prepared_item, 200);
+		}
+
+		return new WP_REST_Response($request->get_body(), 400);
 	}
 
 	public function get_item_permissions_check( $request ) {
+		return true;
+	}
+
+	public function get_items_permissions_check( $request ) {
 		return true;
 	}
 
