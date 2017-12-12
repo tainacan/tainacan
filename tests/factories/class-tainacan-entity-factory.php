@@ -108,7 +108,6 @@ class Entity_Factory {
 					$this->entity->set_description( 'It is only for test' );
 				}
 
-				$this->entity->validate();
 				if ($this->entity->validate()) {
 					$this->entity = $this->repository->insert( $this->entity );
 				} else {
