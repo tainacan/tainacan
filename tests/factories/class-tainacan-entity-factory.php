@@ -75,7 +75,7 @@ class Entity_Factory {
 				if ($this->entity->validate()) {
 					$this->entity = $this->repository->insert($this->entity);
 				} else {
-					throw new \ErrorException('The entity wasn\'t validated.');
+					throw new \ErrorException('The entity wasn\'t validated.' . print_r( $this->entity->get_errors(), true));
 				}
 
 			} elseif (!empty($args) && !$is_validated_and_in_db){
@@ -108,12 +108,8 @@ class Entity_Factory {
 					$this->entity->set_description( 'It is only for test' );
 				}
 
-				if ($this->entity->validate()) {
-					$this->entity = $this->repository->insert( $this->entity );
-				} else {
-					throw new \ErrorException('The entity wasn\'t validated.' . print_r( $this->entity->get_errors(), true));
-				}
-
+				$this->entity->validate();
+				$this->entity = $this->repository->insert( $this->entity );
 			} else {
 				throw new \InvalidArgumentException('One or more arguments are invalid.');
 			}
