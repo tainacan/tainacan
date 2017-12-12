@@ -141,8 +141,13 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @return object|Entities\Item|WP_Error
 	 */
 	public function prepare_item_for_database( $request ) {
-		$this->item->set_title($request[0]['title']);
-		$this->item->set_description($request[0]['description']);
+
+		$item_as_array = $request[0];
+
+		foreach ($item_as_array as $key => $value){
+			$set_ = 'set_' . $key;
+			$this->item->$set_($value);
+		}
 
 		$collection = new Entities\Collection($request[1]);
 
@@ -174,9 +179,13 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 */
 	public function create_item( $request ) {
 		$collection_id = $request['collection_id'];
-		$item = json_decode($request->get_body(), true);
+		$item          = json_decode($request->get_body(), true);
 
-		$metadata = $this->prepare_item_for_database([$item, $collection_id]);
+		try {
+			$metadata = $this->prepare_item_for_database( [ $item, $collection_id ] );
+		} catch (\Error $exception){
+			return new WP_REST_Response($exception->getMessage(), 400);
+		}
 
 		if($this->item->validate()) {
 			$item = $this->items_repository->insert($this->item );

@@ -200,8 +200,13 @@ class Items extends Repository {
 
     }
 
-    public function delete($args){
-    	if($args[1]['is_permanently'] === true){
+	/**
+	 * @param $args ( is a array like [post_id, [is_permanently => bool]] )
+	 *
+	 * @return mixed|Entities\Item
+	 */
+	public function delete($args){
+    	if(!empty($args[1]) && $args[1]['is_permanently'] === true){
     		return new Entities\Item(wp_delete_post($args[0], $args[1]['is_permanently']));
 	    }
 

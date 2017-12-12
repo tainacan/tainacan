@@ -162,8 +162,13 @@ class Collections extends Repository {
 
     }
 
-    public function delete($args){
-	    if($args[1]['is_permanently'] === true){
+	/**
+	 * @param $args ( is a array like [post_id, [is_permanently => bool]] )
+	 *
+	 * @return mixed|Collection
+	 */
+	public function delete($args){
+	    if(!empty($args[1]) && $args[1]['is_permanently'] === true){
 		    return new Entities\Collection(wp_delete_post($args[0], $args[1]['is_permanently']));
 	    }
 

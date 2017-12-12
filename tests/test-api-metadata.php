@@ -12,9 +12,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$item = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
-				'title' => 'No name',
+				'title'       => 'No name',
 				'description' => 'No description',
-				'collection' => $collection
+				'collection'  => $collection
 			),
 			true
 		);
@@ -23,9 +23,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$metadata = json_encode(
 			array(
-				'name' => 'Moeda',
+				'name'        => 'Moeda',
 				'description' => 'Descreve campo moeda.',
-				'field_type' => $field->get_primitive_type(),
+				'field_type'  => $field->get_primitive_type(),
 			)
 		);
 
