@@ -71,6 +71,8 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
     }
     ```
     
+    1.1.2 GET (Fetch all collection metadata)
+    
 2. Route `wp-json/tainacan/v2/metadata/item/(?P<item_id>[\d]+)`
 
     2.1. Endpoints supported:
@@ -88,3 +90,5 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
     }
     
     ```
+    
+    2.1.2 GET (Fetch all item metadata, with your values)
