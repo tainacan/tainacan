@@ -21,7 +21,9 @@ class Text extends Field_Type {
      */
 
     public function render( $metadata ){
-        return '<tainacan-text name="'.$metadata->get_name().'"></tainacan-text>';
+        return '<tainacan-text metadata="'.$metadata->get_id().'" 
+                               item="'.get_the_ID().'"      
+                               name="'.$metadata->get_name().'"></tainacan-text>';
     }
 
     /**

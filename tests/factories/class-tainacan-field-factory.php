@@ -8,7 +8,7 @@ class Field_Factory {
 
 	public function create_field($type, $primitive_type = []){
 		if(empty($type)){
-			throw new \InvalidArgumentException(__('The type can\'t be empty'));
+			throw new \InvalidArgumentException(__('The type can\'t be empty', 'tainacan'));
 		} elseif(!strrchr($type, '_')){
 			$type = ucfirst(strtolower($type));
 		} else {

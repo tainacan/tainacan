@@ -12,7 +12,7 @@ class TAINACAN_UnitTestCase extends \WP_UnitTestCase {
 	public function setUp(){
 		parent::setUp();
 		$this->tainacan_entity_factory = new Factories\Entity_Factory();
-		$this->tainacan_field_factory = new Factories\Field_Factory();
+		$this->tainacan_field_factory  = new Factories\Field_Factory();
 		$this->tainacan_filter_factory = new Factories\Filter_Factory();
 	}
 }

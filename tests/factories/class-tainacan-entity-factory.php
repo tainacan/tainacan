@@ -34,7 +34,7 @@ class Entity_Factory {
 
 		try {
 			if(empty($type)){
-				throw new \InvalidArgumentException(__('The type can\'t be empty'));
+				throw new \InvalidArgumentException(__('The type can\'t be empty', 'tainacan'));
 			} elseif(!strrchr($type, '_')){
 				$type = ucfirst(strtolower($type));
 			} else {
@@ -75,7 +75,7 @@ class Entity_Factory {
 				if ($this->entity->validate()) {
 					$this->entity = $this->repository->insert($this->entity);
 				} else {
-					throw new \ErrorException( __( 'The entity wasn\'t validated.' ) );
+					throw new \ErrorException( __( 'The entity wasn\'t validated.', 'tainacan' ) );
 				}
 
 			} elseif (!empty($args) && !$is_validated_and_in_db){
@@ -92,19 +92,19 @@ class Entity_Factory {
 
 			} elseif (empty($args) && !$is_validated_and_in_db) {
 				try {
-					$this->entity->set_name( "$type" . random_int( 0, 10000 ) . " for test" );
+					$this->entity->set_name( "$type " . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				} catch (\Error $exception){
-					$this->entity->set_title( "$type" . random_int( 0, 10000 ) . " for test" );
+					$this->entity->set_title( "$type " . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				}
 
 			} elseif (empty($args) && $is_validated_and_in_db) {
 				try {
-					$this->entity->set_name( "$type" . random_int( 0, 10000 ) . " for test" );
+					$this->entity->set_name( "$type " . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				} catch (\Error $exception){
-					$this->entity->set_title( "$type" . random_int( 0, 10000 ) . " for test" );
+					$this->entity->set_title( "$type " . random_int( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				}
 
@@ -112,7 +112,8 @@ class Entity_Factory {
 				if ($this->entity->validate()) {
 					$this->entity = $this->repository->insert( $this->entity );
 				} else {
-					throw new \ErrorException( __( 'The entity wasn\'t validated.'.print_r($this->entity->get_errors(), true) ) );
+					throw new \ErrorException( __( 'The entity wasn\'t validated.', 'tainacan').print_r( $this->entity->get_errors(), true ) ); // TODO show this in a better way
+					throw new \ErrorException( __( 'The entity wasn\'t validated.', 'tainacan' ) );
 				}
 
 			} else {

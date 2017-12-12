@@ -5,6 +5,7 @@ Plugin Name: Tainacan
 Plugin URI: https://github.com/tainacan/tainacan
 Description: Transforme seu site Wordpress em um repositório digital
 Author: Media Lab / UFG
+Author URI: https://www.medialab.ufg.br
 Version: 1.0
 */
 

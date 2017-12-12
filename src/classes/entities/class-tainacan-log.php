@@ -16,8 +16,7 @@ class Log extends Entity {
 	 */
 	protected $repository = 'Tainacan_Logs';
 	
-	public function __construct($which=0)
-	{
+	public function __construct($which=0) {
 		parent::__construct($which);
 		
 		if( is_int($which) && $which == 0) {

@@ -1,14 +1,39 @@
 <template>
     <div class="component">
         <p>{{ name }}</p>
-        <input type="text">
+        <input type="text" v-model.lazy="value" >
     </div>
 </template>
 
 <script>
+    import store from '../../../js/store/store'
+    import { mapGetters } from 'vuex';
+
+
     export default {
+        store,
         props: {
-            name: { type: String }
+            name: { type: String },
+            item: { type: Number },
+            metadata: { type: Number },
+        },
+        computed:{
+            value : {
+                get(){
+                    let metadata = this.$store.getters['item/getMetadata'].find(metadata => metadata.metadata_id === this.metadata );
+                    if( metadata ){
+                        return  metadata.values;
+                    }
+                },
+                set( value ){
+                    let metadata = this.$store.getters['item/getMetadata'].find(metadata => metadata.metadata_id === this.metadata );
+                    if( ! metadata ){
+                        this.$store.dispatch('item/addMetadata', { item_id: this.item, metadata_id: this.metadata, values: value });
+                    }else{
+                        this.$store.dispatch('item/updateMetadata', { item_id: this.item, metadata_id: this.metadata, values: value });
+                    }
+                }
+            }
         }
     }
 </script>

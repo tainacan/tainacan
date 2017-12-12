@@ -13,8 +13,7 @@ use Tainacan\Repositories\Repository;
  * @group architecture
  */
 class Objects extends TAINACAN_UnitTestCase {
-	function test_object_transformation()
-	{
+	function test_object_transformation() {
 		$x = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(

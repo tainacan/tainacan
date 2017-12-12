@@ -34,11 +34,12 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_items'),
                 'permission_callback' => array($this, 'get_items_permissions_check'),
+	            'args'                => $this->get_item_schema()
             ),
 	        array(
 		        'methods'             => WP_REST_Server::CREATABLE,
 		        'callback'            => array($this, 'create_item'),
-		        //'permission_callback' => array($this, 'create_item_permissions_check'),
+		        'permission_callback' => array($this, 'create_item_permissions_check'),
 		        'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
 	        ),
         ));
@@ -88,7 +89,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
         $collection_id = $request['collection_id'];
         $collection = $this->collections_repository->fetch($collection_id);
 
-        $response = $this->prepare_item_for_response($collection, $request);
+        $response = $this->prepare_item_for_response( $collection, $request );
 
         return new WP_REST_Response($response, 200);
     }
@@ -118,9 +119,11 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 
             return json_encode($collections_as_json);
         }
-        else {
+        elseif(!empty($item)){
             return $item->__toJSON();
         }
+
+        return $item;
     }
 
 	/**
@@ -152,15 +155,13 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return array|WP_Error|WP_REST_Response
 	 */
 	public function create_item( $request ) {
-    	$request = json_decode($request->get_body(), true);
+		$request = json_decode($request->get_body(), true);
 
-    	if(empty($request)) {
-			return new WP_Error('rest_empty', __('Empty request.'), array('status' => 204));
-	    } elseif (!empty($request['collection_id'])){
-	        return new WP_Error( 'rest_post_exists', __( 'Cannot create existing post.' ), array( 'status' => 400 ) );
-        }
-
-        $prepared_post = $this->prepare_item_for_database($request);
+		try {
+			$prepared_post = $this->prepare_item_for_database( $request );
+		} catch (\Error $exception){
+			return new WP_REST_Response($exception->getMessage(), 400);
+		}
 
         if($prepared_post->validate()) {
 	        $collection = $this->collections_repository->insert( $prepared_post );
@@ -179,11 +180,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-	    if(current_user_can('edit_posts')){
-            return true;
-        }
-
-        return false;
+		return true;
     }
 
 	/**
@@ -194,8 +191,11 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return object|Entities\Collection|WP_Error
 	 */
 	public function prepare_item_for_database( $request ) {
-        $this->collection->set_name($request['name']);
-	    $this->collection->set_description($request['description']);
+
+		foreach ($request as $key => $value){
+			$set_ = 'set_' . $key;
+			$this->collection->$set_($value);
+		}
 
         return $this->collection;
     }
@@ -251,11 +251,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
-	    if(current_user_can('edit_posts')){
-		    return true;
-	    }
-
-	    return false;
+		return true;
     }
 
     public function get_collection_params() {
@@ -273,6 +269,12 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	    ];
 
 	    return apply_filters("rest_{$this->collection->get_post_type()}_collection_params", $args, $this->collection->get_post_type());
+    }
+
+    public function get_item_schema() {
+		$args = $this->collections_repository->get_map();
+
+		return apply_filters("rest_{$this->collection->get_post_type()}_collection_params", $args, $this->collection->get_post_type());
     }
 }
 
