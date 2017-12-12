@@ -8,7 +8,7 @@ class Filter_Factory {
 
 	public function create_filter($type, $supported_types = []){
 		if(empty($type)){
-			throw new \InvalidArgumentException(__('The type can\'t be empty', 'tainacan'));
+			throw new \InvalidArgumentException('The type can\'t be empty');
 		} elseif(!strrchr($type, '_')){
 			$type = ucfirst(strtolower($type));
 		} else {
