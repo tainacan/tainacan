@@ -56,6 +56,15 @@ class Entity {
     		
     	} elseif ($which instanceof \WP_Post) {
     		$this->WP_Post = $which;
+    	} elseif ( // is a stdClass Post object, like returned by delete
+    		$which instanceof \stdClass &&
+    		property_exists($which, 'post_type') &&
+    		property_exists($which, 'ID') && 
+    		property_exists($which, 'post_status')
+    	) {
+    		$this->WP_Post = new \WP_Post($which);
+    	} elseif (is_array($which) && isset($which['ID'])) {
+    		$this->WP_Post = new \WP_Post( (object)$which );
     	} else {
     		$this->WP_Post = new \StdClass();
     	}
