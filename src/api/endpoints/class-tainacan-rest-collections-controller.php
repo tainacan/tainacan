@@ -170,11 +170,9 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
         }
 
         return new WP_REST_Response([
-	        [
-		        'error_message' => __('One or more values are invalid.', 'tainacan'),
-		        'errors' => $prepared_post->get_errors()
-	        ],
-	        $prepared_post->__toJSON()
+        	'error_message' => __('One or more values are invalid.', 'tainacan'),
+	        'errors'        => $prepared_post->get_errors(),
+	        'collection'    => $prepared_post->__toJSON()
         ], 400);
     }
 

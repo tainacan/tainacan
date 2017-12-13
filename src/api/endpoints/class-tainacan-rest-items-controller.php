@@ -198,11 +198,9 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 
 
 		return new WP_REST_Response([
-			[
-				'error_message' => __('One or more values are invalid.', 'tainacan'),
-				'errors' => $item->get_errors()
-			],
-			$item->__toJSON()
+			'error_message' => __('One or more values are invalid.', 'tainacan'),
+			'errors'        => $item->get_errors(),
+			'item'          => $item->__toJSON()
 		], 400);
 	}
 

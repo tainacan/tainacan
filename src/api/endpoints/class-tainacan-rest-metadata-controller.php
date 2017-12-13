@@ -125,11 +125,9 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 				}
 			} else {
 				return new WP_REST_Response([
-					[
-						'error_message' => __('One or more values are invalid.', 'tainacan'),
-						'errors' => $this->metadata->get_errors()
-					],
-					$this->metadata->__toJSON(),
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $this->metadata->get_errors(),
+					'metadata'      => $this->metadata->__toJSON(),
 				], 400);
 			}
 		} elseif (!empty($request['item_id']) && !empty($request->get_body())){
@@ -150,12 +148,10 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 
 				return new WP_REST_Response( $metadata_updated->__toJSON(), 201 );
 			} else {
-				return new WP_REST_Response( [
-					[
-						'error_message' => __('One or more values are invalid.', 'tainacan'),
-						'errors' => $item_metadata->get_errors()
-					],
-					$item_metadata->__toJSON(),
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $item_metadata->get_errors(),
+					'item_metadata' => $item_metadata->__toJSON(),
 				], 400);
 			}
 		} else {
