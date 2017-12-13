@@ -137,7 +137,7 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 			if($item_metadata->validate()) {
 				$metadata_updated = $this->item_metadata_repository->insert( $item_metadata );
 
-				return new WP_REST_Response( $metadata_updated->get_metadata()->__toJSON(), 201 );
+				return new WP_REST_Response( $metadata_updated->__toJSON(), 201 );
 			} else {
 				return new WP_REST_Response( $item_metadata->get_errors(), 200);
 			}

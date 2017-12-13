@@ -251,7 +251,7 @@ class Entity {
 			$attributes[$prop] = $this->get_mapped_property($prop);
 		}
 
-		return json_encode($attributes, JSON_NUMERIC_CHECK, JSON_UNESCAPED_UNICODE);
+		return json_encode($attributes, JSON_NUMERIC_CHECK);
 	}
  
 }

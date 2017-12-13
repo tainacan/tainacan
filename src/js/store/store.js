@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import item from './modules/item/item';
-import collection from './modules/collection/collection';
+import item from './modules/item/';
+import collection from './modules/collection/';
 
 Vue.use(Vuex);
 
