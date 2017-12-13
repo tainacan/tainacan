@@ -17,7 +17,9 @@ class Item_Metadata extends Repository {
             delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id());
             
             if (is_array($item_metadata->get_value())){
-                foreach ($item_metadata->get_value() as $value){
+            	$values = $item_metadata->get_value();
+
+                foreach ($values as $value){
                     add_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash( $value ));
                 }
             }
@@ -34,8 +36,23 @@ class Item_Metadata extends Repository {
 
     }
 
-    public function delete($object){
-
+	/**
+	 * Delete Item Metadata
+	 *
+	 * @param $item_metadata
+	 *
+	 * @return mixed|void
+	 */
+	public function delete($item_metadata){
+//    	if(is_array($item_metadata->get_value())){
+//    		$values = $item_metadata->get_value();
+//
+//    		foreach ($values as $value){
+//    			delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash($value));
+//		    }
+//	    } else {
+//    		delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash($item_metadata->get_value()));
+//	    }
     }
 
     /**

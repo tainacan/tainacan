@@ -196,7 +196,14 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 			return new WP_REST_Response($metadata_added->get_item()->__toJSON(), 201 );
 		}
 
-		return new WP_REST_Response($item->get_errors(), 400);
+
+		return new WP_REST_Response([
+			[
+				'error_message' => __('One or more values are invalid.', 'tainacan'),
+				'errors' => $item->get_errors()
+			],
+			$item->__toJSON()
+		], 400);
 	}
 
 	/**
