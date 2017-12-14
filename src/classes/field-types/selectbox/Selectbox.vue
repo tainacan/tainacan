@@ -66,7 +66,7 @@
         methods: {
             setInitValueOnStore(){
                 if ( this.value ){
-                    this.$store.dispatch('item/setSingleMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: JSON.parse(  this.value ) });
+                    this.$store.dispatch('item/updateMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: JSON.parse(  this.value ) });
                 }
             }
         }

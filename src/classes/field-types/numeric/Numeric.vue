@@ -1,15 +1,22 @@
 <template>
     <div class="component">
         <p>{{ name }}</p>
-        <input type="number">
+        <input type="number" @blur="changeValue($event)">
     </div>
 </template>
 
 <script>
     export default {
         props: {
-            name: { type: String }
+            name: { type: String },
+            item_id: { type: Number },
+            metadata_id: { type: Number },
+            value: { type: [ String,Number ]  },
+        },
+        methods: {
+            changeValue( event ){}
         }
+
     }
 </script>
 

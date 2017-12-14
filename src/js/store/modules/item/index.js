@@ -4,8 +4,8 @@ import * as mutations from './mutations';
 
 const state = {
     item: null,
-    metadata:[],
-    isInit:false,
+    metadata: [],
+    error: []
 };
 
 

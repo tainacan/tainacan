@@ -16,6 +16,18 @@ export const setSingleMetadata = ( state, metadata) => {
     }
 }
 
-export const setInit = ( state, init) => {
-    state.isInit = init;
+export const setError = ( state, metadata ) => {
+    let index = state.error.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
+    if ( index >= 0){
+        state.error[index] = metadata;
+    }else{
+        state.error.push( metadata );
+    }
+};
+
+export const removeError =  ( state, metadata ) => {
+    let index = state.error.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
+    if ( index >= 0){
+        state.error.splice( index, 1);
+    }
 }

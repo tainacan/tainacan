@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import store from './store/store'
 
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
