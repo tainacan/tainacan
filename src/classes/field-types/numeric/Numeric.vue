@@ -1,7 +1,11 @@
 <template>
     <div class="component">
         <p>{{ name }}</p>
-        <input type="number" @blur="changeValue($event)">
+        <input type="text" @blur="changeValue($event)" :value="getValue()">
+        <p
+                v-for="error in getErrors()">
+            {{ error }}
+        </p>
     </div>
 </template>
 
@@ -12,9 +16,28 @@
             item_id: { type: Number },
             metadata_id: { type: Number },
             value: { type: [ String,Number ]  },
+            errorsMsg: { type: [ String,Number ] },
         },
         methods: {
-            changeValue( event ){}
+            changeValue( event ){
+                this.$emit('changeValue', { item_id: this.item_id, metadata_id: this.metadata_id, values: event.target.value } );
+            },
+            getValue(){
+                try{
+                    return JSON.parse( this.value );
+                }catch(e){
+                    console.log('invalid json');
+                }
+                return this.value;
+            },
+            getErrors(){
+                try{
+                    return JSON.parse( this.errorsMsg );
+                }catch(e){
+                    console.log('invalid json');
+                }
+                return this.errorsMsg;
+            }
         }
 
     }

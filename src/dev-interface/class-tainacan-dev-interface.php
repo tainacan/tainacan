@@ -37,8 +37,8 @@ class DevInterface {
             'nonce' => wp_create_nonce( 'wp_rest' )
         ];
 
-        wp_localize_script( 'wp-settings', 'wpApiSettings', $settings );
-        wp_enqueue_script('tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/web-components.js');
+        wp_localize_script( 'wp-settings', 'wp_settings', $settings );
+        wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/web-components.js', [] , null, true);
     }
     
     /**
