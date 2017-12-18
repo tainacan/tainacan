@@ -19,7 +19,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			'description' => 'The Progressive JavasScript Framework'
 		]);
 
-		$request  = new \WP_REST_Request('POST', $this->namespaced_route . '/items/collection/' . $collection->get_id());
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/items/collection/' . $collection->get_id());
 		$request->set_body($item_json);
 
 		$response = $this->server->dispatch($request);
@@ -61,7 +61,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$request  = new \WP_REST_Request('GET', $this->namespaced_route . '/items/collection/' . $collection->get_id());
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/items/collection/' . $collection->get_id());
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
@@ -95,7 +95,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request  = new \WP_REST_Request(
 			'DELETE',
-			$this->namespaced_route . '/items/' . $item1->get_id()
+			$this->namespace . '/items/' . $item1->get_id()
 		);
 		$request->set_body($delete_permanently);
 
@@ -128,7 +128,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request  = new \WP_REST_Request(
 			'DELETE',
-			$this->namespaced_route . '/items/' . $item2->get_id()
+			$this->namespace . '/items/' . $item2->get_id()
 		);
 		$request->set_body($delete_permanently);
 

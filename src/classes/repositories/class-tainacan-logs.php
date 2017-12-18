@@ -203,6 +203,6 @@ class Logs extends Repository {
    		}
 
    		$msn = apply_filters('tainacan-insert-log-message-title', $msn, $type, $new_value);
-    	Entities\Log::create($msn, '', $new_value, $value);
+    	Entities\Log::create($msn, 'empty', $new_value, $value);
     }
 }

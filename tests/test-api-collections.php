@@ -10,11 +10,11 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 	
 	public function test_register_route() {
 		$routes = $this->server->get_routes();
-		$this->assertArrayHasKey($this->namespaced_route, $routes );
+		$this->assertArrayHasKey($this->namespace, $routes );
 	}
 
 	public function test_endpoints() {
-		$the_route = $this->namespaced_route;
+		$the_route = $this->namespace;
 		$routes = $this->server->get_routes();
 		foreach( $routes as $route => $route_config ) {
 			if( 0 === strpos( $the_route, $route ) ) {
@@ -30,24 +30,21 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
     public function test_create_and_fetch_collection_by_id(){
-
-        $collection_JSON = json_encode([
+	    $collection_JSON = json_encode([
             'name'         => 'TesteJsonAdd',
             'description'  => 'Teste JSON',
         ]);
         
-        $request = new \WP_REST_Request('POST', $this->namespaced_route.'/collections');
-        //$request->set_param('name', 'TesteJsonAdd');
-        //$request->set_param('description', 'Teste JSON');
+        $request = new \WP_REST_Request('POST', $this->namespace . '/collections');
         $request->set_body($collection_JSON);
-        
+
         $response = $this->server->dispatch( $request );
         $this->assertEquals( 201, $response->get_status() );
         
         $collection = json_decode($response->get_data());
         $id = $collection->id;
         
-        $requestGet  = new \WP_REST_Request( 'GET', $this->namespaced_route . '/collections/'.$id );
+        $requestGet  = new \WP_REST_Request( 'GET', $this->namespace . '/collections/' . $id );
         $responseGet = $this->server->dispatch( $requestGet );
         
         $this->assertEquals( 200, $responseGet->get_status() );
@@ -55,7 +52,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
         $data = json_decode($responseGet->get_data(), true);
         
         $this->assertEquals('TesteJsonAdd', $data['name']);
-        
     }
 
     public function test_fetch_collections(){
@@ -69,8 +65,11 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
     		),
     		true
 		);
-    	$request  = new \WP_REST_Request( 'GET', $this->namespaced_route . '/collections' );
+
+	    $request  = new \WP_REST_Request( 'GET', $this->namespace . '/collections' );
+
     	$response = $this->server->dispatch( $request );
+
     	$this->assertEquals( 200, $response->get_status() );
     	
     	$data = json_decode($response->get_data());
@@ -91,7 +90,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request  = new \WP_REST_Request(
 			'DELETE',
-			$this->namespaced_route . '/collections/' . $collection1->get_id()
+			$this->namespace . '/collections/' . $collection1->get_id()
 		);
 		$request->set_body($delete_permanently);
 
@@ -116,7 +115,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
 	    $request  = new \WP_REST_Request(
 		    'DELETE',
-		    $this->namespaced_route . '/collections/' . $collection2->get_id()
+		    $this->namespace . '/collections/' . $collection2->get_id()
 	    );
 	    $request->set_body($delete_permanently);
 

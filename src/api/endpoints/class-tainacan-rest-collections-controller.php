@@ -133,7 +133,11 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check($request){
-		return true;
+		if(current_user_can('read')){
+			return true;
+		}
+
+		return false;
     }
 
 	/**
@@ -143,7 +147,11 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function  get_item_permissions_check($request){
-        return true;
+		if(current_user_can('read')){
+			return true;
+		}
+
+		return false;
     }
 
 	/**
@@ -184,7 +192,11 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		return true;
+		if(current_user_can('edit_posts')){
+			return true;
+		}
+
+		return false;
     }
 
 	/**
@@ -232,7 +244,11 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
-	    return true;
+		if(current_user_can('delete_posts')){
+			return true;
+		}
+
+		return false;
     }
 
 	/**
@@ -255,7 +271,11 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
-		return true;
+		if(current_user_can('edit_posts')){
+			return true;
+		}
+
+		return false;
     }
 
     public function get_collection_params() {

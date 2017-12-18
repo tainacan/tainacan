@@ -31,7 +31,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request = new \WP_REST_Request(
 			'POST',
-			$this->namespaced_route . '/metadata/collection/' . $collection->get_id()
+			$this->namespace . '/metadata/collection/' . $collection->get_id()
 		);
 		$request->set_body($metadata);
 
@@ -52,7 +52,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request = new \WP_REST_Request(
 			'POST',
-			$this->namespaced_route . '/metadata/item/' . $item->get_id()
+			$this->namespace . '/metadata/item/' . $item->get_id()
 		);
 		$request->set_body($meta_values);
 
@@ -75,7 +75,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
-				'name' => 'Statement'
+				'name'        => 'Statement',
+				'description' => 'No Statement'
 			),
 			true
 		);
@@ -114,7 +115,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request = new \WP_REST_Request(
 			'GET',
-			$this->namespaced_route . '/metadata/collection/' . $collection->get_id()
+			$this->namespace . '/metadata/collection/' . $collection->get_id()
 		);
 
 		$response = $this->server->dispatch($request);
@@ -131,7 +132,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request = new \WP_REST_Request(
 			'GET',
-			$this->namespaced_route . '/metadata/item/' . $item->get_id()
+			$this->namespace . '/metadata/item/' . $item->get_id()
 		);
 
 		$response = $this->server->dispatch($request);

@@ -23,7 +23,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
 	        array(
-	        	'name' => 'teste'
+	        	'name' => 'teste',
+		        'description' => 'No description',
 	        ),
 	        true
         );
@@ -74,7 +75,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
 	        array(
-	        	'name' => 'teste'
+	        	'name' => 'teste',
+		        'description' => 'No description',
 	        ),
 	        true
         );
@@ -128,7 +130,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $collection = $this->tainacan_entity_factory->create_entity(
 	        'collection',
 	        array(
-		        'name' => 'teste'
+		        'name' => 'teste',
+		        'description' => 'No description',
 	        ),
 	        true
         );
@@ -185,7 +188,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
 	        array(
-	        	'name' => 'teste'
+	        	'name' => 'teste',
+		        'description' => 'No description',
 	        ),
 	        true
         );
