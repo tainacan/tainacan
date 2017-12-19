@@ -25,7 +25,7 @@
                 try{
                     return JSON.parse( this.value );
                 }catch(e){
-                    console.log('invalid json');
+                    console.log('invalid json value');
                 }
                 return this.value;
             },
@@ -33,12 +33,11 @@
                 try{
                     return JSON.parse( this.errorsMsg );
                 }catch(e){
-                    console.log('invalid json');
+                    console.log('invalid json error msg');
                 }
                 return this.errorsMsg;
             }
         }
-
     }
 </script>
 

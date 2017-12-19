@@ -24,5 +24,6 @@ Vue.customElement('tainacan-numeric', Numeric);
 eventBus.registerComponent( 'tainacan-numeric' );
 
 Vue.customElement('tainacan-date', Date);
+eventBus.registerComponent( 'tainacan-date' );
 
 eventBus.listener();

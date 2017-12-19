@@ -1,14 +1,39 @@
 <template>
     <div class="component">
         <p>{{ name }}</p>
-        <input type="date">
+        <input type="date" :value="getValue()" @blur="changeValue( $event )">
     </div>
 </template>
 
 <script>
     export default {
         props: {
-            name: { type: String }
+            name: { type: String },
+            item_id: { type: Number },
+            metadata_id: { type: Number },
+            value: { type: [ String,Number ]  },
+            errorsMsg: { type: [ String,Number ] },
+        },
+        methods: {
+            changeValue( event ){
+                this.$emit('changeValue', { item_id: this.item_id, metadata_id: this.metadata_id, values: event.target.value } );
+            },
+            getValue(){
+                try{
+                    return JSON.parse( this.value );
+                }catch(e){
+                    console.log('invalid json value');
+                }
+                return this.value;
+            },
+            getErrors(){
+                try{
+                    return JSON.parse( this.errorsMsg );
+                }catch(e){
+                    console.log('invalid json error');
+                }
+                return this.errorsMsg;
+            }
         }
     }
 </script>
