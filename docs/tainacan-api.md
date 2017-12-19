@@ -87,7 +87,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
     
     In body of requisition pass a JSON with the attributes of metadata like:
    
-    ```javascript
+```javascript
     {
        "name": "string", 
        "description": "string",
@@ -103,7 +103,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
        "default_value": "string",
        "field_type_options": "string",
     }
-    ```
+```
     
     1.1.2 GET (Fetch all collection metadata)
     
@@ -115,13 +115,13 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
     
     In body of requisition pass a JSON with value e and id of metadata like:
    
-    ```javascript
+```javascript
     {
        "metadata_id": "integer",
        "values": "[any, type]"
     }
     
-    ```
+```
     
     2.1.2 GET (Fetch all item metadata, with your values)
     
