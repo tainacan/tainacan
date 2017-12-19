@@ -26,12 +26,12 @@ class Item_Metadata_Entity extends Entity {
 		return 'Hello, I\'m the Item Metadata Entity';
 	}
 
-    public function  __toJSON(){
-        $json['value']    = $this->get_value();
-        $json['item']     = $this->get_item()->__toJSON();
-        $json['metadata'] = $this->get_metadata()->__toJSON();
+    public function  __toArray(){
+        $as_array['value']    = $this->get_value();
+	    $as_array['item']     = $this->get_item()->__toArray();
+	    $as_array['metadata'] = $this->get_metadata()->__toArray();
 
-	    return json_encode($json);
+	    return $as_array;
     }
     
     /**

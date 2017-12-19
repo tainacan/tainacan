@@ -37,7 +37,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$response = $this->server->dispatch($request);
 
-		$metadata_added = json_decode($response->get_data(), true);
+		$metadata_added = $response->get_data();
 
 		$this->assertEquals('Moeda', $metadata_added['name']);
 
@@ -58,8 +58,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$response = $this->server->dispatch($request);
 
-		$item_metadata_updated = json_decode($response->get_data(), true);
-		$metadata = json_decode($item_metadata_updated['metadata'], true);
+		$item_metadata_updated = $response->get_data();
+
+		$metadata = $item_metadata_updated['metadata'];
 
 		$this->assertEquals($metadata_added['id'], $metadata['id']);
 
@@ -122,9 +123,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$this->assertContainsOnly('string', $data);
-
-		$metadata = json_decode($data[0], true);
+		$metadata = $data[0];
 
 		$this->assertEquals('Data', $metadata['name']);
 
@@ -139,10 +138,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$this->assertContainsOnly('string', $data);
-
-		$item_metadata = json_decode($data[0], true);
-		$metadata = json_decode($item_metadata['metadata'], true);
+		$item_metadata = $data[0];
+		$metadata = $item_metadata['metadata'];
 
 		$this->assertEquals('Data', $metadata['name']);
 		$this->assertEquals('12/12/2017', $item_metadata['value']);

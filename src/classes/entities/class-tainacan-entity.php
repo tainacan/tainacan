@@ -242,16 +242,19 @@ class Entity {
         return true;
     }
 
+    public function __toArray(){
+	    global ${$this->repository};
+	    $map = ${$this->repository}->get_map();
+
+	    $attributes = [];
+	    foreach($map as $prop => $content) {
+		    $attributes[$prop] = $this->get_mapped_property($prop);
+	    }
+
+	    return $attributes;
+    }
 	public function  __toJSON(){
-		global ${$this->repository};
-		$map = ${$this->repository}->get_map();
-
-		$attributes = [];
-		foreach($map as $prop => $content) {
-			$attributes[$prop] = $this->get_mapped_property($prop);
-		}
-
-		return json_encode($attributes, JSON_NUMERIC_CHECK);
+		return json_encode($this->__toArray(), JSON_NUMERIC_CHECK);
 	}
  
 }

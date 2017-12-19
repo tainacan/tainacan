@@ -89,7 +89,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
         $collection_id = $request['collection_id'];
         $collection = $this->collections_repository->fetch($collection_id);
 
-        $response = $this->prepare_item_for_response( $collection, $request );
+        $response = $this->prepare_item_for_response($collection, $request );
 
         return new WP_REST_Response($response, 200);
     }
@@ -111,16 +111,16 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 		        while ( $item->have_posts() ) {
 		        	$item->the_post();
 		        	$collection = new Entities\Collection($item->post);
-			        array_push($collections_as_json, $collection->__toJSON());
+			        array_push($collections_as_json, $collection->__toArray());
 
 		        }
 		        wp_reset_postdata();
 	        }
 
-            return json_encode($collections_as_json);
+            return $collections_as_json;
         }
         elseif(!empty($item)){
-            return $item->__toJSON();
+            return $item->__toArray();
         }
 
         return $item;
@@ -165,6 +165,13 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	public function create_item( $request ) {
 		$request = json_decode($request->get_body(), true);
 
+		if(empty($request)){
+			return new WP_REST_Response([
+				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'collection'    => $request
+			], 400);
+		}
+
 		try {
 			$prepared_post = $this->prepare_item_for_database( $request );
 		} catch (\Error $exception){
@@ -174,13 +181,13 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
         if($prepared_post->validate()) {
 	        $collection = $this->collections_repository->insert( $prepared_post );
 
-	        return new WP_REST_Response($collection->__toJSON(), 201);
+	        return new WP_REST_Response($collection->__toArray(), 201);
         }
 
         return new WP_REST_Response([
         	'error_message' => __('One or more values are invalid.', 'tainacan'),
 	        'errors'        => $prepared_post->get_errors(),
-	        'collection'    => $prepared_post->__toJSON()
+	        'collection'    => $prepared_post->__toArray()
         ], 400);
     }
 

@@ -118,16 +118,16 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 						$metadata_added = $this->item_metadata_repository->insert($item_meta);
 					}
 
-					return new WP_REST_Response($metadata_added->get_metadata()->__toJSON(), 201);
+					return new WP_REST_Response($metadata_added->get_metadata()->__toArray(), 201);
 				}
 				else {
-					return new WP_REST_Response($this->metadata->__toJSON(), 201);
+					return new WP_REST_Response($this->metadata->__toArray(), 201);
 				}
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $this->metadata->get_errors(),
-					'metadata'      => $this->metadata->__toJSON(),
+					'metadata'      => $this->metadata->__toArray(),
 				], 400);
 			}
 		} elseif (!empty($request['item_id']) && !empty($request->get_body())){
@@ -146,16 +146,19 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 			if($item_metadata->validate()) {
 				$metadata_updated = $this->item_metadata_repository->insert( $item_metadata );
 
-				return new WP_REST_Response( $metadata_updated->__toJSON(), 201 );
+				return new WP_REST_Response( $metadata_updated->__toArray(), 201 );
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $item_metadata->get_errors(),
-					'item_metadata' => $item_metadata->__toJSON(),
+					'item_metadata' => $item_metadata->__toArray(),
 				], 400);
 			}
 		} else {
-			return new WP_REST_Response($request->get_body(), 400);
+			return new WP_REST_Response([
+				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'item'          => $request->get_body()
+			], 400);
 		}
 	}
 
@@ -168,19 +171,21 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 	}
 
 	public function prepare_item_for_response( $item, $request ) {
-		$metadata_as_json = [];
+		$metadata_as = [];
 
 		if($request['item_id']) {
 			foreach ( $item as $metadata ) {
-				$metadata_as_json[] = $metadata->__toJSON();
+				$metadata_as[] = $metadata->__toArray();
 			}
-		} else {
+		} else if($request['collection_id']){
+
 			foreach ( $item as $metadata ) {
-				$metadata_as_json[] = $metadata->__toJSON();
+				$metadata_as[] = $metadata->__toArray();
 			}
 		}
 
-		return $metadata_as_json;
+		//var_dump($metadata_as);
+		return $metadata_as;
 	}
 
 	public function get_items( $request ) {

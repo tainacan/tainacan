@@ -40,16 +40,16 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
         $response = $this->server->dispatch( $request );
         $this->assertEquals( 201, $response->get_status() );
-        
-        $collection = json_decode($response->get_data());
-        $id = $collection->id;
+
+        $collection = $response->get_data();
+        $id = $collection['id'];
         
         $requestGet  = new \WP_REST_Request( 'GET', $this->namespace . '/collections/' . $id );
         $responseGet = $this->server->dispatch( $requestGet );
         
         $this->assertEquals( 200, $responseGet->get_status() );
         
-        $data = json_decode($responseGet->get_data(), true);
+        $data = $responseGet->get_data();
         
         $this->assertEquals('TesteJsonAdd', $data['name']);
     }
@@ -72,13 +72,11 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
     	$this->assertEquals( 200, $response->get_status() );
     	
-    	$data = json_decode($response->get_data());
+    	$data = $response->get_data();
     	//$data is a valid json?
-    	$this->assertTrue(json_last_error() === JSON_ERROR_NONE);
-    	
-    	$this->assertContainsOnly('string', $data);
-    	
-    	$one_collection = json_decode($data[0], true);
+    	//$this->assertTrue(json_last_error() === JSON_ERROR_NONE);
+
+    	$one_collection = $data[0];
     	$this->assertEquals('testeApi', $one_collection['name']);
     }
 
@@ -98,7 +96,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals(200, $response->get_status());
 
-		$data = json_decode($response->get_data(), true);
+		$data = $response->get_data();
 
 		$this->assertEquals($collection1->get_id(), $data['id']);
 
@@ -123,7 +121,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
 	    $this->assertEquals(200, $response->get_status());
 
-	    $data = json_decode($response->get_data(), true);
+	    $data = $response->get_data();
 
 	    $this->assertEquals($collection2->get_id(), $data['id']);
 

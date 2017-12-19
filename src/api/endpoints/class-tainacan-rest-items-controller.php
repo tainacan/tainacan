@@ -37,7 +37,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
-					//'permission_callback' => array($this, 'get_items_permissions_check'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_collection_params(),
 				),
 				array(
@@ -83,15 +83,15 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 				while ( $item->have_posts() ) {
 					$item->the_post();
 					$ite = new Entities\Item($item->post);
-					array_push($items_as_array, $ite->__toJSON());
+					array_push($items_as_array, $ite->__toArray());
 
 				}
 				wp_reset_postdata();
 			}
 
-			return json_encode($items_as_array);
+			return $items_as_array;
 		} elseif(!empty($item)){
-			return $item->__toJSON();
+			return $item->__toArray();
 		}
 
 		return $item;
@@ -132,6 +132,14 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
+		if(current_user_can('read')){
+			return true;
+		}
+
+		return false;
+	}
+
+	public function get_items_permissions_check( $request ) {
 		if(current_user_can('read')){
 			return true;
 		}
@@ -185,6 +193,13 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 		$collection_id = $request['collection_id'];
 		$item          = json_decode($request->get_body(), true);
 
+		if(empty($item)){
+			return new WP_REST_Response([
+				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'item'          => $item
+			], 400);
+		}
+
 		try {
 			$metadata = $this->prepare_item_for_database( [ $item, $collection_id ] );
 		} catch (\Error $exception){
@@ -197,14 +212,14 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 			$item_metadata  = new Entities\Item_Metadata_Entity($item, $metadata );
 			$metadata_added = $this->item_metadata->insert( $item_metadata );
 
-			return new WP_REST_Response($metadata_added->get_item()->__toJSON(), 201 );
+			return new WP_REST_Response($metadata_added->get_item()->__toArray(), 201 );
 		}
 
 
 		return new WP_REST_Response([
 			'error_message' => __('One or more values are invalid.', 'tainacan'),
 			'errors'        => $this->item->get_errors(),
-			'item'          => $this->item->__toJSON()
+			'item'          => $this->item->__toArray()
 		], 400);
 	}
 

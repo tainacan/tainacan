@@ -17,7 +17,7 @@ class Item extends Entity {
 	protected $repository = 'Tainacan_Items';
 	
 	public function  __toString(){
-		return 'Hello, my name is '. $this->get_name();
+		return 'Hello, my name is '. $this->get_title();
 	}
 
     /**

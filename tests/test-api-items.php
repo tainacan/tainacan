@@ -26,7 +26,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals(201, $response->get_status());
 
-		$data = json_decode($response->get_data(), true);
+		$data = $response->get_data();
 
 		$this->assertEquals('Vue JS 2', $data['title']);
 	}
@@ -66,12 +66,10 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals(200, $response->get_status());
 
-		$data = json_decode($response->get_data(), true);
+		$data = $response->get_data();
 
-		$this->assertContainsOnly('string', $data);
-
-		$first_item  = json_decode($data[0], true);
-		$second_item = json_decode($data[1], true);
+		$first_item  = $data[0];
+		$second_item = $data[1];
 
 		$this->assertEquals($item2->get_title(), $first_item['title']);
 		$this->assertEquals($item1->get_title(), $second_item['title']);
@@ -103,7 +101,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals(200, $response->get_status());
 
-		$data = json_decode($response->get_data(), true);
+		$data = $response->get_data();
 
 		$this->assertEquals($item1->get_title(), $data['title']);
 
@@ -136,7 +134,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals(200, $response->get_status());
 
-		$data = json_decode($response->get_data(), true);
+		$data = $response->get_data();
 
 		$this->assertEquals($item2->get_title(), $data['title']);
 
