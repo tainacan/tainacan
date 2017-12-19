@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
-import { eventBus } from './event-bus';
+import { eventBus } from './event-bus-web-components';
 
 Vue.use(VueCustomElement);
 
@@ -25,4 +25,4 @@ eventBus.registerComponent( 'tainacan-numeric' );
 
 Vue.customElement('tainacan-date', Date);
 
-eventBus.listen();
+eventBus.listener();

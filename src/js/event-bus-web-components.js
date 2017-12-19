@@ -11,13 +11,21 @@ export const eventBus = new Vue({
         registerComponent( name ){
             this.componentsTag.push( name );
         },
-        listen(){
+        listener(){
             const components = this.getAllComponents();
             for (let eventElement of components){
                 eventElement.addEventListener('changeValue', (event) => {
                     if ( event.detail[0] ){
                         const promisse = this.$store.dispatch('item/sendMetadata', event.detail[0] );
-                        
+                        promisse.then( response => {
+                            const parsedResponse = JSON.parse( response );
+                            eventElement.errorsMsg = JSON.stringify( [] );
+                            eventElement.value = parsedResponse.value;
+                        }, error => {
+                            const metadata = this.errors.find(error => error.metadata_id === event.detail[0].metadata_id );
+                            eventElement.errorsMsg = JSON.stringify( metadata.error );
+                            eventElement.value = event.detail[0].values;
+                        });
                     }
                 });
             }
@@ -30,15 +38,6 @@ export const eventBus = new Vue({
                     eventElement.value =  singleMetadata.values;
                 }
             }
-        },
-        getErrors(){
-            const components = this.getAllComponents();
-            for (let eventElement of components){
-                for(let error of this.errors){
-                    eventElement.errorsMsg =  JSON.stringify( error.error );
-                }
-            }
-
         },
         getAllComponents(){
             const components = [];

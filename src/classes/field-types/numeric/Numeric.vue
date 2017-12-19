@@ -2,8 +2,7 @@
     <div class="component">
         <p>{{ name }}</p>
         <input type="text" @blur="changeValue($event)" :value="getValue()">
-        <p
-                v-for="error in getErrors()">
+        <p  v-for="error in getErrors()">
             {{ error }}
         </p>
     </div>
