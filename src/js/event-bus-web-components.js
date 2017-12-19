@@ -18,9 +18,8 @@ export const eventBus = new Vue({
                     if ( event.detail[0] ){
                         const promisse = this.$store.dispatch('item/sendMetadata', event.detail[0] );
                         promisse.then( response => {
-                            const parsedResponse = JSON.parse( response );
                             eventElement.errorsMsg = JSON.stringify( [] );
-                            eventElement.value = parsedResponse.value;
+                            eventElement.value = response.value;
                         }, error => {
                             const metadata = this.errors.find(error => error.metadata_id === event.detail[0].metadata_id );
                             eventElement.errorsMsg = JSON.stringify( metadata.error );
