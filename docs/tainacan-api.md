@@ -145,6 +145,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
     "parent": "string",
     "slug": "string",
     "allow_insert": "string",
+    "collections_ids": "array"
   }
 ```
 
