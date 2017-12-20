@@ -30,11 +30,14 @@ class DevInterface {
     
     function add_admin_js() {
         global $TAINACAN_BASE_URL;
+        $components = ( has_filter( 'tainacan_register_web_components' ) ) ? apply_filters('tainacan_register_web_components') : [];
+
         wp_enqueue_script('wp-settings',$TAINACAN_BASE_URL . '/js/wp-settings.js');
 
         $settings = [
             'root' => esc_url_raw( rest_url() ).'tainacan/v2',
-            'nonce' => wp_create_nonce( 'wp_rest' )
+            'nonce' => wp_create_nonce( 'wp_rest' ),
+            'components' => $components
         ];
 
         wp_localize_script( 'wp-settings', 'wp_settings', $settings );
