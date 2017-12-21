@@ -186,13 +186,13 @@ class Taxonomies extends Repository {
 	    $taxonomy_name  = $args[1];
 	    $is_permanently = $args[2]['is_permanently'];
 
-    	$unregisted = unregister_taxonomy($taxonomy_name);
-
-    	if($unregisted instanceof \WP_Error){
-    		return $unregisted;
-	    }
-
 	    if($is_permanently === true){
+		    $unregistered = unregister_taxonomy($taxonomy_name);
+
+		    if($unregistered instanceof \WP_Error){
+			    return $unregistered;
+		    }
+
     		$deleted = wp_delete_post($taxonomy_id, true);
 
     		if(!$deleted){
