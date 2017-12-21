@@ -41,11 +41,14 @@ class Entity {
      * @var boolean
      */
     private $validated = false;
-    
-    /**
-     * Create an instance of Entity and get post data from database or create a new StdClass if $which is 0 
-     * @param integer|\WP_Post optional $which Entity ID or a WP_Post object for existing Entities. Leave empty to create a new Entity.
-     */
+
+	/**
+	 * Create an instance of Entity and get post data from database or create a new StdClass if $which is 0
+	 *
+	 * @param integer|\WP_Post optional $which Entity ID or a WP_Post object for existing Entities. Leave empty to create a new Entity.
+	 *
+	 * @throws \Exception
+	 */
     function __construct($which = 0) {
     	if (is_numeric($which) && $which > 0) {
     		$post = get_post($which);
@@ -165,14 +168,14 @@ class Entity {
             if (is_array($prop_value)) {
                 foreach ($prop_value as $val) {
                     if (!$validation->validate($val)) {
-                        //
+
                         $this->add_error('invalid', $message);
                         $is_valid = false;
                     }
                 }
             } else {
                 if (!$validation->validate($prop_value)) {
-                    //
+
                     $this->add_error('invalid', $message);
                     $is_valid = false;
                 }
@@ -253,8 +256,8 @@ class Entity {
 
 	    return $attributes;
     }
+
 	public function  __toJSON(){
 		return json_encode($this->__toArray(), JSON_NUMERIC_CHECK);
 	}
- 
 }

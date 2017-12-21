@@ -63,8 +63,7 @@ class Terms extends Repository {
         ]);
     }
     
-    public function get_default_properties($map)
-    {
+    public function get_default_properties($map) {
     	$defaults = parent::get_default_properties($map);
     	//its uses the term_id and not id
     	unset($defaults['id']);
@@ -150,7 +149,7 @@ class Terms extends Repository {
             $tainacan_term->set_user( get_term_meta($tainacan_term->get_id() , 'user', true ) );
 
             return $tainacan_term;
-        }else{
+        } else{
             return [];
         }
     }

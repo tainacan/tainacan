@@ -175,7 +175,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 					$set_ = 'set_' . $key;
 					$new_metadata->$set_( $value );
 				} catch (\Error $exception){
-					//echo $exception->getMessage();
+					// Do nothing
 				}
 			}
 
