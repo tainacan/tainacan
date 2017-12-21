@@ -7,6 +7,11 @@ export const eventBus = new Vue({
         componentsTag: [],
         errors : store.getters['item/getError']
     },
+    created(){
+        if( wp_settings.components ){
+            this.componentsTag = wp_settings.components;
+        }
+    },
     methods : {
         registerComponent( name ){
             this.componentsTag.push( name );
