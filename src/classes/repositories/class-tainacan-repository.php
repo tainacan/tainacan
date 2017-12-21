@@ -16,6 +16,8 @@ abstract class Repository {
 	 */
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
+		//add_action('admin_init', array(&$this, 'init_caps'));
+		add_action('init', array(&$this, 'init_caps'));
 		add_filter('tainacan-get-map-'.$this->get_name(), array($this, 'get_default_properties'));
 	}
 	
@@ -335,6 +337,61 @@ abstract class Repository {
     		}
     	}
     	return false;
+    }
+    
+    /**
+     * Update post_type caps using WordPress basic roles
+     * @param string $name //capability name
+     */
+    public function init_caps($name = '') {
+    	
+    	if( empty($name) ) {
+    		$name = $this->entities_type::get_post_type();
+    	}
+    	if($name) {
+	    	$wp_append_roles = array(
+	    		'administrator' => array(
+		    		'delete_'.$name.'s',
+		    		'delete_private_'.$name.'s',
+		    		'edit_'.$name,
+		    		'edit_'.$name.'s',
+		    		'edit_private_'.$name.'s',
+		    		'publish_'.$name.'s',
+		    		'read_'.$name,
+		    		'read_private_'.$name.'s',
+		    		'delete_published_'.$name.'s',
+		    		'edit_published_'.$name.'s',
+		    		'edit_published_'.$name,
+		    		'edit_others_'.$name.'s',
+		    		'edit_others_'.$name,
+		    		'delete_others_'.$name.'s',
+		    		'delete_others_'.$name,
+	    		),
+	    		'contributor' => array(
+					'read_'.$name,
+				),
+				'subscriber' => array(
+					'read_'.$name,
+				),
+				'author' => array(
+					'read_'.$name,
+				),
+	    		'editor' => array(
+					'read_'.$name,
+	    		)
+	    	);
+	    	// append new capabilities to WordPress default roles 
+	    	foreach ($wp_append_roles as $role_name => $caps) {
+	    		$role = get_role($role_name);
+	    		if(!is_object($role)) {
+	    			throw new \Exception(sprintf('Capability "%s" not found', $role_name));
+	    		}
+	    		
+	    		foreach ($caps as $cap) {
+	    			$role->add_cap($cap);
+	    		}
+	    	}
+    	}
     }
     
     /**

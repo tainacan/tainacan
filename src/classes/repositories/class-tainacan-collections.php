@@ -134,7 +134,7 @@ class Collections extends Repository {
             'query_var'           => true,
             'can_export'          => true,
             'rewrite'             => true,
-            'capability_type'     => 'post',
+        	'capability_type'     => Entities\Collection::get_post_type(),
             'supports'            => [
                 'title',
                 'editor',

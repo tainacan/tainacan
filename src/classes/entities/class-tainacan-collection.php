@@ -77,7 +77,7 @@ class Collection extends Entity {
             'rewrite'             => [
                 'slug' => $this->get_slug()
             ],
-            'capability_type'     => 'post',
+        	'capability_type'     => $this->get_db_identifier(),
             'supports'            => [
                 'title',
                 'editor',

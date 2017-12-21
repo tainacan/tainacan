@@ -37,6 +37,11 @@ class Items extends Repository {
         ]);
     }
     
+    /**
+     * Register each Item post_type
+     * {@inheritDoc}
+     * @see \Tainacan\Repositories\Repository::register_post_type()
+     */
     public function register_post_type() {
         
         global $Tainacan_Collections, $Tainacan_Taxonomies;
