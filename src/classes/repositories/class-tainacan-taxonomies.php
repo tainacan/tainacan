@@ -18,46 +18,46 @@ class Taxonomies extends Repository {
             'name'            =>  [
                 'map'         => 'post_title',
                 'title'       => __('Name', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Name of the taxonomy', 'tainacan'),
-                'on_error'   => __('The taxonomy should be a text value and not empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty(),
+                'type'        => 'string',
+                'description' => __('Name of the taxonomy', 'tainacan'),
+                'on_error'    => __('The taxonomy should be a text value and not empty', 'tainacan'),
+                'validation'  => v::stringType()->notEmpty(),
             ],
             'parent'          =>  [
                 'map'         => 'parent',
-                'title'      => __('Parent', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('Parent taxonomy', 'tainacan'),
+                'title'       => __('Parent', 'tainacan'),
+                'type'        => 'integer',
+                'description' => __('Parent taxonomy', 'tainacan'),
                 'validation'  => ''
             ],
             'description'     =>  [
                 'map'         => 'post_content',
-                'title'      => __('Description', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The taxonomy description', 'tainacan'),
+                'title'       => __('Description', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('The taxonomy description', 'tainacan'),
                 'validation'  => ''
             ],
             'slug'            =>  [
                 'map'         => 'post_name',
-                'title'      => __('Slug', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The taxonomy slug', 'tainacan'),
+                'title'       => __('Slug', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('The taxonomy slug', 'tainacan'),
                 'validation'  => ''
             ],
             'allow_insert'    =>  [
                 'map'         => 'meta',
-                'title'      => __('Allow insert', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Allow/Deny the creation of new terms in the taxonomy', 'tainacan'),
-                'on_error'   => __('Allow insert is invalid, allowed values ( yes/no )', 'tainacan'),
-                'validation' => v::stringType()->in(['yes', 'no']), // yes or no
-                'default'    => 'yes'
+                'title'       => __('Allow insert', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('Allow/Deny the creation of new terms in the taxonomy', 'tainacan'),
+                'on_error'    => __('Allow insert is invalid, allowed values ( yes/no )', 'tainacan'),
+                'validation'  => v::stringType()->in(['yes', 'no']), // yes or no
+                'default'     => 'yes'
             ],
         	'collections_ids' =>  [
         		'map'         => 'meta_multi',
-                'title'      => __('Collections', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The IDs of collection where the taxonomy is used', 'tainacan'),
+                'title'       => __('Collections', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('The IDs of collection where the taxonomy is used', 'tainacan'),
         		'validation'  => ''
         	],
         ]);
@@ -181,7 +181,33 @@ class Taxonomies extends Repository {
 
     }
 
-    public function delete($object){
+    public function delete($args){
+	    $taxonomy_id    = $args[0];
+	    $taxonomy_name  = $args[1];
+	    $is_permanently = $args[2]['is_permanently'];
 
+	    if($is_permanently === true){
+		    $unregistered = unregister_taxonomy($taxonomy_name);
+
+		    if($unregistered instanceof \WP_Error){
+			    return $unregistered;
+		    }
+
+    		$deleted = wp_delete_post($taxonomy_id, true);
+
+    		if(!$deleted){
+    			return $deleted;
+		    }
+
+    		return new Entities\Taxonomy($deleted);
+	    }
+
+	    $trashed = wp_trash_post($taxonomy_id);
+
+    	if(!$trashed){
+    		return $trashed;
+	    }
+
+    	return new Entities\Taxonomy($trashed);
     }
 }
