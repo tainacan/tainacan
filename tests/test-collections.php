@@ -17,11 +17,41 @@ class Collections extends TAINACAN_UnitTestCase {
 	 * @group permissions
 	 */
 	function test_permissions () {
+		$x = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'testeCaps',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC'
+			),
+			true
+		);
 		$new_user = $this->factory()->user->create(array( 'role' => 'subscriber' ));
 		wp_set_current_user($new_user);
 		$user_id = get_current_user_id();
 		$this->assertEquals($new_user, $user_id);
-		//TODO test collection insert, update, save, fetch permissions
+		
+		global $Tainacan_Collections;
+		$this->assertTrue($Tainacan_Collections->can_read($x));
+		
+		$autor1 = $this->factory()->user->create(array( 'role' => 'author' ));
+		wp_set_current_user($autor1);
+		$autor1_id = get_current_user_id();
+		$x = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'testeCapsOwner',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC'
+			),
+			true
+		);
+		$this->assertEquals($autor1_id, $x->WP_Post->post_author);
+		$autor2 = $this->factory()->user->create(array( 'role' => 'author' ));
+		wp_set_current_user($autor2);
+		$current_user_id = get_current_user_id();
+		$this->assertEquals($autor2, $current_user_id);
+		$this->assertFalse($Tainacan_Collections->can_edit($x, $current_user_id));
 	}
 	
 	/**

@@ -65,12 +65,14 @@ abstract class Repository {
 	 * @throws \Exception
 	 */
 	public function insert($obj) {
+		
+		if(!user_can(get_current_user_id(), 'edit'))
+		
 		// validate
 		if ( in_array($obj->get_status(), apply_filters('tainacan-status-validation', ['publish','future','private'])) && !$obj->get_validated()){
 			throw new \Exception('Entities must be validated before you can save them');
             // TODO: Throw Warning saying you must validate object before insert()
 		}
-		
 		
 		$map = $this->get_map();
 		
@@ -417,6 +419,98 @@ abstract class Repository {
      */
     public abstract function register_post_type();
     
+    /**
+     * Check if $user can edit/create a repository the entity
+     * @param Entities\Entity $entity
+     * @param int|\WP_User $user default is null for the current user
+     * @return boolean
+     */
+    public function can_edit($entity, $user = null) {
+    	if(is_null($user)) {
+    		$user = get_current_user_id();
+    	}
+    	elseif(is_object($user)) {
+    		$user = $user->ID;
+    	}
+    	
+    	$name = $entity::get_post_type();
+    	if($name === false) {
+    		return user_can($user, 'edit');
+    	}
+    	
+    	/*'edit_'.$name,
+    	'edit_'.$name.'s',
+    	'edit_private_'.$name.'s',
+    	'edit_published_'.$name.'s',
+    	'edit_published_'.$name,
+    	'edit_others_'.$name.'s',
+    	'edit_others_'.$name,*/
+    	$status = $entity->get_status();
+    	$owner_id = $entity->WP_Post->post_author;
+    	
+    	/** Treat owner post edit **/
+    	if($user == $owner_id) {
+    		if($status == 'publish') {
+    			return user_can('edit_published_'.$name);
+    		}
+    		else {
+    			return user_can($user, 'edit_'.$name);
+    		}
+    	}
+    	elseif(user_can($user, 'edit_others_'.$name)) {
+    		if($status == 'publish') {
+    			return user_can('edit_published_'.$name);
+    		}
+    		elseif($status == 'private') {
+    			return 'edit_private_'.$name.'s';
+    		}
+    		else {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * Check if $user can read the entity
+     * @param Entities\Entity $entity
+     * @param int|\WP_User $user default is null for the current user
+     * @return boolean
+     */
+    public function can_read($entity, $user = null) {
+    	if(is_null($user)) {
+    		$user = get_current_user_id();
+    	}
+    	elseif(is_object($user)) {
+    		$user = $user->ID;
+    	}
+    	
+   		$name = $entity::get_post_type();
+   		if($name === false)
+   		{
+   			return user_can($user, 'read');
+   		}
+    	
+    	$status = $entity->get_status();
+    	
+    	if($status == 'private') {
+    		return user_can($user, 'read_private_'.$name.'s');
+    	}
+    	else {
+    		return user_can($user, 'read_'.$name);
+    	}
+    	return false;
+    }
+    
+    /**
+     * Check if $user can publish the entity
+     * @param Entities\Entity $entity
+     * @param int|\WP_User $user default is null for the current user
+     * @return boolean
+     */
+    public function can_publish($entity, $user = null) {
+    	
+    }
 }
 
 ?>
