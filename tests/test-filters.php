@@ -20,7 +20,8 @@ class Filters extends TAINACAN_UnitTestCase {
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
 	        array(
-	        	'name' => 'teste'
+	        	'name' => 'teste',
+	        	'description' => 'Filter teste colletion'
 	        ),
 	        true
         );
@@ -29,7 +30,8 @@ class Filters extends TAINACAN_UnitTestCase {
         	'filter',
 	        array(
 	        	'name'       => 'filtro',
-		        'collection' => $collection
+		        'collection' => $collection,
+	        	'description' => 'Teste Filtro'
 	        ),
 	        true
         );
@@ -46,7 +48,8 @@ class Filters extends TAINACAN_UnitTestCase {
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
 	        array(
-	        	'name' => 'teste'
+	        	'name' => 'teste',
+	        	'description' => 'Filter teste colletion'
 	        ),
 	        true
         );
@@ -58,7 +61,8 @@ class Filters extends TAINACAN_UnitTestCase {
 		    array(
 		    	'name'              => 'metadado',
 			    'collection_id'     => $collection->get_id(),
-			    'field_type' => $type
+			    'field_type' => $type,
+		    	'description' => 'descricao',
 		    ),
 		    true
 	    );
@@ -70,6 +74,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		    array(
 		    	'name'               => 'filtro',
 			    'collection'         => $collection,
+		    	'description' => 'descricao',
 			    'metadata'           => $metadata,
 			    'filter_type' => $filter_list_type
 		    ),
