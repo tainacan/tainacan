@@ -47,6 +47,7 @@ class Logs extends Repository {
                 'title'       => __('Description', 'tainacan'),
                 'type'        => 'string',
                 'description' => __('The log description'),
+            	'default'	 => '',
                 'validation'  => ''
             ],
             'slug'            =>  [

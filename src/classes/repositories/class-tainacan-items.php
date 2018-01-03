@@ -23,6 +23,7 @@ class Items extends Repository {
                 'title'      => __('Description', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('The item description', 'tainacan'),
+            	'default'	 => '',
                 'validation' => ''
             ],
             'collection_id' =>  [

@@ -35,6 +35,7 @@ class Taxonomies extends Repository {
                 'title'       => __('Description', 'tainacan'),
                 'type'        => 'string',
                 'description' => __('The taxonomy description', 'tainacan'),
+            	'default'	 => '',
                 'validation'  => ''
             ],
             'slug'            =>  [

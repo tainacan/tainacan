@@ -38,6 +38,7 @@ class Collections extends Repository {
                 'title'       => __('Description', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Collection description', 'tainacan'),
+            	'default'	 => '',
                 //'validation' => v::stringType(),
             ],
             'slug'           =>  [

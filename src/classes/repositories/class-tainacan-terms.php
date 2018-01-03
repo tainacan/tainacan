@@ -42,6 +42,7 @@ class Terms extends Repository {
                 'title'      => __('Description', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('The term description', 'tainacan'),
+            	'default'	 => '',
                 'validation' => ''
             ],
             'taxonomy'    => [

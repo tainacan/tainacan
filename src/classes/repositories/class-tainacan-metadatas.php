@@ -46,6 +46,7 @@ class Metadatas extends Repository {
                 'title'      => __('Description', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('The metadata description', 'tainacan'),
+            	'default'	 => '',
                 //'on_error'   => __('The description should be a text value', 'tainacan'),
                 //'validation' => v::stringType()->notEmpty(),
             ],
