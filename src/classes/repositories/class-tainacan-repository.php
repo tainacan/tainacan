@@ -17,7 +17,7 @@ abstract class Repository {
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
 		//add_action('admin_init', array(&$this, 'init_caps'));
-		add_action('init', array(&$this, 'init_caps'));
+		add_action('init', array(&$this, 'init_capabilities'), 11);
 		add_filter('tainacan-get-map-'.$this->get_name(), array($this, 'get_default_properties'));
 	}
 	
@@ -66,45 +66,47 @@ abstract class Repository {
 	 */
 	public function insert($obj) {
 		
-		if(!user_can(get_current_user_id(), 'edit'))
-		
-		// validate
-		if ( in_array($obj->get_status(), apply_filters('tainacan-status-validation', ['publish','future','private'])) && !$obj->get_validated()){
-			throw new \Exception('Entities must be validated before you can save them');
-            // TODO: Throw Warning saying you must validate object before insert()
-		}
-		
-		$map = $this->get_map();
-		
-		// First iterate through the native post properties
-		foreach ($map as $prop => $mapped) {
-			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
+		if( $this->can_edit($obj))
+		{
+			// validate
+			if ( in_array($obj->get_status(), apply_filters('tainacan-status-validation', ['publish','future','private'])) && !$obj->get_validated()){
+				throw new \Exception('Entities must be validated before you can save them');
+	            // TODO: Throw Warning saying you must validate object before insert()
 			}
-		}
-		$obj->WP_Post->post_type = $obj::get_post_type();
-		//$obj->WP_Post->post_status = 'publish';
-		
-		// TODO verificar se salvou mesmo
-		$id = wp_insert_post($obj->WP_Post);
-		
-		// reset object
-		$obj->WP_Post = get_post($id);
-		
-		// Now run through properties stored as postmeta
-		foreach ($map as $prop => $mapped) {
 			
-            if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
-                $this->insert_metadata($obj, $prop);
-            }
-            
+			$map = $this->get_map();
+			
+			// First iterate through the native post properties
+			foreach ($map as $prop => $mapped) {
+				if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
+					$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
+				}
+			}
+			$obj->WP_Post->post_type = $obj::get_post_type();
+			//$obj->WP_Post->post_status = 'publish';
+			
+			// TODO verificar se salvou mesmo
+			$id = wp_insert_post($obj->WP_Post);
+			
+			// reset object
+			$obj->WP_Post = get_post($id);
+			
+			// Now run through properties stored as postmeta
+			foreach ($map as $prop => $mapped) {
+				
+	            if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
+	                $this->insert_metadata($obj, $prop);
+	            }
+	            
+			}
+			
+			do_action('tainacan-insert', $obj);
+			do_action('tainacan-insert-'.$obj->get_post_type(), $obj);
+			
+			// return a brand new object
+			return new $this->entities_type($obj->WP_Post);
 		}
-		
-		do_action('tainacan-insert', $obj);
-		do_action('tainacan-insert-'.$obj->get_post_type(), $obj);
-		
-		// return a brand new object
-		return new $this->entities_type($obj->WP_Post);
+		throw new \Exception('User cannot edit this post_type: '.$obj->get_post_type());
 	}
     
     /**
@@ -265,7 +267,7 @@ abstract class Repository {
 
     /**
      * return the value for a mapped property from database
-     * @param Tainacan\Entities\Entity
+     * @param Entities\Entity $entity
      * @param string $prop id of property
      * @return mixed property value
      */
@@ -278,7 +280,7 @@ abstract class Repository {
     	}
     	
     	$mapped = $map[$prop]['map'];
-    	
+    	$property = '';
     	if ( $mapped == 'meta') {
     		$property = isset($entity->WP_Post->ID) ? get_post_meta($entity->WP_Post->ID, $prop, true) : null;
     	} elseif ( $mapped == 'meta_multi') {
@@ -291,8 +293,9 @@ abstract class Repository {
     		$property = isset($entity->WP_Term->$mapped) ? $entity->WP_Term->$mapped : null;
     	}
     	
-    	if (empty($property) && isset($map[$prop]['default']) && !empty($map[$prop]['default'])){
+    	if (empty($property) && array_key_exists('default', $map[$prop])){
     		$property = $map[$prop]['default'];
+    		$entity->set_mapped_property($prop, $property);
     	}
     	
     	return $property;
@@ -345,13 +348,13 @@ abstract class Repository {
      * Update post_type caps using WordPress basic roles
      * @param string $name //capability name
      */
-    public function init_caps($name = '') {
+    public function init_capabilities($name = '') {
     	
     	if( empty($name) ) {
     		$name = $this->entities_type::get_post_type();
     	}
     	if($name) {
-	    	$wp_append_roles = array(
+	    	$wp_append_roles = apply_filters('tainacan-default-capabilities', array(
 	    		'administrator' => array(
 		    		'delete_'.$name.'s',
 		    		'delete_private_'.$name.'s',
@@ -370,18 +373,42 @@ abstract class Repository {
 		    		'delete_others_'.$name,
 	    		),
 	    		'contributor' => array(
-					'read_'.$name,
+	    			'delete_'.$name.'s',
+	    			'edit_'.$name,
+	    			'edit_'.$name.'s',
+	    			'read_'.$name,
 				),
 				'subscriber' => array(
 					'read_'.$name,
 				),
 				'author' => array(
+					'delete_'.$name.'s',
+					'edit_'.$name,
+					'edit_'.$name.'s',
+					'publish_'.$name.'s',
 					'read_'.$name,
+					'delete_published_'.$name.'s',
+					'edit_published_'.$name.'s',
+					'edit_published_'.$name,
 				),
 	    		'editor' => array(
-					'read_'.$name,
+	    			'delete_'.$name.'s',
+	    			'delete_private_'.$name.'s',
+	    			'edit_'.$name,
+	    			'edit_'.$name.'s',
+	    			'edit_private_'.$name.'s',
+	    			'publish_'.$name.'s',
+	    			'read_'.$name,
+	    			'read_private_'.$name.'s',
+	    			'delete_published_'.$name.'s',
+	    			'edit_published_'.$name.'s',
+	    			'edit_published_'.$name,
+	    			'edit_others_'.$name.'s',
+	    			'edit_others_'.$name,
+	    			'delete_others_'.$name.'s',
+	    			'delete_others_'.$name,
 	    		)
-	    	);
+	    	));
 	    	// append new capabilities to WordPress default roles 
 	    	foreach ($wp_append_roles as $role_name => $caps) {
 	    		$role = get_role($role_name);
@@ -435,7 +462,7 @@ abstract class Repository {
     	
     	$name = $entity::get_post_type();
     	if($name === false) {
-    		return user_can($user, 'edit');
+    		return user_can($user, 'edit_posts');
     	}
     	
     	/*'edit_'.$name,
@@ -446,15 +473,19 @@ abstract class Repository {
     	'edit_others_'.$name.'s',
     	'edit_others_'.$name,*/
     	$status = $entity->get_status();
-    	$owner_id = $entity->WP_Post->post_author;
+    	$owner_id = $user;
+    	
+    	if(isset($entity->WP_Post->post_author)) {
+    		$owner_id = $entity->WP_Post->post_author;
+    	}
     	
     	/** Treat owner post edit **/
     	if($user == $owner_id) {
     		if($status == 'publish') {
-    			return user_can('edit_published_'.$name);
+    			return user_can($user, 'edit_published_'.$name);
     		}
     		else {
-    			return user_can($user, 'edit_'.$name);
+    			return user_can($user, 'edit_'.$name.'s') || user_can($user, 'edit_'.$name); // TODO differ multi edit from single
     		}
     	}
     	elseif(user_can($user, 'edit_others_'.$name)) {
@@ -462,7 +493,7 @@ abstract class Repository {
     			return user_can('edit_published_'.$name);
     		}
     		elseif($status == 'private') {
-    			return 'edit_private_'.$name.'s';
+    			return user_can($user, 'edit_private_'.$name.'s');
     		}
     		else {
     			return true;
