@@ -315,7 +315,20 @@ abstract class Repository {
 		return $cpts;
     }
     
+    /**
+     * 
+     * @param integer|\WP_Post $post
+     * @throws \Exception
+     * @return \Tainacan\Entities\Entity|boolean
+     */
     public static function get_entity_by_post($post) {
+    	if(is_numeric($post) || is_array($post)) {
+    		$post = get_post($post);
+    	}
+    	elseif(is_object($post) && $post instanceof Entity ) {
+    		return $post;
+    	}
+    	
     	$post_type = $post->post_type;
     	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
     	
@@ -357,6 +370,7 @@ abstract class Repository {
 	    	$wp_append_roles = apply_filters('tainacan-default-capabilities', array(
 	    		'administrator' => array(
 		    		'delete_'.$name.'s',
+	    			'delete_'.$name,
 		    		'delete_private_'.$name.'s',
 		    		'edit_'.$name,
 		    		'edit_'.$name.'s',
@@ -374,6 +388,7 @@ abstract class Repository {
 	    		),
 	    		'contributor' => array(
 	    			'delete_'.$name.'s',
+	    			'delete_'.$name,
 	    			'edit_'.$name,
 	    			'edit_'.$name.'s',
 	    			'read_'.$name,
@@ -383,6 +398,7 @@ abstract class Repository {
 				),
 				'author' => array(
 					'delete_'.$name.'s',
+					'delete_'.$name,
 					'edit_'.$name,
 					'edit_'.$name.'s',
 					'publish_'.$name.'s',
@@ -393,6 +409,7 @@ abstract class Repository {
 				),
 	    		'editor' => array(
 	    			'delete_'.$name.'s',
+	    			'delete_'.$name,
 	    			'delete_private_'.$name.'s',
 	    			'edit_'.$name,
 	    			'edit_'.$name.'s',
@@ -447,7 +464,7 @@ abstract class Repository {
     public abstract function register_post_type();
     
     /**
-     * Check if $user can edit/create a repository the entity
+     * Check if $user can edit/create a entity
      * @param Entities\Entity $entity
      * @param int|\WP_User $user default is null for the current user
      * @return boolean
@@ -459,6 +476,7 @@ abstract class Repository {
     	elseif(is_object($user)) {
     		$user = $user->ID;
     	}
+    	$entity = self::get_entity_by_post($entity);
     	
     	$name = $entity::get_post_type();
     	if($name === false) {
@@ -481,19 +499,21 @@ abstract class Repository {
     	
     	/** Treat owner post edit **/
     	if($user == $owner_id) {
-    		if($status == 'publish') {
-    			return user_can($user, 'edit_published_'.$name);
+    		//Uncomment this to treat edit_published_posts
+    		/*if($status == 'publish') {
+    			return user_can($user, 'edit_published_'.$name.'s');
     		}
     		else {
-    			return user_can($user, 'edit_'.$name.'s') || user_can($user, 'edit_'.$name); // TODO differ multi edit from single
-    		}
+    			return user_can($user, $entity->cap->edit_posts);
+    		}*/
+    		return user_can($user, $entity->cap->edit_posts);
     	}
-    	elseif(user_can($user, 'edit_others_'.$name)) {
+    	elseif(user_can($user, $entity->cap->edit_others_posts)) {
     		if($status == 'publish') {
-    			return user_can('edit_published_'.$name);
+    			return user_can($user, $entity->cap->publish_posts);
     		}
     		elseif($status == 'private') {
-    			return user_can($user, 'edit_private_'.$name.'s');
+    			return user_can($user, $entity->cap->edit_private_posts);
     		}
     		else {
     			return true;
@@ -515,6 +535,7 @@ abstract class Repository {
     	elseif(is_object($user)) {
     		$user = $user->ID;
     	}
+    	$entity = self::get_entity_by_post($entity);
     	
    		$name = $entity::get_post_type();
    		if($name === false)
@@ -523,12 +544,71 @@ abstract class Repository {
    		}
     	
     	$status = $entity->get_status();
-    	
     	if($status == 'private') {
-    		return user_can($user, 'read_private_'.$name.'s');
+    		return user_can($user, $entity->cap->read_private_posts);
     	}
     	else {
-    		return user_can($user, 'read_'.$name);
+    		return user_can($user, $entity->cap->read_post);
+    	}
+    	return false;
+    }
+    
+    /**
+     * Check if $user can delete the entity
+     * @param Entities\Entity $entity
+     * @param int|\WP_User $user default is null for the current user
+     * @return boolean
+     */
+    public function can_delete($entity, $user = null) {
+    	if(is_null($user)) {
+    		$user = get_current_user_id();
+    	}
+    	elseif(is_object($user)) {
+    		$user = $user->ID;
+    	}
+   		$entity = self::get_entity_by_post($entity);
+    	$name = $entity::get_post_type();
+    	if($name === false) {
+    		return user_can($user, 'delete_post');
+    	}
+    	
+    	/*	'delete_'.$name.'s',
+    		'delete_private_'.$name.'s',
+    		'delete_published_'.$name.'s',
+    		'delete_others_'.$name.'s',
+    		'delete_others_'.$name,*/
+    	$status = $entity->get_status();
+    	$owner_id = $user;
+    	
+    	if(isset($entity->WP_Post->post_author)) {
+    		$owner_id = $entity->WP_Post->post_author;
+    	}
+    	
+    	/** Treat owner post delete **/
+    	if($user == $owner_id) {
+    		//Uncomment this to treat delete_published_posts
+    		/*if($status == 'publish') {
+    			return user_can($user, 'delete_published_'.$name.'s');
+    		}
+    		else {
+    			return user_can($user,  'delete_'.$name.'s');
+    		}*/
+    		return user_can($user,  $entity->cap->delete_post);
+    	}
+    	//Uncomment this to treat delete others published or private posts caps
+    	/*elseif(user_can($user, 'delete_others_'.$name.'s') ) {
+    		if($status == 'publish') {
+    			return user_can($user, 'delete_published_'.$name.'s');
+    		}
+    		elseif($status == 'private') {
+    			return user_can($user, 'delete_private_'.$name.'s');
+    		}
+    		else {
+    			return true;
+    		}
+    	}*/
+    	elseif (user_can($user, $entity->cap->edit_others_posts) ) {
+    		return user_can($user,  $entity->cap->delete_post);
     	}
     	return false;
     }
