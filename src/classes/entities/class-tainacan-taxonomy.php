@@ -18,29 +18,6 @@ class Taxonomy extends Entity {
      */
     protected $repository = 'Tainacan_Taxonomies';
 
-	/**
-	 * Taxonomy constructor.
-	 *
-	 * @param int $which
-	 */
-	function __construct( $which = 0 ) {
-
-        $this->repository = 'Tainacan_Taxonomies';
-
-        if ( is_numeric( $which ) && $which > 0) {
-            $post = get_post( $which );
-
-            if ( $post instanceof \WP_Post) {
-                $this->WP_Post = get_post( $which );
-            }
-
-        } elseif ( $which instanceof \WP_Post ) {
-            $this->WP_Post = $which;
-        } else {
-            $this->WP_Post = new \StdClass();
-        }
-    }
-
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_name();
 	}
