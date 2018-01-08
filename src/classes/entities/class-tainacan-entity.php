@@ -41,6 +41,27 @@ class Entity {
      * @var boolean
      */
     private $validated = false;
+    
+    /**
+     * Capabilities of the post_type, one of:
+     * - edit_posts - Controls whether objects of this post type can be edited.
+	 * - edit_others_posts - Controls whether objects of this type owned by other users
+	 *   can be edited. If the post type does not support an author, then this will
+	 *   behave like edit_posts.
+	 * - publish_posts - Controls publishing objects of this post type.
+	 * - read_private_posts - Controls whether private objects can be read.
+     * - read - Controls whether objects of this post type can be read.
+	 * - delete_posts - Controls whether objects of this post type can be deleted.
+	 * - delete_private_posts - Controls whether private objects can be deleted.
+	 * - delete_published_posts - Controls whether published objects can be deleted.
+	 * - delete_others_posts - Controls whether objects owned by other users can be
+	 *   can be deleted. If the post type does not support an author, then this will
+	 *   behave like delete_posts.
+	 * - edit_private_posts - Controls whether private objects can be edited.
+	 * - edit_published_posts - Controls whether published objects can be edited.
+     * @var object
+     */
+    public $cap;
 
 	/**
 	 * Create an instance of Entity and get post data from database or create a new StdClass if $which is 0
@@ -86,6 +107,15 @@ class Entity {
     		else {
     			throw new \Exception('the returned post is not the same type of the entity! expected: '.$this->get_post_type().' and actual: '.$this->WP_Post->post_type );
     		}
+    	}
+    	if($this->get_post_type() !== false) {
+    		$post_type_obj = get_post_type_object(self::get_post_type());
+    		if(!is_object($post_type_obj)) { //may be called before post_type registration
+    			global ${$this->repository};
+    			${$this->repository}->register_post_type();
+    			$post_type_obj = get_post_type_object(self::get_post_type());
+    		}
+    		$this->cap = $post_type_obj->cap;
     	}
     }
     
