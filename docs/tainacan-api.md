@@ -154,3 +154,10 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
     2.1. Endpoints supported:
     
     2.1.1 GET (Fetch a taxonomy)
+    
+    2.1.2 DELETE (Delete or trash a taxonomy)
+    
+```
+ To delete pass in body of requisition the parameter is_permanently as true.
+ To only trash pass false.
+```

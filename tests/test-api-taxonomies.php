@@ -4,6 +4,48 @@ namespace Tainacan\Tests;
 
 class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_UnitApiTestCase {
 
+	public function test_delete_or_trash_a_taxonomy(){
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => '1genero',
+				'description'  => 'tipos de musica',
+				'allow_insert' => 'yes',
+				'status'       => 'publish'
+			),
+			true
+		);
+
+		$is_permanently = json_encode(['is_permanently' => false]);
+
+		$request_trash = new \WP_REST_Request(
+			'DELETE', $this->namespace . '/taxonomies/' . $taxonomy->get_id()
+		);
+
+		$request_trash->set_body($is_permanently);
+
+		$this->server->dispatch($request_trash);
+
+		$taxmy = get_post($taxonomy->get_id());
+
+		$this->assertEquals('trash', $taxmy->post_status);
+		$this->assertEquals(true, taxonomy_exists($taxonomy->get_db_identifier()));
+
+		################ DELETE ###
+
+		$is_permanently = json_encode(['is_permanently' => true]);
+
+		$request_delete = new \WP_REST_Request(
+			'DELETE', $this->namespace . '/taxonomies/' . $taxonomy->get_id()
+		);
+
+		$request_delete->set_body($is_permanently);
+
+		$this->server->dispatch($request_delete);
+
+		$this->assertEquals(false, taxonomy_exists($taxonomy->get_db_identifier()));
+	}
+
 	public function test_create_taxonomy(){
 		$taxonomy_json = json_encode([
 			'name'         => 'Nome',
