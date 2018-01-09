@@ -12,6 +12,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	private $items_repository;
 	private $item;
 	private $item_metadata;
+	private $collections_repository;
 
 	/**
 	 * TAINACAN_REST_Items_Controller constructor.
@@ -23,6 +24,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 		$this->items_repository = new Repositories\Items();
 		$this->item = new Entities\Item();
 		$this->item_metadata = new Repositories\Item_Metadata();
+		$this->collections_repository = new Repositories\Collections();
 
 		add_action('rest_api_init', array($this, 'register_routes'));
 	}
@@ -132,19 +134,13 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
-		if(current_user_can('read')){
-			return true;
-		}
-
-		return false;
+		$item = $this->items_repository->fetch($request['item_id']);
+		return $this->items_repository->can_read($item);
 	}
 
 	public function get_items_permissions_check( $request ) {
-		if(current_user_can('read')){
-			return true;
-		}
-
-		return false;
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+		return $this->collections_repository->can_read($collection);
 	}
 
 	/**
@@ -161,7 +157,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 			$this->item->$set_($value);
 		}
 
-		$collection = new Entities\Collection($request[1]);
+		$collection = $this->collections_repository->fetch($request[1]);
 
 		$this->item->set_collection($collection);
 
@@ -229,11 +225,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(current_user_can('edit_posts')){
-			return true;
-		}
-
-		return false;
+		return $this->items_repository->can_edit($this->item);
 	}
 
 	/**
@@ -260,11 +252,8 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
-		if(current_user_can('delete_posts')){
-			return true;
-		}
-
-		return false;
+		$item = $this->items_repository->fetch($request['item_id']);
+		return $this->items_repository->can_delete($item);
 	}
 
 }
