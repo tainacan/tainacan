@@ -65,48 +65,43 @@ abstract class Repository {
 	 * @throws \Exception
 	 */
 	public function insert($obj) {
-		
-		if( $this->can_edit($obj))
-		{
-			// validate
-			if ( in_array($obj->get_status(), apply_filters('tainacan-status-validation', ['publish','future','private'])) && !$obj->get_validated()){
-				throw new \Exception('Entities must be validated before you can save them');
-	            // TODO: Throw Warning saying you must validate object before insert()
-			}
-			
-			$map = $this->get_map();
-			
-			// First iterate through the native post properties
-			foreach ($map as $prop => $mapped) {
-				if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-					$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
-				}
-			}
-			$obj->WP_Post->post_type = $obj::get_post_type();
-			//$obj->WP_Post->post_status = 'publish';
-			
-			// TODO verificar se salvou mesmo
-			$id = wp_insert_post($obj->WP_Post);
-			
-			// reset object
-			$obj->WP_Post = get_post($id);
-			
-			// Now run through properties stored as postmeta
-			foreach ($map as $prop => $mapped) {
-				
-	            if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
-	                $this->insert_metadata($obj, $prop);
-	            }
-	            
-			}
-			
-			do_action('tainacan-insert', $obj);
-			do_action('tainacan-insert-'.$obj->get_post_type(), $obj);
-			
-			// return a brand new object
-			return new $this->entities_type($obj->WP_Post);
+		// validate
+		if ( in_array($obj->get_status(), apply_filters('tainacan-status-validation', ['publish','future','private'])) && !$obj->get_validated()){
+			throw new \Exception('Entities must be validated before you can save them');
+            // TODO: Throw Warning saying you must validate object before insert()
 		}
-		throw new \Exception('User cannot edit this post_type: '.$obj->get_post_type());
+		
+		$map = $this->get_map();
+		
+		// First iterate through the native post properties
+		foreach ($map as $prop => $mapped) {
+			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
+				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
+			}
+		}
+		$obj->WP_Post->post_type = $obj::get_post_type();
+		//$obj->WP_Post->post_status = 'publish';
+		
+		// TODO verificar se salvou mesmo
+		$id = wp_insert_post($obj->WP_Post);
+		
+		// reset object
+		$obj->WP_Post = get_post($id);
+		
+		// Now run through properties stored as postmeta
+		foreach ($map as $prop => $mapped) {
+			
+            if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
+                $this->insert_metadata($obj, $prop);
+            }
+            
+		}
+		
+		do_action('tainacan-insert', $obj);
+		do_action('tainacan-insert-'.$obj->get_post_type(), $obj);
+		
+		// return a brand new object
+		return new $this->entities_type($obj->WP_Post);
 	}
     
     /**
