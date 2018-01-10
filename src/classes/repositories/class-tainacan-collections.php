@@ -135,7 +135,24 @@ class Collections extends Repository {
             'query_var'           => true,
             'can_export'          => true,
             'rewrite'             => true,
-        	'capability_type'     => Entities\Collection::get_post_type(),
+        	//'capability_type'     => Entities\Collection::get_post_type(),
+        	'map_meta_cap'		  => true,
+        	'capabilities'		  => [
+        		'read_post'          	=> 'read_tainacan-collection',
+        		'read_private_posts' 	=> 'read_private_tainacan-collections',
+        		'create_posts'       	=> 'create_tainacan-collections',
+        		'publish_posts'      	=> 'publish_tainacan-collections',
+        		'delete_post'        	=> 'delete_tainacan-collection',
+        		'delete_posts'          => 'delete_tainacan-collections',
+        		'delete_private_posts'  => 'delete_private_tainacan-collections',
+        		'delete_published_posts'=> 'delete_published_tainacan-collections',
+        		'delete_others_posts'   => 'delete_others_tainacan-collections',
+        		'edit_post'          	=> 'edit_tainacan-collection',
+        		'edit_posts'         	=> 'edit_tainacan-collections',
+        		'edit_others_posts'  	=> 'edit_others_tainacan-collections',
+        		'edit_private_posts'    => 'edit_private_tainacan-collections',
+        		'edit_published_posts'  => 'edit_published_tainacan-collections'
+        	],
             'supports'            => [
                 'title',
                 'editor',
@@ -211,5 +228,73 @@ class Collections extends Repository {
     // TODO: Implement this method
     public function fetch_by_db_identifier($db_identifier) {
         
+    }
+    
+    /**
+     * Update post_type caps using WordPress basic roles
+     * @param string $name //capability name
+     */
+    public function init_capabilities($name = '') {
+    	
+    	$name = 'tainacan-collection';
+    	if($name) {
+    		$wp_append_roles = apply_filters('tainacan-default-capabilities', array(
+    			'administrator' => array(
+    				'delete_'.$name.'s',
+    				'delete_private_'.$name.'s',
+    				'edit_'.$name.'s',
+    				'edit_private_'.$name.'s',
+    				'publish_'.$name.'s',
+    				'read_private_'.$name.'s',
+    				'delete_published_'.$name.'s',
+    				'edit_published_'.$name.'s',
+    				'edit_published_'.$name,
+    				'edit_others_'.$name.'s',
+    				'delete_others_'.$name.'s',
+    				'read_'.$name.'s',
+    			),
+    			'contributor' => array(
+    				'delete_'.$name.'s',
+    				'edit_'.$name.'s',
+    				'read_'.$name.'s',
+    			),
+    			'subscriber' => array(
+    				'read_'.$name.'s',
+    			),
+    			'author' => array(
+    				'delete_'.$name.'s',
+    				'edit_'.$name.'s',
+    				'publish_'.$name.'s',
+    				'delete_published_'.$name.'s',
+    				'edit_published_'.$name.'s',
+    				'read_'.$name.'s',
+    			),
+    			'editor' => array(
+    				'delete_'.$name.'s',
+    				'delete_private_'.$name.'s',
+    				'edit_'.$name.'s',
+    				'edit_private_'.$name.'s',
+    				'publish_'.$name.'s',
+    				'read_private_'.$name.'s',
+    				'delete_published_'.$name.'s',
+    				'edit_published_'.$name.'s',
+    				'edit_published_'.$name,
+    				'edit_others_'.$name.'s',
+    				'delete_others_'.$name.'s',
+    				'read_'.$name.'s',
+    			)
+    		));
+    		// append new capabilities to WordPress default roles
+    		foreach ($wp_append_roles as $role_name => $caps) {
+    			$role = get_role($role_name);
+    			if(!is_object($role)) {
+    				throw new \Exception(sprintf('Capability "%s" not found', $role_name));
+    			}
+    			
+    			foreach ($caps as $cap) {
+    				$role->add_cap($cap);
+    			}
+    		}
+    	}
     }
 }

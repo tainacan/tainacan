@@ -365,9 +365,7 @@ abstract class Repository {
 	    	$wp_append_roles = apply_filters('tainacan-default-capabilities', array(
 	    		'administrator' => array(
 		    		'delete_'.$name.'s',
-	    			'delete_'.$name,
 		    		'delete_private_'.$name.'s',
-		    		'edit_'.$name,
 		    		'edit_'.$name.'s',
 		    		'edit_private_'.$name.'s',
 		    		'publish_'.$name.'s',
@@ -375,16 +373,11 @@ abstract class Repository {
 		    		'read_private_'.$name.'s',
 		    		'delete_published_'.$name.'s',
 		    		'edit_published_'.$name.'s',
-		    		'edit_published_'.$name,
 		    		'edit_others_'.$name.'s',
-		    		'edit_others_'.$name,
 		    		'delete_others_'.$name.'s',
-		    		'delete_others_'.$name,
 	    		),
 	    		'contributor' => array(
 	    			'delete_'.$name.'s',
-	    			'delete_'.$name,
-	    			'edit_'.$name,
 	    			'edit_'.$name.'s',
 	    			'read_'.$name,
 				),
@@ -393,20 +386,14 @@ abstract class Repository {
 				),
 				'author' => array(
 					'delete_'.$name.'s',
-					'delete_'.$name,
-					'edit_'.$name,
 					'edit_'.$name.'s',
 					'publish_'.$name.'s',
-					'read_'.$name,
 					'delete_published_'.$name.'s',
 					'edit_published_'.$name.'s',
-					'edit_published_'.$name,
 				),
 	    		'editor' => array(
 	    			'delete_'.$name.'s',
-	    			'delete_'.$name,
 	    			'delete_private_'.$name.'s',
-	    			'edit_'.$name,
 	    			'edit_'.$name.'s',
 	    			'edit_private_'.$name.'s',
 	    			'publish_'.$name.'s',
@@ -414,11 +401,8 @@ abstract class Repository {
 	    			'read_private_'.$name.'s',
 	    			'delete_published_'.$name.'s',
 	    			'edit_published_'.$name.'s',
-	    			'edit_published_'.$name,
 	    			'edit_others_'.$name.'s',
-	    			'edit_others_'.$name,
 	    			'delete_others_'.$name.'s',
-	    			'delete_others_'.$name,
 	    		)
 	    	));
 	    	// append new capabilities to WordPress default roles 
@@ -460,7 +444,7 @@ abstract class Repository {
     
     /**
      * Check if $user can edit/create a entity
-     * @param Entities\Entity $entity
+     * @param int|array|\WP_Post|Entities\Entity $entity
      * @param int|\WP_User $user default is null for the current user
      * @return boolean
      */

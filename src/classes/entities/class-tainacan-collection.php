@@ -77,7 +77,24 @@ class Collection extends Entity {
             'rewrite'             => [
                 'slug' => $this->get_slug()
             ],
-        	'capability_type'     => $this->get_db_identifier(),
+        	'map_meta_cap'		  => true,
+        	'capabilities'		  => [
+        		'edit_post'          	=> 'edit_'.$this->get_db_identifier(),
+        		'read_post'          	=> 'read_'.$this->get_db_identifier(),
+        		'delete_post'        	=> 'delete_'.$this->get_db_identifier(),
+        		'edit_posts'         	=> 'edit_'.$this->get_db_identifier().'s',
+        		'edit_others_posts'  	=> 'edit_others_'.$this->get_db_identifier().'s',
+        		'publish_posts'      	=> 'publish_'.$this->get_db_identifier().'s',
+        		'read_private_posts' 	=> 'read_private_'.$this->get_db_identifier().'s',
+        		'create_posts'       	=> 'create_'.$this->get_db_identifier().'s',
+        		'read'                  => 'read_'.$this->get_db_identifier(),
+        		'delete_posts'          => 'delete_'.$this->get_db_identifier().'s',
+        		'delete_private_posts'  => 'delete_private_'.$this->get_db_identifier().'s',
+        		'delete_published_posts'=> 'delete_published_'.$this->get_db_identifier().'s',
+        		'delete_others_posts'   => 'delete_others_'.$this->get_db_identifier().'s',
+        		'edit_private_posts'    => 'edit_private_'.$this->get_db_identifier().'s',
+        		'edit_published_posts'  => 'edit_published_'.$this->get_db_identifier().'s'
+        	],
             'supports'            => [
                 'title',
                 'editor',
