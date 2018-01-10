@@ -290,4 +290,45 @@ class Entity {
 	public function  __toJSON(){
 		return json_encode($this->__toArray(), JSON_NUMERIC_CHECK);
 	}
+	
+	/**
+	 * Return if user can read this entity
+	 * @param int|\WP_User $user
+	 * @return bool
+	 */
+	public function can_read($user = null) {
+		global ${$this->repository};
+		return ${$this->repository}->can_read($this, $user);
+	}
+	
+	/**
+	 * Return if user can read this entity
+	 * @param int|\WP_User|null $user the user for capability check, null for the current user
+	 * @return bool
+	 */
+	public function can_edit($user = null)	{
+		global ${$this->repository};
+		return ${$this->repository}->can_edit($this, $user);
+	}
+	
+	/**
+	 * Return if user can read this entity
+	 * @param int|\WP_User|null $user the user for capability check, null for the current user
+	 * @return bool
+	 */
+	public function can_delete($user = null)	{
+		global ${$this->repository};
+		return ${$this->repository}->can_delete($this, $user);
+	}
+	
+	/**
+	 * Return if user can read this entity
+	 * @param int|\WP_User|null $user the user for capability check, null for the current user
+	 * @return bool
+	 */
+	public function can_publish($user = null)	{
+		global ${$this->repository};
+		return ${$this->repository}->can_publish($this, $user);
+	}
+	
 }
