@@ -445,7 +445,7 @@ abstract class Repository {
     /**
      * Check if $user can edit/create a entity
      * @param int|array|\WP_Post|Entities\Entity $entity
-     * @param int|\WP_User $user default is null for the current user
+     * @param int|\WP_User|null $user default is null for the current user
      * @return boolean
      */
     public function can_edit($entity, $user = null) {
@@ -468,7 +468,7 @@ abstract class Repository {
     /**
      * Check if $user can read the entity
      * @param Entities\Entity $entity
-     * @param int|\WP_User $user default is null for the current user
+     * @param int|\WP_User|null $user default is null for the current user
      * @return boolean
      */
     public function can_read($entity, $user = null) {
@@ -492,7 +492,7 @@ abstract class Repository {
     /**
      * Check if $user can delete the entity
      * @param Entities\Entity $entity
-     * @param int|\WP_User $user default is null for the current user
+     * @param int|\WP_User|null $user default is null for the current user
      * @return boolean
      */
     public function can_delete($entity, $user = null) {
@@ -514,11 +514,23 @@ abstract class Repository {
     /**
      * Check if $user can publish the entity
      * @param Entities\Entity $entity
-     * @param int|\WP_User $user default is null for the current user
+     * @param int|\WP_User|null $user default is null for the current user
      * @return boolean
      */
     public function can_publish($entity, $user = null) {
+    	if(is_null($user)) {
+    		$user = get_current_user_id();
+    	}
+    	elseif(is_object($user)) {
+    		$user = $user->ID;
+    	}
+    	$entity = self::get_entity_by_post($entity);
+    	$name = $entity::get_post_type();
+    	if($name === false) {
+    		return user_can($user, 'publish_posts');
+    	}
     	
+    	return user_can($user, 'publish_post', $entity);
     }
 }
 
