@@ -27,6 +27,7 @@ class Permissions extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
+		
 		$new_user = $this->factory()->user->create(array( 'role' => 'subscriber' ));
 		wp_set_current_user($new_user);
 		$user_id = get_current_user_id();
@@ -43,6 +44,12 @@ class Permissions extends TAINACAN_UnitTestCase {
 		$this->assertTrue(user_can($user_id, 'administrator'));
 		$this->assertTrue(user_can($user_id, $collection->cap->edit_post, $collection->get_id()), 'A administrator user cannot edit a Collections?');
 		//TODO test all roles and check the capabilities
+		
+		$new_contributor_user = $this->factory()->user->create(array( 'role' => 'contributor' ));
+		wp_set_current_user($new_contributor_user);
+		$this->assertTrue($collection->can_read());
+		$this->assertFalse($collection->can_publish());
+		
 	}
 	
 }
