@@ -31,8 +31,9 @@ class Collections extends TAINACAN_UnitTestCase {
 		$user_id = get_current_user_id();
 		$this->assertEquals($new_user, $user_id);
 		
-		global $Tainacan_Collections;
-		$this->assertTrue($Tainacan_Collections->can_read($x));
+		//global $Tainacan_Collections;
+		//$this->assertTrue($Tainacan_Collections->can_read($x));
+		$this->assertFalse(current_user_can('edit_collection'));
 		
 		$autor1 = $this->factory()->user->create(array( 'role' => 'author' ));
 		wp_set_current_user($autor1);
@@ -49,9 +50,20 @@ class Collections extends TAINACAN_UnitTestCase {
 		$this->assertEquals($autor1_id, $x->WP_Post->post_author);
 		$autor2 = $this->factory()->user->create(array( 'role' => 'author' ));
 		wp_set_current_user($autor2);
+		$x2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'testeCapsOwner2',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC'
+			),
+			true
+		);
 		$current_user_id = get_current_user_id();
 		$this->assertEquals($autor2, $current_user_id);
-		$this->assertFalse($Tainacan_Collections->can_edit($x, $current_user_id));
+		$this->assertFalse(current_user_can($x->cap->edit_post, $x->WP_Post->ID));
+		$this->assertTrue(current_user_can($x2->cap->edit_post, $x2->WP_Post->ID));
+		$this->assertFalse(user_can($autor2, $x->cap->edit_post, $x->WP_Post->ID));
 	}
 	
 	/**
