@@ -161,3 +161,25 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
  To delete pass in body of requisition the parameter is_permanently as true.
  To only trash pass false.
 ```
+
+#### Filters
+
+1. Route `wp-json/tainacan/v2/filters`
+    1.1 Endpoints supported:
+    
+    1.1.1 POST (Create a filter)
+    
+    Example of JSON passed in body for creating a filter:
+    
+ ```javascript
+ {
+   "collection_id": "int",
+   "metadata_id": "int",
+   "filter": {
+     "name": "string",
+     "description": "string",
+     "filter_type": "string",
+     ...
+   }
+ }
+ ```
