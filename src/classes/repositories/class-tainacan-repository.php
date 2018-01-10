@@ -462,43 +462,7 @@ abstract class Repository {
     		return user_can($user, 'edit_posts');
     	}
     	
-    	/*'edit_'.$name,
-    	'edit_'.$name.'s',
-    	'edit_private_'.$name.'s',
-    	'edit_published_'.$name.'s',
-    	'edit_published_'.$name,
-    	'edit_others_'.$name.'s',
-    	'edit_others_'.$name,*/
-    	$status = $entity->get_status();
-    	$owner_id = $user;
-    	
-    	if(isset($entity->WP_Post->post_author)) {
-    		$owner_id = $entity->WP_Post->post_author;
-    	}
-    	
-    	/** Treat owner post edit **/
-    	if($user == $owner_id) {
-    		//Uncomment this to treat edit_published_posts
-    		/*if($status == 'publish') {
-    			return user_can($user, 'edit_published_'.$name.'s');
-    		}
-    		else {
-    			return user_can($user, $entity->cap->edit_posts);
-    		}*/
-    		return user_can($user, $entity->cap->edit_posts);
-    	}
-    	elseif(user_can($user, $entity->cap->edit_others_posts)) {
-    		if($status == 'publish') {
-    			return user_can($user, $entity->cap->publish_posts);
-    		}
-    		elseif($status == 'private') {
-    			return user_can($user, $entity->cap->edit_private_posts);
-    		}
-    		else {
-    			return true;
-    		}
-    	}
-    	return false;
+    	return user_can($user, 'edit_post', $entity);
     }
     
     /**
@@ -522,14 +486,7 @@ abstract class Repository {
    			return user_can($user, 'read');
    		}
     	
-    	$status = $entity->get_status();
-    	if($status == 'private') {
-    		return user_can($user, $entity->cap->read_private_posts);
-    	}
-    	else {
-    		return user_can($user, $entity->cap->read_post);
-    	}
-    	return false;
+   		return user_can($user, $entity->cap->read_post, $entity);
     }
     
     /**
@@ -548,48 +505,10 @@ abstract class Repository {
    		$entity = self::get_entity_by_post($entity);
     	$name = $entity::get_post_type();
     	if($name === false) {
-    		return user_can($user, 'delete_post');
+    		return user_can($user, 'delete_posts');
     	}
     	
-    	/*	'delete_'.$name.'s',
-    		'delete_private_'.$name.'s',
-    		'delete_published_'.$name.'s',
-    		'delete_others_'.$name.'s',
-    		'delete_others_'.$name,*/
-    	$status = $entity->get_status();
-    	$owner_id = $user;
-    	
-    	if(isset($entity->WP_Post->post_author)) {
-    		$owner_id = $entity->WP_Post->post_author;
-    	}
-    	
-    	/** Treat owner post delete **/
-    	if($user == $owner_id) {
-    		//Uncomment this to treat delete_published_posts
-    		/*if($status == 'publish') {
-    			return user_can($user, 'delete_published_'.$name.'s');
-    		}
-    		else {
-    			return user_can($user,  'delete_'.$name.'s');
-    		}*/
-    		return user_can($user,  $entity->cap->delete_post);
-    	}
-    	//Uncomment this to treat delete others published or private posts caps
-    	/*elseif(user_can($user, 'delete_others_'.$name.'s') ) {
-    		if($status == 'publish') {
-    			return user_can($user, 'delete_published_'.$name.'s');
-    		}
-    		elseif($status == 'private') {
-    			return user_can($user, 'delete_private_'.$name.'s');
-    		}
-    		else {
-    			return true;
-    		}
-    	}*/
-    	elseif (user_can($user, $entity->cap->edit_others_posts) ) {
-    		return user_can($user,  $entity->cap->delete_post);
-    	}
-    	return false;
+    	return user_can($user, 'delete_post', $entity);
     }
     
     /**
