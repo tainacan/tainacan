@@ -8,6 +8,7 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 	private $metadata_repository;
 	private $item_metadata_repository;
 	private $item_repository;
+	private $collection_repository;
 
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
@@ -17,6 +18,7 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 		$this->metadata_repository = new Repositories\Metadatas();
 		$this->item_metadata_repository = new Repositories\Item_Metadata();
 		$this->item_repository = new Repositories\Items();
+		$this->collection_repository = new Repositories\Collections();
 
 		add_action('rest_api_init', array($this, 'register_routes'));
 	}
@@ -48,7 +50,7 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_teim_permissions_check')
+					'permission_callback' => array($this, 'delete_item_permissions_check')
 				)
 			)
 		);
@@ -168,11 +170,11 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(current_user_can('edit_posts')){
-			return true;
+		if(!empty($request['item_id'])){
+			return $this->item_repository->can_edit(new Entities\Item());
 		}
 
-		return false;
+		return $this->collection_repository->can_edit(new Entities\Collection());
 	}
 
 	/**
@@ -232,25 +234,12 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 	 *
 	 * @return bool|WP_Error
 	 */
-	public function get_item_permissions_check( $request ) {
-		if(current_user_can('read')){
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return bool|WP_Error
-	 */
 	public function get_items_permissions_check( $request ) {
-		if(current_user_can('read')){
-			return true;
+		if(!empty($request['item_id'])){
+			return $this->item_repository->can_read(new Entities\Item());
 		}
 
-		return false;
+		return $this->collection_repository->can_read(new Entities\Collection());
 	}
 
 	/**
@@ -282,11 +271,11 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
-		if(current_user_can('delete_posts')){
-			return true;
+		if(!empty($request['item_id'])){
+			return $this->item_repository->can_delete(new Entities\Item());
 		}
 
-		return false;
+		return $this->collection_repository->can_delete(new Entities\Collection());
 	}
 }
 

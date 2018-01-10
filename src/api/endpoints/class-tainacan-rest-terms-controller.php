@@ -36,6 +36,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		);
 	}
 
+	/**
+	 * @param WP_REST_Request $to_prepare
+	 *
+	 * @return object|void|WP_Error
+	 */
 	public function prepare_item_for_database( $to_prepare ) {
 		$attributes = $to_prepare[0];
 		$taxonomy = $to_prepare[1];
@@ -53,6 +58,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		$this->term->set_taxonomy($taxonomy);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function create_item( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];
 		$body = json_decode($request->get_body(), true);
@@ -90,11 +100,7 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(current_user_can('edit_posts')){
-			return true;
-		}
-
-		return false;
+		return $this->terms_repository->can_edit($this->term);
 	}
 
 	public function delete_item( $request ) {

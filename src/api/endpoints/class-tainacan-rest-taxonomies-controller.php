@@ -106,13 +106,15 @@ class TAINACAN_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
-		if(current_user_can('read')){
-			return true;
-		}
-
-		return false;
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		return $this->taxonomy_repository->can_read($taxonomy);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function delete_item( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];
 
@@ -160,11 +162,8 @@ class TAINACAN_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
-		if (current_user_can('delete_posts')){
-			return true;
-		}
-
-		return false;
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		return $this->taxonomy_repository->can_delete($taxonomy);
 	}
 
 	/**
@@ -186,11 +185,7 @@ class TAINACAN_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		if (current_user_can('read')){
-			return true;
-		}
-
-		return false;
+		return $this->taxonomy_repository->can_read($this->taxonomy);
 	}
 
 	/**
@@ -229,11 +224,7 @@ class TAINACAN_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(current_user_can('edit_posts')){
-			return true;
-		}
-
-		return false;
+		return $this->taxonomy_repository->can_edit($this->taxonomy);
 	}
 
 }
