@@ -19,8 +19,7 @@ abstract class Repository {
 		//add_action('admin_init', array(&$this, 'init_caps'));
 		add_action('init', array(&$this, 'init_capabilities'), 11);
 		add_filter('tainacan-get-map-'.$this->get_name(), array($this, 'get_default_properties'));
-        
-        
+
 		add_filter('map_meta_cap', array($this, 'map_meta_cap'), 10, 4);
 	}
 	
@@ -551,7 +550,7 @@ abstract class Repository {
                 if (in_array($user_id, $moderators)) {
                     // if user is moderator, we clear the current caps
                     // (that might fave edit_others_posts) and leave only edit_posts
-                    $caps = [$collection_cpt->cap->edit_posts]
+                    $caps = [$collection_cpt->cap->edit_posts];
                 }
             }
         }
