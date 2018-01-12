@@ -154,7 +154,7 @@ class Filters extends Repository {
         return new Entities\Filter($metadata->WP_Post);
     }*/
 
-    public function delete($object){
+    public function delete($args){
 
     }
 

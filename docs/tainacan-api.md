@@ -175,10 +175,10 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
  {
    "collection_id": "int",
    "metadata_id": "int",
+   "filter_type": "string",
    "filter": {
      "name": "string",
      "description": "string",
-     "filter_type": "string",
      ...
    }
  }

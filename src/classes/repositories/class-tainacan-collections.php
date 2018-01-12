@@ -100,6 +100,13 @@ class Collections extends Repository {
              *
              * 
              */
+            'moderators_ids' =>  [
+                'map'         => 'meta_multi',
+                'title'       => __('Moderators', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('The IDs of users assigned as moderators of this collection', 'tainacan'),
+                'validation'  => ''
+            ],
 
         ]);
     }

@@ -175,6 +175,15 @@ class Collection extends Entity {
     function get_default_view_mode() {
         return $this->get_mapped_property('default_view_mode');
     }
+    
+    /**
+     * Get collection moderators ids
+     *
+     * @return array
+     */
+    function get_moderators_ids() {
+        return $this->get_mapped_property('moderators_ids');
+    }
 
     /**
      * Get collection DB identifier
@@ -296,5 +305,28 @@ class Collection extends Entity {
     function set_default_view_mode($value) {
         $this->set_mapped_property('default_view_mode', $value);
     }
+    
+    /**
+     * Set collection moderators ids
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_moderators_ids($value) {
+        $this->set_mapped_property('moderators_ids', $value);
+    }
+    
+    /**
+     * TODO implement the following methods to handle moderators_ids
+     *
+     * set_moderators
+     * get_moderators
+     * (the same as moderators_ids but gets and sets WP_User objects)
+     *
+     * add_moderator_id
+     * remove moderator_id
+     * (add or remove one moderator from the moderators_ids array)
+     * 
+     */
 
 }
