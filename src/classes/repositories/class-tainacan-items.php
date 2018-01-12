@@ -153,13 +153,7 @@ class Items extends Repository {
         }
 
         if (empty($collections)){
-            $wp_query = $Tainacan_Collections->fetch();
-            if( $wp_query->have_posts() ){
-                while ( $wp_query->have_posts() ){
-                    $wp_query->the_post();
-                    $collections[] = new Entities\Collection(  get_the_ID() );
-                }
-            }
+            $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         }
 
         if (is_numeric($collections)){
