@@ -183,3 +183,14 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
    }
  }
  ```
+ 
+ 2. Route `wp-json/tainacan/v2/filters/(?P<filter_id>[\d]+)`
+    
+    2.1. Endpoints supported:
+    
+    2.1.1 DELETE (Delete or trash a filter)
+    
+```
+To delete pass in body of requisition the parameter is_permanently as true.
+To only trash pass false.
+```
