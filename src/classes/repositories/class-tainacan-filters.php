@@ -139,9 +139,9 @@ class Filters extends Repository {
                 update_post_meta($id, $prop, $metadata->get_mapped_property($prop));
             } elseif ($mapped['map'] == 'meta_multi') {
                 $values = $metadata->get_mapped_property($prop);
-                
+
                 delete_post_meta($id, $prop);
-                
+
                 if (is_array($values)){
                     foreach ($values as $value){
                         add_post_meta($id, $prop, $value);
@@ -154,8 +154,17 @@ class Filters extends Repository {
         return new Entities\Filter($metadata->WP_Post);
     }*/
 
+    /**
+     * @param array $args
+     * @return Entities\Filter
+     *
+     */
     public function delete($args){
+	    if(!empty($args[1]) && $args[1]['is_permanently'] === true){
+		    return new Entities\Filter(wp_delete_post($args[0], $args[1]['is_permanently']));
+	    }
 
+	    return new Entities\Filter(wp_trash_post($args[0]));
     }
 
     public function update($object){

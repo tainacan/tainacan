@@ -51,7 +51,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			'collection',
 			array(
 				'name'        => 'Collection filtered',
-				'description' => 'Is filtered'
+				'description' => 'Is filtered',
 			),
 			true
 		);
@@ -60,7 +60,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			'metadata',
 			array(
 				'name'        => 'Metadata filtered',
-				'description' => 'Is filtered'
+				'description' => 'Is filtered',
 			)
 		);
 
@@ -73,13 +73,13 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'collection'  => $collection,
 				'description' => 'descricao',
 				'metadata'    => $metadata,
-				'filter_type' => $filter_type
+				'filter_type' => $filter_type,
 			),
 			true
 		);
 
 		$is_permanently = json_encode([
-			'is_permanently' => true
+			'is_permanently' => false
 		]);
 
 		$request = new \WP_REST_Request(
@@ -91,18 +91,16 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$this->markTestIncomplete('Incomplete');
-
 		$this->assertEquals('filtro', $data['name']);
 
 		$filter_status = get_post($filter->get_id())->post_status;
 
 		$this->assertEquals('trash', $filter_status);
 
-		##### TRASH #####
+		##### DELETE #####
 
 		$is_permanently = json_encode([
-			'is_permanently' => false
+			'is_permanently' => true
 		]);
 
 		$request = new \WP_REST_Request(
