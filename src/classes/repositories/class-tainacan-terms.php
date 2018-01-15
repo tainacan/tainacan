@@ -159,8 +159,8 @@ class Terms extends Repository {
 
     }
 
-    public function delete($object){
-
+    public function delete($args){
+    	return wp_delete_term($args[0], $args[1]);
     }
     
     public function register_post_type() { }
