@@ -103,7 +103,7 @@ class Filters extends Repository {
             'query_var'           => true,
             'can_export'          => true,
             'rewrite'             => true,
-            'capability_type'     => 'post',
+        	'capability_type'     => Entities\Filter::get_post_type(),
             'supports'            => [
                 'title',
                 'editor',

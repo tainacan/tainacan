@@ -100,6 +100,13 @@ class Collections extends Repository {
              *
              * 
              */
+            'moderators_ids' =>  [
+                'map'         => 'meta_multi',
+                'title'       => __('Moderators', 'tainacan'),
+                'type'        => 'string',
+                'description' => __('The IDs of users assigned as moderators of this collection', 'tainacan'),
+                'validation'  => ''
+            ],
 
         ]);
     }
@@ -135,24 +142,8 @@ class Collections extends Repository {
             'query_var'           => true,
             'can_export'          => true,
             'rewrite'             => true,
-        	//'capability_type'     => Entities\Collection::get_post_type(),
+        	'capability_type'     => 'tainacan-collection', // hardcode because post_type is in plural
         	'map_meta_cap'		  => true,
-        	'capabilities'		  => [
-        		'read_post'          	=> 'read_tainacan-collection',
-        		'read_private_posts' 	=> 'read_private_tainacan-collections',
-        		'create_posts'       	=> 'create_tainacan-collections',
-        		'publish_posts'      	=> 'publish_tainacan-collections',
-        		'delete_post'        	=> 'delete_tainacan-collection',
-        		'delete_posts'          => 'delete_tainacan-collections',
-        		'delete_private_posts'  => 'delete_private_tainacan-collections',
-        		'delete_published_posts'=> 'delete_published_tainacan-collections',
-        		'delete_others_posts'   => 'delete_others_tainacan-collections',
-        		'edit_post'          	=> 'edit_tainacan-collection',
-        		'edit_posts'         	=> 'edit_tainacan-collections',
-        		'edit_others_posts'  	=> 'edit_others_tainacan-collections',
-        		'edit_private_posts'    => 'edit_private_tainacan-collections',
-        		'edit_published_posts'  => 'edit_published_tainacan-collections'
-        	],
             'supports'            => [
                 'title',
                 'editor',
@@ -248,7 +239,6 @@ class Collections extends Repository {
     				'read_private_'.$name.'s',
     				'delete_published_'.$name.'s',
     				'edit_published_'.$name.'s',
-    				'edit_published_'.$name,
     				'edit_others_'.$name.'s',
     				'delete_others_'.$name.'s',
     				'read_'.$name.'s',
@@ -278,7 +268,6 @@ class Collections extends Repository {
     				'read_private_'.$name.'s',
     				'delete_published_'.$name.'s',
     				'edit_published_'.$name.'s',
-    				'edit_published_'.$name,
     				'edit_others_'.$name.'s',
     				'delete_others_'.$name.'s',
     				'read_'.$name.'s',
