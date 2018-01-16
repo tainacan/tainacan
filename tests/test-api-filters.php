@@ -116,6 +116,55 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertNull(get_post($filter->get_id()));
 	}
 
+	public function test_update_filter(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Collection filtered',
+				'description' => 'Is filtered',
+			),
+			true
+		);
+
+		$metadata = $this->tainacan_entity_factory->create_entity(
+			'metadata',
+			array(
+				'name'        => 'Metadata filtered',
+				'description' => 'Is filtered',
+			)
+		);
+
+		$filter_type = $this->tainacan_filter_factory->create_filter('range');
+
+		$filter = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'        => 'filtro',
+				'collection'  => $collection,
+				'description' => 'descricao',
+				'metadata'    => $metadata,
+				'filter_type' => $filter_type,
+			),
+			true
+		);
+
+		$new_attributes = json_encode([
+			'name' => 'Faceta',
+		]);
+
+		$request = new \WP_REST_Request(
+			'PATCH', $this->namespace . '/filters/' . $filter->get_id()
+		);
+
+		$request->set_body($new_attributes);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertNotEquals('filtro', $data['name']);
+		$this->assertEquals('Faceta', $data['name']);
+	}
 }
 
 ?>
