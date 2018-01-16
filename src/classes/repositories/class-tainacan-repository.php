@@ -325,6 +325,17 @@ abstract class Repository {
     	}
     	
     	$post_type = $post->post_type;
+    	return self::get_entity_by_post_type($post_type, $post);
+    }
+    
+    /**
+     *
+     * @param string $post_type
+     * @param integer|\WP_Post $post optional post ID or WordPress post data for creation of Entity 
+     * @throws \Exception
+     * @return \Tainacan\Entities\Entity|boolean the entity for post_type, with data if $post is given or false
+     */
+    public static function get_entity_by_post_type($post_type, $post = 0) {
     	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
     	
     	// its is a collection Item?
@@ -346,41 +357,6 @@ abstract class Repository {
     			if($entity_post_type == $post_type)
     			{
     				return new $tnc_repository->entities_type($post);
-    			}
-    		}
-    	}
-    	return false;
-    }
-    
-    /**
-     *
-     * @param string $post_type
-     * @throws \Exception
-     * @return \Tainacan\Entities\Entity|boolean
-     */
-    public static function get_entity_by_post_type($post_type) {
-    	
-    	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
-    	
-    	// its is a collection Item?
-    	if($prefix == Entities\Collection::$db_identifier_prefix) {
-    		$cpts = self::get_collections_db_identifier();
-    		if(array_key_exists($post_type, $cpts)) {
-    			return $entity = new \Tainacan\Entities\Item();
-    		}
-    		else {
-    			throw new \Exception('Collection object not found for this post');
-    		}
-    	}
-    	else {
-    		global $Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
-    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
-    		foreach ($tnc_globals as $tnc_repository)
-    		{
-    			$entity_post_type = $tnc_repository->entities_type::get_post_type();
-    			if($entity_post_type == $post_type)
-    			{
-    				return new $tnc_repository->entities_type();
     			}
     		}
     	}
