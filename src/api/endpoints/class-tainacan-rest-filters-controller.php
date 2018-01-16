@@ -45,6 +45,11 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 				'methods'             => WP_REST_Server::DELETABLE,
 				'callback'            => array($this, 'delete_item'),
 				'permission_callback' => array($this, 'delete_item_permissions_check')
+			),
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_item'),
+				'permission_callback' => array($this, 'update_item_permissions_check')
 			)
 		));
 	}
@@ -150,6 +155,34 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
 		return $this->filter_repository->can_delete($filter);
 	}
-}
 
+	public function update_item( $request ) {
+		$filter_id = $request['filter_id'];
+
+		$body = json_decode($request->get_body(), true);
+
+		if(!empty($body)){
+			$attributes = ['ID' => $filter_id];
+
+			foreach ($body as $att => $value){
+				$attributes[$att] = $value;
+			}
+
+			$updated_filter = $this->filter_repository->update($attributes);
+
+			return new WP_REST_Response($updated_filter->__toArray(), 200);
+		}
+
+		return new WP_REST_Response([
+			'error_message' => 'The body could not be empty',
+			'body'          => $body
+		], 400);
+
+	}
+
+	public function update_item_permissions_check( $request ) {
+		$filter = $this->filter_repository->fetch($request['filter_id']);
+		return $this->filter_repository->can_edit($filter);
+	}
+}
 ?>
