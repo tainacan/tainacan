@@ -17,7 +17,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"editor"=> [
 				"delete_posts",
@@ -30,7 +30,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"author"=> [
 				"delete_posts",
@@ -38,15 +38,15 @@ class Capabilities {
 				"publish_posts",
 				"delete_published_posts",
 				"edit_published_posts",
-				"read_post"
+				"read"
 			],
 			"contributor"=> [
 				"delete_posts",
 				"edit_posts",
-				"read_post"
+				"read"
 			],
 			"subscriber"=> [
-				"read_post"
+				"read"
 			]
 		],
 		"tainacan-metadata"=> [
@@ -61,7 +61,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"editor"=> [
 				"delete_posts",
@@ -74,7 +74,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"author"=> [
 				"delete_posts",
@@ -82,15 +82,15 @@ class Capabilities {
 				"publish_posts",
 				"delete_published_posts",
 				"edit_published_posts",
-				"read_post"
+				"read"
 			],
 			"contributor"=> [
 				"delete_posts",
 				"edit_posts",
-				"read_post"
+				"read"
 			],
 			"subscriber"=> [
-				"read_post"
+				"read"
 			]
 		],
 		"tainacan-filters"=> [
@@ -105,7 +105,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"editor"=> [
 				"delete_posts",
@@ -118,7 +118,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"author"=> [
 				"delete_posts",
@@ -126,15 +126,15 @@ class Capabilities {
 				"publish_posts",
 				"delete_published_posts",
 				"edit_published_posts",
-				"read_post"
+				"read"
 			],
 			"contributor"=> [
 				"delete_posts",
 				"edit_posts",
-				"read_post"
+				"read"
 			],
 			"subscriber"=> [
-				"read_post"
+				"read"
 			]
 		],
 		"tainacan-taxonomies"=> [
@@ -149,7 +149,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"editor"=> [
 				"delete_posts",
@@ -162,7 +162,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"author"=> [
 				"delete_posts",
@@ -170,15 +170,15 @@ class Capabilities {
 				"publish_posts",
 				"delete_published_posts",
 				"edit_published_posts",
-				"read_post"
+				"read"
 			],
 			"contributor"=> [
 				"delete_posts",
 				"edit_posts",
-				"read_post"
+				"read"
 			],
 			"subscriber"=> [
-				"read_post"
+				"read"
 			]
 		],
 		"tainacan-logs"=> [
@@ -193,7 +193,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"editor"=> [
 				"delete_posts",
@@ -206,7 +206,7 @@ class Capabilities {
 				"edit_published_posts",
 				"edit_others_posts",
 				"delete_others_posts",
-				"read_post"
+				"read"
 			],
 			"author"=> [
 				"delete_posts",
@@ -214,15 +214,15 @@ class Capabilities {
 				"publish_posts",
 				"delete_published_posts",
 				"edit_published_posts",
-				"read_post"
+				"read"
 			],
 			"contributor"=> [
 				"delete_posts",
 				"edit_posts",
-				"read_post"
+				"read"
 			],
 			"subscriber"=> [
-				"read_post"
+				"read"
 			]
 		]
 	];
