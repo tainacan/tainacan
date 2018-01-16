@@ -1,5 +1,7 @@
 <?php
 
+use Tainacan\Capabilities;
+
 const ENTITIES_DIR 	   = __DIR__ . '/entities/';
 const FIELD_TYPES_DIR  = __DIR__ . '/field-types/';
 const FILTER_TYPES_DIR = __DIR__ . '/filter-types/';
@@ -86,5 +88,7 @@ $Tainacan_Terms = new \Tainacan\Repositories\Terms();
 
 global $Tainacan_Logs;
 $Tainacan_Logs = new \Tainacan\Repositories\Logs();
+
+new Capabilities();
 
 ?>

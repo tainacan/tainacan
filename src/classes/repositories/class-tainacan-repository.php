@@ -16,8 +16,6 @@ abstract class Repository {
 	 */
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
-		//add_action('admin_init', array(&$this, 'init_caps'));
-		add_action('init', array(&$this, 'init_capabilities'), 11);
 		add_filter('tainacan-get-map-'.$this->get_name(), array($this, 'get_default_properties'));
 
 		add_filter('map_meta_cap', array($this, 'map_meta_cap'), 10, 4);
@@ -355,70 +353,38 @@ abstract class Repository {
     }
     
     /**
-     * Update post_type caps using WordPress basic roles
-     * @param string $name //capability name
+     *
+     * @param string $post_type
+     * @throws \Exception
+     * @return \Tainacan\Entities\Entity|boolean
      */
-    public function init_capabilities($name = '') {
+    public static function get_entity_by_post_type($post_type) {
     	
-    	if( empty($name) ) {
-    		$name = $this->entities_type::get_post_type();
+    	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
+    	
+    	// its is a collection Item?
+    	if($prefix == Entities\Collection::$db_identifier_prefix) {
+    		$cpts = self::get_collections_db_identifier();
+    		if(array_key_exists($post_type, $cpts)) {
+    			return $entity = new \Tainacan\Entities\Item();
+    		}
+    		else {
+    			throw new \Exception('Collection object not found for this post');
+    		}
     	}
-    	if($name) {
-	    	$wp_append_roles = apply_filters('tainacan-default-capabilities', array(
-	    		'administrator' => array(
-		    		'delete_'.$name.'s',
-		    		'delete_private_'.$name.'s',
-		    		'edit_'.$name.'s',
-		    		'edit_private_'.$name.'s',
-		    		'publish_'.$name.'s',
-		    		'read_'.$name,
-		    		'read_private_'.$name.'s',
-		    		'delete_published_'.$name.'s',
-		    		'edit_published_'.$name.'s',
-		    		'edit_others_'.$name.'s',
-		    		'delete_others_'.$name.'s',
-	    		),
-	    		'contributor' => array(
-	    			'delete_'.$name.'s',
-	    			'edit_'.$name.'s',
-	    			'read_'.$name,
-				),
-				'subscriber' => array(
-					'read_'.$name,
-				),
-				'author' => array(
-					'delete_'.$name.'s',
-					'edit_'.$name.'s',
-					'publish_'.$name.'s',
-					'delete_published_'.$name.'s',
-					'edit_published_'.$name.'s',
-				),
-	    		'editor' => array(
-	    			'delete_'.$name.'s',
-	    			'delete_private_'.$name.'s',
-	    			'edit_'.$name.'s',
-	    			'edit_private_'.$name.'s',
-	    			'publish_'.$name.'s',
-	    			'read_'.$name,
-	    			'read_private_'.$name.'s',
-	    			'delete_published_'.$name.'s',
-	    			'edit_published_'.$name.'s',
-	    			'edit_others_'.$name.'s',
-	    			'delete_others_'.$name.'s',
-	    		)
-	    	));
-	    	// append new capabilities to WordPress default roles 
-	    	foreach ($wp_append_roles as $role_name => $caps) {
-	    		$role = get_role($role_name);
-	    		if(!is_object($role)) {
-	    			throw new \Exception(sprintf('Capability "%s" not found', $role_name));
-	    		}
-	    		
-	    		foreach ($caps as $cap) {
-	    			$role->add_cap($cap);
-	    		}
-	    	}
+    	else {
+    		global $Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
+    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
+    		foreach ($tnc_globals as $tnc_repository)
+    		{
+    			$entity_post_type = $tnc_repository->entities_type::get_post_type();
+    			if($entity_post_type == $post_type)
+    			{
+    				return new $tnc_repository->entities_type();
+    			}
+    		}
     	}
+    	return false;
     }
     
     /**
