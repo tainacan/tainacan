@@ -197,7 +197,19 @@ class Items extends Repository {
     }
 
     public function update($object){
+	    $map = $this->get_map();
 
+	    $entity = [];
+
+	    foreach ($object as $key => $value) {
+		    if($key != 'ID') {
+			    $entity[$map[$key]['map']] = $value ;
+		    } elseif ($key == 'ID'){
+			    $entity[$key] = (int) $value;
+		    }
+	    }
+
+	    return new Entities\Item(wp_update_post($entity));
     }
 
 	/**

@@ -256,6 +256,43 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 		return $this->items_repository->can_delete($item);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function update_item( $request ) {
+		$item_id = $request['item_id'];
+
+		$body = json_decode($request->get_body(), true);
+
+		if(!empty($body)){
+			$attributes = ['ID' => $item_id];
+
+			foreach ($body as $att => $value){
+				$attributes[$att] = $value;
+			}
+
+			$updated_item = $this->items_repository->update($attributes);
+
+			return new WP_REST_Response($updated_item->__toArray(), 200);
+		}
+
+		return new WP_REST_Response([
+			'error_message' => 'The body could not be empty',
+			'body'          => $body
+		], 400);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function update_item_permissions_check( $request ) {
+		$item = $this->items_repository->fetch($request['item_id']);
+		return $this->items_repository->can_edit($item);
+	}
 }
 
 ?>

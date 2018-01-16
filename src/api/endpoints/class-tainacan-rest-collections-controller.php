@@ -252,7 +252,26 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return string|WP_Error|WP_REST_Response
 	 */
 	public function update_item( $request ) {
-	    return 'Não implementado';
+	    $collection_id = $request['collection_id'];
+
+	    $body = json_decode($request->get_body(), true);
+
+	    if(!empty($body)){
+	    	$attributes = ['ID' => $collection_id];
+
+	    	foreach ($body as $att => $value){
+	    		$attributes[$att] = $value;
+		    }
+
+	    	$updated_collection = $this->collections_repository->update($attributes);
+
+	    	return new WP_REST_Response($updated_collection->__toArray(), 200);
+	    }
+
+	    return new WP_REST_Response([
+	    	'error_message' => 'The body could not be empty',
+		    'body'          => $body
+	    ], 400);
     }
 
 
@@ -264,11 +283,8 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
-		if(current_user_can('edit_posts')){
-			return true;
-		}
-
-		return false;
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+		return $this->collections_repository->can_edit($collection);
     }
 
 	/**

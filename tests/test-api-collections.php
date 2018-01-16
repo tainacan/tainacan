@@ -129,6 +129,37 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 
 	    $this->assertNotEmpty($post_meta);
     }
+
+    public function test_update_collection(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+		    'collection',
+		    array(
+			    'name'          => 'testeApi',
+			    'description'   => 'adasdasdsa',
+			    'default_order' => 'DESC',
+			    'status'		=> 'publish'
+		    ),
+		    true
+	    );
+
+		$new_values = json_encode([
+			'name'        => 'Test API',
+			'description' => 'Collection for test.'
+		]);
+
+		$request = new \WP_REST_Request(
+			'PATCH', $this->namespace . '/collections/' . $collection->get_id()
+		);
+
+		$request->set_body($new_values);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertNotEquals($collection->get_name(), $data['name']);
+		$this->assertEquals('Test API', $data['name']);
+    }
 }
 
 ?>
