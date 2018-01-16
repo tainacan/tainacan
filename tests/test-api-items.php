@@ -142,6 +142,38 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertNull($no_post);
 	}
+
+	public function test_update_item(){
+		$collection = $this->tainacan_entity_factory->create_entity('collection', '', true);
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'SCRUM e PMBOK',
+				'description' => 'Unidos no Gerenciamento de Projetos',
+				'collection'  => $collection,
+			),
+			true
+		);
+
+		$new_attributes = json_encode([
+			'title' => 'SCRUM e XP',
+			'description' => 'Direto da trincheiras',
+		]);
+
+		$request = new \WP_REST_Request(
+			'PATCH', $this->namespace . '/items/' . $item->get_id()
+		);
+
+		$request->set_body($new_attributes);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertNotEquals($item->get_title(), $data['title']);
+		$this->assertEquals('SCRUM e XP', $data['title']);
+	}
 }
 
 ?>
