@@ -122,6 +122,44 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals($taxonomy1->get_name(), $data[1]['name']);
 		$this->assertEquals($taxonomy2->get_name(), $data[0]['name']);
 	}
+
+	public function test_update_taxonomy(){
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'Gender',
+				'description'  => 'Music types',
+				'allow_insert' => 'yes',
+				'status'       => 'publish'
+			),
+			true
+		);
+
+		$new_attributes = json_encode([
+			'name'        => 'People',
+			'description' => 'Male or Female'
+		]);
+
+		$request = new \WP_REST_Request('PATCH', $this->namespace . '/taxonomies/' . $taxonomy->get_id());
+
+		$request->set_body($new_attributes);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$args=array(
+			'name' => $taxonomy->get_db_identifier()
+		);
+		$output = 'objects';
+
+		$tax = get_taxonomies($args, $output);
+
+		$this->assertNotEquals($taxonomy->get_name(), $data['name']);
+		$this->assertEquals('People', $data['name']);
+
+		$this->assertEquals('People', $tax[$taxonomy->get_db_identifier()]->label);
+	}
 }
 
 ?>

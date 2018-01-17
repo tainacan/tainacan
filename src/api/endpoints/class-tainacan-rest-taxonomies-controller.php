@@ -48,6 +48,11 @@ class TAINACAN_REST_Taxonomies_Controller extends WP_REST_Controller {
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
+				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
 				)
 			)
 		);
@@ -227,6 +232,43 @@ class TAINACAN_REST_Taxonomies_Controller extends WP_REST_Controller {
 		return $this->taxonomy_repository->can_edit($this->taxonomy);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function update_item( $request ) {
+		$taxonomy_id = $request['taxonomy_id'];
+
+		$body = json_decode($request->get_body(), true);
+
+		if(!empty($body)){
+			$attributes = ['ID' => $taxonomy_id];
+
+			foreach ($body as $att => $value){
+				$attributes[$att] = $value;
+			}
+
+			$updated_taxonomy = $this->taxonomy_repository->update($attributes);
+
+			return new WP_REST_Response($updated_taxonomy->__toArray(), 200);
+		}
+
+		return new WP_REST_Response([
+			'error_message' => 'The body could not be empty',
+			'body'          => $body
+		], 400);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function update_item_permissions_check( $request ) {
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		return $this->taxonomy_repository->can_edit($taxonomy);
+	}
 }
 
 ?>
