@@ -38,6 +38,11 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'create_item_permissions_check')
+			),
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_items'),
+				'permission_callback' => array($this, 'get_items_permissions_check')
 			)
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<filter_id>[\d]+)', array(
@@ -132,6 +137,11 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 		return $this->filter_repository->can_edit($this->filter);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function delete_item( $request ) {
 		$filter_id = $request['filter_id'];
 
@@ -151,11 +161,21 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 		], 400);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
 	public function delete_item_permissions_check( $request ) {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
 		return $this->filter_repository->can_delete($filter);
 	}
 
+	/**
+	 * @param $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function update_item( $request ) {
 		$filter_id = $request['filter_id'];
 
@@ -180,9 +200,57 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
 	public function update_item_permissions_check( $request ) {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
 		return $this->filter_repository->can_edit($filter);
+	}
+
+	/**
+	 * @param mixed $object
+	 * @param WP_REST_Request $request
+	 *
+	 * @return array|mixed|WP_Error|WP_REST_Response
+	 */
+	public function prepare_item_for_response( $object, $request ) {
+
+		if(is_array($object)){
+			$filters = [];
+
+			foreach ($object as $item){
+				$filters[] = $item->__toArray();
+			}
+
+			return $filters;
+		}
+
+		return $object;
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_items( $request ) {
+		$filters = $this->filter_repository->fetch([], 'OBJECT');
+
+		$response = $this->prepare_item_for_response($filters, $request);
+
+		return new WP_REST_Response($response, 200);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function get_items_permissions_check( $request ) {
+		return $this->filter_repository->can_read($this->filter);
 	}
 }
 ?>

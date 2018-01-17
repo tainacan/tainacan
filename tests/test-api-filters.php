@@ -131,6 +131,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Metadata filtered',
 				'description' => 'Is filtered',
+				'collection_id' => $collection->get_id()
 			)
 		);
 
@@ -164,6 +165,75 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertNotEquals('filtro', $data['name']);
 		$this->assertEquals('Faceta', $data['name']);
+	}
+
+	public function test_fetch_filters(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Collection filtered',
+				'description' => 'Is filtered',
+			),
+			true
+		);
+
+		$metadata = $this->tainacan_entity_factory->create_entity(
+			'metadata',
+			array(
+				'name'          => 'Metadata filtered',
+				'description'   => 'Is filtered',
+				'collection_id' => $collection->get_id()
+			)
+		);
+
+		$metadata2 = $this->tainacan_entity_factory->create_entity(
+			'metadata',
+			array(
+				'name'          => 'Other filtered',
+				'description'   => 'Is filtered',
+				'collection_id' => $collection->get_id()
+			)
+		);
+
+		$filter_type = $this->tainacan_filter_factory->create_filter('range');
+
+		$filter = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'        => 'filtro',
+				'collection'  => $collection,
+				'description' => 'descricao',
+				'metadata'    => $metadata,
+				'filter_type' => $filter_type,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$filter2 = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'        => 'filtro2',
+				'collection'  => $collection,
+				'description' => 'descricao',
+				'metadata'    => $metadata2,
+				'filter_type' => $filter_type,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/filters');
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$first_filter = $data[0];
+		$second_filter = $data[1];
+
+		$this->assertEquals($filter2->get_name(), $first_filter['name']);
+		$this->assertEquals($filter->get_name(), $second_filter['name']);
 	}
 }
 

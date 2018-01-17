@@ -117,6 +117,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		return $this->terms_repository->can_edit($this->term);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function delete_item( $request ) {
 		$term_id = $request['term_id'];
 		$taxonomy_id = $request['taxonomy_id'];
@@ -136,11 +141,21 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		return new WP_REST_Response($is_deleted, 200);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
 	public function delete_item_permissions_check( $request ) {
 		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
 		return $this->terms_repository->can_delete($term);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function update_item( $request ) {
 		$term_id = $request['term_id'];
 		$taxonomy_id = $request['taxonomy_id'];
@@ -172,6 +187,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		], 400);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
 	public function update_item_permissions_check( $request ) {
 		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
 		return $this->terms_repository->can_edit($term);
