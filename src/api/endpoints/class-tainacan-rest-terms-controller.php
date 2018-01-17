@@ -39,7 +39,12 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
-					'permission_callbacl' => array($this, 'delete_item_permissions_check')
+					'permission_callback' => array($this, 'delete_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
 				)
 			)
 		);
@@ -132,8 +137,44 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	public function delete_item_permissions_check( $request ) {
-		$term = $this->terms_repository->fetch($request['term_id']);
+		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
 		return $this->terms_repository->can_delete($term);
+	}
+
+	public function update_item( $request ) {
+		$term_id = $request['term_id'];
+		$taxonomy_id = $request['taxonomy_id'];
+
+		$body = json_decode($request->get_body(), true);
+
+		if(!empty($body)){
+			$taxonomy_name = $this->taxonomy_repository->fetch($taxonomy_id)->get_db_identifier();
+
+			$identifiers = [
+				'term_id' => $term_id,
+				'tax_name'  => $taxonomy_name
+			];
+
+			$attributes = [];
+
+			foreach ($body as $att => $value){
+				$attributes[$att] = $value;
+			}
+
+			$updated_term = $this->terms_repository->update([$attributes, $identifiers]);
+
+			return new WP_REST_Response($updated_term->__toArray(), 200);
+		}
+
+		return new WP_REST_Response([
+			'error_message' => 'The body could not be empty',
+			'body'          => $body
+		], 400);
+	}
+
+	public function update_item_permissions_check( $request ) {
+		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
+		return $this->terms_repository->can_edit($term);
 	}
 }
 
