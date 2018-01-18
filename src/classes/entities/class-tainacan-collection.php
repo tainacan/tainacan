@@ -39,7 +39,7 @@ class Collection extends Entity {
      *
      * This method register the post type for a collection, so that items can be created.
      *
-     * @return void
+     * @return \WP_Post_Type|\WP_Error
      */
     function register_collection_item_post_type() {
         $cpt_labels = array(
@@ -92,7 +92,7 @@ class Collection extends Entity {
         if (post_type_exists($this->get_db_identifier()))
             unregister_post_type($this->get_db_identifier());
 
-        register_post_type($cpt_slug, $args);
+        return register_post_type($cpt_slug, $args);
     }
 
     /**
