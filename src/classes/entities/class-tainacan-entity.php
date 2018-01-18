@@ -108,7 +108,7 @@ class Entity {
     			throw new \Exception('the returned post is not the same type of the entity! expected: '.$this->get_post_type().' and actual: '.$this->WP_Post->post_type );
     		}
     	}
-    	if($this->get_post_type() !== false) {
+    	if($this->get_post_type() !== false && post_type_exists(Collection::get_post_type())) {
     		$post_type_obj = get_post_type_object(self::get_post_type());
     		if(!is_object($post_type_obj)) { //may be called before post_type registration
     			global ${$this->repository};
