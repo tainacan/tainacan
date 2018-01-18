@@ -180,7 +180,22 @@ class Taxonomies extends Repository {
     }
 
     public function update($object){
+	    $map = $this->get_map();
 
+	    $entity = [];
+
+	    foreach ($object as $key => $value) {
+		    if($key != 'ID') {
+			    $entity[$map[$key]['map']] = $value ;
+		    } elseif ($key == 'ID'){
+			    $entity[$key] = (int) $value;
+		    }
+	    }
+
+	    $updated_taxonomy = new Entities\Taxonomy(wp_update_post($entity));
+	    $updated_taxonomy->register_taxonomy();
+
+	    return $updated_taxonomy;
     }
 
     public function delete($args){

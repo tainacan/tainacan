@@ -31,6 +31,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check')
 				)
 			)
 		);
@@ -39,7 +44,17 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
-					'permission_callbacl' => array($this, 'delete_item_permissions_check')
+					'permission_callback' => array($this, 'delete_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'get_item_permissions_check')
 				)
 			)
 		);
@@ -112,6 +127,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		return $this->terms_repository->can_edit($this->term);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function delete_item( $request ) {
 		$term_id = $request['term_id'];
 		$taxonomy_id = $request['taxonomy_id'];
@@ -131,9 +151,136 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		return new WP_REST_Response($is_deleted, 200);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
 	public function delete_item_permissions_check( $request ) {
-		$term = $this->terms_repository->fetch($request['term_id']);
+		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
 		return $this->terms_repository->can_delete($term);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function update_item( $request ) {
+		$term_id = $request['term_id'];
+		$taxonomy_id = $request['taxonomy_id'];
+
+		$body = json_decode($request->get_body(), true);
+
+		if(!empty($body)){
+			$taxonomy_name = $this->taxonomy_repository->fetch($taxonomy_id)->get_db_identifier();
+
+			$identifiers = [
+				'term_id' => $term_id,
+				'tax_name'  => $taxonomy_name
+			];
+
+			$attributes = [];
+
+			foreach ($body as $att => $value){
+				$attributes[$att] = $value;
+			}
+
+			$updated_term = $this->terms_repository->update([$attributes, $identifiers]);
+
+			return new WP_REST_Response($updated_term->__toArray(), 200);
+		}
+
+		return new WP_REST_Response([
+			'error_message' => 'The body could not be empty',
+			'body'          => $body
+		], 400);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function update_item_permissions_check( $request ) {
+		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
+		return $this->terms_repository->can_edit($term);
+	}
+
+	/**
+	 * @param mixed $item
+	 * @param WP_REST_Request $request
+	 *
+	 * @return array|mixed|WP_Error|WP_REST_Response
+	 */
+	public function prepare_item_for_response( $item, $request ) {
+
+		if(is_array($item)){
+			$prepared = [];
+
+			foreach ($item as $term){
+				$prepared[] = $term->__toArray();
+			}
+
+			return $prepared;
+		}
+
+		return $item;
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_items( $request ) {
+		$taxonomy_id = $request['taxonomy_id'];
+
+		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+
+		$args = json_decode($request->get_body(), true);
+
+		$terms = $this->terms_repository->fetch($args, $taxonomy);
+
+		$prepared_terms = $this->prepare_item_for_response($terms, $request);
+
+		return new WP_REST_Response($prepared_terms, 200);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function get_items_permissions_check( $request ) {
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		return $this->taxonomy_repository->can_read($taxonomy);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_item( $request ) {
+		$term_id = $request['term_id'];
+		$tax_id = $request['taxonomy_id'];
+
+		$taxonomy = $this->taxonomy_repository->fetch($tax_id);
+
+		$term = $this->terms_repository->fetch($term_id, $taxonomy);
+
+		return new WP_REST_Response($term->__toArray(), 200);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function get_item_permissions_check( $request ) {
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		return $this->taxonomy_repository->can_read($taxonomy);
 	}
 }
 

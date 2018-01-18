@@ -70,6 +70,113 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 
 		$this->assertNull($term);
 	}
+
+	public function test_update_term(){
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => '1genero',
+				'description'  => 'tipos de musica',
+				'allow_insert' => 'yes',
+				'status'       => 'publish'
+			),
+			true
+		);
+
+		$term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => 'Rock',
+				'user'     => get_current_user_id(),
+			),
+			true
+		);
+
+		$new_attributes = json_encode([
+			'name' => 'Trap'
+		]);
+
+		$request = new \WP_REST_Request(
+			'PATCH', $this->namespace . '/terms/' . $term . '/taxonomy/' . $taxonomy->get_id()
+		);
+
+		$request->set_body($new_attributes);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertNotEquals('Rock', $data['name']);
+		$this->assertEquals('Trap', $data['name']);
+
+		$this->assertEquals($taxonomy->get_db_identifier(), $data['taxonomy']);
+	}
+
+	public function test_fetch_terms(){
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'Gender',
+				'description'  => 'Music types',
+				'allow_insert' => 'yes',
+				'status'       => 'publish'
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => 'Rock',
+				'user'     => get_current_user_id(),
+			),
+			true
+		);
+
+		$term2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => 'Trap',
+				'user'     => get_current_user_id(),
+			),
+			true
+		);
+
+		$show_empty = json_encode([
+			'hide_empty' => false
+		]);
+
+		$request = new \WP_REST_Request(
+			'GET', $this->namespace . '/terms/taxonomy/' . $taxonomy->get_id()
+		);
+
+		$request->set_body($show_empty);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$termA = $data[0];
+		$termB = $data[1];
+
+		$this->assertEquals('Trap', $termB['name']);
+		$this->assertEquals('Rock', $termA['name']);
+
+		#### FETCH A TERM ####
+
+		$request = new \WP_REST_Request(
+			'GET', $this->namespace . '/terms/' . $term2 . '/taxonomy/' . $taxonomy->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals('Trap', $data['name']);
+	}
 }
 
 ?>
