@@ -16,6 +16,14 @@ class Item extends Entity {
 	 */
 	protected $repository = 'Tainacan_Items';
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	function __construct($which = 0) {
+		parent::__construct($which);
+		if($which !== 0 ) $this->set_cap();
+	}
+	
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_title();
 	}
@@ -165,5 +173,22 @@ class Item extends Entity {
      */
     function set_metadata(Array $metadata) {
         $this->metadata = $metadata;
+    }
+    
+    /**
+     * set meta cap object
+     */
+    protected function set_cap() {
+    	$post_type_obj = get_post_type_object($this->get_db_identifier());
+    	if(!is_object($post_type_obj)) { //may be called before post_type registration
+    		$collection = $this->get_collection();
+    		if(is_object($collection)) {
+    			$post_type_obj = $collection->register_collection_item_post_type();
+    		}
+    	}
+    	if(!is_object($post_type_obj)) {
+    		throw new \Exception(sprintf("Collection post type (%s) is not setted and cannot be registred", $collection->get_db_identifier()));
+    	}
+    	$this->cap = $post_type_obj->cap;
     }
 }
