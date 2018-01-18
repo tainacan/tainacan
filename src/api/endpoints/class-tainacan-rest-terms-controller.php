@@ -50,6 +50,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'get_item_permissions_check')
 				)
 			)
 		);
@@ -248,6 +253,32 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		return $this->taxonomy_repository->can_read($taxonomy);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_item( $request ) {
+		$term_id = $request['term_id'];
+		$tax_id = $request['taxonomy_id'];
+
+		$taxonomy = $this->taxonomy_repository->fetch($tax_id);
+
+		$term = $this->terms_repository->fetch($term_id, $taxonomy);
+
+		return new WP_REST_Response($term->__toArray(), 200);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function get_item_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 		return $this->taxonomy_repository->can_read($taxonomy);
 	}

@@ -135,7 +135,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$this->tainacan_entity_factory->create_entity(
+		$term2 = $this->tainacan_entity_factory->create_entity(
 			'term',
 			array(
 				'taxonomy' => $taxonomy->get_db_identifier(),
@@ -164,6 +164,18 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals('Trap', $termB['name']);
 		$this->assertEquals('Rock', $termA['name']);
+
+		#### FETCH A TERM ####
+
+		$request = new \WP_REST_Request(
+			'GET', $this->namespace . '/terms/' . $term2 . '/taxonomy/' . $taxonomy->get_id()
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals('Trap', $data['name']);
 	}
 }
 

@@ -258,6 +258,11 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 		return $this->filter_repository->can_read($this->filter);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function get_item( $request ) {
 		$filter_id = $request['filter_id'];
 
@@ -266,6 +271,11 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 		return new WP_REST_Response($filter->__toArray(), 200);
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
 	public function get_item_permissions_check( $request ) {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
 		return $this->filter_repository->can_read($filter);

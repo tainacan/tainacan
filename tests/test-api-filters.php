@@ -235,7 +235,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals($filter2->get_name(), $first_filter['name']);
 		$this->assertEquals($filter->get_name(), $second_filter['name']);
 
-		#### FETCH ONE FILTER ####
+		#### FETCH A FILTER ####
 
 		$request = new \WP_REST_Request(
 			'GET', $this->namespace . '/filters/' . $filter->get_id()
