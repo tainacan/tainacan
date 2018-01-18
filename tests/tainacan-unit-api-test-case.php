@@ -4,7 +4,7 @@ namespace Tainacan\Tests;
 
 /**
  * Basic test case for api calls
- * @author jacson
+ * @author medialab
  *
  */
 class TAINACAN_UnitApiTestCase extends TAINACAN_UnitTestCase {
