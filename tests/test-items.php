@@ -15,6 +15,28 @@ use Tainacan\Entities;
  */
 class Items extends TAINACAN_UnitTestCase {
 
+	/**
+	 * @group permissions
+	 */
+	public function test_permissions () {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'testePerm',
+			),
+			true
+		);
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection,
+			),
+			true
+		);
+		$this->assertTrue($item->can_read(), 'Administrator cannot read the Item');
+		$this->assertTrue($item->can_edit(), 'Administrator cannot edit the Item');
+	}
     
     function teste_query(){
         $type = $this->tainacan_field_factory->create_field('text');
