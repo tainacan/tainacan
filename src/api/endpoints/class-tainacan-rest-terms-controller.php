@@ -233,20 +233,13 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
-		if(!empty($taxonomy)){
-			$args = json_decode($request->get_body(), true);
+		$args = json_decode($request->get_body(), true);
 
-			$terms = $this->terms_repository->fetch($args, $taxonomy);
+		$terms = $this->terms_repository->fetch($args, $taxonomy);
 
-			$prepared_terms = $this->prepare_item_for_response($terms, $request);
+		$prepared_terms = $this->prepare_item_for_response($terms, $request);
 
-			return new WP_REST_Response($prepared_terms, 200);
-		}
-
-		return new WP_REST_Response([
-			'error_message' => "Taxonomy with this id ($taxonomy_id) not found.",
-			'taxonomy_id'   => $taxonomy_id
-		], 400);
+		return new WP_REST_Response($prepared_terms, 200);
 	}
 
 	/**

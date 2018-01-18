@@ -55,6 +55,11 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array($this, 'update_item'),
 				'permission_callback' => array($this, 'update_item_permissions_check')
+			),
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_item'),
+				'permission_callback' => array($this, 'get_item_permissions_check')
 			)
 		));
 	}
@@ -251,6 +256,19 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		return $this->filter_repository->can_read($this->filter);
+	}
+
+	public function get_item( $request ) {
+		$filter_id = $request['filter_id'];
+
+		$filter = $this->filter_repository->fetch($filter_id);
+
+		return new WP_REST_Response($filter->__toArray(), 200);
+	}
+
+	public function get_item_permissions_check( $request ) {
+		$filter = $this->filter_repository->fetch($request['filter_id']);
+		return $this->filter_repository->can_read($filter);
 	}
 }
 ?>
