@@ -31,6 +31,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check')
 				)
 			)
 		);
@@ -195,6 +200,63 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	public function update_item_permissions_check( $request ) {
 		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
 		return $this->terms_repository->can_edit($term);
+	}
+
+	/**
+	 * @param mixed $item
+	 * @param WP_REST_Request $request
+	 *
+	 * @return array|mixed|WP_Error|WP_REST_Response
+	 */
+	public function prepare_item_for_response( $item, $request ) {
+
+		if(is_array($item)){
+			$prepared = [];
+
+			foreach ($item as $term){
+				$prepared[] = $term->__toArray();
+			}
+
+			return $prepared;
+		}
+
+		return $item;
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_items( $request ) {
+		$taxonomy_id = $request['taxonomy_id'];
+
+		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+
+		if(!empty($taxonomy)){
+			$args = json_decode($request->get_body(), true);
+
+			$terms = $this->terms_repository->fetch($args, $taxonomy);
+
+			$prepared_terms = $this->prepare_item_for_response($terms, $request);
+
+			return new WP_REST_Response($prepared_terms, 200);
+		}
+
+		return new WP_REST_Response([
+			'error_message' => "Taxonomy with this id ($taxonomy_id) not found.",
+			'taxonomy_id'   => $taxonomy_id
+		], 400);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function get_items_permissions_check( $request ) {
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		return $this->taxonomy_repository->can_read($taxonomy);
 	}
 }
 
