@@ -98,11 +98,11 @@ class Entity {
     		( 
     			( $this->get_post_type() !== false && $this->WP_Post->post_type != $this->get_post_type() ) ||
     			// Lets check if it is a collection and have rigth post_type
-    			( $this->get_post_type() === false && $this->WP_Post->post_type != Collection::$db_identifier_prefix.$this->get_db_identifier() ) // TODO check if we can use only get_db_identifier for this
+    			( $this->get_post_type() === false && $this->WP_Post->post_type != Collection::$db_identifier_prefix.$this->get_db_identifier().Collection::$db_identifier_sufix ) // TODO check if we can use only get_db_identifier for this
     		)
     	) {
     		if($this->get_post_type() === false) {
-    			throw new \Exception('the returned post is not the same type of the entity! expected: '.Collection::$db_identifier_prefix.$this->get_db_identifier().' and actual: '.$this->WP_Post->post_type );
+    			throw new \Exception('the returned post is not the same type of the entity! expected: '.Collection::$db_identifier_prefix.$this->get_db_identifier().Collection::$db_identifier_sufix.' and actual: '.$this->WP_Post->post_type );
     		}
     		else {
     			throw new \Exception('the returned post is not the same type of the entity! expected: '.$this->get_post_type().' and actual: '.$this->WP_Post->post_type );

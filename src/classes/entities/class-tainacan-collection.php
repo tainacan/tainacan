@@ -27,6 +27,12 @@ class Collection extends Entity {
      * @var string
      */
     static $db_identifier_prefix = 'tnc_col_';
+    
+    /**
+     * sufix used to create the db_identifier
+     * @var string
+     */
+    static $db_identifier_sufix = '_item';
 
     public function  __toString(){
 	    return 'Hello, my name is '. $this->get_name();
@@ -193,7 +199,7 @@ class Collection extends Entity {
      * @return string
      */
     function get_db_identifier() {
-        return $this->get_id() ? Collection::$db_identifier_prefix . $this->get_id() : false;
+        return $this->get_id() ? Collection::$db_identifier_prefix . $this->get_id() . Collection::$db_identifier_sufix : false;
     }
 
 	/**
