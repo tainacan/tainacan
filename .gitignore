@@ -13,3 +13,6 @@ node_modules
 npm-debug.log
 src/assets/web-components.js
 last-js-build.md5
+src/admin/scss/.sass-cache
+src/assets/css/tainacan-admin.css
+src/assets/css/tainacan-admin.css.map

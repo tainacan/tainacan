@@ -24,3 +24,8 @@ $Tainacan_Dev_interface = new \Tainacan\DevInterface\DevInterface();
 function tnc_enable_dev_wp_interface() {
     return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }
+
+// TODO move it somewhere else?
+require_once('admin/class-tainacan-admin.php');
+global $Tainacan_Admin;
+$Tainacan_Admin = new \Tainacan\Admin();
