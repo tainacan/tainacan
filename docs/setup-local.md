@@ -86,23 +86,6 @@ The parameters are:
 * `wordpress-tests-lib` - As the name says, the WordPress Tests Library
 
 Inside `tests` folder, edit the file called `bootstrap-config-sample.php` and inform the folder where you installed your WordPress Test Library. This will be `/path/to/wordpress-test-folder/wodpress-tests-lib`. Save the file as `bootstrap-config.php`.
-If necessary, you can edit the `tests_url` with your configuration.
-
-### Setting up API tests (work in progress)
-
-Go to the `wordpress-test-lib` directory located in your test directory, open the file `wordpress-tests-config.php` and edit the value of `WP_TESTS_DOMAIN` constant to the web address pointing to your `wordpress-test` folder located inside the WordPress Test Directory. For example:
-
-```
-define( 'WP_TESTS_DOMAIN', 'localhost/wordpress-test-folder/wordpress-test/' );
-```
-
-Go to `wordpress-test` directory. Make a copy of the `wp-config-sample.php` to `wp-config.php`, open that new file and add the MySQL settings, which you informed on installation script. (tip: copy and paste it from `wordpress-tests-lib/wp-tests-config.php`).
-
-Now go to the URL of the wordpress installation test (example: localhost/wordpress-test-folder/wordpress-test) and make the wordpress common installation (Obs: Don't forget to activate the permalinks).
-
-Execute the build script, go to Wordpress plugins page and active Tainacan plugin.
-
-Important: to use the URL of your wordpress test installation in new API tests, you should be use the `TAINACAN_TESTS_URL` constant.
 
 You are done! Now, to run your tests, simply go to the root directory of the repository and type:
 
