@@ -17,8 +17,6 @@ abstract class Repository {
 	function __construct() {
 		add_action('init', array(&$this, 'register_post_type'));
 		add_filter('tainacan-get-map-'.$this->get_name(), array($this, 'get_default_properties'));
-
-		add_filter('map_meta_cap', array($this, 'map_meta_cap'), 10, 4);
 	}
 	
 	/**
@@ -485,32 +483,6 @@ abstract class Repository {
     		return user_can($user, 'publish_posts');
     	}
     	return user_can($user, $entity->cap->publish_posts, $entity);
-    }
-    
-    /**
-     * Filter to handle special permissions
-     *
-     * @see https://developer.wordpress.org/reference/hooks/map_meta_cap/
-     * 
-     */
-    public function map_meta_cap($caps, $cap, $user_id, $args) {
-        
-        // Filters meta caps edit_tainacan-collection and check if user is moderator
-        $collection_cpt = get_post_type_object(Entities\Collection::get_post_type());
-        if ($cap == $collection_cpt->cap->edit_post) {
-            $entity = new Entities\Collection($args[0]);
-            if ($entity) {
-                $moderators = $entity->get_moderators_ids();
-                if (in_array($user_id, $moderators)) {
-                    // if user is moderator, we clear the current caps
-                    // (that might fave edit_others_posts) and leave only edit_posts
-                    $caps = [$collection_cpt->cap->edit_posts];
-                }
-            }
-        }
-        
-        return $caps;
-        
     }
     
 }
