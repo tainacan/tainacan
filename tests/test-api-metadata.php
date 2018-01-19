@@ -4,6 +4,9 @@ namespace Tainacan\Tests;
 
 use Tainacan\Repositories;
 
+/**
+ * @group api
+ */
 class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 	public function test_insert_metadata() {

@@ -2,6 +2,9 @@
 
 namespace Tainacan\Tests;
 
+/**
+ * @group api 
+ */
 class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 	public function test_create_filter(){
