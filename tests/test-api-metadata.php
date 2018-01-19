@@ -40,33 +40,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$metadata_added = $response->get_data();
 
 		$this->assertEquals('Moeda', $metadata_added['name']);
-
-		#################### Add value to metadata of item ##########################
-
-		$meta_values = json_encode(
-			array(
-				'metadata_id' => $metadata_added['id'],
-				'values' => 'Valorado'
-			)
-		);
-
-		$request = new \WP_REST_Request(
-			'POST',
-			$this->namespace . '/metadata/item/' . $item->get_id()
-		);
-		$request->set_body($meta_values);
-
-		$response = $this->server->dispatch($request);
-
-		$item_metadata_updated = $response->get_data();
-
-		$metadata = $item_metadata_updated['metadata'];
-
-		$this->assertEquals($metadata_added['id'], $metadata['id']);
-
-		$metav = get_post_meta($item->get_id(), $metadata['id'], true);
-
-		$this->assertEquals('Valorado', $metav);
 	}
 
 
@@ -143,6 +116,66 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals('Data', $metadata['name']);
 		$this->assertEquals('12/12/2017', $item_metadata['value']);
+	}
+
+	public function test_update_metadata(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Statement',
+				'description' => 'No Statement'
+			),
+			true
+		);
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'No name',
+				'description' => 'No description',
+				'collection'  => $collection
+			),
+			true
+		);
+
+		$field = $this->tainacan_field_factory->create_field('text', '', true);
+
+		$metadata = $this->tainacan_entity_factory->create_entity(
+			'metadata',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve o dado do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'field_type'  => $field->get_primitive_type(),
+			),
+			true
+		);
+
+		$meta_values = json_encode(
+			array(
+				'metadata_id' => $metadata->get_id(),
+				'values' => '19/01/2018'
+			)
+		);
+
+		$request = new \WP_REST_Request(
+			'PATCH',
+			$this->namespace . '/metadata/item/' . $item->get_id()
+		);
+		$request->set_body($meta_values);
+
+		$response = $this->server->dispatch($request);
+
+		$item_metadata_updated = $response->get_data();
+
+		$metadata_updated = $item_metadata_updated['metadata'];
+
+		$this->assertEquals($metadata->get_id(), $metadata_updated['id']);
+
+		$metav = get_post_meta($item->get_id(), $metadata_updated['id'], true);
+
+		$this->assertEquals('19/01/2018', $metav);
 	}
 
 }

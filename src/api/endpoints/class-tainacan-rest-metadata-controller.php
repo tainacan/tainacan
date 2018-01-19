@@ -66,6 +66,11 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
 				)
 			)
 		);
@@ -276,6 +281,47 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 		}
 
 		return $this->collection_repository->can_delete(new Entities\Collection());
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function update_item( $request ) {
+		$body = json_decode($request->get_body(), true);
+
+		$item_id = $request['item_id'];
+		$metadata_id = $body['metadata_id'];
+		$value = $body['values'];
+
+		$item = $this->item_repository->fetch($item_id);
+		$metadata = $this->metadata_repository->fetch($metadata_id);
+
+		$item_metadata = new Entities\Item_Metadata_Entity($item, $metadata);
+		$item_metadata->set_value($value);
+
+		if($item_metadata->validate()) {
+			$metadata_updated = $this->item_metadata_repository->update( $item_metadata );
+
+			return new WP_REST_Response( $metadata_updated->__toArray(), 200 );
+		} else {
+			return new WP_REST_Response([
+				'error_message' => __('One or more values are invalid.', 'tainacan'),
+				'errors'        => $item_metadata->get_errors(),
+				'item_metadata' => $item_metadata->__toArray(),
+			], 400);
+		}
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function update_item_permissions_check( $request ) {
+		$item = $this->item_repository->fetch($request['item_id']);
+		return $this->item_repository->can_edit($item);
 	}
 }
 
