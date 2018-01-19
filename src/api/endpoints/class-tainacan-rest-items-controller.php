@@ -230,6 +230,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
 		return $this->items_repository->can_edit($this->item);
@@ -257,6 +258,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
@@ -295,6 +297,7 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function update_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);

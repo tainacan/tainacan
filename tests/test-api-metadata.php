@@ -179,6 +179,35 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$metav = get_post_meta($item->get_id(), $metadata_updated['id'], true);
 
 		$this->assertEquals('19/01/2018', $metav);
+
+
+		#### UPDATE METADATA IN COLLECTION ####
+
+		$values = json_encode([
+			'metadata_id' => $metadata->get_id(),
+			'values'      => [
+				'name'        => 'Dia/Mês/Ano',
+				'description' => 'Continua descrevendo o dado do campo.'
+			]
+		]);
+
+		$request = new \WP_REST_Request(
+			'PATCH',
+			$this->namespace . '/metadata/collection/' . $collection->get_id()
+		);
+
+		$request->set_body($values);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals($metadata->get_id(), $data['id']);
+
+		// Mantém-se o valor antigo no item
+		$metav = get_post_meta($item->get_id(), $data['id'], true);
+
+		$this->assertEquals('19/01/2018', $metav);
 	}
 
 }
