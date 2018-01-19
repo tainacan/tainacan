@@ -1,0 +1,15 @@
+
+body.tainacan-admin-page #adminmenumain {
+    display: none;
+}
+
+#tainacan-admin-app {
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    z-index: 99999999999;
+}

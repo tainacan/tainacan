@@ -12,5 +12,9 @@ cd src/scss
  
 sass -E 'UTF-8' style.scss:../style.css
 
+cd ../admin/scss
+sass -E 'UTF-8' tainacan-admin.scss:../../assets/css/tainacan-admin.css
+
+
 echo "Compilação do Sass Concluído!"
 exit 0
