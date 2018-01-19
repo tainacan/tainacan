@@ -3,7 +3,7 @@
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Taxonomies_Controller extends WP_REST_Controller {
+class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 	private $taxonomy;
 	private $taxonomy_repository;
 
@@ -14,10 +14,16 @@ class TAINACAN_REST_Taxonomies_Controller extends WP_REST_Controller {
 		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'taxonomies';
 
+		add_action('rest_api_init', array($this, 'register_routes'));
+		add_action('init', array(&$this, 'init_objects'), 11);
+	}
+	
+	/**
+	 * Initialize objects after post_type register
+	 */
+	public function init_objects() {
 		$this->taxonomy = new Entities\Taxonomy();
 		$this->taxonomy_repository = new Repositories\Taxonomies();
-
-		add_action('rest_api_init', array($this, 'register_routes'));
 	}
 
 	public function register_routes() {

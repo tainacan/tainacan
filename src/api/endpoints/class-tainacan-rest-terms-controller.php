@@ -16,12 +16,18 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'terms';
 
+		add_action('rest_api_init', array($this, 'register_routes'));
+		add_action('init', array(&$this, 'init_objects'), 11);
+	}
+	
+	/**
+	 * Initialize objects after post_type register
+	 */
+	public function init_objects() {
 		$this->term = new Entities\Term();
 		$this->terms_repository = new Repositories\Terms();
 		$this->taxonomy = new Entities\Taxonomy();
 		$this->taxonomy_repository = new Repositories\Taxonomies();
-
-		add_action('rest_api_init', array($this, 'register_routes'));
 	}
 
 	public function register_routes() {

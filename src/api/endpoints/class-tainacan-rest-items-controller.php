@@ -21,12 +21,19 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'items';
+		
+		add_action('rest_api_init', array($this, 'register_routes'));
+		add_action('init', array(&$this, 'init_objects'), 11);
+	}
+	
+	/**
+	 * Initialize objects after post_type register
+	 */
+	public function init_objects() {
 		$this->items_repository = new Repositories\Items();
 		$this->item = new Entities\Item();
 		$this->item_metadata = new Repositories\Item_Metadata();
 		$this->collections_repository = new Repositories\Collections();
-
-		add_action('rest_api_init', array($this, 'register_routes'));
 	}
 
 	/**
