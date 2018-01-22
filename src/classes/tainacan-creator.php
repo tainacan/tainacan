@@ -40,7 +40,11 @@ function tainacan_autoload($class_name){
         }
     }
     elseif ($class_path[0] == 'Tainacan') {
-        $dir = strtolower(CLASSES_DIR.implode(DIRECTORY_SEPARATOR, array_slice($class_path, 1, count($class_path) -2) )).'/';
+    	$sliced = array_slice($class_path, 1, count($class_path) -2);
+    	$lower = $sliced[0];
+    	$sliced[0] = strtolower($lower);
+
+        $dir = CLASSES_DIR.implode(DIRECTORY_SEPARATOR, $sliced ) . '/';
         $dir = str_replace('_', '-', $dir);
 
         if( in_array('Field_Types', $class_path) ){

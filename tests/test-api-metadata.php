@@ -200,6 +200,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$data = $response->get_data();
 
 		$this->assertEquals($metadata->get_id(), $data['id']);
+		$this->assertEquals('Dia/Mês/Ano', $data['name']);
 
 		// Mantém-se o valor antigo no item
 		$metav = get_post_meta($item->get_id(), $data['id'], true);
