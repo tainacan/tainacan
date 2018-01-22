@@ -20,16 +20,22 @@ class TAINACAN_REST_Filters_Controller extends WP_REST_Controller {
 		$this->namespace = '/tainacan/v2';
 		$this->rest_base = 'filters';
 
+		add_action('rest_api_init', array($this, 'register_routes'));
+		add_action('init', array(&$this, 'init_objects'), 11);
+	}
+	
+	/**
+	 * Initialize objects after post_type register
+	 */
+	public function init_objects() {
 		$this->collection = new Entities\Collection();
 		$this->collection_repository = new Repositories\Collections();
-
+		
 		$this->metadata = new Entities\Metadata();
 		$this->metadata_repository = new Repositories\Metadatas();
-
+		
 		$this->filter = new Entities\Filter();
 		$this->filter_repository = new Repositories\Filters();
-
-		add_action('rest_api_init', array($this, 'register_routes'));
 	}
 
 	public function register_routes() {

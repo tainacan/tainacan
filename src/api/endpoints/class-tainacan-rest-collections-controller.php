@@ -19,10 +19,17 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	public function __construct(){
         $this->namespace = 'tainacan/v2';
         $this->rest_base = 'collections';
-        $this->collections_repository = new Repositories\Collections();
-        $this->collection = new Entities\Collection();
 
         add_action('rest_api_init', array($this, 'register_routes'));
+        add_action('init', array(&$this, 'init_objects'), 11);
+    }
+    
+    /**
+     * Initialize objects after post_type register
+     */
+    public function init_objects() {
+    	$this->collections_repository = new Repositories\Collections();
+    	$this->collection = new Entities\Collection();
     }
 
 	/**

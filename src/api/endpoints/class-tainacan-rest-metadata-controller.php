@@ -14,15 +14,20 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'metadata';
 
+		add_action('rest_api_init', array($this, 'register_routes'));
+		add_action('init', array(&$this, 'init_objects'), 11);
+	}
+
+	/**
+	 * Initialize objects after post_type register
+	 */
+	public function init_objects() {
 		$this->metadata = new Entities\Metadata();
 		$this->metadata_repository = new Repositories\Metadatas();
 		$this->item_metadata_repository = new Repositories\Item_Metadata();
 		$this->item_repository = new Repositories\Items();
 		$this->collection_repository = new Repositories\Collections();
-
-		add_action('rest_api_init', array($this, 'register_routes'));
 	}
-
 
 	/**
 	 * If POST on metadata/collection/<collection_id>, then

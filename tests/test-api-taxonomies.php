@@ -2,6 +2,9 @@
 
 namespace Tainacan\Tests;
 
+/**
+ * @group api
+ */
 class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_UnitApiTestCase {
 
 	public function test_delete_or_trash_a_taxonomy(){

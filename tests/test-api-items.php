@@ -2,6 +2,9 @@
 
 namespace Tainacan\Tests;
 
+/**
+ * @group api
+ */
 class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 	public function test_create_item_in_a_collection(){

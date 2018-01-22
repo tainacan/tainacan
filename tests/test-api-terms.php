@@ -2,6 +2,9 @@
 
 namespace Tainacan\Tests;
 
+/**
+ * @group api
+ */
 class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 
 	public function test_create_term(){
