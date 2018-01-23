@@ -5,10 +5,11 @@
                 <img src="" class="image" :alt="collection.name">
                 <div style="padding: 14px;">
                     <span>{{ collection.name }}</span>
-                    <div class="el-bottom clearfix">
+                    <div class="bottom clearfix">
                         <time class="time">{{collection.description}}</time>
-                        <el-button type="text" class="button">Lista de Itens</el-button>
+                        <el-button type="text" >Lista de Itens</el-button>
                     </div>
+
                 </div>
             </el-card>     
         </el-row>

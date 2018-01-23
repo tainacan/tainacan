@@ -18,18 +18,8 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex'
-    import CollectionsList from './components/collections-list.vue'
-    import CollectionPage from './components/collection-page.vue';
-    import ItensList from './components/itens-list.vue'
-
     export default {
         name: "admin",
-        components: {
-            'collections-list': CollectionsList,
-            'collection-page': CollectionPage,
-            'itens-list': ItensList
-        }
     }
 </script>
 
@@ -47,9 +37,7 @@
     }
 
     .el-main {
-        background-color: #E9EEF3;
         color: #333;
-        line-height: 160px;
     }
 
     body > .el-container {

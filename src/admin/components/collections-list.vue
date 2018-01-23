@@ -3,12 +3,16 @@
         <el-row>
             <el-col :span="8" v-for="(collection, index) in collections" :key="collection.id" :offset="index > 0 ? 2 : 0">
                 <el-card :body-style="{ padding: '0px' }">
-                    <img src="" class="image" :alt="collection.name">
+                    <img src="http://lorempixel.com/200/200" class="image" :alt="collection.name">
                     <div style="padding: 14px;">
                         <span>{{ collection.name }}</span>
-                        <div class="el-bottom clearfix">
+                        <div class="bottom clearfix">
                             <time class="time">{{collection.description}}</time>
-                            <router-link tag="el-button" :to="`/collections/${collection.id}`" type="text" class="button">Ver Coleção</router-link>
+                            <router-link :to="`/collections/${collection.id}`">
+                                <el-button type="text">
+                                    Ver Coleção
+                                </el-button>
+                            </router-link>
                         </div>
                     </div>
                 </el-card>
@@ -54,7 +58,6 @@ export default {
     }
 
     .bottom {
-        margin-top: 13px;
         line-height: 12px;
     }
 
