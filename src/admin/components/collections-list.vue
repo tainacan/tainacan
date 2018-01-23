@@ -8,7 +8,7 @@
                         <span>{{ collection.name }}</span>
                         <div class="el-bottom clearfix">
                             <time class="time">{{collection.description}}</time>
-                            <el-button type="text" class="button">Lista de Itens</el-button>
+                            <router-link tag="el-button" :to="`/collections/${collection.id}`" type="text" class="button">Ver Coleção</router-link>
                         </div>
                     </div>
                 </el-card>

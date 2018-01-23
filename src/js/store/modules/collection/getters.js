@@ -5,3 +5,7 @@ export const getItems = state => {
 export const getCollections = state => {
     return state.collections;
 }
+
+export const getCollection = state => {
+    return state.collection;
+}

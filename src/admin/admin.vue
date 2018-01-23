@@ -20,12 +20,14 @@
 <script>
     import { mapActions, mapGetters } from 'vuex'
     import CollectionsList from './components/collections-list.vue'
+    import CollectionPage from './components/collection-page.vue';
     import ItensList from './components/itens-list.vue'
 
     export default {
         name: "admin",
         components: {
             'collections-list': CollectionsList,
+            'collection-page': CollectionPage,
             'itens-list': ItensList
         }
     }
