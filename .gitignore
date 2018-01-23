@@ -11,7 +11,7 @@ vendor
 src/vendor
 node_modules
 npm-debug.log
-src/assets/web-components.js
+src/assets/*.js
 last-js-build.md5
 src/admin/scss/.sass-cache
 src/assets/css/tainacan-admin.css

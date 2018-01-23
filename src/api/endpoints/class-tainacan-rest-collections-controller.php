@@ -138,6 +138,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function get_items_permissions_check($request){
 		return $this->collections_repository->can_read($this->collection);
@@ -148,6 +149,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function  get_item_permissions_check($request){
 		$collection = $this->collections_repository->fetch($request['collection_id']);
@@ -197,6 +199,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
 		return $this->collections_repository->can_edit($this->collection);
@@ -245,6 +248,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
@@ -288,6 +292,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function update_item_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);

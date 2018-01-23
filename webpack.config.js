@@ -2,11 +2,14 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-    entry: './src/js/main.js',
+    entry:  {
+       dev_admin: './src/js/main.js',
+       user_admin: './src/admin/js/main.js'
+    },
     output: {
         path: path.resolve(__dirname, './src/assets/'),
         publicPath: './src/assets/',
-        filename: 'web-components.js'
+        filename: '[name]-components.js'
     },
     module: {
         rules: [
@@ -23,11 +26,15 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
-                test: /\.(png|jpg|gif|svg)$/,
+                test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
                 loader: 'file',
                 options: {
                     name: '[name].[ext]?[hash]'
                 }
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader', 'postcss-loader']
             }
         ]
     },

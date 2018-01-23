@@ -42,7 +42,7 @@ class DevInterface {
 
         wp_localize_script( 'wp-settings', 'wp_settings', $settings );
         wp_enqueue_script( 'custom-elements', $TAINACAN_BASE_URL . '/assets/customelements.min.js');
-        wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/web-components.js', [] , null, true);
+        wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/dev_admin-components.js', [] , null, true);
     }
     
     /**
