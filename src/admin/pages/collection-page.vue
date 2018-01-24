@@ -8,6 +8,7 @@
                     <div class="bottom clearfix">
                         <time class="time">{{collection.description}}</time>
                         <el-button type="text" >Lista de Itens</el-button>
+                        <el-button @click.native="createItem()">Criar Item</el-button>
                     </div>
 
                 </div>
@@ -32,7 +33,10 @@ export default {
         ]),
         ...mapGetters('collection', [
             'getCollection'
-        ])
+        ]),
+        createItem() {
+            
+        }
     },
     computed: {
         collection(){

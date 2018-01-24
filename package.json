@@ -12,6 +12,7 @@
     "bootstrap": "^3.3.7",
     "element-ui": "^2.0.11",
     "vue": "^2.0.1",
+    "vue-material-design-icons": "^1.0.0",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

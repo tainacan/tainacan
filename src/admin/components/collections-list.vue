@@ -1,34 +1,40 @@
 <template>
-    <div>
-        <el-row>
-            <el-col :span="8" v-for="(collection, index) in collections" :key="collection.id" :offset="index > 0 ? 2 : 0">
-                <el-card :body-style="{ padding: '0px' }">
-                    <img src="http://lorempixel.com/200/200" class="image" :alt="collection.name">
-                    <div style="padding: 14px;">
-                        <span>{{ collection.name }}</span>
-                        <div class="bottom clearfix">
-                            <time class="time">{{collection.description}}</time>
-                            <router-link :to="`/collections/${collection.id}`">
-                                <el-button type="text">
-                                    Ver Coleção
-                                </el-button>
-                            </router-link>
-                        </div>
-                    </div>
-                </el-card>
-            </el-col>
-        </el-row>
-    </div>
+    <el-table
+        ref="multipleTable"
+        :data="collections"
+        style="width: 100%"
+        @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column label="Nome" show-overflow-tooltip>
+                <template slot-scope="scope"><router-link :to="`/collections/${scope.row.id}`" tag="a">{{ scope.row.name }}</router-link></template>
+            </el-table-column>
+            <el-table-column property="description" label="Descrição" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column label="Ações" width="120">
+                <template slot-scope="scope">
+                    <el-button size="small" type="text" @click.native="shareCollection(scope.row.id)"><share-variant-icon></share-variant-icon></el-button>
+                    <el-button size="small" type="text" @click.native="showMoreCollection(scope.row.id)"><dots-horizontal-icon></dots-horizontal-icon></el-button>
+                </template>
+            </el-table-column>
+    </el-table>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import ShareVariantIcon from "vue-material-design-icons/share-variant.vue"
+import DotsHorizontalIcon from "vue-material-design-icons/dots-horizontal.vue"
 
 export default {
     name: 'CollectionsList',
     data(){
         return {
+            multipleSelection: []
         }
+    },
+    components: {
+        ShareVariantIcon,
+        DotsHorizontalIcon
     },
     methods: {
         ...mapActions('collection', [
@@ -36,7 +42,16 @@ export default {
         ]),
         ...mapGetters('collection', [
             'getCollections'
-        ])
+        ]),
+        handleSelectionChange(value) {
+            this.multipleSelection = value;
+        },
+        shareCollection(collectionId) {
+
+        },
+        showMoreCollection(collectionId) {
+
+        }
     },
     computed: {
         collections(){
@@ -52,34 +67,6 @@ export default {
 
 <style scoped>
 
-    .time {
-        font-size: 13px;
-        color: #999;
-    }
-
-    .bottom {
-        line-height: 12px;
-    }
-
-    .button {
-        padding: 0;
-        float: right;
-    }
-
-    .image {
-        width: 100%;
-        display: block;
-    }
-
-    .clearfix:before,
-    .clearfix:after {
-        display: table;
-        content: "";
-    }
-
-    .clearfix:after {
-        clear: both
-    }
 </style>
 
 

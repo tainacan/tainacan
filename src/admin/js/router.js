@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
 
-import Admin from '../admin.vue'
+import AdminPage from '../admin.vue'
 import CollectionsList from '../components/collections-list.vue'
-import CollectionPage from '../components/collection-page.vue'
 import ItensList from '../components/itens-list.vue'
+import CollectionPage from '../pages/collection-page.vue'
 
 Vue.use(VueRouter);
 

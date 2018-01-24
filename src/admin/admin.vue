@@ -3,12 +3,9 @@
         <el-container>
             <el-header>
                 <router-link to="/">Home</router-link>
-                Header
+                <router-link to="/collections">Coleções</router-link>
             </el-header>
             <el-container>
-                <el-aside width="200px">
-                    <router-link to="/collections">Coleções</router-link>
-                </el-aside>
                 <el-main>
                     <router-view></router-view>
                 </el-main>
@@ -19,7 +16,7 @@
 
 <script>
     export default {
-        name: "admin",
+        name: "AdminPage",
     }
 </script>
 

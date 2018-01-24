@@ -1,26 +1,40 @@
 <template>
-    <div>
-        <el-row>
-            <el-col :span="8" v-for="(item, index) in itens" :key="item.id" :offset="index > 0 ? 2 : 0">
-                <el-card :body-style="{ padding: '0px' }">
-                    <img src="" class="image" :alt="item.name">
-                    <div style="padding: 14px;">
-                        <span>{{ item.name }}</span>
-                    </div>
-                </el-card>
-            </el-col>
-        </el-row>
-    </div>
+    <el-table
+        ref="multipleTable"
+        :data="itens"
+        style="width: 100%"
+        @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column label="Nome" show-overflow-tooltip>
+                <template slot-scope="scope"><router-link :to="`/itens/${scope.row.id}`" tag="a">{{ scope.row.name }}</router-link></template>
+            </el-table-column>
+            <el-table-column property="description" label="Descrição" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column label="Ações" width="120">
+                <template slot-scope="scope">
+                    <el-button size="small" type="text" @click.native="shareItem(scope.row.id)"><share-variant-icon></share-variant-icon></el-button>
+                    <el-button size="small" type="text" @click.native="showMoreItem(scope.row.id)"><dots-horizontal-icon></dots-horizontal-icon></el-button>
+                </template>
+            </el-table-column>
+    </el-table>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import ShareVariantIcon from "vue-material-design-icons/share-variant.vue"
+import DotsHorizontalIcon from "vue-material-design-icons/dots-horizontal.vue"
 
 export default {
     name: 'ItensList',
     data(){
         return {
+            multipleSelection: []
         }
+    },
+    components: {
+        ShareVariantIcon,
+        DotsHorizontalIcon
     },
     methods: {
         ...mapActions('item', [
@@ -28,10 +42,19 @@ export default {
         ]),
         ...mapGetters('item', [
             'getItens'
-        ])
+        ]),
+        handleSelectionChange(value) {
+            this.multipleSelection = value;
+        },
+        shareItem(itemId) {
+
+        },
+        showMoreItem(itemId) {
+
+        }
     },
     computed: {
-        collections(){
+        itens(){
             return this.getItens();
         }
     },
@@ -44,35 +67,6 @@ export default {
 
 <style scoped>
 
-    .time {
-        font-size: 13px;
-        color: #999;
-    }
-
-    .bottom {
-        margin-top: 13px;
-        line-height: 12px;
-    }
-
-    .button {
-        padding: 0;
-        float: right;
-    }
-
-    .image {
-        width: 100%;
-        display: block;
-    }
-
-    .clearfix:before,
-    .clearfix:after {
-        display: table;
-        content: "";
-    }
-
-    .clearfix:after {
-        clear: both
-    }
 </style>
 
 
