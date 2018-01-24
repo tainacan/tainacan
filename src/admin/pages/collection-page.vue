@@ -10,7 +10,6 @@
                         <el-button type="text" >Lista de Itens</el-button>
                         <el-button @click.native="createItem()">Criar Item</el-button>
                     </div>
-
                 </div>
             </el-card>     
         </el-row>
@@ -45,7 +44,6 @@ export default {
     },
     created(){
         this.collectionId = this.$route.params.id;
-        console.log(this.collectionId);
         this.fetchCollection(this.collectionId);
     }
 
@@ -64,7 +62,7 @@ export default {
         line-height: 12px;
     }
 
-    .button {
+    el-button {
         padding: 0;
         float: right;
     }
