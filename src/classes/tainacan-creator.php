@@ -9,7 +9,7 @@ const REPOSITORIES_DIR = __DIR__ . '/repositories/';
 const TRAITS_DIR 	   = __DIR__ . '/traits/';
 const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
 const ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
-const HELPERS_DIR    = __DIR__ . '/../helpers/';
+const HELPERS_DIR      = __DIR__ . '/../helpers/';
 
 const DIRS = [
     CLASSES_DIR,

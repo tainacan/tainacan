@@ -101,6 +101,20 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
         return new WP_REST_Response($response, 200);
     }
 
+    protected function get_only_needed_attributes($collection){
+	    $collection_temp = [
+		    'id'                => $collection->get_id(),
+		    'name'              => $collection->get_name(),
+		    'description'       => $collection->get_description(),
+		    'featured_image'    => $collection->get_featured_img(),
+		    'columns'           => $collection->get_columns(),
+		    'creation_date'     => $collection->get_creation_date(),
+		    'modification_date' => $collection->get_modification_date(),
+	    ];
+
+	    return $collection_temp;
+    }
+
 	/**
 	 *
 	 * Receive a WP_Query or a Collection object and return both in JSON
@@ -112,22 +126,25 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response($item, $request){
         if($item instanceof WP_Query){
-            $collections_as_json = [];
+            $collections = [];
 
 	        if ($item->have_posts()) {
 		        while ( $item->have_posts() ) {
 		        	$item->the_post();
 		        	$collection = new Entities\Collection($item->post);
-			        array_push($collections_as_json, $collection->__toArray());
+
+		        	$collection_resumed = $this->get_only_needed_attributes($collection);
+
+			        array_push($collections, $collection_resumed);
 
 		        }
 		        wp_reset_postdata();
 	        }
 
-            return $collections_as_json;
+            return $collections;
         }
         elseif(!empty($item)){
-            return $item->__toArray();
+            return $this->get_only_needed_attributes($item);
         }
 
         return $item;
