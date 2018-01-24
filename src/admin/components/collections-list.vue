@@ -1,9 +1,10 @@
 <template>
-    <el-table
-        ref="multipleTable"
-        :data="collections"
-        style="width: 100%"
-        @selection-change="handleSelectionChange">
+    <div>
+        <el-table
+                ref="multipleTable"
+                :data="collections"
+                style="width: 100%"
+                @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column label="Nome" show-overflow-tooltip>
@@ -17,7 +18,8 @@
                     <el-button size="small" type="text" @click.native="showMoreCollection(scope.row.id)"><dots-horizontal-icon></dots-horizontal-icon></el-button>
                 </template>
             </el-table-column>
-    </el-table>
+        </el-table>
+    </div>
 </template>
 
 <script>
