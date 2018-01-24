@@ -1,7 +1,6 @@
 import Vue from 'vue'
 
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 
 import AdminPage from '../admin.vue'
 //import { eventBus } from '../../js/event-bus-web-components'

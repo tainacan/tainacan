@@ -7,8 +7,8 @@
                     <span>{{ collection.name }}</span>
                     <div class="bottom clearfix">
                         <time class="time">{{collection.description}}</time>
-                        <el-button type="text" >Lista de Itens</el-button>
-                        <el-button @click.native="createItem()">Criar Item</el-button>
+                        <el-button type="text">Lista de Itens</el-button>
+                        <router-link tag="el-button" :to="`/collections/${collection.id}/itens/create`">Criar Item</router-link>
                     </div>
                 </div>
             </el-card>     

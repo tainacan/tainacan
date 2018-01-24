@@ -1,10 +1,17 @@
+/* theme color */
+$--color-primary: teal;
+
+/* icon font path, required */
+//$--font-path: '../../../node_modules/element-theme-chalk/lib/fonts';
+
+@import "../../../node_modules/element-ui/packages/theme-chalk/src/index";
 
 body.tainacan-admin-page #adminmenumain {
     display: none;
 }
 
 #tainacan-admin-app {
-    background: #fff;
+    background: #ffffff;
     position: fixed;
     top: 0;
     left: 0;
