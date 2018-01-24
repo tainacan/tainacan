@@ -46,7 +46,7 @@ class Collections extends TAINACAN_UnitTestCase {
 			true
 		);
 		$this->assertEquals($autor1_id, $collection_test->WP_Post->post_author);
-		$autor2 = $this->factory()->user->create(array( 'role' => 'author' ));
+		$autor2 = $this->factory()->user->create(array( 'role' => 'author', 'display_name' => 'Author2' ));
 		wp_set_current_user($autor2);
 		$collection_test2 = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -75,6 +75,20 @@ class Collections extends TAINACAN_UnitTestCase {
 			true
 		);
 		$this->assertEquals([$autor2], $collection_test_moderator->get_moderators_ids());
+		$this->assertTrue($collection_test_moderator->can_edit($autor2), 'Moderators cannot edit a collection!');
+	}
+	
+	function debug_meta($user = false)
+	{
+		if($user !== false) wp_set_current_user($user);
+		$data = get_userdata( get_current_user_id() );
+		
+		if ( is_object( $data) ) {
+			$current_user_caps = $data->allcaps;
+			
+			// print it to the screen
+			echo '<pre>' .print_r($data->ID, true).'\n'.print_r($data->display_name, true).'\n'. print_r( $current_user_caps, true ) . '</pre>';
+		}
 	}
 	
 	/**
