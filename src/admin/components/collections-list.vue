@@ -61,7 +61,7 @@ export default {
         line-height: 12px;
     }
 
-    .button {
+    el-button {
         padding: 0;
         float: right;
     }
