@@ -9,7 +9,7 @@ const REPOSITORIES_DIR = __DIR__ . '/repositories/';
 const TRAITS_DIR 	   = __DIR__ . '/traits/';
 const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
 const ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
-const HELPERS_DIR    = __DIR__ . '/../helpers/';
+const HELPERS_DIR      = __DIR__ . '/../helpers/';
 
 const DIRS = [
     CLASSES_DIR,
@@ -41,11 +41,16 @@ function tainacan_autoload($class_name){
     }
     elseif ($class_path[0] == 'Tainacan') {
     	$sliced = array_slice($class_path, 1, count($class_path) -2);
-    	$lower = $sliced[0];
-    	$sliced[0] = strtolower($lower);
 
-        $dir = CLASSES_DIR.implode(DIRECTORY_SEPARATOR, $sliced ) . '/';
-        $dir = str_replace('_', '-', $dir);
+    	if($sliced) {
+		    $lower     = $sliced[0];
+		    $sliced[0] = strtolower( $lower );
+
+		    $dir = CLASSES_DIR . implode( DIRECTORY_SEPARATOR, $sliced ) . '/';
+		    $dir = str_replace( '_', '-', $dir );
+	    } else {
+		    $dir = CLASSES_DIR;
+	    }
 
         if( in_array('Field_Types', $class_path) ){
             $dir.= strtolower(str_replace('_', '-' , $class_name)).'/';
