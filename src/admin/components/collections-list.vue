@@ -14,8 +14,8 @@
             </el-table-column>
             <el-table-column label="Ações" width="120">
                 <template slot-scope="scope">
-                    <el-button size="small" type="text" @click.native="shareCollection(scope.row.id)"><share-variant-icon></share-variant-icon></el-button>
-                    <el-button size="small" type="text" @click.native="showMoreCollection(scope.row.id)"><dots-horizontal-icon></dots-horizontal-icon></el-button>
+                    <el-button size="small" type="text" @click.native="shareCollection(scope.row.id)"><i class="material-icons">share</i></el-button>
+                    <el-button size="small" type="text" @click.native="showMoreCollection(scope.row.id)"><i class="material-icons">more_vert</i></el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -24,8 +24,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ShareVariantIcon from "vue-material-design-icons/share-variant.vue"
-import DotsHorizontalIcon from "vue-material-design-icons/dots-horizontal.vue"
 
 export default {
     name: 'CollectionsList',
@@ -33,10 +31,6 @@ export default {
         return {
             multipleSelection: []
         }
-    },
-    components: {
-        ShareVariantIcon,
-        DotsHorizontalIcon
     },
     methods: {
         ...mapActions('collection', [

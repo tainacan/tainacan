@@ -2,8 +2,9 @@
 $--color-primary: teal;
 
 /* icon font path, required */
-//$--font-path: '../../../node_modules/element-theme-chalk/lib/fonts';
+//$--font-path: '../../assets/css/fonts/material-icons.css';
 
+@import "../../assets/css/fonts/material-icons.css";
 @import "../../../node_modules/element-ui/packages/theme-chalk/src/index";
 
 body.tainacan-admin-page #adminmenumain {
@@ -19,4 +20,5 @@ body.tainacan-admin-page #adminmenumain {
     right: 0;
     width: 100%;
     z-index: 99999999999;
+    overflow-y: auto;
 }
