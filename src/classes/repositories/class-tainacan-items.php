@@ -33,6 +33,36 @@ class Items extends Repository {
                 'description'=> __('The collection ID', 'tainacan'),
                 'validation' => ''
             ],
+            'author_id'          => [
+			    'map'         => 'post_author',
+			    'title'       => __('Author', 'tainacan'),
+			    'type'        => 'string',
+			    'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')
+		    ],
+            'creation_date'   => [
+	            'map'         => 'post_date',
+	            'title'       => __('Creation Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection creation date', 'tainacan')
+            ],
+            'modification_date' => [
+	            'map'         => 'post_modified',
+	            'title'       => __('Modification Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection modification date', 'tainacan')
+            ],
+            'url'             => [
+	            'map'         => 'guid',
+	            'title'       => __('Collection URL', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection URL', 'tainacan')
+            ],
+            'featured_image'  => [
+	            'map'         => 'thumbnail',
+	            'title'       => __('Featured Image', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection thumbnail URL')
+            ],
             //'collection' => 'relation...',
             // metadata .. metadata...
         ]);

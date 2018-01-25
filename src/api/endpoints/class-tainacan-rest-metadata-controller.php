@@ -3,7 +3,7 @@
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
+class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	private $metadata;
 	private $metadata_repository;
 	private $item_metadata_repository;

@@ -28,7 +28,7 @@ class Collections extends Repository {
                 'description' => __('Name of the collection', 'tainacan'),
                 'validation'  => v::stringType(),
             ],
-		    'author'          => [
+		    'author_id'          => [
 		    	'map'         => 'post_author',
 			    'title'       => __('Author', 'tainacan'),
 			    'type'        => 'string',
