@@ -31,7 +31,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	}
 
 	public function register_routes() {
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/taxonomy/(?P<taxonomy_id>[\d]+)',
+		register_rest_route($this->namespace,  '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base,
 			array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
@@ -45,7 +45,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 				)
 			)
 		);
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<term_id>[\d]+)/taxonomy/(?P<taxonomy_id>[\d]+)',
+		register_rest_route($this->namespace,'/taxonomy/(?P<taxonomy_id>[\d]+)/'. $this->rest_base . '/(?P<term_id>[\d]+)' ,
 			array(
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,

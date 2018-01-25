@@ -22,7 +22,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			'description' => 'The Progressive JavasScript Framework'
 		]);
 
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/items/collection/' . $collection->get_id());
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items');
 		$request->set_body($item_json);
 
 		$response = $this->server->dispatch($request);
@@ -64,7 +64,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$request  = new \WP_REST_Request('GET', $this->namespace . '/items/collection/' . $collection->get_id());
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());

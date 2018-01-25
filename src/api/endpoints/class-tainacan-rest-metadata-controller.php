@@ -39,7 +39,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * Both of GETs return the metadata of matched objects
 	 */
 	public function register_routes() {
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/collection/(?P<collection_id>[\d]+)',
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base ,
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -64,7 +64,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 				)
 			)
 		);
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/item/(?P<item_id>[\d]+)',
+		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base,
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,

@@ -41,7 +41,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function register_routes() {
 		register_rest_route(
-			$this->namespace, '/' . $this->rest_base . '/collection/(?P<collection_id>[\d]+)',
+			$this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
