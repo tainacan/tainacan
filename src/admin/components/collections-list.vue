@@ -5,14 +5,19 @@
                 :data="collections"
                 style="width: 100%"
                 @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55">
+            <el-table-column type="selection" width="30">
+            </el-table-column>
+            <el-table-column width="55">
+                <template v-if="scope.row.featured_image" slot-scope="scope">
+                    <img class="table-thumb" :src="`${scope.row.featured_image}`"/>
+                </template>
             </el-table-column>
             <el-table-column label="Nome" show-overflow-tooltip>
                 <template slot-scope="scope"><router-link :to="`/collections/${scope.row.id}`" tag="a">{{ scope.row.name }}</router-link></template>
             </el-table-column>
             <el-table-column property="description" label="Descrição" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column label="Ações" width="120">
+            <el-table-column label="Ações" width="100">
                 <template slot-scope="scope">
                     <el-button size="small" type="text" @click.native="shareCollection(scope.row.id)"><i class="material-icons">share</i></el-button>
                     <el-button size="small" type="text" @click.native="showMoreCollection(scope.row.id)"><i class="material-icons">more_vert</i></el-button>
@@ -62,6 +67,11 @@ export default {
 </script>
 
 <style scoped>
+
+    .table-thumb {
+        max-height: 38px !important;
+        vertical-align: middle !important;
+    }
 
 </style>
 
