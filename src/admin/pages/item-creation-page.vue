@@ -10,10 +10,13 @@
             </el-form-item>
             <el-form-item label="Status">
                 <el-select v-model="form.status" placeholder="Selecione um status">
-                    <el-option label="Públicado" value="publish"></el-option>
-                    <el-option label="Rascunho" value="draft"></el-option>
-                    <el-option label="Privado" value="private"></el-option>
-                    <el-option label="Lixo" value="trash"></el-option>
+                    <el-option
+                    v-for="item in statusOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    :disabled="item.disabled">
+                    </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
@@ -47,7 +50,21 @@ export default {
                 name: '',
                 status: '',
                 desc: ''
-            }
+            },
+            // can be obtained from api later
+            statusOptions: [{ 
+                value: 'publish',
+                label: 'Publicado'
+                }, {
+                value: 'draft',
+                label: 'Rascunho'
+                }, {
+                value: 'private',
+                label: 'Privado'
+                }, {
+                value: 'trash',
+                label: 'Lixo'
+            }]
         }
     },
     components: {
@@ -60,7 +77,6 @@ export default {
             'getItens'
         ]),
         onSubmit() {
-            console.log(this.form.name);
         }
     },
     computed: {

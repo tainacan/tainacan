@@ -4,6 +4,10 @@ $--color-primary: teal;
 /* icon font path, required */
 //$--font-path: '../../assets/css/fonts/material-icons.css';
 
+.el-select-dropdown, .el-popper {
+    z-index: 99999999 !important;
+}
+
 @import "../../assets/css/fonts/material-icons.css";
 @import "../../../node_modules/element-ui/packages/theme-chalk/src/index";
 
@@ -19,6 +23,6 @@ body.tainacan-admin-page #adminmenumain {
     bottom: 0;
     right: 0;
     width: 100%;
-    z-index: 99999999999;
+    z-index: 999999;
     overflow-y: auto;
 }
