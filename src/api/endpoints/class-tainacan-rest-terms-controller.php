@@ -3,7 +3,7 @@
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
+class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	private $term;
 	private $terms_repository;
 	private $taxonomy;

@@ -8,7 +8,7 @@ use Tainacan\Entities;
  * @uses Tainacan\Repositories\
  * @uses Tainacan\Entities\
 */
-class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
+class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	private $items_repository;
 	private $item;
 	private $item_metadata;
@@ -85,22 +85,27 @@ class TAINACAN_REST_Items_Controller extends WP_REST_Controller {
 	 * @return mixed|string|void|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
+		$map = $this->items_repository->get_map();
+
 		if (!empty($item) && $item instanceof WP_Query){
-			$items_as_array = [];
+			$items = [];
 
 			if ($item->have_posts()) {
 				while ( $item->have_posts() ) {
 					$item->the_post();
 					$ite = new Entities\Item($item->post);
-					array_push($items_as_array, $ite->__toArray());
+
+					$item_prepared = $this->get_only_needed_attributes($ite, $map);
+
+					array_push($items, $item_prepared);
 
 				}
 				wp_reset_postdata();
 			}
 
-			return $items_as_array;
+			return $items;
 		} elseif(!empty($item)){
-			return $item->__toArray();
+			return $this->get_only_needed_attributes($item, $map);
 		}
 
 		return $item;

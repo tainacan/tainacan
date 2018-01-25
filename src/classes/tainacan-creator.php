@@ -8,6 +8,7 @@ const FILTER_TYPES_DIR = __DIR__ . '/filter-types/';
 const REPOSITORIES_DIR = __DIR__ . '/repositories/';
 const TRAITS_DIR 	   = __DIR__ . '/traits/';
 const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
+const TAPI_DIR          = __DIR__ . '/../api/';
 const ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
 const HELPERS_DIR      = __DIR__ . '/../helpers/';
 
@@ -18,6 +19,7 @@ const DIRS = [
     FILTER_TYPES_DIR,
     REPOSITORIES_DIR,
     TRAITS_DIR,
+	TAPI_DIR,
 	ENDPOINTS_DIR,
 ];
 

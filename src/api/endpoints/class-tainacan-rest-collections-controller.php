@@ -8,7 +8,7 @@ use Tainacan\Entities;
  *
  * @uses Entities\Collection and Repositories\Collections
  * */
-class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
+class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
     private $collections_repository;
     private $collection;
 
@@ -101,20 +101,6 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
         return new WP_REST_Response($response, 200);
     }
 
-    protected function get_only_needed_attributes($collection){
-	    $collection_temp = [
-		    'id'                => $collection->get_id(),
-		    'name'              => $collection->get_name(),
-		    'description'       => $collection->get_description(),
-		    'featured_image'    => $collection->get_featured_img(),
-		    'columns'           => $collection->get_columns(),
-		    'creation_date'     => $collection->get_creation_date(),
-		    'modification_date' => $collection->get_modification_date(),
-	    ];
-
-	    return $collection_temp;
-    }
-
 	/**
 	 *
 	 * Receive a WP_Query or a Collection object and return both in JSON
@@ -125,7 +111,9 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return mixed|string|void|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response($item, $request){
-        if($item instanceof WP_Query){
+		$map = $this->collections_repository->get_map();
+
+		if($item instanceof WP_Query){
             $collections = [];
 
 	        if ($item->have_posts()) {
@@ -133,7 +121,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 		        	$item->the_post();
 		        	$collection = new Entities\Collection($item->post);
 
-		        	$collection_resumed = $this->get_only_needed_attributes($collection);
+		        	$collection_resumed = $this->get_only_needed_attributes($collection, $map);
 
 			        array_push($collections, $collection_resumed);
 
@@ -144,7 +132,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
             return $collections;
         }
         elseif(!empty($item)){
-            return $this->get_only_needed_attributes($item);
+            return $this->get_only_needed_attributes($item, $map);
         }
 
         return $item;

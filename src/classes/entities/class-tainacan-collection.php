@@ -133,8 +133,8 @@ class Collection extends Entity {
 	/**
 	 * @return mixed|null
 	 */
-	function get_author(){
-    	return $this->get_mapped_property('author');
+	function get_author_id(){
+    	return $this->get_mapped_property('author_id');
     }
 
 	/**

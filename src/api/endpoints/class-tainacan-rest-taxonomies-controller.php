@@ -3,7 +3,7 @@
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
+class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	private $taxonomy;
 	private $taxonomy_repository;
 
