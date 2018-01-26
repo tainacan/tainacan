@@ -152,6 +152,14 @@ class Metadata extends Entity {
     function get_field_options(){
         return $this->get_mapped_property('field_type_options');
     }
+    
+    /**
+     * return the collection_id
+     * @return integer
+     */
+    function get_collection_id() {
+    	return $this->get_mapped_property('collection_id');
+    }
 
     /**
      * Set the metadata name
