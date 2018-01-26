@@ -44,7 +44,7 @@ class Admin {
 
 	    // TODO move it to a separate file and start the Vue project
         echo "<div id='tainacan-admin-app'></div>";
-
+        //wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/dev_admin-components.js', [] , null, true);
 	    wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [] , null, true);
     }
 

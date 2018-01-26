@@ -19,7 +19,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item>
+            <el-form-item label="Imagem">
                 <el-upload
                     class="upload-demo"
                     drag
@@ -30,6 +30,9 @@
                     <div class="el-upload__text">Arraste uma imagem aqui <em>ou clique para enviar</em></div>
                     <div class="el-upload__tip" slot="tip">imagens em formato jpg/png</div>
                 </el-upload>
+            </el-form-item>
+            <el-form-item v-for="(metadata, index) in metadataList" v-bind:key="index" :label="metadata.label">
+                <component :is="metadata.component"></component>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">Criar</el-button>
@@ -53,6 +56,15 @@ export default {
                 status: '',
                 description: ''
             },
+            metadataList: [
+                { label: 'Text do Tainacan', component:'tainacan-text' },
+                { label: 'Textarea do Tainacan', component:'tainacan-textarea' },
+                { label: 'Selecbox do Tainacan', component:'tainacan-selectbox' },
+                //{ label: 'Checkbox do Tainacan', component:'tainacan-checkbox' },
+                { label: 'Radio do Tainacan', component:'tainacan-radio' },
+                { label: 'Numeric do Tainacan', component:'tainacan-numeric' },
+                { label: 'Data do Tainacan', component:'tainacan-date' }
+            ],
             // can be obtained from api later
             statusOptions: [{ 
                 value: 'publish',
