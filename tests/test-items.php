@@ -16,7 +16,7 @@ use Tainacan\Entities;
 class Items extends TAINACAN_UnitTestCase {
 
 	/**
-	 * @group permissions
+	 * @group permissions2
 	 */
 	public function test_permissions () {
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -36,6 +36,28 @@ class Items extends TAINACAN_UnitTestCase {
 		);
 		$this->assertTrue($item->can_read(), 'Administrator cannot read the Item');
 		$this->assertTrue($item->can_edit(), 'Administrator cannot edit the Item');
+		
+		$sub = $this->factory()->user->create(array( 'role' => 'subscriber', 'display_name' => 'Sub' ));
+		
+		$collectionM = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'testePermModerator',
+				'moderators_ids'	=> [$sub]
+			),
+			true
+		);
+		$itemM = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItemModerator',
+				'collection' => $collectionM,
+			),
+			true
+		);
+		$this->assertEquals([$sub], $collectionM->get_moderators_ids());
+		$this->assertTrue($itemM->can_edit($sub), 'Moderators cannot edit a item!');
+		
 	}
     
     function teste_query(){
