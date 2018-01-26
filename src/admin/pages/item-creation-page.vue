@@ -1,8 +1,8 @@
 <template>
     <div>
         <h2>Item creation</h2>
-        <el-form ref="form" :model="form" label-width="120px">
-            <el-form-item label="Título">
+        <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+            <el-form-item label="Título" prop="title">
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
             <el-form-item label="Descrição">
@@ -78,7 +78,13 @@ export default {
                 }, {
                 value: 'trash',
                 label: 'Lixo'
-            }]
+            }],
+            rules: {
+                title: [
+                    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+                    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' }
+                ],
+            }
         }
     },
     methods: {

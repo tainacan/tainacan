@@ -15,19 +15,19 @@ module.exports = {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue',
+                loader: 'vue-loader',
                 options: {
                     // vue-loader options go here
                 }
             },
             {
                 test: /\.js$/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 exclude: /node_modules/
             },
             {
                 test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
-                loader: 'file'
+                loader: 'file-loader'
             },
             {
                 test: /\.css$/,
@@ -44,7 +44,7 @@ module.exports = {
         historyApiFallback: true,
         noInfo: true
     },
-    devtool: '#eval-source-map'
+    devtool: '#source-map'
 }
 
 if (process.env.NODE_ENV === 'production') {
