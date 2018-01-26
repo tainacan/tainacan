@@ -2,11 +2,11 @@
     <div>
         <h2>Item creation</h2>
         <el-form ref="form" :model="form" label-width="120px">
-            <el-form-item label="Nome">
-                <el-input v-model="form.name"></el-input>
+            <el-form-item label="Título">
+                <el-input v-model="form.title"></el-input>
             </el-form-item>
             <el-form-item label="Descrição">
-                <el-input type="textarea" v-model="form.desc"></el-input>
+                <el-input type="textarea" v-model="form.description"></el-input>
             </el-form-item>
             <el-form-item label="Status">
                 <el-select v-model="form.status" placeholder="Selecione um status">
@@ -46,10 +46,12 @@ export default {
     name: 'ItemCreationPage',
     data(){
         return {
+            collectionId: Number,
             form: {
-                name: '',
+                collectionId: Number,
+                title: '',
                 status: '',
-                desc: ''
+                description: ''
             },
             // can be obtained from api later
             statusOptions: [{ 
@@ -67,21 +69,21 @@ export default {
             }]
         }
     },
-    components: {
-    },
     methods: {
         ...mapActions('item', [
-            'fetchItens'
-        ]),
-        ...mapGetters('item', [
-            'getItens'
+            'sendItem'
         ]),
         onSubmit() {
+
+            let data = {collection_id: this.form.collectionId, title: this.form.title, description: this.form.description, status: this.form.status};
+            this.sendItem(data);
         }
     },
     computed: {
     },
     created(){
+        this.collectionId = this.$route.params.id;
+        this.form.collectionId = this.collectionId;
     }
 
 }

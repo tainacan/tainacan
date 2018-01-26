@@ -8,7 +8,7 @@
                     <div class="bottom clearfix">
                         <time class="time">{{collection.description}}</time>
                         <el-button type="text">Lista de Itens</el-button>
-                        <router-link tag="el-button" :to="`/collections/${collection.id}/itens/create`">Criar Item</router-link>
+                        <router-link tag="el-button" :to="{ path: `/collections/${collection.id}/items/create`, params: { collection_id: collection.id }}">Criar Item</router-link>
                     </div>
                 </div>
             </el-card>     

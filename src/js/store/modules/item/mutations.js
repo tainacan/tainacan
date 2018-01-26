@@ -18,6 +18,16 @@ export const setSingleMetadata = ( state, metadata) => {
     }
 }
 
+export const setSingleItem = ( state, item) => {
+    let index = state.item.findIndex(itemItem => itemItem.item_id === item.item_id);
+    if ( index >= 0){
+        //state.metadata[index] = metadata;
+        Vue.set( state.item, index, item );
+    }else{
+        state.item.push( item );
+    }
+}
+
 export const setError = ( state, metadata ) => {
     let index = state.error.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
     if ( index >= 0){

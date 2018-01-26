@@ -6,7 +6,7 @@ import CollectionPage from '../pages/collection-page.vue'
 import ItemCreationPage from '../pages/item-creation-page.vue'
 
 import CollectionsList from '../components/collections-list.vue'
-import ItensList from '../components/itens-list.vue'
+import ItemsList from '../components/items-list.vue'
 
 Vue.use(VueRouter);
 
@@ -14,11 +14,11 @@ const routes = [
     { path: '/', component: CollectionsList },
     { path: '/collections', component: CollectionsList },
     { path: '/collections/:id', component: CollectionPage, children: [
-            { path: 'itens-list', component: ItensList }
+            { path: 'items-list', component: ItemsList }
             
         ]   
     },
-    { path: '/collections/:id/itens/create', component: ItemCreationPage },
+    { path: '/collections/:id/items/create', component: ItemCreationPage },
     { path: '*', redirect: '/'}
 ]
 
