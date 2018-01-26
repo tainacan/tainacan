@@ -258,7 +258,6 @@ class Collections extends Repository {
 	 *                       [2] Associated object ID
 	 */
     public function user_has_cap($allcaps, $cap, $args) {
-    	
     	if(count($args) > 2) {
     		$entity = Repository::get_entity_by_post($args[2]);
     		$collection = false;
@@ -266,13 +265,18 @@ class Collections extends Repository {
     			if($entity instanceof Entities\Collection) { // TODO others entity types
     				$collection = $entity;
     			}
-    			if($entity instanceof Entities\Item) { // TODO others entity types
+    			elseif($entity instanceof Entities\Item) {
     				$collection = $entity->get_collection();
+    			}
+    			elseif($entity instanceof Entities\Metadata)
+    			{
+    				$col_id = $entity->get_collection_id();
+    				if($col_id) $collection = Collections::fetch($col_id);
     			}
 	    		if($collection) {
 		    		$moderators = $collection->get_moderators_ids();
 		    		if (is_array($moderators) && in_array($args[1], $moderators)) {
-		    			$allcaps[$cap[0]] = true;
+		    			$allcaps[$cap[0]] = 1;
 		    		}
 	    		}
     		}
