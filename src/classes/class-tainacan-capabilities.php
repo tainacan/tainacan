@@ -277,6 +277,11 @@ class Capabilities {
 	function __construct() {
 		add_action('init', array(&$this, 'init'), 11);
 		add_action('tainacan-insert-tainacan-collections', array(&$this, 'new_collection'));
+		
+        add_action('tainacan-add-collection-moderators', array(&$this, 'add_moderators'), 10, 2);
+		add_action('tainacan-remove-collection-moderators', array(&$this, 'remove_moderators'), 10, 2);
+        
+        
 	}
 	
 	/**
@@ -353,4 +358,44 @@ class Capabilities {
 	{
 		$this->set_items_capabilities($collection);
 	}
+    
+    
+    public function remove_moderators($collection, $moderators) {
+        $defaults_caps = apply_filters('tainacan-defaults-capabilities', $this->defaults);
+        if (is_array($moderators)) {
+            foreach ($moderators as $moderator) {
+                $user = get_userdata($moderator);
+                $cpt_object = get_post_type_object($collection->get_db_identifier());
+                
+                if ($user instanceof \WP_User && $cpt_object instanceof \WP_Post_Type) {
+                    $caps = $defaults_caps['tainacan-items']['editor'];
+                    foreach ($caps as $cap) {
+        				$user->remove_cap($cpt_object->cap->$cap);
+        			}
+                }
+            }
+        }
+    }
+    
+    public function add_moderators($collection, $moderators) {
+        $defaults_caps = apply_filters('tainacan-defaults-capabilities', $this->defaults);
+        if (is_array($moderators)) {
+            foreach ($moderators as $moderator) {
+                $user = get_userdata($moderator);
+                $cpt_object = get_post_type_object($collection->get_db_identifier());
+                
+                
+                
+                if ($user instanceof \WP_User && $cpt_object instanceof \WP_Post_Type) {
+                    $caps = $defaults_caps['tainacan-items']['editor'];
+                    foreach ($caps as $cap) {
+        				$user->add_cap($cpt_object->cap->$cap);
+        			}
+                }
+            }
+        }
+    }
+    
+    
+    
 }

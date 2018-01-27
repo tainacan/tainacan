@@ -47,6 +47,7 @@ class Items extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
+
 		$itemM = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
@@ -56,6 +57,10 @@ class Items extends TAINACAN_UnitTestCase {
 			true
 		);
 		$this->assertEquals([$sub], $collectionM->get_moderators_ids());
+		
+        wp_set_current_user($sub);
+        $cpt_obj = get_post_type_object($collectionM->get_db_identifier());
+		$this->assertTrue(current_user_can($cpt_obj->cap->edit_post, $itemM->get_id()), 'Moderators cannot edit a item!');
 		$this->assertTrue($itemM->can_edit($sub), 'Moderators cannot edit a item!');
 		
 	}

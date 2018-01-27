@@ -13,7 +13,8 @@ class Collections extends Repository {
 	
 	public function __construct() {
 		parent::__construct();
- 		add_filter('user_has_cap', array($this, 'user_has_cap'), 10, 3);
+ 		//add_filter('user_has_cap', array($this, 'user_has_cap'), 10, 3);
+ 		add_filter('map_meta_cap', array($this, 'map_meta_cap'), 10, 4);
 	}
 	/**
 	 * {@inheritDoc}
@@ -171,8 +172,11 @@ class Collections extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($collection){
-    	$new_collection = parent::insert($collection);
-    	$collection->register_collection_item_post_type();
+    	$this->pre_update_moderators($collection);
+        $new_collection = parent::insert($collection);
+    	
+        $collection->register_collection_item_post_type();
+        $this->update_moderators($new_collection);
     	return $new_collection;
     }
     
@@ -242,6 +246,68 @@ class Collections extends Repository {
         
     }
     
+    function pre_update_moderators($collection) {
+        $current_moderators = $this->get_mapped_property($collection, 'moderators_ids');
+        $this->current_moderators = is_array($current_moderators) ? $current_moderators : [];
+        
+    }
+    
+    function update_moderators($collection) {
+        $moderators = $collection->get_moderators_ids();
+        
+        $deleted = array_diff($this->current_moderators, $moderators);
+        $added = array_diff($moderators, $this->current_moderators);
+        
+        do_action('tainacan-add-collection-moderators', $collection, $added);
+        do_action('tainacan-remove-collection-moderators', $collection, $deleted);
+    }
+    
+    /**
+     * Filter to handle special permissions
+     *
+     * @see https://developer.wordpress.org/reference/hooks/map_meta_cap/
+     * 
+     */
+    public function map_meta_cap($caps, $cap, $user_id, $args) {
+        
+        // Filters meta caps edit_tainacan-collection and check if user is moderator
+        
+        if ($cap == 'edit_post') { // edit_tainacan-colletion is mapped to edit_post
+            
+            $entity = $args[0];
+            
+            if (is_numeric($entity) || $entity instanceof Entities\Collection) {
+                
+                if (is_numeric($entity)) {
+                    $post = get_post($entity);
+                    if ($post instanceof \WP_Post && $post->post_type == Entities\Collection::get_post_type()) {
+                        $entity = new Entities\Collection($post);
+                    }
+                
+                }
+                    
+                if ($entity instanceof Entities\Collection) {
+                    $moderators = $entity->get_moderators_ids();
+                    if (is_array($moderators) && in_array($user_id, $moderators)) {
+                        
+                        // if user is moderator, we clear the current caps
+                        // (that might fave edit_others_posts) and leave only edit_posts
+                        $collection_cpt = get_post_type_object(Entities\Collection::get_post_type());
+                        $caps = [$collection_cpt->cap->edit_posts];
+                    }
+                }
+                
+            
+                
+                
+            }
+            
+        }
+        
+        return $caps;
+        
+    }
+    
     /**
      * Filter to handle special permissions
      *
@@ -256,7 +322,7 @@ class Collections extends Repository {
 	 * @param array $args    [0] Requested capability
 	 *                       [1] User ID
 	 *                       [2] Associated object ID
-	 */
+	
     public function user_has_cap($allcaps, $cap, $args) {
     	if(count($args) > 2) {
     		$entity = Repository::get_entity_by_post($args[2]);
@@ -284,5 +350,5 @@ class Collections extends Repository {
     	return $allcaps;
     	
     }
-    
+     */
 }

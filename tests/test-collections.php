@@ -75,6 +75,9 @@ class Collections extends TAINACAN_UnitTestCase {
 			true
 		);
 		$this->assertEquals([$autor2], $collection_test_moderator->get_moderators_ids());
+        
+        wp_set_current_user($autor2);
+        $this->assertTrue(current_user_can($collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
 		$this->assertTrue($collection_test_moderator->can_edit($autor2), 'Moderators cannot edit a collection!');
 	}
 	
