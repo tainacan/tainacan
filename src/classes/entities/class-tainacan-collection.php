@@ -110,7 +110,7 @@ class Collection extends Entity {
      * This method is usefull for getting the capabilities of the collection's items post type
      * regardless if it has been already registered or not.
      * 
-     * @return [type] [description]
+     * @return object Object with all the capabilities as member variables. 
      */
     function get_items_capabilities() {
         $args = [
