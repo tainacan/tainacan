@@ -19,7 +19,8 @@ class Items extends TAINACAN_UnitTestCase {
 	 * @group permissions2
 	 */
 	public function test_permissions () {
-		$collection = $this->tainacan_entity_factory->create_entity(
+		
+        $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
 				'name'   => 'testePerm',
@@ -36,7 +37,15 @@ class Items extends TAINACAN_UnitTestCase {
 		);
 		$this->assertTrue($item->can_read(), 'Administrator cannot read the Item');
 		$this->assertTrue($item->can_edit(), 'Administrator cannot edit the Item');
-		
+        
+        // another administrator should be able to edit items
+        $new_admin = $this->factory()->user->create(array( 'role' => 'administrator' ));
+		wp_set_current_user($new_admin);
+        
+        $this->assertTrue($item->can_read(), 'Administrator cannot read the Item');
+		$this->assertTrue($item->can_edit(), 'Administrator cannot edit the Item');
+		$this->assertTrue(current_user_can($collection->get_items_capabilities()->edit_post, $item->get_id()), 'Administrator cannot edit an item!');
+        
 		$sub = $this->factory()->user->create(array( 'role' => 'subscriber', 'display_name' => 'Sub' ));
 		
 		$collectionM = $this->tainacan_entity_factory->create_entity(
@@ -59,9 +68,8 @@ class Items extends TAINACAN_UnitTestCase {
 		$this->assertEquals([$sub], $collectionM->get_moderators_ids());
 		
         wp_set_current_user($sub);
-        $cpt_obj = get_post_type_object($collectionM->get_db_identifier());
-		$this->assertTrue(current_user_can($cpt_obj->cap->edit_post, $itemM->get_id()), 'Moderators cannot edit a item!');
-		$this->assertTrue($itemM->can_edit($sub), 'Moderators cannot edit a item!');
+		$this->assertTrue(current_user_can($collectionM->get_items_capabilities()->edit_post, $itemM->get_id()), 'Moderators cannot edit an item!');
+		$this->assertTrue($itemM->can_edit($sub), 'Moderators cannot edit an item!');
 		
 	}
     

@@ -319,9 +319,9 @@ class Capabilities {
 	 */
 	public function set_items_capabilities($collection, $defaults_caps = null) {
 		if(is_null($defaults_caps))	$defaults_caps = apply_filters('tainacan-defaults-capabilities', $this->defaults); // External Call
-		$item = new \Tainacan\Entities\Item();
-		$item->set_collection($collection);
 		
+        $collection_items_caps = $collection->get_items_capabilities();
+        
 		foreach ($defaults_caps['tainacan-items'] as $role_name => $caps) {
 			$role = get_role($role_name);
 			if(!is_object($role)) {
@@ -329,7 +329,7 @@ class Capabilities {
 			}
 			
 			foreach ($caps as $cap) {
-				$role->add_cap($collection->cap->$cap);
+				$role->add_cap($collection_items_caps->$cap);
 			}
 		}
 	}
@@ -359,37 +359,46 @@ class Capabilities {
 		$this->set_items_capabilities($collection);
 	}
     
-    
+    /**
+     * Hooke to revoke the capabilities for the items post type of the collection
+     * @param  \Tainacan\Entities\Collection $collection The collection object
+     * @param  array $moderators List of IDs of user IDs removed from the moderators list of the collection
+     * @return void
+     */
     public function remove_moderators($collection, $moderators) {
         $defaults_caps = apply_filters('tainacan-defaults-capabilities', $this->defaults);
         if (is_array($moderators)) {
+            $collection_items_caps = $collection->get_items_capabilities();
             foreach ($moderators as $moderator) {
                 $user = get_userdata($moderator);
-                $cpt_object = get_post_type_object($collection->get_db_identifier());
                 
-                if ($user instanceof \WP_User && $cpt_object instanceof \WP_Post_Type) {
+                if ($user instanceof \WP_User && is_object($collection_items_caps)) {
                     $caps = $defaults_caps['tainacan-items']['editor'];
                     foreach ($caps as $cap) {
-        				$user->remove_cap($cpt_object->cap->$cap);
+        				$user->remove_cap($collection_items_caps->$cap);
         			}
                 }
             }
         }
     }
     
+    /**
+     * Hooke to grant the capabilities for the items post type of the collection
+     * @param  \Tainacan\Entities\Collection $collection The collection object
+     * @param  array $moderators List of IDs of user IDs added to the moderators list of the collection
+     * @return void
+     */
     public function add_moderators($collection, $moderators) {
         $defaults_caps = apply_filters('tainacan-defaults-capabilities', $this->defaults);
         if (is_array($moderators)) {
+            $collection_items_caps = $collection->get_items_capabilities();
             foreach ($moderators as $moderator) {
                 $user = get_userdata($moderator);
-                $cpt_object = get_post_type_object($collection->get_db_identifier());
                 
-                
-                
-                if ($user instanceof \WP_User && $cpt_object instanceof \WP_Post_Type) {
+                if ($user instanceof \WP_User && is_object($collection_items_caps)) {
                     $caps = $defaults_caps['tainacan-items']['editor'];
                     foreach ($caps as $cap) {
-        				$user->add_cap($cpt_object->cap->$cap);
+        				$user->add_cap($collection_items_caps->$cap);
         			}
                 }
             }

@@ -13,7 +13,6 @@ class Collections extends Repository {
 	
 	public function __construct() {
 		parent::__construct();
- 		//add_filter('user_has_cap', array($this, 'user_has_cap'), 10, 3);
  		add_filter('map_meta_cap', array($this, 'map_meta_cap'), 10, 4);
 	}
 	/**
@@ -291,9 +290,9 @@ class Collections extends Repository {
                     if (is_array($moderators) && in_array($user_id, $moderators)) {
                         
                         // if user is moderator, we clear the current caps
-                        // (that might fave edit_others_posts) and leave only edit_posts
+                        // (that might fave edit_others_posts) and leave only read, that everybody has
                         $collection_cpt = get_post_type_object(Entities\Collection::get_post_type());
-                        $caps = [$collection_cpt->cap->edit_posts];
+                        $caps = ['read'];
                     }
                 }
                 
@@ -308,47 +307,4 @@ class Collections extends Repository {
         
     }
     
-    /**
-     * Filter to handle special permissions
-     *
-     * @see https://codex.wordpress.org/Plugin_API/Filter_Reference/user_has_cap
-     *
-     * Filter on the current_user_can() function.
-	 * This function is used to explicitly allow authors to edit contributors and other
-	 * authors posts if they are published or pending.
-	 *
-	 * @param array $allcaps All the capabilities of the user
-	 * @param array $cap     [0] Required capability
-	 * @param array $args    [0] Requested capability
-	 *                       [1] User ID
-	 *                       [2] Associated object ID
-	
-    public function user_has_cap($allcaps, $cap, $args) {
-    	if(count($args) > 2) {
-    		$entity = Repository::get_entity_by_post($args[2]);
-    		$collection = false;
-    		if($entity) {
-    			if($entity instanceof Entities\Collection) { // TODO others entity types
-    				$collection = $entity;
-    			}
-    			elseif($entity instanceof Entities\Item) {
-    				$collection = $entity->get_collection();
-    			}
-    			elseif($entity instanceof Entities\Metadata)
-    			{
-    				$col_id = $entity->get_collection_id();
-    				if($col_id) $collection = Collections::fetch($col_id);
-    			}
-	    		if($collection) {
-		    		$moderators = $collection->get_moderators_ids();
-		    		if (is_array($moderators) && in_array($args[1], $moderators)) {
-		    			$allcaps[$cap[0]] = 1;
-		    		}
-	    		}
-    		}
-    	}
-    	return $allcaps;
-    	
-    }
-     */
 }
