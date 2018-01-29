@@ -16,7 +16,6 @@ router.beforeEach((to, from, next) => {
 // FROM DEV 
 
 // include vue-custom-element plugin to Vue
-import { eventBus } from '../../js/event-bus-web-components';
 
 
 import Text from '../../classes/field-types/text/Text.vue';
@@ -34,13 +33,7 @@ Vue.component('tainacan-selectbox', Selectbox);
 Vue.component('tainacan-checkbox', Checkbox);
 Vue.component('tainacan-radio', Radio);
 Vue.component('tainacan-numeric', Numeric);
-eventBus.registerComponent( 'tainacan-numeric' );
-
-
 Vue.component('tainacan-date', Date);
-eventBus.registerComponent( 'tainacan-date' );
-
-eventBus.listener();
 
 //------------------------------------------------
 
