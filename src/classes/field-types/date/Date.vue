@@ -1,11 +1,23 @@
 <template>
-    <div class="component">
-        <p>{{ name }}</p>
-        <input type="date" :value="getValue()" @blur="changeValue( $event )">
+    <div class="block">
+        <el-date-picker
+                v-model="valueDate"
+                @blur="changeValue()"
+                type="date"
+                format="dd/MM/yyyy"
+                value-format="dd/MM/yyyy"
+                placeholder="Selecione a data...">
+        </el-date-picker>
+        <div class="demonstration">{{ valueDate }}</div>
     </div>
 </template>
 
 <script>
+    import lang from 'element-ui/lib/locale/lang/pt-br'
+    import locale from 'element-ui/lib/locale'
+
+    locale.use(lang)
+
     export default {
         props: {
             name: { type: String },
@@ -14,17 +26,25 @@
             value: { type: [ String,Number ]  },
             errorsMsg: { type: [ String,Number ] },
         },
+        data(){
+          return {
+              valueDate:''
+          }
+        },
+        created(){
+            this.getValue();
+        },
         methods: {
-            changeValue( event ){
-                this.$emit('changeValue', { item_id: this.item_id, metadata_id: this.metadata_id, values: event.target.value } );
+            changeValue(){
+                this.$emit('input', { item_id: this.item_id, metadata_id: this.metadata_id, values: event.target.value } );
             },
             getValue(){
                 try{
-                    return JSON.parse( this.value );
+                    let val = JSON.parse( this.value );
+                    this.valueDate = val;
                 }catch(e){
                     console.log('invalid json value');
                 }
-                return this.value;
             },
             getErrors(){
                 try{
@@ -37,20 +57,3 @@
         }
     }
 </script>
-
-<style scoped>
-    input[type="text"] {
-        display: block;
-        margin: 0;
-        width: 100%;
-        border-radius: 6px;
-        font-family: sans-serif;
-        font-size: 18px;
-        appearance: none;
-        box-shadow: none;
-        color:green;
-    }
-    input[type="text"]:focus {
-        outline: none;
-    }
-</style>
