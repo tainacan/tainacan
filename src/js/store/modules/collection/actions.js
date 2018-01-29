@@ -1,7 +1,7 @@
 import axios from '../../../axios/axios';
 
 export const fetchItems = ({ commit, state }, collectionId) => {
-    axios.get('/collections/'+collectionId+'/items')
+    axios.get('/collection/'+collectionId+'/items')
         .then(res => {
             let items = res.data;
             commit('setItems', items);

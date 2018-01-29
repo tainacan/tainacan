@@ -66,6 +66,11 @@ export default {
 
 <style scoped>
 
+    .table-thumb {
+        max-height: 38px !important;
+        vertical-align: middle !important;
+    }
+
 </style>
 
 

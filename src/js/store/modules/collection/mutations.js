@@ -1,5 +1,5 @@
 export const setItems = ( state, items ) => {
-    state.item = items;
+    state.items = items;
 }
 
 export const setCollections = (state, collections) => {
