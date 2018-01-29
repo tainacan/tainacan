@@ -406,7 +406,7 @@ abstract class Repository {
     	if($post_type === false || $entity instanceof Entities\Entity ) { // There is no post
     		return user_can($user, 'edit_posts');
     	}
-    	return user_can($user, $entity->cap->edit_post, $entity);
+    	return user_can($user, $entity->cap->edit_post, $entity->get_id());
     }
 
 	/**
@@ -432,7 +432,7 @@ abstract class Repository {
    			return user_can($user, 'read');
    		}
     	
-   		return user_can($user, $entity->cap->read_post, $entity);
+   		return user_can($user, $entity->cap->read_post, $entity->get_id());
     }
 
 	/**
@@ -457,7 +457,7 @@ abstract class Repository {
     		return user_can($user, 'delete_posts');
     	}
     	
-    	return user_can($user, $entity->cap->delete_post, $entity);
+    	return user_can($user, $entity->cap->delete_post, $entity->get_id());
     }
 
 	/**
@@ -481,7 +481,7 @@ abstract class Repository {
     	if($post_type === false || $entity instanceof Entities\Entity ) { // There is no post
     		return user_can($user, 'publish_posts');
     	}
-    	return user_can($user, $entity->cap->publish_posts, $entity);
+    	return user_can($user, $entity->cap->publish_posts, $entity->get_id());
     }
     
 }
