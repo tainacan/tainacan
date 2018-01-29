@@ -157,7 +157,13 @@ class Logs extends Repository {
      */
     public function fetch($args = [], $output = null){
         if(is_numeric($args)){
-    	    return new Entities\Log($args);
+            $existing_post = get_post($args);
+            if ($existing_post instanceof \WP_Post) {
+                return new Entities\Log($existing_post);
+            } else {
+                return [];
+            }
+            
         } elseif (is_array($args)) {
             $args = array_merge([
                 'post_status'    => 'publish',

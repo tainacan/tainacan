@@ -104,7 +104,7 @@ class Filters extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'     => Entities\Filter::get_post_type(),
+        	'capability_type'     => 'tainacan-filter',
             'supports'            => [
                 'title',
                 'editor',
@@ -198,7 +198,13 @@ class Filters extends Repository {
      */
     public function fetch($args = [], $output = null){
         if( is_numeric($args) ){
-            return new Entities\Filter($args);
+            $existing_post = get_post($args);
+            if ($existing_post instanceof \WP_Post) {
+                return new Entities\Filter($existing_post);
+            } else {
+                return [];
+            }
+            
         } elseif (is_array($args)) {
             // TODO: get filters from parent collections
             $args = array_merge([
