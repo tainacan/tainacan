@@ -2,16 +2,16 @@
     <div>
         <el-row v-if="collection != null">
             <el-card :body-style="{ padding: '0px' }">
-                <img src="" class="image" :alt="collection.name">
+                <img :src="collection.featured_image" class="image" :alt="collection.name">
                 <div style="padding: 14px;">
                     <span>{{ collection.name }}</span>
                     <div class="bottom clearfix">
                         <time class="time">{{collection.description}}</time>
-                        <el-button type="text">Lista de Itens</el-button>
-                        <router-link tag="el-button" :to="{ path: `/collections/${collection.id}/items/create`, params: { collection_id: collection.id }}">Criar Item</router-link>
+                        <el-button type="text" class="element-button">Lista de Itens</el-button>
+                        <router-link type="success" class="element-button" tag="el-button" :to="{ path: `/collections/${collection.id}/items/create`, params: { collection_id: collection.id }}">Criar Item</router-link>
                     </div>
                 </div>
-            </el-card>     
+            </el-card>
         </el-row>
     </div>
 </template>
@@ -62,13 +62,12 @@ export default {
         line-height: 12px;
     }
 
-    el-button {
-        padding: 0;
+    .element-button {
         float: right;
     }
 
     .image {
-        width: 100%;
+        max-width: 100%;
         display: block;
     }
 
