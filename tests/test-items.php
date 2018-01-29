@@ -101,7 +101,8 @@ class Items extends TAINACAN_UnitTestCase {
 		        'collection' => $collection,
 		        'add_metadata' => [
 		        	[$metadata, 'value_1']
-		        ]
+		        ],
+		        'status'      => 'publish'
 	        ),
 	        true
         );
@@ -121,7 +122,8 @@ class Items extends TAINACAN_UnitTestCase {
 			    'add_metadata' => [
 			    	[$metadata2, 'value_2'],
 				    [$metadata3, 'value_2']
-			    ]
+			    ],
+			    'status'      => 'publish'
 		    ),
 		    true
 	    );
@@ -135,7 +137,8 @@ class Items extends TAINACAN_UnitTestCase {
 			    	[$metadata2, 'value_2'],
 				    [$metadata2, 'value_3'],
 				    [$metadata3, 'value_3']
-			    ]
+			    ],
+			    'status'      => 'publish'
 		    ),
 		    true
 	    );
@@ -148,7 +151,8 @@ class Items extends TAINACAN_UnitTestCase {
 			    'add_metadata' => [
 			    	[$metadata2, 'value_3'],
 				    [$metadata3, 'value_6']
-			    ]
+			    ],
+			    'status'      => 'publish'
 		    ),
 		    true
 	    );

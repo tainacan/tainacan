@@ -12,7 +12,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			'collection',
 			array(
 				'name'        => 'Javascript Frameworks',
-				'description' => 'The best framework to javascript'
+				'description' => 'The best framework to javascript',
 			),
 			true
 		);
@@ -49,7 +49,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'title'       => 'Lean Startup',
 				'description' => 'Um processo ágil de criação de novos negócios.',
-				'collection'  => $collection
+				'collection'  => $collection,
+				'status'      => 'publish'
 			),
 			true
 		);
@@ -59,7 +60,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'title'       => 'SCRUM',
 				'description' => 'Um framework ágil para gerenciamento de tarefas.',
-				'collection'  => $collection
+				'collection'  => $collection,
+				'status'      => 'publish'
 			),
 			true
 		);

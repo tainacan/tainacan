@@ -26,8 +26,15 @@ class Collections extends Repository {
                 'title'       => __('Name', 'tainacan'),
                 'type'        => 'string',
                 'description' => __('Name of the collection', 'tainacan'),
-                'validation'  => v::stringType(),
+                'validation'  => v::stringType()->notEmpty(),
             ],
+		    'status'          => [
+		    	'map'         => 'post_status',
+			    'title'       => __('Status', 'tainacan'),
+			    'type'        => 'string',
+			    'default'     => '',
+			    'description' => __('The posts status', 'tainacan')
+		    ],
 		    'author_id'          => [
 		    	'map'         => 'post_author',
 			    'title'       => __('Author', 'tainacan'),

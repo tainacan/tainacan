@@ -16,8 +16,15 @@ class Items extends Repository {
                 'type'       => 'string',
                 'description'=> __('Title of the item', 'tainacan'),
                 'on_error'   => __('The title should be a text value and not empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty()
+                'validation' => v::stringType()->notEmpty(),
             ],
+            'status'          => [
+			    'map'         => 'post_status',
+			    'title'       => __('Status', 'tainacan'),
+			    'type'        => 'string',
+			    'default'     => 'draft',
+			    'description' => __('The posts status', 'tainacan')
+		    ],
             'description'   =>  [
                 'map'        => 'post_content',
                 'title'      => __('Description', 'tainacan'),
@@ -121,7 +128,7 @@ class Items extends Repository {
     	
     	// save post and geet its ID
     	$item->WP_Post->post_type = $cpt;
-    	$item->WP_Post->post_status = 'publish';
+    	//$item->WP_Post->post_status = 'publish';
     	
     	$id = wp_insert_post($item->WP_Post);
     	$item->WP_Post = get_post($id);
