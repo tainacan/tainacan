@@ -114,7 +114,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$data = $response->get_data();
-
+		$this->assertTrue(is_array($data) && array_key_exists(0, $data), sprintf('cannot read metadata, response: %s', print_r($data, true)));
 		$item_metadata = $data[0];
 		$metadata = $item_metadata['metadata'];
 
