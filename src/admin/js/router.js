@@ -11,14 +11,14 @@ import ItemsList from '../components/items-list.vue'
 Vue.use(VueRouter);
 
 const routes = [
-    { path: '/', component: CollectionsList },
-    { path: '/collections', component: CollectionsList },
+    { path: '/', component: CollectionsList, meta: {title: 'Admin Page'} },
+    { path: '/collections', component: CollectionsList, meta: {title: 'Collections List'} },
     { path: '/collections/:id', component: CollectionPage, children: [
-            { path: 'items-list', component: ItemsList }
-            
-        ]   
+            { path: 'items-list', component: ItemsList, meta: {title: 'Items List'} }
+        ],
+        meta: { title: 'Collection Page' }
     },
-    { path: '/collections/:id/items/create', component: ItemCreationPage },
+    { path: '/collections/:id/items/create', component: ItemCreationPage, meta: {title: 'Create Item'} },
     { path: '*', redirect: '/'}
 ]
 

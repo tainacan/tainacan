@@ -26,7 +26,7 @@ fi
 new_md5_package=$(<last-package-build.md5)
 if [ "$current_md5_package" != "$new_md5_package" ]
 then
-    ## Install composer dependencies
+    ## Install js dependencies
     npm install
 fi
 

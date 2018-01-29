@@ -7,6 +7,11 @@ import AdminPage from '../admin.vue'
 import store from '../../js/store/store'
 import router from './router'
 
+router.beforeEach((to, from, next) => {
+    document.title = to.meta.title
+    next()
+});
+
 //------------------------------------------------
 // FROM DEV 
 
