@@ -198,7 +198,13 @@ class Filters extends Repository {
      */
     public function fetch($args = [], $output = null){
         if( is_numeric($args) ){
-            return new Entities\Filter($args);
+            $existing_post = get_post($args);
+            if ($existing_post instanceof \WP_Post) {
+                return new Entities\Filter($existing_post);
+            } else {
+                return [];
+            }
+            
         } elseif (is_array($args)) {
             // TODO: get filters from parent collections
             $args = array_merge([

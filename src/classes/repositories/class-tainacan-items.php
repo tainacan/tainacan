@@ -149,7 +149,13 @@ class Items extends Repository {
         global $Tainacan_Collections;
 
         if(is_numeric($args)){
-            return new Entities\Item($args);
+            $existing_post = get_post($args);
+            if ($existing_post instanceof \WP_Post) {
+                return new Entities\Item($existing_post);
+            } else {
+                return [];
+            }
+            
         }
 
         if (empty($collections)){
