@@ -41,7 +41,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$metadata_added = $response->get_data();
-
+		$this->assertTrue(is_array($metadata_added) && array_key_exists('name', $metadata_added), sprintf('cannot create metadata, response: %s', print_r($metadata_added, true)));
 		$this->assertEquals('Moeda', $metadata_added['name']);
 	}
 
