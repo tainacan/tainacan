@@ -39,7 +39,10 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 	 * Both of GETs return the metadata of matched objects
 	 */
 	public function register_routes() {
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/collection/(?P<collection_id>[\d]+)',
+		/*
+		Removing this undocumented endpoint.. it seems wrong.
+		
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/collection/(?P<collection_id>[\d]+)',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -64,6 +67,7 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 				)
 			)
 		);
+        */
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/item/(?P<item_id>[\d]+)',
 			array(
 				array(
@@ -328,6 +332,8 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 			}
 		}
 
+        // We need to rethink this endpoint. Its confusing...
+        // and there is no need to iterato through all items...
 
 		$collection_id = $request['collection_id'];
 		$body = json_decode($request->get_body(), true);
@@ -374,7 +380,7 @@ class TAINACAN_REST_Metadata_Controller extends WP_REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
 		$item = $this->item_repository->fetch($request['item_id'] ? $request['item_id'] : $request['collection_id']);
-		return $this->item_repository->can_edit($item);
+        return $this->item_repository->can_edit($item);
 	}
 }
 
