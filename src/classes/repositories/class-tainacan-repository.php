@@ -403,7 +403,7 @@ abstract class Repository {
     	$entity = self::get_entity_by_post($entity);
     	
     	$post_type = $entity::get_post_type();
-    	if($post_type === false || $entity instanceof Entities\Entity ) { // There is no post
+    	if( ($post_type === false && ! ($entity instanceof Entities\Item)) || is_null($entity->cap) ) { // There is no post
     		return user_can($user, 'edit_posts');
     	}
     	return user_can($user, $entity->cap->edit_post, $entity->get_id());
@@ -428,11 +428,11 @@ abstract class Repository {
     	$entity = self::get_entity_by_post($entity);
     	
     	$post_type = $entity::get_post_type();
-    	if($post_type === false || $entity instanceof Entities\Entity ) { // There is no post
+    	if( ($post_type === false && ! ($entity instanceof Entities\Item)) || is_null($entity->cap) ) { // There is no post
    			return user_can($user, 'read');
    		}
     	
-   		return user_can($user, $entity->cap->read_post, $entity->get_id());
+   		return user_can($user, $entity->cap->read, $entity->get_id());
     }
 
 	/**
@@ -453,7 +453,7 @@ abstract class Repository {
     	}
    		$entity = self::get_entity_by_post($entity);
    		$post_type = $entity::get_post_type();
-   		if($post_type === false || $entity instanceof Entities\Entity ) { // There is no post
+   		if( ($post_type === false && ! ($entity instanceof Entities\Item)) || is_null($entity->cap) ) { // There is no post
     		return user_can($user, 'delete_posts');
     	}
     	
@@ -478,7 +478,7 @@ abstract class Repository {
     	}
     	$entity = self::get_entity_by_post($entity);
     	$post_type = $entity::get_post_type();
-    	if($post_type === false || $entity instanceof Entities\Entity ) { // There is no post
+    	if( ($post_type === false && ! ($entity instanceof Entities\Item)) || is_null($entity->cap) ) { // There is no post
     		return user_can($user, 'publish_posts');
     	}
     	return user_can($user, $entity->cap->publish_posts, $entity->get_id());
