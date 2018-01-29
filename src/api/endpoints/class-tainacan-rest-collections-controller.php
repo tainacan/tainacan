@@ -119,7 +119,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	        if ($item->have_posts()) {
 		        while ( $item->have_posts() ) {
 		        	$item->the_post();
-		        	$collection = new Entities\Collection($item->post);
+		        	$collection = new Entities\Collection($item->post->ID);
 
 		        	$collection_resumed = $this->get_only_needed_attributes($collection, $map);
 
