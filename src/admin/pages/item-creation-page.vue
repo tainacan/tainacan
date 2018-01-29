@@ -31,8 +31,12 @@
                     <div class="el-upload__tip" slot="tip">imagens em formato jpg/png</div>
                 </el-upload>
             </el-form-item>
-            <el-form-item v-for="(metadata, index) in metadataList" v-bind:key="index" :label="metadata.label">
-                <component :is="metadata.component"></component>
+            <el-form-item v-for="(metadata, index) in metadataList" v-bind:key="index" :label="metadata.metadata.name">
+                <component  :is="'tainacan-text'"
+                            :name="metadata.metadata.name"
+                            :item_id="metadata.item.id"
+                            :metadata_id="metadata.metadata.id"
+                            :value="metadata.value"></component>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">Criar</el-button>
@@ -49,6 +53,7 @@ export default {
     name: 'ItemCreationPage',
     data(){
         return {
+            itemId: Number,
             collectionId: Number,
             form: {
                 collectionId: Number,
@@ -56,16 +61,7 @@ export default {
                 status: '',
                 description: ''
             },
-            metadataList: [
-                { label: 'Text do Tainacan', component:'tainacan-text' },
-                { label: 'Textarea do Tainacan', component:'tainacan-textarea' },
-                { label: 'Selecbox do Tainacan', component:'tainacan-selectbox' },
-                //{ label: 'Checkbox do Tainacan', component:'tainacan-checkbox' },
-                { label: 'Radio do Tainacan', component:'tainacan-radio' },
-                { label: 'Numeric do Tainacan', component:'tainacan-numeric' },
-                { label: 'Data do Tainacan', component:'tainacan-date' }
-            ],
-            // can be obtained from api later
+            // Can be obtained from api later
             statusOptions: [{ 
                 value: 'publish',
                 label: 'Publicado'
@@ -81,27 +77,55 @@ export default {
             }],
             rules: {
                 title: [
-                    { required: true, message: 'Please input Activity name', trigger: 'blur' },
-                    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' }
+                    { required: true, message: 'Please input Activity name', trigger: 'blur' }
                 ],
             }
         }
     },
     methods: {
         ...mapActions('item', [
-            'sendItem'
+            'sendItem',
+            'updateItem',
+            'fetchMetadata',
+            'sendMetadata'
+        ]),
+        ...mapGetters('item',[
+            'getMetadata'
         ]),
         onSubmit() {
-
-            let data = {collection_id: this.form.collectionId, title: this.form.title, description: this.form.description, status: this.form.status};
-            this.sendItem(data);
+            let data = {item_id: this.itemId, title: this.form.title, description: this.form.description, status: this.form.status};
+            this.updateItem(data);
         }
     },
     computed: {
+        metadataList(){
+            return this.getMetadata();
+        }
     },
     created(){
+        // Obtains collection ID
         this.collectionId = this.$route.params.id;
         this.form.collectionId = this.collectionId;
+
+        // Puts loading on Draft Item creation
+        let loadingInstance = this.$loading({ text: 'Criando item rascunho...' });
+
+        // Creates draft Item
+        let data = {collection_id: this.form.collectionId, title: '', description: '', status: 'draft'};
+        this.sendItem(data).then(res => {
+
+            this.itemId = res.id;
+            // Fill this.form data with current data.
+            // TODO
+            loadingInstance.text = 'Carregando metadados...';
+            // Obtains Item Metadata
+            this.fetchMetadata(this.itemId).then(res => {
+                loadingInstance.close();
+            });
+            
+        })
+        .catch(error => console.log(error));
+        
     }
 
 }

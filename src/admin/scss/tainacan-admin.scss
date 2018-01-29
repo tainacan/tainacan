@@ -6,6 +6,10 @@ $--color-secondary: #01295c;
 //$--font-path: '../../assets/css/fonts/material-icons.css';
 
 .el-select-dropdown, .el-popper {
+    z-index: 9999999 !important;
+}
+
+.el-loading-mask{
     z-index: 99999999 !important;
 }
 
