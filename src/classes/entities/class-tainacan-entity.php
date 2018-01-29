@@ -94,6 +94,7 @@ class Entity {
     	}
     	if(
     		is_int($which) &&
+            $this->WP_Post instanceof \WP_Post &&
     		$which != 0 &&
     		( 
     			( $this->get_post_type() !== false && $this->WP_Post->post_type != $this->get_post_type() ) ||
@@ -116,6 +117,11 @@ class Entity {
     			$post_type_obj = get_post_type_object(self::get_post_type());
     		}
     		$this->cap = $post_type_obj->cap;
+    	} elseif ($this instanceof Item) {
+    	    $item_collection = $this->get_collection();
+            if ($item_collection) {
+                $this->cap = $item_collection->get_items_capabilities();
+            }
     	}
     }
     

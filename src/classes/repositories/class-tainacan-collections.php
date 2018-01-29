@@ -222,7 +222,13 @@ class Collections extends Repository {
      */
     public function fetch($args = [], $output = null){
         if(is_numeric( $args )){
-            return new Entities\Collection($args);
+            $existing_post = get_post($args);
+            if ($existing_post instanceof \WP_Post) {
+                return new Entities\Collection($existing_post);
+            } else {
+                return [];
+            }
+            
         } elseif(is_array($args)) {
             $args = array_merge([
                 'posts_per_page' => -1,
