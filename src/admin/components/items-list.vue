@@ -32,11 +32,14 @@ export default {
             multipleSelection: []
         }
     },
+    props: {
+        collectionId: Number
+    },
     methods: {
-        ...mapActions('item', [
+        ...mapActions('collection', [
             'fetchItems'
         ]),
-        ...mapGetters('item', [
+        ...mapGetters('collection', [
             'getItems'
         ]),
         handleSelectionChange(value) {
@@ -55,7 +58,7 @@ export default {
         }
     },
     created(){
-        this.fetchItems();
+        this.fetchItems(this.collectionId);
     }
 
 }

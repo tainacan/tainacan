@@ -10,6 +10,7 @@
                         <el-button type="text">Lista de Itens</el-button>
                         <router-link tag="el-button" :to="{ path: `/collections/${collection.id}/items/create`, params: { collection_id: collection.id }}">Criar Item</router-link>
                     </div>
+                    <items-list collectionId="collectionId"></items-list>
                 </div>
             </el-card>     
         </el-row>
@@ -18,6 +19,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import ItemsList from '../components/items-list.vue';
 
 export default {
     name: 'CollectionPage',
@@ -36,6 +38,9 @@ export default {
         createItem() {
             
         }
+    },
+    components: {
+        'items-list': ItemsList
     },
     computed: {
         collection(){

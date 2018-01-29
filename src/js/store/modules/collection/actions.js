@@ -1,8 +1,11 @@
 import axios from '../../../axios/axios';
 
-export const fetchItems = ({ commit, state }) => {
-    axios.get('/')
-        .then(res => {})
+export const fetchItems = ({ commit, state }, collectionId) => {
+    axios.get('/collections/'+collectionId+'/items')
+        .then(res => {
+            let items = res.data;
+            commit('setItems', items);
+        })
         .catch(error => console.log( error ));
 }
 
