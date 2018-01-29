@@ -31,13 +31,12 @@
                     <div class="el-upload__tip" slot="tip">imagens em formato jpg/png</div>
                 </el-upload>
             </el-form-item>
-            <el-form-item v-for="(metadata, index) in metadataList" v-bind:key="index" :label="metadata.metadata.name">
-                <component  :is="'tainacan-text'"
-                            :name="metadata.metadata.name"
-                            :item_id="metadata.item.id"
-                            :metadata_id="metadata.metadata.id"
-                            :value="metadata.value"></component>
-            </el-form-item>
+            <component  v-for="(metadata, index) in metadataList" v-bind:key="index" :label="metadata.metadata.name"
+                        :is="extractFieldType(metadata.metadata.field_type)"
+                        :name="metadata.metadata.name"
+                        :item_id="metadata.item.id"
+                        :metadata_id="metadata.metadata.id"
+                        :value="metadata.value"></component>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">Criar</el-button>
                 <el-button>Cancelar</el-button>
@@ -95,6 +94,10 @@ export default {
         onSubmit() {
             let data = {item_id: this.itemId, title: this.form.title, description: this.form.description, status: this.form.status};
             this.updateItem(data);
+        },
+        extractFieldType(field_type) {
+            let parts = field_type.split('\\');
+            return 'tainacan-' + parts.pop().toLowerCase();
         }
     },
     computed: {
