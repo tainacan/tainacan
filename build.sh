@@ -23,18 +23,11 @@ else
     find src -type f \( -name "package.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-package-build.md5
 fi
 
-new_md5_js=$(<last-js-build.md5)
-if [ "$current_md5_js" != "$new_md5_js" ]
+new_md5_package=$(<last-package-build.md5)
+if [ "$current_md5_package" != "$new_md5_package" ]
 then
-    npm run build
-fi
-### END npm build ###
-
-new_md5_sass=$(<last-sass-build.md5)
-if [ "$current_md5_sass" != "$new_md5_sass" ]
-then
-    ## Compile SASS
-    sh compile-sass.sh
+    ## Install composer dependencies
+    npm install
 fi
 
 new_md5_composer=$(<last-composer-build.md5)
@@ -44,12 +37,20 @@ then
     composer install
 fi
 
-new_md5_package=$(<last-package-build.md5)
-if [ "$current_md5_package" != "$new_md5_package" ]
+new_md5_sass=$(<last-sass-build.md5)
+if [ "$current_md5_sass" != "$new_md5_sass" ]
 then
-    ## Install composer dependencies
-    npm install
+    ## Compile SASS
+    sh compile-sass.sh
 fi
+
+new_md5_js=$(<last-js-build.md5)
+if [ "$current_md5_js" != "$new_md5_js" ]
+then
+    npm run build
+fi
+### END npm build ###
+
 
 echo "Updating files in $destination"
 rm -rf $destination
