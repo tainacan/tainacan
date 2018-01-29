@@ -23,7 +23,6 @@ export const eventBus = new Vue({
             const components = this.getAllComponents();
             for (let eventElement of components){
                 eventElement.addEventListener('changeValues', (event) => {
-                    console.log(event,'event')
                     if ( event.detail[0] ){
                         const promisse = this.$store.dispatch('item/updateMetadata', event.detail[0] );
                         promisse.then( response => {
@@ -40,10 +39,11 @@ export const eventBus = new Vue({
         },
         updateValue(data){
             if ( data.item_id ){
-                const promisse = this.$store.dispatch('item/updateMetadata', data );
+                const promisse = this.$store.dispatch('item/updateMetadata',
+                    { item_id: data.item_id, metadata_id: data.metadata_id, values: data.values });
                 promisse.then( response => {
-                    eventElement.errorsMsg = JSON.stringify( [] );
-                    eventElement.value = response.value;
+                    data.instance.message = JSON.stringify( [] );
+                    data.instance.value = response.value;
                 }, error => {
                     const metadata = this.errors.find(error => error.metadata_id === data.metadata_id );
                     eventElement.errorsMsg = JSON.stringify( metadata.error );
@@ -64,7 +64,6 @@ export const eventBus = new Vue({
             const components = [];
             for( let component of this.componentsTag ){
                 const eventElements = document.getElementsByTagName( component );
-                console.log(eventElements,eventElements.length);
                 if( eventElements ) {
                     for (let eventElement of eventElements){
                         components.push( eventElement );

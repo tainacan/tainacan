@@ -26,8 +26,8 @@
         },
         methods: {
             changeValue(){
-               // this.$emit('changeValues', { item_id: this.item_id, metadata_id: this.metadata_id, values: this.valueInput } );
-                eventBus.$emit('input', { item_id: this.item_id, metadata_id: this.metadata_id, values: this.valueInput } );
+                this.$emit('changeValues', { item_id: this.item_id, metadata_id: this.metadata_id, values: this.valueInput } );
+                eventBus.$emit('input', { item_id: this.item_id, metadata_id: this.metadata_id, values: this.valueInput, instance: this } );
             },
             getValue(){
                 try{
