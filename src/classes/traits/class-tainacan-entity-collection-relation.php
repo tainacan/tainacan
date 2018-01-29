@@ -24,7 +24,7 @@ trait Entity_Collection_Relation {
     
     /**
      * Return Collection from relation
-     * @return \Entities\Collection|NULL Return Collection or null on errors
+     * @return Entities\Collection|NULL Return Collection or null on errors
      */
     public function get_collection() {
     	if (isset($this->collection) && $this->collection instanceof Entities\Collection)
