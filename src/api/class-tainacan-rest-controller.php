@@ -29,7 +29,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		}
 
 		if(array_key_exists('columns', $map)){
-			$entity_prepared['featured_image'] = $entity->get_columns();
+			$entity_prepared['columns'] = $entity->get_columns();
 		}
 
 		return $entity_prepared;

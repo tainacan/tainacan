@@ -283,8 +283,7 @@ abstract class Repository {
     	} elseif ( isset( $entity->WP_Post )) {
     		if($mapped == 'thumbnail'){
     			$property = get_the_post_thumbnail_url($entity->WP_Post->ID, 'full');
-		    }
-		    else {
+		    } else {
 			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
 		    }
     	} elseif ( isset( $entity->WP_Term )) {

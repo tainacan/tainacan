@@ -24,7 +24,20 @@ export const sendMetadata = ( { commit }, { item_id, metadata_id, values }) => {
 
 
 export const updateMetadata = ({ commit }, { item_id, metadata_id, values }) => {
-    commit('setSingleMetadata', { item_id: item_id, metadata_id: metadata_id, values: values });
+    return new Promise((resolve, reject) => {
+        axios.patch(`/item/${item_id}/metadata/`, {
+            metadata_id: metadata_id,
+            values: values
+        })
+            .then( res => {
+                console.log(res);
+                let metadata = res.data;
+                commit('setSingleMetadata', metadata);
+            })
+            .catch( error => {
+                console.log('error', error);
+            })
+    });
 };
 
 export const fetchMetadata = ({ commit }, item_id) => {

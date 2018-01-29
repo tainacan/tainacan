@@ -8,20 +8,20 @@ current_OS=`uname`
 
 # For macOS (Darwin)
 if [ $current_OS == "Darwin" ]; then
-    find src -type f \( -name "*.js" -or -name "*.vue" \) -exec md5 {} \; | sort -k 2 | md5 > last-js-build.md5
+    find src -type f \( -name "*.js" -or -name "*.vue" -or -name "*.scss" \) -exec md5 {} \; | sort -k 2 | md5 > last-js-build.md5
 else
-    find src -type f \( -name "*.js" -or -name "*.vue" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-js-build.md5
+    find src -type f \( -name "*.js" -or -name "*.vue" -or -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-js-build.md5
 fi
 
 new_md5=$(<last-js-build.md5)
 if [ "$current_md5" != "$new_md5" ]
 then
     npm run build
+
+    ## Compile SASS
+    sh compile-sass.sh
 fi
 ### END npm build ###
-
-## Compile SASS
-sh compile-sass.sh
 
 ## Install composer dependencies
 composer install

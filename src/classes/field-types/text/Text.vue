@@ -51,11 +51,11 @@
             },
             setInitValueOnStore(){
                 if ( this.value ){
-                    this.$store.dispatch('item/updateMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: JSON.parse(  this.value ) });
+                    this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: JSON.parse(  this.value ) });
                 }
             },
             setValue( event ){
-                this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: event.target.value });
+                this.$store.dispatch('item/updateMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: event.target.value });
             }
         }
     }
