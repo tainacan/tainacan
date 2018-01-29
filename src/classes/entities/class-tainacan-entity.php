@@ -111,9 +111,7 @@ class Entity {
     	if($this->get_post_type() !== false) {
     		$post_type_obj = get_post_type_object(self::get_post_type());
     		if(!is_object($post_type_obj)) { //may be called before post_type registration
-    			global ${$this->repository};
-    			${$this->repository}->register_post_type();
-    			$post_type_obj = get_post_type_object(self::get_post_type());
+    			throw new \Exception(sprintf("The post type %s need to be registered, need the init hook!"));
     		}
     		$this->cap = $post_type_obj->cap;
     	}
