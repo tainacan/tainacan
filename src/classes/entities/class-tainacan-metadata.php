@@ -154,14 +154,6 @@ class Metadata extends Entity {
     }
     
     /**
-     * return the collection_id
-     * @return integer
-     */
-    function get_collection_id() {
-    	return $this->get_mapped_property('collection_id');
-    }
-
-    /**
      * Set the metadata name
      *
      * @param [string] $value
