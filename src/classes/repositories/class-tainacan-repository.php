@@ -281,7 +281,11 @@ abstract class Repository {
     	} elseif ( $mapped == 'termmeta' ){
     		$property = get_term_meta($entity->WP_Term->term_id, $prop, true);
     	} elseif ( isset( $entity->WP_Post )) {
-    		$property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
+    		if($mapped == 'thumbnail'){
+    			$property = get_the_post_thumbnail_url($entity->WP_Post->ID, 'full');
+		    } else {
+			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
+		    }
     	} elseif ( isset( $entity->WP_Term )) {
     		$property = isset($entity->WP_Term->$mapped) ? $entity->WP_Term->$mapped : null;
     	}

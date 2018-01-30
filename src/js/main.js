@@ -2,8 +2,10 @@ import Vue from 'vue'
 
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
+import ElementUI from 'element-ui'
 import { eventBus } from './event-bus-web-components';
 
+Vue.use(ElementUI)
 Vue.use(VueCustomElement);
 
 import Text from '../classes/field-types/text/Text.vue';
@@ -16,10 +18,20 @@ import Date from '../classes/field-types/date/Date.vue';
 
 
 Vue.customElement('tainacan-text', Text);
+eventBus.registerComponent( 'tainacan-text' );
+
 Vue.customElement('tainacan-textarea', Textarea);
+eventBus.registerComponent( 'tainacan-numeric' );
+
 Vue.customElement('tainacan-selectbox', Selectbox);
+eventBus.registerComponent( 'tainacan-textarea' );
+
 Vue.customElement('tainacan-checkbox', Checkbox);
+eventBus.registerComponent( 'tainacan-checkbox' );
+
 Vue.customElement('tainacan-radio', Radio);
+eventBus.registerComponent( 'tainacan-radio' );
+
 Vue.customElement('tainacan-numeric', Numeric);
 eventBus.registerComponent( 'tainacan-numeric' );
 

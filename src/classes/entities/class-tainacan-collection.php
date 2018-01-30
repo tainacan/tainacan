@@ -101,6 +101,49 @@ class Collection extends Entity {
         return register_post_type($cpt_slug, $args);
     }
 
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_featured_img(){
+    	return $this->get_mapped_property('featured_image');
+    }
+
+	/**
+	 * @param $value
+	 */
+	function set_featured_img($value){
+    	$this->set_mapped_property('featured_image', $value);
+    }
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_modification_date(){
+    	return $this->get_mapped_property('modification_date');
+    }
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_creation_date(){
+    	return $this->get_mapped_property('creation_date');
+    }
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_author_id(){
+    	return $this->get_mapped_property('author_id');
+    }
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_url(){
+    	return $this->get_mapped_property('url');
+    }
+
     /**
      * Get collection name
      *

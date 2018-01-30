@@ -55,7 +55,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
     }
 
     public function test_fetch_collections(){
-    	$x = $this->tainacan_entity_factory->create_entity(
+    	$this->tainacan_entity_factory->create_entity(
     		'collection',
     		array(
     			'name'          => 'testeApi',
@@ -65,6 +65,17 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
     		),
     		true
 		);
+
+	    $this->tainacan_entity_factory->create_entity(
+		    'collection',
+		    array(
+			    'name'          => 'Other',
+			    'description'   => 'adasdasdsa',
+			    'default_order' => 'DESC',
+			    'status'		=> 'publish'
+		    ),
+		    true
+	    );
 
 	    $request  = new \WP_REST_Request( 'GET', $this->namespace . '/collections' );
 
@@ -76,8 +87,11 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
     	//$data is a valid json?
     	//$this->assertTrue(json_last_error() === JSON_ERROR_NONE);
 
-    	$one_collection = $data[0];
+	    $other_collection = $data[0];
+    	$one_collection = $data[1];
+
     	$this->assertEquals('testeApi', $one_collection['name']);
+    	$this->assertEquals('Other', $other_collection['name']);
     }
 
     public function test_delete_or_trash_a_collection(){

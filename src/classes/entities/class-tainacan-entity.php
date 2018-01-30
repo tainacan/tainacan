@@ -166,8 +166,9 @@ class Entity {
         $this->reset_errors();
         
         foreach ($map as $prop => $mapped) {
-            if (!$this->validate_prop($prop))
-                $is_valid = false;
+            if (!$this->validate_prop($prop)) {
+	            $is_valid = false;
+            }
         }
         
         $this->set_validated($is_valid);
@@ -204,10 +205,19 @@ class Entity {
                     }
                 }
             } else {
-                if (!$validation->validate($prop_value)) {
+            	$status = $this->get_mapped_property('status');
 
-                    $this->add_error('invalid', $message);
+                if ( !$validation->validate($prop_value)
+                    && ( $prop !== 'title' || $prop !== 'name' )
+                    && ( strpos($status, 'draft') || empty($status) ) ) {
+
+	                $this->add_error('invalid', $message);
                     $is_valid = false;
+                }
+                elseif(!$validation->validate($prop_value) && (strpos($status, 'draft') === false)){
+
+                	$this->add_error('invalid', $message);
+	                $is_valid = false;
                 }
             }
         }

@@ -13,7 +13,7 @@ class Collections extends Repository {
 	
 	public function __construct() {
 		parent::__construct();
-// 		add_filter('map_meta_cap', array($this, 'map_meta_cap'), 10, 4);
+ 		add_filter('user_has_cap', array($this, 'user_has_cap'), 10, 3);
 	}
 	/**
 	 * {@inheritDoc}
@@ -21,30 +21,67 @@ class Collections extends Repository {
 	 */
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
-            'name'           =>  [
-                'map'        => 'post_title',
+            'name'            =>  [
+                'map'         => 'post_title',
                 'title'       => __('Name', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Name of the collection', 'tainacan'),
-                'validation' => v::stringType(),
+                'type'        => 'string',
+                'description' => __('Name of the collection', 'tainacan'),
+                'validation'  => v::stringType()->notEmpty(),
+            ],
+		    'status'          => [
+		    	'map'         => 'post_status',
+			    'title'       => __('Status', 'tainacan'),
+			    'type'        => 'string',
+			    'default'     => '',
+			    'description' => __('The posts status', 'tainacan')
+		    ],
+		    'author_id'          => [
+		    	'map'         => 'post_author',
+			    'title'       => __('Author', 'tainacan'),
+			    'type'        => 'string',
+			    'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')
+		    ],
+            'creation_date'   => [
+            	'map'         => 'post_date',
+	            'title'       => __('Creation Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection creation date', 'tainacan')
+            ],
+            'modification_date' => [
+            	'map'         => 'post_modified',
+	            'title'       => __('Modification Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection modification date', 'tainacan')
+		    ],
+            'url'             => [
+            	'map'         => 'guid',
+	            'title'       => __('Collection URL', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection URL', 'tainacan')
+            ],
+            'featured_image'  => [
+            	'map'         => 'thumbnail',
+	            'title'       => __('Featured Image', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection thumbnail URL')
             ],
             'order'          =>  [
                 'map'        => 'menu_order',
-                'title'       => __('Order', 'tainacan'),
+                'title'      => __('Order', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Collection order. Field used if collections are manually ordered', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             'parent'         =>  [
                 'map'        => 'post_parent',
-                'title'       => __('Parent Collection', 'tainacan'),
+                'title'      => __('Parent Collection', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('Parent collection ID', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             'description'    =>  [
                 'map'        => 'post_content',
-                'title'       => __('Description', 'tainacan'),
+                'title'      => __('Description', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Collection description', 'tainacan'),
             	'default'	 => '',
@@ -52,7 +89,7 @@ class Collections extends Repository {
             ],
             'slug'           =>  [
                 'map'        => 'post_name',
-                'title'       => __('Slug', 'tainacan'),
+                'title'      => __('Slug', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('A unique and santized string representation of the collection, used to build the collection URL', 'tainacan'),
                 //'validation' => v::stringType(),
@@ -60,7 +97,7 @@ class Collections extends Repository {
             
             'default_orderby'           =>  [
                 'map'        => 'meta',
-                'title'       => __('Default Order field', 'tainacan'),
+                'title'      => __('Default Order field', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Default property items in this collections will be ordered by', 'tainacan'),
                 'default'    => 'name',
@@ -68,7 +105,7 @@ class Collections extends Repository {
             ],
             'default_order'           =>  [
                 'map'        => 'meta',
-                'title'       => __('Default order', 'tainacan'),
+                'title'      => __('Default order', 'tainacan'),
                 'description'=> __('Default order for items in this collection. ASC or DESC', 'tainacan'),
                 'type'       => 'string',
                 'default'    => 'ASC',
@@ -76,14 +113,14 @@ class Collections extends Repository {
             ],
             'columns'           =>  [
                 'map'        => 'meta',
-                'title'       => __('Columns', 'tainacan'),
+                'title'      => __('Columns', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('List of collections property that will be displayed in the table view', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             'default_view_mode'           =>  [
                 'map'        => 'meta',
-                'title'       => __('Default view mode', 'tainacan'),
+                'title'      => __('Default view mode', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Collection default visualization mode', 'tainacan'),
                 //'validation' => v::stringType(),
@@ -245,26 +282,39 @@ class Collections extends Repository {
     /**
      * Filter to handle special permissions
      *
-     * @see https://developer.wordpress.org/reference/hooks/map_meta_cap/
+     * @see https://codex.wordpress.org/Plugin_API/Filter_Reference/user_has_cap
      *
-     */
-    public function map_meta_cap($caps, $cap, $user_id, $args) {
+     * Filter on the current_user_can() function.
+	 * This function is used to explicitly allow authors to edit contributors and other
+	 * authors posts if they are published or pending.
+	 *
+	 * @param array $allcaps All the capabilities of the user
+	 * @param array $cap     [0] Required capability
+	 * @param array $args    [0] Requested capability
+	 *                       [1] User ID
+	 *                       [2] Associated object ID
+	 */
+    public function user_has_cap($allcaps, $cap, $args) {
     	
-    	// Filters meta caps edit_tainacan-collection and check if user is moderator
-    	$collection_cpt = get_post_type_object(Entities\Collection::get_post_type());
-    	if ($cap == $collection_cpt->cap->edit_post) {
-    		$entity = new Entities\Collection($args[0]);
-    		if ($entity) {
-    			$moderators = $entity->get_moderators_ids();
-    			if (in_array($user_id, $moderators)) {
-    				// if user is moderator, we clear the current caps
-    				// (that might fave edit_others_posts) and leave only edit_posts
-    				$caps = [$collection_cpt->cap->edit_posts];
+    	if(count($args) > 2) {
+    		$entity = Repository::get_entity_by_post($args[2]);
+    		$collection = false;
+    		if($entity) {
+    			if($entity instanceof Entities\Collection) { // TODO others entity types
+    				$collection = $entity;
     			}
+    			if($entity instanceof Entities\Item) { // TODO others entity types
+    				$collection = $entity->get_collection();
+    			}
+	    		if($collection) {
+		    		$moderators = $collection->get_moderators_ids();
+		    		if (is_array($moderators) && in_array($args[1], $moderators)) {
+		    			$allcaps[$cap[0]] = true;
+		    		}
+	    		}
     		}
     	}
-    	
-    	return $caps;
+    	return $allcaps;
     	
     }
     

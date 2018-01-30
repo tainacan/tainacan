@@ -11,17 +11,20 @@ export const eventBus = new Vue({
         if( wp_settings.components ){
             this.componentsTag = wp_settings.components;
         }
+        this.$on('input', data => this.updateValue(data) );
     },
     methods : {
         registerComponent( name ){
-            this.componentsTag.push( name );
+            if (this.componentsTag.indexOf(name) < 0) {
+                this.componentsTag.push( name );
+            }
         },
         listener(){
             const components = this.getAllComponents();
             for (let eventElement of components){
-                eventElement.addEventListener('changeValue', (event) => {
+                eventElement.addEventListener('changeValues', (event) => {
                     if ( event.detail[0] ){
-                        const promisse = this.$store.dispatch('item/sendMetadata', event.detail[0] );
+                        const promisse = this.$store.dispatch('item/updateMetadata', event.detail[0] );
                         promisse.then( response => {
                             eventElement.errorsMsg = JSON.stringify( [] );
                             eventElement.value = response.value;
@@ -31,6 +34,20 @@ export const eventBus = new Vue({
                             eventElement.value = event.detail[0].values;
                         });
                     }
+                });
+            }
+        },
+        updateValue(data){
+            if ( data.item_id ){
+                const promisse = this.$store.dispatch('item/updateMetadata',
+                    { item_id: data.item_id, metadata_id: data.metadata_id, values: data.values });
+                promisse.then( response => {
+                    data.instance.message = JSON.stringify( [] );
+                    data.instance.value = response.value;
+                }, error => {
+                    const metadata = this.errors.find(error => error.metadata_id === data.metadata_id );
+                    eventElement.errorsMsg = JSON.stringify( metadata.error );
+                    eventElement.value = data.values;
                 });
             }
         },
@@ -51,6 +68,12 @@ export const eventBus = new Vue({
                     for (let eventElement of eventElements){
                         components.push( eventElement );
                     }
+                }
+            }
+            let elements = document.querySelectorAll('[web-component="true"]');
+            if( elements ) {
+                for (let eventElement of elements){
+                    components.push( eventElement );
                 }
             }
             return components;

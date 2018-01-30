@@ -16,8 +16,15 @@ class Items extends Repository {
                 'type'       => 'string',
                 'description'=> __('Title of the item', 'tainacan'),
                 'on_error'   => __('The title should be a text value and not empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty()
+                'validation' => v::stringType()->notEmpty(),
             ],
+            'status'          => [
+			    'map'         => 'post_status',
+			    'title'       => __('Status', 'tainacan'),
+			    'type'        => 'string',
+			    'default'     => 'draft',
+			    'description' => __('The posts status', 'tainacan')
+		    ],
             'description'   =>  [
                 'map'        => 'post_content',
                 'title'      => __('Description', 'tainacan'),
@@ -32,6 +39,36 @@ class Items extends Repository {
                 'type'       => 'integer',
                 'description'=> __('The collection ID', 'tainacan'),
                 'validation' => ''
+            ],
+            'author_id'          => [
+			    'map'         => 'post_author',
+			    'title'       => __('Author', 'tainacan'),
+			    'type'        => 'string',
+			    'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')
+		    ],
+            'creation_date'   => [
+	            'map'         => 'post_date',
+	            'title'       => __('Creation Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection creation date', 'tainacan')
+            ],
+            'modification_date' => [
+	            'map'         => 'post_modified',
+	            'title'       => __('Modification Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection modification date', 'tainacan')
+            ],
+            'url'             => [
+	            'map'         => 'guid',
+	            'title'       => __('Collection URL', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection URL', 'tainacan')
+            ],
+            'featured_image'  => [
+	            'map'         => 'thumbnail',
+	            'title'       => __('Featured Image', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection thumbnail URL')
             ],
             //'collection' => 'relation...',
             // metadata .. metadata...
@@ -91,7 +128,7 @@ class Items extends Repository {
     	
     	// save post and geet its ID
     	$item->WP_Post->post_type = $cpt;
-    	$item->WP_Post->post_status = 'publish';
+    	//$item->WP_Post->post_status = 'publish';
     	
     	$id = wp_insert_post($item->WP_Post);
     	$item->WP_Post = get_post($id);

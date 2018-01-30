@@ -13,6 +13,9 @@ node_modules
 npm-debug.log
 src/assets/*.js
 last-js-build.md5
+last-sass-build.md5
+last-composer-build.md5
+last-package-build.md5
 src/admin/scss/.sass-cache
 src/assets/css/tainacan-admin.css
 src/assets/css/tainacan-admin.css.map
