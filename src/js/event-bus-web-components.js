@@ -22,7 +22,7 @@ export const eventBus = new Vue({
         listener(){
             const components = this.getAllComponents();
             for (let eventElement of components){
-                eventElement.addEventListener('changeValues', (event) => {
+                eventElement.addEventListener('changeValues', (event) => {                    
                     if ( event.detail[0] ){
                         const promisse = this.$store.dispatch('item/updateMetadata', event.detail[0] );
                         promisse.then( response => {

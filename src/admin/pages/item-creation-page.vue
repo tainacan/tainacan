@@ -36,7 +36,8 @@
                         :name="metadata.metadata.name"
                         :item_id="metadata.item.id"
                         :metadata_id="metadata.metadata.id"
-                        :value="metadata.value"></component>
+                        :value="metadata.value"
+                        :multiple="metadata.metadata.multiple"></component>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">Criar</el-button>
                 <el-button>Cancelar</el-button>
@@ -92,6 +93,7 @@ export default {
             'getMetadata'
         ]),
         onSubmit() {
+            this.getMetadata();
             let data = {item_id: this.itemId, title: this.form.title, description: this.form.description, status: this.form.status};
             this.updateItem(data);
         },

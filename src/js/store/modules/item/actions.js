@@ -3,8 +3,7 @@ import axios from '../../../axios/axios';
 // Actions related to Item's metadata
 export const sendMetadata = ( { commit }, { item_id, metadata_id, values }) => {
    return new Promise( (resolve, reject) => {
-       axios.post('/item/'+item_id+'/metadata/', {
-           metadata_id: metadata_id,
+       axios.post('/item/'+item_id+'/metadata/'+metadata_id, {
            values: values
        })
            .then( res => {
@@ -25,8 +24,8 @@ export const sendMetadata = ( { commit }, { item_id, metadata_id, values }) => {
 
 export const updateMetadata = ({ commit }, { item_id, metadata_id, values }) => {
     return new Promise((resolve, reject) => {
-        axios.patch(`/item/${item_id}/metadata/`, {
-            metadata_id: metadata_id,
+        console.log(metadata_id);
+        axios.patch(`/item/${item_id}/metadata/${metadata_id}`, {
             values: values
         })
             .then( res => {
