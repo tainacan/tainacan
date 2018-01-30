@@ -6,7 +6,7 @@
                 style="width: 100%"
                 @selection-change="handleSelectionChange"
                 stripe>
-            <el-table-column type="selection" width="30">
+            <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column width="55">
                 <template v-if="scope.row.featured_image" slot-scope="scope">

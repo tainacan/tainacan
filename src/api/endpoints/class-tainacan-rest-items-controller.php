@@ -147,12 +147,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function get_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $this->items_repository->can_read($item);
+		return $item->can_read();
 	}
 
 	public function get_items_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $this->collections_repository->can_read($collection);
+		return $collection->can_read();
 	}
 
 	/**
@@ -239,11 +239,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function create_item_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-        if ($collection instanceof Entities\Collection) {
+
+		if ($collection instanceof Entities\Collection) {
             return $collection->get_items_capabilities()->edit_posts;
         }
+
         return false;
-        
 	}
 
 	/**
@@ -272,7 +273,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $this->items_repository->can_delete($item);
+		return $item->can_delete();
 	}
 
 	/**
@@ -286,13 +287,19 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
-			$attributes = ['ID' => $item_id];
+			$attributes = [];
 
 			foreach ($body as $att => $value){
 				$attributes[$att] = $value;
 			}
 
-			$updated_item = $this->items_repository->update($attributes);
+			$item = $this->items_repository->fetch($item_id);
+
+			$updated_item = $this->items_repository->update($item, $attributes);
+
+			if(!($updated_item instanceof Entities\Item)){
+				return new WP_REST_Response($updated_item, 400);
+			}
 
 			return new WP_REST_Response($updated_item->__toArray(), 200);
 		}
@@ -311,7 +318,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $this->items_repository->can_edit($item);
+		return $item->can_edit();
 	}
 }
 

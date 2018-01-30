@@ -381,7 +381,7 @@ abstract class Repository {
      * @param $object
      * @return mixed
      */
-    public abstract function update($object);
+    public abstract function update($object, $new_values = null);
 
     /**
      * @return mixed

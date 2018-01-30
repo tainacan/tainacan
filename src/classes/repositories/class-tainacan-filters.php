@@ -168,7 +168,7 @@ class Filters extends Repository {
 	    return new Entities\Filter(wp_trash_post($args[0]));
     }
 
-    public function update($object){
+    public function update($object, $new_values = null){
 	    $map = $this->get_map();
 
 	    $entity = [];

@@ -158,14 +158,13 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$meta_values = json_encode(
 			array(
-				'metadata_id' => $metadata->get_id(),
 				'values' => '19/01/2018'
 			)
 		);
 
 		$request = new \WP_REST_Request(
 			'PATCH',
-			$this->namespace . '/item/' . $item->get_id() . '/metadata'
+			$this->namespace . '/item/' . $item->get_id() . '/metadata/' . $metadata->get_id()
 		);
 		$request->set_body($meta_values);
 
@@ -185,7 +184,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		#### UPDATE METADATA IN COLLECTION ####
         
 		$values = json_encode([
-			'metadata_id' => $metadata->get_id(),
 			'values'      => [
 				'name'        => 'Dia/Mês/Ano',
 				'description' => 'Continua descrevendo o dado do campo.'
@@ -194,7 +192,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request = new \WP_REST_Request(
 			'PATCH',
-			$this->namespace . '/collection/' . $collection->get_id() . '/metadata'
+			$this->namespace . '/collection/' . $collection->get_id() . '/metadata/' . $metadata->get_id()
 		);
 
 		$request->set_body($values);

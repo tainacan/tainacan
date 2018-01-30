@@ -216,20 +216,21 @@ class Collections extends Repository {
     	return $new_collection;
     }
     
-    public function update($object){
-	    $map = $this->get_map();
-
-	    $entity = [];
-
-	    foreach ($object as $key => $value) {
-	    	if($key != 'ID') {
-			    $entity[$map[$key]['map']] = $value ;
-		    } elseif ($key == 'ID'){
-	    		$entity[$key] = (int) $value;
+    public function update($object, $new_values = null){
+	    foreach ($new_values as $key => $value) {
+		    try {
+			    $set_ = 'set_' . $key;
+			    $object->$set_( $value );
+		    } catch (\Error $error){
+			    return $error->getMessage();
 		    }
 	    }
 
-	    return new Entities\Collection(wp_update_post($entity));
+	    if($object->validate()){
+		    return $this->insert($object);
+	    }
+
+	    return $object->get_errors();
     }
 
 	/**

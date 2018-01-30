@@ -155,7 +155,7 @@ class Terms extends Repository {
         }
     }
 
-    public function update($object){
+    public function update($object, $new_values = null){
 	    $map = $this->get_map();
 
 	    $entity = [];

@@ -7,8 +7,13 @@
                 @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55">
             </el-table-column>
+            <el-table-column width="55">
+                <template v-if="scope.row.featured_image" slot-scope="scope">
+                    <img class="table-thumb" :src="`${scope.row.featured_image}`"/>
+                </template>
+            </el-table-column>
             <el-table-column label="Nome" show-overflow-tooltip>
-                <template slot-scope="scope"><router-link :to="`/items/${scope.row.id}`" tag="a">{{ scope.row.name }}</router-link></template>
+                <template slot-scope="scope"><router-link :to="`/items/${scope.row.id}`" tag="a">{{ scope.row.title }}</router-link></template>
             </el-table-column>
             <el-table-column property="description" label="Descrição" show-overflow-tooltip>
             </el-table-column>
@@ -67,7 +72,7 @@ export default {
 <style scoped>
 
     .table-thumb {
-        max-height: 38px !important;
+        max-height: 55px !important;
         vertical-align: middle !important;
     }
 

@@ -288,20 +288,28 @@ class Metadatas extends Repository {
         return $this->fetch( $args, $output );
     }
 
-    public function update($object){
-	    $map = $this->get_map();
-
-	    $entity = [];
-
-	    foreach ($object as $key => $value) {
-		    if($key != 'ID') {
-			    $entity[$map[$key]['map']] = $value ;
-		    } elseif ($key == 'ID'){
-			    $entity[$key] = (int) $value;
+	/**
+	 * @param $object
+	 * @param $new_values
+	 *
+	 * @return mixed|string|Entities\Entity
+	 * @throws \Exception
+	 */
+	public function update($object, $new_values = null){
+	    foreach ($new_values as $key => $value) {
+		    try {
+			    $set_ = 'set_' . $key;
+			    $object->$set_( $value );
+		    } catch (\Error $error){
+		    	return $error->getMessage();
 		    }
 	    }
 
-	    return new Entities\Metadata(wp_update_post($entity));
+	    if($object->validate()){
+	    	return $this->insert($object);
+	    }
+
+	    return $object->get_errors();
     }
 
     public function delete($object){

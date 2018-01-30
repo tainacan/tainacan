@@ -39,7 +39,30 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * Both of GETs return the metadata of matched objects
 	 */
 	public function register_routes() {
-		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base ,
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_id>[\d]+)',
+			array(
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_item'),
+					'permission_callback' => array($this, 'delete_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
+				)
+			)
+		);
+		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_id>[\d]+)',
+			array(
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
+				)
+			)
+		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -52,16 +75,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check')
 				),
-				array(
-					'methods'             => WP_REST_Server::DELETABLE,
-					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_item_permissions_check')
-				),
-				array(
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
-				)
 			)
 		);
 		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base,
@@ -77,11 +90,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check')
 				),
-				array(
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
-				)
 			)
 		);
 	}
@@ -306,7 +314,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 			$body = json_decode( $request->get_body(), true );
 
 			$item_id     = $request['item_id'];
-			$metadata_id = $body['metadata_id'];
+			$metadata_id = $request['metadata_id'];
 			$value       = $body['values'];
 
 			$item     = $this->item_repository->fetch( $item_id );
@@ -335,13 +343,21 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
-			$attributes = ['ID' => $body['metadata_id']];
+			$attributes = [];
+
+			$metadata_id = $request['metadata_id'];
 
 			foreach ($body['values'] as $att => $value){
 				$attributes[$att] = $value;
 			}
 
-			$updated_metadata = $this->metadata_repository->update($attributes);
+			$metadata = $this->metadata_repository->fetch($metadata_id);
+
+			$updated_metadata = $this->metadata_repository->update($metadata, $attributes);
+
+			if(!($updated_metadata instanceof Entities\Metadata)){
+				return new WP_REST_Response($updated_metadata, 400);
+			}
 
 			$items = $this->item_repository->fetch([], $collection_id, 'WP_Query');
 

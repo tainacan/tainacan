@@ -158,7 +158,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function  get_item_permissions_check($request){
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $this->collections_repository->can_read($collection);
+		return $collection->can_read();
 	}
 
 	/**
@@ -257,7 +257,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $this->collections_repository->can_delete($collection);
+		return $collection->can_delete();
     }
 
 	/**
@@ -273,13 +273,19 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	    $body = json_decode($request->get_body(), true);
 
 	    if(!empty($body)){
-	    	$attributes = ['ID' => $collection_id];
+	    	$attributes = [];
 
 	    	foreach ($body as $att => $value){
 	    		$attributes[$att] = $value;
 		    }
 
-	    	$updated_collection = $this->collections_repository->update($attributes);
+		    $collection = $this->collections_repository->fetch($collection_id);
+
+	    	$updated_collection = $this->collections_repository->update($collection, $attributes);
+
+		    if(!($updated_collection instanceof Entities\Collection)){
+			    return new WP_REST_Response($updated_collection, 400);
+		    }
 
 	    	return new WP_REST_Response($updated_collection->__toArray(), 200);
 	    }
@@ -301,7 +307,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $this->collections_repository->can_edit($collection);
+		return $collection->can_edit();
     }
 
 	/**

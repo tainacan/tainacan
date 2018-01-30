@@ -31,7 +31,7 @@ class Item_Metadata extends Repository {
         return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_metadata());
     }
 
-    public function update($item_metadata){
+    public function update($item_metadata, $new_values = null){
 	    $unique = !$item_metadata->is_multiple();
 
 	    if ($unique) {
