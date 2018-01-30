@@ -13,7 +13,7 @@
                 </template>
             </el-table-column>
             <el-table-column label="Nome" show-overflow-tooltip>
-                <template slot-scope="scope"><router-link :to="`/items/${scope.row.id}`" tag="a">{{ scope.row.title }}</router-link></template>
+                <template slot-scope="scope"><router-link :to="`/collections/${collectionId}/items/${scope.row.id}`" tag="a">{{ scope.row.title }}</router-link></template>
             </el-table-column>
             <el-table-column property="description" label="Descrição" show-overflow-tooltip>
             </el-table-column>

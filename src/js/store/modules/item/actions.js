@@ -55,6 +55,21 @@ export const fetchMetadata = ({ commit }, item_id) => {
 };
 
 // Actions directly related to Item
+export const fetchItem = ({ commit }, item_id) => {
+    return new Promise((resolve, reject) => {
+        axios.get('/items/'+item_id)
+        .then(res => {
+            let item = res.data;
+            commit('setSingleItem', item);
+            resolve( res.data );
+        })
+        .catch(error => {
+            console.log(error);
+            reject( error );
+        });
+    });
+};
+
 export const sendItem = ( { commit }, { collection_id, title, description, status }) => {
     return new Promise(( resolve, reject ) => {
         axios.post('/collection/'+ collection_id + '/items/', {
