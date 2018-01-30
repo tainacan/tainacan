@@ -65,7 +65,7 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$data = $response->get_data();
-
+		$this->assertTrue(is_array($data) && array_key_exists('name', $data), sprintf('cannot create a range, response: %s', print_r($data, true)));
 		$this->assertEquals('Nome', $data['name']);
 	}
 

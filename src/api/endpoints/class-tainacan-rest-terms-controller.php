@@ -130,7 +130,11 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		return $this->terms_repository->can_edit($this->term);
+        $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+        if ($taxonomy instanceof Entities\Taxonomy) {
+            return $taxonomy->can_edit();
+        }
+        return false;
 	}
 
 	/**
@@ -163,8 +167,11 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
-		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
-		return $this->terms_repository->can_delete($term);
+        $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+        if ($taxonomy instanceof Entities\Taxonomy) {
+            return $taxonomy->can_edit();
+        }
+        return false;
 	}
 
 	/**
@@ -209,8 +216,11 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
-		$term = new Entities\Term($this->terms_repository->fetch($request['term_id']));
-		return $this->terms_repository->can_edit($term);
+        $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+        if ($taxonomy instanceof Entities\Taxonomy) {
+            return $taxonomy->can_edit();
+        }
+        return false;
 	}
 
 	/**

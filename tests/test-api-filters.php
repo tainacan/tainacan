@@ -44,7 +44,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$data = $response->get_data();
-
+		$this->assertTrue(is_array($data) && array_key_exists('filter_type', $data), sprintf('cannot create a range, response: %s', print_r($data, true)));
 		$this->assertEquals('Tainacan\Filter_Types\Range', $data['filter_type']);
 		$this->assertEquals('Filter name', $data['name']);
 	}

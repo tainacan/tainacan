@@ -31,7 +31,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'field_type'  => $field->get_primitive_type(),
 			)
 		);
-
+        
 		$request = new \WP_REST_Request(
 			'POST',
 			$this->namespace . '/collection/' . $collection->get_id() . '/metadata'
@@ -41,8 +41,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$metadata_added = $response->get_data();
-
+		$this->assertTrue(is_array($metadata_added) && array_key_exists('name', $metadata_added), sprintf('cannot create metadata, response: %s', print_r($metadata_added, true)));
 		$this->assertEquals('Moeda', $metadata_added['name']);
+        
 	}
 
 
@@ -113,7 +114,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$data = $response->get_data();
-
+		$this->assertTrue(is_array($data) && array_key_exists(0, $data), sprintf('cannot read metadata, response: %s', print_r($data, true)));
 		$item_metadata = $data[0];
 		$metadata = $item_metadata['metadata'];
 
@@ -182,7 +183,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 
 		#### UPDATE METADATA IN COLLECTION ####
-
+        
 		$values = json_encode([
 			'metadata_id' => $metadata->get_id(),
 			'values'      => [
@@ -201,7 +202,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$data = $response->get_data();
-
+        
 		$this->assertEquals($metadata->get_id(), $data['id']);
 		$this->assertEquals('Dia/Mês/Ano', $data['name']);
 
@@ -209,6 +210,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$metav = get_post_meta($item->get_id(), $data['id'], true);
 
 		$this->assertEquals('19/01/2018', $metav);
+        
 	}
 
 }

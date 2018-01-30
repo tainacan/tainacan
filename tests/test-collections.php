@@ -31,8 +31,6 @@ class Collections extends TAINACAN_UnitTestCase {
 		$user_id = get_current_user_id();
 		$this->assertEquals($new_user, $user_id);
 		
-		$this->assertFalse(current_user_can('edit_collection'));
-		
 		$autor1 = $this->factory()->user->create(array( 'role' => 'author' ));
 		wp_set_current_user($autor1);
 		$autor1_id = get_current_user_id();
@@ -63,6 +61,18 @@ class Collections extends TAINACAN_UnitTestCase {
 		$this->assertTrue(current_user_can($collection_test2->cap->edit_post, $collection_test2->WP_Post->ID));
 		$this->assertFalse(user_can($autor2, $collection_test->cap->edit_post, $collection_test->WP_Post->ID));
 		
+        // add current user to moderators list of collection test. 
+        // Test add_moderator method and granting permissions
+        
+        $collection_test->add_moderator_id($current_user_id);
+        $collection_test->validate();
+        global $Tainacan_Collections;
+        
+        $collection_test = $Tainacan_Collections->insert($collection_test);
+        
+        $this->assertContains($current_user_id, $collection_test->get_moderators_ids());
+        $this->assertTrue(current_user_can($collection_test->cap->edit_post, $collection_test->WP_Post->ID));
+
 		wp_set_current_user($this->user_id);
 		$collection_test_moderator = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -75,7 +85,38 @@ class Collections extends TAINACAN_UnitTestCase {
 			true
 		);
 		$this->assertEquals([$autor2], $collection_test_moderator->get_moderators_ids());
+        
+        wp_set_current_user($autor2);
+        $this->assertTrue(current_user_can($collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
 		$this->assertTrue($collection_test_moderator->can_edit($autor2), 'Moderators cannot edit a collection!');
+        
+        
+        // now lets test adding a moderator in a collection that already has one
+        // and then lets test remove_moderator_id method
+        
+        // first, subscriber user should not be able to edit the collection
+        $this->assertFalse(user_can($new_user, $collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
+        
+        // lets add him as moderator
+        $collection_test_moderator->add_moderator_id($new_user);
+        $collection_test_moderator->validate();
+        $collection_test_moderator = $Tainacan_Collections->insert($collection_test_moderator);
+        $this->assertContains($new_user, $collection_test_moderator->get_moderators_ids());
+
+        
+        // now he can edit
+        $this->assertTrue(user_can($new_user, $collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
+        
+        // lets remove him and check if he can no longer edit
+        $collection_test_moderator->remove_moderator_id($new_user);
+        $collection_test_moderator->validate();
+        $collection_test_moderator = $Tainacan_Collections->insert($collection_test_moderator);
+        $this->assertNotContains($new_user, $collection_test_moderator->get_moderators_ids());
+
+        
+        // now he can edit
+        $this->assertFalse(user_can($new_user, $collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
+        
 	}
 	
 	function debug_meta($user = false)

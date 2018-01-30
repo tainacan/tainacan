@@ -64,6 +64,7 @@ class Collection extends Entity {
         );
 
         $cpt_slug = $this->get_db_identifier();
+        $capabilities = $this->get_items_capabilities();
 
         $args = array(
             'labels'              => $cpt_labels,
@@ -84,7 +85,7 @@ class Collection extends Entity {
                 'slug' => $this->get_slug()
             ],
         	'map_meta_cap'		  => true,
-        	'capability_type'	  => $this->get_db_identifier(),
+        	'capabilities'	      => (array) $capabilities,
             'supports'            => [
                 'title',
                 'editor',
@@ -99,6 +100,26 @@ class Collection extends Entity {
             unregister_post_type($this->get_db_identifier());
 
         return register_post_type($cpt_slug, $args);
+    }
+    
+    /**
+     * Get the capabilities list for the post type of the items of this collection
+     *
+     * @uses get_post_type_capabilities to get the list.
+     *
+     * This method is usefull for getting the capabilities of the collection's items post type
+     * regardless if it has been already registered or not.
+     * 
+     * @return object Object with all the capabilities as member variables. 
+     */
+    function get_items_capabilities() {
+        $args = [
+            'map_meta_cap' => true,
+            'capability_type' => $this->get_db_identifier(),
+            'capabilities' => array()
+        ];
+        
+        return get_post_type_capabilities((object) $args);
     }
 
 
@@ -365,6 +386,42 @@ class Collection extends Entity {
         $this->set_mapped_property('moderators_ids', $value);
     }
     
+    // Moderators methods
+    
+    /**
+     * Add a moderator ID to the moderators_ids list
+     * @param int $user_id The user ID to be added
+     * @return boolean Wether the ID was added or not. (if it already existed in the list it returns false)
+     */
+    function add_moderator_id($user_id) {
+        if (is_integer($user_id)) {
+            $current_moderators = $this->get_moderators_ids();
+            if (!in_array($user_id, $current_moderators)) {
+                $current_moderators[] = $user_id;
+                $this->set_moderators_ids($current_moderators);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Remove a moderator ID to the moderators_ids list
+     * @param int $user_id The user ID to be removed
+     * @return boolean Wether the ID was added or not. (if it did not exist in the list it returns false)
+     */
+    function remove_moderator_id($user_id) {
+        if (is_integer($user_id)) {
+            $current_moderators = $this->get_moderators_ids();
+            if (($key = array_search($user_id, $current_moderators)) !== false) {
+                unset($current_moderators[$key]);
+                $this->set_moderators_ids($current_moderators);
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * TODO implement the following methods to handle moderators_ids
      *
@@ -372,10 +429,6 @@ class Collection extends Entity {
      * get_moderators
      * (the same as moderators_ids but gets and sets WP_User objects)
      *
-     * add_moderator_id
-     * remove moderator_id
-     * (add or remove one moderator from the moderators_ids array)
-     * 
      */
 
 }

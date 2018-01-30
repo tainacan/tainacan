@@ -238,7 +238,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		return $this->items_repository->can_edit($this->item);
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+        if ($collection instanceof Entities\Collection) {
+            return $collection->get_items_capabilities()->edit_posts;
+        }
+        return false;
+        
 	}
 
 	/**

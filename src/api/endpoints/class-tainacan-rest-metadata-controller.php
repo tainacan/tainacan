@@ -328,6 +328,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 			}
 		}
 
+        // We need to rethink this endpoint. Its confusing...
+        // and there is no need to iterato through all items...
 
 		$collection_id = $request['collection_id'];
 		$body = json_decode($request->get_body(), true);
@@ -373,8 +375,14 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function update_item_permissions_check( $request ) {
-		$item = $this->item_repository->fetch($request['item_id'] ? $request['item_id'] : $request['collection_id']);
-		return $this->item_repository->can_edit($item);
+		if (isset($request['item_id'])) {
+            $item = $this->item_repository->fetch($request['item_id']);
+            return $item->can_edit();
+        } elseif(isset($request['collection_id'])) {
+            $collection = $this->collection_repository->fetch($request['collection_id']);
+            return $collection->can_edit();
+        }
+        
 	}
 }
 

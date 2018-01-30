@@ -221,20 +221,16 @@ class Item extends Entity {
      * set meta cap object
      */
     protected function set_cap() {
-    	$db_identifier = $this->get_db_identifier();
-    	if(!empty($db_identifier))
-    	{
-	    	$post_type_obj = get_post_type_object($db_identifier);
-	    	if(!is_object($post_type_obj)) { //may be called before post_type registration
-	    		$collection = $this->get_collection();
-	    		if(is_object($collection)) {
-	    			$post_type_obj = $collection->register_collection_item_post_type();
-	    		}
+    	if(!empty($this->get_db_identifier())) {
+	    	$db_identifier = Collection::$db_identifier_prefix.$this->get_db_identifier().Collection::$db_identifier_sufix;
+	    	if(!empty($db_identifier))
+	    	{
+		    	$post_type_obj = get_post_type_object($db_identifier);
+		    	if(!is_object($post_type_obj)) {
+		    		throw new \Exception(sprintf("Collection post type (%s) is not setted and cannot be registred", $db_identifier));
+		    	}
+		    	$this->cap = $post_type_obj->cap;
 	    	}
-	    	if(!is_object($post_type_obj)) {
-	    		throw new \Exception(sprintf("Collection post type (%s) is not setted and cannot be registred", $db_identifier));
-	    	}
-	    	$this->cap = $post_type_obj->cap;
-    	} //TODO Item without collection? treat as error?
+    	}
     }
 }

@@ -39,7 +39,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
         $request->set_body($collection_JSON);
 
         $response = $this->server->dispatch( $request );
-        $this->assertEquals( 201, $response->get_status() );
+        $this->assertEquals( 201, $response->get_status(), sprintf('response: %s', print_r($response, true)) );
 
         $collection = $response->get_data();
         $id = $collection['id'];

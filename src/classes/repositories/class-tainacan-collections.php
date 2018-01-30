@@ -13,7 +13,7 @@ class Collections extends Repository {
 	
 	public function __construct() {
 		parent::__construct();
- 		add_filter('user_has_cap', array($this, 'user_has_cap'), 10, 3);
+ 		add_filter('map_meta_cap', array($this, 'map_meta_cap'), 10, 4);
 	}
 	/**
 	 * {@inheritDoc}
@@ -208,8 +208,11 @@ class Collections extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($collection){
-    	$new_collection = parent::insert($collection);
-    	$collection->register_collection_item_post_type();
+    	$this->pre_update_moderators($collection);
+        $new_collection = parent::insert($collection);
+    	
+        $collection->register_collection_item_post_type();
+        $this->update_moderators($new_collection);
     	return $new_collection;
     }
     
@@ -256,7 +259,13 @@ class Collections extends Repository {
      */
     public function fetch($args = [], $output = null){
         if(is_numeric( $args )){
-            return new Entities\Collection($args);
+            $existing_post = get_post($args);
+            if ($existing_post instanceof \WP_Post) {
+                return new Entities\Collection($existing_post);
+            } else {
+                return [];
+            }
+            
         } elseif(is_array($args)) {
             $args = array_merge([
                 'posts_per_page' => -1,
@@ -279,43 +288,66 @@ class Collections extends Repository {
         
     }
     
+    function pre_update_moderators($collection) {
+        $current_moderators = $this->get_mapped_property($collection, 'moderators_ids');
+        $this->current_moderators = is_array($current_moderators) ? $current_moderators : [];
+        
+    }
+    
+    function update_moderators($collection) {
+        $moderators = $collection->get_moderators_ids();
+        
+        $deleted = array_diff($this->current_moderators, $moderators);
+        $added = array_diff($moderators, $this->current_moderators);
+        
+        do_action('tainacan-add-collection-moderators', $collection, $added);
+        do_action('tainacan-remove-collection-moderators', $collection, $deleted);
+    }
+    
     /**
      * Filter to handle special permissions
      *
-     * @see https://codex.wordpress.org/Plugin_API/Filter_Reference/user_has_cap
-     *
-     * Filter on the current_user_can() function.
-	 * This function is used to explicitly allow authors to edit contributors and other
-	 * authors posts if they are published or pending.
-	 *
-	 * @param array $allcaps All the capabilities of the user
-	 * @param array $cap     [0] Required capability
-	 * @param array $args    [0] Requested capability
-	 *                       [1] User ID
-	 *                       [2] Associated object ID
-	 */
-    public function user_has_cap($allcaps, $cap, $args) {
-    	
-    	if(count($args) > 2) {
-    		$entity = Repository::get_entity_by_post($args[2]);
-    		$collection = false;
-    		if($entity) {
-    			if($entity instanceof Entities\Collection) { // TODO others entity types
-    				$collection = $entity;
-    			}
-    			if($entity instanceof Entities\Item) { // TODO others entity types
-    				$collection = $entity->get_collection();
-    			}
-	    		if($collection) {
-		    		$moderators = $collection->get_moderators_ids();
-		    		if (is_array($moderators) && in_array($args[1], $moderators)) {
-		    			$allcaps[$cap[0]] = true;
-		    		}
-	    		}
-    		}
-    	}
-    	return $allcaps;
-    	
+     * @see https://developer.wordpress.org/reference/hooks/map_meta_cap/
+     * 
+     */
+    public function map_meta_cap($caps, $cap, $user_id, $args) {
+        
+        // Filters meta caps edit_tainacan-collection and check if user is moderator
+        
+        if ($cap == 'edit_post') { // edit_tainacan-colletion is mapped to edit_post
+            
+            $entity = $args[0];
+            
+            if (is_numeric($entity) || $entity instanceof Entities\Collection) {
+                
+                if (is_numeric($entity)) {
+                    $post = get_post($entity);
+                    if ($post instanceof \WP_Post && $post->post_type == Entities\Collection::get_post_type()) {
+                        $entity = new Entities\Collection($post);
+                    }
+                
+                }
+                    
+                if ($entity instanceof Entities\Collection) {
+                    $moderators = $entity->get_moderators_ids();
+                    if (is_array($moderators) && in_array($user_id, $moderators)) {
+                        
+                        // if user is moderator, we clear the current caps
+                        // (that might fave edit_others_posts) and leave only read, that everybody has
+                        $collection_cpt = get_post_type_object(Entities\Collection::get_post_type());
+                        $caps = ['read'];
+                    }
+                }
+                
+            
+                
+                
+            }
+            
+        }
+        
+        return $caps;
+        
     }
     
 }

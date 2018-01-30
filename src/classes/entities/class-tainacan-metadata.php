@@ -152,7 +152,7 @@ class Metadata extends Entity {
     function get_field_options(){
         return $this->get_mapped_property('field_type_options');
     }
-
+    
     /**
      * Set the metadata name
      *

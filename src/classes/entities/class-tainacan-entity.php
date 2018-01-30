@@ -94,6 +94,7 @@ class Entity {
     	}
     	if(
     		is_int($which) &&
+            $this->WP_Post instanceof \WP_Post &&
     		$which != 0 &&
     		( 
     			( $this->get_post_type() !== false && $this->WP_Post->post_type != $this->get_post_type() ) ||
@@ -111,11 +112,14 @@ class Entity {
     	if($this->get_post_type() !== false) {
     		$post_type_obj = get_post_type_object(self::get_post_type());
     		if(!is_object($post_type_obj)) { //may be called before post_type registration
-    			global ${$this->repository};
-    			${$this->repository}->register_post_type();
-    			$post_type_obj = get_post_type_object(self::get_post_type());
+    			throw new \Exception(sprintf("The post type %s need to be registered, need the init hook!"));
     		}
     		$this->cap = $post_type_obj->cap;
+    	} elseif ($this instanceof Item) {
+    	    $item_collection = $this->get_collection();
+            if ($item_collection) {
+                $this->cap = $item_collection->get_items_capabilities();
+            }
     	}
     }
     
