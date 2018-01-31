@@ -5,7 +5,7 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Item Metadata Entity
+ * Represents the Item Field Entity
  */
 class Item_Metadata_Entity extends Entity {
 	protected static $post_type = false;
@@ -16,20 +16,20 @@ class Item_Metadata_Entity extends Entity {
 	 */
 	protected $repository = 'Tainacan_Item_Metadata';
 	
-    function __construct(Item $item, Metadata $metadata) {
+    function __construct(Item $item, Field $field) {
         
         $this->set_item($item);
-        $this->set_metadata($metadata);
+        $this->set_field($field);
     }
 
 	public function  __toString(){
-		return 'Hello, I\'m the Item Metadata Entity';
+		return 'Hello, I\'m the Item Field Entity';
 	}
 
     public function  __toArray(){
         $as_array['value']    = $this->get_value();
 	    $as_array['item']     = $this->get_item()->__toArray();
-	    $as_array['metadata'] = $this->get_metadata()->__toArray();
+	    $as_array['field'] = $this->get_field()->__toArray();
 
 	    return $as_array;
     }
@@ -45,7 +45,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Define the metadata value
+     * Define the field value
      *
      * @param [integer | string] $value
      * @return void
@@ -55,13 +55,13 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Define the metadata
+     * Define the field
      *
-     * @param Metadata $metadata
+     * @param Field $field
      * @return void
      */
-    function set_metadata(Metadata $metadata) {
-        $this->metadata = $metadata;
+    function set_field(Field $field) {
+        $this->field = $field;
     }
     
     /**
@@ -74,16 +74,16 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Return the metadata
+     * Return the field
      *
-     * @return Metadata
+     * @return Field
      */
-    function get_metadata() {
-        return $this->metadata;
+    function get_field() {
+        return $this->field;
     }
     
     /**
-     * Return the metadata value
+     * Return the field value
      *
      * @return string | integer
      */
@@ -96,30 +96,30 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Return true if metadata is multiple, else return false
+     * Return true if field is multiple, else return false
      *
      * @return boolean
      */
     function is_multiple() {
-        return $this->get_metadata()->is_multiple();
+        return $this->get_field()->is_multiple();
     }
     
     /**
-     * Return true if metadata is key
+     * Return true if field is key
      *
      * @return boolean
      */
     function is_collection_key() {
-        return $this->get_metadata()->is_collection_key();
+        return $this->get_field()->is_collection_key();
     }
     
     /**
-     * Return true if metadata is required
+     * Return true if field is required
      *
      * @return boolean
      */
     function is_required() {
-        return $this->get_metadata()->is_required();
+        return $this->get_field()->is_required();
     }
     
     /**
@@ -129,11 +129,11 @@ class Item_Metadata_Entity extends Entity {
      */
     function validate() {   
         $value = $this->get_value();
-        $metadata = $this->get_metadata();
+        $field = $this->get_field();
         $item = $this->get_item();
         
         if (empty($value) && $this->is_required()) {
-            $this->add_error('required', $metadata->get_name() . ' is required');
+            $this->add_error('required', $field->get_name() . ' is required');
             return false;
         }
         
@@ -154,19 +154,19 @@ class Item_Metadata_Entity extends Entity {
                 }
                 
                 if ($this->is_required() && !$one_filled) {
-                    $this->add_error('required', $metadata->get_name() . ' is required');
+                    $this->add_error('required', $field->get_name() . ' is required');
                     return false;
                 }
                 
                 if (!$valid) {
-                    $this->add_error('invalid', $metadata->get_name() . ' is invalid');
+                    $this->add_error('invalid', $field->get_name() . ' is invalid');
                     return false;
                 }
                 
                 $this->set_as_valid();
                 return true;   
             } else {
-                $this->add_error('invalid', $metadata->get_name() . ' is invalid');
+                $this->add_error('invalid', $field->get_name() . ' is invalid');
                 return false;
             }
         } else {
@@ -177,14 +177,14 @@ class Item_Metadata_Entity extends Entity {
                 $test = $Tainacan_Items->fetch([
                     'meta_query'    => [
                         [
-                            'key' => $this->metadata->get_id(), 
+                            'key' => $this->field->get_id(),
                             'value' => $value
                         ],
                     ]
                 ], $item->get_collection());
 
                 if ($test->have_posts()) {
-                    $this->add_error('key_exists', $metadata->get_name() . ' is a collection key and there is another item with the same value');
+                    $this->add_error('key_exists', $field->get_name() . ' is a collection key and there is another item with the same value');
                     return false;
                 }
             }

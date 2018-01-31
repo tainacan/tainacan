@@ -9,7 +9,7 @@ abstract class Filter_Type {
     private $supported_types = [];
     public $options;
 
-    abstract function render( $metadata );
+    abstract function render( $field );
 
     public function get_supported_types(){
         return $this->supported_types;

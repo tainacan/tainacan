@@ -1,6 +1,6 @@
 
-export const getMetadata =  state => {
-    return state.metadata;
+export const getFields =  state => {
+    return state.fields;
 }
 
 export const getItem =  state => {

@@ -47,8 +47,8 @@ class Objects extends TAINACAN_UnitTestCase {
 				true
 				);
 		
-		$metadata = $this->tainacan_entity_factory->create_entity(
-				'metadata',
+		$field = $this->tainacan_entity_factory->create_entity(
+				'field',
 				array(
 					'name'   => 'metadado',
 					'status' => 'publish',
@@ -58,8 +58,8 @@ class Objects extends TAINACAN_UnitTestCase {
 				true
 				);
 		
-		$metadata2 = $this->tainacan_entity_factory->create_entity(
-				'metadata',
+		$field2 = $this->tainacan_entity_factory->create_entity(
+				'field',
 				array(
 					'name'   => 'metadado2',
 					'status' => 'publish',
@@ -69,8 +69,8 @@ class Objects extends TAINACAN_UnitTestCase {
 				true
 				);
 		
-		$metadata3 = $this->tainacan_entity_factory->create_entity(
-				'metadata',
+		$field3 = $this->tainacan_entity_factory->create_entity(
+				'field',
 				array(
 					'name'              => 'metadado3',
 					'status'            => 'publish',
@@ -88,7 +88,7 @@ class Objects extends TAINACAN_UnitTestCase {
 					'title'      => 'orange',
 					'collection' => $collection,
 					'add_metadata' => [
-						[$metadata, 'value_1']
+						[$field, 'value_1']
 					]
 				),
 				true
@@ -97,19 +97,19 @@ class Objects extends TAINACAN_UnitTestCase {
 		$entity = Repository::get_entity_by_post($test);
 		$this->assertEquals($i->get_db_identifier(), $entity->get_db_identifier());
 		
-		$test = get_post($metadata->get_id());
+		$test = get_post($field->get_id());
 		$entity = Repository::get_entity_by_post($test);
-		$this->assertEquals($metadata->get_db_identifier(), $entity->get_db_identifier());
+		$this->assertEquals($field->get_db_identifier(), $entity->get_db_identifier());
 		
-		$test = get_post($metadata2->get_id());
+		$test = get_post($field2->get_id());
 		$entity = Repository::get_entity_by_post($test);
-		$this->assertEquals($metadata2->get_db_identifier(), $entity->get_db_identifier());
+		$this->assertEquals($field2->get_db_identifier(), $entity->get_db_identifier());
 		
-		$metadatas = $i->get_metadata();
-		//var_dump($metadatas);
-		$item_metadata = array_pop($metadatas);
-		$test = get_post($item_metadata->get_metadata()->get_id());
+		$fields = $i->get_field();
+		//var_dump($fields);
+		$item_metadata = array_pop($fields);
+		$test = get_post($item_metadata->get_field()->get_id());
 		$entity = Repository::get_entity_by_post($test);
-		$this->assertEquals($item_metadata->get_metadata()->get_db_identifier(), $entity->get_db_identifier());
+		$this->assertEquals($item_metadata->get_field()->get_db_identifier(), $entity->get_db_identifier());
 	}
 }

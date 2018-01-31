@@ -7,10 +7,10 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use \Respect\Validation\Validator as v;
 /**
- * Class Metadatas
+ * Class Fields
  */
-class Metadatas extends Repository {
-	public $entities_type = '\Tainacan\Entities\Metadata';
+class Fields extends Repository {
+	public $entities_type = '\Tainacan\Entities\Field';
 	protected $default_metadata = 'default';
 
 	public $field_types = [];
@@ -21,7 +21,7 @@ class Metadatas extends Repository {
                 'map'        => 'post_title',
                 'title'       => __('Name', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('Name of the metadata', 'tainacan'),
+                'description'=> __('Name of the field', 'tainacan'),
                 'on_error'   => __('The name should be a text value and not empty', 'tainacan'),
                 'validation' => v::stringType()->notEmpty(),
             ],
@@ -29,7 +29,7 @@ class Metadatas extends Repository {
                 'map'        => 'menu_order',
                 'title'       => __('Order', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('Metadata order. Field used if collections are manually ordered', 'tainacan'),
+                'description'=> __('Field order. Field used if collections are manually ordered', 'tainacan'),
                 'on_error'   => __('The menu order should be a numeric value', 'tainacan'),
                 //'validation' => v::numeric(),
             ],
@@ -37,7 +37,7 @@ class Metadatas extends Repository {
                 'map'        => 'parent',
                 'title'      => __('Parent', 'tainacan'),
                 'type'       => 'integer',
-                'description'=> __('Parent metadata', 'tainacan'),
+                'description'=> __('Parent field', 'tainacan'),
                 //'on_error'   => __('The Parent should be numeric value', 'tainacan'),
                 //'validation' => v::numeric(),
             ],
@@ -45,7 +45,7 @@ class Metadatas extends Repository {
                 'map'        => 'post_content',
                 'title'      => __('Description', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The metadata description', 'tainacan'),
+                'description'=> __('The field description', 'tainacan'),
             	'default'	 => '',
                 //'on_error'   => __('The description should be a text value', 'tainacan'),
                 //'validation' => v::stringType()->notEmpty(),
@@ -54,16 +54,16 @@ class Metadatas extends Repository {
                 'map'        => 'meta',
                 'title'      => __('Type', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The metadata type', 'tainacan'),
-                'on_error'   => __('Metadata type is empty', 'tainacan'),
+                'description'=> __('The field type', 'tainacan'),
+                'on_error'   => __('Field type is empty', 'tainacan'),
                 'validation' => v::stringType()->notEmpty(),
             ],
             'required'       => [
                 'map'        => 'meta',
                 'title'      => __('Required', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The metadata is required', 'tainacan'),
-                'on_error'   => __('Metadata required field is invalid', 'tainacan'),
+                'description'=> __('The field is required', 'tainacan'),
+                'on_error'   => __('Field required field is invalid', 'tainacan'),
                 'validation' => v::stringType()->in(['yes', 'no']), // yes or no
                 'default'    => 'no'
             ],
@@ -71,7 +71,7 @@ class Metadatas extends Repository {
                 'map'        => 'meta',
                 'title'      => __('Collection key', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('Metadata value should not be repeated', 'tainacan'),
+                'description'=> __('Field value should not be repeated', 'tainacan'),
                 'on_error'   => __('Collection key is invalid', 'tainacan'),
                 'validation' => v::stringType()->in(['yes', 'no']), // yes or no
                 'default'    => 'no'
@@ -80,7 +80,7 @@ class Metadatas extends Repository {
                 'map'        => 'meta',
                 'title'      => __('Multiple', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('Allow multiple fields for the metadata', 'tainacan'),
+                'description'=> __('Allow multiple fields for the field', 'tainacan'),
                 'on_error'   => __('Multiple fields is invalid', 'tainacan'),
                 'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
                 'default'    => 'no'
@@ -98,7 +98,7 @@ class Metadatas extends Repository {
                 'map'        => 'meta',
                 'title'      => __('Privacy', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The metadata should be omitted in item view', 'tainacan'),
+                'description'=> __('The field should be omitted in item view', 'tainacan'),
                 'on_error'   => __('Privacy is invalid', 'tainacan'),
                 'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
                 'default'    => 'no'
@@ -107,7 +107,7 @@ class Metadatas extends Repository {
                 'map'        => 'meta',
                 'title'      => __('Mask', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The mask to be used in the metadata', 'tainacan'),
+                'description'=> __('The mask to be used in the field', 'tainacan'),
                 //'on_error'   => __('Mask is invalid', 'tainacan'),
                 //'validation' => ''
             ],
@@ -115,7 +115,7 @@ class Metadatas extends Repository {
                 'map'        => 'meta',
                 'title'      => __('Default value', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The value default fot the metadata', 'tainacan'),
+                'description'=> __('The value default fot the field', 'tainacan'),
             ],
             'field_type_options' => [ // not showed in form
                 'map'        => 'meta',
@@ -136,18 +136,18 @@ class Metadatas extends Repository {
 
     public function register_post_type() {
         $labels = array(
-            'name'               => __('Metadata', 'tainacan'),
-            'singular_name'      => __('Metadata', 'tainacan'),
+            'name'               => __('Field', 'tainacan'),
+            'singular_name'      => __('Field', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
-            'add_new_item'       => __('Add new Metadata', 'tainacan'),
-            'edit_item'          => __('Edit Metadata', 'tainacan'),
-            'new_item'           => __('New Metadata', 'tainacan'),
-            'view_item'          => __('View Metadata', 'tainacan'),
-            'search_items'       => __('Search Metadata', 'tainacan'),
-            'not_found'          => __('No Metadata found ', 'tainacan'),
-            'not_found_in_trash' => __('No Metadata found in trash', 'tainacan'),
-            'parent_item_colon'  => __('Parent Metadata:', 'tainacan'),
-            'menu_name'          => __('Metadata', 'tainacan')
+            'add_new_item'       => __('Add new Field', 'tainacan'),
+            'edit_item'          => __('Edit Field', 'tainacan'),
+            'new_item'           => __('New Field', 'tainacan'),
+            'view_item'          => __('View Field', 'tainacan'),
+            'search_items'       => __('Search Field', 'tainacan'),
+            'not_found'          => __('No Field found ', 'tainacan'),
+            'not_found_in_trash' => __('No Field found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent Field:', 'tainacan'),
+            'menu_name'          => __('Fields', 'tainacan')
         );
 
         $args = array(
@@ -167,18 +167,18 @@ class Metadatas extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'	  => Entities\Metadata::get_post_type(),
+        	'capability_type'	  => Entities\Field::get_post_type(),
             'supports'            => [
                 'title',
                 'editor',
                 'page-attributes'
             ]
         );
-        register_post_type(Entities\Metadata::get_post_type(), $args);
+        register_post_type(Entities\Field::get_post_type(), $args);
     }
 
     /**
-     * constant used in default metadata in attribute collection_id
+     * constant used in default field in attribute collection_id
      *
      * @return string the value of constant
      */
@@ -219,14 +219,14 @@ class Metadatas extends Repository {
 
 
     /**
-     * fetch metadata based on ID or WP_Query args
+     * fetch field based on ID or WP_Query args
      *
-     * metadata are stored as posts. Check WP_Query docs
+     * field are stored as posts. Check WP_Query docs
      * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
      * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
      * appropriate WP_Query argument
      *
-     * @param array $args WP_Query args || int $args the metadata id
+     * @param array $args WP_Query args || int $args the field id
      * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
      * @return \WP_Query|Array an instance of wp query OR array of entities;
      */
@@ -235,7 +235,7 @@ class Metadatas extends Repository {
         if( is_numeric($args) ){
             $existing_post = get_post($args);
             if ($existing_post instanceof \WP_Post) {
-                return new Entities\Metadata($existing_post);
+                return new Entities\Field($existing_post);
             } else {
                 return [];
             }
@@ -246,7 +246,7 @@ class Metadatas extends Repository {
                 'post_status'    => 'publish'
             ], $args);
 
-            $args['post_type'] = Entities\Metadata::get_post_type();
+            $args['post_type'] = Entities\Field::get_post_type();
 
             $wp_query = new \WP_Query($args);
             return $this->fetch_output($wp_query, $output);
@@ -254,12 +254,12 @@ class Metadatas extends Repository {
     }
 
     /**
-     * fetch metadata by collection, searches all metadata available
+     * fetch field by collection, searches all field available
      *
      * @param Entities\Collection $collection
      * @param array $args
      * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
-     * @return Array Entities\Metadata
+     * @return Array Entities\Field
      */
     public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
         $collection_id = $collection->get_id();
@@ -270,7 +270,7 @@ class Metadatas extends Repository {
         //insert the actual collection
         $parents[] = $collection_id;
 
-        //search for default metadata
+        //search for default field
         $parents[] = $this->get_default_metadata_attribute();
 
         $meta_query = array(

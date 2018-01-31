@@ -102,15 +102,15 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
   }
 ```
 
-#### Metadata
+#### Field
 
-1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadata`
+1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/field`
     
     1.1. Endpoints supported:
     
-    1.1.1 POST (Create a metadata in collection and all your items)
+    1.1.1 POST (Create a field in collection and all your items)
     
-    In body of requisition pass a JSON with the attributes of metadata like:
+    In body of requisition pass a JSON with the attributes of field like:
    
 ```javascript
     {
@@ -130,24 +130,24 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
     }
 ```
     
-    1.1.2 GET (Fetch all collection metadata)
+    1.1.2 GET (Fetch all collection field)
     
-2. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata`
+2. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/field`
 
     2.1. Endpoints supported:
     
-    2.1.1 POST (Set a value of item metadata)
+    2.1.1 POST (Set a value of item field)
     
-    In body of requisition pass a JSON with value e and id of metadata like:
+    In body of requisition pass a JSON with value e and id of field like:
    
 ```javascript
   {
-     "metadata_id": "integer",
+     "field_id": "integer",
      "values": "[any, type]"
   }
 ```
 
-    2.1.2 GET (Fetch all item metadata, with your values)
+    2.1.2 GET (Fetch all item field, with your values)
     
 #### Taxonomies
 
@@ -210,7 +210,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
  ```javascript
  {
    "collection_id": "int",
-   "metadata_id": "int",
+   "field_id": "int",
    "filter_type": "string",
    "filter": {
      "name": "string",

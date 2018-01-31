@@ -4,42 +4,42 @@ export const setItem = ( state, item ) => {
     state.item = item;
 }
 
-export const setMetadata = ( state, metadata) => {
-    state.metadata = metadata;
+export const setFields = ( state, field) => {
+    state.fields = field;
 }
 
-export const setSingleMetadata = ( state, metadata) => {
-    let index = state.metadata.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
+export const setSingleField = ( state, field) => {
+    let index = state.fields.findIndex(itemMetadata => itemMetadata.field_id === field.field_id);
     if ( index >= 0){
-        //state.metadata[index] = metadata;
-        Vue.set( state.metadata, index, metadata );
+        //state.field[index] = field;
+        Vue.set( state.fields, index, field );
     }else{
-        state.metadata.push( metadata );
+        state.fields.push( field );
     }
 }
 
 export const setSingleItem = ( state, item) => {
     let index = state.item.findIndex(itemItem => itemItem.item_id === item.item_id);
     if ( index >= 0){
-        //state.metadata[index] = metadata;
+        //state.field[index] = field;
         Vue.set( state.item, index, item );
     }else{
         state.item.push( item );
     }
 }
 
-export const setError = ( state, metadata ) => {
-    let index = state.error.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
+export const setError = ( state, field ) => {
+    let index = state.error.findIndex(itemMetadata => itemMetadata.field_id === field.field_id);
     if ( index >= 0){
-        //state.error[index] = metadata;
-        Vue.set( state.error, index, metadata );
+        //state.error[index] = field;
+        Vue.set( state.error, index, field );
     }else{
-        state.error.push( metadata );
+        state.error.push( field );
     }
 };
 
-export const removeError =  ( state, metadata ) => {
-    let index = state.error.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
+export const removeError =  ( state, field ) => {
+    let index = state.error.findIndex(itemMetadata => itemMetadata.field_id === field.field_id);
     if ( index >= 0){
         state.error.splice( index, 1);
     }

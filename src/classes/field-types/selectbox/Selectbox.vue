@@ -34,7 +34,7 @@
             item_id: {
                 type: Number
             },
-            metadata_id: {
+            field_id: {
                 type: Number
             },
             value: {
@@ -51,22 +51,22 @@
             },
             manageValue : {
                 get(){
-                    let metadata = this.$store.getters['item/getMetadata'].find(metadata => metadata.metadata_id === this.metadata_id );
-                    if( metadata ){
-                        return  metadata.values;
+                    let field = this.$store.getters['item/getMetadata'].find(field => field.field_id === this.field_id );
+                    if( field ){
+                        return  field.values;
                     }else if( this.value ){
                         return JSON.parse(  this.value );
                     }
                 },
                 set( value ){
-                    this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: value });
+                    this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, field_id: this.field_id, values: value });
                 }
             }
         },
         methods: {
             setInitValueOnStore(){
                 if ( this.value ){
-                    this.$store.dispatch('item/updateMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: JSON.parse(  this.value ) });
+                    this.$store.dispatch('item/updateMetadata', { item_id: this.item_id, field_id: this.field_id, values: JSON.parse(  this.value ) });
                 }
             }
         }

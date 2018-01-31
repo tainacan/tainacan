@@ -1,37 +1,37 @@
 import axios from '../../../axios/axios';
 
-// Actions related to Item's metadata
-export const sendMetadata = ( { commit }, { item_id, metadata_id, values }) => {
+// Actions related to Item's field
+export const sendField = ( { commit }, { item_id, field_id, values }) => {
    return new Promise( (resolve, reject) => {
-       axios.post('/item/'+item_id+'/metadata/'+metadata_id, {
+       axios.post('/item/'+item_id+'/field/'+field_id, {
            values: values
        })
            .then( res => {
                console.log( 'success',res.data );
-               commit('setSingleMetadata', { item_id: item_id, metadata_id: metadata_id, values: values });
-               commit('removeError', { metadata_id: metadata_id });
+               commit('setSingleMetadata', { item_id: item_id, field_id: field_id, values: values });
+               commit('removeError', { field_id: field_id });
                resolve( res.data );
            })
            .catch(error => {
                console.log( 'error',error );
-               commit('setSingleMetadata', { item_id: item_id, metadata_id: metadata_id, values: values });
-               commit('setError', { item_id: item_id, metadata_id: metadata_id, value: values, error: error.response.data.errors  });
+               commit('setSingleMetadata', { item_id: item_id, field_id: field_id, values: values });
+               commit('setError', { item_id: item_id, field_id: field_id, value: values, error: error.response.data.errors  });
                reject( error);
            });
    });
 };
 
 
-export const updateMetadata = ({ commit }, { item_id, metadata_id, values }) => {
+export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
     return new Promise((resolve, reject) => {
-        console.log(metadata_id);
-        axios.patch(`/item/${item_id}/metadata/${metadata_id}`, {
+        console.log(field_id);
+        axios.patch(`/item/${item_id}/field/${field_id}`, {
             values: values
         })
             .then( res => {
                 console.log(res);
-                let metadata = res.data;
-                commit('setSingleMetadata', metadata);
+                let field = res.data;
+                commit('setSingleField', field);
             })
             .catch( error => {
                 console.log('error', error);
@@ -39,12 +39,12 @@ export const updateMetadata = ({ commit }, { item_id, metadata_id, values }) => 
     });
 };
 
-export const fetchMetadata = ({ commit }, item_id) => {
+export const fetchFields = ({ commit }, item_id) => {
     return new Promise((resolve, reject) => {
-        axios.get('/item/'+item_id+'/metadata')
+        axios.get('/item/'+item_id+'/field')
         .then(res => {
             let items = res.data;
-            commit('setMetadata', items);
+            commit('setFields', items);
             resolve( res.data );
         })
         .catch(error => {
@@ -93,6 +93,6 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
  };
  
  
- export const updateItem = ({ commit }, { item_id, metadata_id, values }) => {
+ export const updateItem = ({ commit }, { item_id, field_id, values }) => {
      commit('setSingleItem', { item_id: item_id, title: title, description: description, status: status });
  };

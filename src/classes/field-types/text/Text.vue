@@ -13,6 +13,7 @@
             inputValue() {
                 return this.value;
             }
+            
         },
         methods: {
             validateObject () {

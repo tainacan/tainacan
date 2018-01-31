@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-row v-if="collection != null">
-            <el-card :body-style="{ padding: '0px' }">
-                <img src="" class="image" :alt="collection.name">
+            <el-card :body-style="{ padding: '0px' }" class="element-card">
+                <img :src="collection.featured_image" class="image" :alt="collection.name">
                 <div style="padding: 14px;">
                     <span>{{ collection.name }}</span>
                     <div class="bottom clearfix">
@@ -58,6 +58,10 @@ export default {
 </script>
 
 <style scoped>
+
+    .element-card{
+        max-width: 500px;
+    }
 
     .time {
         font-size: 13px;

@@ -22,7 +22,7 @@
         props: {
             name: { type: String },
             item_id: { type: Number },
-            metadata_id: { type: Number },
+            field_id: { type: Number },
             value: { type: [ String,Number ]  },
             errorsMsg: { type: [ String,Number ] },
         },
@@ -36,7 +36,7 @@
         },
         methods: {
             changeValue(){
-                this.$emit('input', { item_id: this.item_id, metadata_id: this.metadata_id, values: event.target.value } );
+                this.$emit('input', { item_id: this.item_id, field_id: this.field_id, values: event.target.value } );
             },
             getValue(){
                 try{

@@ -19,8 +19,8 @@ abstract class Field_Type  {
     }
 
     public function register_field_type(){
-        global $Tainacan_Metadatas;
-        $Tainacan_Metadatas->register_field_type( $this );
+        global $Tainacan_Fields;
+        $Tainacan_Fields->register_field_type( $this );
     }
 
     public function validate($value) {

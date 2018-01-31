@@ -14,7 +14,7 @@ class Range extends Filter_Type {
     }
 
     /**
-     * @param $metadata
+     * @param $field
      * @return string
      */
     public function render( $filter ){

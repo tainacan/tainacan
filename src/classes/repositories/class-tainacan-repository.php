@@ -351,8 +351,8 @@ abstract class Repository {
     		}
     	}
     	else {
-    		global $Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
-    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
+    		global $Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
+    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
     		foreach ($tnc_globals as $tnc_repository)
     		{
     			$entity_post_type = $tnc_repository->entities_type::get_post_type();

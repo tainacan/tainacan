@@ -147,12 +147,22 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function get_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $item->can_read();
+
+		if ($item instanceof Entities\Item) {
+			return $item->can_read();
+		}
+
+		return false;
 	}
 
 	public function get_items_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $collection->can_read();
+
+		if ($collection instanceof Entities\Collection) {
+			return $collection->can_read();
+		}
+
+		return false;
 	}
 
 	/**
@@ -173,15 +183,15 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 		$this->item->set_collection($collection);
 
-		$metadata = get_post_meta($collection->get_id());
+		$field = get_post_meta($collection->get_id());
 
-		if(!empty($metadata)) {
-			foreach ($metadata as $key => $value){
-				$new_metadata = new Entities\Metadata();
+		if(!empty($field)) {
+			foreach ($field as $key => $value){
+				$new_field = new Entities\Field();
 
 				try {
 					$set_ = 'set_' . $key;
-					$new_metadata->$set_( $value );
+					$new_field->$set_( $value );
 				} catch (\Error $exception){
 					// Do nothing
 				}
@@ -189,7 +199,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 		}
 
-		return $new_metadata;
+		return $new_field;
 	}
 
 	/**
@@ -209,7 +219,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 		}
 
 		try {
-			$metadata = $this->prepare_item_for_database( [ $item, $collection_id ] );
+			$field = $this->prepare_item_for_database( [ $item, $collection_id ] );
 		} catch (\Error $exception){
 			return new WP_REST_Response($exception->getMessage(), 400);
 		}
@@ -217,10 +227,10 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 		if($this->item->validate()) {
 			$item = $this->items_repository->insert($this->item );
 
-			$item_metadata  = new Entities\Item_Metadata_Entity($item, $metadata );
-			$metadata_added = $this->item_metadata->insert( $item_metadata );
+			$item_metadata  = new Entities\Item_Metadata_Entity($item, $field );
+			$field_added = $this->item_metadata->insert( $item_metadata );
 
-			return new WP_REST_Response($metadata_added->get_item()->__toArray(), 201 );
+			return new WP_REST_Response($field_added->get_item()->__toArray(), 201 );
 		}
 
 
@@ -273,7 +283,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $item->can_delete();
+
+		if ($item instanceof Entities\Item) {
+			return $item->can_delete();
+		}
+
+		return false;
 	}
 
 	/**
@@ -318,7 +333,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $item->can_edit();
+
+		if ($item instanceof Entities\Item) {
+			return $item->can_edit();
+		}
+
+		return false;
 	}
 }
 

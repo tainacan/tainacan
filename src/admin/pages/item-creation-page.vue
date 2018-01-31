@@ -31,13 +31,13 @@
                     <div class="el-upload__tip" slot="tip">imagens em formato jpg/png</div>
                 </el-upload>
             </el-form-item>
-            <tainacan-form-item v-for="(metadata, index) in metadataList" v-bind:key="index" :label="metadata.metadata.name"
-                        :customComponentInput="extractFieldType(metadata.metadata.field_type)"
-                        :name="metadata.metadata.name"
-                        :item_id="metadata.item.id"
-                        :metadata_id="metadata.metadata.id"
-                        :value="metadata.value"
-                        :multiple="metadata.metadata.multiple"></tainacan-form-item>
+            <component  v-for="(field, index) in fieldList" v-bind:key="index" :label="field.field.name"
+                        :is="extractFieldType(field.field.field_type)"
+                        :name="field.field.name"
+                        :item_id="field.item.id"
+                        :field_id="field.field.id"
+                        :value="field.value"
+                        :multiple="field.field.multiple"></component>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">Criar</el-button>
                 <el-button>Cancelar</el-button>
@@ -86,14 +86,14 @@ export default {
         ...mapActions('item', [
             'sendItem',
             'updateItem',
-            'fetchMetadata',
-            'sendMetadata'
+            'fetchFields',
+            'sendField'
         ]),
         ...mapGetters('item',[
-            'getMetadata'
+            'getFields'
         ]),
         onSubmit() {
-            this.getMetadata();
+            this.getFields();
             let data = {item_id: this.itemId, title: this.form.title, description: this.form.description, status: this.form.status};
             this.updateItem(data);
         },
@@ -103,8 +103,8 @@ export default {
         }
     },
     computed: {
-        metadataList(){
-            return this.getMetadata();
+        fieldList(){
+            return this.getFields();
         }
     },
     created(){
@@ -123,8 +123,8 @@ export default {
             // Fill this.form data with current data.
             // TODO
             loadingInstance.text = 'Carregando metadados...';
-            // Obtains Item Metadata
-            this.fetchMetadata(this.itemId).then(res => {
+            // Obtains Item Field
+            this.fetchFields(this.itemId).then(res => {
                 loadingInstance.close();
             });
             
