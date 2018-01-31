@@ -78,58 +78,6 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_Error|WP_REST_Response
-	 */
-//	public function create_item( $request ) {
-//		if (!empty($request['item_id']) && !empty($request->get_body())){
-//			$body = json_decode($request->get_body(), true);
-//
-//			$item_id = $request['item_id'];
-//			$field_id = $body['metadata_id'];
-//			$value = $body['values'];
-//
-//			$item = $this->item_repository->fetch($item_id);
-//			$field = $this->metadata_repository->fetch($field_id);
-//
-//			$item_metadata = new Entities\Item_Metadata_Entity($item, $field);
-//			$item_metadata->set_value($value);
-//
-//			if($item_metadata->validate()) {
-//				$field_updated = $this->item_metadata_repository->insert( $item_metadata );
-//
-//				return new WP_REST_Response( $field_updated->__toArray(), 201 );
-//			} else {
-//				return new WP_REST_Response([
-//					'error_message' => __('One or more values are invalid.', 'tainacan'),
-//					'errors'        => $item_metadata->get_errors(),
-//					'item_metadata' => $item_metadata->__toArray(),
-//				], 400);
-//			}
-//		} else {
-//			return new WP_REST_Response([
-//				'error_message' => __('Body can not be empty.', 'tainacan'),
-//				'item'          => $request->get_body()
-//			], 400);
-//		}
-//	}
-
-	/**
-	 * @param $request
-	 *
-	 * @return bool|WP_Error
-	 * @throws Exception
-	 */
-//	public function create_item_permissions_check( $request ) {
-//		if(isset($request['item_id'])){
-//			return $this->item_repository->can_edit(new Entities\Item());
-//		}
-//
-//		return $this->collection_repository->can_edit(new Entities\Collection());
-//	}
-
-	/**
 	 * @param mixed $item
 	 * @param WP_REST_Request $request
 	 *
