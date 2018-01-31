@@ -3,7 +3,7 @@ import axios from '../../../axios/axios';
 // Actions related to Item's field
 export const sendField = ( { commit }, { item_id, field_id, values }) => {
    return new Promise( (resolve, reject) => {
-       axios.post('/item/'+item_id+'/field/'+field_id, {
+       axios.post('/item/'+item_id+'/metadata/'+field_id, {
            values: values
        })
            .then( res => {
@@ -25,7 +25,7 @@ export const sendField = ( { commit }, { item_id, field_id, values }) => {
 export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
     return new Promise((resolve, reject) => {
         console.log(field_id);
-        axios.patch(`/item/${item_id}/field/${field_id}`, {
+        axios.patch(`/item/${item_id}/metadata/${field_id}`, {
             values: values
         })
             .then( res => {
@@ -41,7 +41,7 @@ export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
 
 export const fetchFields = ({ commit }, item_id) => {
     return new Promise((resolve, reject) => {
-        axios.get('/item/'+item_id+'/field')
+        axios.get('/item/'+item_id+'/metadata')
         .then(res => {
             let items = res.data;
             commit('setFields', items);

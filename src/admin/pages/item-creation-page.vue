@@ -31,13 +31,13 @@
                     <div class="el-upload__tip" slot="tip">imagens em formato jpg/png</div>
                 </el-upload>
             </el-form-item>
-            <component  v-for="(field, index) in fieldList" v-bind:key="index" :label="field.field.name"
-                        :is="extractFieldType(field.field.field_type)"
+            <tainacan-form-item v-for="(field, index) in fieldList" v-bind:key="index" :label="field.field.name"
+                        :customComponentInput="extractFieldType(field.field.field_type)"
                         :name="field.field.name"
                         :item_id="field.item.id"
                         :field_id="field.field.id"
                         :value="field.value"
-                        :multiple="field.field.multiple"></component>
+                        :multiple="field.field.multiple"></tainacan-form-item>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">Criar</el-button>
                 <el-button>Cancelar</el-button>

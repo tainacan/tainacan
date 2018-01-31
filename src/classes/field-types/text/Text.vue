@@ -1,34 +1,23 @@
 <template>
-    <el-input v-model="inputValue"></el-input>
+    <el-input :value="inputValue" 
+    @blur="onBlur"
+    @input="onInput($event)"></el-input>
 </template>
 
 <script>
-    import { eventBus } from '../../../js/event-bus-web-components'
-
     export default {
-        props: [
-            'value'
-        ],
-        computed: {
-            inputValue() {
-                return this.value;
+        data() {
+            return {
+                inputValue: ''
             }
-            
         },
         methods: {
-            validateObject () {
-                return
-                [
-                    { required: this.required, message: this.message, trigger: 'blur' }
-                ]
+            onBlur() {
+                this.$emit('blur');
             },
-            getErrors(){
-                try{
-                    return JSON.parse( this.errorsMsg );
-                }catch(e){
-                    console.log('invalid json error');
-                }
-                return this.errorsMsg;
+            onInput($event) {
+                this.inputValue = $event;
+                this.$emit('input', this.inputValue);
             }
         }
     }
