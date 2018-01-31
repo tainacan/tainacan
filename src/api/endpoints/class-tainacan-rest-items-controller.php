@@ -147,12 +147,22 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function get_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $item->can_read();
+
+		if ($item instanceof Entities\Item) {
+			return $item->can_read();
+		}
+
+		return false;
 	}
 
 	public function get_items_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $collection->can_read();
+
+		if ($collection instanceof Entities\Collection) {
+			return $collection->can_read();
+		}
+
+		return false;
 	}
 
 	/**
@@ -273,7 +283,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $item->can_delete();
+
+		if ($item instanceof Entities\Item) {
+			return $item->can_delete();
+		}
+
+		return false;
 	}
 
 	/**
@@ -318,7 +333,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
-		return $item->can_edit();
+
+		if ($item instanceof Entities\Item) {
+			return $item->can_edit();
+		}
+
+		return false;
 	}
 }
 

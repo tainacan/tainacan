@@ -194,7 +194,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(!empty($request['item_id'])){
+		if(isset($request['item_id'])){
 			return $this->item_repository->can_edit(new Entities\Item());
 		}
 
@@ -260,11 +260,22 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		if(!empty($request['item_id'])){
-			return $this->item_repository->can_read(new Entities\Item());
+		if(isset($request['item_id'])){
+			$item = $this->item_repository->fetch($request['item_id']);
+
+			if($item instanceof Entities\Item) {
+				return $item->can_read();
+			}
+
+		} elseif (isset($request['collection_id'])) {
+			$collection = $this->collection_repository->fetch($request['collection_id']);
+
+			if ($collection instanceof Entities\Collection) {
+				return $collection->can_read();
+			}
 		}
 
-		return $this->collection_repository->can_read(new Entities\Collection());
+		return false;
 	}
 
 	/**
@@ -297,11 +308,22 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function delete_item_permissions_check( $request ) {
-		if(!empty($request['item_id'])){
-			return $this->item_repository->can_delete(new Entities\Item());
+		if(isset($request['item_id'])){
+			$item = $this->item_repository->fetch($request['item_id']);
+
+			if($item instanceof Entities\Item) {
+				return $item->can_delete();
+			}
+
+		} elseif (isset($request['collection_id'])) {
+			$collection = $this->collection_repository->fetch($request['collection_id']);
+
+			if ($collection instanceof Entities\Collection) {
+				return $collection->can_delete();
+			}
 		}
 
-		return $this->collection_repository->can_delete(new Entities\Collection());
+		return false;
 	}
 
 	/**
@@ -393,12 +415,21 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	public function update_item_permissions_check( $request ) {
 		if (isset($request['item_id'])) {
             $item = $this->item_repository->fetch($request['item_id']);
-            return $item->can_edit();
+
+			if ($item instanceof Entities\Item) {
+				return $item->can_edit();
+			}
+
         } elseif(isset($request['collection_id'])) {
             $collection = $this->collection_repository->fetch($request['collection_id']);
-            return $collection->can_edit();
+
+            if ($collection instanceof Entities\Collection) {
+				return $collection->can_edit();
+			}
+
         }
-        
+
+        return false;
 	}
 }
 

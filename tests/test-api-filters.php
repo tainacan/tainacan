@@ -14,15 +14,20 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'Collection filtered',
 				'description' => 'Is filtered'
 			),
+			true,
 			true
 		);
 
 		$metadata = $this->tainacan_entity_factory->create_entity(
 			'metadata',
 			array(
-				'name'        => 'Metadata filtered',
-				'description' => 'Is filtered'
-			)
+				'name'          => 'Metadata filtered',
+				'description'   => 'Is filtered',
+				'collection_id' => $collection->get_id(),
+				'field_type'    => 'text'
+			),
+			true,
+			true
 		);
 
 		$request_body = json_encode(
