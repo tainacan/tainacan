@@ -9,7 +9,7 @@ export const setFields = ( state, field) => {
 }
 
 export const setSingleField = ( state, field) => {
-    let index = state.fields.findIndex(itemMetadata => itemMetadata.field_id === field.field_id);
+    let index = state.fields.findIndex(itemMetadata => itemMetadata.field.id === field.field.id);
     if ( index >= 0){
         //state.field[index] = field;
         Vue.set( state.fields, index, field );
