@@ -1,10 +1,10 @@
 <template>
     <div>
-        <el-form-item :label="name" :prop="validateObject()">
-            <component :is="customComponentInput" v-model="inputs[0]" @blur="changeValue()"></component>
-            <div v-if="multiple == 'yes'">
+        <el-form-item :label="field.field.name" :prop="validateObject()">
+            <component :is="extractFieldType(field.field.field_type)" v-model="inputs[0]" @blur="changeValue()"></component>
+            <div v-if="field.field.multiple == 'yes'">
                 <div v-if="index > 0" v-for="(input, index) in inputsList " v-bind:key="index" class="multiple-inputs">
-                    <component :is="customComponentInput" v-model="inputs[index]" @blur="changeValue()"></component><el-button v-if="index > 0" @click="removeInput(index)">-</el-button>
+                    <component :is="extractFieldType(field.field.field_type)" v-model="inputs[index]" @blur="changeValue()"></component><el-button v-if="index > 0" @click="removeInput(index)">-</el-button>
                 </div> 
                 <el-button @click="addInput">+</el-button>
             </div>
@@ -18,14 +18,7 @@
     export default {
         name: 'TainacanFormItem',
         props: {
-            customComponentInput: String,
-            name: { type: String },
-            required: { type: Boolean },
-            item_id: { type: Number },
-            field_id: { type: Number },
-            value: { },
-            message: { type: [ String,Number ] },
-            multiple: { type: String }
+            field: {}
         },
         data(){
             return {
@@ -34,7 +27,6 @@
         },
         computed: {
             inputsList() {
-                
                 return this.inputs;
             }
         },
@@ -44,30 +36,26 @@
         methods: {
             changeValue(){
                 console.log(this.inputs);
-                eventBus.$emit('input', { item_id: this.item_id, field_id: this.field_id, values: this.inputs, instance: this } );
+                eventBus.$emit('input', { item_id: this.field.item.id, field_id: this.field.field.id, values: this.inputs, instance: this } );
             },
             getValue(){            
-                if (this.value instanceof Array) {
-                    this.inputs = this.value;
+                if (this.field.value instanceof Array) {
+                    this.inputs = this.field.value;
                     if (this.inputs.length == 0)
                         this.inputs.push('');
                 } else {
-                    this.value == null || this.value == undefined ? this.inputs.push('') : this.inputs.push(this.value);
+                    this.field.value == null || this.field.value == undefined ? this.inputs.push('') : this.inputs.push(this.field.value);
                 }
+            },
+            extractFieldType(field_type) {
+                let parts = field_type.split('\\');
+                return 'tainacan-' + parts.pop().toLowerCase();
             },
             validateObject () {
                 return
                 [
-                    { required: this.required, message: this.message, trigger: 'blur' }
+                    { required: this.field.field.required, message: this.message, trigger: 'blur' }
                 ]
-            },
-            getErrors(){
-                try{
-                    return JSON.parse( this.errorsMsg );
-                }catch(e){
-                    console.log('invalid json error');
-                }
-                return this.errorsMsg;
             },
             addInput(){
                 this.inputs.push('');
