@@ -147,10 +147,10 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	public function create_item_permissions_check( $request ) {
 		$body = json_decode($request->get_body(), true);
 
-		$metadata = $this->metadata_repository->fetch($body['metadata_id']);
+		$metadata = $this->field_repository->fetch($body['field_id']);
 		$collection = $this->collection_repository->fetch($body['collection_id']);
 
-		if(($metadata instanceof Entities\Metadata) && ($collection instanceof Entities\Collection)) {
+		if(($metadata instanceof Entities\Field) && ($collection instanceof Entities\Collection)) {
 			return $this->filter_repository->can_edit($this->filter) && $metadata->can_edit() && $collection->can_edit();
 		}
 

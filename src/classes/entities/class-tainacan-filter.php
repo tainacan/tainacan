@@ -136,7 +136,7 @@ class Filter extends Entity {
      * @param \Tainacan\Entities\Field
      * @return void
      */
-    function set_metadata( $value ){
+    function set_field( $value ){
     	$id = ( $value instanceof Field ) ? $value->get_id() : $value;
 
         $this->set_mapped_property('field', $id);

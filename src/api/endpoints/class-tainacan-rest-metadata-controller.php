@@ -5,7 +5,6 @@ use Tainacan\Repositories;
 
 class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	private $field;
-	private $field_repository;
 	private $item_metadata_repository;
 	private $item_repository;
 	private $collection_repository;
