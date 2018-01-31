@@ -11,7 +11,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
-		$this->rest_base = 'field';
+		$this->rest_base = 'fields';
 
 		add_action('rest_api_init', array($this, 'register_routes'));
 		add_action('init', array(&$this, 'init_objects'), 11);
@@ -52,31 +52,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 				)
 			)
 		);
-		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base . '/(?P<field_id>[\d]+)',
-			array(
-				array(
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
-				)
-			)
-		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
-			array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_items'),
-					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
-				),
-				array(
-					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array($this, 'create_item'),
-					'permission_callback' => array($this, 'create_item_permissions_check')
-				),
-			)
-		);
-		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base,
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -117,7 +93,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function create_item( $request ) {
-		if(!empty($request['collection_id'])){
+		if(!empty($request->get_body())){
 			$collection_id = $request['collection_id'];
 
 			try {
@@ -154,36 +130,13 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 					'field'      => $this->field->__toArray(),
 				], 400);
 			}
-		} elseif (!empty($request['item_id']) && !empty($request->get_body())){
-			$body = json_decode($request->get_body(), true);
-
-			$item_id = $request['item_id'];
-			$field_id = $body['field_id'];
-			$value = $body['values'];
-
-			$item = $this->item_repository->fetch($item_id);
-			$field = $this->metadata_repository->fetch($field_id);
-
-			$item_metadata = new Entities\Item_Metadata_Entity($item, $field);
-			$item_metadata->set_value($value);
-
-			if($item_metadata->validate()) {
-				$field_updated = $this->item_metadata_repository->insert( $item_metadata );
-
-				return new WP_REST_Response( $field_updated->__toArray(), 201 );
-			} else {
-				return new WP_REST_Response([
-					'error_message' => __('One or more values are invalid.', 'tainacan'),
-					'errors'        => $item_metadata->get_errors(),
-					'item_metadata' => $item_metadata->__toArray(),
-				], 400);
-			}
-		} else {
-			return new WP_REST_Response([
-				'error_message' => __('Body can not be empty.', 'tainacan'),
-				'item'          => $request->get_body()
-			], 400);
 		}
+
+		return new WP_REST_Response([
+			'error_message' => __('Body can not be empty.', 'tainacan'),
+			'item'          => $request->get_body()
+		], 400);
+
 	}
 
 	/**
@@ -193,10 +146,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(isset($request['item_id'])){
-			return $this->item_repository->can_edit(new Entities\Item());
-		}
-
 		return $this->collection_repository->can_edit(new Entities\Collection());
 	}
 
@@ -209,15 +158,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		$field_as = [];
 
-		if($request['item_id']) {
-			foreach ( $item as $field ) {
-				$field_as[] = $field->__toArray();
-			}
-		} else if($request['collection_id']){
-
-			foreach ( $item as $field ) {
-				$field_as[] = $field->__toArray();
-			}
+		foreach ( $item as $field ) {
+			$field_as[] = $field->__toArray();
 		}
 
 		return $field_as;
@@ -229,25 +171,13 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		if(!empty($request['collection_id'])){
-			$collection_id = $request['collection_id'];
+		$collection_id = $request['collection_id'];
 
-			$collection = new Entities\Collection($collection_id);
+		$collection = new Entities\Collection($collection_id);
 
-			$collection_metadata = $this->metadata_repository->fetch_by_collection($collection, [], 'OBJECT');
+		$collection_metadata = $this->metadata_repository->fetch_by_collection($collection, [], 'OBJECT');
 
-			$prepared_item = $this->prepare_item_for_response($collection_metadata, $request);
-
-			return new WP_REST_Response($prepared_item, 200);
-		}
-
-		$item_id = $request['item_id'];
-
-		$item = new Entities\Item($item_id);
-
-		$item_metadata = $this->item_metadata_repository->fetch($item, 'OBJECT');
-
-		$prepared_item = $this->prepare_item_for_response($item_metadata, $request);
+		$prepared_item = $this->prepare_item_for_response($collection_metadata, $request);
 
 		return new WP_REST_Response($prepared_item, 200);
 	}
@@ -259,14 +189,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		if(isset($request['item_id'])){
-			$item = $this->item_repository->fetch($request['item_id']);
-
-			if($item instanceof Entities\Item) {
-				return $item->can_read();
-			}
-
-		} elseif (isset($request['collection_id'])) {
+		if (isset($request['collection_id'])) {
 			$collection = $this->collection_repository->fetch($request['collection_id']);
 
 			if ($collection instanceof Entities\Collection) {
@@ -307,14 +230,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function delete_item_permissions_check( $request ) {
-		if(isset($request['item_id'])){
-			$item = $this->item_repository->fetch($request['item_id']);
-
-			if($item instanceof Entities\Item) {
-				return $item->can_delete();
-			}
-
-		} elseif (isset($request['collection_id'])) {
+		if (isset($request['collection_id'])) {
 			$collection = $this->collection_repository->fetch($request['collection_id']);
 
 			if ($collection instanceof Entities\Collection) {
@@ -331,35 +247,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function update_item( $request ) {
-		if($request['item_id']) {
-			$body = json_decode( $request->get_body(), true );
-
-			$item_id     = $request['item_id'];
-			$field_id = $request['field_id'];
-			$value       = $body['values'];
-
-			$item     = $this->item_repository->fetch( $item_id );
-			$field = $this->metadata_repository->fetch( $field_id );
-
-			$item_metadata = new Entities\Item_Metadata_Entity( $item, $field );
-			$item_metadata->set_value( $value );
-
-			if ( $item_metadata->validate() ) {
-				$field_updated = $this->item_metadata_repository->update( $item_metadata );
-
-				return new WP_REST_Response( $field_updated->__toArray(), 200 );
-			} else {
-				return new WP_REST_Response( [
-					'error_message' => __( 'One or more values are invalid.', 'tainacan' ),
-					'errors'        => $item_metadata->get_errors(),
-					'item_metadata' => $item_metadata->__toArray(),
-				], 400 );
-			}
-		}
-
-        // We need to rethink this endpoint. Its confusing...
-        // and there is no need to iterato through all items...
-
 		$collection_id = $request['collection_id'];
 		$body = json_decode($request->get_body(), true);
 
@@ -412,14 +299,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function update_item_permissions_check( $request ) {
-		if (isset($request['item_id'])) {
-            $item = $this->item_repository->fetch($request['item_id']);
-
-			if ($item instanceof Entities\Item) {
-				return $item->can_edit();
-			}
-
-        } elseif(isset($request['collection_id'])) {
+		if(isset($request['collection_id'])) {
             $collection = $this->collection_repository->fetch($request['collection_id']);
 
             if ($collection instanceof Entities\Collection) {
