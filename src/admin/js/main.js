@@ -26,6 +26,8 @@ import Radio from '../../classes/field-types/radio/Radio.vue';
 import Numeric from '../../classes/field-types/numeric/Numeric.vue';
 import Date from '../../classes/field-types/date/Date.vue';
 
+import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
+
 
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
@@ -34,6 +36,8 @@ Vue.component('tainacan-checkbox', Checkbox);
 Vue.component('tainacan-radio', Radio);
 Vue.component('tainacan-numeric', Numeric);
 Vue.component('tainacan-date', Date);
+
+Vue.component('tainacan-form-item', TaincanFormItem);
 
 //------------------------------------------------
 

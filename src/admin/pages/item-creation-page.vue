@@ -31,13 +31,13 @@
                     <div class="el-upload__tip" slot="tip">imagens em formato jpg/png</div>
                 </el-upload>
             </el-form-item>
-            <component  v-for="(metadata, index) in metadataList" v-bind:key="index" :label="metadata.metadata.name"
-                        :is="extractFieldType(metadata.metadata.field_type)"
+            <tainacan-form-item v-for="(metadata, index) in metadataList" v-bind:key="index" :label="metadata.metadata.name"
+                        :customComponentInput="extractFieldType(metadata.metadata.field_type)"
                         :name="metadata.metadata.name"
                         :item_id="metadata.item.id"
                         :metadata_id="metadata.metadata.id"
                         :value="metadata.value"
-                        :multiple="metadata.metadata.multiple"></component>
+                        :multiple="metadata.metadata.multiple"></tainacan-form-item>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">Criar</el-button>
                 <el-button>Cancelar</el-button>
