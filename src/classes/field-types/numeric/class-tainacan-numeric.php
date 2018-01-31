@@ -22,10 +22,10 @@ class Numeric extends Field_Type {
 
     public function render( $itemMetadata ){
         return '<tainacan-numeric  
-                                   metadata_id ="'.$itemMetadata->get_metadata()->get_id().'" 
+                                   field_id ="'.$itemMetadata->get_field()->get_id().'" 
                                    item_id="'.$itemMetadata->get_item()->get_id().'"    
                                    value=\''.json_encode( $itemMetadata->get_value() ).'\'  
-                                   name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-numeric>';
+                                   name="'.$itemMetadata->get_field()->get_name().'"></tainacan-numeric>';
     }
 
     /**

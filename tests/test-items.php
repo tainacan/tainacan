@@ -94,8 +94,8 @@ class Items extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-	    $metadata = $this->tainacan_entity_factory->create_entity(
-		    'metadata',
+	    $field = $this->tainacan_entity_factory->create_entity(
+		    'field',
 		    array(
 			    'name'   => 'metadado',
 			    'status' => 'publish',
@@ -105,8 +105,8 @@ class Items extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-	    $metadata2 = $this->tainacan_entity_factory->create_entity(
-		    'metadata',
+	    $field2 = $this->tainacan_entity_factory->create_entity(
+		    'field',
 		    array(
 			    'name'   => 'metadado2',
 			    'status' => 'publish',
@@ -116,8 +116,8 @@ class Items extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-	    $metadata3 = $this->tainacan_entity_factory->create_entity(
-		    'metadata',
+	    $field3 = $this->tainacan_entity_factory->create_entity(
+		    'field',
 		    array(
 			    'name'              => 'metadado3',
 			    'status'            => 'publish',
@@ -135,7 +135,7 @@ class Items extends TAINACAN_UnitTestCase {
 	        	'title'      => 'orange',
 		        'collection' => $collection,
 		        'add_metadata' => [
-		        	[$metadata, 'value_1']
+		        	[$field, 'value_1']
 		        ],
 		        'status'      => 'publish'
 	        ),
@@ -143,11 +143,11 @@ class Items extends TAINACAN_UnitTestCase {
         );
 
         $item = $Tainacan_Items->fetch($i->get_id());
-        $meta_test = $item->get_metadata();
+        $meta_test = $item->get_field();
 
-        $this->assertTrue( isset($meta_test[$metadata->get_id()]) );
-        $this->assertTrue( $meta_test[$metadata->get_id()] instanceof Entities\Item_Metadata_Entity );
-        $this->assertEquals( 'value_1', $meta_test[$metadata->get_id()]->get_value());
+        $this->assertTrue( isset($meta_test[$field->get_id()]) );
+        $this->assertTrue( $meta_test[$field->get_id()] instanceof Entities\Item_Metadata_Entity );
+        $this->assertEquals( 'value_1', $meta_test[$field->get_id()]->get_value());
 
 	    $this->tainacan_entity_factory->create_entity(
 		    'item',
@@ -155,8 +155,8 @@ class Items extends TAINACAN_UnitTestCase {
 			    'title'        => 'apple',
 			    'collection'   => $collection2,
 			    'add_metadata' => [
-			    	[$metadata2, 'value_2'],
-				    [$metadata3, 'value_2']
+			    	[$field2, 'value_2'],
+				    [$field3, 'value_2']
 			    ],
 			    'status'      => 'publish'
 		    ),
@@ -169,9 +169,9 @@ class Items extends TAINACAN_UnitTestCase {
 			    'title'        => 'lemon',
 			    'collection'   => $collection2,
 			    'add_metadata' => [
-			    	[$metadata2, 'value_2'],
-				    [$metadata2, 'value_3'],
-				    [$metadata3, 'value_3']
+			    	[$field2, 'value_2'],
+				    [$field2, 'value_3'],
+				    [$field3, 'value_3']
 			    ],
 			    'status'      => 'publish'
 		    ),
@@ -184,8 +184,8 @@ class Items extends TAINACAN_UnitTestCase {
 			    'title'        => 'pineapple',
 			    'collection'   => $collection2,
 			    'add_metadata' => [
-			    	[$metadata2, 'value_3'],
-				    [$metadata3, 'value_6']
+			    	[$field2, 'value_3'],
+				    [$field3, 'value_6']
 			    ],
 			    'status'      => 'publish'
 		    ),
@@ -234,7 +234,7 @@ class Items extends TAINACAN_UnitTestCase {
         $test_query = $Tainacan_Items->fetch([
             'meta_query' => [
                 [
-                    'key' => $metadata2->get_id(),
+                    'key' => $field2->get_id(),
                     'value' => 'value_2'
                 ]
             ]
@@ -245,7 +245,7 @@ class Items extends TAINACAN_UnitTestCase {
         $test_query = $Tainacan_Items->fetch([
             'meta_query' => [
                 [
-                    'key' => $metadata2->get_id(),
+                    'key' => $field2->get_id(),
                     'value' => 'value_3'
                 ]
             ]
@@ -256,7 +256,7 @@ class Items extends TAINACAN_UnitTestCase {
         $test_query = $Tainacan_Items->fetch([
             'meta_query' => [
                 [
-                    'key' => $metadata3->get_id(),
+                    'key' => $field3->get_id(),
                     'value' => 'value_2',
                     'compare' => '>'
                 ]

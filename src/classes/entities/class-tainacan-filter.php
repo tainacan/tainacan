@@ -51,13 +51,13 @@ class Filter extends Entity {
     }
 
     /**
-     * Return the metadata
+     * Return the field
      *
-     * @return Metadata
+     * @return Field
      */
-    function get_metadata() {
-        $id = $this->get_mapped_property('metadata');
-        return new Metadata( $id );
+    function get_field() {
+        $id = $this->get_mapped_property('field');
+        return new Field( $id );
     }
 
     /**
@@ -131,15 +131,15 @@ class Filter extends Entity {
     }
 
     /**
-     * Define the filter metadata
+     * Define the filter field
      * 
-     * @param \Tainacan\Entities\Metadata
+     * @param \Tainacan\Entities\Field
      * @return void
      */
     function set_metadata( $value ){
-    	$id = ( $value instanceof Metadata ) ? $value->get_id() : $value;
+    	$id = ( $value instanceof Field ) ? $value->get_id() : $value;
 
-        $this->set_mapped_property('metadata', $id);
+        $this->set_mapped_property('field', $id);
     }
 
     /**

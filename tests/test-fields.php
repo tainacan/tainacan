@@ -3,21 +3,21 @@
 namespace Tainacan\Tests;
 use Tainacan\Field_Types;
 /**
- * Class Metadata
+ * Class Field
  *
  * @package Test_Tainacan
  */
 
 /**
- * Metadata test case.
+ * Field test case.
  */
-class Metadata extends TAINACAN_UnitTestCase {
+class Fields extends TAINACAN_UnitTestCase {
 
     /**
-     * Test insert a regular metadata with type
+     * Test insert a regular field with type
      */
     function test_add() {
-        global $Tainacan_Metadatas;
+        global $Tainacan_Fields;
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
@@ -29,8 +29,8 @@ class Metadata extends TAINACAN_UnitTestCase {
 
         $type = $this->tainacan_field_factory->create_field('text');
 
-        $metadata = $this->tainacan_entity_factory->create_entity(
-        	'metadata',
+        $field = $this->tainacan_entity_factory->create_entity(
+        	'field',
 	        array(
 	        	'name' => 'metadado',
 		        'description' => 'descricao',
@@ -40,7 +40,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
 
-        $test = $Tainacan_Metadatas->fetch($metadata->get_id());
+        $test = $Tainacan_Fields->fetch($field->get_id());
 
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_description(), 'descricao');
@@ -48,10 +48,10 @@ class Metadata extends TAINACAN_UnitTestCase {
     }
 
     /**
-     * Test insert a regular metadata with type
+     * Test insert a regular field with type
      */
     function test_add_type(){
-        global $Tainacan_Metadatas;
+        global $Tainacan_Fields;
 
         $collection = $this->tainacan_entity_factory->create_entity(
 	        'collection',
@@ -63,8 +63,8 @@ class Metadata extends TAINACAN_UnitTestCase {
 
 	    $type = $this->tainacan_field_factory->create_field('text');
 
-	    $metadata = $this->tainacan_entity_factory->create_entity(
-	        'metadata',
+	    $field = $this->tainacan_entity_factory->create_entity(
+	        'field',
 	        array(
 		        'name'              => 'metadado',
 		        'description'       => 'descricao',
@@ -74,7 +74,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
 
-        $test = $Tainacan_Metadatas->fetch($metadata->get_id());
+        $test = $Tainacan_Fields->fetch($field->get_id());
 
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_collection_id(), $collection->get_id());
@@ -83,18 +83,18 @@ class Metadata extends TAINACAN_UnitTestCase {
     }
 
     /**
-     * test if parent metadata are visible for children collection
+     * test if parent field are visible for children collection
      */
     function test_hierarchy_metadata(){
-        global $Tainacan_Metadatas;
+        global $Tainacan_Fields;
 
 	    $type = $this->tainacan_field_factory->create_field('text');
 
 	    $this->tainacan_entity_factory->create_entity(
-        	'metadata',
+        	'field',
 	        array(
-	        	'name'              => 'metadata default',
-		        'collection_id'     => $Tainacan_Metadatas->get_default_metadata_attribute(),
+	        	'name'              => 'field default',
+		        'collection_id'     => $Tainacan_Fields->get_default_metadata_attribute(),
 		        'field_type' => $type,
 		        'status'            => 'publish'
 	        ),
@@ -110,9 +110,9 @@ class Metadata extends TAINACAN_UnitTestCase {
         );
 
         $this->tainacan_entity_factory->create_entity(
-        	'metadata',
+        	'field',
 	        array(
-	        	'name'              => 'metadata grandfather',
+	        	'name'              => 'field grandfather',
 		        'collection_id'     => $collection_grandfather->get_id(),
 		        'field_type' => $type,
 		        'status'            => 'publish'
@@ -130,9 +130,9 @@ class Metadata extends TAINACAN_UnitTestCase {
 	    );
 
 	    $this->tainacan_entity_factory->create_entity(
-		    'metadata',
+		    'field',
 		    array(
-			    'name'              => 'metadata father',
+			    'name'              => 'field father',
 			    'collection_id'     => $collection_father->get_id(),
 			    'field_type' => $type,
 			    'status'            => 'publish'
@@ -153,9 +153,9 @@ class Metadata extends TAINACAN_UnitTestCase {
         $this->assertEquals( $collection_father->get_id(), $collection_son->get_parent() );
 
 	    $this->tainacan_entity_factory->create_entity(
-		    'metadata',
+		    'field',
 		    array(
-			    'name'              => 'metadata son',
+			    'name'              => 'field son',
 			    'collection_id'     => $collection_son->get_id(),
 			    'field_type' => $type,
 			    'status'            => 'publish'
@@ -163,7 +163,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-        $retrieve_metadata =  $Tainacan_Metadatas->fetch_by_collection( $collection_son, [], 'OBJECT' );
+        $retrieve_metadata =  $Tainacan_Fields->fetch_by_collection( $collection_son, [], 'OBJECT' );
         $this->assertEquals( 4, sizeof( $retrieve_metadata ) );
     }
 
@@ -171,17 +171,17 @@ class Metadata extends TAINACAN_UnitTestCase {
      * test if the defaults types are registered
      */
     function test_metadata_field_type(){
-        global $Tainacan_Metadatas;
-        $this->assertEquals( 8, sizeof( $Tainacan_Metadatas->fetch_field_types() ) );
+        global $Tainacan_Fields;
+        $this->assertEquals( 8, sizeof( $Tainacan_Fields->fetch_field_types() ) );
     }
 
     /**
      * test if the defaults types are registered
      */
     function test_metadata_field_type_insert(){
-        global $Tainacan_Metadatas;
+        global $Tainacan_Fields;
         $class = new RandomType;
-        $this->assertEquals( 9, sizeof( $Tainacan_Metadatas->fetch_field_types() ) );
+        $this->assertEquals( 9, sizeof( $Tainacan_Fields->fetch_field_types() ) );
     }
 }
 
@@ -195,9 +195,9 @@ class RandomType extends Field_Types\Field_Type {
     }
 
     /**
-     * @param $metadata
+     * @param $field
      * @return string
      */
 
-    public function render( $metadata ){}
+    public function render( $field ){}
 }

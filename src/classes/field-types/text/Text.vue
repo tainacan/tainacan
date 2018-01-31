@@ -20,7 +20,7 @@
             name: { type: String },
             required: { type: Boolean },
             item_id: { type: Number },
-            metadata_id: { type: Number },
+            field_id: { type: Number },
             value: { },
             message: { type: [ String,Number ] },
             multiple: { type: String }
@@ -40,8 +40,8 @@
         },
         methods: {
             changeValue(){
-                this.$emit('changeValues', { item_id: this.item_id, metadata_id: this.metadata_id, values: this.inputs } );
-                eventBus.$emit('input', { item_id: this.item_id, metadata_id: this.metadata_id, values: this.inputs, instance: this } );
+                this.$emit('changeValues', { item_id: this.item_id, field_id: this.field_id, values: this.inputs } );
+                eventBus.$emit('input', { item_id: this.item_id, field_id: this.field_id, values: this.inputs, instance: this } );
             },
             getValue(){            
                 if (this.value instanceof Array) {

@@ -14,7 +14,7 @@ class List_Filter extends Filter_Type {
     }
 
     /**
-     * @param $metadata
+     * @param $field
      * @return string
      */
 

@@ -72,18 +72,18 @@ $Tainacan_Collections = new \Tainacan\Repositories\Collections();
 global $Tainacan_Item_Metadata;
 $Tainacan_Item_Metadata = new \Tainacan\Repositories\Item_Metadata();
 
-global $Tainacan_Metadatas;
-$Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
+global $Tainacan_Fields;
+$Tainacan_Fields = new \Tainacan\Repositories\Fields();
 
 //register field types
-$Tainacan_Metadatas->register_field_type('Tainacan\Field_Types\Text');
-$Tainacan_Metadatas->register_field_type('Tainacan\Field_Types\Textarea');
-$Tainacan_Metadatas->register_field_type('Tainacan\Field_Types\Date');
-$Tainacan_Metadatas->register_field_type('Tainacan\Field_Types\Numeric');
-$Tainacan_Metadatas->register_field_type('Tainacan\Field_Types\Selectbox');
-$Tainacan_Metadatas->register_field_type('Tainacan\Field_Types\Relationship');
-$Tainacan_Metadatas->register_field_type('Tainacan\Field_Types\Radio');
-$Tainacan_Metadatas->register_field_type('Tainacan\Field_Types\Checkbox');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Text');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Textarea');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Date');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Numeric');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Selectbox');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Relationship');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Radio');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Checkbox');
 
 global $Tainacan_Filters;
 $Tainacan_Filters = new \Tainacan\Repositories\Filters();

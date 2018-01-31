@@ -165,20 +165,20 @@ class Item extends Entity {
     }
 
     /**
-     * Return a Metadata or a List of Metadata
+     * Return a Field or a List of Field
      *
-     * @return array || Metadata
+     * @return array || Field
      */
-    function get_metadata() {
-        global $Tainacan_Metadatas;
+    function get_field() {
+        global $Tainacan_Fields;
 
-        if (isset($this->metadata))
-            return $this->metadata;
+        if (isset($this->field))
+            return $this->field;
         
         $collection = $this->get_collection();
         $all_metadata = [];
         if ($collection) {
-            $meta_list = $Tainacan_Metadatas->fetch_by_collection( $collection, [], 'OBJECT' );
+            $meta_list = $Tainacan_Fields->fetch_by_collection( $collection, [], 'OBJECT' );
             
             foreach ($meta_list as $meta) {
                 $all_metadata[$meta->get_id()] = new Item_Metadata_Entity($this, $meta);
@@ -188,20 +188,20 @@ class Item extends Entity {
     }
     
     /**
-     * Define the Metadata
+     * Define the Field
      *
-     * @param Metadata $new_metadata
+     * @param Field $new_metadata
      * @param [string || integer || array] $value
      * @return void
      */
-    function add_metadata(Metadata $new_metadata, $value) {
+    function add_metadata(Field $new_metadata, $value) {
         
-        //TODO Multiple metadata must receive an array as value
+        //TODO Multiple field must receive an array as value
         $item_metadata = new Item_Metadata_Entity($this, $new_metadata);
        
         $item_metadata->set_value($value);
         
-        $current_meta = $this->get_metadata();
+        $current_meta = $this->get_field();
         $current_meta[$new_metadata->get_id()] = $item_metadata;
         
         $this->set_metadata($current_meta);
@@ -210,11 +210,11 @@ class Item extends Entity {
     /**
      * Aux function for @method add_metadata
      *
-     * @param array $metadata
+     * @param array $field
      * @return void
      */
-    function set_metadata(Array $metadata) {
-        $this->metadata = $metadata;
+    function set_metadata(Array $field) {
+        $this->field = $field;
     }
     
     /**

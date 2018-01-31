@@ -7,8 +7,8 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	private $collection;
 	private $collection_repository;
 
-	private $metadata;
-	private $metadata_repository;
+	private $field;
+	private $field_repository;
 
 	private $filter;
 	private $filter_repository;
@@ -31,8 +31,8 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		$this->collection = new Entities\Collection();
 		$this->collection_repository = new Repositories\Collections();
 		
-		$this->metadata = new Entities\Metadata();
-		$this->metadata_repository = new Repositories\Metadatas();
+		$this->field = new Entities\Field();
+		$this->field_repository = new Repositories\Fields();
 		
 		$this->filter = new Entities\Filter();
 		$this->filter_repository = new Repositories\Filters();
@@ -80,7 +80,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		$collection_id = $body['collection_id'];
-		$metadata_id   = $body['metadata_id'];
+		$field_id   = $body['field_id'];
 		$filter = $body['filter'];
 
 		$received_type = $body['filter_type'];
@@ -107,7 +107,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		}
 
 		$this->filter->set_collection_id($collection_id);
-		$this->filter->set_metadata($metadata_id);
+		$this->filter->set_field($field_id);
 		$this->filter->set_filter_type($filter_type);
 	}
 

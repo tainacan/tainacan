@@ -4,15 +4,15 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 
 class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
-	private $metadata;
-	private $metadata_repository;
+	private $field;
+	private $field_repository;
 	private $item_metadata_repository;
 	private $item_repository;
 	private $collection_repository;
 
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
-		$this->rest_base = 'metadata';
+		$this->rest_base = 'field';
 
 		add_action('rest_api_init', array($this, 'register_routes'));
 		add_action('init', array(&$this, 'init_objects'), 11);
@@ -22,24 +22,24 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * Initialize objects after post_type register
 	 */
 	public function init_objects() {
-		$this->metadata = new Entities\Metadata();
-		$this->metadata_repository = new Repositories\Metadatas();
+		$this->field = new Entities\Field();
+		$this->metadata_repository = new Repositories\Fields();
 		$this->item_metadata_repository = new Repositories\Item_Metadata();
 		$this->item_repository = new Repositories\Items();
 		$this->collection_repository = new Repositories\Collections();
 	}
 
 	/**
-	 * If POST on metadata/collection/<collection_id>, then
-	 * a metadata will be created in matched collection and all your item will receive this metadata
+	 * If POST on field/collection/<collection_id>, then
+	 * a field will be created in matched collection and all your item will receive this field
 	 *
-	 * If POST on metadata/item/<item_id>, then a value will be added in a field and metadata passed
+	 * If POST on field/item/<item_id>, then a value will be added in a field and field passed
 	 * id body of requisition
 	 *
-	 * Both of GETs return the metadata of matched objects
+	 * Both of GETs return the field of matched objects
 	 */
 	public function register_routes() {
-		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_id>[\d]+)',
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<field_id>[\d]+)',
 			array(
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
@@ -53,7 +53,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 				)
 			)
 		);
-		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_id>[\d]+)',
+		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base . '/(?P<field_id>[\d]+)',
 			array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
@@ -104,12 +104,12 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 
 		foreach ($meta as $key => $value){
 			$set_ = 'set_' . $key;
-			$this->metadata->$set_($value);
+			$this->field->$set_($value);
 		}
 
 		$collection = new Entities\Collection($request[1]);
 
-		$this->metadata->set_collection($collection);
+		$this->field->set_collection($collection);
 	}
 
 	/**
@@ -127,51 +127,51 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 				return new WP_REST_Response($exception->getMessage(), 400);
 			}
 
-			if($this->metadata->validate()) {
-				$this->metadata_repository->insert( $this->metadata );
+			if($this->field->validate()) {
+				$this->metadata_repository->insert( $this->field );
 
 				$items = $this->item_repository->fetch([], $collection_id, 'WP_Query');
 
-				$metadata_added = '';
+				$field_added = '';
 				if($items->have_posts()){
 					while ($items->have_posts()){
 						$items->the_post();
 
 						$item = new Entities\Item($items->post);
-						$item_meta = new Entities\Item_Metadata_Entity($item, $this->metadata);
+						$item_meta = new Entities\Item_Metadata_Entity($item, $this->field);
 
-						$metadata_added = $this->item_metadata_repository->insert($item_meta);
+						$field_added = $this->item_metadata_repository->insert($item_meta);
 					}
 
-					return new WP_REST_Response($metadata_added->get_metadata()->__toArray(), 201);
+					return new WP_REST_Response($field_added->get_field()->__toArray(), 201);
 				}
 				else {
-					return new WP_REST_Response($this->metadata->__toArray(), 201);
+					return new WP_REST_Response($this->field->__toArray(), 201);
 				}
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
-					'errors'        => $this->metadata->get_errors(),
-					'metadata'      => $this->metadata->__toArray(),
+					'errors'        => $this->field->get_errors(),
+					'field'      => $this->field->__toArray(),
 				], 400);
 			}
 		} elseif (!empty($request['item_id']) && !empty($request->get_body())){
 			$body = json_decode($request->get_body(), true);
 
 			$item_id = $request['item_id'];
-			$metadata_id = $body['metadata_id'];
+			$field_id = $body['field_id'];
 			$value = $body['values'];
 
 			$item = $this->item_repository->fetch($item_id);
-			$metadata = $this->metadata_repository->fetch($metadata_id);
+			$field = $this->metadata_repository->fetch($field_id);
 
-			$item_metadata = new Entities\Item_Metadata_Entity($item, $metadata);
+			$item_metadata = new Entities\Item_Metadata_Entity($item, $field);
 			$item_metadata->set_value($value);
 
 			if($item_metadata->validate()) {
-				$metadata_updated = $this->item_metadata_repository->insert( $item_metadata );
+				$field_updated = $this->item_metadata_repository->insert( $item_metadata );
 
-				return new WP_REST_Response( $metadata_updated->__toArray(), 201 );
+				return new WP_REST_Response( $field_updated->__toArray(), 201 );
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
@@ -208,20 +208,20 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @return array|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$metadata_as = [];
+		$field_as = [];
 
 		if($request['item_id']) {
-			foreach ( $item as $metadata ) {
-				$metadata_as[] = $metadata->__toArray();
+			foreach ( $item as $field ) {
+				$field_as[] = $field->__toArray();
 			}
 		} else if($request['collection_id']){
 
-			foreach ( $item as $metadata ) {
-				$metadata_as[] = $metadata->__toArray();
+			foreach ( $item as $field ) {
+				$field_as[] = $field->__toArray();
 			}
 		}
 
-		return $metadata_as;
+		return $field_as;
 	}
 
 	/**
@@ -295,7 +295,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 			$body = json_decode($request->get_body());
 
 			$collection_id = $request['collection_id'];
-			$metadata_id = $body['metadata_id'];
+			$field_id = $body['field_id'];
 
 			return new WP_REST_Response(['error' => 'Not Implemented.'], 400);
 		}
@@ -336,19 +336,19 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 			$body = json_decode( $request->get_body(), true );
 
 			$item_id     = $request['item_id'];
-			$metadata_id = $request['metadata_id'];
+			$field_id = $request['field_id'];
 			$value       = $body['values'];
 
 			$item     = $this->item_repository->fetch( $item_id );
-			$metadata = $this->metadata_repository->fetch( $metadata_id );
+			$field = $this->metadata_repository->fetch( $field_id );
 
-			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadata );
+			$item_metadata = new Entities\Item_Metadata_Entity( $item, $field );
 			$item_metadata->set_value( $value );
 
 			if ( $item_metadata->validate() ) {
-				$metadata_updated = $this->item_metadata_repository->update( $item_metadata );
+				$field_updated = $this->item_metadata_repository->update( $item_metadata );
 
-				return new WP_REST_Response( $metadata_updated->__toArray(), 200 );
+				return new WP_REST_Response( $field_updated->__toArray(), 200 );
 			} else {
 				return new WP_REST_Response( [
 					'error_message' => __( 'One or more values are invalid.', 'tainacan' ),
@@ -367,17 +367,17 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 		if(!empty($body)){
 			$attributes = [];
 
-			$metadata_id = $request['metadata_id'];
+			$field_id = $request['field_id'];
 
 			foreach ($body['values'] as $att => $value){
 				$attributes[$att] = $value;
 			}
 
-			$metadata = $this->metadata_repository->fetch($metadata_id);
+			$field = $this->metadata_repository->fetch($field_id);
 
-			$updated_metadata = $this->metadata_repository->update($metadata, $attributes);
+			$updated_metadata = $this->metadata_repository->update($field, $attributes);
 
-			if(!($updated_metadata instanceof Entities\Metadata)){
+			if(!($updated_metadata instanceof Entities\Field)){
 				return new WP_REST_Response($updated_metadata, 400);
 			}
 
@@ -394,7 +394,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 					$up_metadata = $this->item_metadata_repository->update($item_meta);
 				}
 
-				return new WP_REST_Response($up_metadata->get_metadata()->__toArray(), 201);
+				return new WP_REST_Response($up_metadata->get_field()->__toArray(), 201);
 			}
 
 			return new WP_REST_Response($updated_metadata->__toArray(), 201);

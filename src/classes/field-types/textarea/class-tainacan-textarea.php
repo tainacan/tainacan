@@ -21,7 +21,7 @@ class Textarea extends Field_Type {
      */
 
     public function render( $itemMetadata ){
-        return '<tainacan-textarea name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-textarea>';
+        return '<tainacan-textarea name="'.$itemMetadata->get_field()->get_name().'"></tainacan-textarea>';
     }
 
     /**

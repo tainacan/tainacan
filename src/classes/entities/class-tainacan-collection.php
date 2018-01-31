@@ -267,17 +267,17 @@ class Collection extends Entity {
     }
 
 	/**
-	 * Get collection metadata.
+	 * Get collection field.
 	 *
-	 * Returns an array of \Entity\Metadata objects, representing all the metadata of the collection.
+	 * Returns an array of \Entity\Field objects, representing all the field of the collection.
 	 *
-	 * @see \Tainacan\Repositories\Metadatas->fetch()
+	 * @see \Tainacan\Repositories\Fields->fetch()
 	 *
-	 * @return [\Tainacan\Entities\Metadata] array
+	 * @return [\Tainacan\Entities\Field] array
 	 */
-    function get_metadata() {
-        $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
-        return $Tainacan_Metadatas->fetch_by_collection( $this,  [], 'OBJECT'  );
+    function get_field() {
+        $Tainacan_Fields = new \Tainacan\Repositories\Fields();
+        return $Tainacan_Fields->fetch_by_collection( $this,  [], 'OBJECT'  );
     }
 
     /**

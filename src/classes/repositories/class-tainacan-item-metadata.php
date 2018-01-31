@@ -12,15 +12,15 @@ class Item_Metadata extends Repository {
         $unique = !$item_metadata->is_multiple();
 
         if ($unique) {
-            add_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash( $item_metadata->get_value() ) );
+            add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
         } else {
-            delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id());
+            delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
             
             if (is_array($item_metadata->get_value())){
             	$values = $item_metadata->get_value();
 
                 foreach ($values as $value){
-                    add_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash( $value ));
+                    add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $value ));
                 }
             }
         }
@@ -28,22 +28,22 @@ class Item_Metadata extends Repository {
         do_action('tainacan-insert', $item_metadata);
         do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
 
-        return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_metadata());
+        return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
     }
 
     public function update($item_metadata, $new_values = null){
 	    $unique = !$item_metadata->is_multiple();
 
 	    if ($unique) {
-		    update_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash( $item_metadata->get_value() ) );
+		    update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
 	    } else {
-		    delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id());
+		    delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
 
 		    if (is_array($item_metadata->get_value())){
 			    $values = $item_metadata->get_value();
 
 			    foreach ($values as $value){
-				    update_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash( $value ));
+				    update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $value ));
 			    }
 		    }
 	    }
@@ -51,11 +51,11 @@ class Item_Metadata extends Repository {
 	    do_action('tainacan-update', $item_metadata);
 	    do_action('tainacan-update-Item_Metadata_Entity', $item_metadata);
 
-	    return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_metadata());
+	    return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
     }
 
 	/**
-	 * Delete Item Metadata
+	 * Delete Item Field
 	 *
 	 * @param $item_metadata
 	 *
@@ -66,22 +66,22 @@ class Item_Metadata extends Repository {
 //    		$values = $item_metadata->get_value();
 //
 //    		foreach ($values as $value){
-//    			delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash($value));
+//    			delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash($value));
 //		    }
 //	    } else {
-//    		delete_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), wp_slash($item_metadata->get_value()));
+//    		delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash($item_metadata->get_value()));
 //	    }
     }
 
     /**
-     * Fetch Item Metadata objects related to an Item
+     * Fetch Item Field objects related to an Item
      *
      * @param Entities\Item $object
      * @return array
      */
     public function fetch($object, $output = null ){
         if($object instanceof Entities\Item){
-            global $Tainacan_Items, $Tainacan_Metadatas;
+            global $Tainacan_Items, $Tainacan_Fields;
             
             $collection = $object->get_collection();
             
@@ -89,7 +89,7 @@ class Item_Metadata extends Repository {
                 return [];
             }
             
-            $meta_list = $Tainacan_Metadatas->fetch_by_collection($collection, [], 'OBJECT' );
+            $meta_list = $Tainacan_Fields->fetch_by_collection($collection, [], 'OBJECT' );
             
             $return = [];
             
@@ -106,7 +106,7 @@ class Item_Metadata extends Repository {
     }
 
     /**
-     * Get the value for a Item metadata.
+     * Get the value for a Item field.
      *
      * @param Entities\Item_Metadata_Entity $item_metadata
      * @return mixed
@@ -114,7 +114,7 @@ class Item_Metadata extends Repository {
     public function get_value(Entities\Item_Metadata_Entity $item_metadata) {
         $unique = ! $item_metadata->is_multiple();
 
-        return get_post_meta($item_metadata->item->get_id(), $item_metadata->metadata->get_id(), $unique);
+        return get_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), $unique);
     }
 
     public function register_post_type() { }

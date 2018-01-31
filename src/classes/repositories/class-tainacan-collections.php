@@ -141,7 +141,7 @@ class Collections extends Repository {
              * Properties yet to be implemented
              *
              * Moderators (a property attached to the collection or to the user?)
-             * geo metadata?
+             * geo field?
              *
              *
              * 

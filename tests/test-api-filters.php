@@ -18,8 +18,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$metadata = $this->tainacan_entity_factory->create_entity(
-			'metadata',
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
 			array(
 				'name'          => 'Metadata filtered',
 				'description'   => 'Is filtered',
@@ -33,7 +33,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$request_body = json_encode(
 			array(
 				'collection_id' => $collection->get_id(),
-				'metadata_id'   => $metadata->get_id(),
+				'field_id'   => $field->get_id(),
 				'filter_type'   => 'range',
 				'filter'        => [
 					'name'        => 'Filter name',
@@ -64,10 +64,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$metadata = $this->tainacan_entity_factory->create_entity(
-			'metadata',
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
 			array(
-				'name'        => 'Metadata filtered',
+				'name'        => 'Field filtered',
 				'description' => 'Is filtered',
 			)
 		);
@@ -80,7 +80,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'metadata'    => $metadata,
+				'field'    => $field,
 				'filter_type' => $filter_type,
 			),
 			true
@@ -134,10 +134,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$metadata = $this->tainacan_entity_factory->create_entity(
-			'metadata',
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
 			array(
-				'name'        => 'Metadata filtered',
+				'name'        => 'Field filtered',
 				'description' => 'Is filtered',
 				'collection_id' => $collection->get_id()
 			)
@@ -151,7 +151,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'metadata'    => $metadata,
+				'field'    => $field,
 				'filter_type' => $filter_type,
 			),
 			true
@@ -185,17 +185,17 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$metadata = $this->tainacan_entity_factory->create_entity(
-			'metadata',
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
 			array(
-				'name'          => 'Metadata filtered',
+				'name'          => 'Field filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id()
 			)
 		);
 
-		$metadata2 = $this->tainacan_entity_factory->create_entity(
-			'metadata',
+		$field2 = $this->tainacan_entity_factory->create_entity(
+			'field',
 			array(
 				'name'          => 'Other filtered',
 				'description'   => 'Is filtered',
@@ -211,7 +211,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'metadata'    => $metadata,
+				'field'    => $field,
 				'filter_type' => $filter_type,
 				'status'      => 'publish'
 			),
@@ -224,7 +224,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro2',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'metadata'    => $metadata2,
+				'field'    => $field2,
 				'filter_type' => $filter_type,
 				'status'      => 'publish'
 			),

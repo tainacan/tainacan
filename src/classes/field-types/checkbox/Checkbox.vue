@@ -33,7 +33,7 @@
             item_id: {
                 type: Number
             },
-            metadata_id: {
+            field_id: {
                 type: Number
             },
             value: {
@@ -54,7 +54,7 @@
                 const array_values = JSON.parse(  this.value );
                 if ( array_values.length > 0 ){
                     this.checked = array_values;
-                    this.$store.dispatch('item/setSingleMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: array_values });
+                    this.$store.dispatch('item/setSingleMetadata', { item_id: this.item_id, field_id: this.field_id, values: array_values });
                 }
             },
             sendValue ( event ){
@@ -64,7 +64,7 @@
                 }else{
                     this.checked.push( event.target.value );
                 }
-                this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: this.checked });
+                this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, field_id: this.field_id, values: this.checked });
             },
             isChecked ( value ){
                 let index  = this.checked.indexOf( value );

@@ -29,8 +29,8 @@ export const eventBus = new Vue({
                             eventElement.errorsMsg = JSON.stringify( [] );
                             eventElement.value = response.value;
                         }, error => {
-                            const metadata = this.errors.find(error => error.metadata_id === event.detail[0].metadata_id );
-                            eventElement.errorsMsg = JSON.stringify( metadata.error );
+                            const field = this.errors.find(error => error.field_id === event.detail[0].field_id );
+                            eventElement.errorsMsg = JSON.stringify( field.error );
                             eventElement.value = event.detail[0].values;
                         });
                     }
@@ -40,22 +40,22 @@ export const eventBus = new Vue({
         updateValue(data){
             if ( data.item_id ){
                 const promisse = this.$store.dispatch('item/updateMetadata',
-                    { item_id: data.item_id, metadata_id: data.metadata_id, values: data.values });
+                    { item_id: data.item_id, field_id: data.field_id, values: data.values });
                 promisse.then( response => {
                     data.instance.message = JSON.stringify( [] );
                     data.instance.value = response.value;
                 }, error => {
-                    const metadata = this.errors.find(error => error.metadata_id === data.metadata_id );
-                    eventElement.errorsMsg = JSON.stringify( metadata.error );
+                    const field = this.errors.find(error => error.field_id === data.field_id );
+                    eventElement.errorsMsg = JSON.stringify( field.error );
                     eventElement.value = data.values;
                 });
             }
         },
         setValues(){
-            const metadata = this.$store.getters['item/getMetadata'];
-            if( metadata ){
-                for(let singleMetadata of metadata){
-                    const eventElement = this.getComponentById( singleMetadata.metadata_id );
+            const field = this.$store.getters['item/getMetadata'];
+            if( field ){
+                for(let singleMetadata of field){
+                    const eventElement = this.getComponentById( singleMetadata.field_id );
                     eventElement.value =  singleMetadata.values;
                 }
             }
@@ -78,12 +78,12 @@ export const eventBus = new Vue({
             }
             return components;
         },
-        getComponentById( metadata_id ){
+        getComponentById( field_id ){
             for( let component of this.componentsTag ){
                 const eventElements = document.getElementsByTagName( component );
                 if( eventElements ) {
                     for (let eventElement of eventElements){
-                        if( eventElement.metadata_id === metadata_id ){
+                        if( eventElement.field_id === field_id ){
                             return eventElement;
                         }
                     }

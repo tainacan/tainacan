@@ -49,7 +49,7 @@ class Capabilities {
 				"read"
 			]
 		],
-		"tainacan-metadata"=> [
+		"tainacan-field"=> [
 			"administrator"=> [
 				"delete_posts",
 				"delete_private_posts",

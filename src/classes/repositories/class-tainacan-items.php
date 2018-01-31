@@ -71,7 +71,7 @@ class Items extends Repository {
 	            'description' => __('The collection thumbnail URL')
             ],
             //'collection' => 'relation...',
-            // metadata .. metadata...
+            // field .. field...
         ]);
     }
     
@@ -106,7 +106,7 @@ class Items extends Repository {
  
     public function insert($item) {
 
-        global $Tainacan_Metadatas;
+        global $Tainacan_Fields;
 
     	$map = $this->get_map();
     	
@@ -150,11 +150,11 @@ class Items extends Repository {
     		}
     	}
     	
-    	// save metadata
-    	$metadata = $item->get_metadata();
+    	// save field
+    	$field = $item->get_field();
     	global $Tainacan_Item_Metadata;
     	
-    	foreach ($metadata as $meta) {
+    	foreach ($field as $meta) {
     		$Tainacan_Item_Metadata->insert($meta);
     	}
     	
