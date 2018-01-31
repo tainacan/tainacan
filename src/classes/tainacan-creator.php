@@ -48,8 +48,8 @@ function tainacan_autoload($class_name){
 		    $lower     = $sliced[0];
 		    $sliced[0] = strtolower( $lower );
 
-		    $dir = CLASSES_DIR . implode( DIRECTORY_SEPARATOR, $sliced ) . '/';
-		    $dir = str_replace( '_', '-', $dir );
+		    $dir = implode( DIRECTORY_SEPARATOR, $sliced ) . '/';
+		    $dir = CLASSES_DIR . str_replace( '_', '-', $dir );
 	    } else {
 		    $dir = CLASSES_DIR;
 	    }
