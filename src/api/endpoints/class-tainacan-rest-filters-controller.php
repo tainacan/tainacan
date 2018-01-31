@@ -151,7 +151,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		$collection = $this->collection_repository->fetch($body['collection_id']);
 
 		if(($metadata instanceof Entities\Metadata) && ($collection instanceof Entities\Collection)) {
-			return (($this->filter_repository->can_edit($this->filter)) === ($metadata->can_edit())) === ($collection->can_edit());
+			return ( (($this->filter_repository->can_edit($this->filter)) === true) === ($metadata->can_edit()) ) === ($collection->can_edit());
 		}
 
 		return false;
