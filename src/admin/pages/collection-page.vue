@@ -7,7 +7,7 @@
                     <span>{{ collection.name }}</span>
                     <div class="bottom clearfix">
                         <time class="time">{{collection.description}}</time>
-                        <router-link tag="el-button" class="primary" :to="{ path: `/collections/${collection.id}/items/create`, params: { collection_id: collection.id }}">Criar Item</router-link>
+                        <router-link tag="el-button" class="primary" :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">Criar Item</router-link>
                     </div>
                     <items-list :collectionId="collectionId"></items-list>
                     <div class="bottom clearfix">

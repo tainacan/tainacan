@@ -19,7 +19,7 @@ export const setSingleField = ( state, field) => {
 }
 
 export const setSingleItem = ( state, item) => {
-    let index = state.item.findIndex(itemItem => itemItem.item_id === item.item_id);
+    let index = state.item.findIndex(itemItem => itemItem.id === item.id);
     if ( index >= 0){
         //state.field[index] = field;
         Vue.set( state.item, index, item );

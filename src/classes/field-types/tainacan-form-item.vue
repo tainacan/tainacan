@@ -35,7 +35,6 @@
         },
         methods: {
             changeValue(){
-                console.log(this.inputs);
                 eventBus.$emit('input', { item_id: this.field.item.id, field_id: this.field.field.id, values: this.inputs, instance: this } );
             },
             getValue(){            

@@ -7,7 +7,7 @@
                     <span>{{ item.title }}</span>
                     <div class="bottom clearfix">
                         <time class="time">{{item.description}}</time>
-                        <router-link tag="el-button" class="primary" :to="{ path: `/collection/${collectionId}/items/${itemId}/edit`}">Editar Item</router-link>
+                        <router-link tag="el-button" class="primary" :to="{ path: `/collections/${collectionId}/items/${itemId}/edit`}">Editar Item</router-link>
                     </div>
                 </div>
             </el-card>     

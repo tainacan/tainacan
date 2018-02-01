@@ -19,7 +19,7 @@ const routes = [
         ],
         meta: { title: 'Collection Page' }
     },
-    { path: '/collections/:id/items/create', component: ItemCreationPage, meta: {title: 'Create Item'} },
+    { path: '/collections/:id/items/new', component: ItemCreationPage, meta: {title: 'Create Item'} },
     { path: '/collections/:collection_id/items/:id/edit', component: ItemCreationPage, meta: {title: 'Edit Item'} },
     { path: '/collections/:collection_id/items/:id', component: ItemPage, meta: {title: 'Item Page'} },
     { path: '*', redirect: '/'}
