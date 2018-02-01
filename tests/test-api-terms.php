@@ -148,17 +148,13 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$show_empty = json_encode([
-			'filters' => [
-				'hide_empty' => false
-			]
-		]);
-
 		$request = new \WP_REST_Request(
 			'GET', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms'
 		);
 
-		$request->set_body($show_empty);
+		$request->set_query_params([
+			'hide_empty' => false
+		]);
 
 		$response = $this->server->dispatch($request);
 

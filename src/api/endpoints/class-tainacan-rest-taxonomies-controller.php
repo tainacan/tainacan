@@ -204,16 +204,17 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$body = json_decode($request->get_body(), true);
 		$args = [];
 
-		if(isset($body['filters'])) {
-			$filters = $body['filters'];
+		$map = $this->taxonomy_repository->get_map();
 
-			$map = $this->taxonomy_repository->get_map();
-
-			$args = $this->unmap_filters($filters, $map);
+		foreach ($map as $key => $value){
+			if(isset($request[$key], $map[$key])){
+				$args[$value['map']] = $request[$key];
+			}
 		}
+
+		//$args = $this->unmap_filters($args, $map);
 
 		$taxonomies = $this->taxonomy_repository->fetch($args, 'OBJECT');
 

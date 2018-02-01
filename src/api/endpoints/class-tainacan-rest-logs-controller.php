@@ -72,16 +72,16 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$body = json_decode($request->get_body(), true);
 		$args = [];
 
-		if(isset($body['filters'])) {
-			$filters = $body['filters'];
+		$map = $this->logs_repository->get_map();
 
-			$map = $this->logs_repository->get_map();
-
-			$args = $this->unmap_filters($filters, $map);
+		foreach ($map as $key => $value){
+			if(isset($request[$key], $map[$key])){
+				$args[$value['map']] = $request[$key];
+			}
 		}
+
 
 		$logs = $this->logs_repository->fetch($args, 'OBJECT');
 

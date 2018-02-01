@@ -59,7 +59,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
+					//'args'                => $this->get_collection_params(),
 				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
@@ -174,16 +174,17 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	public function get_items( $request ) {
 		$collection_id = $request['collection_id'];
 
-		$body = json_decode($request->get_body(), true);
 		$args = [];
 
-		if(isset($body['filters'])) {
-			$filters = $body['filters'];
+		$map = $this->field_repository->get_map();
 
-			$map = $this->field_repository->get_map();
-
-			$args = $this->unmap_filters($filters, $map);
+		foreach ($map as $key => $value){
+			if(isset($request[$key], $map[$key])){
+				$args[$value['map']] = $request[$key];
+			}
 		}
+
+		//$args = $this->unmap_filters($args, $map);
 
 		$collection = new Entities\Collection($collection_id);
 
