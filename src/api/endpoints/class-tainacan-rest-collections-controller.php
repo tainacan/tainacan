@@ -78,7 +78,18 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items($request){
-        $collections = $this->collections_repository->fetch();
+		$body = json_decode($request->get_body(), true);
+		$args = [];
+
+		if(isset($body['filters'])) {
+			$filters = $body['filters'];
+
+			$map = $this->collections_repository->get_map();
+
+			$args = $this->unmap_filters($filters, $map);
+		}
+
+        $collections = $this->collections_repository->fetch($args);
 
         $response = $this->prepare_item_for_response($collections, $request);
 

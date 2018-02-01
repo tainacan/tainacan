@@ -8,6 +8,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	private $item_metadata_repository;
 	private $item_repository;
 	private $collection_repository;
+	private $field_repository;
 
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';

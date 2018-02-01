@@ -149,7 +149,9 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		);
 
 		$show_empty = json_encode([
-			'hide_empty' => false
+			'filters' => [
+				'hide_empty' => false
+			]
 		]);
 
 		$request = new \WP_REST_Request(

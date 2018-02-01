@@ -132,8 +132,19 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
+		$body = json_decode($request->get_body(), true);
+		$args = [];
+
+		if(isset($body['filters'])) {
+			$filters = $body['filters'];
+
+			$map = $this->items_repository->get_map();
+
+			$args = $this->unmap_filters($filters, $map);
+		}
+
 		$collection_id = $request['collection_id'];
-		$items = $this->items_repository->fetch([], $collection_id, 'WP_Query');
+		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 
 		$response = $this->prepare_item_for_response($items, $request);
 
@@ -169,6 +180,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return object|Entities\Item|WP_Error
+	 * @throws Exception
 	 */
 	public function prepare_item_for_database( $request ) {
 
@@ -206,6 +218,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return WP_Error|WP_REST_Response
+	 * @throws Exception
 	 */
 	public function create_item( $request ) {
 		$collection_id = $request['collection_id'];

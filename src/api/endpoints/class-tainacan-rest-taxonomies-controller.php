@@ -62,6 +62,16 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 				)
 			)
 		);
+		register_rest_route(
+			$this->namespace, '/' . $this->rest_base . '/(?P<taxonomy_id>[\d]+)/collection/(?P<collection_id>[\d]+)',
+			array(
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
+				)
+			)
+		);
 	}
 
 	/**
@@ -194,7 +204,18 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$taxonomies = $this->taxonomy_repository->fetch([], 'OBJECT');
+		$body = json_decode($request->get_body(), true);
+		$args = [];
+
+		if(isset($body['filters'])) {
+			$filters = $body['filters'];
+
+			$map = $this->taxonomy_repository->get_map();
+
+			$args = $this->unmap_filters($filters, $map);
+		}
+
+		$taxonomies = $this->taxonomy_repository->fetch($args, 'OBJECT');
 
 		$taxonomies_prepared = $this->prepare_item_for_response($taxonomies, $request);
 
@@ -259,14 +280,26 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 
 		$body = json_decode($request->get_body(), true);
 
-		if(!empty($body)){
-			$attributes = ['ID' => $taxonomy_id];
+		if(!empty($body) || isset($request['collection_id'])){
+			$attributes = [];
 
-			foreach ($body as $att => $value){
-				$attributes[$att] = $value;
+			if(isset($request['collection_id'])) {
+				$collection_id = $request['collection_id'];
+
+				$attributes = [ 'collection' => $collection_id ];
+			} else {
+				foreach ( $body as $att => $value ) {
+					$attributes[ $att ] = $value;
+				}
 			}
 
-			$updated_taxonomy = $this->taxonomy_repository->update($attributes);
+			$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+
+			$updated_taxonomy = $this->taxonomy_repository->update($taxonomy, $attributes);
+
+			if(!($updated_taxonomy instanceof Entities\Taxonomy)){
+				return new WP_REST_Response($updated_taxonomy, 400);
+			}
 
 			return new WP_REST_Response($updated_taxonomy->__toArray(), 200);
 		}

@@ -207,13 +207,19 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
-			$attributes = ['ID' => $filter_id];
+			$attributes = [];
 
 			foreach ($body as $att => $value){
 				$attributes[$att] = $value;
 			}
 
-			$updated_filter = $this->filter_repository->update($attributes);
+			$filter = $this->filter_repository->fetch($filter_id);
+
+			$updated_filter = $this->filter_repository->update($filter, $attributes);
+
+			if(!($updated_filter instanceof Entities\Filter)){
+				return new WP_REST_Response($updated_filter, 400);
+			}
 
 			return new WP_REST_Response($updated_filter->__toArray(), 200);
 		}
@@ -267,7 +273,18 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$filters = $this->filter_repository->fetch([], 'OBJECT');
+		$body = json_decode($request->get_body(), true);
+		$args = [];
+
+		if(isset($body['filters'])) {
+			$filtersq = $body['filters'];
+
+			$map = $this->filter_repository->get_map();
+
+			$args = $this->unmap_filters($filtersq, $map);
+		}
+
+		$filters = $this->filter_repository->fetch($args, 'OBJECT');
 
 		$response = $this->prepare_item_for_response($filters, $request);
 
