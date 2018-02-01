@@ -3,10 +3,9 @@ import Vue from 'vue'
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import { eventBus } from './event-bus-web-components';
 
-Vue.use(ElementUI)
+Vue.use(ElementUI);
 Vue.use(VueCustomElement);
 
 import Text from '../classes/field-types/text/Text.vue';
