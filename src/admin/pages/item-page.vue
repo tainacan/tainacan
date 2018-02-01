@@ -33,9 +33,6 @@ export default {
         ...mapGetters('item', [
             'getItem'
         ]),
-        createItem() {
-            
-        }
     },
     computed: {
         item(){
@@ -45,11 +42,11 @@ export default {
     created(){
         // Obtains item and collection ID
         this.collectionId = this.$route.params.collection_id;        
-        this.itemId = this.$route.params.id;
-
+        this.itemId = this.$route.fullPath.split("/").pop();
+    
         // Puts loading on Item Loading
         let loadingInstance = this.$loading({ text: 'Carregando item...' });
-        
+
         // Obtains Item 
         this.fetchItem(this.itemId).then(res => {
             loadingInstance.close();

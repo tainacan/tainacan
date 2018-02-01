@@ -44,7 +44,7 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-    name: 'ItemCreationPage',
+    name: 'ItemEditionPage',
     data(){
         return {
             itemId: Number,
@@ -141,13 +141,6 @@ export default {
             })
             .catch(error => console.log(error));
         },
-        loadExistingItem() {
-            // Puts loading on Item Loading
-            let loadingInstance = this.$loading({ text: 'Atualizando item...' });
-
-            this.loadMetadata(loadingInstance);    
-        
-        },
         loadMetadata(loadingInstance) {
             loadingInstance = this.$loading({ text: 'Carregando metadados...'});
             // Obtains Item Field
@@ -159,7 +152,7 @@ export default {
     computed: {
         fieldList(){
             return this.getFields();
-        }
+        }   
     },
     created(){
         // Obtains collection ID
@@ -167,12 +160,12 @@ export default {
         this.form.collectionId = this.collectionId;
 
         if (this.$route.fullPath.split("/").pop() == "new") {
-            console.log("CRIANDO ITEM");
             this.createNewItem();
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
             let loadingInstance = this.$loading({ text: 'Carregando item...'});
 
+            // Obtains current Item ID from URL
             this.pathArray = this.$route.fullPath.split("/").reverse(); 
             this.itemId = this.pathArray[1];
 
@@ -183,7 +176,7 @@ export default {
                 this.form.title = this.item.title;
                 this.form.description = this.item.description;
                 this.form.status = this.item.status;
-                
+
                 loadingInstance.close();
             });
         }

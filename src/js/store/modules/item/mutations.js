@@ -18,16 +18,6 @@ export const setSingleField = ( state, field) => {
     }
 }
 
-export const setSingleItem = ( state, item) => {
-    let index = state.item.findIndex(itemItem => itemItem.id === item.id);
-    if ( index >= 0){
-        //state.field[index] = field;
-        Vue.set( state.item, index, item );
-    }else{
-        state.item.push( item );
-    }
-}
-
 export const setError = ( state, field ) => {
     let index = state.error.findIndex(itemMetadata => itemMetadata.field_id === field.field_id);
     if ( index >= 0){

@@ -58,7 +58,7 @@ export const fetchItem = ({ commit }, item_id) => {
         axios.get('/items/'+item_id)
         .then(res => {
             let item = res.data;
-            commit('setSingleItem', item);
+            commit('setItem', item);
             resolve( res.data );
         })
         .catch(error => {
@@ -98,10 +98,10 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
             description: description,
             status: status 
         }).then( res => {
-            commit('setSingleItem', { id: item_id, title: title, description: description, status: status });
+            commit('setItem', { id: item_id, title: title, description: description, status: status });
             resolve( res.data );
         }).catch( error => {  
-            commit('setSingleItem', { id: item_id, title: title, description: description, status: status });
+            commit('setItem', { id: item_id, title: title, description: description, status: status });
             reject( error.response );
         });
 
