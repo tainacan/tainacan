@@ -1,77 +1,76 @@
 <template>
-    <div class="component">
-        <p>{{ name }}</p>
-        <select
-                class="form-control"
-                :disabled="!getOptions"
-                v-model="manageValue">
-            <option
-                    v-for="option in getOptions"
-                    :selected="option == ''">
-                {{ option }}
-            </option>
-        </select>
+    <div>
+        <el-select
+                v-model="selected"
+                multiple
+                filterable
+                remote
+                reserve-keyword
+                :remote-method="search"
+                :loading="loading"
+                 @change="onChecked()">
+            <el-option
+                    v-for="option,index in options"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                    ></el-option>
+        </el-select>
     </div>
 </template>
 
 <script>
-    import store from '../../../js/store/store';
+    import axios from '../../../js/axios/axios'
 
     export default {
-        store,
         data(){
             return {
-                selected:''
+                selected:[],
+                options: [],
+                loading: false,
+                collectionId: 0,
+                inputValue: null
             }
         },
         props: {
-            name: {
-                type: String
-            },
-            options: {
-                type: String
-            },
-            item_id: {
-                type: Number
-            },
-            field_id: {
-                type: Number
-            },
-            value: {
-                type: [ String,Number ]
-            },
-        },
-        created(){
-            this.setInitValueOnStore();
-        },
-        computed: {
-            getOptions(){
-                const values = ( this.options ) ? this.options.split("\n") : false;
-                return values;
-            },
-            manageValue : {
-                get(){
-                    let field = this.$store.getters['item/getMetadata'].find(field => field.field_id === this.field_id );
-                    if( field ){
-                        return  field.values;
-                    }else if( this.value ){
-                        return JSON.parse(  this.value );
-                    }
-                },
-                set( value ){
-                    this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, field_id: this.field_id, values: value });
-                }
+            field: {
+                type: Object
             }
         },
         methods: {
-            setInitValueOnStore(){
-                if ( this.value ){
-                    this.$store.dispatch('item/setSingleMetadata', { item_id: this.item_id, field_id: this.field_id, values: JSON.parse(  this.value ) });
+            onChecked() {
+                this.$emit('blur');
+                this.onInput(this.selected)
+            },
+            onInput($event) {
+                this.inputValue = $event;
+                this.$emit('input', this.inputValue);
+            },
+            search(query) {
+                if (query !== '') {
+                    this.loading = true;
+                    this.options = [];
+                    let collectionId = this.field.field.field_type_options.collection_id;
+                    axios.get('/collection/'+collectionId+'/items')
+                    .then( res => {
+                        let result = [];
+                        this.loading = false;
+                        result = res.data.filter(item => {
+                            return item.title.toLowerCase()
+                                .indexOf(query.toLowerCase()) > -1;
+                        });
+
+                        for (let item of result) {
+                            this.options.push({ label: item.title, value: item.id })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                } else {
+                    this.options = [];
                 }
             }
         }
     }
 </script>
-
-<style scoped>
-</style>

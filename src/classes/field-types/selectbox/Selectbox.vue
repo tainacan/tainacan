@@ -1,18 +1,18 @@
 <template>
     <div>
-        <el-select v-model="checked" @change="onChecked()">
+        <el-select v-model="selected" @change="onChecked()">
             <el-option
                     v-for="option,index in getOptions"
                     :key="index"
-                    v-model="checked"
                     :label="option"
-                    :value="item.value"
+                    :value="option"
                     border>{{ option }}</el-option>
         </el-select>
     </div>
 </template>
 
 <script>
+
     export default {
         data(){
             return {
@@ -26,7 +26,7 @@
         },
         computed: {
             getOptions(){
-                if (this.field) {
+                if (this.field && this.field.field.field_type_options.options) {
                     const fields = this.field.field.field_type_options.options;
                     return ( fields ) ? fields.split("\n") : [];
                 }
@@ -36,11 +36,10 @@
         methods: {
             onChecked(option) {
                 this.$emit('blur');
-                this.onInput(this.checked)
+                this.onInput(this.selected)
             },
             onInput($event) {
-                this.inputValue = $event;
-                this.$emit('input', this.inputValue);
+                this.$emit('input', $event);
             }
         }
     }

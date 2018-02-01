@@ -22,7 +22,7 @@ class Selectbox extends Field_Type {
 
     public function render( $itemMetadata ){
         $options = ( isset( $this->options['options'] ) ) ? $this->options['options'] : '';
-        return '<tainacan-selectbox    options="'.$options.'" 
+        return '<tainacan-selectbox    
                                        field_id ="'.$itemMetadata->get_field()->get_id().'" 
                                        item_id="'.$itemMetadata->get_item()->get_id().'"    
                                        value=\''.json_encode( $itemMetadata->get_value() ).'\'
