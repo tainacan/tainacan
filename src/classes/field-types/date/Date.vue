@@ -1,15 +1,11 @@
 <template>
-    <div class="block">
-        <el-date-picker
-                v-model="valueDate"
-                @blur="changeValue()"
-                type="date"
-                format="dd/MM/yyyy"
-                value-format="dd/MM/yyyy"
-                placeholder="Selecione a data...">
-        </el-date-picker>
-        <div class="demonstration">{{ valueDate }}</div>
-    </div>
+    <el-date-picker
+             type="date"
+              format="dd/MM/yyyy"
+              value-format="dd/MM/yyyy"
+              :value="dateValue"
+              @blur="onBlur"
+              @input="onInput($event)"></el-date-picker>
 </template>
 
 <script>
@@ -19,40 +15,18 @@
     locale.use(lang)
 
     export default {
-        props: {
-            name: { type: String },
-            item_id: { type: Number },
-            field_id: { type: Number },
-            value: { type: [ String,Number ]  },
-            errorsMsg: { type: [ String,Number ] },
-        },
-        data(){
-          return {
-              valueDate:''
-          }
-        },
-        created(){
-            this.getValue();
+        data() {
+            return {
+                dateValue: ''
+            }
         },
         methods: {
-            changeValue(){
-                this.$emit('input', { item_id: this.item_id, field_id: this.field_id, values: event.target.value } );
+            onBlur() {
+                this.$emit('blur');
             },
-            getValue(){
-                try{
-                    let val = JSON.parse( this.value );
-                    this.valueDate = val;
-                }catch(e){
-                    console.log('invalid json value');
-                }
-            },
-            getErrors(){
-                try{
-                    return JSON.parse( this.errorsMsg );
-                }catch(e){
-                    console.log('invalid json error');
-                }
-                return this.errorsMsg;
+            onInput($event) {
+                this.dateValue = $event;
+                this.$emit('input', this.dateValue);
             }
         }
     }

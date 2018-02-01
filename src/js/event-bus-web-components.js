@@ -22,16 +22,19 @@ export const eventBus = new Vue({
         listener(){
             const components = this.getAllComponents();
             for (let eventElement of components){
-                eventElement.addEventListener('changeValues', (event) => {                    
+                eventElement.addEventListener('input', (event) => {
                     if ( event.detail[0] ){
-                        const promisse = this.$store.dispatch('item/updateMetadata', event.detail[0] );
+                        const promisse = this.$store.dispatch('item/updateMetadata',
+                            { item_id: $(eventElement).attr("item_id"), field_id: $(eventElement).attr("field_id"), values: event.detail });
+
                         promisse.then( response => {
-                            eventElement.errorsMsg = JSON.stringify( [] );
-                            eventElement.value = response.value;
+                            // eventElement.errorsMsg = JSON.stringify( [] );
+                            // eventElement.value = response.value;
+                            $(eventElement).val(response.value);
                         }, error => {
                             const field = this.errors.find(error => error.field_id === event.detail[0].field_id );
-                            eventElement.errorsMsg = JSON.stringify( field.error );
-                            eventElement.value = event.detail[0].values;
+                            // eventElement.errorsMsg = JSON.stringify( field.error );
+                            // eventElement.value = event.detail[0].values;
                         });
                     }
                 });

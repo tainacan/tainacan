@@ -5,7 +5,7 @@ import VueCustomElement from 'vue-custom-element';
 import ElementUI from 'element-ui'
 import { eventBus } from './event-bus-web-components';
 
-Vue.use(ElementUI)
+Vue.use(ElementUI);
 Vue.use(VueCustomElement);
 
 import Text from '../classes/field-types/text/Text.vue';

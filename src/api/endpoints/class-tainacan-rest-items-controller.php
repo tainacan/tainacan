@@ -47,15 +47,15 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
+					//'args'                => $this->get_collection_params(),
 				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
+					//'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
 				),
-				'schema' => array($this, 'get_public_item_schema'),
+				//'schema' => array($this, 'get_public_item_schema'),
 		));
 		register_rest_route(
 			$this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)',
@@ -105,7 +105,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 			return $items;
 		} elseif(!empty($item)){
-			return $this->get_only_needed_attributes($item, $map);
+			return $item->__toArray();
 		}
 
 		return $item;
@@ -132,8 +132,20 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
+		$args = [];
+
+		$map = $this->items_repository->get_map();
+
+		foreach ($map as $key => $value){
+			if(isset($request[$key], $map[$key])){
+				$args[$value['map']] = $request[$key];
+			}
+		}
+
+		//$args = $this->unmap_filters($args, $map);
+
 		$collection_id = $request['collection_id'];
-		$items = $this->items_repository->fetch([], $collection_id, 'WP_Query');
+		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 
 		$response = $this->prepare_item_for_response($items, $request);
 
@@ -169,6 +181,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return object|Entities\Item|WP_Error
+	 * @throws Exception
 	 */
 	public function prepare_item_for_database( $request ) {
 
@@ -206,6 +219,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return WP_Error|WP_REST_Response
+	 * @throws Exception
 	 */
 	public function create_item( $request ) {
 		$collection_id = $request['collection_id'];

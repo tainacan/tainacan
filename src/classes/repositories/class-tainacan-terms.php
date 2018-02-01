@@ -61,6 +61,10 @@ class Terms extends Repository {
                 'on_error'   => __('The user is empty or invalid', 'tainacan'),
                 'validation' => v::numeric()->positive(),
             ],
+		    'hide_empty'  => [
+		    	'map'        => 'hide_empty',
+			    'type'       => 'bool'
+		    ]
         ]);
     }
     
@@ -156,20 +160,23 @@ class Terms extends Repository {
     }
 
     public function update($object, $new_values = null){
-	    $map = $this->get_map();
+	    $tax_name = $object[1];
+	    $object = $object[0];
 
-	    $entity = [];
-
-	    foreach ($object[0] as $key => $value) {
-		    if($key != 'ID') {
-			    $entity[$map[$key]['map']] = $value ;
+	    foreach ($new_values as $key => $value) {
+		    try {
+			    $set_ = 'set_' . $key;
+			    $object->$set_( $value );
+		    } catch (\Error $error){
+			    return $error->getMessage();
 		    }
 	    }
 
-	    $term_tax_ids = wp_update_term($object[1]['term_id'], $object[1]['tax_name'], $entity);
-	    $term_id = (int) $term_tax_ids['term_id'];
+	    if($object->validate()){
+		    return new Entities\Term($this->insert($object), $tax_name);
+	    }
 
-	    return new Entities\Term($term_id, $object[1]['tax_name']);
+	    return $object->get_errors();
     }
 
     public function delete($args){

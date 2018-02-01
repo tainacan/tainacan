@@ -218,18 +218,20 @@ class Fields extends Repository {
     }
 
 
-    /**
-     * fetch field based on ID or WP_Query args
-     *
-     * field are stored as posts. Check WP_Query docs
-     * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
-     * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
-     * appropriate WP_Query argument
-     *
-     * @param array $args WP_Query args || int $args the field id
-     * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
-     * @return \WP_Query|Array an instance of wp query OR array of entities;
-     */
+	/**
+	 * fetch field based on ID or WP_Query args
+	 *
+	 * field are stored as posts. Check WP_Query docs
+	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+	 * appropriate WP_Query argument
+	 *
+	 * @param array $args WP_Query args || int $args the field id
+	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
+	 *
+	 * @return \WP_Query|Array an instance of wp query OR array of entities;
+	 * @throws \Exception
+	 */
     public function fetch( $args, $output = null ) {
 
         if( is_numeric($args) ){
@@ -253,14 +255,16 @@ class Fields extends Repository {
         }
     }
 
-    /**
-     * fetch field by collection, searches all field available
-     *
-     * @param Entities\Collection $collection
-     * @param array $args
-     * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
-     * @return Array Entities\Field
-     */
+	/**
+	 * fetch field by collection, searches all field available
+	 *
+	 * @param Entities\Collection $collection
+	 * @param array $args
+	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
+	 *
+	 * @return Array Entities\Field
+	 * @throws \Exception
+	 */
     public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
         $collection_id = $collection->get_id();
 

@@ -1,10 +1,10 @@
 <template>
     <div>
         <el-form-item :label="field.field.name" :prop="validateObject()">
-            <component :is="extractFieldType(field.field.field_type)" v-model="inputs[0]" @blur="changeValue()"></component>
+            <component :is="extractFieldType(field.field.field_type)" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
             <div v-if="field.field.multiple == 'yes'">
                 <div v-if="index > 0" v-for="(input, index) in inputsList " v-bind:key="index" class="multiple-inputs">
-                    <component :is="extractFieldType(field.field.field_type)" v-model="inputs[index]" @blur="changeValue()"></component><el-button v-if="index > 0" @click="removeInput(index)">-</el-button>
+                    <component :is="extractFieldType(field.field.field_type)" v-model="inputs[index]" :field="field" @blur="changeValue()"></component><el-button v-if="index > 0" @click="removeInput(index)">-</el-button>
                 </div> 
                 <el-button @click="addInput">+</el-button>
             </div>

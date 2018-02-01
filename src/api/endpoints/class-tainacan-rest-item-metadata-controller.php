@@ -8,6 +8,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	private $item_metadata_repository;
 	private $item_repository;
 	private $collection_repository;
+	private $field_repository;
 
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
@@ -53,7 +54,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
+					//'args'                => $this->get_collection_params(),
 				)
 			)
 		);

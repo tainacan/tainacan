@@ -78,8 +78,11 @@ abstract class Repository {
 			}
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
-		//$obj->WP_Post->post_status = 'publish';
-		
+
+		if($obj instanceof Entities\Log) {
+			$obj->WP_Post->post_status = 'publish';
+		}
+
 		// TODO verificar se salvou mesmo
 		$id = wp_insert_post($obj->WP_Post);
 		

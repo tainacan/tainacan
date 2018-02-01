@@ -3,11 +3,12 @@
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
+class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	private $field;
 	private $item_metadata_repository;
 	private $item_repository;
 	private $collection_repository;
+	private $field_repository;
 
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
@@ -22,7 +23,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function init_objects() {
 		$this->field = new Entities\Field();
-		$this->metadata_repository = new Repositories\Fields();
+		$this->field_repository = new Repositories\Fields();
 		$this->item_metadata_repository = new Repositories\Item_Metadata();
 		$this->item_repository = new Repositories\Items();
 		$this->collection_repository = new Repositories\Collections();
@@ -58,7 +59,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_collection_params(),
+					//'args'                => $this->get_collection_params(),
 				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
@@ -103,7 +104,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 			}
 
 			if($this->field->validate()) {
-				$this->metadata_repository->insert( $this->field );
+				$this->field_repository->insert( $this->field );
 
 				$items = $this->item_repository->fetch([], $collection_id, 'WP_Query');
 
@@ -173,9 +174,21 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 	public function get_items( $request ) {
 		$collection_id = $request['collection_id'];
 
+		$args = [];
+
+		$map = $this->field_repository->get_map();
+
+		foreach ($map as $key => $value){
+			if(isset($request[$key], $map[$key])){
+				$args[$value['map']] = $request[$key];
+			}
+		}
+
+		//$args = $this->unmap_filters($args, $map);
+
 		$collection = new Entities\Collection($collection_id);
 
-		$collection_metadata = $this->metadata_repository->fetch_by_collection($collection, [], 'OBJECT');
+		$collection_metadata = $this->field_repository->fetch_by_collection($collection, $args, 'OBJECT');
 
 		$prepared_item = $this->prepare_item_for_response($collection_metadata, $request);
 
@@ -259,9 +272,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_REST_Controller {
 				$attributes[$att] = $value;
 			}
 
-			$field = $this->metadata_repository->fetch($field_id);
+			$field = $this->field_repository->fetch($field_id);
 
-			$updated_metadata = $this->metadata_repository->update($field, $attributes);
+			$updated_metadata = $this->field_repository->update($field, $attributes);
 
 			if(!($updated_metadata instanceof Entities\Field)){
 				return new WP_REST_Response($updated_metadata, 400);

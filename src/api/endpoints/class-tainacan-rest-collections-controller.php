@@ -41,20 +41,20 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_items'),
                 'permission_callback' => array($this, 'get_items_permissions_check'),
-	            'args'                => $this->get_item_schema()
+	            //'args'                => $this->get_item_schema()
             ),
 	        array(
 		        'methods'             => WP_REST_Server::CREATABLE,
 		        'callback'            => array($this, 'create_item'),
 		        'permission_callback' => array($this, 'create_item_permissions_check'),
-		        'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
+		        //'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
 	        ),
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)', array(
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
-                'args'                => $this->get_collection_params(),
+                //'args'                => $this->get_collection_params(),
                 'permission_callback' => array($this, 'get_item_permissions_check'),
             ),
             array(
@@ -78,7 +78,19 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items($request){
-        $collections = $this->collections_repository->fetch();
+		$args = [];
+
+		$map = $this->collections_repository->get_map();
+
+		foreach ($map as $key => $value){
+			if(isset($request[$key])){
+				$args[$value['map']] = $request[$key];
+			}
+		}
+
+		//$args = $this->unmap_filters($args, $map);
+
+        $collections = $this->collections_repository->fetch($args);
 
         $response = $this->prepare_item_for_response($collections, $request);
 

@@ -190,12 +190,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
-			$taxonomy_name = $this->taxonomy_repository->fetch($taxonomy_id)->get_db_identifier();
-
-			$identifiers = [
-				'term_id' => $term_id,
-				'tax_name'  => $taxonomy_name
-			];
+			$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+			$tax_name = $taxonomy->get_db_identifier();
 
 			$attributes = [];
 
@@ -203,7 +199,13 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 				$attributes[$att] = $value;
 			}
 
-			$updated_term = $this->terms_repository->update([$attributes, $identifiers]);
+			$term = $this->terms_repository->fetch($term_id, $taxonomy);
+
+			$updated_term = $this->terms_repository->update([$term, $tax_name], $attributes);
+
+			if(!($updated_term instanceof Entities\Term)){
+				return new WP_REST_Response($updated_term, 400);
+			}
 
 			return new WP_REST_Response($updated_term->__toArray(), 200);
 		}
@@ -260,7 +262,17 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
-		$args = json_decode($request->get_body(), true);
+		$args = [];
+
+		$map = $this->terms_repository->get_map();
+
+		foreach ($map as $key => $value){
+			if(isset($request[$key], $map[$key])){
+				$args[$value['map']] = $request[$key];
+			}
+		}
+
+		//$args = $this->unmap_filters($args, $map);
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
 

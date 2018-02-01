@@ -107,10 +107,11 @@ class Taxonomies extends Repository {
         register_post_type(Entities\Taxonomy::get_post_type(), $args);
     }
 
-    /**
-     * @param Entities\Taxonomy $taxonomy
-     * @return int
-     */
+	/**
+	 * @param Entities\Taxonomy $taxonomy
+	 *
+	 * @return Entities\Entity
+	 */
     public function insert($taxonomy) {
 
     	$new_taxonomy = parent::insert($taxonomy);
@@ -185,22 +186,20 @@ class Taxonomies extends Repository {
     }
 
     public function update($object, $new_values = null){
-	    $map = $this->get_map();
-
-	    $entity = [];
-
-	    foreach ($object as $key => $value) {
-		    if($key != 'ID') {
-			    $entity[$map[$key]['map']] = $value ;
-		    } elseif ($key == 'ID'){
-			    $entity[$key] = (int) $value;
+	    foreach ($new_values as $key => $value) {
+		    try {
+			    $set_ = 'set_' . $key;
+			    $object->$set_( $value );
+		    } catch (\Error $error){
+			    return $error->getMessage();
 		    }
 	    }
 
-	    $updated_taxonomy = new Entities\Taxonomy(wp_update_post($entity));
-	    $updated_taxonomy->register_taxonomy();
+	    if($object->validate()){
+		    return $this->insert($object);
+	    }
 
-	    return $updated_taxonomy;
+	    return $object->get_errors();
     }
 
     public function delete($args){
