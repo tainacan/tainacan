@@ -174,17 +174,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	public function get_items( $request ) {
 		$collection_id = $request['collection_id'];
 
-		$args = [];
-
-		$map = $this->field_repository->get_map();
-
-		foreach ($map as $key => $value){
-			if(isset($request[$key], $map[$key])){
-				$args[$value['map']] = $request[$key];
-			}
-		}
-
-		//$args = $this->unmap_filters($args, $map);
+		$args = $this->prepare_filters($request);
 
 		$collection = new Entities\Collection($collection_id);
 

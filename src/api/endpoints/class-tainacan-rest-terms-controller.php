@@ -262,17 +262,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
-		$args = [];
-
-		$map = $this->terms_repository->get_map();
-
-		foreach ($map as $key => $value){
-			if(isset($request[$key], $map[$key])){
-				$args[$value['map']] = $request[$key];
-			}
-		}
-
-		//$args = $this->unmap_filters($args, $map);
+		$args = $this->prepare_filters($request);
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
 

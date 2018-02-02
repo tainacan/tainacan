@@ -45,21 +45,66 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * @param $filters
-	 * @param $map
+	 * @param $request
 	 *
 	 * @return array
 	 */
-	protected function unmap_filters($filters, $map){
-		$unmapped = [];
+	protected function prepare_filters($request){
+		$map = [
+			'name'       => 'title',
+			'title'      => 'title',
+			'id'         => 'p',
+			'pageid'     => 'page_id',
+			'authorid'   => 'author_id',
+			'authorname' => 'author_name',
+			'search'     => 's',
+			'posttype'   => 'post_type',
+			'poststatus' => 'post_status',
+			'offset'     => 'offset',
+			'metaquery'  => 'meta_query',
+			'datequery'  => 'date_query',
+			'order'      => 'order',
+			'orderby'    => 'orderby',
+			'metakey'    => 'meta_key',
+			'hide_empty' => 'hide_empty',
+		];
 
-		if(!empty($filters)) {
-			foreach ( $filters as $filter => $value ) {
-				$unmapped[ $map[ $filter ]['map'] ] = $value;
+		$meta_query = [
+			'key'      => 'key',
+			'value'    => 'value',
+			'compare'  => 'compare',
+			'relation' => 'relation',
+		];
+
+		$date_query = [
+			'year'   => 'year',
+			'month'  => 'month',
+			'day'    => 'month',
+			'week'   => 'week',
+			'hour'   => 'hour',
+			'minute' => 'minute',
+			'second' => 'second'
+		];
+
+		$args = [];
+
+		foreach ($map as $mapped => $mapped_v){
+			if(isset($request[$mapped])){
+				if($mapped === 'metaquery'){
+					foreach ($meta_query as $mapped_meta => $meta_v){
+						$args[$mapped_v][$meta_v] = $request[$mapped][$mapped_meta];
+					}
+				} elseif ($mapped === 'datequery') {
+					foreach ($date_query as $date_meta => $date_v){
+						$args[$mapped_v][$date_v] = $request[$mapped][$date_meta];
+					}
+				} else {
+					$args[ $mapped_v ] = $request[ $mapped ];
+				}
 			}
 		}
 
-		return $unmapped;
+		return $args;
 	}
 
 }
