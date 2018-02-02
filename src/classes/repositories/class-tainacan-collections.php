@@ -125,6 +125,13 @@ class Collections extends Repository {
                 'description'=> __('Collection default visualization mode', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
+            'fields_order'           =>  [
+                'map'        => 'meta',
+                'title'      => __('Ordination fields', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Collection fields ordination', 'tainacan'),
+                //'validation' => v::stringType(),
+            ],
             /*
             
             Isnt it just post status private?

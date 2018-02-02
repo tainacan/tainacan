@@ -289,7 +289,66 @@ class Fields extends Repository {
             $args['meta_query'] = array( $meta_query );
         }
 
-        return $this->fetch( $args, $output );
+        return $this->order_result( $this->fetch( $args, $output ), $collection);
+    }
+
+    /**
+     * Ordinate the result from fetch response
+     *
+     * @param $result Response from method fetch
+     * @param Entities\Collection $collection
+     * @return array or WP_Query ordinatte
+     */
+    public function order_result( $result, Entities\Collection $collection ){
+        $order = $collection->get_fields_order();
+        if($order) {
+            $order = ( is_array($order) ) ? $order : unserialize($order);
+
+            if ( is_array($result)  ){
+                $result_ordinate = [];
+                $not_ordinate = [];
+
+                foreach ( $result as $item ) {
+                    $id = $item->WP_Post->ID;
+                    $index = array_search ( $id , $order);
+
+                    if( $index !== false ){
+                        $result_ordinate[$index] = $item;
+                    } else {
+                        $not_ordinate[] = $item;
+                    }
+                }
+
+                ksort ( $result_ordinate );
+                $result_ordinate = array_merge( $result_ordinate, $not_ordinate );
+
+                return $result_ordinate;
+            }
+            // if the result is a wp query object
+            else {
+                $posts = $result->posts;
+                $result_ordinate = [];
+                $not_ordinate = [];
+
+                foreach ( $posts as $item ) {
+                    $id = $item->ID;
+                    $index = array_search ( $id , $order);
+
+                    if( $index !== false ){
+                        $result_ordinate[$index] = $item;
+                    } else {
+                        $not_ordinate[] = $item;
+                    }
+                }
+
+                ksort ( $result_ordinate );
+                $result->posts = $result_ordinate;
+                $result->posts = array_merge( $result->posts, $not_ordinate );
+
+                return $result;
+            }
+        }
+        return $result;
     }
 
 	/**

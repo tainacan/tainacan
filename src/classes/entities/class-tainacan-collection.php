@@ -245,6 +245,15 @@ class Collection extends Entity {
     function get_default_view_mode() {
         return $this->get_mapped_property('default_view_mode');
     }
+
+    /**
+     * Get collection fields ordination
+     *
+     * @return string
+     */
+    function get_fields_order() {
+        return $this->get_mapped_property('fields_order');
+    }
     
     /**
      * Get collection moderators ids
@@ -275,7 +284,7 @@ class Collection extends Entity {
 	 *
 	 * @return [\Tainacan\Entities\Field] array
 	 */
-    function get_field() {
+    function get_fields() {
         $Tainacan_Fields = new \Tainacan\Repositories\Fields();
         return $Tainacan_Fields->fetch_by_collection( $this,  [], 'OBJECT'  );
     }
@@ -374,6 +383,16 @@ class Collection extends Entity {
      */
     function set_default_view_mode($value) {
         $this->set_mapped_property('default_view_mode', $value);
+    }
+
+    /**
+     * Set collection fields ordination
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_fields_order($value) {
+        $this->set_mapped_property('fields_order', $value);
     }
     
     /**
