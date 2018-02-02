@@ -17,6 +17,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 1. [Filters](#filters)
 1. [Terms](#terms)
 1. [Logs](#logs)
+1. [Others](#others)
 
 ------
 #### Collections
@@ -343,3 +344,12 @@ Example of JSON passed in body for updating a term:
 2.1. Enpoints supported:
 
 2.1.1. GET (Get a log)
+
+------
+#### Others
+
+To Create, Read, Update or Delete Media or Users you can use the default routes of Wordpress.
+
+See about Media in [Media | REST API Handbook](https://developer.wordpress.org/rest-api/reference/media/);
+
+See about Users in [Users | REST API Handbook](https://developer.wordpress.org/rest-api/reference/users/).
