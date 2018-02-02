@@ -14,7 +14,8 @@ class DevInterface {
         add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
         add_action('save_post', array(&$this, 'save_post'), 10, 2);
         add_action('admin_enqueue_scripts', array(&$this, 'add_admin_js'));
-        
+        add_action('admin_enqueue_scripts', array(&$this, 'add_admin_css'));
+
         add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
         
         global $Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Fields, $Tainacan_Taxonomies;
@@ -42,6 +43,11 @@ class DevInterface {
 
         wp_localize_script( 'wp-settings', 'wp_settings', $settings );
         wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/dev_admin-components.js', [] , null, true);
+    }
+
+    function add_admin_css() {
+        global $TAINACAN_BASE_URL;
+        wp_enqueue_style('tainacan-dev-admin-styles', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css' );
     }
     
     /**
