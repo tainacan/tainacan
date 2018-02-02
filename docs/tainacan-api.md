@@ -4,17 +4,18 @@
 
 A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
+------
 ### Routes and Endpoints
-
+------
 #### Collections
 
 1. Route `wp-json/tainacan/v2/collections/(?P<collection_id>[\d]+)`
 
 1.1. Endpoints supported:
 
-1.1.1 GET (Fetch a collection)
+1.1.1. GET (Fetch a collection)
       
-1.1.2 DELETE (Delete or Trash a collection and all your dependencies)
+1.1.2. DELETE (Delete or Trash a collection and all your dependencies)
      
 ```
 To delete pass in body of a requisition the parameter is_permanently as true.
@@ -37,9 +38,9 @@ Example of JSON passed in body for updating a collection:
 
 2.1. Endpoints supported:
     
-2.1.1 GET (Fetch all collections)
+2.1.1. GET (Fetch all collections)
     
-2.1.2 POST (Create a collection).
+2.1.2. POST (Create a collection).
     
 Example of JSON passed in body for creating a collection:
     
@@ -57,15 +58,16 @@ Example of JSON passed in body for creating a collection:
 "default_view_mode": "string"
 }
 ```
+------
 #### Items
 
 1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/items`
 
 1.1. Endpoints supported:
     
-1.1.1 GET (Fetch all items from a collection)
+1.1.1. GET (Fetch all items from a collection)
     
-1.1.2 POST (Create a item in a collection)
+1.1.2. POST (Create a item in a collection)
     
 Example of JSON passed in body for creating a item:
     
@@ -81,16 +83,16 @@ Example of JSON passed in body for creating a item:
 
 2.1. Endpoints supported:
     
-2.1.1 GET (Fetch a item)
+2.1.1. GET (Fetch a item)
     
-2.1.2 DELETE (Delete or Trash a item and all your dependencies)
+2.1.2. DELETE (Delete or Trash a item and all your dependencies)
     
 ```
 To delete pass in body of a requisition the parameter is_permanently as true.
 To only trash pass false.
 ```
 
-2.1.3 PATCH or PUT (Update a item)
+2.1.3. PATCH or PUT (Update a item)
     
 Example of JSON passed in body for updating a item:
     
@@ -101,16 +103,16 @@ Example of JSON passed in body for updating a item:
 ...
 }
 ```
+------
+#### Fields
 
-#### Metadata
-
-1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadata`
+1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/fields`
     
 1.1. Endpoints supported:
     
-1.1.1 POST (Create a metadata in collection and all your items)
+1.1.1. POST (Create a field in collection and all it items)
     
-In body of requisition pass a JSON with the attributes of metadata like:
+In body of requisition pass a JSON with the attributes of field like:
    
 ```javascript
 {
@@ -130,25 +132,46 @@ In body of requisition pass a JSON with the attributes of metadata like:
 }
 ```
     
-1.1.2 GET (Fetch all collection metadata)
-    
-2. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata`
+1.1.2 GET (Fetch all collection field)
+
+2. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/fields/(?P<field_id>[\d]+)`
 
 2.1. Endpoints supported:
+
+2.1.1. PATCH or PUT (Update a field in a collection and all it items)
+
+In body of requisition pass a JSON with the attributes you need to update, like:
+
+```javascript
+{
+"name": "string", 
+"description": "string",
+}
+```
+------
+#### Item Metadata
+
+1. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)`
+
+1.1. Endpoints supported:
     
-2.1.1 POST (Set a value of item metadata)
+1.1.1. PATCH or PUT (Set value of a metadata)
     
-In body of requisition pass a JSON with value e and id of metadata like:
+In body of requisition pass a JSON with values of metadata, like:
    
 ```javascript
 {
-"metadata_id": "integer",
 "values": "[any, type]"
 }
 ```
-   
-2.1.2 GET (Fetch all item metadata, with your values)
-    
+
+2. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata`
+
+2.1. Enpoints supported:
+
+2.1.1. GET (Fetch all item metadata, with it values)
+
+------    
 #### Taxonomies
 
 1. Route `wp-json/tainacan/v2/taxonomies`
@@ -177,16 +200,16 @@ Example of JSON passed in body for creating a taxonomy:
 
 2.1. Endpoints supported:
     
-2.1.1 GET (Fetch a taxonomy)
+2.1.1. GET (Fetch a taxonomy)
     
-2.1.2 DELETE (Delete or trash a taxonomy)
+2.1.2. DELETE (Delete or trash a taxonomy)
     
 ```
 To delete pass in body of requisition the parameter is_permanently as true.
 To only trash pass false.
 ```
 
-2.1.3 PATCH or PUT (Update a taxonomy)
+2.1.3. PATCH or PUT (Update a taxonomy)
     
 Example of JSON passed in body for updating a taxonomy:
     
@@ -198,13 +221,20 @@ Example of JSON passed in body for updating a taxonomy:
 }
 ```
 
+3. Route `wp-json/tainacan/v2/taxonomies/(?P<taxonomy_id>[\d]+)/collection/(?P<collection_id>[\d]+)`
+
+3.1. Routes supported:
+
+3.1.1. PATCH or PUT (Add a Collection in a Taxonomy)
+
+------
 #### Filters
 
 1. Route `wp-json/tainacan/v2/filters`
     
-1.1 Endpoints supported:
+1.1. Endpoints supported:
     
-1.1.1 POST (Create a filter)
+1.1.1. POST (Create a filter)
     
 Example of JSON passed in body for creating a filter:
     
@@ -221,20 +251,20 @@ Example of JSON passed in body for creating a filter:
 }
 ```
  
-1.1.2 GET (Fetch all filters)
+1.1.2. GET (Fetch all filters)
  
 2. Route `wp-json/tainacan/v2/filters/(?P<filter_id>[\d]+)`
     
 2.1. Endpoints supported:
     
-2.1.1 DELETE (Delete or trash a filter)
+2.1.1. DELETE (Delete or trash a filter)
     
 ```
 To delete pass in body of requisition the parameter is_permanently as true.
 To only trash pass false.
 ```
 
-2.1.2 PATCH or PUT (Update a filter)
+2.1.2. PATCH or PUT (Update a filter)
     
 Example of JSON passed in body for updating a filter:
     
@@ -245,15 +275,16 @@ Example of JSON passed in body for updating a filter:
 }
 ```
 
-2.1.3 GET (Fetch a filter)
-    
+2.1.3. GET (Fetch a filter)
+
+------    
 #### Terms
 
 1. Route `wp-json/tainacan/v2/taxonomy/(?P<taxonomy_id>[\d]+)/terms`
 
-1.1 Endpoints supported:
+1.1. Endpoints supported:
     
-1.1.1 POST (Create a term in a taxonomy)
+1.1.1. POST (Create a term in a taxonomy)
     
 Example of JSON passed in body for creating a term:
     
@@ -269,11 +300,11 @@ Example of JSON passed in body for creating a term:
     
 2. Route `wp-json/tainacan/v2/taxonomy/(?P<taxonomy_id>[\d]+)/terms/(?P<term_id>[\d]+)`
 
-2.1 Endpoints supported:
+2.1. Endpoints supported:
     
-2.1.1 GET (Fecth a term of a taxonomy)
+2.1.1. GET (Fecth a term of a taxonomy)
     
-2.1.2 PATCH or PUT (Update a term in a taxonomy)
+2.1.2. PATCH or PUT (Update a term in a taxonomy)
     
 Example of JSON passed in body for updating a term:
     
@@ -284,4 +315,19 @@ Example of JSON passed in body for updating a term:
 }
 ```
 
-2.1.3 DELETE (Delete a term of a taxonoy)
+2.1.3. DELETE (Delete a term of a taxonoy)
+
+------
+#### Logs
+
+1. Route `wp-json/tainacan/v2/logs`
+
+1.1. Endpoints supported:
+
+1.1.1. GET (Get all logs)
+
+2. Route `wp-json/tainacan/v2/logs/(?P<log_id>[\d]+)`
+
+2.1. Enpoints supported:
+
+2.1.1. GET (Get a log)
