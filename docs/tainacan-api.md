@@ -6,6 +6,18 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 ------
 ### Routes and Endpoints
+
+#### Sumary
+
+1. [Collections](#collections)
+1. [Items](#items)
+1. [Fields](#fields)
+1. [Item Metadata](#item-metadata)
+1. [Taxonomies](#taxonomies)
+1. [Filters](#filters)
+1. [Terms](#terms)
+1. [Logs](#logs)
+
 ------
 #### Collections
 
