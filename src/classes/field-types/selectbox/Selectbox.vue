@@ -22,11 +22,17 @@
         props: {
             field: {
                 type: Object
+            },
+            options: {
+                type: String
             }
         },
         computed: {
             getOptions(){
-                if (this.field && this.field.field.field_type_options.options) {
+                if ( this.options && this.options !== '' ){
+                    return this.options.split("\n");
+                }
+                else if ( this.field && this.field.field.field_type_options.options ) {
                     const fields = this.field.field.field_type_options.options;
                     return ( fields ) ? fields.split("\n") : [];
                 }

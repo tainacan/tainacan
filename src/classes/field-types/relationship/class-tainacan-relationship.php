@@ -24,6 +24,7 @@ class Relationship extends Field_Type {
 
     public function render( $itemMetadata ){
         return '<tainacan-relationship 
+                            collection_id="' . $this->options['collection_id'] . '"
                             field_id ="'.$itemMetadata->get_field()->get_id().'" 
                             item_id="'.$itemMetadata->get_item()->get_id().'"    
                             value=\''.json_encode( $itemMetadata->get_value() ).'\'  

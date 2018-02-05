@@ -35,6 +35,9 @@
         props: {
             field: {
                 type: Object
+            },
+            collection_id: {
+                type: Number
             }
         },
         methods: {
@@ -50,7 +53,7 @@
                 if (query !== '') {
                     this.loading = true;
                     this.options = [];
-                    let collectionId = this.field.field.field_type_options.collection_id;
+                    let collectionId = ( this.field && this.field.field.field_type_options.collection_id ) ? this.field.field.field_type_options.collection_id : this.collection_id;
                     axios.get('/collection/'+collectionId+'/items')
                     .then( res => {
                         let result = [];
