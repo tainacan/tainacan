@@ -1,6 +1,6 @@
 <template>
     <b-datepicker
-              :value="dateValue"
+              v-model="dateValue"
               @blur="onBlur"
               @input="onInput($event)"></b-datepicker>
 </template>
@@ -9,7 +9,7 @@
     export default {
         data() {
             return {
-                dateValue: ''
+                dateValue: new Date()
             }
         },
         methods: {

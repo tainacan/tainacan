@@ -1,31 +1,25 @@
 <template>
     <div>
-        <el-select
+        <b-autocomplete
                 v-model="selected"
-                multiple
-                filterable
-                remote
-                reserve-keyword
-                :remote-method="search"
+                :data="options"
+                @input="search"
                 :loading="loading"
-                 @change="onChecked()">
-            <el-option
-                    v-for="option,index in options"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
-                    ></el-option>
-        </el-select>
+                field="label"
+                @select="option => setResults(option) ">
+        </b-autocomplete>
     </div>
 </template>
 
 <script>
+    import debounce from 'lodash/debounce'
     import axios from '../../../js/axios/axios'
 
     export default {
         data(){
             return {
-                selected:[],
+                results:[],
+                selected:'',
                 options: [],
                 loading: false,
                 collectionId: 0,
@@ -41,15 +35,28 @@
             }
         },
         methods: {
+            setResults(option){
+                if(!option)
+                    return;
+
+                let isInserted = this.results.filter( item => {
+                    return item.label.toLowerCase()
+                        .indexOf(option.label.toLowerCase()) > -1;
+                })
+                if(isInserted.length === 0) {
+                    this.results.push(option)
+                }
+                this.onChecked()
+            },
             onChecked() {
                 this.$emit('blur');
-                this.onInput(this.selected)
+                this.onInput(this.results)
             },
             onInput($event) {
                 this.inputValue = $event;
                 this.$emit('input', this.inputValue);
             },
-            search(query) {
+            search(query){
                 if (query !== '') {
                     this.loading = true;
                     this.options = [];

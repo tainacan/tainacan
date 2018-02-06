@@ -23,7 +23,7 @@ export const eventBus = new Vue({
             const components = this.getAllComponents();
             for (let eventElement of components){
                 eventElement.addEventListener('input', (event) => {
-                    if ( event.detail[0] ){
+                    if (event.detail && event.detail[0] ){
                         const promisse = this.$store.dispatch('item/updateMetadata',
                             { item_id: $(eventElement).attr("item_id"), field_id: $(eventElement).attr("field_id"), values: event.detail });
 

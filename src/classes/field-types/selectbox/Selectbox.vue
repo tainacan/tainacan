@@ -1,13 +1,13 @@
 <template>
     <div>
-        <el-select v-model="selected" @change="onChecked()">
-            <el-option
+        <b-select v-model="selected" @input="onChecked()">
+            <option
                     v-for="option,index in getOptions"
                     :key="index"
                     :label="option"
                     :value="option"
-                    border>{{ option }}</el-option>
-        </el-select>
+                    border>{{ option }}</option>
+        </b-select>
     </div>
 </template>
 
@@ -40,7 +40,7 @@
             }
         },
         methods: {
-            onChecked(option) {
+            onChecked() {
                 this.$emit('blur');
                 this.onInput(this.selected)
             },

@@ -1,12 +1,13 @@
 <template>
     <div>
-        <el-radio
+        <b-radio
                 v-for="option,index in getOptions"
                 :key="index"
                 v-model="checked"
-                @change="onChecked(option)"
+                @input="onChecked(option)"
                 :label="option"
-                border>{{ option }}</el-radio>
+                :native-value="option"
+                border>{{ option }}</b-radio>
     </div>
 </template>
 

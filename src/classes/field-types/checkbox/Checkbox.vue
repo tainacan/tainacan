@@ -1,14 +1,14 @@
 <template>
-    <div>
-        <el-checkbox-group v-model="checked">
-            <el-checkbox
-                    v-for="option,index in getOptions"
-                    :key="index"
+    <div class="block">
+        <div
+            v-for="option,index in getOptions"
+            class="field">
+            <b-checkbox
                     v-model="checked"
-                    @change="onChecked(option)"
-                    :label="option"
-                    border>{{ option }}</el-checkbox>
-        </el-checkbox-group>
+                    :native-value="option"
+            >{{ option }}</b-checkbox>
+        </div>
+
     </div>
 </template>
 
@@ -27,6 +27,12 @@
                 type: String
             }
         },
+        watch: {
+            checked: function(val){
+                this.checked = val;
+                this.onChecked();
+            }
+        },
         computed: {
             getOptions(){
                 if ( this.options && this.options !== '' ){
@@ -40,7 +46,7 @@
             }
         },
         methods: {
-            onChecked(option) {
+            onChecked() {
                 this.$emit('blur');
                 this.onInput(this.checked)
             },
