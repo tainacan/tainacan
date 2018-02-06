@@ -1,6 +1,8 @@
 import Vue from 'vue'
+import Buefy from 'buefy'
+import 'buefy/lib/buefy.css'
 
-import ElementUI from 'element-ui'
+Vue.use(Buefy)
 
 import AdminPage from '../admin.vue'
 //import { eventBus } from '../../js/event-bus-web-components'
@@ -42,8 +44,6 @@ Vue.component('tainacan-relationship', Relationship);
 Vue.component('tainacan-form-item', TaincanFormItem);
 
 //------------------------------------------------
-
-Vue.use(ElementUI);
 
 // eventBus.listener();
 

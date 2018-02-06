@@ -1,7 +1,7 @@
 <template>
-    <el-input :value="inputValue" 
+    <b-input :value="inputValue"
     @blur="onBlur"
-    @input="onInput($event)"></el-input>
+    @input="onInput($event)"></b-input>
 </template>
 
 <script>

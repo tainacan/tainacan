@@ -1,42 +1,62 @@
 <template>
     <div>
-        <h2>Item creation</h2><el-tag v-if="item != null && item != undefined" :type="getStatusColor(item.status)" v-text="item.status"></el-tag>
-        <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-            <el-form-item label="Título" prop="title">
-                <el-input v-model="form.title"></el-input>
-            </el-form-item>
-            <el-form-item label="Descrição">
-                <el-input type="textarea" v-model="form.description"></el-input>
-            </el-form-item>
-            <el-form-item label="Status">
-                <el-select v-model="form.status" placeholder="Selecione um status">
-                    <el-option
-                    v-for="statusOption in statusOptions"
-                    :key="statusOption.value"
-                    :label="statusOption.label"
-                    :value="statusOption.value"
-                    :disabled="statusOption.disabled">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="Imagem">
-                <el-upload
-                    class="upload-demo"
-                    drag
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :on-preview="handlePreview"
-                    :on-remove="handleRemove">
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">Arraste uma imagem aqui <em>ou clique para enviar</em></div>
-                    <div class="el-upload__tip" slot="tip">imagens em formato jpg/png</div>
-                </el-upload>
-            </el-form-item>
-            <tainacan-form-item v-for="(field, index) in fieldList" v-bind:key="index" :field="field"></tainacan-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Salvar</el-button>
-                <el-button>Cancelar</el-button>
-            </el-form-item>
-        </el-form>
+        <h1 class="is-size-3">Item creation</h1>
+        <form label-width="120px">
+            <b-field label="Título">
+                <b-input
+                    v-model="form.title"
+                     >
+                </b-input>
+            </b-field>
+            <b-field label="Descrição">
+                <b-input
+                        type="textarea"
+                        v-model="form.description"
+                        >
+                </b-input>
+            </b-field>
+            <b-field label="Status">
+                <b-select
+                        v-model="form.status"
+                        placeholder="Selecione um status">
+                    <option
+                            v-for="statusOption in statusOptions"
+                            :key="statusOption.value"
+                            :label="statusOption.label"
+                            :value="statusOption.value"
+                            :disabled="statusOption.disabled">
+                    </option>
+                </b-select>
+            </b-field>
+            <b-field
+                    label="Imagem">
+                <b-upload v-model="form.files"
+                          multiple
+                          drag-drop>
+                    <section class="section">
+                        <div class="content has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="upload"
+                                        size="is-large">
+                                </b-icon>
+                            </p>
+                            <p>Arraste uma imagem aqui <em>ou clique para enviar</em></p>
+                        </div>
+                    </section>
+                </b-upload>
+            </b-field>
+            <tainacan-form-item
+                    v-for="(field, index) in fieldList"
+                    v-bind:key="index"
+                    :field="field"></tainacan-form-item>
+            <a class="button">Cancelar</a>
+            <a
+                @click="onSubmit"
+                class="button is-success is-hovered">Salvar</a>
+        </form>
+
+        <b-loading :active.sync="isLoading" :canCancel="false">
     </div>
 </template>
 
@@ -50,11 +70,13 @@ export default {
             itemId: Number,
             item: null,
             collectionId: Number,
+            isLoading: false,
             form: {
                 collectionId: Number,
                 title: '',
                 status: '',
-                description: ''
+                description: '',
+                files:[]
             },
             // Can be obtained from api later
             statusOptions: [{ 
@@ -69,12 +91,7 @@ export default {
                 }, {
                 value: 'trash',
                 label: 'Lixo'
-            }],
-            rules: {
-                title: [
-                    { required: true, message: 'Please input Activity name', trigger: 'blur' }
-                ],
-            }
+            }]
         }
     },
     methods: {
@@ -91,7 +108,8 @@ export default {
         ]),
         onSubmit() {
             // Puts loading on Draft Item creation
-            let loadingInstance = this.$loading({ text: 'Salvando item ...' });
+            this.isLoading = true;
+            let loadingInstance = this;
 
             let data = {item_id: this.itemId, title: this.form.title, description: this.form.description, status: this.form.status};
             this.updateItem(data).then(updatedItem => {    
@@ -103,7 +121,7 @@ export default {
                 this.form.description = this.item.description;
                 this.form.status = this.item.status;
 
-                loadingInstance.close();
+                loadingInstance.isLoading = false;
             });
         },
         getStatusColor(status) {
@@ -122,7 +140,8 @@ export default {
         },
         createNewItem() {
             // Puts loading on Draft Item creation
-            let loadingInstance = this.$loading({ text: 'Criando item rascunho...' });
+            this.isLoading = true;
+            let loadingInstance = this;
 
             // Creates draft Item
             let data = {collection_id: this.form.collectionId, title: '', description: '', status: 'draft'};
@@ -136,16 +155,15 @@ export default {
                 this.form.description = this.item.description;
                 this.form.status = this.item.status;
 
-                this.loadMetadata(loadingInstance);
+                this.loadMetadata();
                 
             })
             .catch(error => console.log(error));
         },
-        loadMetadata(loadingInstance) {
-            loadingInstance = this.$loading({ text: 'Carregando metadados...'});
+        loadMetadata() {
             // Obtains Item Field
             this.fetchFields(this.itemId).then(res => {
-               loadingInstance.close();
+                this.isLoading = false;
             });
         }
     },
@@ -163,7 +181,8 @@ export default {
             this.createNewItem();
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
-            let loadingInstance = this.$loading({ text: 'Carregando item...'});
+            this.isLoading = true;
+            let loadingInstance = this;
 
             // Obtains current Item ID from URL
             this.pathArray = this.$route.fullPath.split("/").reverse(); 
@@ -177,7 +196,7 @@ export default {
                 this.form.description = this.item.description;
                 this.form.status = this.item.status;
 
-                loadingInstance.close();
+                loadingInstance.isLoading = false;
             });
         }
         

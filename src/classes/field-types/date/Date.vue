@@ -1,19 +1,11 @@
 <template>
-    <el-date-picker
-             type="date"
-              format="dd/MM/yyyy"
-              value-format="dd/MM/yyyy"
+    <b-datepicker
               :value="dateValue"
               @blur="onBlur"
-              @input="onInput($event)"></el-date-picker>
+              @input="onInput($event)"></b-datepicker>
 </template>
 
 <script>
-    import lang from 'element-ui/lib/locale/lang/pt-br'
-    import locale from 'element-ui/lib/locale'
-
-    locale.use(lang)
-
     export default {
         data() {
             return {
