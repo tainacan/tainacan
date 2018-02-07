@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="is-size-3">Item creation</h1>
+        <h1 class="is-size-3">Item creation  <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag></h1>
         <form label-width="120px">
             <b-field label="Título">
                 <b-input
@@ -22,9 +22,8 @@
                     <option
                             v-for="statusOption in statusOptions"
                             :key="statusOption.value"
-                            :label="statusOption.label"
                             :value="statusOption.value"
-                            :disabled="statusOption.disabled">
+                            :disabled="statusOption.disabled">{{ statusOption.label }}
                     </option>
                 </b-select>
             </b-field>
