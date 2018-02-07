@@ -14,7 +14,6 @@
                     </template>
                 </b-table-column>
 
-
                 <b-table-column label="Nome" field="props.row.name" sortable show-overflow-tooltip>
                     <router-link :to="`/collections/${props.row.id}`" tag="a">{{ props.row.name }}</router-link>
                 </b-table-column>
@@ -25,10 +24,8 @@
 
 
                 <b-table-column label="Ações">
-                    <a @click.native="shareCollection(scope.row.id)">
-                       <b-icon icon="share">
-                    </a>
-                    <a @click.native="showMoreCollection(scope.row.id)">
+                    <router-link :to="`/collections/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
+                    <a @click.native="showMoreCollection(props.row.id)">
                         <b-icon icon="dots-vertical">
                     </a>
                 </b-table-column>
@@ -61,9 +58,6 @@ export default {
         ]),
         handleSelectionChange(value) {
             this.multipleSelection = value;
-        },
-        shareCollection(collectionId) {
-
         },
         showMoreCollection(collectionId) {
 

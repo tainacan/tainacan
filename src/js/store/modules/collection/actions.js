@@ -19,10 +19,34 @@ export const fetchCollections = ({ commit }) => {
 }
 
 export const fetchCollection = ({ commit }, id) => {
-    axios.get('/collections/' + id)
+    return new Promise((resolve, reject) =>{ 
+        axios.get('/collections/' + id)
         .then(res => {
+            console.log(res);
             let collection = res.data;
             commit('setCollection', collection);
+            resolve( res.data );
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+            console.log(error);
+            reject(error);
+        })
+    });
+}
+
+export const updateCollection = ({ commit }, { collection_id, name, description, status }) => {
+    return new Promise((resolve, reject) => {
+        axios.patch('/collections/' + collection_id, {
+            name: name,
+            description: description,
+            status: status 
+        }).then( res => {
+            commit('setCollection', { id: collection_id, name: name, description: description, status: status });
+            resolve( res.data );
+        }).catch( error => {  
+            commit('setCollection', { id: collection_id, name: name, description: description, status: status });
+            reject( error.response );
+        });
+
+    });
 }

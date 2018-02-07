@@ -26,9 +26,7 @@
 
 
                 <b-table-column label="Ações">
-                    <a @click.native="shareItem(props.row.id)">
-                       <b-icon icon="share">
-                    </a>
+                    <router-link :to="`/collections/${collectionId}/items/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
                     <a @click.native="showMoreItem(props.row.id)">
                         <b-icon icon="dots-vertical">
                     </a>
