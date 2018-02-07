@@ -18,7 +18,7 @@
     export default {
         data(){
             return {
-                results:[],
+                results:'',
                 selected:'',
                 options: [],
                 loading: false,
@@ -39,13 +39,15 @@
                 if(!option)
                     return;
 
-                let isInserted = this.results.filter( item => {
-                    return item.label.toLowerCase()
-                        .indexOf(option.label.toLowerCase()) > -1;
-                })
-                if(isInserted.length === 0) {
-                    this.results.push(option)
-                }
+//                let isInserted = this.results.filter( item => {
+//                    return item.label.toLowerCase()
+//                        .indexOf(option.label.toLowerCase()) > -1;
+//                });
+//
+//                if(isInserted.length === 0) {
+//                    this.results.push(option)
+//                }
+                this.results = option.value;
                 this.onChecked()
             },
             onChecked() {

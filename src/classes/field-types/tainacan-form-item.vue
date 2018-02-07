@@ -1,15 +1,15 @@
 <template>
-    <div>
         <b-field :label="field.field.name">
-            <component :is="extractFieldType(field.field.field_type)" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
-            <div v-if="field.field.multiple == 'yes'">
-                <div v-if="index > 0" v-for="(input, index) in inputsList " v-bind:key="index" class="multiple-inputs">
-                    <component :is="extractFieldType(field.field.field_type)" v-model="inputs[index]" :field="field" @blur="changeValue()"></component><el-button v-if="index > 0" @click="removeInput(index)">-</el-button>
-                </div> 
-                <a class="button" @click="addInput">+</a>
+            <div>
+                <component :is="extractFieldType(field.field.field_type)" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
+                <div v-if="field.field.multiple == 'yes'">
+                    <div v-if="index > 0" v-for="(input, index) in inputsList " v-bind:key="index" class="multiple-inputs">
+                        <component :is="extractFieldType(field.field.field_type)" v-model="inputs[index]" :field="field" @blur="changeValue()"></component><a class="button" v-if="index > 0" @click="removeInput(index)">-</a>
+                    </div>
+                    <a class="button" @click="addInput">+</a>
+                </div>
             </div>
         </b-field>
-    </div>
 </template>
 
 <script>
@@ -32,6 +32,7 @@
         },
         created(){
             this.getValue();
+            console.log(this.field)
         },
         methods: {
             changeValue(){
@@ -49,12 +50,6 @@
             extractFieldType(field_type) {
                 let parts = field_type.split('\\');
                 return 'tainacan-' + parts.pop().toLowerCase();
-            },
-            validateObject () {
-                return
-                [
-                    { required: this.field.field.required, message: this.message, trigger: 'blur' }
-                ]
             },
             addInput(){
                 this.inputs.push('');

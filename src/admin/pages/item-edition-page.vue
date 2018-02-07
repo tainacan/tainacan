@@ -50,7 +50,10 @@
                     v-for="(field, index) in fieldList"
                     v-bind:key="index"
                     :field="field"></tainacan-form-item>
-            <a class="button">Cancelar</a>
+            <button
+                class="button"
+                type="button"
+                @click="cancelBack">Cancelar</button>
             <a
                 @click="onSubmit"
                 class="button is-success is-hovered">Salvar</a>
@@ -122,6 +125,8 @@ export default {
                 this.form.status = this.item.status;
 
                 loadingInstance.isLoading = false;
+
+                this.$router.push('/collections/' + this.form.collectionId + '/items/' + this.itemId);
             });
         },
         getStatusColor(status) {
@@ -165,6 +170,9 @@ export default {
             this.fetchFields(this.itemId).then(res => {
                 this.isLoading = false;
             });
+        },
+        cancelBack(){
+            this.$router.push('/collections/' + this.collectionId);
         }
     },
     computed: {
@@ -174,7 +182,7 @@ export default {
     },
     created(){
         // Obtains collection ID
-        this.collectionId = this.$route.params.id;
+        this.collectionId = ( this.$route.params.collection_id ) ? this.$route.params.collection_id : this.$route.params.id;
         this.form.collectionId = this.collectionId;
 
         if (this.$route.fullPath.split("/").pop() == "new") {
@@ -196,7 +204,7 @@ export default {
                 this.form.description = this.item.description;
                 this.form.status = this.item.status;
 
-                loadingInstance.isLoading = false;
+                this.loadMetadata();
             });
         }
         
