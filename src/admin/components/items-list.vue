@@ -20,17 +20,17 @@
                     </router-link>
                 </b-table-column>
 
-                <b-table-column field="description" label="Descrição" field="props.row.description">
+                <b-table-column field="description" label="Descrição">
                     {{ props.row.description }}
                 </b-table-column>
 
 
                 <b-table-column label="Ações">
-                    <a class="button is-large"
-                       @click.native="shareItem(props.row.id)"><i class="material-icons md-18">share</i>
+                    <a @click.native="shareItem(props.row.id)">
+                       <b-icon icon="share">
                     </a>
-                    <a class="button is-large" @click.native="showMoreItem(props.row.id)">
-                        <i class="material-icons md-18">more_vert</i>
+                    <a @click.native="showMoreItem(props.row.id)">
+                        <b-icon icon="dots-vertical">
                     </a>
                 </b-table-column>
 

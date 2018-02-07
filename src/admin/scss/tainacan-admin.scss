@@ -26,9 +26,9 @@ $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
 // Import Bulma and Buefy styles
+@import "../../assets/css/fonts/materialdesignicons.css";
 @import "../../../node_modules/bulma/bulma";
 @import "../../../node_modules/buefy/src/scss/buefy";
-@import "../../assets/css/fonts/material-icons.css";
 
 body.tainacan-admin-page #adminmenumain {
     display: none;

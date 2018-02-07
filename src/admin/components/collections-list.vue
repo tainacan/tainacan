@@ -25,11 +25,11 @@
 
 
                 <b-table-column label="Ações">
-                    <a class="button is-large"
-                       @click.native="shareCollection(scope.row.id)"><i class="material-icons md-18">share</i>
+                    <a @click.native="shareCollection(scope.row.id)">
+                       <b-icon icon="share">
                     </a>
-                    <a class="button is-large" @click.native="showMoreCollection(scope.row.id)">
-                        <i class="material-icons md-18">more_vert</i>
+                    <a @click.native="showMoreCollection(scope.row.id)">
+                        <b-icon icon="dots-vertical">
                     </a>
                 </b-table-column>
 
