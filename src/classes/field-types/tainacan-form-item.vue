@@ -1,5 +1,7 @@
 <template>
-        <b-field :label="field.field.name">
+        <b-field :label="field.field.name"
+                 :message="getErrorMessage"
+                 :type="fieldTypeMessage">
             <div>
                 <component :is="extractFieldType(field.field.field_type)" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
                 <div v-if="field.field.multiple == 'yes'">
@@ -22,16 +24,31 @@
         },
         data(){
             return {
-                inputs: []
+                inputs: [],
+                fieldTypeMessage:''
             }
         },
         computed: {
             inputsList() {
                 return this.inputs;
+            },
+            getErrorMessage() {
+                let msg = '';
+                let errors = eventBus.getErrors(this.field.field.id);
+                if ( errors) {
+                    this.fieldTypeMessage = 'is-danger';
+                    for (let index in errors) {
+                      msg += errors[index] + '\n';
+                    }
+                } else {
+                    this.fieldTypeMessage = '';
+                }
+                return msg;
             }
         },
         created(){
             this.getValue();
+
         },
         methods: {
             changeValue(){

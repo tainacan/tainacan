@@ -5,7 +5,7 @@ export const eventBus = new Vue({
     store,
     data: {
         componentsTag: [],
-        errors : store.getters['item/getError']
+        errors : []
     },
     created(){
         if( wp_settings.components ){
@@ -45,15 +45,29 @@ export const eventBus = new Vue({
                 const promisse = this.$store.dispatch('item/updateMetadata',
                     { item_id: data.item_id, field_id: data.field_id, values: data.values });
                 promisse.then( response => {
-                    data.instance.message = JSON.stringify( [] );
-                    data.instance.value = response.value;
+                    let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
+                    if ( index >= 0){
+                        this.errors.splice( index, 1);
+                    }
                 }, error => {
-                    console.log(error);
-                    // const field = this.errors.find(error => error.field_id === data.field_id );
-                    // eventElement.errorsMsg = JSON.stringify( field.error );
-                    // eventElement.value = data.values;
+                    let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
+                    let messages = null;
+
+                    for (let index in error) {
+                        messages = error[index]
+                    }
+
+                    if ( index >= 0){
+                        Vue.set( this.errors, index, { field_id: data.field_id, errors: messages });
+                    }else{
+                        this.errors.push( { field_id: data.field_id, errors: messages } );
+                    }
                 });
             }
+        },
+        getErrors(field_id){
+            let error = this.errors.find( errorItem => errorItem.field_id === field_id );
+            return ( error ) ? error.errors : false
         },
         setValues(){
             const field = this.$store.getters['item/getMetadata'];
@@ -93,7 +107,7 @@ export const eventBus = new Vue({
                     }
                 }
             }
-        }
+        },
     }
 
 });
