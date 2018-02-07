@@ -103,7 +103,8 @@ export default {
             'updateItem',
             'fetchFields',
             'sendField',
-            'fetchItem'
+            'fetchItem',
+            'cleanFields'
         ]),
         ...mapGetters('item',[
             'getFields',
@@ -182,6 +183,7 @@ export default {
     },
     created(){
         // Obtains collection ID
+        this.cleanFields();
         this.collectionId = ( this.$route.params.collection_id ) ? this.$route.params.collection_id : this.$route.params.id;
         this.form.collectionId = this.collectionId;
 

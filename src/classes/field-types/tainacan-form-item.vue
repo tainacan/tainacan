@@ -32,7 +32,6 @@
         },
         created(){
             this.getValue();
-            console.log(this.field)
         },
         methods: {
             changeValue(){

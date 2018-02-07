@@ -25,7 +25,8 @@
             },
             options: {
                 type: String
-            }
+            },
+            value: [String, Number, Array],
         },
         computed: {
             getOptions(){

@@ -19,13 +19,18 @@
                 checked:[]
             }
         },
+        created(){
+            if(this.value instanceof Array)
+                this.checked = this.value;
+        },
         props: {
             field: {
                 type: Object
             },
             options: {
                 type: String
-            }
+            },
+            value: [String, Number, Array]
         },
         watch: {
             checked: function(val){
