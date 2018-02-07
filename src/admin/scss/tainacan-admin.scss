@@ -1,20 +1,34 @@
-/* theme color */
-$--color-primary:#25a189;
-$--color-secondary: #01295c;
+// Import Bulma's core
+@import "../../../node_modules/bulma/sass/utilities/_all";
 
-/* icon font path, required */
-//$--font-path: '../../assets/css/fonts/material-icons.css';
+// Tainacan custom colors
+$primary: #25a189;
+$primary-invert: findColorInvert($primary);
+$secondary: #01295c;
+$secondary-invert: findColorInvert($primary);
 
-.el-select-dropdown, .el-popper {
-    z-index: 9999999 !important;
-}
+// Setup $colors to use as bulma classes
+$colors: (
+    "white": ($white, $black),
+    "black": ($black, $white),
+    "light": ($light, $light-invert),
+    "dark": ($dark, $dark-invert),
+    "primary": ($primary, $primary-invert),
+    "info": ($info, $info-invert),
+    "success": ($success, $success-invert),
+    "warning": ($warning, $warning-invert),
+    "danger": ($danger, $danger-invert)
+);
 
-.el-loading-mask{
-    z-index: 99999999 !important;
-}
+// Links
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
 
+// Import Bulma and Buefy styles
+@import "../../../node_modules/bulma/bulma";
+@import "../../../node_modules/buefy/src/scss/buefy";
 @import "../../assets/css/fonts/material-icons.css";
-@import "../../../node_modules/element-ui/packages/theme-chalk/src/index";
 
 body.tainacan-admin-page #adminmenumain {
     display: none;
