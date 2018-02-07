@@ -4,7 +4,7 @@ import Vue from 'vue'
 import VueCustomElement from 'vue-custom-element';
 import { eventBus } from './event-bus-web-components';
 import Buefy from 'buefy'
-import 'buefy/lib/buefy.css'
+
 
 Vue.use(Buefy)
 
