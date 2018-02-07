@@ -48,9 +48,10 @@ export const eventBus = new Vue({
                     data.instance.message = JSON.stringify( [] );
                     data.instance.value = response.value;
                 }, error => {
-                    const field = this.errors.find(error => error.field_id === data.field_id );
-                    eventElement.errorsMsg = JSON.stringify( field.error );
-                    eventElement.value = data.values;
+                    console.log(error);
+                    // const field = this.errors.find(error => error.field_id === data.field_id );
+                    // eventElement.errorsMsg = JSON.stringify( field.error );
+                    // eventElement.value = data.values;
                 });
             }
         },

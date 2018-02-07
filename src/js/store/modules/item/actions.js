@@ -32,7 +32,7 @@ export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
                 commit('setSingleField', field);
             })
             .catch( error => {
-                console.log('error', error);
+                reject(error.response.data.errors);
             })
     });
 };
