@@ -165,58 +165,20 @@ class Item extends Entity {
     }
 
     /**
-     * Return a Field or a List of Field
+     * Return a List of ItemMetadata objects
      *
-     * @return array || Field
+     * It will return all fields associeated with the collection this item is part of.
+     *
+     * If the item already has a value for any of the fields, it will be available.
+     *
+     * @return array Array of ItemMetadata objects
      */
     function get_fields() {
-        global $Tainacan_Fields;
+        global $Tainacan_Item_Metadata;
+        return $Tainacan_Item_Metadata->fetch($this, 'OBJECT');
 
-        if (isset($this->field))
-            return $this->field;
-        
-        $collection = $this->get_collection();
-        $all_metadata = [];
-        if ($collection) {
-            $meta_list = $Tainacan_Fields->fetch_by_collection( $collection, [], 'OBJECT' );
-            
-            foreach ($meta_list as $meta) {
-                $all_metadata[$meta->get_id()] = new Item_Metadata_Entity($this, $meta);
-            }
-        }
-        return $all_metadata;
     }
-    
-    /**
-     * Define the Field
-     *
-     * @param Field $new_metadata
-     * @param [string || integer || array] $value
-     * @return void
-     */
-    function add_metadata(Field $new_metadata, $value) {
-        
-        //TODO Multiple field must receive an array as value
-        $item_metadata = new Item_Metadata_Entity($this, $new_metadata);
-       
-        $item_metadata->set_value($value);
-        
-        $current_meta = $this->get_fields();
-        $current_meta[$new_metadata->get_id()] = $item_metadata;
-        
-        $this->set_metadata($current_meta);
-    }
-    
-    /**
-     * Aux function for @method add_metadata
-     *
-     * @param array $field
-     * @return void
-     */
-    function set_metadata(Array $field) {
-        $this->field = $field;
-    }
-    
+
     /**
      * set meta cap object
      */

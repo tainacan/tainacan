@@ -134,62 +134,57 @@ class Items extends TAINACAN_UnitTestCase {
 	        array(
 	        	'title'      => 'orange',
 		        'collection' => $collection,
-		        'add_metadata' => [
-		        	[$field, 'value_1']
-		        ],
 		        'status'      => 'publish'
 	        ),
 	        true
         );
-
+        
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field, 'value_1');
+        
         $item = $Tainacan_Items->fetch($i->get_id());
-        $meta_test = $item->get_fields();
-        $this->assertTrue( isset($meta_test[$field->get_id()]) );
-        $this->assertTrue( $meta_test[$field->get_id()] instanceof Entities\Item_Metadata_Entity );
-        $this->assertEquals( 'value_1', $meta_test[$field->get_id()]->get_value());
+        $meta_test = new Entities\Item_Metadata_Entity($item, $field);
+        $this->assertTrue( $meta_test instanceof Entities\Item_Metadata_Entity );
+        $this->assertEquals( $field->get_id(), $meta_test->get_field()->get_id() );
+        $this->assertEquals( 'value_1', $meta_test->get_value());
 
-	    $this->tainacan_entity_factory->create_entity(
+	    $i = $this->tainacan_entity_factory->create_entity(
 		    'item',
 		    array(
 			    'title'        => 'apple',
 			    'collection'   => $collection2,
-			    'add_metadata' => [
-			    	[$field2, 'value_2'],
-				    [$field3, 'value_2']
-			    ],
 			    'status'      => 'publish'
 		    ),
 		    true
 	    );
-
-	    $this->tainacan_entity_factory->create_entity(
+        
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field3, 'value_2');
+        
+	    $i = $this->tainacan_entity_factory->create_entity(
 		    'item',
 		    array(
 			    'title'        => 'lemon',
 			    'collection'   => $collection2,
-			    'add_metadata' => [
-			    	[$field2, 'value_2'],
-				    [$field2, 'value_3'],
-				    [$field3, 'value_3']
-			    ],
 			    'status'      => 'publish'
 		    ),
 		    true
 	    );
+        
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field2, 'value_2');
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field2, 'value_3');
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field3, 'value_3');
 
-	    $this->tainacan_entity_factory->create_entity(
+	    $i = $this->tainacan_entity_factory->create_entity(
 		    'item',
 		    array(
 			    'title'        => 'pineapple',
 			    'collection'   => $collection2,
-			    'add_metadata' => [
-			    	[$field2, 'value_3'],
-				    [$field3, 'value_6']
-			    ],
 			    'status'      => 'publish'
 		    ),
 		    true
 	    );
+        
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field2, 'value_3');
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field3, 'value_6');
 
         // should return all 4 items
         $test_query = $Tainacan_Items->fetch([]);
@@ -251,7 +246,7 @@ class Items extends TAINACAN_UnitTestCase {
         ], $collection2);
         $this->assertEquals(2, $test_query->post_count);
         
-        // should return 2 item
+        // should return 2 items
         $test_query = $Tainacan_Items->fetch([
             'meta_query' => [
                 [

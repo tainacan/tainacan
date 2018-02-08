@@ -104,7 +104,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 
 		$item = new Entities\Item($item_id);
 
-		$item_metadata = $this->item_metadata_repository->fetch($item, 'OBJECT');
+		$item_metadata = $item->get_fields();
 
 		$prepared_item = $this->prepare_item_for_response($item_metadata, $request);
 

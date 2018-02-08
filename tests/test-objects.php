@@ -87,13 +87,13 @@ class Objects extends TAINACAN_UnitTestCase {
 				array(
 					'title'      => 'orange',
 					'collection' => $collection,
-					'add_metadata' => [
-						[$field, 'value_1']
-					]
 				),
 				true
 				);
-		$test = get_post($i->get_id());
+		
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field, 'value_1');
+        
+        $test = get_post($i->get_id());
 		$entity = Repository::get_entity_by_post($test);
 		$this->assertEquals($i->get_db_identifier(), $entity->get_db_identifier());
 		

@@ -31,6 +31,7 @@ require $_tests_dir . '/includes/bootstrap.php';
 require_once(__DIR__ . '/factories/class-tainacan-entity-factory.php');
 require_once(__DIR__ . '/factories/class-tainacan-field-factory.php');
 require_once(__DIR__ . '/factories/class-tainacan-filter-factory.php');
+require_once(__DIR__ . '/factories/class-tainacan-item-metadata-factory.php');
 require_once(__DIR__ . '/tainacan-unit-test-case.php');
 require_once(__DIR__ . '/tainacan-unit-api-test-case.php');
 
