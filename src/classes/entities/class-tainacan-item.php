@@ -233,4 +233,26 @@ class Item extends Entity {
 	    	}
     	}
     }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::validate()
+     */
+    function validate(){
+        if( parent::validate() ){
+            $arrayItemMetadata = $this->get_fields();
+            if( $arrayItemMetadata  ){
+                foreach ( $arrayItemMetadata as $itemMetadata ) {
+                    if( !$itemMetadata->validate() ){
+                        $errors = $itemMetadata->get_errors();
+                        $this->add_error( $itemMetadata->get_field()->get_name(), $errors );
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }

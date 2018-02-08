@@ -11,6 +11,7 @@ abstract class Field_Type  {
 
     private $primitive_type;
     public $options;
+    public $errors;
 
     abstract function render( $itemMetadata );
 
@@ -37,6 +38,10 @@ abstract class Field_Type  {
 
     public function set_primitive_type($primitive_type){
         $this->primitive_type = $primitive_type;
+    }
+
+    public function get_errors() {
+        return $this->errors;
     }
 
     /**
