@@ -28,9 +28,3 @@
         }
     }
 </script>
-
-<style scoped>
-    .multiple-inputs {
-        display: flex;
-    }
-</style>
