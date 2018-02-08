@@ -151,7 +151,7 @@ class Items extends Repository {
     	}
     	
     	// save field
-    	$field = $item->get_field();
+    	$field = $item->get_fields();
     	global $Tainacan_Item_Metadata;
     	
     	foreach ($field as $meta) {

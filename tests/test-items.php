@@ -143,8 +143,7 @@ class Items extends TAINACAN_UnitTestCase {
         );
 
         $item = $Tainacan_Items->fetch($i->get_id());
-        $meta_test = $item->get_field();
-
+        $meta_test = $item->get_fields();
         $this->assertTrue( isset($meta_test[$field->get_id()]) );
         $this->assertTrue( $meta_test[$field->get_id()] instanceof Entities\Item_Metadata_Entity );
         $this->assertEquals( 'value_1', $meta_test[$field->get_id()]->get_value());

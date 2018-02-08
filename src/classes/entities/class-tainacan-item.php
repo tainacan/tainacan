@@ -169,7 +169,7 @@ class Item extends Entity {
      *
      * @return array || Field
      */
-    function get_field() {
+    function get_fields() {
         global $Tainacan_Fields;
 
         if (isset($this->field))
@@ -201,7 +201,7 @@ class Item extends Entity {
        
         $item_metadata->set_value($value);
         
-        $current_meta = $this->get_field();
+        $current_meta = $this->get_fields();
         $current_meta[$new_metadata->get_id()] = $item_metadata;
         
         $this->set_metadata($current_meta);

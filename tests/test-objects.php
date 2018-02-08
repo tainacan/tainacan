@@ -105,8 +105,7 @@ class Objects extends TAINACAN_UnitTestCase {
 		$entity = Repository::get_entity_by_post($test);
 		$this->assertEquals($field2->get_db_identifier(), $entity->get_db_identifier());
 		
-		$fields = $i->get_field();
-		//var_dump($fields);
+		$fields = $i->get_fields();
 		$item_metadata = array_pop($fields);
 		$test = get_post($item_metadata->get_field()->get_id());
 		$entity = Repository::get_entity_by_post($test);
