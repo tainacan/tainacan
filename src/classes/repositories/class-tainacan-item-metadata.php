@@ -12,7 +12,21 @@ class Item_Metadata extends Repository {
         $unique = !$item_metadata->is_multiple();
 
         if ($unique) {
-            add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+            $field_type = $item_metadata->get_field()->get_field_type_object();
+            if ($field_type->core) {
+                $item = $item_metadata->get_item();
+                $set_method = 'set_' . $field_type->related_mapped_prop;
+                $item->$set_method($item_metadata->get_value());
+                if ($item->validate()) {
+                    global $TainacanItems;
+                    $TainacanItems->insert($item);
+                } else {
+                    throw new \Exception('Item metadata should be validated beforehand');
+                }
+            } else {
+                add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+            }
+            
         } else {
             delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
             

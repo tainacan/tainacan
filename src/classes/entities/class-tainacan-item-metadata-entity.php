@@ -137,11 +137,10 @@ class Item_Metadata_Entity extends Entity {
             return false;
         }
 
-        $field_type = $field->get_field_type();
-        if( class_exists( $field_type ) ){
-            $classFieldType = new $field_type();
+        $classFieldType = $field->get_field_type_object();
+        if( is_object( $classFieldType ) ){
             if( method_exists ( $classFieldType , 'validate' ) ){
-                if( ! $classFieldType->validate( $value ) ) {
+                if( ! $classFieldType->validate( $this ) ) {
                     $this->add_error('field_type_error', $classFieldType->get_errors() );
                     return false;
                 }
