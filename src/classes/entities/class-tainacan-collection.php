@@ -449,5 +449,17 @@ class Collection extends Entity {
      * (the same as moderators_ids but gets and sets WP_User objects)
      *
      */
+     
+     /**
+      * Validate Collection
+      * @return bool 
+      */
+     function validate() {
+        if ( !in_array($this->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+            
+        return parent::validate();
 
+     }
+     
 }

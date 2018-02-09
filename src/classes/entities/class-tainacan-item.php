@@ -202,8 +202,10 @@ class Item extends Entity {
      * @see \Tainacan\Entities\Entity::validate()
      */
     function validate(){
-        //var_dump($this->get_status()); die;
-        if ( !in_array($this->get_status(), apply_filters('tainacan-status-validation', ['publish','future','private'])) )
+        
+        //var_dump($this->get_status() , $this->get_title()); die;
+        
+        if ( !in_array($this->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
             return true;
         
         if( parent::validate() ){
