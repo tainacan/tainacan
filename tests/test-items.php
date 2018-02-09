@@ -16,7 +16,7 @@ use Tainacan\Entities;
 class Items extends TAINACAN_UnitTestCase {
 
 	/**
-	 * @group permissions2
+	 * @group permissions
 	 */
 	public function test_permissions () {
 		
