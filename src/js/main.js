@@ -2,10 +2,12 @@ import Vue from 'vue'
 
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
-import ElementUI from 'element-ui'
 import { eventBus } from './event-bus-web-components';
+import Buefy from 'buefy'
 
-Vue.use(ElementUI);
+
+Vue.use(Buefy)
+
 Vue.use(VueCustomElement);
 
 import Text from '../classes/field-types/text/Text.vue';

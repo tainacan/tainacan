@@ -1,14 +1,14 @@
 <template>
-    <div>
-        <el-checkbox-group v-model="checked">
-            <el-checkbox
-                    v-for="option,index in getOptions"
-                    :key="index"
+    <div class="block">
+        <div
+            v-for="option,index in getOptions"
+            class="field">
+            <b-checkbox
                     v-model="checked"
-                    @change="onChecked(option)"
-                    :label="option"
-                    border>{{ option }}</el-checkbox>
-        </el-checkbox-group>
+                    :native-value="option"
+            >{{ option }}</b-checkbox>
+        </div>
+
     </div>
 </template>
 
@@ -19,12 +19,23 @@
                 checked:[]
             }
         },
+        created(){
+            if(this.value instanceof Array)
+                this.checked = this.value;
+        },
         props: {
             field: {
                 type: Object
             },
             options: {
                 type: String
+            },
+            value: [String, Number, Array]
+        },
+        watch: {
+            checked: function(val){
+                this.checked = val;
+                this.onChecked();
             }
         },
         computed: {
@@ -40,7 +51,7 @@
             }
         },
         methods: {
-            onChecked(option) {
+            onChecked() {
                 this.$emit('blur');
                 this.onInput(this.checked)
             },

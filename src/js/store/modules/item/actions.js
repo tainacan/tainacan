@@ -30,9 +30,10 @@ export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
             .then( res => {
                 let field = res.data;
                 commit('setSingleField', field);
+                resolve(field)
             })
             .catch( error => {
-                console.log('error', error);
+                reject(error.response.data.errors);
             })
     });
 };

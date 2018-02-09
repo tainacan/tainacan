@@ -1,7 +1,7 @@
 <template>
-    <el-input :value="inputValue" 
+    <b-input :value="inputValue"
     @blur="onBlur"
-    @input="onInput($event)"></el-input>
+    @input="onInput($event)"></b-input>
 </template>
 
 <script>
@@ -11,6 +11,9 @@
                 inputValue: ''
             }
         },
+        props: {
+            value: [String, Number, Object],
+        },
         methods: {
             onBlur() {
                 this.$emit('blur');
@@ -19,12 +22,9 @@
                 this.inputValue = $event;
                 this.$emit('input', this.inputValue);
             }
+        },
+        created(){
+            this.inputValue = this.value;
         }
     }
 </script>
-
-<style scoped>
-    .multiple-inputs {
-        display: flex;
-    }
-</style>
