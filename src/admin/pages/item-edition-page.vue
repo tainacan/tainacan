@@ -147,7 +147,7 @@ export default {
             this.isLoading = true;
 
             // Creates draft Item
-            let data = {collection_id: this.form.collectionId, title: '', description: '', status: 'draft'};
+            let data = {collection_id: this.form.collectionId, title: '', description: '', status: 'auto-draft'}; 
             this.sendItem(data).then(res => {
 
                 this.itemId = res.id;
