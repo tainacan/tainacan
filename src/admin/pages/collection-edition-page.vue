@@ -44,10 +44,6 @@
                     </section>
                 </b-upload>
             </b-field>
-            <!--<tainacan-form-item
-                    v-for="(field, index) in fieldList"
-                    v-bind:key="index"
-                    :field="field"></tainacan-form-item>-->
             <button
                 class="button"
                 type="button"
@@ -97,13 +93,9 @@ export default {
         ...mapActions('collection', [
             'sendCollection',
             'updateCollection',
-            'fetchCollection',
-            'fetchFields',
-            'sendField',
-            'cleanFields'
+            'fetchCollection'
         ]),
         ...mapGetters('collection',[
-            'getFields',
             'getCollection'
         ]),
         onSubmit() {
@@ -139,7 +131,7 @@ export default {
                     return 'info'
             }
         },
-        createCollection() {
+        createNewCollection() {
             // Puts loading on Draft Collection creation
             this.isLoading = true;
 
@@ -155,30 +147,17 @@ export default {
                 this.form.description = this.collection.description;
                 this.form.status = this.collection.status;
 
-                //this.loadMetadata();
+                this.isLoading = false;
                 
             })
             .catch(error => console.log(error));
-        },
-        loadMetadata() {
-            // Obtains Collection Field
-            this.fetchFields(this.collectionId).then(res => {
-                this.isLoading = false;
-            });
         },
         cancelBack(){
             this.$router.push('/collections/' + this.collectionId);
         }
     },
-    computed: {
-        // fieldList(){
-        //     return this.getFields();
-        // }   
-    },
     created(){
-
-        this.cleanFields();
-
+        
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewCollection();
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
@@ -197,18 +176,11 @@ export default {
                 this.form.description = this.collection.description;
                 this.form.status = this.collection.status;
 
-                this.isLoading = false; //this.loadMetadata();
+                this.isLoading = false; 
             });
         } 
-        
-        
     }
 
 }
 </script>
-
-<style scoped>
-
-</style>
-
 

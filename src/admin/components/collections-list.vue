@@ -1,5 +1,9 @@
 <template>
     <div>
+        <router-link tag="button" class="button is-primary"
+                    :to="{ path: `/collections/new` }">
+            Criar Coleção
+        </router-link>
         <b-table
                 ref="multipleTable"
                 :data="collections"

@@ -50,3 +50,24 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
 
     });
 }
+
+export const sendCollection = ( { commit }, { name, description, status }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.post('/collections/', {
+            name: name,
+            description: description,
+            status: status
+        })
+            .then( res => {
+                commit('setCollection', { name: name, description: description, status: status });
+                //commit('removeError', { collection_id });
+                resolve( res.data );
+            })
+            .catch(error => {
+                console.log( 'error',error.response );
+                commit('setCollection', { name: name, description: description, status: status });
+                //commit('setError', { name: name, description: description, status: status, error: error.response.data.errors  });
+                reject( error.response );
+            });
+    });
+ };
