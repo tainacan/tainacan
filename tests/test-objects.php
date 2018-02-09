@@ -111,4 +111,27 @@ class Objects extends TAINACAN_UnitTestCase {
 		$entity = Repository::get_entity_by_post($test);
 		$this->assertEquals($item_metadata->get_field()->get_db_identifier(), $entity->get_db_identifier());
 	}
+    
+    function test_delete_attributes() {
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+				'collection',
+				array(
+					'name'   => 'test title',
+                    'description' => 'test description',
+					'status' => 'draft'
+				),
+				true
+				);
+                
+        $collection->set_name('');
+        $this->assertEquals('', $collection->get_name());
+        
+        global $Tainacan_Collections;
+        $this->assertTrue($collection->validate());
+        $newCol = $Tainacan_Collections->insert($collection);
+        $this->assertEquals('', $newCol->get_name());
+        
+        
+    }
 }

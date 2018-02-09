@@ -129,7 +129,7 @@ class Entity {
      * @return mixed property value
      */
     public function get_mapped_property($prop) {
-    	if (isset($this->$prop) && !empty($this->$prop)){
+    	if (isset($this->$prop) ){
     		return $this->$prop;
     	}
     	//prop is not set at object, try to get from database
