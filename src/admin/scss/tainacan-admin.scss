@@ -1,5 +1,5 @@
 // Import Bulma's core
-@import "../../../node_modules/bulma/sass/utilities/_all";
+@import "../../../node_modules/bulma/sass/utilities/_all.sass";
 
 // Tainacan custom colors
 $primary: #25a189;
@@ -27,8 +27,8 @@ $link-focus-border: $primary;
 
 // Import Bulma and Buefy styles
 @import "../../assets/css/fonts/materialdesignicons.css";
-@import "../../../node_modules/bulma/bulma";
-@import "../../../node_modules/buefy/src/scss/buefy";
+@import "../../../node_modules/bulma/bulma.sass";
+@import "../../../node_modules/buefy/src/scss/buefy.scss";
 
 body.tainacan-admin-page #adminmenumain {
     display: none;

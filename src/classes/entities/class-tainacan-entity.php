@@ -209,17 +209,7 @@ class Entity {
                     }
                 }
             } else {
-            	$status = $this->get_mapped_property('status');
-
-                if ( !$validation->validate($prop_value)
-                    && ( $prop !== 'title' || $prop !== 'name' )
-                    && ( strpos($status, 'draft') || empty($status) ) ) {
-
-	                $this->add_error('invalid', $message);
-                    $is_valid = false;
-                }
-                elseif(!$validation->validate($prop_value) && (strpos($status, 'draft') === false)){
-
+                if (!$validation->validate($prop_value)) {
                 	$this->add_error('invalid', $message);
 	                $is_valid = false;
                 }
