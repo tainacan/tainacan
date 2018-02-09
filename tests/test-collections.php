@@ -198,7 +198,8 @@ class Collections extends TAINACAN_UnitTestCase {
 		    array(
 			    'name'          => 'teste',
 			    'description'   => 'adasdasdsa',
-			    'default_order' => 13
+			    'default_order' => 13,
+                'status'        => 'publish'
 		    )
 	    );
 
