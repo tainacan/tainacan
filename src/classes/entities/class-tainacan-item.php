@@ -203,8 +203,6 @@ class Item extends Entity {
      */
     function validate(){
         
-        //var_dump($this->get_status() , $this->get_title()); die;
-        
         if ( !in_array($this->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
             return true;
         
