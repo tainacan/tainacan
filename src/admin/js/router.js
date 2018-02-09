@@ -9,7 +9,7 @@ import ItemEditionPage from '../pages/item-edition-page.vue'
 
 import CollectionsList from '../components/collections-list.vue'
 import ItemsList from '../components/items-list.vue'
-
+ 
 Vue.use(VueRouter); 
 
 const routes = [
