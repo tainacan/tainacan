@@ -110,10 +110,12 @@ export default {
             'getItem'
         ]),
         onSubmit() {
-            // Puts loading on Draft Item creation
+            
+            // Puts loading on Item edition
             this.isLoading = true;
 
             let data = {item_id: this.itemId, title: this.form.title, description: this.form.description, status: this.form.status};
+            
             this.updateItem(data).then(updatedItem => {    
                 
                 this.item = updatedItem;

@@ -28,7 +28,6 @@ export const fetchCollection = ({ commit }, id) => {
             resolve( res.data );
         })
         .catch(error => {
-            console.log(error);
             reject(error);
         })
     });
@@ -43,8 +42,7 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
         }).then( res => {
             commit('setCollection', { id: collection_id, name: name, description: description, status: status });
             resolve( res.data );
-        }).catch( error => {  
-            commit('setCollection', { id: collection_id, name: name, description: description, status: status });
+        }).catch( error => { 
             reject( error.response );
         });
 
@@ -60,13 +58,9 @@ export const sendCollection = ( { commit }, { name, description, status }) => {
         })
             .then( res => {
                 commit('setCollection', { name: name, description: description, status: status });
-                //commit('removeError', { collection_id });
                 resolve( res.data );
             })
             .catch(error => {
-                console.log( 'error',error.response );
-                commit('setCollection', { name: name, description: description, status: status });
-                //commit('setError', { name: name, description: description, status: status, error: error.response.data.errors  });
                 reject( error.response );
             });
     });

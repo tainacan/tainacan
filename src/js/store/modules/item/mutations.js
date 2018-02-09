@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+
 export const setItem = ( state, item ) => {
     state.item = item;
 }
@@ -15,22 +16,5 @@ export const setSingleField = ( state, field) => {
         Vue.set( state.fields, index, field );
     }else{
         state.fields.push( field );
-    }
-}
-
-export const setError = ( state, field ) => {
-    let index = state.error.findIndex(itemMetadata => itemMetadata.field_id === field.field_id);
-    if ( index >= 0){
-        //state.error[index] = field;
-        Vue.set( state.error, index, field );
-    }else{
-        state.error.push( field );
-    }
-};
-
-export const removeError =  ( state, field ) => {
-    let index = state.error.findIndex(itemMetadata => itemMetadata.field_id === field.field_id);
-    if ( index >= 0){
-        state.error.splice( index, 1);
     }
 }

@@ -136,7 +136,7 @@ export default {
             this.isLoading = true;
 
             // Creates draft Collection
-            let data = { title: '', description: '', status: 'draft'};
+            let data = { name: '', description: '', status: 'auto-draft'};
             this.sendCollection(data).then(res => {
 
                 this.collectionId = res.id;

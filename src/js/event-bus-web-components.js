@@ -26,7 +26,7 @@ export const eventBus = new Vue({
                     if (event.detail && event.detail[0] ){
                         const promisse = this.$store.dispatch('item/updateMetadata',
                             { item_id: $(eventElement).attr("item_id"), field_id: $(eventElement).attr("field_id"), values: event.detail });
-
+                            
                         promisse.then( response => {
                             // eventElement.errorsMsg = JSON.stringify( [] );
                             // eventElement.value = response.value;
