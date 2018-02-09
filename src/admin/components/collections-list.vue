@@ -18,11 +18,11 @@
                     </template>
                 </b-table-column>
 
-                <b-table-column label="Nome" field="props.row.name" sortable show-overflow-tooltip>
+                <b-table-column label="Nome" field="props.row.name">
                     <router-link :to="`/collections/${props.row.id}`" tag="a">{{ props.row.name }}</router-link>
                 </b-table-column>
 
-                <b-table-column property="description" label="Descrição" field="props.row.description">
+                <b-table-column property="description" label="Descrição" show-overflow-tooltip field="props.row.description">
                     {{ props.row.description }}
                 </b-table-column>
 

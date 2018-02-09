@@ -13,8 +13,7 @@
                     </template>
                 </b-table-column>
 
-
-                <b-table-column label="Nome" field="title" sortable show-overflow-tooltip>
+                <b-table-column label="Nome" field="title" show-overflow-tooltip>
                     <router-link
                             :to="`/collections/${collectionId}/items/${props.row.id}`" tag="a">{{ props.row.title }}
                     </router-link>

@@ -128,6 +128,10 @@ export default {
                 this.isLoading = false;
 
                 this.$router.push('/collections/' + this.form.collectionId + '/items/' + this.itemId);
+            }).catch(error => {
+                console.log(error);
+
+                this.isLoading = false;
             });
         },
         getStatusColor(status) {
