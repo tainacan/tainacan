@@ -294,6 +294,7 @@ class Capabilities {
 		foreach ($defaults_caps as $post_type => $wp_append_roles) {
 			if($post_type == 'tainacan-items') continue;
 			$entity = Repository::get_entity_by_post_type($post_type);
+			$entity_cap = $entity->get_capabilities();
 			// append new capabilities to WordPress default roles
 			foreach ($wp_append_roles as $role_name => $caps) {
 				$role = get_role($role_name);
@@ -302,7 +303,7 @@ class Capabilities {
 				}
 				
 				foreach ($caps as $cap) {
-					$role->add_cap($entity->cap->$cap);
+					$role->add_cap($entity_cap->$cap);
 				}
 			}
 		}

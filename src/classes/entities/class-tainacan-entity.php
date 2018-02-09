@@ -110,11 +110,7 @@ class Entity {
     		}
     	}
     	if($this->get_post_type() !== false) {
-    		$post_type_obj = get_post_type_object(self::get_post_type());
-    		if(!is_object($post_type_obj)) { //may be called before post_type registration
-    			throw new \Exception(sprintf("The post type %s need to be registered, need the init hook!"));
-    		}
-    		$this->cap = $post_type_obj->cap;
+    		$this->cap = $this->get_capabilities();
     	} elseif ($this instanceof Item) {
     	    $item_collection = $this->get_collection();
             if ($item_collection) {
@@ -343,6 +339,26 @@ class Entity {
 	public function can_publish($user = null)	{
 		global ${$this->repository};
 		return ${$this->repository}->can_publish($this, $user);
+	}
+	
+	/**
+	 * Get the capabilities list for the post type of the entity
+	 *
+	 * @uses get_post_type_capabilities to get the list.
+	 *
+	 * This method is usefull for getting the capabilities of the entity post type
+	 * regardless if it has been already registered or not.
+	 *
+	 * @return object Object with all the capabilities as member variables.
+	 */
+	public function get_capabilities() {
+		$args = [
+			'map_meta_cap' => true,
+			'capability_type' => self::get_post_type(),
+			'capabilities' => array()
+		];
+		
+		return get_post_type_capabilities((object) $args);
 	}
 	
 }

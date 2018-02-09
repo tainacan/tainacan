@@ -408,16 +408,17 @@ abstract class Repository {
     		$user = $user->ID;
     	}
     	$entity = self::get_entity_by_post($entity);
+    	$entity_cap = $entity->get_capabilities();
     	
-    	if (!isset($entity->cap->edit_post)) {
+    	if (!isset($entity_cap->edit_post)) {
             return false;
         }
         
         if (is_integer($entity->get_id())) {
-            return user_can($user, $entity->cap->edit_post, $entity->get_id());
+        	return user_can($user, $entity_cap->edit_post, $entity->get_id());
         } else {
             // creating new
-            return user_can($user, $entity->cap->edit_posts);
+        	return user_can($user, $entity_cap->edit_posts);
         }
 
     }
@@ -439,15 +440,16 @@ abstract class Repository {
     		$user = $user->ID;
     	}
     	$entity = self::get_entity_by_post($entity);
+    	$entity_cap = $entity->get_capabilities();
     	
-    	if (!isset($entity->cap->read)) {
+    	if (!isset($entity_cap->read)) {
     		if($entity->get_post_type() === false) { // Allow read of not post entities
     			return true;
     		}
     		return false;
     	}
     	
-   		return user_can($user, $entity->cap->read, $entity->get_id());
+    	return user_can($user, $entity_cap->read, $entity->get_id());
     }
 
 	/**
@@ -467,12 +469,13 @@ abstract class Repository {
     		$user = $user->ID;
     	}
    		$entity = self::get_entity_by_post($entity);
+   		$entity_cap = $entity->get_capabilities();
    		
-   		if (!isset($entity->cap->delete_post)) {
+   		if (!isset($entity_cap->delete_post)) {
    			return false;
    		}
     	
-    	return user_can($user, $entity->cap->delete_post, $entity->get_id());
+   		return user_can($user, $entity_cap->delete_post, $entity->get_id());
     }
 
 	/**
@@ -492,10 +495,12 @@ abstract class Repository {
     		$user = $user->ID;
     	}
     	$entity = self::get_entity_by_post($entity);
-    	if (!isset($entity->cap->publish_posts)) {
+    	$entity_cap = $entity->get_capabilities();
+    	
+    	if (!isset($entity_cap->publish_posts)) {
     		return false;
     	}
-    	return user_can($user, $entity->cap->publish_posts, $entity->get_id());
+    	return user_can($user, $entity_cap->publish_posts, $entity->get_id());
     }
     
 }

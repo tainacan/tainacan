@@ -221,16 +221,9 @@ class Item extends Entity {
      * set meta cap object
      */
     protected function set_cap() {
-    	if(!empty($this->get_db_identifier())) {
-	    	$db_identifier = Collection::$db_identifier_prefix.$this->get_db_identifier().Collection::$db_identifier_sufix;
-	    	if(!empty($db_identifier))
-	    	{
-		    	$post_type_obj = get_post_type_object($db_identifier);
-		    	if(!is_object($post_type_obj)) {
-		    		throw new \Exception(sprintf("Collection post type (%s) is not setted and cannot be registred", $db_identifier));
-		    	}
-		    	$this->cap = $post_type_obj->cap;
-	    	}
+    	$item_collection = $this->get_collection();
+    	if ($item_collection) {
+    		$this->cap = $item_collection->get_items_capabilities();
     	}
     }
 }
