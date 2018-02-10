@@ -39,7 +39,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			'collection',
 			array(
 				'name'        => 'Agile',
-				'description' => 'Agile methods'
+				'description' => 'Agile methods',
+                'status'      => 'publish'
 			),
 			true
 		);
@@ -70,7 +71,6 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
-
 		$data = $response->get_data();
 
 		$first_item  = $data[0];
