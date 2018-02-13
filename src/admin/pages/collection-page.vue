@@ -1,21 +1,39 @@
 <template>
     <div>
-        <el-row v-if="collection != null">
-            <el-card :body-style="{ padding: '0px' }" class="element-card">
-                <img :src="collection.featured_image" class="image" :alt="collection.name">
-                <div style="padding: 14px;">
-                    <span>{{ collection.name }}</span>
-                    <div class="bottom clearfix">
-                        <time class="time">{{collection.description}}</time>
-                        <router-link tag="el-button" class="primary" :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">Criar Item</router-link>
+        <section class="section" v-if="collection != null">
+            <div class="card">
+                <div class="card-image" v-if="collection.featured_image">
+                    <figure class="image is-4by3">
+                        <img :src="collection.featured_image" class="image" :alt="collection.name">
+                    </figure>
+                </div>
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">{{ collection.name }}</p>
+                            <!--p class="subtitle is-6">@johnsmith</p-->
+                        </div>
                     </div>
-                    <items-list :collectionId="collectionId"></items-list>
-                    <div class="bottom clearfix">
-                        <router-link tag="el-button" :to="{ path: `/collections/${collection.id}/items/`, params: { collection_id: collection.id }}">Ver todos os itens</router-link>
+
+                    <div class="content">
+                        {{collection.description}}
                     </div>
                 </div>
-            </el-card>     
-        </el-row>
+                <footer class="card-footer">
+                    <router-link
+                            class="card-footer-item"
+                            :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">
+                        Criar Item
+                    </router-link>
+                    <router-link
+                            class="card-footer-item"
+                            :to="{ path: `/collection/${collection.id}/items/`, params: { collection_id: collection.id }}">
+                        Ver todos os itens
+                    </router-link>
+                </footer>
+            </div>
+            <items-list :collectionId="collectionId"></items-list>
+        </section>
     </div>
 </template>
 

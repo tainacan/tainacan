@@ -104,7 +104,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 
 		$item = new Entities\Item($item_id);
 
-		$item_metadata = $this->item_metadata_repository->fetch($item, 'OBJECT');
+		$item_metadata = $item->get_fields();
 
 		$prepared_item = $this->prepare_item_for_response($item_metadata, $request);
 
@@ -190,7 +190,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			$field = $this->field_repository->fetch( $field_id );
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $field );
-			$item_metadata->set_value( $value );
+			$item_metadata->set_value( ( is_array($value) ) ? array_filter($value) : $value );
 
 			if ( $item_metadata->validate() ) {
 				$field_updated = $this->item_metadata_repository->update( $item_metadata );

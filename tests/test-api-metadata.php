@@ -69,8 +69,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$field = $this->tainacan_field_factory->create_field('text', '', true);
-
 		$field = $this->tainacan_entity_factory->create_entity(
 			'field',
 			array(
@@ -78,7 +76,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Descreve valor do campo data.',
 				'collection'  => $collection,
 				'status'      => 'publish',
-				'field_type'  => $field->get_primitive_type(),
+				'field_type'  => 'Tainacan\Field_Types\Text',
 			),
 			true
 		);
@@ -142,8 +140,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$field = $this->tainacan_field_factory->create_field('text', '', true);
-
 		$field = $this->tainacan_entity_factory->create_entity(
 			'field',
 			array(
@@ -151,7 +147,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Descreve o dado do campo data.',
 				'collection'  => $collection,
 				'status'      => 'publish',
-				'field_type'  => $field->get_primitive_type(),
+				'field_type'  => 'Tainacan\Field_Types\Text',
 			),
 			true
 		);

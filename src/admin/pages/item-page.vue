@@ -1,17 +1,33 @@
 <template>
     <div>
-        <el-row v-if="item != null">
-            <el-card :body-style="{ padding: '0px' }">
-                <img src="" class="image" :alt="item.title">
-                <div style="padding: 14px;">
-                    <span>{{ item.title }}</span>
-                    <div class="bottom clearfix">
-                        <time class="time">{{item.description}}</time>
-                        <router-link tag="el-button" class="primary" :to="{ path: `/collections/${collectionId}/items/${itemId}/edit`}">Editar Item</router-link>
+        <b-loading :active.sync="isLoading" :canCancel="false">
+
+        </b-loading>
+        <div class="card">
+            <div class="card-image" v-if="item.featured_image">
+                <figure class="image is-4by3">
+                    <img :src="item.featured_image" class="image" :alt="item.title">
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-content">
+                        <p class="title is-4">{{ item.title }}</p>
+                        <!--p class="subtitle is-6">@johnsmith</p-->
                     </div>
                 </div>
-            </el-card>     
-        </el-row>
+
+                <div class="content">
+                    {{item.description}}
+                </div>
+            </div>
+            <footer class="card-footer">
+                <router-link
+                        class="card-footer-item" :to="{ path: `/collections/${collectionId}/items/${itemId}/edit`}">
+                    Editar Item
+                </router-link>
+            </footer>
+        </div>
     </div>
 </template>
 
@@ -23,7 +39,8 @@ export default {
     data(){
         return {
             collectionId: Number,
-            itemId: Number
+            itemId: Number,
+            isLoading: false
         }
     },
     methods: {
@@ -45,11 +62,12 @@ export default {
         this.itemId = this.$route.fullPath.split("/").pop();
     
         // Puts loading on Item Loading
-        let loadingInstance = this.$loading({ text: 'Carregando item...' });
+        this.isLoading = true;
+        let loadingInstance = this;
 
         // Obtains Item 
         this.fetchItem(this.itemId).then(res => {
-            loadingInstance.close();
+            loadingInstance.isLoading = false;
         });
     }
 

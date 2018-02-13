@@ -125,7 +125,7 @@ class Entity {
      * @return mixed property value
      */
     public function get_mapped_property($prop) {
-    	if (isset($this->$prop) && !empty($this->$prop)){
+    	if (isset($this->$prop) ){
     		return $this->$prop;
     	}
     	//prop is not set at object, try to get from database
@@ -205,17 +205,7 @@ class Entity {
                     }
                 }
             } else {
-            	$status = $this->get_mapped_property('status');
-
-                if ( !$validation->validate($prop_value)
-                    && ( $prop !== 'title' || $prop !== 'name' )
-                    && ( strpos($status, 'draft') || empty($status) ) ) {
-
-	                $this->add_error('invalid', $message);
-                    $is_valid = false;
-                }
-                elseif(!$validation->validate($prop_value) && (strpos($status, 'draft') === false)){
-
+                if (!$validation->validate($prop_value)) {
                 	$this->add_error('invalid', $message);
 	                $is_valid = false;
                 }

@@ -1,10 +1,10 @@
 <template>
-    <el-input-number
-              controls-position="right"
+    <b-input
+              type="number"
               :value="inputValue"
               @blur="onBlur"
               @change="onBlur"
-              @input="onInput($event)"></el-input-number>
+              @input="onInput($event)"></b-input>
 </template>
 
 <script>

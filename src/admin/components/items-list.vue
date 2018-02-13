@@ -1,29 +1,42 @@
 <template>
     <div>
-        <el-table
+        <b-table
                 ref="multipleTable"
                 :data="items"
-                style="width: 100%"
-                @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55">
-            </el-table-column>
-            <el-table-column width="55">
-                <template v-if="scope.row.featured_image" slot-scope="scope">
-                    <img class="table-thumb" :src="`${scope.row.featured_image}`"/>
-                </template>
-            </el-table-column>
-            <el-table-column label="Nome" show-overflow-tooltip>
-                <template slot-scope="scope"><router-link :to="`/collections/${collectionId}/items/${scope.row.id}`" tag="a">{{ scope.row.title }}</router-link></template>
-            </el-table-column>
-            <el-table-column property="description" label="Descrição" show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column label="Ações" width="120">
-                <template slot-scope="scope">
-                    <el-button size="small" type="text" @click.native="shareItem(scope.row.id)"><i class="material-icons">share</i></el-button>
-                    <el-button size="small" type="text" @click.native="showMoreItem(scope.row.id)"><i class="material-icons">more_vert</i></el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+                @selection-change="handleSelectionChange"
+                stripe>
+            <template slot-scope="props">
+
+                <b-table-column field="featured_image" width="55">
+                    <template v-if="props.row.featured_image" slot-scope="scope">
+                        <img class="table-thumb" :src="`${props.row.featured_image}`"/>
+                    </template>
+                </b-table-column>
+
+                <b-table-column label="Nome" field="title" show-overflow-tooltip>
+                    <router-link
+                            :to="`/collections/${collectionId}/items/${props.row.id}`" tag="a">{{ props.row.title }}
+                    </router-link>
+                </b-table-column>
+
+                <b-table-column field="description" label="Descrição">
+                    {{ props.row.description }}
+                </b-table-column>
+
+
+                <b-table-column label="Ações">
+                    <router-link :to="`/collections/${collectionId}/items/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
+                    <a @click.native="showMoreItem(props.row.id)">
+                        <b-icon icon="dots-vertical">
+                    </a>
+                </b-table-column>
+
+            </template>
+
+            <!--b-table-column type="selection" width="55">
+            </b-table-column -->
+
+        </b-table>
     </div>
 </template>
 

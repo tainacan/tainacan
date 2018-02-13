@@ -7,15 +7,10 @@ export const sendField = ( { commit }, { item_id, field_id, values }) => {
            values: values
        })
            .then( res => {
-               console.log( 'success',res.data );
                commit('setSingleMetadata', { item_id: item_id, field_id: field_id, values: values });
-               commit('removeError', { field_id: field_id });
                resolve( res.data );
            })
            .catch(error => {
-               console.log( 'error',error );
-               commit('setSingleMetadata', { item_id: item_id, field_id: field_id, values: values });
-               commit('setError', { item_id: item_id, field_id: field_id, value: values, error: error.response.data.errors  });
                reject( error);
            });
    });
@@ -24,15 +19,17 @@ export const sendField = ( { commit }, { item_id, field_id, values }) => {
 
 export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
     return new Promise((resolve, reject) => {
+
         axios.patch(`/item/${item_id}/metadata/${field_id}`, {
             values: values
         })
             .then( res => {
                 let field = res.data;
                 commit('setSingleField', field);
+                resolve(field)
             })
             .catch( error => {
-                console.log('error', error);
+                reject(error.response.data.errors);
             })
     });
 };
@@ -46,7 +43,6 @@ export const fetchFields = ({ commit }, item_id) => {
             resolve( res.data );
         })
         .catch(error => {
-            console.log(error);
             reject( error );
         });
     });
@@ -62,7 +58,6 @@ export const fetchItem = ({ commit }, item_id) => {
             resolve( res.data );
         })
         .catch(error => {
-            console.log(error);
             reject( error );
         });
     });
@@ -76,15 +71,10 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
             status: status
         })
             .then( res => {
-                console.log( 'success',res.data );
-                commit('setSingleItem', { collection_id: collection_id, title: title, description: description, status: status });
-                commit('removeError', { collection_id });
+                commit('setItem', { collection_id: collection_id, title: title, description: description, status: status });
                 resolve( res.data );
             })
             .catch(error => {
-                console.log( 'error',error.response );
-                commit('setSingleItem', { collection_id: collection_id, title: title, description: description, status: status });
-                commit('setError', { collection_id: collection_id, title: title, description: description, status: status, error: error.response.data.errors  });
                 reject( error.response );
             });
     });
@@ -100,8 +90,7 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
         }).then( res => {
             commit('setItem', { id: item_id, title: title, description: description, status: status });
             resolve( res.data );
-        }).catch( error => {  
-            commit('setItem', { id: item_id, title: title, description: description, status: status });
+        }).catch( error => { 
             reject( error.response );
         });
 

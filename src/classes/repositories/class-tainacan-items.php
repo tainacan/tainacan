@@ -150,14 +150,6 @@ class Items extends Repository {
     		}
     	}
     	
-    	// save field
-    	$field = $item->get_field();
-    	global $Tainacan_Item_Metadata;
-    	
-    	foreach ($field as $meta) {
-    		$Tainacan_Item_Metadata->insert($meta);
-    	}
-    	
     	do_action('tainacan-insert', $item);
     	do_action('tainacan-insert-Item', $item);
     	

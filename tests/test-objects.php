@@ -87,13 +87,13 @@ class Objects extends TAINACAN_UnitTestCase {
 				array(
 					'title'      => 'orange',
 					'collection' => $collection,
-					'add_metadata' => [
-						[$field, 'value_1']
-					]
 				),
 				true
 				);
-		$test = get_post($i->get_id());
+		
+        $this->tainacan_item_metadata_factory->create_item_metadata($i, $field, 'value_1');
+        
+        $test = get_post($i->get_id());
 		$entity = Repository::get_entity_by_post($test);
 		$this->assertEquals($i->get_db_identifier(), $entity->get_db_identifier());
 		
@@ -105,11 +105,33 @@ class Objects extends TAINACAN_UnitTestCase {
 		$entity = Repository::get_entity_by_post($test);
 		$this->assertEquals($field2->get_db_identifier(), $entity->get_db_identifier());
 		
-		$fields = $i->get_field();
-		//var_dump($fields);
+		$fields = $i->get_fields();
 		$item_metadata = array_pop($fields);
 		$test = get_post($item_metadata->get_field()->get_id());
 		$entity = Repository::get_entity_by_post($test);
 		$this->assertEquals($item_metadata->get_field()->get_db_identifier(), $entity->get_db_identifier());
 	}
+    
+    function test_delete_attributes() {
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+				'collection',
+				array(
+					'name'   => 'test title',
+                    'description' => 'test description',
+					'status' => 'draft'
+				),
+				true
+				);
+                
+        $collection->set_name('');
+        $this->assertEquals('', $collection->get_name());
+        
+        global $Tainacan_Collections;
+        $this->assertTrue($collection->validate());
+        $newCol = $Tainacan_Collections->insert($collection);
+        $this->assertEquals('', $newCol->get_name());
+        
+        
+    }
 }

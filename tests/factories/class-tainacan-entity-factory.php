@@ -31,7 +31,9 @@ class Entity_Factory {
 	 */
 	public function create_entity($type, $args = [], $is_validated_and_in_db = false, $publish = false){
 		ini_set('display_errors', 1);
-
+        
+        global $Tainacan_Item_Metadata;
+        
 		try {
 			if(empty($type)){
 				throw new \InvalidArgumentException('The type can\'t be empty');
@@ -61,14 +63,8 @@ class Entity_Factory {
 
 			if (!empty($args) && $is_validated_and_in_db) {
 				foreach ($args as $attribute => $content) {
-					if($attribute == 'add_metadata'){
-						foreach ($content as $in){
-							$this->entity->$attribute($in[0], $in[1]);
-						}
-					} else {
-						$set_ = 'set_' . $attribute;
-						$this->entity->$set_( $content );
-					}
+					$set_ = 'set_' . $attribute;
+					$this->entity->$set_( $content );
 				}
 
 				if ($this->entity->validate()) {
@@ -79,14 +75,8 @@ class Entity_Factory {
 
 			} elseif (!empty($args) && !$is_validated_and_in_db){
 				foreach ($args as $attribute => $content) {
-					if($attribute == 'add_metadata'){
-						foreach ($content as $in){
-							$this->entity->$attribute($in[0], $in[1]);
-						}
-					} else {
-						$set_ = 'set_' . $attribute;
-						$this->entity->$set_( $content );
-					}
+					$set_ = 'set_' . $attribute;
+					$this->entity->$set_( $content );
 				}
 
 			} elseif (empty($args) && !$is_validated_and_in_db) {

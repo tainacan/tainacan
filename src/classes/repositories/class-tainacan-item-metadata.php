@@ -7,12 +7,19 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Item_Metadata extends Repository {
 	public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
+    
     public function insert($item_metadata) {
 
         $unique = !$item_metadata->is_multiple();
 
         if ($unique) {
-            add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+            $field_type = $item_metadata->get_field()->get_field_type_object();
+            if ($field_type->core) {
+                $this->save_core_field_value($item_metadata);
+            } else {
+                add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+            }
+            
         } else {
             delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
             
@@ -35,7 +42,12 @@ class Item_Metadata extends Repository {
 	    $unique = !$item_metadata->is_multiple();
 
 	    if ($unique) {
-		    update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+            $field_type = $item_metadata->get_field()->get_field_type_object();
+            if ($field_type->core) {
+                $this->save_core_field_value($item_metadata);
+            } else {
+                update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+            }
 	    } else {
 		    delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
 
@@ -71,6 +83,21 @@ class Item_Metadata extends Repository {
 //	    } else {
 //    		delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash($item_metadata->get_value()));
 //	    }
+    }
+
+    public function save_core_field_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+        $field_type = $item_metadata->get_field()->get_field_type_object();
+        if ($field_type->core) {
+            $item = $item_metadata->get_item();
+            $set_method = 'set_' . $field_type->related_mapped_prop;
+            $item->$set_method($item_metadata->get_value());
+            if ($item->validate()) {
+                global $Tainacan_Items;
+                $Tainacan_Items->insert($item);
+            } else {
+                throw new \Exception('Item metadata should be validated beforehand');
+            }
+        }
     }
 
     /**
@@ -113,8 +140,18 @@ class Item_Metadata extends Repository {
      */
     public function get_value(Entities\Item_Metadata_Entity $item_metadata) {
         $unique = ! $item_metadata->is_multiple();
-
-        return get_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), $unique);
+        
+        $field_type = $item_metadata->get_field()->get_field_type_object();
+        if ($field_type->core) {
+            $item = $item_metadata->get_item();
+            
+            $get_method = 'get_' . $field_type->related_mapped_prop;
+            return $item->$get_method();
+            
+        } else {
+            return get_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), $unique);
+        }
+        
     }
 
     public function register_post_type() { }

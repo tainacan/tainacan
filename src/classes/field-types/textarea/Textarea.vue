@@ -1,9 +1,8 @@
 <template>
-    <el-input type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
+    <b-input type="textarea"
               :value="inputValue"
               @blur="onBlur"
-              @input="onInput($event)"></el-input>
+              @input="onInput($event)"></b-input>
 </template>
 
 <script>

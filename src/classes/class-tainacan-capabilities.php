@@ -333,6 +333,10 @@ class Capabilities {
 				$role->add_cap($collection_items_caps->$cap);
 			}
 		}
+        
+        // Refresh roles capabilities for current user to have instant effect
+        global $current_user;
+        $current_user->get_role_caps();
 	}
 	
 	/**

@@ -11,6 +11,22 @@ abstract class Field_Type  {
 
     private $primitive_type;
     public $options;
+    public $errors;
+    
+    /**
+     * Indicates wether this is a core Field Type or not
+     *
+     * Core field types are used by Title and description fields. These fields:
+     * * Can only be used once, they belong to the repository and can not be deleted
+     * * Its values are saved in th wp_post table, and not as post_meta 
+     * 
+     */
+    public $core = false;
+    
+    /**
+     * Used by core field types to indicate where it should be saved
+     */
+    public $related_mapped_prop = false;
 
     abstract function render( $itemMetadata );
 
@@ -23,7 +39,7 @@ abstract class Field_Type  {
         $Tainacan_Fields->register_field_type( $this );
     }
 
-    public function validate($value) {
+    public function validate(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
         return true;
     }
     
@@ -37,6 +53,10 @@ abstract class Field_Type  {
 
     public function set_primitive_type($primitive_type){
         $this->primitive_type = $primitive_type;
+    }
+
+    public function get_errors() {
+        return $this->errors;
     }
 
     /**

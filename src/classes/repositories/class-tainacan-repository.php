@@ -64,7 +64,7 @@ abstract class Repository {
 	 */
 	public function insert($obj) {
 		// validate
-		if ( in_array($obj->get_status(), apply_filters('tainacan-status-validation', ['publish','future','private'])) && !$obj->get_validated()){
+    		if ( in_array($obj->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) && !$obj->get_validated()){
 			throw new \Exception('Entities must be validated before you can save them');
             // TODO: Throw Warning saying you must validate object before insert()
 		}

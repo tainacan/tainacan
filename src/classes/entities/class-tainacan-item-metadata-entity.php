@@ -136,6 +136,16 @@ class Item_Metadata_Entity extends Entity {
             $this->add_error('required', $field->get_name() . ' is required');
             return false;
         }
+
+        $classFieldType = $field->get_field_type_object();
+        if( is_object( $classFieldType ) ){
+            if( method_exists ( $classFieldType , 'validate' ) ){
+                if( ! $classFieldType->validate( $this ) ) {
+                    $this->add_error('field_type_error', $classFieldType->get_errors() );
+                    return false;
+                }
+            }
+        }
         
         if ($this->is_multiple()) {
             
