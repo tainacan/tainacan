@@ -32,9 +32,20 @@ class CoreFieldTypes extends TAINACAN_UnitTestCase {
         	'field',
 	        array(
 	        	'name' => 'metadado',
-		        'description' => 'descricao',
+		        'description' => 'title',
 		        'collection' => $collection,
 		        'field_type' => 'Tainacan\Field_Types\Core_Title'
+	        ),
+	        true
+        );
+        
+        $fieldDescription = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'metadado_desc',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Core_Description'
 	        ),
 	        true
         );
@@ -63,6 +74,21 @@ class CoreFieldTypes extends TAINACAN_UnitTestCase {
        
        $check_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($checkItem, $field);
        $this->assertEquals('changed title', $check_item_metadata->get_value());
+       
+       
+       // description
+       $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $fieldDescription);
+       $item_metadata->set_value('changed description');
+       $item_metadata->validate();
+       
+       $Tainacan_Item_Metadata->insert($item_metadata);
+       
+       $checkItem = $Tainacan_Items->fetch($i->get_id());
+       
+       $this->assertEquals('changed description', $checkItem->get_description());
+       
+       $check_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($checkItem, $fieldDescription);
+       $this->assertEquals('changed description', $check_item_metadata->get_value());
        
     }
     
