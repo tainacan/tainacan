@@ -285,7 +285,9 @@ abstract class Repository {
     		$property = get_term_meta($entity->WP_Term->term_id, $prop, true);
     	} elseif ( isset( $entity->WP_Post )) {
     		if($mapped == 'thumbnail'){
-    			$property = get_the_post_thumbnail_url($entity->WP_Post->ID, 'full');
+    			if(isset($entity->WP_Post->ID)) {
+    				$property = get_the_post_thumbnail_url($entity->WP_Post->ID, 'full');
+    			}
 		    } else {
 			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
 		    }
@@ -317,7 +319,7 @@ abstract class Repository {
     
     /**
      * 
-     * @param integer|\WP_Post $post
+     * @param integer|\WP_Post $post|Entity
      * @throws \Exception
      * @return \Tainacan\Entities\Entity|boolean
      */
@@ -501,6 +503,45 @@ abstract class Repository {
     		return false;
     	}
     	return user_can($user, $entity_cap->publish_posts, $entity->get_id());
+    }
+    
+    /**
+     * Compare two repository entities 
+     * 
+     * @param Entity|integer|\WP_Post $old default ($which = 0) to self compare with stored entity
+     * @param Entity|integer|\WP_Post $new
+     * 
+     * @return array List of diff values
+     */
+    public function diff($old = 0, $new) {
+    	$old_entity = null;
+    	if($old === 0) { // self diff or other entity?
+    		$id = $new->get_id();
+    		if(!empty($id)) { // there is a repository entity?
+    			$old_entity = $this->get_entity_by_post($new->WP_Post->ID);
+    		}
+    		else {
+    			$entity_type = get_class($new);
+    			$old_entity = new $entity_type; // there is no saved entity, let compare with a new empty one
+    		}
+    	}
+    	else { // get entity from repository
+    		$old_entity = $this->get_entity_by_post($old);
+    	}
+    	$new_entity = $this->get_entity_by_post($new);
+    	
+    	$map = $this->get_map();
+    	
+    	$diff = [];
+    	
+    	foreach ($map as $prop => $mapped) {
+   			if($old_entity->get_mapped_property($prop) != $new_entity->get_mapped_property($prop) ) {
+   				$diff[$prop] = ['new' => $new_entity->get_mapped_property($prop), 'old' => $old_entity->get_mapped_property($prop)];
+   			}
+    	}
+    	$diff = apply_filters('tainacan-entity-diff', $diff, $new, $old);
+    	
+    	return $diff;
     }
     
 }

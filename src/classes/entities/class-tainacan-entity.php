@@ -361,4 +361,14 @@ class Entity {
 		return get_post_type_capabilities((object) $args);
 	}
 	
+	/**
+	 * Compare this entity props with self old values or with $which other entity 
+	 * @param Entity|integer|\WP_Post $which default ($which = 0) to self compare with stored entity
+	 * @return array
+	 */
+	public function diff($which = 0) {
+		global ${$this->repository};
+		return ${$this->repository}->diff($which, $this);
+	}
+	
 }
