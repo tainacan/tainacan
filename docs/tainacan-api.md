@@ -174,16 +174,10 @@ In body of requisition pass a JSON with values of metadata, like:
    
 ```javascript
 {
-"values": "[any, type]"
-}
-```
-
-If you want to update a metadata with multiple values, you will need to pass a body like (attribute multiple with value 'yes'):
-
-```javascript
-{
-"values": "[any, type]",
-"multiple": "yes"
+"values": "[
+{ "new": "any_type", "prev": "any_type"},
+{ "new": "any_type", "prev": ""}
+]"
 }
 ```
 
