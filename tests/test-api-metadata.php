@@ -148,13 +148,17 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'collection'  => $collection,
 				'status'      => 'publish',
 				'field_type'  => 'Tainacan\Field_Types\Text',
+				'multiple'    => 'yes'
 			),
 			true
 		);
 
 		$meta_values = json_encode(
 			array(
-				'values' => '19/01/2018'
+				'values' => array(
+					array('new' => '19/01/2018', 'prev' => ''),
+					array('new' => '19/02/2018', 'prev' => '')
+				)
 			)
 		);
 
@@ -172,9 +176,11 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals($field->get_id(), $field_updated['id']);
 
-		$metav = get_post_meta($item->get_id(), $field_updated['id'], true);
+		$metav = get_post_meta($item->get_id(), $field_updated['id']);
 
-		$this->assertEquals('19/01/2018', $metav);
+		var_dump($metav);
+
+		$this->assertEquals('19/01/2018', $metav[0]);
 
 
 		#### UPDATE FIELD IN COLLECTION ####
