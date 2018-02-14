@@ -178,6 +178,15 @@ In body of requisition pass a JSON with values of metadata, like:
 }
 ```
 
+If you want to update a metadata with multiple values, you will need to pass a body like (attribute multiple with value 'yes'):
+
+```javascript
+{
+"values": "[any, type]",
+"multiple": "yes"
+}
+```
+
 2. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata`
 
 2.1. Enpoints supported:
