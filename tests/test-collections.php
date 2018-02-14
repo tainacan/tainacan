@@ -228,21 +228,25 @@ class Collections extends TAINACAN_UnitTestCase {
     	$x = $this->tainacan_entity_factory->create_entity(
     		'collection',
     		array(
-    			'name'          => 'testeDiff',
-    			'description'   => 'adasdasdsa',
-    			'default_order' => 'DESC'
+    			'name'				=> 'testeDiff',
+    			'description'		=> 'adasdasdsa',
+    			'default_order' 	=> 'DESC',
+    			'moderators_ids'	=> [1,2,3]
     		),
     		true
     	);
     	
     	$x->set_name('OtherValue');
     	$x->set_description('testeDiff2');
+    	$x->set_moderators_ids([3,4,5]);
     	
     	$diff = $x->diff();
-    	$this->assertEquals(2, count($diff));
+    	$this->assertEquals(3, count($diff));
     	$this->assertEquals($diff['name']['new'], 'OtherValue');
     	$this->assertEquals($diff['name']['old'], 'testeDiff');
     	$this->assertEquals($diff['description']['new'], 'testeDiff2');
     	$this->assertEquals($diff['description']['old'], 'adasdasdsa');
+    	$this->assertEquals([1 => 4, 2 => 5], $diff['moderators_ids']['diff']);
+    	
     }
 }

@@ -537,7 +537,22 @@ abstract class Repository {
     	
     	foreach ($map as $prop => $mapped) {
    			if($old_entity->get_mapped_property($prop) != $new_entity->get_mapped_property($prop) ) {
-   				$diff[$prop] = ['new' => $new_entity->get_mapped_property($prop), 'old' => $old_entity->get_mapped_property($prop)];
+   				if($mapped['map'] == 'meta_multi') {
+   					$meta_diff = array_diff( $new_entity->get_mapped_property($prop), $old_entity->get_mapped_property($prop) );
+   					if( !empty($meta_diff) ) {
+	   					$diff[$prop] = [
+	   						'new' => $new_entity->get_mapped_property($prop),
+	   						'old' => $old_entity->get_mapped_property($prop),
+	   						'diff' => $meta_diff //TODO better expose difference
+	   					];
+   					}
+   				}
+   				else {
+   					$diff[$prop] = [
+   						'new' => $new_entity->get_mapped_property($prop),
+   						'old' => $old_entity->get_mapped_property($prop)
+   					];
+   				}
    			}
     	}
     	$diff = apply_filters('tainacan-entity-diff', $diff, $new, $old);
