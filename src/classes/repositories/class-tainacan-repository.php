@@ -35,6 +35,7 @@ abstract class Repository {
      *          'type'       => 'string',
      *          'description'=> __('Name of the collection', 'tainacan'),
      *          'validation' => v::stringType(),
+     *          'default'	 => ''
      *      ],
      *      'slug'           =>  [
      *          'map'        => 'post_name',
