@@ -154,6 +154,14 @@ class Field extends Entity {
     }
     
     /**
+     * Return true if this field allow community suggestions, false otherwise
+     * @return bool
+     */
+    function get_accept_suggestion() {
+    	return $this->get_mapped_property('accept_suggestion');
+    }
+    
+    /**
      * Set the field name
      *
      * @param [string] $value
@@ -270,6 +278,14 @@ class Field extends Entity {
      */
     public function set_field_type( $value ){
     	$this->set_mapped_property('field_type', ( is_object( $value ) ) ?  get_class( $value ) : $value ) ; // Encode to avoid backslaches removal
+    }
+    
+    /**
+     * Set if this field allow community suggestions
+     * @param bool $value
+     */
+    function set_accept_suggestion( $value ) {
+    	return $this->set_mapped_property('accept_suggestion', $value);
     }
 
     // helpers

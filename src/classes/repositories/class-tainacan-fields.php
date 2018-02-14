@@ -131,6 +131,14 @@ class Fields extends Repository {
                 'description'=> __('The collection ID', 'tainacan'),
                 //'validation' => ''
             ],
+    		'accept_suggestion' => [
+    			'map'		 => 'meta',
+    			'title'		 => __('Field Value Accepts Suggestions', 'tainacan'),
+    			'type'		 => 'bool',
+    			'description'=> __('Allow the community suggest a different values for that field', 'tainacan'),
+    			'default'	 => false,
+    			'validation' => v::boolType()
+    		]
         ]);
     }
 

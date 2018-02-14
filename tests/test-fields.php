@@ -10,6 +10,7 @@ use Tainacan\Field_Types;
 
 /**
  * Field test case.
+ * @group fields
  */
 class Fields extends TAINACAN_UnitTestCase {
 
@@ -35,7 +36,8 @@ class Fields extends TAINACAN_UnitTestCase {
 	        	'name' => 'metadado',
 		        'description' => 'descricao',
 		        'collection' => $collection,
-		        'field_type' => $type
+		        'field_type' => $type,
+	        	'accept_suggestion' => true
 	        ),
 	        true
         );
@@ -45,6 +47,7 @@ class Fields extends TAINACAN_UnitTestCase {
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_description(), 'descricao');
         $this->assertEquals($test->get_collection_id(), $collection->get_id());
+        $this->assertTrue((bool) $test->get_accept_suggestion());
     }
 
     /**
