@@ -11,8 +11,8 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	protected function get_only_needed_attributes($entity, $map){
 
 		$entity_prepared = [
-			'id'                => $entity->get_id(),
-			'description'       => $entity->get_description(),
+			'id'          => $entity->get_id(),
+			'description' => $entity->get_description(),
 		];
 
 		if(array_key_exists('modification_date', $map)){
@@ -39,6 +39,10 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 
 		if(array_key_exists('columns', $map)){
 			$entity_prepared['columns'] = $entity->get_columns();
+		}
+
+		if(array_key_exists('status', $map)){
+			$entity_prepared['status'] = $entity->get_status();
 		}
 
 		return $entity_prepared;

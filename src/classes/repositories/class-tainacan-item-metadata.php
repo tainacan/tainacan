@@ -55,7 +55,11 @@ class Item_Metadata extends Repository {
 			    $values = $item_metadata->get_value();
 
 			    foreach ($values as $value){
-				    update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $value ));
+			    	if(array_key_exists('prev', $value)) {
+					    update_post_meta( $item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $value['new'] ), wp_slash($value['prev']) );
+				    } else {
+					    add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $value ));
+				    }
 			    }
 		    }
 	    }
@@ -100,12 +104,14 @@ class Item_Metadata extends Repository {
         }
     }
 
-    /**
-     * Fetch Item Field objects related to an Item
-     *
-     * @param Entities\Item $object
-     * @return array
-     */
+	/**
+	 * Fetch Item Field objects related to an Item
+	 *
+	 * @param Entities\Item $object
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
     public function fetch($object, $output = null ){
         if($object instanceof Entities\Item){
             global $Tainacan_Items, $Tainacan_Fields;
