@@ -174,10 +174,10 @@ In body of requisition pass a JSON with values of metadata, like:
    
 ```javascript
 {
-"values": "[
+"values": [
 { "new": "any_type", "prev": "any_type"},
 { "new": "any_type", "prev": ""}
-]"
+]
 }
 ```
 
