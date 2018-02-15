@@ -26,9 +26,8 @@
 
                 <b-table-column label="Ações">
                     <router-link :to="`/collections/${collectionId}/items/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
-                    <a @click.native="showMoreItem(props.row.id)">
-                        <b-icon icon="dots-vertical">
-                    </a>
+                    <a><b-icon icon="delete" @click.native="deleteOneItem(props.row.id)"></a>
+                    <a><b-icon icon="dots-vertical" @click.native="showMoreItem(props.row.id)"></a> 
                 </b-table-column>
 
             </template>
@@ -55,7 +54,8 @@ export default {
     },
     methods: {
         ...mapActions('collection', [
-            'fetchItems'
+            'fetchItems',
+            'deleteItem'
         ]),
         ...mapGetters('collection', [
             'getItems'
@@ -63,11 +63,13 @@ export default {
         handleSelectionChange(value) {
             this.multipleSelection = value;
         },
-        shareItem(itemId) {
-
+        deleteOneItem(itemId) {
+            this.$dialog.confirm({
+                message: 'Deseja realmente deletar este Item?',
+                onConfirm: () => this.deleteItem(itemId)
+            });
         },
         showMoreItem(itemId) {
-
         }
     },
     computed: {

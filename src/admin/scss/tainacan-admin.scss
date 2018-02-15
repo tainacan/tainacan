@@ -26,6 +26,9 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
+// Bulma's modal (needs to be greather than taincan-admin-app
+$modal-z: 9999999;
+
 // Import Bulma and Buefy styles
 @import "../../assets/css/fonts/materialdesignicons.css";
 @import "../../../node_modules/bulma/bulma.sass";

@@ -80,7 +80,7 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
  };
  
  
- export const updateItem = ({ commit }, { item_id, title, description, status }) => {
+export const updateItem = ({ commit }, { item_id, title, description, status }) => {
     return new Promise((resolve, reject) => {
         axios.patch('/items/' + item_id, {
             title: title,
@@ -93,5 +93,5 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
             reject( error.response );
         });
 
-    });
+    }); 
 };
