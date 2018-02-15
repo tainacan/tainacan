@@ -3,10 +3,10 @@
                  :message="getErrorMessage"
                  :type="fieldTypeMessage">
             <div>
-                <component :is="field.field_type_object.component" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
+                <component :is="field.field.field_type_object.component" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
                 <div v-if="field.field.multiple == 'yes'">
                     <div v-if="index > 0" v-for="(input, index) in inputsList " v-bind:key="index" class="multiple-inputs">
-                        <component :is="field.field_type_object.component" v-model="inputs[index]" :field="field" @blur="changeValue()"></component><a class="button" v-if="index > 0" @click="removeInput(index)">-</a>
+                        <component :is="field.field.field_type_object.component" v-model="inputs[index]" :field="field" @blur="changeValue()"></component><a class="button" v-if="index > 0" @click="removeInput(index)">-</a>
                     </div>
                     <a class="button" @click="addInput">+</a>
                 </div>
@@ -56,13 +56,10 @@
             getValue(){           
                 if (this.field.value instanceof Array) {
                     this.inputs = this.field.value;
-                    if (this.inputs.length == 0) 
-                        this.inputs.push('');  
-                } else {
-                    if (this.field.value == null || this.field.value == undefined)
+                    if (this.inputs.length == 0)
                         this.inputs.push('');
-                    else
-                        this.inputs.push(this.field.value);
+                } else {
+                    this.field.value == null || this.field.value == undefined ? this.inputs.push('') : this.inputs.push(this.field.value);
                 }
             },
             addInput(){

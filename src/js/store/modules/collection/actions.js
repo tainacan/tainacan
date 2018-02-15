@@ -9,6 +9,19 @@ export const fetchItems = ({ commit, state }, collectionId) => {
         .catch(error => console.log( error ));
 }
 
+export const deleteItem = ({ commit }, item_id ) => {
+    return new Promise((resolve, reject) => {
+        axios.delete('/items/' + item_id)
+        .then( res => {
+            commit('deleteItem', { id: item_id });
+            resolve( res );
+        }).catch( error => { 
+            reject( error );
+        });
+
+    });
+};
+
 export const fetchCollections = ({ commit }) => {
     axios.get('/collections')
         .then(res => {
