@@ -82,5 +82,17 @@ abstract class Field_Type  {
     public function form(){
 
     }
+    
+    public function __toArray(){
+	    $attributes = [];
+        
+        $attributes['className'] = get_class($this);
+        $attributes['core'] = $this->core;
+        $attributes['component'] = $this->get_component();
+        $attributes['primitive_type'] = $this->get_primitive_type();
+        
+        return $attributes;
+        
+    }
 
 }

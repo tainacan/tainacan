@@ -87,10 +87,13 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		$field_as = [];
 
-		foreach ( $item as $field ) {
-			$field_as[] = $field->__toArray();
+		foreach ( $item as $item_metadata ) {
+			$field_as[] = $item_metadata->__toArray();
+            //$field_as['field']['field_type_object'] = $item_metadata->get_field()->get_field_type_object()->__toArray();
 		}
-
+        
+        
+        
 		return $field_as;
 	}
 
