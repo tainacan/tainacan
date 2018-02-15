@@ -176,11 +176,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals($field->get_id(), $field_updated['id']);
 
-		$metav = get_post_meta($item->get_id(), $field_updated['id']);
-
-		var_dump($metav);
-
-		$this->assertEquals('19/01/2018', $metav[0]);
+		$this->assertEquals('19/01/2018', $item_metadata_updated['value'][0]);
+		$this->assertEquals('19/02/2018', $item_metadata_updated['value'][1]);
 
 
 		#### UPDATE FIELD IN COLLECTION ####
