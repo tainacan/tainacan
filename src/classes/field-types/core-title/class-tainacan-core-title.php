@@ -15,6 +15,7 @@ class Core_Title extends Field_Type {
         parent::set_primitive_type('string');
         $this->core = true;
         $this->related_mapped_prop = 'title';
+        $this->component = 'tainacan-text';
     }
 
     /**
