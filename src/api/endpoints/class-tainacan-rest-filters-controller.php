@@ -215,17 +215,31 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 
 			$filter = $this->filter_repository->fetch($filter_id);
 
-			$updated_filter = $this->filter_repository->update($filter, $attributes);
+			if($filter) {
+				$prepared_filter = $this->prepare_item_for_updating($filter, $attributes);
 
-			if(!($updated_filter instanceof Entities\Filter)){
-				return new WP_REST_Response($updated_filter, 400);
+				if($prepared_filter->validate()) {
+					$updated_filter = $this->filter_repository->update( $prepared_filter );
+
+					return new WP_REST_Response($updated_filter->__toArray(), 200);
+				}
+
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_filter->get_errors(),
+					'filters'       => $prepared_filter->__toArray()
+				], 400);
 			}
 
-			return new WP_REST_Response($updated_filter->__toArray(), 200);
+			return new WP_REST_Response([
+				'error_message' => __('Filter with that ID not found', 'tainacan' ),
+				'filter_id'     => $filter_id
+			], 400);
+
 		}
 
 		return new WP_REST_Response([
-			'error_message' => 'The body could not be empty',
+			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $body
 		], 400);
 

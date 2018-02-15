@@ -295,17 +295,30 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 			$item = $this->items_repository->fetch($item_id);
 
-			$updated_item = $this->items_repository->update($item, $attributes);
+			if($item){
+				$prepared_item = $this->prepare_item_for_updating($item, $attributes);
 
-			if(!($updated_item instanceof Entities\Item)){
-				return new WP_REST_Response($updated_item, 400);
+				if($prepared_item->validate()){
+					$updated_item = $this->items_repository->update($prepared_item);
+
+					return new WP_REST_Response($updated_item->__toArray(), 200);
+				}
+
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_item->get_errors(),
+					'item'          => $prepared_item->__toArray()
+				], 400);
 			}
 
-			return new WP_REST_Response($updated_item->__toArray(), 200);
+			return new WP_REST_Response([
+				'error_message' => __('Item with that ID not found', 'tainacan' ),
+				'item_id'       => $item_id
+			], 400);
 		}
 
 		return new WP_REST_Response([
-			'error_message' => 'The body could not be empty',
+			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $body
 		], 400);
 	}

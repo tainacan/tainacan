@@ -159,24 +159,8 @@ class Terms extends Repository {
         }
     }
 
-    public function update($object, $new_values = null){
-	    $tax_name = $object[1];
-	    $object = $object[0];
-
-	    foreach ($new_values as $key => $value) {
-		    try {
-			    $set_ = 'set_' . $key;
-			    $object->$set_( $value );
-		    } catch (\Error $error){
-			    return $error->getMessage();
-		    }
-	    }
-
-	    if($object->validate()){
-		    return new Entities\Term($this->insert($object), $tax_name);
-	    }
-
-	    return $object->get_errors();
+    public function update($object, $tax_name = null){
+    	return new Entities\Term($this->insert($object), $tax_name);
     }
 
     public function delete($args){
