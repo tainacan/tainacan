@@ -194,7 +194,10 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			if ( $item_metadata->validate() ) {
 				$field_updated = $this->item_metadata_repository->insert( $item_metadata );
 
-				return new WP_REST_Response( $field_updated->__toArray(), 200 );
+				$prepared_item =  $this->prepare_item_for_response($field_updated, $request);
+				$prepared_item['field']['field_type_object'] = $field_updated->get_field()->get_field_type_object()->__toArray();
+
+				return new WP_REST_Response( $prepared_item, 200 );
 			} else {
 				return new WP_REST_Response( [
 					'error_message' => __( 'One or more values are invalid.', 'tainacan' ),
