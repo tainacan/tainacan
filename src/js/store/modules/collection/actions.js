@@ -14,8 +14,10 @@ export const deleteItem = ({ commit }, item_id ) => {
         axios.delete('/items/' + item_id)
         .then( res => {
             commit('deleteItem', { id: item_id });
+            //console.log("OK");
             resolve( res );
-        }).catch( error => { 
+        }).catch( err => { 
+            //console.log("DEU RUIM");
             reject( error );
         });
 
