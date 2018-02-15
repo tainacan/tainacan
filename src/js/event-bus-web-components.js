@@ -24,18 +24,11 @@ export const eventBus = new Vue({
             for (let eventElement of components){
                 eventElement.addEventListener('input', (event) => {
                     if (event.detail && event.detail[0] ){
-                        const promisse = this.$store.dispatch('item/updateMetadata',
-                            { item_id: $(eventElement).attr("item_id"), field_id: $(eventElement).attr("field_id"), values: event.detail, old_values: $(eventElement).attr("old_values") });
-                            
-                        promisse.then( response => {
-                            // eventElement.errorsMsg = JSON.stringify( [] );
-                            // eventElement.value = response.value;
-                            $(eventElement).val(response.value);
-                        }, error => {
-                            const field = this.errors.find(error => error.field_id === event.detail[0].field_id );
-                            // eventElement.errorsMsg = JSON.stringify( field.error );
-                            // eventElement.value = event.detail[0].values;
-                        });
+                        this.updateValue({ 
+                            item_id: $(eventElement).attr("item_id"), 
+                            field_id: $(eventElement).attr("field_id"), 
+                            values: event.detail
+                        })                    
                     }
                 });
             }
@@ -43,7 +36,7 @@ export const eventBus = new Vue({
         updateValue(data){
             if ( data.item_id ){
                 const promisse = this.$store.dispatch('item/updateMetadata',
-                    { item_id: data.item_id, field_id: data.field_id, values: data.values, old_values: data.old_values });
+                    { item_id: data.item_id, field_id: data.field_id, values: data.values });
                 promisse.then( response => {
                     let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
                     if ( index >= 0){
