@@ -67,7 +67,9 @@ class Item_Metadata extends Repository {
 	    do_action('tainacan-update', $item_metadata);
 	    do_action('tainacan-update-Item_Metadata_Entity', $item_metadata);
 
+	    $value = get_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
 	    $item_metadata = new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
+	    $item_metadata->set_value($value);
 
 	    return $item_metadata;
     }
