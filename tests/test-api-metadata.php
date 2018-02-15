@@ -156,8 +156,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$meta_values = json_encode(
 			array(
 				'values' => array(
-					array('new' => '19/01/2018', 'prev' => ''),
-					array('new' => '19/02/2018', 'prev' => '')
+					'19/01/2018',
+					'19/02/2018',
 				)
 			)
 		);
