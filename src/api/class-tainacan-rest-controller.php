@@ -2,6 +2,25 @@
 
 class TAINACAN_REST_Controller extends WP_REST_Controller {
 
+	/**
+	 * @param $object
+	 * @param $new_values
+	 *
+	 * @return Tainacan\Entities\Entity
+	 */
+	protected function prepare_item_for_updating($object, $new_values){
+
+		foreach ($new_values as $key => $value) {
+			try {
+				$set_ = 'set_' . $key;
+				$object->$set_( $value );
+			} catch (\Error $error){
+				// Do nothing
+			}
+		}
+
+		return $object;
+	}
 
 	/**
 	 * @param $entity

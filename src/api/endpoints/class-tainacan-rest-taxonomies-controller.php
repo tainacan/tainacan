@@ -286,17 +286,30 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 
 			$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
-			$updated_taxonomy = $this->taxonomy_repository->update($taxonomy, $attributes);
+			if($taxonomy){
+				$prepared_taxonomy = $this->prepare_item_for_updating($taxonomy, $attributes);
 
-			if(!($updated_taxonomy instanceof Entities\Taxonomy)){
-				return new WP_REST_Response($updated_taxonomy, 400);
+				if($prepared_taxonomy->validate()){
+					$updated_taxonomy = $this->taxonomy_repository->update($prepared_taxonomy);
+
+					return new WP_REST_Response($updated_taxonomy->__toArray(), 200);
+				}
+
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_taxonomy->get_errors(),
+					'taxonomy'      => $prepared_taxonomy->__toArray()
+				], 400);
 			}
 
-			return new WP_REST_Response($updated_taxonomy->__toArray(), 200);
+			return new WP_REST_Response([
+				'error_message' => __('Taxonomy with that ID not found', 'tainacan' ),
+				'taxonomy_id'   => $taxonomy_id
+			], 400);
 		}
 
 		return new WP_REST_Response([
-			'error_message' => 'The body could not be empty',
+			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $body
 		], 400);
 	}

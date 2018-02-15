@@ -201,17 +201,31 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 			$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-			$updated_term = $this->terms_repository->update([$term, $tax_name], $attributes);
+			if($term){
+				$prepared_term = $this->prepare_item_for_updating($term, $attributes);
 
-			if(!($updated_term instanceof Entities\Term)){
-				return new WP_REST_Response($updated_term, 400);
+				if($prepared_term->validate()){
+					$updated_term = $this->terms_repository->update($prepared_term, $tax_name);
+
+					return new WP_REST_Response($updated_term->__toArray(), 200);
+				}
+
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_term->get_errors(),
+					'term'          => $prepared_term->__toArray()
+				], 400);
 			}
 
-			return new WP_REST_Response($updated_term->__toArray(), 200);
+			return new WP_REST_Response([
+				'error_message' => __('Term or Taxonomy with that IDs not found', 'tainacan' ),
+				'term_id'       => $term_id,
+				'taxonomy_id'   => $taxonomy_id
+			], 400);
 		}
 
 		return new WP_REST_Response([
-			'error_message' => 'The body could not be empty',
+			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $body
 		], 400);
 	}

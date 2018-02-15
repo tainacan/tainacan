@@ -186,20 +186,7 @@ class Taxonomies extends Repository {
     }
 
     public function update($object, $new_values = null){
-	    foreach ($new_values as $key => $value) {
-		    try {
-			    $set_ = 'set_' . $key;
-			    $object->$set_( $value );
-		    } catch (\Error $error){
-			    return $error->getMessage();
-		    }
-	    }
-
-	    if($object->validate()){
-		    return $this->insert($object);
-	    }
-
-	    return $object->get_errors();
+    	return $this->insert($object);
     }
 
     public function delete($args){

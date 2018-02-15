@@ -293,17 +293,30 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 
 		    $collection = $this->collections_repository->fetch($collection_id);
 
-	    	$updated_collection = $this->collections_repository->update($collection, $attributes);
+	    	if($collection) {
+			    $collection_prepared = $this->prepare_item_for_updating( $collection, $attributes );
 
-		    if(!($updated_collection instanceof Entities\Collection)){
-			    return new WP_REST_Response($updated_collection, 400);
+			    if ( $collection_prepared->validate() ) {
+				    $updated_collection = $this->collections_repository->update( $collection );
+
+				    return new WP_REST_Response( $updated_collection->__toArray(), 200 );
+			    }
+
+			    return new WP_REST_Response([
+				    'error_message' => __('One or more values are invalid.', 'tainacan'),
+				    'errors'        => $collection_prepared->get_errors(),
+				    'collection'    => $collection_prepared->__toArray()
+			    ], 400);
 		    }
 
-	    	return new WP_REST_Response($updated_collection->__toArray(), 200);
+		    return new WP_REST_Response([
+		    	'error_message' => __('Collection with that ID not found', 'tainacan' ),
+			    'collection_id' => $collection_id
+		    ], 400);
 	    }
 
 	    return new WP_REST_Response([
-	    	'error_message' => 'The body could not be empty',
+	    	'error_message' => __('The body could not be empty', 'tainacan'),
 		    'body'          => $body
 	    ], 400);
     }
