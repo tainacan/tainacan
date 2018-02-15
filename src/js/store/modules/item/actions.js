@@ -17,11 +17,36 @@ export const sendField = ( { commit }, { item_id, field_id, values }) => {
 };
 
 
-export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
+export const updateMetadata = ({ commit }, { item_id, field_id, values, old_values }) => {
     return new Promise((resolve, reject) => {
+        
+        let metadata_values = [];
 
+        // values = ["a", "b", "c"]
+        // old_values = ["a", "b"]
+        if (values.lenght >= old_values.length) {
+            // New values in metadata array
+            for (let i = 0; i < values.length; i++) {
+                if (old_values[i])
+                    metadata_values.push({"new": values[i], "prev": old_values[i]});
+                else
+                    metadata_values.push({"new": values[i], "prev": null });
+            }
+        }
+        // values = ["a", "c"]
+        // old_values = ["a", "b", "c"]
+        else {
+            // Values removed from metadata array
+            for (let i = 0; i < old_values.length; i++) {
+                if (values[i])
+                    metadata_values.push({"new": values[i], "prev": old_values[i]});
+                else
+                    metadata_values.push({"new": null, "prev": old_values[i]});
+            }
+        }        
+        //console.log(metadata_values);
         axios.patch(`/item/${item_id}/metadata/${field_id}`, {
-            values: values
+            values: metadata_values,
         })
             .then( res => {
                 let field = res.data;

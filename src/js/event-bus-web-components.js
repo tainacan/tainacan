@@ -25,7 +25,7 @@ export const eventBus = new Vue({
                 eventElement.addEventListener('input', (event) => {
                     if (event.detail && event.detail[0] ){
                         const promisse = this.$store.dispatch('item/updateMetadata',
-                            { item_id: $(eventElement).attr("item_id"), field_id: $(eventElement).attr("field_id"), values: event.detail });
+                            { item_id: $(eventElement).attr("item_id"), field_id: $(eventElement).attr("field_id"), values: event.detail, old_values: $(eventElement).attr("old_values") });
                             
                         promisse.then( response => {
                             // eventElement.errorsMsg = JSON.stringify( [] );
@@ -43,7 +43,7 @@ export const eventBus = new Vue({
         updateValue(data){
             if ( data.item_id ){
                 const promisse = this.$store.dispatch('item/updateMetadata',
-                    { item_id: data.item_id, field_id: data.field_id, values: data.values });
+                    { item_id: data.item_id, field_id: data.field_id, values: data.values, old_values: data.old_values });
                 promisse.then( response => {
                     let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
                     if ( index >= 0){

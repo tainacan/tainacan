@@ -22,6 +22,11 @@
                 <footer class="card-footer">
                     <router-link
                             class="card-footer-item"
+                            :to="{ path: `/collections/${collection.id}/edit` }">
+                        Editar Coleção
+                    </router-link>
+                    <router-link
+                            class="card-footer-item"
                             :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">
                         Criar Item
                     </router-link>

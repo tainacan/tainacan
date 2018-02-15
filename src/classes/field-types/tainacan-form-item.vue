@@ -25,6 +25,7 @@
         data(){
             return {
                 inputs: [],
+                oldInputs: [],
                 fieldTypeMessage:''
             }
         },
@@ -48,13 +49,15 @@
         },
         created(){
             this.getValue();
-
         },
         methods: {
             changeValue(){
-                eventBus.$emit('input', { item_id: this.field.item.id, field_id: this.field.field.id, values: this.inputs, instance: this } );
+                //console.log(this.inputs);
+                //console.log(this.oldInputs);
+                eventBus.$emit('input', { item_id: this.field.item.id, field_id: this.field.field.id, values: this.inputs, old_values: this.oldInputs } );
             },
-            getValue(){            
+            getValue(){     
+                     
                 if (this.field.value instanceof Array) {
                     this.inputs = this.field.value;
                     if (this.inputs.length == 0)
@@ -62,6 +65,11 @@
                 } else {
                     this.field.value == null || this.field.value == undefined ? this.inputs.push('') : this.inputs.push(this.field.value);
                 }
+                // Can't use this.oldInputs = this.inputs, would still affect oldInputs after inputs change
+                this.oldInputs = this.inputs;
+                // for (let input of this.inputs) {
+                //     this.oldInputs.push(input);
+                // }
             },
             extractFieldType(field_type) {
                 let parts = field_type.split('\\');
