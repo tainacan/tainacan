@@ -322,7 +322,7 @@ class Collections extends Repository {
         
         // Filters meta caps edit_tainacan-collection and check if user is moderator
         
-        if ($cap == 'edit_post') { // edit_tainacan-colletion is mapped to edit_post
+        if ( $cap == 'edit_post' && is_array($args) && array_key_exists(0 , $args) ) { // edit_tainacan-colletion is mapped to edit_post
             
             $entity = $args[0];
             
