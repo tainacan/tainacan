@@ -1,43 +1,60 @@
 <template>
     <div>
-        <button v-if="selectedItems.length > 0" class="button field is-danger" @click="deleteSelectedItems()"><span>Deletar itens selecionados </span><b-icon icon="delete"></b-icon></button>
-        <b-table
-                ref="itemsTable"
-                :data="items"
-                @selection-change="handleSelectionChange"
-                :checked-rows.sync="selectedItems"
-                checkable>
-            <template slot-scope="props">
+        <section class="section">
+            <button v-if="selectedItems.length > 0" class="button field is-danger" @click="deleteSelectedItems()"><span>Deletar itens selecionados </span><b-icon icon="delete"></b-icon></button>
+            <b-table
+                    ref="itemsTable"
+                    :data="items"
+                    @selection-change="handleSelectionChange"
+                    :checked-rows.sync="selectedItems"
+                    :loading="isLoading"
+                    checkable>
+                <template slot-scope="props">
 
-                <b-table-column field="featured_image" width="55">
-                    <template v-if="props.row.featured_image" slot-scope="scope">
-                        <img class="table-thumb" :src="`${props.row.featured_image}`"/>
-                    </template>
-                </b-table-column>
+                    <b-table-column field="featured_image" width="55">
+                        <template v-if="props.row.featured_image" slot-scope="scope">
+                            <img class="table-thumb" :src="`${props.row.featured_image}`"/>
+                        </template>
+                    </b-table-column>
 
-                <b-table-column label="Nome" field="title" show-overflow-tooltip>
-                    <router-link
-                            :to="`/collections/${collectionId}/items/${props.row.id}`" tag="a">{{ props.row.title }}
-                    </router-link>
-                </b-table-column>
+                    <b-table-column label="Nome" field="title" show-overflow-tooltip>
+                        <router-link
+                                :to="`/collections/${collectionId}/items/${props.row.id}`" tag="a">{{ props.row.title }}
+                        </router-link>
+                    </b-table-column>
 
-                <b-table-column field="description" label="Descrição">
-                    {{ props.row.description }}
-                </b-table-column>
+                    <b-table-column field="description" label="Descrição">
+                        {{ props.row.description }}
+                    </b-table-column>
 
 
-                <b-table-column label="Ações">
-                    <router-link :to="`/collections/${collectionId}/items/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
-                    <a><b-icon icon="delete" @click.native="deleteOneItem(props.row.id)"></a>
-                    <a><b-icon icon="dots-vertical" @click.native="showMoreItem(props.row.id)"></a> 
-                </b-table-column>
+                    <b-table-column label="Ações">
+                        <router-link :to="`/collections/${collectionId}/items/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
+                        <a><b-icon icon="delete" @click.native="deleteOneItem(props.row.id)"></a>
+                        <a><b-icon icon="dots-vertical" @click.native="showMoreItem(props.row.id)"></a> 
+                    </b-table-column>
 
-            </template>
-
-            <!--b-table-column type="selection" width="55">
-            </b-table-column -->
-
-        </b-table>
+                </template>
+                <!-- Empty state image -->
+                <template slot="empty">
+                    <section class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <b-icon
+                                    icon="inbox"
+                                    size="is-large">
+                                </b-icon>
+                            </p>
+                            <p>Nenhum item ainda nesta coleção.</p>
+                            <router-link tag="button" class="button is-primary"
+                                        :to="{ path: `/collections/${collectionId}/items/new` }">
+                                Criar Item
+                            </router-link>
+                        </div>
+                    </section>
+                </template>
+            </b-table>
+        </section>
     </div>
 </template>
 
@@ -48,7 +65,8 @@ export default {
     name: 'ItemsList',
     data(){
         return {
-            selectedItems: []
+            selectedItems: [],
+            isLoading: Boolean
         }
     },
     props: {
@@ -90,48 +108,28 @@ export default {
             this.$dialog.confirm({
                 message: 'Deseja realmente todos os itens selecionados?',
                 onConfirm: () => {
-                    let successfullyDeleted = [];
+
                     for (let item of this.selectedItems) {
                         this.deleteItem(item.id)
                         .then((res) => {
-                            this.successfullyDeleted.push(item);
-                            //console.log("OK AQUI TBM");
+                            this.$toast.open({
+                                duration: 3000,
+                                message: `Item deletado`,
+                                position: 'is-bottom',
+                                type: 'is-secondary',
+                                queue: false
+                            })                            
                         }).catch((err) => { 
-                            //console.log("DEU RUIM AQUI");
-                            // this.$toast.open({
-                            //     duration: 3000,
-                            //     message: `Erro ao deletar item`,
-                            //     position: 'is-bottom',
-                            //     type: 'is-danger',
-                            //     queue: false
-                            // });
+                            this.$toast.open({
+                                duration: 3000,
+                                message: `Erro ao deletar item`,
+                                position: 'is-bottom',
+                                type: 'is-danger',
+                                queue: false
+                            });
                         });
                     }
-                    // if (successfullyDeleted.length == this.selectedItems) {
-                    //     this.$toast.open({
-                    //         duration: 3000,
-                    //         message: `Todos items selecionados foram deletados.`,
-                    //         position: 'is-bottom',
-                    //         type: 'is-secondary',
-                    //         queue: false
-                    //     })
-                    // } else if (successfullyDeleted.length == 0) {
-                    //     this.$toast.open({
-                    //         duration: 3000,
-                    //         message: `Erro ao deletar os itens`,
-                    //         position: 'is-bottom',
-                    //         type: 'is-danger',
-                    //         queue: false
-                    //     })
-                    // } else {
-                    //     this.$toast.open({
-                    //         duration: 3000,
-                    //         message: `Alguns itens não foram deletados com sucesso.`,
-                    //         position: 'is-bottom',
-                    //         type: 'is-warning',
-                    //         queue: false
-                    //     })
-                    // }
+
                     this.selectedItems =  [];
                 }
             });
@@ -148,7 +146,12 @@ export default {
         }
     },
     created(){
-        this.fetchItems(this.collectionId);
+        this.isLoading = true;
+        this.fetchItems(this.collectionId)
+            .then(res => this.isLoading = false)
+            .catch((error) => {
+                this.isLoading = false;
+            });
     }
 
 }
