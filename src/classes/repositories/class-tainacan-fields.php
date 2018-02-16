@@ -256,7 +256,7 @@ class Fields extends Repository {
 	 * @param array $args WP_Query args || int $args the field id
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
-	 * @return \WP_Query|Array an instance of wp query OR array of entities;
+	 * @return Entities\Field|\WP_Query|Array an instance of wp query OR array of entities;
 	 * @throws \Exception
 	 */
     public function fetch( $args, $output = null ) {
