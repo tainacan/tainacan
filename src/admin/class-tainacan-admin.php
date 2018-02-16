@@ -14,21 +14,68 @@ class Admin {
         add_filter( 'admin_body_class', array(&$this, 'admin_body_class') );
 	    add_action('admin_enqueue_scripts', array(&$this, 'add_user_admin_js'));
 
-
     }
-    
+
     function add_admin_menu() {
         $page_suffix = add_menu_page( __('Tainacan', 'tainacan'), __('Tainacan', 'tainacan'), 'edit_posts', $this->menu_slug, array(&$this, 'admin_page') );
         add_action( 'load-' . $page_suffix, array(&$this, 'load_admin_page'));
     }
     
     function load_admin_page() {
-        add_action( 'admin_enqueue_scripts', array(&$this, 'add_admin_css') );
+        add_action( 'admin_enqueue_scripts', array(&$this, 'add_admin_css'), 90 );
     }
     
+    function login_styles_reset( $style ) {
+        if ( strpos( $style, 'wp-admin-css') !== FALSE ) {
+            $style = NULL;
+        }
+        return $style;
+    }
+
     function add_admin_css() {
-        global $TAINACAN_BASE_URL;
+        global $TAINACAN_BASE_URL; 
+
         wp_enqueue_style('tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css' );
+        wp_dequeue_style('load-styles');
+        // wp_dequeue_style('admin-menu');
+        // wp_dequeue_style('admin-bar');
+        // wp_dequeue_style('code-editor');
+        // wp_dequeue_style('color-picker');
+        // wp_dequeue_style('common');
+        // wp_dequeue_style('customize-controls');
+        // wp_dequeue_style('customize-nav-menus');
+        // wp_dequeue_style('customize-widgets');
+        // wp_dequeue_style('dashboard');
+        // wp_dequeue_style('dashicons');
+        // wp_dequeue_style('deprecated-media');
+        // wp_dequeue_style('edit');
+        // wp_dequeue_style('wp-pointer');
+        // wp_dequeue_style('farbtastic');
+        // wp_dequeue_style('forms');
+        // wp_dequeue_style('install');
+        // wp_dequeue_style('wp-auth-check');
+        // wp_dequeue_style('site-icon');
+        // wp_dequeue_style('buttons');
+        // wp_dequeue_style('l10n');
+        // wp_dequeue_style('list-tables');
+        // wp_dequeue_style('login');
+        // wp_dequeue_style('media');
+        // wp_dequeue_style('nav-menus');
+        // wp_dequeue_style('revisions');
+        // wp_dequeue_style('themes');
+        // wp_dequeue_style('widgets');
+        // wp_dequeue_style('wp-admin');
+
+        // $result = [];
+    
+        // // Print all loaded Styles (CSS)
+        // global $wp_styles;
+        // foreach( $wp_styles->queue as $style ) :
+        // $result[] =  $wp_styles->registered[$style]->src . ";";
+        // endforeach;
+        
+        // var_dump($result); die;
+        
     }
     
     function admin_body_class($classes) {

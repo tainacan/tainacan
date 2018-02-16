@@ -13,6 +13,10 @@ export const setCollections = (state, collections) => {
     state.collections = collections;
 }
 
+export const setFields = (state, fields) => {
+    state.fields = fields;
+}
+
 export const setCollection = (state, collection) => {
     state.collection = collection;
 }

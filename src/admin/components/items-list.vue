@@ -1,14 +1,34 @@
 <template>
     <div>
         <section class="section">
-            <b-field grouped group-multiline>
+             <b-field grouped group-multiline>
                 <button v-if="selectedItems.length > 0" class="button field is-danger" @click="deleteSelectedItems()"><span>Deletar itens selecionados </span><b-icon icon="delete"></b-icon></button>
-                <b-select v-model="itemsPerPage" @input="onChangeItemsPerPage" class="is-pulled-right" :disabled="items.length <= 0">
+
+                <b-dropdown>
+                    <button class="button" slot="trigger">
+                        <span>Campos da tabela</span>
+                        <b-icon icon="menu-down"></b-icon>
+                    </button>
+                    <b-dropdown-item v-for="(column, index) in tableFields" 
+                        :key="index"
+                        class="control" custom>
+                        <b-checkbox v-model="column.visible"
+                            :native-value="column.field">
+                            {{ column.label }}
+                        </b-checkbox>
+                    </b-dropdown-item>
+                </b-dropdown>
+
+                <b-select 
+                        v-model="itemsPerPage" 
+                        @input="onChangeItemsPerPage" 
+                        :disabled="items.length <= 0">
                     <option value="2">2 itens por página</option>
                     <option value="10">10 itens por página</option>
                     <option value="15">15 itens por página</option>
                     <option value="20">20 itens por página</option>
                 </b-select>
+                
             </b-field>
             <b-table ref="itemsTable"
                     :data="items"
@@ -23,7 +43,7 @@
                     @page-change="onPageChange">
                 <template slot-scope="props">
 
-                    <b-table-column field="featured_image" width="55">
+                    <!-- <b-table-column field="featured_image" width="55">
                         <template v-if="props.row.featured_image" slot-scope="scope">
                             <img class="table-thumb" :src="`${props.row.featured_image}`"/>
                         </template>
@@ -37,10 +57,19 @@
 
                     <b-table-column field="description" label="Descrição">
                         {{ props.row.description }}
+                    </b-table-column> -->
+
+                    <b-table-column v-for="(column, index) in tableFields"
+                        :key="index"
+                        :label="column.label"
+                        :visible="column.visible">
+                        <template v-if="column.field != 'featured_image'">{{ props.row[column.field] }}</template>
+                        <template v-if="column.field == 'featured_image'">
+                            <img class="table-thumb" :src="`${ props.row[column.field] }`"/>
+                        </template>
                     </b-table-column>
 
-
-                    <b-table-column label="Ações">
+                    <b-table-column label="Ações"  width="110">
                         <router-link :to="`/collections/${collectionId}/items/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
                         <a><b-icon icon="delete" @click.native="deleteOneItem(props.row.id)"></a>
                         <a><b-icon icon="dots-vertical" @click.native="showMoreItem(props.row.id)"></a> 
@@ -78,6 +107,7 @@ export default {
     data(){
         return {
             selectedItems: [],
+            tableFields: [],
             isLoading: false,
             totalItems: 0,
             page: 1,
@@ -90,10 +120,12 @@ export default {
     methods: {
         ...mapActions('collection', [
             'fetchItems',
-            'deleteItem'
+            'deleteItem',
+            'fetchFields'
         ]),
         ...mapGetters('collection', [
-            'getItems'
+            'getItems',
+            'getFields'
         ]),
         deleteOneItem(itemId) {
             this.$dialog.confirm({
@@ -166,7 +198,6 @@ export default {
             this.fetchItems({ 'collectionId': this.collectionId, 'page': this.page, 'itemsPerPage': this.itemsPerPage })
             .then((res) => {
                 this.isLoading = false;
-                console.log(res);
                 this.totalItems = res.total;
             })
             .catch((error) => {
@@ -181,6 +212,14 @@ export default {
     },
     mounted(){
         this.loadItems();
+        this.fetchFields(this.collectionId).then((res) => {
+            let rawFields = res;
+            for (let field of rawFields) {
+                this.tableFields.push(
+                    { label: field.name, field: field.description, visible: true }
+                );
+            }
+        }).catch();
     }
 
 }

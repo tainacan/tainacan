@@ -34,6 +34,21 @@ export const fetchCollections = ({ commit }) => {
         .catch(error => console.log(error));
 }
 
+export const fetchFields = ({ commit }, id) => {
+    return new Promise((resolve, reject) => {
+        axios.get('/collection/'+id+'/fields')
+        .then((res) => {
+            let fields= res.data;
+            commit('setFields', fields);
+            resolve (fields);
+        })
+        .catch((error) => {
+            console.log(error);
+            reject(error);
+        });
+    });
+}
+
 export const fetchCollection = ({ commit }, id) => {
     return new Promise((resolve, reject) =>{ 
         axios.get('/collections/' + id)
