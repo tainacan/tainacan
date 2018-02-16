@@ -169,6 +169,9 @@ class Fields extends TAINACAN_UnitTestCase {
         $this->assertEquals( 6, sizeof( $retrieve_metadata ) );
     }
 
+    /**
+     * test remove core fields
+     */
     function test_core_fields(){
         global $Tainacan_Fields;
 
@@ -182,13 +185,9 @@ class Fields extends TAINACAN_UnitTestCase {
 
         $core_fields = $Tainacan_Fields->get_core_fields( $collection_grandfather );
 
-        $this->expectException(\ErrorException::class);
-
-
-
         if( $core_fields ){
             foreach( $core_fields as $core_field ){
-                wp_trash_post( $core_field->get_id()  );
+                $this->assertFalse(wp_trash_post( $core_field->get_id() ) );
             }
         }
     }
