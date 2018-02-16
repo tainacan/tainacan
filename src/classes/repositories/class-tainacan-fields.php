@@ -2,6 +2,7 @@
 
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
+use Tainacan\Field_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -15,14 +16,17 @@ class Fields extends Repository {
 
 	public $field_types = [];
 
+	public $core_fields = [
+	    'Tainacan\Field_Types\Core_Title',
+	    'Tainacan\Field_Types\Core_Description'
+    ];
     /**
      * Register specific hooks for field repository
      */
     function __construct() {
         parent::__construct();
-        add_action('tainacan_activated', array(&$this, 'register_core_fields'));
-        add_action('wp_trash_post', array( &$this, 'disable_delete_core_fields' ) );
-        add_action('before_delete_post', array( &$this, 'disable_delete_core_fields' ) );
+        add_filter('pre_trash_post', array( &$this, 'disable_delete_core_fields' ), 10, 2 );
+        add_filter('pre_delete_post', array( &$this, 'force_delete_core_fields' ), 10, 3 );
     }
 	
     public function get_map() {
@@ -285,7 +289,7 @@ class Fields extends Repository {
 	 * @throws \Exception
 	 */
     public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
-        $this->register_core_fields();
+        $this->register_core_fields( $collection );
 
         $collection_id = $collection->get_id();
 
@@ -414,71 +418,133 @@ class Fields extends Repository {
     }
 
     /**
-     * verify and, if is not registered, insert the default fields
+     * @param Entities\Collection $collection
+     * @return array
+     * @throws \ErrorException
      */
-    public function register_core_fields(){
-        $update_option = [];
-        $core_fields = get_option('tainacan_core_fields');
-        if( $core_fields ) {
-            return $core_fields;
-        }
+    public function register_core_fields( Entities\Collection $collection ){
+
+        $fields = $this->get_core_fields( $collection );
 
         // TODO: create a better way to retrieve this data
         $data_core_fields = [
             'core_title' => [
                 'name' => 'Title',
                 'description' => 'title',
-                'collection_id' => 'default',
+                'collection_id' => $collection->get_id(),
                 'field_type' => 'Tainacan\Field_Types\Core_Title',
-                'can_delete' => 'no',
                 'status'     => 'publish'
             ],
             'core_description' => [
                 'name' => 'Description',
                 'description' => 'description',
-                'collection_id' => 'default',
+                'collection_id' => $collection->get_id(),
                 'field_type' => 'Tainacan\Field_Types\Core_Description',
-                'can_delete' => 'no',
                 'status'     => 'publish'
             ]
         ];
 
-        foreach ( $data_core_fields as $index => $data_core_field ) {
-            if( !$core_fields || !isset($core_fields[$index]) ){
-                $field = new Entities\Field();
-
-                foreach ($data_core_field as $attribute => $value) {
-                    $set_ = 'set_' . $attribute;
-                    $field->$set_( $value );
-                }
-
-                if ($field->validate()) {
-                    $field = $this->insert($field);
-                    $update_option[$index] = $field->get_id();
-                } else {
-                    throw new \ErrorException('The entity wasn\'t validated.' . print_r( $field->get_errors(), true));
-                }
-            } else if( isset($core_fields[$index]) ) {
-                $update_option[$index] = $core_fields[$index];
-            }
+        if( $collection->get_parent() !== 0 ){
+            return false;
         }
 
-        update_option('tainacan_core_fields', $update_option);
+        foreach ( $data_core_fields as $index => $data_core_field ) {
+            if( empty( $fields ) ){
+                $this->insert_array_field( $data_core_field );
+            } else {
+                $exists = false;
+                foreach ( $fields as $field ){
+                    if ( $field->get_field_type() === $data_core_field['field_type'] ) {
+                        $exists = true;
+                    }
+                }
 
-        return $update_option;
+                if( !$exists ){
+                    $this->insert_array_field( $data_core_field );
+                }
+            }
+        }
     }
 
     /**
      * block user from remove core fields
      *
-     * @param $post_id The post ID which is deleting
+     * @param $before  wordpress pass a null value
+     * @param $post the post which is moving to trash
+     * @return null/bool
      * @throws \ErrorException
      */
-    public function disable_delete_core_fields( $post_id ){
-        $core_fields = get_option('tainacan_core_fields');
+    public function disable_delete_core_fields( $before, $post ){
+        $field = $this->fetch( $post->ID );
 
-        if ( $core_fields && in_array( $post_id, $core_fields ) ) {
-            throw new \ErrorException('Core fields cannot be deleted.');
+        if ( $field && in_array( $field->get_field_type(), $this->core_fields ) &&  is_numeric($field->get_collection_id()) ) {
+            return false;
+        }
+    }
+
+    /**
+     * block user from remove core fields ( if use wp_delete_post)
+     *
+     * @param $before  wordpress pass a null value
+     * @param $post the post which is deleting
+     * @param $force_delete a boolean that force the deleting
+     * @return null /bool
+     * @internal param The $post_id post ID which is deleting
+     */
+    public function force_delete_core_fields( $before, $post, $force_delete ){
+        $field = $this->fetch( $post->ID );
+
+        if ( $field && in_array( $field->get_field_type(), $this->core_fields ) &&  is_numeric($field->get_collection_id()) ) {
+            return false;
+        }
+    }
+
+    /**
+     * returns all core items from a specific collection
+     *
+     * @param Entities\Collection $collection
+     * @return Array|\WP_Query
+     */
+    public function get_core_fields( Entities\Collection $collection ){
+        $args = [];
+
+        $meta_query = array(
+            array(
+                'key'     => 'collection_id',
+                'value'   => $collection->get_id(),
+                'compare' => 'IN',
+            ),
+            array(
+                'key'     => 'field_type',
+                'value'   => $this->core_fields,
+                'compare' => 'IN',
+            )
+        );
+
+        $args['meta_query'] = $meta_query;
+
+        return $this->fetch( $args, 'OBJECT' );
+    }
+
+    /**
+     * create a field entity and insert by an associative array ( attribute => value )
+     *
+     * @param Array $data the array of attributes to insert a field
+     * @return int the field id inserted
+     * @throws \ErrorException
+     */
+    public function insert_array_field( $data ){
+        $field = new Entities\Field();
+        foreach ( $data as $attribute => $value ) {
+            $set_ = 'set_' . $attribute;
+            $field->$set_( $value );
+        }
+
+        if ( $field->validate( )) {
+            $field = $this->insert( $field );
+            return $field->get_id();
+        } else {
+            throw new \ErrorException('The entity wasn\'t validated.' . print_r( $field->get_errors(), true));
         }
     }
 }

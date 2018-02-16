@@ -153,15 +153,7 @@ class Field extends Entity {
         return $this->get_mapped_property('field_type_options');
     }
 
-    /**
-     * Return the if the field may be deleted
-     *
-     * @return string
-     */
-    function get_can_delete(){
-        return $this->get_mapped_property('can_delete');
-    }
-    
+
     /**
      * Set the field name
      *
@@ -279,16 +271,6 @@ class Field extends Entity {
      */
     public function set_field_type( $value ){
     	$this->set_mapped_property('field_type', ( is_object( $value ) ) ?  get_class( $value ) : $value ) ; // Encode to avoid backslaches removal
-    }
-
-    /**
-     * Set can delete
-     *
-     * @param [string] $value
-     * @return void
-     */
-    function set_can_delete( $value ){
-        $this->set_mapped_property('can_delete', $value);
     }
 
     // helpers

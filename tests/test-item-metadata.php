@@ -223,12 +223,18 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         );
 
         $item_metadatas = $Tainacan_Item_Metadata->fetch($i, 'OBJECT');
+
+        $names = [];
+        foreach ($item_metadatas as $item_metadata) {
+            $names[] = $item_metadata->get_field()->get_name();
+        }
         
         $this->assertTrue(is_array($item_metadatas));
 
         // notice for repository fields
         $this->assertEquals(3, sizeof($item_metadatas));
-        $this->assertEquals('metadado', $item_metadatas[0]->get_field()->get_name());
+        //first 2 fields are repository fields
+        $this->assertTrue( in_array('metadado', $names) );
         
     }
 }
