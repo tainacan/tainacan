@@ -27,7 +27,13 @@ abstract class Field_Type  {
      * Used by core field types to indicate where it should be saved
      */
     public $related_mapped_prop = false;
-
+    
+    /**
+     * The name of the web component used by this field type
+     * @var string
+     */
+    public $component;
+    
     abstract function render( $itemMetadata );
 
     public function __construct(){
@@ -58,6 +64,10 @@ abstract class Field_Type  {
     public function get_errors() {
         return $this->errors;
     }
+    
+    public function get_component() {
+        return $this->component;
+    }
 
     /**
      * @param $options
@@ -71,6 +81,18 @@ abstract class Field_Type  {
      */
     public function form(){
 
+    }
+    
+    public function __toArray(){
+	    $attributes = [];
+        
+        $attributes['className'] = get_class($this);
+        $attributes['core'] = $this->core;
+        $attributes['component'] = $this->get_component();
+        $attributes['primitive_type'] = $this->get_primitive_type();
+        
+        return $attributes;
+        
     }
 
 }

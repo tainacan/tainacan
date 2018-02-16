@@ -152,6 +152,15 @@ class Field extends Entity {
     function get_field_options(){
         return $this->get_mapped_property('field_type_options');
     }
+
+    /**
+     * Return the if the field may be deleted
+     *
+     * @return string
+     */
+    function get_can_delete(){
+        return $this->get_mapped_property('can_delete');
+    }
     
     /**
      * Return true if this field allow community suggestions, false otherwise
@@ -286,6 +295,16 @@ class Field extends Entity {
      */
     function set_accept_suggestion( $value ) {
     	return $this->set_mapped_property('accept_suggestion', $value);
+    }
+
+    /**
+     * Set can delete
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_can_delete( $value ){
+        $this->set_mapped_property('can_delete', $value);
     }
 
     // helpers

@@ -2,6 +2,25 @@
 
 class TAINACAN_REST_Controller extends WP_REST_Controller {
 
+	/**
+	 * @param $object
+	 * @param $new_values
+	 *
+	 * @return Tainacan\Entities\Entity
+	 */
+	protected function prepare_item_for_updating($object, $new_values){
+
+		foreach ($new_values as $key => $value) {
+			try {
+				$set_ = 'set_' . $key;
+				$object->$set_( $value );
+			} catch (\Error $error){
+				// Do nothing
+			}
+		}
+
+		return $object;
+	}
 
 	/**
 	 * @param $entity
@@ -11,8 +30,8 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	protected function get_only_needed_attributes($entity, $map){
 
 		$entity_prepared = [
-			'id'                => $entity->get_id(),
-			'description'       => $entity->get_description(),
+			'id'          => $entity->get_id(),
+			'description' => $entity->get_description(),
 		];
 
 		if(array_key_exists('modification_date', $map)){
@@ -41,6 +60,10 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			$entity_prepared['columns'] = $entity->get_columns();
 		}
 
+		if(array_key_exists('status', $map)){
+			$entity_prepared['status'] = $entity->get_status();
+		}
+
 		return $entity_prepared;
 	}
 
@@ -51,22 +74,24 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 */
 	protected function prepare_filters($request){
 		$map = [
-			'name'       => 'title',
-			'title'      => 'title',
-			'id'         => 'p',
-			'pageid'     => 'page_id',
-			'authorid'   => 'author_id',
-			'authorname' => 'author_name',
-			'search'     => 's',
-			'posttype'   => 'post_type',
-			'poststatus' => 'post_status',
-			'offset'     => 'offset',
-			'metaquery'  => 'meta_query',
-			'datequery'  => 'date_query',
-			'order'      => 'order',
-			'orderby'    => 'orderby',
-			'metakey'    => 'meta_key',
-			'hide_empty' => 'hide_empty',
+			'name'         => 'title',
+			'title'        => 'title',
+			'id'           => 'p',
+			'pageid'       => 'page_id',
+			'authorid'     => 'author_id',
+			'authorname'   => 'author_name',
+			'search'       => 's',
+			'posttype'     => 'post_type',
+			'status'   => 'post_status',
+			'offset'       => 'offset',
+			'metaquery'    => 'meta_query',
+			'datequery'    => 'date_query',
+			'order'        => 'order',
+			'orderby'      => 'orderby',
+			'metakey'      => 'meta_key',
+			'hideempty'   => 'hide_empty',
+			'perpage' => 'posts_per_page',
+			'paged'        => 'paged'
 		];
 
 		$meta_query = [

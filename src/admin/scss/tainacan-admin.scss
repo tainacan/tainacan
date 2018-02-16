@@ -26,6 +26,9 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
+// Bulma's modal (needs to be greather than taincan-admin-app
+$modal-z: 9999999;
+
 // Import Bulma and Buefy styles
 @import "../../assets/css/fonts/materialdesignicons.css";
 @import "../../../node_modules/bulma/bulma.sass";
@@ -60,3 +63,8 @@ body.tainacan-admin-page #adminmenumain {
 /* Rules for using icons as white on a dark background. */
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+// Buefy notices (toast)
+.notices {
+z-index: 99999999 !important;
+}

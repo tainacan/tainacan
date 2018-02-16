@@ -167,7 +167,21 @@ class Fields extends TAINACAN_UnitTestCase {
 	    );
 
         $retrieve_metadata =  $Tainacan_Fields->fetch_by_collection( $collection_son, [], 'OBJECT' );
-        $this->assertEquals( 4, sizeof( $retrieve_metadata ) );
+
+        // should return 6
+        $this->assertEquals( 6, sizeof( $retrieve_metadata ) );
+    }
+
+    function test_core_fields(){
+        global $Tainacan_Fields;
+        $core_fields_ids = $Tainacan_Fields->register_core_fields();
+        $this->expectException(\ErrorException::class);
+
+        if( $core_fields_ids ){
+            foreach( $core_fields_ids as $core_field_id ){
+                wp_trash_post( $core_field_id  );
+            }
+        }
     }
 
     /**

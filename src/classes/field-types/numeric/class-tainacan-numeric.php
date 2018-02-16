@@ -13,6 +13,7 @@ class Numeric extends Field_Type {
         // call field type constructor
         parent::__construct();
         parent::set_primitive_type('float');
+        $this->component = 'tainacan-numeric';
     }
 
     /**

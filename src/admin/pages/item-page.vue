@@ -23,6 +23,10 @@
             </div>
             <footer class="card-footer">
                 <router-link
+                        class="card-footer-item" :to="{ path: `/collections/${collectionId}`}">
+                    Ver Coleção
+                </router-link>
+                <router-link
                         class="card-footer-item" :to="{ path: `/collections/${collectionId}/items/${itemId}/edit`}">
                     Editar Item
                 </router-link>

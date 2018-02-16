@@ -1,13 +1,29 @@
 import axios from '../../../axios/axios';
 
 export const fetchItems = ({ commit, state }, collectionId) => {
-    axios.get('/collection/'+collectionId+'/items')
+    return new Promise ((resolve, reject) => {
+        axios.get('/collection/'+collectionId+'/items')
         .then(res => {
             let items = res.data;
             commit('setItems', items);
+            resolve(items);
         })
-        .catch(error => console.log( error ));
+        .catch(error => reject(error));
+    });
 }
+
+export const deleteItem = ({ commit }, item_id ) => {
+    return new Promise((resolve, reject) => {
+        axios.delete('/items/' + item_id)
+        .then( res => {
+            commit('deleteItem', { id: item_id });
+            resolve( res );
+        }).catch( err => { 
+            reject( error );
+        });
+
+    });
+};
 
 export const fetchCollections = ({ commit }) => {
     axios.get('/collections')

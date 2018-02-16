@@ -17,7 +17,7 @@ class Item_Metadata extends Repository {
             if ($field_type->core) {
                 $this->save_core_field_value($item_metadata);
             } else {
-                add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+                update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
             }
             
         } else {
@@ -36,34 +36,6 @@ class Item_Metadata extends Repository {
         do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
 
         return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
-    }
-
-    public function update($item_metadata, $new_values = null){
-	    $unique = !$item_metadata->is_multiple();
-
-	    if ($unique) {
-            $field_type = $item_metadata->get_field()->get_field_type_object();
-            if ($field_type->core) {
-                $this->save_core_field_value($item_metadata);
-            } else {
-                update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
-            }
-	    } else {
-		    delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
-
-		    if (is_array($item_metadata->get_value())){
-			    $values = $item_metadata->get_value();
-
-			    foreach ($values as $value){
-				    update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $value ));
-			    }
-		    }
-	    }
-
-	    do_action('tainacan-update', $item_metadata);
-	    do_action('tainacan-update-Item_Metadata_Entity', $item_metadata);
-
-	    return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
     }
 
 	/**
@@ -100,12 +72,14 @@ class Item_Metadata extends Repository {
         }
     }
 
-    /**
-     * Fetch Item Field objects related to an Item
-     *
-     * @param Entities\Item $object
-     * @return array
-     */
+	/**
+	 * Fetch Item Field objects related to an Item
+	 *
+	 * @param Entities\Item $object
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
     public function fetch($object, $output = null ){
         if($object instanceof Entities\Item){
             global $Tainacan_Items, $Tainacan_Fields;
@@ -158,5 +132,11 @@ class Item_Metadata extends Repository {
     
     public function get_map() { return []; }
     public function get_default_properties($map) { return []; }
-    
+
+	/**
+	 * @param $object
+	 *
+	 * @return mixed
+	 */
+	public function update( $object, $new_values = null ) {}
 }

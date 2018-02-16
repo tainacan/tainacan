@@ -13,6 +13,7 @@ class Textarea extends Field_Type {
         // call field type constructor
         parent::__construct();
         parent::set_primitive_type('string');
+        $this->component = 'tainacan-textarea';
     }
 
     /**

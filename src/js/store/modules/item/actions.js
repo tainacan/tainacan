@@ -19,9 +19,8 @@ export const sendField = ( { commit }, { item_id, field_id, values }) => {
 
 export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
     return new Promise((resolve, reject) => {
-
         axios.patch(`/item/${item_id}/metadata/${field_id}`, {
-            values: values
+            values: values,
         })
             .then( res => {
                 let field = res.data;
@@ -81,7 +80,7 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
  };
  
  
- export const updateItem = ({ commit }, { item_id, title, description, status }) => {
+export const updateItem = ({ commit }, { item_id, title, description, status }) => {
     return new Promise((resolve, reject) => {
         axios.patch('/items/' + item_id, {
             title: title,
@@ -94,5 +93,5 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
             reject( error.response );
         });
 
-    });
+    }); 
 };

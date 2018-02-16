@@ -6,7 +6,3 @@ export const getFields =  state => {
 export const getItem = state => {
     return state.item;
 }
-
-export const getError =  state => {
-    return state.error;
-}

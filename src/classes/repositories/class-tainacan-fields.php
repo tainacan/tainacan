@@ -14,6 +14,16 @@ class Fields extends Repository {
 	protected $default_metadata = 'default';
 
 	public $field_types = [];
+
+    /**
+     * Register specific hooks for field repository
+     */
+    function __construct() {
+        parent::__construct();
+        add_action('tainacan_activated', array(&$this, 'register_core_fields'));
+        add_action('wp_trash_post', array( &$this, 'disable_delete_core_fields' ) );
+        add_action('before_delete_post', array( &$this, 'disable_delete_core_fields' ) );
+    }
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
@@ -131,14 +141,23 @@ class Fields extends Repository {
                 'description'=> __('The collection ID', 'tainacan'),
                 //'validation' => ''
             ],
-    		'accept_suggestion' => [
+            'accept_suggestion' => [
     			'map'		 => 'meta',
     			'title'		 => __('Field Value Accepts Suggestions', 'tainacan'),
     			'type'		 => 'bool',
     			'description'=> __('Allow the community suggest a different values for that field', 'tainacan'),
     			'default'	 => false,
     			'validation' => v::boolType()
-    		]
+    	    ],
+            'can_delete'        => [
+                'map'        => 'meta',
+                'title'      => __('Can delete', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The field can be deleted', 'tainacan'),
+                'on_error'   => __('Can delete is invalid', 'tainacan'),
+                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
+                'default'    => 'yes'
+            ],
         ]);
     }
 
@@ -274,6 +293,8 @@ class Fields extends Repository {
 	 * @throws \Exception
 	 */
     public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
+        $this->register_core_fields();
+
         $collection_id = $collection->get_id();
 
         //get parent collections
@@ -367,20 +388,7 @@ class Fields extends Repository {
 	 * @throws \Exception
 	 */
 	public function update($object, $new_values = null){
-	    foreach ($new_values as $key => $value) {
-		    try {
-			    $set_ = 'set_' . $key;
-			    $object->$set_( $value );
-		    } catch (\Error $error){
-		    	return $error->getMessage();
-		    }
-	    }
-
-	    if($object->validate()){
-	    	return $this->insert($object);
-	    }
-
-	    return $object->get_errors();
+		return $this->insert($object);
     }
 
     public function delete($object){
@@ -411,5 +419,74 @@ class Fields extends Repository {
         }
 
         return $this->field_types;
+    }
+
+    /**
+     * verify and, if is not registered, insert the default fields
+     */
+    public function register_core_fields(){
+        $update_option = [];
+        $core_fields = get_option('tainacan_core_fields');
+        if( $core_fields ) {
+            return $core_fields;
+        }
+
+        // TODO: create a better way to retrieve this data
+        $data_core_fields = [
+            'core_title' => [
+                'name' => 'Title',
+                'description' => 'title',
+                'collection_id' => 'default',
+                'field_type' => 'Tainacan\Field_Types\Core_Title',
+                'can_delete' => 'no',
+                'status'     => 'publish'
+            ],
+            'core_description' => [
+                'name' => 'Description',
+                'description' => 'description',
+                'collection_id' => 'default',
+                'field_type' => 'Tainacan\Field_Types\Core_Description',
+                'can_delete' => 'no',
+                'status'     => 'publish'
+            ]
+        ];
+
+        foreach ( $data_core_fields as $index => $data_core_field ) {
+            if( !$core_fields || !isset($core_fields[$index]) ){
+                $field = new Entities\Field();
+
+                foreach ($data_core_field as $attribute => $value) {
+                    $set_ = 'set_' . $attribute;
+                    $field->$set_( $value );
+                }
+
+                if ($field->validate()) {
+                    $field = $this->insert($field);
+                    $update_option[$index] = $field->get_id();
+                } else {
+                    throw new \ErrorException('The entity wasn\'t validated.' . print_r( $field->get_errors(), true));
+                }
+            } else if( isset($core_fields[$index]) ) {
+                $update_option[$index] = $core_fields[$index];
+            }
+        }
+
+        update_option('tainacan_core_fields', $update_option);
+
+        return $update_option;
+    }
+
+    /**
+     * block user from remove core fields
+     *
+     * @param $post_id The post ID which is deleting
+     * @throws \ErrorException
+     */
+    public function disable_delete_core_fields( $post_id ){
+        $core_fields = get_option('tainacan_core_fields');
+
+        if ( $core_fields && in_array( $post_id, $core_fields ) ) {
+            throw new \ErrorException('Core fields cannot be deleted.');
+        }
     }
 }
