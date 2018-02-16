@@ -98,9 +98,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$field = $data[0];
+		$fields_names = array_map(function($field) {return $field['name'];}, $data);
 
-		$this->assertEquals('Data', $field['name']);
+		$this->assertContains('Data', $fields_names);
 
 		################### Get field of item with value #######################
 
