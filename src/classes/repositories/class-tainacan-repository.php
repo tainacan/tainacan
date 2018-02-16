@@ -80,7 +80,7 @@ abstract class Repository {
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
 
-		if($obj instanceof Entities\Log) {
+		if( $obj instanceof Entities\Log && ! ( isset($obj->WP_Post->post_status) && in_array($obj->WP_Post->post_status, ['publish', 'pending'])) ) {
 			$obj->WP_Post->post_status = 'publish';
 		}
 

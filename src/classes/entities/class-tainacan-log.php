@@ -191,14 +191,15 @@ class Log extends Entity {
      * @param string $desc
      * @param mixed $new_value
      * @param mixed $old_value
+     * @param string $status 'publish', 'private' or 'pending'
      * @throws \Exception
      * @return \Tainacan\Entities\Log
      */
-    public static function create($msn = false, $desc = '', $new_value = null, $old_value = null) {
+    public static function create($msn = false, $desc = '', $new_value = null, $old_value = null, $status = 'publish') {
     	$log = new Log();
     	$log->set_title($msn);
     	$log->set_description($desc);
-    	$log->set_status('publish'); //TODO may be private
+    	$log->set_status($status);
     	
     	if(!is_null($new_value)) {
 	    	$type = gettype($new_value);
