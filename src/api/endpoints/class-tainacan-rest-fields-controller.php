@@ -119,16 +119,20 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 						$field_added = $this->item_metadata_repository->insert($item_meta);
 					}
 
-					return new WP_REST_Response($field_added->get_field()->__toArray(), 201);
+					$response = $this->prepare_item_for_response($field_added->get_field(), $request);
+
+					return new WP_REST_Response($response, 201);
 				}
 				else {
-					return new WP_REST_Response($this->field->__toArray(), 201);
+					$response = $this->prepare_item_for_response($this->field, $request);
+
+					return new WP_REST_Response($response, 201);
 				}
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $this->field->get_errors(),
-					'field'      => $this->field->__toArray(),
+					'field'         => $this->prepare_item_for_response($this->field, $request),
 				], 400);
 			}
 		}
@@ -157,13 +161,11 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return array|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$field_as = [];
-
-		foreach ( $item as $field ) {
-			$field_as[] = $field->__toArray();
+		if(!empty($item)){
+			return $item->__toArray();
 		}
 
-		return $field_as;
+		return $item;
 	}
 
 	/**
@@ -180,7 +182,10 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 
 		$collection_metadata = $this->field_repository->fetch_by_collection($collection, $args, 'OBJECT');
 
-		$prepared_item = $this->prepare_item_for_response($collection_metadata, $request);
+		$prepared_item = [];
+		foreach ($collection_metadata as $item){
+			$prepared_item[] = $this->prepare_item_for_response($item, $request);
+		}
 
 		return new WP_REST_Response($prepared_item, 200);
 	}
@@ -284,16 +289,20 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 							$up_metadata = $this->item_metadata_repository->update($item_meta);
 						}
 
-						return new WP_REST_Response($up_metadata->get_field()->__toArray(), 201);
+						$response = $this->prepare_item_for_response($up_metadata->get_field(), $request);
+
+						return new WP_REST_Response($response, 200);
 					}
 
-					return new WP_REST_Response($updated_metadata->__toArray(), 201);
+					$response = $this->prepare_item_for_response($updated_metadata, $request);
+
+					return new WP_REST_Response($response, 200);
 				}
 
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $prepared_metadata->get_errors(),
-					'metadata'      => $prepared_metadata->__toArray()
+					'metadata'      => $this->prepare_item_for_response($prepared_metadata, $request)
 				], 400);
 			}
 

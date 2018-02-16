@@ -153,7 +153,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		);
 
 		$request->set_query_params([
-			'hide_empty' => false
+			'hideempty' => false
 		]);
 
 		$response = $this->server->dispatch($request);
