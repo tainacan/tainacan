@@ -11,6 +11,7 @@ module.exports = {
         publicPath: './src/assets/',
         filename: '[name]-components.js'
     },
+    devtool: 'eval-source-map',
     module: {
         rules: [
             {
@@ -31,7 +32,7 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader']
+                use: ['style-loader', 'css-loader', 'postcss-loader'],
             }
         ]
     },
@@ -44,11 +45,10 @@ module.exports = {
         historyApiFallback: true,
         noInfo: true
     },
-    devtool: '#source-map'
 }
 
 if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = '#eval-source-map'
+    module.exports.devtool = 'inline-source-map';
     // http://vue-loader.vuejs.org/en/workflow/production.html
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
