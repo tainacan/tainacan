@@ -16,17 +16,20 @@ use Tainacan\Entities;
  * Private items should only be visible by logged users who have the rights
  * 
  */
+ /**
+  * @group privateObjects
+  */
 class PrivateObjects extends TAINACAN_UnitTestCase {
 
-	/**
-	 * @group privateObjects
-	 */
+	// TODO Test the same things via API
+    
 	public function test_private_items () {
 		
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
 				'name'   => 'testePerm',
+                'status' => 'publish'
 			),
 			true
 		);
@@ -60,6 +63,90 @@ class PrivateObjects extends TAINACAN_UnitTestCase {
         
         $items = $Tainacan_Items->fetch([], $collection);
         $this->assertEquals(1, $items->found_posts, 'contributors should not see private items');
+		
+	}
+    
+    public function test_items_in_private_collections () {
+		
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'testePerm',
+                'status' => 'publish'
+			),
+			true
+		);
+        $privateCollection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'testePerm',
+                'status' => 'private'
+			),
+			true
+		);
+        
+        $item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testItem',
+				'collection' => $collection,
+                'status'     => 'publish'
+			),
+			true
+		);
+        $item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testItem',
+				'collection' => $collection,
+                'status'     => 'publish'
+			),
+			true
+		);
+        
+        $item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testItem',
+				'collection' => $privateCollection,
+                'status'     => 'publish'
+			),
+			true
+		);
+        $item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testItem',
+				'collection' => $privateCollection,
+                'status'     => 'publish'
+			),
+			true
+		);
+        
+        $new_contributor_user = $this->factory()->user->create(array( 'role' => 'contributor' ));
+		wp_set_current_user($new_contributor_user);
+		
+        global $Tainacan_Items, $Tainacan_Collections;
+        
+        $items = $Tainacan_Items->fetch([], $collection);
+        $this->assertEquals(2, $items->found_posts, 'items of a public collections should be visible');
+        
+        $items = $Tainacan_Items->fetch([], $privateCollection);
+        $this->assertEquals(0, $items->found_posts, 'items of a private collection should not be visible');
+        
+        $privateCollection->set_status('publish');
+        $privateCollection->validate();
+        $privateCollection = $Tainacan_Collections->insert($privateCollection);
+        
+        $items = $Tainacan_Items->fetch([], $privateCollection);
+        $this->assertEquals(2, $items->found_posts, 'items should be visible after collections is made public');
+        
+        $privateCollection->set_status('private');
+        $privateCollection->validate();
+        $privateCollection = $Tainacan_Collections->insert($privateCollection);
+        
+        $items = $Tainacan_Items->fetch([], $privateCollection);
+        $this->assertEquals(0, $items->found_posts, 'items should not be visible after collection is made private');
 		
 	}
     
