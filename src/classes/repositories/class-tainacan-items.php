@@ -220,10 +220,6 @@ class Items extends Repository {
         //TODO: get collection order and order by options
         
         $args = $this->parse_fetch_args($args);
-        
-        $args = array_merge([
-            'post_status'    => 'publish',
-        ], $args);
 
         $args['post_type'] = $cpt;
 

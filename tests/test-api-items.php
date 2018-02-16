@@ -76,8 +76,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$first_item  = $data[0];
 		$second_item = $data[1];
 
-		$this->assertEquals($item2->get_title(), $first_item['title']);
-		$this->assertEquals($item1->get_title(), $second_item['title']);
+		$this->assertEquals($item1->get_title(), $first_item['title']);
+		$this->assertEquals($item2->get_title(), $second_item['title']);
 	}
 
 	public function test_delete_or_trash_item_from_a_collection(){
