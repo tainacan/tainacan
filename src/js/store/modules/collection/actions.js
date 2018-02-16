@@ -1,12 +1,12 @@
 import axios from '../../../axios/axios';
 
-export const fetchItems = ({ commit, state }, collectionId) => {
+export const fetchItems = ({ commit, state }, { collectionId, page, itemsPerPage }) => {
     return new Promise ((resolve, reject) => {
-        axios.get('/collection/'+collectionId+'/items')
+        axios.get('/collection/'+collectionId+'/items?paged='+page+'&perpage='+itemsPerPage)
         .then(res => {
             let items = res.data;
             commit('setItems', items);
-            resolve(items);
+            resolve({'items': items, 'total': res.headers['x-wp-total'] });
         })
         .catch(error => reject(error));
     });
@@ -38,7 +38,6 @@ export const fetchCollection = ({ commit }, id) => {
     return new Promise((resolve, reject) =>{ 
         axios.get('/collections/' + id)
         .then(res => {
-            console.log(res);
             let collection = res.data;
             commit('setCollection', collection);
             resolve( res.data );

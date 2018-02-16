@@ -1,14 +1,26 @@
 <template>
     <div>
         <section class="section">
-            <button v-if="selectedItems.length > 0" class="button field is-danger" @click="deleteSelectedItems()"><span>Deletar itens selecionados </span><b-icon icon="delete"></b-icon></button>
-            <b-table
-                    ref="itemsTable"
+            <b-field grouped group-multiline>
+                <button v-if="selectedItems.length > 0" class="button field is-danger" @click="deleteSelectedItems()"><span>Deletar itens selecionados </span><b-icon icon="delete"></b-icon></button>
+                <b-select v-model="itemsPerPage" @input="onChangeItemsPerPage" class="is-pulled-right" :disabled="items.length <= 0">
+                    <option value="2">2 itens por página</option>
+                    <option value="10">10 itens por página</option>
+                    <option value="15">15 itens por página</option>
+                    <option value="20">20 itens por página</option>
+                </b-select>
+            </b-field>
+            <b-table ref="itemsTable"
                     :data="items"
                     @selection-change="handleSelectionChange"
                     :checked-rows.sync="selectedItems"
+                    checkable
                     :loading="isLoading"
-                    checkable>
+                    paginated
+                    backend-pagination
+                    :total="totalItems"
+                    :per-page="itemsPerPage"
+                    @page-change="onPageChange">
                 <template slot-scope="props">
 
                     <b-table-column field="featured_image" width="55">
@@ -66,7 +78,10 @@ export default {
     data(){
         return {
             selectedItems: [],
-            isLoading: Boolean
+            isLoading: false,
+            totalItems: 0,
+            page: 1,
+            itemsPerPage: 2
         }
     },
     props: {
@@ -135,9 +150,28 @@ export default {
             });
         },
         handleSelectionChange() {
-
         },
         showMoreItem(itemId) {
+        },
+        onChangeItemsPerPage(value) {
+            this.itemsPerPage = value;
+            this.loadItems();
+        },
+        onPageChange(page) {
+            this.page = page;
+            this.loadItems();
+        },
+        loadItems() {
+            this.isLoading = true;
+            this.fetchItems({ 'collectionId': this.collectionId, 'page': this.page, 'itemsPerPage': this.itemsPerPage })
+            .then((res) => {
+                this.isLoading = false;
+                console.log(res);
+                this.totalItems = res.total;
+            })
+            .catch((error) => {
+                this.isLoading = false;
+            });
         }
     },
     computed: {
@@ -145,13 +179,8 @@ export default {
             return this.getItems();
         }
     },
-    created(){
-        this.isLoading = true;
-        this.fetchItems(this.collectionId)
-            .then(res => this.isLoading = false)
-            .catch((error) => {
-                this.isLoading = false;
-            });
+    mounted(){
+        this.loadItems();
     }
 
 }

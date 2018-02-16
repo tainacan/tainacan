@@ -21,16 +21,19 @@
                 </div>
                 <footer class="card-footer">
                     <router-link
+                            tag="a"
                             class="card-footer-item"
                             :to="{ path: `/collections/${collection.id}/edit` }">
                         Editar Coleção
                     </router-link>
                     <router-link
+                            tag="a"
                             class="card-footer-item"
                             :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">
                         Criar Item
                     </router-link>
                     <router-link
+                            tag="a"
                             class="card-footer-item"
                             :to="{ path: `/collection/${collection.id}/items/`, params: { collection_id: collection.id }}">
                         Ver todos os itens
@@ -81,40 +84,6 @@ export default {
 </script>
 
 <style scoped>
-
-    .element-card{
-        max-width: 500px;
-    }
-
-    .time {
-        font-size: 13px;
-        color: #999;
-    }
-
-    .bottom {
-        margin-top: 13px;
-        line-height: 12px;
-    }
-
-    el-button {
-        padding: 0;
-        float: right;
-    }
-
-    .image {
-        width: 100%;
-        display: block;
-    }
-
-    .clearfix:before,
-    .clearfix:after {
-        display: table;
-        content: "";
-    }
-
-    .clearfix:after {
-        clear: both
-    }
 </style>
 
 
