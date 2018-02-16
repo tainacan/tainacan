@@ -109,7 +109,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 				$term_inserted = $this->terms_repository->fetch($term_id, $taxonomy);
 
-				return new WP_REST_Response($term_inserted->__toArray(), 200);
+				return new WP_REST_Response($this->prepare_item_for_response($term_inserted, $request), 200);
 			} else {
 				return new WP_REST_Response([
 					'error_message' => 'One or more attributes are invalid.',
@@ -207,13 +207,13 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 				if($prepared_term->validate()){
 					$updated_term = $this->terms_repository->update($prepared_term, $tax_name);
 
-					return new WP_REST_Response($updated_term->__toArray(), 200);
+					return new WP_REST_Response($this->prepare_item_for_response($updated_term, $request), 200);
 				}
 
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $prepared_term->get_errors(),
-					'term'          => $prepared_term->__toArray()
+					'term'          => $this->prepare_item_for_response($prepared_term, $request)
 				], 400);
 			}
 
@@ -252,15 +252,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	 * @return array|mixed|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-
-		if(is_array($item)){
-			$prepared = [];
-
-			foreach ($item as $term){
-				$prepared[] = $term->__toArray();
-			}
-
-			return $prepared;
+		if(!empty($item)){
+			return $item->__toArray();
 		}
 
 		return $item;
@@ -280,9 +273,12 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
 
-		$prepared_terms = $this->prepare_item_for_response($terms, $request);
+		$response = [];
+		foreach ($terms as $term) {
+			array_push($response, $this->prepare_item_for_response( $term, $request ));
+		}
 
-		return new WP_REST_Response($prepared_terms, 200);
+		return new WP_REST_Response($response, 200);
 	}
 
 	/**
@@ -313,7 +309,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-		return new WP_REST_Response($term->__toArray(), 200);
+		return new WP_REST_Response($this->prepare_item_for_response($term, $request), 200);
 	}
 
 	/**

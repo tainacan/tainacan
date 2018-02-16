@@ -81,17 +81,11 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	 * @return array|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$taxonomies = [];
-
-		if($request['taxonomy_id']){
+		if(!empty($item)) {
 			return $item->__toArray();
 		}
 
-		foreach ( $item as $it ) {
-			$taxonomies[] = $it->__toArray();
-		}
-
-		return $taxonomies;
+		return $item;
 	}
 
 	/**
@@ -173,12 +167,12 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 				return new WP_REST_Response($deleted, 400);
 			}
 
-			return new WP_REST_Response($deleted->__toArray(), 200);
+			return new WP_REST_Response($this->prepare_item_for_response($deleted, $request), 200);
 		}
 
 		return new WP_REST_Response([
 			'error_message' => __('Taxonomy with this id ('. $taxonomy_id .') not found.', 'tainacan'),
-			'taxonomy'       => $taxonomy->__toArray()
+			'taxonomy'      => $this->prepare_item_for_response($taxonomy, $request)
 		], 400);
 	}
 
@@ -208,9 +202,12 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 
 		$taxonomies = $this->taxonomy_repository->fetch($args, 'OBJECT');
 
-		$taxonomies_prepared = $this->prepare_item_for_response($taxonomies, $request);
+		$response = [];
+		foreach ($taxonomies as $taxonomy) {
+			array_push($response, $this->prepare_item_for_response( $taxonomy, $request ));
+		}
 
-		return new WP_REST_Response($taxonomies_prepared, 200);
+		return new WP_REST_Response($response, 200);
 	}
 
 	/**
@@ -236,12 +233,12 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 			if($this->taxonomy->validate()){
 				$taxonomy = $this->taxonomy_repository->insert($this->taxonomy);
 
-				return new WP_REST_Response($taxonomy->__toArray(), 201);
+				return new WP_REST_Response($this->prepare_item_for_response($taxonomy, $request), 201);
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $this->taxonomy->get_errors(),
-					'item_metadata' => $this->taxonomy->__toArray(),
+					'item_metadata' => $this->prepare_item_for_response($this->taxonomy, $request),
 				], 400);
 			}
 		} else {
@@ -292,13 +289,13 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 				if($prepared_taxonomy->validate()){
 					$updated_taxonomy = $this->taxonomy_repository->update($prepared_taxonomy);
 
-					return new WP_REST_Response($updated_taxonomy->__toArray(), 200);
+					return new WP_REST_Response($this->prepare_item_for_response($updated_taxonomy, $request), 200);
 				}
 
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $prepared_taxonomy->get_errors(),
-					'taxonomy'      => $prepared_taxonomy->__toArray()
+					'taxonomy'      => $this->prepare_item_for_response($prepared_taxonomy, $request)
 				], 400);
 			}
 

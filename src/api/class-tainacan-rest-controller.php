@@ -74,24 +74,24 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 */
 	protected function prepare_filters($request){
 		$map = [
-			'name'         => 'title',
-			'title'        => 'title',
-			'id'           => 'p',
-			'pageid'       => 'page_id',
-			'authorid'     => 'author_id',
-			'authorname'   => 'author_name',
-			'search'       => 's',
-			'posttype'     => 'post_type',
-			'status'   => 'post_status',
-			'offset'       => 'offset',
-			'metaquery'    => 'meta_query',
-			'datequery'    => 'date_query',
-			'order'        => 'order',
-			'orderby'      => 'orderby',
-			'metakey'      => 'meta_key',
-			'hideempty'   => 'hide_empty',
-			'perpage' => 'posts_per_page',
-			'paged'        => 'paged'
+			'name'       => 'title',
+			'title'      => 'title',
+			'id'         => 'p',
+			'pageid'     => 'page_id',
+			'authorid'   => 'author_id',
+			'authorname' => 'author_name',
+			'search'     => 's',
+			'posttype'   => 'post_type',
+			'status'     => 'post_status',
+			'offset'     => 'offset',
+			'metaquery'  => 'meta_query',
+			'datequery'  => 'date_query',
+			'order'      => 'order',
+			'orderby'    => 'orderby',
+			'metakey'    => 'meta_key',
+			'hideempty'  => 'hide_empty',
+			'perpage'    => 'posts_per_page',
+			'paged'      => 'paged'
 		];
 
 		$meta_query = [

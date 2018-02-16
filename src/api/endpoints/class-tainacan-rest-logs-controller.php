@@ -51,19 +51,11 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	 * @return array|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$prepared = [];
-		$map = $this->logs_repository->get_map();
-
-
-		if(is_array($item)){
-			foreach ($item as $it){
-				$prepared[] = $this->get_only_needed_attributes($it, $map);
-			}
-
-			return $prepared;
+		if(!empty($item)){
+			return $item->__toArray();
 		}
 
-		return $item->__toArray();
+		return $item;
 	}
 
 	/**
@@ -74,15 +66,32 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	public function get_items( $request ) {
 		$args = $this->prepare_filters($request);
 
-		$logs = $this->logs_repository->fetch($args, 'OBJECT');
+		$logs = $this->logs_repository->fetch($args);
 
-		if(!empty($logs)) {
-			$prepared_logs = $this->prepare_item_for_response( $logs, $request );
+		$map = $this->logs_repository->get_map();
 
-			return new WP_REST_Response($prepared_logs, 200);
+		$response = [];
+		if($logs->have_posts()){
+			while ($logs->have_posts()){
+				$logs->the_post();
+
+				$collection = new Entities\Log($logs->post);
+
+				array_push($response, $this->get_only_needed_attributes($collection, $map));
+			}
+
+			wp_reset_postdata();
 		}
 
-		return new WP_REST_Response($logs, 200);
+		$total_logs  = $logs->found_posts;
+		$max_pages = ceil($total_logs / (int) $logs->query_vars['posts_per_page']);
+
+		$rest_response = new WP_REST_Response($response, 200);
+
+		$rest_response->header('X-WP-Total', (int) $total_logs);
+		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
+
+		return $rest_response;
 	}
 
 	/**
@@ -104,13 +113,9 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 
 		$log = $this->logs_repository->fetch($log_id);
 
-		if(!empty($log)) {
-			$prepared_log = $this->prepare_item_for_response( $log, $request );
+		$prepared_log = $this->prepare_item_for_response( $log, $request );
 
-			return new WP_REST_Response($prepared_log, 200);
-		}
-
-		return new WP_REST_Response($log, 200);
+		return new WP_REST_Response($prepared_log, 200);
 	}
 
 	/**

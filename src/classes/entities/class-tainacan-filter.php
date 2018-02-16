@@ -32,6 +32,13 @@ class Filter extends Entity {
         return $this->get_mapped_property('name');
     }
 
+	/**
+	 * @return mixed|null
+	 */
+	function get_description(){
+    	return $this->get_mapped_property('description');
+    }
+
     /**
      * Return the filter order type
      *
@@ -50,11 +57,12 @@ class Filter extends Entity {
         return $this->get_mapped_property('color');
     }
 
-    /**
-     * Return the field
-     *
-     * @return Field
-     */
+	/**
+	 * Return the field
+	 *
+	 * @return Field
+	 * @throws \Exception
+	 */
     function get_field() {
         $id = $this->get_mapped_property('field');
         return new Field( $id );
