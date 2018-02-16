@@ -139,4 +139,8 @@ class Item_Metadata extends Repository {
 	 * @return mixed
 	 */
 	public function update( $object, $new_values = null ) {}
+	
+	public function suggest($item_metadata) {
+		Entities\Log::create(false, '', $item_metadata, null, 'pending');
+	}
 }

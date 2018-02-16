@@ -192,10 +192,21 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			$item_metadata->set_value( $value );
 
 			if ( $item_metadata->validate() ) {
-				$field_updated = $this->item_metadata_repository->insert( $item_metadata );
-
-				$prepared_item =  $this->prepare_item_for_response($field_updated, $request);
-				$prepared_item['field']['field_type_object'] = $field_updated->get_field()->get_field_type_object()->__toArray();
+				if($item->can_edit()) {
+					$field_updated = $this->item_metadata_repository->insert( $item_metadata );
+					$prepared_item =  $this->prepare_item_for_response($field_updated, $request);
+					$prepared_item['field']['field_type_object'] = $field_updated->get_field()->get_field_type_object()->__toArray();
+				}
+				elseif($field->get_accept_suggestion()) {
+					$field_updated = $this->item_metadata_repository->suggest( $item_metadata );
+					$prepared_item =  $this->prepare_item_for_response($field_updated, $request);
+					$prepared_item['field']['field_type_object'] = $field_updated->get_field()->get_field_type_object()->__toArray();
+				}
+				else {
+					return new WP_REST_Response( [
+						'error_message' => __( 'Field do not accept suggestion.', 'tainacan' ),
+					], 400 );
+				}
 
 				return new WP_REST_Response( $prepared_item, 200 );
 			} else {
@@ -224,7 +235,14 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			$item = $this->item_repository->fetch($request['item_id']);
 
 			if ($item instanceof Entities\Item) {
-				return $item->can_edit();
+				if($item->can_edit()) {
+					return $item->can_edit();
+				}
+				else {
+					$field_id = $request['metadata_id'];
+					$field = $this->field_repository->fetch( $field_id );
+					return $field->get_accept_suggestion();
+				}
 			}
 
 		}
