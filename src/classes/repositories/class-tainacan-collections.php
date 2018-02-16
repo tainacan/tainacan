@@ -215,9 +215,12 @@ class Collections extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($collection){
+        global $Tainacan_Fields;
+
     	$this->pre_update_moderators($collection);
         $new_collection = parent::insert($collection);
-    	
+
+        $Tainacan_Fields->register_core_fields( $new_collection );
         $collection->register_collection_item_post_type();
         $this->update_moderators($new_collection);
     	return $new_collection;

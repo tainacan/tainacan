@@ -171,12 +171,24 @@ class Fields extends TAINACAN_UnitTestCase {
 
     function test_core_fields(){
         global $Tainacan_Fields;
-        $core_fields_ids = $Tainacan_Fields->register_core_fields();
+
+        $collection_grandfather = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name' => 'collection field'
+            ),
+            true
+        );
+
+        $core_fields = $Tainacan_Fields->get_core_fields( $collection_grandfather );
+
         $this->expectException(\ErrorException::class);
 
-        if( $core_fields_ids ){
-            foreach( $core_fields_ids as $core_field_id ){
-                wp_trash_post( $core_field_id  );
+
+
+        if( $core_fields ){
+            foreach( $core_fields as $core_field ){
+                wp_trash_post( $core_field->get_id()  );
             }
         }
     }

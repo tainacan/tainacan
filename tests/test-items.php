@@ -229,11 +229,11 @@ class Items extends TAINACAN_UnitTestCase {
             'meta_query' => [
                 [
                     'key' => $field2->get_id(),
-                    'value' => 'value_2'
+                    'value' => 'value_3'
                 ]
             ]
         ], $collection2);
-        $this->assertEquals(1, $test_query->post_count);
+        $this->assertEquals(2, $test_query->post_count);
         
         // should return 2 items
         $test_query = $Tainacan_Items->fetch([

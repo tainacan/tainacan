@@ -25,13 +25,6 @@ function tnc_enable_dev_wp_interface() {
     //return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }
 
-// fire actions right after plugin is activate
-function tainacan_activate() {
-    do_action( 'tainacan_activated' );
-}
-
-register_activation_hook( __FILE__, 'tainacan_activate' );
-
 // TODO move it somewhere else?
 require_once('admin/class-tainacan-admin.php');
 global $Tainacan_Admin;
