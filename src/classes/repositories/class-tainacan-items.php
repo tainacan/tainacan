@@ -225,6 +225,8 @@ class Items extends Repository {
         		if ( $status_obj->public || current_user_can( $collection->cap->read_private_posts ) ) {
         			$cpt[] = $collection->get_db_identifier();
         		}
+            } else {
+                $cpt[] = $collection->get_db_identifier();
             }
             
         }

@@ -58,10 +58,19 @@ class PrivateObjects extends TAINACAN_UnitTestCase {
         
         $this->assertEquals(2, $items->found_posts, 'admins should see all 2 items');
         
+        $items = $Tainacan_Items->fetch(['post_status' => 'private', 'perm' => 'readable'], $collection);
+        $this->assertEquals(1, $items->found_posts, 'contributors should not see private items');
+        
         $new_contributor_user = $this->factory()->user->create(array( 'role' => 'contributor' ));
 		wp_set_current_user($new_contributor_user);
         
         $items = $Tainacan_Items->fetch([], $collection);
+        $this->assertEquals(1, $items->found_posts, 'contributors should not see private items');
+        
+        $items = $Tainacan_Items->fetch(['post_status' => 'private', 'perm' => 'readable'], $collection);
+        $this->assertEquals(0, $items->found_posts, 'contributors should not see private items');
+        
+        $items = $Tainacan_Items->fetch(['post_status' => 'private'], $collection);
         $this->assertEquals(1, $items->found_posts, 'contributors should not see private items');
 		
 	}
