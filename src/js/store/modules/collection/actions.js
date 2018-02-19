@@ -25,13 +25,19 @@ export const deleteItem = ({ commit }, item_id ) => {
     });
 };
 
-export const fetchCollections = ({ commit }) => {
-    axios.get('/collections')
+export const fetchCollections = ({commit} , { page, collectionsPerPage }) => {
+    return new Promise((resolve, reject) => {
+        axios.get('/collections?paged='+page+'&perpage='+collectionsPerPage)
         .then(res => {
             let collections = res.data;
             commit('setCollections', collections);
+            resolve({'collections': collections, 'total': res.headers['x-wp-total'] });
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+            console.log(error);
+            reject(error);
+        });
+    });
 }
 
 export const fetchFields = ({ commit }, id) => {
@@ -55,6 +61,20 @@ export const fetchCollection = ({ commit }, id) => {
         .then(res => {
             let collection = res.data;
             commit('setCollection', collection);
+            resolve( res.data );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+}
+
+export const deleteCollection = ({ commit }, id) => {
+    return new Promise((resolve, reject) =>{ 
+        axios.delete('/collections/' + id)
+        .then(res => {
+            let collection = res.data;
+            commit('deleteCollection', collection);
             resolve( res.data );
         })
         .catch(error => {

@@ -11,7 +11,6 @@
                     <div class="media">
                         <div class="media-content">
                             <p class="title is-4">{{ collection.name }}</p>
-                            <!--p class="subtitle is-6">@johnsmith</p-->
                         </div>
                     </div>
 
