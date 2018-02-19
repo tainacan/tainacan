@@ -5,7 +5,7 @@
                 <router-link class="navbar-item" to="/">
                     <img :src="logoHeader" alt="Tainacan Admin" height="32">
                 </router-link>
-                <router-link class="navbar-item" to="/collections">Coleções</router-link>
+                <router-link class="navbar-item" to="/collections">{{ $i18n.getString('header', 'collections')}}</router-link>
             </div>
             <a :href="wordpressAdmin" class="navbar-end">
                 <i class="mdi mdi-close mdi-36px mdi-light"></i>
@@ -25,6 +25,6 @@
                 logoHeader: '../wp-content/plugins/tainacan/admin/images/tainacan_logo_header.png',
                 wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             }
-        },
+        }
     }
 </script>

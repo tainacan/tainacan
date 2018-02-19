@@ -4,7 +4,6 @@ import Buefy from 'buefy'
 Vue.use(Buefy);
 
 import AdminPage from '../admin.vue'
-//import { eventBus } from '../../js/event-bus-web-components'
 import store from '../../js/store/store'
 import router from './router'
 
@@ -17,8 +16,6 @@ router.beforeEach((to, from, next) => {
 // FROM DEV 
 
 // include vue-custom-element plugin to Vue
-
-
 import Text from '../../classes/field-types/text/Text.vue';
 import Textarea from '../../classes/field-types/textarea/Textarea.vue';
 import Selectbox from '../../classes/field-types/selectbox/Selectbox.vue';
@@ -27,9 +24,7 @@ import Radio from '../../classes/field-types/radio/Radio.vue';
 import Numeric from '../../classes/field-types/numeric/Numeric.vue';
 import Date from '../../classes/field-types/date/Date.vue';
 import Relationship from '../../classes/field-types/relationship/Relationship.vue';
-
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
-
 
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
@@ -43,8 +38,23 @@ Vue.component('tainacan-relationship', Relationship);
 Vue.component('tainacan-form-item', TaincanFormItem);
 
 //------------------------------------------------
+// I18N DIRECTIVE
+const I18NPlugin = {};
+I18NPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$i18n = {
+        getString: function (component, key) {
+            if (wp_settings.i18n[component] == null || wp_settings.i18n[component] == undefined)
+                return "ERROR: Invalid i18n component!"
 
-// eventBus.listener();
+            let string = wp_settings.i18n[component][key];
+            return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
+        }
+    }
+
+}  
+
+Vue.use(I18NPlugin);
 
 new Vue({
     el: '#tainacan-admin-app',

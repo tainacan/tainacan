@@ -193,16 +193,7 @@ export default {
         }
     },
     mounted(){
-        
         this.loadCollections();
-        // this.fetchFields(this.collectionId).then((res) => {
-        //     let rawFields = res;
-        //     for (let field of rawFields) {
-        //         this.tableFields.push(
-        //             { label: field.name, field: field.description, visible: true }
-        //         );
-        //     }
-        // }).catch();
     }
 
 }

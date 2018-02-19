@@ -2,6 +2,10 @@
 
 return [
 
+    'header' => [
+        'collections' => __('Collections', 'tainacan')
+    ],
+    
     'collection_page' => [
         'title' => __('Collections', 'tainacan'),
         'subtitle' => __('Browse Collections', 'tainacan'),
