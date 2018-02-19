@@ -62,7 +62,8 @@ class Item_Metadata extends Repository {
         if ($field_type->core) {
             $item = $item_metadata->get_item();
             $set_method = 'set_' . $field_type->related_mapped_prop;
-            $item->$set_method($item_metadata->get_value());
+            $value = $item_metadata->get_value();
+            $item->$set_method( is_array( $value ) ? $value[0] : $value );
             if ($item->validate()) {
                 global $Tainacan_Items;
                 $Tainacan_Items->insert($item);

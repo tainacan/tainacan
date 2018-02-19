@@ -113,11 +113,13 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 		$this->assertTrue(is_array($data) && array_key_exists(0, $data), sprintf('cannot read field, response: %s', print_r($data, true)));
-		$item_metadata = $data[0];
-		$field = $item_metadata['field'];
 
-		$this->assertEquals('Data', $field['name']);
-		$this->assertEquals('12/12/2017', $item_metadata['value']);
+
+		$fields_names = array_map(function($item_metadata) {return $item_metadata['field']['name'];}, $data);
+		$values = array_map(function($item_metadata) {return $item_metadata['value'];}, $data);
+
+        $this->assertContains('Data', $fields_names);
+        $this->assertContains('12/12/2017', $values);
 	}
 
 	public function test_update_metadata(){
