@@ -282,7 +282,7 @@ class Fields extends Repository {
 	 * fetch field by collection, searches all field available
 	 *
 	 * @param Entities\Collection $collection
-	 * @param array $args
+	 * @param array $args WP_Query args plus disabled_fields
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
 	 * @return Array Entities\Field
@@ -314,7 +314,7 @@ class Fields extends Repository {
             $args['meta_query'] = array( $meta_query );
         }
 
-        return $this->order_result( $this->fetch( $args, $output ), $collection);
+        return $this->order_result( $this->fetch( $args, $output ), $collection, isset( $args['disabled_fields'] ) ? $args['disabled_fields'] : false  );
     }
 
     /**
@@ -322,9 +322,10 @@ class Fields extends Repository {
      *
      * @param $result Response from method fetch
      * @param Entities\Collection $collection
+     * @param bool $disabled_fields Disabled fields wont appear on list
      * @return array or WP_Query ordinatte
      */
-    public function order_result( $result, Entities\Collection $collection ){
+    public function order_result( $result, Entities\Collection $collection, $disabled_fields = false ){
         $order = $collection->get_fields_order();
         if($order) {
             $order = ( is_array($order) ) ? $order : unserialize($order);
@@ -335,9 +336,15 @@ class Fields extends Repository {
 
                 foreach ( $result as $item ) {
                     $id = $item->WP_Post->ID;
-                    $index = array_search ( $id , $order);
+                    $index = array_search ( $id , array_column( $order , 'id') );
 
-                    if( $index !== false ){
+                    if( $index !== false ) {
+
+                        // skipping fields disabled if the arg is set
+                        if( $disabled_fields && !$order[$index]['enable'] ){
+                           continue;
+                        }
+
                         $result_ordinate[$index] = $item;
                     } else {
                         $not_ordinate[] = $item;
@@ -357,7 +364,7 @@ class Fields extends Repository {
 
                 foreach ( $posts as $item ) {
                     $id = $item->ID;
-                    $index = array_search ( $id , $order);
+                    $index = array_search ( $id ,  array_column( $order , 'id') );
 
                     if( $index !== false ){
                         $result_ordinate[$index] = $item;
