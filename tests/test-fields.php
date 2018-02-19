@@ -208,6 +208,75 @@ class Fields extends TAINACAN_UnitTestCase {
         $class = new RandomType;
         $this->assertEquals( 9, sizeof( $Tainacan_Fields->fetch_field_types() ) );
     }
+
+    /**
+     *
+     */
+    function test_ordenation_fields(){
+        global $Tainacan_Collections, $Tainacan_Fields;
+
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name' => 'teste'
+            ),
+            true
+        );
+
+        $type = $this->tainacan_field_factory->create_field('text');
+
+        $field1 = $this->tainacan_entity_factory->create_entity(
+            'field',
+            array(
+                'name' => 'field1',
+                'description' => 'descricao',
+                'collection' => $collection,
+                'field_type' => $type,
+                'status' => 'publish'
+            ),
+            true
+        );
+
+        $field2 = $this->tainacan_entity_factory->create_entity(
+            'field',
+            array(
+                'name' => 'field2',
+                'description' => 'field2',
+                'collection' => $collection,
+                'field_type' => $type,
+                'status' => 'publish'
+            ),
+            true
+        );
+
+
+        $field3 = $this->tainacan_entity_factory->create_entity(
+            'field',
+            array(
+                'name' => 'field3',
+                'description' => 'field3',
+                'collection' => $collection,
+                'field_type' => $type,
+                'status' => 'publish'
+            ),
+            true
+        );
+
+        $collection->set_fields_order(
+            [
+                array( 'id' => $field3->get_id(), 'enable' => false ),
+                array( 'id' => $field2->get_id(), 'enable' => true ),
+                array( 'id' => $field1->get_id(), 'enable' => true )
+            ]);
+
+        $update_collection = $Tainacan_Collections->update( $collection );
+        
+        $fields_ordinate = $Tainacan_Fields->fetch_by_collection( $update_collection, [], 'OBJECT' );
+        $this->assertEquals( 'field3', $fields_ordinate[0]->get_name() );
+
+        $fields_ordinate_enabled = $Tainacan_Fields->fetch_by_collection( $update_collection, [ 'disabled_fields' => true ], 'OBJECT' );
+        $this->assertEquals( 'field2', $fields_ordinate_enabled[0]->get_name() );
+    }
 }
 
 /**
