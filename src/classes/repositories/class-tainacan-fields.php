@@ -441,18 +441,18 @@ class Fields extends Repository {
 
         // TODO: create a better way to retrieve this data
         $data_core_fields = [
-            'core_title' => [
-                'name' => 'Title',
-                'description' => 'title',
-                'collection_id' => $collection->get_id(),
-                'field_type' => 'Tainacan\Field_Types\Core_Title',
-                'status'     => 'publish'
-            ],
             'core_description' => [
                 'name' => 'Description',
                 'description' => 'description',
                 'collection_id' => $collection->get_id(),
                 'field_type' => 'Tainacan\Field_Types\Core_Description',
+                'status'     => 'publish'
+            ],
+            'core_title' => [
+                'name' => 'Title',
+                'description' => 'title',
+                'collection_id' => $collection->get_id(),
+                'field_type' => 'Tainacan\Field_Types\Core_Title',
                 'status'     => 'publish'
             ]
         ];
