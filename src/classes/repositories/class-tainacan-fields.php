@@ -314,16 +314,22 @@ class Fields extends Repository {
             $args['meta_query'] = array( $meta_query );
         }
 
-        return $this->order_result( $this->fetch( $args, $output ), $collection, isset( $args['disabled_fields'] ) ? $args['disabled_fields'] : false  );
+        return $this->order_result(
+            $this->fetch( $args, $output ),
+            $collection,
+            isset( $args['disabled_fields'] ) ? $args['disabled_fields'] : false
+        );
     }
 
     /**
-     * Ordinate the result from fetch response
+     * Ordinate the result from fetch response if $collection has an ordination,
+     * fields not ordinated appear on the end of the list
+     *
      *
      * @param $result Response from method fetch
      * @param Entities\Collection $collection
-     * @param bool $disabled_fields Disabled fields wont appear on list
-     * @return array or WP_Query ordinatte
+     * @param bool $disabled_fields Disabled fields wont appear on list collection fields
+     * @return array or WP_Query ordinate
      */
     public function order_result( $result, Entities\Collection $collection, $disabled_fields = false ){
         $order = $collection->get_fields_order();
