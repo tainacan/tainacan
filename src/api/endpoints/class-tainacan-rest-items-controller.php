@@ -106,16 +106,14 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 		$response = $this->prepare_item_for_response($item, $request);
 
-		foreach($item_metadata as $meta){
-			$name = $meta->get_field()->get_name();
-			$field = $meta->get_field();
+		foreach($item_metadata as $index => $me){
+			$field = $me->get_field();
 
-			$response['metadata'][$name]['value'] = $meta->get_value();
-			$response['metadata'][$name]['status'] = $field->get_status();
-			$response['metadata'][$name]['multiple'] = $field->get_multiple();
+			$limited_item['metadata'][$index]['name'] = $field->get_name();
+			$limited_item['metadata'][$index]['value'] = $me->get_value();
+			$limited_item['metadata'][$index]['status'] = $field->get_status();
+			$limited_item['metadata'][$index]['multiple'] = $field->get_multiple();
 		}
-
-		var_dump($response);
 
 		return new WP_REST_Response($response, 200);
 	}
@@ -144,13 +142,13 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 				$item_metadata = $item->get_fields();
 
-				foreach($item_metadata as $meta){
-					$name = $meta->get_field()->get_name();
-					$field = $meta->get_field();
+				foreach($item_metadata as $index => $me){
+					$field = $me->get_field();
 
-					$limited_item['metadata'][$name]['value'] = $meta->get_value();
-					$limited_item['metadata'][$name]['status'] = $field->get_status();
-					$limited_item['metadata'][$name]['multiple'] = $field->get_multiple();
+					$limited_item['metadata'][$index]['name'] = $field->get_name();
+					$limited_item['metadata'][$index]['value'] = $me->get_value();
+					$limited_item['metadata'][$index]['status'] = $field->get_status();
+					$limited_item['metadata'][$index]['multiple'] = $field->get_multiple();
 				}
 
 				array_push($response, $limited_item);
