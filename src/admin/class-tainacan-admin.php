@@ -42,11 +42,9 @@ class Admin {
             'dashicons', 'deprecated-media', 'edit', 'wp-pointer', 'farbtastic', 'forms', 'common',
             'install', 'wp-auth-check', 'site-icon', 'buttons', 'l10n', 'list-tables','login',
             'media', 'nav-menus', 'revisions', 'themes', 'widgets', 'wp-admin'];
-
-        foreach( $undesired_wp_styles as $style ) :        
-            wp_dequeue_style($style);
-            wp_deregister_style($style);
-        endforeach;
+        
+        wp_dequeue_style($undesired_wp_styles);
+        wp_deregister_style($undesired_wp_styles);
         
     }
     
