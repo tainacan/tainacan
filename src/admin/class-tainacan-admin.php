@@ -9,7 +9,7 @@ class Admin {
     private $menu_slug = 'tainacan_admin';
     
     public function __construct() {
-        
+
         add_action( 'admin_menu', array(&$this, 'add_admin_menu') );
         add_filter( 'admin_body_class', array(&$this, 'admin_body_class') );
 	    add_action('admin_enqueue_scripts', array(&$this, 'add_user_admin_js'));
@@ -36,45 +36,17 @@ class Admin {
         global $TAINACAN_BASE_URL; 
 
         wp_enqueue_style('tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css' );
-        wp_dequeue_style('load-styles');
-        // wp_dequeue_style('admin-menu');
-        // wp_dequeue_style('admin-bar');
-        // wp_dequeue_style('code-editor');
-        // wp_dequeue_style('color-picker');
-        // wp_dequeue_style('common');
-        // wp_dequeue_style('customize-controls');
-        // wp_dequeue_style('customize-nav-menus');
-        // wp_dequeue_style('customize-widgets');
-        // wp_dequeue_style('dashboard');
-        // wp_dequeue_style('dashicons');
-        // wp_dequeue_style('deprecated-media');
-        // wp_dequeue_style('edit');
-        // wp_dequeue_style('wp-pointer');
-        // wp_dequeue_style('farbtastic');
-        // wp_dequeue_style('forms');
-        // wp_dequeue_style('install');
-        // wp_dequeue_style('wp-auth-check');
-        // wp_dequeue_style('site-icon');
-        // wp_dequeue_style('buttons');
-        // wp_dequeue_style('l10n');
-        // wp_dequeue_style('list-tables');
-        // wp_dequeue_style('login');
-        // wp_dequeue_style('media');
-        // wp_dequeue_style('nav-menus');
-        // wp_dequeue_style('revisions');
-        // wp_dequeue_style('themes');
-        // wp_dequeue_style('widgets');
-        // wp_dequeue_style('wp-admin');
 
-        // $result = [];
-    
-        // // Print all loaded Styles (CSS)
-        // global $wp_styles;
-        // foreach( $wp_styles->queue as $style ) :
-        // $result[] =  $wp_styles->registered[$style]->src . ";";
-        // endforeach;
-        
-        // var_dump($result); die;
+        $undesired_wp_styles = [ 'admin-menu', 'admin-bar', 'code-editor', 'color-picker',
+            'customize-controls', 'customize-nav-menus', 'customize-widgets', 'dashboard', 
+            'dashicons', 'deprecated-media', 'edit', 'wp-pointer', 'farbtastic', 'forms', 'common',
+            'install', 'wp-auth-check', 'site-icon', 'buttons', 'l10n', 'list-tables','login',
+            'media', 'nav-menus', 'revisions', 'themes', 'widgets', 'wp-admin'];
+
+        foreach( $undesired_wp_styles as $style ) :        
+            wp_dequeue_style($style);
+            wp_deregister_style($style);
+        endforeach;
         
     }
     
