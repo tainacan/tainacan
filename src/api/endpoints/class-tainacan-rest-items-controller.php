@@ -102,7 +102,20 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 		$item = $this->items_repository->fetch($item_id);
 
+		$item_metadata = $item->get_fields();
+
 		$response = $this->prepare_item_for_response($item, $request);
+
+		foreach($item_metadata as $meta){
+			$name = $meta->get_field()->get_name();
+			$field = $meta->get_field();
+
+			$response['metadata'][$name]['value'] = $meta->get_value();
+			$response['metadata'][$name]['status'] = $field->get_status();
+			$response['metadata'][$name]['multiple'] = $field->get_multiple();
+		}
+
+		var_dump($response);
 
 		return new WP_REST_Response($response, 200);
 	}
@@ -127,7 +140,20 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 				$item = new Entities\Item($items->post);
 
-				array_push($response, $this->get_only_needed_attributes($item, $map));
+				$limited_item = $this->get_only_needed_attributes($item, $map);
+
+				$item_metadata = $item->get_fields();
+
+				foreach($item_metadata as $meta){
+					$name = $meta->get_field()->get_name();
+					$field = $meta->get_field();
+
+					$limited_item['metadata'][$name]['value'] = $meta->get_value();
+					$limited_item['metadata'][$name]['status'] = $field->get_status();
+					$limited_item['metadata'][$name]['multiple'] = $field->get_multiple();
+				}
+
+				array_push($response, $limited_item);
 			}
 
 			wp_reset_postdata();

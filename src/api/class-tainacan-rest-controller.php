@@ -104,7 +104,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		$date_query = [
 			'year'   => 'year',
 			'month'  => 'month',
-			'day'    => 'month',
+			'day'    => 'day',
 			'week'   => 'week',
 			'hour'   => 'hour',
 			'minute' => 'minute',
