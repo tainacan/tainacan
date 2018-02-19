@@ -18,7 +18,7 @@ export const deleteItem = ({ commit }, item_id ) => {
         .then( res => {
             commit('deleteItem', { id: item_id });
             resolve( res );
-        }).catch( err => { 
+        }).catch((error) => { 
             reject( error );
         });
 

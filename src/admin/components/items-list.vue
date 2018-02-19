@@ -63,13 +63,15 @@
                         :key="index"
                         :label="column.label"
                         :visible="column.visible">
-                        <template v-if="column.field != 'featured_image'">{{ props.row[column.field] }}</template>
+                        <template v-if="column.field != 'featured_image'">{{ 
+                            props.row.metadata[column.label].multiple == 'yes' ? props.row.metadata[column.label].value.join(', ') : props.row.metadata[column.label].value 
+                        }}</template>
                         <template v-if="column.field == 'featured_image'">
                             <img class="table-thumb" :src="`${ props.row[column.field] }`"/>
                         </template>
                     </b-table-column>
 
-                    <b-table-column label="Ações"  width="110">
+                    <b-table-column label="Ações">
                         <router-link :to="`/collections/${collectionId}/items/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
                         <a><b-icon icon="delete" @click.native="deleteOneItem(props.row.id)"></a>
                         <a><b-icon icon="dots-vertical" @click.native="showMoreItem(props.row.id)"></a> 
@@ -131,23 +133,29 @@ export default {
             this.$dialog.confirm({
                 message: 'Deseja realmente deletar este Item?',
                 onConfirm: () => {
-                    this.deleteItem(itemId).then(() =>
+                    this.deleteItem(itemId).then((res) => {
+                        this.loadItems();
                         this.$toast.open({
                             duration: 3000,
                             message: `Item deletado`,
                             position: 'is-bottom',
                             type: 'is-secondary',
                             queue: true
-                        })
-                    ).catch(() =>
-                        this.$toast.open({
+                        });
+                        for (let i = 0; i < this.selectedItems.length; i++) {
+                            if (this.selectedItems[i].id == this.itemId)
+                                this.selectedItems.splice(i, 1);
+                        }
+                    }).catch(( error ) => {
+
+                        this.$toast.open({ 
                             duration: 3000,
                             message: `Erro ao deletar item`,
                             position: 'is-bottom',
                             type: 'is-danger',
                             queue: true
                         })
-                    );
+                    });
                 }
             });
         },
@@ -159,13 +167,15 @@ export default {
                     for (let item of this.selectedItems) {
                         this.deleteItem(item.id)
                         .then((res) => {
+                            this.loadItems();
                             this.$toast.open({
                                 duration: 3000,
                                 message: `Item deletado`,
                                 position: 'is-bottom',
                                 type: 'is-secondary',
                                 queue: false
-                            })                            
+                            });
+                                                      
                         }).catch((err) => { 
                             this.$toast.open({
                                 duration: 3000,

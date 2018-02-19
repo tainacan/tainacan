@@ -107,7 +107,8 @@ export default {
             this.$dialog.confirm({
                 message: 'Deseja realmente deletar esta Coleção?',
                 onConfirm: () => {
-                    this.deleteCollection(collectionId).then(() =>
+                    this.deleteCollection(collectionId).then(() => {
+                        this.loadCollections();
                         this.$toast.open({
                             duration: 3000,
                             message: `Coleção deletada`,
@@ -115,7 +116,11 @@ export default {
                             type: 'is-secondary',
                             queue: true
                         })
-                    ).catch(() =>
+                        for (let i = 0; i < this.selectedCollections.length; i++) {
+                            if (this.selectedCollections[i].id == this.collectionId)
+                                this.selectedCollections.splice(i, 1);
+                        }
+                    }).catch(() =>
                         this.$toast.open({
                             duration: 3000,
                             message: `Erro ao deletar coleção`,
@@ -135,6 +140,7 @@ export default {
                     for (let collection of this.selectedCollections) {
                         this.deleteCollection(collection.id)
                         .then((res) => {
+                            this.loadCollections();
                             this.$toast.open({
                                 duration: 3000,
                                 message: `Coleção deletada`,
