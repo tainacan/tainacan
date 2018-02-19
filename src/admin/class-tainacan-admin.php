@@ -12,7 +12,6 @@ class Admin {
 
         add_action( 'admin_menu', array(&$this, 'add_admin_menu') );
         add_filter( 'admin_body_class', array(&$this, 'admin_body_class') );
-	    add_action('admin_enqueue_scripts', array(&$this, 'add_user_admin_js'));
 
     }
 
@@ -63,23 +62,22 @@ class Admin {
         echo "<div id='tainacan-admin-app'></div>";
         //wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/dev_admin-components.js', [] , null, true);
 	    wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [] , null, true);
-    }
+        
+        $tainacan_admin_i18n = require('tainacan-admin-i18n.php');
+        $components = ( has_filter( 'tainacan_register_web_components' ) ) ? apply_filters('tainacan_register_web_components') : [];
 
-
-	function add_user_admin_js() {
-		global $TAINACAN_BASE_URL;
-		$components = ( has_filter( 'tainacan_register_web_components' ) ) ? apply_filters('tainacan_register_web_components') : [];
-
-		wp_enqueue_script('wp-settings',$TAINACAN_BASE_URL . '/js/wp-settings.js');
-
-		$settings = [
+        
+        $settings = [
 			'root' => esc_url_raw( rest_url() ).'tainacan/v2',
 			'nonce' => wp_create_nonce( 'wp_rest' ),
-			'components' => $components
+			'components' => $components,
+            'i18n' => $tainacan_admin_i18n
 		];
 
-		wp_localize_script( 'wp-settings', 'wp_settings', $settings );
-	}
+        wp_localize_script( 'tainacan-user-admin', 'wp_settings', $settings );
+		
+    }
+
 
 }
 
