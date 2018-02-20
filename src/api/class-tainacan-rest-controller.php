@@ -81,7 +81,6 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'authorid'   => 'author_id',
 			'authorname' => 'author_name',
 			'search'     => 's',
-			'posttype'   => 'post_type',
 			'status'     => 'post_status',
 			'offset'     => 'offset',
 			'metaquery'  => 'meta_query',
@@ -116,9 +115,26 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		foreach ($map as $mapped => $mapped_v){
 			if(isset($request[$mapped])){
 				if($mapped === 'metaquery'){
-					foreach ($meta_query as $mapped_meta => $meta_v){
-						$args[$mapped_v][$meta_v] = $request[$mapped][$mapped_meta];
+					$request_meta_query = $request[$mapped];
+
+					// If is a multidimensional array (array of array)
+					if($this->contains_array($request_meta_query)) {
+
+						foreach ( $request_meta_query as $index1 => $a ) {
+							foreach ( $meta_query as $mapped_meta => $meta_v ) {
+								if ( isset( $a[ $meta_v ] ) ) {
+									$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $meta_v ];
+								}
+							}
+						}
+					} else {
+						foreach ( $meta_query as $mapped_meta => $meta_v ) {
+							if(isset($request[$mapped][$meta_v])) {
+								$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $meta_v ];
+							}
+						}
 					}
+
 				} elseif ($mapped === 'datequery') {
 					foreach ($date_query as $date_meta => $date_v){
 						$args[$mapped_v][$date_v] = $request[$mapped][$date_meta];
@@ -129,7 +145,20 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			}
 		}
 
+		$args['perm'] = 'readable';
+
+		var_dump($args);
 		return $args;
+	}
+
+	protected function contains_array($array){
+		foreach ($array as $value){
+			if(is_array($value)){
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

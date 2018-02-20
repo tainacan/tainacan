@@ -192,7 +192,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			$item_metadata->set_value( $value );
 
 			if ( $item_metadata->validate() ) {
-				$field_updated = $this->item_metadata_repository->insert( $item_metadata );
+				$field_updated = $this->item_metadata_repository->update( $item_metadata );
 
 				$prepared_item =  $this->prepare_item_for_response($field_updated, $request);
 				$prepared_item['field']['field_type_object'] = $this->prepare_item_for_response($field_updated->get_field()->get_field_type_object(), $request);
