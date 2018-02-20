@@ -36,45 +36,33 @@
                     :checked-rows.sync="selectedItems"
                     checkable
                     :loading="isLoading"
+                    hoverable
+                    striped
+                    selectable
+                    @select="(item) => $router.push(`/collections/${collectionId}/items/${item.id}`)"
                     paginated
                     backend-pagination
                     :total="totalItems"
                     :per-page="itemsPerPage"
-                    @page-change="onPageChange">
+                    @page-change="onPageChange"
+                    backend-sorting>
                 <template slot-scope="props">
-
-                    <!-- <b-table-column field="featured_image" width="55">
-                        <template v-if="props.row.featured_image" slot-scope="scope">
-                            <img class="table-thumb" :src="`${props.row.featured_image}`"/>
-                        </template>
-                    </b-table-column>
-
-                    <b-table-column label="Nome" field="title" show-overflow-tooltip>
-                        <router-link
-                                :to="`/collections/${collectionId}/items/${props.row.id}`" tag="a">{{ props.row.title }}
-                        </router-link>
-                    </b-table-column>
-
-                    <b-table-column field="description" label="Descrição">
-                        {{ props.row.description }}
-                    </b-table-column> -->
 
                     <b-table-column v-for="(column, index) in tableFields"
                         :key="index"
                         :label="column.label"
                         :visible="column.visible">
-                        <template v-if="column.field != 'featured_image'">{{ 
+                        <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">{{ 
                             props.row.metadata[column.label].multiple == 'yes' ? props.row.metadata[column.label].value.join(', ') : props.row.metadata[column.label].value 
                         }}</template>
                         <template v-if="column.field == 'featured_image'">
                             <img class="table-thumb" :src="`${ props.row[column.field] }`"/>
                         </template>
-                    </b-table-column>
-
-                    <b-table-column label="Ações">
-                        <router-link :to="`/collections/${collectionId}/items/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
-                        <a><b-icon icon="delete" @click.native="deleteOneItem(props.row.id)"></a>
-                        <a><b-icon icon="dots-vertical" @click.native="showMoreItem(props.row.id)"></a> 
+                        <template v-if="column.field == 'row_actions'">
+                            <a @click.prevent.stop="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
+                            <a @click.prevent.stop="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
+                            <a @click.prevent.stop="showMoreItem(props.row.id)"><b-icon icon="dots-vertical"></a> 
+                        </template>
                     </b-table-column>
 
                 </template>
@@ -199,6 +187,9 @@ export default {
             this.itemsPerPage = value;
             this.loadItems();
         },
+        goToItemEditPage(itemId) {
+            this.$router.push(`/collections/${this.collectionId}/items/${itemId}/edit`);
+        },
         onPageChange(page) {
             this.page = page;
             this.loadItems();
@@ -229,6 +220,7 @@ export default {
                     { label: field.name, field: field.description, visible: true }
                 );
             }
+            this.tableFields.push({ label: 'Ações', field: 'row_actions', visible: true });
         }).catch();
     }
 
