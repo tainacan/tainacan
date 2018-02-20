@@ -27,6 +27,10 @@
                     :checked-rows.sync="selectedCollections"
                     checkable
                     :loading="isLoading"
+                    hoverable
+                    striped
+                    selectable
+                    @select="(collection) => $router.push(`/collections/${collection.id}`)"
                     paginated
                     backend-pagination
                     :total="totalCollections"
@@ -50,9 +54,9 @@
 
 
                     <b-table-column label="Ações">
-                        <router-link :to="`/collections/${props.row.id}/edit`" tag="a"><b-icon icon="pencil"></router-link>
-                        <a><b-icon icon="delete" @click.native="deleteOneCollection(props.row.id)"></a>
-                        <a @click.native="showMoreCollection(props.row.id)"><b-icon icon="dots-vertical"></a>
+                        <a @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
+                        <a @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
+                        <a @click.prevent.stop="showMoreCollection(props.row.id)"><b-icon icon="dots-vertical"></a>
                     </b-table-column>
 
                 </template>
@@ -166,6 +170,9 @@ export default {
         handleSelectionChange(value) {
         },
         showMoreCollection(collectionId) {
+        },
+        goToCollectionEditPage(collectionId) {
+            this.$router.push(`/collections/${collectionId}/edit`);
         },
         onChangeCollectionsPerPage(value) {
             this.collectionsPerPage = value;
