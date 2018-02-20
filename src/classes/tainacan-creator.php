@@ -11,6 +11,7 @@ const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
 const TAPI_DIR          = __DIR__ . '/../api/';
 const ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
 const HELPERS_DIR      = __DIR__ . '/../helpers/';
+const IMPORTER_DIR      = __DIR__ . '/../importer/';
 
 const DIRS = [
     CLASSES_DIR,
@@ -21,10 +22,12 @@ const DIRS = [
     TRAITS_DIR,
 	TAPI_DIR,
 	ENDPOINTS_DIR,
+    IMPORTER_DIR
 ];
 
 require_once(VENDOR_DIR . 'autoload.php');
 require_once(HELPERS_DIR . 'class-tainacan-helpers-html.php');
+require_once(IMPORTER_DIR . 'class-tainacan-importer.php');
 
 spl_autoload_register('tainacan_autoload');
 
@@ -44,7 +47,9 @@ function tainacan_autoload($class_name){
     elseif ($class_path[0] == 'Tainacan') {
     	$sliced = array_slice($class_path, 1, count($class_path) -2);
 
-    	if($sliced) {
+    	if( isset( $class_path[1] ) && $class_path[1] === 'Importer' ){
+            $dir = IMPORTER_DIR;
+        } else if($sliced) {
 		    $lower     = $sliced[0];
 		    $sliced[0] = strtolower( $lower );
 
