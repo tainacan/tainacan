@@ -147,7 +147,6 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 
 		$args['perm'] = 'readable';
 
-		var_dump($args);
 		return $args;
 	}
 
