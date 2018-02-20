@@ -139,5 +139,7 @@ class Item_Metadata extends Repository {
 	 *
 	 * @return mixed
 	 */
-	public function update( $object, $new_values = null ) {}
+	public function update( $object, $new_values = null ) {
+		return $this->insert($object);
+	}
 }

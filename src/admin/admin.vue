@@ -7,7 +7,7 @@
                 </router-link>
                 <router-link class="navbar-item" to="/collections">{{ $i18n.getString('header', 'collections')}}</router-link>
             </div>
-            <a :href="wordpressAdmin" class="navbar-end">
+            <a :href="wordpressAdmin" class="is-pulled-right">
                 <i class="mdi mdi-close mdi-36px mdi-light"></i>
             </a>
         </nav>

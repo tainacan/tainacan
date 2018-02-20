@@ -8,6 +8,7 @@ class TAINACAN_UnitTestCase extends \WP_UnitTestCase {
 	protected $tainacan_entity_factory;
 	protected $tainacan_field_factory;
 	protected $tainacan_filter_factory;
+	protected $tainacan_item_metadata_factory;
 	protected $user_id;
 
 	public function setUp(){
