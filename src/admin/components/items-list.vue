@@ -54,10 +54,10 @@
                         :visible="column.visible"
                         :width="column.field == 'row_actions' ? 80 : column.field == 'featured_image' ? 55 : undefined ">
                         <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">{{ 
-                            props.row.metadata[column.label].multiple == 'yes' ? props.row.metadata[column.label].value.join(', ') : props.row.metadata[column.label].value 
+                            props.row.metadata[column.slug].multiple == 'yes' ? props.row.metadata[column.slug].value.join(', ') : props.row.metadata[column.slug].value 
                         }}</template>
                         <template v-if="column.field == 'featured_image'">
-                            <img class="table-thumb" :src="`${ props.row[column.field] }`"/>
+                            <img class="table-thumb" :src="`${ props.row[column.slug] }`"/>
                         </template>
                         <template v-if="column.field == 'row_actions'" width="80">
                             <a @click.prevent.stop="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
@@ -215,10 +215,10 @@ export default {
             let rawFields = res;
             for (let field of rawFields) {
                 this.tableFields.push(
-                    { label: field.name, field: field.description, visible: true }
+                    { label: field.name, field: field.description, slug: field.slug,  visible: true }
                 );
             }
-            this.tableFields.push({ label: 'Ações', field: 'row_actions', visible: true });
+            this.tableFields.push({ label: 'Ações', field: 'row_actions', slug: 'actions', visible: true });
         }).catch();
     }
 
