@@ -38,25 +38,23 @@
                     @page-change="onPageChange">
                 <template slot-scope="props">
 
-                    <b-table-column field="featured_image" width="55">
+                    <b-table-column field="featured_image" width="55" sortable="false">
                         <template v-if="props.row.featured_image" slot-scope="scope">
                             <img class="table-thumb" :src="`${props.row.featured_image}`"/>
                         </template>
                     </b-table-column>
 
                     <b-table-column label="Nome" field="props.row.name">
-                        <router-link :to="`/collections/${props.row.id}`" tag="a">{{ props.row.name }}</router-link>
+                        {{ props.row.name }}
                     </b-table-column>
 
                     <b-table-column property="description" label="Descrição" show-overflow-tooltip field="props.row.description">
                         {{ props.row.description }}
                     </b-table-column>
 
-
-                    <b-table-column label="Ações">
+                    <b-table-column label="Ações" width="80">
                         <a @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
                         <a @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
-                        <a @click.prevent.stop="showMoreCollection(props.row.id)"><b-icon icon="dots-vertical"></a>
                     </b-table-column>
 
                 </template>
@@ -162,14 +160,11 @@ export default {
                             });
                         });
                     }
-
                     this.selectedCollections =  [];
                 }
             });
         },
         handleSelectionChange(value) {
-        },
-        showMoreCollection(collectionId) {
         },
         goToCollectionEditPage(collectionId) {
             this.$router.push(`/collections/${collectionId}/edit`);
@@ -188,7 +183,7 @@ export default {
             .then((res) => {
                 this.isLoading = false;
                 this.totalCollections = res.total;
-            })
+            }) 
             .catch((error) => {
                 this.isLoading = false;
             });
@@ -212,6 +207,8 @@ export default {
         max-height: 38px !important;
         vertical-align: middle !important;
     }
+
+    tr { cursor: pointer !important; }
 
 </style>
 

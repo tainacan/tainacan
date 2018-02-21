@@ -4,6 +4,7 @@ use Tainacan;
 
 abstract class Importer {
 
+    private $id;
     public $collection;
     public $mapping;
     public $tmp_file;
@@ -14,6 +15,16 @@ abstract class Importer {
         if (!session_id()) {
             @session_start();
         }
+
+        $this->id = uniqid();
+        $_SESSION['tainacan_importer'][$this->id] = $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_id(){
+        return $this->id;
     }
 
     /**
@@ -21,7 +32,6 @@ abstract class Importer {
      */
     public function set_collection( Tainacan\Entities\Collection $collection ){
         $this->collection = $collection;
-        $_SESSION['tainacan_importer'] = $this;
     }
 
     /**
@@ -29,7 +39,6 @@ abstract class Importer {
      */
     public function set_mapping( $mapping ){
         $this->mapping = $mapping;
-        $_SESSION['tainacan_importer'] = $this;
     }
 
     /**
@@ -41,7 +50,6 @@ abstract class Importer {
         if ( is_numeric( $new_file ) ) {
             $attach = get_post($new_file);
             $this->tmp_file = $attach->guid;
-            $_SESSION['tainacan_importer'] = $this;
         } else {
             return false;
         }
@@ -59,6 +67,22 @@ abstract class Importer {
         $file_array['tmp_name'] = $path_file;
         $file_array['size'] = filesize( $path_file );
         return media_handle_sideload( $file_array, 0 );
+    }
+
+    /**
+     * get the content form url and creates a file
+     *
+     * @param $url
+     * @return array
+     */
+    public function fetch_from_remote( $url ){
+        $tmp = wp_remote_get( $url );
+        if( isset( $tmp['body'] ) ){
+            $file = fopen( $this->get_id().'.txt', 'w' );
+            fwrite( $file, $tmp['body'] );
+            fclose( $file );
+            return $this->set_file( $this->get_id().'.txt' );
+        }
     }
 
     /**

@@ -164,8 +164,10 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
 
 		/* Meta Query:
-			Fetch items from a collection desc ordered by fieldA1 and its only in range A to Y.
-		*/
+		 *
+		 * Fetch items from a collection desc ordered by fieldA1 and its only in range A to F.
+		 *
+		 * */
 
 		$meta_query = [
 			'metakey'   => $fieldA1->get_id(),
@@ -188,6 +190,51 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$data3 = $meta_query_response->get_data();
 
 		$this->assertCount(2, $data3);
+
+		$values = [$data3[0]['metadata']['Field A-1']['value'], $data3[1]['metadata']['Field A-1']['value']];
+
+		$this->assertNotContains('G', $values);
+
+		// E have to come first, because DESC
+		$this->assertEquals('E', $data3[0]['metadata']['Field A-1']['value']);
+		$this->assertEquals('D', $data3[1]['metadata']['Field A-1']['value']);
+
+
+		/* Date Query:
+		 *
+		 * Fetch posts for today
+		 *
+		 * */
+
+		$today = getdate();
+
+		$date_query = [
+			'datequery' => [
+				[
+					'year'  => $today['year'],
+					'month' => $today['mon'],
+					'day'   => $today['mday']
+				]
+			]
+		];
+
+		$date_query_request_collections = new \WP_REST_Request('GET', $this->namespace . '/collections');
+		$date_query_request_collections->set_query_params($date_query);
+
+		$date_query_response_collections = $this->server->dispatch($date_query_request_collections);
+		$data4 = $date_query_response_collections->get_data();
+
+		$this->assertCount(3, $data4);
+
+		// If we change the date query for a date different of today, it should return nothing
+		$date_query['datequery'][0]['year'] = 1995;
+
+		$date_query_request_collections->set_query_params($date_query);
+
+		$date_query_response_collections = $this->server->dispatch($date_query_request_collections);
+		$data5 = $date_query_response_collections->get_data();
+
+		$this->assertCount(0, $data5);
 	}
 }
 

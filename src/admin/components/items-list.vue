@@ -51,17 +51,17 @@
                     <b-table-column v-for="(column, index) in tableFields"
                         :key="index"
                         :label="column.label"
-                        :visible="column.visible">
+                        :visible="column.visible"
+                        :width="column.field == 'row_actions' ? 80 : column.field == 'featured_image' ? 55 : undefined ">
                         <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">{{ 
                             props.row.metadata[column.label].multiple == 'yes' ? props.row.metadata[column.label].value.join(', ') : props.row.metadata[column.label].value 
                         }}</template>
                         <template v-if="column.field == 'featured_image'">
                             <img class="table-thumb" :src="`${ props.row[column.field] }`"/>
                         </template>
-                        <template v-if="column.field == 'row_actions'">
+                        <template v-if="column.field == 'row_actions'" width="80">
                             <a @click.prevent.stop="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
                             <a @click.prevent.stop="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
-                            <a @click.prevent.stop="showMoreItem(props.row.id)"><b-icon icon="dots-vertical"></a> 
                         </template>
                     </b-table-column>
 
@@ -181,8 +181,6 @@ export default {
         },
         handleSelectionChange() {
         },
-        showMoreItem(itemId) {
-        },
         onChangeItemsPerPage(value) {
             this.itemsPerPage = value;
             this.loadItems();
@@ -233,6 +231,8 @@ export default {
         max-height: 55px !important;
         vertical-align: middle !important;
     }
+
+    tr { cursor: pointer }
 
 </style>
 
