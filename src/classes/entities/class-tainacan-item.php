@@ -210,6 +210,13 @@ class Item extends Entity {
             $arrayItemMetadata = $this->get_fields();
             if( $arrayItemMetadata  ){
                 foreach ( $arrayItemMetadata as $itemMetadata ) {
+
+                    // avoid core fields to re-validate
+                    $pos = strpos($itemMetadata->get_field()->get_field_type(), 'Core');
+                    if( $pos !== false ){
+                        continue;
+                    }
+
                     if( !$itemMetadata->validate() ){
                         $errors = $itemMetadata->get_errors();
                         $this->add_error( $itemMetadata->get_field()->get_name(), $errors );
@@ -220,5 +227,16 @@ class Item extends Entity {
             return true;
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::validate()
+     */
+    public function validate_core_fields(){
+        if ( !in_array($this->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+
+        return parent::validate();
     }
 }
