@@ -26,10 +26,11 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         );
 
         $csv_importer = new Importer\CSV();
-        $csv_importer->set_collection( $collection );
+        $id = $csv_importer->get_id();
+        $_SESSION['tainacan_importer'][$id]->set_collection( $collection );
 
         // here the session is init already
-        $this->assertEquals( $_SESSION['tainacan_importer'], $csv_importer );
+        $this->assertEquals( $collection->get_id(),  $_SESSION['tainacan_importer'][$id]->collection->get_id() );
     }
 
     /**
@@ -37,6 +38,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
      */
     public function test_file_import_csv () {
         $csv_importer = new Importer\CSV();
+        $id = $csv_importer->get_id();
 
         // open the file "demosaved.csv" for writing
         $file = fopen('demosaved.csv', 'w');
@@ -44,7 +46,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // save the column headers
         fputcsv($file, array('Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
 
-        // Sample data. This can be fetched from mysql too
+        // Sample data
         $data = array(
             array('Data 11', 'Data 12', 'Data 13', 'Data 14', 'Data 15'),
             array('Data 21', 'Data 22', 'Data 23', 'Data 24', 'Data 25'),
@@ -61,9 +63,9 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // Close the file
         fclose($file);
 
-        $csv_importer->set_file( 'demosaved.csv' );
+        $_SESSION['tainacan_importer'][$id]->set_file( 'demosaved.csv' );
 
         // here the session is init already
-        $this->assertEquals( $_SESSION['tainacan_importer']->tmp_file , $csv_importer->tmp_file );
+        $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
     }
 }
