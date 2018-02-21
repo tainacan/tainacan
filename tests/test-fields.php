@@ -27,15 +27,13 @@ class Fields extends TAINACAN_UnitTestCase {
 	        true
         );
 
-        $type = $this->tainacan_field_factory->create_field('text');
-
         $field = $this->tainacan_entity_factory->create_entity(
         	'field',
 	        array(
 	        	'name' => 'metadado',
 		        'description' => 'descricao',
 		        'collection' => $collection,
-		        'field_type' => $type
+		        'field_type'  => 'Tainacan\Field_Types\Text',
 	        ),
 	        true
         );
@@ -61,15 +59,13 @@ class Fields extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $field = $this->tainacan_entity_factory->create_entity(
 	        'field',
 	        array(
 		        'name'              => 'metadado',
 		        'description'       => 'descricao',
 		        'collection_id'     => $collection->get_id(),
-		        'field_type' => $type
+		        'field_type'  => 'Tainacan\Field_Types\Text',
 	        ),
 	        true
         );
@@ -79,7 +75,7 @@ class Fields extends TAINACAN_UnitTestCase {
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_collection_id(), $collection->get_id());
         $this->assertEquals('Tainacan\Field_Types\Text', $test->get_field_type());
-        $this->assertEquals($test->get_field_type_object(), $type);
+        $this->assertEquals($test->get_field_type(), 'Tainacan\Field_Types\Text');
     }
 
     /**
@@ -88,14 +84,12 @@ class Fields extends TAINACAN_UnitTestCase {
     function test_hierarchy_metadata(){
         global $Tainacan_Fields;
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $this->tainacan_entity_factory->create_entity(
         	'field',
 	        array(
 	        	'name'              => 'field default',
 		        'collection_id'     => $Tainacan_Fields->get_default_metadata_attribute(),
-		        'field_type' => $type,
+		        'field_type'  => 'Tainacan\Field_Types\Text',
 		        'status'            => 'publish'
 	        ),
 	        true
@@ -114,7 +108,7 @@ class Fields extends TAINACAN_UnitTestCase {
 	        array(
 	        	'name'              => 'field grandfather',
 		        'collection_id'     => $collection_grandfather->get_id(),
-		        'field_type' => $type,
+		        'field_type'  => 'Tainacan\Field_Types\Text',
 		        'status'            => 'publish'
 	        ),
 	        true
@@ -134,7 +128,7 @@ class Fields extends TAINACAN_UnitTestCase {
 		    array(
 			    'name'              => 'field father',
 			    'collection_id'     => $collection_father->get_id(),
-			    'field_type' => $type,
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 			    'status'            => 'publish'
 		    ),
 		    true
@@ -157,7 +151,7 @@ class Fields extends TAINACAN_UnitTestCase {
 		    array(
 			    'name'              => 'field son',
 			    'collection_id'     => $collection_son->get_id(),
-			    'field_type' => $type,
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 			    'status'            => 'publish'
 		    ),
 		    true
@@ -223,15 +217,13 @@ class Fields extends TAINACAN_UnitTestCase {
             true
         );
 
-        $type = $this->tainacan_field_factory->create_field('text');
-
         $field1 = $this->tainacan_entity_factory->create_entity(
             'field',
             array(
                 'name' => 'field1',
                 'description' => 'descricao',
                 'collection' => $collection,
-                'field_type' => $type,
+                'field_type'  => 'Tainacan\Field_Types\Text',
                 'status' => 'publish'
             ),
             true
@@ -243,7 +235,7 @@ class Fields extends TAINACAN_UnitTestCase {
                 'name' => 'field2',
                 'description' => 'field2',
                 'collection' => $collection,
-                'field_type' => $type,
+                'field_type'  => 'Tainacan\Field_Types\Text',
                 'status' => 'publish'
             ),
             true
@@ -256,7 +248,7 @@ class Fields extends TAINACAN_UnitTestCase {
                 'name' => 'field3',
                 'description' => 'field3',
                 'collection' => $collection,
-                'field_type' => $type,
+                'field_type'  => 'Tainacan\Field_Types\Text',
                 'status' => 'publish'
             ),
             true
@@ -276,6 +268,70 @@ class Fields extends TAINACAN_UnitTestCase {
 
         $fields_ordinate_enabled = $Tainacan_Fields->fetch_by_collection( $update_collection, [ 'disabled_fields' => true ], 'OBJECT' );
         $this->assertEquals( 'field2', $fields_ordinate_enabled[0]->get_name() );
+    }
+    
+    function test_unique_slugs() {
+		$x = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+                'slug'          => 'duplicated_slug',
+                'status'        => 'publish',
+                'field_type'  => 'Tainacan\Field_Types\Text',
+			),
+			true
+		);
+        
+        $y = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+                'slug'          => 'duplicated_slug',
+                'status'        => 'publish',
+                'field_type'  => 'Tainacan\Field_Types\Text',
+			),
+			true
+		);
+        
+        $this->assertNotEquals($x->get_slug(), $y->get_slug());
+        
+        // Create as draft and publish later
+        $x = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+                'slug'          => 'duplicated_slug',
+                'field_type'  => 'Tainacan\Field_Types\Text',
+			),
+			true
+		);
+        
+        $y = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+                'slug'          => 'duplicated_slug',
+                'field_type'  => 'Tainacan\Field_Types\Text',
+			),
+			true
+		);
+        
+        $this->assertEquals($x->get_slug(), $y->get_slug());
+        
+        global $Tainacan_Fields;
+        $x->set_status('publish');
+        $x->validate();
+        $x = $Tainacan_Fields->insert($x);
+        $y->set_status('private'); // or publish shoud behave the same
+        $y->validate();
+        $y = $Tainacan_Fields->insert($y);
+        
+        $this->assertNotEquals($x->get_slug(), $y->get_slug());
+        
     }
 }
 

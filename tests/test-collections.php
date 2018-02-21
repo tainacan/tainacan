@@ -158,6 +158,70 @@ class Collections extends TAINACAN_UnitTestCase {
         $this->assertEquals('draft', $test->get_status());
     }
     
+    function test_unique_slugs() {
+		$x = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC',
+                'slug'          => 'duplicated_slug',
+                'status'        => 'publish'
+			),
+			true
+		);
+        
+        $y = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC',
+                'slug'          => 'duplicated_slug',
+                'status'        => 'publish'
+			),
+			true
+		);
+        
+        $this->assertNotEquals($x->get_slug(), $y->get_slug());
+        
+        // Create as draft and publish later
+        $x = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC',
+                'slug'          => 'duplicated_slug',
+			),
+			true
+		);
+        
+        $y = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC',
+                'slug'          => 'duplicated_slug',
+			),
+			true
+		);
+        
+        $this->assertEquals($x->get_slug(), $y->get_slug());
+        
+        global $Tainacan_Collections;
+        $x->set_status('publish');
+        $x->validate();
+        $x = $Tainacan_Collections->insert($x);
+        $y->set_status('private'); // or publish shoud behave the same
+        $y->validate();
+        $y = $Tainacan_Collections->insert($y);
+        
+        $this->assertNotEquals($x->get_slug(), $y->get_slug());
+        
+    }
+    
     function test_item() {
 	    $x = $this->tainacan_entity_factory->create_entity(
 		    'collection',

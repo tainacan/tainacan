@@ -54,14 +54,12 @@ class Filters extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $field = $this->tainacan_entity_factory->create_entity(
 	    	'field',
 		    array(
 		    	'name'              => 'metadado',
 			    'collection_id'     => $collection->get_id(),
-			    'field_type' => $type,
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    	'description' => 'descricao',
 		    ),
 		    true

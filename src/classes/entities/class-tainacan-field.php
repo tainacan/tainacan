@@ -32,6 +32,15 @@ class Field extends Entity {
     function get_name() {
         return $this->get_mapped_property('name');
     }
+    
+    /**
+     * Get field slug
+     *
+     * @return string
+     */
+    function get_slug() {
+        return $this->get_mapped_property('slug');
+    }
 
     /**
      * Return the field order type
@@ -162,6 +171,22 @@ class Field extends Entity {
      */
     function set_name($value) {
         $this->set_mapped_property('name', $value);
+    }
+
+    /**
+     * Set the field slug
+     *
+     * If you dont set the field slug, it will be set automatically based on the name and
+     * following WordPress default behavior of creating slugs for posts.
+     *
+     * If you set the slug for an existing one, WordPress will append a number at the end of in order
+     * to make it unique (e.g slug-1, slug-2)
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_slug($value) {
+        $this->set_mapped_property('slug', $value);
     }
 
     /**

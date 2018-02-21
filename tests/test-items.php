@@ -74,8 +74,6 @@ class Items extends TAINACAN_UnitTestCase {
 	}
     
     function teste_query(){
-        $type = $this->tainacan_field_factory->create_field('text');
-
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
         	array(
@@ -100,7 +98,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'   => 'metadado',
 			    'status' => 'publish',
 			    'collection' => $collection,
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -111,7 +109,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'   => 'metadado2',
 			    'status' => 'publish',
 			    'collection' => $collection,
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -122,7 +120,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'              => 'metadado3',
 			    'status'            => 'publish',
 			    'collection'        => $collection,
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );

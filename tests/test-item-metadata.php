@@ -29,15 +29,13 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $field = $this->tainacan_entity_factory->create_entity(
         	'field',
 	        array(
 	        	'name'              => 'metadado',
 		        'description'       => 'descricao',
 		        'collection'        => $collection,
-		        'field_type' => $type
+		        'field_type'  => 'Tainacan\Field_Types\Text',
 	        ),
 	        true
         );
@@ -81,8 +79,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $field = $this->tainacan_entity_factory->create_entity(
 	    	'field',
 		    array(
@@ -90,7 +86,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			    'description'       => 'descricao',
 			    'collection'        => $collection,
 			    'required'          => 'yes',
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -136,8 +132,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $field = $this->tainacan_entity_factory->create_entity(
 		    'field',
 		    array(
@@ -145,7 +139,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			    'description'       => 'descricao',
 			    'collection'        => $collection,
 			    'collection_key'    => 'yes',
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -196,8 +190,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         );
 
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
         $this->tainacan_entity_factory->create_entity(
         	'field',
             array(
@@ -205,7 +197,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	            'description'       => 'descricao',
 	            'collection'        => $collection,
 	            'status'            => 'publish',
-	            'field_type' => $type
+	            'field_type'  => 'Tainacan\Field_Types\Text',
             ),
 	        true
         );

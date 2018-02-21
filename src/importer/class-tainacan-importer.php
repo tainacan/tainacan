@@ -70,16 +70,19 @@ abstract class Importer {
     }
 
     /**
+     * get the content form url and creates a file
+     *
      * @param $url
+     * @return array
      */
     public function fetch_from_remote( $url ){
-        $tmp = download_url( $url );
-        $path_parts = pathinfo( $url );
-
-        $file_array['name'] = $path_parts['basename'];
-        $file_array['tmp_name'] = $tmp;
-        $file_array['size'] = filesize( $tmp );
-        return media_handle_sideload( $file_array, 0 );
+        $tmp = wp_remote_get( $url );
+        if( isset( $tmp['body'] ) ){
+            $file = fopen( $this->get_id().'.txt', 'w' );
+            fwrite( $file, $tmp['body'] );
+            fclose( $file );
+            return $this->set_file( $this->get_id().'.txt' );
+        }
     }
 
     /**
