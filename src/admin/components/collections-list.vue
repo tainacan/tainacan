@@ -3,12 +3,6 @@
         <section class="section">
             <b-field grouped group-multiline>
                 <button v-if="selectedCollections.length > 0" class="button field is-danger" @click="deleteSelectedCollections()"><span>Deletar coleções selecionadas </span><b-icon icon="delete"></b-icon></button>
-
-                <router-link tag="button" class="button is-primary"
-                            :to="{ path: `/collections/new` }">
-                    Criar Coleção
-                </router-link>
-
                 <b-select 
                         v-model="collectionsPerPage" 
                         @input="onChangeCollectionsPerPage" 
@@ -38,7 +32,7 @@
                     @page-change="onPageChange">
                 <template slot-scope="props">
 
-                    <b-table-column field="featured_image" width="55" sortable="false">
+                    <b-table-column field="featured_image" width="55" :sortable="false">
                         <template v-if="props.row.featured_image" slot-scope="scope">
                             <img class="table-thumb" :src="`${props.row.featured_image}`"/>
                         </template>

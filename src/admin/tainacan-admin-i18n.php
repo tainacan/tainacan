@@ -2,8 +2,13 @@
 
 return [
 
-    'header' => [
-        'collections' => __('Collections', 'tainacan')
+    'menu' => [
+        'collections' => __('Collections', 'tainacan'),
+        'items' => __('Items', 'tainacan'),
+        'fields' => __('Fields', 'tainacan'),
+        'filters' => __('Filters', 'tainacan'),
+        'categories' => __('Categories', 'tainacan'),
+        'events' => __('Events', 'tainacan')
     ],
     
     'collection_page' => [

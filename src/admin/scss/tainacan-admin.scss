@@ -14,7 +14,8 @@ $modal-z: 9999999;
 @import "../../../node_modules/bulma/bulma.sass";
 @import "../../../node_modules/buefy/src/scss/buefy.scss";
 
-body.tainacan-admin-page #adminmenumain {
+// Clears wordpress content
+body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
     display: none;
 }
 
@@ -28,6 +29,8 @@ body.tainacan-admin-page #adminmenumain {
     width: 100%;
     z-index: 999999;
     overflow-y: auto;
+    height: 100%;
+    margin: 0px !important; 
 }
 
 /* Rules for sizing the icon. */
