@@ -475,6 +475,12 @@ class DevInterface {
                 
                 foreach ($metalist as $meta) {
                     $item_meta = new \Tainacan\Entities\Item_Metadata_Entity($entity, $meta);
+
+                    $pos = strpos($item_meta->get_field()->get_field_type(), 'Core');
+                    if( $pos !== false ){
+                        continue;
+                    }
+
                     if (isset($_POST['tnc_metadata_' . $meta->get_id()])) {
                         $item_meta->set_value($_POST['tnc_metadata_' . $meta->get_id()]);
                         if ($item_meta->validate()) {

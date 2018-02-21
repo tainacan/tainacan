@@ -289,8 +289,6 @@ class Fields extends Repository {
 	 * @throws \Exception
 	 */
     public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
-        $this->register_core_fields( $collection );
-
         $collection_id = $collection->get_id();
 
         //get parent collections
