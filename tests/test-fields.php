@@ -270,9 +270,6 @@ class Fields extends TAINACAN_UnitTestCase {
         $this->assertEquals( 'field2', $fields_ordinate_enabled[0]->get_name() );
     }
     
-    /**
-	 * @group blabla
-	 */
     function test_unique_slugs() {
 		$x = $this->tainacan_entity_factory->create_entity(
 			'field',
