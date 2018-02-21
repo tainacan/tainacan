@@ -78,6 +78,21 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 		));
 	}
 
+	private function add_metadata_to_item($item_object, $item_array){
+		$item_metadata = $item_object->get_fields();
+
+		foreach($item_metadata as $index => $me){
+			$field = $me->get_field();
+			$slug = $field->get_slug();
+
+			$item_array['metadata'][$slug]['name'] = $field->get_name();
+			$item_array['metadata'][$slug]['value'] = $me->get_value();
+			$item_array['metadata'][$slug]['multiple'] = $field->get_multiple();
+		}
+
+		return $item_array;
+	}
+
 	/**
 	 * @param mixed $item
 	 * @param WP_REST_Request $request
@@ -86,7 +101,9 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
-			return $item->__toArray();
+			$item_array = $item->__toArray();
+
+			return $this->add_metadata_to_item($item, $item_array);
 		}
 
 		return $item;
@@ -102,18 +119,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 		$item = $this->items_repository->fetch($item_id);
 
-		$item_metadata = $item->get_fields();
-
 		$response = $this->prepare_item_for_response($item, $request);
-
-		foreach($item_metadata as $index => $me){
-			$field = $me->get_field();
-			$name = $field->get_name();
-
-			$response['metadata'][$name]['value'] = $me->get_value();
-			$response['metadata'][$name]['status'] = $field->get_status();
-			$response['metadata'][$name]['multiple'] = $field->get_multiple();
-		}
 
 		return new WP_REST_Response($response, 200);
 	}
@@ -139,17 +145,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 				$item = new Entities\Item($items->post);
 
 				$limited_item = $this->get_only_needed_attributes($item, $map);
-
-				$item_metadata = $item->get_fields();
-
-				foreach($item_metadata as $index => $me){
-					$field = $me->get_field();
-					$name = $field->get_name();
-
-					$limited_item['metadata'][$name]['value'] = $me->get_value();
-					$limited_item['metadata'][$name]['status'] = $field->get_status();
-					$limited_item['metadata'][$name]['multiple'] = $field->get_multiple();
-				}
+				$limited_item = $this->add_metadata_to_item($item, $limited_item);
 
 				array_push($response, $limited_item);
 			}

@@ -139,6 +139,15 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		return $args;
 	}
 
+	/**
+	 * @param $mapped
+	 * @param $request
+	 * @param $query
+	 * @param $mapped_v
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
 	private function  prepare_meta($mapped, $request, $query, $mapped_v, $args){
 		$request_meta_query = $request[$mapped];
 
@@ -162,6 +171,11 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		return $args;
 	}
 
+	/**
+	 * @param $array
+	 *
+	 * @return bool
+	 */
 	protected function contains_array($array){
 		foreach ($array as $value){
 			if(is_array($value)){
