@@ -39,6 +39,13 @@ class Fields extends Repository {
                 'on_error'   => __('The name should be a text value and not empty', 'tainacan'),
                 'validation' => v::stringType()->notEmpty(),
             ],
+            'slug'           =>  [
+                'map'        => 'post_name',
+                'title'      => __('Slug', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('A unique and santized string representation of the field', 'tainacan'),
+                //'validation' => v::stringType(),
+            ],
             'order'          => [
                 'map'        => 'menu_order',
                 'title'       => __('Order', 'tainacan'),

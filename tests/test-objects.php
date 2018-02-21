@@ -27,8 +27,6 @@ class Objects extends TAINACAN_UnitTestCase {
 		$entity = Repository::get_entity_by_post($test);
 		$this->assertEquals($x->get_db_identifier(), $entity->get_db_identifier());
 		
-		$type = $this->tainacan_field_factory->create_field('text');
-		
 		$collection = $this->tainacan_entity_factory->create_entity(
 				'collection',
 				array(
@@ -53,7 +51,7 @@ class Objects extends TAINACAN_UnitTestCase {
 					'name'   => 'metadado',
 					'status' => 'publish',
 					'collection' => $collection,
-					'field_type' => $type
+					'field_type'  => 'Tainacan\Field_Types\Text',
 				),
 				true
 				);
@@ -64,7 +62,7 @@ class Objects extends TAINACAN_UnitTestCase {
 					'name'   => 'metadado2',
 					'status' => 'publish',
 					'collection' => $collection,
-					'field_type' => $type
+					'field_type'  => 'Tainacan\Field_Types\Text',
 				),
 				true
 				);
@@ -75,7 +73,7 @@ class Objects extends TAINACAN_UnitTestCase {
 					'name'              => 'metadado3',
 					'status'            => 'publish',
 					'collection'        => $collection,
-					'field_type' => $type
+					'field_type'  => 'Tainacan\Field_Types\Text',
 				),
 				true
 				);
