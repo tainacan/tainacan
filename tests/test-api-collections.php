@@ -90,8 +90,8 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 	    $other_collection = $data[0];
     	$one_collection = $data[1];
 
-    	$this->assertEquals('testeApi', $one_collection['name']);
-    	$this->assertEquals('Other', $other_collection['name']);
+    	$this->assertEquals('Other', $one_collection['name']);
+    	$this->assertEquals('testeApi', $other_collection['name']);
     }
 
     public function test_delete_or_trash_a_collection(){
