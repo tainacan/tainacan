@@ -51,5 +51,16 @@
         }
     }
 
+    #secondary-menu {
+        background-color: $secondary;
+
+        li{
+            a {color: white !important;}
+            a:hover {color: $secondary !important;}
+        }
+    }
+
+    
+
 </style>
 

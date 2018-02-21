@@ -1,6 +1,17 @@
 <template>
-    <div>
-        <section class="section" v-if="collection != null">
+    <div class="columns is-fullheight">
+        <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
+            <aside class="menu">
+                <ul class="menu-list">
+                    <li><router-link tag="a" to="">Itens</router-link></li>
+                    <li><router-link tag="a" to="">Editar</router-link></li>
+                    <li><router-link tag="a" to="">Campos</router-link></li>
+                    <li><router-link tag="a" to="">Filtros</router-link></li>
+                    <li><router-link tag="a" to="">Atividades</router-link></li>
+                </ul>
+            </aside>
+        </nav>
+        <section class="container column is-main-content" v-if="collection != null">
             <div class="card">
                 <div class="card-image" v-if="collection.featured_image">
                     <figure class="image is-4by3">

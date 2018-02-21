@@ -24,7 +24,6 @@
                     hoverable
                     striped
                     selectable
-                    @select="(collection) => $router.push(`/collections/${collection.id}`)"
                     paginated
                     backend-pagination
                     :total="totalCollections"
@@ -46,7 +45,8 @@
                         {{ props.row.description }}
                     </b-table-column>
 
-                    <b-table-column label="Ações" width="80">
+                    <b-table-column label="Ações" width="110">
+                        <a @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a>
                         <a @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
                         <a @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
                     </b-table-column>
@@ -159,6 +159,9 @@ export default {
             });
         },
         handleSelectionChange(value) {
+        },
+        goToCollectionPage(collectionId) {
+            this.$router.push(`/collections/${collectionId}`);
         },
         goToCollectionEditPage(collectionId) {
             this.$router.push(`/collections/${collectionId}/edit`);

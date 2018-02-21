@@ -5,7 +5,7 @@
                     :to="{ path: `/collections/new` }">
             Criar Coleção
         </router-link>
-        <collections-list></collections-list>
+        <collections-list></collections-list>          
     </div>
 </template>
 

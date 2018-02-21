@@ -39,7 +39,6 @@
                     hoverable
                     striped
                     selectable
-                    @select="(item) => $router.push(`/collections/${collectionId}/items/${item.id}`)"
                     paginated
                     backend-pagination
                     :total="totalItems"
@@ -52,14 +51,15 @@
                         :key="index"
                         :label="column.label"
                         :visible="column.visible"
-                        :width="column.field == 'row_actions' ? 80 : column.field == 'featured_image' ? 55 : undefined ">
+                        :width="column.field == 'row_actions' ? 110 : column.field == 'featured_image' ? 55 : undefined ">
                         <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">{{ 
                             props.row.metadata[column.slug].multiple == 'yes' ? props.row.metadata[column.slug].value.join(', ') : props.row.metadata[column.slug].value 
                         }}</template>
                         <template v-if="column.field == 'featured_image'">
                             <img class="table-thumb" :src="`${ props.row[column.slug] }`"/>
                         </template>
-                        <template v-if="column.field == 'row_actions'" width="80">
+                        <template v-if="column.field == 'row_actions'">
+                            <a @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a>
                             <a @click.prevent.stop="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
                             <a @click.prevent.stop="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
                         </template>
@@ -184,6 +184,9 @@ export default {
         onChangeItemsPerPage(value) {
             this.itemsPerPage = value;
             this.loadItems();
+        },
+        goToItemPage(itemId) {
+            this.$router.push(`/collections/${this.collectionId}/items/${itemId}`);
         },
         goToItemEditPage(itemId) {
             this.$router.push(`/collections/${this.collectionId}/items/${itemId}/edit`);
