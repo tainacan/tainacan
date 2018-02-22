@@ -182,7 +182,7 @@ abstract class Importer {
                 $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
 
                 if( $result ){
-                    $values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() );
+                	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
                     $this->set_log( 'success', 'Item ' . $index .
                         ' has inserted the values: ' . $values . ' on field: ' . $itemMetadata->get_field()->get_name() );
                 } else {
