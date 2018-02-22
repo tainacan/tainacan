@@ -197,12 +197,15 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		if (isset($request['collection_id'])) {
-			$collection = $this->collection_repository->fetch($request['collection_id']);
+        if (isset($request['collection_id'])) {
+			
+            
+            if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-fields') ) {
+    			return false;
+    		}
 
-			if ($collection instanceof Entities\Collection) {
-				return $collection->can_read();
-			}
+    		return true;
+
 		}
 
 		return false;

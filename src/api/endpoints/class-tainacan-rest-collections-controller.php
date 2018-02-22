@@ -150,7 +150,12 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check($request){
-		return $this->collections_repository->can_read($this->collection);
+        
+        if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-collections') ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -344,15 +349,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 		}
 
 		return false;
-    }
-
-	/**
-	 * @return array|mixed|void
-	 */
-	public function get_collection_params() {
-	    $query_params = $this->collections_repository->get_map();
-
-        return $query_params;
     }
 
 	/**
