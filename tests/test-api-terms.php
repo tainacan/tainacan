@@ -20,7 +20,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		);
 
 		$request = new \WP_REST_Request(
-			'POST', $this->namespace . '/terms/taxonomy/' . $taxonomy->get_id()
+			'POST', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms'
 		);
 
 		$term = json_encode([
@@ -61,7 +61,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$request = new \WP_REST_Request('DELETE', $this->namespace . '/terms/' . $term . '/taxonomy/' . $taxonomy->get_id());
+		$request = new \WP_REST_Request('DELETE', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term);
 
 		$response = $this->server->dispatch($request);
 
@@ -101,7 +101,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		]);
 
 		$request = new \WP_REST_Request(
-			'PATCH', $this->namespace . '/terms/' . $term . '/taxonomy/' . $taxonomy->get_id()
+			'PATCH', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term
 		);
 
 		$request->set_body($new_attributes);
@@ -148,15 +148,13 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$show_empty = json_encode([
-			'hide_empty' => false
-		]);
-
 		$request = new \WP_REST_Request(
-			'GET', $this->namespace . '/terms/taxonomy/' . $taxonomy->get_id()
+			'GET', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms'
 		);
 
-		$request->set_body($show_empty);
+		$request->set_query_params([
+			'hideempty' => false
+		]);
 
 		$response = $this->server->dispatch($request);
 
@@ -171,7 +169,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		#### FETCH A TERM ####
 
 		$request = new \WP_REST_Request(
-			'GET', $this->namespace . '/terms/' . $term2 . '/taxonomy/' . $taxonomy->get_id()
+			'GET', $this->namespace  . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term2
 		);
 
 		$response = $this->server->dispatch($request);

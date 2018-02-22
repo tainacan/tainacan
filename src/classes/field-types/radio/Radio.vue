@@ -1,14 +1,13 @@
 <template>
-    <div class="component">
-        <label
-                v-for="option in getOptions"
-                :for="option.replace(' ','-') + '-checkbox'">
-            <input
-                    type="radio"
-                    :id="option.replace(' ','-') + '-checkbox'"
-                    :value="option"
-                    v-model="checked"> {{ option }}<br>
-        </label>
+    <div>
+        <b-radio
+                v-for="option,index in getOptions"
+                :key="index"
+                v-model="checked"
+                @input="onChecked(option)"
+                :label="option"
+                :native-value="option"
+                border>{{ option }}</b-radio>
     </div>
 </template>
 
@@ -20,8 +19,8 @@
             }
         },
         props: {
-            name: {
-                type: String
+            field: {
+                type: Object
             },
             options: {
                 type: String
@@ -29,16 +28,25 @@
         },
         computed: {
             getOptions(){
-                const values = ( this.options ) ? this.options.split("\n") : '';
-                return values;
+                if ( this.options && this.options !== '' ){
+                    return this.options.split("\n");
+                }
+                else if (this.field) {
+                    const fields = this.field.field.field_type_options.options;
+                    return ( fields ) ? fields.split("\n") : [];
+                }
+                return [];
+            }
+        },
+        methods: {
+            onChecked(option) {
+                this.$emit('blur');
+                this.onInput(this.checked)
+            },
+            onInput($event) {
+                this.inputValue = $event;
+                this.$emit('input', this.inputValue);
             }
         }
     }
 </script>
-
-<style scoped="">
-    #postcustomstuff table input, #postcustomstuff table select, #postcustomstuff table textarea {
-        width: auto;
-        margin: 8px;
-    }
-</style>

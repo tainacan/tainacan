@@ -5,36 +5,45 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Metadata
+ * Represents the Entity Field
  */
-class Metadata extends Entity {
+class Field extends Entity {
 	
     // Collection getter and setter declared here
     use \Tainacan\Traits\Entity_Collection_Relation;
 
-	protected static $post_type = 'tainacan-metadata';
+	protected static $post_type = 'tainacan-field';
 	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Metadatas';
+	protected $repository = 'Tainacan_Fields';
 	
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_name();
 	}
 
     /**
-     * Return the metadata name
+     * Return the field name
      *
      * @return string
      */
     function get_name() {
         return $this->get_mapped_property('name');
     }
+    
+    /**
+     * Get field slug
+     *
+     * @return string
+     */
+    function get_slug() {
+        return $this->get_mapped_property('slug');
+    }
 
     /**
-     * Return the metadata order type
+     * Return the field order type
      *
      * @return string
      */
@@ -52,7 +61,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Return the metadata description
+     * Return the field description
      *
      * @return string
      */
@@ -61,7 +70,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Return if is a required metadata
+     * Return if is a required field
      *
      * @return boolean
      */
@@ -70,7 +79,7 @@ class Metadata extends Entity {
     }
     
     /**
-     * Return if is a multiple metadata
+     * Return if is a multiple field
      *
      * @return boolean
      */
@@ -88,7 +97,7 @@ class Metadata extends Entity {
     }
     
     /**
-     * Return if metadata is key
+     * Return if field is key
      *
      * @return boolean
      */
@@ -115,7 +124,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Return the metadata default value
+     * Return the field default value
      *
      * @return string || integer
      */
@@ -152,9 +161,10 @@ class Metadata extends Entity {
     function get_field_options(){
         return $this->get_mapped_property('field_type_options');
     }
-    
+
+
     /**
-     * Set the metadata name
+     * Set the field name
      *
      * @param [string] $value
      * @return void
@@ -164,7 +174,23 @@ class Metadata extends Entity {
     }
 
     /**
-     * Set manually the order of the metadata
+     * Set the field slug
+     *
+     * If you dont set the field slug, it will be set automatically based on the name and
+     * following WordPress default behavior of creating slugs for posts.
+     *
+     * If you set the slug for an existing one, WordPress will append a number at the end of in order
+     * to make it unique (e.g slug-1, slug-2)
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_slug($value) {
+        $this->set_mapped_property('slug', $value);
+    }
+
+    /**
+     * Set manually the order of the field
      *
      * @param [string] $value
      * @return void
@@ -174,7 +200,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Set the metadata parent ID
+     * Set the field parent ID
      *
      * @param [integer] $value The ID from parent
      * @return void
@@ -184,7 +210,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Set metadata description
+     * Set field description
      *
      * @param [string] $value The text description
      * @return void
@@ -194,7 +220,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Allow the metadata be required
+     * Allow the field be required
      *
      * @param [boolean] $value
      * @return void
@@ -234,7 +260,7 @@ class Metadata extends Entity {
     }
 
     /**
-     * Set mask for the metadata
+     * Set mask for the field
      *
      * @param [string] $value
      * @return void

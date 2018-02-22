@@ -14,6 +14,7 @@ class Date extends Field_Type {
         // call field type constructor
         parent::__construct();
         parent::set_primitive_type('date');
+        $this->component = 'tainacan-date';
     }
 
     /**
@@ -22,10 +23,10 @@ class Date extends Field_Type {
      */
 
     public function render( $itemMetadata ){
-        return '<tainacan-date metadata_id ="'.$itemMetadata->get_metadata()->get_id().'" 
+        return '<tainacan-date field_id ="'.$itemMetadata->get_field()->get_id().'" 
                                item_id="'.$itemMetadata->get_item()->get_id().'"    
                                value=\''.json_encode( $itemMetadata->get_value() ).'\'  
-                               name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-date>';
+                               name="'.$itemMetadata->get_field()->get_name().'"></tainacan-date>';
     }
 
     /**

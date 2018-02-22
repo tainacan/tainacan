@@ -16,8 +16,15 @@ class Items extends Repository {
                 'type'       => 'string',
                 'description'=> __('Title of the item', 'tainacan'),
                 'on_error'   => __('The title should be a text value and not empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty()
+                'validation' => v::stringType()->notEmpty(),
             ],
+            'status'          => [
+			    'map'         => 'post_status',
+			    'title'       => __('Status', 'tainacan'),
+			    'type'        => 'string',
+			    'default'     => 'draft',
+			    'description' => __('The posts status', 'tainacan')
+		    ],
             'description'   =>  [
                 'map'        => 'post_content',
                 'title'      => __('Description', 'tainacan'),
@@ -33,8 +40,38 @@ class Items extends Repository {
                 'description'=> __('The collection ID', 'tainacan'),
                 'validation' => ''
             ],
+            'author_id'          => [
+			    'map'         => 'post_author',
+			    'title'       => __('Author', 'tainacan'),
+			    'type'        => 'string',
+			    'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')
+		    ],
+            'creation_date'   => [
+	            'map'         => 'post_date',
+	            'title'       => __('Creation Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection creation date', 'tainacan')
+            ],
+            'modification_date' => [
+	            'map'         => 'post_modified',
+	            'title'       => __('Modification Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection modification date', 'tainacan')
+            ],
+            'url'             => [
+	            'map'         => 'guid',
+	            'title'       => __('Collection URL', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection URL', 'tainacan')
+            ],
+            'featured_image'  => [
+	            'map'         => 'thumbnail',
+	            'title'       => __('Featured Image', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection thumbnail URL')
+            ],
             //'collection' => 'relation...',
-            // metadata .. metadata...
+            // field .. field...
         ]);
     }
     
@@ -69,7 +106,7 @@ class Items extends Repository {
  
     public function insert($item) {
 
-        global $Tainacan_Metadatas;
+        global $Tainacan_Fields;
 
     	$map = $this->get_map();
     	
@@ -91,7 +128,7 @@ class Items extends Repository {
     	
     	// save post and geet its ID
     	$item->WP_Post->post_type = $cpt;
-    	$item->WP_Post->post_status = 'publish';
+    	//$item->WP_Post->post_status = 'publish';
     	
     	$id = wp_insert_post($item->WP_Post);
     	$item->WP_Post = get_post($id);
@@ -111,14 +148,6 @@ class Items extends Repository {
     				}
     			}
     		}
-    	}
-    	
-    	// save metadata
-    	$metadata = $item->get_metadata();
-    	global $Tainacan_Item_Metadata;
-    	
-    	foreach ($metadata as $meta) {
-    		$Tainacan_Item_Metadata->insert($meta);
     	}
     	
     	do_action('tainacan-insert', $item);
@@ -165,36 +194,53 @@ class Items extends Repository {
         if (is_numeric($collections)){
             $collections = $Tainacan_Collections->fetch($collections);
         }
-
+        
+        $collections_objects = [];
+        $cpt = [];
+        
         if ($collections instanceof Entities\Collection) {
-            $cpt = $collections->get_db_identifier();
+            $collections_objects[] = $collections;
         } elseif (is_array($collections)) {
-            $cpt = [];
-
-            foreach ($collections as $collection) {
-                if (is_numeric($collection)){
-                    $collection = $Tainacan_Collections->fetch($collection);
+            foreach ($collections as $col) {
+                if (is_numeric($col)){
+                    $col = $Tainacan_Collections->fetch($col);
                 }
-                if ($collection instanceof Entities\Collection){
-                    $cpt[] = $collection->get_db_identifier();
+                if ($col instanceof Entities\Collection){
+                    $collections_objects[] = $col;
                 }
             }
 
-        } else {
-            return [];
+        } 
+        foreach ($collections_objects as $collection) {
+            
+            /**
+             * If no specific status is defined in the query, WordPress will fetch
+             * public items and private items for users withe the correct permission.
+             *
+             * If a collection is private, it must have the same behavior, despite its 
+             * items are public or not.
+             */
+            if (!isset($args['post_status'])) {
+                $status_obj = get_post_status_object( $collection->get_status() );
+        		if ( $status_obj->public || current_user_can( $collection->cap->read_private_posts ) ) {
+        			$cpt[] = $collection->get_db_identifier();
+        		}
+            } else {
+                $cpt[] = $collection->get_db_identifier();
+            }
+            
         }
-
+        
+        
+        
+        
         if (empty($cpt)){
-            return [];
+            $cpt[] = 'please-return-nothing';
         }
 
         //TODO: get collection order and order by options
         
         $args = $this->parse_fetch_args($args);
-        
-        $args = array_merge([
-            'post_status'    => 'publish',
-        ], $args);
 
         $args['post_type'] = $cpt;
 
@@ -202,20 +248,8 @@ class Items extends Repository {
         return $this->fetch_output($wp_query, $output);
     }
 
-    public function update($object){
-	    $map = $this->get_map();
-
-	    $entity = [];
-
-	    foreach ($object as $key => $value) {
-		    if($key != 'ID') {
-			    $entity[$map[$key]['map']] = $value ;
-		    } elseif ($key == 'ID'){
-			    $entity[$key] = (int) $value;
-		    }
-	    }
-
-	    return new Entities\Item(wp_update_post($entity));
+    public function update($object, $new_values = null){
+    	return $this->insert($object);
     }
 
 	/**

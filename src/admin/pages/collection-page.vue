@@ -1,0 +1,98 @@
+<template>
+    <div class="columns is-fullheight">
+        <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
+            <aside class="menu">
+                <ul class="menu-list">
+                    <li><router-link tag="a" to="">{{ $i18n.get('items')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('edit')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('fields')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('filters')}}</router-link></li>
+                </ul>
+            </aside>
+        </nav>
+        <section class="container column is-main-content" v-if="collection != null">
+            <div class="card">
+                <div class="card-image" v-if="collection.featured_image">
+                    <figure class="image is-4by3">
+                        <img :src="collection.featured_image" class="image" :alt="collection.name">
+                    </figure>
+                </div>
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">{{ collection.name }}</p>
+                        </div>
+                    </div>
+
+                    <div class="content">
+                        {{collection.description}}
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <router-link
+                            tag="a"
+                            class="card-footer-item"
+                            :to="{ path: `/collections/${collection.id}/edit` }">
+                        Editar Coleção
+                    </router-link>
+                    <router-link
+                            tag="a"
+                            class="card-footer-item"
+                            :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">
+                        Criar Item
+                    </router-link>
+                    <router-link
+                            tag="a"
+                            class="card-footer-item"
+                            :to="{ path: `/collection/${collection.id}/items/`, params: { collection_id: collection.id }}">
+                        Ver todos os itens
+                    </router-link>
+                </footer>
+            </div>
+            <items-list :collectionId="collectionId"></items-list>
+        </section>
+    </div>
+</template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+import ItemsList from '../components/items-list.vue';
+
+export default {
+    name: 'CollectionPage',
+    data(){
+        return {
+            collectionId: Number
+        }
+    },
+    methods: {
+        ...mapActions('collection', [
+            'fetchCollection'
+        ]),
+        ...mapGetters('collection', [
+            'getCollection'
+        ]),
+        createItem() {
+            
+        }
+    },
+    components: {
+        'items-list': ItemsList
+    },
+    computed: {
+        collection(){
+            return this.getCollection();
+        }
+    },
+    created(){
+        this.collectionId = new Number(this.$route.params.id);
+        this.fetchCollection(this.collectionId);
+    }
+
+}
+</script>
+
+<style scoped>
+</style>
+
+

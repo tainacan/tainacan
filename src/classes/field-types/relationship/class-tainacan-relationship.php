@@ -15,6 +15,7 @@ class Relationship extends Field_Type {
         // call field type constructor
         parent::__construct();
         parent::set_primitive_type('');
+        $this->component = 'tainacan-relationship';
     }
 
     /**
@@ -23,7 +24,12 @@ class Relationship extends Field_Type {
      */
 
     public function render( $itemMetadata ){
-        return '<tainacan-relationship name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-relationship>';
+        return '<tainacan-relationship 
+                            collection_id="' . $this->options['collection_id'] . '"
+                            field_id ="'.$itemMetadata->get_field()->get_id().'" 
+                            item_id="'.$itemMetadata->get_item()->get_id().'"    
+                            value=\''.json_encode( $itemMetadata->get_value() ).'\'  
+                            name="'.$itemMetadata->get_field()->get_name().'"></tainacan-relationship>';
     }
 
     /**
@@ -43,8 +49,8 @@ class Relationship extends Field_Type {
         <?php if( $this->options['collection_id'] ): ?>
             <tr>
                 <td>
-                    <label><?php echo __('Metadata for search','tainacan'); ?></label><br/>
-                    <small><?php echo __('Selected metadata to help in the search','tainacan'); ?></small>
+                    <label><?php echo __('Field for search','tainacan'); ?></label><br/>
+                    <small><?php echo __('Selected field to help in the search','tainacan'); ?></small>
                 </td>
                 <td>
                     <?php Helpers\HtmlHelpers::metadata_checkbox_list(
@@ -67,7 +73,7 @@ class Relationship extends Field_Type {
         <?php if( isset( $this->options['collection_id'] ) ): ?>
             <?php
 
-            //filter only related metadata
+            //filter only related field
             $args = array( 'meta_query' => array ( array(
                 'key'     => 'field_type',
                 'value'   => 'Tainacan\Field_Types\Relationship',
@@ -77,7 +83,7 @@ class Relationship extends Field_Type {
             <tr>
                 <td>
                     <label><?php echo __('Inverse','tainacan'); ?></label><br/>
-                    <small><?php echo __('Select the relationship inverse for this metadata','tainacan'); ?></small>
+                    <small><?php echo __('Select the relationship inverse for this field','tainacan'); ?></small>
                 </td>
                 <td>
                     <?php Helpers\HtmlHelpers::metadata_dropdown(

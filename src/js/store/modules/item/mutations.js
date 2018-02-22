@@ -4,33 +4,16 @@ export const setItem = ( state, item ) => {
     state.item = item;
 }
 
-export const setMetadata = ( state, metadata) => {
-    state.metadata = metadata;
+export const setFields = ( state, field) => {
+    state.fields = field;
 }
 
-export const setSingleMetadata = ( state, metadata) => {
-    let index = state.metadata.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
+export const setSingleField = ( state, field) => {
+    let index = state.fields.findIndex(itemMetadata => itemMetadata.field.id === field.field.id);
     if ( index >= 0){
-        //state.metadata[index] = metadata;
-        Vue.set( state.metadata, index, metadata );
+        //state.field[index] = field;
+        Vue.set( state.fields, index, field );
     }else{
-        state.metadata.push( metadata );
-    }
-}
-
-export const setError = ( state, metadata ) => {
-    let index = state.error.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
-    if ( index >= 0){
-        //state.error[index] = metadata;
-        Vue.set( state.error, index, metadata );
-    }else{
-        state.error.push( metadata );
-    }
-};
-
-export const removeError =  ( state, metadata ) => {
-    let index = state.error.findIndex(itemMetadata => itemMetadata.metadata_id === metadata.metadata_id);
-    if ( index >= 0){
-        state.error.splice( index, 1);
+        state.fields.push( field );
     }
 }

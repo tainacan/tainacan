@@ -8,7 +8,7 @@ use Tainacan\Entities;
  *
  * @uses Entities\Collection and Repositories\Collections
  * */
-class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
+class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
     private $collections_repository;
     private $collection;
 
@@ -41,20 +41,20 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_items'),
                 'permission_callback' => array($this, 'get_items_permissions_check'),
-	            'args'                => $this->get_item_schema()
+	            //'args'                => $this->get_item_schema()
             ),
 	        array(
 		        'methods'             => WP_REST_Server::CREATABLE,
 		        'callback'            => array($this, 'create_item'),
 		        'permission_callback' => array($this, 'create_item_permissions_check'),
-		        'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
+		        //'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
 	        ),
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)', array(
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
-                'args'                => $this->get_collection_params(),
+                //'args'                => $this->get_collection_params(),
                 'permission_callback' => array($this, 'get_item_permissions_check'),
             ),
             array(
@@ -78,11 +78,35 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items($request){
-        $collections = $this->collections_repository->fetch();
+		$args = $this->prepare_filters($request);
 
-        $response = $this->prepare_item_for_response($collections, $request);
+        $collections = $this->collections_repository->fetch($args);
 
-        return new WP_REST_Response($response, 200);
+		$map = $this->collections_repository->get_map();
+
+
+		$response = [];
+		if($collections->have_posts()){
+			while ($collections->have_posts()){
+				$collections->the_post();
+
+				$collection = new Entities\Collection($collections->post);
+
+				array_push($response, $this->get_only_needed_attributes($collection, $map));
+			}
+
+			wp_reset_postdata();
+		}
+
+		$total_collections  = $collections->found_posts;
+		$max_pages = ceil($total_collections / (int) $collections->query_vars['posts_per_page']);
+
+        $rest_response = new WP_REST_Response($response, 200);
+
+        $rest_response->header('X-WP-Total', (int) $total_collections);
+        $rest_response->header('X-WP-TotalPages', (int) $max_pages);
+
+        return $rest_response;
     }
 
 	/**
@@ -111,22 +135,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return mixed|string|void|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response($item, $request){
-        if($item instanceof WP_Query){
-            $collections_as_json = [];
-
-	        if ($item->have_posts()) {
-		        while ( $item->have_posts() ) {
-		        	$item->the_post();
-		        	$collection = new Entities\Collection($item->post);
-			        array_push($collections_as_json, $collection->__toArray());
-
-		        }
-		        wp_reset_postdata();
-	        }
-
-            return $collections_as_json;
-        }
-        elseif(!empty($item)){
+        if(!empty($item)){
             return $item->__toArray();
         }
 
@@ -141,7 +150,12 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check($request){
-		return $this->collections_repository->can_read($this->collection);
+        
+        if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-collections') ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -153,7 +167,12 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 */
 	public function  get_item_permissions_check($request){
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $this->collections_repository->can_read($collection);
+
+		if($collection instanceof Entities\Collection) {
+			return $collection->can_read();
+		}
+
+		return false;
 	}
 
 	/**
@@ -165,17 +184,17 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 * @return array|WP_Error|WP_REST_Response
 	 */
 	public function create_item( $request ) {
-		$request = json_decode($request->get_body(), true);
+		$body = json_decode($request->get_body(), true);
 
-		if(empty($request)){
+		if(empty($body)){
 			return new WP_REST_Response([
 				'error_message' => __('Body can not be empty.', 'tainacan'),
-				'collection'    => $request
+				'collection'    => $body
 			], 400);
 		}
 
 		try {
-			$prepared_post = $this->prepare_item_for_database( $request );
+			$prepared_post = $this->prepare_item_for_database( $body );
 		} catch (\Error $exception){
 			return new WP_REST_Response($exception->getMessage(), 400);
 		}
@@ -183,13 +202,15 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
         if($prepared_post->validate()) {
 	        $collection = $this->collections_repository->insert( $prepared_post );
 
-	        return new WP_REST_Response($collection->__toArray(), 201);
+	        $response = $this->prepare_item_for_response($collection, $request);
+
+	        return new WP_REST_Response($response, 201);
         }
 
         return new WP_REST_Response([
         	'error_message' => __('One or more values are invalid.', 'tainacan'),
 	        'errors'        => $prepared_post->get_errors(),
-	        'collection'    => $prepared_post->__toArray()
+	        'collection'    => $this->prepare_item_for_response($prepared_post, $request)
         ], 400);
     }
 
@@ -252,7 +273,12 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $this->collections_repository->can_delete($collection);
+
+		if($collection instanceof Entities\Collection) {
+			return $collection->can_delete();
+		}
+
+		return false;
     }
 
 	/**
@@ -268,19 +294,40 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	    $body = json_decode($request->get_body(), true);
 
 	    if(!empty($body)){
-	    	$attributes = ['ID' => $collection_id];
+	    	$attributes = [];
 
 	    	foreach ($body as $att => $value){
 	    		$attributes[$att] = $value;
 		    }
 
-	    	$updated_collection = $this->collections_repository->update($attributes);
+		    $collection = $this->collections_repository->fetch($collection_id);
 
-	    	return new WP_REST_Response($updated_collection->__toArray(), 200);
+	    	if($collection) {
+			    $prepared_collection = $this->prepare_item_for_updating( $collection, $attributes );
+
+			    if ( $prepared_collection->validate() ) {
+				    $updated_collection = $this->collections_repository->update( $collection );
+
+				    $response = $this->prepare_item_for_response($updated_collection, $request);
+
+				    return new WP_REST_Response( $response, 200 );
+			    }
+
+			    return new WP_REST_Response([
+				    'error_message' => __('One or more values are invalid.', 'tainacan'),
+				    'errors'        => $prepared_collection->get_errors(),
+				    'collection'    => $this->prepare_item_for_response($prepared_collection, $request)
+			    ], 400);
+		    }
+
+		    return new WP_REST_Response([
+		    	'error_message' => __('Collection with that ID not found', 'tainacan' ),
+			    'collection_id' => $collection_id
+		    ], 400);
 	    }
 
 	    return new WP_REST_Response([
-	    	'error_message' => 'The body could not be empty',
+	    	'error_message' => __('The body could not be empty', 'tainacan'),
 		    'body'          => $body
 	    ], 400);
     }
@@ -296,16 +343,12 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		return $this->collections_repository->can_edit($collection);
-    }
 
-	/**
-	 * @return array|mixed|void
-	 */
-	public function get_collection_params() {
-	    $query_params = $this->collections_repository->get_map();
+		if($collection instanceof Entities\Collection) {
+			return $collection->can_edit();
+		}
 
-        return apply_filters("rest_{$this->collection->get_post_type()}_collection_params", $query_params, $this->collection->get_post_type());
+		return false;
     }
 
 	/**
@@ -321,7 +364,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 		    ]
 	    ];
 
-	    return apply_filters("rest_{$this->collection->get_post_type()}_collection_params", $args, $this->collection->get_post_type());
+	    return $args;
     }
 
 	/**
@@ -330,7 +373,7 @@ class TAINACAN_REST_Collections_Controller extends WP_REST_Controller {
 	public function get_item_schema() {
 		$args = $this->collections_repository->get_map();
 
-		return apply_filters("rest_{$this->collection->get_post_type()}_collection_params", $args, $this->collection->get_post_type());
+		return $args;
     }
 }
 

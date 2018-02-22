@@ -32,6 +32,13 @@ class Filter extends Entity {
         return $this->get_mapped_property('name');
     }
 
+	/**
+	 * @return mixed|null
+	 */
+	function get_description(){
+    	return $this->get_mapped_property('description');
+    }
+
     /**
      * Return the filter order type
      *
@@ -50,14 +57,15 @@ class Filter extends Entity {
         return $this->get_mapped_property('color');
     }
 
-    /**
-     * Return the metadata
-     *
-     * @return Metadata
-     */
-    function get_metadata() {
-        $id = $this->get_mapped_property('metadata');
-        return new Metadata( $id );
+	/**
+	 * Return the field
+	 *
+	 * @return Field
+	 * @throws \Exception
+	 */
+    function get_field() {
+        $id = $this->get_mapped_property('field');
+        return new Field( $id );
     }
 
     /**
@@ -131,15 +139,15 @@ class Filter extends Entity {
     }
 
     /**
-     * Define the filter metadata
+     * Define the filter field
      * 
-     * @param \Tainacan\Entities\Metadata
+     * @param \Tainacan\Entities\Field
      * @return void
      */
-    function set_metadata( $value ){
-    	$id = ( $value instanceof Metadata ) ? $value->get_id() : $value;
+    function set_field( $value ){
+    	$id = ( $value instanceof Field ) ? $value->get_id() : $value;
 
-        $this->set_mapped_property('metadata', $id);
+        $this->set_mapped_property('field', $id);
     }
 
     /**

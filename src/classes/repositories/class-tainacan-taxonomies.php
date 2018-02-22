@@ -23,13 +23,6 @@ class Taxonomies extends Repository {
                 'on_error'    => __('The taxonomy should be a text value and not empty', 'tainacan'),
                 'validation'  => v::stringType()->notEmpty(),
             ],
-            'parent'          =>  [
-                'map'         => 'parent',
-                'title'       => __('Parent', 'tainacan'),
-                'type'        => 'integer',
-                'description' => __('Parent taxonomy', 'tainacan'),
-                'validation'  => ''
-            ],
             'description'     =>  [
                 'map'         => 'post_content',
                 'title'       => __('Description', 'tainacan'),
@@ -107,10 +100,11 @@ class Taxonomies extends Repository {
         register_post_type(Entities\Taxonomy::get_post_type(), $args);
     }
 
-    /**
-     * @param Entities\Taxonomy $taxonomy
-     * @return int
-     */
+	/**
+	 * @param Entities\Taxonomy $taxonomy
+	 *
+	 * @return Entities\Entity
+	 */
     public function insert($taxonomy) {
 
     	$new_taxonomy = parent::insert($taxonomy);
@@ -184,23 +178,8 @@ class Taxonomies extends Repository {
         }
     }
 
-    public function update($object){
-	    $map = $this->get_map();
-
-	    $entity = [];
-
-	    foreach ($object as $key => $value) {
-		    if($key != 'ID') {
-			    $entity[$map[$key]['map']] = $value ;
-		    } elseif ($key == 'ID'){
-			    $entity[$key] = (int) $value;
-		    }
-	    }
-
-	    $updated_taxonomy = new Entities\Taxonomy(wp_update_post($entity));
-	    $updated_taxonomy->register_taxonomy();
-
-	    return $updated_taxonomy;
+    public function update($object, $new_values = null){
+    	return $this->insert($object);
     }
 
     public function delete($args){

@@ -22,9 +22,10 @@ class Term extends Entity {
 	 * @param int $which
 	 * @param string $taxonomy
 	 */
-	function __construct($which = 0, $taxonomy = '' ) {
+	function __construct($which = 0, $taxonomy = false ) {
 
-        $this->set_taxonomy( $taxonomy );
+        if ($taxonomy)
+            $this->set_taxonomy( $taxonomy );
 
         if ( is_numeric( $which ) && $which > 0) {
             $post = get_term_by('id', $which, $taxonomy);

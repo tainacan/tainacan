@@ -3,7 +3,7 @@
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
+class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	private $term;
 	private $terms_repository;
 	private $taxonomy;
@@ -31,7 +31,7 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	public function register_routes() {
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/taxonomy/(?P<taxonomy_id>[\d]+)',
+		register_rest_route($this->namespace,  '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base,
 			array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
@@ -45,7 +45,7 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 				)
 			)
 		);
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<term_id>[\d]+)/taxonomy/(?P<taxonomy_id>[\d]+)',
+		register_rest_route($this->namespace,'/taxonomy/(?P<taxonomy_id>[\d]+)/'. $this->rest_base . '/(?P<term_id>[\d]+)' ,
 			array(
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
@@ -109,7 +109,7 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 
 				$term_inserted = $this->terms_repository->fetch($term_id, $taxonomy);
 
-				return new WP_REST_Response($term_inserted->__toArray(), 200);
+				return new WP_REST_Response($this->prepare_item_for_response($term_inserted, $request), 200);
 			} else {
 				return new WP_REST_Response([
 					'error_message' => 'One or more attributes are invalid.',
@@ -131,9 +131,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	 */
 	public function create_item_permissions_check( $request ) {
         $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+
         if ($taxonomy instanceof Entities\Taxonomy) {
             return $taxonomy->can_edit();
         }
+
         return false;
 	}
 
@@ -168,9 +170,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
         $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+
         if ($taxonomy instanceof Entities\Taxonomy) {
             return $taxonomy->can_edit();
         }
+
         return false;
 	}
 
@@ -186,12 +190,8 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
-			$taxonomy_name = $this->taxonomy_repository->fetch($taxonomy_id)->get_db_identifier();
-
-			$identifiers = [
-				'term_id' => $term_id,
-				'tax_name'  => $taxonomy_name
-			];
+			$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+			$tax_name = $taxonomy->get_db_identifier();
 
 			$attributes = [];
 
@@ -199,13 +199,33 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 				$attributes[$att] = $value;
 			}
 
-			$updated_term = $this->terms_repository->update([$attributes, $identifiers]);
+			$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-			return new WP_REST_Response($updated_term->__toArray(), 200);
+			if($term){
+				$prepared_term = $this->prepare_item_for_updating($term, $attributes);
+
+				if($prepared_term->validate()){
+					$updated_term = $this->terms_repository->update($prepared_term, $tax_name);
+
+					return new WP_REST_Response($this->prepare_item_for_response($updated_term, $request), 200);
+				}
+
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_term->get_errors(),
+					'term'          => $this->prepare_item_for_response($prepared_term, $request)
+				], 400);
+			}
+
+			return new WP_REST_Response([
+				'error_message' => __('Term or Taxonomy with that IDs not found', 'tainacan' ),
+				'term_id'       => $term_id,
+				'taxonomy_id'   => $taxonomy_id
+			], 400);
 		}
 
 		return new WP_REST_Response([
-			'error_message' => 'The body could not be empty',
+			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $body
 		], 400);
 	}
@@ -217,9 +237,11 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
         $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+
         if ($taxonomy instanceof Entities\Taxonomy) {
             return $taxonomy->can_edit();
         }
+
         return false;
 	}
 
@@ -230,15 +252,8 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	 * @return array|mixed|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-
-		if(is_array($item)){
-			$prepared = [];
-
-			foreach ($item as $term){
-				$prepared[] = $term->__toArray();
-			}
-
-			return $prepared;
+		if(!empty($item)){
+			return $item->__toArray();
 		}
 
 		return $item;
@@ -254,13 +269,16 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
-		$args = json_decode($request->get_body(), true);
+		$args = $this->prepare_filters($request);
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
 
-		$prepared_terms = $this->prepare_item_for_response($terms, $request);
+		$response = [];
+		foreach ($terms as $term) {
+			array_push($response, $this->prepare_item_for_response( $term, $request ));
+		}
 
-		return new WP_REST_Response($prepared_terms, 200);
+		return new WP_REST_Response($response, 200);
 	}
 
 	/**
@@ -270,7 +288,12 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
-		return $this->taxonomy_repository->can_read($taxonomy);
+
+		if ($taxonomy instanceof Entities\Taxonomy) {
+			return $taxonomy->can_read();
+		}
+
+		return false;
 	}
 
 	/**
@@ -286,7 +309,7 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-		return new WP_REST_Response($term->__toArray(), 200);
+		return new WP_REST_Response($this->prepare_item_for_response($term, $request), 200);
 	}
 
 	/**
@@ -296,7 +319,12 @@ class TAINACAN_REST_Terms_Controller extends WP_REST_Controller {
 	 */
 	public function get_item_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
-		return $this->taxonomy_repository->can_read($taxonomy);
+
+		if ($taxonomy instanceof Entities\Taxonomy) {
+			return $taxonomy->can_read();
+		}
+
+		return false;
 	}
 }
 

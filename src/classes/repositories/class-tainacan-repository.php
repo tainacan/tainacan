@@ -64,7 +64,7 @@ abstract class Repository {
 	 */
 	public function insert($obj) {
 		// validate
-		if ( in_array($obj->get_status(), apply_filters('tainacan-status-validation', ['publish','future','private'])) && !$obj->get_validated()){
+    		if ( in_array($obj->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) && !$obj->get_validated()){
 			throw new \Exception('Entities must be validated before you can save them');
             // TODO: Throw Warning saying you must validate object before insert()
 		}
@@ -78,8 +78,11 @@ abstract class Repository {
 			}
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
-		//$obj->WP_Post->post_status = 'publish';
-		
+
+		if($obj instanceof Entities\Log) {
+			$obj->WP_Post->post_status = 'publish';
+		}
+
 		// TODO verificar se salvou mesmo
 		$id = wp_insert_post($obj->WP_Post);
 		
@@ -281,7 +284,11 @@ abstract class Repository {
     	} elseif ( $mapped == 'termmeta' ){
     		$property = get_term_meta($entity->WP_Term->term_id, $prop, true);
     	} elseif ( isset( $entity->WP_Post )) {
-    		$property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
+    		if($mapped == 'thumbnail'){
+    			$property = get_the_post_thumbnail_url($entity->WP_Post->ID, 'full');
+		    } else {
+			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
+		    }
     	} elseif ( isset( $entity->WP_Term )) {
     		$property = isset($entity->WP_Term->$mapped) ? $entity->WP_Term->$mapped : null;
     	}
@@ -347,8 +354,8 @@ abstract class Repository {
     		}
     	}
     	else {
-    		global $Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
-    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Metadatas, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
+    		global $Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
+    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
     		foreach ($tnc_globals as $tnc_repository)
     		{
     			$entity_post_type = $tnc_repository->entities_type::get_post_type();
@@ -377,7 +384,7 @@ abstract class Repository {
      * @param $object
      * @return mixed
      */
-    public abstract function update($object);
+    public abstract function update($object, $new_values = null);
 
     /**
      * @return mixed

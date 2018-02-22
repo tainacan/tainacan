@@ -5,40 +5,68 @@ export const eventBus = new Vue({
     store,
     data: {
         componentsTag: [],
-        errors : store.getters['item/getError']
+        errors : []
     },
     created(){
         if( wp_settings.components ){
             this.componentsTag = wp_settings.components;
         }
+        this.$on('input', data => this.updateValue(data) );
     },
     methods : {
         registerComponent( name ){
-            this.componentsTag.push( name );
+            if (this.componentsTag.indexOf(name) < 0) {
+                this.componentsTag.push( name );
+            }
         },
         listener(){
             const components = this.getAllComponents();
             for (let eventElement of components){
-                eventElement.addEventListener('changeValue', (event) => {
-                    if ( event.detail[0] ){
-                        const promisse = this.$store.dispatch('item/sendMetadata', event.detail[0] );
-                        promisse.then( response => {
-                            eventElement.errorsMsg = JSON.stringify( [] );
-                            eventElement.value = response.value;
-                        }, error => {
-                            const metadata = this.errors.find(error => error.metadata_id === event.detail[0].metadata_id );
-                            eventElement.errorsMsg = JSON.stringify( metadata.error );
-                            eventElement.value = event.detail[0].values;
-                        });
+                eventElement.addEventListener('input', (event) => {
+                    if (event.detail && event.detail[0] ){
+                        this.updateValue({ 
+                            item_id: $(eventElement).attr("item_id"), 
+                            field_id: $(eventElement).attr("field_id"), 
+                            values: event.detail
+                        })                    
                     }
                 });
             }
         },
+        updateValue(data){
+            if ( data.item_id ){
+                const promisse = this.$store.dispatch('item/updateMetadata',
+                    { item_id: data.item_id, field_id: data.field_id, values: data.values });
+                promisse.then( response => {
+                    let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
+                    if ( index >= 0){
+                        this.errors.splice( index, 1);
+                    }
+                }, error => {
+                    let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
+                    let messages = null;
+
+                    for (let index in error) {
+                        messages = error[index]
+                    }
+
+                    if ( index >= 0){
+                        Vue.set( this.errors, index, { field_id: data.field_id, errors: messages });
+                    }else{
+                        this.errors.push( { field_id: data.field_id, errors: messages } );
+                    }
+                });
+            }
+        },
+        getErrors(field_id){
+            let error = this.errors.find( errorItem => errorItem.field_id === field_id );
+            return ( error ) ? error.errors : false
+        },
         setValues(){
-            const metadata = this.$store.getters['item/getMetadata'];
-            if( metadata ){
-                for(let singleMetadata of metadata){
-                    const eventElement = this.getComponentById( singleMetadata.metadata_id );
+            const field = this.$store.getters['item/getMetadata'];
+            if( field ){
+                for(let singleMetadata of field){
+                    const eventElement = this.getComponentById( singleMetadata.field_id );
                     eventElement.value =  singleMetadata.values;
                 }
             }
@@ -53,20 +81,26 @@ export const eventBus = new Vue({
                     }
                 }
             }
+            let elements = document.querySelectorAll('[web-component="true"]');
+            if( elements ) {
+                for (let eventElement of elements){
+                    components.push( eventElement );
+                }
+            }
             return components;
         },
-        getComponentById( metadata_id ){
+        getComponentById( field_id ){
             for( let component of this.componentsTag ){
                 const eventElements = document.getElementsByTagName( component );
                 if( eventElements ) {
                     for (let eventElement of eventElements){
-                        if( eventElement.metadata_id === metadata_id ){
+                        if( eventElement.field_id === field_id ){
                             return eventElement;
                         }
                     }
                 }
             }
-        }
+        },
     }
 
 });

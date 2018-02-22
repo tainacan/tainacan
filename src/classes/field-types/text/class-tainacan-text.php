@@ -13,6 +13,7 @@ class Text extends Field_Type {
         // call field type constructor
         parent::__construct();
         parent::set_primitive_type('string');
+        $this->component = 'tainacan-text';
     }
 
     /**
@@ -21,10 +22,10 @@ class Text extends Field_Type {
      */
 
     public function render( $itemMetadata ){
-        return '<tainacan-text metadata_id ="'.$itemMetadata->get_metadata()->get_id().'" 
+        return '<tainacan-text field_id ="'.$itemMetadata->get_field()->get_id().'" 
                                item_id="'.$itemMetadata->get_item()->get_id().'"    
                                value=\''.json_encode( $itemMetadata->get_value() ).'\'  
-                               name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-text>';
+                               name="'.$itemMetadata->get_field()->get_name().'"></tainacan-text>';
     }
 
     /**

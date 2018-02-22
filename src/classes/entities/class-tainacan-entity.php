@@ -129,7 +129,7 @@ class Entity {
      * @return mixed property value
      */
     public function get_mapped_property($prop) {
-    	if (isset($this->$prop) && !empty($this->$prop)){
+    	if (isset($this->$prop) ){
     		return $this->$prop;
     	}
     	//prop is not set at object, try to get from database
@@ -170,8 +170,9 @@ class Entity {
         $this->reset_errors();
         
         foreach ($map as $prop => $mapped) {
-            if (!$this->validate_prop($prop))
-                $is_valid = false;
+            if (!$this->validate_prop($prop)) {
+	            $is_valid = false;
+            }
         }
         
         $this->set_validated($is_valid);
@@ -209,9 +210,8 @@ class Entity {
                 }
             } else {
                 if (!$validation->validate($prop_value)) {
-
-                    $this->add_error('invalid', $message);
-                    $is_valid = false;
+                	$this->add_error('invalid', $message);
+	                $is_valid = false;
                 }
             }
         }

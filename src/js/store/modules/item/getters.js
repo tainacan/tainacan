@@ -1,8 +1,8 @@
 
-export const getMetadata =  state => {
-    return state.metadata;
+export const getFields =  state => {
+    return state.fields;
 }
 
-export const getError =  state => {
-    return state.error;
+export const getItem = state => {
+    return state.item;
 }
