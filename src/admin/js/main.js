@@ -38,16 +38,13 @@ Vue.component('tainacan-relationship', Relationship);
 Vue.component('tainacan-form-item', TaincanFormItem);
 
 //------------------------------------------------
-// I18N DIRECTIVE
+// I18N PLUGIN
 const I18NPlugin = {};
 I18NPlugin.install = function (Vue, options = {}) {
     
     Vue.prototype.$i18n = {
-        getString: function (component, key) {
-            if (wp_settings.i18n[component] == null || wp_settings.i18n[component] == undefined)
-                return "ERROR: Invalid i18n component!"
-
-            let string = wp_settings.i18n[component][key];
+        get: function (key) {
+            let string = wp_settings.i18n[key];
             return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
         }
     }

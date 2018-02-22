@@ -3,11 +3,10 @@
         <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
             <aside class="menu">
                 <ul class="menu-list">
-                    <li><router-link tag="a" to="">Itens</router-link></li>
-                    <li><router-link tag="a" to="">Editar</router-link></li>
-                    <li><router-link tag="a" to="">Campos</router-link></li>
-                    <li><router-link tag="a" to="">Filtros</router-link></li>
-                    <li><router-link tag="a" to="">Atividades</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('items')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('edit')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('fields')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('filters')}}</router-link></li>
                 </ul>
             </aside>
         </nav>
