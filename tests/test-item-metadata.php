@@ -29,15 +29,13 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $field = $this->tainacan_entity_factory->create_entity(
         	'field',
 	        array(
 	        	'name'              => 'metadado',
 		        'description'       => 'descricao',
 		        'collection'        => $collection,
-		        'field_type' => $type
+		        'field_type'  => 'Tainacan\Field_Types\Text',
 	        ),
 	        true
         );
@@ -81,8 +79,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $field = $this->tainacan_entity_factory->create_entity(
 	    	'field',
 		    array(
@@ -90,7 +86,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			    'description'       => 'descricao',
 			    'collection'        => $collection,
 			    'required'          => 'yes',
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -136,8 +132,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
 	    $field = $this->tainacan_entity_factory->create_entity(
 		    'field',
 		    array(
@@ -145,7 +139,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			    'description'       => 'descricao',
 			    'collection'        => $collection,
 			    'collection_key'    => 'yes',
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -196,8 +190,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         );
 
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
         $this->tainacan_entity_factory->create_entity(
         	'field',
             array(
@@ -205,7 +197,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	            'description'       => 'descricao',
 	            'collection'        => $collection,
 	            'status'            => 'publish',
-	            'field_type' => $type
+	            'field_type'  => 'Tainacan\Field_Types\Text',
             ),
 	        true
         );
@@ -223,12 +215,18 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         );
 
         $item_metadatas = $Tainacan_Item_Metadata->fetch($i, 'OBJECT');
+
+        $names = [];
+        foreach ($item_metadatas as $item_metadata) {
+            $names[] = $item_metadata->get_field()->get_name();
+        }
         
         $this->assertTrue(is_array($item_metadatas));
 
         // notice for repository fields
         $this->assertEquals(3, sizeof($item_metadatas));
-        $this->assertEquals('metadado', $item_metadatas[0]->get_field()->get_name());
+        //first 2 fields are repository fields
+        $this->assertTrue( in_array('metadado', $names) );
         
     }
 }

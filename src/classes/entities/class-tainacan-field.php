@@ -32,6 +32,15 @@ class Field extends Entity {
     function get_name() {
         return $this->get_mapped_property('name');
     }
+    
+    /**
+     * Get field slug
+     *
+     * @return string
+     */
+    function get_slug() {
+        return $this->get_mapped_property('slug');
+    }
 
     /**
      * Return the field order type
@@ -153,15 +162,17 @@ class Field extends Entity {
         return $this->get_mapped_property('field_type_options');
     }
 
+
     /**
-     * Return the if the field may be deleted
+     * Set the field name
      *
-     * @return string
+     * @param [string] $value
+     * @return void
      */
-    function get_can_delete(){
-        return $this->get_mapped_property('can_delete');
+    function set_name($value) {
+        $this->set_mapped_property('name', $value);
     }
-    
+
     /**
      * Return true if this field allow community suggestions, false otherwise
      * @return bool
@@ -171,13 +182,19 @@ class Field extends Entity {
     }
     
     /**
-     * Set the field name
+     * Set the field slug
+     *
+     * If you dont set the field slug, it will be set automatically based on the name and
+     * following WordPress default behavior of creating slugs for posts.
+     *
+     * If you set the slug for an existing one, WordPress will append a number at the end of in order
+     * to make it unique (e.g slug-1, slug-2)
      *
      * @param [string] $value
      * @return void
      */
-    function set_name($value) {
-        $this->set_mapped_property('name', $value);
+    function set_slug($value) {
+        $this->set_mapped_property('slug', $value);
     }
 
     /**
@@ -295,16 +312,6 @@ class Field extends Entity {
      */
     function set_accept_suggestion( $value ) {
     	return $this->set_mapped_property('accept_suggestion', $value);
-    }
-
-    /**
-     * Set can delete
-     *
-     * @param [string] $value
-     * @return void
-     */
-    function set_can_delete( $value ){
-        $this->set_mapped_property('can_delete', $value);
     }
 
     // helpers

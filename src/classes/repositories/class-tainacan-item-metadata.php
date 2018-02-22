@@ -62,8 +62,9 @@ class Item_Metadata extends Repository {
         if ($field_type->core) {
             $item = $item_metadata->get_item();
             $set_method = 'set_' . $field_type->related_mapped_prop;
-            $item->$set_method($item_metadata->get_value());
-            if ($item->validate()) {
+            $value = $item_metadata->get_value();
+            $item->$set_method( is_array( $value ) ? $value[0] : $value );
+            if ($item->validate_core_fields()) {
                 global $Tainacan_Items;
                 $Tainacan_Items->insert($item);
             } else {
@@ -138,8 +139,15 @@ class Item_Metadata extends Repository {
 	 *
 	 * @return mixed
 	 */
-	public function update( $object, $new_values = null ) {}
-	
+	public function update( $object, $new_values = null ) {
+		return $this->insert($object);
+	}
+
+    /**
+     * Suggest a value to be inserted as a item Field value, return a pending log  
+     * @param Entities\Item_Metadata_Entity $item_metadata
+     * @return Entities\Log
+     */        
 	public function suggest($item_metadata) {
 		return Entities\Log::create(false, '', $item_metadata, null, 'pending');
 	}

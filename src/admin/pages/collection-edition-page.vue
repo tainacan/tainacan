@@ -157,7 +157,7 @@ export default {
         }
     },
     created(){
-        
+
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewCollection();
         } else if (this.$route.fullPath.split("/").pop() == "edit") {

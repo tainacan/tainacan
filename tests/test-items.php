@@ -74,8 +74,6 @@ class Items extends TAINACAN_UnitTestCase {
 	}
     
     function teste_query(){
-        $type = $this->tainacan_field_factory->create_field('text');
-
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
         	array(
@@ -100,7 +98,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'   => 'metadado',
 			    'status' => 'publish',
 			    'collection' => $collection,
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -111,7 +109,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'   => 'metadado2',
 			    'status' => 'publish',
 			    'collection' => $collection,
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -122,7 +120,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'              => 'metadado3',
 			    'status'            => 'publish',
 			    'collection'        => $collection,
-			    'field_type' => $type
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    ),
 		    true
 	    );
@@ -229,11 +227,11 @@ class Items extends TAINACAN_UnitTestCase {
             'meta_query' => [
                 [
                     'key' => $field2->get_id(),
-                    'value' => 'value_2'
+                    'value' => 'value_3'
                 ]
             ]
         ], $collection2);
-        $this->assertEquals(1, $test_query->post_count);
+        $this->assertEquals(2, $test_query->post_count);
         
         // should return 2 items
         $test_query = $Tainacan_Items->fetch([

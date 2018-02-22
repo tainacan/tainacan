@@ -25,14 +25,21 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	/**
 	 * @param $entity
 	 *
+	 * @param $map
+	 * @param $context
+	 *
 	 * @return array
 	 */
-	protected function get_only_needed_attributes($entity, $map){
+	protected function get_only_needed_attributes($entity, $map, $context = null){
 
 		$entity_prepared = [
 			'id'          => $entity->get_id(),
 			'description' => $entity->get_description(),
 		];
+
+		if($context === 'edit'){
+			$entity_prepared['current_user_can_edit'] = $entity->can_edit();
+		}
 
 		if(array_key_exists('modification_date', $map)){
 			$entity_prepared['modification_date'] = $entity->get_modification_date();
@@ -81,17 +88,20 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'authorid'     => 'author_id',
 			'authorname'   => 'author_name',
 			'search'       => 's',
-			'posttype'     => 'post_type',
-			'status'   => 'post_status',
+			'status'       => 'post_status',
 			'offset'       => 'offset',
 			'metaquery'    => 'meta_query',
 			'datequery'    => 'date_query',
+			'taxquery'     => 'taxquery',
 			'order'        => 'order',
 			'orderby'      => 'orderby',
 			'metakey'      => 'meta_key',
-			'hideempty'   => 'hide_empty',
-			'perpage' => 'posts_per_page',
-			'paged'        => 'paged'
+			'metavalue'    => 'meta_value',
+			'metavaluenum' => 'meta_value_num',
+			'metacompare'  => 'meta_compare',
+			'hideempty'    => 'hide_empty',
+			'perpage'      => 'posts_per_page',
+			'paged'        => 'paged',
 		];
 
 		$meta_query = [
@@ -99,16 +109,30 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'value'    => 'value',
 			'compare'  => 'compare',
 			'relation' => 'relation',
+			'type'     => 'type',
 		];
 
 		$date_query = [
-			'year'   => 'year',
-			'month'  => 'month',
-			'day'    => 'month',
-			'week'   => 'week',
-			'hour'   => 'hour',
-			'minute' => 'minute',
-			'second' => 'second'
+			'year'      => 'year',
+			'month'     => 'month',
+			'day'       => 'day',
+			'week'      => 'week',
+			'hour'      => 'hour',
+			'minute'    => 'minute',
+			'second'    => 'second',
+			'compare'   => 'compare',
+			'dayofweek' => 'dayofweek',
+			'inclusive' => 'inclusive',
+			'before'    => 'before',
+			'after'     => 'after',
+		];
+
+		$tax_query = [
+			'taxonomy' => 'taxonomy',
+			'field'    => 'field',
+			'terms'    => 'terms',
+			'operator' => 'operator',
+			'relation' => 'relation',
 		];
 
 		$args = [];
@@ -116,20 +140,68 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		foreach ($map as $mapped => $mapped_v){
 			if(isset($request[$mapped])){
 				if($mapped === 'metaquery'){
-					foreach ($meta_query as $mapped_meta => $meta_v){
-						$args[$mapped_v][$meta_v] = $request[$mapped][$mapped_meta];
-					}
-				} elseif ($mapped === 'datequery') {
-					foreach ($date_query as $date_meta => $date_v){
-						$args[$mapped_v][$date_v] = $request[$mapped][$date_meta];
-					}
-				} else {
+					$args = $this->prepare_meta($mapped, $request, $meta_query, $mapped_v, $args);
+				} elseif($mapped === 'datequery'){
+					$args = $this->prepare_meta($mapped, $request, $date_query, $mapped_v, $args);
+				} elseif($mapped === 'taxquery'){
+					$args = $this->prepare_meta($mapped, $request, $tax_query, $mapped_v, $args);
+				}
+				else {
 					$args[ $mapped_v ] = $request[ $mapped ];
 				}
 			}
 		}
 
+		$args['perm'] = 'readable';
+
 		return $args;
+	}
+
+	/**
+	 * @param $mapped
+	 * @param $request
+	 * @param $query
+	 * @param $mapped_v
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
+	private function  prepare_meta($mapped, $request, $query, $mapped_v, $args){
+		$request_meta_query = $request[$mapped];
+
+		// If is a multidimensional array (array of array)
+		if($this->contains_array($request_meta_query)) {
+			foreach ( $request_meta_query as $index1 => $a ) {
+				foreach ( $query as $mapped_meta => $meta_v ) {
+					if ( isset( $a[ $meta_v ] ) ) {
+						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $meta_v ];
+					}
+				}
+			}
+		} else {
+			foreach ( $query as $mapped_meta => $meta_v ) {
+				if(isset($request[$mapped][$meta_v])) {
+					$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $meta_v ];
+				}
+			}
+		}
+
+		return $args;
+	}
+
+	/**
+	 * @param $array
+	 *
+	 * @return bool
+	 */
+	protected function contains_array($array){
+		foreach ($array as $value){
+			if(is_array($value)){
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

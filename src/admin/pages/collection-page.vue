@@ -1,6 +1,16 @@
 <template>
-    <div>
-        <section class="section" v-if="collection != null">
+    <div class="columns is-fullheight">
+        <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
+            <aside class="menu">
+                <ul class="menu-list">
+                    <li><router-link tag="a" to="">{{ $i18n.get('items')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('edit')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('fields')}}</router-link></li>
+                    <li><router-link tag="a" to="">{{ $i18n.get('filters')}}</router-link></li>
+                </ul>
+            </aside>
+        </nav>
+        <section class="container column is-main-content" v-if="collection != null">
             <div class="card">
                 <div class="card-image" v-if="collection.featured_image">
                     <figure class="image is-4by3">
@@ -11,7 +21,6 @@
                     <div class="media">
                         <div class="media-content">
                             <p class="title is-4">{{ collection.name }}</p>
-                            <!--p class="subtitle is-6">@johnsmith</p-->
                         </div>
                     </div>
 
@@ -21,16 +30,19 @@
                 </div>
                 <footer class="card-footer">
                     <router-link
+                            tag="a"
                             class="card-footer-item"
                             :to="{ path: `/collections/${collection.id}/edit` }">
                         Editar Coleção
                     </router-link>
                     <router-link
+                            tag="a"
                             class="card-footer-item"
                             :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">
                         Criar Item
                     </router-link>
                     <router-link
+                            tag="a"
                             class="card-footer-item"
                             :to="{ path: `/collection/${collection.id}/items/`, params: { collection_id: collection.id }}">
                         Ver todos os itens
@@ -81,40 +93,6 @@ export default {
 </script>
 
 <style scoped>
-
-    .element-card{
-        max-width: 500px;
-    }
-
-    .time {
-        font-size: 13px;
-        color: #999;
-    }
-
-    .bottom {
-        margin-top: 13px;
-        line-height: 12px;
-    }
-
-    el-button {
-        padding: 0;
-        float: right;
-    }
-
-    .image {
-        width: 100%;
-        display: block;
-    }
-
-    .clearfix:before,
-    .clearfix:after {
-        display: table;
-        content: "";
-    }
-
-    .clearfix:after {
-        clear: both
-    }
 </style>
 
 
