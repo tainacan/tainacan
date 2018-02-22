@@ -182,7 +182,7 @@ class Logs extends Repository {
 
     }
 
-    public function update($object){
+    public function update($object, $new_values = null){
 
     }
     

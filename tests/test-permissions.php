@@ -49,7 +49,24 @@ class Permissions extends TAINACAN_UnitTestCase {
 		wp_set_current_user($new_contributor_user);
 		$this->assertTrue($collection->can_read());
 		$this->assertFalse($collection->can_publish());
-		
+        
+        
+		$this->assertTrue(user_can($new_admin_user, $collection->get_items_capabilities()->edit_posts, $collection->get_id()), 'admin should be able to edit items in the collection');
+        
+        $privateCollection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'testePermsCC',
+				'description'   => 'adasdasdsa',
+                'status'        => 'private'
+			),
+			true
+		);
+        
+		$this->assertTrue(user_can($new_admin_user, $collection->cap->read_post, $collection->get_id()), 'admin should be able read private collection');
+        
+        // subsciber should not be able to
+        $this->assertFalse(user_can($new_user, $collection->cap->read_post, $collection->get_id()), 'subscriber should not be able read private collection');
 	}
 	
 }

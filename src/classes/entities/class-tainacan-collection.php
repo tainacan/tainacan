@@ -122,6 +122,49 @@ class Collection extends Entity {
         return get_post_type_capabilities((object) $args);
     }
 
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_featured_img(){
+    	return $this->get_mapped_property('featured_image');
+    }
+
+	/**
+	 * @param $value
+	 */
+	function set_featured_img($value){
+    	$this->set_mapped_property('featured_image', $value);
+    }
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_modification_date(){
+    	return $this->get_mapped_property('modification_date');
+    }
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_creation_date(){
+    	return $this->get_mapped_property('creation_date');
+    }
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_author_id(){
+    	return $this->get_mapped_property('author_id');
+    }
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_url(){
+    	return $this->get_mapped_property('url');
+    }
+
     /**
      * Get collection name
      *
@@ -202,6 +245,15 @@ class Collection extends Entity {
     function get_default_view_mode() {
         return $this->get_mapped_property('default_view_mode');
     }
+
+    /**
+     * Get collection fields ordination
+     *
+     * @return string
+     */
+    function get_fields_order() {
+        return $this->get_mapped_property('fields_order');
+    }
     
     /**
      * Get collection moderators ids
@@ -224,17 +276,17 @@ class Collection extends Entity {
     }
 
 	/**
-	 * Get collection metadata.
+	 * Get collection field.
 	 *
-	 * Returns an array of \Entity\Metadata objects, representing all the metadata of the collection.
+	 * Returns an array of \Entity\Field objects, representing all the field of the collection.
 	 *
-	 * @see \Tainacan\Repositories\Metadatas->fetch()
+	 * @see \Tainacan\Repositories\Fields->fetch()
 	 *
-	 * @return [\Tainacan\Entities\Metadata] array
+	 * @return [\Tainacan\Entities\Field] array
 	 */
-    function get_metadata() {
-        $Tainacan_Metadatas = new \Tainacan\Repositories\Metadatas();
-        return $Tainacan_Metadatas->fetch_by_collection( $this,  [], 'OBJECT'  );
+    function get_fields() {
+        $Tainacan_Fields = new \Tainacan\Repositories\Fields();
+        return $Tainacan_Fields->fetch_by_collection( $this,  [], 'OBJECT'  );
     }
 
     /**
@@ -332,6 +384,16 @@ class Collection extends Entity {
     function set_default_view_mode($value) {
         $this->set_mapped_property('default_view_mode', $value);
     }
+
+    /**
+     * Set collection fields ordination
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_fields_order($value) {
+        $this->set_mapped_property('fields_order', $value);
+    }
     
     /**
      * Set collection moderators ids
@@ -387,5 +449,17 @@ class Collection extends Entity {
      * (the same as moderators_ids but gets and sets WP_User objects)
      *
      */
+     
+     /**
+      * Validate Collection
+      * @return bool 
+      */
+     function validate() {
+        if ( !in_array($this->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+            
+        return parent::validate();
 
+     }
+     
 }

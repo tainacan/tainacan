@@ -11,30 +11,28 @@ module.exports = {
         publicPath: './src/assets/',
         filename: '[name]-components.js'
     },
+    devtool: 'eval-source-map',
     module: {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue',
+                loader: 'vue-loader',
                 options: {
                     // vue-loader options go here
                 }
             },
             {
                 test: /\.js$/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 exclude: /node_modules/
             },
             {
                 test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
-                loader: 'file',
-                options: {
-                    name: '[name].[ext]?[hash]'
-                }
+                loader: 'file-loader'
             },
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader']
+                use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
             }
         ]
     },
@@ -47,11 +45,10 @@ module.exports = {
         historyApiFallback: true,
         noInfo: true
     },
-    devtool: '#eval-source-map'
 }
 
 if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = '#source-map'
+    module.exports.devtool = 'inline-source-map';
     // http://vue-loader.vuejs.org/en/workflow/production.html
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({

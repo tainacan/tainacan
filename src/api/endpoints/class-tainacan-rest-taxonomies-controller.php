@@ -3,7 +3,7 @@
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
+class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	private $taxonomy;
 	private $taxonomy_repository;
 
@@ -62,6 +62,16 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 				)
 			)
 		);
+		register_rest_route(
+			$this->namespace, '/' . $this->rest_base . '/(?P<taxonomy_id>[\d]+)/collection/(?P<collection_id>[\d]+)',
+			array(
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
+				)
+			)
+		);
 	}
 
 	/**
@@ -71,17 +81,11 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 	 * @return array|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$taxonomies = [];
-
-		if($request['taxonomy_id']){
+		if(!empty($item)) {
 			return $item->__toArray();
 		}
 
-		foreach ( $item as $it ) {
-			$taxonomies[] = $it->__toArray();
-		}
-
-		return $taxonomies;
+		return $item;
 	}
 
 	/**
@@ -118,7 +122,12 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 	 */
 	public function get_item_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
-		return $this->taxonomy_repository->can_read($taxonomy);
+
+		if ($taxonomy instanceof Entities\Taxonomy) {
+			return $taxonomy->can_read();
+		}
+
+		return false;
 	}
 
 	/**
@@ -158,12 +167,12 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 				return new WP_REST_Response($deleted, 400);
 			}
 
-			return new WP_REST_Response($deleted->__toArray(), 200);
+			return new WP_REST_Response($this->prepare_item_for_response($deleted, $request), 200);
 		}
 
 		return new WP_REST_Response([
 			'error_message' => __('Taxonomy with this id ('. $taxonomy_id .') not found.', 'tainacan'),
-			'taxonomy'       => $taxonomy->__toArray()
+			'taxonomy'      => $this->prepare_item_for_response($taxonomy, $request)
 		], 400);
 	}
 
@@ -174,7 +183,13 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
-		return $this->taxonomy_repository->can_delete($taxonomy);
+
+		if ($taxonomy instanceof Entities\Taxonomy) {
+			return $taxonomy->can_delete();
+		}
+
+		return false;
+
 	}
 
 	/**
@@ -183,11 +198,16 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$taxonomies = $this->taxonomy_repository->fetch([], 'OBJECT');
+		$args = $this->prepare_filters($request);
 
-		$taxonomies_prepared = $this->prepare_item_for_response($taxonomies, $request);
+		$taxonomies = $this->taxonomy_repository->fetch($args, 'OBJECT');
 
-		return new WP_REST_Response($taxonomies_prepared, 200);
+		$response = [];
+		foreach ($taxonomies as $taxonomy) {
+			array_push($response, $this->prepare_item_for_response( $taxonomy, $request ));
+		}
+
+		return new WP_REST_Response($response, 200);
 	}
 
 	/**
@@ -213,12 +233,12 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 			if($this->taxonomy->validate()){
 				$taxonomy = $this->taxonomy_repository->insert($this->taxonomy);
 
-				return new WP_REST_Response($taxonomy->__toArray(), 201);
+				return new WP_REST_Response($this->prepare_item_for_response($taxonomy, $request), 201);
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $this->taxonomy->get_errors(),
-					'item_metadata' => $this->taxonomy->__toArray(),
+					'item_metadata' => $this->prepare_item_for_response($this->taxonomy, $request),
 				], 400);
 			}
 		} else {
@@ -248,20 +268,45 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 
 		$body = json_decode($request->get_body(), true);
 
-		if(!empty($body)){
-			$attributes = ['ID' => $taxonomy_id];
+		if(!empty($body) || isset($request['collection_id'])){
+			$attributes = [];
 
-			foreach ($body as $att => $value){
-				$attributes[$att] = $value;
+			if(isset($request['collection_id'])) {
+				$collection_id = $request['collection_id'];
+
+				$attributes = [ 'collection' => $collection_id ];
+			} else {
+				foreach ( $body as $att => $value ) {
+					$attributes[ $att ] = $value;
+				}
 			}
 
-			$updated_taxonomy = $this->taxonomy_repository->update($attributes);
+			$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
-			return new WP_REST_Response($updated_taxonomy->__toArray(), 200);
+			if($taxonomy){
+				$prepared_taxonomy = $this->prepare_item_for_updating($taxonomy, $attributes);
+
+				if($prepared_taxonomy->validate()){
+					$updated_taxonomy = $this->taxonomy_repository->update($prepared_taxonomy);
+
+					return new WP_REST_Response($this->prepare_item_for_response($updated_taxonomy, $request), 200);
+				}
+
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_taxonomy->get_errors(),
+					'taxonomy'      => $this->prepare_item_for_response($prepared_taxonomy, $request)
+				], 400);
+			}
+
+			return new WP_REST_Response([
+				'error_message' => __('Taxonomy with that ID not found', 'tainacan' ),
+				'taxonomy_id'   => $taxonomy_id
+			], 400);
 		}
 
 		return new WP_REST_Response([
-			'error_message' => 'The body could not be empty',
+			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $body
 		], 400);
 	}
@@ -273,7 +318,12 @@ class TAINACAN_REST_Taxonomies_Controller extends \WP_REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
-		return $this->taxonomy_repository->can_edit($taxonomy);
+
+		if ($taxonomy instanceof Entities\Taxonomy) {
+			return $taxonomy->can_edit();
+		}
+
+		return false;
 	}
 }
 

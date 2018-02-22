@@ -1,77 +1,79 @@
 <template>
-    <div class="component">
-        <p>{{ name }}</p>
-        <select
-                class="form-control"
-                :disabled="!getOptions"
-                v-model="manageValue">
-            <option
-                    v-for="option in getOptions"
-                    :selected="option == ''">
-                {{ option }}
-            </option>
-        </select>
+    <div>
+        <b-autocomplete
+                v-model="selected"
+                :data="options"
+                @input="search"
+                :loading="loading"
+                field="label"
+                @select="option => setResults(option) ">
+        </b-autocomplete>
     </div>
 </template>
 
 <script>
-    import store from '../../../js/store/store';
+    import debounce from 'lodash/debounce'
+    import axios from '../../../js/axios/axios'
 
     export default {
-        store,
         data(){
             return {
-                selected:''
+                results:'',
+                selected:'',
+                options: [],
+                loading: false,
+                collectionId: 0,
+                inputValue: null
             }
         },
         props: {
-            name: {
-                type: String
+            field: {
+                type: Object
             },
-            options: {
-                type: String
-            },
-            item_id: {
+            collection_id: {
                 type: Number
-            },
-            metadata_id: {
-                type: Number
-            },
-            value: {
-                type: [ String,Number ]
-            },
-        },
-        created(){
-            this.setInitValueOnStore();
-        },
-        computed: {
-            getOptions(){
-                const values = ( this.options ) ? this.options.split("\n") : false;
-                return values;
-            },
-            manageValue : {
-                get(){
-                    let metadata = this.$store.getters['item/getMetadata'].find(metadata => metadata.metadata_id === this.metadata_id );
-                    if( metadata ){
-                        return  metadata.values;
-                    }else if( this.value ){
-                        return JSON.parse(  this.value );
-                    }
-                },
-                set( value ){
-                    this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: value });
-                }
             }
         },
         methods: {
-            setInitValueOnStore(){
-                if ( this.value ){
-                    this.$store.dispatch('item/setSingleMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: JSON.parse(  this.value ) });
+            setResults(option){
+                if(!option)
+                    return;
+                this.results = option.value;
+                this.onChecked()
+            },
+            onChecked() {
+                this.$emit('blur');
+                this.onInput(this.results)
+            },
+            onInput($event) {
+                this.inputValue = $event;
+                this.$emit('input', this.inputValue);
+            },
+            search(query){
+                if (query !== '') {
+                    this.loading = true;
+                    this.options = [];
+                    let collectionId = ( this.field && this.field.field.field_type_options.collection_id ) ? this.field.field.field_type_options.collection_id : this.collection_id;
+                    axios.get('/collection/'+collectionId+'/items')
+                    .then( res => {
+                        let result = [];
+                        this.loading = false;
+                        result = res.data.filter(item => {
+                            return item.title.toLowerCase()
+                                .indexOf(query.toLowerCase()) > -1;
+                        });
+
+                        for (let item of result) {
+                            this.options.push({ label: item.title, value: item.id })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                } else {
+                    this.options = [];
                 }
             }
         }
     }
 </script>
-
-<style scoped>
-</style>

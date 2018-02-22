@@ -48,4 +48,12 @@ trait Entity_Collections_Relation {
         $this->set_collections_ids($collections_ids);
     }
 
+    public function set_collection($new_collection_id){
+    	$this->collections = $this->get_mapped_property('collections_ids');
+
+    	$collections[] = $new_collection_id;
+
+    	$this->set_collections_ids($collections);
+    }
+
 }

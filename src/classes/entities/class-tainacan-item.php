@@ -28,6 +28,48 @@ class Item extends Entity {
 		return 'Hello, my name is '. $this->get_title();
 	}
 
+	/**
+	 * @return mixed|null
+	 */
+	function get_featured_img(){
+		return $this->get_mapped_property('featured_image');
+	}
+
+	/**
+	 * @param $value
+	 */
+	function set_featured_img($value){
+		$this->set_mapped_property('featured_image', $value);
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_modification_date(){
+		return $this->get_mapped_property('modification_date');
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_creation_date(){
+		return $this->get_mapped_property('creation_date');
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_author_id(){
+		return $this->get_mapped_property('author_id');
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_url(){
+		return $this->get_mapped_property('url');
+	}
+
     /**
      * Return the item ID
      *
@@ -123,58 +165,20 @@ class Item extends Entity {
     }
 
     /**
-     * Return a Metadata or a List of Metadata
+     * Return a List of ItemMetadata objects
      *
-     * @return array || Metadata
+     * It will return all fields associeated with the collection this item is part of.
+     *
+     * If the item already has a value for any of the fields, it will be available.
+     *
+     * @return array Array of ItemMetadata objects
      */
-    function get_metadata() {
-        global $Tainacan_Metadatas;
+    function get_fields() {
+        global $Tainacan_Item_Metadata;
+        return $Tainacan_Item_Metadata->fetch($this, 'OBJECT');
 
-        if (isset($this->metadata))
-            return $this->metadata;
-        
-        $collection = $this->get_collection();
-        $all_metadata = [];
-        if ($collection) {
-            $meta_list = $Tainacan_Metadatas->fetch_by_collection( $collection, [], 'OBJECT' );
-            
-            foreach ($meta_list as $meta) {
-                $all_metadata[$meta->get_id()] = new Item_Metadata_Entity($this, $meta);
-            }
-        }
-        return $all_metadata;
     }
-    
-    /**
-     * Define the Metadata
-     *
-     * @param Metadata $new_metadata
-     * @param [string || integer || array] $value
-     * @return void
-     */
-    function add_metadata(Metadata $new_metadata, $value) {
-        
-        //TODO Multiple metadata must receive an array as value
-        $item_metadata = new Item_Metadata_Entity($this, $new_metadata);
-       
-        $item_metadata->set_value($value);
-        
-        $current_meta = $this->get_metadata();
-        $current_meta[$new_metadata->get_id()] = $item_metadata;
-        
-        $this->set_metadata($current_meta);
-    }
-    
-    /**
-     * Aux function for @method add_metadata
-     *
-     * @param array $metadata
-     * @return void
-     */
-    function set_metadata(Array $metadata) {
-        $this->metadata = $metadata;
-    }
-    
+
     /**
      * set meta cap object
      */
@@ -190,5 +194,49 @@ class Item extends Entity {
 		    	$this->cap = $post_type_obj->cap;
 	    	}
     	}
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::validate()
+     */
+    function validate(){
+        
+        if ( !in_array($this->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+        
+        if( parent::validate() ){
+            $arrayItemMetadata = $this->get_fields();
+            if( $arrayItemMetadata  ){
+                foreach ( $arrayItemMetadata as $itemMetadata ) {
+
+                    // avoid core fields to re-validate
+                    $pos = strpos($itemMetadata->get_field()->get_field_type(), 'Core');
+                    if( $pos !== false ){
+                        continue;
+                    }
+
+                    if( !$itemMetadata->validate() ){
+                        $errors = $itemMetadata->get_errors();
+                        $this->add_error( $itemMetadata->get_field()->get_name(), $errors );
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::validate()
+     */
+    public function validate_core_fields(){
+        if ( !in_array($this->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+
+        return parent::validate();
     }
 }

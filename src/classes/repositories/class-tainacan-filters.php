@@ -62,11 +62,11 @@ class Filters extends Repository {
                 'description'=> __('Filter color', 'tainacan'),
                 'validation' => ''
             ],
-            'metadata'           => [
+            'field'           => [
                 'map'        => 'meta',
-                'title'      => __('Metadata', 'tainacan'),
+                'title'      => __('Field', 'tainacan'),
                 'type'       => 'integer',
-                'description'=> __('Filter metadata', 'tainacan'),
+                'description'=> __('Filter field', 'tainacan'),
                 'validation' => ''
             ],
         ]);
@@ -116,30 +116,30 @@ class Filters extends Repository {
 
 
     /**
-     * @param Entities\Metadata $metadata
+     * @param Entities\Field $field
      * @return int
      *
-    public function insert($metadata) {
+    public function insert($field) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $metadata->WP_Post->{$mapped['map']} = $metadata->get_mapped_property($prop);
+                $field->WP_Post->{$mapped['map']} = $field->get_mapped_property($prop);
             }
         }
 
         // save post and get its ID
-        $metadata->WP_Post->post_type = Entities\Filter::get_post_type();
-        $metadata->WP_Post->post_status = 'publish';
-        $id = wp_insert_post($metadata->WP_Post);
-        $metadata->WP_Post = get_post($id);
+        $field->WP_Post->post_type = Entities\Filter::get_post_type();
+        $field->WP_Post->post_status = 'publish';
+        $id = wp_insert_post($field->WP_Post);
+        $field->WP_Post = get_post($id);
 
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] == 'meta') {
-                update_post_meta($id, $prop, $metadata->get_mapped_property($prop));
+                update_post_meta($id, $prop, $field->get_mapped_property($prop));
             } elseif ($mapped['map'] == 'meta_multi') {
-                $values = $metadata->get_mapped_property($prop);
+                $values = $field->get_mapped_property($prop);
 
                 delete_post_meta($id, $prop);
 
@@ -152,7 +152,7 @@ class Filters extends Repository {
         }
 
         // return a brand new object
-        return new Entities\Filter($metadata->WP_Post);
+        return new Entities\Filter($field->WP_Post);
     }*/
 
     /**
@@ -168,20 +168,8 @@ class Filters extends Repository {
 	    return new Entities\Filter(wp_trash_post($args[0]));
     }
 
-    public function update($object){
-	    $map = $this->get_map();
-
-	    $entity = [];
-
-	    foreach ($object as $key => $value) {
-		    if($key != 'ID') {
-			    $entity[$map[$key]['map']] = $value ;
-		    } elseif ($key == 'ID'){
-			    $entity[$key] = (int) $value;
-		    }
-	    }
-
-	    return new Entities\Filter(wp_update_post($entity));
+    public function update($object, $new_values = null){
+    	return $this->insert($object);
     }
 
     /**
@@ -241,7 +229,7 @@ class Filters extends Repository {
     /**
      * fetch only supported filters for the type specified
      *
-     * @param ( string || array )  $types Primitve types of metadata ( float, string, int)
+     * @param ( string || array )  $types Primitve types of field ( float, string, int)
      * @return array Filters supported by the primitive types passed in $types
      */
     public function fetch_supported_filter_types($types){

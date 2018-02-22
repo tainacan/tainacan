@@ -1,15 +1,53 @@
+// Tainacan custom colors and bulma's core
+@import "./_variables.scss";
 
-body.tainacan-admin-page #adminmenumain {
+// Links
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+
+// Bulma's modal (needs to be greather than taincan-admin-app
+$modal-z: 9999999;
+
+// Import Bulma and Buefy styles
+@import "../../assets/css/fonts/materialdesignicons.css";
+@import "../../../node_modules/bulma/bulma.sass";
+@import "../../../node_modules/buefy/src/scss/buefy.scss";
+
+// Clears wordpress content
+body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
     display: none;
 }
 
 #tainacan-admin-app {
-    background: #fff;
+    background: #ffffff;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     right: 0;
     width: 100%;
-    z-index: 99999999999;
+    z-index: 999999;
+    overflow-y: auto;
+    height: 100%;
+    margin: 0px !important; 
+}
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+// Buefy notices (toast)
+.notices {
+z-index: 99999999 !important;
 }

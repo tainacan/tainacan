@@ -3,8 +3,8 @@ import * as getters from './getters';
 import * as mutations from './mutations';
 
 const state = {
-    item: null,
-    metadata: [],
+    item: [],
+    fields: [],
     error: []
 };
 

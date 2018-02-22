@@ -12,7 +12,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			'collection',
 			array(
 				'name'        => 'Javascript Frameworks',
-				'description' => 'The best framework to javascript'
+				'description' => 'The best framework to javascript',
 			),
 			true
 		);
@@ -22,7 +22,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			'description' => 'The Progressive JavasScript Framework'
 		]);
 
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/items/collection/' . $collection->get_id());
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items');
 		$request->set_body($item_json);
 
 		$response = $this->server->dispatch($request);
@@ -39,7 +39,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			'collection',
 			array(
 				'name'        => 'Agile',
-				'description' => 'Agile methods'
+				'description' => 'Agile methods',
+                'status'      => 'publish'
 			),
 			true
 		);
@@ -49,7 +50,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'title'       => 'Lean Startup',
 				'description' => 'Um processo ágil de criação de novos negócios.',
-				'collection'  => $collection
+				'collection'  => $collection,
+				'status'      => 'publish'
 			),
 			true
 		);
@@ -59,23 +61,23 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'title'       => 'SCRUM',
 				'description' => 'Um framework ágil para gerenciamento de tarefas.',
-				'collection'  => $collection
+				'collection'  => $collection,
+				'status'      => 'publish'
 			),
 			true
 		);
 
-		$request  = new \WP_REST_Request('GET', $this->namespace . '/items/collection/' . $collection->get_id());
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
-
 		$data = $response->get_data();
 
 		$first_item  = $data[0];
 		$second_item = $data[1];
 
-		$this->assertEquals($item2->get_title(), $first_item['title']);
-		$this->assertEquals($item1->get_title(), $second_item['title']);
+		$this->assertEquals($item1->get_title(), $first_item['title']);
+		$this->assertEquals($item2->get_title(), $second_item['title']);
 	}
 
 	public function test_delete_or_trash_item_from_a_collection(){

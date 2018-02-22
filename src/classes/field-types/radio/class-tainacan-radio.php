@@ -13,6 +13,7 @@ class Radio extends Field_Type {
         // call field type constructor
         parent::__construct();
         parent::set_primitive_type('');
+        $this->component = 'tainacan-radio';
     }
 
     /**
@@ -22,7 +23,12 @@ class Radio extends Field_Type {
 
     public function render( $itemMetadata ){
         $options = ( isset( $this->options['options'] ) ) ? $this->options['options'] : '';
-        return '<tainacan-radio  options="'.$options.'" name="'.$itemMetadata->get_metadata()->get_name().'"></tainacan-radio>';
+        return '<tainacan-radio
+                                options="' . $options . '"  
+                                field_id ="'.$itemMetadata->get_field()->get_id().'" 
+                                item_id="'.$itemMetadata->get_item()->get_id().'"    
+                                value=\''.json_encode( $itemMetadata->get_value() ).'\'  
+                                options="'.$options.'" name="'.$itemMetadata->get_field()->get_name().'"></tainacan-radio>';
     }
 
     /**
@@ -33,7 +39,7 @@ class Radio extends Field_Type {
         <tr>
             <td>
                 <label><?php echo __('Options','tainacan'); ?></label><br/>
-                <small><?php echo __('Insert the options, separate by lines for the metadata value','tainacan'); ?></small>
+                <small><?php echo __('Insert the options, separate by lines for the field value','tainacan'); ?></small>
             </td>
             <td>
                 <textarea name="field_type_radio[options]"><?php echo ( isset( $this->options['options'] ) ) ? $this->options['options'] : ''; ?></textarea>

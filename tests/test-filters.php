@@ -54,14 +54,12 @@ class Filters extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $type = $this->tainacan_field_factory->create_field('text');
-
-	    $metadata = $this->tainacan_entity_factory->create_entity(
-	    	'metadata',
+	    $field = $this->tainacan_entity_factory->create_entity(
+	    	'field',
 		    array(
 		    	'name'              => 'metadado',
 			    'collection_id'     => $collection->get_id(),
-			    'field_type' => $type,
+			    'field_type'  => 'Tainacan\Field_Types\Text',
 		    	'description' => 'descricao',
 		    ),
 		    true
@@ -75,7 +73,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		    	'name'               => 'filtro',
 			    'collection'         => $collection,
 		    	'description' => 'descricao',
-			    'metadata'           => $metadata,
+			    'field'           => $field,
 			    'filter_type' => $filter_list_type
 		    ),
 		    true
@@ -90,7 +88,7 @@ class Filters extends TAINACAN_UnitTestCase {
 
         $this->assertEquals( 'filtro', $test->get_name() );
         $this->assertEquals( $collection->get_id(), $test->get_collection_id() );
-        $this->assertEquals( $metadata->get_id(), $test->get_metadata()->get_id() );
+        $this->assertEquals( $field->get_id(), $test->get_field()->get_id() );
         $objClass = get_class( $filter_list_type );
         $storedObjClass = get_class( $test->get_filter_type_object() );
         $this->assertEquals($objClass , $storedObjClass );

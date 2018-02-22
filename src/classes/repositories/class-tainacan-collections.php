@@ -21,30 +21,67 @@ class Collections extends Repository {
 	 */
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
-            'name'           =>  [
-                'map'        => 'post_title',
+            'name'            =>  [
+                'map'         => 'post_title',
                 'title'       => __('Name', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Name of the collection', 'tainacan'),
-                'validation' => v::stringType(),
+                'type'        => 'string',
+                'description' => __('Name of the collection', 'tainacan'),
+                'validation'  => v::stringType()->notEmpty(),
+            ],
+		    'status'          => [
+		    	'map'         => 'post_status',
+			    'title'       => __('Status', 'tainacan'),
+			    'type'        => 'string',
+			    'default'     => '',
+			    'description' => __('The posts status', 'tainacan')
+		    ],
+		    'author_id'          => [
+		    	'map'         => 'post_author',
+			    'title'       => __('Author', 'tainacan'),
+			    'type'        => 'string',
+			    'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')
+		    ],
+            'creation_date'   => [
+            	'map'         => 'post_date',
+	            'title'       => __('Creation Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection creation date', 'tainacan')
+            ],
+            'modification_date' => [
+            	'map'         => 'post_modified',
+	            'title'       => __('Modification Date', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection modification date', 'tainacan')
+		    ],
+            'url'             => [
+            	'map'         => 'guid',
+	            'title'       => __('Collection URL', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection URL', 'tainacan')
+            ],
+            'featured_image'  => [
+            	'map'         => 'thumbnail',
+	            'title'       => __('Featured Image', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection thumbnail URL')
             ],
             'order'          =>  [
                 'map'        => 'menu_order',
-                'title'       => __('Order', 'tainacan'),
+                'title'      => __('Order', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Collection order. Field used if collections are manually ordered', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             'parent'         =>  [
                 'map'        => 'post_parent',
-                'title'       => __('Parent Collection', 'tainacan'),
+                'title'      => __('Parent Collection', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('Parent collection ID', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             'description'    =>  [
                 'map'        => 'post_content',
-                'title'       => __('Description', 'tainacan'),
+                'title'      => __('Description', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Collection description', 'tainacan'),
             	'default'	 => '',
@@ -52,7 +89,7 @@ class Collections extends Repository {
             ],
             'slug'           =>  [
                 'map'        => 'post_name',
-                'title'       => __('Slug', 'tainacan'),
+                'title'      => __('Slug', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('A unique and santized string representation of the collection, used to build the collection URL', 'tainacan'),
                 //'validation' => v::stringType(),
@@ -60,7 +97,7 @@ class Collections extends Repository {
             
             'default_orderby'           =>  [
                 'map'        => 'meta',
-                'title'       => __('Default Order field', 'tainacan'),
+                'title'      => __('Default Order field', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Default property items in this collections will be ordered by', 'tainacan'),
                 'default'    => 'name',
@@ -68,7 +105,7 @@ class Collections extends Repository {
             ],
             'default_order'           =>  [
                 'map'        => 'meta',
-                'title'       => __('Default order', 'tainacan'),
+                'title'      => __('Default order', 'tainacan'),
                 'description'=> __('Default order for items in this collection. ASC or DESC', 'tainacan'),
                 'type'       => 'string',
                 'default'    => 'ASC',
@@ -76,16 +113,23 @@ class Collections extends Repository {
             ],
             'columns'           =>  [
                 'map'        => 'meta',
-                'title'       => __('Columns', 'tainacan'),
+                'title'      => __('Columns', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('List of collections property that will be displayed in the table view', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             'default_view_mode'           =>  [
                 'map'        => 'meta',
-                'title'       => __('Default view mode', 'tainacan'),
+                'title'      => __('Default view mode', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Collection default visualization mode', 'tainacan'),
+                //'validation' => v::stringType(),
+            ],
+            'fields_order'           =>  [
+                'map'        => 'meta',
+                'title'      => __('Ordination fields', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Collection fields ordination', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             /*
@@ -104,7 +148,7 @@ class Collections extends Repository {
              * Properties yet to be implemented
              *
              * Moderators (a property attached to the collection or to the user?)
-             * geo metadata?
+             * geo field?
              *
              *
              * 
@@ -171,28 +215,19 @@ class Collections extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($collection){
+        global $Tainacan_Fields;
+
     	$this->pre_update_moderators($collection);
         $new_collection = parent::insert($collection);
-    	
+
+        $Tainacan_Fields->register_core_fields( $new_collection );
         $collection->register_collection_item_post_type();
         $this->update_moderators($new_collection);
     	return $new_collection;
     }
     
-    public function update($object){
-	    $map = $this->get_map();
-
-	    $entity = [];
-
-	    foreach ($object as $key => $value) {
-	    	if($key != 'ID') {
-			    $entity[$map[$key]['map']] = $value ;
-		    } elseif ($key == 'ID'){
-	    		$entity[$key] = (int) $value;
-		    }
-	    }
-
-	    return new Entities\Collection(wp_update_post($entity));
+    public function update($object, $new_values = null){
+    	return $this->insert($object);
     }
 
 	/**
@@ -232,7 +267,6 @@ class Collections extends Repository {
         } elseif(is_array($args)) {
             $args = array_merge([
                 'posts_per_page' => -1,
-                'post_status'    => 'publish',
             ], $args);
             
             $args = $this->parse_fetch_args($args);

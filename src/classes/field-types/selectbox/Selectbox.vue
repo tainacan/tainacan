@@ -1,77 +1,53 @@
 <template>
-    <div class="component">
-        <p>{{ name }}</p>
-        <select
-                class="form-control"
-                :disabled="!getOptions"
-                v-model="manageValue">
+    <div>
+        <b-select v-model="selected" @input="onChecked()">
             <option
-                    v-for="option in getOptions"
-                    :selected="option == ''">
-                {{ option }}
-            </option>
-        </select>
+                    v-for="option,index in getOptions"
+                    :key="index"
+                    :label="option"
+                    :value="option"
+                    border>{{ option }}</option>
+        </b-select>
     </div>
 </template>
 
 <script>
-    import store from '../../../js/store/store';
 
     export default {
-        store,
         data(){
             return {
                 selected:''
             }
         },
         props: {
-            name: {
-                type: String
+            field: {
+                type: Object
             },
             options: {
                 type: String
             },
-            item_id: {
-                type: Number
-            },
-            metadata_id: {
-                type: Number
-            },
-            value: {
-                type: [ String,Number ]
-            },
-        },
-        created(){
-            this.setInitValueOnStore();
+            value: [String, Number, Array],
         },
         computed: {
             getOptions(){
-                const values = ( this.options ) ? this.options.split("\n") : false;
-                return values;
-            },
-            manageValue : {
-                get(){
-                    let metadata = this.$store.getters['item/getMetadata'].find(metadata => metadata.metadata_id === this.metadata_id );
-                    if( metadata ){
-                        return  metadata.values;
-                    }else if( this.value ){
-                        return JSON.parse(  this.value );
-                    }
-                },
-                set( value ){
-                    this.$store.dispatch('item/sendMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: value });
+                if ( this.options && this.options !== '' ){
+                    return this.options.split("\n");
                 }
+                else if ( this.field && this.field.field.field_type_options.options ) {
+                    const fields = this.field.field.field_type_options.options;
+                    return ( fields ) ? fields.split("\n") : [];
+                }
+                return [];
             }
         },
         methods: {
-            setInitValueOnStore(){
-                if ( this.value ){
-                    this.$store.dispatch('item/updateMetadata', { item_id: this.item_id, metadata_id: this.metadata_id, values: JSON.parse(  this.value ) });
-                }
+            onChecked() {
+                this.$emit('blur');
+                this.onInput(this.selected)
+            },
+            onInput($event) {
+                this.$emit('input', $event);
             }
         }
     }
 </script>
-
-<style scoped>
-</style>
