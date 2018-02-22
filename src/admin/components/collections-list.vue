@@ -31,7 +31,7 @@
                     @page-change="onPageChange">
                 <template slot-scope="props">
 
-                    <b-table-column field="featured_image" width="55" sortable="{{ false }}">
+                    <b-table-column field="featured_image" width="55">
                         <template v-if="props.row.featured_image" slot-scope="scope">
                             <img class="table-thumb" :src="`${props.row.featured_image}`"/>
                         </template>
