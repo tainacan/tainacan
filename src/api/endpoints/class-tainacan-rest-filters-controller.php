@@ -39,12 +39,14 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	}
 
 	public function register_routes() {
-		register_rest_route($this->namespace, '/' . $this->rest_base, array(
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/field/(?P<field_id>[\d]+)/' . $this->rest_base, array(
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'create_item_permissions_check')
 			),
+		));
+		register_rest_route($this->namespace, '/' . $this->rest_base, array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
@@ -79,8 +81,8 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	public function prepare_item_for_database( $request ) {
 		$body = json_decode($request->get_body(), true);
 
-		$collection_id = $body['collection_id'];
-		$field_id   = $body['field_id'];
+		$collection_id = $request['collection_id'];
+		$field_id   = $request['field_id'];
 		$filter = $body['filter'];
 
 		$received_type = $body['filter_type'];
@@ -128,13 +130,13 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 			}
 
 			return new WP_REST_Response([
-				'error_message' => 'One or more attributes are invalid',
+				'error_message' => __('One or more attributes are invalid', 'tainacan'),
 				'error'         => $this->filter->get_errors()
 			], 400);
 		}
 
 		return new WP_REST_Response([
-			'error_message' => 'The body could not be empty.',
+			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $request->get_body()
 		], 400);
 	}
@@ -147,8 +149,8 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	public function create_item_permissions_check( $request ) {
 		$body = json_decode($request->get_body(), true);
 
-		$metadata = $this->field_repository->fetch($body['field_id']);
-		$collection = $this->collection_repository->fetch($body['collection_id']);
+		$metadata = $this->field_repository->fetch($request['field_id']);
+		$collection = $this->collection_repository->fetch($request['collection_id']);
 
 		if(($metadata instanceof Entities\Field) && ($collection instanceof Entities\Collection)) {
 			return $this->filter_repository->can_edit($this->filter) && $metadata->can_edit() && $collection->can_edit();
@@ -176,7 +178,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		}
 
 		return new WP_REST_Response([
-			'error_message' => 'The body could not be empty',
+			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $request->get_body()
 		], 400);
 	}
