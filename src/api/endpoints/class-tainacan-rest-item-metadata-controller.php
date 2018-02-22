@@ -198,9 +198,8 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 					$prepared_item['field']['field_type_object'] = $field_updated->get_field()->get_field_type_object()->__toArray();
 				}
 				elseif($field->get_accept_suggestion()) {
-					$field_updated = $this->item_metadata_repository->suggest( $item_metadata );
-					$prepared_item =  $this->prepare_item_for_response($field_updated, $request);
-					$prepared_item['field']['field_type_object'] = $field_updated->get_field()->get_field_type_object()->__toArray();
+					$log = $this->item_metadata_repository->suggest( $item_metadata );
+					$prepared_item = $log->__toArray();  
 				}
 				else {
 					return new WP_REST_Response( [
