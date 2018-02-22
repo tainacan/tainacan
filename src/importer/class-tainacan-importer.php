@@ -5,11 +5,13 @@ use Tainacan;
 abstract class Importer {
 
     private $id;
+
     public $collection;
     public $mapping;
     public $tmp_file;
     public $total_items;
     public $limit_query;
+    public $logs = [];
 
     public function __construct() {
         if (!session_id()) {
@@ -111,6 +113,9 @@ abstract class Importer {
 
     /**
      * get values for a single item
+     *
+     * @return array with field_source's as the index and values for the
+     * item Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
      */
     abstract public function process_item();
 
@@ -132,6 +137,75 @@ abstract class Importer {
      */
     public function process( $start, $end ){
 
+    }
+
+    /**
+     * insert processed item from source to Tainacan
+     *
+     * @param int $index the source id unique for the item
+     * @param array $processed_item Associative array with field source's as index with
+     *                              its value or values
+     * @return Tainacan\Entities\Item Item inserted
+     */
+    public function insert( $index, $processed_item ){
+        global $Tainacan_Items, $Tainacan_Item_Metadata, $Tainacan_Fields;
+        $item = new Tainacan\Entities\Item();
+        $itemMetadataArray = [];
+
+        if( !isset( $this->mapping ) ){
+            $this->set_log('error','Mapping is not set');
+            return false;
+        }
+
+        if( is_array( $processed_item ) ){
+            foreach ( $processed_item as $field_source => $values ){
+                $tainacan_field_id = array_search( $field_source, $this->mapping );
+                $field = $Tainacan_Fields->fetch( $tainacan_field_id );
+
+                if( $field instanceof Tainacan\Entities\Field ){
+                    $singleItemMetadata = new Tainacan\Entities\Item_Metadata_Entity();
+                    $singleItemMetadata->set_field( $field );
+                    $singleItemMetadata->set_value( $values );
+                    $itemMetadataArray[] = $singleItemMetadata;
+                }
+
+            }
+        }
+
+        if( !empty( $itemMetadata ) && $this->collection instanceof Tainacan\Entities\Collection ){
+            $item->set_title( time() );
+            $item->set_collection( $this->collection );
+            $insertedItem = $Tainacan_Items->insert( $item );
+
+            foreach ( $itemMetadataArray as $itemMetadata ) {
+                $itemMetadata->set_item( $insertedItem );
+                $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+
+                if( $result ){
+                    $values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() );
+                    $this->set_log( 'success', 'Item ' . $index .
+                        ' has inserted the values: ' . $values . ' on field: ' . $itemMetadata->get_field()->get_name() );
+                } else {
+                    $this->set_log( 'error', 'Item ' . $index . ' has an error' );
+                }
+            }
+
+            $item->set_status('publish' );
+            $Tainacan_Items->update( $item );
+            return $item;
+        } else {
+            $this->set_log( 'error', 'Collection not set');
+            return false;
+        }
+
+    }
+
+    /**
+     * @param $type
+     * @param $message
+     */
+    public function set_log ( $type, $message ){
+        $this->logs[] = [ 'type' => $type, 'message' => $message ];
     }
 
     /**
