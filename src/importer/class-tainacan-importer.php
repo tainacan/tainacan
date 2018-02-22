@@ -27,6 +27,14 @@ abstract class Importer {
         return $this->id;
     }
 
+
+    /**
+     * @return array
+     */
+    public function get_mapping(){
+        return $this->mapping;
+    }
+
     /**
      * @param Tainacan\Entities\Collection $collection
      */
@@ -35,6 +43,8 @@ abstract class Importer {
     }
 
     /**
+     * save an associative array with tainacan field id and field from source
+     *
      * @param array $mapping Mapping importer-fields
      */
     public function set_mapping( $mapping ){
@@ -48,8 +58,7 @@ abstract class Importer {
     public function set_file( $file ){
         $new_file = $this->upload_file( $file );
         if ( is_numeric( $new_file ) ) {
-            $attach = get_post($new_file);
-            $this->tmp_file = $attach->guid;
+            $this->tmp_file = get_attached_file( $new_file );
         } else {
             return false;
         }
@@ -86,8 +95,17 @@ abstract class Importer {
     }
 
     /**
+     * @return mixed
+     */
+    public function get_collection_fields(){
+        return $this->collection;
+    }
+
+    /**
      * get the fields of file/url to allow mapping
      * should returns an array
+     *
+     * @return array $fields_source the fields from the source
      */
     abstract public function get_fields_source();
 
@@ -100,6 +118,13 @@ abstract class Importer {
      * @return mixed
      */
     abstract public function get_options();
+
+    /**
+     * return the all items found
+     *
+     * @return int Total of items
+     */
+    abstract public function get_total_items();
 
     /**
      * @param $start

@@ -2,17 +2,15 @@
     <div id="tainacan-admin-app" class="columns is-fullheight">
         <nav id="primary-menu" role="navigation" aria-label="main navigation" class="column is-2 is-sidebar-menu">
             <aside class="menu">
-                <router-link to="/">
-                    <img :src="logoHeader" alt="Tainacan Admin" height="32">
-                </router-link>
+                <h1 class="menu-level-title">{{ $i18n.get('repository') }}</h1>
                 <ul class="menu-list">
-                    <li><router-link tag="a" to="/collections">{{ $i18n.getString('menu', 'collections')}}</router-link></li>
-                    <li><router-link tag="a" to="/items">{{ $i18n.getString('menu', 'items')}}</router-link></li>
-                    <li><router-link tag="a" to="/fields">{{ $i18n.getString('menu', 'fields')}}</router-link></li>
-                    <li><router-link tag="a" to="/filters">{{ $i18n.getString('menu', 'filters')}}</router-link></li>
-                    <li><router-link tag="a" to="/categories">{{ $i18n.getString('menu', 'categories')}}</router-link></li>
-                    <li><router-link tag="a" to="/events">{{ $i18n.getString('menu', 'events')}}</router-link></li>
-                    <li><a class="navbar-item" :href="wordpressAdmin">Admin do Wordpress</a></li>
+                    <li><router-link tag="a" to="/collections">{{ $i18n.get('collections')}}</router-link></li>
+                    <li><router-link tag="a" to="/items">{{ $i18n.get('items')}}</router-link></li>
+                    <li><router-link tag="a" to="/fields">{{ $i18n.get('fields')}}</router-link></li>
+                    <li><router-link tag="a" to="/filters">{{ $i18n.get('filters')}}</router-link></li>
+                    <li><router-link tag="a" to="/categories">{{ $i18n.get('categories')}}</router-link></li>
+                    <li><router-link tag="a" to="/events">{{ $i18n.get('events')}}</router-link></li>
+                    <li><a class="navbar-item" :href="wordpressAdmin">Wordpress</a></li>
                 </ul>
             </aside>
         </nav>
@@ -40,6 +38,8 @@
 
     .is-fullheight {
         height: 100%;
+        margin-bottom: 0px;
+        margin-top: 0px;
     }
 
     #primary-menu {
@@ -49,6 +49,11 @@
             a {color: white !important;}
             a:hover {color: $primary !important;}
         }
+    }
+
+    .is-main-content {
+        padding-bottom: 0px;
+        padding-top: 0px;
     }
 
     #secondary-menu {
