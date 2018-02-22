@@ -1,5 +1,5 @@
 <template>
-    <div class="container columns is-fullheight">
+    <div class="columns is-fullheight">
         <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
             <aside class="menu">
                 <ul class="menu-list">

@@ -1,5 +1,5 @@
 <template>
-    <nav id="primary-menu" :class="isCompressed ? 'is-compressed' : ''" role="navigation" aria-label="main navigation" class="column is-sidebar-menu">
+    <nav id="primary-menu" :class="isCompressed ? 'is-compressed' : ''" role="navigation" aria-label="main navigation" class="column is-2 is-sidebar-menu">
         <aside class="menu">
             <ul class="menu-list">
                 <li><router-link tag="a" to="/collections" :class="activeRoute == '/collections' ? 'is-active':''">
@@ -58,8 +58,6 @@ export default {
         background-color: $primary;
         -webkit-transition: width 0.8s; /* Safari */
         transition: all 0.1s;
-        width: 180px !important;
-        max-width: 180px !important;
 
         li{
             a {color: white}
@@ -72,12 +70,25 @@ export default {
         }
 
         &.is-compressed {
-            width: 64px !important;
-            max-width: 64px !important;
+            width: 64px;
+            max-width: 64px;
             .menu-text {
                 display: none;
             }
             box-shadow: -1px 0px 5px #111 inset;
+        }
+
+        @media screen and (max-width: 769px) {
+            width: 100% !important;
+            max-width: 100% !important;
+            .menu-text {
+                display: none !important;
+            }
+            ul { 
+                display: flex;
+                align-items: stretch;
+                justify-content: space-between;
+            }
         }
     }
 </style>

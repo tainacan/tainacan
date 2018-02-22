@@ -2,7 +2,7 @@
     <div id="tainacan-admin-app" class="columns is-fullheight">
         <primary-menu></primary-menu>
         <div class="column is-main-content">
-            <router-view></router-view>
+            <router-view></router-view> 
         </div>
     </div>
 </template>
