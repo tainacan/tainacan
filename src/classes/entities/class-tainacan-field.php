@@ -140,7 +140,7 @@ class Field extends Entity {
     function get_field_type_object(){
         $class_name = $this->get_field_type();
         $object_type = new $class_name();
-        $object_type->set_options(  $this->get_field_options() );
+        $object_type->set_options(  $this->get_field_type_options() );
     	return $object_type;
     }
 
@@ -158,7 +158,7 @@ class Field extends Entity {
      *
      * @return array Configurations for the field type object
      */
-    function get_field_options(){
+    function get_field_type_options(){
         return $this->get_mapped_property('field_type_options');
     }
 
@@ -298,7 +298,7 @@ class Field extends Entity {
     }
 
     /**
-     * save the field type class name
+     * set the field type class name
      *
      * @param string | \Tainacan\Field_Types\Field_Type $value The name of the class or the instance
      */
@@ -312,6 +312,16 @@ class Field extends Entity {
      */
     function set_accept_suggestion( $value ) {
     	return $this->set_mapped_property('accept_suggestion', $value);
+    }
+    
+    /**
+     * Set Field type options
+     *
+     * @param [string || integer] $value
+     * @return void
+     */
+    function set_field_type_options( $value ){
+        $this->set_mapped_property('field_type_options', $value);
     }
 
     // helpers
@@ -341,5 +351,41 @@ class Field extends Entity {
 	 */
 	function is_required() {
         return $this->get_required() === 'yes';
+    }
+    
+    /**
+     * {@inheritdoc }  
+     * 
+     * Also validates the field, calling the validate_options callback of the Field Type
+     * 
+     * @return bool valid or not
+     */
+    public function validate() {
+        
+        $is_valid = parent::validate();
+        
+        if (false === $is_valid)
+            return false;
+        
+        $fto = $this->get_field_type_object();
+
+        if (is_object($fto)) {
+            $is_valid = $fto->validate_options($this->get_field_type_options());
+        }
+        
+        if (true === $is_valid)
+            return true;
+            
+        if (!is_array($is_valid))
+            throw new Exception("Return of validate_options field type method should be an Array in case of error");
+        
+        foreach ($is_valid as $field => $message) {
+            $this->add_error($field, $message);
+        }
+        
+        
+        return false;
+            
+        
     }
 }

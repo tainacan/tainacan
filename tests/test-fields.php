@@ -336,6 +336,38 @@ class Fields extends TAINACAN_UnitTestCase {
         $this->assertNotEquals($x->get_slug(), $y->get_slug());
         
     }
+
+    function test_validation_of_field_types() {
+        global $Tainacan_Fields;
+
+        $collection = $this->tainacan_entity_factory->create_entity(
+        	'collection',
+	        array(
+	        	'name' => 'teste'
+	        ),
+	        true
+        );
+
+        
+        $validField = new \Tainacan\Entities\Field();
+        $validField->set_name('test');
+        $validField->set_description('test');
+        $validField->set_collection($collection);
+        $validField->set_field_type('Tainacan\Field_Types\Relationship');
+        $validField->set_field_type_options(['collection_id' => 12]);
+        
+        $this->assertTrue($validField->validate());
+        
+        $invalidField = new \Tainacan\Entities\Field();
+        $invalidField->set_name('test');
+        $invalidField->set_description('test');
+        $invalidField->set_collection($collection);
+        $invalidField->set_field_type('Tainacan\Field_Types\Relationship');
+        $invalidField->set_field_type_options(['collection_id' => 'string']);
+        
+        $this->assertFalse($invalidField->validate());
+
+    }
 }
 
 /**
