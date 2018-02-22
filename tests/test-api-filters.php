@@ -24,7 +24,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadata filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'field_type'    => 'text'
+				'field_type'    => 'Tainacan\Field_Types\Text',
 			),
 			true,
 			true
