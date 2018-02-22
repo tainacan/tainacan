@@ -62,15 +62,13 @@ export const fetchItem = ({ commit }, item_id) => {
     });
 };
 
-export const sendItem = ( { commit }, { collection_id, title, description, status }) => {
+export const sendItem = ( { commit }, { collection_id, status }) => {
     return new Promise(( resolve, reject ) => {
         axios.post('/collection/'+ collection_id + '/items/', {
-            title: title,
-            description: description,
             status: status
         })
             .then( res => {
-                commit('setItem', { collection_id: collection_id, title: title, description: description, status: status });
+                commit('setItem', { collection_id: collection_id, status: status });
                 resolve( res.data );
             })
             .catch(error => {
@@ -80,14 +78,12 @@ export const sendItem = ( { commit }, { collection_id, title, description, statu
  };
  
  
-export const updateItem = ({ commit }, { item_id, title, description, status }) => {
+export const updateItem = ({ commit }, { item_id, status }) => {
     return new Promise((resolve, reject) => {
         axios.patch('/items/' + item_id, {
-            title: title,
-            description: description,
             status: status 
         }).then( res => {
-            commit('setItem', { id: item_id, title: title, description: description, status: status });
+            commit('setItem', { id: item_id, status: status });
             resolve( res.data );
         }).catch( error => { 
             reject( error.response );

@@ -87,11 +87,10 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
     	//$data is a valid json?
     	//$this->assertTrue(json_last_error() === JSON_ERROR_NONE);
 
-	    $other_collection = $data[0];
-    	$one_collection = $data[1];
-
-    	$this->assertEquals('testeApi', $one_collection['name']);
-    	$this->assertEquals('Other', $other_collection['name']);
+        $collectionsNames = array_map(function($data) {return $data['name'];}, $data);
+        
+        $this->assertContains('testeApi', $collectionsNames);
+        $this->assertContains('Other', $collectionsNames);
     }
 
     public function test_delete_or_trash_a_collection(){

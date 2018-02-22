@@ -2,19 +2,6 @@
     <div>
         <h1 class="is-size-3">Item creation  <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag></h1>
         <form label-width="120px">
-            <b-field label="Título">
-                <b-input
-                    v-model="form.title"
-                     >
-                </b-input>
-            </b-field>
-            <b-field label="Descrição">
-                <b-input
-                        type="textarea"
-                        v-model="form.description"
-                        >
-                </b-input>
-            </b-field>
             <b-field label="Status">
                 <b-select
                         v-model="form.status"
@@ -75,9 +62,7 @@ export default {
             isLoading: false,
             form: {
                 collectionId: Number,
-                title: '',
                 status: '',
-                description: '',
                 files:[]
             },
             // Can be obtained from api later
@@ -114,15 +99,13 @@ export default {
             // Puts loading on Item edition
             this.isLoading = true;
 
-            let data = {item_id: this.itemId, title: this.form.title, description: this.form.description, status: this.form.status};
+            let data = {item_id: this.itemId, status: this.form.status};
             
             this.updateItem(data).then(updatedItem => {    
                 
                 this.item = updatedItem;
 
                 // Fill this.form data with current data.
-                this.form.title = this.item.title;
-                this.form.description = this.item.description;
                 this.form.status = this.item.status;
 
                 this.isLoading = false;
@@ -153,15 +136,13 @@ export default {
             this.isLoading = true;
 
             // Creates draft Item
-            let data = {collection_id: this.form.collectionId, title: '', description: '', status: 'auto-draft'}; 
+            let data = {collection_id: this.form.collectionId, status: 'auto-draft'}; 
             this.sendItem(data).then(res => {
 
                 this.itemId = res.id;
                 this.item = res;
 
                 // Fill this.form data with current data.
-                this.form.title = this.item.title;
-                this.form.description = this.item.description;
                 this.form.status = this.item.status;
 
                 this.loadMetadata();
@@ -204,8 +185,6 @@ export default {
                 this.item = res;
                 
                 // Fill this.form data with current data.
-                this.form.title = this.item.title;
-                this.form.description = this.item.description;
                 this.form.status = this.item.status;
 
                 this.loadMetadata();

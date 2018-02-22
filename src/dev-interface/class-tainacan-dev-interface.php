@@ -33,8 +33,6 @@ class DevInterface {
         global $TAINACAN_BASE_URL;
         $components = ( has_filter( 'tainacan_register_web_components' ) ) ? apply_filters('tainacan_register_web_components') : [];
 
-        wp_enqueue_script('wp-settings',$TAINACAN_BASE_URL . '/js/wp-settings.js');
-
         $settings = [
             'root' => esc_url_raw( rest_url() ).'tainacan/v2',
             'nonce' => wp_create_nonce( 'wp_rest' ),
@@ -475,6 +473,12 @@ class DevInterface {
                 
                 foreach ($metalist as $meta) {
                     $item_meta = new \Tainacan\Entities\Item_Metadata_Entity($entity, $meta);
+
+                    $pos = strpos($item_meta->get_field()->get_field_type(), 'Core');
+                    if( $pos !== false ){
+                        continue;
+                    }
+
                     if (isset($_POST['tnc_metadata_' . $meta->get_id()])) {
                         $item_meta->set_value($_POST['tnc_metadata_' . $meta->get_id()]);
                         if ($item_meta->validate()) {

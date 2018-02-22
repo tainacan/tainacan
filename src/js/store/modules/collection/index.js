@@ -5,6 +5,7 @@ import * as mutations from './mutations';
 const state = {
     items: [],
     collections: [],
+    fields: [],
     collection: null
 };
 

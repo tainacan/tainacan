@@ -162,7 +162,13 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
-			return $item->__toArray();
+			$item_arr = $item->__toArray();
+
+			if($request['context'] === 'edit'){
+				$item_arr['current_user_can_edit'] = $item->can_edit();
+			}
+
+			return $item_arr;
 		}
 
 		return $item;
@@ -197,12 +203,15 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		if (isset($request['collection_id'])) {
-			$collection = $this->collection_repository->fetch($request['collection_id']);
+        if (isset($request['collection_id'])) {
+			
+            
+            if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-fields') ) {
+    			return false;
+    		}
 
-			if ($collection instanceof Entities\Collection) {
-				return $collection->can_read();
-			}
+    		return true;
+
 		}
 
 		return false;

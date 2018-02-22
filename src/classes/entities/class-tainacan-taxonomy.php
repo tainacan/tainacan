@@ -85,15 +85,6 @@ class Taxonomy extends Entity {
     }
 
 	/**
-	 * Return the parent id
-	 *
-	 * @return integer
-	 */
-	function get_parent() {
-        return $this->get_mapped_property('parent');
-    }
-
-	/**
 	 * Return the description
 	 *
 	 * @return string
@@ -142,14 +133,6 @@ class Taxonomy extends Entity {
         $this->set_mapped_property('name', $value);
     }
 
-	/**
-	 * Define the parent ID
-	 *
-	 * @param [integer] $value
-	 */
-	function set_parent($value) {
-        $this->set_mapped_property('parent', $value);
-    }
 
 	/**
 	 * Define the slug

@@ -194,36 +194,53 @@ class Items extends Repository {
         if (is_numeric($collections)){
             $collections = $Tainacan_Collections->fetch($collections);
         }
-
+        
+        $collections_objects = [];
+        $cpt = [];
+        
         if ($collections instanceof Entities\Collection) {
-            $cpt = $collections->get_db_identifier();
+            $collections_objects[] = $collections;
         } elseif (is_array($collections)) {
-            $cpt = [];
-
-            foreach ($collections as $collection) {
-                if (is_numeric($collection)){
-                    $collection = $Tainacan_Collections->fetch($collection);
+            foreach ($collections as $col) {
+                if (is_numeric($col)){
+                    $col = $Tainacan_Collections->fetch($col);
                 }
-                if ($collection instanceof Entities\Collection){
-                    $cpt[] = $collection->get_db_identifier();
+                if ($col instanceof Entities\Collection){
+                    $collections_objects[] = $col;
                 }
             }
 
-        } else {
-            return [];
+        } 
+        foreach ($collections_objects as $collection) {
+            
+            /**
+             * If no specific status is defined in the query, WordPress will fetch
+             * public items and private items for users withe the correct permission.
+             *
+             * If a collection is private, it must have the same behavior, despite its 
+             * items are public or not.
+             */
+            if (!isset($args['post_status'])) {
+                $status_obj = get_post_status_object( $collection->get_status() );
+        		if ( $status_obj->public || current_user_can( $collection->cap->read_private_posts ) ) {
+        			$cpt[] = $collection->get_db_identifier();
+        		}
+            } else {
+                $cpt[] = $collection->get_db_identifier();
+            }
+            
         }
-
+        
+        
+        
+        
         if (empty($cpt)){
-            return [];
+            $cpt[] = 'please-return-nothing';
         }
 
         //TODO: get collection order and order by options
         
         $args = $this->parse_fetch_args($args);
-        
-        $args = array_merge([
-            'post_status'    => 'publish',
-        ], $args);
 
         $args['post_type'] = $cpt;
 

@@ -23,13 +23,6 @@ class Taxonomies extends Repository {
                 'on_error'    => __('The taxonomy should be a text value and not empty', 'tainacan'),
                 'validation'  => v::stringType()->notEmpty(),
             ],
-            'parent'          =>  [
-                'map'         => 'parent',
-                'title'       => __('Parent', 'tainacan'),
-                'type'        => 'integer',
-                'description' => __('Parent taxonomy', 'tainacan'),
-                'validation'  => ''
-            ],
             'description'     =>  [
                 'map'         => 'post_content',
                 'title'       => __('Description', 'tainacan'),
