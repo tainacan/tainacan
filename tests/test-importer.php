@@ -36,7 +36,9 @@ class ImporterTests extends TAINACAN_UnitTestCase {
     /**
      * @group importer
      */
-    public function test_file_import_csv () {
+    public function test_file_csv () {
+        global $Tainacan_Fields;
+
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
 
@@ -65,8 +67,46 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         $_SESSION['tainacan_importer'][$id]->set_file( 'demosaved.csv' );
 
-        // here the session is init already
+        // file isset on importer
         $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
+
+        // count size of csv
+        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_total_items() );
+
+        // get fields to mapping
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_fields_source();
+        $this->assertEquals( $headers[4], 'Column 5' );
+
+        // inserting the collection
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'          => 'Other',
+                'description'   => 'adasdasdsa',
+                'default_order' => 'DESC',
+                'status'		=> 'publish'
+            ),
+            true
+        );
+
+        // set the importer
+        $_SESSION['tainacan_importer'][$id]->set_collection( $collection );
+
+        // get collection fields to map
+        $fields = $Tainacan_Fields->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+
+        //create a random mapping
+        $map = [];
+        foreach ( $fields as $index => $field ){
+            $map[$field->get_id()] = $headers[$index];
+        }
+
+        // set the mapping
+        $_SESSION['tainacan_importer'][$id]->set_mapping( $map );
+
+        // check is equal
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_mapping(), $map );
+
     }
 
     /**

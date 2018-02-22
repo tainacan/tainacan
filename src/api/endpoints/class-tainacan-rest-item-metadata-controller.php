@@ -85,7 +85,13 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @return array|WP_Error|WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		return $item->__toArray();
+		$item_arr = $item->__toArray();
+
+		if($request['context'] === 'edit'){
+			$item_arr['current_user_can_edit'] = $item->can_edit();
+		}
+
+		return $item_arr;
 	}
 
 	/**

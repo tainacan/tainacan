@@ -32,8 +32,6 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request_body = json_encode(
 			array(
-				'collection_id' => $collection->get_id(),
-				'field_id'   => $field->get_id(),
 				'filter_type'   => 'range',
 				'filter'        => [
 					'name'        => 'Filter name',
@@ -42,7 +40,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			)
 		);
 
-		$request = new \WP_REST_Request('POST', $this->namespace . '/filters');
+		$request = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/field/' . $field->get_id(). '/filters');
 
 		$request->set_body($request_body);
 

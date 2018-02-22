@@ -3,7 +3,7 @@
 namespace Tainacan\Tests;
 
 /**
- * @group queries
+ * @group api
  * **/
 class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
@@ -191,13 +191,15 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
 		$this->assertCount(2, $data3);
 
-		$values = [$data3[0]['metadata']['Field A-1']['value'], $data3[1]['metadata']['Field A-1']['value']];
+		$fieldA1_slug = $fieldA1->get_slug();
+
+		$values = [$data3[0]['metadata'][$fieldA1_slug]['value'], $data3[1]['metadata'][$fieldA1_slug]['value']];
 
 		$this->assertNotContains('G', $values);
 
 		// E have to come first, because DESC
-		$this->assertEquals('E', $data3[0]['metadata']['Field A-1']['value']);
-		$this->assertEquals('D', $data3[1]['metadata']['Field A-1']['value']);
+		$this->assertEquals('E', $data3[0]['metadata'][$fieldA1_slug]['value']);
+		$this->assertEquals('D', $data3[1]['metadata'][$fieldA1_slug]['value']);
 
 
 		/* Date Query:

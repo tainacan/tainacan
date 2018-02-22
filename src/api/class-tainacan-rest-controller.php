@@ -25,14 +25,21 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	/**
 	 * @param $entity
 	 *
+	 * @param $map
+	 * @param $context
+	 *
 	 * @return array
 	 */
-	protected function get_only_needed_attributes($entity, $map){
+	protected function get_only_needed_attributes($entity, $map, $context = null){
 
 		$entity_prepared = [
 			'id'          => $entity->get_id(),
 			'description' => $entity->get_description(),
 		];
+
+		if($context === 'edit'){
+			$entity_prepared['current_user_can_edit'] = $entity->can_edit();
+		}
 
 		if(array_key_exists('modification_date', $map)){
 			$entity_prepared['modification_date'] = $entity->get_modification_date();
@@ -85,6 +92,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'offset'       => 'offset',
 			'metaquery'    => 'meta_query',
 			'datequery'    => 'date_query',
+			'taxquery'     => 'taxquery',
 			'order'        => 'order',
 			'orderby'      => 'orderby',
 			'metakey'      => 'meta_key',
@@ -119,6 +127,14 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'after'     => 'after',
 		];
 
+		$tax_query = [
+			'taxonomy' => 'taxonomy',
+			'field'    => 'field',
+			'terms'    => 'terms',
+			'operator' => 'operator',
+			'relation' => 'relation',
+		];
+
 		$args = [];
 
 		foreach ($map as $mapped => $mapped_v){
@@ -127,6 +143,8 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 					$args = $this->prepare_meta($mapped, $request, $meta_query, $mapped_v, $args);
 				} elseif($mapped === 'datequery'){
 					$args = $this->prepare_meta($mapped, $request, $date_query, $mapped_v, $args);
+				} elseif($mapped === 'taxquery'){
+					$args = $this->prepare_meta($mapped, $request, $tax_query, $mapped_v, $args);
 				}
 				else {
 					$args[ $mapped_v ] = $request[ $mapped ];
