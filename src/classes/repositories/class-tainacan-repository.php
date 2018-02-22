@@ -298,7 +298,6 @@ abstract class Repository {
     	
     	if (empty($property) && array_key_exists('default', $map[$prop])){
     		$property = $map[$prop]['default'];
-    		$entity->set_mapped_property($prop, $property);
     	}
     	
     	return $property;
