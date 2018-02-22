@@ -162,7 +162,12 @@ class Taxonomies extends Repository {
         // TODO: Pegar taxonomias registradas via código
         
         if( is_numeric($args) ){
-            return new Entities\Taxonomy($args);
+            $existing_post = get_post($args);
+            if ($existing_post instanceof \WP_Post) {
+                return new Entities\Taxonomy($existing_post);
+            } else {
+                return [];
+            }
         } elseif (is_array($args)) {
 
             $args = array_merge([

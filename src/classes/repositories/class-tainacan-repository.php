@@ -387,13 +387,13 @@ abstract class Repository {
 	/**
 	 * Check if $user can edit/create a entity
 	 *
-	 * @param int|array|\WP_Post|Entities\Entity $entity
+	 * @param Entities\Entity $entity
 	 * @param int|\WP_User|null $user default is null for the current user
 	 *
 	 * @return boolean
 	 * @throws \Exception
 	 */
-    public function can_edit($entity, $user = null) {
+    public function can_edit(Entities\Entity $entity, $user = null) {
     	if(is_null($user)) {
     		$user = get_current_user_id();
     	}
@@ -402,12 +402,17 @@ abstract class Repository {
     	}
     	$entity = self::get_entity_by_post($entity);
     	
-    	$post_type = $entity::get_post_type();
-    	if($post_type === false) { // There is no post
-    		return user_can($user, 'edit_posts');
-    	}
-    	
-    	return user_can($user, $entity->cap->edit_post, $entity);
+    	if (!isset($entity->cap->edit_post)) {
+            return false;
+        }
+        
+        if (is_integer($entity->get_id())) {
+            return user_can($user, $entity->cap->edit_post, $entity->get_id());
+        } else {
+            // creating new
+            return user_can($user, $entity->cap->edit_posts);
+        }
+
     }
 
 	/**
@@ -428,12 +433,14 @@ abstract class Repository {
     	}
     	$entity = self::get_entity_by_post($entity);
     	
-   		$post_type = $entity::get_post_type();
-   		if($post_type === false) { // There is no post
-   			return user_can($user, 'read');
-   		}
+    	if (!isset($entity->cap->read)) {
+    		if($entity->get_post_type() === false) { // Allow read of not post entities
+    			return true;
+    		}
+    		return false;
+    	}
     	
-   		return user_can($user, $entity->cap->read_post, $entity);
+   		return user_can($user, $entity->cap->read, $entity->get_id());
     }
 
 	/**
@@ -453,12 +460,12 @@ abstract class Repository {
     		$user = $user->ID;
     	}
    		$entity = self::get_entity_by_post($entity);
-    	$post_type = $entity::get_post_type();
-    	if($post_type === false) { // There is no post
-    		return user_can($user, 'delete_posts');
-    	}
+   		
+   		if (!isset($entity->cap->delete_post)) {
+   			return false;
+   		}
     	
-    	return user_can($user, $entity->cap->delete_post, $entity);
+    	return user_can($user, $entity->cap->delete_post, $entity->get_id());
     }
 
 	/**
@@ -478,11 +485,10 @@ abstract class Repository {
     		$user = $user->ID;
     	}
     	$entity = self::get_entity_by_post($entity);
-    	$post_type = $entity::get_post_type();
-    	if($post_type === false) { // There is no post
-    		return user_can($user, 'publish_posts');
+    	if (!isset($entity->cap->publish_posts)) {
+    		return false;
     	}
-    	return user_can($user, $entity->cap->publish_posts, $entity);
+    	return user_can($user, $entity->cap->publish_posts, $entity->get_id());
     }
     
 }
