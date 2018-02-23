@@ -299,7 +299,7 @@ abstract class Repository {
     					'post_type'     => 'attachment',
 					    'post_per_page' => -1,
 					    'post_parent'   => $entity->WP_Post->ID,
-					    'exclude'       => get_post_thumbnail_id()
+					    'exclude'       => get_post_thumbnail_id($entity->WP_Post->ID)
 				    ];
 
     				$attachments = get_posts($attachments_query);
