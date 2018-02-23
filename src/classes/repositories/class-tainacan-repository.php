@@ -289,11 +289,7 @@ abstract class Repository {
     			if(isset($entity->WP_Post->ID)) {
     				$property = get_the_post_thumbnail_url($entity->WP_Post->ID, 'full');
     			}
-		    } else {
-			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
-		    }
-
-		    if($mapped == 'attachments'){
+		    } elseif($mapped == 'attachments'){
     			if(isset($entity->WP_Post) && isset($entity->WP_Post->ID)){
     				$attachments_query = [
     					'post_type'     => 'attachment',
@@ -321,6 +317,8 @@ abstract class Repository {
 
 				    $property = $attachments_prepared;
 			    }
+		    } else {
+			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
 		    }
     	} elseif ( isset( $entity->WP_Term )) {
     		$property = isset($entity->WP_Term->$mapped) ? $entity->WP_Term->$mapped : null;
