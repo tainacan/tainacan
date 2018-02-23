@@ -222,5 +222,19 @@ class Logs extends Repository {
     	return Entities\Log::create($msn, 'empty', $new_value, $value);
     }
     
-    
+    /**
+     * 
+     * @param Entities\Log $log
+     * @return Entities\Entity|boolean return insert/update valeu or false
+     */
+    public function approve($log) {
+    	$log = self::get_entity_by_post($log);
+    	if($log->get_status() == 'pending') {
+    		/** @var Entity $value **/
+    		$value = $log->get_value();
+    		$repository = self::get_repository($value);
+    		return $repository->insert($value);
+    	}
+    	return false; 
+    }
 }
