@@ -6,6 +6,7 @@ use Tainacan;
 class CSV extends Importer {
 
     public $delimiter = ',';
+    private $file;
 
     public function __construct() {
         parent::__construct();
@@ -18,7 +19,9 @@ class CSV extends Importer {
         return $this->delimiter;
     }
 
-
+    /**
+     * @param $delimiter
+     */
     public function set_delimiter( $delimiter ){
         $this->delimiter = $delimiter;
     }
@@ -27,16 +30,45 @@ class CSV extends Importer {
      * @inheritdoc
      */
     public function get_fields_source(){
-        $file = new \SplFileObject( $this->tmp_file, 'r' );
-        $file->seek(0 );
-        return $file->fgetcsv( $this->get_delimiter() );
+        $this->file = ( !isset( $this->file ) ) ?  new \SplFileObject( $this->tmp_file, 'r' ) : $this->file;
+        $this->file->seek(0 );
+        return $this->file->fgetcsv( $this->get_delimiter() );
     }
 
     /**
-     *
+     * @inheritdoc
      */
-    public function process_item(){
-        // TODO: process single item
+    public function process( $start, $end ){
+        $this->file = ( !isset( $this->file ) ) ?  new \SplFileObject( $this->tmp_file, 'r' ) : $this->file;
+
+        while ( $start <  $end ){
+            if( $start === 0 ){
+                $start++;
+                continue;
+            }
+
+            $processed_item = $this->process_item( $start );
+            $this->insert( $start, $processed_item );
+            $start++;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function process_item( $index ){
+        $processedItem = [];
+        $headers = $this->get_fields_source();
+        
+        // search the index in the file and get values
+        $this->file->seek( $index );
+        $values = $this->file->fgetcsv( $this->get_delimiter() );
+
+        foreach ($headers as $index => $header) {
+            $processedItem[ $header ] = $values[ $index ];
+        }
+
+        return $processedItem;
     }
 
     /**
@@ -46,7 +78,9 @@ class CSV extends Importer {
         // TODO: Implement get_options() method.
     }
 
-
+    /**
+     * @inheritdoc
+     */
     public function get_total_items(){
         if( isset( $this->total_items ) ){
             return $this->total_items;

@@ -5,12 +5,16 @@ use Tainacan;
 abstract class Importer {
 
     private $id;
+    private $processed_items;
+    private $last_index;
 
     public $collection;
     public $mapping;
     public $tmp_file;
     public $total_items;
     public $limit_query;
+    public $start;
+    public $end;
     public $logs = [];
 
     public function __construct() {
@@ -19,6 +23,10 @@ abstract class Importer {
         }
 
         $this->id = uniqid();
+        $this->limit_query = 100;
+        $this->start = 0;
+        $this->end = $this->start + $this->limit_query;
+        $this->processed_items = [];
         $_SESSION['tainacan_importer'][$this->id] = $this;
     }
 
@@ -31,10 +39,24 @@ abstract class Importer {
 
 
     /**
-     * @return array
+     * @return array Mapping
      */
     public function get_mapping(){
         return $this->mapping;
+    }
+
+    /**
+     * @return array Array with ids inserted in Tainacan
+     */
+    public function get_processed_items(){
+        return $this->processed_items;
+    }
+
+    /**
+     * @return mixed the last index from source
+     */
+    public function get_last_index(){
+        return $this->last_index;
     }
 
     /**
@@ -45,12 +67,35 @@ abstract class Importer {
     }
 
     /**
-     * save an associative array with tainacan field id and field from source
+     * save an associative array with tainacan field id as index and field from source as value
      *
      * @param array $mapping Mapping importer-fields
      */
     public function set_mapping( $mapping ){
         $this->mapping = $mapping;
+    }
+
+    /**
+     * set the limit of query to be processed
+     *
+     * @param $size The total of items
+     */
+    public function set_limit_query( $size ){
+        $this->limit_query = $size;
+    }
+
+    /**
+     * @param int $start the first index to init the process
+     */
+    public function set_start( $start ){
+        $this->start = $start;
+    }
+
+    /**
+     * @param mixed $end the last index in process
+     */
+    public function set_end( $end ){
+        $this->end = $end;
     }
 
     /**
@@ -114,10 +159,11 @@ abstract class Importer {
     /**
      * get values for a single item
      *
+     * @param  $index
      * @return array with field_source's as the index and values for the
      * item Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
      */
-    abstract public function process_item();
+    abstract public function process_item( $index );
 
     /**
      * @return mixed
@@ -132,12 +178,12 @@ abstract class Importer {
     abstract public function get_total_items();
 
     /**
-     * @param $start
-     * @param $end
+     * process a limited size of items
+     *
+     * @param $start init index
+     * @param $end last index
      */
-    public function process( $start, $end ){
-
-    }
+    abstract public function process( $start, $end );
 
     /**
      * insert processed item from source to Tainacan
@@ -191,6 +237,13 @@ abstract class Importer {
             }
 
             $item->set_status('publish' );
+
+            // inserted the id on processed item with its index as array index
+            $this->processed_items[ $index ] = $item->get_id();
+
+            // set the last index
+            $this->last_index = $index;
+
             $Tainacan_Items->update( $item );
             return $item;
         } else {
@@ -201,17 +254,19 @@ abstract class Importer {
     }
 
     /**
+     * log the actions from importer
+     *
      * @param $type
      * @param $message
      */
-    public function set_log ( $type, $message ){
+    public function set_log( $type, $message ){
         $this->logs[] = [ 'type' => $type, 'message' => $message ];
     }
 
     /**
-     *
+     * run the process
      */
     public function run(){
-
+        $this->process( $this->start, $this->end );
     }
 }
