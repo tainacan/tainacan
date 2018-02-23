@@ -1,6 +1,7 @@
 <?php
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
+use Tainacan\Entities\Entity;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -198,6 +199,13 @@ class Logs extends Repository {
     	return array_pop($logs);
     }
     
+    /** 
+     * Insert a log when a new entity is inserted
+     * @param Entity $new_value
+     * @param Entity $value
+     * 
+     * @return Entities\Log new created log
+     */
     public function log_inserts($new_value, $value = null) {
     	$msn = "";
    		if(is_object($new_value)) {
@@ -211,6 +219,8 @@ class Logs extends Repository {
    		}
 
    		$msn = apply_filters('tainacan-insert-log-message-title', $msn, $type, $new_value);
-    	Entities\Log::create($msn, 'empty', $new_value, $value);
+    	return Entities\Log::create($msn, 'empty', $new_value, $value);
     }
+    
+    
 }
