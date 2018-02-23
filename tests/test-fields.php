@@ -194,17 +194,9 @@ class Fields extends TAINACAN_UnitTestCase {
      */
     function test_metadata_field_type(){
         global $Tainacan_Fields;
-        $this->assertEquals( 8, sizeof( $Tainacan_Fields->fetch_field_types() ) );
-    }
-
-    /**
-     * test if the defaults types are registered
-     */
-    function test_metadata_field_type_insert(){
-        global $Tainacan_Fields;
-        $class = new RandomType;
         $this->assertEquals( 9, sizeof( $Tainacan_Fields->fetch_field_types() ) );
     }
+
 
     /**
      *
