@@ -89,7 +89,7 @@ class Log extends Entity {
      * @param mixed $value
      * @return void
      */
-    public function get_value($value = null) {
+    public function get_value() {
     	return maybe_unserialize( base64_decode($this->get_mapped_property('value')));
     }
     
@@ -99,7 +99,7 @@ class Log extends Entity {
      * @param mixed $value
      * @return void
      */
-    public function get_old_value($value = null) {
+    public function get_old_value() {
     	return maybe_unserialize( base64_decode($this->get_mapped_property('old_value')));
     }
         
