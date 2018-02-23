@@ -65,6 +65,12 @@ class Collections extends Repository {
 	            'type'        => 'string',
 	            'description' => __('The collection thumbnail URL')
             ],
+            'attachments'     => [
+            	'map'         => 'attachments',
+	            'title'       => __('Attachments', 'tainacan'),
+	            'type'        => 'array',
+	            'description' => __('The collection attachments')
+            ],
             'order'          =>  [
                 'map'        => 'menu_order',
                 'title'      => __('Order', 'tainacan'),

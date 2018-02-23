@@ -70,6 +70,12 @@ class Items extends Repository {
 	            'type'        => 'string',
 	            'description' => __('The collection thumbnail URL')
             ],
+            'attachments'     => [
+			    'map'         => 'attachments',
+			    'title'       => __('Attachments', 'tainacan'),
+			    'type'        => 'array',
+			    'description' => __('The item attachments')
+		    ],
             //'collection' => 'relation...',
             // field .. field...
         ]);

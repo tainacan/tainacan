@@ -131,11 +131,11 @@ class Collection extends Entity {
     }
 
 	/**
-	 * @param $value
+	 * @return mixed|null
 	 */
-	function set_featured_img($value){
-    	$this->set_mapped_property('featured_image', $value);
-    }
+	function get_attachments(){
+		return $this->get_mapped_property( 'attachments');
+	}
 
 	/**
 	 * @return mixed|null

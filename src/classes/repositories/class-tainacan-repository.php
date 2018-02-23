@@ -292,6 +292,36 @@ abstract class Repository {
 		    } else {
 			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
 		    }
+
+		    if($mapped == 'attachments'){
+    			if(isset($entity->WP_Post) && isset($entity->WP_Post->ID)){
+    				$attachments_query = [
+    					'post_type'     => 'attachment',
+					    'post_per_page' => -1,
+					    'post_parent'   => $entity->WP_Post->ID,
+					    'exclude'       => get_post_thumbnail_id()
+				    ];
+
+    				$attachments = get_posts($attachments_query);
+
+    				$attachments_prepared = [];
+    				if($attachments){
+    					foreach ($attachments as $attachment){
+    						$prepared = [
+    							'id'          => $attachment->ID,
+    							'title'       => $attachment->post_title,
+							    'description' => $attachment->post_content,
+							    'mime_type'   => $attachment->post_mime_type,
+							    'url'         => $attachment->guid,
+						    ];
+
+						    array_push($attachments_prepared, $prepared);
+					    }
+				    }
+
+				    $property = $attachments_prepared;
+			    }
+		    }
     	} elseif ( isset( $entity->WP_Term )) {
     		$property = isset($entity->WP_Term->$mapped) ? $entity->WP_Term->$mapped : null;
     	}
