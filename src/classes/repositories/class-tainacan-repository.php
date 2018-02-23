@@ -372,6 +372,36 @@ abstract class Repository {
     }
     
     /**
+     * Return Entity's Repository
+     * @param Entity $entity
+     * @return \Tainacan\Repositories\Repository|bool return the entity Repository or false
+     */
+    public static function get_repository($entity)
+    {
+    	$post_type = $entity->get_post_type();
+    	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
+    	
+    	// its is a collection Item?
+    	if($prefix == Entities\Collection::$db_identifier_prefix) {
+    		global $Tainacan_Items;
+    		return $Tainacan_Items;
+    	}
+    	else {
+    		global $Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
+    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
+    		foreach ($tnc_globals as $tnc_repository)
+    		{
+    			$entity_post_type = $tnc_repository->entities_type::get_post_type();
+    			if($entity_post_type == $post_type)
+    			{
+    				return $tnc_repository;
+    			}
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
      * @param $object
      * @return mixed
      */
