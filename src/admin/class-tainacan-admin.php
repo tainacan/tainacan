@@ -66,13 +66,25 @@ class Admin {
         $tainacan_admin_i18n = require('tainacan-admin-i18n.php');
         $components = ( has_filter( 'tainacan_register_web_components' ) ) ? apply_filters('tainacan_register_web_components') : [];
 
+        $cur_user = wp_get_current_user();
+        $user_caps = array();
+        if ($cur_user instanceof \WP_User) {
+            if (is_array($cur_user->allcaps)) {
+                foreach ($cur_user->allcaps as $cap => $bool)
+                    if ($bool === true)
+                        $user_caps[] = $cap;
+            }
+        }
         
         $settings = [
 			'root' => esc_url_raw( rest_url() ).'tainacan/v2',
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 			'components' => $components,
-            'i18n' => $tainacan_admin_i18n
+            'i18n' => $tainacan_admin_i18n,
+            'user_caps' => $user_caps
 		];
+        
+        
 
         wp_localize_script( 'tainacan-user-admin', 'wp_settings', $settings );
 		
