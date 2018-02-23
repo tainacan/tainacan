@@ -22,7 +22,7 @@ import FieldsList from '../components/fields-list.vue'
 Vue.use(VueRouter); 
 
 const routes = [
-    { path: '/', component: CollectionsPage, meta: {title: 'Admin Page'} },
+    { path: '/', redirect:'/collections' },
 
     { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: 'Collections Page'} },
     { path: '/collections/new', name: 'CollectionEditionPage', component: CollectionEditionPage, meta: {title: 'Create Collection'} },

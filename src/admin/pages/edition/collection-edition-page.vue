@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="is-size-3">Collection creation  <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag></h1>
+        <h1 class="is-size-3">{{ pageTitle }}  <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag></h1>
         <form label-width="120px">
             <b-field label="Título">
                 <b-input
@@ -64,6 +64,7 @@ export default {
     name: 'CollectionEditionPage',
     data(){
         return {
+            pageTitle: '',
             collectionId: Number,
             collection: null,
             isLoading: false,
@@ -159,9 +160,11 @@ export default {
     created(){
 
         if (this.$route.fullPath.split("/").pop() == "new") {
+            this.pageTitle = this.$i18n.get('page_title_new_collection');
             this.createNewCollection();
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
+            this.pageTitle = this.$i18n.get('page_title_edit_collection');
             this.isLoading = true;
 
             // Obtains current Collection ID from URL

@@ -13,8 +13,6 @@
         name: "AdminPage",
         data(){
             return {
-                logoHeader: '../wp-content/plugins/tainacan/admin/images/tainacan_logo_header.png',
-                wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             }
         },
         components: {

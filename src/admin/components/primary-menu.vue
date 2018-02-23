@@ -1,6 +1,13 @@
 <template>
     <nav id="primary-menu" :class="isCompressed ? 'is-compressed' : ''" role="navigation" aria-label="main navigation" class="column is-sidebar-menu">
         <aside class="menu">
+            <div class="menu-header">
+                <ul class="menu-list"><li><router-link tag="a" to="/">
+                    <b-icon size="is-medium" icon="chevron-left"></b-icon>
+                    <img class="tainacan-logo" :src="logoHeader"/>
+                </router-link></li></ul> 
+            </div>
+            
             <ul class="menu-list">
                 <li><router-link tag="a" to="/collections" :class="activeRoute == 'CollectionsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="folder-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('collections')}}</span>
@@ -33,6 +40,8 @@ export default {
     name: 'PrimaryMenu',
     data(){
         return {
+            logoHeader: '../wp-content/plugins/tainacan/admin/images/tainacan_logo_header.png',
+            wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             isCompressed: false,
             activeRoute: '/collections'
         }
@@ -60,6 +69,26 @@ export default {
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear; 
         max-width: 222px;
+
+        .menu-header {
+            background-color: $primary-darker;
+            height: 62px;
+            a { padding: 1em 2.5em }
+            .icon {
+                position: absolute;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.2s linear, visibility 0.2s linear;
+                -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;  
+            }
+            .tainacan-logo {
+                max-height: 28px;
+                opacity: 1;
+                visibility: visible;
+                transition: opacity 0.15s linear, visibility 0.15s linear;
+                -webkit-transition: opacity 0.15s linear, visibility 0.15s linear;
+            }
+        }
 
         li{
             a {
@@ -91,9 +120,21 @@ export default {
 
         &.is-compressed {
             max-width: 42px;
+
+            .menu-header {
+                a { padding: 1.2em 0.3em }
+                .icon {
+                    visibility: visible; 
+                    opacity: 1;
+                }   
+                .tainacan-logo {   
+                    visibility: hidden; 
+                    opacity: 0;
+                }
+            }
             a{ padding: 1em 0.8em; }
-            .menu-text {
-                visibility: hidden;
+            .menu-text {   
+                visibility: hidden; 
                 opacity: 0;
             }
             box-shadow: -3px 0px 10px #111;
@@ -103,6 +144,21 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
+
+            &.is-compressed {
+
+                .menu-header {
+                    .icon {
+                        visibility: hidden !important; 
+                        opacity: 0 !important;
+                    }   
+                    .tainacan-logo {   
+                        visibility: visible !important; 
+                        opacity: 1 !important;
+                    }
+                }
+            }
+
             a{ padding: 1em 0.8em !important;}
             .menu-text {
                 display: none !important;

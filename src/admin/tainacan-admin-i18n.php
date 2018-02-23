@@ -19,6 +19,10 @@ return [
     // Actions
     'edit' => __('Edit', 'tainacan'),
     'new' => __('New', 'tainacan'),
+
+    // Page Titles
+    'page_title_new_collection' => __('New Collection', 'tainacan'),
+    'page_title_edit_collection' => __('Edit Collection', 'tainacan'),
 ]
 
  ?>
