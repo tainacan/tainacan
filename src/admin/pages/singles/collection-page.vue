@@ -1,6 +1,6 @@
 <template>
     <div class="columns is-fullheight">
-        <secondary-menu></secondary-menu>
+        <secondary-menu :id="collectionId"></secondary-menu>
         <section class="container column is-main-content" v-if="collection != null">
             <div class="card">
                 <div class="card-image" v-if="collection.featured_image">
@@ -23,32 +23,19 @@
                     <router-link
                             tag="a"
                             class="card-footer-item"
-                            :to="{ path: `/collections/${collection.id}/edit` }">
-                        Editar Coleção
-                    </router-link>
-                    <router-link
-                            tag="a"
-                            class="card-footer-item"
                             :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">
                         Criar Item
                     </router-link>
-                    <router-link
-                            tag="a"
-                            class="card-footer-item"
-                            :to="{ path: `/collection/${collection.id}/items/`, params: { collection_id: collection.id }}">
-                        Ver todos os itens
-                    </router-link>
                 </footer>
             </div>
-            <items-list :collectionId="collectionId"></items-list>
+            <router-view></router-view>
         </section>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ItemsList from '../components/items-list.vue';
-import SecondaryMenu from '../components/secondary-menu.vue';
+import SecondaryMenu from '../../components/secondary-menu.vue';
 
 export default {
     name: 'CollectionPage',
@@ -69,8 +56,7 @@ export default {
         }
     },
     components: {
-        'items-list': ItemsList,
-        'secondary-menu': SecondaryMenu
+        SecondaryMenu
     },
     computed: {
         collection(){

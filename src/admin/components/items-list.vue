@@ -101,11 +101,9 @@ export default {
             isLoading: false,
             totalItems: 0,
             page: 1,
-            itemsPerPage: 2
+            itemsPerPage: 2,
+            collectionId: Number
         }
-    },
-    props: {
-        collectionId: Number
     },
     methods: {
         ...mapActions('collection', [
@@ -211,6 +209,14 @@ export default {
         items(){
             return this.getItems();
         }
+    },
+    created() {
+        this.collectionId = this.$route.fullPath.split("/").pop();
+        if (isNaN(this.collectionId)) {
+            let routeArray = this.$route.fullPath.split("/");
+            routeArray.pop();
+            this.collectionId = routeArray.pop();
+        }   
     },
     mounted(){
         this.loadItems();
