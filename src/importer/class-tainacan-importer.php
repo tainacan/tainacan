@@ -60,6 +60,13 @@ abstract class Importer {
     }
 
     /**
+     * @return array the last index from source
+     */
+    public function get_logs(){
+        return $this->logs;
+    }
+
+    /**
      * @param Tainacan\Entities\Collection $collection
      */
     public function set_collection( Tainacan\Entities\Collection $collection ){
@@ -109,6 +116,16 @@ abstract class Importer {
         } else {
             return false;
         }
+    }
+
+    /**
+     * log the actions from importer
+     *
+     * @param $type
+     * @param $message
+     */
+    public function set_log( $type, $message ){
+        $this->logs[] = [ 'type' => $type, 'message' => $message ];
     }
 
     /**
@@ -209,8 +226,7 @@ abstract class Importer {
                 $field = $Tainacan_Fields->fetch( $tainacan_field_id );
 
                 if( $field instanceof Tainacan\Entities\Field ){
-                    $singleItemMetadata = new Tainacan\Entities\Item_Metadata_Entity();
-                    $singleItemMetadata->set_field( $field );
+                    $singleItemMetadata = new Tainacan\Entities\Item_Metadata_Entity( $item, $field);
                     $singleItemMetadata->set_value( $values );
                     $itemMetadataArray[] = $singleItemMetadata;
                 }
@@ -218,7 +234,7 @@ abstract class Importer {
             }
         }
 
-        if( !empty( $itemMetadata ) && $this->collection instanceof Tainacan\Entities\Collection ){
+        if( !empty( $itemMetadataArray ) && $this->collection instanceof Tainacan\Entities\Collection ){
             $item->set_title( time() );
             $item->set_collection( $this->collection );
             $insertedItem = $Tainacan_Items->insert( $item );
@@ -251,16 +267,6 @@ abstract class Importer {
             return false;
         }
 
-    }
-
-    /**
-     * log the actions from importer
-     *
-     * @param $type
-     * @param $message
-     */
-    public function set_log( $type, $message ){
-        $this->logs[] = [ 'type' => $type, 'message' => $message ];
     }
 
     /**

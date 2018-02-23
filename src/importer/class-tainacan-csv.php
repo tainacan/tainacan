@@ -6,7 +6,6 @@ use Tainacan;
 class CSV extends Importer {
 
     public $delimiter = ',';
-    private $file;
 
     public function __construct() {
         parent::__construct();
@@ -30,25 +29,23 @@ class CSV extends Importer {
      * @inheritdoc
      */
     public function get_fields_source(){
-        $this->file = ( !isset( $this->file ) ) ?  new \SplFileObject( $this->tmp_file, 'r' ) : $this->file;
-        $this->file->seek(0 );
-        return $this->file->fgetcsv( $this->get_delimiter() );
+        $file =  new \SplFileObject( $this->tmp_file, 'r' );
+        $file->seek(0 );
+        return $file->fgetcsv( $this->get_delimiter() );
     }
 
     /**
      * @inheritdoc
      */
     public function process( $start, $end ){
-        $this->file = ( !isset( $this->file ) ) ?  new \SplFileObject( $this->tmp_file, 'r' ) : $this->file;
-
-        while ( $start <  $end ){
-            if( $start === 0 ){
-                $start++;
-                continue;
-            }
-
+        while ( $start <  $end && count( $this->get_processed_items() ) <= $this->get_total_items() ){
             $processed_item = $this->process_item( $start );
-            $this->insert( $start, $processed_item );
+            if( $processed_item) {
+                $this->insert( $start, $processed_item );
+            } else {
+                $this->set_log('error', 'failed on item '.$start );
+                break;
+            }
             $start++;
         }
     }
@@ -61,8 +58,20 @@ class CSV extends Importer {
         $headers = $this->get_fields_source();
         
         // search the index in the file and get values
-        $this->file->seek( $index );
-        $values = $this->file->fgetcsv( $this->get_delimiter() );
+        $file =  new \SplFileObject( $this->tmp_file, 'r' );
+        $file->seek( $index );
+
+        if( $index === 0 ){
+            $file->current();
+            $file->next();
+            $values = $file->fgetcsv( $this->get_delimiter() );
+        }else{
+            $values = $file->fgetcsv( $this->get_delimiter() );
+        }
+
+        if( count( $headers ) !== count( $values ) ){
+           return false;
+        }
 
         foreach ($headers as $index => $header) {
             $processedItem[ $header ] = $values[ $index ];
