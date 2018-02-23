@@ -38,7 +38,7 @@ const routes = [
     },
     { path: 'items/new', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title: 'Create Item'} },
     { path: '/collections/:collection_id/items/:id/edit', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title: 'Edit Item'} },
-    
+    { path: '/collections/:collection_id/items/new', name: 'ItemCreatePage', component: ItemEditionPage, meta: {title: 'Create Item'} },
     { path: '/collections/:collection_id/items/:id', name: 'ItemPage', component: ItemPage, meta: {title: 'Item Page'} },
 
     { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: 'Items Page'} },
