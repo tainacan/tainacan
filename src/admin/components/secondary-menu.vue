@@ -2,10 +2,10 @@
     <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
         <aside class="menu">
             <ul class="menu-list">
-                <li><router-link tag="a" to="">{{ $i18n.get('items')}}</router-link></li>
-                <li><router-link tag="a" to="">{{ $i18n.get('edit')}}</router-link></li>
-                <li><router-link tag="a" to="">{{ $i18n.get('fields')}}</router-link></li>
-                <li><router-link tag="a" to="">{{ $i18n.get('filters')}}</router-link></li>
+                <li><router-link tag="a" :to="{ path: `/collections/${id}/items`}" :class="activeRoute == 'ItemsList' ? 'is-active':''">{{ $i18n.get('items')}}</router-link></li>
+                <li><router-link tag="a" :to="{ path: `/collections/${id}/edit`}" :class="activeRoute == 'CollectionEditionPage' ? 'is-active':''">{{ $i18n.get('edit')}}</router-link></li>
+                <li><router-link tag="a" :to="{ path: `/collections/${id}/fields`}" :class="activeRoute == 'FieldsList' ? 'is-active':''">{{ $i18n.get('fields')}}</router-link></li>
+                <li><router-link tag="a" :to="{ path: `/collections/${id}/filters`}" :class="activeRoute == 'FiltersList' ? 'is-active':''">{{ $i18n.get('filters')}}</router-link></li>
             </ul>
         </aside>
     </nav>
@@ -16,8 +16,21 @@ export default {
     name: 'SecondaryMenu',
     data(){
         return {
+            activeRoute: 'ItemsList'
         }
+    },
+    props: {
+        id: Number
+    },
+    watch: {
+        '$route' (to, from) {
+            this.activeRoute = to.name;
+        }
+    },
+    created () {
+        this.activeRoute = this.$route.name;
     }
+
 }
 </script>
 

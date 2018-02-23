@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import CollectionsList from '../components/collections-list.vue';
+import CollectionsList from '../../components/collections-list.vue';
 
 export default {
     name: 'CollectionsPage',

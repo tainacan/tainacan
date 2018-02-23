@@ -2,22 +2,22 @@
     <nav id="primary-menu" :class="isCompressed ? 'is-compressed' : ''" role="navigation" aria-label="main navigation" class="column is-sidebar-menu">
         <aside class="menu">
             <ul class="menu-list">
-                <li><router-link tag="a" to="/collections" :class="activeRoute == '/collections' ? 'is-active':''">
+                <li><router-link tag="a" to="/collections" :class="activeRoute == 'CollectionsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="folder-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('collections')}}</span>
                 </router-link></li>
-                <li><router-link tag="a" to="/items" :class="activeRoute == '/items' ? 'is-active':''">
+                <li><router-link tag="a" to="/items" :class="activeRoute == 'ItemsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="note-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
                 </router-link></li>
-                <li><router-link tag="a" to="/fields" :class="activeRoute == '/fields' ? 'is-active':''">
+                <li><router-link tag="a" to="/fields" :class="activeRoute == 'FieldsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="format-list-checks"></b-icon> <span class="menu-text">{{ $i18n.get('fields')}}</span>
                 </router-link></li>
-                <li><router-link tag="a" to="/filters" :class="activeRoute == '/filters' ? 'is-active':''">
+                <li><router-link tag="a" to="/filters" :class="activeRoute == 'FiltersPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="filter"></b-icon> <span class="menu-text">{{ $i18n.get('filters')}}</span>
                 </router-link></li>
-                <li><router-link tag="a" to="/categories" :class="activeRoute == '/categories' ? 'is-active':''">
+                <li><router-link tag="a" to="/categories" :class="activeRoute == 'CategoriesPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="shape"></b-icon> <span class="menu-text">{{ $i18n.get('categories')}}</span>
                 </router-link></li>
-                <li><router-link tag="a" to="/events" :class="activeRoute == '/events' ? 'is-active':''">
+                <li><router-link tag="a" to="/events" :class="activeRoute == 'EventsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="calendar"></b-icon> <span class="menu-text">{{ $i18n.get('events')}}</span>
                 </router-link></li>
                 <li><a class="navbar-item" :href="wordpressAdmin">
@@ -40,13 +40,12 @@ export default {
     watch: {
         '$route' (to, from) {
             this.isCompressed = (to.params.id != undefined);
-            this.activeRoute = to.path;
-            console.log(to);
+            this.activeRoute = to.name;
         }
     },
     created () {
         this.isCompressed = (this.$route.params.id != undefined);
-        this.activeRoute = this.$route.path;
+        this.activeRoute = this.$route.to;
     }
 }
 </script>
