@@ -1,5 +1,5 @@
 <template>
-    <nav id="primary-menu" :class="isCompressed ? 'is-compressed' : ''" role="navigation" aria-label="main navigation" class="column is-2 is-sidebar-menu">
+    <nav id="primary-menu" :class="isCompressed ? 'is-compressed' : ''" role="navigation" aria-label="main navigation" class="column is-sidebar-menu">
         <aside class="menu">
             <ul class="menu-list">
                 <li><router-link tag="a" to="/collections" :class="activeRoute == '/collections' ? 'is-active':''">
@@ -41,6 +41,7 @@ export default {
         '$route' (to, from) {
             this.isCompressed = (to.params.id != undefined);
             this.activeRoute = to.path;
+            console.log(to);
         }
     },
     created () {
@@ -55,39 +56,62 @@ export default {
     @import "../scss/_variables.scss";
 
     #primary-menu {
-        background-color: $primary;
-        -webkit-transition: width 0.8s; /* Safari */
-        transition: all 0.1s;
+        background-color: $primary-dark;
+        padding: 0px; 
+        -webkit-transition: max-width 0.2s linear; /* Safari */
+        transition: max-width 0.2s linear; 
+        max-width: 222px;
 
         li{
-            a {color: white}
-            a:hover {color: $primary}
+            a {
+                color: white;
+                white-space: nowrap;
+                overflow: hidden;
+                padding: 1em 1.8em;
+                line-height: 1.5em;
+                border-radius: 0px;
+                -webkit-transition: padding 0.2s linear; /* Safari */
+                transition: padding 0.2s linear; 
+            }
+            a:hover {
+                background-color: $primary-light;
+                color: $secondary
+            }
             a.is-active {
-                background-color: white;
+                background-color: $primary;
                 color: $secondary;
-                color: $primary;
+            }
+            .menu-text {
+                padding-left: 0.7em;
+                opacity: 1;
+                visibility: visible;
+                transition: opacity 0.2s linear, visibility 0.2s linear;
+                -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;
             }
         }
 
         &.is-compressed {
-            width: 64px;
-            max-width: 64px;
+            max-width: 42px;
+            a{ padding: 1em 0.8em; }
             .menu-text {
-                display: none;
+                visibility: hidden;
+                opacity: 0;
             }
-            box-shadow: -1px 0px 5px #111 inset;
+            box-shadow: -3px 0px 10px #111;
+            z-index: 10;
         }
 
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
+            a{ padding: 1em 0.8em !important;}
             .menu-text {
                 display: none !important;
             }
             ul { 
                 display: flex;
                 align-items: stretch;
-                justify-content: space-between;
+                justify-content: space-evenly; 
             }
         }
     }

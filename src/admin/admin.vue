@@ -36,18 +36,9 @@
     .is-main-content {
         padding-bottom: 0px;
         padding-top: 0px;
-
         margin: 0 auto;
         position: relative;
-    }
-
-    #secondary-menu {
-        background-color: $secondary;
-
-        li{ 
-            a {color: white !important;}
-            a:hover {color: $secondary !important;}
-        }
+        overflow-y: auto;
     }
 
 </style>

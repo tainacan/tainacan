@@ -1,15 +1,6 @@
 <template>
     <div class="columns is-fullheight">
-        <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
-            <aside class="menu">
-                <ul class="menu-list">
-                    <li><router-link tag="a" to="">{{ $i18n.get('items')}}</router-link></li>
-                    <li><router-link tag="a" to="">{{ $i18n.get('edit')}}</router-link></li>
-                    <li><router-link tag="a" to="">{{ $i18n.get('fields')}}</router-link></li>
-                    <li><router-link tag="a" to="">{{ $i18n.get('filters')}}</router-link></li>
-                </ul>
-            </aside>
-        </nav>
+        <secondary-menu></secondary-menu>
         <section class="container column is-main-content" v-if="collection != null">
             <div class="card">
                 <div class="card-image" v-if="collection.featured_image">
@@ -57,6 +48,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ItemsList from '../components/items-list.vue';
+import SecondaryMenu from '../components/secondary-menu.vue';
 
 export default {
     name: 'CollectionPage',
@@ -77,7 +69,8 @@ export default {
         }
     },
     components: {
-        'items-list': ItemsList
+        'items-list': ItemsList,
+        'secondary-menu': SecondaryMenu
     },
     computed: {
         collection(){

@@ -2,10 +2,13 @@
 @import "../../../node_modules/bulma/sass/utilities/_all.sass";
 
 // Tainacan custom colors
-$primary: #25a189;
+$primary: #7DB9C3;// #25a189;
 $primary-invert: findColorInvert($primary);
-$secondary: #01295c;
+$secondary: #1F2F56;
 $secondary-invert: findColorInvert($primary);
+
+$primary-light:#A5CDD7;
+$primary-dark: #55A0AF;
 
 // Setup $colors to use as bulma classes
 $colors: (
