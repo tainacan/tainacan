@@ -230,14 +230,13 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		if(!empty($request->get_body())){
-			$body = json_decode($request->get_body());
+			$field_id = $request['field_id'];
 
-			$collection_id = $request['collection_id'];
-			$field_id = $body['field_id'];
+			$field_trashed = $this->field_repository->delete($field_id);
 
-			return new WP_REST_Response(['error' => 'Not Implemented.'], 400);
-		}
+			$prepared = $this->prepare_item_for_response($field_trashed, $request);
+
+			return new WP_REST_Response($prepared, 200);
 	}
 
 	/**

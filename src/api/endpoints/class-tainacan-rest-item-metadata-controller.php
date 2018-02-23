@@ -147,41 +147,6 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function delete_item( $request ) {
-		if(!empty($request->get_body())){
-			$body = json_decode($request->get_body());
-
-			$collection_id = $request['collection_id'];
-			$field_id = $body['metadata_id'];
-
-			return new WP_REST_Response(['error' => 'Not Implemented.'], 400);
-		}
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return bool|WP_Error
-	 * @throws Exception
-	 */
-	public function delete_item_permissions_check( $request ) {
-		if(isset($request['item_id'])){
-			$item = $this->item_repository->fetch($request['item_id']);
-
-			if($item instanceof Entities\Item) {
-				return $item->can_delete();
-			}
-
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_Error|WP_REST_Response
-	 */
 	public function update_item( $request ) {
 		$body = json_decode( $request->get_body(), true );
 

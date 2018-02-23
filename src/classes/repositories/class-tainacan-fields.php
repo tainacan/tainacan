@@ -414,8 +414,8 @@ class Fields extends Repository {
 		return $this->insert($object);
     }
 
-    public function delete($object){
-
+    public function delete($field_id){
+		return new Entities\Field( wp_trash_post( $field_id ) );
     }
 
     /**
