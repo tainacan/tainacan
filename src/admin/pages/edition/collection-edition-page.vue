@@ -48,10 +48,12 @@
                 </b-upload>
             </b-field>
             <button
+                id="button-cancel-collection-creation"
                 class="button"
                 type="button"
                 @click="cancelBack">Cancelar</button>
             <a
+                id="button-submit-collection-creation"
                 @click="onSubmit"
                 class="button is-success is-hovered">Salvar</a>
         </form>
