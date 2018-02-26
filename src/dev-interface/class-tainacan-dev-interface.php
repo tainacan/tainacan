@@ -186,10 +186,12 @@ class DevInterface {
                                     <?php  Helpers\HtmlHelpers::collections_dropdown( $value ); ?>
                                 <?php elseif ($prop == 'collections_ids'): ?>
                                     <?php  Helpers\HtmlHelpers::collections_checkbox_list( $value ); ?>
-                                <?php elseif ($prop == 'field_type_options'): ?>
+                                <?php elseif ($prop == 'field_type_options' || $prop == 'filter_type_options'): ?>
                                     <?php echo $value; ?>
                                 <?php elseif ($prop == 'field_type'): ?>
                                     <?php echo $this->field_type_dropdown($post->ID,$value); ?>
+                                <?php elseif ($prop == 'filter_type'): ?>
+                                    <?php echo $this->filter_type_dropdown($post->ID,$value); ?>
                                 <?php else: ?>
                                         <textarea name="tnc_prop_<?php echo $prop; ?>"><?php echo htmlspecialchars($value); ?></textarea>
                                 <?php endif; ?>    
@@ -378,6 +380,33 @@ class DevInterface {
             ?>
         <?php
     }
+
+    function filter_type_dropdown($id,$selected) {
+
+        global $Tainacan_Filters;
+
+        $class = ( class_exists( $selected ) ) ? new $selected() : '';
+
+        if(is_object( $class )){
+            $selected =  str_replace('Tainacan\Filter_Types\\','', get_class( $class ) );
+        }
+
+        $types = $Tainacan_Filters->fetch_filter_types('NAME');
+        ?>
+        <select name="tnc_prop_filter_type">
+            <?php foreach ($types as $type): ?>
+                <option value="<?php echo $type; ?>" <?php selected($type, $selected) ?>><?php echo $type; ?></option>
+            <?php endforeach; ?>
+        </select>
+        <?php
+        if( $class ){
+            $options = get_post_meta($id,'filter_type_options',true);
+            $class->set_options($options);
+            echo $class->form();
+        }
+        ?>
+        <?php
+    }
     
     function collections_checkbox_list($selected) {
         global $Tainacan_Collections;
@@ -432,10 +461,14 @@ class DevInterface {
                         $class = '\Tainacan\Field_Types\\'.$value;
                         update_post_meta($post_id, 'field_type_options', $_POST['field_type_'.strtolower( $value ) ] );
                         update_post_meta($post_id, 'field_type',  wp_slash( get_class( new $class() ) ) );
-                    } elseif($prop == 'field_type_options') {
+                    } elseif($prop == 'field_type_options' || $prop == 'filter_type_options') {
                         continue;
+                    } elseif ($prop == 'filter_type') {
+                        $class = '\Tainacan\Filter_Types\\'.$value;
+                        update_post_meta($post_id, 'filter_type_options', $_POST['filter_type_'.strtolower( $value ) ] );
+                        update_post_meta($post_id, 'filter_type',  wp_slash( get_class( new $class() ) ) );
                     } elseif ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
-                        
+
                         $repo->insert_metadata($entity, $prop);
                         
         			}

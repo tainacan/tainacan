@@ -11,6 +11,7 @@ class List_Filter extends Filter_Type {
 
     function __construct(){
         parent::set_supported_types(['string']);
+        $this->component = 'tainacan-filter-list';
     }
 
     /**

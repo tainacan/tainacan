@@ -8,8 +8,20 @@ abstract class Filter_Type {
 
     private $supported_types = [];
     public $options;
+    public $component;
+
+    public function __construct(){
+        add_action('register_filter_types', array(&$this, 'register_filter_type'));
+    }
 
     abstract function render( $field );
+
+    /**
+     * generate the fields for this field type
+     */
+    public function form(){
+
+    }
 
     /**
      * @return array Supported types by the filter
@@ -25,6 +37,25 @@ abstract class Filter_Type {
      */
     public function set_supported_types($supported_types){
         $this->supported_types = $supported_types;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_component() {
+        return $this->component;
+    }
+    /**
+     * @return array
+     */
+    public function __toArray(){
+        $attributes = [];
+
+        $attributes['className'] = get_class($this);
+        $attributes['component'] = $this->get_component();
+        $attributes['supported_types'] = $this->get_supported_types();
+
+        return $attributes;
     }
 
     /**
