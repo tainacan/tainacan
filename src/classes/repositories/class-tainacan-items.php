@@ -76,6 +76,12 @@ class Items extends Repository {
 			    'type'        => 'array',
 			    'description' => __('The item attachments')
 		    ],
+            'terms'           => [
+            	'map'         => 'terms',
+	            'title'       => __('Term IDs', 'tainacan'),
+	            'type'        => 'array',
+	            'description' => __('The item term IDs', 'tainacan'),
+            ],
             //'collection' => 'relation...',
             // field .. field...
         ]);
@@ -127,7 +133,7 @@ class Items extends Repository {
     	
     	// iterate through the native post properties
     	foreach ($map as $prop => $mapped) {
-    		if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
+    		if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'terms') {
     			$item->WP_Post->{$mapped['map']} = $item->get_mapped_property($prop);
     		}
     	}
@@ -153,7 +159,22 @@ class Items extends Repository {
     					add_post_meta($id, $prop, wp_slash( $value ));
     				}
     			}
-    		}
+    		} elseif($mapped['map'] == 'terms'){
+			    $values = $item->get_mapped_property($prop);
+
+			    if($values) {
+			    	$res = [];
+
+			    	foreach ($values as $value){
+			    		$taxonomy = get_term($value)->taxonomy;
+					    $res[] = wp_set_post_terms( $item->WP_Post->ID, $value, $taxonomy );
+				    }
+
+				    if ( ! is_array( $res ) ) {
+					    throw new \InvalidArgumentException( 'The id of post or taxonomy name or term name may be invalid. Response = ' . $res );
+				    }
+			    }
+		    }
     	}
     	
     	do_action('tainacan-insert', $item);

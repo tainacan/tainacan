@@ -3,13 +3,34 @@
 namespace Tainacan\Tests;
 
 /**
- * @group api
+ * @group queries
  * **/
 class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
 	public function test_queries(){
 
 		// Populate the database
+
+		$collectionB = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			[
+				'name'        => 'B',
+				'description' => 'Collection B',
+				'status'      => 'publish'
+			],
+			true
+		);
+
+		$collectionC = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			[
+				'name'        => 'C',
+				'description' => 'Collection C',
+				'status'      => 'private'
+			],
+			true
+		);
+
 		$collectionA = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			[
@@ -20,6 +41,35 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
+		// Create Taxonomy
+		$taxonomyA = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'            => 'Tax A',
+				'description'     => 'A taxonomy',
+				'allow_insert'    => 'yes',
+				'status'          => 'publish',
+				'collections_ids' => [
+					$collectionA->get_id(),
+					$collectionC->get_id(),
+					$collectionB->get_id()
+				]
+			),
+			true
+		);
+		// Create Term
+
+		$termA = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomyA->get_db_identifier(),
+				'name'     => 'Term A',
+				'user'     => get_current_user_id(),
+			),
+			true
+		);
+		//
+
 		// Create Items
 		$itemA1 = $this->tainacan_entity_factory->create_entity(
 			'item',
@@ -27,7 +77,8 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 				'title'       => 'Item A-1',
 				'description' => 'Item in collection A',
 				'status'      => 'publish',
-				'collection'  => $collectionA
+				'collection'  => $collectionA,
+				'terms'       => [$termA]
 			],
 			true
 		);
@@ -38,7 +89,8 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 				'title'       => 'Item A-2',
 				'description' => 'Item in collection A',
 				'status'      => 'private',
-				'collection'  => $collectionA
+				'collection'  => $collectionA,
+				'terms'       => [$termA]
 			],
 			true
 		);
@@ -109,27 +161,6 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$itemA3_metadata3 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA3, $fieldA3, ['Q', 'V']);
 
 		//
-
-		$collectionB = $this->tainacan_entity_factory->create_entity(
-			'collection',
-			[
-				'name'        => 'B',
-				'description' => 'Collection B',
-				'status'      => 'publish'
-			],
-			true
-		);
-
-		$collectionC = $this->tainacan_entity_factory->create_entity(
-			'collection',
-			[
-				'name'        => 'C',
-				'description' => 'Collection C',
-				'status'      => 'private'
-			],
-			true
-		);
-
 
 		// Fetch a collection with a specific name
 		$name_query = ['name' => 'B'];
@@ -237,6 +268,36 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$data5 = $date_query_response_collections->get_data();
 
 		$this->assertCount(0, $data5);
+
+		/* Tax Query
+		 *
+		 * Fetch items under a taxonomy with a specific term
+		 *
+		 * */
+
+		$tax_query = [
+			'taxquery' => [
+				[
+					'taxonomy' => $taxonomyA->get_db_identifier(),
+					'field'    => 'slug',
+					'terms'    => 'term-a'
+				]
+			]
+		];
+
+		$tax_query_request_collections = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collectionA->get_id() . '/items');
+		$tax_query_request_collections->set_query_params($tax_query);
+
+		$tax_query_response_collections = $this->server->dispatch($tax_query_request_collections);
+		$data6 = $tax_query_response_collections->get_data();
+
+		$this->assertCount(2, $data6);
+
+		$itemsA1_A2 = [$data6[0]['title'], $data6[1]['title']];
+
+		$this->assertContains('Item A-1', $itemsA1_A2);
+		$this->assertContains('Item A-2', $itemsA1_A2);
+		$this->assertNotContains('Item A-3', $itemsA1_A2);
 	}
 }
 

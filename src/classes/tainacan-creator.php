@@ -93,6 +93,10 @@ $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Checkbox');
 global $Tainacan_Filters;
 $Tainacan_Filters = new \Tainacan\Repositories\Filters();
 
+//register filter type
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Range');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\List_Filter');
+
 global $Tainacan_Taxonomies;
 $Tainacan_Taxonomies = new \Tainacan\Repositories\Taxonomies();
 

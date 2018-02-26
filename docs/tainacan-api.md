@@ -87,7 +87,8 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
             "title": "string",
             "description": "string",
             "status": "string",
-      }
+            "terms": ["integer", "integer", ...]
+      }
 ```
     
 2. Route `wp-json/tainacan/v2/items/(?P<item_id>[\d]+)`
@@ -108,7 +109,8 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
       {
             "title": "string",
             "description": "string",
-            ...
+            "terms": ["integer", "integer", ...]
+            ...
       }
 ```
 
@@ -170,10 +172,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
    
 ```javascript
       {
-            "values": [
-                  { "new": "any_type", "prev": "any_type"},
-                  { "new": "any_type", "prev": ""}
-            ]
+            "values": ["any", "type"]
       }
 ```
 

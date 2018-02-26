@@ -8,6 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 use \Respect\Validation\Validator as v;
 class Filters extends Repository {
 	public $entities_type = '\Tainacan\Entities\Filter';
+    public $filters_types = [];
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(),  [
@@ -87,6 +88,7 @@ class Filters extends Repository {
             'parent_item_colon'  => __('Parent Filter:', 'tainacan'),
             'menu_name'          => __('Filters', 'tainacan')
         );
+
         $args = array(
             'labels'              => $labels,
             'hierarchical'        => true,
@@ -104,7 +106,7 @@ class Filters extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'     => 'tainacan-filter',
+        	'capability_type'     => Entities\Field::get_post_type(),
             'supports'            => [
                 'title',
                 'editor',
@@ -209,21 +211,62 @@ class Filters extends Repository {
         }
     }
 
-    /**
-     * fetch all declared filter type classes
-     *
-     * @return Array of Entities\Filter_Types\Filter_Type objects
-     */
-    public function fetch_filter_types(){
-        $filters = array();
 
-        foreach (get_declared_classes() as $class) {
-            if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
-                $filters[] = new $class();
-            }
+    /**
+     * register field types class on array of types
+     *
+     * @param $class_name string | object The class name or the instance
+     */
+    public function register_filter_type( $class_name ){
+        if( is_object( $class_name ) ){
+            $class_name = get_class( $class_name );
         }
 
-        return $filters;
+        if(!in_array( $class_name, $this->filters_types)){
+            $this->filters_types[] = $class_name;
+        }
+    }
+
+    /**
+     * register field types class on array of types
+     *
+     * @param $class_name string | object The class name or the instance
+     */
+    public function deregister_filter_type( $class_name ){
+        if (is_object($class_name)) {
+            $class_name = get_class($class_name);
+        }
+
+        $key = array_search($class_name, $this->filters_types);
+        if ($key !== false) {
+            unset($this->filters_types[$key]);
+        }
+    }
+
+    /**
+     * fetch all registered filter type classes
+     *
+     * Possible outputs are:
+     * CLASS (default) - returns the Class name of of filter types registered
+     * NAME - return an Array of the names of filter types registered
+     *
+     * @param $output string CLASS | NAME
+     * @return array of Entities\Filter_Types\Filter_Type classes path name
+     */
+    public function fetch_filter_types( $output = 'CLASS'){
+        $return = [];
+
+        do_action('register_filter_types');
+
+        if( $output === 'NAME' ){
+            foreach ($this->filters_types as $filter_type) {
+                $return[] = str_replace('Tainacan\Filter_Types\\','', $filter_type);
+            }
+
+            return $return;
+        }
+
+        return $this->filters_types;
     }
 
     /**

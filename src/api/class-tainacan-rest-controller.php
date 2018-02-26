@@ -92,7 +92,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'offset'       => 'offset',
 			'metaquery'    => 'meta_query',
 			'datequery'    => 'date_query',
-			'taxquery'     => 'taxquery',
+			'taxquery'     => 'tax_query',
 			'order'        => 'order',
 			'orderby'      => 'orderby',
 			'metakey'      => 'meta_key',

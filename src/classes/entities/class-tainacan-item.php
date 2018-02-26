@@ -29,6 +29,20 @@ class Item extends Entity {
 	}
 
 	/**
+	 * @param $value
+	 */
+	function set_terms($value){
+		$this->set_mapped_property('terms', $value);
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_terms(){
+		return $this->get_mapped_property('terms');
+	}
+
+	/**
 	 * @return mixed|null
 	 */
 	function get_featured_img(){
