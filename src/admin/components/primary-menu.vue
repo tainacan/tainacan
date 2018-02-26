@@ -1,10 +1,10 @@
 <template>
-    <nav id="primary-menu" :class="isCompressed ? 'is-compressed' : ''" role="navigation" aria-label="main navigation" class="column is-sidebar-menu">
+    <nav id="primary-menu" :class="isCompressed ? 'is-compressed' : ''" role="navigation" :aria-label="$i18n.get('label_main_menu')" class="column is-sidebar-menu">
         <aside class="menu">
             <div class="menu-header">
                 <ul class="menu-list"><li><router-link tag="a" to="/">
                     <b-icon size="is-medium" icon="chevron-left"></b-icon>
-                    <img class="tainacan-logo" :src="logoHeader"/>
+                    <img class="tainacan-logo" alt="Tainacan Logo" :src="logoHeader"/>
                 </router-link></li></ul> 
             </div>
             
@@ -15,7 +15,7 @@
                 <li><router-link tag="a" to="/items" :class="activeRoute == 'ItemsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="note-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
                 </router-link></li>
-                <div class="separator"></div>
+                <li class="separator"></li>
                 <li><router-link tag="a" to="/fields" :class="activeRoute == 'FieldsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="format-list-checks"></b-icon> <span class="menu-text">{{ $i18n.get('fields')}}</span>
                 </router-link></li>
@@ -123,7 +123,6 @@ export default {
             }
         }
 
-                background-color: $primary-darker;
         &.is-compressed {
             max-width: 42px;
 

@@ -1,18 +1,26 @@
 <template>
-    <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-sidebar-menu">
+    <nav id="secondary-menu" role="navigation" :aria-label="$i18n.get('label_collection_menu')" class="column is-sidebar-menu">
         <aside class="menu">
             <div class="menu-header">
                 <ul class="menu-list"><li><router-link tag="a" to="/">
                     <b-icon size="is-medium" icon="chevron-left"></b-icon>
-                    <img class="tainacan-logo" :src="logoHeader"/>
+                    <img class="tainacan-logo"  alt="Tainacan Logo" :src="logoHeader"/>
                 </router-link></li></ul> 
             </div>
 
             <ul class="menu-list">
-                <li><router-link tag="a" :to="{ path: `/collections/${id}/items`}" :class="activeRoute == 'ItemsList' ? 'is-active':''">{{ $i18n.get('items')}}</router-link></li>
-                <li><router-link tag="a" :to="{ path: `/collections/${id}/edit`}" :class="activeRoute == 'CollectionEditionPage' ? 'is-active':''">{{ $i18n.get('edit')}}</router-link></li>
-                <li><router-link tag="a" :to="{ path: `/collections/${id}/fields`}" :class="activeRoute == 'FieldsList' ? 'is-active':''">{{ $i18n.get('fields')}}</router-link></li>
-                <li><router-link tag="a" :to="{ path: `/collections/${id}/filters`}" :class="activeRoute == 'FiltersList' ? 'is-active':''">{{ $i18n.get('filters')}}</router-link></li>
+                <li><router-link tag="a" :to="{ path: `/collections/${id}/items`}" :class="activeRoute == 'ItemsList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('items')">
+                    {{ $i18n.get('items')}}
+                </router-link></li>
+                <li><router-link tag="a" :to="{ path: `/collections/${id}/edit`}" :class="activeRoute == 'CollectionEditionPage' ? 'is-active':''" :aria-label="$i18n.get('edit') + ' ' + $i18n.get('collection')">
+                    {{ $i18n.get('edit')}}
+                </router-link></li>
+                <li><router-link tag="a" :to="{ path: `/collections/${id}/fields`}" :class="activeRoute == 'FieldsList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('fields')">
+                    {{ $i18n.get('fields')}}
+                </router-link></li>
+                <li><router-link tag="a" :to="{ path: `/collections/${id}/filters`}" :class="activeRoute == 'FiltersList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('filters')">
+                    {{ $i18n.get('filters')}}
+                </router-link></li>
             </ul>
         </aside>
     </nav>
