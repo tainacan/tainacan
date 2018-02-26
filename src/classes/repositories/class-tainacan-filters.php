@@ -252,4 +252,106 @@ class Filters extends Repository {
 
         return $supported_filter_types;
     }
+
+    /**
+     * fetch filters by collection, searches all filters available
+     *
+     * @param Entities\Collection $collection
+     * @param array $args WP_Query args plus disabled_fields
+     * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
+     *
+     * @return Array Entities\Field
+     * @throws \Exception
+     */
+    public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
+        $collection_id = $collection->get_id();
+
+        //get parent collections
+        $parents = get_post_ancestors( $collection_id );
+
+        //insert the actual collection
+        $parents[] = $collection_id;
+
+        //search for default field
+        $parents[] = $this->get_default_metadata_attribute();
+
+        $meta_query = array(
+            'key'     => 'collection_id',
+            'value'   => $parents,
+            'compare' => 'IN',
+        );
+
+        if( isset( $args['meta_query'] ) ){
+            $args['meta_query'][] = $meta_query;
+        }else{
+            $args['meta_query'] = array( $meta_query );
+        }
+
+        return $this->order_result(
+            $this->fetch( $args, $output ),
+            $collection,
+            isset( $args['disabled_fields'] ) ? $args['disabled_fields'] : false
+        );
+    }
+
+    /**
+     * Ordinate the result from fetch response if $collection has an ordination,
+     * filters not ordinated appear on the end of the list
+     *
+     *
+     * @param $result Response from method fetch
+     * @param Entities\Collection $collection
+     * @return array or WP_Query ordinate
+     */
+    public function order_result( $result, Entities\Collection $collection ){
+        $order = $collection->get_filters_order();
+        if($order) {
+            $order = ( is_array($order) ) ? $order : unserialize($order);
+
+            if ( is_array($result)  ){
+                $result_ordinate = [];
+                $not_ordinate = [];
+
+                foreach ( $result as $item ) {
+                    $id = $item->WP_Post->ID;
+                    $index = array_search ( $id , array_column( $order , 'id') );
+
+                    if( $index !== false ) {
+                        $result_ordinate[$index] = $item;
+                    } else {
+                        $not_ordinate[] = $item;
+                    }
+                }
+
+                ksort ( $result_ordinate );
+                $result_ordinate = array_merge( $result_ordinate, $not_ordinate );
+
+                return $result_ordinate;
+            }
+            // if the result is a wp query object
+            else {
+                $posts = $result->posts;
+                $result_ordinate = [];
+                $not_ordinate = [];
+
+                foreach ( $posts as $item ) {
+                    $id = $item->ID;
+                    $index = array_search ( $id ,  array_column( $order , 'id') );
+
+                    if( $index !== false ){
+                        $result_ordinate[$index] = $item;
+                    } else {
+                        $not_ordinate[] = $item;
+                    }
+                }
+
+                ksort ( $result_ordinate );
+                $result->posts = $result_ordinate;
+                $result->posts = array_merge( $result->posts, $not_ordinate );
+
+                return $result;
+            }
+        }
+        return $result;
+    }
 }

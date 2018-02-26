@@ -24,7 +24,9 @@ class Core_Title extends Field_Type {
      */
 
     public function render( $itemMetadata ){
-        return '<tainacan-text field_id ="'.$itemMetadata->get_field()->get_id().'" 
+        return '<tainacan-text 
+                               id="tainacan-text-' . $itemMetadata->get_item()->get_slug() . '"
+                               field_id ="'.$itemMetadata->get_field()->get_id().'" 
                                item_id="'.$itemMetadata->get_item()->get_id().'"    
                                value=\''.json_encode( $itemMetadata->get_value() ).'\'  
                                name="'.$itemMetadata->get_field()->get_name().'"></tainacan-text>';

@@ -254,7 +254,16 @@ class Collection extends Entity {
     function get_fields_order() {
         return $this->get_mapped_property('fields_order');
     }
-    
+
+    /**
+     * Get collection filters ordination
+     *
+     * @return string
+     */
+    function get_filters_order() {
+        return $this->get_mapped_property('filters_order');
+    }
+
     /**
      * Get collection moderators ids
      *
@@ -393,6 +402,16 @@ class Collection extends Entity {
      */
     function set_fields_order($value) {
         $this->set_mapped_property('fields_order', $value);
+    }
+
+    /**
+     * Set collection filters ordination
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_filters_order($value) {
+        $this->set_mapped_property('filters_order', $value);
     }
     
     /**
