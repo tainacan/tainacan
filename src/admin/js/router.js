@@ -24,32 +24,32 @@ Vue.use(VueRouter);
 const routes = [
     { path: '/', redirect:'/collections' },
 
-    { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: 'Collections Page'} },
-    { path: '/collections/new', name: 'CollectionEditionPage', component: CollectionEditionPage, meta: {title: 'Create Collection'} },
+    { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: 'page_title_collections_page'} },
+    { path: '/collections/new', name: 'CollectionEditionPage', component: CollectionEditionPage, meta: {title: 'page_title_create_collection'} },
     
-    { path: '/collections/:id', name: 'CollectionPage', component: CollectionPage, meta: {title: 'Collections Page'}, 
+    { path: '/collections/:id', name: 'CollectionPage', component: CollectionPage, meta: {title: 'page_title_collection_page'}, 
       children: [
         { path: '', component: ItemsList, name: 'ItemsList', meta: {title: 'Items List'} },
         { path: 'items', component: ItemsList, name: 'ItemsList', meta: {title: 'Items List'} },
-        { path: 'edit', component: CollectionEditionPage,  name: 'CollectionEditionPage', meta: {title: 'Edit Collection'} },
+        { path: 'edit', component: CollectionEditionPage,  name: 'CollectionEditionPage', meta: {title: 'page_title_collection_edition'} },
         { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: 'Fields List'} }, 
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: 'Filters List'} }
       ]
     },
-    { path: 'items/new', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title: 'Create Item'} },
-    { path: '/collections/:collection_id/items/:id/edit', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title: 'Edit Item'} },
-    { path: '/collections/:collection_id/items/new', name: 'ItemCreatePage', component: ItemEditionPage, meta: {title: 'Create Item'} },
-    { path: '/collections/:collection_id/items/:id', name: 'ItemPage', component: ItemPage, meta: {title: 'Item Page'} },
+    { path: 'items/new', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title: 'page_title_create_item'} },
+    { path: '/collections/:collection_id/items/:id/edit', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title:  'page_title_item_edition'} },
+    { path: '/collections/:collection_id/items/new', name: 'ItemCreatePage', component: ItemEditionPage, meta: {title: 'page_title_create_item'} },
+    { path: '/collections/:collection_id/items/:id', name: 'ItemPage', component: ItemPage, meta: {title: 'page_title_item_page'} },
 
-    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: 'Items Page'} },
+    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: 'page_title_items_page'} },
 
-    { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: 'Filters Page'} },
+    { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: 'page_title_filters_page'} },
 
-    { path: '/fields', name: 'FieldsPage', component: FieldsPage, meta: {title: 'Fields Page'} },
+    { path: '/fields', name: 'FieldsPage', component: FieldsPage, meta: {title: 'page_title_fields_page'} },
 
-    { path: '/categories', name: 'CategoriesPage', component: CategoriesPage, meta: {title: 'Categories Page'} },
+    { path: '/categories', name: 'CategoriesPage', component: CategoriesPage, meta: {title: 'page_title_categories_page'} },
 
-    { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: 'Events Page'} },
+    { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: 'page_title_events_page'} },
 
     { path: '*', redirect: '/'}
 ]

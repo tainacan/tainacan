@@ -11,6 +11,7 @@ class Range extends Filter_Type {
 
     function __construct(){
         parent::set_supported_types(['float','date']);
+        $this->component = 'tainacan-filter-range';
     }
 
     /**

@@ -4,6 +4,7 @@
             <b-field grouped group-multiline>
                 <button v-if="selectedCollections.length > 0" class="button field is-danger" @click="deleteSelectedCollections()"><span>Deletar coleções selecionadas </span><b-icon icon="delete"></b-icon></button>
                 <b-select 
+                        :label="$i18n.get('label_collections_per_page')"
                         v-model="collectionsPerPage" 
                         @input="onChangeCollectionsPerPage" 
                         :disabled="collections.length <= 0">
@@ -21,7 +22,7 @@
                     :checked-rows.sync="selectedCollections"
                     checkable
                     :loading="isLoading"
-                    hoverable
+                    hoverable 
                     striped
                     selectable
                     paginated
@@ -31,24 +32,24 @@
                     @page-change="onPageChange">
                 <template slot-scope="props">
 
-                    <b-table-column field="featured_image" width="55">
+                    <b-table-column tabindex="0" label="Imagem" :aria-label="$i18n.get('label_image')" field="featured_image" width="55">
                         <template v-if="props.row.featured_image" slot-scope="scope">
                             <img class="table-thumb" :src="`${props.row.featured_image}`"/>
                         </template>
                     </b-table-column>
 
-                    <b-table-column label="Nome" field="props.row.name">
+                    <b-table-column tabindex="0" label="Nome" :aria-label="$i18n.get('label_name') + ': ' + props.row.name" field="props.row.name">
                         {{ props.row.name }}
                     </b-table-column>
 
-                    <b-table-column property="description" label="Descrição" show-overflow-tooltip field="props.row.description">
+                    <b-table-column tabindex="0" :aria-label="$i18n.get('label_description') + ': ' + props.row.description" property="description" label="Descrição" show-overflow-tooltip field="props.row.description">
                         {{ props.row.description }}
                     </b-table-column>
 
-                    <b-table-column label="Ações" width="110">
-                        <a @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a>
-                        <a @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
-                        <a @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
+                    <b-table-column tabindex="0" label="Ações" width="110" :aria-label="$i18n.get('label_ações')">
+                        <a :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a>
+                        <a :aria-label="$i18n.get('label_button_edit')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
+                        <a :aria-label="$i18n.get('label_button_delete')" @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
                     </b-table-column>
 
                 </template>
