@@ -105,6 +105,8 @@ export default {
             width: 100% !important;
             max-width: 100% !important;
             a{ padding: 1em 0.8em !important; }
+            .menu-header { display: none;
+            }
             .menu-text {
                 display: none !important;
             }

@@ -123,6 +123,7 @@ export default {
             }
         }
 
+                background-color: $primary-darker;
         &.is-compressed {
             max-width: 42px;
 
@@ -163,7 +164,10 @@ export default {
                     }
                 }
             }
-
+            .separator {
+                width: 2px;
+                height: auto;
+            }
             a{ padding: 1em 0.8em !important;}
             .menu-text {
                 display: none !important;
