@@ -10,7 +10,9 @@ import ItemPage from '../pages/singles/item-page.vue'
 import ItemEditionPage from '../pages/edition/item-edition-page.vue'
 import FieldsPage from '../pages/lists/fields-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
+import FilterEditionPage from '../pages/edition/filter-edition-page.vue'
 import CategoriesPage from '../pages/lists/categories-page.vue'
+import CategoryEditionPage from '../pages/edition/category-edition-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 
 import CollectionsList from '../components/collections-list.vue'
@@ -29,32 +31,39 @@ const i18nGet = function (key) {
 const routes = [
     { path: '/', redirect:'/collections' },
 
-    { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: i18nGet('page_title_collections_page')} },
-    { path: '/collections/new', name: 'CollectionEditionPage', component: CollectionEditionPage, meta: {title: i18nGet('page_title_create_collection')} },
+    { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: i18nGet('title_collections_page')} },
+    { path: '/collections/new', name: 'CollectionEditionPage', component: CollectionEditionPage, meta: {title: i18nGet('title_create_collection')} },
     
-    { path: '/collections/:id', name: 'CollectionPage', component: CollectionPage, meta: {title: i18nGet('page_title_collection_page')}, 
+    { path: '/collections/:id', name: 'CollectionPage', component: CollectionPage, meta: {title: i18nGet('title_collection_page')}, 
       children: [
-        { path: '', component: ItemsList, name: 'ItemsList', meta: {title: i18nGet('page_title_collection_page')} },
-        { path: 'items', component: ItemsList, name: 'ItemsList', meta: {title: i18nGet('page_title_collection_page')} },
-        { path: 'edit', component: CollectionEditionPage,  name: 'CollectionEditionPage', meta: {title: i18nGet('page_title_collection_edition')} },
-        { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: i18nGet('page_title_collection_page')} }, 
-        { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('page_title_collection_page')} }
+        { path: '', component: ItemsList, name: 'ItemsList', meta: {title: i18nGet('title_collection_page')} },
+        { path: 'items', component: ItemsList, name: 'ItemsList', meta: {title: i18nGet('title_collection_page')} ,
+          children: [
+            { path: ':id/edit', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title:  i18nGet('title_item_edition')} },
+            { path: 'new', name: 'ItemCreatePage', component: ItemEditionPage, meta: {title: i18nGet('title_create_item')} },
+            { path: ':id', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page')} },
+          ]
+        },
+        { path: 'edit', component: CollectionEditionPage,  name: 'CollectionEditionPage', meta: {title: i18nGet('title_collection_edition')} },
+        { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: i18nGet('title_collection_page')} }, 
+        { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_page')} }
       ]
     },
-    { path: 'items/new', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title: i18nGet('page_title_create_item')} },
-    { path: '/collections/:collection_id/items/:id/edit', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title:  i18nGet('page_title_item_edition')} },
-    { path: '/collections/:collection_id/items/new', name: 'ItemCreatePage', component: ItemEditionPage, meta: {title: i18nGet('page_title_create_item')} },
-    { path: '/collections/:collection_id/items/:id', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('page_title_item_page')} },
 
-    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('page_title_items_page')} },
+    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page')} },
+    { path: '/items/new', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title: i18nGet('title_create_item')} },
 
-    { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('page_title_filters_page')} },
+    { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('title_filters_page')} },
+    { path: '/filters/new', name: 'FilterEditionPage', component: FilterEditionPage, meta: {title: i18nGet('title_create_filter_page')} },
+    { path: '/filters/:id/edit', name: 'FilterEditionPage', component: FilterEditionPage, meta: {title: i18nGet('title_filter_edition_page')} },
 
-    { path: '/fields', name: 'FieldsPage', component: FieldsPage, meta: {title: i18nGet('page_title_fields_page')} },
+    { path: '/fields', name: 'FieldsPage', component: FieldsPage, meta: {title: i18nGet('title_fields_page')} },
 
-    { path: '/categories', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('page_title_categories_page')} },
+    { path: '/categories', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_categories_page')} },
+    { path: '/categories/new', name: 'CategoryEditionPage', component: CategoryEditionPage, meta: {title: i18nGet('title_create_category_page')} },
+    { path: '/categories/:id/edit', name: 'CategoryEditionPage', component: CategoryEditionPage, meta: {title: i18nGet('title_category_edition_page')} },
 
-    { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('page_title_events_page')} },
+    { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_events_page')} },
 
     { path: '*', redirect: '/'}
 ]

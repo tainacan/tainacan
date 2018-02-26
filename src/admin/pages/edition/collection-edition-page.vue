@@ -165,11 +165,11 @@ export default {
     created(){
 
         if (this.$route.fullPath.split("/").pop() == "new") {
-            this.pageTitle = this.$i18n.get('page_title_new_collection');
+            this.pageTitle = this.$i18n.get('title_create_collection');
             this.createNewCollection();
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
-            this.pageTitle = this.$i18n.get('page_title_edit_collection');
+            this.pageTitle = this.$i18n.get('title_collection_edition');
             this.isLoading = true;
 
             // Obtains current Collection ID from URL
