@@ -3,10 +3,28 @@ import Buefy from 'buefy'
 
 Vue.use(Buefy);
 
+//------------------------------------------------
+// I18N PLUGIN
+const I18NPlugin = {};
+I18NPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$i18n = {
+        get: function (key) {
+            let string = wp_settings.i18n[key];
+            return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
+        }
+    }
+
+}  
+
+Vue.use(I18NPlugin);
+
 import AdminPage from '../admin.vue'
 import store from '../../js/store/store'
 import router from './router'
 
+//------------------------------------------------
+// Router
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title
     next()
@@ -36,22 +54,6 @@ Vue.component('tainacan-date', Date);
 Vue.component('tainacan-relationship', Relationship);
 
 Vue.component('tainacan-form-item', TaincanFormItem);
-
-//------------------------------------------------
-// I18N PLUGIN
-const I18NPlugin = {};
-I18NPlugin.install = function (Vue, options = {}) {
-    
-    Vue.prototype.$i18n = {
-        get: function (key) {
-            let string = wp_settings.i18n[key];
-            return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
-        }
-    }
-
-}  
-
-Vue.use(I18NPlugin);
 
 new Vue({
     el: '#tainacan-admin-app',
