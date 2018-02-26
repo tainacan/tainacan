@@ -11,10 +11,18 @@ abstract class Filter_Type {
 
     abstract function render( $field );
 
+    /**
+     * @return array Supported types by the filter
+     */
     public function get_supported_types(){
         return $this->supported_types;
     }
 
+    /**
+     * specifies the types supported for the filter
+     *
+     * @param array $supported_types the types supported
+     */
     public function set_supported_types($supported_types){
         $this->supported_types = $supported_types;
     }
