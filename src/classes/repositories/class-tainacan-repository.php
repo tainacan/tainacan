@@ -69,12 +69,12 @@ abstract class Repository {
 			throw new \Exception('Entities must be validated before you can save them');
             // TODO: Throw Warning saying you must validate object before insert()
 		}
-		
+
 		$map = $this->get_map();
 		
 		// First iterate through the native post properties
 		foreach ($map as $prop => $mapped) {
-			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
+			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'terms') {
 				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
 			}
 		}
@@ -92,7 +92,6 @@ abstract class Repository {
 		
 		// Now run through properties stored as postmeta
 		foreach ($map as $prop => $mapped) {
-			
             if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
                 $this->insert_metadata($obj, $prop);
             }
@@ -286,11 +285,9 @@ abstract class Repository {
     		$property = get_term_meta($entity->WP_Term->term_id, $prop, true);
     	} elseif ( isset( $entity->WP_Post )) {
     		if($mapped == 'thumbnail'){
-    			if(isset($entity->WP_Post->ID)) {
-    				$property = get_the_post_thumbnail_url($entity->WP_Post->ID, 'full');
-    			}
+    			$property = isset($entity->WP_Post->ID) ? get_the_post_thumbnail_url($entity->WP_Post->ID, 'full') : null;
 		    } elseif($mapped == 'attachments'){
-    			if(isset($entity->WP_Post) && isset($entity->WP_Post->ID)){
+    			if(isset($entity->WP_Post->ID)){
     				$attachments_query = [
     					'post_type'     => 'attachment',
 					    'post_per_page' => -1,
@@ -317,6 +314,24 @@ abstract class Repository {
 
 				    $property = $attachments_prepared;
 			    }
+		    } elseif ($mapped === 'terms'){
+    			$taxonomies = get_taxonomies('', 'names');
+
+    			$terms_prepared = [];
+			    foreach($taxonomies as $taxonomy){
+    				if(stristr($taxonomy, 'tnc_tax_')) {
+					    $terms = isset( $entity->WP_Post->ID ) ? wp_get_post_terms( $entity->WP_Post->ID, $taxonomy ) : null;
+
+					    if ( is_array( $terms ) ) {
+						    foreach ( $terms as $term ) {
+							    $term = new Entities\Term( $term->term_id, $term->taxonomy );
+							    array_push( $terms_prepared, $term->__toArray() );
+						    }
+					    }
+				    }
+			    }
+
+			    $property = $terms_prepared;
 		    } else {
 			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
 		    }
@@ -532,15 +547,16 @@ abstract class Repository {
     	}
     	return user_can($user, $entity_cap->publish_posts, $entity->get_id());
     }
-    
-    /**
-     * Compare two repository entities 
-     * 
-     * @param Entity|integer|\WP_Post $old default ($which = 0) to self compare with stored entity
-     * @param Entity|integer|\WP_Post $new
-     * 
-     * @return array List of diff values
-     */
+
+	/**
+	 * Compare two repository entities
+	 *
+	 * @param Entity|integer|\WP_Post $old default ($which = 0) to self compare with stored entity
+	 * @param Entity|integer|\WP_Post $new
+	 *
+	 * @return array List of diff values
+	 * @throws \Exception
+	 */
     public function diff($old = 0, $new) {
     	$old_entity = null;
     	if($old === 0) { // self diff or other entity?

@@ -78,6 +78,21 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 		));
 	}
 
+
+	private function add_terms_to_item($item_object, $item_array){
+		$item_terms = $item_object->get_terms();
+
+		foreach ($item_terms as $index => $term){
+			$term_id = $term['term_id'];
+
+			$item_array['terms'][$term_id]['name']        = $term['name'];
+			$item_array['terms'][$term_id]['description'] = $term['description'];
+			$item_array['terms'][$term_id]['taxonomy']    = $term['taxonomy'];
+		}
+
+		return $item_array;
+	}
+
 	private function add_metadata_to_item($item_object, $item_array){
 		$item_metadata = $item_object->get_fields();
 
@@ -85,8 +100,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 			$field = $me->get_field();
 			$slug = $field->get_slug();
 
-			$item_array['metadata'][$slug]['name'] = $field->get_name();
-			$item_array['metadata'][$slug]['value'] = $me->get_value();
+			$item_array['metadata'][$slug]['name']     = $field->get_name();
+			$item_array['metadata'][$slug]['value']    = $me->get_value();
 			$item_array['metadata'][$slug]['multiple'] = $field->get_multiple();
 		}
 
@@ -107,7 +122,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 			}
 
-			return $this->add_metadata_to_item($item, $item_arr);
+			$prep = $this->add_metadata_to_item($item, $item_arr);
+			return $this->add_terms_to_item($item, $prep);
 		}
 
 		return $item;
@@ -150,6 +166,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 				$limited_item = $this->get_only_needed_attributes($item, $map, $request['context']);
 				$limited_item = $this->add_metadata_to_item($item, $limited_item);
+				$limited_item = $this->add_terms_to_item($item, $limited_item);
 
 				array_push($response, $limited_item);
 			}
