@@ -4,11 +4,13 @@
         <form label-width="120px">
             <b-field label="Título">
                 <b-input
+                    id="tainacan-text-name"
                     v-model="form.name">
                 </b-input>
             </b-field>
             <b-field label="Descrição">
                 <b-input
+                        id="tainacan-text-description"
                         type="textarea"
                         v-model="form.description"
                         >
@@ -16,6 +18,7 @@
             </b-field>
             <b-field label="Status">
                 <b-select
+                        id="tainacan-select-status"
                         v-model="form.status"
                         placeholder="Selecione um status">
                     <option

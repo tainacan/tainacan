@@ -4,11 +4,11 @@
             v-for="option,index in getOptions"
             class="field">
             <b-checkbox
+                    :id="id"
                     v-model="checked"
                     :native-value="option"
             >{{ option }}</b-checkbox>
         </div>
-
     </div>
 </template>
 
@@ -30,7 +30,8 @@
             options: {
                 type: String
             },
-            value: [String, Number, Array]
+            value: [String, Number, Array],
+            id: ''
         },
         watch: {
             checked: function(val){

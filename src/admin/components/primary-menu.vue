@@ -15,6 +15,7 @@
                 <li><router-link tag="a" to="/items" :class="activeRoute == 'ItemsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="note-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
                 </router-link></li>
+                <div class="separator"></div>
                 <li><router-link tag="a" to="/fields" :class="activeRoute == 'FieldsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="format-list-checks"></b-icon> <span class="menu-text">{{ $i18n.get('fields')}}</span>
                 </router-link></li>
@@ -54,7 +55,7 @@ export default {
     },
     created () {
         this.isCompressed = (this.$route.params.id != undefined);
-        this.activeRoute = this.$route.to;
+        this.activeRoute = this.$route.name;
     }
 }
 </script>
@@ -89,7 +90,11 @@ export default {
                 -webkit-transition: opacity 0.15s linear, visibility 0.15s linear;
             }
         }
-
+        .separator {
+            height: 2px;
+            background-color: $primary-darker;
+            width: 100%;
+        }
         li{
             a {
                 color: white;

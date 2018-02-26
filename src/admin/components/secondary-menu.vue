@@ -1,6 +1,13 @@
 <template>
-    <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
+    <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-sidebar-menu">
         <aside class="menu">
+            <div class="menu-header">
+                <ul class="menu-list"><li><router-link tag="a" to="/">
+                    <b-icon size="is-medium" icon="chevron-left"></b-icon>
+                    <img class="tainacan-logo" :src="logoHeader"/>
+                </router-link></li></ul> 
+            </div>
+
             <ul class="menu-list">
                 <li><router-link tag="a" :to="{ path: `/collections/${id}/items`}" :class="activeRoute == 'ItemsList' ? 'is-active':''">{{ $i18n.get('items')}}</router-link></li>
                 <li><router-link tag="a" :to="{ path: `/collections/${id}/edit`}" :class="activeRoute == 'CollectionEditionPage' ? 'is-active':''">{{ $i18n.get('edit')}}</router-link></li>
@@ -16,6 +23,7 @@ export default {
     name: 'SecondaryMenu',
     data(){
         return {
+            logoHeader: '../wp-content/plugins/tainacan/admin/images/tainacan_logo_header.png',
             activeRoute: 'ItemsList'
         }
     },
@@ -44,6 +52,26 @@ export default {
         -webkit-transition: max-width 0.3s linear; /* Safari */
         transition: max-width 0.3s linear;
         max-width: 180px; 
+
+        .menu-header {
+            background-color: $primary-dark;
+            height: 62px;
+            a { padding: 1em 1.2em; }
+            .icon {
+                position: absolute;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.2s linear, visibility 0.2s linear;
+                -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;  
+            }
+            .tainacan-logo {
+                max-height: 28px;
+                opacity: 1;
+                visibility: visible;
+                transition: opacity 0.15s linear, visibility 0.15s linear;
+                -webkit-transition: opacity 0.15s linear, visibility 0.15s linear;
+            }
+        }
 
         li{
             a {

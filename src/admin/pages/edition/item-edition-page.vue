@@ -3,10 +3,11 @@
         <h1 class="is-size-3">Item creation  <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag></h1>
         <form label-width="120px">
             <b-field label="Status">
-                <b-select
+                <b-select id="status-select"
                         v-model="form.status"
                         placeholder="Selecione um status">
                     <option
+                            id="{{'status-option-' + statusOption.value}}"
                             v-for="statusOption in statusOptions"
                             :key="statusOption.value"
                             :value="statusOption.value"
@@ -32,15 +33,17 @@
                     </section>
                 </b-upload>
             </b-field>
-            <tainacan-form-item
+            <tainacan-form-item                  
                     v-for="(field, index) in fieldList"
                     v-bind:key="index"
                     :field="field"></tainacan-form-item>
             <button
+                id="button-cancel-item-creation"
                 class="button"
                 type="button"
                 @click="cancelBack">Cancelar</button>
             <a
+                id="button-submit-item-creation"
                 @click="onSubmit"
                 class="button is-success is-hovered">Salvar</a>
         </form>

@@ -3,10 +3,10 @@
                  :message="getErrorMessage"
                  :type="fieldTypeMessage">
             <div>
-                <component :is="field.field.field_type_object.component" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
+                <component :id="field.field.field_type_object.component + '-' + field.field.slug" :is="field.field.field_type_object.component" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
                 <div v-if="field.field.multiple == 'yes'">
                     <div v-if="index > 0" v-for="(input, index) in inputsList " v-bind:key="index" class="multiple-inputs">
-                        <component :is="field.field.field_type_object.component" v-model="inputs[index]" :field="field" @blur="changeValue()"></component><a class="button" v-if="index > 0" @click="removeInput(index)">-</a>
+                        <component :id="field.field.field_type_object.component + '-' + field.field.slug" :is="field.field.field_type_object.component" v-model="inputs[index]" :field="field" @blur="changeValue()"></component><a class="button" v-if="index > 0" @click="removeInput(index)">-</a>
                     </div>
                     <a class="button" @click="addInput">+</a>
                 </div>

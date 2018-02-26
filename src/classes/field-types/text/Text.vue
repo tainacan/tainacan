@@ -1,5 +1,7 @@
 <template>
-    <b-input :value="inputValue"
+    <b-input
+    :id="id"
+    :value="inputValue"
     @blur="onBlur"
     @input="onInput($event)"></b-input>
 </template>
@@ -8,11 +10,12 @@
     export default {
         data() {
             return {
-                inputValue: ''
+                inputValue: '',
             }
         },
         props: {
             value: [String, Number, Object],
+            id: ''
         },
         methods: {
             onBlur() {
