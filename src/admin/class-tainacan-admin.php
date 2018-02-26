@@ -16,7 +16,7 @@ class Admin {
     }
 
     function add_admin_menu() {
-        $page_suffix = add_menu_page( __('Tainacan', 'tainacan'), __('Tainacan', 'tainacan'), 'edit_posts', $this->menu_slug, array(&$this, 'admin_page') );
+        $page_suffix = add_menu_page( __('Tainacan', 'tainacan'), __('Tainacan', 'tainacan'), 'edit_posts', $this->menu_slug, array(&$this, 'admin_page'), plugin_dir_url(__FILE__) . 'images/tainacan_logo_symbol.svg' );
         add_action( 'load-' . $page_suffix, array(&$this, 'load_admin_page'));
     }
     
