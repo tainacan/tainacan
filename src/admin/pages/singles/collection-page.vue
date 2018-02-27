@@ -64,7 +64,7 @@ export default {
         }
     },
     created(){
-        this.collectionId = new Number(this.$route.params.id);
+        this.collectionId = parseInt(this.$route.params.id);
         this.fetchCollection(this.collectionId);
     }
 

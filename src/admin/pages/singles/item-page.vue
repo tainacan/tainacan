@@ -62,8 +62,8 @@ export default {
     },
     created(){
         // Obtains item and collection ID
-        this.collectionId = this.$route.params.collection_id;        
-        this.itemId = this.$route.fullPath.split("/").pop();
+        this.collectionId = this.$route.params.collectionId;        
+        this.itemId = this.$route.params.id;
     
         // Puts loading on Item Loading
         this.isLoading = true;

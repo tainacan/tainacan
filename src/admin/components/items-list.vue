@@ -213,12 +213,7 @@ export default {
         }
     },
     created() {
-        this.collectionId = this.$route.fullPath.split("/").pop();
-        if (isNaN(this.collectionId)) {
-            let routeArray = this.$route.fullPath.split("/");
-            routeArray.pop();
-            this.collectionId = routeArray.pop();
-        }   
+        this.collectionId = this.$route.params.id;
     },
     mounted(){
         this.loadItems();

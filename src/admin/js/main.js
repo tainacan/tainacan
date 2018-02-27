@@ -1,39 +1,8 @@
+// Main imports
 import Vue from 'vue'
 import Buefy from 'buefy'
 
-Vue.use(Buefy);
-
-//------------------------------------------------
-// I18N PLUGIN
-const I18NPlugin = {};
-I18NPlugin.install = function (Vue, options = {}) {
-    
-    Vue.prototype.$i18n = {
-        get: function (key) {
-            let string = wp_settings.i18n[key];
-            return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
-        }
-    }
-
-}  
-
-Vue.use(I18NPlugin);
-
-import AdminPage from '../admin.vue'
-import store from '../../js/store/store'
-import router from './router'
-
-//------------------------------------------------
-// Router
-router.beforeEach((to, from, next) => {
-    document.title = to.meta.title
-    next()
-});
-
-//------------------------------------------------
-// FROM DEV 
-
-// include vue-custom-element plugin to Vue
+// Custom elements
 import Text from '../../classes/field-types/text/Text.vue';
 import Textarea from '../../classes/field-types/textarea/Textarea.vue';
 import Selectbox from '../../classes/field-types/selectbox/Selectbox.vue';
@@ -44,6 +13,22 @@ import Date from '../../classes/field-types/date/Date.vue';
 import Relationship from '../../classes/field-types/relationship/Relationship.vue';
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 
+// Remaining imports
+import AdminPage from '../admin.vue'
+import store from '../../js/store/store'
+import router from './router'
+import { I18NPlugin, RouterHelperPlugin } from './utilities';
+
+// Configure and Register Plugins
+router.beforeEach((to, from, next) => {
+    document.title = to.meta.title
+    next()
+});
+Vue.use(I18NPlugin);
+Vue.use(RouterHelperPlugin);
+Vue.use(Buefy); 
+
+// Register Components
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
 Vue.component('tainacan-selectbox', Selectbox);
@@ -52,7 +37,6 @@ Vue.component('tainacan-radio', Radio);
 Vue.component('tainacan-numeric', Numeric);
 Vue.component('tainacan-date', Date);
 Vue.component('tainacan-relationship', Relationship);
-
 Vue.component('tainacan-form-item', TaincanFormItem);
 
 new Vue({
