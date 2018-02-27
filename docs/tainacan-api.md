@@ -12,6 +12,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 1. [Collections](#collections)
 1. [Items](#items)
 1. [Fields](#fields)
+1. [Field Types](#field-types)
 1. [Item Metadata](#item-metadata)
 1. [Taxonomies](#taxonomies)
 1. [Filters](#filters)
@@ -159,6 +160,13 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
       }
 ```
 
+------
+#### Field Types
+1. Route `wp-json/tainacan/v2/field-types`
+
+      1. Endpoint supported:
+      
+            1. GET (Fetch all field types)
 ------
 #### Item Metadata
 
