@@ -306,7 +306,11 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		return $this->filter_repository->can_read($this->filter);
+		if('edit' === $request['context'] && !$this->filter_repository->can_read($this->filter)){
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -330,8 +334,12 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	public function get_item_permissions_check( $request ) {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
 
-		if ($filter instanceof Entities\Filter) {
-			return $filter->can_read();
+		if(($filter instanceof Entities\Filter)) {
+			if('edit' === $request['context'] && !$filter->can_read()) {
+				return false;
+			}
+
+			return true;
 		}
 
 		return false;
