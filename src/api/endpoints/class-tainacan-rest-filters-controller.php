@@ -147,8 +147,6 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		$body = json_decode($request->get_body(), true);
-
 		$metadata = $this->field_repository->fetch($request['field_id']);
 		$collection = $this->collection_repository->fetch($request['collection_id']);
 

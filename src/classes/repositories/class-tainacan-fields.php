@@ -301,7 +301,7 @@ class Fields extends Repository {
 	 * @param array $args WP_Query args plus disabled_fields
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
-	 * @return Array Entities\Field
+	 * @return array Entities\Field
 	 * @throws \Exception
 	 */
     public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
@@ -444,11 +444,13 @@ class Fields extends Repository {
         return $this->field_types;
     }
 
-    /**
-     * @param Entities\Collection $collection
-     * @return array
-     * @throws \ErrorException
-     */
+	/**
+	 * @param Entities\Collection $collection
+	 *
+	 * @return bool
+	 * @throws \ErrorException
+	 * @throws \Exception
+	 */
     public function register_core_fields( Entities\Collection $collection ){
 
         $fields = $this->get_core_fields( $collection );
@@ -493,14 +495,15 @@ class Fields extends Repository {
         }
     }
 
-    /**
-     * block user from remove core fields
-     *
-     * @param $before  wordpress pass a null value
-     * @param $post the post which is moving to trash
-     * @return null/bool
-     * @throws \ErrorException
-     */
+	/**
+	 * block user from remove core fields
+	 *
+	 * @param $before  wordpress pass a null value
+	 * @param $post the post which is moving to trash
+	 *
+	 * @return null/bool
+	 * @throws \Exception
+	 */
     public function disable_delete_core_fields( $before, $post ){
         $field = $this->fetch( $post->ID );
 
@@ -509,15 +512,17 @@ class Fields extends Repository {
         }
     }
 
-    /**
-     * block user from remove core fields ( if use wp_delete_post)
-     *
-     * @param $before  wordpress pass a null value
-     * @param $post the post which is deleting
-     * @param $force_delete a boolean that force the deleting
-     * @return null /bool
-     * @internal param The $post_id post ID which is deleting
-     */
+	/**
+	 * block user from remove core fields ( if use wp_delete_post)
+	 *
+	 * @param $before  wordpress pass a null value
+	 * @param $post the post which is deleting
+	 * @param $force_delete a boolean that force the deleting
+	 *
+	 * @return null /bool
+	 * @throws \Exception
+	 * @internal param The $post_id post ID which is deleting
+	 */
     public function force_delete_core_fields( $before, $post, $force_delete ){
         $field = $this->fetch( $post->ID );
 
@@ -526,12 +531,14 @@ class Fields extends Repository {
         }
     }
 
-    /**
-     * returns all core items from a specific collection
-     *
-     * @param Entities\Collection $collection
-     * @return Array|\WP_Query
-     */
+	/**
+	 * returns all core items from a specific collection
+	 *
+	 * @param Entities\Collection $collection
+	 *
+	 * @return Array|\WP_Query
+	 * @throws \Exception
+	 */
     public function get_core_fields( Entities\Collection $collection ){
         $args = [];
 
@@ -553,13 +560,15 @@ class Fields extends Repository {
         return $this->fetch( $args, 'OBJECT' );
     }
 
-    /**
-     * create a field entity and insert by an associative array ( attribute => value )
-     *
-     * @param Array $data the array of attributes to insert a field
-     * @return int the field id inserted
-     * @throws \ErrorException
-     */
+	/**
+	 * create a field entity and insert by an associative array ( attribute => value )
+	 *
+	 * @param Array $data the array of attributes to insert a field
+	 *
+	 * @return int the field id inserted
+	 * @throws \ErrorException
+	 * @throws \Exception
+	 */
     public function insert_array_field( $data ){
         $field = new Entities\Field();
         foreach ( $data as $attribute => $value ) {

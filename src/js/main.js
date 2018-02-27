@@ -3,6 +3,7 @@ import Vue from 'vue'
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
 import { eventBus } from './event-bus-web-components';
+import { eventFilterBus } from './event-bus-filters';
 import Buefy from 'buefy'
 
 
@@ -19,6 +20,7 @@ import Numeric from '../classes/field-types/numeric/Numeric.vue';
 import Date from '../classes/field-types/date/Date.vue';
 import Relationship from '../classes/field-types/relationship/Relationship.vue';
 
+import FilterRange from '../classes/filter-types/range/Range.vue';
 
 Vue.customElement('tainacan-text', Text);
 eventBus.registerComponent( 'tainacan-text' );
@@ -45,3 +47,10 @@ Vue.customElement('tainacan-relationship', Relationship);
 eventBus.registerComponent( 'tainacan-relationship' );
 
 eventBus.listener();
+
+/* Filters */
+
+Vue.customElement('tainacan-filter-range', FilterRange);
+eventFilterBus.registerComponent( 'tainacan-filter-range' );
+
+eventFilterBus.listener();

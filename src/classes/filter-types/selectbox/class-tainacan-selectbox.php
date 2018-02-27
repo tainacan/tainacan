@@ -10,15 +10,15 @@ class Selectbox extends Filter_Type {
 
     function __construct(){
         parent::set_supported_types(['string']);
-        $this->component = 'tainacan-filter-list';
+        $this->component = 'tainacan-filter-selectbox';
     }
 
     /**
-     * @param $field
+     * @param $filter
      * @return string
      */
 
     public function render( $filter ){
-        return '<tainacan-filter-list name="'.$filter->get_name().'"></tainacan-filter-list>';
+        return '<tainacan-filter-selectbox name="'.$filter->get_name().'"></tainacan-filter-selectbox>';
     }
 }

@@ -186,6 +186,12 @@ class DevInterface {
                                     <?php  Helpers\HtmlHelpers::collections_dropdown( $value ); ?>
                                 <?php elseif ($prop == 'collections_ids'): ?>
                                     <?php  Helpers\HtmlHelpers::collections_checkbox_list( $value ); ?>
+                                <?php elseif ($prop == 'field'): ?>
+                                    <?php Helpers\HtmlHelpers::metadata_dropdown(
+                                        $entity->get_collection_id(),
+                                        ( isset( $value ) ) ? $value : '',
+                                        'tnc_prop_field'
+                                    ) ?>
                                 <?php elseif ($prop == 'field_type_options' || $prop == 'filter_type_options'): ?>
                                     <?php echo $value; ?>
                                 <?php elseif ($prop == 'field_type'): ?>
@@ -195,8 +201,8 @@ class DevInterface {
                                 <?php else: ?>
                                         <textarea name="tnc_prop_<?php echo $prop; ?>"><?php echo htmlspecialchars($value); ?></textarea>
                                 <?php endif; ?>    
-                                
-                                
+
+
                             </td>
                         </tr>
                         
@@ -388,6 +394,11 @@ class DevInterface {
         $class = ( class_exists( $selected ) ) ? new $selected() : '';
 
         if(is_object( $class )){
+            $filter = $Tainacan_Filters->fetch( $id );
+            if ( $filter ) {
+                echo '<h3>Exemplo:</h3>';
+                echo $class->render( $filter );
+            }
             $selected =  str_replace('Tainacan\Filter_Types\\','', get_class( $class ) );
         }
 
