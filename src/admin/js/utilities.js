@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
 I18NPlugin.install = function (Vue, options = {}) {
@@ -17,13 +19,33 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
     
     Vue.prototype.$routerHelper = {
         // Lists
-
+        getCollectionsPath(query) {
+            return '/collections/?' + qs.stringify(query);
+        },
+        getCollectionItemsPath(collectionId, query) {
+            return 'collections/'+ collectionId + '/items/?' + qs.stringify(query);
+        },
+        getItemsPath(query) {
+            return '/items/?' + qs.stringify(query);
+        },
+        getCategoriesPath(query) {
+            return '/items/?' + qs.stringify(query);
+        },
+        getCategoryTermsPath(categoryId, query) {
+            return '/categoryId/' + categoryId + 'terms/?' + qs.stringify(query);
+        },
+        getFiltersPath(query) {
+            return '/filters/?' + qs.stringify(query);
+        },
+        getFieldsPath(query) {
+            return '/fields/?' + qs.stringify(query);
+        },
+        getEventsPath(query) {
+            return '/events/?' + qs.stringify(query);
+        },
         // Singles
         getCollectionPath(id) {
             return '/collections/' + id;
-        },
-        getItemPath(collectionId, itemId) {
-            return '/collections/' + collectionId + '/items/' + itemId;
         },
         getItemPath(collectionId, itemId) {
             return '/collections/' + collectionId + '/items/' + itemId;
@@ -39,7 +61,46 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getEventPath(id) {
             return '/events/' + id;
+        },
+        // New
+        getNewCollectionPath() {
+            return '/collections/new';
+        },
+        getNewItemPath() {
+            return '/collections/' + collectionId + '/items/new';
+        },
+        getNewFilterPath() {
+            return '/filters/new';
+        },
+        getNewCategoryPath() {
+            return '/categories/new';
+        },
+        getNewTermPath() {
+            return '/categories/' + categoryId + '/terms/new';
+        },
+        getNewEventPath() {
+            return '/events/new';
+        },
+        // Edit
+        getCollectionEditPath(id) {
+            return '/collections/' + id + '/edit';
+        },
+        getItemEditPath(collectionId, itemId) {
+            return '/collections/' + collectionId + '/items/' + itemId + '/edit';
+        },
+        getFilterEditPath(id) {
+            return '/filters/' + id + '/edit';
+        },
+        getCategoryEditPath(id) {
+            return '/categories/' + id + '/edit';
+        },
+        getTermEditPath(categoryId, termId) {
+            return '/categories/' + categoryId + '/terms/' + termId + '/edit';
+        },
+        getEventEditPath(id) {
+            return '/events/' + id + '/edit';
         }
+        
     }
 
 }

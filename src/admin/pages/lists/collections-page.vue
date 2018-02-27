@@ -2,7 +2,7 @@
     <div>
         <h1>Collections Page</h1>
         <router-link tag="button" class="button is-primary"
-                    :to="{ path: `/collections/new` }">
+                    :to="{ path: $routerHelper.getNewCollectionPath() }">
             Criar Coleção
         </router-link>
         <collections-list></collections-list>          
