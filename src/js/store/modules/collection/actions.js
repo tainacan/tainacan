@@ -115,3 +115,19 @@ export const sendCollection = ( { commit }, { name, description, status }) => {
             });
     });
  };
+
+
+ export const fetchFieldTypes = ({ commit} ) => {
+    return new Promise((resolve, reject) => {
+        axios.get('/field-types')
+        .then((res) => {
+            let fieldTypes = res.data;
+            commit('setFieldTypes', fieldTypes);
+            resolve (fieldTypes);
+        })
+        .catch((error) => {
+            console.log(error);
+            reject(error);
+        });
+    });
+}
