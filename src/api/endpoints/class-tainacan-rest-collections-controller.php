@@ -174,8 +174,12 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	public function  get_item_permissions_check($request){
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
-		if($collection instanceof Entities\Collection) {
-			return $collection->can_read();
+		if(($collection instanceof Entities\Collection)) {
+			if('edit' === $request['context'] && !$collection->can_read()) {
+				return false;
+			}
+
+			return true;
 		}
 
 		return false;

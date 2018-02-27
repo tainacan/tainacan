@@ -123,13 +123,14 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		if(isset($request['item_id'])){
-			$item = $this->item_repository->fetch($request['item_id']);
+		$item = $this->item_repository->fetch($request['item_id']);
 
-			if($item instanceof Entities\Item) {
-				return $item->can_read();
+		if(($item instanceof Entities\Item)) {
+			if('edit' === $request['context'] && !$item->can_read()) {
+				return false;
 			}
 
+			return true;
 		}
 
 		return false;

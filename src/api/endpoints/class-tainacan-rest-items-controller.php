@@ -79,6 +79,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	}
 
 
+	/**
+	 * @param $item_object
+	 * @param $item_array
+	 *
+	 * @return mixed
+	 */
 	private function add_terms_to_item($item_object, $item_array){
 		$item_terms = $item_object->get_terms();
 
@@ -93,6 +99,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 		return $item_array;
 	}
 
+	/**
+	 * @param $item_object
+	 * @param $item_array
+	 *
+	 * @return mixed
+	 */
 	private function add_metadata_to_item($item_object, $item_array){
 		$item_metadata = $item_object->get_fields();
 
@@ -193,18 +205,31 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	public function get_item_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
 
-		if ($item instanceof Entities\Item) {
-			return $item->can_read();
+		if(($item instanceof Entities\Item)) {
+			if('edit' === $request['context'] && !$item->can_read()) {
+				return false;
+			}
+
+			return true;
 		}
 
 		return false;
 	}
 
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
 	public function get_items_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
-		if ($collection instanceof Entities\Collection) {
-			return $collection->can_read();
+		if(($collection instanceof Entities\Collection)) {
+			if('edit' === $request['context'] && !$collection->can_read()) {
+				return false;
+			}
+
+			return true;
 		}
 
 		return false;
