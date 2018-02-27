@@ -5,9 +5,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class TainacanFieldType
- * List_Filter because List is reseved
  */
-class List_Filter extends Filter_Type {
+class Selectbox extends Filter_Type {
 
     function __construct(){
         parent::set_supported_types(['string']);

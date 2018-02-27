@@ -59,7 +59,7 @@ function tainacan_autoload($class_name){
 		    $dir = CLASSES_DIR;
 	    }
 
-        if( in_array('Field_Types', $class_path) ){
+        if( in_array('Field_Types', $class_path) || in_array('Filter_Types', $class_path) ){
             $dir.= strtolower(str_replace('_', '-' , $class_name)).'/';
         }
 
@@ -95,7 +95,7 @@ $Tainacan_Filters = new \Tainacan\Repositories\Filters();
 
 //register filter type
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Range');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\List_Filter');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
 
 global $Tainacan_Taxonomies;
 $Tainacan_Taxonomies = new \Tainacan\Repositories\Taxonomies();
