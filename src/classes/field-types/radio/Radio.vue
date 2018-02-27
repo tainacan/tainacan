@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-radio
+                :id="id"
                 v-for="option,index in getOptions"
                 :key="index"
                 v-model="checked"
@@ -24,7 +25,8 @@
             },
             options: {
                 type: String
-            }
+            },
+            id: ''
         },
         computed: {
             getOptions(){

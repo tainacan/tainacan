@@ -13,8 +13,6 @@
         name: "AdminPage",
         data(){
             return {
-                logoHeader: '../wp-content/plugins/tainacan/admin/images/tainacan_logo_header.png',
-                wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             }
         },
         components: {
@@ -36,18 +34,9 @@
     .is-main-content {
         padding-bottom: 0px;
         padding-top: 0px;
-
         margin: 0 auto;
         position: relative;
-    }
-
-    #secondary-menu {
-        background-color: $secondary;
-
-        li{ 
-            a {color: white !important;}
-            a:hover {color: $secondary !important;}
-        }
+        overflow-y: auto;
     }
 
 </style>

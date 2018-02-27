@@ -13,3 +13,7 @@ export const getFields = state => {
 export const getCollection = state => {
     return state.collection;
 }
+
+export const getFieldTypes = state => {
+    return state.fieldTypes;
+}

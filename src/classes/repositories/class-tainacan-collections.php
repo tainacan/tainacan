@@ -65,6 +65,12 @@ class Collections extends Repository {
 	            'type'        => 'string',
 	            'description' => __('The collection thumbnail URL')
             ],
+            'attachments'     => [
+            	'map'         => 'attachments',
+	            'title'       => __('Attachments', 'tainacan'),
+	            'type'        => 'array',
+	            'description' => __('The collection attachments')
+            ],
             'order'          =>  [
                 'map'        => 'menu_order',
                 'title'      => __('Order', 'tainacan'),
@@ -130,6 +136,13 @@ class Collections extends Repository {
                 'title'      => __('Ordination fields', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Collection fields ordination', 'tainacan'),
+                //'validation' => v::stringType(),
+            ],
+            'filters_order'           =>  [
+                'map'        => 'meta',
+                'title'      => __('Ordination filters', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Collection filters ordination', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             /*

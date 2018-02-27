@@ -2,7 +2,7 @@
     <div>
         <h1>Collections Page</h1>
         <router-link tag="button" class="button is-primary"
-                    :to="{ path: `/collections/new` }">
+                    :to="{ path: $routerHelper.getNewCollectionPath() }">
             Criar Coleção
         </router-link>
         <collections-list></collections-list>          
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import CollectionsList from '../components/collections-list.vue';
+import CollectionsList from '../../components/collections-list.vue';
 
 export default {
     name: 'CollectionsPage',

@@ -92,7 +92,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'offset'       => 'offset',
 			'metaquery'    => 'meta_query',
 			'datequery'    => 'date_query',
-			'taxquery'     => 'taxquery',
+			'taxquery'     => 'tax_query',
 			'order'        => 'order',
 			'orderby'      => 'orderby',
 			'metakey'      => 'meta_key',
@@ -166,7 +166,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 *
 	 * @return mixed
 	 */
-	private function  prepare_meta($mapped, $request, $query, $mapped_v, $args){
+	private function prepare_meta($mapped, $request, $query, $mapped_v, $args){
 		$request_meta_query = $request[$mapped];
 
 		// If is a multidimensional array (array of array)

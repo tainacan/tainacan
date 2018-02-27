@@ -1,24 +1,13 @@
 <template>
     <div>
-        <h1 class="is-size-3">Collection creation  <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag></h1>
+        <h1 class="is-size-3">Item creation  <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag></h1>
         <form label-width="120px">
-            <b-field label="Título">
-                <b-input
-                    v-model="form.name">
-                </b-input>
-            </b-field>
-            <b-field label="Descrição">
-                <b-input
-                        type="textarea"
-                        v-model="form.description"
-                        >
-                </b-input>
-            </b-field>
             <b-field label="Status">
-                <b-select
+                <b-select id="status-select"
                         v-model="form.status"
                         placeholder="Selecione um status">
                     <option
+                            id="{{'status-option-' + statusOption.value}}"
                             v-for="statusOption in statusOptions"
                             :key="statusOption.value"
                             :value="statusOption.value"
@@ -43,12 +32,18 @@
                         </div>
                     </section>
                 </b-upload>
-            </b-field>
+            </b-field>        
+            <tainacan-form-item                  
+                v-for="(field, index) in fieldList"
+                v-bind:key="index"
+                :field="field"></tainacan-form-item>           
             <button
+                id="button-cancel-item-creation"
                 class="button"
                 type="button"
                 @click="cancelBack">Cancelar</button>
             <a
+                id="button-submit-item-creation"
                 @click="onSubmit"
                 class="button is-success is-hovered">Salvar</a>
         </form>
@@ -61,16 +56,16 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-    name: 'CollectionEditionPage',
+    name: 'ItemEditionPage',
     data(){
         return {
+            itemId: Number,
+            item: null,
             collectionId: Number,
-            collection: null,
             isLoading: false,
             form: {
-                name: '',
+                collectionId: Number,
                 status: '',
-                description: '',
                 files:[]
             },
             // Can be obtained from api later
@@ -90,31 +85,39 @@ export default {
         }
     },
     methods: {
-        ...mapActions('collection', [
-            'sendCollection',
-            'updateCollection',
-            'fetchCollection'
+        ...mapActions('item', [
+            'sendItem',
+            'updateItem',
+            'fetchFields',
+            'sendField',
+            'fetchItem',
+            'cleanFields'
         ]),
-        ...mapGetters('collection',[
-            'getCollection'
+        ...mapGetters('item',[
+            'getFields',
+            'getItem'
         ]),
         onSubmit() {
-            // Puts loading on Draft Collection creation
+            
+            // Puts loading on Item edition
             this.isLoading = true;
 
-            let data = {collection_id: this.collectionId, name: this.form.name, description: this.form.description, status: this.form.status};
-            this.updateCollection(data).then(updatedCollection => {    
+            let data = {item_id: this.itemId, status: this.form.status};
+            
+            this.updateItem(data).then(updatedItem => {    
                 
-                this.collection = updatedCollection;
+                this.item = updatedItem;
 
                 // Fill this.form data with current data.
-                this.form.name = this.collection.name;
-                this.form.description = this.collection.description;
-                this.form.status = this.collection.status;
+                this.form.status = this.item.status;
 
                 this.isLoading = false;
 
-                this.$router.push('/collections/' + this.collectionId);
+                this.$router.push('/collections/' + this.form.collectionId + '/items/' + this.itemId);
+            }).catch(error => {
+                console.log(error);
+
+                this.isLoading = false;
             });
         },
         getStatusColor(status) {
@@ -131,56 +134,74 @@ export default {
                     return 'info'
             }
         },
-        createNewCollection() {
-            // Puts loading on Draft Collection creation
+        createNewItem() {
+            // Puts loading on Draft Item creation
             this.isLoading = true;
 
-            // Creates draft Collection
-            let data = { name: '', description: '', status: 'auto-draft'};
-            this.sendCollection(data).then(res => {
+            // Creates draft Item
+            let data = {collection_id: this.form.collectionId, status: 'auto-draft'}; 
+            this.sendItem(data).then(res => {
 
-                this.collectionId = res.id;
-                this.collection = res;
+                this.itemId = res.id;
+                this.item = res;
 
                 // Fill this.form data with current data.
-                this.form.name = this.collection.name;
-                this.form.description = this.collection.description;
-                this.form.status = this.collection.status;
+                this.form.status = this.item.status;
 
-                this.isLoading = false;
+                this.loadMetadata();
                 
             })
             .catch(error => console.log(error));
+        },
+        loadMetadata() {
+            // Obtains Item Field
+            this.fetchFields(this.itemId).then(res => {
+                this.isLoading = false;
+            });
         },
         cancelBack(){
             this.$router.push('/collections/' + this.collectionId);
         }
     },
+    computed: {
+        fieldList(){
+            return this.getFields();
+        }   
+    },
     created(){
+        // Obtains collection ID
+        this.cleanFields();
+        this.collectionId = ( this.$route.params.collection_id ) ? this.$route.params.collection_id : this.$route.params.id;
+        this.form.collectionId = this.collectionId;
 
         if (this.$route.fullPath.split("/").pop() == "new") {
-            this.createNewCollection();
+            this.createNewItem();
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
             this.isLoading = true;
 
-            // Obtains current Collection ID from URL
+            // Obtains current Item ID from URL
             this.pathArray = this.$route.fullPath.split("/").reverse(); 
-            this.collectionId = this.pathArray[1];
+            this.itemId = this.pathArray[1];
 
-            this.fetchCollection(this.collectionId).then(res => {
-                this.collection = res;
-
+            this.fetchItem(this.itemId).then(res => {
+                this.item = res;
+                
                 // Fill this.form data with current data.
-                this.form.name = this.collection.name;
-                this.form.description = this.collection.description;
-                this.form.status = this.collection.status;
+                this.form.status = this.item.status;
 
-                this.isLoading = false; 
+                this.loadMetadata();
             });
-        } 
+        }
+        
+        
     }
 
 }
 </script>
+
+<style scoped>
+
+</style>
+
 

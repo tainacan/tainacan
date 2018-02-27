@@ -8,6 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 use \Respect\Validation\Validator as v;
 class Filters extends Repository {
 	public $entities_type = '\Tainacan\Entities\Filter';
+    public $filters_types = [];
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(),  [
@@ -87,6 +88,7 @@ class Filters extends Repository {
             'parent_item_colon'  => __('Parent Filter:', 'tainacan'),
             'menu_name'          => __('Filters', 'tainacan')
         );
+
         $args = array(
             'labels'              => $labels,
             'hierarchical'        => true,
@@ -104,7 +106,7 @@ class Filters extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'     => 'tainacan-filter',
+        	'capability_type'     => Entities\Field::get_post_type(),
             'supports'            => [
                 'title',
                 'editor',
@@ -209,21 +211,62 @@ class Filters extends Repository {
         }
     }
 
-    /**
-     * fetch all declared filter type classes
-     *
-     * @return Array of Entities\Filter_Types\Filter_Type objects
-     */
-    public function fetch_filter_types(){
-        $filters = array();
 
-        foreach (get_declared_classes() as $class) {
-            if (is_subclass_of($class, '\Tainacan\Filter_Types\Filter_Type')){
-                $filters[] = new $class();
-            }
+    /**
+     * register field types class on array of types
+     *
+     * @param $class_name string | object The class name or the instance
+     */
+    public function register_filter_type( $class_name ){
+        if( is_object( $class_name ) ){
+            $class_name = get_class( $class_name );
         }
 
-        return $filters;
+        if(!in_array( $class_name, $this->filters_types)){
+            $this->filters_types[] = $class_name;
+        }
+    }
+
+    /**
+     * register field types class on array of types
+     *
+     * @param $class_name string | object The class name or the instance
+     */
+    public function deregister_filter_type( $class_name ){
+        if (is_object($class_name)) {
+            $class_name = get_class($class_name);
+        }
+
+        $key = array_search($class_name, $this->filters_types);
+        if ($key !== false) {
+            unset($this->filters_types[$key]);
+        }
+    }
+
+    /**
+     * fetch all registered filter type classes
+     *
+     * Possible outputs are:
+     * CLASS (default) - returns the Class name of of filter types registered
+     * NAME - return an Array of the names of filter types registered
+     *
+     * @param $output string CLASS | NAME
+     * @return array of Entities\Filter_Types\Filter_Type classes path name
+     */
+    public function fetch_filter_types( $output = 'CLASS'){
+        $return = [];
+
+        do_action('register_filter_types');
+
+        if( $output === 'NAME' ){
+            foreach ($this->filters_types as $filter_type) {
+                $return[] = str_replace('Tainacan\Filter_Types\\','', $filter_type);
+            }
+
+            return $return;
+        }
+
+        return $this->filters_types;
     }
 
     /**
@@ -251,5 +294,107 @@ class Filters extends Repository {
         }
 
         return $supported_filter_types;
+    }
+
+    /**
+     * fetch filters by collection, searches all filters available
+     *
+     * @param Entities\Collection $collection
+     * @param array $args WP_Query args plus disabled_fields
+     * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
+     *
+     * @return Array Entities\Field
+     * @throws \Exception
+     */
+    public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
+        $collection_id = $collection->get_id();
+
+        //get parent collections
+        $parents = get_post_ancestors( $collection_id );
+
+        //insert the actual collection
+        $parents[] = $collection_id;
+
+        //search for default field
+        $parents[] = $this->get_default_metadata_attribute();
+
+        $meta_query = array(
+            'key'     => 'collection_id',
+            'value'   => $parents,
+            'compare' => 'IN',
+        );
+
+        if( isset( $args['meta_query'] ) ){
+            $args['meta_query'][] = $meta_query;
+        }else{
+            $args['meta_query'] = array( $meta_query );
+        }
+
+        return $this->order_result(
+            $this->fetch( $args, $output ),
+            $collection,
+            isset( $args['disabled_fields'] ) ? $args['disabled_fields'] : false
+        );
+    }
+
+    /**
+     * Ordinate the result from fetch response if $collection has an ordination,
+     * filters not ordinated appear on the end of the list
+     *
+     *
+     * @param $result Response from method fetch
+     * @param Entities\Collection $collection
+     * @return array or WP_Query ordinate
+     */
+    public function order_result( $result, Entities\Collection $collection ){
+        $order = $collection->get_filters_order();
+        if($order) {
+            $order = ( is_array($order) ) ? $order : unserialize($order);
+
+            if ( is_array($result)  ){
+                $result_ordinate = [];
+                $not_ordinate = [];
+
+                foreach ( $result as $item ) {
+                    $id = $item->WP_Post->ID;
+                    $index = array_search ( $id , array_column( $order , 'id') );
+
+                    if( $index !== false ) {
+                        $result_ordinate[$index] = $item;
+                    } else {
+                        $not_ordinate[] = $item;
+                    }
+                }
+
+                ksort ( $result_ordinate );
+                $result_ordinate = array_merge( $result_ordinate, $not_ordinate );
+
+                return $result_ordinate;
+            }
+            // if the result is a wp query object
+            else {
+                $posts = $result->posts;
+                $result_ordinate = [];
+                $not_ordinate = [];
+
+                foreach ( $posts as $item ) {
+                    $id = $item->ID;
+                    $index = array_search ( $id ,  array_column( $order , 'id') );
+
+                    if( $index !== false ){
+                        $result_ordinate[$index] = $item;
+                    } else {
+                        $not_ordinate[] = $item;
+                    }
+                }
+
+                ksort ( $result_ordinate );
+                $result->posts = $result_ordinate;
+                $result->posts = array_merge( $result->posts, $not_ordinate );
+
+                return $result;
+            }
+        }
+        return $result;
     }
 }

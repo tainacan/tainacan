@@ -12,6 +12,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 1. [Collections](#collections)
 1. [Items](#items)
 1. [Fields](#fields)
+1. [Field Types](#field-types)
 1. [Item Metadata](#item-metadata)
 1. [Taxonomies](#taxonomies)
 1. [Filters](#filters)
@@ -87,7 +88,8 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
             "title": "string",
             "description": "string",
             "status": "string",
-      }
+            "terms": ["integer", "integer", ...]
+      }
 ```
     
 2. Route `wp-json/tainacan/v2/items/(?P<item_id>[\d]+)`
@@ -108,7 +110,8 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
       {
             "title": "string",
             "description": "string",
-            ...
+            "terms": ["integer", "integer", ...]
+            ...
       }
 ```
 
@@ -158,6 +161,13 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 ```
 
 ------
+#### Field Types
+1. Route `wp-json/tainacan/v2/field-types`
+
+      1. Endpoint supported:
+      
+            1. GET (Fetch all field types)
+------
 #### Item Metadata
 
 1. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)`
@@ -170,10 +180,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
    
 ```javascript
       {
-            "values": [
-                  { "new": "any_type", "prev": "any_type"},
-                  { "new": "any_type", "prev": ""}
-            ]
+            "values": ["any", "type"]
       }
 ```
 

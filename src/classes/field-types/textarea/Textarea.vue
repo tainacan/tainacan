@@ -1,8 +1,10 @@
 <template>
-    <b-input type="textarea"
-              :value="inputValue"
-              @blur="onBlur"
-              @input="onInput($event)"></b-input>
+    <b-input 
+            :id="id"
+            type="textarea"
+            :value="inputValue"
+            @blur="onBlur"
+            @input="onInput($event)"></b-input>
 </template>
 
 <script>
@@ -11,6 +13,9 @@
             return {
                 inputValue: ''
             }
+        },
+        props: {
+            id: ''
         },
         methods: {
             onBlur() {

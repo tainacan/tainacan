@@ -39,23 +39,11 @@ class Item_Metadata extends Repository {
     }
 
 	/**
-	 * Delete Item Field
-	 *
 	 * @param $item_metadata
 	 *
 	 * @return mixed|void
 	 */
-	public function delete($item_metadata){
-//    	if(is_array($item_metadata->get_value())){
-//    		$values = $item_metadata->get_value();
-//
-//    		foreach ($values as $value){
-//    			delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash($value));
-//		    }
-//	    } else {
-//    		delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash($item_metadata->get_value()));
-//	    }
-    }
+	public function delete($item_metadata){}
 
     public function save_core_field_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
         $field_type = $item_metadata->get_field()->get_field_type_object();

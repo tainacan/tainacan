@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-autocomplete
+                :id="id"
                 v-model="selected"
                 :data="options"
                 @input="search"
@@ -32,7 +33,8 @@
             },
             collection_id: {
                 type: Number
-            }
+            },
+            id: ''
         },
         methods: {
             setResults(option){

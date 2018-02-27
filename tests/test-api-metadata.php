@@ -22,13 +22,11 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$field = $this->tainacan_field_factory->create_field('text', '', true);
-
 		$field = json_encode(
 			array(
 				'name'        => 'Moeda',
 				'description' => 'Descreve campo moeda.',
-				'field_type'  => $field->get_primitive_type(),
+				'field_type'  => 'Tainacan\Field_Types\Text',
 			)
 		);
         
@@ -210,6 +208,43 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals('19/01/2018', $metav);
         
+	}
+
+	public function test_trash_field(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Statement',
+				'description' => 'No Statement'
+			),
+			true
+		);
+
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'        => 'Field Statement',
+				'description' => 'No Statement',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'field_type'  => 'Tainacan\Field_Types\Text',
+				'multiple'    => 'yes'
+			),
+			true
+		);
+
+		$trash_field_request = new \WP_REST_Request(
+			'DELETE',
+			$this->namespace . '/collection/'. $collection->get_id() . '/fields/' . $field->get_id()
+		);
+
+		$trash_field_response = $this->server->dispatch($trash_field_request);
+		$data1 = $trash_field_response->get_data();
+
+		$this->assertEquals($field->get_id(), $data1['id']);
+
+		$field_trashed = get_post($data1['id']);
+		$this->assertEquals('trash', $field_trashed->post_status);
 	}
 
 }

@@ -1,8 +1,9 @@
 <template>
     <b-datepicker
-              v-model="dateValue"
-              @blur="onBlur"
-              @input="onInput($event)"></b-datepicker>
+            :id="id"
+            v-model="dateValue"
+            @blur="onBlur"
+            @input="onInput($event)"></b-datepicker>
 </template>
 
 <script>
@@ -11,6 +12,9 @@
             return {
                 dateValue: new Date()
             }
+        },
+        props: {
+            id: ''
         },
         methods: {
             onBlur() {

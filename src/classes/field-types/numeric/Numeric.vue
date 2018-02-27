@@ -1,10 +1,11 @@
 <template>
     <b-input
-              type="number"
-              :value="inputValue"
-              @blur="onBlur"
-              @change="onBlur"
-              @input="onInput($event)"></b-input>
+            :id="id"
+            type="number"
+            :value="inputValue"
+            @blur="onBlur"
+            @change="onBlur"
+            @input="onInput($event)"></b-input>
 </template>
 
 <script>
@@ -13,6 +14,9 @@
             return {
                 inputValue: ''
             }
+        },
+        props: {
+            id: ''
         },
         methods: {
             onBlur() {

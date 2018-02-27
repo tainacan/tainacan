@@ -154,6 +154,9 @@ class Entity {
 
     /**
      * Validate the class values/properties, to be used before insert/save/update
+     *
+     * If Entity is not valid, validation error messages are available via get_errors() method
+     * 
      * @return boolean
      */
     public function validate() {

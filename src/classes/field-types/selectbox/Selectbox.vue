@@ -1,6 +1,9 @@
 <template>
     <div>
-        <b-select v-model="selected" @input="onChecked()">
+        <b-select 
+            :id = "id"
+            v-model="selected" 
+            @input="onChecked()">
             <option
                     v-for="option,index in getOptions"
                     :key="index"
@@ -27,6 +30,7 @@
                 type: String
             },
             value: [String, Number, Array],
+            id: ''
         },
         computed: {
             getOptions(){

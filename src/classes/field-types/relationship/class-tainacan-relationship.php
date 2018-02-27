@@ -97,4 +97,14 @@ class Relationship extends Field_Type {
         <?php endif; ?>
         <?php
     }
+    
+    public function validate_options(Array $options) {
+        // TODO: This is just a sample validation to test validation workflow for field types. Must redo it
+        if (isset($options['collection_id']) && !is_numeric($options['collection_id'])) {
+            return [
+                'collection_id' => 'Collection ID invalid'
+            ];
+        }
+        return true;
+    }
 }

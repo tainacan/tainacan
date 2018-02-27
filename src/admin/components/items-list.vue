@@ -59,9 +59,9 @@
                             <img class="table-thumb" :src="`${ props.row[column.slug] }`"/>
                         </template>
                         <template v-if="column.field == 'row_actions'">
-                            <a @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a>
-                            <a @click.prevent.stop="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
-                            <a @click.prevent.stop="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
+                            <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a>
+                            <a id="button-edit" @click.prevent.stop="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
+                            <a id="button-delete" @click.prevent.stop="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
                         </template>
                     </b-table-column>
 
@@ -77,7 +77,9 @@
                                 </b-icon>
                             </p>
                             <p>Nenhum item ainda nesta coleção.</p>
-                            <router-link tag="button" class="button is-primary"
+                            <router-link
+                                        id="button-create" 
+                                        tag="button" class="button is-primary"
                                         :to="{ path: `/collections/${collectionId}/items/new` }">
                                 Criar Item
                             </router-link>
@@ -101,11 +103,9 @@ export default {
             isLoading: false,
             totalItems: 0,
             page: 1,
-            itemsPerPage: 2
+            itemsPerPage: 2,
+            collectionId: Number
         }
-    },
-    props: {
-        collectionId: Number
     },
     methods: {
         ...mapActions('collection', [
@@ -211,6 +211,9 @@ export default {
         items(){
             return this.getItems();
         }
+    },
+    created() {
+        this.collectionId = this.$route.params.id;
     },
     mounted(){
         this.loadItems();

@@ -1,15 +1,6 @@
 <template>
     <div class="columns is-fullheight">
-        <nav id="secondary-menu" role="navigation" aria-label="secondary navigation" class="column is-2 is-sidebar-menu">
-            <aside class="menu">
-                <ul class="menu-list">
-                    <li><router-link tag="a" to="">{{ $i18n.get('items')}}</router-link></li>
-                    <li><router-link tag="a" to="">{{ $i18n.get('edit')}}</router-link></li>
-                    <li><router-link tag="a" to="">{{ $i18n.get('fields')}}</router-link></li>
-                    <li><router-link tag="a" to="">{{ $i18n.get('filters')}}</router-link></li>
-                </ul>
-            </aside>
-        </nav>
+        <secondary-menu :id="collectionId"></secondary-menu>
         <section class="container column is-main-content" v-if="collection != null">
             <div class="card">
                 <div class="card-image" v-if="collection.featured_image">
@@ -32,31 +23,19 @@
                     <router-link
                             tag="a"
                             class="card-footer-item"
-                            :to="{ path: `/collections/${collection.id}/edit` }">
-                        Editar Coleção
-                    </router-link>
-                    <router-link
-                            tag="a"
-                            class="card-footer-item"
                             :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">
                         Criar Item
                     </router-link>
-                    <router-link
-                            tag="a"
-                            class="card-footer-item"
-                            :to="{ path: `/collection/${collection.id}/items/`, params: { collection_id: collection.id }}">
-                        Ver todos os itens
-                    </router-link>
                 </footer>
             </div>
-            <items-list :collectionId="collectionId"></items-list>
+            <router-view></router-view>
         </section>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ItemsList from '../components/items-list.vue';
+import SecondaryMenu from '../../components/secondary-menu.vue';
 
 export default {
     name: 'CollectionPage',
@@ -77,7 +56,7 @@ export default {
         }
     },
     components: {
-        'items-list': ItemsList
+        SecondaryMenu
     },
     computed: {
         collection(){
@@ -85,7 +64,7 @@ export default {
         }
     },
     created(){
-        this.collectionId = new Number(this.$route.params.id);
+        this.collectionId = parseInt(this.$route.params.id);
         this.fetchCollection(this.collectionId);
     }
 

@@ -94,5 +94,17 @@ abstract class Field_Type  {
         return $attributes;
         
     }
+    
+    /**
+     * Validates the options Array
+     *
+     * This method should be declared by each field type sub classes
+     * 
+     * @param  Array  $options Options to be saved as field_type_optins
+     * @return true|Array True if optinos are valid. If invalid, returns an array where keys are the field keys and values are error messages.
+     */
+    public function validate_options(Array $options) {
+        return true;
+    }
 
 }

@@ -6,6 +6,7 @@ const state = {
     items: [],
     collections: [],
     fields: [],
+    fieldTypes: [],
     collection: null
 };
 

@@ -37,7 +37,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
      * @group importer
      */
     public function test_file_csv () {
-        global $Tainacan_Fields;
+        global $Tainacan_Fields, $Tainacan_Items;
 
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
@@ -106,6 +106,13 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         // check is equal
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_mapping(), $map );
+
+        //execute the process
+        $_SESSION['tainacan_importer'][$id]->run();
+
+        $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
+
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_total_items(), count( $items ) );
 
     }
 

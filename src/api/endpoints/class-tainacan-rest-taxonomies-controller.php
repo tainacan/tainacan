@@ -129,8 +129,12 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	public function get_item_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
-		if ($taxonomy instanceof Entities\Taxonomy) {
-			return $taxonomy->can_read();
+		if(($taxonomy instanceof Entities\Taxonomy)) {
+			if('edit' === $request['context'] && !$taxonomy->can_read()) {
+				return false;
+			}
+
+			return true;
 		}
 
 		return false;
@@ -222,7 +226,11 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		return $this->taxonomy_repository->can_read($this->taxonomy);
+		if('edit' === $request['context'] && !$this->taxonomy_repository->can_read($this->taxonomy)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

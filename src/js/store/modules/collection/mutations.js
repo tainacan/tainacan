@@ -27,3 +27,7 @@ export const setFields = (state, fields) => {
 export const setCollection = (state, collection) => {
     state.collection = collection;
 }
+
+export const setFieldTypes = (state, fieldTypes) => {
+    state.fieldTypes = fieldTypes;
+}

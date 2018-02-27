@@ -65,7 +65,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-	    $filter_list_type = $this->tainacan_filter_factory->create_filter('list_filter');
+	    $filter_list_type = $this->tainacan_filter_factory->create_filter('selectbox');
 
 	    $filter = $this->tainacan_entity_factory->create_entity(
 	    	'filter',
