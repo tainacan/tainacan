@@ -43,6 +43,7 @@ return [
     'title_item_edition' => __('Item Edition Page', 'tainacan'),
     'title_category_edition' => __('Category Edition Page', 'tainacan'),
     'title_filter_edition' => __('Filter Edition Page', 'tainacan'),
+    'title_collection_fields_edition' => __('Collection Fields Edition Page', 'tainacan'),
 
     // Labels (used mainly on Aria Labels)
     'label_menu' => __('Menu', 'tainacan'),
@@ -58,6 +59,8 @@ return [
     'label_button_delete' => __('Button Delete', 'tainacan'),
     'label_collections_per_page' => __('Number of Collections Per Page', 'tainacan'),
     'label_items_per_page' => __('Number of Items Per Page', 'tainacan'),
+    'label_active_fields' => __('Active Fields', 'tainacan'),
+    'label_available_fields' => __('Available Fields', 'tainacan'),
 ]
 
  ?>

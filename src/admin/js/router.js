@@ -5,6 +5,7 @@ import AdminPage from '../admin.vue'
 import CollectionsPage from '../pages/lists/collections-page.vue'
 import CollectionPage from '../pages/singles/collection-page.vue'
 import CollectionEditionPage from '../pages/edition/collection-edition-page.vue'
+import CollectionFieldsEditionPage from '../pages/edition/collection-fields-edition-page.vue'
 import ItemsPage from '../pages/lists/items-page.vue'
 import ItemPage from '../pages/singles/item-page.vue'
 import ItemEditionPage from '../pages/edition/item-edition-page.vue'
@@ -39,7 +40,7 @@ const routes = [
         { path: '', redirect: 'items'},
         { path: 'items', component: ItemsList, name: 'ItemsList', meta: {title: i18nGet('title_collection_page')} },
         { path: 'edit', component: CollectionEditionPage,  name: 'CollectionEditionPage', meta: {title: i18nGet('title_collection_edition')} },
-        { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: i18nGet('title_collection_page')} }, 
+        { path: 'fields', component: CollectionFieldsEditionPage, name: 'CollectionFieldsEditionPage', meta: {title: i18nGet('title_collection_fields_edition')} }, 
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_page')} }
       ]
     },

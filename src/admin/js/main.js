@@ -15,6 +15,7 @@ import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
+import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
 import { I18NPlugin, RouterHelperPlugin } from './utilities';
@@ -37,7 +38,9 @@ Vue.component('tainacan-radio', Radio);
 Vue.component('tainacan-numeric', Numeric);
 Vue.component('tainacan-date', Date);
 Vue.component('tainacan-relationship', Relationship);
+
 Vue.component('tainacan-form-item', TaincanFormItem);
+Vue.component('draggable', draggable);
 
 new Vue({
     el: '#tainacan-admin-app',

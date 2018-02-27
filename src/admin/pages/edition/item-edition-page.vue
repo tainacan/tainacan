@@ -32,11 +32,11 @@
                         </div>
                     </section>
                 </b-upload>
-            </b-field>
+            </b-field>        
             <tainacan-form-item                  
-                    v-for="(field, index) in fieldList"
-                    v-bind:key="index"
-                    :field="field"></tainacan-form-item>
+                v-for="(field, index) in fieldList"
+                v-bind:key="index"
+                :field="field"></tainacan-form-item>           
             <button
                 id="button-cancel-item-creation"
                 class="button"
