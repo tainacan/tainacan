@@ -19,6 +19,8 @@ class Range extends Filter_Type {
      * @return string
      */
     public function render( $filter ){
-        return '<tainacan-filter-range name="'.$filter->get_name().'"></tainacan-filter-range>';
+        return '<tainacan-filter-range 
+                                        name="'.$filter->get_name().'"
+                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-range>';
     }
 }

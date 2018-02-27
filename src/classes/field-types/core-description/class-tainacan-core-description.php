@@ -25,7 +25,7 @@ class Core_Description extends Field_Type {
 
      public function render( $itemMetadata ){
          return '<tainacan-textarea 
-                         id="tainacan-textarea-' . $itemMetadata->get_item()->get_slug() . '"
+                         id="tainacan-textarea-' . $itemMetadata->get_item()->WP_Post->post_name . '"
                          field_id ="'.$itemMetadata->get_field()->get_id().'" 
                          item_id="'.$itemMetadata->get_item()->get_id().'"    
                          value=\''.json_encode( $itemMetadata->get_value() ).'\'  
