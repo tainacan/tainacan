@@ -6,7 +6,7 @@ I18NPlugin.install = function (Vue, options = {}) {
     
     Vue.prototype.$i18n = {
         get(key) {
-            let string = wp_settings.i18n[key];
+            let string = tainacan_plugin.i18n[key];
             return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
         }
     }
