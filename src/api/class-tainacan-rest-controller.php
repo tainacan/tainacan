@@ -170,7 +170,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		$request_meta_query = $request[$mapped];
 
 		// If is a multidimensional array (array of array)
-		if($this->contains_array($request_meta_query)) {
+		if($this->contains_array($request_meta_query, $query)) {
 			foreach ( $request_meta_query as $index1 => $a ) {
 				foreach ( $query as $mapped_meta => $meta_v ) {
 					if ( isset( $a[ $meta_v ] ) ) {
@@ -192,11 +192,14 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	/**
 	 * @param $array
 	 *
+	 * @param $query
+	 *
 	 * @return bool
 	 */
-	protected function contains_array($array){
+	protected function contains_array($array, $query){
 		foreach ($array as $index => $value){
-			if(is_array($value) && in_array($index, ['metaquery', 'datequery', 'taxquery'])){
+			// Not will pass named meta query, which use reserved names
+			if(is_array($value) && !key_exists($index, $query)){
 				return true;
 			}
 		}
