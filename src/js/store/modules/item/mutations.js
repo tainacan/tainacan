@@ -13,7 +13,7 @@ export const setSingleField = ( state, field) => {
     if ( index >= 0){
         //state.field[index] = field;
         Vue.set( state.fields, index, field );
-    }else{
+    } else {
         state.fields.push( field );
     }
 }

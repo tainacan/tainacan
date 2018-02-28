@@ -93,7 +93,7 @@ export default {
                 transition: padding 0.3s linear; 
             }
             a:hover {
-                background-color: white;
+                background-color: $primary-lighter;
                 color: $secondary
             }
             a.is-active {
