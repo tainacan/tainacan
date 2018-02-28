@@ -89,12 +89,13 @@ class Admin {
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 			'components' => $components,
             'i18n' => $tainacan_admin_i18n,
-            'user_caps' => $user_caps
+            'user_caps' => $user_caps,
+            'base_url' => $TAINACAN_BASE_URL
 		];
         
         
 
-        wp_localize_script( 'tainacan-user-admin', 'wp_settings', $settings );
+        wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
 		
     }
 

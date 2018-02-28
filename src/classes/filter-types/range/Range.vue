@@ -44,8 +44,8 @@
 <script>
     export default {
         created(){
-            if( this.typeRange ) {
-                this.type = this.typeRange;
+            if( this.typerange ) {
+                this.type = this.typerange;
             }
         },
         data(){
@@ -54,7 +54,7 @@
                 value_end: 0,
                 date_init: new Date,
                 date_end: new Date,
-                type: 'date'
+                type: 'numeric'
             }
         },
         props: {
@@ -62,7 +62,8 @@
                 type: Object // concentrate all attributes field id and type
             },
             field_id: [Number], // not required, but overrides the filter field id if is set
-            typeRange: [String],  // not required, but overrides the filter field type if is set
+            collection_id: [Number], // not required, but overrides the filter field id if is set
+            typerange: [String],  // not required, but overrides the filter field type if is set
             id: ''
         },
         methods: {
@@ -82,23 +83,28 @@
                     }
                 }
             },
-            // emit the operation for component listener
+            // emit the operation for listeners
             emit(){
+                let values = [];
+                let type = ''
+
                 if( this.type === 'date' ){
-                    this.$emit('input', {
-                        filter: 'range',
-                        type: 'date',
-                        field_id: ( this.field_id ) ? this.field_id : this.filter.field,
-                        values: [ this.date_init, this.date_end ]
-                    });
+                    values = [ this.date_init, this.date_end ];
+                    type = 'DATE';
                 } else {
-                    this.$emit('input', {
-                        filter: 'range',
-                        type: 'numeric',
-                        field_id: ( this.field_id ) ? this.field_id : this.filter.field,
-                        values: [ this.value_init, this.value_end ]
-                    });
+                    values =  [ this.value_init, this.value_end ];
+                    type = 'DECIMAL';
                 }
+
+
+                this.$emit('input', {
+                    filter: 'range',
+                    type: type,
+                    compare: 'BETWEEN',
+                    field_id: ( this.field_id ) ? this.field_id : this.filter.field,
+                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    value: values
+                });
             },
             // message for error
             error_message(){

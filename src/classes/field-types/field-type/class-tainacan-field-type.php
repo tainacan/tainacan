@@ -37,12 +37,7 @@ abstract class Field_Type  {
     abstract function render( $itemMetadata );
 
     public function __construct(){
-        add_action('register_field_types', array(&$this, 'register_field_type'));
-    }
-
-    public function register_field_type(){
-        global $Tainacan_Fields;
-        $Tainacan_Fields->register_field_type( $this );
+        
     }
 
     public function validate(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {

@@ -8,8 +8,8 @@ export const eventBus = new Vue({
         errors : []
     },
     created(){
-        if( wp_settings.components ){
-            this.componentsTag = wp_settings.components;
+        if( tainacan_plugin.components ){
+            this.componentsTag = tainacan_plugin.components;
         }
         this.$on('input', data => this.updateValue(data) );
     },

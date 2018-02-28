@@ -3,7 +3,7 @@
 namespace Tainacan\Tests;
 
 /**
- * @group queries
+ * @group api
  * **/
 class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
@@ -78,7 +78,6 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 				'description' => 'Item in collection A',
 				'status'      => 'publish',
 				'collection'  => $collectionA,
-				'terms'       => [$termA]
 			],
 			true
 		);
@@ -90,7 +89,6 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 				'description' => 'Item in collection A',
 				'status'      => 'private',
 				'collection'  => $collectionA,
-				'terms'       => [$termA]
 			],
 			true
 		);
@@ -284,6 +282,9 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 				]
 			]
 		];
+
+		wp_set_post_terms($itemA1->get_id(), $termA, $taxonomyA->get_db_identifier());
+		wp_set_post_terms($itemA2->get_id(), $termA, $taxonomyA->get_db_identifier());
 
 		$tax_query_request_collections = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collectionA->get_id() . '/items');
 		$tax_query_request_collections->set_query_params($tax_query);
