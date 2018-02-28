@@ -1,7 +1,11 @@
-export const getQuery = state => {
-    return state.query;
+export const getPostQuery = state => {
+    return state.post_query;
 }
 
-export const getCollection = state => {
-    return state.collection;
+export const getMetaQuery = state => {
+    return state.meta_query;
+}
+
+export const getTaxQuery = state => {
+    return state.tax_query;
 }

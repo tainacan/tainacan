@@ -21,6 +21,7 @@ class Range extends Filter_Type {
     public function render( $filter ){
         return '<tainacan-filter-range 
                                         name="'.$filter->get_name().'"
+                                        collection_id="'.$filter->get_collection_id().'"
                                         field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-range>';
     }
 }

@@ -1,17 +1,27 @@
 import Vue from 'vue';
+import store from './store/store'
 
 export const eventFilterBus = new Vue({
+    store,
     data: {
         componentsTag: [],
         errors : [],
         query: {}
     },
     created(){
-        this.$on('input', data => this.search(data) );
+        this.$on('input', data => this.add_metaquery(data) );
     },
     methods: {
-        search( ){
-           console.log( data );
+        add_metaquery( data ){
+            if ( data.collection_id ){
+                this.$store.dispatch('filter/add_metaquery', data );
+                const promisse = this.$store.dispatch('filter/search_by_collection', data.collection_id );
+                promisse.then( response => {
+
+                }, error => {
+
+                });
+            }
         },
 
         /* Dev interfaces methods */
@@ -37,7 +47,7 @@ export const eventFilterBus = new Vue({
             const components = this.getAllComponents();
             for (let eventElement of components){
                 eventElement.addEventListener('input', (event) => {
-                    console.log( event.detail, 'dev' );
+                    this.add_metaquery( event.detail[0] );
                 });
             }
         },
