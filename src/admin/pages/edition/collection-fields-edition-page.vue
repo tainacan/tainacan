@@ -44,7 +44,8 @@ export default {
             'fetchFieldTypes',
             'fetchFields',
             'sendField',
-            'deleteField'
+            'deleteField',
+            'updateCollectionFieldsOrder'
         ]),
         ...mapGetters('collection',[
             'getFieldTypes',
@@ -55,9 +56,15 @@ export default {
                 this.addNewField($event.added.element);
             } else if ($event.removed) {
                 this.removeField($event.removed.element);
-            } else if ($event.moved) {
-                console.log($event.moved.element);
-            } 
+            }
+            this.updateFieldsOrder(); 
+        },
+        updateFieldsOrder() {
+            let fieldsOrder = [];
+            for (let field of this.activeFieldList) {
+                fieldsOrder.push({'id': field.id, 'enabled': true});
+            }
+            this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
         },
         addNewField(newField) {
             this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'publish'})

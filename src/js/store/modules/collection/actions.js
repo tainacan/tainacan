@@ -130,6 +130,20 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
     });
 }
 
+export const updateCollectionFieldsOrder = ({ commit }, { collectionId, fieldsOrder }) => {
+    return new Promise((resolve, reject) => {
+        axios.patch('/collections/' + collectionId, {
+            fields_order: fieldsOrder
+        }).then( res => {
+            commit('setCollection', res.data);
+            resolve( res.data );
+        }).catch( error => { 
+            reject( error.response );
+        });
+
+    });
+}
+
 export const sendCollection = ( { commit }, { name, description, status }) => {
     return new Promise(( resolve, reject ) => {
         axios.post('/collections/', {
