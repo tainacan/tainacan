@@ -8,9 +8,9 @@ $secondary: #1F2F56;
 $secondary-invert: findColorInvert($primary);
  
 $primary-light:#A5CDD7;
-$primary-lighter: lighten($primary-light, 4);
+$primary-lighter: lighten($primary-light, 10%);
 $primary-dark: #55A0AF;
-$primary-darker: darken($primary-dark, 4);
+$primary-darker: darken($primary-dark, 5%);
 
 // Setup $colors to use as bulma classes
 $colors: (
