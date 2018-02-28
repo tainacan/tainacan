@@ -5,9 +5,20 @@
         <div class="columns">
             <div class="column">
                 <b-field :label="$i18n.get('label_active_fields')" is-grouped>
-                    <draggable class="box active-fields-area" @change="handleChange" :class="{'fields-area-receive': isDraggingFromAvailable}" :list="activeFieldList" :options="{group:'fields', chosenClass: 'sortable-chosen'}">
-                        <div class="active-field-item" v-for="(field, index) in activeFieldList" :key="index">
-                            {{ field.name }}<span class="label-details"> (not configured)</span><a @click.prevent="removeField(field)"><b-icon is-small icon="delete"></b-icon></a><b-icon is-small icon="pencil"></b-icon>
+                    <draggable 
+                        class="box active-fields-area"
+                        @change="handleChange"
+                        :class="{'fields-area-receive': isDraggingFromAvailable}" 
+                        :list="activeFieldList" 
+                        :options="{group:'fields', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
+                        <div 
+                            class="active-field-item" 
+                            :class="{'not-sortable-item': field.id == undefined}" 
+                            v-for="(field, index) in activeFieldList" :key="index">
+                            {{ field.name }}
+                            <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span> (not configured)</span>
+                            <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon is-small icon="delete"></b-icon></a>
+                            <b-icon is-small icon="pencil" v-if="field.id != undefined"></b-icon>
                         </div>
                         <div slot="footer">Drag and drop Fields here to add them to Collection.</div>
                     </draggable> 
@@ -52,12 +63,15 @@ export default {
             'getFields'
         ]),
         handleChange($event) {
+            
             if ($event.added) {
-                this.addNewField($event.added.element);
+                this.addNewField($event.added.element, $event.added.newIndex);
             } else if ($event.removed) {
                 this.removeField($event.removed.element);
+            } else if ($event.moved) {
+                this.updateFieldsOrder(); 
             }
-            this.updateFieldsOrder(); 
+            
         },
         updateFieldsOrder() {
             let fieldsOrder = [];
@@ -66,21 +80,24 @@ export default {
             }
             this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
         },
-        addNewField(newField) {
+        addNewField(newField, newIndex) {
             this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'publish'})
-            .then((res) => {
-
+            .then((field) => {
+                this.activeFieldList.splice(newIndex, 1, field);
+                this.updateFieldsOrder();
             })
             .catch((error) => {
+                console.log(error);
             });
         },
         removeField(removedField) {
             this.deleteField({ collectionId: this.collectionId, fieldId: removedField.id })
             .then((field) => {
-                let index = this.activeFieldList.findIndex(deletedItem => deletedItem.id === field.id);
+                let index = this.activeFieldList.findIndex(deletedField => deletedField.id === field.id);
                 if (index >= 0) {  
                     this.activeFieldList.splice(index, 1);
                 }
+                this.updateFieldsOrder(); 
             })
             .catch((error) => {
             });
@@ -146,16 +163,20 @@ export default {
                 color: gray;
             }
 
-            &.is-loading:after {
+            .loading-spinner {
                 animation: spinAround 500ms infinite linear;
                 border: 2px solid #dbdbdb;
                 border-radius: 290486px;
                 border-right-color: transparent;
                 border-top-color: transparent;
                 content: "";
-                display: block;
+                display: inline-block;
                 height: 1em;
                 width: 1em;
+            }
+
+            &.not-sortable-item {
+                color: gray;
             }
         }
         .active-field-item:hover {
