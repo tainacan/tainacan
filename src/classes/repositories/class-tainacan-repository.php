@@ -314,24 +314,6 @@ abstract class Repository {
 
 				    $property = $attachments_prepared;
 			    }
-		    } elseif ($mapped === 'terms'){
-    			$taxonomies = get_taxonomies('', 'names');
-
-    			$terms_prepared = [];
-			    foreach($taxonomies as $taxonomy){
-    				if(stristr($taxonomy, 'tnc_tax_')) {
-					    $terms = isset( $entity->WP_Post->ID ) ? wp_get_post_terms( $entity->WP_Post->ID, $taxonomy ) : null;
-
-					    if ( is_array( $terms ) ) {
-						    foreach ( $terms as $term ) {
-							    $term = new Entities\Term( $term->term_id, $term->taxonomy );
-							    array_push( $terms_prepared, $term->__toArray() );
-						    }
-					    }
-				    }
-			    }
-
-			    $property = $terms_prepared;
 		    } else {
 			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
 		    }

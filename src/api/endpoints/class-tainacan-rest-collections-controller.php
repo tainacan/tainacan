@@ -82,9 +82,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 
         $collections = $this->collections_repository->fetch($args);
 
-		$map = $this->collections_repository->get_map();
-
-
 		$response = [];
 		if($collections->have_posts()){
 			while ($collections->have_posts()){
@@ -92,7 +89,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 
 				$collection = new Entities\Collection($collections->post);
 
-				array_push($response, $this->get_only_needed_attributes($collection, $map, $request['context']));
+				array_push($response, $this->prepare_item_for_response($collection, $request));
 			}
 
 			wp_reset_postdata();

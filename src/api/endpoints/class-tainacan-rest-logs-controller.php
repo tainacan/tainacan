@@ -68,16 +68,14 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 
 		$logs = $this->logs_repository->fetch($args);
 
-		$map = $this->logs_repository->get_map();
-
 		$response = [];
 		if($logs->have_posts()){
 			while ($logs->have_posts()){
 				$logs->the_post();
 
-				$collection = new Entities\Log($logs->post);
+				$log = new Entities\Log($logs->post);
 
-				array_push($response, $this->get_only_needed_attributes($collection, $map));
+				array_push($response, $this->prepare_item_for_response($log, $request));
 			}
 
 			wp_reset_postdata();
