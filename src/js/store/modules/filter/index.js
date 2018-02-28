@@ -3,8 +3,14 @@ import * as getters from './getters';
 import * as mutations from './mutations';
 
 const state = {
-    query: {},
-    collection: null
+    post_query: {
+        post_status: 'publish',
+        post_type: [],
+        meta_query: null,
+        tax_query: null
+    },
+    meta_query: [],
+    tax_query: []
 };
 
 export default {

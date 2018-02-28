@@ -62,6 +62,7 @@
                 type: Object // concentrate all attributes field id and type
             },
             field_id: [Number], // not required, but overrides the filter field id if is set
+            collection_id: [Number], // not required, but overrides the filter field id if is set
             typeRange: [String],  // not required, but overrides the filter field type if is set
             id: ''
         },
@@ -82,23 +83,23 @@
                     }
                 }
             },
-            // emit the operation for component listener
+            // emit the operation for listeners
             emit(){
+                let values = null;
                 if( this.type === 'date' ){
-                    this.$emit('input', {
-                        filter: 'range',
-                        type: 'date',
-                        field_id: ( this.field_id ) ? this.field_id : this.filter.field,
-                        values: [ this.date_init, this.date_end ]
-                    });
+                    values = [ this.date_init, this.date_end ]
                 } else {
-                    this.$emit('input', {
-                        filter: 'range',
-                        type: 'numeric',
-                        field_id: ( this.field_id ) ? this.field_id : this.filter.field,
-                        values: [ this.value_init, this.value_end ]
-                    });
+                    values =  [ this.value_init, this.value_end ]
                 }
+
+                this.$emit('input', {
+                    filter: 'range',
+                    type: 'numeric',
+                    compare: 'BETWEEN',
+                    field_id: ( this.field_id ) ? this.field_id : this.filter.field,
+                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    value: values
+                });
             },
             // message for error
             error_message(){
