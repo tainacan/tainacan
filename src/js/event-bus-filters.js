@@ -13,11 +13,11 @@ export const eventFilterBus = new Vue({
     },
     methods: {
         add_metaquery( data ){
-            if ( data.collection_id ){
+            if ( data && data.collection_id ){
                 this.$store.dispatch('filter/add_metaquery', data );
                 const promisse = this.$store.dispatch('filter/search_by_collection', data.collection_id );
                 promisse.then( response => {
-
+                    console.log( response );
                 }, error => {
 
                 });
@@ -47,7 +47,9 @@ export const eventFilterBus = new Vue({
             const components = this.getAllComponents();
             for (let eventElement of components){
                 eventElement.addEventListener('input', (event) => {
-                    this.add_metaquery( event.detail[0] );
+                    if( event.detail ) {
+                        this.add_metaquery( event.detail[0] );
+                    }
                 });
             }
         },
