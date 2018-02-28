@@ -20,7 +20,7 @@ else
     find src -type f \( -name "*.js" -or -name "*.vue" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-js-build.md5
     find src -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
     find src -type f \( -name "composer.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-composer-build.md5
-    find src -type f \( -name "package.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-package-build.md5
+    find src -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-package-build.md5
 fi
 
 new_md5_package=$(<last-package-build.md5)
