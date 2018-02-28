@@ -161,7 +161,13 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			$field = $this->field_repository->fetch( $field_id );
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $field );
-			$item_metadata->set_value( $value );
+			if($item_metadata->is_multiple()) {
+				$item_metadata->set_value( $value );
+			} elseif(is_array($value)) {
+				$item_metadata->set_value(implode(' ', $value));
+			} else{
+				$item_metadata->set_value($value);
+			}
 
 			if ( $item_metadata->validate() ) {
 				$field_updated = $this->item_metadata_repository->update( $item_metadata );
