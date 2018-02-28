@@ -195,8 +195,8 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 * @return bool
 	 */
 	protected function contains_array($array){
-		foreach ($array as $value){
-			if(is_array($value)){
+		foreach ($array as $index => $value){
+			if(is_array($value) && in_array($index, ['metaquery', 'datequery', 'taxquery'])){
 				return true;
 			}
 		}
