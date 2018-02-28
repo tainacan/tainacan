@@ -1,11 +1,11 @@
 export const getPostQuery = state => {
-    return state.post_query;
+    return state.postquery;
 }
 
 export const getMetaQuery = state => {
-    return state.meta_query;
+    return state.metaquery;
 }
 
 export const getTaxQuery = state => {
-    return state.tax_query;
+    return state.taxquery;
 }

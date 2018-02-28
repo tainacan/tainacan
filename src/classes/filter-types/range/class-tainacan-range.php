@@ -19,8 +19,10 @@ class Range extends Filter_Type {
      * @return string
      */
     public function render( $filter ){
-        return '<tainacan-filter-range 
+         $type = ( $filter->get_field()->get_field_type() === 'Tainacan\Field_Types\Date' ) ? 'date' : 'numeric';
+         return '<tainacan-filter-range 
                                         name="'.$filter->get_name().'"
+                                        typeRange="'.$type.'"
                                         collection_id="'.$filter->get_collection_id().'"
                                         field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-range>';
     }

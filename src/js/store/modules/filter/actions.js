@@ -1,11 +1,9 @@
 import axios from '../../../axios/axios';
 import qs from 'qs';
 
-export const search_by_collection = ({ commit, state, dispatch }, collectionId) => {
-    commit('setPostQuery', 'meta_query', state.meta_query  );
-    commit('setPostQuery', 'tax_query', state.tax_query  );
+export const search_by_collection = ({ commit, state, getters }, collectionId) => {
     return new Promise((resolve, reject) =>{
-        axios.get('/collection/' + collectionId + '/items?' + qs.stringify( state.query ))
+        axios.get('/collection/' + collectionId + '/items?' + qs.stringify( state.postquery ))
             .then(res => {
                  resolve( res.data );
             })
@@ -17,7 +15,7 @@ export const search_by_collection = ({ commit, state, dispatch }, collectionId) 
 
 
 export const set_postquery_attribute = ({ commit }, field, value ) => {
-    commit('setPostQuery', field, value  );
+    commit('setPostQuery', {  attr: field, value: value } );
 };
 
 export const add_metaquery = ( { commit }, filter  ) => {
