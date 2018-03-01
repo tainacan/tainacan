@@ -25,7 +25,7 @@ import FieldsList from '../components/fields-list.vue'
 Vue.use(VueRouter);
 
 const i18nGet = function (key) {
-  let string = wp_settings.i18n[key];
+  let string = tainacan_plugin.i18n[key];
   return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
 }
 

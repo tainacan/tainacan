@@ -55,6 +55,37 @@ export const fetchFields = ({ commit }, id) => {
     });
 }
 
+export const sendField = ( { commit }, { collectionId, name, fieldType, status }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.post('/collection/'+ collectionId + '/fields/', {
+            name: name,
+            field_type: fieldType, 
+            status: status
+        })
+            .then( res => {
+                commit('setField', { collection_id: collectionId, name: name, field_type: fieldType, status: status });
+                resolve( res.data );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
+export const deleteField = ({ commit }, { collectionId, fieldId }) => {
+    return new Promise((resolve, reject) => {
+        axios.delete('/collection/' + collectionId + '/fields/' + fieldId)
+        .then( res => {
+            commit('deleteField', { fieldId } );
+            resolve( res.data );
+        }).catch((error) => { 
+            console.log(error);
+            reject( error );
+        });
+
+    }); 
+};
+
 export const fetchCollection = ({ commit }, id) => {
     return new Promise((resolve, reject) =>{ 
         axios.get('/collections/' + id)
@@ -99,6 +130,20 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
     });
 }
 
+export const updateCollectionFieldsOrder = ({ commit }, { collectionId, fieldsOrder }) => {
+    return new Promise((resolve, reject) => {
+        axios.patch('/collections/' + collectionId, {
+            fields_order: fieldsOrder
+        }).then( res => {
+            commit('setCollection', res.data);
+            resolve( res.data );
+        }).catch( error => { 
+            reject( error.response );
+        });
+
+    });
+}
+
 export const sendCollection = ( { commit }, { name, description, status }) => {
     return new Promise(( resolve, reject ) => {
         axios.post('/collections/', {
@@ -131,3 +176,7 @@ export const sendCollection = ( { commit }, { name, description, status }) => {
         });
     });
 }
+
+export const setItems = ({ commit }, items ) => {
+    commit('setItems', items);
+};

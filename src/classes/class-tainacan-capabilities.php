@@ -5,7 +5,7 @@ use Tainacan\Repositories\Repository;
 
 class Capabilities {
 	protected $defaults = [
-		"tainacan-collections"=> [
+		"tainacan-collection"=> [
 			"administrator"=> [
 				"delete_posts",
 				"delete_private_posts",
@@ -93,7 +93,7 @@ class Capabilities {
 				"read"
 			]
 		],
-		"tainacan-filters"=> [
+		"tainacan-filter"=> [
 			"administrator"=> [
 				"delete_posts",
 				"delete_private_posts",
@@ -137,7 +137,7 @@ class Capabilities {
 				"read"
 			]
 		],
-		"tainacan-taxonomies"=> [
+		"tainacan-taxonomy"=> [
 			"administrator"=> [
 				"delete_posts",
 				"delete_private_posts",
@@ -181,7 +181,7 @@ class Capabilities {
 				"read"
 			]
 		],
-		"tainacan-logs"=> [
+		"tainacan-log"=> [
 			"administrator"=> [
 				"delete_posts",
 				"delete_private_posts",
@@ -276,7 +276,7 @@ class Capabilities {
 	 */
 	function __construct() {
 		add_action('init', array(&$this, 'init'), 11);
-		add_action('tainacan-insert-tainacan-collections', array(&$this, 'new_collection'));
+		add_action('tainacan-insert-tainacan-collection', array(&$this, 'new_collection'));
 		
         add_action('tainacan-add-collection-moderators', array(&$this, 'add_moderators'), 10, 2);
 		add_action('tainacan-remove-collection-moderators', array(&$this, 'remove_moderators'), 10, 2);

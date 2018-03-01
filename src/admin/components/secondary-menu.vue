@@ -31,7 +31,7 @@ export default {
     name: 'SecondaryMenu',
     data(){
         return {
-            logoHeader: '../wp-content/plugins/tainacan/admin/images/tainacan_logo_header.png',
+            logoHeader: tainacan_plugin.base_url + '/admin/images/tainacan_logo_header.png',
             activeRoute: 'ItemsList'
         }
     },
@@ -93,7 +93,7 @@ export default {
                 transition: padding 0.3s linear; 
             }
             a:hover {
-                background-color: white;
+                background-color: $primary-lighter;
                 color: $secondary
             }
             a.is-active {

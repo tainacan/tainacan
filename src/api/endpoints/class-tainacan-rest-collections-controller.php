@@ -82,9 +82,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 
         $collections = $this->collections_repository->fetch($args);
 
-		$map = $this->collections_repository->get_map();
-
-
 		$response = [];
 		if($collections->have_posts()){
 			while ($collections->have_posts()){
@@ -92,7 +89,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 
 				$collection = new Entities\Collection($collections->post);
 
-				array_push($response, $this->get_only_needed_attributes($collection, $map, $request['context']));
+				array_push($response, $this->prepare_item_for_response($collection, $request));
 			}
 
 			wp_reset_postdata();
@@ -156,8 +153,8 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check($request){
-        
-        if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-collections') ) {
+        $dummy = new Entities\Collection();
+        if ( 'edit' === $request['context'] && ! current_user_can($dummy->get_capabilities()->edit_posts) ) {
 			return false;
 		}
 
@@ -233,7 +230,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		return $this->collections_repository->can_edit($this->collection);
+        return $this->collection->can_edit();
     }
 
 	/**

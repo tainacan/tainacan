@@ -1,9 +1,6 @@
 <?php
 
-use Tainacan\Field_Types;
-
 class TAINACAN_REST_Field_Types_Controller extends TAINACAN_REST_Controller {
-	private $field_type;
 
 	/**
 	 * TAINACAN_REST_Field_Types_Controller constructor.

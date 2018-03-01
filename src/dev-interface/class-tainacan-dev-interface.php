@@ -40,7 +40,7 @@ class DevInterface {
         ];
 
         wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/dev_admin-components.js', [] , null, true);
-	    wp_localize_script( 'tainacan-dev-admin', 'wp_settings', $settings );
+	    wp_localize_script( 'tainacan-dev-admin', 'tainacan_plugin', $settings );
     }
 
     function add_admin_css() {

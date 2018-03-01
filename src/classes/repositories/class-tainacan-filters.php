@@ -106,7 +106,7 @@ class Filters extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'     => Entities\Field::get_post_type(),
+        	'capability_type'     => Entities\Field::get_capability_type(),
             'supports'            => [
                 'title',
                 'editor',

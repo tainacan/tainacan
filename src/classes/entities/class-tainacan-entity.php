@@ -28,6 +28,12 @@ class Entity {
     protected static $post_type = false;
     
     /**
+     * The WordPress capability for the entity post type. Default is to be equal to $post_type
+     * @var string
+     */
+    protected static $capability_type = false;
+    
+    /**
      * Store the WordPress post object 
      * @var \WP_Post
      */
@@ -227,6 +233,10 @@ class Entity {
     	return static::$post_type;
     }
     
+    public static function get_capability_type() {
+    	return false !== static::$capability_type ? static::$capability_type : static::$post_type;
+    }
+    
     public function get_status(){
    		$value = $this->get_mapped_property('status');
    		if(empty($value)) $value = 'draft';
@@ -345,9 +355,9 @@ class Entity {
 	 * @return object Object with all the capabilities as member variables.
 	 */
 	public function get_capabilities() {
-		$args = [
+        $args = [
 			'map_meta_cap' => true,
-			'capability_type' => self::get_post_type(),
+			'capability_type' => self::get_capability_type(),
 			'capabilities' => array()
 		];
 		

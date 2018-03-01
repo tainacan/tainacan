@@ -66,7 +66,7 @@
                             </p>
                             <p>Nenhuma coleção ainda neste repositório.</p>
                             <router-link tag="button" class="button is-primary"
-                                        :to="{ path: `/collections/new` }">
+                                        :to="{ path: $routerHelper.getNewCollectionPath() }">
                                 Criar Coleção
                             </router-link>
                         </div>
@@ -162,10 +162,10 @@ export default {
         handleSelectionChange(value) {
         },
         goToCollectionPage(collectionId) {
-            this.$router.push(`/collections/${collectionId}`);
+            this.$router.push(this.$routerHelper.getCollectionPath(collectionId));
         },
         goToCollectionEditPage(collectionId) {
-            this.$router.push(`/collections/${collectionId}/edit`);
+            this.$router.push(this.$routerHelper.getCollectionEditPath(collectionId));
         },
         onChangeCollectionsPerPage(value) {
             this.collectionsPerPage = value;

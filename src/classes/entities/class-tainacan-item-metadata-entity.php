@@ -180,6 +180,11 @@ class Item_Metadata_Entity extends Entity {
                 return false;
             }
         } else {
+
+            if( is_array($value) ){
+                $this->add_error('not_multiple', $field->get_name() . ' do not accept array as value');
+                return false;
+            }
             
             if ($this->is_collection_key()) {
             	$Tainacan_Items = new \Tainacan\Repositories\Items();
@@ -198,9 +203,7 @@ class Item_Metadata_Entity extends Entity {
                     return false;
                 }
             }
-            
-            // TODO: call fieldType validation
-            // 
+
             $this->set_as_valid();
             return true;   
         }   

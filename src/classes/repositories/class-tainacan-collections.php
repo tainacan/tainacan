@@ -208,7 +208,7 @@ class Collections extends Repository {
             'query_var'           => true,
             'can_export'          => true,
             'rewrite'             => true,
-        	'capability_type'     => 'tainacan-collection', // hardcode because post_type is in plural
+        	'capability_type'     => Entities\Collection::get_capability_type(),
         	'map_meta_cap'		  => true,
             'supports'            => [
                 'title',

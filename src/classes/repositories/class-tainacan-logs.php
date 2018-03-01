@@ -133,7 +133,7 @@ class Logs extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'		  => Entities\Log::get_post_type(),
+        	'capability_type'		  => Entities\Log::get_capability_type(),
             'supports'            => [
                 'title',
                 'editor',
@@ -210,7 +210,7 @@ class Logs extends Repository {
     	$msn = "";
    		if(is_object($new_value)) {
    			// do not log a log
-   			if(method_exists($new_value, 'get_post_type') && $new_value->get_post_type() == 'tainacan-logs'){
+   			if(method_exists($new_value, 'get_post_type') && $new_value->get_post_type() == 'tainacan-log'){
    			    return;
 		    }
    			
