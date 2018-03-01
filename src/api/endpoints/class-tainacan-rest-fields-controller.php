@@ -106,24 +106,16 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	public function prepare_item_for_database( $request, $collection_id = null ) {
 		$field = new Entities\Field();
 
+		$meta = json_decode( $request, true );
+		foreach ( $meta as $key => $value ) {
+			$set_ = 'set_' . $key;
+			$field->$set_( $value );
+		}
+
 		if($collection_id) {
-			$meta = json_decode( $request, true );
-
-			foreach ( $meta as $key => $value ) {
-				$set_ = 'set_' . $key;
-				$field->$set_( $value );
-			}
-
 			$collection = new Entities\Collection( $collection_id );
-
 			$field->set_collection( $collection );
 		} else {
-			$meta = json_decode( $request, true );
-			foreach ( $meta as $key => $value ) {
-				$set_ = 'set_' . $key;
-				$field->$set_( $value );
-			}
-
 			$field->set_collection_id( 'default' );
 		}
 

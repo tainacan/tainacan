@@ -2,8 +2,6 @@
 
 namespace Tainacan\Tests;
 
-use Tainacan\Repositories;
-
 /**
  * @group api
  */
@@ -41,7 +39,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$field_added = $response->get_data();
 		$this->assertTrue(is_array($field_added) && array_key_exists('name', $field_added), sprintf('cannot create field, response: %s', print_r($field_added, true)));
 		$this->assertEquals('Moeda', $field_added['name']);
-        
+
+		$this->assertNotEquals('default', $field_added['collection_id']);
 	}
 
 	public function test_create_default_field(){
@@ -64,6 +63,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertTrue(is_array($field_added) && array_key_exists('name', $field_added), sprintf('cannot create field, response: %s', print_r($field_added, true)));
 		$this->assertEquals('Ano de Publicação', $field_added['name']);
+
+		$this->assertEquals('default', $field_added['collection_id']);
 	}
 
 	public function test_get_item_and_collection_metadata(){
