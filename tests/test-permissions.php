@@ -135,6 +135,8 @@ class Permissions extends TAINACAN_UnitTestCase {
 		
 		// Once we had a bug that items of all collections shared the same capability type. they should not.
 		// This test avoid it to happen
+        $this->assertNotEquals($item2->get_capabilities()->edit_posts, $item->get_capabilities()->edit_posts);
+        
 		$this->assertTrue(current_user_can( $item2->get_capabilities()->edit_post, $item2->get_id() ), 'author should be able to edit items in his collection');
 		$this->assertFalse(current_user_can( $item->get_capabilities()->edit_post, $item->get_id() ), 'author should not be able to edit items in admins collection');
 		
