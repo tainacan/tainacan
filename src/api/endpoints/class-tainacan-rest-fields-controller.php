@@ -117,15 +117,15 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			$collection = new Entities\Collection( $collection_id );
 
 			$field->set_collection( $collection );
-		}
+		} else {
+			$meta = json_decode( $request, true );
+			foreach ( $meta as $key => $value ) {
+				$set_ = 'set_' . $key;
+				$field->$set_( $value );
+			}
 
-		$meta = json_decode($request, true);
-		foreach ( $meta as $key => $value ) {
-			$set_ = 'set_' . $key;
-			$field->$set_( $value );
+			$field->set_collection_id( 'default' );
 		}
-
-		$field->set_collection_id('default');
 
 		return $field;
 	}
