@@ -93,6 +93,13 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$pending = $log->get_value();
 		
 		$this->assertEquals('TestValuesSuggestion', $pending->value);
+		
+		wp_set_current_user($this->user_id);
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/logs/' . $log->get_id() . '/approve' );
+		$response = $this->server->dispatch($request);
+		
+		var_dump($response);
 	}
 
 	
