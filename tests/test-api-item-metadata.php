@@ -99,7 +99,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$request  = new \WP_REST_Request('POST', $this->namespace . '/logs/' . $log->get_id() . '/approve' );
 		$response = $this->server->dispatch($request);
 		
-		var_dump($response);
+		$this->assertEquals(200, $response->get_status());
 	}
 
 	
