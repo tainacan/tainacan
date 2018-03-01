@@ -232,6 +232,7 @@ class Logs extends Repository {
     	if($log->get_status() == 'pending') {
     		/** @var Entity $value **/
     		$value = $log->get_value();
+    		//$value->set_status('publish'); // TODO check if publish the entity on approve
     		$repository = self::get_repository($value);
     		return $repository->insert($value);
     	}
