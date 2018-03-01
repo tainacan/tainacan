@@ -81,8 +81,6 @@ global $Tainacan_Fields;
 $Tainacan_Fields = new \Tainacan\Repositories\Fields();
 
 //register field types
-$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Core_Title');
-$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Core_Description');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Text');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Textarea');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Date');
