@@ -4,7 +4,6 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 
 class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
-	private $field;
 	private $item_metadata_repository;
 	private $item_repository;
 	private $collection_repository;
@@ -20,9 +19,10 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 
 	/**
 	 * Initialize objects after post_type register
+	 *
+	 * @throws Exception
 	 */
 	public function init_objects() {
-		$this->field = new Entities\Field();
 		$this->field_repository = new Repositories\Fields();
 		$this->item_metadata_repository = new Repositories\Item_Metadata();
 		$this->item_repository = new Repositories\Items();
@@ -42,15 +42,16 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<field_id>[\d]+)',
 			array(
 				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
+				),
+				// ENDPOINT X. THIS ENDPOINT DO THE SAME THING OF ENDPOINT Z. I hope that in a brief future it function changes.
+				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check')
 				),
-				array(
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
-				)
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
@@ -68,43 +69,77 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				),
 			)
 		);
+		register_rest_route($this->namespace, '/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'create_item'),
+					'permission_callback' => array($this, 'create_item_permissions_check')
+				)
+			)
+		);
+		register_rest_route($this->namespace, '/'. $this->rest_base . '/(?P<field_id>[\d]+)',
+			array(
+				// ENDPOINT Z.
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_item'),
+					'permission_callback' => array($this, 'delete_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_item'),
+					'permission_callback' => array($this, 'update_item_permissions_check')
+				)
+			)
+		);
 	}
 
 	/**
 	 * @param WP_REST_Request $request
 	 *
+	 * @param null $collection_id
+	 *
 	 * @return object|void|WP_Error
+	 * @throws Exception
 	 */
-	public function prepare_item_for_database( $request ) {
-		$meta = json_decode($request[0]->get_body(), true);
+	public function prepare_item_for_database( $request, $collection_id = null ) {
+		$field = new Entities\Field();
 
-		foreach ($meta as $key => $value){
+		$meta = json_decode( $request, true );
+		foreach ( $meta as $key => $value ) {
 			$set_ = 'set_' . $key;
-			$this->field->$set_($value);
+			$field->$set_( $value );
 		}
 
-		$collection = new Entities\Collection($request[1]);
+		if($collection_id) {
+			$collection = new Entities\Collection( $collection_id );
+			$field->set_collection( $collection );
+		} else {
+			$field->set_collection_id( 'default' );
+		}
 
-		$this->field->set_collection($collection);
+		return $field;
 	}
 
 	/**
 	 * @param WP_REST_Request $request
 	 *
 	 * @return WP_Error|WP_REST_Response
+	 * @throws Exception
 	 */
 	public function create_item( $request ) {
-		if(!empty($request->get_body())){
+		if(!empty($request->get_body()) && isset($request['collection_id'])){
 			$collection_id = $request['collection_id'];
 
 			try {
-				$this->prepare_item_for_database( [ $request, $collection_id ] );
+				$prepared = $this->prepare_item_for_database( $request->get_body(), $collection_id );
 			} catch (\Error $exception){
 				return new WP_REST_Response($exception->getMessage(), 400);
 			}
 
-			if($this->field->validate()) {
-				$this->field_repository->insert( $this->field );
+			if($prepared->validate()) {
+				$field = $this->field_repository->insert( $prepared);
 
 				$items = $this->item_repository->fetch([], $collection_id, 'WP_Query');
 
@@ -114,7 +149,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 						$items->the_post();
 
 						$item = new Entities\Item($items->post);
-						$item_meta = new Entities\Item_Metadata_Entity($item, $this->field);
+						$item_meta = new Entities\Item_Metadata_Entity($item, $field);
 
 						$field_added = $this->item_metadata_repository->insert($item_meta);
 					}
@@ -124,10 +159,30 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					return new WP_REST_Response($response, 201);
 				}
 				else {
-					$response = $this->prepare_item_for_response($this->field, $request);
+					$response = $this->prepare_item_for_response($prepared, $request);
 
 					return new WP_REST_Response($response, 201);
 				}
+			} else {
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared->get_errors(),
+					'field'         => $this->prepare_item_for_response($prepared, $request),
+				], 400);
+			}
+		} elseif (!empty($request->get_body())) {
+			try {
+				$prepared = $this->prepare_item_for_database( $request->get_body() );
+			} catch ( \Error $exception ) {
+				return new WP_REST_Response( $exception->getMessage(), 400 );
+			}
+
+			if ( $prepared->validate() ) {
+				$field = $this->field_repository->insert( $prepared );
+
+				$response = $this->prepare_item_for_response($field, $request);
+
+				return new WP_REST_Response($response, 201);
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
@@ -135,6 +190,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					'field'         => $this->prepare_item_for_response($this->field, $request),
 				], 400);
 			}
+
 		}
 
 		return new WP_REST_Response([
@@ -151,7 +207,11 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		return $this->collection_repository->can_edit(new Entities\Collection());
+		if(isset($request['collection_id'])) {
+			return $this->collection_repository->can_edit( new Entities\Collection() );
+		}
+
+		return $this->field_repository->can_edit(new Entities\Field());
 	}
 
 	/**
@@ -254,7 +314,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			}
 		}
 
-		return false;
+		return $this->field_repository->can_edit(new Entities\Field());
 	}
 
 	/**
@@ -266,7 +326,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 		$collection_id = $request['collection_id'];
 		$body = json_decode($request->get_body(), true);
 
-		if(!empty($body)){
+		if(!empty($body) && $collection_id){
 			$attributes = [];
 
 			$field_id = $request['field_id'];
@@ -318,6 +378,40 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				'error_message' => __('Field with that ID not found', 'tainacan'),
 				'field_id'      => $field_id
 			], 400);
+		} elseif (!empty($body)){
+			$attributes = [];
+
+			$field_id = $request['field_id'];
+
+			foreach ($body['values'] as $att => $value){
+				$attributes[$att] = $value;
+			}
+
+			$field = $this->field_repository->fetch($field_id);
+
+			if($field && $field->get_collection_id() === 'default') {
+
+				$prepared_metadata = $this->prepare_item_for_updating( $field, $attributes );
+
+				if ( $prepared_metadata->validate() ) {
+					$updated_metadata = $this->field_repository->update( $prepared_metadata );
+
+					$response = $this->prepare_item_for_response($updated_metadata, $request);
+
+					return new WP_REST_Response($response, 200);
+				}
+
+				return new WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_metadata->get_errors(),
+					'metadata'      => $this->prepare_item_for_response($prepared_metadata, $request)
+				], 400);
+			}
+
+			return new WP_REST_Response([
+				'error_message' => __('Field with that ID not found or that field is not a default field', 'tainacan'),
+				'field_id'      => $field_id
+			], 400);
 		}
 
 		return new WP_REST_Response([
@@ -342,7 +436,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 
         }
 
-        return false;
+        return $this->field_repository->can_edit(new Entities\Field());
 	}
 }
 
