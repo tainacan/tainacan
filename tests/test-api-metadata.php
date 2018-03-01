@@ -9,10 +9,10 @@ use Tainacan\Repositories;
  */
 class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
-	public function test_insert_metadata() {
+	public function test_create_field_in_a_collection() {
 		$collection = $this->tainacan_entity_factory->create_entity('collection', '', true);
 
-		$item = $this->tainacan_entity_factory->create_entity(
+		$this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
 				'title'       => 'No name',
@@ -44,6 +44,27 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
         
 	}
 
+	public function test_create_default_field(){
+		$field = json_encode(
+			array(
+				'name'        => 'Ano de Publicação',
+				'description' => 'Uma data no formato dd/mm/aaaa.',
+				'field_type'  => 'Tainacan\Field_Types\Text',
+			)
+		);
+
+		$request = new \WP_REST_Request(
+			'POST',
+			$this->namespace . '/fields'
+		);
+		$request->set_body($field);
+
+		$response = $this->server->dispatch($request);
+		$field_added = $response->get_data();
+
+		$this->assertTrue(is_array($field_added) && array_key_exists('name', $field_added), sprintf('cannot create field, response: %s', print_r($field_added, true)));
+		$this->assertEquals('Ano de Publicação', $field_added['name']);
+	}
 
 	public function test_get_item_and_collection_metadata(){
 		global $Tainacan_Item_Metadata;
@@ -210,7 +231,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
         
 	}
 
-	public function test_trash_field(){
+	public function test_trash_field_in_collection(){
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -245,6 +266,70 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$field_trashed = get_post($data1['id']);
 		$this->assertEquals('trash', $field_trashed->post_status);
+	}
+
+	public function test_trash_default_field(){
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'          => 'Field Statement',
+				'description'   => 'No Statement',
+				'collection_id' => 'default',
+				'status'        => 'publish',
+				'field_type'    => 'Tainacan\Field_Types\Text',
+				'multiple'      => 'yes'
+			),
+			true
+		);
+
+		$trash_field_request = new \WP_REST_Request(
+			'DELETE',
+			$this->namespace . '/fields/' . $field->get_id()
+		);
+
+		$trash_field_response = $this->server->dispatch($trash_field_request);
+		$data1 = $trash_field_response->get_data();
+
+		$this->assertEquals($field->get_id(), $data1['id']);
+
+		$field_trashed = get_post($data1['id']);
+		$this->assertEquals('trash', $field_trashed->post_status);
+	}
+
+	public function test_update_default_field(){
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'          => 'Field Statement',
+				'description'   => 'No Statement',
+				'collection_id' => 'default',
+				'status'        => 'publish',
+				'field_type'    => 'Tainacan\Field_Types\Text',
+				'multiple'      => 'no'
+			),
+			true
+		);
+
+		$new_attributes = json_encode([
+			'values' => [
+				'name'        => 'No name',
+				'description' => 'NOP!'
+			]
+		]);
+
+		$request = new \WP_REST_Request(
+			'PATCH',
+			$this->namespace . '/fields/' . $field->get_id()
+		);
+
+		$request->set_body($new_attributes);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals($field->get_id(), $data['id']);
+		$this->assertEquals('No name', $data['name']);
 	}
 
 }
