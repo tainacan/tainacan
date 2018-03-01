@@ -580,8 +580,7 @@ abstract class Repository {
     			$entity_type = get_class($new);
     			$old_entity = new $entity_type; // there is no saved entity, let compare with a new empty one
     		}
-    	}
-    	else { // get entity from repository
+    	} else { // get entity from repository
     		$old_entity = $this->get_entity_by_post($old);
     	}
     	$new_entity = $this->get_entity_by_post($new);
