@@ -89,7 +89,13 @@
                 let type = ''
 
                 if( this.type === 'date' ){
-                    values = [ this.date_init, this.date_end ];
+                    let date_init = this.date_init.getUTCFullYear() + '-' +
+                        ('00' + (this.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
+                        ('00' + this.date_init.getUTCDate()).slice(-2);
+                    let date_end = this.date_end.getUTCFullYear() + '-' +
+                        ('00' + (this.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
+                        ('00' + this.date_end.getUTCDate()).slice(-2);
+                    values = [ date_init, date_end ];
                     type = 'DATE';
                 } else {
                     values =  [ this.value_init, this.value_end ];
