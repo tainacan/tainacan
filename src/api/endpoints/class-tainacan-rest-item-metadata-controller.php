@@ -57,6 +57,15 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 					//'args'                => $this->get_collection_params(),
 				)
 			)
+				);
+		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base. '/(?P<field_id>[\d]+)',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item_field_value'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+				)
+			)
 		);
 	}
 
@@ -113,6 +122,32 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			$prepared_item[$index-1]['field']['field_type_object'] = $this->prepare_item_for_response( $item_metadata->get_field()->get_field_type_object(), $request);
 		}
 
+		return new WP_REST_Response($prepared_item, 200);
+	}
+	
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_item_field_value( $request ) {
+		$item_id = $request['item_id'];
+		$field_id = $request['field_id'];
+		
+		$item = $this->item_repository->fetch($item_id);
+		
+		$items_metadata = $item->get_fields();
+		
+		$prepared_item = '';
+		
+		foreach ($items_metadata as $item_metadata){
+			$field = $item_metadata->get_field();
+			if($field->get_id() == $field_id) {
+				$prepared_item = $this->prepare_item_for_response($item_metadata, $request);
+				$prepared_item['field']['field_type_object'] = $this->prepare_item_for_response( $field->get_field_type_object(), $request);
+			}
+		}
+		
 		return new WP_REST_Response($prepared_item, 200);
 	}
 
@@ -219,7 +254,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 				else {
 					$field_id = $request['metadata_id'];
 					$field = $this->field_repository->fetch( $field_id );
-					return $field->get_accept_suggestion();
+					return 'publish' === $field->get_status() && $field->get_accept_suggestion();
 				}
 			}
 
