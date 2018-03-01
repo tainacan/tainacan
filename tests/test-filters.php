@@ -79,7 +79,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-        $filter_range_type = $this->tainacan_filter_factory->create_filter('range');
+        $filter_range_type = $this->tainacan_filter_factory->create_filter('custom_interval');
 
         //nao devera permitir um filtro Range para o tipo string
          $this->assertTrue( $filter->set_filter_type( $filter_range_type ) === null );

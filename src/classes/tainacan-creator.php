@@ -94,7 +94,7 @@ global $Tainacan_Filters;
 $Tainacan_Filters = new \Tainacan\Repositories\Filters();
 
 //register filter type
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Range');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Custom_Interval');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
 
 global $Tainacan_Taxonomies;
