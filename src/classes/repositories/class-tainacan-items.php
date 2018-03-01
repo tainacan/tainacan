@@ -249,7 +249,7 @@ class Items extends Repository {
              */
             if (!isset($args['post_status'])) {
                 $status_obj = get_post_status_object( $collection->get_status() );
-        		if ( $status_obj->public || current_user_can( $collection->cap->read_private_posts ) ) {
+        		if ( $status_obj->public || current_user_can( $collection->cap->read_private_posts, $collection->get_id() ) ) {
         			$cpt[] = $collection->get_db_identifier();
         		}
             } else {
