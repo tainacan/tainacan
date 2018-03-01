@@ -139,6 +139,15 @@ class Item extends Entity {
     }
     
     /**
+     * Use especial Item capabilities
+     * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::get_capabilities()
+     */
+    public function get_capabilities() {
+    	return $this->get_collection()->get_items_capabilities();
+    }
+    
+    /**
      * Define the title
      *
      * @param [string] $value
