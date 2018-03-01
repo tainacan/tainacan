@@ -69,4 +69,21 @@ class Permissions extends TAINACAN_UnitTestCase {
         $this->assertFalse(user_can($new_user, $collection->cap->read_post, $collection->get_id()), 'subscriber should not be able read private collection');
 	}
 	
+	function test_entity_serialization() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'testeSeria',
+				'description'   => 'adasdasdsa',
+			),
+			true
+		);
+		
+		$ser = serialize($collection);
+		$u2 = $this->factory()->user->create(array( 'role' => 'subscriber' ));
+		wp_set_current_user($u2);
+		$collection_unser = unserialize($ser);
+		$this->assertFalse(user_can($u2, $collection_unser->cap->edit_post, $collection_unser->get_id()));
+	}
+	
 }
