@@ -153,8 +153,8 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check($request){
-        
-        if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-collections') ) {
+        $dummy = new Entities\Collection();
+        if ( 'edit' === $request['context'] && ! current_user_can($dummy->get_capabilities()->edit_posts) ) {
 			return false;
 		}
 
@@ -230,7 +230,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		return $this->collections_repository->can_edit($this->collection);
+        return $this->collection->can_edit();
     }
 
 	/**

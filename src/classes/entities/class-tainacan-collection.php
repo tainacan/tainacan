@@ -14,7 +14,7 @@ class Collection extends Entity {
      * @see \Tainacan\Entities\Entity::post_type
 	 * @var string
 	 */
-    protected static $post_type = 'tainacan-collections';
+    protected static $post_type = 'tainacan-collection';
     /**
      * {@inheritDoc}
      * @see \Tainacan\Entities\Entity::repository

@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Represents entity Log
  */
 class Log extends Entity {
-	protected static $post_type = 'tainacan-logs';
+	protected static $post_type = 'tainacan-log';
 	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::repository

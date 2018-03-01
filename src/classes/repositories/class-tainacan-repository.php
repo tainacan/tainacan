@@ -370,7 +370,7 @@ abstract class Repository {
     public static function get_entity_by_post_type($post_type, $post = 0) {
     	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
     	
-    	// its is a collection Item?
+    	// Is it a collection Item?
     	if($prefix == Entities\Collection::$db_identifier_prefix) {
     		$cpts = self::get_collections_db_identifier();
     		if(array_key_exists($post_type, $cpts)) {

@@ -9,8 +9,21 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Taxonomy extends Entity {
     use \Tainacan\Traits\Entity_Collections_Relation;
-
-    protected static $post_type = 'tainacan-taxonomies';
+    
+    /**
+	 * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::post_type
+	 * @var string
+	 */
+    protected static $post_type = 'tainacan-taxonomy';
+    
+    /**
+	 * {@inheritDoc}
+     * @see \Tainacan\Entities\Entity::capability_type
+	 * @var string
+	 */
+    protected static $capability_type = ['tainacan-taxonomy', 'tainacan-taxonomies'];
+    
     /**
      * {@inheritDoc}
      * @see \Tainacan\Entities\Entity::repository
