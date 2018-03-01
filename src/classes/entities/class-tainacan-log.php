@@ -220,4 +220,13 @@ class Log extends Entity {
         }
 		
     }
+    
+    /**
+     * {@inheritDoc}
+	 * @see \Tainacan\Repositories\Logs::approve
+     */
+    public function approve() {
+    	global ${$this->repository};
+    	return ${$this->repository}->approve($this);
+    }
 }

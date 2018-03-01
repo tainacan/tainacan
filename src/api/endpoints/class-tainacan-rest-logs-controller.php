@@ -42,6 +42,16 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 				)
 			)
 		);
+		
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<log_id>[\d]+)/approve',
+			array(
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'approve_item'),
+					'permission_callback' => array($this, 'approve_item_permissions_check'),
+				)
+			)
+		);
 	}
 
 	/**
@@ -131,6 +141,43 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function approve_item_permissions_check( $request ) {
+		$log = $this->logs_repository->fetch($request['log_id']);
+		
+		if($log instanceof Entities\Log){
+			if($log->can_read()) {
+				$entity = $log->get_value();
+				if($entity instanceof Entities\Entity) {
+					return $entity->can_edit();
+				}
+				return new WP_Error();
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * approve a logged modification
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function approve_item($request) {
+		$log = $this->logs_repository->fetch($request['log_id']);
+		if($log instanceof Entities\Log){ 
+			$entity = $log->approve();
+			$prepared_entity = $this->prepare_item_for_response( $entity, $request );
+			
+			return new WP_REST_Response($prepared_entity, 200);
+		}
 	}
 }
 
