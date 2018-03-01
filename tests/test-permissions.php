@@ -69,6 +69,9 @@ class Permissions extends TAINACAN_UnitTestCase {
         $this->assertFalse(user_can($new_user, $collection->cap->read_post, $collection->get_id()), 'subscriber should not be able read private collection');
 	}
 	
+	/**
+	 * @group serialize_permission
+	 */
 	function test_entity_serialization() {
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -79,10 +82,10 @@ class Permissions extends TAINACAN_UnitTestCase {
 			true
 		);
 		
-		$ser = serialize($collection);
+		$ser = base64_encode( maybe_serialize($collection));
 		$u2 = $this->factory()->user->create(array( 'role' => 'subscriber' ));
 		wp_set_current_user($u2);
-		$collection_unser = unserialize($ser);
+		$collection_unser = maybe_unserialize( base64_decode($ser));
 		$this->assertFalse(user_can($u2, $collection_unser->cap->edit_post, $collection_unser->get_id()));
 	}
 	
