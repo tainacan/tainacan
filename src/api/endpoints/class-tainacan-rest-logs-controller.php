@@ -2,6 +2,7 @@
 
 use Tainacan\Entities;
 use Tainacan\Repositories;
+use Tainacan\Repositories\Repository;
 
 class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	private $logs_repository;
@@ -148,17 +149,21 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function approve_item_permissions_check( $request ) {
 		$log = $this->logs_repository->fetch($request['log_id']);
-		
 		if($log instanceof Entities\Log){
 			if($log->can_read()) {
 				$entity = $log->get_value();
 				if($entity instanceof Entities\Entity) {
-					return $entity->can_edit();
+					if($entity instanceof Entities\Item_Metadata_Entity) {
+						$item = $entity->get_item();
+						return $item->can_edit();
+					} // TODO for other entities types
+					else {
+						return $entity->can_edit();
+					}
 				}
 				return new WP_Error();
 			}
 		}
-		
 		return false;
 	}
 	
