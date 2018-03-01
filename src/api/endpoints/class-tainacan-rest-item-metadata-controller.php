@@ -58,7 +58,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 				)
 			)
 				);
-		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base. '/(?P<field_id>[\d]+)',
+		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base. '/(?P<metadata_id>[\d]+)',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -132,7 +132,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function get_item_field_value( $request ) {
 		$item_id = $request['item_id'];
-		$field_id = $request['field_id'];
+		$field_id = $request['metadata_id'];
 		
 		$item = $this->item_repository->fetch($item_id);
 		
