@@ -10,10 +10,10 @@
             
             <ul class="menu-list">
                 <li><router-link tag="a" to="/collections" :class="activeRoute == 'CollectionsPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="folder-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('collections')}}</span>
+                    <b-icon size="is-small" icon="folder"></b-icon> <span class="menu-text">{{ $i18n.get('collections')}}</span>
                 </router-link></li>
                 <li><router-link tag="a" to="/items" :class="activeRoute == 'ItemsPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="note-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
+                    <b-icon size="is-small" icon="cube-outline"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
                 </router-link></li>
                 <li class="separator"></li>
                 <li><router-link tag="a" to="/fields" :class="activeRoute == 'FieldsPage' ? 'is-active':''">

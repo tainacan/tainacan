@@ -37,16 +37,15 @@ const routes = [
     { path: '/collections/:id', name: 'CollectionPage', component: CollectionPage, meta: {title: i18nGet('title_collection_page')}, 
       children: [
         { path: '', redirect: 'items'},
-        { path: 'items', component: ItemsList, name: 'ItemsList', meta: {title: i18nGet('title_collection_page')} },
+        { path: 'items', component: ItemsPage, name: 'ItemsPage', meta: {title: i18nGet('title_collection_page')} }, 
+        { path: 'items/:itemId/edit', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title:  i18nGet('title_item_edition')} },
+        { path: 'items/new', name: 'ItemCreatePage', component: ItemEditionPage, meta: {title: i18nGet('title_create_item')} },
+        { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page')} },   
         { path: 'edit', component: CollectionEditionPage,  name: 'CollectionEditionPage', meta: {title: i18nGet('title_collection_edition')} },
         { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: i18nGet('title_collection_fields_edition')} }, 
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_page')} }
       ]
     },
-
-    { path: '/collections/:collectionId/items/:id/edit', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title:  i18nGet('title_item_edition')} },
-    { path: '/collections/:id/items/new', name: 'ItemCreatePage', component: ItemEditionPage, meta: {title: i18nGet('title_create_item')} },
-    { path: '/collections/:collectionId/items/:id', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page')} },
 
     { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page')} },
     { path: '/items/new', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title: i18nGet('title_create_item')} },

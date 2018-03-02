@@ -105,9 +105,11 @@ export default {
             isLoading: false,
             totalItems: 0,
             page: 1,
-            itemsPerPage: 2,
-            collectionId: Number
+            itemsPerPage: 2
         }
+    },
+    props: {
+        collectionId: Number
     },
     methods: {
         ...mapActions('collection', [
@@ -213,9 +215,6 @@ export default {
         items(){
             return this.getItems();
         }
-    },
-    created() {
-        this.collectionId = this.$route.params.id;
     },
     mounted(){
         this.loadItems();

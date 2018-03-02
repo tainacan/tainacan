@@ -172,7 +172,7 @@ export default {
     created(){
         // Obtains collection ID
         this.cleanFields();
-        this.collectionId = ( this.$route.params.collection_id ) ? this.$route.params.collection_id : this.$route.params.id;
+        this.collectionId = this.$route.params.id;
         this.form.collectionId = this.collectionId;
 
         if (this.$route.fullPath.split("/").pop() == "new") {
@@ -184,8 +184,7 @@ export default {
             this.pageTitle = this.$i18n.get('title_item_edition');
 
             // Obtains current Item ID from URL
-            this.pathArray = this.$route.fullPath.split("/").reverse(); 
-            this.itemId = this.pathArray[1];
+            this.itemId = this.$route.params.itemId;
 
             this.fetchItem(this.itemId).then(res => {
                 this.item = res;
