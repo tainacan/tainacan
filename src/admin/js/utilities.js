@@ -1,4 +1,11 @@
 import qs from 'qs';
+import axios from 'axios';
+
+const wpApi = axios.create({
+    baseURL: tainacan_plugin.root_wp_api
+});
+
+wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
@@ -8,6 +15,43 @@ I18NPlugin.install = function (Vue, options = {}) {
         get(key) {
             let string = tainacan_plugin.i18n[key];
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
+        }
+    }
+
+}
+
+// USER PREFERENCES - Used to save key-value information for user settings of plugin
+export const UserPrefsPlugin = {};
+UserPrefsPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$userPrefs = {
+        get(key) {
+            return new Promise(( resolve, reject ) => {
+                wpApi.get('/wp/v2/users/me/')
+                .then( res => {
+                    if (res.data.meta.hasOwnProperty(key))
+                        resolve( res.data.key );
+                    else
+                        reject( { message: 'Key does not exists in user preference.', value: false} );
+                })
+                .catch(error => {
+                    reject( { message: error, value: false});
+                });
+            }); 
+        },
+        set(metakey, value) {
+            let data = {
+                'meta': { metakey: value }
+            };
+            return new Promise(( resolve, reject ) => {
+                wpApi.post('/wp/v2/users/me/?context=edit&' + qs.stringify(data))
+                .then( res => {
+                    resolve( res.data );
+                })
+                .catch(error => {
+                    reject( error );
+                });
+            }); 
         }
     }
 

@@ -85,7 +85,8 @@ class Admin {
         }
         
         $settings = [
-			'root' => esc_url_raw( rest_url() ).'tainacan/v2',
+            'root' => esc_url_raw( rest_url() ).'tainacan/v2',
+            'root_wp_api' => esc_url_raw( rest_url() ),
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 			'components' => $components,
             'i18n' => $tainacan_admin_i18n,

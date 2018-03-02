@@ -18,7 +18,7 @@ import AdminPage from '../admin.vue'
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
-import { I18NPlugin, RouterHelperPlugin } from './utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin } from './utilities';
 
 // Configure and Register Plugins
 router.beforeEach((to, from, next) => {
@@ -26,6 +26,7 @@ router.beforeEach((to, from, next) => {
     next()
 });
 Vue.use(I18NPlugin);
+Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
 Vue.use(Buefy); 
 

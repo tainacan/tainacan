@@ -8,10 +8,10 @@
                         v-model="collectionsPerPage" 
                         @input="onChangeCollectionsPerPage" 
                         :disabled="collections.length <= 0">
-                    <option value="2">2 {{ $i18n.get('label_per_page') }}</option>
-                    <option value="10">10 {{ $i18n.get('label_per_page') }}</option>
-                    <option value="15">15 {{ $i18n.get('label_per_page') }}</option>
-                    <option value="20">20 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="12">12 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="24">24 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="48">48 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="96">96 {{ $i18n.get('label_per_page') }}</option>
                 </b-select>
 
             </b-field>
@@ -52,7 +52,7 @@
                         </router-link>
                     </b-table-column>
 
-                    <b-table-column tabindex="0" label="Ações" width="110" :aria-label="$i18n.get('label_ações')">
+                    <b-table-column tabindex="0" label="Ações" width="80" :aria-label="$i18n.get('label_ações')">
                         <!-- <a id="button-view" :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a> -->
                         <a id="button-edit" :aria-label="$i18n.get('label_button_edit')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
                         <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
@@ -94,7 +94,7 @@ export default {
             isLoading: false,
             totalCollections: 0,
             page: 1,
-            collectionsPerPage: 2
+            collectionsPerPage: 12
         }
     },
     methods: {
@@ -107,13 +107,13 @@ export default {
         ]),
         deleteOneCollection(collectionId) {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_collection_deleted'),
+                message: this.$i18n.get('info_warning_collection_delete'),
                 onConfirm: () => {
                     this.deleteCollection(collectionId).then(() => {
                         this.loadCollections();
                         this.$toast.open({
                             duration: 3000,
-                            message: this.$i18n.get('info_collection_delete'),
+                            message: this.$i18n.get('info_collection_deleted'),
                             position: 'is-bottom',
                             type: 'is-secondary',
                             queue: true
@@ -174,6 +174,7 @@ export default {
         },
         onChangeCollectionsPerPage(value) {
             this.collectionsPerPage = value;
+            this.$userPrefs.set('items_per_page', value);
             this.loadCollections();
         },
         onPageChange(page) {
@@ -196,6 +197,15 @@ export default {
         collections(){
             return this.getCollections();
         }
+    },
+    created() {
+        this.$userPrefs.get('items_per_page')
+            .then((value) => {
+                this.collectionsPerPage = value;
+            })
+            .catch((error) => {
+                this.$userPrefs.set('items_per_page', 12);
+            }); 
     },
     mounted(){
         this.loadCollections();

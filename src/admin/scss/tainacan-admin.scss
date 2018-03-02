@@ -6,6 +6,11 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
+// Table
+$table-head-cell-color: $gray-light;
+$table-row-active-color: #e5e5e5;
+$table-head-cell-border-width: 0 0 1px;
+
 // Bulma's modal (needs to be greather than taincan-admin-app
 $modal-z: 9999999;
 
@@ -13,6 +18,9 @@ $modal-z: 9999999;
 @import "../../assets/css/fonts/materialdesignicons.css";
 @import "../../../node_modules/bulma/bulma.sass";
 @import "../../../node_modules/buefy/src/scss/buefy.scss";
+
+// Roboto font
+$family-sans-serif: 'Roboto', sans-serif;
 
 // Clears wordpress content
 body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
@@ -31,6 +39,7 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
     overflow-y: auto;
     height: 100%;
     margin: 0px !important; 
+    font-family: $family-sans-serif;
 }
 
 /* Rules for sizing the icon. */
@@ -49,5 +58,5 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
 
 // Buefy notices (toast)
 .notices {
-z-index: 99999999 !important;
+    z-index: 99999999 !important;
 }
