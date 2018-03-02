@@ -47,12 +47,12 @@
                     @page-change="onPageChange"
                     backend-sorting>
                 <template slot-scope="props">
-
                     <b-table-column v-for="(column, index) in tableFields"
                         :key="index"
                         :label="column.label"
                         :visible="column.visible"
                         :width="column.field == 'row_actions' ? 110 : column.field == 'featured_image' ? 55 : undefined ">
+                        <router-link tag="span" class="clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
                         <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">{{ 
                             props.row.metadata[column.slug].multiple == 'yes' ? props.row.metadata[column.slug].value.join(', ') : props.row.metadata[column.slug].value 
                         }}</template>
@@ -60,10 +60,11 @@
                             <img class="table-thumb" :src="`${ props.row[column.slug] }`"/>
                         </template>
                         <template v-if="column.field == 'row_actions'">
-                            <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a>
+                            <!-- <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a> -->
                             <a id="button-edit" @click.prevent.stop="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
                             <a id="button-delete" @click.prevent.stop="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
                         </template>
+                        </router-link>
                     </b-table-column>
 
                 </template>
@@ -239,7 +240,7 @@ export default {
         vertical-align: middle !important;
     }
 
-    tr { cursor: pointer }
+    .clickable-row{ cursor: pointer !important }
 
 </style>
 

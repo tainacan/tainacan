@@ -31,27 +31,32 @@
                     :per-page="collectionsPerPage"
                     @page-change="onPageChange">
                 <template slot-scope="props">
-
+                    
                     <b-table-column tabindex="0" label="Imagem" :aria-label="$i18n.get('label_image')" field="featured_image" width="55">
+                        <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
                         <template v-if="props.row.featured_image" slot-scope="scope">
                             <img class="table-thumb" :src="`${props.row.featured_image}`"/>
                         </template>
+                        </router-link>
                     </b-table-column>
 
                     <b-table-column tabindex="0" label="Nome" :aria-label="$i18n.get('label_name') + ': ' + props.row.name" field="props.row.name">
+                        <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
                         {{ props.row.name }}
+                        </router-link>
                     </b-table-column>
 
                     <b-table-column tabindex="0" :aria-label="$i18n.get('label_description') + ': ' + props.row.description" property="description" label="Descrição" show-overflow-tooltip field="props.row.description">
+                        <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
                         {{ props.row.description }}
+                        </router-link>
                     </b-table-column>
 
                     <b-table-column tabindex="0" label="Ações" width="110" :aria-label="$i18n.get('label_ações')">
-                        <a id="button-view" :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a>
+                        <!-- <a id="button-view" :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a> -->
                         <a id="button-edit" :aria-label="$i18n.get('label_button_edit')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
                         <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
                     </b-table-column>
-
                 </template>
 
                 <!-- Empty state image -->
@@ -206,7 +211,7 @@ export default {
         vertical-align: middle !important;
     }
 
-    tr { cursor: pointer !important; }
+    .clickable-row{ cursor: pointer !important; }
 
 </style>
 
