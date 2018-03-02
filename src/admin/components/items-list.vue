@@ -52,19 +52,24 @@
                         :label="column.label"
                         :visible="column.visible"
                         :width="column.field == 'row_actions' ? 110 : column.field == 'featured_image' ? 55 : undefined ">
+                        
                         <router-link tag="span" class="clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
-                        <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">{{ 
-                            props.row.metadata[column.slug].multiple == 'yes' ? props.row.metadata[column.slug].value.join(', ') : props.row.metadata[column.slug].value 
-                        }}</template>
-                        <template v-if="column.field == 'featured_image'">
-                            <img class="table-thumb" :src="`${ props.row[column.slug] }`"/>
-                        </template>
+                            <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">
+                                {{ props.row.metadata[column.slug].multiple == 'yes' ? props.row.metadata[column.slug].value.join(', ') : props.row.metadata[column.slug].value}}
+                            </template>
+                        </router-link>
+                        
+                        <router-link tag="span" class="clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
+                            <template v-if="column.field == 'featured_image'">
+                                <img class="table-thumb" :src="`${ props.row[column.slug] }`"/>
+                            </template>
+                        </router-link>
+                        
                         <template v-if="column.field == 'row_actions'">
                             <!-- <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a> -->
-                            <a id="button-edit" @click.prevent.stop="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
-                            <a id="button-delete" @click.prevent.stop="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
+                            <a id="button-edit" @click="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
+                            <a id="button-delete" @click="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
                         </template>
-                        </router-link>
                     </b-table-column>
 
                 </template>
@@ -123,13 +128,13 @@ export default {
         ]),
         deleteOneItem(itemId) {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_item_deleted'),
+                message: this.$i18n.get('info_warning_item_delete'),
                 onConfirm: () => {
                     this.deleteItem(itemId).then((res) => {
                         this.loadItems();
                         this.$toast.open({
                             duration: 3000,
-                            message: this.$i18n.get('info_item_delete'),
+                            message: this.$i18n.get('info_item_deleted'),
                             position: 'is-bottom',
                             type: 'is-secondary',
                             queue: true

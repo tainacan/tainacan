@@ -89,6 +89,7 @@ return [
     'info_no_item_created' => __('No item was created in this collection.', 'tainacan'),
     'info_error_deleting_collection' => __('Error on deleting collection.', 'tainacan'),
     'info_collection_deleted' => __('Collection deleted.', 'tainacan'),
+    'info_item_deleted' => __('Item deleted.', 'tainacan'),
     'info_warning_collection_delete' => __('Do you really want to delete this collection?', 'tainacan'),
     'info_warning_item_delete' => __('Do you really want to delete this item?', 'tainacan'),
     'info_warning_selected_collections_delete' => __('Do you really want to delete the selected collections?', 'tainacan'),
