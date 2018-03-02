@@ -28,6 +28,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "cross-env": "^3.0.0",
     "css-loader": "^0.25.0",
+    "cypress": "^2.1.0",
     "element-theme-chalk": "^2.1.0",
     "file-loader": "^0.9.0",
     "postcss-loader": "^2.1.0",
