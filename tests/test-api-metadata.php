@@ -333,6 +333,102 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('No name', $data['name']);
 	}
 
+	public function test_fetch_all_field_values(){
+		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Statement',
+				'description' => 'No Statement',
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'No name1',
+				'description' => 'No description1',
+				'status'      => 'publish',
+				'collection'  => $collection
+			),
+			true
+		);
+
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'No name2',
+				'description' => 'No description2',
+				'status'      => 'private',
+				'collection'  => $collection
+			),
+			true
+		);
+
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve valor do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'field_type'  => 'Tainacan\Field_Types\Text',
+			),
+			true
+		);
+
+		$item_metadata1 = new \Tainacan\Entities\Item_Metadata_Entity($item1, $field);
+		$item_metadata1->set_value('12/12/2017');
+
+		$item_metadata1->validate();
+		$Tainacan_Item_Metadata->insert($item_metadata1);
+
+		$item_metadata2 = new \Tainacan\Entities\Item_Metadata_Entity($item2, $field);
+		$item_metadata2->set_value('02/03/2018');
+
+		$item_metadata2->validate();
+		$Tainacan_Item_Metadata->insert($item_metadata2);
+
+		//=======================
+
+		$query = [
+			'fetch' => 'all_field_values'
+		];
+
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/collection/' . $collection->get_id() . '/fields/' . $field->get_id()
+		);
+		$request->set_query_params($query);
+
+		//=======================
+
+		$new_user1 = $this->factory()->user->create(array( 'role' => 'subscriber' ));
+		wp_set_current_user($new_user1);
+
+		$response1 = $this->server->dispatch($request);
+
+		$data1 = $response1->get_data();
+
+		$this->assertCount(1, $data1);
+		$this->assertEquals('12/12/2017', $data1[0]['mvalue']);
+
+		//=======================
+
+		$new_user2 = $this->factory()->user->create(array( 'role' => 'administrator' ));
+		wp_set_current_user($new_user2);
+
+		$response2 = $this->server->dispatch($request);
+
+		$data2 = $response2->get_data();
+
+		$this->assertCount(2, $data2);
+		$this->assertEquals('12/12/2017', $data2[0]['mvalue']);
+		$this->assertEquals('02/03/2018', $data2[1]['mvalue']);
+	}
 }
 
 ?>

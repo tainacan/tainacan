@@ -583,4 +583,51 @@ class Fields extends Repository {
             throw new \ErrorException('The entity wasn\'t validated.' . print_r( $field->get_errors(), true));
         }
     }
+
+	/**
+	 * Fetch all values of a field from a collection in all it collection items
+	 *
+	 * @param $collection_id
+	 * @param $field_id
+	 *
+	 * @return array|null|object
+	 */
+	public function fetch_all_field_values($collection_id, $field_id){
+		global $wpdb;
+
+		// Clear the result cache
+		$wpdb->flush();
+
+		$item_post_type = "%{$collection_id}_item";
+
+		$sql_string = (current_user_can( "read_private_tnc_col_{$collection_id}_items" ) && current_user_can( 'read_private_tainacan-collections' )) ? $wpdb->prepare(
+			"SELECT item_id, field_id, mvalue 
+				FROM (
+					SELECT ID as item_id
+					FROM $wpdb->posts
+					WHERE post_type LIKE %s
+				) items
+				JOIN (
+					SELECT meta_key as field_id, meta_value as mvalue, post_id
+					FROM $wpdb->postmeta
+				) metas
+				ON items.item_id = metas.post_id AND metas.field_id = %s", $item_post_type, $field_id
+		) : $wpdb->prepare(
+			"SELECT item_id, field_id, mvalue 
+				FROM (
+					SELECT ID as item_id
+					FROM $wpdb->posts
+					WHERE post_type LIKE %s AND post_status <> 'private'
+				) items
+				JOIN (
+					SELECT meta_key as field_id, meta_value as mvalue, post_id
+					FROM $wpdb->postmeta
+				) metas
+				ON items.item_id = metas.post_id AND metas.field_id = %s", $item_post_type, $field_id
+		);
+
+		$results = $wpdb->get_results($sql_string, ARRAY_A);
+
+		return $results;
+	}
 }

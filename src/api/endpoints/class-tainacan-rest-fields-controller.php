@@ -46,12 +46,17 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check')
 				),
-				// ENDPOINT X. THIS ENDPOINT DO THE SAME THING OF ENDPOINT Z. I hope that in a brief future it function changes.
+				// ENDPOINT X. THIS ENDPOINT DO THE SAME THING OF ENDPOINT Z. I hope in a brief future it function changes.
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check')
 				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'get_item_permissions_check')
+				)
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
@@ -93,6 +98,41 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				)
 			)
 		);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_item( $request ) {
+		$collection_id = $request['collection_id'];
+		$field_id = $request['field_id'];
+
+		if($request['fetch'] === 'all_field_values'){
+			$results = $this->field_repository->fetch_all_field_values($collection_id, $field_id);
+
+			return new WP_REST_Response($results, 200);
+		}
+
+		return new WP_REST_Response([
+			'error_message' => __('Verify the route. A query parameter is missing', 'tainacan'),
+		], 400);
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return bool|WP_Error
+	 * @throws Exception
+	 */
+	public function get_item_permissions_check( $request ) {
+
+		if($request['context'] === 'edit' && !$this->field_repository->can_read(new Entities\Field())){
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
