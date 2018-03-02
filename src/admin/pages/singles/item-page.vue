@@ -24,11 +24,11 @@
             <footer class="card-footer">
                 <router-link
                         class="card-footer-item" :to="{ path: $routerHelper.getCollectionPath(collectionId)}">
-                    Ver Coleção
+                    {{ $i18n.get('see') + ' ' + $i18n.get('collection') }}
                 </router-link>
                 <router-link
                         class="card-footer-item" :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                    Editar Item
+                    {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
                 </router-link>
             </footer>
         </div>

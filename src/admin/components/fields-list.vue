@@ -20,7 +20,7 @@
                             <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon is-small icon="delete"></b-icon></a>
                             <b-icon is-small icon="pencil" v-if="field.id != undefined"></b-icon>
                         </div>
-                        <div class="not-sortable-item" slot="footer">Drag and drop Fields here to add them to Collection.</div>
+                        <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_fields_collection') }}</div>
                     </draggable> 
                 </b-field>
             </div>

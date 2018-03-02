@@ -2,16 +2,16 @@
     <div>
         <section class="section">
             <b-field grouped group-multiline>
-                <button v-if="selectedCollections.length > 0" class="button field is-danger" @click="deleteSelectedCollections()"><span>Deletar coleções selecionadas </span><b-icon icon="delete"></b-icon></button>
+                <button v-if="selectedCollections.length > 0" class="button field is-danger" @click="deleteSelectedCollections()"><span>{{$i18n.get('instruction_delete_selected_collections')}} </span><b-icon icon="delete"></b-icon></button>
                 <b-select 
                         :label="$i18n.get('label_collections_per_page')"
                         v-model="collectionsPerPage" 
                         @input="onChangeCollectionsPerPage" 
                         :disabled="collections.length <= 0">
-                    <option value="2">2 coleções por página</option>
-                    <option value="10">10 coleções por página</option>
-                    <option value="15">15 coleções por página</option>
-                    <option value="20">20 coleções por página</option>
+                    <option value="2">2 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="10">10 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="15">15 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="20">20 {{ $i18n.get('label_per_page') }}</option>
                 </b-select>
 
             </b-field>
@@ -64,10 +64,10 @@
                                     size="is-large">
                                 </b-icon>
                             </p>
-                            <p>Nenhuma coleção ainda neste repositório.</p>
+                            <p></p>
                             <router-link tag="button" class="button is-primary"
                                         :to="{ path: $routerHelper.getNewCollectionPath() }">
-                                Criar Coleção
+                                {{ $i18n.get('new') + ' ' + $i18n.get('collection') }}
                             </router-link>
                         </div>
                     </section>
@@ -102,13 +102,13 @@ export default {
         ]),
         deleteOneCollection(collectionId) {
             this.$dialog.confirm({
-                message: 'Deseja realmente deletar esta Coleção?',
+                message: this.$i18n.get('info_warning_collection_deleted'),
                 onConfirm: () => {
                     this.deleteCollection(collectionId).then(() => {
                         this.loadCollections();
                         this.$toast.open({
                             duration: 3000,
-                            message: `Coleção deletada`,
+                            message: this.$i18n.get('info_collection_delete'),
                             position: 'is-bottom',
                             type: 'is-secondary',
                             queue: true
@@ -120,7 +120,7 @@ export default {
                     }).catch(() =>
                         this.$toast.open({
                             duration: 3000,
-                            message: `Erro ao deletar coleção`,
+                            message: this.$i18n.get('info_error_deleting_collection'),
                             position: 'is-bottom',
                             type: 'is-danger',
                             queue: true
@@ -131,7 +131,7 @@ export default {
         },
         deleteSelectedCollections() {
             this.$dialog.confirm({
-                message: 'Deseja realmente todos as coleções selecionadas?',
+                message: this.$i18n.get('info_selected_collections_delete'),
                 onConfirm: () => {
 
                     for (let collection of this.selectedCollections) {
@@ -140,7 +140,7 @@ export default {
                             this.loadCollections();
                             this.$toast.open({
                                 duration: 3000,
-                                message: `Coleção deletada`,
+                                message: this.$i18n.get('info_collection_deleted'),
                                 position: 'is-bottom',
                                 type: 'is-secondary',
                                 queue: false
@@ -148,7 +148,7 @@ export default {
                         }).catch((err) => { 
                             this.$toast.open({
                                 duration: 3000,
-                                message: `Erro ao deletar coleção`,
+                                message: this.$i18n.get('info_error_deleting_collection'),
                                 position: 'is-bottom',
                                 type: 'is-danger',
                                 queue: false

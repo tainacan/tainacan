@@ -2,13 +2,13 @@
     <div>
         <h1 class="is-size-3">{{ pageTitle }}  <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag></h1>
         <form label-width="120px">
-            <b-field label="Título">
+            <b-field :label="$i18n.get('label_title')">
                 <b-input
                     id="tainacan-text-name"
                     v-model="form.name">
                 </b-input>
             </b-field>
-            <b-field label="Descrição">
+            <b-field :label="$i18n.get('label_description')">
                 <b-input
                         id="tainacan-text-description"
                         type="textarea"
@@ -16,11 +16,11 @@
                         >
                 </b-input>
             </b-field>
-            <b-field label="Status">
+            <b-field :label="$i18n.get('label_status')">
                 <b-select
                         id="tainacan-select-status"
                         v-model="form.status"
-                        placeholder="Selecione um status">
+                        :placeholder="$i18n.get('instruction_select_a_status')">
                     <option
                             v-for="statusOption in statusOptions"
                             :key="statusOption.value"
@@ -30,7 +30,7 @@
                 </b-select>
             </b-field>
             <b-field
-                    label="Imagem">
+                    :label="$i18n.get('label_image')">
                 <b-upload v-model="form.files"
                           multiple
                           drag-drop>
@@ -42,7 +42,7 @@
                                         size="is-large">
                                 </b-icon>
                             </p>
-                            <p>Arraste uma imagem aqui <em>ou clique para enviar</em></p>
+                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
                         </div>
                     </section>
                 </b-upload>
@@ -51,11 +51,11 @@
                 id="button-cancel-collection-creation"
                 class="button"
                 type="button"
-                @click="cancelBack">Cancelar</button>
+                @click="cancelBack">{{ $i18n.get('cancel') }}</button>
             <a
                 id="button-submit-collection-creation"
                 @click="onSubmit"
-                class="button is-success is-hovered">Salvar</a>
+                class="button is-success is-hovered">{{ $i18n.get('save') }}</a>
         </form>
 
         <b-loading :active.sync="isLoading" :canCancel="false">
@@ -82,16 +82,16 @@ export default {
             // Can be obtained from api later
             statusOptions: [{ 
                 value: 'publish',
-                label: 'Publicado'
+                label: this.$i18n.get('publish')
                 }, {
                 value: 'draft',
-                label: 'Rascunho'
+                label: this.$i18n.get('draft')
                 }, {
                 value: 'private',
-                label: 'Privado'
+                label: this.$i18n.get('private')
                 }, {
                 value: 'trash',
-                label: 'Lixo'
+                label: this.$i18n.get('trash')
             }]
         }
     },
@@ -159,7 +159,7 @@ export default {
             .catch(error => console.log(error));
         },
         cancelBack(){
-            this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+            this.$router.push(this.$routerHelper.getCollectionsPath());
         }
     },
     created(){

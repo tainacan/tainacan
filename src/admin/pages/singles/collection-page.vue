@@ -19,14 +19,6 @@
                         {{collection.description}}
                     </div>
                 </div>
-                <footer class="card-footer">
-                    <router-link
-                            tag="a"
-                            class="card-footer-item"
-                            :to="{ path: $routerHelper.getNewItemPath(collection.id), params: { collection_id: collection.id }}">
-                        Criar Item
-                    </router-link>
-                </footer>
             </div>
             <router-view></router-view>
         </section>

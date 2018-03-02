@@ -1,11 +1,11 @@
 <template>
     <div>
-        <h1 class="is-size-3">Item creation  <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag></h1>
+        <h1 class="is-size-3">{{ pageTitle }}  <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag></h1>
         <form label-width="120px">
-            <b-field label="Status">
+            <b-field :label="$i18n.get('label_status')">
                 <b-select id="status-select"
                         v-model="form.status"
-                        placeholder="Selecione um status">
+                        :placeholder="$i18n.get('instruction_select_a_status')">
                     <option
                             id="{{'status-option-' + statusOption.value}}"
                             v-for="statusOption in statusOptions"
@@ -16,7 +16,7 @@
                 </b-select>
             </b-field>
             <b-field
-                    label="Imagem">
+                    :label="$i18n.get('label_image')">
                 <b-upload v-model="form.files"
                           multiple
                           drag-drop>
@@ -28,7 +28,7 @@
                                         size="is-large">
                                 </b-icon>
                             </p>
-                            <p>Arraste uma imagem aqui <em>ou clique para enviar</em></p>
+                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
                         </div>
                     </section>
                 </b-upload>
@@ -41,11 +41,11 @@
                 id="button-cancel-item-creation"
                 class="button"
                 type="button"
-                @click="cancelBack">Cancelar</button>
+                @click="cancelBack">{{ $i18n.get('cancel') }}</button>
             <a
                 id="button-submit-item-creation"
                 @click="onSubmit"
-                class="button is-success is-hovered">Salvar</a>
+                class="button is-success is-hovered">{{ $i18n.get('save') }}</a>
         </form>
 
         <b-loading :active.sync="isLoading" :canCancel="false">
@@ -59,6 +59,7 @@ export default {
     name: 'ItemEditionPage',
     data(){
         return {
+            pageTitle: '',
             itemId: Number,
             item: null,
             collectionId: Number,
@@ -71,16 +72,16 @@ export default {
             // Can be obtained from api later
             statusOptions: [{ 
                 value: 'publish',
-                label: 'Publicado'
+                label: this.$i18n.get('publish')
                 }, {
                 value: 'draft',
-                label: 'Rascunho'
+                label: this.$i18n.get('draft')
                 }, {
                 value: 'private',
-                label: 'Privado'
+                label: this.$i18n.get('private')
                 }, {
                 value: 'trash',
-                label: 'Lixo'
+                label: this.$i18n.get('trash')
             }]
         }
     },
@@ -176,9 +177,11 @@ export default {
 
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewItem();
+            this.pageTitle = this.$i18n.get('title_create_item');
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
             this.isLoading = true;
+            this.pageTitle = this.$i18n.get('title_item_edition');
 
             // Obtains current Item ID from URL
             this.pathArray = this.$route.fullPath.split("/").reverse(); 

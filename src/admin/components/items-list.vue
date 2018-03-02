@@ -2,11 +2,11 @@
     <div>
         <section class="section">
              <b-field grouped group-multiline>
-                <button v-if="selectedItems.length > 0" class="button field is-danger" @click="deleteSelectedItems()"><span>Deletar itens selecionados </span><b-icon icon="delete"></b-icon></button>
+                <button v-if="selectedItems.length > 0" class="button field is-danger" @click="deleteSelectedItems()"><span>{{$i18n.get('instruction_delete_selected_items')}} </span><b-icon icon="delete"></b-icon></button>
 
                 <b-dropdown>
-                    <button class="button" slot="trigger">
-                        <span>Campos da tabela</span>
+                    <button class="button" slot="trigger" :disabled="items.length <= 0">
+                        <span>{{$i18n.get('label_table_fields')}}</span>
                         <b-icon icon="menu-down"></b-icon>
                     </button>
                     <b-dropdown-item v-for="(column, index) in tableFields" 
@@ -20,13 +20,14 @@
                 </b-dropdown>
 
                 <b-select 
+                        :label="$i18n.get('label_items_per_page')"
                         v-model="itemsPerPage" 
                         @input="onChangeItemsPerPage" 
                         :disabled="items.length <= 0">
-                    <option value="2">2 itens por página</option>
-                    <option value="10">10 itens por página</option>
-                    <option value="15">15 itens por página</option>
-                    <option value="20">20 itens por página</option>
+                    <option value="2">2 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="10">10 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="15">15 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="20">20 {{ $i18n.get('label_per_page') }}</option>
                 </b-select>
                 
             </b-field>
@@ -76,12 +77,12 @@
                                     size="is-large">
                                 </b-icon>
                             </p>
-                            <p>Nenhum item ainda nesta coleção.</p>
+                            <p>{{$i18n.get('info_no_item_created')}}</p>
                             <router-link
                                         id="button-create" 
                                         tag="button" class="button is-primary"
                                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                                Criar Item
+                                {{ $i18n.get('new') + ' ' + $i18n.get('item') }}
                             </router-link>
                         </div>
                     </section>
@@ -119,13 +120,13 @@ export default {
         ]),
         deleteOneItem(itemId) {
             this.$dialog.confirm({
-                message: 'Deseja realmente deletar este Item?',
+                message: this.$i18n.get('info_warning_item_deleted'),
                 onConfirm: () => {
                     this.deleteItem(itemId).then((res) => {
                         this.loadItems();
                         this.$toast.open({
                             duration: 3000,
-                            message: `Item deletado`,
+                            message: this.$i18n.get('info_item_delete'),
                             position: 'is-bottom',
                             type: 'is-secondary',
                             queue: true
@@ -138,7 +139,7 @@ export default {
 
                         this.$toast.open({ 
                             duration: 3000,
-                            message: `Erro ao deletar item`,
+                            message: this.$i18n.get('info_error_deleting_item'),
                             position: 'is-bottom',
                             type: 'is-danger',
                             queue: true
@@ -149,7 +150,7 @@ export default {
         },
         deleteSelectedItems() {
             this.$dialog.confirm({
-                message: 'Deseja realmente todos os itens selecionados?',
+                message: this.$i18n.get('info_selected_items_delete'),
                 onConfirm: () => {
 
                     for (let item of this.selectedItems) {
@@ -158,7 +159,7 @@ export default {
                             this.loadItems();
                             this.$toast.open({
                                 duration: 3000,
-                                message: `Item deletado`,
+                                message: this.$i18n.get('info_item_deleted'),
                                 position: 'is-bottom',
                                 type: 'is-secondary',
                                 queue: false
@@ -167,7 +168,7 @@ export default {
                         }).catch((err) => { 
                             this.$toast.open({
                                 duration: 3000,
-                                message: `Erro ao deletar item`,
+                                message: this.$i18n.get('info_error_deleting_item'),
                                 position: 'is-bottom',
                                 type: 'is-danger',
                                 queue: false
@@ -224,7 +225,7 @@ export default {
                     { label: field.name, field: field.description, slug: field.slug,  visible: true }
                 );
             }
-            this.tableFields.push({ label: 'Ações', field: 'row_actions', slug: 'actions', visible: true });
+            this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
         }).catch();
     }
 
