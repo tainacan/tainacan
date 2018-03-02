@@ -15,7 +15,8 @@
             }
         },
         props: {
-            id: ''
+            id: '',
+            value: [String, Number, Object]
         },
         methods: {
             onBlur() {
@@ -25,6 +26,9 @@
                 this.inputValue = $event;
                 this.$emit('input', this.inputValue);
             }
+        },
+        created(){
+            this.inputValue = this.value;
         }
     }
 </script>

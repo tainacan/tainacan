@@ -34,21 +34,6 @@ class CSV extends Importer {
         return $file->fgetcsv( $this->get_delimiter() );
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function process( $start, $end ){
-        while ( $start <  $end && count( $this->get_processed_items() ) <= $this->get_total_items() ){
-            $processed_item = $this->process_item( $start );
-            if( $processed_item) {
-                $this->insert( $start, $processed_item );
-            } else {
-                $this->set_log('error', 'failed on item '.$start );
-                break;
-            }
-            $start++;
-        }
-    }
 
     /**
      * @inheritdoc
