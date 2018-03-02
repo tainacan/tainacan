@@ -23,7 +23,13 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/collections/?' + qs.stringify(query);
         },
         getCollectionItemsPath(collectionId, query) {
-            return 'collections/'+ collectionId + '/items/?' + qs.stringify(query);
+            return '/collections/'+ collectionId + '/items/?' + qs.stringify(query);
+        },
+        getCollectionFieldsPath(collectionId) {
+            return '/collections/'+ collectionId + '/fields/';
+        },
+        getCollectionFiltersPath(collectionId) {
+            return '/collections/'+ collectionId + '/filters/';
         },
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
@@ -66,7 +72,7 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewCollectionPath() {
             return '/collections/new';
         },
-        getNewItemPath() {
+        getNewItemPath(collectionId) {
             return '/collections/' + collectionId + '/items/new';
         },
         getNewFilterPath() {

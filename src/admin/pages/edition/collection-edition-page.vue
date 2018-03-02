@@ -120,7 +120,7 @@ export default {
 
                 this.isLoading = false;
 
-                this.$router.push('/collections/' + this.collectionId);
+                this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             });
         },
         getStatusColor(status) {
@@ -159,7 +159,7 @@ export default {
             .catch(error => console.log(error));
         },
         cancelBack(){
-            this.$router.push('/collections/' + this.collectionId);
+            this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
         }
     },
     created(){

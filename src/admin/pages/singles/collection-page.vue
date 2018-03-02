@@ -23,7 +23,7 @@
                     <router-link
                             tag="a"
                             class="card-footer-item"
-                            :to="{ path: `/collections/${collection.id}/items/new`, params: { collection_id: collection.id }}">
+                            :to="{ path: $routerHelper.getNewItemPath(collection.id), params: { collection_id: collection.id }}">
                         Criar Item
                     </router-link>
                 </footer>

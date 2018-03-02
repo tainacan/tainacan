@@ -23,11 +23,11 @@
             </div>
             <footer class="card-footer">
                 <router-link
-                        class="card-footer-item" :to="{ path: `/collections/${collectionId}`}">
+                        class="card-footer-item" :to="{ path: $routerHelper.getCollectionPath(collectionId)}">
                     Ver Coleção
                 </router-link>
                 <router-link
-                        class="card-footer-item" :to="{ path: `/collections/${collectionId}/items/${itemId}/edit`}">
+                        class="card-footer-item" :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                     Editar Item
                 </router-link>
             </footer>

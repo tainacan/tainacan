@@ -37,6 +37,12 @@
         margin: 0 auto;
         position: relative;
         overflow-y: auto;
+
+        @media screen and (max-width: 769px) {
+            & {
+                overflow-y: visible;
+            }
+        }
     }
 
 </style>

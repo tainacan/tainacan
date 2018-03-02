@@ -80,7 +80,7 @@
                             <router-link
                                         id="button-create" 
                                         tag="button" class="button is-primary"
-                                        :to="{ path: `/collections/${collectionId}/items/new` }">
+                                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                                 Criar Item
                             </router-link>
                         </div>
@@ -186,10 +186,10 @@ export default {
             this.loadItems();
         },
         goToItemPage(itemId) {
-            this.$router.push(`/collections/${this.collectionId}/items/${itemId}`);
+            this.$router.push(this.$routerHelper.getItemPath(this.collectionId, itemId));
         },
         goToItemEditPage(itemId) {
-            this.$router.push(`/collections/${this.collectionId}/items/${itemId}/edit`);
+            this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
         onPageChange(page) {
             this.page = page;

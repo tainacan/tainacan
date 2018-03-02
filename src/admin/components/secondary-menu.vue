@@ -9,16 +9,16 @@
             </div>
 
             <ul class="menu-list">
-                <li><router-link tag="a" :to="{ path: `/collections/${id}/items`}" :class="activeRoute == 'ItemsList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('items')">
+                <li><router-link tag="a" :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" :class="activeRoute == 'ItemsList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('items')">
                     {{ $i18n.get('items')}}
                 </router-link></li>
-                <li><router-link tag="a" :to="{ path: `/collections/${id}/edit`}" :class="activeRoute == 'CollectionEditionPage' ? 'is-active':''" :aria-label="$i18n.get('edit') + ' ' + $i18n.get('collection')">
+                <li><router-link tag="a" :to="{ path: $routerHelper.getCollectionEditPath(id) }" :class="activeRoute == 'CollectionEditionPage' ? 'is-active':''" :aria-label="$i18n.get('edit') + ' ' + $i18n.get('collection')">
                     {{ $i18n.get('edit')}}
                 </router-link></li>
-                <li><router-link tag="a" :to="{ path: `/collections/${id}/fields`}" :class="activeRoute == 'FieldsList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('fields')">
+                <li><router-link tag="a" :to="{ path: $routerHelper.getCollectionFieldsPath(id) }" :class="activeRoute == 'FieldsList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('fields')">
                     {{ $i18n.get('fields')}}
                 </router-link></li>
-                <li><router-link tag="a" :to="{ path: `/collections/${id}/filters`}" :class="activeRoute == 'FiltersList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('filters')">
+                <li><router-link tag="a" :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" :class="activeRoute == 'FiltersList' ? 'is-active':''" :aria-label="$i18n.get('collection') + ' ' + $i18n.get('filters')">
                     {{ $i18n.get('filters')}}
                 </router-link></li>
             </ul>

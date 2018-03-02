@@ -113,7 +113,7 @@ export default {
 
                 this.isLoading = false;
 
-                this.$router.push('/collections/' + this.form.collectionId + '/items/' + this.itemId);
+                this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
             }).catch(error => {
                 console.log(error);
 
@@ -160,7 +160,7 @@ export default {
             });
         },
         cancelBack(){
-            this.$router.push('/collections/' + this.collectionId);
+            this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
         }
     },
     computed: {
