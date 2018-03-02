@@ -46,7 +46,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue'
+            'vue$': 'vue/dist/vue.js'
         }
     },
     devServer: {
@@ -72,5 +72,8 @@ if (process.env.NODE_ENV === 'production') {
         new webpack.LoaderOptionsPlugin({
             minimize: true
         })
-    ])
+    ]);
+    module.exports.resolve.alias = {
+        'vue$': 'vue/dist/vue.min.js'
+    }
 }
