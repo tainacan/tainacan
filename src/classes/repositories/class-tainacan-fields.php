@@ -206,7 +206,7 @@ class Fields extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'	  => Entities\Field::get_post_type(),
+        	'capability_type'	  => Entities\Field::get_capability_type(),
             'supports'            => [
                 'title',
                 'editor',
@@ -268,7 +268,7 @@ class Fields extends Repository {
 	 * @param array $args WP_Query args || int $args the field id
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
-	 * @return \WP_Query|Array an instance of wp query OR array of entities;
+	 * @return Entities\Field|\WP_Query|Array an instance of wp query OR array of entities;
 	 * @throws \Exception
 	 */
     public function fetch( $args, $output = null ) {

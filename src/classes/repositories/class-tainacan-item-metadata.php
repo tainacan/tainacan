@@ -130,4 +130,13 @@ class Item_Metadata extends Repository {
 	public function update( $object, $new_values = null ) {
 		return $this->insert($object);
 	}
+
+    /**
+     * Suggest a value to be inserted as a item Field value, return a pending log  
+     * @param Entities\Item_Metadata_Entity $item_metadata
+     * @return Entities\Log
+     */        
+	public function suggest($item_metadata) {
+		return Entities\Log::create(false, '', $item_metadata, null, 'pending');
+	}
 }

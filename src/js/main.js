@@ -21,6 +21,7 @@ import Date from '../classes/field-types/date/Date.vue';
 import Relationship from '../classes/field-types/relationship/Relationship.vue';
 
 import FilterRange from '../classes/filter-types/range/Range.vue';
+import FilterSelectbox from '../classes/filter-types/selectbox/Selectbox.vue';
 
 Vue.customElement('tainacan-text', Text);
 eventBus.registerComponent( 'tainacan-text' );
@@ -52,5 +53,8 @@ eventBus.listener();
 
 Vue.customElement('tainacan-filter-range', FilterRange);
 eventFilterBus.registerComponent( 'tainacan-filter-range' );
+
+Vue.customElement('tainacan-filter-selectbox', FilterSelectbox);
+eventFilterBus.registerComponent( 'tainacan-filter-selectbox' );
 
 eventFilterBus.listener();

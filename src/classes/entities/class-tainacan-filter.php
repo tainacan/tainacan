@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Filter extends Entity {
     use \Tainacan\Traits\Entity_Collection_Relation;
     
-    protected static $post_type = 'tainacan-filters';
+    protected static $post_type = 'tainacan-filter';
     
     /**
      * {@inheritDoc}

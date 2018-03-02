@@ -74,13 +74,13 @@ abstract class Repository {
 		
 		// First iterate through the native post properties
 		foreach ($map as $prop => $mapped) {
-			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'terms') {
+			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
 				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
 			}
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
 
-		if($obj instanceof Entities\Log) {
+		if( $obj instanceof Entities\Log && ! ( isset($obj->WP_Post->post_status) && in_array($obj->WP_Post->post_status, ['publish', 'pending'])) ) {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
@@ -370,7 +370,7 @@ abstract class Repository {
     public static function get_entity_by_post_type($post_type, $post = 0) {
     	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
     	
-    	// its is a collection Item?
+    	// Is it a collection Item?
     	if($prefix == Entities\Collection::$db_identifier_prefix) {
     		$cpts = self::get_collections_db_identifier();
     		if(array_key_exists($post_type, $cpts)) {
@@ -389,6 +389,36 @@ abstract class Repository {
     			if($entity_post_type == $post_type)
     			{
     				return new $tnc_repository->entities_type($post);
+    			}
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * Return Entity's Repository
+     * @param Entity $entity
+     * @return \Tainacan\Repositories\Repository|bool return the entity Repository or false
+     */
+    public static function get_repository($entity)
+    {
+    	$post_type = $entity->get_post_type();
+    	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
+    	
+    	// its is a collection Item?
+    	if($prefix == Entities\Collection::$db_identifier_prefix) {
+    		global $Tainacan_Items;
+    		return $Tainacan_Items;
+    	}
+    	else {
+    		global $Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
+    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
+    		foreach ($tnc_globals as $tnc_repository)
+    		{
+    			$entity_post_type = $tnc_repository->entities_type::get_post_type();
+    			if($entity_post_type == $post_type)
+    			{
+    				return $tnc_repository;
     			}
     		}
     	}
@@ -550,8 +580,7 @@ abstract class Repository {
     			$entity_type = get_class($new);
     			$old_entity = new $entity_type; // there is no saved entity, let compare with a new empty one
     		}
-    	}
-    	else { // get entity from repository
+    	} else { // get entity from repository
     		$old_entity = $this->get_entity_by_post($old);
     	}
     	$new_entity = $this->get_entity_by_post($new);

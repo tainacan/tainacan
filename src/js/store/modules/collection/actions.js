@@ -176,3 +176,7 @@ export const sendCollection = ( { commit }, { name, description, status }) => {
         });
     });
 }
+
+export const setItems = ({ commit }, items ) => {
+    commit('setItems', items);
+};

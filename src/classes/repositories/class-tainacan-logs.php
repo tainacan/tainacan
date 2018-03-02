@@ -1,6 +1,7 @@
 <?php
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
+use Tainacan\Entities\Entity;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -132,7 +133,7 @@ class Logs extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'		  => Entities\Log::get_post_type(),
+        	'capability_type'		  => Entities\Log::get_capability_type(),
             'supports'            => [
                 'title',
                 'editor',
@@ -198,19 +199,43 @@ class Logs extends Repository {
     	return array_pop($logs);
     }
     
+    /** 
+     * Insert a log when a new entity is inserted
+     * @param Entity $new_value
+     * @param Entity $value
+     * 
+     * @return Entities\Log new created log
+     */
     public function log_inserts($new_value, $value = null) {
     	$msn = "";
    		if(is_object($new_value)) {
    			// do not log a log
-   			if(method_exists($new_value, 'get_post_type') && $new_value->get_post_type() == 'tainacan-logs'){
+   			if(method_exists($new_value, 'get_post_type') && $new_value->get_post_type() == 'tainacan-log'){
    			    return;
 		    }
    			
    			$type = get_class($new_value);
-   			$msn = sprintf( esc_html__( 'a %s has been created/modified.', 'tainacan' ), $type );
+   			$msn = sprintf( esc_html__( 'a %s has been created/updated.', 'tainacan' ), $type );
    		}
 
    		$msn = apply_filters('tainacan-insert-log-message-title', $msn, $type, $new_value);
-    	Entities\Log::create($msn, 'empty', $new_value, $value);
+    	return Entities\Log::create($msn, 'empty', $new_value, $value);
+    }
+    
+    /**
+     * 
+     * @param Entities\Log $log
+     * @return Entities\Entity|boolean return insert/update valeu or false
+     */
+    public function approve($log) {
+    	$log = self::get_entity_by_post($log);
+    	if($log->get_status() == 'pending') {
+    		/** @var Entity $value **/
+    		$value = $log->get_value();
+    		//$value->set_status('publish'); // TODO check if publish the entity on approve
+    		$repository = self::get_repository($value);
+    		return $repository->insert($value);
+    	}
+    	return false; 
     }
 }

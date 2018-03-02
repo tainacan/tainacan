@@ -69,4 +69,82 @@ class Permissions extends TAINACAN_UnitTestCase {
         $this->assertFalse(user_can($new_user, $collection->cap->read_post, $collection->get_id()), 'subscriber should not be able read private collection');
 	}
 	
+	/**
+	 * @group serialize_permission
+	 */
+	function test_entity_serialization() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'testeSeria',
+				'description'   => 'adasdasdsa',
+			),
+			true
+		);
+		
+		$ser = base64_encode( maybe_serialize($collection));
+		$u2 = $this->factory()->user->create(array( 'role' => 'subscriber' ));
+		wp_set_current_user($u2);
+		$collection_unser = maybe_unserialize( base64_decode($ser));
+		$this->assertFalse(user_can($u2, $collection_unser->cap->edit_post, $collection_unser->get_id()));
+	}
+	
+	/**
+	 * @group permission_others_collections
+	 */
+	function test_edit_others_collections() {
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste1',
+				'description'   => 'adasdasdsa',
+			),
+			true
+		);
+		
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection,
+			),
+			true
+		);
+	
+		$new_author_user = $this->factory()->user->create(array( 'role' => 'author' ));
+		wp_set_current_user($new_author_user);
+		
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste2',
+				'description'   => 'adasdasdsa',
+			),
+			true
+		);
+		
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection2,
+			),
+			true
+		);
+		
+		// Once we had a bug that items of all collections shared the same capability type. they should not.
+		// This test avoid it to happen
+        $this->assertNotEquals($item2->get_capabilities()->edit_posts, $item->get_capabilities()->edit_posts);
+        
+		$this->assertTrue(current_user_can( $item2->get_capabilities()->edit_post, $item2->get_id() ), 'author should be able to edit items in his collection');
+		$this->assertFalse(current_user_can( $item->get_capabilities()->edit_post, $item->get_id() ), 'author should not be able to edit items in admins collection');
+		
+		$this->assertTrue($item2->can_edit(), 'author should be able to edit items in his collection');
+		$this->assertFalse($item->can_edit(), 'author should not be able to edit items in admins collection');
+		
+		$this->assertNotEquals($item->get_capabilities()->edit_posts, $item2->get_capabilities()->edit_posts);
+		
+	}
+	
 }
