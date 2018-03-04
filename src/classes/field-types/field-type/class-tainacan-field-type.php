@@ -145,10 +145,10 @@ abstract class Field_Type  {
      *
      * This method should be declared by each field type sub classes
      * 
-     * @param  Array  $options Options to be saved as field_type_optins
+     * @param  \Tainacan\Entities\Field  $field The field object that is beeing validated
      * @return true|Array True if optinos are valid. If invalid, returns an array where keys are the field keys and values are error messages.
      */
-    public function validate_options(Array $options) {
+    public function validate_options(\Tainacan\Entities\Field $field) {
         return true;
     }
 

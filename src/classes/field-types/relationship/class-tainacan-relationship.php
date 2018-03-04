@@ -98,9 +98,9 @@ class Relationship extends Field_Type {
         <?php
     }
     
-    public function validate_options(Array $options) {
+    public function validate_options(\Tainacan\Entities\Field $field) {
         // TODO: This is just a sample validation to test validation workflow for field types. Must redo it
-        if (isset($options['collection_id']) && !is_numeric($options['collection_id'])) {
+        if (!empty($this->get_option('collection_id')) && !is_numeric($this->get_option('collection_id'))) {
             return [
                 'collection_id' => 'Collection ID invalid'
             ];

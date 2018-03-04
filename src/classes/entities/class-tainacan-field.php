@@ -370,7 +370,7 @@ class Field extends Entity {
         $fto = $this->get_field_type_object();
 
         if (is_object($fto)) {
-            $is_valid = $fto->validate_options($this->get_field_type_options());
+            $is_valid = $fto->validate_options($this);
         }
         
         if (true === $is_valid)

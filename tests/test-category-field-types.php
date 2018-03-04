@@ -40,10 +40,11 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
         $field = $this->tainacan_entity_factory->create_entity(
         	'field',
 	        array(
-	        	'name' => 'metadado',
-		        'description' => 'title',
+	        	'name' => 'meta',
+		        'description' => 'description',
 		        'collection' => $collection,
 		        'field_type' => 'Tainacan\Field_Types\Category',
+				'status'	 => 'publish',
 				'field_type_options' => [
 					'taxonomy_id' => $tax->get_db_identifier(),
 					'allow_new_terms' => false
@@ -55,10 +56,11 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
         $field2 = $this->tainacan_entity_factory->create_entity(
         	'field',
 	        array(
-	        	'name' => 'metadado_desc',
+	        	'name' => 'meta2',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'field_type' => 'Tainacan\Field_Types\Category'
+		        'field_type' => 'Tainacan\Field_Types\Category',
+				'status'	 => 'draft',
 	        ),
 	        true
         );
@@ -111,6 +113,17 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		$check_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($checkItem, $field);
 
 		$this->assertEquals('WP_Term', get_class($check_item_metadata->get_value()));
+		
+		// test 2 fields with same category
+		$field2->set_field_type_options([
+			'taxonomy_id' => $tax->get_db_identifier(),
+		]);
+		$field2->set_status('publish');
+		
+		$this->assertFalse($field2->validate(), 'Category Field should not validate when using a category in use by another field in the same collection');
+		$errors = $field2->get_errors();
+		$this->assertInternalType('array', $errors);
+		$this->assertArrayHasKey('taxonomy_id', $errors[0]);
     }
     
 }

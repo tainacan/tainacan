@@ -61,17 +61,48 @@ class Category extends Field_Type {
                     <?php endforeach; ?>
                 </select>
             </td>
+			<td>
+                <label><?php echo __('Allow creation of new terms','tainacan'); ?></label><br/>
+                <small><?php echo __('If checked, users may create new terms for this category, otherwise they can only selected from existing terms.','tainacan'); ?></small>
+            </td>
+            <td>
+                <input type="checkbox" name="allow_new_terms" <?php checked(true, $this->get_option('allow_new_terms')); ?> >
+				<label>Allow</label>
+            </td>
         </tr>
         <?php
     }
 	
-	public function validate_options(Array $options) {
+	public function validate_options(\Tainacan\Entities\Field $field) {
+		
+		if ( !in_array($field->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+		
+		if (empty($this->get_option('taxonomy_id')))
+			return ['taxonomy_id' => __('Please select a category', 'tainacan')];
+		
+		global $Tainacan_Fields;
+		
+		$category_fields = $Tainacan_Fields->fetch([
+			'collection_id' => $field->get_collection_id(),
+			'field_type' => 'Tainacan\\Field_Types\\Category'
+		], 'OBJECT');
+		
+		$category_fields = array_map(function ($field) {
+			$fto = $field->get_field_type_object();
+			return $fto->get_option('taxonomy_id');
+		}, $category_fields);
+		
+		if (in_array($this->get_option('taxonomy_id'), $category_fields)) {
+			return ['taxonomy_id' => __('You can not have 2 Category Fields using the same category in a collection', 'tainacan')];
+		}
+		
 		return true;
-		// TODO validate required and unique taxonomy
+		
 	}
 	
 	/**
-     * Validate item based on field type categores options
+     * Validate item based on field type categories options
      *
      * @param  TainacanEntitiesItem_Metadata_Entity $item_metadata
      * @return bool Valid or not
@@ -88,6 +119,10 @@ class Category extends Field_Type {
         
         if (false === $this->get_option('allow_new_terms')) {
 			$terms = $item_metadata->get_value();
+			
+			if (false === $terms)
+				return true;
+			
 			if (!is_array($terms))
 				$terms = array($terms);
 			
