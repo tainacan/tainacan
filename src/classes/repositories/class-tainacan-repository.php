@@ -118,7 +118,7 @@ abstract class Repository {
             return false;
         
         if ($map[$prop]['map'] == 'meta') {
-            update_post_meta($obj->get_id(), $prop,  wp_slash( $obj->get_mapped_property($prop) ));
+            update_post_meta($obj->get_id(), $prop,  $this->maybe_add_slashes( $obj->get_mapped_property($prop) ));
         } elseif($map[$prop]['map'] == 'meta_multi') {
             $values = $obj->get_mapped_property($prop);
             
@@ -126,11 +126,18 @@ abstract class Repository {
             
             if (is_array($values)){
                 foreach ($values as $value){
-                    add_post_meta($obj->get_id(), $prop, wp_slash( $value ));
+                    add_post_meta($obj->get_id(), $prop, $this->maybe_add_slashes( $value ));
                 }
             }
         }
     }
+	
+	function maybe_add_slashes($value) {
+		if (is_string($value) && strpos($value, '\\') !== false) {
+			return wp_slash($value);
+		}
+		return $value;
+	}
 
     /**
      * Prepare the output for the fetch() methods.

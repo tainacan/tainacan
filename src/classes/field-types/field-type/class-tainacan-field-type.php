@@ -9,8 +9,32 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 abstract class Field_Type  {
 
+    
+    /**
+     * Indicates the type of variable that this field type handles.
+     *
+     * This is used to relate Field types and filter types, so we know which filter types
+     * will be available to be used for each field based on its Field Type
+     *
+     * For instance, the Filter Type "input text" may be used to search in any field that has
+     * a Field Type with a string primitive type.
+     * 
+     * @var string
+     */
     private $primitive_type;
-    public $options;
+    
+    /**
+     * Array of options spececific to this field type. Stored in field_type_options property of the Field object
+     * @var Array
+     */
+    public $options = [];
+    
+    /**
+     * The default values for the field type options array
+     * @var Array
+     */
+    public $default_options = [];
+    
     public $errors;
     
     /**
@@ -69,6 +93,32 @@ abstract class Field_Type  {
      */
     public function set_options( $options ){
         $this->options = ( is_array( $options ) ) ? $options : unserialize( $options );
+    }
+    
+    public function set_default_options(Array $options) {
+        $this->default_options = $options;
+    }
+    
+    /**
+     * Gets the options for this field types, including default values for options
+     * that were not set yet.
+     * @return Array Fielt type options
+     */
+    public function get_options() {
+        return array_merge($this->default_options, $this->options);
+    }
+    
+    /**
+     * Gets one option from the options array.
+     *
+     * Checks if option exist or if it have a default value. Otherwise return an empty string
+     * 
+     * @param  string $key the desired option
+     * @return mixed the option value, the default value or an empty string
+     */
+    public function get_option($key) {
+        $options = $this->get_options();
+        return isset($options[$key]) ? $options[$key] : '';
     }
 
     /**
