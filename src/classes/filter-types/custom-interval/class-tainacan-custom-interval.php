@@ -15,8 +15,9 @@ class Custom_Interval extends Filter_Type {
     }
 
     /**
-     * @param $field
+     * @param $filter
      * @return string
+     * @internal param $field
      */
     public function render( $filter ){
          $type = ( $filter->get_field()->get_field_type() === 'Tainacan\Field_Types\Date' ) ? 'date' : 'numeric';

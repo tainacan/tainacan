@@ -47,29 +47,33 @@ class Category extends Field_Type {
         // TODO: form incomplete and not tested
         
         ?>
-        <tr>
-            <td>
-                <label><?php echo __('Category','tainacan'); ?></label><br/>
-                <small><?php echo __('Select the category','tainacan'); ?></small>
-            </td>
-            <td>
-                <select name="taxonomy_id">
-                    <?php foreach ($taxonomies as $tax): ?>
-                        
-                        <option value="<?php echo $tax->get_db_identifier(); ?>" <?php selected($this->get_option('taxonomy_id'), $tax->get_db_identifier()); ?> ><?php echo $tax->get_name(); ?></option>
-                        
-                    <?php endforeach; ?>
-                </select>
-            </td>
-			<td>
-                <label><?php echo __('Allow creation of new terms','tainacan'); ?></label><br/>
-                <small><?php echo __('If checked, users may create new terms for this category, otherwise they can only selected from existing terms.','tainacan'); ?></small>
-            </td>
-            <td>
-                <input type="checkbox" name="allow_new_terms" <?php checked(true, $this->get_option('allow_new_terms')); ?> >
-				<label>Allow</label>
-            </td>
-        </tr>
+		<div class="field">
+			<label class="label">
+				<?php _e('Category','tainacan'); ?>
+			</label>
+			
+			<div class="control">
+				<div class="select">
+					<select name="field_type_options[taxonomy_id]">
+						<?php foreach ($taxonomies as $tax): ?>
+							
+							<option value="<?php echo $tax->get_db_identifier(); ?>" <?php selected($this->get_option('taxonomy_id'), $tax->get_db_identifier()); ?> ><?php echo $tax->get_name(); ?></option>
+							
+						<?php endforeach; ?>
+					</select>
+				</div>
+			</div>
+		</div>
+		
+		<div class="field">
+			<div class="control">
+				<label class="checkbox">
+					<input type="checkbox" name="field_type_options[allow_new_terms]" <?php checked(true, $this->get_option('allow_new_terms')); ?> >
+					Allow
+				</label>
+			</div>
+		</div>
+		
         <?php
     }
 	

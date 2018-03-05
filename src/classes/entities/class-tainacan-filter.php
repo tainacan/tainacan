@@ -75,6 +75,11 @@ class Filter extends Entity {
      */
     function get_filter_type_object(){
         $class_name = $this->get_filter_type();
+
+        if( !class_exists( $class_name ) ){
+            return false;
+        }
+
         $object_type = new $class_name();
         $object_type->set_options(  $this->get_filter_options() );
         return $object_type;
@@ -157,5 +162,35 @@ class Filter extends Entity {
      */
     public function set_filter_type($value){
         $this->set_mapped_property('filter_type', ( is_object( $value ) ) ? get_class( $value ) : $value );
+    }
+
+    /**
+     * {@inheritdoc }
+     *
+     * Also validates the field, calling the validate_options callback of the Field Type
+     *
+     * @return bool valid or not
+     */
+    public function validate() {
+        $is_valid = parent::validate();
+        if (false === $is_valid)
+            return false;
+
+        $fto = $this->get_filter_type_object();
+        if (is_object($fto)) {
+            $is_valid = $fto->validate_options( $this );
+        }
+
+        if (true === $is_valid)
+            return true;
+
+        if (!is_array($is_valid))
+            throw new \Exception("Return of validate_options field type method should be an Array in case of error");
+
+        foreach ($is_valid as $field => $message) {
+            $this->add_error($field, $message);
+        }
+
+        return false;
     }
 }

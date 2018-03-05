@@ -12,7 +12,7 @@ class Selectbox extends Field_Type {
     function __construct(){
         // call field type constructor
         parent::__construct();
-        parent::set_primitive_type('');
+        parent::set_primitive_type('string');
         $this->component = 'tainacan-selectbox';
     }
 
@@ -22,7 +22,7 @@ class Selectbox extends Field_Type {
      */
 
     public function render( $itemMetadata ){
-        $options = ( isset( $this->options['options'] ) ) ? $this->options['options'] : '';
+        $options = $this->get_option('options');
         return '<tainacan-selectbox    
                                        options="' . $options . '"
                                        field_id ="'.$itemMetadata->get_field()->get_id().'" 
@@ -42,7 +42,7 @@ class Selectbox extends Field_Type {
                 <small><?php echo __('Insert the options, separate by lines for the field value','tainacan'); ?></small>
             </td>
             <td>
-                <textarea name="field_type_selectbox[options]"><?php echo ( isset( $this->options['options'] ) ) ? $this->options['options'] : ''; ?></textarea>
+                <textarea name="field_type_options[options]"><?php echo $this->get_option('options'); ?></textarea>
             </td>
         </tr>
         <?php

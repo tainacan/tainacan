@@ -126,6 +126,12 @@ export default {
             'getItems',
             'getFields'
         ]),
+        ...mapActions('fields', [
+            'fetchFields'
+        ]),
+        ...mapGetters('fields', [
+            'getFields'
+        ]),
         deleteOneItem(itemId) {
             this.$dialog.confirm({
                 message: this.$i18n.get('info_warning_item_delete'),
@@ -233,7 +239,7 @@ export default {
     },
     mounted(){
         this.loadItems();
-        this.fetchFields(this.collectionId).then((res) => {
+        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false }).then((res) => {
             let rawFields = res;
             for (let field of rawFields) {
                 this.tableFields.push(

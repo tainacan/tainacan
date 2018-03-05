@@ -99,9 +99,70 @@ class Filters extends TAINACAN_UnitTestCase {
         global $Tainacan_Filters;
 
         $all_filter_types = $Tainacan_Filters->fetch_filter_types();
-        $this->assertEquals( 2, count( $all_filter_types ) );
+        $this->assertEquals( 3, count( $all_filter_types ) );
 
         $float_filters = $Tainacan_Filters->fetch_supported_filter_types('float');
         $this->assertTrue( count( $float_filters ) > 0 );
+    }
+
+    /**
+     * @group filter
+     */
+    function test_validate_supported_filters(){
+        global $Tainacan_Filters;
+
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'        => 'Collection filtered',
+                'description' => 'Is filtered',
+            ),
+            true
+        );
+
+        $field2 = $this->tainacan_entity_factory->create_entity(
+            'field',
+            array(
+                'name'          => 'Other filtered',
+                'description'   => 'Is filtered',
+                'field_type'    => 'Tainacan\Field_Types\Text',
+                'collection_id' => $collection->get_id()
+            ),
+            true
+        );
+
+        $autocomplete = $this->tainacan_filter_factory->create_filter('autocomplete');
+
+        $filter = $this->tainacan_entity_factory->create_entity(
+            'filter',
+            array(
+                'name'               => 'filtro',
+                'collection'         => $collection,
+                'description' => 'descricao',
+                'field'           => $field2,
+                'filter_type' => $autocomplete
+            ),
+            true
+        );
+
+        $test = $Tainacan_Filters->fetch( $filter->get_id() );
+
+        $this->assertEquals( 'Tainacan\Filter_Types\Autocomplete', $test->get_filter_type());
+
+        $custom_interval = $this->tainacan_filter_factory->create_filter('custom_interval');
+
+        $this->expectException('ErrorException');
+        $filter2 = $this->tainacan_entity_factory->create_entity(
+            'filter',
+            array(
+                'name'               => 'filtro 2',
+                'collection'         => $collection,
+                'description' => 'descricao',
+                'field'           => $field2,
+                'filter_type' => $custom_interval
+            ),
+            true
+        );
+
     }
 }
