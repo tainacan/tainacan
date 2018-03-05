@@ -2,6 +2,22 @@
 
 class TAINACAN_REST_Controller extends WP_REST_Controller {
 
+
+	/**
+	 * TAINACAN_REST_Controller constructor.
+	 */
+	public function __construct() {
+		add_action( 'rest_api_init', function () {
+			register_rest_field( 'user',
+				'meta',
+				array(
+					'update_callback' => array($this, 'up_user_meta'),
+					'get_callback'    => array($this, 'gt_user_meta'),
+				)
+			);
+		} );
+	}
+
 	/**
 	 * @param $object
 	 * @param $new_values
@@ -103,6 +119,73 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		$args['perm'] = 'readable';
 
 		return $args;
+	}
+
+	/**
+	 * @param $data
+	 * @param $field_name
+	 * @param $request
+	 *
+	 * @return WP_Error
+	 */
+	function gt_user_meta( $data, $field_name, $request ) {
+		if( $data['id'] ){
+			$user_meta = get_user_meta( $data['id'] );
+		}
+
+		if ( !$user_meta ) {
+			return new WP_Error( 'No user meta found', 'No user meta found', array( 'status' => 404 ) );
+		}
+
+		foreach ($user_meta as $key => $value) {
+			$data[$key] = $value;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * @param $meta
+	 * @param $user
+	 * @param $field_name
+	 *
+	 * @return mixed|WP_Error
+	 */
+	public function up_user_meta( $meta, $user, $field_name ) {
+		if ( !$user->ID ) {
+			return new WP_Error( 'No user found', 'No user found', array( 'status' => 404 ) );
+		}
+
+		$user_id = $user->ID;
+		$metas = $field_name === 'meta' ? $meta : '';
+
+		$map = [
+			'metakey',
+			'metavalue',
+			'prevvalue',
+		];
+
+		if($this->contains_array($metas, $map)){
+			foreach ($metas as $index => $meta){
+				if(isset($meta[$map[0]], $meta[$map[1]], $meta[$map[2]])){
+
+					update_user_meta($user_id, $meta[$map[0]], $meta[$map[1]], $meta[$map[2]]);
+				} elseif (isset($meta[$map[0]], $meta[$map[1]])){
+
+					add_user_meta($user_id, $meta[$map[0]], $meta[$map[1]]);
+				}
+			}
+		} else {
+			foreach ($metas as $meta){
+				if(isset($meta[$map[0]], $meta[$map[1]], $meta[$map[2]])){
+
+					update_user_meta($user_id, $meta[$map[0]], $meta[$map[1]], $meta[$map[2]]);
+				} elseif (isset($meta[$map[0]], $meta[$map[1]])){
+
+					add_user_meta($user_id, $meta[$map[0]], $meta[$map[1]]);
+				}
+			}
+		}
 	}
 
 	/**
