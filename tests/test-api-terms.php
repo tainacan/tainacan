@@ -61,7 +61,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$request = new \WP_REST_Request('DELETE', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term);
+		$request = new \WP_REST_Request('DELETE', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term->get_term_id());
 
 		$response = $this->server->dispatch($request);
 
@@ -69,7 +69,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 
 		$this->assertTrue($data);
 
-		$term = get_term($term);
+		$term = get_term($term->get_term_id());
 
 		$this->assertNull($term);
 	}
@@ -101,7 +101,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		]);
 
 		$request = new \WP_REST_Request(
-			'PATCH', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term
+			'PATCH', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term->get_term_id()
 		);
 
 		$request->set_body($new_attributes);
@@ -169,7 +169,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		#### FETCH A TERM ####
 
 		$request = new \WP_REST_Request(
-			'GET', $this->namespace  . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term2
+			'GET', $this->namespace  . '/taxonomy/' . $taxonomy->get_id() . '/terms/' . $term2->get_term_id()
 		);
 
 		$response = $this->server->dispatch($request);

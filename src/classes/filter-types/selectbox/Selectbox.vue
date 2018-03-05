@@ -22,6 +22,7 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
+            this.field = ( this.field_id ) ? this.field_id : this.filter.collection_id;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
             this.loadOptions();
         },
@@ -31,6 +32,7 @@
                 options: [],
                 type: '',
                 collection: '',
+                field: '',
                 selected: '',
             }
         },
@@ -45,7 +47,19 @@
         },
         methods: {
             getValuesPlainText( field_id ){
-                // TODO: get values from items
+                return axios.get( '/collection/' + this.collection_id  + '/fields/' + field_id + '?fetch=all_field_values')
+                    .then( res => {
+                        for (let metadata of res.data) {
+                            let index = this.options.findIndex(itemMetadata => itemMetadata.value === metadata.mvalue);
+                            if( index < 0 ){
+                                this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
+                            }
+
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
             },
             getValuesCategory( taxonomy ){
                 // TODO: get taxonomy terms
@@ -80,7 +94,7 @@
                     promise = this.getValuesCategory( collectionTarget );
 
                 } else {
-                    promise = this.getValuesPlainText( this.filter.field.id );
+                    promise = this.getValuesPlainText( this.field );
                 }
 
                 promise.then( data => {

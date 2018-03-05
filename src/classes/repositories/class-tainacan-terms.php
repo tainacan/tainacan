@@ -35,6 +35,7 @@ class Terms extends Repository {
                 'title'      => __('Parent', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('The parent of the term', 'tainacan'),
+				'default'	 => 0,
                 'validation' => ''
             ],
             'description' => [
@@ -59,7 +60,8 @@ class Terms extends Repository {
                 'type'       => 'integer',
                 'description'=> __('The term creator', 'tainacan'),
                 'on_error'   => __('The user is empty or invalid', 'tainacan'),
-                'validation' => v::numeric()->positive(),
+				'default'    => get_current_user_id(),
+                'validation' => v::numeric(),
             ],
 		    'hide_empty'  => [
 		    	'map'        => 'hide_empty',
@@ -85,9 +87,9 @@ class Terms extends Repository {
         }
 
         // save post and get its ID
-        $term_inserted = wp_insert_term( $term->WP_Term->name, $term->WP_Term->taxonomy, [
-            'parent'      => ( isset( $term->WP_Term->parent ) ) ? $term->WP_Term->parent : 0,
-            'description' => ( isset( $term->WP_Term->description ) ) ? $term->WP_Term->description : '',
+        $term_inserted = wp_insert_term( $term->get_name(), $term->get_taxonomy(), [
+            'parent'      => $term->get_parent(),
+            'description' => $term->get_description(),
         ]);
 
         // Now run through properties stored as postmeta
@@ -99,8 +101,8 @@ class Terms extends Repository {
         
         do_action('tainacan-insert', $term);
         do_action('tainacan-insert-Term', $term);
-        
-        return $term_inserted['term_id'];
+        //var_dump($term);
+		return new Entities\Term($term_inserted['term_id'], $term->get_taxonomy());
     }
 
     /**
@@ -160,7 +162,7 @@ class Terms extends Repository {
     }
 
     public function update($object, $tax_name = null){
-    	return new Entities\Term($this->insert($object), $tax_name);
+    	return $this->insert($object);
     }
 
     public function delete($args){

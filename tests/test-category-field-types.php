@@ -77,11 +77,15 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 			true
 		);
 	   
-		/** TODO test existing term 
-		$term = new \Tainacan\Entities\Term();
-		$term->set_name('Red');
-		$term->validate();
-		$term = $Tainacan_Terms->insert($term);
+		
+		$term = $this->tainacan_entity_factory->create_entity(
+		    'term',
+		    array(
+			    'taxonomy' => $tax->get_db_identifier(),
+			    'name'     => 'Red',
+		    ),
+		    true
+	    );
 
 		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $field);
 		$item_metadata->set_value('Red');
@@ -89,7 +93,7 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		$this->assertTrue($item_metadata->validate(), 'item metadata should validate because it is an existing term');
 
 		$Tainacan_Item_Metadata->insert($item_metadata);
-	   **/
+
 		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $field);
 		$item_metadata->set_value('love');
 

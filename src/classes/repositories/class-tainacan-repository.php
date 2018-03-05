@@ -289,7 +289,7 @@ abstract class Repository {
     	} elseif ( $mapped == 'meta_multi') {
     		$property = isset($entity->WP_Post->ID) ? get_post_meta($entity->WP_Post->ID, $prop, false) : null;
     	} elseif ( $mapped == 'termmeta' ){
-    		$property = get_term_meta($entity->WP_Term->term_id, $prop, true);
+    		$property = isset($entity->WP_Term->term_id) ? get_term_meta($entity->WP_Term->term_id, $prop, true) : null;
     	} elseif ( isset( $entity->WP_Post )) {
     		if($mapped == 'thumbnail'){
     			$property = isset($entity->WP_Post->ID) ? get_the_post_thumbnail_url($entity->WP_Post->ID, 'full') : null;
