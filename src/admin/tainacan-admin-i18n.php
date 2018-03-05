@@ -13,7 +13,7 @@ return [
     'item' => __('Item', 'tainacan'),
     'field' => __('Field', 'tainacan'),
     'filter' => __('Filter', 'tainacan'),
-    'category' => __('Categorie', 'tainacan'),
+    'category' => __('Category', 'tainacan'),
     'event' => __('Event', 'tainacan'),
     
     // Actions
@@ -33,7 +33,7 @@ return [
     'auto-draft' => __('Automatic Draft', 'tainacan'),
 
     // Page Titles (used mainly on Router)
-    'title_collections_page' => __('Collection Page', 'tainacan'),
+    'title_collections_page' => __('Collections Page', 'tainacan'),
     'title_items_page' => __('Items Page', 'tainacan'),
     'title_fields_page' => __('Fields Page', 'tainacan'),
     'title_filters_page' => __('Filters Page', 'tainacan'),

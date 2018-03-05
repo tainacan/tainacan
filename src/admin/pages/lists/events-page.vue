@@ -1,6 +1,8 @@
 <template>
     <div>
-        <h1>Events (or Activites) Page</h1>
+        <nav class="level header"><h1>Events (or Activies) Page</h1></nav>
+        <div class="primary-page">    
+        </div>
     </div>
 </template>
 

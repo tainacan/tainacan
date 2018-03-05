@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="is-size-3">{{ pageTitle }}  <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag></h1>
+        <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag>
         <form label-width="120px">
             <b-field :label="$i18n.get('label_status')">
                 <b-select id="status-select"
@@ -172,7 +172,7 @@ export default {
     created(){
         // Obtains collection ID
         this.cleanFields();
-        this.collectionId = this.$route.params.id;
+        this.collectionId = this.$route.params.collectionId;
         this.form.collectionId = this.collectionId;
 
         if (this.$route.fullPath.split("/").pop() == "new") {

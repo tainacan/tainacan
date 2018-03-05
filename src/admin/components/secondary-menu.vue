@@ -9,10 +9,10 @@
             </div>
 
             <ul class="menu-list">
-                <li><router-link 
+                <li><router-link  
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
-                        :class="activeRoute == 'ItemsList' || 'ItemEditionPage' || 'ItemCreatePage' ? 'is-active':''" 
+                        :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionPage' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
                         :aria-label="$i18n.get('collection') + ' ' + $i18n.get('items')">
                     <b-icon size="is-small" icon="cube-outline"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
                 </router-link></li>
@@ -76,11 +76,12 @@ export default {
         -webkit-transition: max-width 0.3s linear; /* Safari */
         transition: max-width 0.3s linear;
         max-width: 180px; 
+        z-index: 90;
 
         .menu-header {
             background-color: rgba(0,0,0,0.1);
-            height: 62px;
-            a { padding: 1em 1.2em; }
+            height: 78px;
+            a { padding: 1.52em 1.5em; }
             .icon {
                 position: absolute;
                 opacity: 0;

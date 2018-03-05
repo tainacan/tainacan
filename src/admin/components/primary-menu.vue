@@ -28,9 +28,6 @@
                 <li><router-link tag="a" to="/events" :class="activeRoute == 'EventsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="calendar"></b-icon> <span class="menu-text">{{ $i18n.get('events')}}</span>
                 </router-link></li>
-                <li><a class="navbar-item" :href="wordpressAdmin">
-                    <b-icon size="is-small" icon="wordpress"></b-icon> <span class="menu-text">Wordpress</span>
-                </a></li>
             </ul>
         </aside>
     </nav>
@@ -42,19 +39,18 @@ export default {
     data(){
         return {
             logoHeader: tainacan_plugin.base_url + '/admin/images/tainacan_logo_header.png',
-            wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             isCompressed: false,
             activeRoute: '/collections'
         }
     },
     watch: {
         '$route' (to, from) {
-            this.isCompressed = (to.params.id != undefined);
+            this.isCompressed = (to.params.collectionId != undefined);
             this.activeRoute = to.name;
         }
     },
     created () {
-        this.isCompressed = (this.$route.params.id != undefined);
+        this.isCompressed = (this.$route.params.collectionId != undefined);
         this.activeRoute = this.$route.name;
     }
 }
@@ -70,11 +66,12 @@ export default {
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear; 
         max-width: 222px;
+        z-index: 99;
 
         .menu-header {
             background-color: rgba(0,0,0,0.1);
-            height: 62px;
-            a { padding: 1em 2.5em }
+            height: 78px; 
+            a { padding: 1.45em 2.5em }
             .icon {
                 position: absolute;
                 opacity: 0;
@@ -127,7 +124,7 @@ export default {
             max-width: 42px;
 
             .menu-header {
-                a { padding: 1.2em 0.3em }
+                a { padding: 1.67em 0.3em }
                 .icon {
                     visibility: visible; 
                     opacity: 1;

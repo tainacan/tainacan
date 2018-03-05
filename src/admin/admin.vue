@@ -1,7 +1,8 @@
 <template>
     <div id="tainacan-admin-app" class="columns is-fullheight">
         <primary-menu></primary-menu>
-        <div class="column is-main-content">
+        <tainacan-header></tainacan-header>
+        <div class="column is-main-content">  
             <router-view></router-view> 
         </div>
     </div>
@@ -9,6 +10,8 @@
 
 <script>
     import PrimaryMenu from './components/primary-menu.vue';
+    import TainacanHeader from './components/tainacan-header.vue';
+
     export default {
         name: "AdminPage",
         data(){
@@ -16,7 +19,8 @@
             }
         },
         components: {
-            PrimaryMenu
+            PrimaryMenu,
+            TainacanHeader
         }
     }
 </script>
@@ -32,8 +36,8 @@
     }  
 
     .is-main-content {
-        padding-bottom: 0px;
         padding-top: 0px;
+        padding-bottom: 0px;
         margin: 0 auto;
         position: relative;
         overflow-y: auto;
@@ -42,7 +46,21 @@
             & {
                 overflow-y: visible;
             }
-        }
+        } 
+    }
+
+    .is-secondary-content {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin: 78px auto 0 auto;
+        position: relative;
+        overflow-y: auto;
+
+        @media screen and (max-width: 769px) {
+            & {
+                overflow-y: visible;
+            }
+        } 
     }
 
 </style>

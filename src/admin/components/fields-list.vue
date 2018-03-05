@@ -17,20 +17,27 @@
                             v-for="(field, index) in activeFieldList" :key="index">
                             {{ field.name }}
                             <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span> <b-tag v-if="field.status != undefined">{{field.status}}</b-tag></span>
-                            <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon is-small icon="delete"></b-icon></a>
-                            <b-icon is-small icon="pencil" v-if="field.id != undefined"></b-icon>
+                            <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon icon="delete"></b-icon></a>
+                            <b-icon icon="pencil" v-if="field.id != undefined"></b-icon>
                         </div>
                         <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_fields_collection') }}</div>
                     </draggable> 
                 </b-field>
             </div>
             <div class="column">
-                <b-field :label="$i18n.get('label_available_fields')" is-grouped>
-                    <draggable class="box available-fields-area" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: 'false', revertClone: 'true' }}">
-                        <div class="available-field-item" v-for="(field, index) in availableFieldList" :key="index">
-                            {{ field.name }}
-                        </div>
-                    </draggable> 
+                <b-field :label="$i18n.get('label_available_fields')">
+                    <div class="columns box available-fields-area" >
+                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: 'false', revertClone: 'true' }}">
+                            <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
+                                {{ field.name }}  <b-icon type="is-gray" class="is-pulled-right" icon="drag"></b-icon>
+                            </div>
+                        </draggable>
+                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: 'false', revertClone: 'true' }}">
+                            <div class="available-field-item" v-if="index % 2 != 0" v-for="(field, index) in availableFieldList" :key="index">
+                                {{ field.name }}  <b-icon type="is-gray" class="is-pulled-right" icon="drag"></b-icon>
+                            </div>       
+                        </draggable> 
+                   </div>
                 </b-field>
             </div>
         </div>
@@ -113,7 +120,7 @@ export default {
         this.isLoadingFieldTypes = true;
         this.isLoadingFields = true;
 
-        this.collectionId = this.$route.params.id;
+        this.collectionId = this.$route.params.collectionId;
         
         this.fetchFieldTypes()
             .then((res) => {
@@ -169,7 +176,7 @@ export default {
                 border-top-color: transparent;
                 content: "";
                 display: inline-block;
-                height: 1em;
+                height: 1em; 
                 width: 1em;
             }
 
@@ -193,17 +200,17 @@ export default {
     }
 
     .available-fields-area {
-        padding: 10px;
-        border-radius: 5px;
+        padding: 0 10px;
+        margin: 0;
         background-color: whitesmoke;
 
         .available-field-item {
             padding: 0.2em 0.5em;
-            margin: 10px;
+            margin: 10px 10% 10px 0px;
             border-radius: 5px;
             background-color: white;
             border: 1px solid gainsboro;
-            display: inline-flex;
+            width: 100%;
             cursor: grab;
         }
         .available-field-item:hover {

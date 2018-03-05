@@ -119,6 +119,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewItemPath(collectionId) {
             return '/collections/' + collectionId + '/items/new';
         },
+        getNewFieldPath() {
+            return '/field/new';
+        },
         getNewFilterPath() {
             return '/filters/new';
         },

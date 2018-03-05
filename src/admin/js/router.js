@@ -34,10 +34,10 @@ const routes = [
     { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: i18nGet('title_collections_page')} },
     { path: '/collections/new', name: 'CollectionEditionPage', component: CollectionEditionPage, meta: {title: i18nGet('title_create_collection')} },
     
-    { path: '/collections/:id', name: 'CollectionPage', component: CollectionPage, meta: {title: i18nGet('title_collection_page')}, 
+    { path: '/collections/:collectionId', name: 'CollectionPage', component: CollectionPage, meta: {title: i18nGet('title_collection_page')}, 
       children: [
         { path: '', redirect: 'items'},
-        { path: 'items', component: ItemsPage, name: 'ItemsPage', meta: {title: i18nGet('title_collection_page')} }, 
+        { path: 'items', component: ItemsPage, name: 'CollectionItemsPage', meta: {title: i18nGet('title_collection_page')} }, 
         { path: 'items/:itemId/edit', name: 'ItemEditionPage', component: ItemEditionPage, meta: {title:  i18nGet('title_item_edition')} },
         { path: 'items/new', name: 'ItemCreatePage', component: ItemEditionPage, meta: {title: i18nGet('title_create_item')} },
         { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page')} },   
@@ -52,13 +52,13 @@ const routes = [
 
     { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('title_filters_page')} },
     { path: '/filters/new', name: 'FilterEditionPage', component: FilterEditionPage, meta: {title: i18nGet('title_create_filter_page')} },
-    { path: '/filters/:id/edit', name: 'FilterEditionPage', component: FilterEditionPage, meta: {title: i18nGet('title_filter_edition_page')} },
+    { path: '/filters/:filterId/edit', name: 'FilterEditionPage', component: FilterEditionPage, meta: {title: i18nGet('title_filter_edition_page')} },
 
     { path: '/fields', name: 'FieldsPage', component: FieldsPage, meta: {title: i18nGet('title_fields_page')} },
 
     { path: '/categories', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_categories_page')} },
     { path: '/categories/new', name: 'CategoryEditionPage', component: CategoryEditionPage, meta: {title: i18nGet('title_create_category_page')} },
-    { path: '/categories/:id/edit', name: 'CategoryEditionPage', component: CategoryEditionPage, meta: {title: i18nGet('title_category_edition_page')} },
+    { path: '/categories/:categoryId/edit', name: 'CategoryEditionPage', component: CategoryEditionPage, meta: {title: i18nGet('title_category_edition_page')} },
 
     { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_events_page')} },
 

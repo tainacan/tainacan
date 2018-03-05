@@ -1,5 +1,6 @@
 // Import Bulma's core and variables
-@import "../../../node_modules/bulma/sass/utilities/_all.sass";
+@import "../../../node_modules/bulma/sass/utilities/initial-variables";
+@import "../../../node_modules/bulma/sass/utilities/functions";
 
 // Tainacan custom colors
 $primary: #2cb4c1;// #25a189;
@@ -20,19 +21,24 @@ $gray-invert: findColorInvert($gray);
 $gray-light: #898d8f; 
 $gray-light-invert: findColorInvert($gray-light);
 
+@import "../../../node_modules/bulma/sass/utilities/derived-variables.sass";
+
 // Setup $colors to use as bulma classes
 $colors: (
     "white": ($white, $black),
     "black": ($black, $white),
-    "gray": ($gray, $gray-invert),
-    "gray-light": ($gray-light, $gray-light-invert),
     "light": ($light, $light-invert),
     "dark": ($dark, $dark-invert),
     "primary": ($primary, $primary-invert),
     "secondary": ($secondary, $secondary-invert),
-    "tertiary": ($secondary, $secondary-invert),
     "info": ($info, $info-invert),
     "success": ($success, $success-invert),
     "warning": ($warning, $warning-invert),
     "danger": ($danger, $danger-invert)
 );
+$addColors: ( 
+    "gray": ($gray, $gray-invert),
+    "gray-light": ($gray-light, $gray-light-invert),
+    "tertiary": ($secondary, $secondary-invert),
+);
+$colors: map-merge($colors, $addColors);

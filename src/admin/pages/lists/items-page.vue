@@ -1,11 +1,13 @@
 <template>  
     <div>
         <h1>Items Page</h1>
-        <router-link tag="button" class="button is-secondary"
-                    :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-            {{ $i18n.get('new') + ' ' + $i18n.get('item') }}
-        </router-link>
-        <items-list :collection-id="collectionId"></items-list>
+        <div class="primary-page">
+            <router-link tag="button" class="button is-secondary"
+                        :to="{ path: $routerHelper.getNewItemPath() }">
+                {{ $i18n.get('new') + ' ' + $i18n.get('item') }}
+            </router-link>
+            <items-list :collection-id="collectionId"></items-list>
+        </div>
     </div>
 </template>
 
@@ -23,7 +25,7 @@ export default {
         ItemsList
     },
     created() {
-        this.collectionId = this.$route.params.id;
+        this.collectionId = this.$route.params.collectionId;
     }
 }
 </script>
