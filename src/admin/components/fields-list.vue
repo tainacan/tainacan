@@ -10,29 +10,29 @@
                         @change="handleChange"
                         :class="{'fields-area-receive': isDraggingFromAvailable}" 
                         :list="activeFieldList" 
-                        :options="{group:'fields', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
+                        :options="{group: { name:'fields', pull: false, put: true }, chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
                         <div 
                             class="active-field-item" 
-                            :class="{'not-sortable-item': field.id == undefined}" 
+                            :class="{'not-sortable-item': field.id == undefined || isRepositoryLevel}" 
                             v-for="(field, index) in activeFieldList" :key="index">
                             {{ field.name }}
                             <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span> <b-tag v-if="field.status != undefined">{{field.status}}</b-tag></span>
                             <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon icon="delete"></b-icon></a>
                             <b-icon icon="pencil" v-if="field.id != undefined"></b-icon>
                         </div>
-                        <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_fields_collection') }}</div>
+                        <!-- <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_fields_collection') }}</div> -->
                     </draggable> 
                 </b-field>
             </div>
             <div class="column">
                 <b-field :label="$i18n.get('label_available_fields')">
                     <div class="columns box available-fields-area" >
-                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: 'false', revertClone: 'true' }}">
+                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
                                 {{ field.name }}  <b-icon type="is-gray" class="is-pulled-right" icon="drag"></b-icon>
                             </div>
                         </draggable>
-                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: 'false', revertClone: 'true' }}">
+                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 != 0" v-for="(field, index) in availableFieldList" :key="index">
                                 {{ field.name }}  <b-icon type="is-gray" class="is-pulled-right" icon="drag"></b-icon>
                             </div>       
@@ -52,20 +52,21 @@ export default {
     data(){           
         return {
             collectionId: '',
+            isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingFieldTypes: true,
             isLoadingFields: false
         }
     },
     methods: {
-        ...mapActions('collection', [
+        ...mapActions('fields', [
             'fetchFieldTypes',
             'fetchFields',
             'sendField',
             'deleteField',
             'updateCollectionFieldsOrder'
         ]),
-        ...mapGetters('collection',[
+        ...mapGetters('fields',[
             'getFieldTypes',
             'getFields'
         ]),
@@ -75,7 +76,8 @@ export default {
             } else if ($event.removed) {
                 this.removeField($event.removed.element);
             } else if ($event.moved) {
-                this.updateFieldsOrder(); 
+                if (!this.isRepositoryLevel)
+                    this.updateFieldsOrder(); 
             }
         },
         updateFieldsOrder() {
@@ -86,23 +88,32 @@ export default {
             this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
         },
         addNewField(newField, newIndex) {
-            this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'auto-draft'})
+            this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel})
             .then((field) => {
-                this.activeFieldList.splice(newIndex, 1, field);
-                this.updateFieldsOrder();
+
+                if (newIndex < 0) {
+                    this.activeFieldList.pop();
+                    this.activeFieldList.push(field);
+                } else {
+                   this.activeFieldList.splice(newIndex, 1, field);  
+                }
+
+                if (!this.isRepositoryLevel)
+                    this.updateFieldsOrder();
             })
             .catch((error) => {
                 console.log(error);
             });
         },
         removeField(removedField) {
-            this.deleteField({ collectionId: this.collectionId, fieldId: removedField.id })
+            this.deleteField({ collectionId: this.collectionId, fieldId: removedField.id, isRepositoryLevel: this.isRepositoryLevel})
             .then((field) => {
                 let index = this.activeFieldList.findIndex(deletedField => deletedField.id === field.id);
-                if (index >= 0) {  
+                if (index >= 0) 
                     this.activeFieldList.splice(index, 1);
-                }
-                this.updateFieldsOrder(); 
+                
+                if (!this.isRepositoryLevel)
+                    this.updateFieldsOrder(); 
             })
             .catch((error) => {
             });
@@ -118,9 +129,7 @@ export default {
     },
     created() {
         this.isLoadingFieldTypes = true;
-        this.isLoadingFields = true;
-
-        this.collectionId = this.$route.params.collectionId;
+        this.isLoadingFields = true;         
         
         this.fetchFieldTypes()
             .then((res) => {
@@ -129,7 +138,11 @@ export default {
             .catch((error) => {
                 this.isLoadingFieldTypes = false;
             });
-        this.fetchFields(this.collectionId)
+
+        this.isRepositoryLevel = this.$route.name == 'FieldsPage' ? true : false;
+        this.collectionId = this.$route.params.collectionId;
+
+        this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
             .then((res) => {
                 this.isLoadingFields = false;
             })
