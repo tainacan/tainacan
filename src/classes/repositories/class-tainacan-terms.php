@@ -59,7 +59,8 @@ class Terms extends Repository {
                 'type'       => 'integer',
                 'description'=> __('The term creator', 'tainacan'),
                 'on_error'   => __('The user is empty or invalid', 'tainacan'),
-                'validation' => v::numeric()->positive(),
+				'default'    => get_current_user_id(),
+                'validation' => v::numeric(),
             ],
 		    'hide_empty'  => [
 		    	'map'        => 'hide_empty',
