@@ -186,7 +186,7 @@ class DevInterface {
                                     <?php  Helpers\HtmlHelpers::collections_dropdown( $value ); ?>
                                 <?php elseif ($prop == 'collections_ids'): ?>
                                     <?php  Helpers\HtmlHelpers::collections_checkbox_list( $value ); ?>
-                                <?php elseif ($prop == 'field'): ?>
+                                <?php elseif ( $prop == 'field' && $entity->get_collection_id() ): ?>
                                     <?php Helpers\HtmlHelpers::metadata_dropdown(
                                         $entity->get_collection_id(),
                                         ( isset( $value ) ) ? $value : '',

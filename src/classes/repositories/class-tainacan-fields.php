@@ -286,7 +286,9 @@ class Fields extends Repository {
                 'posts_per_page' => -1,
                 'post_status'    => 'publish'
             ], $args);
-
+			
+			$args = $this->parse_fetch_args($args);
+			
             $args['post_type'] = Entities\Field::get_post_type();
 
             $wp_query = new \WP_Query($args);

@@ -20,7 +20,7 @@ import Numeric from '../classes/field-types/numeric/Numeric.vue';
 import Date from '../classes/field-types/date/Date.vue';
 import Relationship from '../classes/field-types/relationship/Relationship.vue';
 
-import FilterRange from '../classes/filter-types/range/Range.vue';
+import FilterCustomInterval from '../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterSelectbox from '../classes/filter-types/selectbox/Selectbox.vue';
 
 Vue.customElement('tainacan-text', Text);
@@ -51,8 +51,8 @@ eventBus.listener();
 
 /* Filters */
 
-Vue.customElement('tainacan-filter-range', FilterRange);
-eventFilterBus.registerComponent( 'tainacan-filter-range' );
+Vue.customElement('tainacan-filter-custom-interval', FilterCustomInterval);
+eventFilterBus.registerComponent( 'tainacan-filter-custom-interval' );
 
 Vue.customElement('tainacan-filter-selectbox', FilterSelectbox);
 eventFilterBus.registerComponent( 'tainacan-filter-selectbox' );

@@ -2,24 +2,35 @@
 @import "../../../node_modules/bulma/sass/utilities/_all.sass";
 
 // Tainacan custom colors
-$primary: #7DB9C3;// #25a189;
+$primary: #2cb4c1;// #25a189;
 $primary-invert: findColorInvert($primary);
-$secondary: #1F2F56;
-$secondary-invert: findColorInvert($primary);
- 
+$secondary: #298596;
+$secondary-invert: findColorInvert($secondary);
+$tertiary: #1f2f56;
+$tertiary-invert: findColorInvert($tertiary);
+
 $primary-light:#A5CDD7;
 $primary-lighter: lighten($primary-light, 15%);
 $primary-dark: #55A0AF;
 $primary-darker: darken($primary-dark, 5%);
 
+$separator-color: #2a6e77;
+$gray: #898d8f; 
+$gray-invert: findColorInvert($gray);
+$gray-light: #898d8f; 
+$gray-light-invert: findColorInvert($gray-light);
+
 // Setup $colors to use as bulma classes
 $colors: (
     "white": ($white, $black),
     "black": ($black, $white),
+    "gray": ($gray, $gray-invert),
+    "gray-light": ($gray-light, $gray-light-invert),
     "light": ($light, $light-invert),
     "dark": ($dark, $dark-invert),
     "primary": ($primary, $primary-invert),
     "secondary": ($secondary, $secondary-invert),
+    "tertiary": ($secondary, $secondary-invert),
     "info": ($info, $info-invert),
     "success": ($success, $success-invert),
     "warning": ($warning, $warning-invert),

@@ -78,7 +78,7 @@ export default {
         max-width: 180px; 
 
         .menu-header {
-            background-color: $primary-dark;
+            background-color: rgba(0,0,0,0.1);
             height: 62px;
             a { padding: 1em 1.2em; }
             .icon {
@@ -109,12 +109,12 @@ export default {
                 transition: padding 0.3s linear; 
             }
             a:hover {
-                background-color: $primary-lighter;
-                color: $secondary
+                background-color: rgba(255,255,255,0.4);
+                color: $tertiary;
             }
             a.is-active {
-                background-color: $primary-light;
-                color: $secondary;
+                background-color: rgba(255,255,255,0.4);
+                color: $tertiary;
             }
             .menu-text {
                 padding-left: 0.7em;
@@ -132,7 +132,7 @@ export default {
             .menu-header { display: none;
             }
             .menu-text {
-                display: none !important;
+                padding-left: 0.3em !important;
             }
             ul { 
                 display: flex;

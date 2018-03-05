@@ -124,7 +124,7 @@ abstract class Importer {
      * @param $type
      * @param $message
      */
-    public function set_log( $type, $message ){
+    public function add_log($type, $message ){
         $this->logs[] = [ 'type' => $type, 'message' => $message ];
     }
 
@@ -178,7 +178,9 @@ abstract class Importer {
      *
      * @param  $index
      * @return array with field_source's as the index and values for the
-     * item Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
+     * item
+     *
+     * Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
      */
     abstract public function process_item( $index );
 
@@ -200,7 +202,18 @@ abstract class Importer {
      * @param $start init index
      * @param $end last index
      */
-    abstract public function process( $start, $end );
+    public function process( $start, $end ){
+        while ( $start <  $end && count( $this->get_processed_items() ) <= $this->get_total_items() ){
+            $processed_item = $this->process_item( $start );
+            if( $processed_item) {
+                $this->insert( $start, $processed_item );
+            } else {
+                $this->add_log('error', 'failed on item '.$start );
+                break;
+            }
+            $start++;
+        }
+    }
 
     /**
      * insert processed item from source to Tainacan
@@ -212,11 +225,14 @@ abstract class Importer {
      */
     public function insert( $index, $processed_item ){
         global $Tainacan_Items, $Tainacan_Item_Metadata, $Tainacan_Fields;
-        $item = new Tainacan\Entities\Item();
+
+        $isUpdate = ( is_array( $this->processed_items ) && isset( $this->processed_items[ $index ] ) )
+            ? $this->processed_items[ $index ] : 0;
+        $item = new Tainacan\Entities\Item( $isUpdate );
         $itemMetadataArray = [];
 
         if( !isset( $this->mapping ) ){
-            $this->set_log('error','Mapping is not set');
+            $this->add_log('error','Mapping is not set');
             return false;
         }
 
@@ -235,20 +251,32 @@ abstract class Importer {
         }
 
         if( !empty( $itemMetadataArray ) && $this->collection instanceof Tainacan\Entities\Collection ){
-            $item->set_title( time() );
             $item->set_collection( $this->collection );
-            $insertedItem = $Tainacan_Items->insert( $item );
+
+            if( $item->validate() ){
+                $insertedItem = $Tainacan_Items->insert( $item );
+            } else {
+                $this->add_log( 'error', 'Item ' . $index . ': '. $item->get_errors() );
+                return false;
+            }
 
             foreach ( $itemMetadataArray as $itemMetadata ) {
                 $itemMetadata->set_item( $insertedItem );
-                $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+
+                if( $itemMetadata->validate() ){
+                    $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+                } else {
+                    $this->add_log( 'error', 'Item ' . $index . ' on field '. $itemMetadata->get_field()->get_name()
+                        .' has error ' . $itemMetadata->get_errors() );
+                    continue;
+                }
 
                 if( $result ){
                 	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
-                    $this->set_log( 'success', 'Item ' . $index .
+                    $this->add_log( 'success', 'Item ' . $index .
                         ' has inserted the values: ' . $values . ' on field: ' . $itemMetadata->get_field()->get_name() );
                 } else {
-                    $this->set_log( 'error', 'Item ' . $index . ' has an error' );
+                    $this->add_log( 'error', 'Item ' . $index . ' has an error' );
                 }
             }
 
@@ -263,7 +291,7 @@ abstract class Importer {
             $Tainacan_Items->update( $item );
             return $item;
         } else {
-            $this->set_log( 'error', 'Collection not set');
+            $this->add_log( 'error', 'Collection not set');
             return false;
         }
 

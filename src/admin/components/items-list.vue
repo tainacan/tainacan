@@ -24,10 +24,10 @@
                         v-model="itemsPerPage" 
                         @input="onChangeItemsPerPage" 
                         :disabled="items.length <= 0">
-                    <option value="2">2 {{ $i18n.get('label_per_page') }}</option>
-                    <option value="10">10 {{ $i18n.get('label_per_page') }}</option>
-                    <option value="15">15 {{ $i18n.get('label_per_page') }}</option>
-                    <option value="20">20 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="12">12 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="24">24 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="48">48 {{ $i18n.get('label_per_page') }}</option>
+                    <option value="96">96 {{ $i18n.get('label_per_page') }}</option>
                 </b-select>
                 
             </b-field>
@@ -110,7 +110,7 @@ export default {
             isLoading: false,
             totalItems: 0,
             page: 1,
-            itemsPerPage: 2
+            itemsPerPage: 12
         }
     },
     props: {
@@ -192,6 +192,7 @@ export default {
         },
         onChangeItemsPerPage(value) {
             this.itemsPerPage = value;
+            this.$userPrefs.set('items_per_page', value);
             this.loadItems();
         },
         goToItemPage(itemId) {
@@ -221,6 +222,15 @@ export default {
             return this.getItems();
         }
     },
+    created() {
+        this.$userPrefs.get('items_per_page')
+        .then((value) => {
+            this.itemsPerPage = value;
+        })
+        .catch((error) => {
+            this.$userPrefs.set('items_per_page', 12);
+        });     
+    },
     mounted(){
         this.loadItems();
         this.fetchFields(this.collectionId).then((res) => {
@@ -237,7 +247,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    @import "../scss/_variables.scss";
 
     .table-thumb {
         max-height: 55px !important;

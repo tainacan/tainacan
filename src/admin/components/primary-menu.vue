@@ -65,14 +65,14 @@ export default {
     @import "../scss/_variables.scss";
 
     #primary-menu {
-        background-color: $primary-dark;
+        background-color: $secondary;
         padding: 0px; 
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear; 
         max-width: 222px;
 
         .menu-header {
-            background-color: $primary-darker;
+            background-color: rgba(0,0,0,0.1);
             height: 62px;
             a { padding: 1em 2.5em }
             .icon {
@@ -92,7 +92,7 @@ export default {
         }
         .separator {
             height: 2px;
-            background-color: $primary-darker;
+            background-color: $separator-color;
             width: 100%;
         }
         li{
@@ -107,12 +107,12 @@ export default {
                 transition: padding 0.2s linear; 
             }
             a:hover {
-                background-color: $primary-light;
-                color: $secondary
+                background-color: $primary;
+                color: $tertiary
             }
             a.is-active {
                 background-color: $primary;
-                color: $secondary;
+                color: $tertiary;
             }
             .menu-text {
                 padding-left: 0.7em;
@@ -137,7 +137,10 @@ export default {
                     opacity: 0;
                 }
             }
-            a{ padding: 1em 0.8em; }
+            a { 
+                padding: 1em 0.8em;
+                color: rgba(255,255,255,0.4);
+            }
             .menu-text {   
                 visibility: hidden; 
                 opacity: 0;
