@@ -266,6 +266,11 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
+				ob_start();
+				$item->get_field_type_object()->form();
+				$form = ob_get_clean();
+				$item_arr['edit_form'] = $form;
+				
 			}
 
 			return $item_arr;

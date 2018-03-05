@@ -22,7 +22,7 @@ class Checkbox extends Field_Type {
      */
 
     public function render( $itemMetadata ){
-        $options = ( isset( $this->options['options'] ) ) ? $this->options['options'] : '';
+        $options = $this->get_option('options');
         return '<tainacan-checkbox options="'.$options.'" 
                                    field_id ="'.$itemMetadata->get_field()->get_id().'" 
                                    item_id="'.$itemMetadata->get_item()->get_id().'"    
@@ -41,7 +41,7 @@ class Checkbox extends Field_Type {
                 <small><?php echo __('Insert the options, separate by lines for the field value','tainacan'); ?></small>
             </td>
             <td>
-                <textarea name="field_type_checkbox[options]"><?php echo ( isset( $this->options['options'] ) ) ? $this->options['options'] : ''; ?></textarea>
+                <textarea name="field_type_options[options]"><?php echo $this->get_option('options'); ?></textarea>
             </td>
         </tr>
         <?php

@@ -33,7 +33,7 @@ class Date extends Field_Type {
      * generate the fields for this field type
      */
     public function form(){
-        $approx_date = ( $this->options['approximate_date'] ) ? $this->options['approximate_date'] : '';
+        $approx_date = $this->get_option('approximate_date');
         ?>
         <tr>
             <td>
@@ -41,7 +41,7 @@ class Date extends Field_Type {
                 <small><?php echo __('Allow format approximate date','tainacan'); ?></small>
             </td>
             <td>
-                <?php Helpers\HtmlHelpers::radio_field( $approx_date, 'field_type_date[approximate_date]' ) ?>
+                <?php Helpers\HtmlHelpers::radio_field( $approx_date, 'field_type_options[approximate_date]' ) ?>
             </td>
         </tr>
         <?php
