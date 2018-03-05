@@ -53,6 +53,9 @@ class Term extends Entity {
 	 * @return integer
 	 */
 	function get_id() {
+        return $this->get_term_id();
+    }
+	function get_term_id() {
         return $this->get_mapped_property('term_id');
     }
 

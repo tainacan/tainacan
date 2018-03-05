@@ -105,9 +105,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 			$this->prepare_item_for_database($to_prepare);
 
 			if($this->term->validate()){
-				$term_id = $this->terms_repository->insert($this->term);
-
-				$term_inserted = $this->terms_repository->fetch($term_id, $taxonomy);
+				$term_inserted = $this->terms_repository->insert($this->term);
 
 				return new WP_REST_Response($this->prepare_item_for_response($term_inserted, $request), 200);
 			} else {

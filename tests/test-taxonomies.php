@@ -64,7 +64,7 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 	    );
 
         //retorna um objeto da classe Tainacan_Term
-        $test =  $Tainacan_Terms->fetch($term, $taxonomy_test);
+        $test =  $Tainacan_Terms->fetch($term->get_term_id(), $taxonomy_test);
         $this->assertEquals( $test->get_name(), 'Rock' );
         $this->assertEquals( $test->get_user(), 56 );
     }
