@@ -54,9 +54,9 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_all_field_values'),
-					'permission_callback' => array($this, 'get_all_field_values_permissions_check')
-				)
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'get_item_permissions_check')
+				),
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
@@ -100,7 +100,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check')
-				)
+				),
 			)
 		);
 	}
@@ -110,7 +110,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function get_all_field_values( $request ) {
+	public function get_item( $request ) {
 		$collection_id = $request['collection_id'];
 		$field_id = $request['field_id'];
 
@@ -120,9 +120,9 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			return new WP_REST_Response($results, 200);
 		}
 
-		return new WP_REST_Response([
-			'error_message' => __('Verify the route. A query parameter is missing', 'tainacan'),
-		], 400);
+		$result = $this->field_repository->fetch($field_id, 'OBJECT');
+
+		return new WP_REST_Response($this->prepare_item_for_response($result, $request), 200);
 	}
 
 	/**
@@ -131,9 +131,10 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 * @throws Exception
 	 */
-	public function get_all_field_values_permissions_check( $request ) {
-
-		if($request['context'] === 'edit' && !$this->field_repository->can_read(new Entities\Field())){
+	public function get_item_permissions_check( $request ) {
+		if($request['context'] === 'edit' && !$this->collection_repository->can_read(new Entities\Collection($request['collection_id']))){
+			return false;
+		} elseif($request['context'] === 'edit' && !$this->field_repository->can_read(new Entities\Field())){
 			return false;
 		}
 

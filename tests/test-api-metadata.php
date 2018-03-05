@@ -43,6 +43,37 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertNotEquals('default', $field_added['collection_id']);
 	}
 
+	public function test_fetch_a_field_from_a_collection(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Statement',
+				'description' => 'No Statement'
+			),
+			true
+		);
+
+		$fieldA = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve valor do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'field_type'  => 'Tainacan\Field_Types\Text',
+			), true
+		);
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/fields/' . $fieldA->get_id());
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertEquals('Data', $data['name']);
+		$this->assertEquals($fieldA->get_id(), $data['id']);
+	}
+
 	public function test_create_default_field(){
 		$field = json_encode(
 			array(
@@ -378,7 +409,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_fetch_all_field_values(){
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		global $Tainacan_Item_Metadata;
 
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
