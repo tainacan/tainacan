@@ -52,10 +52,10 @@ fi
 ### END npm build ###
 
 
-echo "Updating files in $destination"
-rm -rf $destination
-mkdir $destination
-cp -R src/* $destination/
-rm -rf $destination/scss
+echo "Updating files in $wp_plugin_dir"
+rm -rf $wp_plugin_dir
+mkdir $wp_plugin_dir
+cp -R src/* $wp_plugin_dir/
+rm -rf $wp_plugin_dir/scss
 
 echo "Build complete!"
