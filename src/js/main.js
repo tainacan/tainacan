@@ -22,6 +22,7 @@ import Relationship from '../classes/field-types/relationship/Relationship.vue';
 
 import FilterCustomInterval from '../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterSelectbox from '../classes/filter-types/selectbox/Selectbox.vue';
+import FilterAutocomplete from '../classes/filter-types/autocomplete/Autocomplete.vue';
 
 Vue.customElement('tainacan-text', Text);
 eventBus.registerComponent( 'tainacan-text' );
@@ -56,5 +57,9 @@ eventFilterBus.registerComponent( 'tainacan-filter-custom-interval' );
 
 Vue.customElement('tainacan-filter-selectbox', FilterSelectbox);
 eventFilterBus.registerComponent( 'tainacan-filter-selectbox' );
+
+
+Vue.customElement('tainacan-filter-autocomplete', FilterAutocomplete);
+eventFilterBus.registerComponent( 'tainacan-filter-autocomplete' );
 
 eventFilterBus.listener();

@@ -20,6 +20,7 @@ class Selectbox extends Filter_Type {
 
     public function render( $filter ){
         return '<tainacan-filter-selectbox name="'.$filter->get_name().'"
+                                        filter_type="'.$filter->get_field()->get_field_type().'"
                                         collection_id="'.$filter->get_collection_id().'"
                                         field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-selectbox>';
     }
