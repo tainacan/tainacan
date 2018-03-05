@@ -7,11 +7,11 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanFieldType
  */
-class Range extends Filter_Type {
+class Custom_Interval extends Filter_Type {
 
     function __construct(){
         parent::set_supported_types(['float','date']);
-        $this->component = 'tainacan-filter-range';
+        $this->component = 'tainacan-filter-custom-interval';
     }
 
     /**
@@ -20,10 +20,10 @@ class Range extends Filter_Type {
      */
     public function render( $filter ){
          $type = ( $filter->get_field()->get_field_type() === 'Tainacan\Field_Types\Date' ) ? 'date' : 'numeric';
-         return '<tainacan-filter-range 
+         return '<tainacan-filter-custom-interval 
                                         name="'.$filter->get_name().'"
                                         typeRange="'.$type.'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-range>';
+                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-custom-interval>';
     }
 }

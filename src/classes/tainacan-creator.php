@@ -88,12 +88,13 @@ $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Numeric');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Selectbox');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Relationship');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Radio');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Category');
 
 global $Tainacan_Filters;
 $Tainacan_Filters = new \Tainacan\Repositories\Filters();
 
 //register filter type
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Range');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Custom_Interval');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
 
 global $Tainacan_Taxonomies;

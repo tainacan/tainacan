@@ -32,10 +32,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$request_body = json_encode(
 			array(
-				'filter_type'   => 'range',
+				'filter_type'   => 'custom_interval',
 				'filter'        => [
 					'name'        => 'Filter name',
-					'description' => 'This is RANGE!',
+					'description' => 'This is CUSTOM INTERVAL!',
 				]
 			)
 		);
@@ -48,7 +48,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 		$this->assertTrue(is_array($data) && array_key_exists('filter_type', $data), sprintf('cannot create a range, response: %s', print_r($data, true)));
-		$this->assertEquals('Tainacan\Filter_Types\Range', $data['filter_type']);
+		$this->assertEquals('Tainacan\Filter_Types\Custom_Interval', $data['filter_type']);
 		$this->assertEquals('Filter name', $data['name']);
 	}
 
@@ -70,7 +70,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			)
 		);
 
-		$filter_type = $this->tainacan_filter_factory->create_filter('range');
+		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
 
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
@@ -141,7 +141,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			)
 		);
 
-		$filter_type = $this->tainacan_filter_factory->create_filter('range');
+		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
 
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',
@@ -201,7 +201,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			)
 		);
 
-		$filter_type = $this->tainacan_filter_factory->create_filter('range');
+		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
 
 		$filter = $this->tainacan_entity_factory->create_entity(
 			'filter',

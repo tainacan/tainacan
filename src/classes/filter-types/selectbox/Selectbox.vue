@@ -1,20 +1,18 @@
 <template>
     <div class="block">
-        <b-field>
-            <b-select
-                    :id = "id"
-                    :laoding = "isLoading"
-                    v-model = "selected"
-                    @input = "onSelect()"
-                    expanded>
-                <option
-                        v-for="option,index in options"
-                        :key="index"
-                        :label="option.label"
-                        :value="option.value"
-                        border>{{ option.label }}</option>
-            </b-select>
-        </b-field>
+        <b-select
+                :id = "id"
+                :laoding = "isLoading"
+                v-model = "selected"
+                @input = "onSelect()"
+                expanded>
+            <option
+                    v-for="option,index in options"
+                    :key="index"
+                    :label="option.label"
+                    :value="option.value"
+                    border>{{ option.label }}</option>
+        </b-select>
     </div>
 </template>
 
@@ -24,6 +22,7 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
+            this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
             this.loadOptions();
         },
         data(){
