@@ -80,6 +80,11 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check')
 				)
 			)
 		);
@@ -280,17 +285,31 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$collection_id = $request['collection_id'];
+		if(isset($request['collection_id'])) {
+			$collection_id = $request['collection_id'];
 
-		$args = $this->prepare_filters($request);
+			$args = $this->prepare_filters( $request );
 
-		$collection = new Entities\Collection($collection_id);
+			$collection = new Entities\Collection( $collection_id );
 
-		$collection_metadata = $this->field_repository->fetch_by_collection($collection, $args, 'OBJECT');
+			$result = $this->field_repository->fetch_by_collection( $collection, $args, 'OBJECT' );
+		} else {
+			$args = [
+				'meta_query' => [
+					[
+						'key'     => 'collection_id',
+						'value'   => 'default',
+						'compare' => '='
+					]
+				]
+			];
+
+			$result = $this->field_repository->fetch( $args, 'OBJECT' );
+		}
 
 		$prepared_item = [];
-		foreach ($collection_metadata as $item){
-			$prepared_item[] = $this->prepare_item_for_response($item, $request);
+		foreach ( $result as $item ) {
+			$prepared_item[] = $this->prepare_item_for_response( $item, $request );
 		}
 
 		return new WP_REST_Response($prepared_item, 200);
@@ -303,18 +322,11 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-        if (isset($request['collection_id'])) {
-			
-            
-            if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-fields') ) {
-    			return false;
-    		}
-
-    		return true;
-
+		if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-fields') ) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
