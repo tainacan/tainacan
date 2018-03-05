@@ -197,8 +197,9 @@ export default {
         handleSelectionChange() {
         },
         onChangeItemsPerPage(value) {
+            let prevValue = this.itemsPerPage;
             this.itemsPerPage = value;
-            this.$userPrefs.set('items_per_page', value);
+            this.$userPrefs.set('num_items_per_page', value, prevValue);
             this.loadItems();
         },
         goToItemPage(itemId) {
@@ -229,12 +230,12 @@ export default {
         }
     },
     created() {
-        this.$userPrefs.get('items_per_page')
+        this.$userPrefs.get('num_items_per_page')
         .then((value) => {
             this.itemsPerPage = value;
         })
         .catch((error) => {
-            this.$userPrefs.set('items_per_page', 12);
+            this.$userPrefs.set('num_items_per_page', 12, null);
         });     
     },
     mounted(){

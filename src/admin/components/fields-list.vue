@@ -10,16 +10,47 @@
                         @change="handleChange"
                         :class="{'fields-area-receive': isDraggingFromAvailable}" 
                         :list="activeFieldList" 
-                        :options="{group: { name:'fields', pull: false, put: true }, chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
-                        <div 
+                        :options="{group: { name:'fields', pull: false, put: true }, 'handle': '.handle', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
+                        <div  
                             class="active-field-item" 
-                            :class="{'not-sortable-item': field.id == undefined || isRepositoryLevel}" 
+                            :class="{'not-sortable-item': field.id == undefined || isRepositoryLevel }" 
                             v-for="(field, index) in activeFieldList" :key="index">
-                            {{ field.name }}
-                            <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span> <b-tag v-if="field.status != undefined">{{field.status}}</b-tag></span>
-                            <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon icon="delete"></b-icon></a>
-                            <b-icon icon="pencil" v-if="field.id != undefined"></b-icon>
+                            <div>
+                                <div class="handle">
+                                    {{ field.name }}
+                                    <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span> <b-tag v-if="field.status != undefined">{{field.status}}</b-tag></span>
+                                    <b-icon type="is-gray" class="is-pulled-right" icon="drag"></b-icon>
+                                    <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon icon="delete"></b-icon></a>
+                                    <a @click.prevent="editField(field)" v-if="field.id != undefined"><b-icon icon="pencil" v-if="field.id != undefined"></b-icon></a>
+                                </div>
+                                <div v-if="openedFieldId == field.id">
+                                    <form v-on:submit.prevent="saveEdition($event, field)">    
+                                        <b-field :label="$i18n.get('label_status')">
+                                            <b-select
+                                                    id="tainacan-select-status"
+                                                    name="status"
+                                                    :value="editForm"
+                                                    :placeholder="$i18n.get('instruction_select_a_status')">
+                                                <option value="private">{{ $i18n.get('publish')}}</option>
+                                                <option value="private">{{ $i18n.get('private')}}</option>
+                                            </b-select>
+                                        </b-field>
+
+                                        <div v-html="field.edit_form"></div>
+                                        
+                                        <div class="field is-grouped">
+                                            <div class="control">
+                                                <button class="button is-link" type="submit">Submit</button>
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-text" @click.prevent="cancelEdition(field)" slot="trigger">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
+                        
                         <!-- <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_fields_collection') }}</div> -->
                     </draggable> 
                 </b-field>
@@ -55,7 +86,10 @@ export default {
             isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingFieldTypes: true,
-            isLoadingFields: false
+            isLoadingFields: false,
+            isLoadingField: false,
+            editForm: {},
+            openedFieldId: ''
         }
     },
     methods: {
@@ -79,6 +113,21 @@ export default {
                 if (!this.isRepositoryLevel)
                     this.updateFieldsOrder(); 
             }
+        },
+        saveEdition($event, field) {
+            this.openedFieldId = field.id;
+            
+            let data = []
+            for (let i = 0; i < $event.target.length; i++) {
+                let input = {};
+                input[$event.target[i].name] =  $event.target[i].value;
+                data.push(input);
+            }
+            console.log(data);
+        },
+        cancelEdition(field) {
+            this.editForm = {};
+            this.openedFieldId = '';
         },
         updateFieldsOrder() {
             let fieldsOrder = [];
@@ -117,6 +166,12 @@ export default {
             })
             .catch((error) => {
             });
+        },
+        editField(field) {
+            if (this.openedFieldId == field.id)
+                this.openedFieldId = '';
+            else
+                this.openedFieldId = field.id;
         }
     },
     computed: {
@@ -129,8 +184,8 @@ export default {
     },
     created() {
         this.isLoadingFieldTypes = true;
-        this.isLoadingFields = true;         
-        
+        this.isLoadingFields = true;      
+
         this.fetchFieldTypes()
             .then((res) => {
                 this.isLoadingFieldTypes = false;
@@ -166,6 +221,10 @@ export default {
             border: 1px dashed gray;
         }
 
+        .collapse {
+            display: initial;
+        }
+
         .active-field-item {
             background-color: white;
             padding: 0.2em 0.5em;
@@ -195,7 +254,7 @@ export default {
 
             &.not-sortable-item {
                 color: gray;
-                cursor: wait;
+                cursor: default;
             }
         }
         .active-field-item:hover {

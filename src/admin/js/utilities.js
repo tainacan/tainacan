@@ -29,22 +29,29 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             return new Promise(( resolve, reject ) => {
                 wpApi.get('/wp/v2/users/me/')
                 .then( res => {
-                    if (res.data.meta.hasOwnProperty(key))
-                        resolve( res.data.key );
-                    else
+                    if (res.data.meta.hasOwnProperty(key)) {
+                        if (res.data.key.length > 1)
+                            resolve( res.data.key );
+                        else 
+                            resolve( res.data.key[0] );
+                    } else {
                         reject( { message: 'Key does not exists in user preference.', value: false} );
+                    }
                 })
                 .catch(error => {
                     reject( { message: error, value: false});
                 });
             }); 
         },
-        set(metakey, value) {
-            let data = {
-                'meta': { metakey: value }
-            };
+        set(metakey, value, prevValue) {
+            let data = {}
+            if (prevValue != null)
+                data = {'meta': [{'metakey': metakey, 'metavalue': value, 'prevvalue': prevValue}]};
+            else
+                data = {'meta': [{'metakey': metakey, 'metavalue': value}]};
+
             return new Promise(( resolve, reject ) => {
-                wpApi.post('/wp/v2/users/me/?context=edit&' + qs.stringify(data))
+                wpApi.post('/wp/v2/users/me/?' + qs.stringify(data))
                 .then( res => {
                     resolve( res.data );
                 })
