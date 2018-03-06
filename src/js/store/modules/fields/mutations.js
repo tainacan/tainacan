@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 export const deleteField = ( state, field ) => {
     let index = state.fields.findIndex(deletedField => deletedField.id === field.id);
     if (index >= 0) {

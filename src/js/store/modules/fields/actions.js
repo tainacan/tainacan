@@ -8,7 +8,7 @@ export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel}) => {
         else
             endpoint = '/fields/';
 
-        axios.get(endpoint)
+        axios.get(endpoint + '?context=edit')
         .then((res) => {
             let fields= res.data;
             commit('setFields', fields);
@@ -21,6 +21,30 @@ export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel}) => {
     });
 }
 
+
+export const fetchField = ({ commit }, {collectionId, fieldId, isRepositoryLevel}) => {
+    return new Promise((resolve, reject) => {
+
+        let endpoint = '';
+        if (!isRepositoryLevel) 
+            endpoint = '/collection/' + collectionId + '/fields/' + fieldId; 
+        else
+            endpoint = '/fields/' + fieldId;
+
+        axios.get(endpoint + '?context=edit')
+        .then((res) => {
+            let field = res.data;
+            commit('setSingleField', field);
+            resolve (field);
+        }) 
+        .catch((error) => {
+            console.log(error);
+            reject(error);
+        });
+    });
+}
+
+
 export const sendField = ( { commit }, { collectionId, name, fieldType, status, isRepositoryLevel }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
@@ -28,7 +52,7 @@ export const sendField = ( { commit }, { collectionId, name, fieldType, status, 
             endpoint = '/collection/' + collectionId + '/fields/'; 
         else
             endpoint = '/fields/';
-        axios.post(endpoint, {
+        axios.post(endpoint + '?context=edit', {
             name: name,
             field_type: fieldType, 
             status: status
