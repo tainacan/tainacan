@@ -280,7 +280,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				$item->get_field_type_object()->form();
 				$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
-				
+				$item_arr['field_type_object'] = $item->get_field_type_object();
 			}
 
 			return $item_arr;
