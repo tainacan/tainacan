@@ -32,10 +32,19 @@ class Relationship extends Field_Type {
                             name="'.$itemMetadata->get_field()->get_name().'"></tainacan-relationship>';
     }
 
+    public function form(){
+        ?>
+        <tainacan-form-relationship
+                            collection_id="<?php echo ( $this->options['collection_id'] ) ? $this->options['collection_id'] : '' ?>"
+                            repeated="<?php echo ( $this->options['repeated'] ) ? $this->options['repeated'] : 'yes' ?>"
+                            search='<?php echo ( $this->options['search'] ) ? json_encode($this->options['search']) : '' ?>'
+                                    ></tainacan-form-relationship>
+        <?php
+    }
     /**
      * generate the fields for this field type
      */
-    public function form(){
+    public function form_raw(){
         ?>
         <tr>
             <td>

@@ -280,10 +280,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		#### UPDATE FIELD IN COLLECTION ####
         
 		$values = json_encode([
-			'values'      => [
-				'name'        => 'Dia/Mês/Ano',
-				'description' => 'Continua descrevendo o dado do campo.'
-			]
+			'name'        => 'Dia/Mês/Ano',
+			'description' => 'Continua descrevendo o dado do campo.'
 		]);
 
 		$request = new \WP_REST_Request(
@@ -387,10 +385,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		);
 
 		$new_attributes = json_encode([
-			'values' => [
-				'name'        => 'No name',
-				'description' => 'NOP!'
-			]
+			'name'        => 'No name',
+			'description' => 'NOP!'
 		]);
 
 		$request = new \WP_REST_Request(

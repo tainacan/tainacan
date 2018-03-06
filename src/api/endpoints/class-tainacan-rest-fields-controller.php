@@ -388,42 +388,43 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 		$collection_id = $request['collection_id'];
 		$body = json_decode($request->get_body(), true);
 
-		if(!empty($body) && $collection_id){
+		if(!empty($body)){
 			$attributes = [];
 
 			$field_id = $request['field_id'];
 
-			foreach ($body['values'] as $att => $value){
+			foreach ($body as $att => $value){
 				$attributes[$att] = $value;
 			}
 
 			$field = $this->field_repository->fetch($field_id);
 
+			$error_message = __('Field with that ID not found', 'tainacan');
+
 			if($field){
+
+				// These conditions are for verify if endpoints are used correctly
+				if(!$collection_id && $field->get_collection_id() !== 'default') {
+					$error_message = __('That field is not a default field', 'tainacan');
+
+					return new WP_REST_Response( [
+						'error_message' => $error_message,
+						'field_id'      => $field_id
+					] );
+				} elseif ($collection_id && $field->get_collection_id() === 'default'){
+					$error_message = __('That field is not a collection field', 'tainacan');
+
+					return new WP_REST_Response( [
+						'error_message' => $error_message,
+						'field_id'      => $field_id
+					] );
+				}
 
 				$prepared_metadata = $this->prepare_item_for_updating($field, $attributes);
 
 				if($prepared_metadata->validate()){
 					$updated_metadata = $this->field_repository->update($prepared_metadata);
 
-					$items = $this->item_repository->fetch([], $collection_id, 'WP_Query');
-
-					$up_metadata = '';
-					if($items->have_posts()){
-						while ($items->have_posts()){
-							$items->the_post();
-
-							$item = new Entities\Item($items->post);
-							$item_meta = new Entities\Item_Metadata_Entity($item, $updated_metadata);
-
-							$up_metadata = $this->item_metadata_repository->update($item_meta);
-						}
-
-						$response = $this->prepare_item_for_response($up_metadata->get_field(), $request);
-
-						return new WP_REST_Response($response, 200);
-					}
-
 					$response = $this->prepare_item_for_response($updated_metadata, $request);
 
 					return new WP_REST_Response($response, 200);
@@ -436,44 +437,10 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				], 400);
 			}
 
-			return new WP_REST_Response([
-				'error_message' => __('Field with that ID not found', 'tainacan'),
+			return new WP_REST_Response( [
+				'error_message' => $error_message,
 				'field_id'      => $field_id
-			], 400);
-		} elseif (!empty($body)){
-			$attributes = [];
-
-			$field_id = $request['field_id'];
-
-			foreach ($body['values'] as $att => $value){
-				$attributes[$att] = $value;
-			}
-
-			$field = $this->field_repository->fetch($field_id);
-
-			if($field && $field->get_collection_id() === 'default') {
-
-				$prepared_metadata = $this->prepare_item_for_updating( $field, $attributes );
-
-				if ( $prepared_metadata->validate() ) {
-					$updated_metadata = $this->field_repository->update( $prepared_metadata );
-
-					$response = $this->prepare_item_for_response($updated_metadata, $request);
-
-					return new WP_REST_Response($response, 200);
-				}
-
-				return new WP_REST_Response([
-					'error_message' => __('One or more values are invalid.', 'tainacan'),
-					'errors'        => $prepared_metadata->get_errors(),
-					'metadata'      => $this->prepare_item_for_response($prepared_metadata, $request)
-				], 400);
-			}
-
-			return new WP_REST_Response([
-				'error_message' => __('Field with that ID not found or that field is not a default field', 'tainacan'),
-				'field_id'      => $field_id
-			], 400);
+			] );
 		}
 
 		return new WP_REST_Response([

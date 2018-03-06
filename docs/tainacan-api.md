@@ -148,6 +148,10 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 2. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/fields/(?P<field_id>[\d]+)`
 
       1. Endpoints supported:
+      
+            1. GET (Fetch a field from a collection or Fetch all field values)
+            
+                  To fetch all field values from a field of a collection in all it items, pass a query like `?fetch=all_field_values`
 
             1. PATCH or PUT (Update a field in a collection and all it items)
 
@@ -160,6 +164,26 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
       }
 ```
 
+3. Route `wp-json/tainacan/v2/fields`
+
+      1. Endpoints supported:
+      
+            1. GET (Fetch all default fields)
+            
+            1. POST (Create a default field)
+            
+                  In body of requisition pass a JSON with the attributes of field.
+
+4. Route `wp-json/tainacan/v2/fields/(?P(<field_id>[\d]+))`
+
+      1. Endpoints supported:
+      
+            1. DELETE (Trash a default field)
+            
+            1. PATCH or PUT (Update a default field)
+                  
+                  In body of requisition pass a JSON with the attributes you need to update.
+                  
 ------
 #### Field Types
 1. Route `wp-json/tainacan/v2/field-types`
