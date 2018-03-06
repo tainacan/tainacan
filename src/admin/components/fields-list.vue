@@ -66,7 +66,12 @@
                                             </b-select>
                                         </b-field>
 
-                                        <div v-html="field.edit_form"></div>
+                                        <component
+                                                v-if="field.field_type_object && field.field_type_object.form_component"
+                                                :is="field.field_type_object.form_component"
+                                                v-model="editForm.field_type_options"
+                                        ></component>
+                                        <div v-html="field.edit_form" v-else></div>
                                         
                                         <div class="field is-grouped is-grouped-centered">
                                             <div class="control">
@@ -119,7 +124,7 @@ export default {
             isLoadingFields: false,
             isLoadingField: false,
             editForm: {},
-            openedFieldId: ''
+            openedFieldId: '',
         }
     },
     methods: {

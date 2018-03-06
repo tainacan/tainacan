@@ -57,6 +57,12 @@ abstract class Field_Type  {
      * @var string
      */
     public $component;
+
+    /**
+     * The name of the web component used by the Form
+     * @var bool | string
+     */
+    public $form_component = false;
     
     abstract function render( $itemMetadata );
 
@@ -86,6 +92,10 @@ abstract class Field_Type  {
     
     public function get_component() {
         return $this->component;
+    }
+
+    public function get_form_component() {
+        return $this->form_component;
     }
 
     /**
@@ -135,7 +145,8 @@ abstract class Field_Type  {
         $attributes['core'] = $this->core;
         $attributes['component'] = $this->get_component();
         $attributes['primitive_type'] = $this->get_primitive_type();
-        
+        $attributes['form_component'] = $this->get_form_component();
+
         return $attributes;
         
     }

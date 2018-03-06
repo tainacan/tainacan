@@ -71,6 +71,7 @@
             search: [ String ],
             collection_id: [ Number ],
             repeated: [ String ],
+            value: [ String, Object ]
         },
         data(){
             return {
@@ -93,9 +94,19 @@
                     this.fields = [];
                     this.hasFields = false;
                 }
+                this.emitValues();
+            },
+            modelRepeated( value ){
+                this.modelRepeated = value;
+                this.emitValues();
+            },
+            modelSearch( value ){
+                this.modelSearch = value;
+                this.emitValues();
             }
         },
         created(){
+           console.log( this.value);
            this.fetchCollections().then( data => {
                if( this.collection_id !== '' ){
                    this.collection = this.collection_id;
@@ -168,6 +179,13 @@
                     this.modelSearch = [];
                 }
 
+            },
+            emitValues(){
+                this.$emit('input',{
+                    collection_id: this.collection,
+                    search: this.modelSearch,
+                    repeated:  this.modelRepeated
+                })
             }
         }
     }

@@ -16,6 +16,7 @@ class Relationship extends Field_Type {
         parent::__construct();
         parent::set_primitive_type('');
         $this->component = 'tainacan-relationship';
+        $this->form_component = 'tainacan-form-relationship';
     }
 
     /**
