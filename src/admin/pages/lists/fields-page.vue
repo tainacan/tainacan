@@ -5,17 +5,23 @@
             <router-link tag="button" class="button is-secondary"
                         :to="{ path: $routerHelper.getNewFieldPath() }">
                 {{ $i18n.get('new') + ' ' + $i18n.get('field') }}
-            </router-link>    
+            </router-link>
+            <fields-list></fields-list>    
         </div>
     </div>
 </template>
 
 <script>
+import FieldsList from '../../components/fields-list.vue';
+
 export default {
     name: 'FieldsPage',
     data(){
         return {
         }
+    },
+    components: {
+        FieldsList
     }
 }
 </script>

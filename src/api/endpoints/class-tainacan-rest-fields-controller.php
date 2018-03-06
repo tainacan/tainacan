@@ -54,9 +54,9 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_all_field_values'),
-					'permission_callback' => array($this, 'get_all_field_values_permissions_check')
-				)
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'get_item_permissions_check')
+				),
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
@@ -80,6 +80,11 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check')
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check')
 				)
 			)
 		);
@@ -95,7 +100,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check')
-				)
+				),
 			)
 		);
 	}
@@ -105,7 +110,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function get_all_field_values( $request ) {
+	public function get_item( $request ) {
 		$collection_id = $request['collection_id'];
 		$field_id = $request['field_id'];
 
@@ -115,9 +120,9 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			return new WP_REST_Response($results, 200);
 		}
 
-		return new WP_REST_Response([
-			'error_message' => __('Verify the route. A query parameter is missing', 'tainacan'),
-		], 400);
+		$result = $this->field_repository->fetch($field_id, 'OBJECT');
+
+		return new WP_REST_Response($this->prepare_item_for_response($result, $request), 200);
 	}
 
 	/**
@@ -126,13 +131,18 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 * @throws Exception
 	 */
-	public function get_all_field_values_permissions_check( $request ) {
+	public function get_item_permissions_check( $request ) {
+		$collection = $this->collection_repository->fetch($request['collection_id']);
 
-		if($request['context'] === 'edit' && !$this->field_repository->can_read(new Entities\Field())){
-			return false;
+		if($collection instanceof Entities\Collection) {
+			if ($request['context'] === 'edit' && ! $collection->can_read()) {
+				return false;
+			}
+
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	/**
@@ -266,6 +276,11 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
+				ob_start();
+				$item->get_field_type_object()->form();
+				$form = ob_get_clean();
+				$item_arr['edit_form'] = $form;
+				
 			}
 
 			return $item_arr;
@@ -280,17 +295,31 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$collection_id = $request['collection_id'];
+		if(isset($request['collection_id'])) {
+			$collection_id = $request['collection_id'];
 
-		$args = $this->prepare_filters($request);
+			$args = $this->prepare_filters( $request );
 
-		$collection = new Entities\Collection($collection_id);
+			$collection = new Entities\Collection( $collection_id );
 
-		$collection_metadata = $this->field_repository->fetch_by_collection($collection, $args, 'OBJECT');
+			$result = $this->field_repository->fetch_by_collection( $collection, $args, 'OBJECT' );
+		} else {
+			$args = [
+				'meta_query' => [
+					[
+						'key'     => 'collection_id',
+						'value'   => 'default',
+						'compare' => '='
+					]
+				]
+			];
+
+			$result = $this->field_repository->fetch( $args, 'OBJECT' );
+		}
 
 		$prepared_item = [];
-		foreach ($collection_metadata as $item){
-			$prepared_item[] = $this->prepare_item_for_response($item, $request);
+		foreach ( $result as $item ) {
+			$prepared_item[] = $this->prepare_item_for_response( $item, $request );
 		}
 
 		return new WP_REST_Response($prepared_item, 200);
@@ -303,18 +332,11 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-        if (isset($request['collection_id'])) {
-			
-            
-            if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-fields') ) {
-    			return false;
-    		}
-
-    		return true;
-
+		if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-fields') ) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**

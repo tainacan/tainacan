@@ -326,7 +326,7 @@ class Fields extends Repository {
 
         if( isset( $args['meta_query'] ) ){
             $args['meta_query'][] = $meta_query;
-        }else{
+        } elseif(is_array($args)){
             $args['meta_query'] = array( $meta_query );
         }
 
