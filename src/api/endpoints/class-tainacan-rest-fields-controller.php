@@ -132,13 +132,17 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function get_item_permissions_check( $request ) {
-		if($request['context'] === 'edit' && !$this->collection_repository->can_read(new Entities\Collection($request['collection_id']))){
-			return false;
-		} elseif($request['context'] === 'edit' && !$this->field_repository->can_read(new Entities\Field())){
-			return false;
+		$collection = $this->collection_repository->fetch($request['collection_id']);
+
+		if($collection instanceof Entities\Collection) {
+			if ($request['context'] === 'edit' && ! $collection->can_read()) {
+				return false;
+			}
+
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	/**
