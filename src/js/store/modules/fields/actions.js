@@ -76,7 +76,6 @@ export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLe
         else
             endpoint = '/fields/' + fieldId;
 
-        console.log(options);
         axios.put(endpoint, options)
             .then( res => {
                 commit('setField', { collection_id: collectionId, name: name, field_type: fieldType, status: status });

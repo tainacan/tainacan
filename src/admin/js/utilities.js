@@ -49,7 +49,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 data = {'meta': [{'metakey': metakey, 'metavalue': value, 'prevvalue': prevValue}]};
             else
                 data = {'meta': [{'metakey': metakey, 'metavalue': value}]};
-
+            //data['delete'] = true;
             return new Promise(( resolve, reject ) => {
                 wpApi.post('/wp/v2/users/me/?' + qs.stringify(data))
                 .then( res => {

@@ -24,38 +24,52 @@
                                     <a @click.prevent="editField(field)" v-if="field.id != undefined"><b-icon icon="pencil" v-if="field.id != undefined"></b-icon></a>
                                 </div>
                                 <div v-if="openedFieldId == field.id">
-                                    <form id="fieldEditForm" class="box" v-on:submit.prevent="saveEdition(field)">    
+                                    <form id="fieldEditForm" v-on:submit.prevent="saveEdition($event,field)">    
                                         
-                                        <h1 class="is-size-4">{{ field.name }}</h1>
                                         <h2 class="is-size-5">{{ $i18n.get('edit') }}</h2>
 
-                                        <b-field :label="$i18n.get('label_name')">
+                                        <b-field :label="$i18n.get('label_name')" message="">
                                             <b-input v-model="editForm.name"></b-input>
                                         </b-field>
 
-                                        <b-field :label="$i18n.get('label_description')">
-                                            <b-input type="textarea" v-model="editForm.description"></b-input>
+                                        <b-field :label="$i18n.get('label_description')" message="">
+                                            <b-input type="textarea" name="description" v-model="editForm.description"></b-input>
                                         </b-field>
 
                                         <div class="field">
-                                            <b-checkbox 
+                                            <b-switch 
                                                 v-model="editForm.required"
                                                 true-value="yes" 
-                                                false-value="no">
-                                                {{ $i18n.get('label_required') }}
-                                            </b-checkbox>
+                                                false-value="no"
+                                                native-value="yes"
+                                                name="required">
+                                                {{ editForm.required }}
+                                            </b-switch>
                                         </div>
 
                                         <div class="field">
-                                            <b-checkbox 
-                                                v-model="editForm.multiple"
+                                            <b-switch 
+                                                v-model="isSwitchedCustom"
                                                 true-value="yes" 
-                                                false-value="no">
-                                                {{ $i18n.get('label_allow_multiple') }}
-                                            </b-checkbox>
+                                                false-value="no"
+                                                native-value="yes"
+                                                name="multiple">
+                                                {{ isSwitchedCustom }}
+                                            </b-switch>
                                         </div>
 
-                                        <b-field :label="$i18n.get('label_status')">
+                                        <b-field message="">
+                                            <b-switch 
+                                                v-model="editForm.unique"
+                                                true-value="yes" 
+                                                false-value="no"
+                                                native-value="yes"
+                                                name="collecion_key">
+                                                {{ $i18n.get('label_unique_value') }}
+                                            </b-switch>
+                                        </b-field>
+
+                                        <b-field :label="$i18n.get('label_status')" message="">
                                             <b-select
                                                     id="tainacan-select-status"
                                                     name="status"
@@ -79,8 +93,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                        
+                                                  
                         <!-- <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_fields_collection') }}</div> -->
                     </draggable> 
                 </b-field>
@@ -119,7 +132,8 @@ export default {
             isLoadingFields: false,
             isLoadingField: false,
             editForm: {},
-            openedFieldId: ''
+            openedFieldId: '',
+            isSwitchedCustom: 'yes'
         }
     },
     methods: {
@@ -145,10 +159,12 @@ export default {
                     this.updateFieldsOrder(); 
             }
         },
-        saveEdition(field) {
+        saveEdition($event, field) {
+
             let formElement = document.getElementById('fieldEditForm');
             let formData = new FormData(formElement);
             this.openedFieldId = field.id;
+            
             let formObj = {}
             for (var [key, value] of formData.entries()) { 
                 formObj[key] = value;
@@ -279,6 +295,9 @@ export default {
                 font-style: italic;
                 color: gray;
             }
+            form {
+                padding: 5px;
+            }
 
             .loading-spinner {
                 animation: spinAround 500ms infinite linear;
@@ -328,23 +347,6 @@ export default {
         .available-field-item:hover {
             border: 1px solid lightgrey;
             box-shadow: 0px 0px 2px #777;
-        }
-    }
-
-    #fieldEditForm {
-        position: absolute;
-        right: 0px;
-        padding: 20px;
-        height: 100%;
-        bottom: 0px;
-        width: 50%;
-
-        @media screen and (max-width: 769px) {
-            width: 50%;
-            position: relative;
-            box-shadow: none;
-            border: none;
-            padding: 10px;
         }
     }
 
