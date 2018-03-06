@@ -149,9 +149,11 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 * @param $user
 	 * @param $field_name
 	 *
+	 * @param $request
+	 *
 	 * @return mixed|WP_Error
 	 */
-	public function up_user_meta( $meta, $user, $field_name ) {
+	public function up_user_meta( $meta, $user, $field_name, $request ) {
 		if ( !$user->ID ) {
 			return new WP_Error( 'No user found', 'No user found', array( 'status' => 404 ) );
 		}
@@ -165,7 +167,21 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'prevvalue',
 		];
 
-		if($this->contains_array($metas, $map)){
+		if ($request['delete'] === 'true'){
+			if($this->contains_array($metas, $map)){
+				foreach ($metas as $index => $meta){
+					if (isset($meta[$map[0]], $meta[$map[1]])){
+						delete_user_meta($user_id, $meta[$map[0]], $meta[$map[1]]);
+					}
+				}
+			} else {
+				foreach ($metas as $meta){
+					if (isset($meta[$map[0]], $meta[$map[1]])){
+						delete_user_meta($user_id, $meta[$map[0]], $meta[$map[1]]);
+					}
+				}
+			}
+		} elseif($this->contains_array($metas, $map)){
 			foreach ($metas as $index => $meta){
 				if(isset($meta[$map[0]], $meta[$map[1]], $meta[$map[2]])){
 
@@ -186,6 +202,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 				}
 			}
 		}
+
 	}
 
 	/**
