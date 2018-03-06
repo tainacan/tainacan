@@ -21,7 +21,7 @@
 
                 <b-select 
                         :label="$i18n.get('label_items_per_page')"
-                        v-model="itemsPerPage" 
+                        :value="itemsPerPage"
                         @input="onChangeItemsPerPage" 
                         :disabled="items.length <= 0">
                     <option value="12">12 {{ $i18n.get('label_per_page') }}</option>

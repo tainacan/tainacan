@@ -1,4 +1,5 @@
 import axios from '../../../axios/axios';
+import qs from 'qs';
 
 export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel}) => {
     return new Promise((resolve, reject) => {
@@ -66,6 +67,27 @@ export const sendField = ( { commit }, { collectionId, name, fieldType, status, 
             });
     });
 };
+
+export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLevel, options }) => {
+    return new Promise(( resolve, reject ) => {
+        let endpoint = '';
+        if (!isRepositoryLevel) 
+            endpoint = '/collection/' + collectionId + '/fields/' + fieldId; 
+        else
+            endpoint = '/fields/' + fieldId;
+
+        console.log(options);
+        axios.put(endpoint, options)
+            .then( res => {
+                commit('setField', { collection_id: collectionId, name: name, field_type: fieldType, status: status });
+                resolve( res.data );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
 
 export const deleteField = ({ commit }, { collectionId, fieldId, isRepositoryLevel }) => {
     let endpoint = '';
