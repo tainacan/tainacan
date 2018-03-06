@@ -24,23 +24,53 @@
                                     <a @click.prevent="editField(field)" v-if="field.id != undefined"><b-icon icon="pencil" v-if="field.id != undefined"></b-icon></a>
                                 </div>
                                 <div v-if="openedFieldId == field.id">
-                                    <form v-on:submit.prevent="saveEdition($event, field)">    
+                                    <form id="fieldEditForm" class="box" v-on:submit.prevent="saveEdition(field)">    
+                                        
+                                        <h1 class="is-size-4">{{ field.name }}</h1>
+                                        <h2 class="is-size-5">{{ $i18n.get('edit') }}</h2>
+
+                                        <b-field :label="$i18n.get('label_name')">
+                                            <b-input v-model="editForm.name"></b-input>
+                                        </b-field>
+
+                                        <b-field :label="$i18n.get('label_description')">
+                                            <b-input type="textarea" v-model="editForm.description"></b-input>
+                                        </b-field>
+
+                                        <div class="field">
+                                            <b-checkbox 
+                                                v-model="editForm.required"
+                                                true-value="yes" 
+                                                false-value="no">
+                                                {{ $i18n.get('label_required') }}
+                                            </b-checkbox>
+                                        </div>
+
+                                        <div class="field">
+                                            <b-checkbox 
+                                                v-model="editForm.multiple"
+                                                true-value="yes" 
+                                                false-value="no">
+                                                {{ $i18n.get('label_allow_multiple') }}
+                                            </b-checkbox>
+                                        </div>
+
                                         <b-field :label="$i18n.get('label_status')">
                                             <b-select
                                                     id="tainacan-select-status"
                                                     name="status"
-                                                    :value="editForm"
+                                                    :value="editForm.status"
                                                     :placeholder="$i18n.get('instruction_select_a_status')">
-                                                <option value="private">{{ $i18n.get('publish')}}</option>
+                                                <option value="publish">{{ $i18n.get('publish')}}</option>
                                                 <option value="private">{{ $i18n.get('private')}}</option>
                                             </b-select>
                                         </b-field>
 
                                         <div v-html="field.edit_form"></div>
                                         
-                                        <div class="field is-grouped">
+                                        <div class="field is-grouped is-grouped-centered">
                                             <div class="control">
-                                                <button class="button is-link" type="submit">Submit</button>
+                                                <button class="button is-secondary" type="submit">Submit</button>
                                             </div>
                                             <div class="control">
                                                 <button class="button is-text" @click.prevent="cancelEdition(field)" slot="trigger">Cancel</button>
@@ -77,7 +107,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-
+import qs from 'qs';
 export default {
     name: 'FieldsList',
     data(){           
@@ -97,6 +127,7 @@ export default {
             'fetchFieldTypes',
             'fetchFields',
             'sendField',
+            'updateField',
             'deleteField',
             'updateCollectionFieldsOrder'
         ]),
@@ -114,16 +145,22 @@ export default {
                     this.updateFieldsOrder(); 
             }
         },
-        saveEdition($event, field) {
+        saveEdition(field) {
+            let formElement = document.getElementById('fieldEditForm');
+            let formData = new FormData(formElement);
             this.openedFieldId = field.id;
-            
-            let data = []
-            for (let i = 0; i < $event.target.length; i++) {
-                let input = {};
-                input[$event.target[i].name] =  $event.target[i].value;
-                data.push(input);
+            let formObj = {}
+            for (var [key, value] of formData.entries()) { 
+                formObj[key] = value;
             }
-            console.log(data);
+
+            this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: formObj})
+            .then((field) => {
+                 console.log(field);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         },
         cancelEdition(field) {
             this.editForm = {};
@@ -168,10 +205,13 @@ export default {
             });
         },
         editField(field) {
-            if (this.openedFieldId == field.id)
+            if (this.openedFieldId == field.id) {
                 this.openedFieldId = '';
-            else
+                this.editForm = {};
+            } else {
                 this.openedFieldId = field.id;
+                this.editForm = field;
+            }
         }
     },
     computed: {
@@ -290,6 +330,24 @@ export default {
             box-shadow: 0px 0px 2px #777;
         }
     }
+
+    #fieldEditForm {
+        position: absolute;
+        right: 0px;
+        padding: 20px;
+        height: 100%;
+        bottom: 0px;
+        width: 50%;
+
+        @media screen and (max-width: 769px) {
+            width: 50%;
+            position: relative;
+            box-shadow: none;
+            border: none;
+            padding: 10px;
+        }
+    }
+
 </style>
 
 

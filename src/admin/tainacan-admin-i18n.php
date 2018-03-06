@@ -76,6 +76,8 @@ return [
     'label_available_fields' => __('Available Fields', 'tainacan'),
     'label_per_page' => __('per Page', 'tainacan'),
     'label_table_fields' => __('Fields on table', 'tainacan'),
+    'label_required' => __('Required', 'tainacan'),
+    'label_allow_multiple' => __('Allow multiple values', 'tainacan'),
 
     // Instructions. More complex sentences to guide user and placeholders
     'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to add them to Collection.', 'tainacan'),
