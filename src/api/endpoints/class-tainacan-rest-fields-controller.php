@@ -393,7 +393,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 
 			$field_id = $request['field_id'];
 
-			foreach ($body['values'] as $att => $value){
+			foreach ($body as $att => $value){
 				$attributes[$att] = $value;
 			}
 
@@ -445,7 +445,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 
 			$field_id = $request['field_id'];
 
-			foreach ($body['values'] as $att => $value){
+			foreach ($body as $att => $value){
 				$attributes[$att] = $value;
 			}
 
