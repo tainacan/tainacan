@@ -206,10 +206,10 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 
 			if ( $item_metadata->validate() ) {
 				if($item->can_edit()) {
-                                        $field_updated = $this->item_metadata_repository->update( $item_metadata );
+					$field_updated = $this->item_metadata_repository->update( $item_metadata );
 
-            				$prepared_item =  $this->prepare_item_for_response($field_updated, $request);
-	        			$prepared_item['field']['field_type_object'] = $this->prepare_item_for_response($field_updated->get_field()->get_field_type_object(), $request);
+					$prepared_item =  $this->prepare_item_for_response($field_updated, $request);
+					$prepared_item['field']['field_type_object'] = $this->prepare_item_for_response($field_updated->get_field()->get_field_type_object(), $request);
 				}
 				elseif($field->get_accept_suggestion()) {
 					$log = $this->item_metadata_repository->suggest( $item_metadata );
