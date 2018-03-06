@@ -30,10 +30,10 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 wpApi.get('/wp/v2/users/me/')
                 .then( res => {
                     if (res.data.meta.hasOwnProperty(key)) {
-                        if (res.data.key.length > 1)
-                            resolve( res.data.key );
+                        if (res.data.meta[key].length > 1)
+                            resolve( res.data.meta[key] );
                         else 
-                            resolve( res.data.key[0] );
+                            resolve( res.data.meta[key][0] );
                     } else {
                         reject( { message: 'Key does not exists in user preference.', value: false} );
                     }
@@ -49,7 +49,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 data = {'meta': [{'metakey': metakey, 'metavalue': value, 'prevvalue': prevValue}]};
             else
                 data = {'meta': [{'metakey': metakey, 'metavalue': value}]};
-            //data['delete'] = true;
+
             return new Promise(( resolve, reject ) => {
                 wpApi.post('/wp/v2/users/me/?' + qs.stringify(data))
                 .then( res => {

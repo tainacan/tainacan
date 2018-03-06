@@ -173,8 +173,9 @@ export default {
             this.$router.push(this.$routerHelper.getCollectionEditPath(collectionId));
         },
         onChangeCollectionsPerPage(value) {
+            let prevValue = this.collectionsPerPage;
             this.collectionsPerPage = value;
-            this.$userPrefs.set('items_per_page', value);
+            this.$userPrefs.set('collections_per_page', value,  prevValue);
             this.loadCollections();
         },
         onPageChange(page) {
@@ -199,12 +200,12 @@ export default {
         }
     },
     created() {
-        this.$userPrefs.get('items_per_page')
+        this.$userPrefs.get('collections_per_page')
             .then((value) => {
                 this.collectionsPerPage = value;
             })
             .catch((error) => {
-                this.$userPrefs.set('items_per_page', 12);
+                this.$userPrefs.set('collections_per_page', 12, null);
             }); 
     },
     mounted(){
