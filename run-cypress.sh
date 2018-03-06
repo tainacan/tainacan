@@ -33,9 +33,9 @@ cd -
 # cypress beginning
 if [ ${SKIP_HEAD} = "0" ]
 then
-  ./node_modules/.bin/cypress run
+  ./node_modules/.bin/cypress run --config baseUrl=$wp_url
 else
-  ./node_modules/.bin/cypress run --headed
+  ./node_modules/.bin/cypress open --config baseUrl=$wp_url
 fi
 
 ################## teardown cypress environment

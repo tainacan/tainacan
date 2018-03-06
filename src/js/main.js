@@ -20,6 +20,8 @@ import Numeric from '../classes/field-types/numeric/Numeric.vue';
 import Date from '../classes/field-types/date/Date.vue';
 import Relationship from '../classes/field-types/relationship/Relationship.vue';
 
+import FormRelationship from '../classes/field-types/relationship/FormRelationship.vue';
+
 import FilterCustomInterval from '../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterSelectbox from '../classes/filter-types/selectbox/Selectbox.vue';
 import FilterAutocomplete from '../classes/filter-types/autocomplete/Autocomplete.vue';
@@ -49,6 +51,11 @@ Vue.customElement('tainacan-relationship', Relationship);
 eventBus.registerComponent( 'tainacan-relationship' );
 
 eventBus.listener();
+
+/* Form */
+
+Vue.customElement('tainacan-form-relationship', FormRelationship);
+eventBus.registerComponent( 'tainacan-form-relationship' );
 
 /* Filters */
 
