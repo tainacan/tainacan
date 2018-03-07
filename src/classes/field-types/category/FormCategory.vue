@@ -77,7 +77,7 @@
                     });
             },
             labelNewTerms(){
-                return ( this.modelRepeated === 'yes' ) ? 'Yes' : 'No';
+                return ( this.allow_new_terms === 'yes' ) ? 'Yes' : 'No';
             },
             emitValues(){
                 this.$emit('input',{
