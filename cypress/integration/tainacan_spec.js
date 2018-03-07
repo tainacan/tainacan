@@ -3,13 +3,11 @@ describe('Plugin active Test', function () {
     cy.loginByForm('admin', 'admin')
   })
 
-  it('Visit users page', function () {
-    cy.visit('/wp-admin/users.php')
-    cy.get('h1').should('contain', 'Users')
-  })
-
   it('plugin active', function () {
+    cy.get('h1').should('contain', 'Dashboard')
+    cy.get('div').should('contain', 'Tainacan')
     cy.contains('Tainacan').click()
+    cy.title().contains('Collections Page')
     cy.get('h1').should('contain', 'Collections Page')
   })
 })

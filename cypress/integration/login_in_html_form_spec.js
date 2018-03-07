@@ -74,6 +74,8 @@
     })
 
     it('test loginByForm', function() {
+      cy.url().should('include', '/wp-admin')
+      cy.get('h1').should('contain', 'Dashboard')
       // login before each test
       cy.loginByForm('admin', 'admin')
     })
