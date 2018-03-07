@@ -17,7 +17,8 @@ class Category extends Field_Type {
         $this->set_default_options([
             'allow_new_terms' => false
         ]);
-        
+
+        $this->form_component = 'tainacan-form-category';
         // TODO: Set component depending on options. If multiple is checkbox. if single, select. etc.
         $this->component = 'tainacan-category';
     }
