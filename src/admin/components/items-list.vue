@@ -12,7 +12,8 @@
                     <b-dropdown-item v-for="(column, index) in tableFields" 
                         :key="index"
                         class="control" custom>
-                        <b-checkbox v-model="column.visible"
+                        <b-checkbox
+                            v-model="column.visible" 
                             :native-value="column.field">
                             {{ column.label }}
                         </b-checkbox>

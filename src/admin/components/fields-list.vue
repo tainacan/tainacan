@@ -43,18 +43,18 @@
                                                 false-value="no"
                                                 native-value="yes"
                                                 name="required">
-                                                {{ editForm.required }}
+                                                {{ $i18n.get('label_required') }}
                                             </b-switch>
                                         </div>
 
                                         <div class="field">
                                             <b-switch 
-                                                v-model="isSwitchedCustom"
+                                                v-model="editForm.multiple"
                                                 true-value="yes" 
                                                 false-value="no"
                                                 native-value="yes"
                                                 name="multiple">
-                                                {{ isSwitchedCustom }}
+                                                {{ $i18n.get('label_unique_multiple') }}
                                             </b-switch>
                                         </div>
 
@@ -244,7 +244,7 @@ export default {
     },
     created() {
         this.isLoadingFieldTypes = true;
-        this.isLoadingFields = true;      
+        this.isLoadingFields = true;
 
         this.fetchFieldTypes()
             .then((res) => {
