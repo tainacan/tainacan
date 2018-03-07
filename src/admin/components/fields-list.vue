@@ -30,22 +30,23 @@
 
                                         <b-field 
                                             :label="$i18n.get('label_name')" 
-                                            :type="editFormErrors[editForm.name] != undefined ? 'is-danger' : ''" 
-                                            :message="editFormErrors[editForm.name] != undefined ? editFormErrors[editForm.name].error_message : ''">
-                                            <b-input v-model="editForm.name"></b-input>
-                                        </b-field>
-
-                                        <b-field 
-                                            :label="$i18n.get('label_description')" 
-                                            :type="editFormErrors[editForm.description] != undefined ? 'is-danger' : ''" 
-                                            :message="editFormErrors[editForm.description] != undefined ? editFormErrors[editForm.description].error_message : ''">
-                                            <b-input type="textarea" name="description" v-model="editForm.description"></b-input>
+                                            :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                                            <b-input v-model="editForm.name" name="name" @focus="clearErrors('name')"></b-input>
                                         </b-field>
 
                                         <b-field
-                                            :type="editFormErrors[editForm.required] != undefined ? 'is-danger' : ''" 
-                                            :message="editFormErrors[editForm.required] != undefined ? editFormErrors[editForm.required].error_message : ''">
+                                            :label="$i18n.get('label_description')" 
+                                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                                            <b-input type="textarea" name="description" v-model="editForm.description" @focus="clearErrors('description')" ></b-input>
+                                        </b-field>
+
+                                        <b-field
+                                            :type="editFormErrors['required'] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors['required'] != undefined ? editFormErrors['required'] : ''">
                                             <b-switch 
+                                                @input="clearErrors('required')"
                                                 v-model="editForm.required"
                                                 true-value="yes" 
                                                 false-value="no"
@@ -56,9 +57,10 @@
                                         </b-field>
 
                                         <b-field
-                                            :type="editFormErrors[editForm.multiple] != undefined ? 'is-danger' : ''" 
-                                            :message="editFormErrors[editForm.multiple] != undefined ? editFormErrors[editForm.multiple].error_message : ''">
+                                            :type="editFormErrors['multiple'] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors['multiple'] != undefined ? editFormErrors['multiple'] : ''">
                                             <b-switch 
+                                                @input="clearErrors('multiple')"
                                                 v-model="editForm.multiple"
                                                 true-value="yes" 
                                                 false-value="no"
@@ -69,9 +71,10 @@
                                         </b-field>
 
                                         <b-field 
-                                            :type="editFormErrors[editForm.unique] != undefined ? 'is-danger' : ''" 
-                                            :message="editFormErrors[editForm.unique] != undefined ? editFormErrors[editForm.unique].error_message : ''">
+                                            :type="editFormErrors['unique'] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors['unique'] != undefined ? editFormErrors['unique'] : ''">
                                             <b-switch 
+                                                @input="clearErrors('unique')"
                                                 v-model="editForm.unique"
                                                 true-value="yes" 
                                                 false-value="no"
@@ -83,28 +86,28 @@
 
                                         <b-field 
                                             :label="$i18n.get('label_status')"
-                                            :type="editFormErrors[editForm.status] != undefined ? 'is-danger' : ''" 
-                                            :message="editFormErrors[editForm.status] != undefined ? editFormErrors[editForm.status].error_message : ''">
+                                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
                                             <b-select
+                                                    @focus="clearErrors('label_status')"
                                                     id="tainacan-select-status"
                                                     name="status"
                                                     :value="editForm.status"
                                                     :placeholder="$i18n.get('instruction_select_a_status')">
-                                                <option value="publish">{{ $i18n.get('publish')}}</option>
+                                                <option value="publish" selected>{{ $i18n.get('publish')}}</option>
                                                 <option value="private">{{ $i18n.get('private')}}</option>
                                             </b-select>
                                         </b-field>
 
                                         <component
-        
-                                                :messages="editFormErrors[editForm.field_type_options]"
+                                                :errors="editFormErrors['field_type_options']"
                                                 v-if="field.field_type_object && field.field_type_object.form_component"
                                                 :is="field.field_type_object.form_component"
                                                 :field="editForm"
                                                 v-model="editForm.field_type_options">
                                         </component>
                                         <div v-html="field.edit_form" v-else></div>
-                                        
+                    
                                         <div class="field is-grouped is-grouped-centered">
                                             <div class="control">
                                                 <button class="button is-secondary" type="submit">Submit</button>
@@ -113,6 +116,7 @@
                                                 <button class="button is-text" @click.prevent="cancelEdition(field)" slot="trigger">Cancel</button>
                                             </div>
                                         </div>
+                                        <p class="help is-danger">{{formErrorMessage}}</p>
                                     </form>
                                 </div>
                             </div>
@@ -156,6 +160,7 @@ export default {
             isLoadingField: false,
             editForm: {},
             editFormErrors: {},
+            formErrorMessage: '',
             openedFieldId: '',
         }
     },
@@ -185,19 +190,23 @@ export default {
         saveEdition(field) {
 
             this.openedFieldId = field.id;
+            this.editFormErrors = {};
+            this.formErrorMessage = '';
 
             if (field.field_type_object && field.field_type_object.form_component) {
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: this.editForm})
                     .then((field) => {
-                        console.log(field);
                         this.editForm = {};
                         this.openedFieldId = '';
                         this.editFormErrors = {};
+                        this.formErrorMessage = '';
                     })
                     .catch((errors) => {
-                        console.log(errors);
-                        //for (let error of errors.errors)
-                            // this.editFormErrors[error['invalid'].attribute] = error['invalid'];
+                        for (let error of errors.errors) {     
+                            for (let attribute of Object.keys(error))
+                                this.editFormErrors[attribute] = error[attribute];
+                        }
+                        this.formErrorMessage = errors.error_message;
                     });
             } else {
                 let formElement = document.getElementById('fieldEditForm');
@@ -209,24 +218,29 @@ export default {
                 
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: formObj})
                     .then((field) => {
-                        console.log(field);
                         this.editForm = {};
                         this.openedFieldId = '';
                         this.editFormErrors = {};
+                        this.formErrorMessage = '';
                     })
                     .catch((errors) => {
-                        console.log(errors);
-                        for (let error of Object.keys(errors.errors))
-                            this.editFormErrors[error] = errors.errors[error];
-
-                        console.log(this.editFormErrors);
-                              
+                        for (let error of errors.errors) {     
+                            for (let attribute of Object.keys(error))
+                                this.editFormErrors[attribute] = error[attribute];
+                        }
+                        this.formErrorMessage = errors.error_message;
                     });
             }           
+        },
+        clearErrors(attribute) {
+            this.editFormErrors[attribute] = undefined;
         },
         cancelEdition(field) {
             this.editForm = {};
             this.openedFieldId = '';
+            this.editFormErrors = {};
+            this.editFormErrors = {};
+            this.formErrorMessage = '';
         },
         updateFieldsOrder() {
             let fieldsOrder = [];
@@ -274,6 +288,8 @@ export default {
                 this.openedFieldId = field.id;
                 this.editForm = field;
             }
+            this.editFormErrors = {};
+            this.formErrorMessage = '';
         }
     },
     computed: {
@@ -333,7 +349,7 @@ export default {
             margin: 10px;
             border-radius: 5px;
             border: 1px solid gainsboro;
-            display: block;
+            display: block; 
             cursor: grab;
             .icon { float: right }
             .field-name {
@@ -368,7 +384,9 @@ export default {
             }
         }
         .active-field-item:hover {
-            box-shadow: 0px 0px 2px #777;
+            box-shadow: 0 3px 4px rgba(0,0,0,0.25);
+            position: relative;
+            top: -2px;
         }
 
         .sortable-chosen {
@@ -397,7 +415,9 @@ export default {
         }
         .available-field-item:hover {
             border: 1px solid lightgrey;
-            box-shadow: 0px 0px 2px #777;
+            box-shadow: 0 3px 4px rgba(0,0,0,0.25);
+            position: relative;
+            top: -2px;
         }
     }
 

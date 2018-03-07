@@ -9,7 +9,7 @@
                         <router-link 
                             tag="a" 
                             :to="'/' + arrayPath.slice(0, index + 1).join('/')">
-                                {{ isNaN(pathItem) ? $i18n.get(pathItem) : pathItem }}
+                                {{ isNaN(pathItem) ? $i18n.get(pathItem) : getEntityName(arrayPath[index-1], pathItem) }}
                         </router-link>
                         <span v-if="index != arrayPath.length - 1"> > </span>
                     </span>   
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
     name: 'TainacanHeader',
     data(){
@@ -35,6 +37,33 @@ export default {
             arrayPath: [],
         }
     },
+    methods: {
+        ...mapActions('collection', [
+            'fetchCollection'
+        ]),
+        ...mapGetters('collection', [
+            'getCollection'
+        ]),
+        ...mapActions('item', [
+            'fetchItem'
+        ]),
+        ...mapGetters('item', [
+            'getItem'
+        ]),
+        getEntityName(type, id) {
+            switch(type) {
+                case 'collections':
+                    //return this.getCollectionName(id);
+                break;
+                case 'items':
+                    //return this.getItemName(id);
+                break;
+                default:
+                return id;
+            }
+            return id;
+        }
+    },
     watch: {
         '$route' (to, from) {
             this.onSecondaryPage = (to.params.collectionId != undefined);
@@ -43,7 +72,7 @@ export default {
             this.pageTitle = this.$route.meta.title;
         }
     },
-    created () {
+    created() {
         this.onSecondaryPage = (this.$route.params.collectionId != undefined);
         this.arrayPath = this.$route.path.split("/");
         this.arrayPath = this.arrayPath.filter((item) => item.length != 0);
