@@ -5,6 +5,7 @@
                     name="field_type_relationship[collection_id]"
                     placeholder="Select the collection to fetch items"
                     v-model="collection"
+                    @change.native="emitValues()"
                     :loading="loading">
                 <option value="">Select...</option>
                 <option
@@ -42,23 +43,14 @@
 
         <b-field label="Allow repeated items">
             <div class="block">
-                <div class="field">
-                    <b-radio name="field_type_relationship[repeated]"
-                             v-model="modelRepeated"
-                             size="is-small"
-                             native-value="yes">
-                        Yes
-                    </b-radio>
-                </div>
-                <div class="field">
-                    <b-radio name="field_type_relationship[repeated]"
-                             v-model="modelRepeated"
-                             size="is-small"
-                             native-value="no">
-                        No
-                    </b-radio>
-                </div>
-                </div>
+                <b-switch v-model="modelRepeated"
+                          type="is-info"
+                          @input="emitValues()"
+                          true-value="yes"
+                          false-value="no">
+                    {{ labelRepeated()  }}
+                </b-switch>
+            </div>
         </b-field>
     </section>
 </template>
@@ -93,12 +85,8 @@
                 } else {
                     this.fields = [];
                     this.hasFields = false;
+                    this.modelSearch = []
                 }
-                this.emitValues();
-            },
-            modelRepeated( value ){
-                this.modelRepeated = value;
-                this.emitValues();
             },
             modelSearch( value ){
                 this.modelSearch = value;
@@ -106,15 +94,18 @@
             }
         },
         created(){
-           console.log( this.value);
            this.fetchCollections().then( data => {
-               if( this.collection_id !== '' ){
+               if( this.collection_id && this.collection_id !== '' ){
                    this.collection = this.collection_id;
+               } else if ( this.value ) {
+                   this.collection = this.value.collection_id;
                }
-           })
+           });
 
            if( this.repeated ){
                this.modelRepeated = this.repeated;
+           } else if( this.value ) {
+               this.modelRepeated = this.value.repeated;
            }
         },
         methods:{
@@ -167,18 +158,23 @@
                     })
                     .catch((error) => {
                         this.hasFields = false;
-                        console.log(error);
                     });
 
             },
             checkFields(){
-                try {
-                    const json = JSON.parse( this.search );
-                    this.modelSearch = json;
-                } catch(e){
-                    this.modelSearch = [];
+                if( this.value && this.value.search.length > 0 ){
+                    this.modelSearch = this.value.search;
+                } else {
+                    try {
+                        const json = JSON.parse( this.search );
+                        this.modelSearch = json;
+                    } catch(e){
+                        this.modelSearch = [];
+                    }
                 }
-
+            },
+            labelRepeated(){
+                return ( this.modelRepeated === 'yes' ) ? 'Yes' : 'No';
             },
             emitValues(){
                 this.$emit('input',{
