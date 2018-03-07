@@ -10,23 +10,7 @@
 //
 //
 // -- This is a parent command --
- Cypress.Commands.add("login", (log, pwd) => {
-//   cy.request({
-//     method: 'POST'
-//     url: baseUrl
-//     body: {
-//       email: 'admin@admin.com'
-//       password 'admin'
-//     }
-//   })
-//   .then((resp) => {
-//     window.localStorage.setItem('jwt', resp.body.user.token)
-//   })
-   cy.visit('/wp-login.php')
-   cy.get('[id=user_login]').type('admin@admin.com')
-   cy.get('[id=user_pass]').type('admin{enter}')
-   cy.hash().should('/wp-admin')
- })
+// Cypress.Commands.add("login", (email, password) => { ... })
 //
 //
 // -- This is a child command --
@@ -39,3 +23,20 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+Cypress.Commands.add('loginByForm', (username, password) => {
+
+  Cypress.log({
+    name: 'loginByForm',
+    message: username + ' | ' + password
+  })
+
+  cy.request({
+      method: 'POST',
+      url: '/wp-login.php', // baseUrl will be prepended to this url
+      form: true, // indicates the body should be form urlencoded and sets Content-Type: application/x-www-form-urlencoded headers
+      body: {
+        log: username,
+        pwd: password
+      }
+    })
+})
