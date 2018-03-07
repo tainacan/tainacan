@@ -17,6 +17,36 @@
             </b-select>
         </b-field>
 
+        <b-field label="Component Type">
+
+            <b-select
+                    v-if="field && field.multiple"
+                    name="field_type_options[component_type]"
+                    placeholder="Select the component type for the category field"
+                    v-model="component_type">
+                <option :value="'tainacan-category-radio'">
+                    Radio
+                </option>
+                <option :value="'tainacan-category-selectbox'">
+                    Selectbox
+                </option>
+            </b-select>
+
+            <b-select
+                    name="field_type_options[component_type]"
+                    placeholder="Select the component type for the category field"
+                    v-model="component_type"
+                    v-else>
+                <option :value="'tainacan-category-tag-input'">
+                    Radio
+                </option>
+                <option :value="'tainacan-category-checkbox'">
+                    Selectbox
+                </option>
+            </b-select>
+
+        </b-field>
+
         <b-field label="Allow new Terms">
             <div class="block">
                 <b-switch v-model="allow_new_terms"
@@ -37,7 +67,8 @@
 
     export default {
         props: {
-            value: [ String, Object ]
+            value: [ String, Object ],
+            field: [ String, Object ]
         },
         created(){
             this.fetchTaxonomies().then( res => {
@@ -55,7 +86,8 @@
                 taxonomies: [],
                 taxonomy_id: '',
                 loading: true,
-                allow_new_terms: 'yes'
+                allow_new_terms: 'yes',
+                component_type: 'tainacan-category-radio'
             }
         },
         methods: {

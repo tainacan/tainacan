@@ -1,6 +1,9 @@
 <template>
     <section>
-        <b-field label="Collection related">
+        <b-field
+                label="Collection related"
+                :type="type"
+                :message="message">
             <b-select
                     name="field_type_relationship[collection_id]"
                     placeholder="Select the collection to fetch items"
@@ -44,7 +47,7 @@
         <b-field label="Allow repeated items">
             <div class="block">
                 <b-switch v-model="modelRepeated"
-                          type="is-info"
+                          type="is-primary"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
@@ -63,10 +66,14 @@
             search: [ String ],
             collection_id: [ Number ],
             repeated: [ String ],
-            value: [ String, Object ]
+            value: [ String, Object ],
+            field: [ String, Object ],
         },
         data(){
             return {
+                invalid: true,
+                message: '',
+                type: '',
                 collections:[],
                 fields: [],
                 loading: true,
@@ -81,8 +88,14 @@
             collection( value ){
                 this.collection = value;
                 if( value && value !== '' ) {
+                    this.message = '';
+                    this.type = '';
+                    this.invalid = false;
                     this.fetchFieldsFromCollection(value);
                 } else {
+                    this.invalid = true;
+                    this.type = 'is-danger';
+                    this.message = 'The field Collection related is required';
                     this.fields = [];
                     this.hasFields = false;
                     this.modelSearch = []
@@ -97,7 +110,7 @@
            this.fetchCollections().then( data => {
                if( this.collection_id && this.collection_id !== '' ){
                    this.collection = this.collection_id;
-               } else if ( this.value ) {
+               } else if ( this.value && this.value.collection_id ) {
                    this.collection = this.value.collection_id;
                }
            });
@@ -180,7 +193,8 @@
                 this.$emit('input',{
                     collection_id: this.collection,
                     search: this.modelSearch,
-                    repeated:  this.modelRepeated
+                    repeated:  this.modelRepeated,
+                    invalid: this.invalid
                 })
             }
         }
