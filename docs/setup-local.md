@@ -71,7 +71,7 @@ Tainacan uses `phpunit` to run tests for the backend and the API, and `cypress` 
 
 To execute all the tests, simply execute the `run-tests` script. But first you need to configure PHPUnit.
 
-#### Configuration PHPUnit
+#### Preparing PHPUnit
 To run the unit tests it is necessary to create a new MySQL database for your unit tests. This database will be cleaned and restored every time you run PHPUnit.
 
 Install the WordPress test library by running the script provided in:
@@ -124,6 +124,6 @@ If you want to run front-end tests, opening the Cypress app and beeing able to r
 
 **Important note about the Cypress setup:** 
 
-Cypress will use the same local WordPress installation you configures in the build to run its tests. But before it does so, it will edit the `wp-config.php` file and change the `$db_prefix` variable, so, in reality, it will run all the tests in a brand new WordPress installation. After the tests are completed, it restores the `wp-config.php` as it was before. So, make sure you allways let the script run till the end to restore you configuration. For instance, if you opened Cypress window and are running the tests, dont exit it by Ctrl+C in the terminal. Close the window gently and let the script finish its job.
+Cypress will use the same local WordPress installation you configure in the build to run its tests. But before it does so, it will edit the `wp-config.php` file and change the `$db_prefix` variable, so, in reality, it will run all the tests in a brand new WordPress installation. After the tests are completed, it delete this installation from the database and restores the `wp-config.php` as it was before. So, make sure you allways let the script run till the end to restore you configuration. For instance, if you opened Cypress window and are running the tests, dont exit it by Ctrl+C in the terminal. Close the window gently and let the script finish its job.
 
 If, by any reason you interrupt the script, no worries, just manually edit you `wp-config.php` and delete the line added by the script.
