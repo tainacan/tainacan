@@ -127,7 +127,7 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		$this->assertFalse($field2->validate(), 'Category Field should not validate when using a category in use by another field in the same collection');
 		$errors = $field2->get_errors();
 		$this->assertInternalType('array', $errors);
-		$this->assertArrayHasKey('taxonomy_id', $errors[0]);
+		$this->assertArrayHasKey('taxonomy_id', $errors[0]['field_type_options']);
     }
     
 }

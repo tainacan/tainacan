@@ -203,22 +203,19 @@ class Entity {
         ) {
             $validation = $mapped['validation'];
             $prop_value = $this->get_mapped_property($prop);
-            $message = [
-            	'error_message' => ( isset( $mapped['on_error'] ) ) ? $mapped['on_error'] : $prop. __(' is invalid', 'tainacan'),
-	            'attribute'     => $prop
-            ];
+            $message = ( isset( $mapped['on_error'] ) ) ? $mapped['on_error'] : $prop. __(' is invalid', 'tainacan');
 
             if (is_array($prop_value)) {
                 foreach ($prop_value as $val) {
                     if (!$validation->validate($val)) {
 
-                        $this->add_error('invalid', $message);
+                        $this->add_error($prop, $message);
                         $is_valid = false;
                     }
                 }
             } else {
                 if (!$validation->validate($prop_value)) {
-                	$this->add_error('invalid', $message);
+                	$this->add_error($prop, $message);
 	                $is_valid = false;
                 }
             }
