@@ -600,35 +600,78 @@ class Fields extends Repository {
 		// Clear the result cache
 		$wpdb->flush();
 
-		$item_post_type = "%{$collection_id}_item";
+		$item_post_type = "%%{$collection_id}_item";
 
-		$sql_string = (current_user_can( "read_private_tnc_col_{$collection_id}_items" ) && current_user_can( 'read_private_tainacan-collections' )) ? $wpdb->prepare(
-			"SELECT item_id, field_id, mvalue 
-				FROM (
-					SELECT ID as item_id
-					FROM $wpdb->posts
-					WHERE post_type LIKE %s
-				) items
-				JOIN (
-					SELECT meta_key as field_id, meta_value as mvalue, post_id
-					FROM $wpdb->postmeta
-				) metas
-				ON items.item_id = metas.post_id AND metas.field_id = %s", $item_post_type, $field_id
-		) : $wpdb->prepare(
-			"SELECT item_id, field_id, mvalue 
-				FROM (
-					SELECT ID as item_id
-					FROM $wpdb->posts
-					WHERE post_type LIKE %s AND post_status <> 'private'
-				) items
-				JOIN (
-					SELECT meta_key as field_id, meta_value as mvalue, post_id
-					FROM $wpdb->postmeta
-				) metas
-				ON items.item_id = metas.post_id AND metas.field_id = %s", $item_post_type, $field_id
-		);
+		$collection = new Entities\Collection($collection_id);
+		$capabilities = $collection->get_capabilities();
 
-		$results = $wpdb->get_results($sql_string, ARRAY_A);
+		$results = [];
+
+		// If no has logged user or actual user can not read private posts
+		if(get_current_user_id() === 0 || !current_user_can( $capabilities->read_private_posts)) {
+			$args = [
+				'exclude_from_search' => false,
+				'public'              => true,
+				'private'             => false,
+				'internal'            => false,
+			];
+
+			$post_statuses = get_post_stati( $args, 'names', 'and' );
+
+			foreach ($post_statuses as $post_status) {
+				$sql_string = $wpdb->prepare(
+					"SELECT item_id, field_id, mvalue 
+				  		FROM (
+			  				SELECT ID as item_id
+		  					FROM $wpdb->posts
+	  						WHERE post_type LIKE %s AND post_status = %s
+  						) items
+							JOIN (
+						  	SELECT meta_key as field_id, meta_value as mvalue, post_id
+					  		FROM $wpdb->postmeta
+				  		) metas
+			  			ON items.item_id = metas.post_id AND metas.field_id = %d",
+					$item_post_type, $post_status, $field_id
+				);
+
+				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+
+				if (!empty($pre_result)) {
+					$results[] = $pre_result[0];
+				}
+			}
+		} else {
+			if ( current_user_can( $capabilities->read_private_posts) ) {
+				$args = [
+					'exclude_from_search' => false,
+				];
+
+				$post_statuses = get_post_stati( $args, 'names', 'and' );
+
+				foreach ($post_statuses as $post_status) {
+					$sql_string = $wpdb->prepare(
+						"SELECT item_id, field_id, mvalue 
+					        FROM (
+						        SELECT ID as item_id
+					            FROM $wpdb->posts
+					            WHERE post_type LIKE %s AND post_status = %s
+					        ) items
+						    JOIN (
+						        SELECT meta_key as field_id, meta_value as mvalue, post_id
+						        FROM $wpdb->postmeta
+						    ) metas
+						    ON items.item_id = metas.post_id AND metas.field_id = %d",
+						$item_post_type, $post_status, $field_id
+					);
+
+					$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+
+					if (!empty($pre_result)) {
+						$results[] = $pre_result[0];
+					}
+				}
+			}
+		}
 
 		return $results;
 	}

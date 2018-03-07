@@ -477,6 +477,18 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		//=======================
 
+		// Set no one user
+		wp_set_current_user(0);
+
+		$response1 = $this->server->dispatch($request);
+
+		$data1 = $response1->get_data();
+
+		$this->assertCount(1, $data1);
+		$this->assertEquals('12/12/2017', $data1[0]['mvalue']);
+
+		//=======================
+
 		$new_user1 = $this->factory()->user->create(array( 'role' => 'subscriber' ));
 		wp_set_current_user($new_user1);
 
