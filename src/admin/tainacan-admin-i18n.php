@@ -80,6 +80,11 @@ return [
     'label_allow_multiple' => __('Allow multiple values', 'tainacan'),
     'label_default_value' => __('Default value', 'tainacan'),
     'label_unique_value' => __('Unique value', 'tainacan'),
+    'label_yes' => __('Yes', 'tainacan'),
+    'label_no' => __('No', 'tainacan'),
+    'label_collection_related' => __('Collection Related', 'tainacan'),
+    'label_fields_for_search' => __('Fields for search', 'tainacan'),
+    'label_allow_repeated_items' => __('Allow repeated items', 'tainacan'),
 
     // Instructions. More complex sentences to guide user and placeholders
     'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to add them to Collection.', 'tainacan'),
@@ -98,6 +103,8 @@ return [
     'info_warning_item_delete' => __('Do you really want to delete this item?', 'tainacan'),
     'info_warning_selected_collections_delete' => __('Do you really want to delete the selected collections?', 'tainacan'),
     'info_warning_selected_items_delete' => __('Do you really want to delete the selected items?', 'tainacan'),
-  
+    'info_warning_collection_related'  => __('The field Collection related is required', 'tainacan'),
+    'info_warning_no_fields_found'  => __('No fields found in this collection', 'tainacan'),
+
 ]
  ?>
