@@ -204,8 +204,8 @@ class Entity {
             $validation = $mapped['validation'];
             $prop_value = $this->get_mapped_property($prop);
             $message = [
-            	'error_message'   => ( isset( $mapped['on_error'] ) ) ? $mapped['on_error'] : $prop. __(' is invalid', 'tainacan'),
-	            'attribute' => $prop
+            	'error_message' => ( isset( $mapped['on_error'] ) ) ? $mapped['on_error'] : $prop. __(' is invalid', 'tainacan'),
+	            'attribute'     => $prop
             ];
 
             if (is_array($prop_value)) {

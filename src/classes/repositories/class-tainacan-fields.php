@@ -626,9 +626,9 @@ class Fields extends Repository {
 		  					FROM $wpdb->posts
 	  						WHERE post_type LIKE %s AND post_status = %s
   						) items
-							JOIN (
+						JOIN (
 						  	SELECT meta_key as field_id, meta_value as mvalue, post_id
-					  		FROM $wpdb->postmeta
+					  	  	FROM $wpdb->postmeta
 				  		) metas
 			  			ON items.item_id = metas.post_id AND metas.field_id = %d",
 					$item_post_type, $post_status, $field_id
@@ -640,35 +640,33 @@ class Fields extends Repository {
 					$results[] = $pre_result[0];
 				}
 			}
-		} else {
-			if ( current_user_can( $capabilities->read_private_posts) ) {
-				$args = [
-					'exclude_from_search' => false,
-				];
+		} elseif ( current_user_can( $capabilities->read_private_posts) ) {
+			$args = [
+				'exclude_from_search' => false,
+			];
 
-				$post_statuses = get_post_stati( $args, 'names', 'and' );
+			$post_statuses = get_post_stati( $args, 'names', 'and' );
 
-				foreach ($post_statuses as $post_status) {
-					$sql_string = $wpdb->prepare(
-						"SELECT item_id, field_id, mvalue 
-					        FROM (
-						        SELECT ID as item_id
-					            FROM $wpdb->posts
-					            WHERE post_type LIKE %s AND post_status = %s
-					        ) items
-						    JOIN (
-						        SELECT meta_key as field_id, meta_value as mvalue, post_id
-						        FROM $wpdb->postmeta
-						    ) metas
-						    ON items.item_id = metas.post_id AND metas.field_id = %d",
-						$item_post_type, $post_status, $field_id
-					);
+			foreach ($post_statuses as $post_status) {
+				$sql_string = $wpdb->prepare(
+					"SELECT item_id, field_id, mvalue 
+		  	        	FROM (
+	  	  		        	SELECT ID as item_id
+  	  			        	FROM $wpdb->posts
+  				        	WHERE post_type LIKE %s AND post_status = %s
+					  	) items
+					  	JOIN (
+					    	SELECT meta_key as field_id, meta_value as mvalue, post_id
+							FROM $wpdb->postmeta
+					  	) metas
+					  	ON items.item_id = metas.post_id AND metas.field_id = %d",
+					$item_post_type, $post_status, $field_id
+				);
 
-					$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
 
-					if (!empty($pre_result)) {
-						$results[] = $pre_result[0];
-					}
+				if (!empty($pre_result)) {
+					$results[] = $pre_result[0];
 				}
 			}
 		}
