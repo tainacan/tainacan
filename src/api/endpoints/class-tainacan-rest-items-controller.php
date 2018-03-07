@@ -107,13 +107,20 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
-			$item_arr = $item->__toArray();
 
-			if($request['context'] === 'edit'){
-				$item_arr['current_user_can_edit'] = $item->can_edit();
+			if(!isset($request['fetch_only'])) {
+				$item_arr = $item->__toArray();
+
+				if ( $request['context'] === 'edit' ) {
+					$item_arr['current_user_can_edit'] = $item->can_edit();
+				}
+
+				return $this->add_metadata_to_item( $item, $item_arr );
 			}
 
-			return $this->add_metadata_to_item($item, $item_arr);
+			$attributes_to_filter = $request['fetch_only'];
+
+			return $this->filter_object_by_attributes($item, $attributes_to_filter);
 		}
 
 		return $item;

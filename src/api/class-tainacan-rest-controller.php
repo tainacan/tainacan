@@ -20,6 +20,36 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 
 	/**
 	 * @param $object
+	 * @param $attributes
+	 *
+	 * @return array
+	 */
+	protected function filter_object_by_attributes($object, $attributes){
+		$object_filtered = [];
+
+		if (is_array($attributes)) {
+			foreach ( $attributes as $attribute ) {
+				try {
+					$get_              = 'get_' . $attribute;
+					$object_filtered[$attribute] = $object->$get_();
+				} catch ( \Error $error ) {
+					// Do nothing
+				}
+			}
+		} else {
+			try{
+				$get_ = 'get_' . $attributes;
+				$object_filtered[$attributes] = $object->$get_();
+			} catch (\Error $error){
+				// Do nothing
+			}
+		}
+
+		return $object_filtered;
+	}
+
+	/**
+	 * @param $object
 	 * @param $new_values
 	 *
 	 * @return Tainacan\Entities\Entity
