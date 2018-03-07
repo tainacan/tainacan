@@ -251,10 +251,16 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
-			$item_arr = $item->__toArray();
+			if(!isset($request['fetch_only'])) {
+				$item_arr = $item->__toArray();
 
-			if($request['context'] === 'edit'){
-				$item_arr['current_user_can_edit'] = $item->can_edit();
+				if ( $request['context'] === 'edit' ) {
+					$item_arr['current_user_can_edit'] = $item->can_edit();
+				}
+			} else {
+				$attributes_to_filter = $request['fetch_only'];
+
+				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
 			}
 
 			return $item_arr;
