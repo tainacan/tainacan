@@ -21,6 +21,9 @@
         components: {
             PrimaryMenu,
             TainacanHeader
+        },
+        created() {
+            this.$userPrefs.init()
         }
     }
 </script>

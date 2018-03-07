@@ -13,6 +13,7 @@
                         :key="index"
                         class="control" custom>
                         <b-checkbox
+                            @input="onChangeTableFields(column)"
                             v-model="column.visible" 
                             :native-value="column.field">
                             {{ column.label }}
@@ -108,6 +109,7 @@ export default {
         return {
             selectedItems: [],
             tableFields: [],
+            prefTableFields: [],
             isLoading: false,
             totalItems: 0,
             page: 1,
@@ -197,6 +199,26 @@ export default {
         },
         handleSelectionChange() {
         },
+        onChangeTableFields(field) {
+            let prevValue = this.prefTableFields;
+            let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
+            if (index >= 0) {
+                console.log(prevValue[index].visible);
+                console.log(this.prefTableFields[index].visible);
+                //prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
+            }
+            
+
+            // for (let currentField of this.prefTableFields)
+            //     console.log(currentField.slug, currentField.visible);
+            
+            console.log("-------------");
+
+            // for (let oldField of prevValue)
+            //     console.log(oldField.slug, oldField.visible);
+
+            //this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
+        },
         onChangeItemsPerPage(value) {
             let prevValue = this.itemsPerPage;
             this.itemsPerPage = value;
@@ -249,6 +271,16 @@ export default {
                 );
             }
             this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
+            
+            this.prefTableFields = this.tableFields;
+            // this.$userPrefs.get('table_columns_' + this.collectionId)
+            //     .then((value) => {
+            //         this.prefTableFields = value;
+            //     })
+            //     .catch((error) => {
+            //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
+            //     });
+
         }).catch();
     }
 

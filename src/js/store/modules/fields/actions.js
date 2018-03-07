@@ -82,7 +82,8 @@ export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLe
                 resolve( res.data );
             })
             .catch(error => {
-                reject( error.response );
+                console.log(error);
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
 };

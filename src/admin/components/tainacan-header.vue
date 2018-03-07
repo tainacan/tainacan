@@ -86,6 +86,9 @@ export default {
             .level-right {
                 display: none;
             }
+
+            position: relative !important;
+            margin-bottom: 0px !important;
         }
 
     }

@@ -23,19 +23,34 @@ I18NPlugin.install = function (Vue, options = {}) {
 // USER PREFERENCES - Used to save key-value information for user settings of plugin
 export const UserPrefsPlugin = {};
 UserPrefsPlugin.install = function (Vue, options = {}) {
-    
+
     Vue.prototype.$userPrefs = {
+        
+        tainacanPrefs: {
+            'items_per_page': 12,
+            'collections_per_page': 12
+        },
+        init() {
+            let data = {'meta': {'tainacan_prefs': this.tainacanPrefs} };
+            
+            wpApi.get('/wp/v2/users/me/')
+                .then( res => {
+                    if (res.data.meta['tainacan_prefs'] == undefined) {
+                        wpApi.post('/wp/v2/users/me/', qs.stringify(data))  
+                    }
+                })
+                .catch(error => {
+                    
+                });
+        },
         get(key) {
             return new Promise(( resolve, reject ) => {
                 wpApi.get('/wp/v2/users/me/')
                 .then( res => {
-                    if (res.data.meta.hasOwnProperty(key)) {
-                        if (res.data.meta[key].length > 1)
-                            resolve( res.data.meta[key] );
-                        else 
-                            resolve( res.data.meta[key][0] );
+                    if (res.data.meta['tainacan_prefs']['items_per_page']) {
+                            resolve( res.data.meta['tainacan_prefs']['items_per_page'] );  
                     } else {
-                        reject( { message: 'Key does not exists in user preference.', value: false} );
+                        reject( { message: 'Key does not exists in user preference.', value: false } );
                     }
                 })
                 .catch(error => {
@@ -43,15 +58,11 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 });
             }); 
         },
-        set(metakey, value, prevValue) {
-            let data = {}
-            if (prevValue != null)
-                data = {'meta': [{'metakey': metakey, 'metavalue': value, 'prevvalue': prevValue}]};
-            else
-                data = {'meta': [{'metakey': metakey, 'metavalue': value}]};
-
+        set(key, value) {
+            this.tainacanPrefs[key] = value;
+            let data = {'meta': {'tainacan_prefs': this.tainacanPrefs} };
             return new Promise(( resolve, reject ) => {
-                wpApi.post('/wp/v2/users/me/?' + qs.stringify(data))
+                wpApi.post('/wp/v2/users/me/', qs.stringify(data))
                 .then( res => {
                     resolve( res.data );
                 })

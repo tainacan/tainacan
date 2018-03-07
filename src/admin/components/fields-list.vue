@@ -17,26 +17,34 @@
                             v-for="(field, index) in activeFieldList" :key="index">
                             <div>
                                 <div class="handle">
-                                    {{ field.name }}
-                                    <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span> <b-tag v-if="field.status != undefined">{{field.status}}</b-tag></span>
+                                    <span class="field-name">{{ field.name }}</span>
+                                    <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span></span>
                                     <b-icon type="is-gray" class="is-pulled-right" icon="drag"></b-icon>
                                     <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon icon="delete"></b-icon></a>
                                     <a @click.prevent="editField(field)" v-if="field.id != undefined"><b-icon icon="pencil" v-if="field.id != undefined"></b-icon></a>
                                 </div>
-                                <div v-if="openedFieldId == field.id">
-                                    <form id="fieldEditForm" v-on:submit.prevent="saveEdition($event,field)">    
+                                <b-field v-if="openedFieldId == field.id">
+                                    <form id="fieldEditForm" v-on:submit.prevent="saveEdition(field)">    
                                         
                                         <h2 class="is-size-5">{{ $i18n.get('edit') }}</h2>
 
-                                        <b-field :label="$i18n.get('label_name')" message="">
+                                        <b-field 
+                                            :label="$i18n.get('label_name')" 
+                                            :type="editFormErrors[editForm.name] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors[editForm.name] != undefined ? editFormErrors[editForm.name].error_message : ''">
                                             <b-input v-model="editForm.name"></b-input>
                                         </b-field>
 
-                                        <b-field :label="$i18n.get('label_description')" message="">
+                                        <b-field 
+                                            :label="$i18n.get('label_description')" 
+                                            :type="editFormErrors[editForm.description] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors[editForm.description] != undefined ? editFormErrors[editForm.description].error_message : ''">
                                             <b-input type="textarea" name="description" v-model="editForm.description"></b-input>
                                         </b-field>
 
-                                        <div class="field">
+                                        <b-field
+                                            :type="editFormErrors[editForm.required] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors[editForm.required] != undefined ? editFormErrors[editForm.required].error_message : ''">
                                             <b-switch 
                                                 v-model="editForm.required"
                                                 true-value="yes" 
@@ -45,20 +53,24 @@
                                                 name="required">
                                                 {{ $i18n.get('label_required') }}
                                             </b-switch>
-                                        </div>
+                                        </b-field>
 
-                                        <div class="field">
+                                        <b-field
+                                            :type="editFormErrors[editForm.multiple] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors[editForm.multiple] != undefined ? editFormErrors[editForm.multiple].error_message : ''">
                                             <b-switch 
                                                 v-model="editForm.multiple"
                                                 true-value="yes" 
                                                 false-value="no"
                                                 native-value="yes"
                                                 name="multiple">
-                                                {{ $i18n.get('label_unique_multiple') }}
+                                                {{ $i18n.get('label_allow_multiple') }}
                                             </b-switch>
-                                        </div>
+                                        </b-field>
 
-                                        <b-field message="">
+                                        <b-field 
+                                            :type="editFormErrors[editForm.unique] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors[editForm.unique] != undefined ? editFormErrors[editForm.unique].error_message : ''">
                                             <b-switch 
                                                 v-model="editForm.unique"
                                                 true-value="yes" 
@@ -69,7 +81,10 @@
                                             </b-switch>
                                         </b-field>
 
-                                        <b-field :label="$i18n.get('label_status')" message="">
+                                        <b-field 
+                                            :label="$i18n.get('label_status')"
+                                            :type="editFormErrors[editForm.status] != undefined ? 'is-danger' : ''" 
+                                            :message="editFormErrors[editForm.status] != undefined ? editFormErrors[editForm.status].error_message : ''">
                                             <b-select
                                                     id="tainacan-select-status"
                                                     name="status"
@@ -81,8 +96,11 @@
                                         </b-field>
 
                                         <component
+        
+                                                :messages="editFormErrors[editForm.field_type_options]"
                                                 v-if="field.field_type_object && field.field_type_object.form_component"
                                                 :is="field.field_type_object.form_component"
+                                                :field="editForm"
                                                 v-model="editForm.field_type_options">
                                         </component>
                                         <div v-html="field.edit_form" v-else></div>
@@ -137,6 +155,7 @@ export default {
             isLoadingFields: false,
             isLoadingField: false,
             editForm: {},
+            editFormErrors: {},
             openedFieldId: '',
         }
     },
@@ -163,24 +182,47 @@ export default {
                     this.updateFieldsOrder(); 
             }
         },
-        saveEdition($event, field) {
+        saveEdition(field) {
 
-            let formElement = document.getElementById('fieldEditForm');
-            let formData = new FormData(formElement);
             this.openedFieldId = field.id;
-            
-            let formObj = {}
-            for (var [key, value] of formData.entries()) { 
-                formObj[key] = value;
-            }
 
-            this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: formObj})
-            .then((field) => {
-                 console.log(field);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            if (field.field_type_object && field.field_type_object.form_component) {
+                this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: this.editForm})
+                    .then((field) => {
+                        console.log(field);
+                        this.editForm = {};
+                        this.openedFieldId = '';
+                        this.editFormErrors = {};
+                    })
+                    .catch((errors) => {
+                        console.log(errors);
+                        //for (let error of errors.errors)
+                            // this.editFormErrors[error['invalid'].attribute] = error['invalid'];
+                    });
+            } else {
+                let formElement = document.getElementById('fieldEditForm');
+                let formData = new FormData(formElement); 
+                let formObj = {}
+
+                for (let [key, value] of formData.entries())  
+                    formObj[key] = value;
+                
+                this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: formObj})
+                    .then((field) => {
+                        console.log(field);
+                        this.editForm = {};
+                        this.openedFieldId = '';
+                        this.editFormErrors = {};
+                    })
+                    .catch((errors) => {
+                        console.log(errors);
+                        for (let error of Object.keys(errors.errors))
+                            this.editFormErrors[error] = errors.errors[error];
+
+                        console.log(this.editFormErrors);
+                              
+                    });
+            }           
         },
         cancelEdition(field) {
             this.editForm = {};
@@ -294,6 +336,11 @@ export default {
             display: block;
             cursor: grab;
             .icon { float: right }
+            .field-name {
+                text-overflow: ellipsis;
+                overflow-x: hidden;
+                white-space: nowrap;
+            }
             .label-details {
                 font-weight: normal;
                 font-style: italic;
