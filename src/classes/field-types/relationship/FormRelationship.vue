@@ -1,7 +1,7 @@
 <template>
     <section>
         <b-field
-                label="Collection related"
+                :label="$i18n.get('label_collection_related')"
                 :type="type"
                 :message="message">
             <b-select
@@ -26,7 +26,7 @@
                 class="loading-spinner"></div>
             <b-field
                     v-if="hasFields"
-                    label="Field for search">
+                    :label="$i18n.get('label_fields_for_search')">
                 <div class="block">
                     <div
                         v-for="option in fields"
@@ -44,7 +44,7 @@
         </transition>
 
 
-        <b-field label="Allow repeated items">
+        <b-field :label="$i18n.get('label_allow_repeated_items')">
             <div class="block">
                 <b-switch v-model="modelRepeated"
                           type="is-primary"
@@ -74,6 +74,7 @@
                 invalid: true,
                 message: '',
                 type: '',
+                icon: '',
                 collections:[],
                 fields: [],
                 loading: true,
@@ -94,8 +95,8 @@
                     this.fetchFieldsFromCollection(value);
                 } else {
                     this.invalid = true;
-                    this.type = 'is-danger';
-                    this.message = 'The field Collection related is required';
+                    this.type = 'is-warning';
+                    this.message = this.$i18n.get('info_warning_collection_related');
                     this.fields = [];
                     this.hasFields = false;
                     this.modelSearch = []
@@ -110,7 +111,7 @@
            this.fetchCollections().then( data => {
                if( this.collection_id && this.collection_id !== '' ){
                    this.collection = this.collection_id;
-               } else if ( this.value && this.value.collection_id ) {
+               } else if ( this.value ) {
                    this.collection = this.value.collection_id;
                }
            });
@@ -163,7 +164,7 @@
                             this.hasFields = false;
                             this.$toast.open({
                                 duration: 4000,
-                                message: `No fields found in this collection`,
+                                message: this.$i18n.get('info_warning_no_fields_found'),
                                 position: 'is-bottom',
                                 type: 'is-danger'
                             })
@@ -187,7 +188,7 @@
                 }
             },
             labelRepeated(){
-                return ( this.modelRepeated === 'yes' ) ? 'Yes' : 'No';
+                return ( this.modelRepeated === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
             },
             emitValues(){
                 this.$emit('input',{
