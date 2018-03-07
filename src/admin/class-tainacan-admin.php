@@ -12,6 +12,8 @@ class Admin {
 
         add_action( 'admin_menu', array(&$this, 'add_admin_menu') );
         add_filter( 'admin_body_class', array(&$this, 'admin_body_class') );
+		
+		add_action( 'init', array(&$this, 'register_user_meta') );
 
     }
 
@@ -76,12 +78,14 @@ class Admin {
 
         $cur_user = wp_get_current_user();
         $user_caps = array();
+		$prefs = array();
         if ($cur_user instanceof \WP_User) {
             if (is_array($cur_user->allcaps)) {
                 foreach ($cur_user->allcaps as $cap => $bool)
                     if ($bool === true)
                         $user_caps[] = $cap;
             }
+			$prefs = get_user_meta($cur_user->ID, 'tainacan_prefs', true);
         }
         
         $settings = [
@@ -91,6 +95,7 @@ class Admin {
 			'components' => $components,
             'i18n' => $tainacan_admin_i18n,
             'user_caps' => $user_caps,
+            'user_prefs' => $prefs,
             'base_url' => $TAINACAN_BASE_URL
 		];
         
@@ -99,7 +104,18 @@ class Admin {
         wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
 		
     }
-
+	
+	function register_user_meta() {
+		$args = array(
+			//'sanitize_callback' => 'sanitize_my_meta_key',
+			//'auth_callback' => 'authorize_my_meta_key',
+			'type' => 'array',
+			'description' => 'Tainacan admin user preferences',
+			'single' => true,
+			'show_in_rest' => true,
+		);
+		register_meta( 'user', 'tainacan_prefs', $args );
+	}
 
 }
 
