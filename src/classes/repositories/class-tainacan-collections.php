@@ -145,27 +145,6 @@ class Collections extends Repository {
                 'description'=> __('Collection filters ordination', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
-            /*
-            
-            Isnt it just post status private?
-            
-            'privacy'           =>  [
-                'map'        => 'meta',
-                'name'       => __('Privacy', 'tainacan'),
-                'description'=> __('Collection privacy, defines wether a collection is visible to the public or not', 'tainacan'),
-                //'validation' => v::stringType(),
-            ],
-            */
-    
-            /**
-             * Properties yet to be implemented
-             *
-             * Moderators (a property attached to the collection or to the user?)
-             * geo field?
-             *
-             *
-             * 
-             */
             'moderators_ids' =>  [
                 'map'         => 'meta_multi',
                 'title'       => __('Moderators', 'tainacan'),
