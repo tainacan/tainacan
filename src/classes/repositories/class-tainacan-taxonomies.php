@@ -12,7 +12,13 @@ use \Respect\Validation\Validator as v;
  */
 class Taxonomies extends Repository {
 	public $entities_type = '\Tainacan\Entities\Taxonomy';
-
+	
+	public function __construct() {
+		parent::__construct();
+ 		add_action('tainacan-taxonomy-removed-from-collection', array($this, 'removed_collection'), 10, 2);
+ 		add_action('tainacan-taxonomy-added-to-collection', array($this, 'added_collection'), 10, 2);
+	}
+	
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
             'name'            =>  [
@@ -211,4 +217,32 @@ class Taxonomies extends Repository {
 
     	return new Entities\Taxonomy($trashed);
     }
+	
+	
+	public function added_collection($taxonomy_id, $collection) {
+		// TODO use a (yet to be implemented) method fetch_by_db_identifier
+		$id = preg_replace('/[^\d+]/','',$taxonomy_id);
+		//var_dump($collection->get_id()); die;
+		if (!empty($id) && is_numeric($id)) {
+			$tax = $this->fetch((int) $id);
+			$tax->add_collection_id($collection->get_id());
+			if ($tax->validate()) {
+				$this->insert($tax);
+			}
+		}
+	}
+	
+	public function removed_collection($taxonomy_id, $collection) {
+		// TODO use a (yet to be implemented) method fetch_by_db_identifier
+		$id = preg_replace('/[^\d+]/','',$taxonomy_id);
+		if (!empty($id) && is_numeric($id)) {
+			$tax = $this->fetch((int) $id);
+			$tax->remove_collection_id($collection->get_id());
+			if ($tax->validate()) {
+				$this->insert($tax);
+			}
+		}
+	}
+	
+	
 }

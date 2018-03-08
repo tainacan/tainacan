@@ -129,5 +129,77 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		$this->assertInternalType('array', $errors);
 		$this->assertArrayHasKey('taxonomy_id', $errors[0]['field_type_options']);
     }
+	
+	function test_relate_taxonomy() {
+        
+        global $Tainacan_Item_Metadata, $Tainacan_Items, $Tainacan_Fields, $Tainacan_Terms, $Tainacan_Taxonomies;
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+			),
+			true
+		);
+		
+		$tax2 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test2',
+			),
+			true
+		);
+        
+        $field = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'meta',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Category',
+				'status'	 => 'publish',
+				'field_type_options' => [
+					'taxonomy_id' => $tax->get_db_identifier(),
+					'allow_new_terms' => false
+				]
+	        ),
+	        true
+        );
+        
+		$checkTax = $Tainacan_Taxonomies->fetch($tax->get_id());
+		$this->assertContains($collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be added to taxonomy when field is created');
+		
+		$field->set_field_type_options([
+			'taxonomy_id' => $tax2->get_db_identifier(),
+			'allow_new_terms' => false
+		]);
+		
+		$field->validate();
+		$field = $Tainacan_Fields->insert($field);
+		
+		$checkTax = $Tainacan_Taxonomies->fetch($tax->get_id());
+		$checkTax2 = $Tainacan_Taxonomies->fetch($tax2->get_id());
+		$this->assertContains($collection->get_id(), $checkTax2->get_collections_ids(), 'Collection must be added to taxonomy when field is updated');
+		$this->assertNotContains($collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be removed from taxonomy when field is updated');
+		
+		$field = $Tainacan_Fields->delete($field->get_id());
+		
+		$checkTax2 = $Tainacan_Taxonomies->fetch($tax2->get_id());
+		
+		$this->assertNotContains($collection->get_id(), $checkTax2->get_collections_ids(), 'Collection must be removed from taxonomy when field is deleted');
+		
+		
+		
+		
+		
+    }
     
 }

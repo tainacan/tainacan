@@ -404,6 +404,22 @@ class Fields extends Repository {
         }
         return $result;
     }
+	
+	/**
+     * @param \Tainacan\Entities\Field $field
+     * @return \Tainacan\Entities\Field
+     * {@inheritDoc}
+     * @see \Tainacan\Repositories\Repository::insert()
+     */
+    public function insert($field){
+        global $Tainacan_Fields;
+
+    	$this->pre_update_category_field($field);
+        $new_field = parent::insert($field);
+
+        $this->update_category_field($new_field);
+    	return $new_field;
+    }
 
 	/**
 	 * @param $object
@@ -417,6 +433,7 @@ class Fields extends Repository {
     }
 
     public function delete($field_id){
+		$this->delete_category_field($field_id);
 		return new Entities\Field( wp_trash_post( $field_id ) );
     }
 
@@ -672,5 +689,59 @@ class Fields extends Repository {
 		}
 
 		return $results;
+	}
+	
+	/**
+	 * Stores the value of the taxonomy_id option to use on update_category_field method.
+	 *
+	 */
+	private function pre_update_category_field($field) {
+		$field_type = $field->get_field_type_object();
+		$current_tax = '';
+		if ($field_type->get_primitive_type() == 'term') {
+			
+			$options = $this->get_mapped_property($field, 'field_type_options');
+			$field_type->set_options($options);
+			$current_tax = $field_type->get_option('taxonomy_id');
+		}
+		$this->current_taxonomy = $current_tax;
+	}
+	
+	/**
+	 * Triggers hooks when saving a Category Field, indicating wich taxonomy was added or removed from a collection.
+	 *
+	 * This is used by Taxonomies repository to update the collections_ids property of the taxonomy as
+	 * a field type category is inserted or removed
+	 * 
+	 * @param  [type] $field [description]
+	 * @return [type]        [description]
+	 */
+	private function update_category_field($field) {
+		$field_type = $field->get_field_type_object();
+		$new_tax = '';
+		
+		if ($field_type->get_primitive_type() == 'term') {
+			$new_tax = $field_type->get_option('taxonomy_id');
+		}
+		
+		if ($new_tax != $this->current_taxonomy) {
+			if (!empty($this->current_taxonomy)) {
+				do_action('tainacan-taxonomy-removed-from-collection', $this->current_taxonomy, $field->get_collection());
+			}
+			if (!empty($new_tax)) {
+				do_action('tainacan-taxonomy-added-to-collection', $new_tax, $field->get_collection());
+			}
+				
+		}
+	}
+	
+	private function delete_category_field($field_id) {
+		$field = $this->fetch($field_id);
+		$field_type = $field->get_field_type_object();
+		if ($field_type->get_primitive_type() == 'term') {
+			$removed_tax = $field_type->get_option('taxonomy_id');
+			if (!empty($removed_tax))
+				do_action('tainacan-taxonomy-removed-from-collection', $removed_tax, $field->get_collection());
+		}
 	}
 }
