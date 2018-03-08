@@ -54,6 +54,20 @@ export const fetchCollection = ({ commit }, id) => {
     });
 }
 
+export const fetchCollectionName = ({ commit }, id) => {
+    return new Promise((resolve, reject) =>{ 
+        axios.get('/collections/' + id + '?fetch_only=name')
+        .then(res => {
+            let collectionName = res.data;
+            commit('setCollectionName', collectionName.name);
+            resolve( collectionName.name );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+}
+
 export const deleteCollection = ({ commit }, id) => {
     return new Promise((resolve, reject) =>{ 
         axios.delete('/collections/' + id)

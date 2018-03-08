@@ -6,3 +6,7 @@ export const getFields =  state => {
 export const getItem = state => {
     return state.item;
 }
+
+export const getItemTitle = state => {
+    return state.itemTitle;
+}

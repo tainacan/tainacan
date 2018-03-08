@@ -62,6 +62,20 @@ export const fetchItem = ({ commit }, item_id) => {
     });
 };
 
+export const fetchItemTitle = ({ commit }, id) => {
+    return new Promise((resolve, reject) =>{ 
+        axios.get('/items/' + id + '?fetch_only=title')
+        .then(res => {
+            let itemTitle = res.data;
+            commit('setItemTitle', itemTitle.title);
+            resolve( itemTitle.title );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+}
+
 export const sendItem = ( { commit }, { collection_id, status }) => {
     return new Promise(( resolve, reject ) => {
         axios.post('/collection/'+ collection_id + '/items/', {

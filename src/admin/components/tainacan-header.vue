@@ -3,15 +3,15 @@
         <div class="level-left">
             <div class="level-item">
                 <h1 class="has-text-weight-bold is-uppercase has-text-primary">{{pageTitle}}</h1>
-                <nav class="breadcums">
+                <nav class="breadcrumbs">
                     <router-link tag="a" :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                    <span v-for="(pathItem, index) in arrayPath" :key="index">
+                    <span v-for="(pathItem, index) in arrayRealPath" :key="index">
                         <router-link 
                             tag="a" 
-                            :to="'/' + arrayPath.slice(0, index + 1).join('/')">
-                                {{ isNaN(pathItem) ? $i18n.get(pathItem) : getEntityName(arrayPath[index-1], pathItem) }}
+                            :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
+                                {{ arrayViewPath[index] }}
                         </router-link>
-                        <span v-if="index != arrayPath.length - 1"> > </span>
+                        <span v-if="index != arrayRealPath.length - 1"> > </span>
                     </span>   
                 </nav>
             </div>
@@ -34,49 +34,73 @@ export default {
             wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             onSecondaryPage: false,
             pageTitle: '',
-            arrayPath: [],
+            arrayRealPath: [],
+            arrayViewPath: []
         }
     },
     methods: {
         ...mapActions('collection', [
-            'fetchCollection'
+            'fetchCollectionName'
         ]),
         ...mapGetters('collection', [
-            'getCollection'
+            'getCollectionName'
         ]),
         ...mapActions('item', [
-            'fetchItem'
+            'fetchItemTitle'
         ]),
         ...mapGetters('item', [
-            'getItem'
+            'getItemTitle'
         ]),
-        getEntityName(type, id) {
-            switch(type) {
-                case 'collections':
-                    //return this.getCollectionName(id);
-                break;
-                case 'items':
-                    //return this.getItemName(id);
-                break;
-                default:
-                return id;
+        generateViewPath() {
+
+            for (let i = 0; i < this.arrayRealPath.length; i++) {
+                
+                this.arrayViewPath.push('');
+                
+                if (!isNaN(this.arrayRealPath[i]) && i > 0) {
+                    
+                    switch(this.arrayRealPath[i-1]) {
+                        case 'collections':
+                            this.fetchCollectionName(this.arrayRealPath[i])
+                                .then(collectionName => this.arrayViewPath.splice(i, 1, collectionName))
+                                .catch((error) => console.log(error));
+                        break;
+                        case 'items':
+                            this.fetchItemTitle(this.arrayRealPath[i])
+                                .then(itemTitle => this.arrayViewPath.splice(i, 1,itemTitle))
+                                .catch((error) => console.log(error));
+                        break;
+                    }
+                    
+                } else {
+                    this.arrayViewPath.splice(i, 1, this.$i18n.get(this.arrayRealPath[i])); 
+                }
+                
             }
-            return id;
-        }
+        },
     },
     watch: {
         '$route' (to, from) {
             this.onSecondaryPage = (to.params.collectionId != undefined);
-            this.arrayPath = to.path.split("/");
-            this.arrayPath = this.arrayPath.filter((item) => item.length != 0);
             this.pageTitle = this.$route.meta.title;
+
+            this.arrayRealPath = to.path.split("/");
+            this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
+            
+            this.generateViewPath();
         }
+    },
+    mounted() {
+        console.log(this.arrayViewPath);
     },
     created() {
         this.onSecondaryPage = (this.$route.params.collectionId != undefined);
-        this.arrayPath = this.$route.path.split("/");
-        this.arrayPath = this.arrayPath.filter((item) => item.length != 0);
         this.pageTitle = this.$route.meta.title;
+
+        this.arrayRealPath = this.$route.path.split("/");
+        this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
+        
+        this.generateViewPath();
     }
 }
 </script>

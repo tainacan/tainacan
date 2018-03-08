@@ -4,6 +4,10 @@ export const setItem = ( state, item ) => {
     state.item = item;
 }
 
+export const setItemTitle = ( state, itemTitle ) => {
+    state.itemTitle = itemTitle;
+}
+
 export const setFields = ( state, field) => {
     state.fields = field;
 }

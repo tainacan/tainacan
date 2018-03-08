@@ -9,3 +9,7 @@ export const getCollections = state => {
 export const getCollection = state => {
     return state.collection;
 }
+
+export const getCollectionName = state => {
+    return state.collectionName;
+}
