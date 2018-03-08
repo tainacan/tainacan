@@ -109,6 +109,9 @@ class Relationship extends Field_Type {
     }
     
     public function validate_options(\Tainacan\Entities\Field $field) {
+        if ( !in_array($field->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+
         if (!empty($this->get_option('collection_id')) && !is_numeric($this->get_option('collection_id'))) {
             return [
                 'collection_id' => 'Collection ID invalid'
