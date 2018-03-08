@@ -7,31 +7,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 trait Entity_Collections_Relation {
 
-    public function fetch_ids() {
-        return $this->get_mapped_property('collections_ids');
-    }
-    
-    public function fetch() {
-        if (isset($this->collection) && !empty($this->collection) && is_array($this->collection)){
-            return $this->collection;
-        }
-        
-        if (is_array($this->fetch_ids()) && !empty(is_array($this->fetch_ids()))) {
-            
-            global $Tainacan_Collections;
-            $collections = [];
-            
-            foreach ($this->fetch_ids() as $col_id) {
-                $collections[] = $Tainacan_Collections->fetch($col_id);
-            }
-            
-            return $collections;
-        }
-        
-        return null;
-        
-    }
-	
 	public function get_collections_ids() {
         return $this->get_mapped_property('collections_ids');
     }
