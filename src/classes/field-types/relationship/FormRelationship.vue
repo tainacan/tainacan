@@ -71,7 +71,7 @@
             repeated: [ String ],
             value: [ String, Object, Array ],
             field: [ String, Object ],
-            errors: [ String, Object,Array ]
+            errors: [ String, Object, Array ]
         },
         data(){
             return {

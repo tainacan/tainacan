@@ -93,14 +93,18 @@ class Category extends Field_Type {
 			'field_type' => 'Tainacan\\Field_Types\\Category'
 		], 'OBJECT');
 		
-		$category_fields = array_map(function ($field) {
-			$fto = $field->get_field_type_object();
-			return $fto->get_option('taxonomy_id');
+		$category_fields = array_map(function ($field_map) {
+			$fto = $field_map->get_field_type_object();
+			return [ $field_map->get_id() => $fto->get_option('taxonomy_id') ];
 		}, $category_fields);
-		
-		if (in_array($this->get_option('taxonomy_id'), $category_fields)) {
-			return ['taxonomy_id' => __('You can not have 2 Category Fields using the same category in a collection', 'tainacan')];
-		}
+
+		if( is_array( $category_fields ) ){
+            foreach ($category_fields as $field_id => $category_field) {
+                if ( $field_id != $field->get_id() && in_array($this->get_option('taxonomy_id'), $category_fields)) {
+                    return ['taxonomy_id' => __('You can not have 2 Category Fields using the same category in a collection', 'tainacan')];
+                }
+		    }
+        }
 		
 		return true;
 		
