@@ -278,7 +278,8 @@ class Collections extends Repository {
     }
     
     function pre_update_moderators($collection) {
-        $current_moderators = $this->get_mapped_property($collection, 'moderators_ids');
+        // make sure we get the current value from database
+		$current_moderators = $this->get_mapped_property($collection, 'moderators_ids');
         $this->current_moderators = is_array($current_moderators) ? $current_moderators : [];
         
     }
