@@ -71,6 +71,7 @@ export const sendField = ( { commit }, { collectionId, name, fieldType, status, 
 export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLevel, options }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
+
         if (!isRepositoryLevel) 
             endpoint = '/collection/' + collectionId + '/fields/' + fieldId; 
         else
@@ -78,7 +79,7 @@ export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLe
 
         axios.put(endpoint, options)
             .then( res => {
-                commit('setField', { collection_id: collectionId, name: name, field_type: fieldType, status: status });
+                commit('setSingleField', res.data);
                 resolve( res.data );
             })
             .catch(error => {
