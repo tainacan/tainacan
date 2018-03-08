@@ -3,7 +3,8 @@
         <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag>
         <form label-width="120px">
             <b-field :label="$i18n.get('label_status')">
-                <b-select id="status-select"
+                <b-select 
+                        id="status-select"
                         v-model="form.status"
                         :placeholder="$i18n.get('instruction_select_a_status')">
                     <option
@@ -33,7 +34,7 @@
                     </section>
                 </b-upload>
             </b-field>        
-            <tainacan-form-item                  
+            <tainacan-form-item                 
                 v-for="(field, index) in fieldList"
                 v-bind:key="index"
                 :field="field"></tainacan-form-item>           
@@ -42,10 +43,10 @@
                 class="button"
                 type="button"
                 @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-            <a
+            <button
                 id="button-submit-item-creation"
                 @click="onSubmit"
-                class="button is-success is-hovered">{{ $i18n.get('save') }}</a>
+                class="button is-success is-hovered" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
         </form>
 
         <b-loading :active.sync="isLoading" :canCancel="false">
@@ -53,7 +54,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex';
+import { eventBus } from '../../../js/event-bus-web-components.js'
 
 export default {
     name: 'ItemEditionPage',
@@ -99,7 +101,6 @@ export default {
             'getItem'
         ]),
         onSubmit() {
-            
             // Puts loading on Item edition
             this.isLoading = true;
 
@@ -116,8 +117,7 @@ export default {
 
                 this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
             }).catch(error => {
-                console.log(error);
-
+                
                 this.isLoading = false;
             });
         },
@@ -154,12 +154,12 @@ export default {
             })
             .catch(error => console.log(error));
         },
-        loadMetadata() {
+        loadMetadata() { 
             // Obtains Item Field
             this.fetchFields(this.itemId).then(res => {
                 this.isLoading = false;
             });
-        },
+        }, 
         cancelBack(){
             this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
         }
@@ -167,7 +167,11 @@ export default {
     computed: {
         fieldList(){
             return this.getFields();
+        },
+        formHasErrors(){
+            return eventBus.errors.length > 0;
         }   
+
     },
     created(){
         // Obtains collection ID

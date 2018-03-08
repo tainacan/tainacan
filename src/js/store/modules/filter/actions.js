@@ -3,7 +3,7 @@ import qs from 'qs';
 
 export const search_by_collection = ({  state, dispatch, rootGetters }, collectionId) => {
     return new Promise((resolve, reject) =>{
-        axios.get('/collection/' + collectionId + '/items?' + qs.stringify( state.postquery ))
+        axios.tainacan.get('/collection/' + collectionId + '/items?' + qs.stringify( state.postquery ))
             .then(res => {
                  resolve( res.data );
                  dispatch('collection/setItems', res.data, { root: true } );

@@ -3,23 +3,23 @@ import axios from '../../../axios/axios';
 // Actions related to Item's field
 export const sendField = ( { commit }, { item_id, field_id, values }) => {
    return new Promise( (resolve, reject) => {
-       axios.post('/item/'+item_id+'/metadata/'+field_id, {
-           values: values
-       })
-           .then( res => {
-               commit('setSingleMetadata', { item_id: item_id, field_id: field_id, values: values });
-               resolve( res.data );
-           })
-           .catch(error => {
-               reject( error);
-           });
+        axios.tainacan.post('/item/'+item_id+'/metadata/'+field_id, {
+            values: values
+        })
+        .then( res => {
+            commit('setSingleMetadata', { item_id: item_id, field_id: field_id, values: values });
+            resolve( res.data );
+        })
+        .catch(error => {
+            reject( error);
+        });
    });
 };
 
 
 export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
     return new Promise((resolve, reject) => {
-        axios.patch(`/item/${item_id}/metadata/${field_id}`, {
+        axios.tainacan.patch(`/item/${item_id}/metadata/${field_id}`, {
             values: values,
         })
             .then( res => {
@@ -35,7 +35,7 @@ export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
 
 export const fetchFields = ({ commit }, item_id) => {
     return new Promise((resolve, reject) => {
-        axios.get('/item/'+item_id+'/metadata')
+        axios.tainacan.get('/item/'+item_id+'/metadata')
         .then(res => {
             let items = res.data;
             commit('setFields', items);
@@ -50,7 +50,7 @@ export const fetchFields = ({ commit }, item_id) => {
 // Actions directly related to Item
 export const fetchItem = ({ commit }, item_id) => {
     return new Promise((resolve, reject) => {
-        axios.get('/items/'+item_id)
+        axios.tainacan.get('/items/'+item_id)
         .then(res => {
             let item = res.data;
             commit('setItem', item);
@@ -64,7 +64,7 @@ export const fetchItem = ({ commit }, item_id) => {
 
 export const fetchItemTitle = ({ commit }, id) => {
     return new Promise((resolve, reject) =>{ 
-        axios.get('/items/' + id + '?fetch_only=title')
+        axios.tainacan.get('/items/' + id + '?fetch_only=title')
         .then(res => {
             let itemTitle = res.data;
             commit('setItemTitle', itemTitle.title);
@@ -78,9 +78,38 @@ export const fetchItemTitle = ({ commit }, id) => {
 
 export const sendItem = ( { commit }, { collection_id, status }) => {
     return new Promise(( resolve, reject ) => {
-        axios.post('/collection/'+ collection_id + '/items/', {
+        axios.tainacan.post('/collection/'+ collection_id + '/items/', {
             status: status
         })
+            .then( res => {
+                commit('setItem', { collection_id: collection_id, status: status });
+                resolve( res.data );
+            })
+            .catch(error => {
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+    });
+};
+ 
+export const updateItem = ({ commit }, { item_id, status }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.patch('/items/' + item_id, {
+            status: status 
+        }).then( res => {
+            commit('setItem', { id: item_id, status: status });
+            resolve( res.data );
+        }).catch( error => { 
+            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+        });
+
+    }); 
+};
+
+export const sendAttachment = ( { commit }, { item_id, url_path }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.wp.post('/media/', {
+            post: item_id,
+        }, url_path)
             .then( res => {
                 commit('setItem', { collection_id: collection_id, status: status });
                 resolve( res.data );
@@ -89,19 +118,4 @@ export const sendItem = ( { commit }, { collection_id, status }) => {
                 reject( error.response );
             });
     });
- };
- 
- 
-export const updateItem = ({ commit }, { item_id, status }) => {
-    return new Promise((resolve, reject) => {
-        axios.patch('/items/' + item_id, {
-            status: status 
-        }).then( res => {
-            commit('setItem', { id: item_id, status: status });
-            resolve( res.data );
-        }).catch( error => { 
-            reject( error.response );
-        });
-
-    }); 
 };

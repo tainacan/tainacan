@@ -76,7 +76,7 @@ export default {
         -webkit-transition: max-width 0.3s linear; /* Safari */
         transition: max-width 0.3s linear;
         max-width: 180px; 
-        z-index: 90;
+        z-index: 10;
 
         .menu-header {
             background-color: rgba(0,0,0,0.1);

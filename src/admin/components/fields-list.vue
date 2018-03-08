@@ -264,6 +264,11 @@ export default {
 
                 if (!this.isRepositoryLevel)
                     this.updateFieldsOrder();
+
+                this.openedFieldId = field.id;
+                this.editForm = JSON.parse(JSON.stringify(field));
+                this.editFormErrors = {};
+                this.formErrorMessage = '';
             })
             .catch((error) => {
                 console.log(error);
@@ -288,7 +293,7 @@ export default {
                 this.editForm = {};
             } else {
                 this.openedFieldId = field.id;
-                this.editForm = field;
+                this.editForm = JSON.parse(JSON.stringify(field));
             }
             this.editFormErrors = {};
             this.formErrorMessage = '';
