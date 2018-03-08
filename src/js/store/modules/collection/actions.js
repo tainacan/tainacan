@@ -92,7 +92,7 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
             commit('setCollection', { id: collection_id, name: name, description: description, status: status });
             resolve( res.data );
         }).catch( error => { 
-            reject( error.response );
+            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
         });
 
     });

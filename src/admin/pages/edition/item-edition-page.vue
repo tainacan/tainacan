@@ -45,8 +45,8 @@
                 @click="cancelBack">{{ $i18n.get('cancel') }}</button>
             <button
                 id="button-submit-item-creation"
-                @click="onSubmit"
-                class="button is-success" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
+                @click.prevent="onSubmit"
+                class="button is-primary" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
         </form>
 
         <b-loading :active.sync="isLoading" :canCancel="false">
