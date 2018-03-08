@@ -89,7 +89,7 @@
                                                     @focus="clearErrors('label_status')"
                                                     id="tainacan-select-status"
                                                     name="status"
-                                                    :value="editForm.status"
+                                                    v-model="editForm.status"
                                                     :placeholder="$i18n.get('instruction_select_a_status')">
                                                 <option value="publish" selected>{{ $i18n.get('publish')}}</option>
                                                 <option value="private">{{ $i18n.get('private')}}</option>
@@ -289,6 +289,7 @@ export default {
             } else {
                 this.openedFieldId = field.id;
                 this.editForm = field;
+                this.editForm.status = 'publish';
             }
             this.editFormErrors = {};
             this.formErrorMessage = '';
