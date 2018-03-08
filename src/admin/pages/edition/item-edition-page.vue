@@ -46,7 +46,7 @@
             <button
                 id="button-submit-item-creation"
                 @click="onSubmit"
-                class="button is-success is-hovered" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
+                class="button is-success" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
         </form>
 
         <b-loading :active.sync="isLoading" :canCancel="false">
