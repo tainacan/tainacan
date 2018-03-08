@@ -61,7 +61,7 @@
 </template>
 
 <script>
-    import axios from '../../../js/axios/axios';
+    import { tainacan as axios } from '../../../js/axios/axios';
     import Vue from 'vue';
 
     export default {

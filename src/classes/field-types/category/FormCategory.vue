@@ -1,5 +1,7 @@
 <template>
-    <section v-if="isReady">
+    <section
+            v-if="isReady"
+            :listen="setError">
         <b-field :label="$i18n.get('label_select_category')">
             <b-select
                     name="field_type_options[taxonomy_id]"
@@ -67,7 +69,7 @@
 </template>
 
 <script>
-    import axios from '../../../js/axios/axios';
+    import { tainacan as axios }  from '../../../js/axios/axios';
 
     export default {
         props: {
@@ -107,7 +109,7 @@
                     return false;
                 }
             },
-            listenErrors(){
+            setError(){
 
             }
         },
