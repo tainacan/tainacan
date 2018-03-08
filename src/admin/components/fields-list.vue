@@ -50,7 +50,6 @@
                                                 v-model="editForm.required"
                                                 true-value="yes" 
                                                 false-value="no"
-                                                native-value="yes"
                                                 name="required">
                                                 {{ $i18n.get('label_required') }}
                                             </b-switch>
@@ -64,7 +63,6 @@
                                                 v-model="editForm.multiple"
                                                 true-value="yes" 
                                                 false-value="no"
-                                                native-value="yes"
                                                 name="multiple">
                                                 {{ $i18n.get('label_allow_multiple') }}
                                             </b-switch>
@@ -78,7 +76,6 @@
                                                 v-model="editForm.unique"
                                                 true-value="yes" 
                                                 false-value="no"
-                                                native-value="yes"
                                                 name="collecion_key">
                                                 {{ $i18n.get('label_unique_value') }}
                                             </b-switch>
@@ -194,12 +191,15 @@ export default {
             this.formErrorMessage = '';
 
             if (field.field_type_object && field.field_type_object.form_component) {
+                
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: this.editForm})
                     .then((field) => {
                         this.editForm = {};
                         this.openedFieldId = '';
                         this.editFormErrors = {};
                         this.formErrorMessage = '';
+
+                        this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
                     })
                     .catch((errors) => {
                         for (let error of errors.errors) {     
@@ -222,6 +222,8 @@ export default {
                         this.openedFieldId = '';
                         this.editFormErrors = {};
                         this.formErrorMessage = '';
+
+                        this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
                     })
                     .catch((errors) => {
                         for (let error of errors.errors) {     
@@ -350,6 +352,8 @@ export default {
             border-radius: 5px;
             border: 1px solid gainsboro;
             display: block; 
+            transition: top 0.2s ease;
+
             cursor: grab;
             .icon { float: right }
             .field-name {
@@ -412,12 +416,15 @@ export default {
             border: 1px solid gainsboro;
             width: 100%;
             cursor: grab;
+            top: 0;
+            transition: top 0.2s ease;
         }
         .available-field-item:hover {
             border: 1px solid lightgrey;
-            box-shadow: 0 3px 4px rgba(0,0,0,0.25);
+            box-shadow: 2px 3px 4px rgba(0,0,0,.25);
             position: relative;
             top: -2px;
+            left: -2px;
         }
     }
 

@@ -90,9 +90,6 @@ export default {
             this.generateViewPath();
         }
     },
-    mounted() {
-        console.log(this.arrayViewPath);
-    },
     created() {
         this.onSecondaryPage = (this.$route.params.collectionId != undefined);
         this.pageTitle = this.$route.meta.title;

@@ -1,4 +1,5 @@
-export const getFields = state => {
+export const getFields = state => {  
+    
     return state.fields;
 }
 
