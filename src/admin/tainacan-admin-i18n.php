@@ -85,6 +85,10 @@ return [
     'label_collection_related' => __('Collection Related', 'tainacan'),
     'label_fields_for_search' => __('Fields for search', 'tainacan'),
     'label_allow_repeated_items' => __('Allow repeated items', 'tainacan'),
+    'label_select_category' => __('Select category', 'tainacan'),
+    'label_select_category_input_type' => __('Input type', 'tainacan'),
+    'label_category_allow_new_terms' => __('Allow new terms', 'tainacan'),
+    'label_selectbox_init' => __('Select', 'tainacan'),
 
     // Instructions. More complex sentences to guide user and placeholders
     'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to add them to Collection.', 'tainacan'),

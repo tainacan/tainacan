@@ -354,6 +354,7 @@ class Fields extends TAINACAN_UnitTestCase {
         $invalidField->set_name('test');
         $invalidField->set_description('test');
         $invalidField->set_collection($collection);
+        $invalidField->set_status('publish');
         $invalidField->set_field_type('Tainacan\Field_Types\Relationship');
         $invalidField->set_field_type_options(['collection_id' => 'string']);
         

@@ -1,13 +1,14 @@
 <template>
-    <section>
-        <b-field label="Category">
+    <section v-if="isReady">
+        <b-field :label="$i18n.get('label_select_category')">
             <b-select
                     name="field_type_options[taxonomy_id]"
                     placeholder="Select the taxonomy"
                     v-model="taxonomy_id"
+                    @input="emitValues()"
                     @change.native="emitValues()"
                     :loading="loading">
-                <option value="">Select...</option>
+                <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
                 <option
                         v-for="option in taxonomies"
                         :value="option.id"
@@ -17,18 +18,19 @@
             </b-select>
         </b-field>
 
-        <b-field label="Input Type">
+        <b-field :label="$i18n.get('label_select_category_input_type')">
 
             <b-select
-                    v-if="listInputType()"
+                    v-if="listInputType"
                     name="field_type_options[component_type]"
                     placeholder="Select the input type for the category field"
+                    @input="emitValues()"
                     v-model="input_type">
-                <option :value="'tainacan-category-radio'">
-                    Radio
-                </option>
-                <option :value="'tainacan-category-selectbox'">
-                    Selectbox
+                <option
+                        v-for="option,index in single_types"
+                        :value="index"
+                        :key="index">
+                    {{ option }}
                 </option>
             </b-select>
 
@@ -36,22 +38,23 @@
                     name="field_type_options[input_type]"
                     placeholder="Select the input type for the category field"
                     v-model="input_type"
+                    @input="emitValues()"
                     v-else>
 
-                <option :value="'tainacan-category-checkbox'">
-                    Checkbox
-                </option>
-                <option :value="'tainacan-category-tag-input'" >
-                    Tag Input
+                <option
+                        v-for="option,index in multiple_types"
+                        :value="index"
+                        :key="index">
+                    {{ option }}
                 </option>
             </b-select>
 
         </b-field>
 
-        <b-field label="Allow new Terms">
+        <b-field :label="$i18n.get('label_category_allow_new_terms')">
             <div class="block">
                 <b-switch v-model="allow_new_terms"
-                          type="is-info"
+                          type="is-primary"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
@@ -69,7 +72,8 @@
     export default {
         props: {
             value: [ String, Object, Array ],
-            field: [ String, Object ]
+            field: [ String, Object ],
+            errors: [ String, Object, Array ]
         },
         created(){
             this.fetchTaxonomies().then( res => {
@@ -80,28 +84,46 @@
 
             if( this.value ) {
                 this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
-                this.input_type = ( this.value.input_type ) ? this.value.input_type : this.listInputType();
+            }
+
+            this.single_types['tainacan-category-radio'] = 'Radio';
+            this.single_types['tainacan-category-selectbox'] = 'Selectbox';
+            this.multiple_types['tainacan-category-tag-input'] = 'Tag Input';
+            this.multiple_types['tainacan-category-checkbox'] = 'Checkbox';
+
+            this.isReady = true;
+        },
+        computed: {
+            listInputType(){
+                if( this.field && this.field.multiple === 'no' ){
+                    let types = Object.keys( this.single_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    this.input_type =  ( hasValue ) ? this.value.input_type : 'tainacan-category-radio';
+                    return true;
+                } else {
+                    let types = Object.keys( this.multiple_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    this.input_type =  ( hasValue ) ? this.value.input_type : 'tainacan-category-checkbox';
+                    return false;
+                }
+            },
+            listenErrors(){
+
             }
         },
         data(){
             return {
+                isReady: false,
                 taxonomies: [],
                 taxonomy_id: '',
                 loading: true,
                 allow_new_terms: 'yes',
-                input_type: 'tainacan-category-radio'
+                input_type: 'tainacan-category-radio',
+                multiple_types: {},
+                single_types: {},
             }
         },
         methods: {
-            listInputType(){
-                if( this.field && this.field.multiple === 'no' ){
-                    this.input_type =  'tainacan-category-radio';
-                    return true;
-                } else {
-                    this.input_type =  'tainacan-category-checkbox';
-                    return false;
-                }
-            },
             fetchTaxonomies(){
                 return axios.get('/taxonomies')
                     .then(res => {
