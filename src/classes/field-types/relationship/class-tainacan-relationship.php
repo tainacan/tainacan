@@ -109,10 +109,13 @@ class Relationship extends Field_Type {
     }
     
     public function validate_options(\Tainacan\Entities\Field $field) {
-        // TODO: This is just a sample validation to test validation workflow for field types. Must redo it
         if (!empty($this->get_option('collection_id')) && !is_numeric($this->get_option('collection_id'))) {
             return [
                 'collection_id' => 'Collection ID invalid'
+            ];
+        } else if( empty($this->get_option('collection_id'))) {
+            return [
+                'collection_id' => 'Collection related is required'
             ];
         }
         return true;

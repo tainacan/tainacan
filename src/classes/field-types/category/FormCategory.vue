@@ -38,10 +38,10 @@
                     v-model="component_type"
                     v-else>
                 <option :value="'tainacan-category-tag-input'">
-                    Radio
+                    Tag Input
                 </option>
                 <option :value="'tainacan-category-checkbox'">
-                    Selectbox
+                    Checkbox
                 </option>
             </b-select>
 

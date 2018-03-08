@@ -2,13 +2,15 @@
     <section>
         <b-field
                 :label="$i18n.get('label_collection_related')"
-                :type="type"
-                :message="message">
+                :listen="setError()"
+                :type="collectionType"
+                :message="collectionMessage">
             <b-select
                     name="field_type_relationship[collection_id]"
                     placeholder="Select the collection to fetch items"
                     v-model="collection"
                     @change.native="emitValues()"
+                    @focus="clear()"
                     :loading="loading">
                 <option value="">Select...</option>
                 <option
@@ -60,6 +62,7 @@
 
 <script>
     import axios from '../../../js/axios/axios';
+    import Vue from 'vue';
 
     export default {
         props: {
@@ -68,12 +71,10 @@
             repeated: [ String ],
             value: [ String, Object ],
             field: [ String, Object ],
+            errors: [ String, Object,Array ]
         },
         data(){
             return {
-                invalid: true,
-                message: '',
-                type: '',
                 icon: '',
                 collections:[],
                 fields: [],
@@ -89,17 +90,11 @@
             collection( value ){
                 this.collection = value;
                 if( value && value !== '' ) {
-                    this.message = '';
-                    this.type = '';
-                    this.invalid = false;
                     this.fetchFieldsFromCollection(value);
                 } else {
-                    this.invalid = true;
-                    this.type = 'is-warning';
-                    this.message = this.$i18n.get('info_warning_collection_related');
                     this.fields = [];
                     this.hasFields = false;
-                    this.modelSearch = []
+                    this.modelSearch = [];
                 }
             },
             modelSearch( value ){
@@ -190,12 +185,26 @@
             labelRepeated(){
                 return ( this.modelRepeated === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
             },
+            setError(){
+                if( this.errors && this.errors.collection_id !== '' ){
+                    this.collectionType = 'is-warning';
+                    this.collectionMessage = this.errors.collection_id;
+                } else {
+                    this.collectionType = '';
+                    this.collectionMessage = '';
+                }
+            },
+            clear(){
+                if( this.errors && this.errors.collection_id ){
+                    this.errors.collection_id = '';
+                }
+
+            },
             emitValues(){
                 this.$emit('input',{
                     collection_id: this.collection,
                     search: this.modelSearch,
-                    repeated:  this.modelRepeated,
-                    invalid: this.invalid
+                    repeated:  this.modelRepeated
                 })
             }
         }

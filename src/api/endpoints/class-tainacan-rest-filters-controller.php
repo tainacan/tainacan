@@ -17,7 +17,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 * TAINACAN_REST_Filters_Controller constructor.
 	 */
 	public function __construct() {
-		$this->namespace = '/tainacan/v2';
+		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'filters';
 
 		add_action('rest_api_init', array($this, 'register_routes'));
