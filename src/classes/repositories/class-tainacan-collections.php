@@ -134,7 +134,7 @@ class Collections extends Repository {
             'fields_order'           =>  [
                 'map'        => 'meta',
                 'title'      => __('Ordination fields', 'tainacan'),
-                'type'       => 'string',
+                'type'       => 'array',
                 'description'=> __('Collection fields ordination', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
