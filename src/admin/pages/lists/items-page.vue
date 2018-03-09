@@ -3,7 +3,7 @@
         <h1>Items Page</h1>
         <div class="primary-page">
             <router-link tag="button" class="button is-secondary"
-                        :to="{ path: $routerHelper.getNewItemPath() }">
+                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                 {{ $i18n.get('new') + ' ' + $i18n.get('item') }}
             </router-link>
             <items-list :collection-id="collectionId"></items-list>

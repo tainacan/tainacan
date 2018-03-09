@@ -6,7 +6,9 @@ const state = {
     item: [],
     fields: [],
     error: [],
-    itemTitle: ''
+    itemTitle: '',
+    attachment: {},
+    attachments: []
 };
 
 

@@ -404,7 +404,7 @@ export default {
             padding: 0.2em 0.5em;
             margin: 10px;
             border-radius: 5px;
-            border: 2px dashed $primary-light;
+            border: 1px dashed $primary-light;
             display: block; 
         }
     }

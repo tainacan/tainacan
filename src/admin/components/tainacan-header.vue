@@ -2,7 +2,7 @@
     <div id="tainacan-header" class="level">
         <div class="level-left">
             <div class="level-item">
-                <h1 class="has-text-weight-bold is-uppercase has-text-primary">{{pageTitle}}</h1>
+                <h1 class="has-text-weight-bold is-uppercase has-text-tertiary">{{pageTitle}}</h1>
                 <nav class="breadcrumbs">
                     <router-link tag="a" :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
                     <span v-for="(pathItem, index) in arrayRealPath" :key="index">

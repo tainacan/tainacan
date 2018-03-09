@@ -4,6 +4,20 @@ export const setItem = ( state, item ) => {
     state.item = item;
 }
 
+export const setSingleAttachment = ( state, attachment ) => {
+    let index = state.attachment.findIndex(newAttachment => newAttachment.id === attachment.id);
+    if ( index >= 0){
+        //state.field[index] = field;
+        Vue.set( state.attachments, index, attachment );
+    } else {
+        state.attachments.push( attachment );
+    }
+}
+
+export const setAttachments = ( state, attachments ) => {
+    state.attachments = attachments;
+}
+
 export const setItemTitle = ( state, itemTitle ) => {
     state.itemTitle = itemTitle;
 }

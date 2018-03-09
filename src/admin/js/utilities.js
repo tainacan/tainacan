@@ -33,10 +33,10 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
         init() {
             let data = {'meta': {'tainacan_prefs': this.tainacanPrefs} };
             
-            wpApi.get('/wp/v2/users/me/')
+            wpApi.get('/users/me/')
                 .then( res => {
                     if (res.data.meta['tainacan_prefs'] == undefined) {
-                        wpApi.post('/wp/v2/users/me/', qs.stringify(data))  
+                        wpApi.post('/users/me/', qs.stringify(data))  
                     }
                 })
                 .catch(error => {
@@ -45,7 +45,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
         },
         get(key) {
             return new Promise(( resolve, reject ) => {
-                wpApi.get('/wp/v2/users/me/')
+                wpApi.get('/users/me/')
                 .then( res => {
                     if (res.data.meta['tainacan_prefs']['items_per_page']) {
                             resolve( res.data.meta['tainacan_prefs']['items_per_page'] );  
@@ -62,7 +62,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             this.tainacanPrefs[key] = value;
             let data = {'meta': {'tainacan_prefs': this.tainacanPrefs} };
             return new Promise(( resolve, reject ) => {
-                wpApi.post('/wp/v2/users/me/', qs.stringify(data))
+                wpApi.post('/users/me/', qs.stringify(data))
                 .then( res => {
                     resolve( res.data );
                 })

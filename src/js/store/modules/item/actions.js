@@ -105,17 +105,36 @@ export const updateItem = ({ commit }, { item_id, status }) => {
     }); 
 };
 
-export const sendAttachment = ( { commit }, { item_id, url_path }) => {
+// Attachments =======================================
+export const sendAttachment = ( { commit }, { item_id, file }) => {
     return new Promise(( resolve, reject ) => {
-        axios.wp.post('/media/', {
-            post: item_id,
-        }, url_path)
+        axios.wp.post('/media/?post=' + item_id, file, {
+            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
+            onUploadProgress: progressEvent => {
+                console.log(progressEvent.loaded + '/' + progressEvent.total);
+            }
+        })
             .then( res => {
-                commit('setItem', { collection_id: collection_id, status: status });
-                resolve( res.data );
+                let attachment = res.data;
+                commit('setSingleAttachment', attachment);
+                resolve( attachment );
             })
             .catch(error => {
                 reject( error.response );
             });
+    });
+};
+
+export const fetchAttachments = ({ commit }, item_id) => {
+    return new Promise((resolve, reject) => {
+        axios.wp.get('/media/?post=' + item_id)
+        .then(res => {
+            let attachments = res.data;
+            commit('setAttachments', attachments);
+            resolve( attachments );
+        })
+        .catch(error => {
+            reject( error );
+        });
     });
 };

@@ -20,7 +20,8 @@
                     :label="$i18n.get('label_image')">
                 <b-upload v-model="form.files"
                           multiple
-                          drag-drop>
+                          drag-drop
+                          @input="uploadAttachment($event)">
                     <section class="section">
                         <div class="content has-text-centered">
                             <p>
@@ -33,11 +34,27 @@
                         </div>
                     </section>
                 </b-upload>
-            </b-field>        
+            </b-field>    
+            <div class="uploaded-files">
+                <div v-for="(file, index) in form.files"
+                    :key="index">
+                    <span class="tag is-primary">
+                        {{ file.name }}
+                        <button class="delete is-small"
+                            type="button"
+                            @click="deleteFile(index)">
+                        </button>
+                    </span>
+                    <!-- <progress class="progress is-secondary" value="15" max="100">30%</progress> -->
+                </div>
+            </div>    
             <tainacan-form-item                 
                 v-for="(field, index) in fieldList"
                 v-bind:key="index"
-                :field="field"></tainacan-form-item>           
+                :field="field"></tainacan-form-item>    
+            <div>
+                <p v-for="(attachment, index) of attachmentsList" :key="index">{{attachment}}</p>
+            </div>       
             <button
                 id="button-cancel-item-creation"
                 class="button"
@@ -94,11 +111,14 @@ export default {
             'fetchFields',
             'sendField',
             'fetchItem',
-            'cleanFields'
+            'cleanFields',
+            'fetchAttachments',
+            'sendAttachment'
         ]),
         ...mapGetters('item',[
             'getFields',
-            'getItem'
+            'getItem',
+            'getAttachments'
         ]),
         onSubmit() {
             // Puts loading on Item edition
@@ -162,6 +182,21 @@ export default {
         }, 
         cancelBack(){
             this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+        },
+        uploadAttachment($event) {
+            
+            for (let file of $event) {
+                this.sendAttachment({ item_id: this.itemId, file: file })
+                .then((res) => {
+                    
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+        },
+        deleteFile(index) {
+
         }
     },
     computed: {
@@ -170,6 +205,9 @@ export default {
         },
         formHasErrors(){
             return eventBus.errors.length > 0;
+        },
+        attachmentsList(){
+            return this.getAttachments();
         }   
 
     },

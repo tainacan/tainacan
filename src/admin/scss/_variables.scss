@@ -39,6 +39,6 @@ $colors: (
 $addColors: ( 
     "gray": ($gray, $gray-invert),
     "gray-light": ($gray-light, $gray-light-invert),
-    "tertiary": ($secondary, $secondary-invert),
+    "tertiary": ($tertiary, $tertiary-invert),
 );
 $colors: map-merge($colors, $addColors);
