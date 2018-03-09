@@ -352,7 +352,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 						'description' => __('OR or AND, how the sub-arrays should be compared.'),
 						'default'     => 'AND',
 					),
-					'type'     => array(
+					'type'    => array(
 						'type'        => 'string',
 						'description' => __('Custom field type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
 					),
@@ -408,6 +408,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 						'type'        => 'string/array',
 						'description' => __('Date to retrieve posts after. Accepts strtotime()-compatible string, or array of year, month, day '),
 					),
+					'type'      => 'object'
 				),
 			),
 			'taxquery'     => array(
@@ -436,6 +437,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 						'description' => __('The logical relationship between each inner taxonomy array when there is more than one. Possible values are AND, OR. Do not use with a single inner taxonomy array.'),
 						'default'     => 'AND'
 					),
+					'type'     => 'object'
 				),
 			),
 		);
