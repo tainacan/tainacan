@@ -41,31 +41,38 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_items'),
                 'permission_callback' => array($this, 'get_items_permissions_check'),
-	            //'args'                => $this->get_item_schema()
+	            'args'                => $this->get_collection_params(),
             ),
 	        array(
 		        'methods'             => WP_REST_Server::CREATABLE,
 		        'callback'            => array($this, 'create_item'),
 		        'permission_callback' => array($this, 'create_item_permissions_check'),
-		        //'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
+		        'args'                => $this->get_item_schema()
 	        ),
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)', array(
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
-                //'args'                => $this->get_collection_params(),
                 'permission_callback' => array($this, 'get_item_permissions_check'),
+	            'args'                => $this->get_item_schema()
             ),
             array(
                 'methods'             => WP_REST_Server::EDITABLE,
                 'callback'            => array($this, 'update_item'),
                 'permission_callback' => array($this, 'update_item_permissions_check'),
+                'args'                => $this->get_item_schema()
             ),
             array(
                 'methods'             => WP_REST_Server::DELETABLE,
                 'callback'            => array($this, 'delete_item'),
                 'permission_callback' => array($this, 'delete_item_permissions_check'),
+	            'args'                => array(
+	            	'body_args' => array(
+		                'description' => __('To delete permanently, in body you can pass \'is_permanently\' as true. By default this will only trash collection'),
+			            'default'     => 'false'
+		            ),
+	            )
             ),
         ));
     }
@@ -368,28 +375,100 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
     }
 
 	/**
-	 * @param string $method
-	 *
-	 * @return array|mixed|void
-	 */
-	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
-	    $args = [
-	    	'Object' => [
-	    		'type'        => 'JSON',
-			    'description' => 'A Collection object'
-		    ]
-	    ];
-
-	    return $args;
-    }
-
-	/**
 	 * @return array|mixed|void
 	 */
 	public function get_item_schema() {
-		$args = $this->collections_repository->get_map();
+		$schema = $this->collections_repository->get_map();
 
-		return $args;
+		return $schema;
+    }
+
+    /**
+     *
+     * Return the queries supported when getting a collection of objects
+     *
+     * */
+    public function get_collection_params() {
+    	$query_params['context']['default'] = 'view';
+
+	    $query_params = array_merge($query_params, parent::get_collection_params());
+
+	    $query_params['name'] = array(
+	    	'description' => __('Limit result set to collection with specific name.'),
+		    'type'        => 'string',
+	    );
+
+	    $query_params['authorid'] = array(
+    		'description' => __('Limit result set to collections assigned to specific authors by id.'),
+		    'type'        => 'array',
+		    'items'       => array(
+		    	'type'    => 'integer',
+		    ),
+	    );
+
+	    $query_params['authorname'] = array(
+	    	'description' => __('Limit result set to collections assigned to specific authors by name'),
+		    'type'        => 'string',
+	    );
+
+	    $query_params['status'] = array(
+	    	'description' => __('Limit result set to collections assigned one or more statuses.'),
+		    'type'        => 'array',
+		    'items'       => array(
+		    	'enum'    => array_merge(array_keys(get_post_stati()), array('any')),
+			    'type'    => 'string',
+		    ),
+		    'sanitize_callback' => array($this, 'sanitize_post_statuses'),
+	    );
+
+	    $query_params['offset'] = array(
+		    'description'        => __( 'Offset the result set by a specific number of collections.' ),
+		    'type'               => 'integer',
+	    );
+
+	    $query_params['order'] = array(
+		    'description'        => __( 'Order sort attribute ascending or descending.' ),
+		    'type'               => 'string/array',
+		    'default'            => 'desc',
+		    'enum'               => array( 'asc', 'desc' ),
+	    );
+
+	    $query_params['orderby'] = array(
+		    'description'        => __( 'Sort collection by object attribute.' ),
+		    'type'               => 'string/array',
+		    'default'            => 'date',
+		    'enum'               => array(
+			    'author',
+			    'date',
+			    'id',
+			    'include',
+			    'modified',
+			    'parent',
+			    'relevance',
+			    'slug',
+			    'include_slugs',
+			    'title',
+		    ),
+	    );
+
+	    $query_params['perpage'] = array(
+		    'description'        => __( 'Maximum number of collections to be returned in result set.' ),
+		    'type'               => 'integer',
+		    'default'            => 10,
+		    'minimum'            => 1,
+		    'maximum'            => 100,
+		    'sanitize_callback'  => 'absint',
+		    'validate_callback'  => 'rest_validate_request_arg',
+	    );
+
+	    $query_params['paged'] = array(
+	    	'description' => __('Show the posts that would normally show up just on page X'),
+		    'type'        => 'integer',
+	    );
+
+	    $query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+	    return $query_params;
     }
 }
 
