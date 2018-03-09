@@ -9,6 +9,20 @@
             </div>
             
             <ul class="menu-list">
+                <li class="search-area">
+                    <b-field>
+                        <b-input 
+                            :placeholder="$i18n.get('search')"
+                            type="search"
+                            size="is-small"
+                            icon="magnify">
+                        </b-input>
+                    </b-field>
+                    <router-link tag="a" to="">
+                        <b-icon size="is-small" icon="magnify"></b-icon> <span class="menu-text">{{ $i18n.get('advanced_search')}}</span>
+                    </router-link>
+                </li>
+                <li class="separator"></li>
                 <li><router-link tag="a" to="/collections" :class="activeRoute == 'CollectionsPage' ? 'is-active':''">
                     <b-icon size="is-small" icon="folder"></b-icon> <span class="menu-text">{{ $i18n.get('collections')}}</span>
                 </router-link></li>
@@ -91,13 +105,26 @@ export default {
             height: 2px;
             background-color: $separator-color;
             width: 100%;
+            margin: 1.75em 0;
         }
         li{
+            &.search-area {
+                visibility: visible;
+                opacity: 1;
+                padding-top: 1.8em;
+                .field { 
+                    padding: 0 1.8em 0.5em 1.8em; 
+                    .mdi, .input {
+                        font-size: 0.85em !important;
+                    }
+                }
+                .menu-text { font-size: 0.85em; }
+            }
             a {
                 color: white;
                 white-space: nowrap;
                 overflow: hidden;
-                padding: 1em 1.8em;
+                padding: 0.75em 1.8em;
                 line-height: 1.5em;
                 border-radius: 0px;
                 -webkit-transition: padding 0.2s linear; /* Safari */
@@ -134,6 +161,10 @@ export default {
                     opacity: 0;
                 }
             }
+            .search-area {   
+                visibility: hidden; 
+                opacity: 0;
+            }
             a { 
                 padding: 1em 0.8em;
                 color: rgba(255,255,255,0.4);
@@ -161,6 +192,7 @@ export default {
                         visibility: visible !important; 
                         opacity: 1 !important;
                     }
+                    
                 }
             }
             .separator {

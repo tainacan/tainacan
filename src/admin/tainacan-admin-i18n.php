@@ -24,6 +24,8 @@ return [
     'cancel' => __('Cancel', 'tainacan'),
     'save' => __('Save', 'tainacan'),
     'see' => __('See', 'tainacan'),
+    'search' => __('Search', 'tainacan'),
+    'advanced_search' => __('Advanced Search', 'tainacan'),
 
     // Wordpress Status
     'publish' => __('Publish', 'tainacan'),

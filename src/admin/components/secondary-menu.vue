@@ -9,6 +9,20 @@
             </div>
 
             <ul class="menu-list">
+                <li class="search-area">
+                    <b-field>
+                        <b-input 
+                            :placeholder="$i18n.get('search')"
+                            type="search"
+                            size="is-small"
+                            icon="magnify">
+                        </b-input>
+                    </b-field>
+                    <router-link tag="a" to="">
+                        <b-icon size="is-small" icon="magnify"></b-icon> <span class="menu-text">{{ $i18n.get('advanced_search')}}</span>
+                    </router-link>
+                </li>
+                <li class="separator"></li>
                 <li><router-link  
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
@@ -75,13 +89,13 @@ export default {
         padding: 0px;
         -webkit-transition: max-width 0.3s linear; /* Safari */
         transition: max-width 0.3s linear;
-        max-width: 180px; 
-        z-index: 10;
+        max-width: 222px; 
+        z-index: 9;
 
         .menu-header {
             background-color: rgba(0,0,0,0.1);
             height: 78px;
-            a { padding: 1.52em 1.5em; }
+            a { padding: 1.45em 2.5em }
             .icon {
                 position: absolute;
                 opacity: 0;
@@ -97,13 +111,28 @@ export default {
                 -webkit-transition: opacity 0.15s linear, visibility 0.15s linear;
             }
         }
-
+        .separator {
+            height: 2px;
+            background-color: $separator-color;
+            width: 100%;
+            margin: 1.75em 0;
+        }
         li{
+            &.search-area {
+                visibility: visible;
+                opacity: 1;
+                padding-top: 1.8em;
+                .field { 
+                    padding: 0 1.8em 0.5em 1.8em; 
+                    font-size: 0.85em !important;
+                }
+                .menu-text { font-size: 0.85em; }
+            }
             a {
                 color: white;
                 white-space: nowrap;
                 overflow: hidden;
-                padding: 1em 1.8em;
+                padding: 0.75em 1.8em;
                 line-height: 1.5em;
                 border-radius: 0px;
                 -webkit-transition: padding 0.3s linear; /* Safari */
