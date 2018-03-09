@@ -267,6 +267,7 @@ export default {
 
                 this.openedFieldId = field.id;
                 this.editForm = JSON.parse(JSON.stringify(field));
+                this.editForm.status = 'publish';
                 this.editFormErrors = {};
                 this.formErrorMessage = '';
             })
@@ -294,7 +295,6 @@ export default {
             } else {
                 this.openedFieldId = field.id;
                 this.editForm = JSON.parse(JSON.stringify(field));
-                this.editForm.status = 'publish';
             }
             this.editFormErrors = {};
             this.formErrorMessage = '';
