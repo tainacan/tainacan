@@ -78,7 +78,6 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'name'         => 'title',
 			'title'        => 'title',
 			'id'           => 'p',
-			'pageid'       => 'page_id',
 			'authorid'     => 'author_id',
 			'authorname'   => 'author_name',
 			'search'       => 's',
@@ -285,6 +284,164 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		return false;
 	}
 
+	/**
+	 * Return the common params
+	 *
+	 * @return array|void
+	 *
+	 */
+	public function get_collection_params(){
+		return array(
+			'search' => array(
+				'description'        => __( 'Limit results to those matching a string.' ),
+				'type'               => 'string',
+				'sanitize_callback'  => 'sanitize_text_field',
+				'validate_callback'  => 'rest_validate_request_arg',
+			),
+			'id'     => array(
+				'description' => __('Limit result to collection with specific id.'),
+				'type'        => 'integer',
+			),
+		);
+	}
+
+	/**
+	 * Return the common meta, date and tax queries params
+	 *
+	 * @return array
+	 */
+	protected function get_meta_queries_params(){
+		return array(
+			'metakey'      => array(
+				'type'        => 'string',
+				'description' => __('Custom field key.'),
+			),
+			'metavalue'    => array(
+				'type'        => 'string/array',
+				'description' => __('Custom field value'),
+			),
+			'metavaluenum' => array(
+				'type'        => 'number',
+				'description' => __('Custom field value'),
+			),
+			'metacompare'  => array(
+				'type'        => 'string',
+				'description' => __('Operator to test the meta_value. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, NOT EXISTS, REGEXP, NOT REGEXP or RLIKE.'),
+				'default'     => '=',
+			),
+			'metaquery'    => array(
+				'description' => __('Limit result set to items that have specific custom fields'),
+				'type'        => 'array',
+				'items'       => array(
+					'key'      => array(
+						'type'        => 'string',
+						'description' => __('Custom field key.'),
+					),
+					'value'    => array(
+						'type'        => 'string/array',
+						'description' => __('Custom field value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.
+(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.)'),
+					),
+					'compare'  => array(
+						'type'        => 'string',
+						'description' => __('Operator to test. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS and NOT EXISTS.'),
+						'default'     => '='
+					),
+					'relation' => array(
+						'type'        => 'string',
+						'description' => __('OR or AND, how the sub-arrays should be compared.'),
+						'default'     => 'AND',
+					),
+					'type'    => array(
+						'type'        => 'string',
+						'description' => __('Custom field type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
+					),
+				),
+			),
+			'datequery'    => array(
+				'description' => __('Limit result set to items that was created in specific date.'),
+				'type'        => 'array',
+				'items'       => array(
+					'year'      => array(
+						'type'        => 'integer',
+						'description' => __('4 digit year (e.g. 2018).'),
+					),
+					'month'     => array(
+						'type'        => 'integer',
+						'description' => __('Month number (from 1 to 12).'),
+					),
+					'day'       => array(
+						'type'        => 'integer',
+						'description' => __('Day of the month (from 1 to 31).'),
+					),
+					'week'      => array(
+						'type'        => 'integer',
+						'description' => __('Week of the year (from 0 to 53).'),
+					),
+					'hour'      => array(
+						'type'        => 'integer',
+						'description' => __('Hour (from 0 to 23).'),
+					),
+					'minute'    => array(
+						'type'        => 'integer',
+						'description' => __('Minute (from 0 to 59).'),
+					),
+					'second'    => array(
+						'type'        => 'integer',
+						'description' => __('Second (from 0 to 59).')
+					),
+					'compare'   => array(
+						'type'        => 'string',
+						'description' => __('Operator to test. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS and NOT EXISTS.'),
+						'default'     => '='
+					),
+					'dayofweek' => array('type' => 'array'),
+					'inclusive' => array(
+						'type'        => 'boolean',
+						'description' => __('For after/before, whether exact value should be matched or not.'),
+					),
+					'before'    => array(
+						'type'        => 'string/array',
+						'description' => __('Date to retrieve posts before. Accepts strtotime()-compatible string, or array of year, month, day '),
+					),
+					'after'     => array(
+						'type'        => 'string/array',
+						'description' => __('Date to retrieve posts after. Accepts strtotime()-compatible string, or array of year, month, day '),
+					),
+					'type'      => 'object'
+				),
+			),
+			'taxquery'     => array(
+				'description' => __('Show items associated with certain taxonomy.'),
+				'type'        => 'array',
+				'items'       => array(
+					'taxonomy' => array(
+						'type'        => 'string',
+						'description' => __('The taxonomy data base identifier.')
+					),
+					'field'    => array(
+						'type'        => 'string',
+						'description' => __('Select taxonomy term by. Possible values are term_id, name, slug or term_taxonomy_id. Default value is term_id.')
+					),
+					'terms'    => array(
+						'type'        => 'int/string/array',
+						'description' => __('Taxonomy term(s).'),
+					),
+					'operator' => array(
+						'type'        => 'string',
+						'description' => __('Operator to test. Possible values are IN, NOT IN, AND, EXISTS and NOT EXISTS'),
+						'default'     => 'IN'
+					),
+					'relation' => array(
+						'type'        => 'string',
+						'description' => __('The logical relationship between each inner taxonomy array when there is more than one. Possible values are AND, OR. Do not use with a single inner taxonomy array.'),
+						'default'     => 'AND'
+					),
+					'type'     => 'object'
+				),
+			),
+		);
+	}
 }
 
 ?>

@@ -134,21 +134,21 @@ class Collections extends Repository {
             'fields_order'           =>  [
                 'map'        => 'meta',
                 'title'      => __('Ordination fields', 'tainacan'),
-                'type'       => 'string',
+                'type'       => 'array',
                 'description'=> __('Collection fields ordination', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             'filters_order'           =>  [
                 'map'        => 'meta',
                 'title'      => __('Ordination filters', 'tainacan'),
-                'type'       => 'string',
+                'type'       => 'array',
                 'description'=> __('Collection filters ordination', 'tainacan'),
                 //'validation' => v::stringType(),
             ],
             'moderators_ids' =>  [
                 'map'         => 'meta_multi',
                 'title'       => __('Moderators', 'tainacan'),
-                'type'        => 'string',
+                'type'        => 'array',
                 'description' => __('The IDs of users assigned as moderators of this collection', 'tainacan'),
                 'validation'  => ''
             ],

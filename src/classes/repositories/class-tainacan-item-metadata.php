@@ -123,8 +123,19 @@ class Item_Metadata extends Repository {
             return $item->$get_method();
         
 		} elseif ($field_type->get_primitive_type() == 'term') {
-			
-			$terms = wp_get_object_terms($item_metadata->get_item()->get_id(), $field_type->get_option('taxonomy_id'));
+
+            if( is_numeric( $field_type->get_option('taxonomy_id') ) ){
+                $taxonomy = new Entities\Taxonomy( $field_type->get_option('taxonomy_id') );
+                if( $taxonomy ){
+                    $taxonomy_slug = $taxonomy->get_db_identifier();
+                } else {
+                    return [];
+                }
+            } else {
+                return [];
+            }
+
+			$terms = wp_get_object_terms($item_metadata->get_item()->get_id(), $taxonomy_slug );
 			
 			if ($unique)
 				$terms = reset($terms);
