@@ -2,13 +2,16 @@
     <section
             v-if="isReady"
             :listen="setError">
-        <b-field :label="$i18n.get('label_select_category')">
+        <b-field :label="$i18n.get('label_select_category')"
+                 :type="taxonomyType"
+                 :message="taxonomyMessage"
+        >
             <b-select
                     name="field_type_options[taxonomy_id]"
                     placeholder="Select the taxonomy"
                     v-model="taxonomy_id"
                     @input="emitValues()"
-                    @change.native="emitValues()"
+                    @focus="clear"
                     :loading="loading">
                 <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
                 <option
@@ -110,7 +113,13 @@
                 }
             },
             setError(){
-
+                if( this.errors && this.errors.taxonomy_id !== '' ){
+                    this.taxonomyType = 'is-warning';
+                    this.taxonomyMessage = this.errors.taxonomy_id;
+                } else {
+                    this.taxonomyType = '';
+                    this.taxonomyMessage = '';
+                }
             }
         },
         data(){
@@ -123,6 +132,8 @@
                 input_type: 'tainacan-category-radio',
                 multiple_types: {},
                 single_types: {},
+                taxonomyType:'',
+                taxonomyMessage: ''
             }
         },
         methods: {
@@ -145,6 +156,10 @@
             },
             labelNewTerms(){
                 return ( this.allow_new_terms === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
+            },
+            clear(){
+                this.taxonomyType = '';
+                this.taxonomyMessage = '';
             },
             emitValues(){
                 this.$emit('input',{
