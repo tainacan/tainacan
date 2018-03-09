@@ -100,7 +100,8 @@ class Category extends Field_Type {
 
 		if( is_array( $category_fields ) ){
             foreach ($category_fields as $field_id => $category_field) {
-                if ( $field_id != $field->get_id() && in_array($this->get_option('taxonomy_id'), $category_fields)) {
+                if ( is_array( $category_field ) && key($category_field) != $field->get_id()
+                    && in_array($this->get_option('taxonomy_id'), $category_field)) {
                     return ['taxonomy_id' => __('You can not have 2 Category Fields using the same category in a collection', 'tainacan')];
                 }
 		    }

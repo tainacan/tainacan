@@ -114,11 +114,11 @@ class Relationship extends Field_Type {
 
         if (!empty($this->get_option('collection_id')) && !is_numeric($this->get_option('collection_id'))) {
             return [
-                'collection_id' => 'Collection ID invalid'
+                'collection_id' => __('Collection ID invalid','tainacan')
             ];
         } else if( empty($this->get_option('collection_id'))) {
             return [
-                'collection_id' => 'Collection related is required'
+                'collection_id' => __('Collection related is required','tainacan')
             ];
         }
         return true;

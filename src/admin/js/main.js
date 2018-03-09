@@ -14,6 +14,7 @@ import Relationship from '../../classes/field-types/relationship/Relationship.vu
 
 import FormRelationship from '../../classes/field-types/relationship/FormRelationship.vue';
 import FormCategory from '../../classes/field-types/category/FormCategory.vue';
+import FormSelectbox from '../../classes/field-types/selectbox/FormSelectbox.vue';
 
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 
@@ -43,8 +44,10 @@ Vue.component('tainacan-radio', Radio);
 Vue.component('tainacan-numeric', Numeric);
 Vue.component('tainacan-date', Date);
 Vue.component('tainacan-relationship', Relationship);
+
 Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-category', FormCategory);
+Vue.component('tainacan-form-selectbox', FormSelectbox);
 
 Vue.component('tainacan-form-item', TaincanFormItem);
 Vue.component('draggable', draggable);

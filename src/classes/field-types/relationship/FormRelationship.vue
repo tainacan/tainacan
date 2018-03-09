@@ -2,7 +2,7 @@
     <section>
         <b-field
                 :label="$i18n.get('label_collection_related')"
-                :listen="setError()"
+                :listen="setError"
                 :type="collectionType"
                 :message="collectionMessage">
             <b-select
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-    import axios from '../../../js/axios/axios';
+    import { tainacan as axios } from '../../../js/axios/axios';
     import Vue from 'vue';
 
     export default {
@@ -83,7 +83,9 @@
                 hasFields: false,
                 loadingFields: false,
                 modelRepeated: 'yes',
-                modelSearch:[]
+                modelSearch:[],
+                collectionType: '',
+                collectionMessage: ''
             }
         },
         watch:{
@@ -116,6 +118,17 @@
            } else if( this.value ) {
                this.modelRepeated = this.value.repeated;
            }
+        },
+        computed: {
+            setError(){
+                if( this.errors && this.errors.collection_id !== '' ){
+                    this.collectionType = 'is-warning';
+                    this.collectionMessage = this.errors.collection_id;
+                } else {
+                    this.collectionType = '';
+                    this.collectionMessage = '';
+                }
+            },
         },
         methods:{
             fetchCollections(){
@@ -185,20 +198,9 @@
             labelRepeated(){
                 return ( this.modelRepeated === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
             },
-            setError(){
-                if( this.errors && this.errors.collection_id !== '' ){
-                    this.collectionType = 'is-warning';
-                    this.collectionMessage = this.errors.collection_id;
-                } else {
-                    this.collectionType = '';
-                    this.collectionMessage = '';
-                }
-            },
             clear(){
-                if( this.errors && this.errors.collection_id ){
-                    this.errors.collection_id = '';
-                }
-
+                this.collectionType = '';
+                this.collectionMessage = '';
             },
             emitValues(){
                 this.$emit('input',{

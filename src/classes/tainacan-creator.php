@@ -87,7 +87,6 @@ $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Date');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Numeric');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Selectbox');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Relationship');
-$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Radio');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Category');
 
 global $Tainacan_Filters;

@@ -23,12 +23,36 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-
 Cypress.Commands.add('loginByForm', (username, password) => {
 
   Cypress.log({
-    name: 'loginByForm',
+    name: 'loginByRequest',
     message: username + ' | ' + password
+  })
+
+  cy.request('/wp-admin')
+  cy.get('title').should('contain', 'Log In ‹ Test — WordPress')
+
+  cy.request({
+    method: 'POST',
+    url: '/wp-login.php',
+    form: true,
+    body: {
+      log: username,
+      pwd: password
+    }
+  })
+
+  cy.get('h1').should('contain', 'Dashboard')
+
+  cy.getCookie('cypress-session-cookie').should('exist')
+})
+
+Cypress.Commands.add('loginByRequest', () => {
+
+  Cypress.log({
+    name: 'loginByRequest',
+    message: 'admin' + ' | ' + 'admin'
   })
 
   cy.request({
@@ -36,11 +60,23 @@ Cypress.Commands.add('loginByForm', (username, password) => {
     url: '/login',
     form: true,
     body: {
-      log: username,
-      pwd: password
+      log: 'admin',
+      pwd: 'admin'
     }
   })
+
   // we should be redirected to /wp-admin
   cy.url().should('include', '/wp-admin')
   cy.get('h1').should('contain', 'Dashboard')
+
+  cy.getCookie('cypress-session-cookie').should('exist')
 })
+
+Cypress.Commands.add('loginByUI', () => {
+    cy.visit('/wp-admin')
+    cy.get('input[name=log]').type('admin')
+    cy.get('input[name=pwd]').type('admin{enter}')
+    // we should be redirected to /wp-admin
+    cy.url().should('include', '/wp-admin')
+    cy.get('h1').should('contain', 'Dashboard')
+  })
