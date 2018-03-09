@@ -89,6 +89,8 @@ return [
     'label_select_category_input_type' => __('Input type', 'tainacan'),
     'label_category_allow_new_terms' => __('Allow new terms', 'tainacan'),
     'label_selectbox_init' => __('Select', 'tainacan'),
+    'label_options' => __('Insert options', 'tainacan'),
+    'label_attachments' => __('Attachments', 'tainacan'),
 
     // Instructions. More complex sentences to guide user and placeholders
     'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to add them to Collection.', 'tainacan'),
