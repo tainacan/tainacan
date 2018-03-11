@@ -4,7 +4,7 @@ namespace Tainacan;
 use Tainacan\Repositories\Repository;
 
 class Capabilities {
-	protected $defaults = [
+	public $defaults = [
 		"tainacan-collection"=> [
 			"administrator"=> [
 				"delete_posts",
@@ -275,7 +275,6 @@ class Capabilities {
 	 * Register hooks
 	 */
 	function __construct() {
-		add_action('init', array(&$this, 'init'), 11);
 		add_action('tainacan-insert-tainacan-collection', array(&$this, 'new_collection'));
 		
         add_action('tainacan-add-collection-moderators', array(&$this, 'add_moderators'), 10, 2);
