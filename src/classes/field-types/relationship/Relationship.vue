@@ -16,17 +16,32 @@
                 autocomplete
                 :loading="loading"
                 field="label"
-                @input="onChecked()"
                 @typing="search">
         </b-taginput>
     </div>
 </template>
 
 <script>
-    import debounce from 'lodash/debounce'
-    import { tainacan as axios} from '../../../js/axios/axios'
+    import { tainacan as axios } from '../../../js/axios/axios'
+    import qs from 'qs';
 
     export default {
+        created(){
+            if( this.field.value ){
+                let collectionId = ( this.field && this.field.field.field_type_options.collection_id ) ? this.field.field.field_type_options.collection_id : this.collection_id;
+                let query = qs.stringify({ postin: ( Array.isArray( this.field.value ) ) ? this.field.value : [ this.field.value ]  });
+
+                axios.get('/collection/'+collectionId+'/items?' + query)
+                    .then( res => {
+                        for (let item of res.data) {
+                            this.selected.push({ label: item.title, value: item.id, img: '' });
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+        },
         data(){
             return {
                 results:'',
@@ -46,21 +61,27 @@
             },
             id: ''
         },
+        watch: {
+            selected( value ){
+                this.selected = value;
+                let values = [];
+                if( this.selected.length > 0 ){
+                    for(let val of this.selected){
+                        values.push( val.value );
+                    }
+                }
+                this.onInput( values );
+            }
+        },
         methods: {
             setResults(option){
                 if(!option)
                     return;
                 this.results = option.value;
-                this.onChecked()
             },
-            onChecked() {
+            onInput( $event ) {
+                this.$emit('input', $event);
                 this.$emit('blur');
-                this.onInput(this.selected)
-            },
-            onInput($event) {
-                this.inputValue = $event;
-                console.log( this.inputValue, 'log' );
-                this.$emit('input', this.inputValue);
             },
             search(query){
                 if (query !== '') {

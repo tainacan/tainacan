@@ -28,22 +28,4 @@ class Date extends Field_Type {
                                value=\''.json_encode( $itemMetadata->get_value() ).'\'  
                                name="'.$itemMetadata->get_field()->get_name().'"></tainacan-date>';
     }
-
-    /**
-     * generate the fields for this field type
-     */
-    public function form(){
-        $approx_date = $this->get_option('approximate_date');
-        ?>
-        <!--tr>
-            <td>
-                <label><?php echo __('Approximate Date','tainacan'); ?></label><br/>
-                <small><?php echo __('Allow format approximate date','tainacan'); ?></small>
-            </td>
-            <td>
-                <?php Helpers\HtmlHelpers::radio_field( $approx_date, 'field_type_options[approximate_date]' ) ?>
-            </td>
-        </tr-->
-        <?php
-    }
 }

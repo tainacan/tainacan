@@ -29,21 +29,4 @@ class Checkbox extends Field_Type {
                                    value=\''.json_encode( $itemMetadata->get_value() ).'\'
                                    name="'.$itemMetadata->get_field()->get_name().'"></tainacan-checkbox>';
     }
-
-    /**
-     * generate the fields for this field type
-     */
-    public function form(){
-        ?>
-        <tr>
-            <td>
-                <label><?php echo __('Options','tainacan'); ?></label><br/>
-                <small><?php echo __('Insert the options, separate by lines for the field value','tainacan'); ?></small>
-            </td>
-            <td>
-                <textarea name="field_type_options[options]"><?php echo $this->get_option('options'); ?></textarea>
-            </td>
-        </tr>
-        <?php
-    }
 }

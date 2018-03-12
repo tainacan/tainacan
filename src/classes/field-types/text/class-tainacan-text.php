@@ -27,11 +27,4 @@ class Text extends Field_Type {
                                value=\''.json_encode( $itemMetadata->get_value() ).'\'  
                                name="'.$itemMetadata->get_field()->get_name().'"></tainacan-text>';
     }
-
-    /**
-     * generate the fields for this field type
-     */
-    public function form(){
-
-    }
 }

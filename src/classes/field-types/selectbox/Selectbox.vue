@@ -17,6 +17,11 @@
 <script>
 
     export default {
+        created(){
+            if( this.field && this.field.value ){
+                this.selected = this.field.value
+            }
+        },
         data(){
             return {
                 selected:''

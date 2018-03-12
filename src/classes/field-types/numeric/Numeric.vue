@@ -10,13 +10,22 @@
 
 <script>
     export default {
+        created(){
+            if( this.field && this.field.value ){
+                this.inputValue = this.field.value
+            }
+        },
         data() {
             return {
                 inputValue: ''
             }
         },
         props: {
-            id: ''
+            id: '',
+            field: {
+                type: Object
+            },
+            value: [String, Number, Array],
         },
         methods: {
             onBlur() {

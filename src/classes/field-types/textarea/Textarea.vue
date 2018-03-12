@@ -9,6 +9,11 @@
 
 <script>
     export default {
+        created(){
+            if( this.field && this.field.value ){
+                this.inputValue = this.field.value
+            }
+        },
         data() {
             return {
                 inputValue: ''
@@ -16,7 +21,10 @@
         },
         props: {
             id: '',
-            value: [String, Number, Object]
+            field: {
+                type: Object
+            },
+            value: [String, Number, Array],
         },
         methods: {
             onBlur() {

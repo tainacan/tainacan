@@ -35,8 +35,9 @@ export const eventBus = new Vue({
         },
         updateValue(data){
             if ( data.item_id ){
+                let values = ( Array.isArray( data.values[0] ) ) ? data.values[0] : data.values ;
                 const promisse = this.$store.dispatch('item/updateMetadata',
-                    { item_id: data.item_id, field_id: data.field_id, values: data.values });
+                    { item_id: data.item_id, field_id: data.field_id, values: values });
                 promisse.then( response => {
                     let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
                     if ( index >= 0){

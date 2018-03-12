@@ -363,9 +363,9 @@ class Fields extends Repository {
                     if( $index !== false ) {
 
                         // skipping fields disabled if the arg is set
-                        if( !$include_disabled && !$order[$index]['enable'] ) {
+                        if( !$include_disabled && isset( $order[$index]['enable'] ) && !$order[$index]['enable'] ) {
 						   continue;
-					   } elseif ($include_disabled && !$order[$index]['enable']) {
+					   } elseif ($include_disabled && isset( $order[$index]['enable'] ) && !$order[$index]['enable']) {
 						   $item->set_disabled_for_collection(true);
 					   }
 

@@ -8,13 +8,21 @@
 
 <script>
     export default {
+        created(){
+            if( this.field && this.field.value ){
+                this.inputValue = this.field.value
+            }
+        },
         data() {
             return {
                 inputValue: '',
             }
         },
         props: {
-            value: [String, Number, Object],
+            field: {
+                type: Object
+            },
+            value: [String, Number, Array],
             id: ''
         },
         methods: {

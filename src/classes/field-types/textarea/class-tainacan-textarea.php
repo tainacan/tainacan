@@ -28,11 +28,4 @@ class Textarea extends Field_Type {
                         value=\''.json_encode( $itemMetadata->get_value() ).'\'  
                         name="'.$itemMetadata->get_field()->get_name().'"></tainacan-textarea>';
     }
-
-    /**
-     * generate the fields for this field type
-     */
-    public function form(){
-
-    }
 }
