@@ -26,7 +26,7 @@
                 </b-dropdown>
             </div>
         </div>
-        <div class="columns">
+        <div class="columns above-subheader">
             <aside class="column filters-menu">
                 <h3>{{ $i18n.get('filters') }}</h3>
             </aside>
@@ -228,15 +228,15 @@ export default {
         }
     }
 
-    .columns {
+    .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
-        height: 100%;
+        min-height: 100%;
+        height: auto;
 
         .filters-menu {
             min-width: $side-menu-width;
             max-width: $side-menu-width;
-            height: 100%;
             background-color: $primary-lighter;
             margin-left: -$page-small-side-padding;
             padding-left: $page-small-side-padding

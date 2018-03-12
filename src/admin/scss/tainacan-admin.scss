@@ -47,7 +47,8 @@ html {
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
 .primary-page {
-    margin-top: $header-height;
+    margin-top: $header-height; 
+    height: $page-height !important;
 }
 .page-container{
     padding: $page-top-padding $page-side-padding;

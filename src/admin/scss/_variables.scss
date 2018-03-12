@@ -50,6 +50,7 @@ $size-small: 0.85em; // 0.75em on Bulma.
 // Tainacan Header and side menus
 $header-height: 78px;
 $side-menu-width: 222px;
+$page-height: calc(100% - 78px);
 
 // Overall Pages padding:
 $page-side-padding: 4em;
