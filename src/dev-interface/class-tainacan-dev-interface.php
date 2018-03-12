@@ -469,7 +469,7 @@ class DevInterface {
                     } elseif($prop == 'field_type_options' || $prop == 'filter_type_options') {
                         continue;
                     } elseif ($prop == 'filter_type') {
-                        $class = '\Tainacan\Filter_Types\\'.$value;
+                        $class = str_replace('\\\\','\\','\Tainacan\Filter_Types\\'.$value );
                         update_post_meta($post_id, 'filter_type_options', $_POST['filter_type_'.strtolower( $value ) ] );
                         update_post_meta($post_id, 'filter_type',  wp_slash( get_class( new $class() ) ) );
                     } elseif ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {

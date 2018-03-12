@@ -25,6 +25,8 @@ import FormRelationship from '../classes/field-types/relationship/FormRelationsh
 import FilterCustomInterval from '../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterSelectbox from '../classes/filter-types/selectbox/Selectbox.vue';
 import FilterAutocomplete from '../classes/filter-types/autocomplete/Autocomplete.vue';
+import FilterCheckbox from '../classes/filter-types/checkbox/Checkbox.vue';
+import FilterTaginput from '../classes/filter-types/taginput/Taginput.vue';
 
 Vue.customElement('tainacan-text', Text);
 eventBus.registerComponent( 'tainacan-text' );
@@ -68,5 +70,11 @@ eventFilterBus.registerComponent( 'tainacan-filter-selectbox' );
 
 Vue.customElement('tainacan-filter-autocomplete', FilterAutocomplete);
 eventFilterBus.registerComponent( 'tainacan-filter-autocomplete' );
+
+Vue.customElement('tainacan-filter-checkbox', FilterCheckbox);
+eventFilterBus.registerComponent( 'tainacan-filter-checkbox' );
+
+Vue.customElement('tainacan-filter-taginput', FilterTaginput);
+eventFilterBus.registerComponent( 'tainacan-filter-taginput' );
 
 eventFilterBus.listener();
