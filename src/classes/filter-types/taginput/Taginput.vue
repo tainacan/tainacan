@@ -1,16 +1,15 @@
 <template>
     <div class="block">
-        <b-autocomplete
+        <b-taginput
                 rounded
                 icon="magnify"
-                :id="id"
                 v-model="selected"
                 :data="options"
-                @input="search"
+                autocomplete
                 :loading="loading"
                 field="label"
-                @select="option => setResults(option) ">
-        </b-autocomplete>
+                @typing="search">
+        </b-taginput>
     </div>
 </template>
 
@@ -26,7 +25,7 @@
         data(){
             return {
                 results:'',
-                selected:'',
+                selected:[],
                 options: [],
                 isLoading: false,
                 type: '',
@@ -44,43 +43,32 @@
             filter_type: [String],  // not required, but overrides the filter field type if is set
             id: ''
         },
-        methods: {
-            setResults(option){
-                if(!option)
-                    return;
-                this.results = option.value;
-                this.onSelect()
-            },
-            onSelect(){
-                let filter = null;
-                if ( this.type ) {
-                    filter = 'term';
-                } else {
-                    filter = 'selectbox';
+        watch: {
+            selected( value ){
+                this.selected = value;
+                let values = [];
+                if( this.selected.length > 0 ){
+                    for(let val of this.selected){
+                        values.push( val.value );
+                    }
                 }
-
                 this.$emit('input', {
-                    filter: filter,
+                    filter: 'taginput',
                     field_id: ( this.field_id ) ? this.field_id : this.filter.field,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: this.results
+                    value: values
                 });
-            },
+            }
+        },
+        methods: {
             search( query ){
                 let promise = null;
                 this.options = [];
-
                 if ( this.type === 'Tainacan\Field_types\Relationship' ) {
 
                     let collectionTarget = ( this.filter && this.filter.field.field_type_options.collection_id ) ?
                         this.filter.field.field_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget, query );
-
-                } else if ( this.type === 'Tainacan\Field_types\Category' ) {
-
-                    let collectionTarget = ( this.filter && this.filter.field.field_type_options.taxonomy ) ?
-                        this.filter.field.field_type_options.taxonomy : this.taxonomy;
-                    promise = this.getValuesCategory( collectionTarget, query );
 
                 } else {
                     promise = this.getValuesPlainText( this.field, query );
@@ -89,10 +77,10 @@
                 promise.then( data => {
                     this.isLoading = false;
                 })
-                .catch( error => {
-                    console.log('error select', error );
-                    this.isLoading = false;
-                });
+                    .catch( error => {
+                        console.log('error select', error );
+                        this.isLoading = false;
+                    });
             },
             getValuesPlainText( field_id ){
                 return axios.get( '/collection/' + this.collection_id  + '/fields/' + field_id + '?fetch=all_field_values')
@@ -109,20 +97,30 @@
                         console.log(error);
                     });
             },
-            getValuesCategory( taxonomy ){
-                // TODO: get taxonomy terms
-            },
             getValuesRelationship( collectionTarget, search ){
                 return axios.get( '/collection/' + collectionTarget  + '/items?s=' + search )
                     .then( res => {
-                        for (let item of res.data) {
-                            this.options.push({ label: item.title, value: item.id })
+                        if( res.data.length > 0 ){
+                           this.getItemsName( collectionTarget, res.data);
                         }
                     })
                     .catch(error => {
                         console.log(error);
                     });
             },
+            getItemsName( collectionId, ids){
+                let query = qs.stringify({ postin: ( Array.isArray( ids ) ) ? ids : [ ids ]  });
+
+                return axios.get('/collection/'+collectionId+'/items?' + query)
+                    .then( res => {
+                        for (let item of res.data) {
+                            this.options.push({ label: item.title, value: item.id, img: '' });
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
         }
     }
 </script>

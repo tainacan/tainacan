@@ -1,14 +1,5 @@
 <template>
     <div>
-        <!--b-autocomplete
-                :id="id"
-                v-model="selected"
-                :data="options"
-                @input="search"
-                :loading="loading"
-                field="label"
-                @select="option => setResults(option) ">
-        </b-autocomplete-->
         <b-taginput
                 :id="id"
                 v-model="selected"

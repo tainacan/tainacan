@@ -6,11 +6,11 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanFieldType
  */
-class Autocomplete extends Filter_Type {
+class Taginput extends Filter_Type {
 
     function __construct(){
         parent::set_supported_types(['string','item']);
-        $this->component = 'tainacan-filter-autocomplete';
+        $this->component = 'tainacan-filter-taginput';
     }
 
     /**
@@ -19,9 +19,9 @@ class Autocomplete extends Filter_Type {
      */
 
     public function render( $filter ){
-        return '<tainacan-filter-autocomplete name="'.$filter->get_name().'"
-                                        collection_id="'.$filter->get_collection_id().'"
+        return '<tainacan-filter-taginput name="'.$filter->get_name().'"
                                         filter_type="'.$filter->get_field()->get_field_type().'"
-                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-autocomplete>';
+                                        collection_id="'.$filter->get_collection_id().'"
+                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-taginput>';
     }
 }
