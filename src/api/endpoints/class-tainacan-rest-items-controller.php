@@ -47,16 +47,16 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					//'args'                => $this->get_collection_params(),
+					'args'                => $this->get_collection_params(),
 				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check'),
-					//'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
+					'args'                => $this->get_item_schema(),
 				),
-				//'schema' => array($this, 'get_public_item_schema'),
-		));
+			)
+		);
 		register_rest_route(
 			$this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)',
 			array(
@@ -64,18 +64,27 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
+					'args'                => $this->get_item_schema(),
 				),
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
+					'args'                => $this->get_item_schema(),
 				),
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args'                => array(
+						'body_args' => array(
+							'description' => __('To delete permanently, in body you can pass \'is_permanently\' as true. By default this will only trash collection'),
+							'default'     => 'false'
+						),
+					)
 				),
-		));
+			)
+		);
 	}
 
 	/**
@@ -386,6 +395,39 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function get_item_schema() {
+		$schema['$schema'] = 'http://json-schema.org/draft-07/schema#';
+		$schema['title'] = $this->item->get_post_type();
+		$schema['type']  = 'object';
+
+		$schema['properties'] = $this->items_repository->get_map();
+
+		return $schema;
+	}
+
+	/**
+	 * @param null $object_name
+	 *
+	 * @return array|void
+	 */
+	public function get_collection_params($object_name = null) {
+		$query_params['context']['default'] = 'view';
+
+		array_merge($query_params, parent::get_collection_params('item'));
+
+		$query_params['title'] = array(
+			'description' => __('Limit result set to items with specific title.'),
+			'type'        => 'string',
+		);
+
+		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+		return $query_params;
 	}
 }
 

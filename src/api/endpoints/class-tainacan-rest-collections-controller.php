@@ -378,92 +378,31 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 	 * @return array|mixed|void
 	 */
 	public function get_item_schema() {
-		$schema = $this->collections_repository->get_map();
+		$schema['$schema'] = 'http://json-schema.org/draft-07/schema#';
+		$schema['title'] = $this->collection->get_post_type();
+		$schema['type']  = 'object';
+
+		$schema['properties'] = $this->collections_repository->get_map();
 
 		return $schema;
     }
 
-    /**
-     *
-     * Return the queries supported when getting a collection of objects
-     *
-     * */
-    public function get_collection_params() {
+	/**
+	 *
+	 * Return the queries supported when getting a collection of objects
+	 *
+	 * @param null $object_name
+	 *
+	 * @return array
+	 */
+    public function get_collection_params($object_name = null) {
     	$query_params['context']['default'] = 'view';
 
-	    $query_params = array_merge($query_params, parent::get_collection_params());
+	    $query_params = array_merge($query_params, parent::get_collection_params('collection'));
 
 	    $query_params['name'] = array(
 	    	'description' => __('Limit result set to collection with specific name.'),
 		    'type'        => 'string',
-	    );
-
-	    $query_params['authorid'] = array(
-    		'description' => __('Limit result set to collections assigned to specific authors by id.'),
-		    'type'        => 'array',
-		    'items'       => array(
-		    	'type'    => 'integer',
-		    ),
-	    );
-
-	    $query_params['authorname'] = array(
-	    	'description' => __('Limit result set to collections assigned to specific authors by name'),
-		    'type'        => 'string',
-	    );
-
-	    $query_params['status'] = array(
-	    	'description' => __('Limit result set to collections assigned one or more statuses.'),
-		    'type'        => 'array',
-		    'items'       => array(
-		    	'enum'    => array_merge(array_keys(get_post_stati()), array('any')),
-			    'type'    => 'string',
-		    ),
-		    'sanitize_callback' => array($this, 'sanitize_post_statuses'),
-	    );
-
-	    $query_params['offset'] = array(
-		    'description'        => __( 'Offset the result set by a specific number of collections.' ),
-		    'type'               => 'integer',
-	    );
-
-	    $query_params['order'] = array(
-		    'description'        => __( 'Order sort attribute ascending or descending.' ),
-		    'type'               => 'string/array',
-		    'default'            => 'desc',
-		    'enum'               => array( 'asc', 'desc' ),
-	    );
-
-	    $query_params['orderby'] = array(
-		    'description'        => __( 'Sort collection by object attribute.' ),
-		    'type'               => 'string/array',
-		    'default'            => 'date',
-		    'enum'               => array(
-			    'author',
-			    'date',
-			    'id',
-			    'include',
-			    'modified',
-			    'parent',
-			    'relevance',
-			    'slug',
-			    'include_slugs',
-			    'title',
-		    ),
-	    );
-
-	    $query_params['perpage'] = array(
-		    'description'        => __( 'Maximum number of collections to be returned in result set.' ),
-		    'type'               => 'integer',
-		    'default'            => 10,
-		    'minimum'            => 1,
-		    'maximum'            => 100,
-		    'sanitize_callback'  => 'absint',
-		    'validate_callback'  => 'rest_validate_request_arg',
-	    );
-
-	    $query_params['paged'] = array(
-	    	'description' => __('Show the posts that would normally show up just on page X'),
-		    'type'        => 'integer',
 	    );
 
 	    $query_params = array_merge($query_params, parent::get_meta_queries_params());
