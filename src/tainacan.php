@@ -33,3 +33,8 @@ register_activation_hook( __FILE__, array( $Tainacan_Capabilities, 'init' ) );
 require_once('admin/class-tainacan-admin.php');
 global $Tainacan_Admin;
 $Tainacan_Admin = new \Tainacan\Admin();
+
+function tainacan_load_plugin_textdomain() {
+    load_plugin_textdomain( 'tainacan', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
+}
+add_action( 'plugins_loaded', 'tainacan_load_plugin_textdomain' );
