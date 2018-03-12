@@ -80,6 +80,13 @@ class Item extends Entity {
 	/**
 	 * @return mixed|null
 	 */
+	function get_author_name(){
+		return $this->get_mapped_property('author_name');
+	}
+
+	/**
+	 * @return mixed|null
+	 */
 	function get_url(){
 		return $this->get_mapped_property('url');
 	}

@@ -44,31 +44,37 @@ class Items extends Repository {
 			    'map'         => 'post_author',
 			    'title'       => __('Author', 'tainacan'),
 			    'type'        => 'string',
-			    'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')
+			    'description' => __('The item author\'s user ID (numeric string)', 'tainacan')
 		    ],
+            'author_name'     => [
+	            'map'         => 'author_name',
+	            'title'       => __('Author name', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The item author\'s user name')
+            ],
             'creation_date'   => [
 	            'map'         => 'post_date',
 	            'title'       => __('Creation Date', 'tainacan'),
 	            'type'        => 'string',
-	            'description' => __('The collection creation date', 'tainacan')
+	            'description' => __('The item creation date', 'tainacan')
             ],
             'modification_date' => [
 	            'map'         => 'post_modified',
 	            'title'       => __('Modification Date', 'tainacan'),
 	            'type'        => 'string',
-	            'description' => __('The collection modification date', 'tainacan')
+	            'description' => __('The item modification date', 'tainacan')
             ],
             'url'             => [
 	            'map'         => 'guid',
-	            'title'       => __('Collection URL', 'tainacan'),
+	            'title'       => __('Item URL', 'tainacan'),
 	            'type'        => 'string',
-	            'description' => __('The collection URL', 'tainacan')
+	            'description' => __('The item URL', 'tainacan')
             ],
             'featured_image'  => [
 	            'map'         => 'thumbnail',
 	            'title'       => __('Featured Image', 'tainacan'),
 	            'type'        => 'string',
-	            'description' => __('The collection thumbnail URL')
+	            'description' => __('The item thumbnail URL')
             ],
             'attachments'     => [
 			    'map'         => 'attachments',

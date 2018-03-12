@@ -35,12 +35,18 @@ class Collections extends Repository {
 			    'default'     => '',
 			    'description' => __('The posts status', 'tainacan')
 		    ],
-		    'author_id'          => [
+		    'author_id'       => [
 		    	'map'         => 'post_author',
-			    'title'       => __('Author', 'tainacan'),
+			    'title'       => __('Author ID', 'tainacan'),
 			    'type'        => 'string',
 			    'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')
 		    ],
+            'author_name'     => [
+            	'map'         => 'author_name',
+	            'title'       => __('Author name', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The collection author\'s user name')
+            ],
             'creation_date'   => [
             	'map'         => 'post_date',
 	            'title'       => __('Creation Date', 'tainacan'),

@@ -321,6 +321,8 @@ abstract class Repository {
 
 				    $property = $attachments_prepared;
 			    }
+		    } elseif ($mapped == 'author_name'){
+    			$property = isset($entity->WP_Post->post_author) ? get_the_author_meta('display_name', $entity->WP_Post->post_author): null;
 		    } else {
 			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
 		    }
