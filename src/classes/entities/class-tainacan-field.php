@@ -11,7 +11,9 @@ class Field extends Entity {
 	
     // Collection getter and setter declared here
     use \Tainacan\Traits\Entity_Collection_Relation;
-
+	
+	public $disabled_for_collection = false;
+	
 	protected static $post_type = 'tainacan-field';
 	/**
 	 * {@inheritDoc}
@@ -323,6 +325,21 @@ class Field extends Entity {
     function set_field_type_options( $value ){
         $this->set_mapped_property('field_type_options', $value);
     }
+	
+	
+	/**
+	 * Transient property used to store the status of the field for a particular collection
+	 *
+	 * Used by the API to tell front end when a field is disabled
+	 * 
+	 */
+	public function get_disabled_for_collection() {
+		return $this->disabled_for_collection;
+	}
+	public function set_disabled_for_collection($value) {
+		$this->disabled_for_collection = $value;
+	}
+	
 
     // helpers
 
