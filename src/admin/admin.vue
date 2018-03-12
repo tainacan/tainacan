@@ -9,8 +9,8 @@
 </template>
 
 <script>
-    import PrimaryMenu from './components/primary-menu.vue';
-    import TainacanHeader from './components/tainacan-header.vue';
+    import PrimaryMenu from './components/navigation/primary-menu.vue';
+    import TainacanHeader from './components/navigation/tainacan-header.vue';
 
     export default {
         name: "AdminPage",
@@ -39,8 +39,7 @@
     }  
 
     .is-main-content {
-        padding-top: 0px;
-        padding-bottom: 0px;
+        padding: 0px;
         margin: 0 auto;
         position: relative;
         overflow-y: auto;
@@ -50,11 +49,14 @@
                 overflow-y: visible;
             }
         } 
+        .columns {
+            margin-left: 0px;
+            margin-right: 0px;
+        }
     }
 
     .is-secondary-content {
-        padding-top: 0px;
-        padding-bottom: 0px;
+        padding: 0px;
         margin: 78px auto 0 auto;
         position: relative;
         overflow-y: auto;

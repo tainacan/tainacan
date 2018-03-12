@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-container">
         <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag>
         <form label-width="120px">
             <b-field :label="$i18n.get('label_status')">
@@ -75,7 +75,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { eventBus } from '../../../js/event-bus-web-components.js'
 
 export default {
-    name: 'ItemEditionPage',
+    name: 'ItemEditionForm',
     data(){
         return {
             pageTitle: '',
@@ -166,8 +166,8 @@ export default {
                 this.itemId = res.id;
                 this.item = res;
 
-                // Fill this.form data with current data.
-                this.form.status = this.item.status;
+                // Pre-fill status with publish to incentivate it
+                this.form.status = 'publish';
 
                 this.loadMetadata();
                 
@@ -219,11 +219,8 @@ export default {
 
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewItem();
-            this.pageTitle = this.$i18n.get('title_create_item');
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
-
             this.isLoading = true;
-            this.pageTitle = this.$i18n.get('title_item_edition');
 
             // Obtains current Item ID from URL
             this.itemId = this.$route.params.itemId;

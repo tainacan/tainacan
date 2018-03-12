@@ -2,7 +2,7 @@
     <nav id="secondary-menu" role="navigation" :aria-label="$i18n.get('label_collection_menu')" class="column is-sidebar-menu">
         <aside class="menu">
             <div class="menu-header">
-                <ul class="menu-list"><li><router-link tag="a" to="/">
+                <ul class="menu-list"><li><router-link tag="a" to="/" target='_blank'>
                     <b-icon size="is-medium" icon="chevron-left"></b-icon>
                     <img class="tainacan-logo"  alt="Tainacan Logo" :src="logoHeader"/>
                 </router-link></li></ul> 
@@ -26,14 +26,14 @@
                 <li><router-link  
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
-                        :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionPage' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
+                        :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
                         :aria-label="$i18n.get('collection') + ' ' + $i18n.get('items')">
-                    <b-icon size="is-small" icon="cube-outline"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
+                    <b-icon size="is-small" icon="file-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
-                        :class="activeRoute == 'CollectionEditionPage' ? 'is-active':''" 
+                        :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
                         :aria-label="$i18n.get('edit') + ' ' + $i18n.get('collection')">
                     <b-icon size="is-small" icon="pencil"></b-icon> <span class="menu-text">{{ $i18n.get('edit')}}</span>
                 </router-link></li>
@@ -82,19 +82,19 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../scss/_variables.scss";
+    @import "../../scss/_variables.scss";
 
     #secondary-menu {
         background-color: $primary;
         padding: 0px;
         -webkit-transition: max-width 0.3s linear; /* Safari */
         transition: max-width 0.3s linear;
-        max-width: 222px; 
+        max-width: $side-menu-width; 
         z-index: 9;
 
         .menu-header {
             background-color: rgba(0,0,0,0.1);
-            height: 78px;
+            height: $header-height;
             a { padding: 1.45em 2.5em }
             .icon {
                 position: absolute;
@@ -113,7 +113,7 @@ export default {
         }
         .separator {
             height: 2px;
-            background-color: $separator-color;
+            background-color: rgba(0,0,0,0.15);
             width: 100%;
             margin: 1.75em 0;
         }
@@ -122,10 +122,7 @@ export default {
                 visibility: visible;
                 opacity: 1;
                 padding-top: 1.8em;
-                .field { 
-                    padding: 0 1.8em 0.5em 1.8em; 
-                    font-size: 0.85em !important;
-                }
+                .field { padding: 0 1.8em 0.5em; }
                 .menu-text { font-size: 0.85em; }
             }
             a {
@@ -168,6 +165,10 @@ export default {
                 display: flex;
                 align-items: stretch;
                 justify-content: space-evenly;
+                
+                .separator, li.search-area {
+                    display: none;
+                }
             }
         }
     }

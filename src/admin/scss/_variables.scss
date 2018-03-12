@@ -16,6 +16,7 @@ $primary-dark: #55A0AF;
 $primary-darker: darken($primary-dark, 5%);
 
 $separator-color: #2a6e77;
+
 $gray: #898d8f; 
 $gray-invert: findColorInvert($gray);
 $gray-light: #898d8f; 
@@ -42,3 +43,35 @@ $addColors: (
     "tertiary": ($tertiary, $tertiary-invert),
 );
 $colors: map-merge($colors, $addColors);
+
+// Small size
+$size-small: 0.85em; // 0.75em on Bulma.
+
+// Tainacan Header and side menus
+$header-height: 78px;
+$side-menu-width: 222px;
+
+// Overall Pages padding:
+$page-side-padding: 4em;
+$page-top-padding: 1.5em;
+$page-small-side-padding: 2em;
+$page-small-top-padding: 1.5em;
+
+$page-mobile-side-padding: 1em;
+$page-mobile-top-padding: 0.5em;
+
+// Links
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary; 
+
+// Table
+$table-head-cell-color: $gray-light;
+$table-head-cell-border-width: 0 0 1px !important;
+$table-row-active-color: #e5e5e5;
+$table-foot-cell-color: $gray-light;
+$table-foot-cell-border-width: 1px 0 0 !important;
+
+ 
+// Bulma's modal (needs to be greather than taincan-admin-app)
+$modal-z: 9999999;

@@ -22,8 +22,12 @@ export const setItemTitle = ( state, itemTitle ) => {
     state.itemTitle = itemTitle;
 }
 
-export const setFields = ( state, field) => {
-    state.fields = field;
+export const setFields = ( state, fields) => {
+    state.fields = fields;
+}
+
+export const cleanFields = (state) => {
+    state.fields = [];
 }
 
 export const setSingleField = ( state, field) => {

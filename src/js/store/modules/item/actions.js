@@ -37,14 +37,20 @@ export const fetchFields = ({ commit }, item_id) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/item/'+item_id+'/metadata')
         .then(res => {
-            let items = res.data;
-            commit('setFields', items);
-            resolve( res.data );
+            let fields = res.data;
+            commit('setFields', fields);
+            resolve( fields );
         })
         .catch(error => {
             reject( error );
         });
     });
+};
+
+export const cleanFields = ({ commit }, item_id) => {
+   
+    commit('cleanFields');
+
 };
 
 // Actions directly related to Item

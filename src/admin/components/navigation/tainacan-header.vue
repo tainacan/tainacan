@@ -2,7 +2,7 @@
     <div id="tainacan-header" class="level">
         <div class="level-left">
             <div class="level-item" :class="{'secondary-page': onSecondaryPage}">
-                <h1 class="has-text-weight-bold is-uppercase has-text-primary">{{pageTitle}}</h1>
+                <h1 class="has-text-weight-bold is-uppercase has-text-primary"><b-icon size="is-small" :icon="currentIcon"></b-icon>{{pageTitle}}</h1>
                 <nav class="breadcrumbs">
                     <router-link tag="a" :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
                     <span v-for="(pathItem, index) in arrayRealPath" :key="index">
@@ -35,7 +35,9 @@ export default {
             onSecondaryPage: false,
             pageTitle: '',
             arrayRealPath: [],
-            arrayViewPath: []
+            arrayViewPath: [],
+            activeRouteName: '',
+            currentIcon: ''
         }
     },
     methods: {
@@ -77,12 +79,13 @@ export default {
                 }
                 
             }
-        },
+        }
     },
     watch: {
         '$route' (to, from) {
             this.onSecondaryPage = (to.params.collectionId != undefined);
             this.pageTitle = this.$route.meta.title;
+            this.currentIcon = this.$route.meta.icon;
 
             this.arrayRealPath = to.path.split("/");
             this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
@@ -93,6 +96,7 @@ export default {
     created() {
         this.onSecondaryPage = (this.$route.params.collectionId != undefined);
         this.pageTitle = this.$route.meta.title;
+        this.currentIcon = this.$route.meta.icon;
 
         this.arrayRealPath = this.$route.path.split("/");
         this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
@@ -104,20 +108,26 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../scss/_variables.scss";
+    @import "../../scss/_variables.scss";
     
     // Tainacan Header
     #tainacan-header{
         background-color: $light;
-        height: 78px;
+        height: $header-height;
+        max-height: $header-height;
         width: 100%;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 0.5px solid #ddd;
         padding: 1.0em;
         vertical-align: middle; 
         left: 0;
         right: 0;
         position: absolute;
         z-index: 9;
+
+        .icon {
+            padding-right: 1.3em;
+            margin-left: -1.3em;
+        }
 
         .breadcrumbs {
             font-size: 0.85em;
@@ -126,10 +136,10 @@ export default {
         .level-left {
             .level-item {
                 display: inline-block;
-                margin-left: 222px;
+                margin-left: 268px;
             }
             .secondary-page {
-                margin-left: 260px;
+                margin-left: 310px;
             }
             
         }

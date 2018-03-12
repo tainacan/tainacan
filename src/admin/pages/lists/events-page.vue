@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <nav class="level header"><h1>Events (or Activies) Page</h1></nav>
+    <div class="page-container">
         <div class="primary-page">    
+            <h1>Events (or Activies) Page</h1>
         </div>
     </div>
 </template>

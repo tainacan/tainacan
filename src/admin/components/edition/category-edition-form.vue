@@ -1,12 +1,12 @@
 <template>
-    <div>
-        <h1>Category Edition Page</h1>
+    <div class="page-container">
+        <h1>Category Edition Form</h1>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'CategoryEditionPage',
+    name: 'CategoryEditionForm',
     data(){
         return {
         }

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="is-size-3">{{ pageTitle }}  <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag></h1>
+        <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag>
         <form label-width="120px">
             <b-field 
                 :label="$i18n.get('label_name')"
@@ -81,10 +81,9 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-    name: 'CollectionEditionPage',
+    name: 'CollectionEditionForm',
     data(){
         return {
-            pageTitle: '',
             collectionId: Number,
             collection: null,
             isLoading: false,
@@ -196,11 +195,9 @@ export default {
     created(){
 
         if (this.$route.fullPath.split("/").pop() == "new") {
-            this.pageTitle = this.$i18n.get('title_create_collection');
             this.createNewCollection();
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
-            this.pageTitle = this.$i18n.get('title_collection_edition');
             this.isLoading = true;
 
             // Obtains current Collection ID from URL

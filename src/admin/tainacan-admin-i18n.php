@@ -72,8 +72,8 @@ return [
     'label_button_view' => __('Button View', 'tainacan'),
     'label_button_edit' => __('Button Edit', 'tainacan'),
     'label_button_delete' => __('Button Delete', 'tainacan'),
-    'label_collections_per_page' => __('Number of Collections Per Page', 'tainacan'),
-    'label_items_per_page' => __('Number of Items Per Page', 'tainacan'),
+    'label_collections_per_page' => __('Collections per Page:', 'tainacan'),
+    'label_items_per_page' => __('Items per Page:', 'tainacan'),
     'label_active_fields' => __('Active Fields', 'tainacan'),
     'label_available_fields' => __('Available Fields', 'tainacan'),
     'label_per_page' => __('per Page', 'tainacan'),
@@ -113,6 +113,9 @@ return [
     'info_warning_selected_items_delete' => __('Do you really want to delete the selected items?', 'tainacan'),
     'info_warning_collection_related'  => __('The field Collection related is required', 'tainacan'),
     'info_warning_no_fields_found'  => __('No fields found in this collection', 'tainacan'),
-
+    'info_showing_items'  => __('Showing items ', 'tainacan'),
+    'info_showing_collections'  => __('Showing collections ', 'tainacan'),
+    'info_to'  => __(' to ', 'tainacan'),
+    'info_of'  => __(' of ', 'tainacan'),
 ]
  ?>

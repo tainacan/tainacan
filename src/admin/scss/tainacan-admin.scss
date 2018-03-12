@@ -1,19 +1,6 @@
 // Tainacan custom colors and bulma's core
 @import "./_variables.scss";
 
-// Links
-$link: $primary;
-$link-invert: $primary-invert;
-$link-focus-border: $primary;
-
-// Table
-$table-head-cell-color: $gray-light;
-$table-row-active-color: #e5e5e5;
-$table-head-cell-border-width: 0 0 1px;
-
-// Bulma's modal (needs to be greather than taincan-admin-app
-$modal-z: 9999999;
-
 // Import Bulma and Buefy styles
 @import "../../assets/css/fonts/materialdesignicons.css";
 @import "../../../node_modules/bulma/bulma.sass";
@@ -25,6 +12,9 @@ $family-sans-serif: 'Roboto', sans-serif;
 // Clears wordpress content
 body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
     display: none;
+}
+html {
+    overflow-y: hidden;
 }
 
 #tainacan-admin-app {
@@ -57,10 +47,127 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
 .primary-page {
-    padding-top: 78px;
+    margin-top: $header-height;
+}
+.page-container{
+    padding: $page-top-padding $page-side-padding;
+    height: 100%;
+    overflow-y: auto;
+    
+    @media screen and (max-width: 769px) {
+        padding: $page-mobile-top-padding $page-mobile-side-padding;
+    }
+}
+.page-container-small{
+    padding: $page-small-top-padding $page-small-side-padding;
+    height: 100%;
+    overflow-y: auto;
+
+    @media screen and (max-width: 769px) {
+        padding: $page-mobile-top-padding $page-mobile-side-padding;
+    }
 }
 
 // Buefy notices (toast)
 .notices {
     z-index: 99999999 !important;
+}
+
+// Buttons border radius are bigger in Tainacan
+.button {
+    border-radius: 6px !important;
+    font-weight: normal;
+    height: 30px !important;
+    padding: 2px 15px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+.select {
+    padding-top: 0px !important;
+    select {
+        border-radius: 6px !important;
+        font-weight: normal;
+        height: 30px !important;
+        padding: 2px 25px 2px 15px!important;
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+        &:focus>option:checked, &:focus>option:hover {
+            background-color: $primary-lighter !important;
+        }
+    }
+    &:not(.is-multiple)::after {
+        content: "\F35D" !important;
+        font: normal normal normal 24px/1 "Material Design Icons" !important;
+        border: none !important;
+        transform: none;
+        margin-top: -0.6em;
+        right: 0.95em;
+        color: $primary;
+    }       
+}
+.dropdown {
+    .dropdown-trigger{
+        .icon {
+            color: $primary;
+        }
+    }
+    .dropdown-menu {
+        top: 26px;
+        .dropdown-item {
+            .b-checkbox { width: 100% };
+            &:hover {
+                background-color: $primary-lighter;
+            }
+        }
+    }
+}
+.table {
+    tbody {
+        td { border-bottom: 0px solid $gray-light !important; }
+    }
+    .b-checkbox.checkbox input[type="checkbox"] + .check {
+        width: 0.85em !important;
+        height: 0.85em !important;
+        border-radius: 2px !important;
+        border: 1px solid #7a7a7a !important;
+    }
+    .th-wrap {
+        font-size: 0.85em !important;
+        font-weight: normal !important;
+    }
+}
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85em !important;
+    font-weight: normal !important;
+    border-top: 1px solid $gray-light;
+    padding: 0.85em 1.0em;
+    color: $gray-light;
+
+    .shown-items { 
+        flex-grow: 1; 
+    }
+
+    .items-per-page { 
+        flex-grow: 3;
+        margin-top: 0.35em;
+        .field-label {
+            flex-grow: 5;
+            margin-right: 0.5em;
+            .label {
+                font-size: 1em !important;
+                font-weight: normal !important;
+                color: $gray-light;
+            }
+        }
+        select {
+            font-size: 0.85em;
+        } 
+    }
+
+    .pagination { 
+        flex-grow: 1; 
+    }
 }
