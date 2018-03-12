@@ -36,8 +36,17 @@ class DefaultCapabilities extends TAINACAN_UnitTestCase {
 				wp_set_current_user($new_user);
 				
 				foreach ($caps as $cap) {
-					$this->assertTrue(current_user_can($entity_cap->$cap));
+					$this->assertTrue(current_user_can($entity_cap->$cap), "$role_name does not have capability {$entity_cap->$cap}" );
 				}
+				
+				$new_user = $this->factory()->user->create(array( 'role' => 'tainacan-' . $role_name ));
+				wp_set_current_user($new_user);
+				
+				foreach ($caps as $cap) {
+					$this->assertTrue(current_user_can($entity_cap->$cap), "tainacan-$role_name does not have capability {$entity_cap->$cap}");
+				}
+				
+				
 			}
 		}
 		
