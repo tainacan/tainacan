@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-container primary-page">
         <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag>
         <form label-width="120px">
             <b-field 
@@ -178,7 +178,9 @@ export default {
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
-                this.form.status = this.collection.status;
+                
+                // Pre-fill status with publish to incentivate it
+                this.form.status = 'publish';
 
                 this.isLoading = false;
                 
