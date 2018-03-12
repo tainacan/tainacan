@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Fields List and Edition Component</h1>
         <b-loading :active.sync="isLoadingFieldTypes"></b-loading>
         <div class="columns">
             <div class="column">
@@ -13,15 +12,21 @@
                         :options="{group: { name:'fields', pull: false, put: true }, 'handle': '.handle', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
                         <div  
                             class="active-field-item" 
-                            :class="{'not-sortable-item': field.id == undefined || isRepositoryLevel }" 
+                            :class="{'not-sortable-item': field.id == undefined, 'inherited-field': field.collection_id != collectionId}" 
                             v-for="(field, index) in activeFieldList" :key="index">
-                            <b>
                                 <div class="handle">
+                                    <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                                     <span class="field-name">{{ field.name }}</span>
                                     <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span></span>
-                                    <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                                    <a @click.prevent="removeField(field)" v-if="field.id != undefined"><b-icon icon="delete"></b-icon></a>
-                                    <a @click.prevent="editField(field)" v-if="field.id != undefined"><b-icon icon="pencil" v-if="field.id != undefined"></b-icon></a>
+                                    <span class="controls">
+                                        <!-- <b-switch size="is-small" @input="onChangeEnable">Active</b-switch>      -->
+                                        <a @click.prevent="removeField(field)" v-if="field.id != undefined">
+                                            <b-icon icon="delete"></b-icon>
+                                        </a>
+                                        <a @click.prevent="editField(field)" v-if="field.id != undefined">
+                                            <b-icon icon="pencil" v-if="field.id != undefined"></b-icon>
+                                        </a>
+                                    </span>
                                 </div>
                                 <b-field v-if="openedFieldId == field.id">
                                     <field-edition-form 
@@ -180,7 +185,11 @@ export default {
             });
 
         this.isRepositoryLevel = this.$route.name == 'FieldsPage' ? true : false;
-        this.collectionId = this.$route.params.collectionId;
+        if (this.isRepositoryLevel)
+            this.collectionId = 'default';
+        else
+            this.collectionId = this.$route.params.collectionId;
+        
 
         this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
             .then((res) => {
@@ -218,9 +227,8 @@ export default {
             border: 1px solid gainsboro;
             display: block; 
             transition: top 0.2s ease;
-
             cursor: grab;
-            .icon { float: right }
+        
             .field-name {
                 text-overflow: ellipsis;
                 overflow-x: hidden;
@@ -231,7 +239,7 @@ export default {
                 font-style: italic;
                 color: gray;
             }
-
+            .controls { float: right }
             .loading-spinner {
                 animation: spinAround 500ms infinite linear;
                 border: 2px solid #dbdbdb;
@@ -243,10 +251,12 @@ export default {
                 height: 1em; 
                 width: 1em;
             }
-
             &.not-sortable-item {
                 color: gray;
                 cursor: default;
+            }
+            &.inherited-field {
+                color: gray;
             }
         }
         .active-field-item:hover {
@@ -257,7 +267,6 @@ export default {
 
         .sortable-chosen {
             background-color: $primary-lighter;
-            padding: 0.2em 0.5em;
             margin: 10px;
             border-radius: 5px;
             border: 1px dashed $primary-light;

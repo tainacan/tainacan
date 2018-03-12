@@ -48,9 +48,7 @@ export const fetchFields = ({ commit }, item_id) => {
 };
 
 export const cleanFields = ({ commit }, item_id) => {
-   
     commit('cleanFields');
-
 };
 
 // Actions directly related to Item
