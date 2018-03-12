@@ -8,4 +8,13 @@ export const getMetaQuery = state => {
 
 export const getTaxQuery = state => {
     return state.taxquery;
+} 
+
+export const getFilters = state => {  
+    
+    return state.filters;
+}
+
+export const getFilterTypes = state => {
+    return state.flterTypes;
 }

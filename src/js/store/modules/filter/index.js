@@ -8,7 +8,9 @@ const state = {
         post_type: [],
         metaquery: [],
         taxquery: []
-    }
+    },
+    filters: [],
+    filterTypes: []
 };
 
 export default {

@@ -12,7 +12,7 @@
                         :options="{group: { name:'fields', pull: false, put: true }, 'handle': '.handle', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
                         <div  
                             class="active-field-item" 
-                            :class="{'not-sortable-item': field.id == undefined, 'inherited-field': field.collection_id != collectionId}" 
+                            :class="{'not-sortable-item': field.id == undefined || openedFieldId == field.id, 'inherited-field': field.collection_id != collectionId}" 
                             v-for="(field, index) in activeFieldList" :key="index">
                                 <div class="handle">
                                     <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
@@ -43,7 +43,7 @@
                 </b-field>
             </div>
             <div class="column">
-                <b-field :label="$i18n.get('label_available_fields_types')">
+                <b-field :label="$i18n.get('label_available_field_types')">
                     <div class="columns box available-fields-area" >
                         <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
@@ -260,7 +260,9 @@ export default {
                 height: 1em; 
                 width: 1em;
             }
-            &.not-sortable-item {
+            &.not-sortable-item, &.not-sortable-item:hover {
+                box-shadow: none !important;
+                top: 0px !important;
                 color: gray;
                 cursor: default;
             }

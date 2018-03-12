@@ -59,7 +59,7 @@ export const sendField = ( { commit }, { collectionId, name, fieldType, status, 
             status: status
         })
             .then( res => {
-                commit('setField', { collection_id: collectionId, name: name, field_type: fieldType, status: status });
+                commit('setSingleField', { collection_id: collectionId, name: name, field_type: fieldType, status: status });
                 resolve( res.data );
             })
             .catch(error => {
