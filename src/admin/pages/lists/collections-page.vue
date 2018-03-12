@@ -63,6 +63,7 @@
 <script>
 import CollectionsList from '../../components/lists/collections-list.vue';
 import { mapActions, mapGetters } from 'vuex';
+import moment from 'moment'
 
 export default {
     name: 'CollectionsPage',
@@ -96,6 +97,7 @@ export default {
         },
         loadCollections() {    
             this.isLoading = true;
+            
             this.fetchCollections({ 'page': this.page, 'collectionsPerPage': this.collectionsPerPage })
             .then((res) => {
                 this.isLoading = false;
@@ -113,7 +115,10 @@ export default {
     },
     computed: {
         collections(){
-            return this.getCollections();
+            let collectionsList = this.getCollections(); 
+            for (let collection of collectionsList) 
+                collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + moment(collection['creation_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
+            return collectionsList;
         }
     },
     created() {

@@ -13,7 +13,7 @@
                 hoverable 
                 striped
                 selectable
-                backend-sorting>>
+                backend-sorting>
             <template slot-scope="props">
                 
                 <b-table-column tabindex="0" label="Imagem" :aria-label="$i18n.get('label_image')" field="featured_image" width="55">
@@ -24,19 +24,24 @@
                     </router-link>
                 </b-table-column>
 
-                <b-table-column tabindex="0" label="Nome" :aria-label="$i18n.get('label_name') + ': ' + props.row.name" field="props.row.name">
+                <b-table-column tabindex="0" :label="$i18n.get('label_name')" :aria-label="$i18n.get('label_name')" field="props.row.name">
                     <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
                     {{ props.row.name }}
                     </router-link>
                 </b-table-column>
 
-                <b-table-column tabindex="0" :aria-label="$i18n.get('label_description') + ': ' + props.row.description" property="description" label="Descrição" show-overflow-tooltip field="props.row.description">
+                <b-table-column tabindex="0" :aria-label="$i18n.get('label_description')" :label="$i18n.get('label_description')" property="description" show-overflow-tooltip field="props.row.description">
                     <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
                     {{ props.row.description }}
                     </router-link>
                 </b-table-column>
 
-                <b-table-column tabindex="0" :label="$i18n.get('label_actions')" width="78" :aria-label="$i18n.get('label_ações')">
+                <b-table-column class="row-creation" tabindex="0" :aria-label="$i18n.get('label_creation') + ': ' + props.row.creation" :label="$i18n.get('label_creation')" property="creation" show-overflow-tooltip field="props.row.creation">
+                    <router-link class="clickable-row" v-html="props.row.creation" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
+                    </router-link>
+                </b-table-column>
+
+                <b-table-column tabindex="0" :label="$i18n.get('label_actions')" width="78" :aria-label="$i18n.get('label_actions')">
                     <!-- <a id="button-view" :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a> -->
                     <a id="button-edit" :aria-label="$i18n.get('label_button_edit')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
                     <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
@@ -158,11 +163,19 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    @import "../../scss/_variables.scss";
 
     .table-thumb {
         max-height: 38px !important;
         vertical-align: middle !important;
+    }
+
+    .row-creation {
+        color: $gray-light;
+        font-size: 0.75em;
+        line-height: 1.5
     }
 
     .clickable-row{ cursor: pointer !important; }

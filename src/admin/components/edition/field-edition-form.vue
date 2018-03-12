@@ -1,8 +1,6 @@
 <template>
     <form id="fieldEditForm" v-on:submit.prevent="saveEdition(editForm)">    
         
-        <h2 class="is-size-5">{{ $i18n.get('edit') }}</h2>
-
         <b-field 
             :label="$i18n.get('label_name')" 
             :type="formErrors['name'] != undefined ? 'is-danger' : ''" 

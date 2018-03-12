@@ -17,9 +17,9 @@
                                 <div class="handle">
                                     <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                                     <span class="field-name">{{ field.name }}</span>
-                                    <span class="label-details"><span class="loading-spinner" v-if="field.id == undefined"></span></span>
+                                    <span class="label-details">{{ $i18n.get(field.field_type_object.component)}}<span class="loading-spinner" v-if="field.id == undefined"></span></span>
                                     <span class="controls">
-                                        <!-- <b-switch size="is-small" @input="onChangeEnable">Active</b-switch>      -->
+                                        <b-switch size="is-small" v-model="field.disabled" @input="onChangeEnable($event, index)">{{ field.disabled ? $i18n.get('label_disabled') : $i18n.get('label_enabled') }}</b-switch>
                                         <a @click.prevent="removeField(field)" v-if="field.id != undefined">
                                             <b-icon icon="delete"></b-icon>
                                         </a>
@@ -43,7 +43,7 @@
                 </b-field>
             </div>
             <div class="column">
-                <b-field :label="$i18n.get('label_available_fields')">
+                <b-field :label="$i18n.get('label_available_fields_types')">
                     <div class="columns box available-fields-area" >
                         <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
@@ -108,9 +108,18 @@ export default {
         updateFieldsOrder() {
             let fieldsOrder = [];
             for (let field of this.activeFieldList) {
-                fieldsOrder.push({'id': field.id, 'enabled': true});
+                fieldsOrder.push({'id': field.id, 'enabled': !field.disabled});
             }
             this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
+        },
+        onChangeEnable($event, index) {
+            this.activeFieldList[index].disabled = $event;
+            let fieldsOrder = [];
+            for (let field of this.activeFieldList) {
+                fieldsOrder.push({'id': field.id, 'enabled': !field.disabled});
+            }
+            this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
+
         },
         addNewField(newField, newIndex) {
             this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel})

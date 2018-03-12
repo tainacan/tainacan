@@ -62,7 +62,7 @@ const routes = [
     { path: '/categories/new', name: 'CategoryEditionForm', component: CategoryEditionForm, meta: {title: i18nGet('title_create_category_page'), icon: 'shape'} },
     { path: '/categories/:categoryId/edit', name: 'CategoryEditionForm', component: CategoryEditionForm, meta: {title: i18nGet('title_category_edition_page'), icon: 'shape'} },
 
-    { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_events_page'), icon: 'calendar'} },
+    { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_events_page'), icon: 'bell'} },
 
     { path: '*', redirect: '/'}
 ]

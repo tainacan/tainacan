@@ -76,6 +76,7 @@ return [
     'label_items_per_page' => __('Items per Page:', 'tainacan'),
     'label_active_fields' => __('Active Fields', 'tainacan'),
     'label_available_fields' => __('Available Fields', 'tainacan'),
+    'label_available_fields_types' => __('Available Fields Types', 'tainacan'),
     'label_per_page' => __('per Page', 'tainacan'),
     'label_table_fields' => __('Fields on table', 'tainacan'),
     'label_required' => __('Required', 'tainacan'),
@@ -93,6 +94,9 @@ return [
     'label_selectbox_init' => __('Select', 'tainacan'),
     'label_options' => __('Insert options', 'tainacan'),
     'label_attachments' => __('Attachments', 'tainacan'),
+    'label_enabled' => __('Enabled', 'tainacan'),
+    'label_disabled' => __('Disabled', 'tainacan'),
+    'label_creation' => __('Creation', 'tainacan'),
 
     // Instructions. More complex sentences to guide user and placeholders
     'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to add them to Collection.', 'tainacan'),
@@ -117,5 +121,16 @@ return [
     'info_showing_collections'  => __('Showing collections ', 'tainacan'),
     'info_to'  => __(' to ', 'tainacan'),
     'info_of'  => __(' of ', 'tainacan'),
+    'info_created_by'  => __('Created by: ', 'tainacan'),
+    'info_date'  => __('Date: ', 'tainacan'),
+
+    // Tainacan Field Types
+    'tainacan-text'  => __('Text', 'tainacan'),
+    'tainacan-textarea'  => __('Text area', 'tainacan'),
+    'tainacan-date'  => __('Date', 'tainacan'),
+    'tainacan-numeric'  => __('Numeric', 'tainacan'),
+    'tainacan-select'  => __('Select box', 'tainacan'),
+    'tainacan-relationship'  => __('Relationship', 'tainacan'),
+    'tainacan-category'  => __('Category', 'tainacan'),
 ]
  ?>
