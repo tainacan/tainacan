@@ -4,7 +4,7 @@ namespace Tainacan;
 use Tainacan\Repositories\Repository;
 
 class Capabilities {
-	protected $defaults = [
+	public $defaults = [
 		"tainacan-collection"=> [
 			"administrator"=> [
 				"delete_posts",
@@ -275,18 +275,73 @@ class Capabilities {
 	 * Register hooks
 	 */
 	function __construct() {
-		add_action('init', array(&$this, 'init'), 11);
 		add_action('tainacan-insert-tainacan-collection', array(&$this, 'new_collection'));
 		
         add_action('tainacan-add-collection-moderators', array(&$this, 'add_moderators'), 10, 2);
 		add_action('tainacan-remove-collection-moderators', array(&$this, 'remove_moderators'), 10, 2);
         
+		add_filter( 'gettext_with_context', array(&$this, 'translate_user_roles'), 10, 4 );
+		
+		// Dummy calls for translation. 
+		_x('Tainacan Author', 'User role', 'tainacan');
+		_x('Tainacan Contributor', 'User role', 'tainacan');
+		_x('Tainacan Editor', 'User role', 'tainacan');
         
 	}
 	
 	/**
-	 * Update post_type caps using WordPress basic roles
-	 * @param string $name //capability name
+	 * Tainacan default roles
+	 *
+	 * These are roles relative to the native WordPress roles. They will have 
+	 * the same capabilities of their relatives native roles in what is concerned to 
+	 * tainacan activities, but will have no other WordPress capabilities.
+	 * 
+	 * @return array Tainacan roles
+	 */
+	private function get_tainacan_roles() {
+		$tainacan_roles = [
+			'editor' => [
+				'slug' => 'tainacan-editor',
+				'display_name' => 'Tainacan Editor'
+			],
+			'contributor' => [
+				'slug' => 'tainacan-contributor',
+				'display_name' => 'Tainacan Contributor'
+			],
+			'author' => [
+				'slug' => 'tainacan-author',
+				'display_name' => 'Tainacan Author'
+			],
+		];
+		
+		return $tainacan_roles;
+	}
+	
+	/**
+	 * Callback to gettext_with_context hook to translate custom ueser roles.
+	 *
+	 * Since user roles are stored in the database, we have to translate them on the fly 
+	 * using translate_user_role() function.
+	 *
+	 * @see https://wordpress.stackexchange.com/questions/141551/how-to-auto-translate-custom-user-roles
+	 */
+	public function translate_user_roles( $translations, $text, $context, $domain ) {
+
+		$plugin_domain = 'tainacan';
+
+		$roles_names = array_map(function($role) {
+			return $role['display_name'];
+		}, $this->get_tainacan_roles());
+		
+		if ( $context === 'User role' && in_array( $text, $roles_names ) && $domain !== $plugin_domain ) {
+			return translate_with_gettext_context( $text, $context, $plugin_domain );
+		}
+
+		return $translations;
+	}
+	
+	/**
+	 * Update post_type caps using WordPress basic roles and register tainacan roles
 	 */
 	public function init() {
 		$defaults_caps = apply_filters('tainacan-defaults-capabilities', $this->defaults);
@@ -305,8 +360,27 @@ class Capabilities {
 				foreach ($caps as $cap) {
 					$role->add_cap($entity_cap->$cap);
 				}
+				
+				$tainacan_roles = $this->get_tainacan_roles();
+				
+				if (array_key_exists($role_name, $tainacan_roles)) {
+					$tainacan_role = add_role( $tainacan_roles[$role_name]['slug'], $tainacan_roles[$role_name]['display_name'] );
+					if(!is_object($tainacan_role)) {
+						$tainacan_role = get_role($tainacan_roles[$role_name]['slug']);
+					}
+					
+					if(!is_object($tainacan_role)) {
+						throw new \Exception(sprintf('Role "%s" not found', $tainacan_roles[$role_name]['slug']));
+					}
+						
+					foreach ($caps as $cap) {
+						$tainacan_role->add_cap($entity_cap->$cap);
+					}
+				}
+				
 			}
 		}
+		
 		global $Tainacan_Collections;
 		$collections = $Tainacan_Collections->fetch([], 'OBJECT');
 		foreach ($collections as $collection) {

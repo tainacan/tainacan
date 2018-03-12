@@ -22,6 +22,9 @@ require_once $_tests_dir . '/includes/functions.php';
  */
 function _manually_load_plugin() {
     require dirname( dirname( __FILE__ ) ) . '/src/tainacan.php';
+	add_action('plugins_loaded', function() {
+		do_action('activate_' . substr(dirname( dirname( __FILE__ ) ), 1) . '/src/tainacan.php');
+	}); 
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
