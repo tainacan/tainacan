@@ -12,7 +12,7 @@
                         :options="{group: { name:'fields', pull: false, put: true }, 'handle': '.handle', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
                         <div  
                             class="active-field-item" 
-                            :class="{'not-sortable-item': field.id == undefined || openedFieldId == field.id, 'inherited-field': field.collection_id != collectionId}" 
+                            :class="{'not-sortable-item': field.id == undefined, 'not-focusable-item': openedFieldId == field.id, 'inherited-field': field.collection_id != collectionId}" 
                             v-for="(field, index) in activeFieldList" :key="index">
                             <div class="handle">
                                 <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
@@ -258,10 +258,9 @@ export default {
                 height: 1em; 
                 width: 1em;
             }
-            &.not-sortable-item, &.not-sortable-item:hover {
+            &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover {
                 box-shadow: none !important;
                 top: 0px !important;
-                color: gray;
                 cursor: default;
             }
             &.inherited-field {

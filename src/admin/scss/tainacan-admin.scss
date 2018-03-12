@@ -74,7 +74,44 @@ html {
     z-index: 99999999 !important;
 }
 
-// Buttons border radius are bigger in Tainacan
+// Input components used in forms are gray in Tainacan
+.tainacan-form {
+    .input, .textarea {
+        border: none;
+        border-radius: 1px !important;
+        background-color: $tainacan-input-color;
+        color: black;
+        box-shadow: none;
+    }
+    .select {
+        padding-top: 0px !important;
+        select {
+            border: none;
+            border-radius: 1px !important;
+            font-weight: normal;
+            height: 30px !important;
+            padding: 2px 25px 2px 15px!important;
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            background-color: $tainacan-input-color;
+            color: black;
+            &:focus>option:checked, &:focus>option:hover {
+                background-color: $primary-lighter !important;
+            }
+        }
+        &:not(.is-multiple)::after {
+            content: "\F35D" !important;
+            font: normal normal normal 24px/1 "Material Design Icons" !important;
+            border: none !important;
+            transform: none;
+            margin-top: -0.6em;
+            right: 0.95em;
+            color: $primary;
+        }       
+    }
+}
+
+// Some components have a different style in listing pages
 .button {
     border-radius: 6px !important;
     font-weight: normal;
@@ -86,6 +123,7 @@ html {
 .select {
     padding-top: 0px !important;
     select {
+        border: none;
         border-radius: 6px !important;
         font-weight: normal;
         height: 30px !important;
@@ -108,6 +146,9 @@ html {
 }
 .dropdown {
     .dropdown-trigger{
+        .button {
+            border: none;
+        }
         .icon {
             color: $primary;
         }

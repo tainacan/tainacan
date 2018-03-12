@@ -12,7 +12,7 @@
                         :options="{group: { name:'filters', pull: false, put: true }, 'handle': '.handle', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
                         <div  
                             class="active-filter-item" 
-                            :class="{'not-sortable-item': filter.id == undefined || openedFilterId == filter.id, 'inherited-filter': filter.collection_id != collectionId}" 
+                            :class="{'not-sortable-item': filter.id == undefined, 'not-focusable-item': openedFilterId == filter.id, 'inherited-filter': filter.collection_id != collectionId}" 
                             v-for="(filter, index) in activeFilterList" :key="index">
                                 <div class="handle">
                                     <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
@@ -260,7 +260,7 @@ export default {
                 height: 1em; 
                 width: 1em;
             }
-            &.not-sortable-item, &.not-sortable-item:hover {
+            &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover  {
                 box-shadow: none !important;
                 top: 0px !important;
                 color: gray;

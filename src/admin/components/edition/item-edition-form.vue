@@ -1,7 +1,7 @@
 <template>
     <div class="page-container">
         <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag>
-        <form label-width="120px">
+        <form class="tainacan-form" label-width="120px">
             <b-field :label="$i18n.get('label_status')">
                 <b-select 
                         id="status-select"

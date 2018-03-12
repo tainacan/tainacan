@@ -1,5 +1,5 @@
 <template>
-    <form id="fieldEditForm" v-on:submit.prevent="saveEdition(editForm)">    
+    <form id="fieldEditForm" class="tainacan-form" v-on:submit.prevent="saveEdition(editForm)">    
         
         <b-field 
             :label="$i18n.get('label_name')" 
@@ -71,7 +71,7 @@
 
         <component
                 :errors="formErrors['field_type_options']"
-                v-if="editForm.field_type_object && field.field_type_object.form_component"
+                v-if="(editForm.field_type_object && field.field_type_object.form_component) || field.edit_form == ''"
                 :is="editForm.field_type_object.form_component"
                 :field="editForm"
                 v-model="editForm.field_type_options">
@@ -121,7 +121,7 @@ export default {
             this.formErrors = {};
             this.formErrorMessage = '';
 
-            if (field.field_type_object && field.field_type_object.form_component) {
+            if ((field.field_type_object && field.field_type_object.form_component) || field.edit_form == '') {
                 
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: this.editForm})
                     .then((field) => {

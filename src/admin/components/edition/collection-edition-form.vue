@@ -1,7 +1,7 @@
 <template>
     <div class="page-container primary-page">
         <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag>
-        <form label-width="120px">
+        <form class="tainacan-form" label-width="120px">
             <b-field 
                 :label="$i18n.get('label_name')"
                 :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 

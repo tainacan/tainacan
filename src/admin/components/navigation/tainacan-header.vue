@@ -112,7 +112,7 @@ export default {
     
     // Tainacan Header
     #tainacan-header{
-        background-color: $light;
+        background-color: $header-color;
         height: $header-height;
         max-height: $header-height;
         width: 100%;
