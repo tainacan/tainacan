@@ -281,6 +281,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
 				$item_arr['field_type_object'] = $item->get_field_type_object();
+				$item_arr['disabled'] = $item->get_disabled_for_collection();
 			}
 
 			return $item_arr;
@@ -299,6 +300,10 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			$collection_id = $request['collection_id'];
 
 			$args = $this->prepare_filters( $request );
+			
+			if ($request['context'] === 'edit') {
+				$args['include_disabled'] = true;
+			}
 
 			$collection = new Entities\Collection( $collection_id );
 

@@ -333,7 +333,7 @@ class Fields extends Repository {
         return $this->order_result(
             $this->fetch( $args, $output ),
             $collection,
-            isset( $args['disabled_fields'] ) ? $args['disabled_fields'] : false
+            isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
         );
     }
 
@@ -344,10 +344,10 @@ class Fields extends Repository {
      *
      * @param $result Response from method fetch
      * @param Entities\Collection $collection
-     * @param bool $disabled_fields Disabled fields wont appear on list collection fields
+     * @param bool $include_disabled Wether to include disabled fields in the results or not
      * @return array or WP_Query ordinate
      */
-    public function order_result( $result, Entities\Collection $collection, $disabled_fields = false ){
+    public function order_result( $result, Entities\Collection $collection, $include_disabled = false ){
         $order = $collection->get_fields_order();
         if($order) {
             $order = ( is_array($order) ) ? $order : unserialize($order);
@@ -363,9 +363,11 @@ class Fields extends Repository {
                     if( $index !== false ) {
 
                         // skipping fields disabled if the arg is set
-                        if( $disabled_fields && !$order[$index]['enable'] ){
-                           continue;
-                        }
+                        if( !$include_disabled && !$order[$index]['enable'] ) {
+						   continue;
+					   } elseif ($include_disabled && !$order[$index]['enable']) {
+						   $item->set_disabled_for_collection(true);
+					   }
 
                         $result_ordinate[$index] = $item;
                     } else {

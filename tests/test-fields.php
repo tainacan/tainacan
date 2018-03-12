@@ -259,10 +259,14 @@ class Fields extends TAINACAN_UnitTestCase {
         $update_collection = $Tainacan_Collections->update( $collection );
         
         $fields_ordinate = $Tainacan_Fields->fetch_by_collection( $update_collection, [], 'OBJECT' );
-        $this->assertEquals( 'field3', $fields_ordinate[0]->get_name() );
+        $this->assertEquals( 'field2', $fields_ordinate[0]->get_name() );
 
-        $fields_ordinate_enabled = $Tainacan_Fields->fetch_by_collection( $update_collection, [ 'disabled_fields' => true ], 'OBJECT' );
-        $this->assertEquals( 'field2', $fields_ordinate_enabled[0]->get_name() );
+        $fields_ordinate_enabled = $Tainacan_Fields->fetch_by_collection( $update_collection, [ 'include_disabled' => true ], 'OBJECT' );
+        $this->assertEquals( 'field3', $fields_ordinate_enabled[0]->get_name() );
+		
+		$this->assertTrue($fields_ordinate_enabled[0]->get_disabled_for_collection());
+		$this->assertFalse($fields_ordinate_enabled[1]->get_disabled_for_collection());
+		$this->assertFalse($fields_ordinate_enabled[2]->get_disabled_for_collection());
     }
     
     function test_unique_slugs() {

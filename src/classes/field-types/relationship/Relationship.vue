@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-autocomplete
+        <!--b-autocomplete
                 :id="id"
                 v-model="selected"
                 :data="options"
@@ -8,19 +8,29 @@
                 :loading="loading"
                 field="label"
                 @select="option => setResults(option) ">
-        </b-autocomplete>
+        </b-autocomplete-->
+        <b-taginput
+                :id="id"
+                v-model="selected"
+                :data="options"
+                autocomplete
+                :loading="loading"
+                field="label"
+                @input="onChecked()"
+                @typing="search">
+        </b-taginput>
     </div>
 </template>
 
 <script>
     import debounce from 'lodash/debounce'
-    import axios from '../../../js/axios/axios'
+    import { tainacan as axios} from '../../../js/axios/axios'
 
     export default {
         data(){
             return {
                 results:'',
-                selected:'',
+                selected:[],
                 options: [],
                 loading: false,
                 collectionId: 0,
@@ -45,10 +55,11 @@
             },
             onChecked() {
                 this.$emit('blur');
-                this.onInput(this.results)
+                this.onInput(this.selected)
             },
             onInput($event) {
                 this.inputValue = $event;
+                console.log( this.inputValue, 'log' );
                 this.$emit('input', this.inputValue);
             },
             search(query){
