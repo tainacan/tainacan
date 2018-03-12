@@ -46,7 +46,7 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		        'field_type' => 'Tainacan\Field_Types\Category',
 				'status'	 => 'publish',
 				'field_type_options' => [
-					'taxonomy_id' => $tax->get_db_identifier(),
+					'taxonomy_id' => $tax->get_id(),
 					'allow_new_terms' => false
 				]
 	        ),
@@ -120,7 +120,7 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		
 		// test 2 fields with same category
 		$field2->set_field_type_options([
-			'taxonomy_id' => $tax->get_db_identifier(),
+			'taxonomy_id' => $tax->get_id(),
 		]);
 		$field2->set_status('publish');
 		
@@ -167,7 +167,7 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		        'field_type' => 'Tainacan\Field_Types\Category',
 				'status'	 => 'publish',
 				'field_type_options' => [
-					'taxonomy_id' => $tax->get_db_identifier(),
+					'taxonomy_id' => $tax->get_id(),
 					'allow_new_terms' => false
 				]
 	        ),
@@ -178,7 +178,7 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		$this->assertContains($collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be added to taxonomy when field is created');
 		
 		$field->set_field_type_options([
-			'taxonomy_id' => $tax2->get_db_identifier(),
+			'taxonomy_id' => $tax2->get_id(),
 			'allow_new_terms' => false
 		]);
 		

@@ -220,9 +220,7 @@ class Taxonomies extends Repository {
 	
 	
 	public function added_collection($taxonomy_id, $collection) {
-		// TODO use a (yet to be implemented) method fetch_by_db_identifier
-		$id = preg_replace('/[^\d+]/','',$taxonomy_id);
-		//var_dump($collection->get_id()); die;
+		$id = $taxonomy_id;
 		if (!empty($id) && is_numeric($id)) {
 			$tax = $this->fetch((int) $id);
 			$tax->add_collection_id($collection->get_id());
@@ -233,8 +231,7 @@ class Taxonomies extends Repository {
 	}
 	
 	public function removed_collection($taxonomy_id, $collection) {
-		// TODO use a (yet to be implemented) method fetch_by_db_identifier
-		$id = preg_replace('/[^\d+]/','',$taxonomy_id);
+        $id = $taxonomy_id;
 		if (!empty($id) && is_numeric($id)) {
 			$tax = $this->fetch((int) $id);
 			$tax->remove_collection_id($collection->get_id());

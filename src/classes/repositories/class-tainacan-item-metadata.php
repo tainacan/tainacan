@@ -68,7 +68,12 @@ class Item_Metadata extends Repository {
 		$field_type = $item_metadata->get_field()->get_field_type_object();
 		if ($field_type->get_primitive_type() == 'term') {
 			$new_terms = $item_metadata->get_value();
-			wp_set_object_terms($item_metadata->get_item()->get_id(), $new_terms, $field_type->get_option('taxonomy_id'));
+			$taxonomy = new Entities\Taxonomy( $field_type->get_option('taxonomy_id') );
+			if( $taxonomy ){
+                wp_set_object_terms($item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
+            }
+
+
 		}
 	}
 
@@ -129,10 +134,10 @@ class Item_Metadata extends Repository {
                 if( $taxonomy ){
                     $taxonomy_slug = $taxonomy->get_db_identifier();
                 } else {
-                    return [];
+                    return null;
                 }
             } else {
-                return [];
+                return null;
             }
 
 			$terms = wp_get_object_terms($item_metadata->get_item()->get_id(), $taxonomy_slug );
