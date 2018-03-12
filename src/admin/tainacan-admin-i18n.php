@@ -76,7 +76,7 @@ return [
     'label_items_per_page' => __('Items per Page:', 'tainacan'),
     'label_active_fields' => __('Active Fields', 'tainacan'),
     'label_available_fields' => __('Available Fields', 'tainacan'),
-    'label_available_fields_types' => __('Available Field Types', 'tainacan'),
+    'label_available_field_types' => __('Available Field Types', 'tainacan'),
     'label_active_filters' => __('Active Filters', 'tainacan'),
     'label_available_filters' => __('Available Filters', 'tainacan'),
     'label_available_filter_types' => __('Available Filter Types', 'tainacan'),

@@ -14,31 +14,29 @@
                             class="active-field-item" 
                             :class="{'not-sortable-item': field.id == undefined || openedFieldId == field.id, 'inherited-field': field.collection_id != collectionId}" 
                             v-for="(field, index) in activeFieldList" :key="index">
-                                <div class="handle">
-                                    <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                                    <span class="field-name">{{ field.name }}</span>
-                                    <span class="label-details">{{ $i18n.get(field.field_type_object.component)}}<span class="loading-spinner" v-if="field.id == undefined"></span></span>
-                                    <span class="controls">
-                                        <b-switch size="is-small" v-model="field.disabled" @input="onChangeEnable($event, index)">{{ field.disabled ? $i18n.get('label_disabled') : $i18n.get('label_enabled') }}</b-switch>
-                                        <a @click.prevent="removeField(field)" v-if="field.id != undefined">
-                                            <b-icon icon="delete"></b-icon>
-                                        </a>
-                                        <a @click.prevent="editField(field)" v-if="field.id != undefined">
-                                            <b-icon icon="pencil" v-if="field.id != undefined"></b-icon>
-                                        </a>
-                                    </span>
-                                </div>
-                                <b-field v-if="openedFieldId == field.id">
-                                    <field-edition-form 
-                                        :collectionId="collectionId"
-                                        :isRepositoryLevel="isRepositoryLevel"
-                                        @onEditionFinished="onEditionFinished()"
-                                        @onEditionCanceled="onEditionCanceled()"
-                                        :field="editForm"></field-edition-form>
-                                </b-field>
+                            <div class="handle">
+                                <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                                <span class="field-name">{{ field.name }}</span>
+                                <span class="label-details">{{ $i18n.get(field.field_type_object.component)}}<span class="loading-spinner" v-if="field.id == undefined"></span></span>
+                                <span class="controls">
+                                    <b-switch size="is-small" v-model="field.disabled" @input="onChangeEnable($event, index)">{{ field.disabled ? $i18n.get('label_disabled') : $i18n.get('label_enabled') }}</b-switch>
+                                    <a @click.prevent="removeField(field)" v-if="field.id != undefined">
+                                        <b-icon icon="delete"></b-icon>
+                                    </a>
+                                    <a @click.prevent="editField(field)" v-if="field.id != undefined">
+                                        <b-icon icon="pencil" v-if="field.id != undefined"></b-icon>
+                                    </a>
+                                </span>
                             </div>
-                                             
-                        <!-- <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_fields_collection') }}</div> -->
+                            <b-field v-if="openedFieldId == field.id">
+                                <field-edition-form 
+                                    :collectionId="collectionId"
+                                    :isRepositoryLevel="isRepositoryLevel"
+                                    @onEditionFinished="onEditionFinished()"
+                                    @onEditionCanceled="onEditionCanceled()"
+                                    :field="editForm"></field-edition-form>
+                            </b-field>
+                        </div>
                     </draggable> 
                 </b-field>
             </div>
