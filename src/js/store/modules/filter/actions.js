@@ -3,6 +3,7 @@ import qs from 'qs';
 
 // METAQUERIES ----------------------------------------------------
 export const search_by_collection = ({  state, dispatch, rootGetters }, collectionId) => {
+    console.log( 'uai' );
     return new Promise((resolve, reject) =>{
         axios.tainacan.get('/collection/' + collectionId + '/items?' + qs.stringify( state.postquery ))
             .then(res => {

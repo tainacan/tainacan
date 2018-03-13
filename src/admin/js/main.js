@@ -17,6 +17,7 @@ import FormCategory from '../../classes/field-types/category/FormCategory.vue';
 import FormSelectbox from '../../classes/field-types/selectbox/FormSelectbox.vue';
 
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
+import TaincanFiltersList from '../../classes/filter-types/tainacan-filters-list.vue';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
@@ -50,6 +51,7 @@ Vue.component('tainacan-form-category', FormCategory);
 Vue.component('tainacan-form-selectbox', FormSelectbox);
 
 Vue.component('tainacan-form-item', TaincanFormItem);
+Vue.component('tainacan-filters-list', TaincanFiltersList);
 Vue.component('draggable', draggable);
 
 new Vue({
