@@ -1,7 +1,7 @@
 <template>
     <div class="columns is-fullheight">
         <secondary-menu :id="collectionId"></secondary-menu>
-        <section class="container column is-secondary-content">
+        <section class="column is-secondary-content">
             <router-view class="page-container"></router-view>
         </section>
     </div>
