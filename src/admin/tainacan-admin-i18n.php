@@ -132,7 +132,7 @@ return [
     'tainacan-textarea'  => __('Text area', 'tainacan'),
     'tainacan-date'  => __('Date', 'tainacan'),
     'tainacan-numeric'  => __('Numeric', 'tainacan'),
-    'tainacan-select'  => __('Select box', 'tainacan'),
+    'tainacan-selectbox'  => __('Select box', 'tainacan'),
     'tainacan-relationship'  => __('Relationship', 'tainacan'),
     'tainacan-category'  => __('Category', 'tainacan'),
 ]

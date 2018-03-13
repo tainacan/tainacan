@@ -17,14 +17,14 @@
                                 <div class="handle">
                                     <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                                     <span class="filter-name">{{ filter.name }}</span>
-                                    <span class="label-details">{{ $i18n.get(filter.filter_type_object.component)}}<span class="loading-spinner" v-if="filter.id == undefined"></span></span>
-                                    <span class="controls">
+                                    <span v-if="filter.id !== undefined" class="label-details">{{ $i18n.get(filter.filter_type_object.component)}}</span><span class="loading-spinner" v-if="filter.id == undefined"></span>
+                                    <span class="controls" v-if="filter.id != undefined">
                                         <b-switch size="is-small" v-model="filter.disabled" @input="onChangeEnable($event, index)">{{ filter.disabled ? $i18n.get('label_disabled') : $i18n.get('label_enabled') }}</b-switch>
-                                        <a @click.prevent="removeFilter(filter)" v-if="filter.id != undefined">
+                                        <a @click.prevent="removeFilter(filter)">
                                             <b-icon icon="delete"></b-icon>
                                         </a>
-                                        <a @click.prevent="editFilter(filter)" v-if="filter.id != undefined">
-                                            <b-icon icon="pencil" v-if="filter.id != undefined"></b-icon>
+                                        <a @click.prevent="editFilter(filter)">
+                                            <b-icon icon="pencil"></b-icon>
                                         </a>
                                     </span>
                                 </div>

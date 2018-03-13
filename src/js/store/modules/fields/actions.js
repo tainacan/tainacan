@@ -59,7 +59,8 @@ export const sendField = ( { commit }, { collectionId, name, fieldType, status, 
             status: status
         })
             .then( res => {
-                commit('setSingleField', { collection_id: collectionId, name: name, field_type: fieldType, status: status });
+                let field = res.data;
+                commit('setSingleField', field);
                 resolve( res.data );
             })
             .catch(error => {
@@ -77,7 +78,7 @@ export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLe
         else
             endpoint = '/fields/' + fieldId;
 
-        axios.tainacan.put(endpoint, options)
+        axios.tainacan.put(endpoint + '?context=edit', options)
             .then( res => {
                 commit('setSingleField', res.data);
                 resolve( res.data );

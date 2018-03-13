@@ -85,8 +85,9 @@ export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterTyp
             status: status
         })
             .then( res => {
-                commit('setSingleFilter', { collection_id: collectionId, name: name, filter_type: filterType, status: status });
-                resolve( res.data );
+                let filter = res.data;
+                commit('setSingleFilter', filter);
+                resolve( filter );
             })
             .catch(error => {
                 reject( error.response );
