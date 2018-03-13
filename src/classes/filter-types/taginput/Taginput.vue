@@ -14,13 +14,25 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios'
+    import { tainacan as axios } from '../../../js/axios/axios';
+    import qs from 'qs';
 
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.collection_id;
-            this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
+            this.field = ( this.field_id ) ? this.field_id : this.filter.field;
+            const vm = this;
+            axios.get('/collection/' + this.collection + '/fields/' +  this.field )
+                .then( res => {
+                    let result = res.data;
+                    if( result && result.field_type ){
+                        vm.field_object = result;
+                        vm.type = result.field_type;
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
         data(){
             return {
@@ -32,6 +44,7 @@
                 collection: '',
                 field: '',
                 selected: '',
+                field_object: {}
             }
         },
         props: {
@@ -54,8 +67,9 @@
                 }
                 this.$emit('input', {
                     filter: 'taginput',
-                    field_id: ( this.field_id ) ? this.field_id : this.filter.field,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    compare: 'IN',
+                    field_id: this.field,
+                    collection_id: this.collection,
                     value: values
                 });
             }
@@ -64,10 +78,9 @@
             search( query ){
                 let promise = null;
                 this.options = [];
-                if ( this.type === 'Tainacan\Field_types\Relationship' ) {
-
-                    let collectionTarget = ( this.filter && this.filter.field.field_type_options.collection_id ) ?
-                        this.filter.field.field_type_options.collection_id : this.collection_id;
+                if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
+                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ?
+                        this.field_object.field_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget, query );
 
                 } else {
@@ -82,7 +95,7 @@
                 });
             },
             getValuesPlainText( field_id ){
-                return axios.get( '/collection/' + this.collection_id  + '/fields/' + field_id + '?fetch=all_field_values')
+                return axios.get( '/collection/' + this.collection  + '/fields/' + field_id + '?fetch=all_field_values')
                     .then( res => {
                         for (let metadata of res.data) {
                             let index = this.options.findIndex(itemMetadata => itemMetadata.value === metadata.mvalue);
@@ -97,23 +110,12 @@
                     });
             },
             getValuesRelationship( collectionTarget, search ){
-                return axios.get( '/collection/' + collectionTarget  + '/items?s=' + search )
+                return axios.get( '/collection/' + collectionTarget  + '/items?search=' + search )
                     .then( res => {
                         if( res.data.length > 0 ){
-                           this.getItemsName( collectionTarget, res.data);
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            },
-            getItemsName( collectionId, ids){
-                let query = qs.stringify({ postin: ( Array.isArray( ids ) ) ? ids : [ ids ]  });
-
-                return axios.get('/collection/'+collectionId+'/items?' + query)
-                    .then( res => {
-                        for (let item of res.data) {
-                            this.options.push({ label: item.title, value: item.id, img: '' });
+                            for (let item of res.data) {
+                                this.options.push({ label: item.title, value: item.id, img: '' });
+                            }
                         }
                     })
                     .catch(error => {

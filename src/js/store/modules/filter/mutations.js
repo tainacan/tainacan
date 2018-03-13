@@ -27,7 +27,7 @@ export const addMetaQuery = ( state, filter ) => {
 export const removeMetaQuery = ( state, filter ) => {
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
     if (index >= 0) {
-        state.metaquery.splice(index, 1);
+        state.postquery.metaquery.splice(index, 1);
     }
 }
 
