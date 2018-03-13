@@ -316,7 +316,7 @@ class Filters extends Repository {
         $parents[] = $collection_id;
 
         //search for default field
-        $parents[] = $this->get_default_metadata_attribute();
+        //$parents[] = $this->get_default_metadata_attribute();
 
         $meta_query = array(
             'key'     => 'collection_id',

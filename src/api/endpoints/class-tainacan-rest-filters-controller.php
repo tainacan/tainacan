@@ -10,7 +10,6 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	private $field;
 	private $field_repository;
 
-	private $filter;
 	private $filter_repository;
 
 	/**
@@ -34,7 +33,6 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		$this->field = new Entities\Field();
 		$this->field_repository = new Repositories\Fields();
 		
-		$this->filter = new Entities\Filter();
 		$this->filter_repository = new Repositories\Filters();
 	}
 
@@ -46,11 +44,28 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 				'permission_callback' => array($this, 'create_item_permissions_check')
 			),
 		));
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base, array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_items'),
+				'permission_callback' => array($this, 'get_items_permissions_check')
+			),
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'create_item'),
+				'permission_callback' => array($this, 'create_item_permissions_check')
+			)
+		));
 		register_rest_route($this->namespace, '/' . $this->rest_base, array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
 				'permission_callback' => array($this, 'get_items_permissions_check')
+			),
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'create_item'),
+				'permission_callback' => array($this, 'create_item_permissions_check')
 			)
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<filter_id>[\d]+)', array(
@@ -81,8 +96,8 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	public function prepare_item_for_database( $request ) {
 		$body = json_decode($request->get_body(), true);
 
-		$collection_id = $request['collection_id'];
-		$field_id   = $request['field_id'];
+		$filter_obj = new Entities\Filter();
+
 		$filter = $body['filter'];
 
 		$received_type = $body['filter_type'];
@@ -102,15 +117,31 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		foreach ($filter as $attribute => $value){
 			try {
 				$set_ = 'set_'. $attribute;
-				$this->filter->$set_($value);
+				$filter_obj->$set_($value);
 			} catch (\Error $error){
 				//
 			}
 		}
 
-		$this->filter->set_collection_id($collection_id);
-		$this->filter->set_field($field_id);
-		$this->filter->set_filter_type($filter_type);
+		if(isset($request['collection_id']) && isset($request['filter_id'])) {
+			$collection_id = $request['collection_id'];
+			$field_id      = $request['field_id'];
+
+			$filter_obj->set_collection_id( $collection_id );
+			$filter_obj->set_field( $field_id );
+		} elseif (isset($request['collection_id'])){
+			$collection_id = $request['collection_id'];
+
+			$filter_obj->set_collection_id( $collection_id );
+			$filter_obj->set_field('');
+		} else {
+			$filter_obj->set_collection_id( 'filter_in_repository' );
+			$filter_obj->set_field('');
+		}
+
+		$filter_obj->set_filter_type($filter_type);
+
+		return $filter_obj;
 	}
 
 	/**
@@ -121,17 +152,17 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	public function create_item( $request ) {
 
 		if(!empty($request->get_body())){
-			$this->prepare_item_for_database($request);
+			$filter_obj = $this->prepare_item_for_database($request);
 
-			if ($this->filter->validate()){
-				$filter_inserted = $this->filter_repository->insert($this->filter);
+			if ($filter_obj->validate()){
+				$filter_inserted = $this->filter_repository->insert($filter_obj);
 
 				return new WP_REST_Response($this->prepare_item_for_response($filter_inserted, $request), 200);
 			}
 
 			return new WP_REST_Response([
 				'error_message' => __('One or more attributes are invalid', 'tainacan'),
-				'error'         => $this->filter->get_errors()
+				'error'         => $filter_obj->get_errors()
 			], 400);
 		}
 
@@ -145,16 +176,27 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return bool|WP_Error
+	 * @throws Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		$metadata = $this->field_repository->fetch($request['field_id']);
-		$collection = $this->collection_repository->fetch($request['collection_id']);
+		if(isset($request['collection_id']) && isset($request['field_id'])) {
+			$metadata   = $this->field_repository->fetch( $request['field_id'] );
+			$collection = $this->collection_repository->fetch( $request['collection_id'] );
 
-		if(($metadata instanceof Entities\Field) && ($collection instanceof Entities\Collection)) {
-			return $this->filter_repository->can_edit($this->filter) && $metadata->can_edit() && $collection->can_edit();
+			if ( ( $metadata instanceof Entities\Field ) && ( $collection instanceof Entities\Collection ) ) {
+				return $this->filter_repository->can_edit( new Entities\Filter() ) && $metadata->can_edit() && $collection->can_edit();
+			}
+
+		} elseif (isset($request['collection_id'])){
+			$collection = $this->collection_repository->fetch( $request['collection_id'] );
+
+			if ( $collection instanceof Entities\Collection ) {
+				return $collection->can_edit();
+			}
+
 		}
 
-		return false;
+		return $this->filter_repository->can_edit(new Entities\Field());
 	}
 
 	/**
@@ -286,13 +328,24 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$args = $this->prepare_filters($request);
+		$args = $this->prepare_filters( $request );
 
-		$filters = $this->filter_repository->fetch($args, 'OBJECT');
+		if(!isset($request['collection_id'])) {
+			$args['meta_query'][] = [
+				'key'     => 'collection_id',
+				'value'   => 'filter_in_repository',
+				'compare' => '='
+			];
+
+			$filters = $this->filter_repository->fetch( $args, 'OBJECT' );
+		} else {
+			$collection = $this->collection_repository->fetch($request['collection_id']);
+			$filters = $this->filter_repository->fetch_by_collection($collection, $args, 'OBJECT');
+		}
 
 		$response = [];
-		foreach ($filters as $filter){
-			array_push($response, $this->prepare_item_for_response($filter, $request));
+		foreach ( $filters as $filter ) {
+			array_push( $response, $this->prepare_item_for_response( $filter, $request ) );
 		}
 
 		return new WP_REST_Response($response, 200);
@@ -304,11 +357,25 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		if('edit' === $request['context'] && !$this->filter_repository->can_read($this->filter)){
-			return false;
+		if(!isset($request['collection_id'])) {
+			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_read( $this->filter ) ) {
+				return false;
+			}
+
+			return true;
 		}
 
-		return true;
+		$collection = $this->collection_repository->fetch($request['collection_id']);
+
+		if($collection instanceof Entities\Collection){
+			if ( 'edit' === $request['context'] && ! $collection->can_read() ) {
+				return false;
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

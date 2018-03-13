@@ -229,7 +229,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$request = new \WP_REST_Request('GET', $this->namespace . '/filters');
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/'.  $collection->get_id() .'/filters');
 
 		$response = $this->server->dispatch($request);
 
@@ -238,8 +238,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$first_filter = $data[0];
 		$second_filter = $data[1];
 
-		$this->assertEquals($filter2->get_name(), $first_filter['name']);
-		$this->assertEquals($filter->get_name(), $second_filter['name']);
+		$this->assertEquals($filter->get_name(), $first_filter['name']);
+		$this->assertEquals($filter2->get_name(), $second_filter['name']);
 
 		#### FETCH A FILTER ####
 
@@ -252,6 +252,73 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$data = $response->get_data();
 
 		$this->assertEquals('filtro', $data['name']);
+	}
+
+	public function test_create_and_fetch_filter_in_repository(){
+		$filter_attr = json_encode([
+			'filter_type' => 'autocomplete',
+			'filter'      => [
+				'name'        => '2x Filter',
+				'description' => 'Description of 2x Filter',
+				'status'      => 'publish'
+			]
+		]);
+
+		$filter_attr2 = json_encode([
+			'filter_type' => 'autocomplete',
+			'filter'      => [
+				'name'        => '4x Filter',
+				'description' => 'Description of 4x Filter',
+				'status'      => 'publish'
+			]
+		]);
+
+		#### CREATE A FILTER IN REPOSITORY ####
+
+		$request_create = new \WP_REST_Request('POST', $this->namespace . '/filters');
+		$request_create->set_body($filter_attr);
+
+		$response_create = $this->server->dispatch($request_create);
+
+		$data = $response_create->get_data();
+
+		$this->assertEquals('filter_in_repository', $data['collection_id']);
+
+
+		#### CREATE A FILTER IN COLLECTION WITHOUT FIELD ASSOCIATION ####
+
+		$collection = $this->tainacan_entity_factory->create_entity('collection', [], true);
+
+		$request_create2 = new \WP_REST_Request('POST', $this->namespace . '/collection/'. $collection->get_id() .'/filters');
+		$request_create2->set_body($filter_attr2);
+
+		$response_create2 = $this->server->dispatch($request_create2);
+
+		$data2 = $response_create2->get_data();
+
+		$this->assertEquals($collection->get_id(), $data2['collection_id']);
+
+		#### GET A FILTER FROM A REPOSITORY CONTEXT ####
+
+		$request_get1 = new \WP_REST_Request('GET', $this->namespace . '/filters');
+
+		$response_get1 = $this->server->dispatch($request_get1);
+
+		$data3 = $response_get1->get_data();
+
+		$this->assertCount(1, $data3);
+		$this->assertEquals('2x Filter', $data3[0]['name']);
+
+		#### GET A FILTER FROM A COLLECTION CONTEXT ####
+
+		$request_get2 = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/filters');
+
+		$response_get2 = $this->server->dispatch($request_get2);
+
+		$data4 = $response_get2->get_data();
+
+		$this->assertCount(1, $data4);
+		$this->assertEquals('4x Filter', $data4[0]['name']);
 	}
 }
 
