@@ -16,6 +16,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 1. [Item Metadata](#item-metadata)
 1. [Taxonomies](#taxonomies)
 1. [Filters](#filters)
+1. [Filter Types](#filter-types)
 1. [Terms](#terms)
 1. [Logs](#logs)
 1. [Others](#others)
@@ -351,9 +352,17 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
                   ...
             }
       }
-```   
+```  
 
 ------
+#### Filter Types
+1. Route `wp-json/tainacan/v2/filter-types`
+
+      1. Endpoint:
+      
+            1. GET (Fetch all filter types)
+------
+
 #### Terms
 
 1. Route `wp-json/tainacan/v2/taxonomy/(?P<taxonomy_id>[\d]+)/terms`
