@@ -24,6 +24,12 @@ class TAINACAN_REST_Filter_Types_Controller extends TAINACAN_REST_Controller {
 		);
 	}
 
+	/**
+	 * @param mixed $item
+	 * @param WP_REST_Request $request
+	 *
+	 * @return mixed|WP_Error|WP_REST_Response
+	 */
 	public function prepare_item_for_response( $item, $request ) {
 		$name = "\Tainacan\Filter_Types\\$item";
 		$filter_type = new $name();
