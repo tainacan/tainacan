@@ -351,9 +351,9 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
                   ...
             }
       }
-```         
-      
-------    
+```   
+
+------
 #### Terms
 
 1. Route `wp-json/tainacan/v2/taxonomy/(?P<taxonomy_id>[\d]+)/terms`
