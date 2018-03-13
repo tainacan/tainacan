@@ -188,8 +188,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'          => 'Field filtered',
 				'description'   => 'Is filtered',
-				'collection_id' => $collection->get_id()
-			)
+				'collection_id' => $collection->get_id(),
+				'field_type'    => 'Tainacan\Field_Types\Numeric'
+			),
+			true
 		);
 
 		$field2 = $this->tainacan_entity_factory->create_entity(
@@ -197,8 +199,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'          => 'Other filtered',
 				'description'   => 'Is filtered',
-				'collection_id' => $collection->get_id()
-			)
+				'collection_id' => $collection->get_id(),
+				'field_type'    => 'Tainacan\Field_Types\Numeric'
+			),
+			true
 		);
 
 		$filter_type = $this->tainacan_filter_factory->create_filter('custom_interval');
@@ -209,7 +213,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'field'    => $field,
+				'field'       => $field,
 				'filter_type' => $filter_type,
 				'status'      => 'publish'
 			),
@@ -222,7 +226,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => 'filtro2',
 				'collection'  => $collection,
 				'description' => 'descricao',
-				'field'    => $field2,
+				'field'       => $field2,
 				'filter_type' => $filter_type,
 				'status'      => 'publish'
 			),

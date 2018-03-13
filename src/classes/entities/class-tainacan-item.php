@@ -52,7 +52,7 @@ class Item extends Entity {
 	/**
 	 * @param $id
 	 */
-	function set_featured_img_by_id($id){
+	function set_featured_img_id($id){
 		$this->set_mapped_property('featured_image_id', $id );
 	}
 
