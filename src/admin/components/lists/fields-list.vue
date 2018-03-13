@@ -17,14 +17,14 @@
                             <div class="handle">
                                 <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                                 <span class="field-name">{{ field.name }}</span>
-                                <span v-if="field.id !== undefined" class="label-details">{{ $i18n.get(field.field_type_object.component)}}<span class="loading-spinner" v-if="field.id == undefined"></span></span>
-                                <span class="controls">
+                                <span v-if="field.id !== undefined" class="label-details">{{ $i18n.get(field.field_type_object.component)}}</span><span class="loading-spinner" v-if="field.id == undefined"></span>
+                                <span class="controls" v-if="field.id !== undefined">
                                     <b-switch size="is-small" v-model="field.disabled" @input="onChangeEnable($event, index)">{{ field.disabled ? $i18n.get('label_disabled') : $i18n.get('label_enabled') }}</b-switch>
-                                    <a @click.prevent="removeField(field)" v-if="field.id != undefined">
+                                    <a @click.prevent="removeField(field)">
                                         <b-icon icon="delete"></b-icon>
                                     </a>
-                                    <a @click.prevent="editField(field)" v-if="field.id != undefined">
-                                        <b-icon icon="pencil" v-if="field.id != undefined"></b-icon>
+                                    <a @click.prevent="editField(field)">
+                                        <b-icon icon="pencil"></b-icon>
                                     </a>
                                 </span>
                             </div>
