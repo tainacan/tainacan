@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-loading :active.sync="isLoadingFilterTypes"></b-loading>
+        <b-loading :active.sync="isLoadingFieldTypes"></b-loading>
         <div class="columns">
             <div class="column">
                 <b-filter :label="$i18n.get('label_active_filters')" is-grouped>
@@ -27,6 +27,32 @@
                                             <b-icon icon="pencil"></b-icon>
                                         </a>
                                     </span>
+                                     <b-modal :active.sync="isModalOpened" :width="320" scroll="keep">
+                                        <div class="filter-selection-modal">
+                                            <b-field :label="$i18n.get('label_filter_type')">
+                                                <b-select
+                                                        
+                                                        :placeholder="$i18n.get('instruction_select_a_filter_type')">
+                                                    <option value="publish" selected>{{ $i18n.get('publish')}}</option>
+                                                    <option value="private">{{ $i18n.get('private')}}</option>
+                                                </b-select>
+                                            </b-field>
+                                            <div class="field is-grouped is-grouped-centered">
+                                                <div class="control">
+                                                    <button 
+                                                        class="button is-secondary" 
+                                                        type="submit" 
+                                                        @click.prevent="confirmSelectedFilterType()">Submit</button>
+                                                </div>
+                                                <div class="control">
+                                                    <button 
+                                                        class="button is-text" 
+                                                        @click.prevent="cancelFilterTypeSelection()" 
+                                                        slot="trigger">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </b-modal>
                                 </div>
                                 <b-filter v-if="openedFilterId == filter.id">
                                     <!-- <filter-edition-form 
@@ -43,16 +69,16 @@
                 </b-filter>
             </div>
             <div class="column">
-                <b-filter :label="$i18n.get('label_available_filter_types')">
-                    <div class="columns box available-filters-area" >
-                        <draggable class="column" :list="availableFilterList" :options="{ sort: false, group: { name:'filters', pull: 'clone', put: false, revertClone: true }}">
-                            <div class="available-filter-item" v-if="index % 2 == 0" v-for="(filter, index) in availableFilterList" :key="index">
-                                {{ filter.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                <b-filter :label="$i18n.get('label_available_field_types')">
+                    <div class="columns box available-fields-area" >
+                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: 'clone', put: false, revertClone: true }}">
+                            <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
+                                {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             </div>
                         </draggable>
-                        <draggable class="column" :list="availableFilterList" :options="{ sort: false, group: { name:'filters', pull: 'clone', put: false, revertClone: true }}">
-                            <div class="available-filter-item" v-if="index % 2 != 0" v-for="(filter, index) in availableFilterList" :key="index">
-                                {{ filter.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: 'clone', put: false, revertClone: true }}">
+                            <div class="available-field-item" v-if="index % 2 != 0" v-for="(field, index) in availableFieldList" :key="index">
+                                {{ field.name }}  <b-iiltercon type="is-gray" class="is-pulled-left" icon="drag"></b-iiltercon>
                             </div>       
                         </draggable> 
                    </div>
@@ -73,10 +99,12 @@ export default {
             collectionId: '',
             isRepositoryLevel: false,
             isDraggingFromAvailable: false,
-            isLoadingFilterTypes: true,
+            isLoadingFieldTypes: true,
             isLoadingFilters: false,
+            isLoadingFilterTypes: false,
             isLoadingFilter: false,
             openedFilterId: '',
+            isModalOpened: false,
             editForm: {}
         }
     },
@@ -92,8 +120,14 @@ export default {
             'updateCollectionFiltersOrder'
         ]),
         ...mapGetters('filter',[
-            'getFilterTypes',
-            'getFilters'
+            'getFilters',
+            'getFilterTypes'
+        ]),
+        ...mapActions('fields', [
+            'fetchFieldTypes'
+        ]),
+        ...mapGetters('fields',[
+            'getFieldTypes'
         ]),
         handleChange($event) {     
             if ($event.added) {
@@ -122,7 +156,10 @@ export default {
 
         },
         addNewFilter(newFilter, newIndex) {
-            this.sendFilter({collectionId: this.collectionId, name: newFilter.name, filterType: newFilter.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel})
+            this.isModalOpened = true;
+        },
+        createChoosenFilter(field, newFilter, newIndex) {
+            this.sendFilter({collectionId: this.collectionId, fieldId: field.id, name: newFilter.name, filterType: newFilter.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel})
             .then((filter) => {
 
                 if (newIndex < 0) {
@@ -154,6 +191,13 @@ export default {
             .catch((error) => {
             });
         },
+        confirmSelectedFilterType() {
+           // this.createChoosenFilter();
+        },
+        cancelFilterTypeSelection() {
+           // this.createChoosenFilter();
+           this.$modal.close();
+        },
         editFilter(filter) {
             if (this.openedFilterId == filter.id) {
                 this.openedFilterId = '';
@@ -174,19 +218,32 @@ export default {
 
     },
     computed: {
-        availableFilterList() {
-            return this.getFilterTypes();
+        availableFieldList() {
+            return this.getFieldTypes();
         },
         activeFilterList() {
             return this.getFilters();
+        },
+        filterTypes() {
+            return this.getFilterTypes();
         }
     },
     created() {
-        this.isLoadingFilterTypes = true;
+        this.isLoadingFieldTypes = true;
         this.isLoadingFilters = true;
+        this.isLoadingFilterTypes = true;
+
+        this.fetchFieldTypes()
+            .then((res) => {
+                this.isLoadingFieldTypes = false;
+            })
+            .catch((error) => {
+                this.isLoadingFieldTypes = false;
+            });
 
         this.fetchFilterTypes()
             .then((res) => {
+                console.log(res);
                 this.isLoadingFilterTypes = false;
             })
             .catch((error) => {
@@ -226,6 +283,12 @@ export default {
 
         .collapse {
             display: initial;
+        }
+
+        .filter-selection-modal{
+            padding: 20px;
+            background-color: white;
+            border-radius: 3px;
         }
 
         .active-filter-item {
@@ -285,12 +348,12 @@ export default {
         }
     }
 
-    .available-filters-area {
+    .available-fields-area {
         padding: 0 10px;
         margin: 0;
         background-color: whitesmoke;
 
-        .available-filter-item {
+        .available-field-item {
             padding: 0.4em;
             margin: 10px 10% 10px 0px;
             border-radius: 5px;
@@ -301,7 +364,7 @@ export default {
             top: 0;
             transition: top 0.2s ease;
         }
-        .available-filter-item:hover {
+        .available-field-item:hover {
             border: 1px solid lightgrey;
             box-shadow: 2px 3px 4px rgba(0,0,0,.25);
             position: relative;

@@ -24,23 +24,23 @@
                 </li>
                 <li class="separator"></li>
                 <li><router-link tag="a" to="/collections" :class="activeRoute == 'CollectionsPage' || isCompressed ? 'is-active':''">
-                    <b-icon size="is-small" icon="folder-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('collections')}}</span>
+                    <b-icon size="is-small" icon="folder-multiple"></b-icon> <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                 </router-link></li>
                 <li><router-link tag="a" to="/items" :class="activeRoute == 'ItemsPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="file-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
+                    <b-icon size="is-small" icon="file-multiple"></b-icon> <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                 </router-link></li>
                 <li class="separator"></li>
                 <li><router-link tag="a" to="/fields" :class="activeRoute == 'FieldsPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="format-list-checks"></b-icon> <span class="menu-text">{{ $i18n.get('fields')}}</span>
+                    <b-icon size="is-small" icon="format-list-checks"></b-icon> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
                 </router-link></li>
                 <li><router-link tag="a" to="/filters" :class="activeRoute == 'FiltersPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="filter"></b-icon> <span class="menu-text">{{ $i18n.get('filters')}}</span>
+                    <b-icon size="is-small" icon="filter"></b-icon> <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                 </router-link></li>
                 <li><router-link tag="a" to="/categories" :class="activeRoute == 'CategoriesPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="shape"></b-icon> <span class="menu-text">{{ $i18n.get('categories')}}</span>
+                    <b-icon size="is-small" icon="shape"></b-icon> <span class="menu-text">{{ $i18n.getFrom('categories', 'name') }}</span>
                 </router-link></li>
                 <li><router-link tag="a" to="/events" :class="activeRoute == 'EventsPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="bell"></b-icon> <span class="menu-text">{{ $i18n.get('events')}}</span>
+                    <b-icon size="is-small" icon="bell"></b-icon> <span class="menu-text">{{ $i18n.getFrom('events', 'name') }}</span>
                 </router-link></li>
             </ul>
         </aside>

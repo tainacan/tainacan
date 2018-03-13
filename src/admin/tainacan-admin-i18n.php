@@ -45,6 +45,8 @@ return [
     'title_collection_page' => __('Collection Page', 'tainacan'),
     'title_item_page' => __('Item Page', 'tainacan'),
     'title_field_page' => __('Field Page', 'tainacan'),
+    
+    /* translators: alkdjklasdj laksjd klsadj */
     'title_filter_page' => __('Filter Page', 'tainacan'),
     'title_category_page' => __('Category Page', 'tainacan'),
     'title_term_page' => __('Term Page', 'tainacan'),
@@ -78,6 +80,7 @@ return [
     'label_available_fields' => __('Available Fields', 'tainacan'),
     'label_available_field_types' => __('Available Field Types', 'tainacan'),
     'label_active_filters' => __('Active Filters', 'tainacan'),
+    'label_filter_type' => __('Filter Type', 'tainacan'),
     'label_available_filters' => __('Available Filters', 'tainacan'),
     'label_available_filter_types' => __('Available Filter Types', 'tainacan'),
     'label_per_page' => __('per Page', 'tainacan'),
@@ -100,6 +103,9 @@ return [
     'label_enabled' => __('Enabled', 'tainacan'),
     'label_disabled' => __('Disabled', 'tainacan'),
     'label_creation' => __('Creation', 'tainacan'),
+    'label_collection_items' => __('Collection Items', 'tainacan'),
+    'label_collection_fields' => __('Collection Fields', 'tainacan'),
+    'label_collection_filters' => __('Collection Filters', 'tainacan'),
 
     // Instructions. More complex sentences to guide user and placeholders
     'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to add them to Collection.', 'tainacan'),
@@ -107,6 +113,7 @@ return [
     'instruction_delete_selected_items' => __('Delete selected items', 'tainacan'),
     'instruction_image_upload_box' => __('Drop an image here or click to upload.', 'tainacan'),
     'instruction_select_a_status' => __('Select a status:', 'tainacan'), 
+    'instruction_select_a_filter_type' => __('Select a filter type:', 'tainacan'), 
 
     // Info. Other feedback to user.
     'info_no_collection_created' => __('No collection was created in this repository.', 'tainacan'),

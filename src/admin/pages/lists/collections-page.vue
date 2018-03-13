@@ -4,13 +4,13 @@
             <div class="header-item">
                 <router-link tag="button" class="button is-secondary"
                             :to="{ path: $routerHelper.getNewCollectionPath() }">
-                    {{ $i18n.get('new') + ' ' + $i18n.get('collection') }}
+                    {{ $i18n.getFrom('collections', 'new_item') }}
                 </router-link>
             </div>
         </div>
         <div class="columns above-subheader">
             <aside class="column filters-menu">
-                <h3>{{ $i18n.get('filters') }}</h3>
+                <h3>{{ $i18n.getFrom('filters', 'name') }}</h3>
             </aside>
             <div class="column table-container">
                 <collections-list

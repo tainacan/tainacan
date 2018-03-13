@@ -20,7 +20,7 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
 "_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-tainacan-admin.php:22 admin/class-tainacan-admin.php:23
@@ -96,39 +96,39 @@ msgstr "Categoria"
 
 #: admin/tainacan-admin-i18n.php:17
 msgid "Event"
-msgstr ""
+msgstr "Evento"
 
 #: admin/tainacan-admin-i18n.php:20
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: admin/tainacan-admin-i18n.php:21
 msgid "New"
-msgstr ""
+msgstr "Novo"
 
 #: admin/tainacan-admin-i18n.php:22
 msgid "Import"
-msgstr ""
+msgstr "Importar"
 
 #: admin/tainacan-admin-i18n.php:23
 msgid "Export"
-msgstr ""
+msgstr "Exportar"
 
 #: admin/tainacan-admin-i18n.php:24
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: admin/tainacan-admin-i18n.php:25
 msgid "Save"
-msgstr ""
+msgstr "Salvar"
 
 #: admin/tainacan-admin-i18n.php:26
 msgid "See"
-msgstr ""
+msgstr "Ver"
 
 #: admin/tainacan-admin-i18n.php:27
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 #: admin/tainacan-admin-i18n.php:28
 msgid "Advanced Search"
@@ -136,39 +136,39 @@ msgstr "Busca Avançada"
 
 #: admin/tainacan-admin-i18n.php:31
 msgid "Publish"
-msgstr ""
+msgstr "Publicado"
 
 #: admin/tainacan-admin-i18n.php:32
 msgid "Draft"
-msgstr ""
+msgstr "Rascunho"
 
 #: admin/tainacan-admin-i18n.php:33
 msgid "Private"
-msgstr ""
+msgstr "Privado"
 
 #: admin/tainacan-admin-i18n.php:34
 msgid "Trash"
-msgstr ""
+msgstr "Lixo"
 
 #: admin/tainacan-admin-i18n.php:35
 msgid "Automatic Draft"
-msgstr ""
+msgstr "Rascunho automático"
 
 #: admin/tainacan-admin-i18n.php:38
 msgid "Collections Page"
-msgstr ""
+msgstr "Página de Coleções"
 
 #: admin/tainacan-admin-i18n.php:39
 msgid "Items Page"
-msgstr ""
+msgstr "Página de Itens"
 
 #: admin/tainacan-admin-i18n.php:40
 msgid "Fields Page"
-msgstr ""
+msgstr "Página de Campos"
 
 #: admin/tainacan-admin-i18n.php:41
 msgid "Filters Page"
-msgstr ""
+msgstr "Página de Filtros"
 
 #: admin/tainacan-admin-i18n.php:42
 msgid "Categories Page"
@@ -176,97 +176,97 @@ msgstr "Página de Categorias"
 
 #: admin/tainacan-admin-i18n.php:43
 msgid "Terms Page"
-msgstr ""
+msgstr "Página de Campos"
 
 #: admin/tainacan-admin-i18n.php:44
 msgid "Events Page"
-msgstr ""
+msgstr "Página de Eventos"
 
 #: admin/tainacan-admin-i18n.php:45
 msgid "Collection Page"
-msgstr ""
+msgstr "Página da Coleção"
 
 #: admin/tainacan-admin-i18n.php:46
 msgid "Item Page"
-msgstr ""
+msgstr "Página do Item"
 
 #: admin/tainacan-admin-i18n.php:47
 msgid "Field Page"
-msgstr ""
+msgstr "Página do Campo"
 
 #: admin/tainacan-admin-i18n.php:48
 msgid "Filter Page"
-msgstr ""
+msgstr "Págia do Filtro"
 
 #: admin/tainacan-admin-i18n.php:49
 msgid "Category Page"
-msgstr ""
+msgstr "Página da Categoria"
 
 #: admin/tainacan-admin-i18n.php:50
 msgid "Term Page"
-msgstr ""
+msgstr "Página do Termo"
 
 #: admin/tainacan-admin-i18n.php:51
 msgid "Event Page"
-msgstr ""
+msgstr "Página do Evento"
 
 #: admin/tainacan-admin-i18n.php:52
 msgid "Collection Creation Page"
-msgstr ""
+msgstr "Página de Criação da Coleção"
 
 #: admin/tainacan-admin-i18n.php:53
 msgid "Category Creation Page"
-msgstr ""
+msgstr "Página de Criação da Categoria"
 
 #: admin/tainacan-admin-i18n.php:54
 msgid "Item Creation Page"
-msgstr ""
+msgstr "Página de Criação do Item"
 
 #: admin/tainacan-admin-i18n.php:55
 msgid "Filter Creation Page"
-msgstr ""
+msgstr "Página de Criação do Item"
 
 #: admin/tainacan-admin-i18n.php:56
 msgid "Collection Edition Page"
-msgstr ""
+msgstr "Página de Edição da Coleção"
 
 #: admin/tainacan-admin-i18n.php:57
 msgid "Item Edition Page"
-msgstr ""
+msgstr "Página de Edição do Item"
 
 #: admin/tainacan-admin-i18n.php:58
 msgid "Category Edition Page"
-msgstr ""
+msgstr "Página de Edição da Categoria"
 
 #: admin/tainacan-admin-i18n.php:59
 msgid "Filter Edition Page"
-msgstr ""
+msgstr "Página de Edição do Filtro"
 
 #: admin/tainacan-admin-i18n.php:60
 msgid "Collection Fields Edition Page"
-msgstr ""
+msgstr "Página de Edição dos Campos da Coleção"
 
 #: admin/tainacan-admin-i18n.php:63
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: admin/tainacan-admin-i18n.php:64
 msgid "Main Menu"
-msgstr ""
+msgstr "Menu Principal"
 
 #: admin/tainacan-admin-i18n.php:65
 msgid "Collection Menu"
-msgstr ""
+msgstr "Menu da Coleção"
 
 #: admin/tainacan-admin-i18n.php:66
 #: classes/repositories/class-tainacan-items.php:15
 #: classes/repositories/class-tainacan-logs.php:26
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: admin/tainacan-admin-i18n.php:67
 msgid "Actions"
-msgstr ""
+msgstr "Ações"
 
 #: admin/tainacan-admin-i18n.php:68
 #: classes/repositories/class-tainacan-collections.php:26
@@ -275,7 +275,7 @@ msgstr ""
 #: classes/repositories/class-tainacan-taxonomies.php:26
 #: classes/repositories/class-tainacan-terms.php:27
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: admin/tainacan-admin-i18n.php:69
 #: classes/repositories/class-tainacan-collections.php:96
@@ -286,7 +286,7 @@ msgstr ""
 #: classes/repositories/class-tainacan-taxonomies.php:34
 #: classes/repositories/class-tainacan-terms.php:43
 msgid "Description"
-msgstr ""
+msgstr "Decrição"
 
 #: admin/tainacan-admin-i18n.php:70
 #: classes/repositories/class-tainacan-collections.php:33
@@ -294,47 +294,47 @@ msgstr ""
 #: classes/repositories/class-tainacan-repository.php:253
 #: classes/repositories/class-tainacan-repository.php:255
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: admin/tainacan-admin-i18n.php:71
 msgid "Image"
-msgstr ""
+msgstr "Imagem"
 
 #: admin/tainacan-admin-i18n.php:72
 msgid "Button View"
-msgstr ""
+msgstr "Botão Ver"
 
 #: admin/tainacan-admin-i18n.php:73
 msgid "Button Edit"
-msgstr ""
+msgstr "Botão Editar"
 
 #: admin/tainacan-admin-i18n.php:74
 msgid "Button Delete"
-msgstr ""
+msgstr "Botão Deletar"
 
 #: admin/tainacan-admin-i18n.php:75
 msgid "Collections per Page:"
-msgstr ""
+msgstr "Coleções por Página:"
 
 #: admin/tainacan-admin-i18n.php:76
 msgid "Items per Page:"
-msgstr ""
+msgstr "Items por Página:"
 
 #: admin/tainacan-admin-i18n.php:77
 msgid "Active Fields"
-msgstr ""
+msgstr "Campos Ativos"
 
 #: admin/tainacan-admin-i18n.php:78
 msgid "Available Fields"
-msgstr ""
+msgstr "Campos Disponíveis"
 
 #: admin/tainacan-admin-i18n.php:79
 msgid "Available Field Types"
-msgstr ""
+msgstr "Tipos de Campos Disponíveis"
 
 #: admin/tainacan-admin-i18n.php:80
 msgid "Active Filters"
-msgstr ""
+msgstr "Filtros Ativos"
 
 #: admin/tainacan-admin-i18n.php:81
 msgid "Available Filters"

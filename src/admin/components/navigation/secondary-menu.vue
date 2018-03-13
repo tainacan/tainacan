@@ -12,7 +12,7 @@
                 <li class="search-area">
                     <b-field>
                         <b-input 
-                            :placeholder="$i18n.get('search')"
+                            :placeholder="$i18n.getFrom('items', 'search_items')"
                             type="search"
                             size="is-small"
                             icon="magnify">
@@ -27,29 +27,29 @@
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
                         :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
-                        :aria-label="$i18n.get('collection') + ' ' + $i18n.get('items')">
-                    <b-icon size="is-small" icon="file-multiple"></b-icon> <span class="menu-text">{{ $i18n.get('items')}}</span>
+                        :aria-label="$i18n.get('label_collection_fields')">
+                    <b-icon size="is-small" icon="file-multiple"></b-icon> <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
-                        :aria-label="$i18n.get('edit') + ' ' + $i18n.get('collection')">
-                    <b-icon size="is-small" icon="pencil"></b-icon> <span class="menu-text">{{ $i18n.get('edit')}}</span>
+                        :aria-label="$i18n.getFrom('collections','edit_item')">
+                    <b-icon size="is-small" icon="pencil"></b-icon> <span class="menu-text">{{ $i18n.get('edit') }}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionFieldsPath(id) }" 
                         :class="activeRoute == 'FieldsList' ? 'is-active':''" 
-                        :aria-label="$i18n.get('collection') + ' ' + $i18n.get('fields')">
-                    <b-icon size="is-small" icon="format-list-checks"></b-icon> <span class="menu-text">{{ $i18n.get('fields')}}</span>
+                        :aria-label="$i18n.get('label_collection_fields')">
+                    <b-icon size="is-small" icon="format-list-checks"></b-icon> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
-                        :aria-label="$i18n.get('collection') + ' ' + $i18n.get('filters')">
-                    <b-icon size="is-small" icon="filter"></b-icon> <span class="menu-text">{{ $i18n.get('filters')}}</span>
+                        :aria-label="$i18n.get('label_collection_filters')">
+                    <b-icon size="is-small" icon="filter"></b-icon> <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                 </router-link></li>
             </ul>
         </aside>

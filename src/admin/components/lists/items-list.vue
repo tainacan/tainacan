@@ -36,8 +36,8 @@
                     
                     <template v-if="column.field == 'row_actions'">
                         <!-- <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a> -->
-                        <a id="button-edit" @click="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
-                        <a id="button-delete" @click="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
+                        <a id="button-edit" :aria-label="$i18n.getFrom('items','edit_item')" @click="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
+                        <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
                     </template>
                 </b-table-column>
 
@@ -57,7 +57,7 @@
                                     id="button-create" 
                                     tag="button" class="button is-primary"
                                     :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ $i18n.get('new') + ' ' + $i18n.get('item') }}
+                            {{ $i18n.getFrom('items', 'new_item') }}
                         </router-link>
                     </div>
                 </section>

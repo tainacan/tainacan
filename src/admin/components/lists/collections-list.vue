@@ -43,7 +43,7 @@
 
                 <b-table-column tabindex="0" :label="$i18n.get('label_actions')" width="78" :aria-label="$i18n.get('label_actions')">
                     <!-- <a id="button-view" :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a> -->
-                    <a id="button-edit" :aria-label="$i18n.get('label_button_edit')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
+                    <a id="button-edit" :aria-label="$i18n.getFrom('collections','edit_item')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
                     <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
                 </b-table-column>
             </template>
@@ -61,7 +61,7 @@
                         <p>{{$i18n.get('info_no_collection_created')}}</p>
                         <router-link tag="button" class="button is-primary"
                                     :to="{ path: $routerHelper.getNewCollectionPath() }">
-                            {{ $i18n.get('new') + ' ' + $i18n.get('collection') }}
+                            {{ $i18n.getFrom('collections', 'new_item') }}
                         </router-link>
                     </div>
                 </section>

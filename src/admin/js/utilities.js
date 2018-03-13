@@ -15,6 +15,14 @@ I18NPlugin.install = function (Vue, options = {}) {
         get(key) {
             let string = tainacan_plugin.i18n[key];
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
+        },
+        getFrom(entity, key) {
+            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+                entity = 'taxonomies'
+            if (tainacan_plugin.i18n['entities_labels'][entity] == undefined)
+                return 'Invalid i18n entity: ' + entity;
+            let string = tainacan_plugin.i18n['entities_labels'][entity][key];
+            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
         }
     }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="page-container primary-page">
+    <div class="page-container">
         <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag>
         <form class="tainacan-form" label-width="120px">
             <b-field 

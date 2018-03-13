@@ -4,7 +4,7 @@
             <div class="header-item">
                 <router-link tag="button" class="button is-secondary"
                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                    {{ $i18n.get('new') + ' ' + $i18n.get('item') }}
+                    {{ $i18n.getFrom('items', 'new_item') }}
                 </router-link>
             </div>
             <div class="header-item">
