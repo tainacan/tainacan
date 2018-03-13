@@ -66,14 +66,16 @@ abstract class Filter_Type {
         $this->options = ( is_array( $options ) ) ? $options : unserialize( $options );
     }
 
-    /**
-     * Validates the options Array
-     *
-     * This method should be declared by each filter type sub classes
-     *
-     * @param  \Tainacan\Entities\Filter $filter The field object that is beeing validated
-     * @return true|Array True if options are valid. If invalid, returns an array where keys are the field keys and values are error messages.
-     */
+	/**
+	 * Validates the options Array
+	 *
+	 * This method should be declared by each filter type sub classes
+	 *
+	 * @param  \Tainacan\Entities\Filter $filter The field object that is beeing validated
+	 *
+	 * @return true|Array True if options are valid. If invalid, returns an array where keys are the field keys and values are error messages.
+	 * @throws \Exception
+	 */
     public function validate_options(\Tainacan\Entities\Filter $filter) {
         $field_type = $filter->get_field()->get_field_type();
         //if there is no field to validate

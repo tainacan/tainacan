@@ -10,6 +10,7 @@ $rest_filters_controller       = new TAINACAN_REST_Filters_Controller();
 $rest_item_metadata_controller = new TAINACAN_REST_Item_Metadata_Controller();
 $rest_logs_controller          = new TAINACAN_REST_Logs_Controller();
 $rest_field_types_controller   = new TAINACAN_REST_Field_Types_Controller();
+$rest_filter_types_controller  = new TAINACAN_REST_Filter_Types_Controller();
 // Add here other endpoints imports
 
 ?>
