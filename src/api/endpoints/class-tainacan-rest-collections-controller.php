@@ -47,7 +47,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 		        'methods'             => WP_REST_Server::CREATABLE,
 		        'callback'            => array($this, 'create_item'),
 		        'permission_callback' => array($this, 'create_item_permissions_check'),
-		        'args'                => $this->get_item_schema()
+		        'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
 	        ),
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)', array(
@@ -55,13 +55,13 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
                 'permission_callback' => array($this, 'get_item_permissions_check'),
-	            'args'                => $this->get_item_schema()
+	            'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::READABLE),
             ),
             array(
                 'methods'             => WP_REST_Server::EDITABLE,
                 'callback'            => array($this, 'update_item'),
                 'permission_callback' => array($this, 'update_item_permissions_check'),
-                'args'                => $this->get_item_schema()
+                'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE),
             ),
             array(
                 'methods'             => WP_REST_Server::DELETABLE,
@@ -375,14 +375,48 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
     }
 
 	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_endpoint_args_for_item_schema( $method = null ) {
+		$endpoint_args = [];
+		if($method === WP_REST_Server::READABLE) {
+			$endpoint_args['fetch_only'] = array(
+				'type'        => 'string/array',
+				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.' ),
+			);
+
+			$endpoint_args['context'] = array(
+				'type'    => 'string',
+				'default' => 'view',
+				'items'   => array( 'view, edit' )
+			);
+		} elseif ($method === WP_REST_Server::CREATABLE || $method === WP_REST_Server::EDITABLE) {
+			$map = $this->collections_repository->get_map();
+
+			foreach ($map as $mapped => $value){
+				$set_ = 'set_'. $mapped;
+
+				// Show only args that has a method set
+				if( !method_exists($this->collection, "$set_") ){
+					unset($map[$mapped]);
+				}
+			}
+
+			$endpoint_args = $map;
+		}
+
+	    return $endpoint_args;
+    }
+
+	/**
 	 * @return array|mixed|void
 	 */
 	public function get_item_schema() {
-		$schema['$schema'] = 'http://json-schema.org/draft-07/schema#';
-		$schema['title'] = $this->collection->get_post_type();
-		$schema['type']  = 'object';
-
-		$schema['properties'] = $this->collections_repository->get_map();
+		$schema['collection']['type']        = 'array/object';
+		$schema['collection']['description'] = __('Passed in body.');
+		$schema['collection']['properties']  = $this->collections_repository->get_map();
 
 		return $schema;
     }

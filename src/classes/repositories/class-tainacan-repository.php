@@ -74,7 +74,7 @@ abstract class Repository {
 		
 		// First iterate through the native post properties
 		foreach ($map as $prop => $mapped) {
-			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
+			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'thumbnail_id') {
 				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
 			}
 		}
@@ -94,8 +94,9 @@ abstract class Repository {
 		foreach ($map as $prop => $mapped) {
             if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
                 $this->insert_metadata($obj, $prop);
+            } elseif ($mapped['map'] === 'thumbnail_id'){
+            	set_post_thumbnail($obj->WP_Post, $obj->get_mapped_property('thumbnail_id'));
             }
-            
 		}
 		
 		do_action('tainacan-insert', $obj);

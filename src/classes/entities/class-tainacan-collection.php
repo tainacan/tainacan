@@ -122,6 +122,13 @@ class Collection extends Entity {
     }
 
 	/**
+	 * @param $id
+	 */
+	function set_featured_img_by_id($id){
+		$this->set_mapped_property('featured_image_id', $id );
+    }
+
+	/**
 	 * @return mixed|null
 	 */
 	function get_attachments(){
@@ -290,6 +297,7 @@ class Collection extends Entity {
 	 * @see \Tainacan\Repositories\Fields->fetch()
 	 *
 	 * @return [\Tainacan\Entities\Field] array
+	 * @throws \Exception
 	 */
     function get_fields() {
         $Tainacan_Fields = new \Tainacan\Repositories\Fields();

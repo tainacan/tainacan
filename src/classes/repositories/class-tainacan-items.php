@@ -76,6 +76,12 @@ class Items extends Repository {
 	            'type'        => 'string',
 	            'description' => __('The item thumbnail URL')
             ],
+            'featured_image_id' => [
+	            'map'         => 'thumbnail_id',
+	            'title'       => __('Featured Image ID', 'tainacan'),
+	            'type'        => 'string',
+	            'description' => __('The item thumbnail')
+            ],
             'attachments'     => [
 			    'map'         => 'attachments',
 			    'title'       => __('Attachments', 'tainacan'),
