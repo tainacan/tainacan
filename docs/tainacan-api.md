@@ -25,7 +25,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 1. Route `wp-json/tainacan/v2/collections/(?P<collection_id>[\d]+)`
 
-      1. Endpoints supported:
+      1. Endpoints:
 
             1. GET (Fetch a collection)
       
@@ -47,7 +47,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 2. Route `wp-json/tainacan/v2/collections`
 
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. GET (Fetch all collections)
     
@@ -75,7 +75,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/items`
 
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. GET (Fetch all items from a collection)
     
@@ -94,7 +94,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
     
 2. Route `wp-json/tainacan/v2/items/(?P<item_id>[\d]+)`
 
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. GET (Fetch a item)
     
@@ -120,7 +120,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/fields`
     
-      1. Endpoints supported:
+      1. Endpoints:
             1. GET (Fetch all collection field)
                 
             1. POST (Create a field in collection and all it items)
@@ -147,7 +147,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 2. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/fields/(?P<field_id>[\d]+)`
 
-      1. Endpoints supported:
+      1. Endpoints:
       
             1. GET (Fetch a field from a collection or Fetch all field values)
             
@@ -166,7 +166,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 3. Route `wp-json/tainacan/v2/fields`
 
-      1. Endpoints supported:
+      1. Endpoints:
       
             1. GET (Fetch all default fields)
             
@@ -176,7 +176,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 4. Route `wp-json/tainacan/v2/fields/(?P(<field_id>[\d]+))`
 
-      1. Endpoints supported:
+      1. Endpoints:
       
             1. DELETE (Trash a default field)
             
@@ -188,7 +188,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 #### Field Types
 1. Route `wp-json/tainacan/v2/field-types`
 
-      1. Endpoint supported:
+      1. Endpoint:
       
             1. GET (Fetch all field types)
 ------
@@ -196,7 +196,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 1. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)`
 
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. PATCH or PUT (Set value of a metadata)
     
@@ -210,7 +210,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 2. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata`
 
-      1. Enpoints supported:
+      1. Enpoints:
 
             1. GET (Fetch all item metadata, with it values)
 
@@ -219,7 +219,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 1. Route `wp-json/tainacan/v2/taxonomies`
 
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. GET (Fetch all taxonomies)
     
@@ -241,7 +241,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 2. Route `wp-json/tainacan/v2/taxonomies/(?P<taxonomy_id>[\d]+)`
 
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. GET (Fetch a taxonomy)
     
@@ -264,7 +264,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 3. Route `wp-json/tainacan/v2/taxonomies/(?P<taxonomy_id>[\d]+)/collection/(?P<collection_id>[\d]+)`
 
-      1. Routes supported:
+      1. Routes:
 
             1. PATCH or PUT (Add a Collection in a Taxonomy)
 
@@ -273,7 +273,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/field/(?P<field_id>[\d]+)/filters`
     
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. POST (Create a filter)
     
@@ -292,7 +292,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 2. Route `wp-json/tainacan/v2/filters/(?P<filter_id>[\d]+)`
     
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. GET (Fetch a filter)
             
@@ -313,16 +313,52 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 3. Route `wp-json/tainacan/v2/filters`
 
-      1. Endpoints supported:
+      1. Endpoints:
 
-            1. GET (Fetch all filters)
+            1. GET (Fetch all repository filters)
+            
+            1. POST (Create a filter in repository. Without field and collection associations)
+            
+                  Example of JSON passed in body for creating a filter:
+    
+```javascript
+      {
+            "filter_type": "string",
+            "filter": {
+                  "name": "string",
+                  "description": "string",
+                  ...
+            }
+      }
+```
 
-------    
+4. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/filters`
+
+      1. Endpoints:
+            
+            1. GET (Fetch all collection filters)
+            
+            1. POST (Create a filter in a collection, without field association)
+            
+                  Example of JSON passed in body for creating a filter:
+    
+```javascript
+      {
+            "filter_type": "string",
+            "filter": {
+                  "name": "string",
+                  "description": "string",
+                  ...
+            }
+      }
+```         
+      
+------    
 #### Terms
 
 1. Route `wp-json/tainacan/v2/taxonomy/(?P<taxonomy_id>[\d]+)/terms`
 
-      1. Endpoints supported:
+      1. Endpoints:
       
             1. GET (Fetch all tems of a taxonomy)
     
@@ -340,7 +376,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
    
 2. Route `wp-json/tainacan/v2/taxonomy/(?P<taxonomy_id>[\d]+)/terms/(?P<term_id>[\d]+)`
 
-      1. Endpoints supported:
+      1. Endpoints:
     
             1. GET (Fecth a term of a taxonomy)
             
@@ -362,13 +398,13 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 1. Route `wp-json/tainacan/v2/logs`
 
-      1. Endpoints supported:
+      1. Endpoints:
 
             1. GET (Get all logs)
 
 2. Route `wp-json/tainacan/v2/logs/(?P<log_id>[\d]+)`
 
-      1. Enpoints supported:
+      1. Enpoints:
 
             1. GET (Get a log)
 
