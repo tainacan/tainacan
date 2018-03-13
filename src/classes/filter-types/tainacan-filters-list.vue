@@ -14,11 +14,13 @@
 
 <script>
     import { eventFilterBus } from '../../js/event-bus-filters'
+    import qs from 'qs';
 
     export default {
         name: 'TainacanFiltersList',
         props: {
-            filter: {}
+            filter: {},
+            query: {}
         },
         created(){
             console.log( this.filter );
@@ -51,6 +53,8 @@
         methods: {
             listen( event ){
                 eventFilterBus.$emit( 'input', ( event.detail ) ? event.detail[0] : event );
+                console.log( this.$route );
+                this.$router.push({ query: this.query })
             }
         }
     }

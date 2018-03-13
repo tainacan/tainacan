@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
+import qs from 'qs';
 
 // Main Pages
 import AdminPage from '../admin.vue'
@@ -68,5 +69,14 @@ const routes = [
 ]
 
 export default new VueRouter ({
-    routes
+    routes,
+    // set custom query resolver
+    parseQuery(query) {
+        return qs.parse(query);
+    },
+    stringifyQuery(query) {
+        var result = qs.stringify(query);
+
+        return result ? ('?' + result) : '';
+    }
 })
