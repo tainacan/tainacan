@@ -48,20 +48,11 @@ class Collection extends Entity {
      * @return \WP_Post_Type|\WP_Error
      */
     function register_collection_item_post_type() {
-        $cpt_labels = array(
-            'name'               => __('Items', 'tainacan'),
-            'singular_name'      => __('Item', 'tainacan'),
-            'add_new'            => __('Add new', 'tainacan'),
-            'add_new_item'       => __('Add new', 'tainacan'),
-            'edit_item'          => __('Edit Item', 'tainacan'),
-            'new_item'           => __('New Item', 'tainacan'),
-            'view_item'          => __('View Item', 'tainacan'),
-            'search_items'       => __('Search items', 'tainacan'),
-            'not_found'          => __('No items found', 'tainacan'),
-            'not_found_in_trash' => __('No items found in trash', 'tainacan'),
-            'parent_item_colon'  => __('Parent item:', 'tainacan'),
-            'menu_name'          => $this->get_name()
-        );
+        global ${$this->repository};
+		
+		$cpt_labels = ${$this->repository}->get_cpt_labels();
+		
+		$cpt_labels['menu_name'] = $this->get_name();
 
         $cpt_slug = $this->get_db_identifier();
         $capabilities = $this->get_items_capabilities();

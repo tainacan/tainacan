@@ -62,10 +62,14 @@ class Taxonomies extends Repository {
         	],
         ]);
     }
-
-    public function register_post_type() {
-        $labels = array(
-            'name'               => __('Taxonomies', 'tainacan'),
+	
+	/**
+	 * Get the labels for the custom post type of this repository
+	 * @return array Labels in the format expected by register_post_type()
+	 */
+	public function get_cpt_labels() {
+		return array(
+			'name'               => __('Taxonomies', 'tainacan'),
             'singular_name'      => __('Taxonomy', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
             'add_new_item'       => __('Add new Taxonomy', 'tainacan'),
@@ -78,7 +82,10 @@ class Taxonomies extends Repository {
             'parent_item_colon'  => __('Parent Taxonomy:', 'tainacan'),
             'menu_name'          => __('Taxonomies', 'tainacan')
         );
+	}
 
+    public function register_post_type() {
+        $labels = $this->get_cpt_labels();
         $args = array(
             'labels'              => $labels,
             'hierarchical'        => true,

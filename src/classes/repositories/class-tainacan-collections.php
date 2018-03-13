@@ -161,9 +161,13 @@ class Collections extends Repository {
 
         ]);
     }
-
-    public function register_post_type() {
-        $labels = array(
+	
+	/**
+	 * Get the labels for the custom post type of this repository
+	 * @return array Labels in the format expected by register_post_type()
+	 */
+	public function get_cpt_labels() {
+		return array(
             'name'               => __('Collections', 'tainacan'),
             'singular_name'      => __('Collection', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
@@ -177,6 +181,10 @@ class Collections extends Repository {
             'parent_item_colon'  => __('Parent Collection:', 'tainacan'),
             'menu_name'          => __('Collections', 'tainacan')
         );
+	}
+
+    public function register_post_type() {
+        $labels = $this->get_cpt_labels();
         $args = array(
             'labels'              => $labels,
             'hierarchical'        => true,

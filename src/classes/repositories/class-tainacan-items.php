@@ -92,6 +92,29 @@ class Items extends Repository {
             // field .. field...
         ]);
     }
+	
+	/**
+	 * Get generic labels for the custom post types created for each collection
+	 *
+	 * @see \Tainacan\Entities\Collection::register_collection_item_post_type()
+	 * 
+	 * @return array Labels in the format expected by register_post_type()
+	 */
+	public function get_cpt_labels() {
+		return array(
+			'name'               => __('Items', 'tainacan'),
+            'singular_name'      => __('Item', 'tainacan'),
+            'add_new'            => __('Add new', 'tainacan'),
+            'add_new_item'       => __('Add new', 'tainacan'),
+            'edit_item'          => __('Edit Item', 'tainacan'),
+            'new_item'           => __('New Item', 'tainacan'),
+            'view_item'          => __('View Item', 'tainacan'),
+            'search_items'       => __('Search items', 'tainacan'),
+            'not_found'          => __('No items found', 'tainacan'),
+            'not_found_in_trash' => __('No items found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent item:', 'tainacan'),
+        );
+	}
     
     /**
      * Register each Item post_type

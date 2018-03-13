@@ -72,10 +72,14 @@ class Filters extends Repository {
             ],
         ]);
     }
-
-    public function register_post_type(){
-        $labels = array(
-            'name'               => __('Filters', 'tainacan'),
+	
+	/**
+	 * Get the labels for the custom post type of this repository
+	 * @return array Labels in the format expected by register_post_type()
+	 */
+	public function get_cpt_labels() {
+		return array(
+			'name'               => __('Filters', 'tainacan'),
             'singular_name'      => __('Filter', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
             'add_new_item'       => __('Add new Filter', 'tainacan'),
@@ -88,7 +92,10 @@ class Filters extends Repository {
             'parent_item_colon'  => __('Parent Filter:', 'tainacan'),
             'menu_name'          => __('Filters', 'tainacan')
         );
+	}
 
+    public function register_post_type() {
+        $labels = $this->get_cpt_labels();
         $args = array(
             'labels'              => $labels,
             'hierarchical'        => true,

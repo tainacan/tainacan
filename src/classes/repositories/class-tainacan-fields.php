@@ -172,10 +172,14 @@ class Fields extends Repository {
             ],
         ]);
     }
-
-    public function register_post_type() {
-        $labels = array(
-            'name'               => __('Field', 'tainacan'),
+	
+	/**
+	 * Get the labels for the custom post type of this repository
+	 * @return array Labels in the format expected by register_post_type()
+	 */
+	public function get_cpt_labels() {
+		return array(
+			'name'               => __('Field', 'tainacan'),
             'singular_name'      => __('Field', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
             'add_new_item'       => __('Add new Field', 'tainacan'),
@@ -188,7 +192,10 @@ class Fields extends Repository {
             'parent_item_colon'  => __('Parent Field:', 'tainacan'),
             'menu_name'          => __('Fields', 'tainacan')
         );
+	}
 
+    public function register_post_type() {
+        $labels = $this->get_cpt_labels();
         $args = array(
             'labels'              => $labels,
             'hierarchical'        => true,

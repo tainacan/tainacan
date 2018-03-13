@@ -66,7 +66,7 @@ class Admin {
     }
     
     function admin_page() {
-	    global $TAINACAN_BASE_URL;
+	    global $TAINACAN_BASE_URL, $Tainacan_Collections, $Tainacan_Fields, $Tainacan_Filters, $Tainacan_Items, $Tainacan_Taxonomies;
 
 	    // TODO move it to a separate file and start the Vue project
         echo "<div id='tainacan-admin-app'></div>";
@@ -74,6 +74,17 @@ class Admin {
 	    wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [] , null, true);
         
         $tainacan_admin_i18n = require('tainacan-admin-i18n.php');
+		
+		$entities_labels = [
+			'collections' => $Tainacan_Collections->get_cpt_labels(),
+			'fields' => $Tainacan_Fields->get_cpt_labels(),
+			'filters' => $Tainacan_Filters->get_cpt_labels(),
+			'items' => $Tainacan_Items->get_cpt_labels(),
+			'taxonomies' => $Tainacan_Taxonomies->get_cpt_labels(),
+		];
+		
+		$tainacan_admin_i18n['entities_labels'] = $entities_labels;
+		
         $components = ( has_filter( 'tainacan_register_web_components' ) ) ? apply_filters('tainacan_register_web_components') : [];
 
         $cur_user = wp_get_current_user();
