@@ -210,7 +210,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 2. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata`
 
-      1. Enpoints:
+      1. Endpoint:
 
             1. GET (Fetch all item metadata, with it values)
 
@@ -264,7 +264,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 3. Route `wp-json/tainacan/v2/taxonomies/(?P<taxonomy_id>[\d]+)/collection/(?P<collection_id>[\d]+)`
 
-      1. Routes:
+      1. Endpoints:
 
             1. PATCH or PUT (Add a Collection in a Taxonomy)
 
@@ -404,7 +404,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 2. Route `wp-json/tainacan/v2/logs/(?P<log_id>[\d]+)`
 
-      1. Enpoints:
+      1. Endpoints:
 
             1. GET (Get a log)
 
