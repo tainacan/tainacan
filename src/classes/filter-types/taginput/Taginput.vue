@@ -76,11 +76,10 @@
 
                 promise.then( data => {
                     this.isLoading = false;
-                })
-                    .catch( error => {
-                        console.log('error select', error );
-                        this.isLoading = false;
-                    });
+                }).catch( error => {
+                    console.log('error select', error );
+                    this.isLoading = false;
+                });
             },
             getValuesPlainText( field_id ){
                 return axios.get( '/collection/' + this.collection_id  + '/fields/' + field_id + '?fetch=all_field_values')
