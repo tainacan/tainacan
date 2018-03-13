@@ -1,0 +1,1671 @@
+# WordPress Blank Pot
+# Copyright (C) 2014 ...
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Blank Pot v1.0.0\n"
+"Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
+"POT-Creation-Date: 2018-03-12 17:22-0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: MediaLab\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Textdomain-Support: yesX-Generator: Poedit 1.6.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html_x:1,2c;esc_html__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
+"_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin/class-tainacan-admin.php:22 admin/class-tainacan-admin.php:23
+msgid "Tainacan"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:5
+msgid "Repository"
+msgstr "Repositório"
+
+#: admin/tainacan-admin-i18n.php:6
+#: classes/repositories/class-tainacan-collections.php:167
+#: classes/repositories/class-tainacan-collections.php:178
+#: classes/repositories/class-tainacan-taxonomies.php:58
+msgid "Collections"
+msgstr "Coleções"
+
+#: admin/tainacan-admin-i18n.php:7
+#: classes/entities/class-tainacan-collection.php:52
+msgid "Items"
+msgstr "Itens"
+
+#: admin/tainacan-admin-i18n.php:8
+#: classes/repositories/class-tainacan-fields.php:189
+msgid "Fields"
+msgstr "Campos"
+
+#: admin/tainacan-admin-i18n.php:9
+#: classes/repositories/class-tainacan-filters.php:78
+#: classes/repositories/class-tainacan-filters.php:89
+msgid "Filters"
+msgstr "Filtros"
+
+#: admin/tainacan-admin-i18n.php:10
+msgid "Categories"
+msgstr "Categorias"
+
+#: admin/tainacan-admin-i18n.php:11
+msgid "Events"
+msgstr "Eventos"
+
+#: admin/tainacan-admin-i18n.php:12
+#: classes/repositories/class-tainacan-collections.php:168
+#: classes/repositories/class-tainacan-fields.php:151
+#: classes/repositories/class-tainacan-filters.php:54
+#: classes/repositories/class-tainacan-items.php:38
+msgid "Collection"
+msgstr "Coleção"
+
+#: admin/tainacan-admin-i18n.php:13
+#: classes/entities/class-tainacan-collection.php:53
+msgid "Item"
+msgstr "Item"
+
+#: admin/tainacan-admin-i18n.php:14
+#: classes/repositories/class-tainacan-fields.php:178
+#: classes/repositories/class-tainacan-fields.php:179
+#: classes/repositories/class-tainacan-filters.php:68
+#: dev-interface/class-tainacan-dev-interface.php:103
+#: dev-interface/class-tainacan-dev-interface.php:252
+#: dev-interface/class-tainacan-dev-interface.php:322
+msgid "Field"
+msgstr "Campo"
+
+#: admin/tainacan-admin-i18n.php:15
+#: classes/repositories/class-tainacan-filters.php:79
+msgid "Filter"
+msgstr "Filtro"
+
+#: admin/tainacan-admin-i18n.php:16 admin/tainacan-admin-i18n.php:137
+msgid "Category"
+msgstr "Categoria"
+
+#: admin/tainacan-admin-i18n.php:17
+msgid "Event"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:20
+msgid "Edit"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:21
+msgid "New"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:22
+msgid "Import"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:23
+msgid "Export"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:24
+msgid "Cancel"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:25
+msgid "Save"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:26
+msgid "See"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:27
+msgid "Search"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:28
+msgid "Advanced Search"
+msgstr "Busca Avançada"
+
+#: admin/tainacan-admin-i18n.php:31
+msgid "Publish"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:32
+msgid "Draft"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:33
+msgid "Private"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:34
+msgid "Trash"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:35
+msgid "Automatic Draft"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:38
+msgid "Collections Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:39
+msgid "Items Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:40
+msgid "Fields Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:41
+msgid "Filters Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:42
+msgid "Categories Page"
+msgstr "Página de Categorias"
+
+#: admin/tainacan-admin-i18n.php:43
+msgid "Terms Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:44
+msgid "Events Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:45
+msgid "Collection Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:46
+msgid "Item Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:47
+msgid "Field Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:48
+msgid "Filter Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:49
+msgid "Category Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:50
+msgid "Term Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:51
+msgid "Event Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:52
+msgid "Collection Creation Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:53
+msgid "Category Creation Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:54
+msgid "Item Creation Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:55
+msgid "Filter Creation Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:56
+msgid "Collection Edition Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:57
+msgid "Item Edition Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:58
+msgid "Category Edition Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:59
+msgid "Filter Edition Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:60
+msgid "Collection Fields Edition Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:63
+msgid "Menu"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:64
+msgid "Main Menu"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:65
+msgid "Collection Menu"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:66
+#: classes/repositories/class-tainacan-items.php:15
+#: classes/repositories/class-tainacan-logs.php:26
+msgid "Title"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:67
+msgid "Actions"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:68
+#: classes/repositories/class-tainacan-collections.php:26
+#: classes/repositories/class-tainacan-fields.php:36
+#: classes/repositories/class-tainacan-filters.php:17
+#: classes/repositories/class-tainacan-taxonomies.php:26
+#: classes/repositories/class-tainacan-terms.php:27
+msgid "Name"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:69
+#: classes/repositories/class-tainacan-collections.php:96
+#: classes/repositories/class-tainacan-fields.php:67
+#: classes/repositories/class-tainacan-filters.php:32
+#: classes/repositories/class-tainacan-items.php:30
+#: classes/repositories/class-tainacan-logs.php:48
+#: classes/repositories/class-tainacan-taxonomies.php:34
+#: classes/repositories/class-tainacan-terms.php:43
+msgid "Description"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:70
+#: classes/repositories/class-tainacan-collections.php:33
+#: classes/repositories/class-tainacan-items.php:23
+#: classes/repositories/class-tainacan-repository.php:253
+#: classes/repositories/class-tainacan-repository.php:255
+msgid "Status"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:71
+msgid "Image"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:72
+msgid "Button View"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:73
+msgid "Button Edit"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:74
+msgid "Button Delete"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:75
+msgid "Collections per Page:"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:76
+msgid "Items per Page:"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:77
+msgid "Active Fields"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:78
+msgid "Available Fields"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:79
+msgid "Available Field Types"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:80
+msgid "Active Filters"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:81
+msgid "Available Filters"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:82
+msgid "Available Filter Types"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:83
+msgid "per Page"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:84
+msgid "Fields on table"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:85
+#: classes/repositories/class-tainacan-fields.php:84
+msgid "Required"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:86
+msgid "Allow multiple values"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:87
+#: classes/repositories/class-tainacan-fields.php:137
+msgid "Default value"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:88
+msgid "Unique value"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:89
+msgid "Yes"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:90
+msgid "No"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:91
+msgid "Collection Related"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:92
+msgid "Fields for search"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:93
+msgid "Allow repeated items"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:94
+msgid "Select category"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:95
+msgid "Input type"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:96
+msgid "Allow new terms"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:97
+msgid "Select"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:98
+msgid "Insert options"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:99
+#: classes/repositories/class-tainacan-collections.php:76
+#: classes/repositories/class-tainacan-items.php:81
+msgid "Attachments"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:100
+msgid "Enabled"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:101
+msgid "Disabled"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:102
+msgid "Creation"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:105
+msgid "Drag and drop Fields here to add them to Collection."
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:106
+msgid "Delete selected collections"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:107
+msgid "Delete selected items"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:108
+msgid "Drop an image here or click to upload."
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:109
+msgid "Select a status:"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:112
+msgid "No collection was created in this repository."
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:113
+msgid "No item was created in this collection."
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:114
+msgid "Error on deleting collection."
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:115
+msgid "Collection deleted."
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:116
+msgid "Item deleted."
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:117
+msgid "Do you really want to delete this collection?"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:118
+msgid "Do you really want to delete this item?"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:119
+msgid "Do you really want to delete the selected collections?"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:120
+msgid "Do you really want to delete the selected items?"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:121
+msgid "The field Collection related is required"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:122
+msgid "No fields found in this collection"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:123
+msgid "Showing items "
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:124
+msgid "Showing collections "
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:125
+msgid " to "
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:126
+msgid " of "
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:127
+msgid "Created by: "
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:128
+msgid "Date: "
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:131
+msgid "Text"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:132
+msgid "Text area"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:133
+msgid "Date"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:134
+msgid "Numeric"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:135
+msgid "Select box"
+msgstr ""
+
+#: admin/tainacan-admin-i18n.php:136
+msgid "Relationship"
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:302
+msgid "Limit results to those matching a string."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:337
+msgid "Order sort attribute ascending or descending."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:388
+#: api/class-tainacan-rest-controller.php:410
+msgid "Custom field key."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:392
+#: api/class-tainacan-rest-controller.php:396
+msgid "Custom field value"
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:400
+msgid ""
+"Operator to test the meta_value. Possible values are =, !=, >, >=, <, <=, "
+"LIKE, NOT LIKE, IN, NOT IN, BETWEEN, NOT BETWEEN, NOT EXISTS, REGEXP, NOT "
+"REGEXP or RLIKE."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:404
+msgid "Limit result set to items that have specific custom fields"
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:414
+msgid ""
+"Custom field value. It can be an array only when compare is IN, NOT IN, "
+"BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the "
+"EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.\n"
+"\t(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to "
+"work correctly prior to 3.9. You must supply some string for the value "
+"parameter. An empty string or NULL will NOT work. However, any other string "
+"will do the trick and will NOT show up in your SQL when using NOT EXISTS. "
+"Need inspiration? How about 'bug #23268'.)"
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:419
+#: api/class-tainacan-rest-controller.php:470
+msgid ""
+"Operator to test. Possible values are =, !=, >, >=, <, <=, LIKE, NOT LIKE, "
+"IN, NOT IN, BETWEEN, NOT BETWEEN, EXISTS and NOT EXISTS."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:424
+msgid "OR or AND, how the sub-arrays should be compared."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:429
+msgid ""
+"Custom field type. Possible values are NUMERIC, BINARY, CHAR, DATE, "
+"DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can "
+"also specify precision and scale for the DECIMAL and NUMERIC types (for "
+"example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with "
+"the compare value BETWEEN only if the date is stored at the format YYYY-MM-"
+"DD and tested with this format."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:436
+msgid "Limit result set to items that was created in specific date."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:442
+msgid "4 digit year (e.g. 2018)."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:446
+msgid "Month number (from 1 to 12)."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:450
+msgid "Day of the month (from 1 to 31)."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:454
+msgid "Week of the year (from 0 to 53)."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:458
+msgid "Hour (from 0 to 23)."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:462
+msgid "Minute (from 0 to 59)."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:466
+msgid "Second (from 0 to 59)."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:476
+msgid "For after/before, whether exact value should be matched or not."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:480
+msgid ""
+"Date to retrieve posts before. Accepts strtotime()-compatible string, or "
+"array of year, month, day "
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:484
+msgid ""
+"Date to retrieve posts after. Accepts strtotime()-compatible string, or "
+"array of year, month, day "
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:491
+msgid "Show items associated with certain taxonomy."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:497
+msgid "The taxonomy data base identifier."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:501
+msgid ""
+"Select taxonomy term by. Possible values are term_id, name, slug or "
+"term_taxonomy_id. Default value is term_id."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:505
+msgid "Taxonomy term(s)."
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:509
+msgid ""
+"Operator to test. Possible values are IN, NOT IN, AND, EXISTS and NOT EXISTS"
+msgstr ""
+
+#: api/class-tainacan-rest-controller.php:514
+msgid ""
+"The logical relationship between each inner taxonomy array when there is "
+"more than one. Possible values are AND, OR. Do not use with a single inner "
+"taxonomy array."
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:72
+#: api/endpoints/class-tainacan-rest-items-controller.php:81
+msgid ""
+"To delete permanently, in body you can pass 'is_permanently' as true. By "
+"default this will only trash collection"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:214
+#: api/endpoints/class-tainacan-rest-fields-controller.php:247
+#: api/endpoints/class-tainacan-rest-items-controller.php:262
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:159
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:266
+msgid "Body can not be empty."
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:234
+#: api/endpoints/class-tainacan-rest-collections-controller.php:340
+#: api/endpoints/class-tainacan-rest-fields-controller.php:218
+#: api/endpoints/class-tainacan-rest-fields-controller.php:238
+#: api/endpoints/class-tainacan-rest-fields-controller.php:432
+#: api/endpoints/class-tainacan-rest-filters-controller.php:228
+#: api/endpoints/class-tainacan-rest-item-metadata-controller.php:220
+#: api/endpoints/class-tainacan-rest-items-controller.php:281
+#: api/endpoints/class-tainacan-rest-items-controller.php:366
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:259
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:316
+#: api/endpoints/class-tainacan-rest-terms-controller.php:212
+msgid "One or more values are invalid."
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:347
+msgid "Collection with that ID not found"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:353
+#: api/endpoints/class-tainacan-rest-fields-controller.php:445
+#: api/endpoints/class-tainacan-rest-filters-controller.php:139
+#: api/endpoints/class-tainacan-rest-filters-controller.php:179
+#: api/endpoints/class-tainacan-rest-filters-controller.php:242
+#: api/endpoints/class-tainacan-rest-items-controller.php:379
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:329
+#: api/endpoints/class-tainacan-rest-terms-controller.php:226
+msgid "The body could not be empty"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-collections-controller.php:404
+msgid "Limit result set to collection with specific name."
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-fields-controller.php:400
+msgid "Field with that ID not found"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-fields-controller.php:406
+msgid "That field is not a default field"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-fields-controller.php:413
+msgid "That field is not a collection field"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-filters-controller.php:133
+msgid "One or more attributes are invalid"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-filters-controller.php:235
+msgid "Filter with that ID not found"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-item-metadata-controller.php:213
+msgid "Field do not accept suggestion."
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-items-controller.php:373
+msgid "Item with that ID not found"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-items-controller.php:424
+msgid "Limit result set to items with specific title."
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:179
+msgid "Failure on deleted."
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:190
+msgid "Taxonomy with this id ("
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-taxonomies-controller.php:323
+msgid "Taxonomy with that ID not found"
+msgstr ""
+
+#: api/endpoints/class-tainacan-rest-terms-controller.php:219
+msgid "Term or Taxonomy with that IDs not found"
+msgstr ""
+
+#: classes/class-tainacan-capabilities.php:286
+msgctxt "User role"
+msgid "Tainacan Author"
+msgstr "Autor Tainacan"
+
+#: classes/class-tainacan-capabilities.php:287
+msgctxt "User role"
+msgid "Tainacan Contributor"
+msgstr "Colaborador Tainacan"
+
+#: classes/class-tainacan-capabilities.php:288
+msgctxt "User role"
+msgid "Tainacan Editor"
+msgstr "Editor Tainacan"
+
+#: classes/entities/class-tainacan-collection.php:54
+#: classes/entities/class-tainacan-collection.php:55
+#: classes/repositories/class-tainacan-collections.php:169
+#: classes/repositories/class-tainacan-fields.php:180
+#: classes/repositories/class-tainacan-filters.php:80
+#: classes/repositories/class-tainacan-logs.php:108
+#: classes/repositories/class-tainacan-taxonomies.php:70
+msgid "Add new"
+msgstr ""
+
+#: classes/entities/class-tainacan-collection.php:56
+msgid "Edit Item"
+msgstr ""
+
+#: classes/entities/class-tainacan-collection.php:57
+msgid "New Item"
+msgstr ""
+
+#: classes/entities/class-tainacan-collection.php:58
+msgid "View Item"
+msgstr ""
+
+#: classes/entities/class-tainacan-collection.php:59
+msgid "Search items"
+msgstr ""
+
+#: classes/entities/class-tainacan-collection.php:60
+msgid "No items found"
+msgstr ""
+
+#: classes/entities/class-tainacan-collection.php:61
+msgid "No items found in trash"
+msgstr ""
+
+#: classes/entities/class-tainacan-collection.php:62
+msgid "Parent item:"
+msgstr ""
+
+#: classes/entities/class-tainacan-entity.php:206
+msgid " is invalid"
+msgstr ""
+
+#: classes/entities/class-tainacan-taxonomy.php:49
+msgid "Parent term"
+msgstr ""
+
+#: classes/entities/class-tainacan-taxonomy.php:50
+msgid "Parent term:"
+msgstr ""
+
+#: classes/entities/class-tainacan-taxonomy.php:51
+msgid "Edit term"
+msgstr ""
+
+#: classes/entities/class-tainacan-taxonomy.php:52
+msgid "Update term"
+msgstr ""
+
+#: classes/entities/class-tainacan-taxonomy.php:53
+msgid "Add New term"
+msgstr ""
+
+#: classes/entities/class-tainacan-taxonomy.php:54
+msgid "New Genre term"
+msgstr ""
+
+#: classes/field-types/category/class-tainacan-category.php:47
+msgid "Please select a category"
+msgstr ""
+
+#: classes/field-types/category/class-tainacan-category.php:65
+msgid ""
+"You can not have 2 Category Fields using the same category in a collection"
+msgstr ""
+
+#: classes/field-types/radio/class-tainacan-radio.php:41
+msgid "Options"
+msgstr ""
+
+#: classes/field-types/radio/class-tainacan-radio.php:42
+msgid "Insert the options, separate by lines for the field value"
+msgstr ""
+
+#: classes/field-types/relationship/class-tainacan-relationship.php:42
+msgid "Collection ID invalid"
+msgstr ""
+
+#: classes/field-types/relationship/class-tainacan-relationship.php:46
+msgid "Collection related is required"
+msgstr ""
+
+#: classes/field-types/selectbox/class-tainacan-selectbox.php:45
+msgid "Options is required"
+msgstr ""
+
+#: classes/filter-types/filter-type/class-tainacan-filter-type.php:89
+msgid "The field primitive type is not supported by this filter"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:28
+msgid "Name of the collection"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:36
+#: classes/repositories/class-tainacan-items.php:26
+msgid "The posts status"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:40
+msgid "Author ID"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:42
+msgid "The collection author's user ID (numeric string)"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:46
+#: classes/repositories/class-tainacan-items.php:51
+msgid "Author name"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:48
+msgid "The collection author's user name"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:52
+#: classes/repositories/class-tainacan-items.php:57
+msgid "Creation Date"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:54
+msgid "The collection creation date"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:58
+#: classes/repositories/class-tainacan-items.php:63
+msgid "Modification Date"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:60
+msgid "The collection modification date"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:64
+msgid "Collection URL"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:66
+msgid "The collection URL"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:70
+#: classes/repositories/class-tainacan-items.php:75
+msgid "Featured Image"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:72
+msgid "The collection thumbnail URL"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:78
+msgid "The collection attachments"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:82
+#: classes/repositories/class-tainacan-fields.php:51
+#: classes/repositories/class-tainacan-filters.php:25
+msgid "Order"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:84
+msgid "Collection order. Field used if collections are manually ordered"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:89
+msgid "Parent Collection"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:91
+msgid "Parent collection ID"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:98
+msgid "Collection description"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:104
+#: classes/repositories/class-tainacan-fields.php:44
+#: classes/repositories/class-tainacan-logs.php:56
+#: classes/repositories/class-tainacan-taxonomies.php:42
+msgid "Slug"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:106
+msgid ""
+"A unique and santized string representation of the collection, used to build "
+"the collection URL"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:112
+msgid "Default Order field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:114
+msgid "Default property items in this collections will be ordered by"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:120
+msgid "Default order"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:121
+msgid "Default order for items in this collection. ASC or DESC"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:128
+msgid "Columns"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:130
+msgid "List of collections property that will be displayed in the table view"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:135
+msgid "Default view mode"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:137
+msgid "Collection default visualization mode"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:142
+msgid "Ordination fields"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:144
+msgid "Collection fields ordination"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:149
+msgid "Ordination filters"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:151
+msgid "Collection filters ordination"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:156
+msgid "Moderators"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:158
+msgid "The IDs of users assigned as moderators of this collection"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:170
+msgid "Add new Collection"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:171
+msgid "Edit Collection"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:172
+msgid "New Collection"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:173
+msgid "View Collection"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:174
+msgid "Search Collections"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:175
+msgid "No Collections found "
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:176
+msgid "No Collections found in trash"
+msgstr ""
+
+#: classes/repositories/class-tainacan-collections.php:177
+msgid "Parent Collection:"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:38
+msgid "Name of the field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:39
+msgid "The name should be a text value and not empty"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:46
+msgid "A unique and santized string representation of the field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:53
+msgid "Field order. Field used if collections are manually ordered"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:54
+msgid "The menu order should be a numeric value"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:59
+#: classes/repositories/class-tainacan-logs.php:41
+#: classes/repositories/class-tainacan-terms.php:35
+msgid "Parent"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:61
+msgid "Parent field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:69
+msgid "The field description"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:76
+#: classes/repositories/class-tainacan-filters.php:47
+msgid "Type"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:78
+msgid "The field type"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:79
+msgid "Field type is empty"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:86
+msgid "The field is required"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:87
+msgid "Field required field is invalid"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:93
+msgid "Collection key"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:95
+msgid "Field value should not be repeated"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:96
+msgid "Collection key is invalid"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:102
+msgid "Multiple"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:104
+msgid "Allow multiple fields for the field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:105
+msgid "Multiple fields is invalid"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:111
+msgid "Cardinality"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:113
+msgid "Number of multiples possible fields"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:114
+msgid "The number of fields not allowed"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:120
+msgid "Privacy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:122
+msgid "The field should be omitted in item view"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:123
+msgid "Privacy is invalid"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:129
+msgid "Mask"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:131
+msgid "The mask to be used in the field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:139
+msgid "The value default fot the field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:143
+msgid "Field Type options"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:145
+msgid "Options specific for field type"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:153
+#: classes/repositories/class-tainacan-filters.php:56
+#: classes/repositories/class-tainacan-items.php:40
+msgid "The collection ID"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:158
+msgid "Field Value Accepts Suggestions"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:160
+msgid "Allow the community suggest a different values for that field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:166
+msgid "Can delete"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:168
+msgid "The field can be deleted"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:169
+msgid "Can delete is invalid"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:181
+msgid "Add new Field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:182
+msgid "Edit Field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:183
+msgid "New Field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:184
+msgid "View Field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:185
+msgid "Search Field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:186
+msgid "No Field found "
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:187
+msgid "No Field found in trash"
+msgstr ""
+
+#: classes/repositories/class-tainacan-fields.php:188
+msgid "Parent Field:"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:19
+msgid "Name of the filter"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:20
+msgid "The filter name should be a text value and not empty"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:27
+msgid "Filter order. Field used if filters are manually ordered"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:34
+msgid "The filter description"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:40
+msgid "Filter type options"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:42
+msgid "The filter type options"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:49
+msgid "The filter type"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:61
+msgid "Color"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:63
+msgid "Filter color"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:70
+msgid "Filter field"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:81
+msgid "Add new Filter"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:82
+msgid "Edit Filter"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:83
+msgid "New Filter"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:84
+msgid "View Filter"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:85
+msgid "Search Filters"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:86
+msgid "No Filters found "
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:87
+msgid "No Filters found in trash"
+msgstr ""
+
+#: classes/repositories/class-tainacan-filters.php:88
+msgid "Parent Filter:"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:17
+msgid "Title of the item"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:18
+#: classes/repositories/class-tainacan-logs.php:29
+msgid "The title should be a text value and not empty"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:32
+msgid "The item description"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:45
+msgid "Author"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:47
+msgid "The item author's user ID (numeric string)"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:53
+msgid "The item author's user name"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:59
+msgid "The item creation date"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:65
+msgid "The item modification date"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:69
+msgid "Item URL"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:71
+msgid "The item URL"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:77
+msgid "The item thumbnail URL"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:83
+msgid "The item attachments"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:87
+msgid "Term IDs"
+msgstr ""
+
+#: classes/repositories/class-tainacan-items.php:89
+msgid "The item term IDs"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:28
+msgid "The title of the log"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:34
+msgid "Menu order"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:36
+#: classes/repositories/class-tainacan-logs.php:43
+msgid "Log order"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:50
+msgid "The log description"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:58
+msgid "The log slug"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:63
+msgid "Itens per page"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:65
+msgid "The quantity of items that should be load"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:70
+msgid "User ID"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:72
+#: classes/repositories/class-tainacan-logs.php:79
+#: classes/repositories/class-tainacan-repository.php:262
+#: classes/repositories/class-tainacan-terms.php:22
+msgid "Unique identifier"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:77
+msgid "Blog ID"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:84
+msgid "Actual value"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:86
+msgid "The actual log value"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:91
+msgid "Old value"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:93
+msgid "The old log value"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:106
+#: classes/repositories/class-tainacan-logs.php:117
+msgid "Logs"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:107
+msgid "Log"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:109
+msgid "Add new Log"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:110
+msgid "Edit Log"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:111
+msgid "New Log"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:112
+msgid "View Log"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:113
+msgid "Search Logs"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:114
+msgid "No Logs found "
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:115
+msgid "No Logs found in trash"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:116
+msgid "Parent Log:"
+msgstr ""
+
+#: classes/repositories/class-tainacan-logs.php:218
+#, php-format
+msgid "a %s has been created/updated."
+msgstr ""
+
+#: classes/repositories/class-tainacan-repository.php:260
+#: classes/repositories/class-tainacan-terms.php:20
+msgid "ID"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:28
+msgid "Name of the taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:29
+msgid "The taxonomy should be a text value and not empty"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:36
+msgid "The taxonomy description"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:44
+msgid "The taxonomy slug"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:49
+msgid "Allow insert"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:51
+msgid "Allow/Deny the creation of new terms in the taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:52
+msgid "Allow insert is invalid, allowed values ( yes/no )"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:60
+msgid "The IDs of collection where the taxonomy is used"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:68
+#: classes/repositories/class-tainacan-taxonomies.php:79
+#: classes/repositories/class-tainacan-taxonomies.php:125
+msgid "Taxonomies"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:69
+#: classes/repositories/class-tainacan-taxonomies.php:126
+#: classes/repositories/class-tainacan-terms.php:51
+msgid "Taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:71
+msgid "Add new Taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:72
+msgid "Edit Taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:73
+msgid "New Taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:74
+msgid "View Taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:75
+msgid "Search Taxonomies"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:76
+msgid "No Taxonomies found "
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:77
+msgid "No Taxonomies found in trash"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:78
+msgid "Parent Taxonomy:"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:127
+msgid "Search taxonomies"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:128
+msgid "All taxonomies"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:129
+msgid "Parent taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:130
+msgid "Parent taxonomy:"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:131
+msgid "Edit taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:132
+msgid "Update taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:133
+msgid "Add New taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:134
+msgid "New Genre taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-taxonomies.php:135
+msgid "Genre"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:29
+msgid "Name of the term"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:30
+msgid "The name is empty"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:37
+msgid "The parent of the term"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:45
+msgid "The term description"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:53
+msgid "The term taxonomy"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:54
+msgid "The taxonomy is empty"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:59
+msgid "User"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:61
+msgid "The term creator"
+msgstr ""
+
+#: classes/repositories/class-tainacan-terms.php:62
+msgid "The user is empty or invalid"
+msgstr ""
+
+#: dev-interface/class-tainacan-dev-interface.php:88
+msgid "Properties"
+msgstr ""
+
+#: dev-interface/class-tainacan-dev-interface.php:112
+msgid "Field Components"
+msgstr ""
+
+#: dev-interface/class-tainacan-dev-interface.php:159
+msgid "Property"
+msgstr ""
+
+#: dev-interface/class-tainacan-dev-interface.php:160
+#: dev-interface/class-tainacan-dev-interface.php:253
+#: dev-interface/class-tainacan-dev-interface.php:323
+msgid "Value"
+msgstr ""
+
+#: helpers/class-tainacan-helpers-html.php:59
+msgid "Select an option"
+msgstr ""
