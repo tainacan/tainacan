@@ -180,7 +180,7 @@ class Fields extends Repository {
 	 */
 	public function get_cpt_labels() {
 		return array(
-			'name'               => __('Field', 'tainacan'),
+			'name'               => __('Fields', 'tainacan'),
             'singular_name'      => __('Field', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
             'add_new_item'       => __('Add new Field', 'tainacan'),
