@@ -37,7 +37,7 @@
                                                         v-for="(filterType, index) in allowedFilterTypes" 
                                                         :key="index"
                                                         :selected="index == 0"
-                                                        value="filterType">
+                                                        :value="filterType">
                                                         {{ filterType.name }}</option>  
                                                 </b-select>
                                             </b-field>
@@ -46,6 +46,7 @@
                                                     <button 
                                                         class="button is-secondary" 
                                                         type="submit" 
+                                                        :disabled="Object.keys(selectedFilterType).length == 0"
                                                         @click.prevent="confirmSelectedFilterType()">Submit</button>
                                                 </div>
                                                 <div class="control">
@@ -58,14 +59,12 @@
                                         </div>
                                      </b-modal>
                                 </div>
-                                <b-filter v-if="openedFilterId == filter.id">
-                                    <!-- <filter-edition-form 
-                                        :collectionId="collectionId"
-                                        :isRepositoryLevel="isRepositoryLevel"
+                                <b-field v-if="openedFilterId == filter.id">
+                                    <filter-edition-form
                                         @onEditionFinished="onEditionFinished()"
                                         @onEditionCanceled="onEditionCanceled()"
-                                        :filter="editForm"></filter-edition-form> -->
-                                </b-filter>
+                                        :filter="editForm"></filter-edition-form>
+                                </b-field>
                             </div>
                                              
                         <!-- <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_filters_collection') }}</div> -->
@@ -117,7 +116,7 @@ export default {
         }
     },
     components: {
-        //FilterEditionForm
+        FilterEditionForm
     },
     methods: {
         ...mapActions('filter', [
@@ -167,6 +166,7 @@ export default {
             this.choosenField = choosenField;
             this.newIndex = newIndex;
             this.allowedFilterTypes = [];
+            this.selectedFilterType = {};
 
             for (let filter of this.filterTypes) {
                 for (let supportedType of filter['supported_types']) {
@@ -177,18 +177,17 @@ export default {
             this.isModalOpened = true;
         },
         createChoosenFilter() {
-
-            let newFilter = this.selectedFilterType;
-
-            this.sendFilter({collectionId: this.collectionId, fieldId: this.choosenField.id, name: newFilter.name, filterType: newFilter.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel})
+            
+            this.sendFilter({
+                collectionId: this.collectionId, 
+                fieldId: this.choosenField.id, 
+                name: this.selectedFilterType.name, 
+                filterType: this.selectedFilterType.name, 
+                status: 'auto-draft', 
+                isRepositoryLevel: this.isRepositoryLevel,
+                newIndex: this.newIndex
+            })
             .then((filter) => {
-
-                if (this.newIndex < 0) {
-                    this.activeFilterList.pop();
-                    this.activeFilterList.push(filter);
-                } else {
-                   this.activeFilterList.splice(this.newIndex, 1, filter);  
-                }
 
                 if (!this.isRepositoryLevel)
                     this.updateFiltersOrder();
@@ -196,18 +195,18 @@ export default {
                 this.editFilter(filter);
 
                 this.newIndex = 0;
-                this.choosenField = {};
+                this.selectedFilterType = {}
                 this.allowedFilterTypes = [];
             })
             .catch((error) => {
                 console.log(error);
                 this.newIndex = 0;
-                this.choosenField = {};
+                this.selectedFilterType = {}
                 this.allowedFilterTypes = [];
             });
         },
         removeFilter(removedFilter) {
-            this.deleteFilter({ collectionId: this.collectionId, filterId: removedFilter.id, isRepositoryLevel: this.isRepositoryLevel})
+            this.deleteFilter(removedFilter.id)
             .then((filter) => {
                 let index = this.activeFilterList.findIndex(deletedFilter => deletedFilter.id === filter.id);
                 if (index >= 0) 
@@ -220,27 +219,33 @@ export default {
             });
         },
         confirmSelectedFilterType() {
-           this.createChoosenFilter();
+            this.isModalOpened = false;
+            this.createChoosenFilter();
         },
         cancelFilterTypeSelection() {
-           this.isModalOpened = true;
+           this.isModalOpened = false;
+           this.choosenField = '';
+           this.allowedFilterTypes = [];
+           this.selectedFilterType = {};
+           this.activeFilterList.splice(this.newIndex, 1);
+           this.newIndex = 0;
         },
         editFilter(filter) {
             if (this.openedFilterId == filter.id) {
-                this.openedFilterId = '';
                 this.editForm = {};
+                this.openedFilterId = '';
             } else {
-                this.openedFilterId = filter.id;
                 this.editForm = JSON.parse(JSON.stringify(filter));
                 this.editForm.status = 'publish';
-            }            
+                this.openedFilterId = filter.id;
+            }     
         },
-        onEditionFinished() {
-            this.isModalOpened = false;
+         onEditionFinished() {
+            this.openedFilterId = '';
             this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
         onEditionCanceled() {
-            this.isModalOpened = false;
+            this.openedFilterId = '';
         }
 
     },

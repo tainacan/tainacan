@@ -43,14 +43,8 @@ export const deleteFilter = ( state, filter ) => {
     }
 }
 
-export const setSingleFilter = (state, filter) => {
-    let index = state.filters.findIndex(newFilter => newFilter.id === filter.id);
-    
-    if ( index >= 0){
-        Vue.set( state.filters, index, filter );
-    } else {
-        state.filters.push( filter );
-    }
+export const setSingleFilter = (state, { filter, index}) => {
+    Vue.set( state.filters, index, filter );
 }
 
 export const setFilters = (state, filters) => {

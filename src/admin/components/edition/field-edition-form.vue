@@ -112,12 +112,10 @@ export default {
     },
     methods: {
         ...mapActions('fields', [
-            'fetchFields',
-            'updateField',
+            'updateField'
         ]),
         saveEdition(field) {
 
-            this.openedFieldId = field.id;
             this.formErrors = {};
             this.formErrorMessage = '';
 
@@ -148,7 +146,6 @@ export default {
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: formObj})
                     .then((field) => {
                         this.editForm = {};
-                        this.openedFieldId = '';
                         this.formErrors = {};
                         this.formErrorMessage = '';
                         this.$emit('onEditionFinished');
