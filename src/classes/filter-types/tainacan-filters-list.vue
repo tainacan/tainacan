@@ -7,6 +7,7 @@
                     :id="filter.filter_type_object.component + '-' + filter.slug"
                     :is="filter.filter_type_object.component"
                     :filter="getFilter"
+                    :query="query"
                     @input="listen( $event )"></component>
         </div>
     </b-field>
@@ -50,7 +51,8 @@
         methods: {
             listen( event ){
                 eventFilterBus.$emit( 'input', ( event.detail ) ? event.detail[0] : event );
-                this.$router.push({ query: this.query })
+                let query = JSON.parse( JSON.stringify( this.query ) );
+                this.$router.push({ query: query })
             }
         }
     }
