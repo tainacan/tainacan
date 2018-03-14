@@ -71,10 +71,10 @@ class Collections extends Repository {
 	            'type'        => 'string',
 	            'description' => __('The collection thumbnail URL')
             ],
-            'featured_image_id' => [
+            'featured_img_id' => [
 	            'map'         => 'thumbnail_id',
 	            'title'       => __('Featured Image ID', 'tainacan'),
-	            'type'        => 'string',
+	            'type'        => 'integer',
 	            'description' => __('The collection thumbnail')
             ],
             'attachments'     => [
