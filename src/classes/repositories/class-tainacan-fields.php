@@ -109,7 +109,7 @@ class Fields extends Repository {
             'cardinality'    => [
                 'map'        => 'meta',
                 'title'      => __('Cardinality', 'tainacan'),
-                'type'       => 'string',
+                'type'       => 'string/number',
                 'description'=> __('Number of multiples possible fields', 'tainacan'),
                 'on_error'   => __('The number of fields not allowed', 'tainacan'),
                 'validation' => v::numeric()->positive(),
