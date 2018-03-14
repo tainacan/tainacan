@@ -19,6 +19,25 @@ class TAINACAN_REST_Filter_Types_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => [
+						'filter-type' => [
+							'description' => __('The structure of objects returned.'),
+							'items'       => [
+								'className'       => [
+									'type' => 'string'
+								],
+								'component'       => [
+									'type' => 'string'
+								],
+								'supported_types' => [
+									'type'  => 'array',
+									'items' => [
+										'type' => 'string'
+									]
+								]
+							]
+						]
+					]
 				)
 			)
 		);

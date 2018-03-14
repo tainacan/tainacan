@@ -18,7 +18,41 @@ class TAINACAN_REST_Field_Types_Controller extends TAINACAN_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
-					'permission_callback' => array($this, 'get_items_permissions_check')
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => [
+						'field-type' => [
+							'description' => __('The structure of objects returned.'),
+							'items'       => [
+								'errors'              => [
+									'type' => 'string'
+								],
+								'component'           => [
+									'type' => 'string'
+								],
+								'primitive_type'      => [
+									'type'  => 'array/string',
+									'items' => [
+										'type' => 'string'
+									]
+								],
+								'related_mapped_prop' => [
+									'type' => 'boolean'
+								],
+								'options'             => [
+									'type' => 'array'
+								],
+								'className'           => [
+									'type' => 'string'
+								],
+								'core'                => [
+									'type' => 'boolean'
+								],
+								'form_component'      => [
+									'type' => 'boolean'
+								]
+							]
+						]
+					]
 				)
 			)
 		);

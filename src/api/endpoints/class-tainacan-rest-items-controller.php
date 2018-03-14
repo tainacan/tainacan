@@ -436,17 +436,6 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @return array
-	 */
-	public function get_item_schema() {
-		$schema['item']['type']        = 'object';
-		$schema['item']['description'] = __('Passed in body.');
-		$schema['item']['properties']  = $this->items_repository->get_map();
-
-		return $schema;
-	}
-
-	/**
 	 * @param null $object_name
 	 *
 	 * @return array|void
