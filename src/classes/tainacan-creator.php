@@ -10,6 +10,7 @@ const TAPI_DIR          = __DIR__ . '/../api/';
 const ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
 const HELPERS_DIR      = __DIR__ . '/../helpers/';
 const IMPORTER_DIR      = __DIR__ . '/../importer/';
+const EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 
 const DIRS = [
     CLASSES_DIR,
@@ -20,12 +21,14 @@ const DIRS = [
     TRAITS_DIR,
 	TAPI_DIR,
 	ENDPOINTS_DIR,
-    IMPORTER_DIR
+    IMPORTER_DIR,
+	EXPOSERS_DIR
 ];
 
 require_once(VENDOR_DIR . 'autoload.php');
 require_once(HELPERS_DIR . 'class-tainacan-helpers-html.php');
 require_once(IMPORTER_DIR . 'class-tainacan-importer.php');
+require_once(EXPOSERS_DIR . 'class-tainacan-exposers.php');
 
 spl_autoload_register('tainacan_autoload');
 
@@ -47,21 +50,24 @@ function tainacan_autoload($class_name){
 
     	if( isset( $class_path[1] ) && $class_path[1] === 'Importer' ){
             $dir = IMPORTER_DIR;
-        } else if($sliced) {
+    	} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
+    		$dir = EXPOSERS_DIR;
+    		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+    	} else if($sliced) {
 		    $lower     = $sliced[0];
 		    $sliced[0] = strtolower( $lower );
 
-		    $dir = implode( DIRECTORY_SEPARATOR, $sliced ) . '/';
+		    $dir = implode( DIRECTORY_SEPARATOR, $sliced ) . DIRECTORY_SEPARATOR;
 		    $dir = CLASSES_DIR . str_replace( '_', '-', $dir );
 	    } else {
 		    $dir = CLASSES_DIR;
 	    }
 
-        if( in_array('Field_Types', $class_path) || in_array('Filter_Types', $class_path) ){
+	    if( in_array('Field_Types', $class_path) || in_array('Filter_Types', $class_path) ){
             if(  in_array('Filter_Types', $class_path) && in_array('Category', $class_path) ){
                 $dir = strtolower( $dir );
             } else {
-                $dir.= strtolower(str_replace('_', '-' , $class_name)).'/';
+                $dir.= strtolower(str_replace('_', '-' , $class_name)).DIRECTORY_SEPARATOR;
             }
         }
 
@@ -115,5 +121,10 @@ $Tainacan_Terms = new \Tainacan\Repositories\Terms();
 
 global $Tainacan_Logs;
 $Tainacan_Logs = new \Tainacan\Repositories\Logs();
+
+global $Tainacan_Exposers;
+$Tainacan_Exposers = new \Tainacan\Exposers\Exposers();
+
+$Tainacan_Exposers->register_exposer_type('Tainacan\Exposers\Types\Xml');
 
 ?>
