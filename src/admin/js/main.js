@@ -16,6 +16,12 @@ import FormRelationship from '../../classes/field-types/relationship/FormRelatio
 import FormCategory from '../../classes/field-types/category/FormCategory.vue';
 import FormSelectbox from '../../classes/field-types/selectbox/FormSelectbox.vue';
 
+import FilterCustomInterval from '../../classes/filter-types/custom-interval/CustomInterval.vue';
+import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue';
+import FilterAutocomplete from '../../classes/filter-types/autocomplete/Autocomplete.vue';
+import FilterCheckbox from '../../classes/filter-types/checkbox/Checkbox.vue';
+import FilterTaginput from '../../classes/filter-types/taginput/Taginput.vue';
+
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filters-list.vue';
 
@@ -53,6 +59,14 @@ Vue.component('tainacan-form-selectbox', FormSelectbox);
 Vue.component('tainacan-form-item', TaincanFormItem);
 Vue.component('tainacan-filters-list', TaincanFiltersList);
 Vue.component('draggable', draggable);
+
+/* Filters */
+
+Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
+Vue.component('tainacan-filter-selectbox', FilterSelectbox);
+Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
+Vue.component('tainacan-filter-checkbox', FilterCheckbox);
+Vue.component('tainacan-filter-taginput', FilterTaginput);
 
 new Vue({
     el: '#tainacan-admin-app',

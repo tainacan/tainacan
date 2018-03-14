@@ -6,7 +6,7 @@
             <component
                     :id="filter.filter_type_object.component + '-' + filter.slug"
                     :is="filter.filter_type_object.component"
-                    :filter="filter"
+                    :filter="getFilter"
                     @input="listen( $event )"></component>
         </div>
     </b-field>
@@ -14,11 +14,13 @@
 
 <script>
     import { eventFilterBus } from '../../js/event-bus-filters'
+    import qs from 'qs';
 
     export default {
         name: 'TainacanFiltersList',
         props: {
-            filter: {}
+            filter: {},
+            query: {}
         },
         created(){
             console.log( this.filter );
@@ -42,12 +44,17 @@
                     this.filterTypeMessage = '';
                 }
                 return msg;
+            },
+            getFilter(){
+                return this.filter;
             }
 
         },
         methods: {
             listen( event ){
-                eventFilterBus.$emit( 'input', event.detail[0] );
+                eventFilterBus.$emit( 'input', ( event.detail ) ? event.detail[0] : event );
+                console.log( this.$route );
+                this.$router.push({ query: this.query })
             }
         }
     }
