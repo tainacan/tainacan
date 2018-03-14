@@ -71,6 +71,7 @@ return [
     'label_description' => __('Description', 'tainacan'),
     'label_status' => __('Status', 'tainacan'),
     'label_image' => __('Image', 'tainacan'),
+    'label_thumbnail' => __('Thumbnail', 'tainacan'),
     'label_button_view' => __('Button View', 'tainacan'),
     'label_button_edit' => __('Button Edit', 'tainacan'),
     'label_button_delete' => __('Button Delete', 'tainacan'),

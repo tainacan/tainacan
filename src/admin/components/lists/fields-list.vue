@@ -120,15 +120,8 @@ export default {
 
         },
         addNewField(newField, newIndex) {
-            this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel})
+            this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel, newIndex: newIndex})
             .then((field) => {
-
-                if (newIndex < 0) {
-                    this.activeFieldList.pop();
-                    this.activeFieldList.push(field);
-                } else {
-                   this.activeFieldList.splice(newIndex, 1, field);  
-                }
 
                 if (!this.isRepositoryLevel)
                     this.updateFieldsOrder();

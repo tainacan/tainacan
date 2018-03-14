@@ -5,7 +5,7 @@ export const setItem = ( state, item ) => {
 }
 
 export const setSingleAttachment = ( state, attachment ) => {
-    let index = state.attachment.findIndex(newAttachment => newAttachment.id === attachment.id);
+    let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
         //state.field[index] = field;
         Vue.set( state.attachments, index, attachment );

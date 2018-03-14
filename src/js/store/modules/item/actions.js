@@ -142,3 +142,19 @@ export const fetchAttachments = ({ commit }, item_id) => {
         });
     });
 };
+
+ 
+export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.patch('/items/' + itemId, {
+            featured_img_id: thumbnailId 
+        }).then( res => {
+            let item = res.data
+            commit('setItem', item);
+            resolve( item );
+        }).catch( error => { 
+            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+        });
+
+    }); 
+};

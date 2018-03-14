@@ -49,7 +49,7 @@ class Fields extends Repository {
             'order'          => [
                 'map'        => 'menu_order',
                 'title'       => __('Order', 'tainacan'),
-                'type'       => 'string',
+                'type'       => 'string/integer',
                 'description'=> __('Field order. Field used if collections are manually ordered', 'tainacan'),
                 'on_error'   => __('The menu order should be a numeric value', 'tainacan'),
                 //'validation' => v::numeric(),
@@ -59,6 +59,7 @@ class Fields extends Repository {
                 'title'      => __('Parent', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('Parent field', 'tainacan'),
+                'default'    => 0
                 //'on_error'   => __('The Parent should be numeric value', 'tainacan'),
                 //'validation' => v::numeric(),
             ],

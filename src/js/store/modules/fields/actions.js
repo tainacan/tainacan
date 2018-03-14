@@ -46,7 +46,7 @@ export const fetchField = ({ commit }, {collectionId, fieldId, isRepositoryLevel
 }
 
 
-export const sendField = ( { commit }, { collectionId, name, fieldType, status, isRepositoryLevel }) => {
+export const sendField = ( { commit }, { collectionId, name, fieldType, status, isRepositoryLevel, newIndex }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
@@ -60,7 +60,7 @@ export const sendField = ( { commit }, { collectionId, name, fieldType, status, 
         })
             .then( res => {
                 let field = res.data;
-                commit('setSingleField', field);
+                commit('setSingleField', { field: field, index: newIndex});
                 resolve( res.data );
             })
             .catch(error => {
