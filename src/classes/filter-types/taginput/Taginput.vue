@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-taginput
+                size="is-small"
                 rounded
                 icon="magnify"
                 v-model="selected"
@@ -28,6 +29,7 @@
                     if( result && result.field_type ){
                         vm.field_object = result;
                         vm.type = result.field_type;
+                        vm.selectedValues();
                     }
                 })
                 .catch(error => {
@@ -43,7 +45,6 @@
                 type: '',
                 collection: '',
                 field: '',
-                selected: '',
                 field_object: {}
             }
         },
@@ -54,7 +55,8 @@
             field_id: [Number], // not required, but overrides the filter field id if is set
             collection_id: [Number], // not required, but overrides the filter field id if is set
             filter_type: [String],  // not required, but overrides the filter field type if is set
-            id: ''
+            id: '',
+            query: {}
         },
         watch: {
             selected( value ){
@@ -121,6 +123,39 @@
                     .catch(error => {
                         console.log(error);
                     });
+            },
+            selectedValues(){
+                const instance = this;
+                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
+                    return false;
+
+                let index = this.query.metaquery.findIndex(newField => newField.key === this.field );
+                if ( index >= 0){
+                    let metadata = this.query.metaquery[ index ];
+                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ?
+                        this.field_object.field_type_options.collection_id : this.collection_id;
+
+
+                    if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
+                        let query = qs.stringify({ postin: metadata.value  });
+
+                        axios.get('/collection/' + collectionTarget + '/items?' + query)
+                            .then( res => {
+                                for (let item of res.data) {
+                                    instance.selected.push({ label: item.title, value: item.id, img: '' });
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    } else {
+                        for (let item of metadata.value) {
+                            instance.selected.push({ label: item, value: item, img: '' });
+                        }
+                    }
+                } else {
+                    return false;
+                }
             }
         }
     }

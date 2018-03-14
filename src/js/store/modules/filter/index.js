@@ -4,7 +4,6 @@ import * as mutations from './mutations';
 
 const state = {
     postquery: {
-        post_status: 'publish',
         post_type: [],
         metaquery: [],
         taxquery: []
