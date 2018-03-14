@@ -1,17 +1,16 @@
 <?php
-namespace Tainacan\Filter_Types\Category;
-use Tainacan\Filter_Types;
+namespace Tainacan\Filter_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class Taginput
+ * Class TainacanFieldType
  */
-class Taginput extends Filter_Types\Filter_Type {
+class CategoryCheckbox extends Filter_Type {
 
     function __construct(){
         parent::set_supported_types(['term']);
-        $this->component = 'tainacan-filter-category-taginput';
+        $this->component = 'tainacan-filter-category-checkbox';
     }
 
     /**
@@ -20,9 +19,9 @@ class Taginput extends Filter_Types\Filter_Type {
      */
 
     public function render( $filter ){
-        return '<tainacan-filter-category-taginput name="'.$filter->get_name().'"
+        return '<tainacan-filter-category-checkbox name="'.$filter->get_name().'"
                                         filter_type="'.$filter->get_field()->get_field_type().'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-taginput>';
+                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-checkbox>';
     }
 }
