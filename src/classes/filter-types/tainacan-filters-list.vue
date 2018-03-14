@@ -22,9 +22,6 @@
             filter: {},
             query: {}
         },
-        created(){
-            console.log( this.filter );
-        },
         data(){
             return {
                 inputs: [],
@@ -53,7 +50,6 @@
         methods: {
             listen( event ){
                 eventFilterBus.$emit( 'input', ( event.detail ) ? event.detail[0] : event );
-                console.log( this.$route );
                 this.$router.push({ query: this.query })
             }
         }
