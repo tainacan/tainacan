@@ -411,17 +411,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
     }
 
 	/**
-	 * @return array|mixed|void
-	 */
-	public function get_item_schema() {
-		$schema['collection']['type']        = 'array/object';
-		$schema['collection']['description'] = __('Passed in body.');
-		$schema['collection']['properties']  = $this->collections_repository->get_map();
-
-		return $schema;
-    }
-
-	/**
 	 *
 	 * Return the queries supported when getting a collection of objects
 	 *
