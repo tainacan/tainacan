@@ -12,15 +12,15 @@ class Category extends Field_Type {
     function __construct(){
         // call field type constructor
         parent::__construct();
-        parent::set_primitive_type('term');
+        $this->set_primitive_type('term');
         
         $this->set_default_options([
             'allow_new_terms' => false
         ]);
 
-        $this->form_component = 'tainacan-form-category';
+        $this->set_form_component('tainacan-form-category');
         // TODO: Set component depending on options. If multiple is checkbox. if single, select. etc.
-        $this->component = 'tainacan-category';
+        $this->set_component('tainacan-category');
     }
 
     /**
@@ -29,7 +29,7 @@ class Category extends Field_Type {
      */
 
     public function render( $itemMetadata ){
-        $options = ( isset( $this->options['options'] ) ) ? $this->options['options'] : '';
+        $options = ( isset( $this->get_options()['options'] ) ) ? $this->get_options()['options'] : '';
         return '<tainacan-selectbox    
                                        options="' . $options . '"
                                        field_id ="'.$itemMetadata->get_field()->get_id().'" 

@@ -14,9 +14,9 @@ class Relationship extends Field_Type {
     function __construct(){
         // call field type constructor
         parent::__construct();
-        parent::set_primitive_type('item');
-        $this->component = 'tainacan-relationship';
-        $this->form_component = 'tainacan-form-relationship';
+        $this->set_primitive_type('item');
+        $this->set_component('tainacan-relationship');
+        $this->set_form_component('tainacan-form-relationship');
     }
 
     /**
@@ -26,7 +26,7 @@ class Relationship extends Field_Type {
 
     public function render( $itemMetadata ){
         return '<tainacan-relationship 
-                            collection_id="' . $this->options['collection_id'] . '"
+                            collection_id="' . $this->get_options()['collection_id'] . '"
                             field_id ="'.$itemMetadata->get_field()->get_id().'" 
                             item_id="'.$itemMetadata->get_item()->get_id().'"    
                             value=\''.json_encode( $itemMetadata->get_value() ).'\'  

@@ -12,8 +12,8 @@ class Textarea extends Field_Type {
     function __construct(){
         // call field type constructor
         parent::__construct();
-        parent::set_primitive_type('string');
-        $this->component = 'tainacan-textarea';
+        $this->set_primitive_type('string');
+        $this->set_component('tainacan-textarea');
     }
 
     /**

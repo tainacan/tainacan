@@ -10,8 +10,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Custom_Interval extends Filter_Type {
 
     function __construct(){
-        parent::set_supported_types(['float','date']);
-        $this->component = 'tainacan-filter-custom-interval';
+        $this->set_supported_types(['float','date']);
+        $this->set_component('tainacan-filter-custom-interval');
     }
 
     /**

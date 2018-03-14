@@ -12,8 +12,8 @@ class Radio extends Field_Type {
     function __construct(){
         // call field type constructor
         parent::__construct();
-        parent::set_primitive_type('');
-        $this->component = 'tainacan-radio';
+        $this->set_primitive_type('');
+        $this->set_component('tainacan-radio');
     }
 
     /**

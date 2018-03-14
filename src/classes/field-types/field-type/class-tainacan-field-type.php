@@ -77,6 +77,10 @@ abstract class Field_Type  {
     public function get_related_mapped_prop(){
     	return $this->related_mapped_prop;
     }
+
+    public function set_related_mapped_prop($related_mapped_prop){
+    	$this->related_mapped_prop = $related_mapped_prop;
+    }
     
     public function get_validation_errors() {
         return [];
@@ -98,8 +102,16 @@ abstract class Field_Type  {
         return $this->component;
     }
 
+    public function set_component($component){
+    	$this->component = $component;
+    }
+
     public function get_form_component() {
         return $this->form_component;
+    }
+
+    public function set_form_component($form_component){
+    	$this->form_component = $form_component;
     }
 
     /**
@@ -177,4 +189,7 @@ abstract class Field_Type  {
 		return $this->core;
 	}
 
+	public function set_core($core){
+		$this->core = $core;
+	}
 }

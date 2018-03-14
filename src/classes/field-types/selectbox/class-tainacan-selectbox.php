@@ -12,9 +12,9 @@ class Selectbox extends Field_Type {
     function __construct(){
         // call field type constructor
         parent::__construct();
-        parent::set_primitive_type('string');
-        $this->component = 'tainacan-selectbox';
-        $this->form_component = 'tainacan-form-selectbox';
+        $this->set_primitive_type('string');
+        $this->set_component('tainacan-selectbox');
+        $this->set_form_component('tainacan-form-selectbox');
     }
 
     /**

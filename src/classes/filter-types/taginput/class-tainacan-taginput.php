@@ -9,8 +9,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Taginput extends Filter_Type {
 
     function __construct(){
-        parent::set_supported_types(['string','item']);
-        $this->component = 'tainacan-filter-taginput';
+        $this->set_supported_types(['string','item']);
+        $this->set_component('tainacan-filter-taginput');
     }
 
     /**

@@ -9,8 +9,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class CategorySelectbox extends Filter_Type {
 
     function __construct(){
-        parent::set_supported_types(['term']);
-        $this->component = 'tainacan-filter-category-selectbox';
+        $this->set_supported_types(['term']);
+        $this->set_component('tainacan-filter-category-selectbox');
     }
 
     /**

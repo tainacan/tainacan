@@ -8,8 +8,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 abstract class Filter_Type {
 
     private $supported_types = [];
-    public $options;
-    public $component;
+    private $options;
+    private $component;
 
     public function __construct(){
         add_action('register_filter_types', array(&$this, 'register_filter_type'));
@@ -91,4 +91,18 @@ abstract class Filter_Type {
             return ['unsupported_type' => __('The field primitive type is not supported by this filter', 'tainacan')];
         }
     }
+
+	/**
+	 * @param mixed $component
+	 */
+	public function set_component( $component ) {
+		$this->component = $component;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function get_options() {
+		return $this->options;
+	}
 }
