@@ -95,7 +95,7 @@ abstract class Repository {
             if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
                 $this->insert_metadata($obj, $prop);
             } elseif ($mapped['map'] === 'thumbnail_id'){
-            	set_post_thumbnail($obj->WP_Post, $obj->get_mapped_property('thumbnail_id'));
+            	set_post_thumbnail($obj->WP_Post, $obj->get_mapped_property($prop));
             }
 		}
 		
