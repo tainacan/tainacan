@@ -122,7 +122,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			$prepared_item[$index-1]['field']['field_type_object'] = $this->prepare_item_for_response( $item_metadata->get_field()->get_field_type_object(), $request);
 		}
 
-		return new WP_REST_Response($prepared_item, 200);
+		return new WP_REST_Response(apply_filters('tainacan-get-response', $prepared_item, $request), 200);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			}
 		}
 		
-		return new WP_REST_Response($prepared_item, 200);
+		return new WP_REST_Response(apply_filters('tainacan-rest-response', $prepared_item, $request), 200);
 	}
 
 	/**
