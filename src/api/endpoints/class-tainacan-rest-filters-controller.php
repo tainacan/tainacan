@@ -314,7 +314,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
-				$item_arr['filter_type_object'] = $item->get_filter_type_object();
+				$item_arr['filter_type_object'] = $item->get_filter_type_object()->__toArray();
 			}
 
 			return $item_arr;
