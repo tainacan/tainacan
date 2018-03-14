@@ -289,7 +289,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
 				$item_arr['field_type_object'] = $item->get_field_type_object()->__toArray();
-				$item_arr['disabled'] = $item->get_disabled_for_collection();
+				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
 			return $item_arr;
