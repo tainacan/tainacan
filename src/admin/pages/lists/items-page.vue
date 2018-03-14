@@ -120,6 +120,10 @@ export default {
         ...mapGetters('fields', [
             'getFields'
         ]),
+        ...mapActions('filter', [
+            'set_postquery',
+            'search_by_collection'
+        ]),
         onChangeTableFields(field) {
             let prevValue = this.prefTableFields;
             let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
@@ -152,8 +156,22 @@ export default {
         },
         loadItems() {
             this.isLoading = true;
-            this.fetchItems({ 'collectionId': this.collectionId, 'page': this.page, 'itemsPerPage': this.itemsPerPage })
-            .then((res) => {
+            let promisse = null;
+
+            if( Object.keys( this.$route.query ).length > 0 ) {
+                this.page = ( this.$route.query.page ) ? this.$route.query.page : this.page;
+                this.itemsPerPage = ( this.$route.query.itemsPerPage ) ? this.$route.query.itemsPerPage : this.itemsPerPage;
+
+                this.set_postquery(this.$route.query);
+                if (this.$route.params && this.$route.params.collectionId) {
+                    promisse = this.search_by_collection(this.$route.params.collectionId);
+                }
+            }
+
+            if(!promisse)
+                promisse = this.fetchItems({ 'collectionId': this.collectionId, 'page': this.page, 'itemsPerPage': this.itemsPerPage });
+
+            promisse.then((res) => {
                 this.isLoading = false;
                 this.totalItems = res.total;
             })

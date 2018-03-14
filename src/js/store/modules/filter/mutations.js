@@ -1,8 +1,12 @@
 import Vue from 'vue';
 
 // METAQUERIES ----------------------------------------------------------------------------
-export const setPostQuery = ( state, { attr, value }) => {
+export const setPostQueryAttribute = ( state, { attr, value }) => {
     Vue.set( state.postquery, attr , value );
+};
+
+export const setPostQuery = ( state, postquery ) => {
+    state.postquery = postquery;
 };
  
 export const addMetaQuery = ( state, filter ) => {

@@ -6,8 +6,9 @@ export const search_by_collection = ({  state, dispatch, rootGetters }, collecti
     return new Promise((resolve, reject) =>{
         axios.tainacan.get('/collection/' + collectionId + '/items?' + qs.stringify( state.postquery ))
             .then(res => {
-                 resolve( res.data );
-                 dispatch('collection/setItems', res.data, { root: true } );
+                let items = res.data;
+                dispatch('collection/setItems', res.data, { root: true } );
+                resolve({'items': items, 'total': res.headers['x-wp-total'] });
             })
             .catch(error => {
                  reject( error )
@@ -16,7 +17,11 @@ export const search_by_collection = ({  state, dispatch, rootGetters }, collecti
 };
 
 export const set_postquery_attribute = ({ commit }, filter, value ) => {
-    commit('setPostQuery', {  attr: filter, value: value } );
+    commit('setPostQueryAttribute', {  attr: filter, value: value } );
+};
+
+export const set_postquery = ({ commit }, postquery ) => {
+    commit('setPostQuery', postquery );
 };
 
 export const add_metaquery = ( { commit }, filter  ) => {
