@@ -19,7 +19,7 @@
                                     <span v-if="filter.id !== undefined" class="filter-name">{{ filter.name }}</span>
                                     <span v-if="filter.id !== undefined" class="label-details"><span class="loading-spinner" v-if="filter.id == undefined"></span>
                                     <span class="controls" v-if="filter.id != undefined">
-                                        <b-switch size="is-small" v-model="filter.disabled" @input="onChangeEnable($event, index)">{{ filter.disabled ? $i18n.get('label_disabled') : $i18n.get('label_enabled') }}</b-switch>
+                                        <b-switch size="is-small" v-model="filter.enabled" @input="onChangeEnable($event, index)">{{ filter.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled') }}</b-switch>
                                         <a @click.prevent="removeFilter(filter)">
                                             <b-icon icon="delete"></b-icon>
                                         </a>
@@ -149,15 +149,15 @@ export default {
         updateFiltersOrder() {
             let filtersOrder = [];
             for (let filter of this.activeFilterList) {
-                filtersOrder.push({'id': filter.id, 'enabled': !filter.disabled});
+                filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
         },
         onChangeEnable($event, index) {
-            this.activeFilterList[index].disabled = $event;
+            this.activeFilterList[index].enabled = $event;
             let filtersOrder = [];
             for (let filter of this.activeFilterList) {
-                filtersOrder.push({'id': filter.id, 'enabled': !filter.disabled});
+                filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
 

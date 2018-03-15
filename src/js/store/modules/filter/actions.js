@@ -46,7 +46,7 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel}) => {
         else
             endpoint = '/filters/';
 
-        axios.tainacan.get(endpoint + '?context=edit')
+        axios.tainacan.get(endpoint)
         .then((res) => {
             let filters= res.data;
             commit('setFilters', filters);

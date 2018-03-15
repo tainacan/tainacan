@@ -1,7 +1,7 @@
 <template>
-    <div id="tainacan-header" class="level">
+    <div id="tainacan-header" class="level" :class="{'secondary-page': onSecondaryPage}">
         <div class="level-left">
-            <div class="level-item" :class="{'secondary-page': onSecondaryPage}">
+            <div class="level-item">
                 <h1 class="has-text-weight-bold is-uppercase has-text-primary"><b-icon size="is-small" :icon="currentIcon"></b-icon>{{pageTitle}}</h1>
                 <nav class="breadcrumbs">
                     <router-link tag="a" :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
@@ -137,24 +137,29 @@ export default {
             .level-item {
                 display: inline-block;
                 margin-left: 268px;
-            }
-            .secondary-page {
+            }  
+        }
+        &.secondary-page {
+            .level-item {
                 margin-left: 310px;
             }
-            
         }
 
         @media screen and (max-width: 769px) {
             .level-left {
+                margin-left: 0px !important;
                 .level-item {
-                    margin-left: 0px;
+                    margin-left: 30px;
                 }
             }
             .level-right {
                 display: none;
             }
 
-            position: relative !important;
+            top: 214px;
+            &.secondary-page {
+                top: 245px !important;  
+            }
             margin-bottom: 0px !important;
         }
 
