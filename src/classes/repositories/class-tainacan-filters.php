@@ -38,7 +38,8 @@ class Filters extends Repository {
             'filter_type_options' => [
                 'map'        => 'meta',
                 'title'      => __('Filter type options', 'tainacan'),
-                'type'       => 'object',
+                'type'       => 'array/object/string',
+                'items'      => ['type' => 'array/string/integer'],
                 'description'=> __('The filter type options', 'tainacan'),
                 'validation' => ''
             ],
