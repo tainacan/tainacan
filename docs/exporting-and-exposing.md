@@ -10,6 +10,8 @@ With Tainacan you have the possibility to map your collection structure to one o
 
 You do it by informing, for each field you create, what is it relative in each format you want to map your collection to. You may sau for example, that you "Name" Field is the equivalent to the dc:Title attribute in Dublin Core and some another attribute in other format you choose.
 
+Note: When you use a preset to build your collection, chances are that the mapping is already done. This is a good reason to consider using presets ;)
+
 ## Exporting
 
 Exporting allows you to download the content of your repository to a file - or to multiple files. The format of the package you will download depends on the exporter you will use. Tainacan ships with a simple CSV exporter and a Tainacan-Package exporter, that allows you to export all the content of your collections, including the attachments, to import in another Tainacan instance.
