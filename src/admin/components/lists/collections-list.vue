@@ -16,12 +16,10 @@
                 backend-sorting>
             <template slot-scope="props">
                 
-                <b-table-column tabindex="0" label="Imagem" :aria-label="$i18n.get('label_image')" field="featured_image" width="55">
-                    <!-- <router-link class="" tag="span" > -->
+                <b-table-column tabindex="0" label="$i18n.get('label_thumbnail')" :aria-label="$i18n.get('label_thumbnail')" field="featured_image" width="55">
                     <template v-if="props.row.featured_image" slot-scope="scope">
                         <router-link tag="img" :to="{path: $routerHelper.getCollectionPath(props.row.id)}" class="table-thumb clickable-row" :src="`${props.row.featured_image}`"></router-link>
                     </template>
-                    <!-- </router-link> -->
                 </b-table-column>
 
                 <b-table-column tabindex="0" :label="$i18n.get('label_name')" :aria-label="$i18n.get('label_name')" field="props.row.name">

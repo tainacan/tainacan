@@ -28,12 +28,10 @@
                         </template>
                     </router-link>
                     
-                    <router-link tag="span" class="clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
-                        <template v-if="column.field == 'featured_image'">
-                            <img class="table-thumb" :src="`${ props.row[column.slug] }`"/>
-                        </template>
-                    </router-link>
-                    
+                    <template v-if="column.field == 'featured_image'">
+                        <router-link tag="img" class="table-thumb clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}" :src="props.row[column.slug]"></router-link>
+                    </template>
+                         
                     <template v-if="column.field == 'row_actions'">
                         <!-- <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a> -->
                         <a id="button-edit" :aria-label="$i18n.getFrom('items','edit_item')" @click="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>

@@ -135,8 +135,6 @@ export default {
             let prevValue = this.prefTableFields;
             let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
             if (index >= 0) {
-                console.log(prevValue[index].visible);
-                console.log(this.prefTableFields[index].visible);
                 //prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
             }
             
@@ -223,13 +221,14 @@ export default {
         this.loadItems();
         this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false }).then((res) => {
             let rawFields = res;
+            this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', visible: true });
             for (let field of rawFields) {
                 this.tableFields.push(
                     { label: field.name, field: field.description, slug: field.slug,  visible: true }
                 );
             }
             this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
-            
+   
             this.prefTableFields = this.tableFields;
             // this.$userPrefs.get('table_columns_' + this.collectionId)
             //     .then((value) => {

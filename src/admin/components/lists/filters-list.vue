@@ -76,12 +76,16 @@
                     <div class="columns box available-fields-area" >
                         <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: true, put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
-                                {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                                <a @click.prevent="addFieldViaButton(field)">
+                                    <b-icon type="is-gray" class="is-pulled-left" icon="arrow-left-bold"></b-icon>
+                                </a>  {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             </div>
                         </draggable>
                         <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: true, put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 != 0" v-for="(field, index) in availableFieldList" :key="index">
-                                {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                                <a @click.prevent="addFieldViaButton(field)">
+                                    <b-icon type="is-gray" class="is-pulled-left" icon="arrow-left-bold"></b-icon>
+                                </a>  {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             </div>       
                         </draggable> 
                    </div>
@@ -161,6 +165,11 @@ export default {
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
 
+        },
+        addFieldViaButton(field) {
+            let lastIndex = this.activeFilterList.length;
+            this.activeFilterList.push(field);
+            this.addNewFilter(field, lastIndex);
         },
         addNewFilter(choosenField, newIndex) {
             this.choosenField = choosenField;
