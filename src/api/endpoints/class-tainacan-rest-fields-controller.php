@@ -225,8 +225,8 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
-					'errors'        => $this->field->get_errors(),
-					'field'         => $this->prepare_item_for_response($this->field, $request),
+					'errors'        => $prepared->get_errors(),
+					'field'         => $this->prepare_item_for_response($prepared, $request),
 				], 400);
 			}
 
@@ -372,7 +372,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function update_item( $request ) {
-		$collection_id = $request['collection_id'];
+		$collection_id = is_numeric($request['collection_id']) ? $request['collection_id'] : null;
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){

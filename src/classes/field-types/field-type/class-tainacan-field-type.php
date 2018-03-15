@@ -24,21 +24,21 @@ abstract class Field_Type  {
     private $primitive_type;
     
     /**
-     * Array of options spececific to this field type. Stored in field_type_options property of the Field object
-     * @var Array
+     * Array of options specific to this field type. Stored in field_type_options property of the Field object
+     * @var array
      */
     private $options = [];
     
     /**
      * The default values for the field type options array
-     * @var Array
+     * @var array
      */
     private $default_options = [];
     
     private $errors;
     
     /**
-     * Indicates wether this is a core Field Type or not
+     * Indicates whether this is a core Field Type or not
      *
      * Core field types are used by Title and description fields. These fields:
      * * Can only be used once, they belong to the repository and can not be deleted
@@ -118,7 +118,7 @@ abstract class Field_Type  {
      * @param $options
      */
     public function set_options( $options ){
-        $this->options = ( is_array( $options ) ) ? $options : unserialize( $options );
+	    $this->options = ( is_array( $options ) ) ? $options : (!is_array(unserialize( $options )) ? [] : unserialize( $options ));
     }
     
     public function set_default_options(Array $options) {
@@ -128,7 +128,7 @@ abstract class Field_Type  {
     /**
      * Gets the options for this field types, including default values for options
      * that were not set yet.
-     * @return Array Fielt type options
+     * @return array Field type options
      */
     public function get_options() {
         return array_merge($this->default_options, $this->options);
