@@ -2,6 +2,10 @@ export const setItems = ( state, items ) => {
     state.items = items;
 }
 
+export const setTotalItems = ( state, total ) => {
+    state.totalItems = total;
+}
+
 export const deleteItem = ( state, item ) => {
     let index = state.items.findIndex(deletedItem => deletedItem.id === item.id);
     if (index >= 0) {

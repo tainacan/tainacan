@@ -6,6 +6,7 @@ export const fetchItems = ({ commit, state }, { collectionId, page, itemsPerPage
         .then(res => {
             let items = res.data;
             commit('setItems', items);
+            commit('setTotalItems', res.headers['x-wp-total']);
             resolve({'items': items, 'total': res.headers['x-wp-total'] });
         })
         .catch(error => reject(error));
@@ -117,4 +118,8 @@ export const sendCollection = ( { commit }, { name, description, status }) => {
 
 export const setItems = ({ commit }, items ) => {
     commit('setItems', items);
+};
+
+export const setTotalItems = ({ commit }, total ) => {
+    commit('setTotalItems', total);
 };

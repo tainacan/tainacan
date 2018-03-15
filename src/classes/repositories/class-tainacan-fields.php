@@ -374,8 +374,9 @@ class Fields extends Repository {
                         if( !$include_disabled && isset( $order[$index]['enable'] ) && !$order[$index]['enable'] ) {
 						   continue;
 					   	}
-					   
-					   $item->set_enabled_for_collection($order[$index]['enable']);
+
+					   $enable =  ( isset( $order[$index]['enable'] )) ?  $order[$index]['enable'] : true;
+					   $item->set_enabled_for_collection($enable);
 
                         $result_ordinate[$index] = $item;
                     } else {

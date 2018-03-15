@@ -44,7 +44,7 @@
                 </items-list>
                 <!-- Footer -->
                 <div class="table-footer">
-                    <div class="shown-items"> 
+                    <div class="shown-items">
                         {{ 
                             $i18n.get('info_showing_items') + 
                             (itemsPerPage*(page - 1) + 1) + 
@@ -95,7 +95,6 @@ export default {
             isRepositoryLevel: false,
             tableFields: [],
             prefTableFields: [],
-            totalItems: 0,
             page: 1,
             itemsPerPage: 12,
             isLoading: false
@@ -112,7 +111,8 @@ export default {
         ]),
         ...mapGetters('collection', [
             'getItems',
-            'getFields'
+            'getFields',
+            'getTotalItems'
         ]),
         ...mapActions('fields', [
             'fetchFields'
@@ -151,6 +151,9 @@ export default {
             this.loadItems();
         },
         onPageChange(page) {
+            if(page == 0)
+                return;
+
             this.page = page;
             this.loadItems();
         },
@@ -161,7 +164,7 @@ export default {
             if( Object.keys( this.$route.query ).length > 0 ) {
                 this.page = ( this.$route.query.page ) ? this.$route.query.page : this.page;
                 this.itemsPerPage = ( this.$route.query.itemsPerPage ) ? this.$route.query.itemsPerPage : this.itemsPerPage;
-
+                console.log( this.page );
                 this.set_postquery(this.$route.query);
                 if (this.$route.params && this.$route.params.collectionId) {
                     promisse = this.search_by_collection(this.$route.params.collectionId);
@@ -173,7 +176,6 @@ export default {
 
             promisse.then((res) => {
                 this.isLoading = false;
-                this.totalItems = res.total;
             })
             .catch((error) => {
                 this.isLoading = false;
@@ -188,6 +190,9 @@ export default {
     computed: {
         items(){
             return this.getItems();
+        },
+        totalItems(){
+            return this.getTotalItems();
         }
     },
     created() {

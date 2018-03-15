@@ -8,6 +8,7 @@ export const search_by_collection = ({  state, dispatch, rootGetters }, collecti
             .then(res => {
                 let items = res.data;
                 dispatch('collection/setItems', res.data, { root: true } );
+                dispatch('collection/setTotalItems', res.headers['x-wp-total'], { root: true } );
                 resolve({'items': items, 'total': res.headers['x-wp-total'] });
             })
             .catch(error => {

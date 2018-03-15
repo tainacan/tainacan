@@ -4,6 +4,7 @@ import * as mutations from './mutations';
 
 const state = {
     items: [],
+    totalItems: 0,
     collections: [],
     collection: null,
     collectionName: ''

@@ -2,6 +2,10 @@ export const getItems = state => {
     return state.items;
 }
 
+export const getTotalItems = state => {
+    return state.totalItems;
+}
+
 export const getCollections = state => {
     return state.collections;
 }
