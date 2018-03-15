@@ -2,13 +2,14 @@ import axios from '../../../axios/axios';
 import qs from 'qs';
 
 // METAQUERIES ----------------------------------------------------
-export const search_by_collection = ({  state, dispatch, rootGetters }, collectionId) => {
+export const search_by_collection = ({  state, dispatch, commit }, collectionId) => {
     return new Promise((resolve, reject) =>{
         axios.tainacan.get('/collection/' + collectionId + '/items?' + qs.stringify( state.postquery ))
             .then(res => {
                 let items = res.data;
                 dispatch('collection/setItems', res.data, { root: true } );
-                dispatch('collection/setTotalItems', res.headers['x-wp-total'], { root: true } );
+                commit('setTotalItems', res.headers['x-wp-total'] );
+
                 resolve({'items': items, 'total': res.headers['x-wp-total'] });
             })
             .catch(error => {
