@@ -10,6 +10,16 @@
                 :loading="loading"
                 field="label"
                 @select="option => setResults(option) ">
+            <template slot-scope="props">
+                <div class="media">
+                    <div class="media-left" v-if="props.option.img">
+                        <img width="32" :src="`${props.option.img}`">
+                    </div>
+                    <div class="media-content">
+                        {{ props.option.label }}
+                    </div>
+                </div>
+            </template>
         </b-autocomplete>
         <br>
         <div class="field has-text-centered">
@@ -138,3 +148,14 @@
         }
     }
 </script>
+<style scoped>
+    #profileImage {
+        width: 32px;
+        height: 32px;
+        font-size: 35px;
+        color: #fff;
+        text-align: center;
+        line-height: 150px;
+        margin: 20px 0;
+    }
+</style>
