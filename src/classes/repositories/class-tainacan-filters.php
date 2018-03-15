@@ -52,7 +52,7 @@ class Filters extends Repository {
             'collection_id'      => [
                 'map'        => 'meta',
                 'title'      => __('Collection', 'tainacan'),
-                'type'       => 'integer',
+                'type'       => 'integer/string',
                 'description'=> __('The collection ID', 'tainacan'),
                 'validation' => ''
             ],

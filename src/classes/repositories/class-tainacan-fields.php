@@ -150,7 +150,7 @@ class Fields extends Repository {
             'collection_id'  => [ // not showed in form
                 'map'        => 'meta',
                 'title'      => __('Collection', 'tainacan'),
-                'type'       => 'integer',
+                'type'       => 'integer/string',
                 'description'=> __('The collection ID', 'tainacan'),
                 //'validation' => ''
             ],
