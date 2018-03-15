@@ -34,11 +34,13 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_collection_params()
 				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE)
 				)
 			)
 		);
@@ -49,16 +51,24 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::READABLE)
 				),
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args'                => array(
+						'body_args' => array(
+							'description' => __('To delete permanently, in body you can pass \'is_permanently\' as true. By default this will only trash collection'),
+							'default'     => 'false'
+						),
+					)
 				),
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
+					'permission_callback' => array($this, 'update_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE)
 				)
 			)
 		);
@@ -68,7 +78,8 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
+					'permission_callback' => array($this, 'update_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE)
 				)
 			)
 		);
@@ -344,6 +355,65 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_endpoint_args_for_item_schema( $method = null ) {
+		$endpoint_args = [];
+		if($method === WP_REST_Server::READABLE) {
+			$endpoint_args['fetch_only'] = array(
+				'type'        => 'string/array',
+				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.' ),
+			);
+
+			$endpoint_args['context'] = array(
+				'type'    => 'string',
+				'default' => 'view',
+				'items'   => array( 'view, edit' )
+			);
+		} elseif ($method === WP_REST_Server::CREATABLE || $method === WP_REST_Server::EDITABLE) {
+			$map = $this->taxonomy_repository->get_map();
+
+			foreach ($map as $mapped => $value){
+				$set_ = 'set_'. $mapped;
+
+				// Show only args that has a method set
+				if( !method_exists($this->taxonomy, "$set_") ){
+					unset($map[$mapped]);
+				}
+			}
+
+			$endpoint_args = $map;
+		}
+
+		return $endpoint_args;
+	}
+
+	/**
+	 *
+	 * Return the queries supported when getting a collection of objects
+	 *
+	 * @param null $object_name
+	 *
+	 * @return array
+	 */
+	public function get_collection_params($object_name = null) {
+		$query_params['context']['default'] = 'view';
+
+		$query_params = array_merge($query_params, parent::get_collection_params('tax'));
+
+		$query_params['name'] = array(
+			'description' => __('Limit result set to taxonomy with specific name.'),
+			'type'        => 'string',
+		);
+
+		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+		return $query_params;
 	}
 }
 

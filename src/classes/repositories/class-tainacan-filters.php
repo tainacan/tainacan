@@ -12,7 +12,7 @@ class Filters extends Repository {
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(),  [
-            'name'               => [
+            'name'                => [
                 'map'        => 'post_title',
                 'title'       => __('Name', 'tainacan'),
                 'type'       => 'string',
@@ -20,14 +20,14 @@ class Filters extends Repository {
                 'on_error'   => __('The filter name should be a text value and not empty', 'tainacan'),
                 'validation' => v::stringType()->notEmpty(),
             ],
-            'order'              => [
+            'order'               => [
                 'map'        => 'menu_order',
                 'title'       => __('Order', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Filter order. Field used if filters are manually ordered', 'tainacan'),
                 'validation' => ''
             ],
-            'description'        => [
+            'description'         => [
                 'map'        => 'post_content',
                 'title'      => __('Description', 'tainacan'),
                 'type'       => 'string',
@@ -43,28 +43,28 @@ class Filters extends Repository {
                 'description'=> __('The filter type options', 'tainacan'),
                 'validation' => ''
             ],
-            'filter_type'        => [
-                'map' => 'meta',
+            'filter_type'         => [
+                'map'        => 'meta',
                 'title'      => __('Type', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('The filter type', 'tainacan'),
                 'validation' => ''
             ],
-            'collection_id'      => [
+            'collection_id'       => [
                 'map'        => 'meta',
                 'title'      => __('Collection', 'tainacan'),
                 'type'       => 'integer/string',
                 'description'=> __('The collection ID', 'tainacan'),
                 'validation' => ''
             ],
-            'color'              => [
+            'color'               => [
                 'map'        => 'meta',
                 'title'      => __('Color', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('Filter color', 'tainacan'),
                 'validation' => ''
             ],
-            'field'           => [
+            'field'               => [
                 'map'        => 'meta',
                 'title'      => __('Field', 'tainacan'),
                 'type'       => 'integer',

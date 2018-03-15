@@ -23,6 +23,21 @@ class Filter extends Entity {
 		return 'Hello, my name is '. $this->get_name();
 	}
 
+	/**
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function __toArray(){
+		$filter_array = parent::__toArray();
+		$field_id = $filter_array['field'];
+
+		$filter_array['field'] = [];
+		$filter_array['field']['field_id'] = $field_id;
+		$filter_array['field']['field_name'] = $this->get_field()->get_name();
+
+		return $filter_array;
+	}
+
     /**
      * Return the filter name
      *
