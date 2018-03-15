@@ -199,28 +199,9 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			if($prepared->validate()) {
 				$field = $this->field_repository->insert( $prepared);
 
-				$items = $this->item_repository->fetch([], $collection_id, 'WP_Query');
+				$response = $this->prepare_item_for_response($field, $request);
 
-				$field_added = '';
-				if($items->have_posts()){
-					while ($items->have_posts()){
-						$items->the_post();
-
-						$item = new Entities\Item($items->post);
-						$item_meta = new Entities\Item_Metadata_Entity($item, $field);
-
-						$field_added = $this->item_metadata_repository->insert($item_meta);
-					}
-
-					$response = $this->prepare_item_for_response($field_added->get_field(), $request);
-
-					return new WP_REST_Response($response, 201);
-				}
-				else {
-					$response = $this->prepare_item_for_response($prepared, $request);
-
-					return new WP_REST_Response($response, 201);
-				}
+				return new WP_REST_Response($response, 201);
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
