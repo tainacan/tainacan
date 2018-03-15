@@ -116,7 +116,9 @@ export default {
         ]),
         ...mapGetters('collection', [
             'getItems',
-            'getFields',
+            'getFields'
+        ]),
+        ...mapGetters('search', [
             'getTotalItems'
         ]),
         ...mapActions('fields', [
@@ -125,7 +127,7 @@ export default {
         ...mapGetters('fields', [
             'getFields'
         ]),
-        ...mapActions('filter', [
+        ...mapActions('search', [
             'set_postquery',
             'search_by_collection'
         ]),

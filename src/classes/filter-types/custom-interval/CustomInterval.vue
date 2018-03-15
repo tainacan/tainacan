@@ -1,21 +1,21 @@
 <template>
     <div>
-        <div v-if="type === 'date'" class="columns" style="">
+        <div v-if="type === 'date'">
             <b-datepicker
                     size="is-small"
-                    class="column"
                     v-model="date_init"
                     @input="validate_values()"
                     icon="calendar-today">
             </b-datepicker>
+            <br>
             <b-datepicker
                     size="is-small"
-                    class="column"
                     v-model="date_end"
                     @input="validate_values()"
                     @focus="isTouched = true"
                     icon="calendar-today">
             </b-datepicker>
+            <br>
         </div>
         <div class="columns" v-else>
             <b-input
@@ -101,7 +101,7 @@
                         let result = this.date_init;
                         result.setDate(result.getDate() + 1);
                         this.date_end = result;
-                        this.error_message();
+                        //this.error_message();
                     }
                 } else {
                     this.value_end = (this.value_end === null) ? 0 : this.value_end;
@@ -109,7 +109,7 @@
 
                     if ( parseFloat( this.value_init ) > parseFloat( this.value_end )) {
                         this.value_end = parseFloat( this.value_init ) + 1;
-                        this.error_message();
+                        //this.error_message();
                     }
                 }
                 this.emit( this );
