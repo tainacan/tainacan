@@ -83,14 +83,15 @@ export const deleteCollection = ({ commit }, id) => {
     });
 }
 
-export const updateCollection = ({ commit }, { collection_id, name, description, status }) => {
+export const updateCollection = ({ commit }, { collection_id, name, description, slug, status }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
             name: name,
             description: description,
-            status: status 
+            status: status,
+            slug: slug
         }).then( res => {
-            commit('setCollection', { id: collection_id, name: name, description: description, status: status });
+            commit('setCollection', { id: collection_id, name: name, description: description, slug: slug, status: status });
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -122,4 +123,54 @@ export const setItems = ({ commit }, items ) => {
 
 export const setTotalItems = ({ commit }, total ) => {
     commit('setTotalItems', total);
+};
+
+
+// Attachments =======================================
+export const sendAttachment = ( { commit }, { collection_id, file }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.wp.post('/media/?post=' + collection_id, file, {
+            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
+            onUploadProgress: progressEvent => {
+                console.log(progressEvent.loaded + '/' + progressEvent.total);
+            }
+        })
+            .then( res => {
+                let attachment = res.data;
+                commit('setSingleAttachment', attachment);
+                resolve( attachment );
+            })
+            .catch(error => {
+                reject( error.response );
+            });
+    });
+};
+
+export const fetchAttachments = ({ commit }, collection_id) => {
+    return new Promise((resolve, reject) => {
+        axios.wp.get('/media/?post=' + collection_id)
+        .then(res => {
+            let attachments = res.data;
+            commit('setAttachments', attachments);
+            resolve( attachments );
+        })
+        .catch(error => {
+            reject( error );
+        });
+    });
+};
+
+export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.patch('/collections/' + collectionId, {
+            featured_img_id: thumbnailId 
+        }).then( res => {
+            let collection = res.data
+            commit('setCollection', collection);
+            resolve( collection );
+        }).catch( error => { 
+            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+        });
+
+    }); 
 };

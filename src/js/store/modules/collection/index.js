@@ -7,7 +7,8 @@ const state = {
     totalItems: 0,
     collections: [],
     collection: null,
-    collectionName: ''
+    collectionName: '',
+    attachments: []
 };
 
 export default {

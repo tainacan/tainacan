@@ -239,10 +239,10 @@ export default {
 
             this.sendAttachment({ item_id: this.itemId, file: $event[0] })
             .then((res) => {
-                console.log(res);
+
                 this.updateThumbnail({itemId: this.itemId, thumbnailId: res.id})
                 .then((res) => {
-                    console.log(res);
+                    
                 })
                 .catch((error) => {
                     console.log(error);

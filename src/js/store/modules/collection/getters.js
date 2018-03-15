@@ -17,3 +17,7 @@ export const getCollection = state => {
 export const getCollectionName = state => {
     return state.collectionName;
 }
+
+export const getAttachments =  state => {
+    return state.attachments;
+}
