@@ -44,7 +44,8 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
+					'permission_callback' => array($this, 'update_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE)
 				)
 			)
 		);
@@ -54,10 +55,10 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					//'args'                => $this->get_collection_params(),
+					'args'                => $this->get_collection_params(),
 				)
 			)
-				);
+		);
 		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base. '/(?P<metadata_id>[\d]+)',
 			array(
 				array(
@@ -189,6 +190,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 			$field = $this->field_repository->fetch( $field_id );
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $field );
+
 			if($item_metadata->is_multiple()) {
 				$item_metadata->set_value( $value );
 			} elseif(is_array($value)) {
@@ -254,6 +256,41 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_endpoint_args_for_item_schema( $method = null ) {
+		$endpoint_args = [];
+
+		if ($method === WP_REST_Server::EDITABLE) {
+			$endpoint_args['values'] = [
+				'type'        => 'array/string/object/integer',
+				'items'       => [
+					'type' => 'array/string/object/integer'
+				],
+				'description' => __('The value(s) of item metadata')
+			];
+		}
+
+		return $endpoint_args;
+	}
+
+	/**
+	 *
+	 * Return the queries supported when getting a collection of objects
+	 *
+	 * @param null $object_name
+	 *
+	 * @return array
+	 */
+	public function get_collection_params($object_name = null) {
+		$query_params['context']['default'] = 'view';
+
+		return $query_params;
 	}
 }
 

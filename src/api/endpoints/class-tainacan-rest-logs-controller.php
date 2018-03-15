@@ -31,6 +31,7 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_collection_params()
 				)
 			)
 		);
@@ -40,10 +41,10 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::READABLE)
 				)
 			)
 		);
-		
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<log_id>[\d]+)/approve',
 			array(
 				array(
@@ -149,9 +150,11 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function approve_item_permissions_check( $request ) {
 		$log = $this->logs_repository->fetch($request['log_id']);
+
 		if($log instanceof Entities\Log){
 			if($log->can_read()) {
 				$entity = $log->get_value();
+
 				if($entity instanceof Entities\Entity) {
 					if($entity instanceof Entities\Item_Metadata_Entity) {
 						$item = $entity->get_item();
@@ -161,9 +164,11 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 						return $entity->can_edit();
 					}
 				}
+
 				return new WP_Error();
 			}
 		}
+
 		return false;
 	}
 	
@@ -175,12 +180,54 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function approve_item($request) {
 		$log = $this->logs_repository->fetch($request['log_id']);
-		if($log instanceof Entities\Log){ 
+
+		if($log instanceof Entities\Log){
 			$entity = $log->approve();
 			$prepared_entity = $this->prepare_item_for_response( $entity, $request );
 			
 			return new WP_REST_Response($prepared_entity, 200);
 		}
+	}
+
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_endpoint_args_for_item_schema( $method = null ) {
+		$endpoint_args = [];
+		if($method === WP_REST_Server::READABLE) {
+			$endpoint_args['context'] = array(
+				'type'    => 'string',
+				'default' => 'view',
+				'items'   => array( 'view' )
+			);
+		}
+
+		return $endpoint_args;
+	}
+
+	/**
+	 *
+	 * Return the queries supported when getting a collection of objects
+	 *
+	 * @param null $object_name
+	 *
+	 * @return array
+	 */
+	public function get_collection_params($object_name = null) {
+		$query_params['context']['default'] = 'view';
+
+		$query_params = array_merge($query_params, parent::get_collection_params('log'));
+
+		$query_params['title'] = array(
+			'description' => __('Limit result set to log with specific title.'),
+			'type'        => 'string',
+		);
+
+		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+		return $query_params;
 	}
 }
 
