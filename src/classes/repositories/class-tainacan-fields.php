@@ -142,7 +142,7 @@ class Fields extends Repository {
             'field_type_options' => [ // not showed in form
                 'map'        => 'meta',
                 'title'      => __('Field Type options', 'tainacan'),
-                'type'       => 'array',
+                'type'       => 'array/object',
                 'description'=> __('Options specific for field type', 'tainacan'),
                 'default'    => [],
                // 'validation' => ''
@@ -152,6 +152,7 @@ class Fields extends Repository {
                 'title'      => __('Collection', 'tainacan'),
                 'type'       => 'integer/string',
                 'description'=> __('The collection ID', 'tainacan'),
+                'default'    => ''
                 //'validation' => ''
             ],
             'accept_suggestion' => [
@@ -663,9 +664,8 @@ class Fields extends Repository {
 				);
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
-
 				if (!empty($pre_result)) {
-					$results[] = $pre_result[0];
+					$results[] = $pre_result;
 				}
 			}
 		} elseif ( current_user_can( $capabilities->read_private_posts) ) {
@@ -694,7 +694,7 @@ class Fields extends Repository {
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
 
 				if (!empty($pre_result)) {
-					$results[] = $pre_result[0];
+					$results[] = $pre_result;
 				}
 			}
 		}
