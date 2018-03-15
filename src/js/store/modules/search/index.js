@@ -3,11 +3,12 @@ import * as getters from './getters';
 import * as mutations from './mutations';
 
 const state = {
-    items: [],
-    collections: [],
-    collection: null,
-    collectionName: '',
-    attachments: []
+    postquery: {
+        post_type: [],
+        metaquery: [],
+        taxquery: []
+    },
+    totalItems: 0
 };
 
 export default {

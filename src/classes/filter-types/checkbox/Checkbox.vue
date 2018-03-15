@@ -19,7 +19,7 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.field;
+            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
             const vm = this;
             axios.get('/collection/' + this.collection + '/fields/' +  this.field )
                 .then( res => {
@@ -80,7 +80,7 @@
                 this.$emit('input', {
                     filter: 'checkbox',
                     compare: 'IN',
-                    field_id: ( this.field_id ) ? this.field_id : this.filter.field,
+                    field_id: this.field,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: this.selected
                 });
