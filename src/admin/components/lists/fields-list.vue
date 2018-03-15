@@ -45,12 +45,16 @@
                     <div class="columns box available-fields-area" >
                         <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
-                                {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                                <a @click.prevent="addFieldViaButton(field)">
+                                    <b-icon type="is-gray" class="is-pulled-left" icon="arrow-left-bold"></b-icon>
+                                </a> {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             </div>
                         </draggable>
                         <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 != 0" v-for="(field, index) in availableFieldList" :key="index">
-                                {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                                <a @click.prevent="addFieldViaButton(field)">
+                                    <b-icon type="is-gray" class="is-pulled-left" icon="arrow-left-bold"></b-icon>
+                                </a> {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             </div>       
                         </draggable> 
                    </div>
@@ -118,6 +122,11 @@ export default {
             }
             this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
 
+        },
+        addFieldViaButton(fieldType) {
+            let lastIndex = this.activeFieldList.length;
+            this.activeFieldList.push(fieldType);
+            this.addNewField(fieldType, lastIndex);
         },
         addNewField(newField, newIndex) {
             this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel, newIndex: newIndex})
