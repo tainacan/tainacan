@@ -1,12 +1,12 @@
 import axios from '../../../axios/axios';
 
-export const fetchItems = ({ commit, state }, { collectionId, page, itemsPerPage }) => {
+export const fetchItems = ({ commit, dispatch }, { collectionId, page, itemsPerPage }) => {
     return new Promise ((resolve, reject) => {
         axios.tainacan.get('/collection/'+collectionId+'/items?paged='+page+'&perpage='+itemsPerPage)
         .then(res => {
             let items = res.data;
             commit('setItems', items);
-            commit('setTotalItems', res.headers['x-wp-total']);
+            dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
             resolve({'items': items, 'total': res.headers['x-wp-total'] });
         })
         .catch(error => reject(error));
@@ -119,10 +119,6 @@ export const sendCollection = ( { commit }, { name, description, status }) => {
 
 export const setItems = ({ commit }, items ) => {
     commit('setItems', items);
-};
-
-export const setTotalItems = ({ commit }, total ) => {
-    commit('setTotalItems', total);
 };
 
 

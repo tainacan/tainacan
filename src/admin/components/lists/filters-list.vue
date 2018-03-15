@@ -74,12 +74,12 @@
             <div class="column">
                 <b-filter :label="$i18n.get('label_available_field_types')">
                     <div class="columns box available-fields-area" >
-                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: 'clone', put: false, revertClone: true }}">
+                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: true, put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
                                 {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             </div>
                         </draggable>
-                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: 'clone', put: false, revertClone: true }}">
+                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: true, put: false, revertClone: true }}">
                             <div class="available-field-item" v-if="index % 2 != 0" v-for="(field, index) in availableFieldList" :key="index">
                                 {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             </div>       
@@ -181,7 +181,7 @@ export default {
             this.sendFilter({
                 collectionId: this.collectionId, 
                 fieldId: this.choosenField.id, 
-                name: this.selectedFilterType.name, 
+                name: this.choosenField.name, 
                 filterType: this.selectedFilterType.name, 
                 status: 'auto-draft', 
                 isRepositoryLevel: this.isRepositoryLevel,
@@ -210,7 +210,16 @@ export default {
             .then((filter) => {
                 let index = this.activeFilterList.findIndex(deletedFilter => deletedFilter.id === filter.id);
                 if (index >= 0) 
+                    
                     this.activeFilterList.splice(index, 1);
+                    this.isLoadingFieldTypes = true;
+                    this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
+                    .then((res) => {
+                        this.isLoadingFieldTypes = false;
+                    })
+                    .catch((error) => {
+                        this.isLoadingFieldTypes = false;
+                    });
                 
                 if (!this.isRepositoryLevel)
                     this.updateFiltersOrder(); 
@@ -251,7 +260,16 @@ export default {
     },
     computed: {
         availableFieldList() {
-            return this.getFields();
+            let availableFields = this.getFields();  
+            for (let activeFilter of this.activeFilterList) {
+                for (let i = availableFields.length - 1; i >= 0 ; i--) {
+                    if (activeFilter.field != undefined) {
+                        if (activeFilter.field.field_id == availableFields[i].id) 
+                            availableFields.splice(i, 1);
+                    }
+                }
+            }
+            return availableFields;
         },
         activeFilterList() {
             return this.getFilters();
@@ -272,14 +290,6 @@ export default {
         this.isLoadingFilters = true;
         this.isLoadingFilterTypes = true;
 
-        this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-            .then((res) => {
-                this.isLoadingFieldTypes = false;
-            })
-            .catch((error) => {
-                this.isLoadingFieldTypes = false;
-            });
-
         this.fetchFilterTypes()
             .then((res) => {
                 this.isLoadingFilterTypes = false;
@@ -291,6 +301,14 @@ export default {
         this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
             .then((res) => {
                 this.isLoadingFilters = false;
+                // Needs to be done after activeFilterList exists to compare and remove chosen fields.
+                this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
+                    .then((res) => {
+                        this.isLoadingFieldTypes = false;
+                    })
+                    .catch((error) => {
+                        this.isLoadingFieldTypes = false;
+                    });
             })
             .catch((error) => {
                 this.isLoadingFilters = false;

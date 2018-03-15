@@ -18,31 +18,38 @@
             </b-field>
 
             <!-- Thumbnail -------------------------------- --> 
-            <div class="columns">
-                <b-field class="column" :label="$i18n.get('label_image')">
+            <b-field :label="$i18n.get('label_image')">
+                <div class="thumbnail-field">
                     <b-upload 
+                        v-if="item.featured_image == undefined || item.featured_image == false"
                         v-model="thumbnail"
                         drag-drop
                         @input="uploadThumbnail($event)">
-                        <section class="section">
-                            <div class="content has-text-centered">
-                                <p>
-                                    <b-icon
-                                            icon="upload"
-                                            size="is-large">
-                                    </b-icon>
-                                </p>
-                                <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
-                            </div>
-                        </section>
+                        <div class="content has-text-centered">
+                            <p>
+                            <b-icon
+                                icon="upload">
+                            </b-icon>
+                            </p>
+                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
+                        </div>
                     </b-upload>
-                </b-field> 
-                <div class="column is-centered"> 
-                    <figure class="image is-128x128">
-                        <img :alt="$i18n.get('label_thumbnail')" :src="item.featured_image"/>
-                    </figure>
-                </div> 
-            </div> 
+                    <div v-else> 
+                        <figure class="image is-128x128">
+                            <img :alt="$i18n.get('label_thumbnail')" :src="item.featured_image"/>
+                        </figure>
+                        <div class="thumbnail-buttons-row">
+                            <b-upload 
+                                model="thumbnail"
+                                @input="uploadThumbnail($event)">
+                                <a id="button-edit" :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"></a>
+                            </b-upload>
+                            <a id="button-delete" :aria-label="$i18n.get('label_button_delete_thumb')" @click="deleteThumbnail()"><b-icon icon="delete"></a>
+                        </div>
+                    </div> 
+                </div>
+            </b-field> 
+                  
             
             <!-- Fields from Collection-------------------------------- -->   
             <tainacan-form-item                 
@@ -242,7 +249,7 @@ export default {
 
                 this.updateThumbnail({itemId: this.itemId, thumbnailId: res.id})
                 .then((res) => {
-                    
+                    this.item.featured_image = res.featured_image;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -252,6 +259,15 @@ export default {
                 console.log(error);
             });
             
+        },
+        deleteThumbnail() {
+            this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
+            .then((res) => {
+                this.item.featured_image = false;
+            })
+            .catch((error) => {
+                console.log(error);
+            });    
         },
         deleteFile(index) {
 
@@ -296,7 +312,38 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    .thumbnail-field {
+        width: 128px;
+        height: 128px;
+        max-width: 128px;
+        max-height: 128px;
+        
+        .content {
+            padding: 10px;
+            font-size: 0.8em;
+        }
+        img {
+            bottom: 0;
+            position: absolute;
+        }
+
+        .thumbnail-buttons-row {
+            display: none;
+        }
+        &:hover {
+             .thumbnail-buttons-row {
+                display: inline-block;
+                position: relative;
+                bottom: 31px;
+                background-color: rgba(255,255,255,0.8);
+                padding: 2px 8px;
+                border-radius: 0px 4px 0px 0px;
+            }
+        }
+    }
+
 
 </style>
 

@@ -301,6 +301,10 @@ export default {
             padding: 10px;
             font-size: 0.8em;
         }
+        img {
+            bottom: 0;
+            position: absolute;
+        }
 
         .thumbnail-buttons-row {
             display: none;

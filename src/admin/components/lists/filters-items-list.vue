@@ -31,7 +31,7 @@
             ...mapActions('filter',[
                 'fetchFilters'
             ]),
-            ...mapGetters('filter',[
+            ...mapGetters('search',[
                 'getPostQuery'
             ])
         }
