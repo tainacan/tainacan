@@ -16,6 +16,7 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
+    import { filter_type_mixin } from '../filter-types-mixin'
     import qs from 'qs';
 
     export default {
@@ -48,16 +49,7 @@
                 field_object: {}
             }
         },
-        props: {
-            filter: {
-                type: Object // concentrate all attributes field id and type
-            },
-            field_id: [Number], // not required, but overrides the filter field id if is set
-            collection_id: [Number], // not required, but overrides the filter field id if is set
-            filter_type: [String],  // not required, but overrides the filter field type if is set
-            id: '',
-            query: {}
-        },
+        mixins: [filter_type_mixin],
         watch: {
             selected( value ){
                 this.selected = value;
@@ -95,36 +87,6 @@
                     console.log('error select', error );
                     this.isLoading = false;
                 });
-            },
-            getValuesPlainText( field_id ){
-                return axios.get( '/collection/' + this.collection  + '/fields/' + field_id + '?fetch=all_field_values')
-                    .then( res => {
-                        if( res.data ){
-                            for (let metadata of res.data) {
-                                let index = this.options.findIndex(itemMetadata => itemMetadata.value === metadata.mvalue);
-                                if( index < 0 ){
-                                    this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
-                                }
-
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            },
-            getValuesRelationship( collectionTarget, search ){
-                return axios.get( '/collection/' + collectionTarget  + '/items?search=' + search )
-                    .then( res => {
-                        if( res.data.length > 0 ){
-                            for (let item of res.data) {
-                                this.options.push({ label: item.title, value: item.id, img: '' });
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
             },
             selectedValues(){
                 const instance = this;

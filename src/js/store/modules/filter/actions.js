@@ -42,9 +42,9 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/filters/'; 
+            endpoint = '/collection/' + collectionId + '/filters?context=edit';
         else
-            endpoint = '/filters/';
+            endpoint = '/filters?context=edit';
 
         axios.tainacan.get(endpoint)
         .then((res) => {

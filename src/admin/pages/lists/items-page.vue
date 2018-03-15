@@ -169,7 +169,6 @@ export default {
             if( Object.keys( this.$route.query ).length > 0 ) {
                 this.page = ( this.$route.query.page ) ? this.$route.query.page : this.page;
                 this.itemsPerPage = ( this.$route.query.itemsPerPage ) ? this.$route.query.itemsPerPage : this.itemsPerPage;
-                console.log( this.page );
                 this.set_postquery(this.$route.query);
                 if (this.$route.params && this.$route.params.collectionId) {
                     promisse = this.search_by_collection(this.$route.params.collectionId);
