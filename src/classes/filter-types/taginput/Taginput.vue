@@ -99,12 +99,14 @@
             getValuesPlainText( field_id ){
                 return axios.get( '/collection/' + this.collection  + '/fields/' + field_id + '?fetch=all_field_values')
                     .then( res => {
-                        for (let metadata of res.data) {
-                            let index = this.options.findIndex(itemMetadata => itemMetadata.value === metadata.mvalue);
-                            if( index < 0 ){
-                                this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
-                            }
+                        if( res.data ){
+                            for (let metadata of res.data) {
+                                let index = this.options.findIndex(itemMetadata => itemMetadata.value === metadata.mvalue);
+                                if( index < 0 ){
+                                    this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
+                                }
 
+                            }
                         }
                     })
                     .catch(error => {

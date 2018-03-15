@@ -485,7 +485,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$data1 = $response1->get_data();
 
 		$this->assertCount(1, $data1);
-		$this->assertEquals('12/12/2017', $data1[0]['mvalue']);
+		$this->assertEquals('12/12/2017', $data1[0][0]['mvalue']);
 
 		//=======================
 
@@ -497,7 +497,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$data1 = $response1->get_data();
 
 		$this->assertCount(1, $data1);
-		$this->assertEquals('12/12/2017', $data1[0]['mvalue']);
+		$this->assertEquals('12/12/2017', $data1[0][0]['mvalue']);
 
 		//=======================
 
@@ -509,8 +509,8 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$data2 = $response2->get_data();
 
 		$this->assertCount(2, $data2);
-		$this->assertEquals('12/12/2017', $data2[0]['mvalue']);
-		$this->assertEquals('02/03/2018', $data2[1]['mvalue']);
+		$this->assertEquals('12/12/2017', $data2[0][0]['mvalue']);
+		$this->assertEquals('02/03/2018', $data2[1][0]['mvalue']);
 	}
 }
 
