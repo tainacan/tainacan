@@ -19,7 +19,7 @@
                                 <span class="field-name">{{ field.name }}</span>
                                 <span v-if="field.id !== undefined" class="label-details">{{ $i18n.get(field.field_type_object.component)}}</span><span class="loading-spinner" v-if="field.id == undefined"></span>
                                 <span class="controls" v-if="field.id !== undefined">
-                                    <b-switch size="is-small" v-model="field.disabled" @input="onChangeEnable($event, index)">{{ field.disabled ? $i18n.get('label_disabled') : $i18n.get('label_enabled') }}</b-switch>
+                                    <b-switch size="is-small" v-model="field.enabled" @input="onChangeEnable($event, index)">{{ field.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled') }}</b-switch>
                                     <a @click.prevent="removeField(field)">
                                         <b-icon icon="delete"></b-icon>
                                     </a>
@@ -106,15 +106,15 @@ export default {
         updateFieldsOrder() {
             let fieldsOrder = [];
             for (let field of this.activeFieldList) {
-                fieldsOrder.push({'id': field.id, 'enabled': !field.disabled});
+                fieldsOrder.push({'id': field.id, 'enabled': field.enabled});
             }
             this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
         },
         onChangeEnable($event, index) {
-            this.activeFieldList[index].disabled = $event;
+            this.activeFieldList[index].enabled = $event;
             let fieldsOrder = [];
             for (let field of this.activeFieldList) {
-                fieldsOrder.push({'id': field.id, 'enabled': !field.disabled});
+                fieldsOrder.push({'id': field.id, 'enabled': field.enabled});
             }
             this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
 

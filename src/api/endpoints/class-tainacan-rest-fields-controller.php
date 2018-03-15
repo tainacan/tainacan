@@ -418,6 +418,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 						'field_id'      => $field_id
 					] );
 				} elseif ($collection_id && $field->get_collection_id() === 'default'){
+					var_dump($collection_id);
 					$error_message = __('That field is not a collection field', 'tainacan');
 
 					return new WP_REST_Response( [
