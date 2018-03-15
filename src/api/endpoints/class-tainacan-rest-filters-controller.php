@@ -123,7 +123,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 			}
 		}
 
-		if(isset($request['collection_id']) && isset($request['filter_id'])) {
+		if(isset($request['collection_id']) && isset($request['field_id'])) {
 			$collection_id = $request['collection_id'];
 			$field_id      = $request['field_id'];
 
@@ -359,7 +359,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		if(!isset($request['collection_id'])) {
-			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_read( $this->filter ) ) {
+			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_read( new Entities\Filter() ) ) {
 				return false;
 			}
 
@@ -409,6 +409,26 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param null $object_name
+	 *
+	 * @return array|void
+	 */
+	public function get_collection_params( $object_name = null ) {
+		$query_params['context']['default'] = 'view';
+
+		$query_params = array_merge($query_params, parent::get_collection_params('filter'));
+
+		$query_params['name'] = array(
+			'description' => __('Limit result set to filter with specific name.'),
+			'type'        => 'string',
+		);
+
+		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+		return $query_params;
 	}
 }
 ?>
