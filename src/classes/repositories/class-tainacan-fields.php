@@ -142,9 +142,8 @@ class Fields extends Repository {
             'field_type_options' => [ // not showed in form
                 'map'        => 'meta',
                 'title'      => __('Field Type options', 'tainacan'),
-                'type'       => 'array/object',
+                'type'       => 'object',
                 'description'=> __('Options specific for field type', 'tainacan'),
-                'default'    => [],
                // 'validation' => ''
             ],
             'collection_id'  => [ // not showed in form
@@ -152,7 +151,6 @@ class Fields extends Repository {
                 'title'      => __('Collection', 'tainacan'),
                 'type'       => 'integer/string',
                 'description'=> __('The collection ID', 'tainacan'),
-                'default'    => ''
                 //'validation' => ''
             ],
             'accept_suggestion' => [
