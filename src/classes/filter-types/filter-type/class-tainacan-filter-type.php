@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 abstract class Filter_Type {
 
     private $supported_types = [];
-    private $options;
+    private $options = [];
     private $component;
 
     public function __construct(){
@@ -46,6 +46,7 @@ abstract class Filter_Type {
     public function get_component() {
         return $this->component;
     }
+
     /**
      * @return array
      */
@@ -73,7 +74,7 @@ abstract class Filter_Type {
 	 *
 	 * @param  \Tainacan\Entities\Filter $filter The field object that is beeing validated
 	 *
-	 * @return true|Array True if options are valid. If invalid, returns an array where keys are the field keys and values are error messages.
+	 * @return true|array True if options are valid. If invalid, returns an array where keys are the field keys and values are error messages.
 	 * @throws \Exception
 	 */
     public function validate_options(\Tainacan\Entities\Filter $filter) {

@@ -143,7 +143,7 @@ class Fields extends Repository {
                 'map'        => 'meta',
                 'title'      => __('Field Type options', 'tainacan'),
                 'type'       => 'array/object/string',
-                'items'      => ['type' => 'array/string/integer'],
+                'items'      => ['type' => 'array/string/integer/object'],
                 'description'=> __('Options specific for field type', 'tainacan'),
                // 'validation' => ''
             ],
