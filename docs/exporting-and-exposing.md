@@ -10,7 +10,11 @@ With Tainacan you have the possibility to map your collection structure to one o
 
 You do it by informing, for each field you create, what is it relative in each format you want to map your collection to. You may sau for example, that you "Name" Field is the equivalent to the dc:Title attribute in Dublin Core and some another attribute in other format you choose.
 
+Tainacan is shipped with some Mapping standards that implement popular metadata standards. And it will be easy to create new standards.
+
 Note: When you use a preset to build your collection, chances are that the mapping is already done. This is a good reason to consider using presets ;)
+
+Note 2: If the mapping standard you mapped your collection to supports it, you will be able to expose your collection en JSON-LD format!
 
 ## Exporting
 
