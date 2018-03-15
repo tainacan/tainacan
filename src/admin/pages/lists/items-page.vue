@@ -46,8 +46,8 @@
                 <div class="table-footer">
                     <div class="shown-items">
                         {{ 
-                            $i18n.get('info_showing_items') + 
-                            (itemsPerPage*(page - 1) + 1) + 
+                            $i18n.get('info_showing_items') +
+                            getFirstItem() +
                             $i18n.get('info_to') + 
                             getLastItemNumber() + 
                             $i18n.get('info_of') + totalItems + '.'
@@ -98,6 +98,11 @@ export default {
             page: 1,
             itemsPerPage: 12,
             isLoading: false
+        }
+    },
+    watch: {
+        page( value ){
+            this.page = ( value > 0 ) ? value : 1;
         }
     },
     components: {
@@ -185,6 +190,12 @@ export default {
             let last = (Number(this.itemsPerPage*(this.page - 1)) + Number(this.itemsPerPage));
             
             return last > this.totalItems ? this.totalItems : last;
+        },
+        getFirstItem(){
+            if( this.totalItems == 0 )
+                return 0;
+
+            return ( this.itemsPerPage * ( this.page - 1 ) + 1)
         }
     },
     computed: {
