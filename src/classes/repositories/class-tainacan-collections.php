@@ -348,16 +348,10 @@ class Collections extends Repository {
                         $caps = ['read'];
                     }
                 }
-                
-            
-                
-                
             }
-            
         }
         
         return $caps;
-        
     }
     
 }

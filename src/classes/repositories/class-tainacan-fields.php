@@ -33,7 +33,7 @@ class Fields extends Repository {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
             'name'           => [
                 'map'        => 'post_title',
-                'title'       => __('Name', 'tainacan'),
+                'title'      => __('Name', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Name of the field', 'tainacan'),
                 'on_error'   => __('The name should be a text value and not empty', 'tainacan'),
@@ -488,18 +488,18 @@ class Fields extends Repository {
         // TODO: create a better way to retrieve this data
         $data_core_fields = [
             'core_description' => [
-                'name' => 'Description',
-                'description' => 'description',
+                'name'          => 'Description',
+                'description'   => 'description',
                 'collection_id' => $collection->get_id(),
-                'field_type' => 'Tainacan\Field_Types\Core_Description',
-                'status'     => 'publish'
+                'field_type'    => 'Tainacan\Field_Types\Core_Description',
+                'status'        => 'publish'
             ],
-            'core_title' => [
-                'name' => 'Title',
-                'description' => 'title',
+            'core_title'       => [
+                'name'          => 'Title',
+                'description'   => 'title',
                 'collection_id' => $collection->get_id(),
-                'field_type' => 'Tainacan\Field_Types\Core_Title',
-                'status'     => 'publish'
+                'field_type'    => 'Tainacan\Field_Types\Core_Title',
+                'status'        => 'publish'
             ]
         ];
 

@@ -27,8 +27,8 @@ class Item_Metadata_Entity extends Entity {
 	}
 
     public function  __toArray(){
-        $as_array['value']    = $this->get_value();
-	    $as_array['item']     = $this->get_item()->__toArray();
+        $as_array['value'] = $this->get_value();
+	    $as_array['item']  = $this->get_item()->__toArray();
 	    $as_array['field'] = $this->get_field()->__toArray();
 
 	    return $as_array;
@@ -190,9 +190,9 @@ class Item_Metadata_Entity extends Entity {
             	$Tainacan_Items = new \Tainacan\Repositories\Items();
                 
                 $test = $Tainacan_Items->fetch([
-                    'meta_query'    => [
+                    'meta_query' => [
                         [
-                            'key' => $this->field->get_id(),
+                            'key'   => $this->field->get_id(),
                             'value' => $value
                         ],
                     ]
