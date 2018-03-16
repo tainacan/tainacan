@@ -35,7 +35,7 @@ class Exposers {
 		$class = $prefix.sanitize_text_field($class_name);
 		$class = str_replace(['-', ' '], ['_'], $class);
 		
-		return ($root ? '/' : '').$class;
+		return ($root ? '\\' : '').$class;
 	}
 	
 	public function rest_response($item_arr, $request) {
