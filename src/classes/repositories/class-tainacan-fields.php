@@ -170,6 +170,15 @@ class Fields extends Repository {
                 'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
                 'default'    => 'yes'
             ],
+    		'exposer_mapping'        => [
+    			'map'        => 'meta',
+    			'title'      => __('exposer_mapping', 'tainacan'),
+    			'type'       => 'array',
+    			'description'=> __('The field mapping options', 'tainacan'),
+    			'on_error'   => __('Invalid Field Mapping', 'tainacan'),
+    			'validation' =>  v::arrayType(),
+    			'default'    => []
+    		],
         ]);
     }
 	
