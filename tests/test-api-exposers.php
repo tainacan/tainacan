@@ -30,7 +30,13 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 				'description'       => 'descricao',
 				'collection'        => $collection,
 				'field_type'		=> $type,
-				'accept_suggestion'	=> true
+				'exposer_mapping'	=> [
+					'dublin-core' => [
+						'name' => 'title',
+						'label' => 'Title',
+						'URI' => 'http://purl.org/dc/terms/title',
+					]
+				]
 			),
 			true,
 			true
@@ -86,8 +92,16 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		
 		$this->assertInstanceOf('SimpleXMLElement', @simplexml_load_string($data));
 		
-		$xml = simplexml_load_string($data);
-		$xml->asXML('/tmp/1.xml');
+		$item_exposer_json = json_encode([
+			'exposer-map'       => 'Dublin Core',
+		]);
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/'. $field->get_id() );
+		$request->set_body($item_exposer_json);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data();
+		
+		$this->assertEquals('TestValues_exposers', $data['dc:title']);
 	}
 }
 
