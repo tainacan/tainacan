@@ -16,6 +16,12 @@ class Xml extends Type {
 		return $response;
 	}
 	
+	/**
+	 * Convert Array to Xml
+	 * @param array $data
+	 * @param \SimpleXMLElement $xml_data
+	 * @return \SimpleXMLElement
+	 */
 	protected function array_to_xml( $data, $xml_data ) {
 		foreach( $data as $key => $value ) {
 			if( is_numeric($key) ){
