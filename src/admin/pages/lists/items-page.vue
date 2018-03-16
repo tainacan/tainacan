@@ -286,7 +286,12 @@ export default {
             max-width: $side-menu-width;
             background-color: $primary-lighter;
             margin-left: -$page-small-side-padding;
-            padding-left: $page-small-side-padding
+            padding: $page-small-side-padding;
+
+            .label {
+                font-weight: normal;
+                font-size: 0.85em;
+            }
         }
 
         .table-container {

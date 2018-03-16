@@ -163,6 +163,35 @@ html {
         }
     }
 }
+.switch {
+    input[type="checkbox"] + .check {
+        background-color: transparent;
+        border: 2px solid gray;
+
+        &::before {
+            background-color: gray;
+            box-shadow: none;
+        }
+    } 
+    &:hover input[type="checkbox"]:checked + .check {
+        background-color: $primary-lighter;
+    }
+
+    input[type="checkbox"]:checked + .check {
+        border: 2px solid $primary;
+        background-color: transparent;
+
+        &::before {
+            background-color: $primary;
+        }
+    }
+    &:hover input[type="checkbox"]:checked + .check {
+        background-color: $tainacan-input-color;
+    }
+    
+}
+
+// Tables
 .table {
     tbody {
         td { border-bottom: 0px solid $gray-light !important; }

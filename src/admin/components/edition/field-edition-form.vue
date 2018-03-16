@@ -173,10 +173,19 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
+    @import "../../scss/_variables.scss";
+ 
     form {
-        padding: 5px;
+        padding: 1.0em 2.0em;
+        border-top: 1px solid $draggable-border-color;
+        margin-top: 1.0em;
+        font-size: 16px;
+
+        .field {
+            font-weight: normal !important;
+        }
     }
 
 </style>

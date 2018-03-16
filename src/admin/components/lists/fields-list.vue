@@ -1,74 +1,72 @@
 <template>
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"></b-loading>
+        <div class="page-title">
+            <h2>{{ $i18n.get('instruction_dragndrop_fields_collection')}}</h2>
+        </div>
         <div class="columns">
-            <div class="column">
-                <b-field :label="$i18n.get('label_active_fields')">
-                    <draggable 
-                        class="box active-fields-area"
-                        @change="handleChange"
-                        :class="{'fields-area-receive': isDraggingFromAvailable}" 
-                        :list="activeFieldList" 
-                        :options="{ 
-                                group: { name:'fields', pull: false, put: true }, 
-                                handle: '.handle', 
-                                chosenClass: 'sortable-chosen',
-                                ghostClass: 'sortable-ghost', 
-                                filter: '.not-sortable-item', 
-                                animation: '250'}">
-                        <div  
-                            class="active-field-item"
-                            :class="{'not-sortable-item': field.id == undefined, 'not-focusable-item': openedFieldId == field.id, 'inherited-field': field.collection_id != collectionId}" 
-                            v-for="(field, index) in activeFieldList" :key="index">
-                            <div class="handle">
-                                <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                                <span class="field-name">{{ field.name }}</span>
-                                <span v-if="field.id !== undefined" class="label-details">{{ $i18n.get(field.field_type_object.component)}}</span><span class="loading-spinner" v-if="field.id == undefined"></span>
-                                <span class="controls" v-if="field.id !== undefined">
-                                    <b-switch size="is-small" v-model="field.enabled" @input="onChangeEnable($event, index)">{{ field.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled') }}</b-switch>
-                                    <a @click.prevent="removeField(field)">
-                                        <b-icon icon="delete"></b-icon>
-                                    </a>
-                                    <a @click.prevent="editField(field)">
-                                        <b-icon icon="pencil"></b-icon>
-                                    </a>
-                                </span>
-                            </div>
-                            <div v-if="openedFieldId == field.id">
-                                <field-edition-form   
-                                    :collectionId="collectionId"
-                                    :isRepositoryLevel="isRepositoryLevel"
-                                    @onEditionFinished="onEditionFinished()"
-                                    @onEditionCanceled="onEditionCanceled()"
-                                    :field="editForm"></field-edition-form>
-                            </div>
+            <div class="column">        
+                <draggable 
+                    class="active-fields-area"
+                    @change="handleChange"
+                    :class="{'fields-area-receive': isDraggingFromAvailable}" 
+                    :list="activeFieldList" 
+                    :options="{ 
+                            group: { name:'fields', pull: false, put: true }, 
+                            handle: '.handle', 
+                            ghostClass: 'sortable-ghost', 
+                            filter: '.not-sortable-item', 
+                            animation: '250'}">
+                    <div  
+                        class="active-field-item"
+                        :class="{'not-sortable-item': field.id == undefined, 'not-focusable-item': openedFieldId == field.id, 'inherited-field': field.collection_id != collectionId}" 
+                        v-for="(field, index) in activeFieldList" :key="index">
+                        <div class="handle">
+                            <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                            <span class="field-name">{{ field.name }}</span>
+                            <span v-if="field.id !== undefined" class="label-details">{{ $i18n.get(field.field_type_object.component)}}</span><span class="loading-spinner" v-if="field.id == undefined"></span>
+                            <span class="controls" v-if="field.id !== undefined">
+                                <b-switch size="is-small" v-model="field.enabled" @input="onChangeEnable($event, index)"></b-switch>
+                                <a @click.prevent="removeField(field)">
+                                    <b-icon icon="delete"></b-icon>
+                                </a>
+                                <a @click.prevent="editField(field)">
+                                    <b-icon icon="pencil"></b-icon>
+                                </a>
+                            </span>
                         </div>
-                    </draggable> 
-                </b-field>
+                        <div v-if="openedFieldId == field.id">
+                            <field-edition-form   
+                                :collectionId="collectionId"
+                                :isRepositoryLevel="isRepositoryLevel"
+                                @onEditionFinished="onEditionFinished()"
+                                @onEditionCanceled="onEditionCanceled()"
+                                :field="editForm"></field-edition-form>
+                        </div>
+                    </div>
+                </draggable> 
             </div>
-            <div class="column">
-                <b-field :label="$i18n.get('label_available_field_types')">
-                    <div class="box available-fields-area" >
-                        <draggable 
-                            :list="availableFieldList" 
-                            :options="{ 
-                                sort: false, 
-                                group: { name:'fields', pull: 'clone', put: false, revertClone: true }
-                            }">
-                            <div 
-                                @click.prevent="addFieldViaButton(field)" 
-                                class="available-field-item" 
-                                v-for="(field, index) in availableFieldList" 
-                                :key="index">
-                                <!-- <a @click.prevent="addFieldViaButton(field)"> -->           
-                                <a>    
-                                    <b-icon type="is-gray" class="is-pulled-left" icon="arrow-left-bold"></b-icon>
-                                </a> {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                            </div>
-                        </draggable>
-                   </div>
-                </b-field>
-            </div>
+          
+            <div class="column available-fields-area" >
+                <div class="field">
+                    <h3 class="label">{{ $i18n.get('label_available_field_types')}}</h3>
+                    <draggable 
+                        :list="availableFieldList" 
+                        :options="{ 
+                            sort: false, 
+                            group: { name:'fields', pull: 'clone', put: false, revertClone: true },
+                            dragClass: 'sortable-drag'
+                        }">
+                        <div 
+                            @click.prevent="addFieldViaButton(field)" 
+                            class="available-field-item" 
+                            v-for="(field, index) in availableFieldList" 
+                            :key="index">
+                            <b-icon type="is-gray" class="is-pulled-left"  icon="drag"></b-icon> <span class="field-name">{{ field.name }}</span>
+                        </div>
+                    </draggable>
+                </div>
+            </div> 
         </div>
     </div> 
 </template>
@@ -224,12 +222,21 @@ export default {
 
     @import "../../scss/_variables.scss";
 
+    .page-title {
+        border-bottom: 1px solid $secondary;
+        h2 {
+            color: $tertiary;
+        }
+        margin: 1em 0em 1.6em -1.2em;
+    }
+
     .active-fields-area {
+        font-size: 14px;
         min-height: 40px;
         padding: 10px;
+        margin-right: 6em; 
 
         &.fields-area-receive {
-            background-color: whitesmoke;
             border: 1px dashed gray;
         }
 
@@ -243,18 +250,20 @@ export default {
         }
         .active-field-item {
             background-color: white;
-            padding: 0.4em;
-            margin: 10px;
-            border-radius: 5px;
-            border: 1px solid gainsboro;
+            padding: 0.6em;
+            margin: 4px;
+            min-height: 42px;
             display: block; 
             transition: top 0.2s ease;
             cursor: grab;
-        
+
             .field-name {
                 text-overflow: ellipsis;
                 overflow-x: hidden;
                 white-space: nowrap;
+                font-weight: bold;
+                margin-left: 0.4em;
+                margin-right: 0.4em;
             }
             .label-details {
                 font-weight: normal;
@@ -277,59 +286,132 @@ export default {
                 box-shadow: none !important;
                 top: 0px !important;
                 cursor: default;
+                background-color: white !important;
+                
+                .field-name {
+                    color: $primary !important;
+                }
+                .label-details, .icon {
+                    color: gray !important;
+                }
             }
             &.inherited-field {
                 color: gray;
-            }
-           
+            }           
         }
         .active-field-item:hover {
-            box-shadow: 0 3px 4px rgba(0,0,0,0.25);
-            position: relative;
+            background-color: $secondary;
+            border-color: $secondary;
+            color: white !important;
             top: -2px;
-        }
 
-        .sortable-chosen {
-            background-color: #fff;
-            margin: 10px;
-            border-radius: 5px;
-            border: 1px solid $primary-light;
-            display: inherit; 
+            .label-details, .icon {
+                color: white !important;
+            }
         }
         .sortable-ghost {
-            padding: .4em;
-            margin: 10px;
-            background-color: $primary-lighter;
-            border-radius: 5px;
-            border: 1px dashed $primary-light;
+            border-left: 1px solid $draggable-border-color;
+            border-right: 1px dashed $draggable-border-color;
+            border-top: 1px dashed $draggable-border-color;
+            border-bottom: 1px dashed $draggable-border-color;
             display: block;
+            position: relative;
+            height: 42px;
+
+            // &:after,
+            // &:before {
+            //     content: '';
+            //     display: block;
+            //     position: absolute;
+            //     left: 0%;
+            //     width: 0;
+            //     height: 0;
+            //     border-style: solid;
+            // }
+            // &:after {
+            //     top: 0px;
+            //     border-color: $secondary transparent $secondary $secondary;
+            //     border-width: 20px;
+            // }
+            // &:before {
+            //     top: -1px;
+            //     border-color: $secondary transparent $secondary $secondary;
+            //     border-width: 21px;
+            // }
         }
     }
 
     .available-fields-area {
-        padding: 10px;
+        padding: 10px 0px 10px 10px;
         margin: 0;
-        background-color: whitesmoke;
+        max-width: 280px;
+        font-size: 14px;
+
+        h3 {
+            color: $secondary;
+            margin: 1.0em 0em;
+        }
 
         .available-field-item {
-            padding: 0.4em;
-            margin: 10px;
-            border-radius: 5px;
+            padding: 0.6em;
+            margin: 4px;
             background-color: white;
-            border: 1px solid gainsboro;
             cursor: pointer;
-            top: 0;
-            transition: top 0.2s ease;
-        }
-        .available-field-item:hover {
-            border: 1px solid lightgrey;
-            box-shadow: 2px 3px 4px rgba(0,0,0,.25);
+            left: 0;
+            height: 42px;
             position: relative;
-            top: -2px;
-            left: -2px;
+            border: 1px solid $draggable-border-color;
+            transition: left 0.2s ease;
+            
+            .field-name {
+                text-overflow: ellipsis;
+                overflow-x: hidden;
+                white-space: nowrap;
+                font-weight: bold;
+                margin-left: 0.4em;
+            }
+            &:after,
+            &:before {
+                content: '';
+                display: block;
+                position: absolute;
+                right: 100%;
+                width: 0;
+                height: 0;
+                border-style: solid;
+            }
+            &:after {
+                top: 0px;
+                border-color: transparent white transparent transparent;
+                border-width: 20px;
+            }
+            &:before {
+                top: -1px;
+                border-color: transparent $draggable-border-color transparent transparent;
+                border-width: 21px;
+            }
+
+            .sortable-drag {
+                opacity: 1 !important;
+            }
         }
-        .glowing-field {
-            background-color: darkturquoise !important;
+
+        .available-field-item:hover {
+            background-color: $secondary;
+            border-color: $secondary;
+            color: white;
+            position: relative;
+            left: -4px;
+
+            &:after {
+                border-color: transparent $secondary transparent transparent;
+            }
+            &:before {
+                border-color: transparent $secondary transparent transparent;
+            }
+            .icon {
+                color: white !important;
+            }
         }
     }
 

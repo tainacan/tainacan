@@ -112,7 +112,7 @@ return [
     'label_collection_filters' => __('Collection Filters', 'tainacan'),
 
     // Instructions. More complex sentences to guide user and placeholders
-    'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to add them to Collection.', 'tainacan'),
+    'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to Collection.', 'tainacan'),
     'instruction_delete_selected_collections' => __('Delete selected collections', 'tainacan'),
     'instruction_delete_selected_items' => __('Delete selected items', 'tainacan'),
     'instruction_image_upload_box' => __('Drop an image here or click to upload.', 'tainacan'),
