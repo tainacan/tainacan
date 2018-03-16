@@ -31,7 +31,26 @@ class Exposers {
 		}
 	}
 	
+	protected function check_class_name($class_name, $root = false, $prefix = 'Tainacan\Exposers\Types\\') {
+		$class = $prefix.sanitize_text_field($class_name);
+		$class = str_replace(['-', ' '], ['_'], $class);
+		
+		return ($root ? '/' : '').$class;
+	}
+	
 	public function rest_response($item_arr, $request) {
+		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
+			$body = json_decode( $request->get_body(), true );
+			$class_prefix = 'Tainacan\Exposers\Mappers\\';
+			if(
+				is_array($body) && array_key_exists('exposer-map', $body) &&
+					in_array($this->check_class_name($body['exposer-map'], false, $class_prefix), $this->mappers)
+			) {
+				$type = $this->check_class_name($body['exposer-map'], true, $class_prefix);
+				$exposer = new $type;
+				return $exposer->rest_request_after_callbacks($response, $handler, $request);
+			}
+		}
 		return $item_arr;
 	}
 	
@@ -45,9 +64,11 @@ class Exposers {
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
 			$body = json_decode( $request->get_body(), true );
-			if(is_array($body) && array_key_exists('exposer-type', $body) &&
-			in_array('Tainacan\Exposers\Types\\'.sanitize_text_field($body['exposer-type']), $this->types) ) {
-				$type = '\Tainacan\Exposers\Types\\'.sanitize_text_field($body['exposer-type']);
+			if(
+				is_array($body) && array_key_exists('exposer-type', $body) &&
+				in_array($this->check_class_name($body['exposer-type']), $this->types)
+			) {
+				$type = $this->check_class_name($body['exposer-type'], true);
 				$exposer = new $type;
 				return $exposer->rest_request_after_callbacks($response, $handler, $request);
 			}
