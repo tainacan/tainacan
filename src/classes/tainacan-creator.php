@@ -125,6 +125,4 @@ $Tainacan_Logs = new \Tainacan\Repositories\Logs();
 global $Tainacan_Exposers;
 $Tainacan_Exposers = new \Tainacan\Exposers\Exposers();
 
-$Tainacan_Exposers->register_exposer_type('Tainacan\Exposers\Types\Xml');
-
 ?>
