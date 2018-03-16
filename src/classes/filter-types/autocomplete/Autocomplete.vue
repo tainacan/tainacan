@@ -28,7 +28,7 @@
                    size="is-small"
                    closable
                    @close="clearSearch()">
-                {{ selected }}
+                {{ results }}
             </b-tag>
         </div>
     </div>
@@ -120,16 +120,16 @@
                         axios.get('/collection/' + collectionTarget + '/items?' + query)
                             .then( res => {
                                 for (let item of res.data) {
-                                    instance.selected.push({ label: item.title, value: item.id, img: '' });
+                                   // instance.selected.push({ label: item.title, value: item.id, img: '' });
+                                    console.log(item.title);
+                                    instance.results = item.title;
                                 }
                             })
                             .catch(error => {
                                 console.log(error);
                             });
                     } else {
-                        for (let item of metadata.value) {
-                            instance.selected.push({ label: item, value: item, img: '' });
-                        }
+                        instance.results = metadata.value;
                     }
                 } else {
                     return false;

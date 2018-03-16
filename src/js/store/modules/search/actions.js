@@ -41,3 +41,11 @@ export const remove_metaquery = ( { commit }, filter  ) => {
 export const setTotalItems = ({ commit }, total ) => {
     commit('setTotalItems', total);
 };
+
+export const setPage = ({ commit }, page ) => {
+    commit('setPostQueryAttribute', {  attr: 'paged', value: page } );
+};
+
+export const setItemsPerPage = ({ commit }, page ) => {
+    commit('setPostQueryAttribute', {  attr: 'perpage', value: page } );
+};

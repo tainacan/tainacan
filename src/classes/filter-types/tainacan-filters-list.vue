@@ -16,6 +16,8 @@
 <script>
     import { eventFilterBus } from '../../js/event-bus-filters'
     import qs from 'qs';
+    import { mapActions, mapGetters } from 'vuex';
+    import router from '../../admin/js/router'
 
     export default {
         name: 'TainacanFiltersList',
@@ -49,10 +51,17 @@
 
         },
         methods: {
+            ...mapActions('search', [
+                'setPage'
+            ]),
+            ...mapGetters('search', [
+                'getPostQuery'
+            ]),
             listen( event ){
-                eventFilterBus.$emit( 'input', ( event.detail ) ? event.detail[0] : event );
-                let query = JSON.parse( JSON.stringify( this.query ) );
-                this.$router.push({ query: query })
+                this.setPage(1);
+                eventFilterBus.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
+                router.push({ query: {} });
+                router.push({ query: this.getPostQuery() });
             }
         }
     }

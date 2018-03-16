@@ -136,6 +136,11 @@
                         this.value_init = metadata.value[0];
                         this.value_end = metadata.value[1];
                         this.isValid = true;
+                    } else if( metadata.value.length > 0 ){
+                        this.date_init = new Date( metadata.value[0] );
+                        this.date_end = new Date( metadata.value[1] );
+
+                        this.isValid = true;
                     }
 
                 } else {
@@ -189,7 +194,7 @@
                     filter: 'range',
                     type: type,
                     compare: 'BETWEEN',
-                    field_id: ( vm.field_id ) ? vm.field_id : vm.filter.field,
+                    field_id: vm.field,
                     collection_id: ( vm.collection_id ) ? vm.collection_id : vm.filter.collection_id,
                     value: values
                 });
