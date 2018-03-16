@@ -95,8 +95,6 @@ export default {
             isRepositoryLevel: false,
             tableFields: [],
             prefTableFields: [],
-            page: 1,
-            itemsPerPage: 12,
             isLoading: false
         }
     },
@@ -119,7 +117,10 @@ export default {
             'getFields'
         ]),
         ...mapGetters('search', [
-            'getTotalItems'
+            'getPostQuery',
+            'getTotalItems',
+            'getPage',
+            'getItemsPerPage'
         ]),
         ...mapActions('fields', [
             'fetchFields'
@@ -129,6 +130,8 @@ export default {
         ]),
         ...mapActions('search', [
             'set_postquery',
+            'setPage',
+            'setItemsPerPage',
             'search_by_collection'
         ]),
         onChangeTableFields(field) {
@@ -150,16 +153,22 @@ export default {
             //this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
         },
         onChangeItemsPerPage(value) {
+            if( this.itemsPerPage == value){
+                return false;
+            }
+
             let prevValue = this.itemsPerPage;
-            this.itemsPerPage = value;
+            this.setItemsPerPage( value );
             this.$userPrefs.set('items_per_page', value, prevValue);
+            this.alterQueryString();
             this.loadItems();
         },
         onPageChange(page) {
             if(page == 0)
                 return;
 
-            this.page = page;
+            this.setPage(  page );
+            this.alterQueryString();
             this.loadItems();
         },
         loadItems() {
@@ -167,16 +176,17 @@ export default {
             let promisse = null;
 
             if( Object.keys( this.$route.query ).length > 0 ) {
-                this.page = ( this.$route.query.page ) ? this.$route.query.page : this.page;
-                this.itemsPerPage = ( this.$route.query.itemsPerPage ) ? this.$route.query.itemsPerPage : this.itemsPerPage;
                 this.set_postquery(this.$route.query);
                 if (this.$route.params && this.$route.params.collectionId) {
                     promisse = this.search_by_collection(this.$route.params.collectionId);
                 }
             }
 
-            if(!promisse)
+            if(!promisse){
                 promisse = this.fetchItems({ 'collectionId': this.collectionId, 'page': this.page, 'itemsPerPage': this.itemsPerPage });
+                this.alterQueryString();
+            }
+
 
             promisse.then((res) => {
                 this.isLoading = false;
@@ -195,6 +205,10 @@ export default {
                 return 0;
 
             return ( this.itemsPerPage * ( this.page - 1 ) + 1)
+        },
+        alterQueryString(){
+            this.$router.push({ query: {} });
+            this.$router.push({ query: this.getPostQuery() });
         }
     },
     computed: {
@@ -203,6 +217,12 @@ export default {
         },
         totalItems(){
             return this.getTotalItems();
+        },
+        page(){
+            return this.getPage();
+        },
+        itemsPerPage(){
+            return this.getItemsPerPage();
         }
     },
     created() {

@@ -356,9 +356,9 @@ class Entity {
 	 */
 	public function get_capabilities() {
         $args = [
-			'map_meta_cap' => true,
+			'map_meta_cap'    => true,
 			'capability_type' => self::get_capability_type(),
-			'capabilities' => array()
+			'capabilities'    => array()
 		];
 		
 		return get_post_type_capabilities((object) $args);

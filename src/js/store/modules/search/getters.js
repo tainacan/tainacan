@@ -13,3 +13,11 @@ export const getTaxQuery = state => {
 export const getTotalItems = state => {
     return state.totalItems;
 }
+
+export const getPage = state => {
+    return state.postquery.paged;
+}
+
+export const getItemsPerPage = state => {
+    return state.postquery.perpage;
+};

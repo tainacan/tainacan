@@ -9,8 +9,9 @@ export const setPostQuery = ( state, postquery ) => {
 };
  
 export const addMetaQuery = ( state, filter ) => {
+    state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
-    if ( index >= 0){
+    if ( index >= 0 ){
         Vue.set( state.postquery.metaquery, index, {
             key: filter.field_id,
             value: filter.value,
