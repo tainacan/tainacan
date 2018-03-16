@@ -3,15 +3,21 @@
         <b-loading :active.sync="isLoadingFieldTypes"></b-loading>
         <div class="columns">
             <div class="column">
-                <b-field :label="$i18n.get('label_active_fields')" is-grouped>
+                <b-field :label="$i18n.get('label_active_fields')">
                     <draggable 
                         class="box active-fields-area"
                         @change="handleChange"
                         :class="{'fields-area-receive': isDraggingFromAvailable}" 
                         :list="activeFieldList" 
-                        :options="{group: { name:'fields', pull: false, put: true }, 'handle': '.handle', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
+                        :options="{ 
+                                group: { name:'fields', pull: false, put: true }, 
+                                handle: '.handle', 
+                                chosenClass: 'sortable-chosen',
+                                ghostClass: 'sortable-ghost', 
+                                filter: '.not-sortable-item', 
+                                animation: '250'}">
                         <div  
-                            class="active-field-item" 
+                            class="active-field-item"
                             :class="{'not-sortable-item': field.id == undefined, 'not-focusable-item': openedFieldId == field.id, 'inherited-field': field.collection_id != collectionId}" 
                             v-for="(field, index) in activeFieldList" :key="index">
                             <div class="handle">
@@ -28,35 +34,38 @@
                                     </a>
                                 </span>
                             </div>
-                            <b-field v-if="openedFieldId == field.id">
-                                <field-edition-form 
+                            <div v-if="openedFieldId == field.id">
+                                <field-edition-form   
                                     :collectionId="collectionId"
                                     :isRepositoryLevel="isRepositoryLevel"
                                     @onEditionFinished="onEditionFinished()"
                                     @onEditionCanceled="onEditionCanceled()"
                                     :field="editForm"></field-edition-form>
-                            </b-field>
+                            </div>
                         </div>
                     </draggable> 
                 </b-field>
             </div>
             <div class="column">
                 <b-field :label="$i18n.get('label_available_field_types')">
-                    <div class="columns box available-fields-area" >
-                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: false, revertClone: true }}">
-                            <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
-                                <a @click.prevent="addFieldViaButton(field)">
+                    <div class="box available-fields-area" >
+                        <draggable 
+                            :list="availableFieldList" 
+                            :options="{ 
+                                sort: false, 
+                                group: { name:'fields', pull: 'clone', put: false, revertClone: true }
+                            }">
+                            <div 
+                                @click.prevent="addFieldViaButton(field)" 
+                                class="available-field-item" 
+                                v-for="(field, index) in availableFieldList" 
+                                :key="index">
+                                <!-- <a @click.prevent="addFieldViaButton(field)"> -->           
+                                <a>    
                                     <b-icon type="is-gray" class="is-pulled-left" icon="arrow-left-bold"></b-icon>
                                 </a> {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             </div>
                         </draggable>
-                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'fields', pull: 'clone', put: false, revertClone: true }}">
-                            <div class="available-field-item" v-if="index % 2 != 0" v-for="(field, index) in availableFieldList" :key="index">
-                                <a @click.prevent="addFieldViaButton(field)">
-                                    <b-icon type="is-gray" class="is-pulled-left" icon="arrow-left-bold"></b-icon>
-                                </a> {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                            </div>       
-                        </draggable> 
                    </div>
                 </b-field>
             </div>
@@ -79,7 +88,7 @@ export default {
             isLoadingFields: false,
             isLoadingField: false,
             openedFieldId: '',
-            editForm: {}
+            editForm: {},
         }
     },
     components: {
@@ -227,7 +236,11 @@ export default {
         .collapse {
             display: initial;
         }
-
+        .list-item {
+            visibility: visible;
+            opacity: 1;
+            transition: all 5s;
+        }
         .active-field-item {
             background-color: white;
             padding: 0.4em;
@@ -268,6 +281,7 @@ export default {
             &.inherited-field {
                 color: gray;
             }
+           
         }
         .active-field-item:hover {
             box-shadow: 0 3px 4px rgba(0,0,0,0.25);
@@ -276,27 +290,34 @@ export default {
         }
 
         .sortable-chosen {
-            background-color: $primary-lighter;
+            background-color: #fff;
             margin: 10px;
             border-radius: 5px;
+            border: 1px solid $primary-light;
+            display: inherit; 
+        }
+        .sortable-ghost {
+            padding: .4em;
+            margin: 10px;
+            background-color: $primary-lighter;
+            border-radius: 5px;
             border: 1px dashed $primary-light;
-            display: block; 
+            display: block;
         }
     }
 
     .available-fields-area {
-        padding: 0 10px;
+        padding: 10px;
         margin: 0;
         background-color: whitesmoke;
 
         .available-field-item {
             padding: 0.4em;
-            margin: 10px 10% 10px 0px;
+            margin: 10px;
             border-radius: 5px;
             background-color: white;
             border: 1px solid gainsboro;
-            width: 100%;
-            cursor: grab;
+            cursor: pointer;
             top: 0;
             transition: top 0.2s ease;
         }
@@ -306,6 +327,9 @@ export default {
             position: relative;
             top: -2px;
             left: -2px;
+        }
+        .glowing-field {
+            background-color: darkturquoise !important;
         }
     }
 

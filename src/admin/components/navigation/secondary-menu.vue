@@ -162,7 +162,10 @@ export default {
                 display: flex;
                 align-items: stretch;
                 justify-content: space-evenly;
-                a{ padding: 0.5em 0.7em !important; }
+                a { 
+                    padding: 0.5em 0.7em !important; 
+                    text-align: center;
+                }
                 .menu-text {
                     padding-left: 0.3em !important;
                 }
@@ -170,7 +173,7 @@ export default {
                     flex-basis: 100%; 
                     padding-top: 1.0em !important;
                     .field {
-                        padding: 0 0.8em .5em !important;
+                        padding: 0 0.8em !important;
                         margin-bottom: 0px;
                     }
                 }

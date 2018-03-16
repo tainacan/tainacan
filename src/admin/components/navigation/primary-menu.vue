@@ -191,11 +191,14 @@ export default {
                     flex-basis: 100%; 
                     padding-top: 1.0em !important;
                     .field {
-                        padding: 0 0.8em .5em !important;
+                        padding: 0 0.8em !important;
                         margin-bottom: 0px;
                     }
                 }
-                a{ padding: 0.8em !important;}
+                a{ 
+                    padding: 0.8em !important;
+                    text-align: center;
+                }
                 li + li {
                     .menu-text{
                         display: none !important;

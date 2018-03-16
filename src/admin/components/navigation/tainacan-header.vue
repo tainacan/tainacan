@@ -111,7 +111,7 @@ export default {
     @import "../../scss/_variables.scss";
     
     // Tainacan Header
-    #tainacan-header{
+    #tainacan-header {
         background-color: $header-color;
         height: $header-height;
         max-height: $header-height;
@@ -156,9 +156,9 @@ export default {
                 display: none;
             }
 
-            top: 214px;
+            top: 206px;
             &.secondary-page {
-                top: 245px !important;  
+                top: 237px !important;  
             }
             margin-bottom: 0px !important;
         }
