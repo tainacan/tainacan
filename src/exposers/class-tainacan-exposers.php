@@ -48,7 +48,7 @@ class Exposers {
 			) {
 				$type = $this->check_class_name($body['exposer-map'], true, $class_prefix);
 				$exposer = new $type;
-				return $exposer->rest_request_after_callbacks($response, $handler, $request);
+				return $exposer->rest_response($response, $handler, $request);
 			}
 		}
 		return $item_arr;
