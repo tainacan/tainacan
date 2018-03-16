@@ -10,7 +10,7 @@ With Tainacan you have the possibility to map your collection structure to one o
 
 You do it by informing, for each field you create, what is it relative in each format you want to map your collection to. You may sau for example, that you "Name" Field is the equivalent to the dc:Title attribute in Dublin Core and some another attribute in other format you choose.
 
-Tainacan is shipped with some Mapping standards that implement popular metadata standards. And it will be easy to create new standards.
+Tainacan is shipped with some Mapping standards that implement popular metadata standards. And it will be easy to create new standards.  See more [details about mapping standards](mapping-standards.md).
 
 Note: When you use a preset to build your collection, chances are that the mapping is already done. This is a good reason to consider using presets ;)
 
@@ -28,9 +28,9 @@ Tainacan makes it very easy to developers to create new exporters and publish th
 
 Tainacan is powered with an API that allows other applications to search and consume the content of your repository. By default, this API serves the content in JSON format, preserving the fields in the collections the way you created them.
 
-In the same way you can choose the format of the file when you export your collection, one can choose the format they want to consume yout content in. This is the role of exposers.
+In the same way you can choose the format of the file when you export your collection, one can choose the format he/she want to consume yout content in. This is what exposers are for.
 
-Each exposer implements a different way of presenting your data in the API response, and may support one or many mappings.
+Each exposer implements a different way of presenting your data in the API response, and may support one or many mappings. See more [details about exposers](exposers.md).
 
 For example, the default JSON exposer supports any mapping and can serve your content exposing any metadata standard you mapped your content to. The decision is in the hands of the application that makes the request to your API.
 
