@@ -1,10 +1,14 @@
 <template>
     <section
             :listen="setError">
-        <b-field :label="$i18n.get('label_options')"
+        <b-field :addons="false"
                  :type="optionType"
                  :message="optionMessage"
         >
+            <label class="label">
+                {{ $i18n.get('label_options') }}
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <b-taginput
                     v-model="options"
                     @input="emitValues()"

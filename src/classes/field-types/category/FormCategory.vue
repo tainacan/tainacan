@@ -2,10 +2,14 @@
     <section
             v-if="isReady"
             :listen="setError">
-        <b-field :label="$i18n.get('label_select_category')"
+        <b-field :addons="false"
                  :type="taxonomyType"
                  :message="taxonomyMessage"
         >
+            <label class="label">
+                {{ $i18n.get('label_select_category') }}
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <b-select
                     name="field_type_options[taxonomy_id]"
                     placeholder="Select the taxonomy"
@@ -23,8 +27,11 @@
             </b-select>
         </b-field>
 
-        <b-field :label="$i18n.get('label_select_category_input_type')">
-
+        <b-field :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_select_category_input_type') }}
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <b-select
                     v-if="listInputType"
                     name="field_type_options[component_type]"
@@ -56,10 +63,13 @@
 
         </b-field>
 
-        <b-field :label="$i18n.get('label_category_allow_new_terms')">
+        <b-field :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_category_allow_new_terms') }}
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <div class="block">
                 <b-switch v-model="allow_new_terms"
-                          type="is-primary"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
