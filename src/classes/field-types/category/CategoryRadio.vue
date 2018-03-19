@@ -3,12 +3,11 @@
         <div class="block" v-for="option,index in getOptions( 0 )">
             <b-radio
                     :id="id"
-                    :style="{ paddingLeft: (option.level * 20)  + 'px' }"
+                    :style="{ paddingLeft: (option.level * 30)  + 'px' }"
                     :key="index"
                     v-model="checked"
                     @input="onChecked(option)"
-                    :label="option"
-                    :native-value="option"
+                    :native-value="option.term_id"
                     border>
                 {{ option.name }}
             </b-radio>
@@ -48,7 +47,6 @@
             },
             onChecked(option) {
                 this.$emit('blur');
-                console.log( this.checked );
                 this.onInput(this.checked)
             },
             onInput($event) {

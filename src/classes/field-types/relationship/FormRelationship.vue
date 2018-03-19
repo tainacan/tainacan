@@ -55,17 +55,15 @@
 
 
         <b-field :addons="false">
-            <label class="label">
-                {{ $i18n.get('label_allow_repeated_items') }}
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-            </label>
+
             <div class="block">
-                <b-switch v-model="modelRepeated"
+                <b-checkbox v-model="modelRepeated"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
-                    {{ labelRepeated()  }}
-                </b-switch>
+                        {{ $i18n.get('label_allow_repeated_items') }}
+                </b-checkbox>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </div>
         </b-field>
     </section>

@@ -64,17 +64,14 @@
         </b-field>
 
         <b-field :addons="false">
-            <label class="label">
-                {{ $i18n.get('label_category_allow_new_terms') }}
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-            </label>
             <div class="block">
-                <b-switch v-model="allow_new_terms"
+                <b-checkbox v-model="allow_new_terms"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
-                    {{ labelNewTerms()  }}
-                </b-switch>
+                    {{ $i18n.get('label_category_allow_new_terms') }}
+                </b-checkbox>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </div>
         </b-field>
 
@@ -83,8 +80,10 @@
 
 <script>
     import { tainacan as axios }  from '../../../js/axios/axios';
+    import BCheckbox from "../../../../node_modules/buefy/src/components/checkbox/Checkbox.vue";
 
     export default {
+        components: {BCheckbox},
         props: {
             value: [ String, Object, Array ],
             field: [ String, Object ],
