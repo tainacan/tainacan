@@ -1,6 +1,7 @@
 <?php
 
 namespace Tainacan\Repositories;
+
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 use Tainacan;
@@ -10,51 +11,52 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 abstract class Repository {
 	public $entities_type = '\Tainacan\Entities\Entity';
-	
+
 	/**
 	 * Register hooks
 	 */
 	function __construct() {
-		add_action('init', array(&$this, 'register_post_type'));
-		add_filter('tainacan-get-map-'.$this->get_name(), array($this, 'get_default_properties'));
+		add_action( 'init', array( &$this, 'register_post_type' ) );
+		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
 	}
-	
+
 	/**
 	 * return properties map
-	 * 		@return array properties map array, format like:
-	 * 		'id'             => [
-     *          'map'        => 'ID',
-     *          'title'       => __('ID', 'tainacan'),
+	 *
+	 * @return array properties map array, format like:
+	 *        'id'             => [
+	 *          'map'        => 'ID',
+	 *          'title'       => __('ID', 'tainacan'),
 	 *          'type'       => 'integer',
-     *          'description'=> __('Unique identifier', 'tainacan'),
-     *          'validation' => v::numeric(),
-     *      ],
-     *      'name'           =>  [
-     *          'map'        => 'post_title',
-     *          'title'       => __('Name', 'tainacan'),
-     *          'type'       => 'string',
-     *          'description'=> __('Name of the collection', 'tainacan'),
-     *          'validation' => v::stringType(),
-     *          'default'	 => ''
-     *      ],
-     *      'slug'           =>  [
-     *          'map'        => 'post_name',
-     *          'title'       => __('Slug', 'tainacan'),
-     *          'type'       => 'string',
-     *          'description'=> __('A unique and santized string representation of the collection, used to build the collection URL', 'tainacan'),
-     *          'validation' => v::stringType(),
-     *      ],
+	 *          'description'=> __('Unique identifier', 'tainacan'),
+	 *          'validation' => v::numeric(),
+	 *      ],
+	 *      'name'           =>  [
+	 *          'map'        => 'post_title',
+	 *          'title'       => __('Name', 'tainacan'),
+	 *          'type'       => 'string',
+	 *          'description'=> __('Name of the collection', 'tainacan'),
+	 *          'validation' => v::stringType(),
+	 *          'default'     => ''
+	 *      ],
+	 *      'slug'           =>  [
+	 *          'map'        => 'post_name',
+	 *          'title'       => __('Slug', 'tainacan'),
+	 *          'type'       => 'string',
+	 *          'description'=> __('A unique and santized string representation of the collection, used to build the collection URL', 'tainacan'),
+	 *          'validation' => v::stringType(),
+	 *      ],
 	 */
 	public abstract function get_map();
-    
-    /**
-     * Return repository name
-     * 
-     * @return string The repository name
-     */
-    public function get_name() {
-        return str_replace('Tainacan\Repositories\\', '', get_class($this));
-    }
+
+	/**
+	 * Return repository name
+	 *
+	 * @return string The repository name
+	 */
+	public function get_name() {
+		return str_replace( 'Tainacan\Repositories\\', '', get_class( $this ) );
+	}
 
 	/**
 	 *
@@ -63,181 +65,199 @@ abstract class Repository {
 	 * @return \Tainacan\Entities\Entity
 	 * @throws \Exception
 	 */
-	public function insert($obj) {
+	public function insert( $obj ) {
 		// validate
-    	if ( in_array($obj->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) && !$obj->get_validated()){
-			throw new \Exception('Entities must be validated before you can save them');
-            // TODO: Throw Warning saying you must validate object before insert()
+		if ( in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', [
+				'publish',
+				'future',
+				'private'
+			] ) ) && ! $obj->get_validated() ) {
+			throw new \Exception( 'Entities must be validated before you can save them' );
+			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
 		$map = $this->get_map();
-		
+
 		// First iterate through the native post properties
-		foreach ($map as $prop => $mapped) {
-			if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'thumbnail_id') {
-				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property($prop);
+		foreach ( $map as $prop => $mapped ) {
+			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'thumbnail_id' ) {
+				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property( $prop );
 			}
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
 
-		if( $obj instanceof Entities\Log && ! ( isset($obj->WP_Post->post_status) && in_array($obj->WP_Post->post_status, ['publish', 'pending'])) ) {
+		if ( $obj instanceof Entities\Log && ! ( isset( $obj->WP_Post->post_status ) && in_array( $obj->WP_Post->post_status, [
+					'publish',
+					'pending'
+				] ) ) ) {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
 		// TODO verificar se salvou mesmo
-		$id = wp_insert_post($obj->WP_Post);
-		
+		$id = wp_insert_post( $obj->WP_Post );
+
 		// reset object
-		$obj->WP_Post = get_post($id);
-		
+		$obj->WP_Post = get_post( $id );
+
 		// Now run through properties stored as postmeta
-		foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
-                $this->insert_metadata($obj, $prop);
-            } elseif ($mapped['map'] === 'thumbnail_id'){
-            	set_post_thumbnail($obj->WP_Post, $obj->get_mapped_property($prop));
-            }
+		foreach ( $map as $prop => $mapped ) {
+			if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
+				$this->insert_metadata( $obj, $prop );
+			}
 		}
-		
-		do_action('tainacan-insert', $obj);
-		do_action('tainacan-insert-'.$obj->get_post_type(), $obj);
-		
+
+		if ( method_exists( $obj, 'get_featured_img_id' ) ) {
+			set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+		}
+
+		do_action( 'tainacan-insert', $obj );
+		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
+
 		// return a brand new object
-		return new $this->entities_type($obj->WP_Post);
+		return new $this->entities_type( $obj->WP_Post );
 	}
-    
-    /**
-     * Insert object property stored as postmeta into the database
-     * @param  \Tainacan\Entities  $obj    The entity object
-     * @param  string  $prop   the property name, as declared in the map of the repository
-     * @return null|false on error
-     */
-    public function insert_metadata($obj, $prop) {
-        $map = $this->get_map();
-        
-        if (!array_key_exists($prop, $map))
-            return false;
-        
-        if ($map[$prop]['map'] == 'meta') {
-            update_post_meta($obj->get_id(), $prop,  $this->maybe_add_slashes( $obj->get_mapped_property($prop) ));
-        } elseif($map[$prop]['map'] == 'meta_multi') {
-            $values = $obj->get_mapped_property($prop);
-            
-            delete_post_meta($obj->get_id(), $prop);
-            
-            if (is_array($values)){
-                foreach ($values as $value){
-                    add_post_meta($obj->get_id(), $prop, $this->maybe_add_slashes( $value ));
-                }
-            }
-        }
-    }
-	
-	function maybe_add_slashes($value) {
-		if (is_string($value) && strpos($value, '\\') !== false) {
-			return wp_slash($value);
+
+	/**
+	 * Insert object property stored as postmeta into the database
+	 *
+	 * @param  \Tainacan\Entities $obj The entity object
+	 * @param  string $prop the property name, as declared in the map of the repository
+	 *
+	 * @return null|false on error
+	 */
+	public function insert_metadata( $obj, $prop ) {
+		$map = $this->get_map();
+
+		if ( ! array_key_exists( $prop, $map ) ) {
+			return false;
 		}
+
+		if ( $map[ $prop ]['map'] == 'meta' ) {
+			update_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $obj->get_mapped_property( $prop ) ) );
+		} elseif ( $map[ $prop ]['map'] == 'meta_multi' ) {
+			$values = $obj->get_mapped_property( $prop );
+
+			delete_post_meta( $obj->get_id(), $prop );
+
+			if ( is_array( $values ) ) {
+				foreach ( $values as $value ) {
+					add_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $value ) );
+				}
+			}
+		}
+	}
+
+	function maybe_add_slashes( $value ) {
+		if ( is_string( $value ) && strpos( $value, '\\' ) !== false ) {
+			return wp_slash( $value );
+		}
+
 		return $value;
 	}
 
-    /**
-     * Prepare the output for the fetch() methods.
-     *
-     * Possible outputs are:
-     * WP_Query (default) - returns the WP_Object itself
-     * OBJECT - return an Array of Tainacan\Entities
-     * 
-     * @param \WP_Query $WP_Query
-     * @param string $output `WP_Query` for a single WP_Query object or `OBJECT` for an array of Tainacan\Entities
-     * @return array|\WP_Query
-     */
-	public function fetch_output(\WP_Query $WP_Query, $output = 'WP_Query' ){
-        
-        if (is_null($output)) $output = 'WP_Query';
+	/**
+	 * Prepare the output for the fetch() methods.
+	 *
+	 * Possible outputs are:
+	 * WP_Query (default) - returns the WP_Object itself
+	 * OBJECT - return an Array of Tainacan\Entities
+	 *
+	 * @param \WP_Query $WP_Query
+	 * @param string $output `WP_Query` for a single WP_Query object or `OBJECT` for an array of Tainacan\Entities
+	 *
+	 * @return array|\WP_Query
+	 */
+	public function fetch_output( \WP_Query $WP_Query, $output = 'WP_Query' ) {
 
-        if( $output === 'WP_Query'){
-            return $WP_Query;
-        } else if( $output === 'OBJECT' ) {
-            $result = [];
+		if ( is_null( $output ) ) {
+			$output = 'WP_Query';
+		}
 
-            if ( $WP_Query->have_posts() ){
-                /**
-                 * Using WordPress Loop here would cause problems
-                 * @see https://core.trac.wordpress.org/ticket/18408
-                 */
-                foreach ($WP_Query->get_posts() as $p) {
-                    $result[] = new $this->entities_type(  $p->ID );
-                }
-            }
+		if ( $output === 'WP_Query' ) {
+			return $WP_Query;
+		} else if ( $output === 'OBJECT' ) {
+			$result = [];
 
-            return $result;
-        }
-    }
-    
-    /**
-     * Maps repository mapped properties to WP_Query arguments.
-     *
-     * This allows to build fetch arguments using both WP_Query arguments
-     * and the mapped properties for the repository.
-     *
-     * For example, you can use any of the following methods to browse collections by name:
-     * $TainacanCollections->fetch(['title' => 'test']);
-     * $TainacanCollections->fetch(['name' => 'test']);
-     *
-     * The property `name` is transformed into the native WordPress property `post_title`. (actually only title for query purpouses)
-     *
-     * Example 2, this also works with properties mapped to postmeta. The following methods are the same:
-     * $TainacanMetadatas->fetch(['required' => 'yes']);
-     * $TainacanMetadatas->fetch(['meta_query' => [
-     *     [
-     *         'key' => 'required',
-     *         'value' => 'yes'
-     *     ]
-     * ]]);
-     *
-     * 
-     * @param  array  $args [description]
-     * @return array $args new $args array with mapped properties
-     */
-    public function parse_fetch_args($args = []) {
-        
-        $map = $this->get_map();
+			if ( $WP_Query->have_posts() ) {
+				/**
+				 * Using WordPress Loop here would cause problems
+				 *
+				 * @see https://core.trac.wordpress.org/ticket/18408
+				 */
+				foreach ( $WP_Query->get_posts() as $p ) {
+					$result[] = new $this->entities_type( $p->ID );
+				}
+			}
 
-        $wp_query_exceptions = [
-            'ID'         => 'p',
-            'post_title' => 'title'
-        ];
-        
-        $meta_query = [];
-        
-        foreach ($map as $prop => $mapped) {
-            if (array_key_exists($prop, $args)) {
-                $prop_value = $args[$prop];
-                
-                unset($args[$prop]);
-                
-                if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
-                    $meta_query[] = [
-                        'key'   => $prop,
-                        'value' => $prop_value
-                    ];
-                } else {
-                    $prop_search_name = array_key_exists($mapped['map'], $wp_query_exceptions) ? $wp_query_exceptions[$mapped['map']] : $mapped['map'];
-                    $args[$prop_search_name] = $prop_value;
-                }
-                
-            }
-        }
-        
-        if ( isset($args['meta_query']) && is_array($args['meta_query']) && !empty($args['meta_query'])) {
-            $meta_query = array_merge($args['meta_query'],$meta_query);
-        }
-        
-        $args['meta_query'] = $meta_query;
-        
-        return $args;
-        
-    }
+			return $result;
+		}
+	}
+
+	/**
+	 * Maps repository mapped properties to WP_Query arguments.
+	 *
+	 * This allows to build fetch arguments using both WP_Query arguments
+	 * and the mapped properties for the repository.
+	 *
+	 * For example, you can use any of the following methods to browse collections by name:
+	 * $TainacanCollections->fetch(['title' => 'test']);
+	 * $TainacanCollections->fetch(['name' => 'test']);
+	 *
+	 * The property `name` is transformed into the native WordPress property `post_title`. (actually only title for query purpouses)
+	 *
+	 * Example 2, this also works with properties mapped to postmeta. The following methods are the same:
+	 * $TainacanMetadatas->fetch(['required' => 'yes']);
+	 * $TainacanMetadatas->fetch(['meta_query' => [
+	 *     [
+	 *         'key' => 'required',
+	 *         'value' => 'yes'
+	 *     ]
+	 * ]]);
+	 *
+	 *
+	 * @param  array $args [description]
+	 *
+	 * @return array $args new $args array with mapped properties
+	 */
+	public function parse_fetch_args( $args = [] ) {
+
+		$map = $this->get_map();
+
+		$wp_query_exceptions = [
+			'ID'         => 'p',
+			'post_title' => 'title'
+		];
+
+		$meta_query = [];
+
+		foreach ( $map as $prop => $mapped ) {
+			if ( array_key_exists( $prop, $args ) ) {
+				$prop_value = $args[ $prop ];
+
+				unset( $args[ $prop ] );
+
+				if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
+					$meta_query[] = [
+						'key'   => $prop,
+						'value' => $prop_value
+					];
+				} else {
+					$prop_search_name          = array_key_exists( $mapped['map'], $wp_query_exceptions ) ? $wp_query_exceptions[ $mapped['map'] ] : $mapped['map'];
+					$args[ $prop_search_name ] = $prop_value;
+				}
+
+			}
+		}
+
+		if ( isset( $args['meta_query'] ) && is_array( $args['meta_query'] ) && ! empty( $args['meta_query'] ) ) {
+			$meta_query = array_merge( $args['meta_query'], $meta_query );
+		}
+
+		$args['meta_query'] = $meta_query;
+
+		return $args;
+
+	}
 
 	/**
 	 * Return default properties
@@ -246,219 +266,207 @@ abstract class Repository {
 	 *
 	 * @return array
 	 */
-	public function get_default_properties($map) {
-		if(is_array($map)) {
-	    	$defaults = array(
-	    		'status'	=>  array(
-		   			'map'			=> 'post_status',
-		   			'title'			=> __('Status', 'tainacan'),
-		   			'type'			=> 'string',
-		   			'description'	=> __('Status', 'tainacan'),
-		   			//'validation'	=> v::stringType(),
-	   			),
-	    		'id'             => array(
-	    			'map'        => 'ID',
-	    			'title'       => __('ID', 'tainacan'),
-	    			'type'       => 'integer',
-	    			'description'=> __('Unique identifier', 'tainacan'),
-	    			//'validation' => v::numeric(),
-	    		),
-	    	);
-	    	return array_merge($defaults, $map);
+	public function get_default_properties( $map ) {
+		if ( is_array( $map ) ) {
+			$defaults = array(
+				'status' => array(
+					'map'         => 'post_status',
+					'title'       => __( 'Status', 'tainacan' ),
+					'type'        => 'string',
+					'description' => __( 'Status', 'tainacan' ),
+					//'validation'	=> v::stringType(),
+				),
+				'id'     => array(
+					'map'         => 'ID',
+					'title'       => __( 'ID', 'tainacan' ),
+					'type'        => 'integer',
+					'description' => __( 'Unique identifier', 'tainacan' ),
+					//'validation' => v::numeric(),
+				),
+			);
+
+			return array_merge( $defaults, $map );
 		}
+
 		return $map;
-    }
+	}
 
-    /**
-     * return the value for a mapped property from database
-     * @param Entities\Entity $entity
-     * @param string $prop id of property
-     * @return mixed property value
-     */
-    public function get_mapped_property($entity, $prop) {
-    	
-    	$map = $this->get_map();
-    	
-    	if (!array_key_exists($prop, $map)){
-    		return null;
-    	}
-    	
-    	$mapped = $map[$prop]['map'];
-    	$property = '';
-    	if ( $mapped == 'meta') {
-    		$property = isset($entity->WP_Post->ID) ? get_post_meta($entity->WP_Post->ID, $prop, true) : null;
-    	} elseif ( $mapped == 'meta_multi') {
-    		$property = isset($entity->WP_Post->ID) ? get_post_meta($entity->WP_Post->ID, $prop, false) : null;
-    	} elseif ( $mapped == 'termmeta' ){
-    		$property = isset($entity->WP_Term->term_id) ? get_term_meta($entity->WP_Term->term_id, $prop, true) : null;
-    	} elseif ( isset( $entity->WP_Post )) {
-    		if($mapped == 'thumbnail'){
-    			$property = isset($entity->WP_Post->ID) ? get_the_post_thumbnail_url($entity->WP_Post->ID, 'full') : null;
-		    } elseif ($mapped == 'thumbnail_id'){
-    			$property = isset($entity->WP_Post->ID) ? get_post_thumbnail_id($entity->WP_Post->ID) : null;
-		    } elseif($mapped == 'attachments'){
-    			if(isset($entity->WP_Post->ID)){
-    				$attachments_query = [
-    					'post_type'     => 'attachment',
-					    'post_per_page' => -1,
-					    'post_parent'   => $entity->WP_Post->ID,
-					    'exclude'       => get_post_thumbnail_id($entity->WP_Post->ID)
-				    ];
+	/**
+	 * return the value for a mapped property from database
+	 *
+	 * @param Entities\Entity $entity
+	 * @param string $prop id of property
+	 *
+	 * @return mixed property value
+	 */
+	public function get_mapped_property( $entity, $prop ) {
 
-    				$attachments = get_posts($attachments_query);
+		$map = $this->get_map();
 
-    				$attachments_prepared = [];
-    				if($attachments){
-    					foreach ($attachments as $attachment){
-    						$prepared = [
-    							'id'          => $attachment->ID,
-    							'title'       => $attachment->post_title,
-							    'description' => $attachment->post_content,
-							    'mime_type'   => $attachment->post_mime_type,
-							    'url'         => $attachment->guid,
-						    ];
-
-						    array_push($attachments_prepared, $prepared);
-					    }
-				    }
-
-				    $property = $attachments_prepared;
-			    }
-		    } elseif ($mapped == 'author_name'){
-    			$property = isset($entity->WP_Post->post_author) ? get_the_author_meta('display_name', $entity->WP_Post->post_author): null;
-		    } else {
-			    $property = isset($entity->WP_Post->$mapped) ? $entity->WP_Post->$mapped : null;
-		    }
-    	} elseif ( isset( $entity->WP_Term )) {
-    		$property = isset($entity->WP_Term->$mapped) ? $entity->WP_Term->$mapped : null;
-    	}
-    	
-    	if (empty($property) && array_key_exists('default', $map[$prop])){
-    		$property = $map[$prop]['default'];
-    	}
-    	
-    	return $property;
-    }
-    
-    /**
-     * Return array of collections db identifiers
-     * @return array[]
-     */
-    public static function get_collections_db_identifier() {
-    	global $Tainacan_Collections;
-    	$collections = $Tainacan_Collections->fetch([], 'OBJECT');
-    	$cpts = [];
-		foreach($collections as $col) {
-			$cpts[$col->get_db_identifier()] = $col;
+		if ( ! array_key_exists( $prop, $map ) ) {
+			return null;
 		}
+
+		$mapped   = $map[ $prop ]['map'];
+		$property = '';
+		if ( $mapped == 'meta' ) {
+			$property = isset( $entity->WP_Post->ID ) ? get_post_meta( $entity->WP_Post->ID, $prop, true ) : null;
+		} elseif ( $mapped == 'meta_multi' ) {
+			$property = isset( $entity->WP_Post->ID ) ? get_post_meta( $entity->WP_Post->ID, $prop, false ) : null;
+		} elseif ( $mapped == 'termmeta' ) {
+			$property = isset( $entity->WP_Term->term_id ) ? get_term_meta( $entity->WP_Term->term_id, $prop, true ) : null;
+		} elseif ( isset( $entity->WP_Post ) ) {
+			$property = isset( $entity->WP_Post->$mapped ) ? $entity->WP_Post->$mapped : null;
+		} elseif ( isset( $entity->WP_Term ) ) {
+			$property = isset( $entity->WP_Term->$mapped ) ? $entity->WP_Term->$mapped : null;
+		}
+
+		if ( empty( $property ) && array_key_exists( 'default', $map[ $prop ] ) ) {
+			$property = $map[ $prop ]['default'];
+		}
+
+		return $property;
+	}
+
+	/**
+	 * Return array of collections db identifiers
+	 *
+	 * @return array[]
+	 */
+	public static function get_collections_db_identifier() {
+		global $Tainacan_Collections;
+		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
+		$cpts        = [];
+		foreach ( $collections as $col ) {
+			$cpts[ $col->get_db_identifier() ] = $col;
+		}
+
 		return $cpts;
-    }
-    
-    /**
-     * 
-     * @param integer|\WP_Post $post|Entity
-     * @throws \Exception
-     * @return \Tainacan\Entities\Entity|boolean
-     */
-    public static function get_entity_by_post($post) {
-    	if(is_numeric($post) || is_array($post)) {
-    		$post = get_post($post);
-    	}
-    	elseif(is_object($post) && $post instanceof Entity ) {
-    		return $post;
-    	}
-    	
-    	$post_type = $post->post_type;
-    	return self::get_entity_by_post_type($post_type, $post);
-    }
-    
-    /**
-     *
-     * @param string $post_type
-     * @param integer|\WP_Post $post optional post ID or WordPress post data for creation of Entity 
-     * @throws \Exception
-     * @return \Tainacan\Entities\Entity|boolean the entity for post_type, with data if $post is given or false
-     */
-    public static function get_entity_by_post_type($post_type, $post = 0) {
-    	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
-    	
-    	// Is it a collection Item?
-    	if($prefix == Entities\Collection::$db_identifier_prefix) {
-    		$cpts = self::get_collections_db_identifier();
-    		if(array_key_exists($post_type, $cpts)) {
-    			return $entity = new \Tainacan\Entities\Item($post);
-    		}
-    		else {
-    			throw new \Exception('Collection object not found for this post');
-    		}
-    	}
-    	else {
-    		global $Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
-    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
-    		foreach ($tnc_globals as $tnc_repository)
-    		{
-    			$entity_post_type = $tnc_repository->entities_type::get_post_type();
-    			if($entity_post_type == $post_type)
-    			{
-    				return new $tnc_repository->entities_type($post);
-    			}
-    		}
-    	}
-    	return false;
-    }
-    
-    /**
-     * Return Entity's Repository
-     * @param Entity $entity
-     * @return \Tainacan\Repositories\Repository|bool return the entity Repository or false
-     */
-    public static function get_repository($entity)
-    {
-    	$post_type = $entity->get_post_type();
-    	$prefix = substr($post_type, 0, strlen(Entities\Collection::$db_identifier_prefix));
-    	
-    	// its is a collection Item?
-    	if($prefix == Entities\Collection::$db_identifier_prefix) {
-    		global $Tainacan_Items;
-    		return $Tainacan_Items;
-    	}
-    	else {
-    		global $Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs;
-    		$tnc_globals = [$Tainacan_Collections,$Tainacan_Fields, $Tainacan_Item_Metadata,$Tainacan_Filters,$Tainacan_Taxonomies,$Tainacan_Terms,$Tainacan_Logs];
-    		foreach ($tnc_globals as $tnc_repository)
-    		{
-    			$entity_post_type = $tnc_repository->entities_type::get_post_type();
-    			if($entity_post_type == $post_type)
-    			{
-    				return $tnc_repository;
-    			}
-    		}
-    	}
-    	return false;
-    }
-    
-    /**
-     * @param $object
-     * @return mixed
-     */
-    public abstract function delete($object);
+	}
 
-    /**
-     * @param $args
-     * @return mixed
-     */
-    public abstract function fetch( $args , $output = null );
+	/**
+	 *
+	 * @param integer|\WP_Post $post |Entity
+	 *
+	 * @throws \Exception
+	 * @return \Tainacan\Entities\Entity|boolean
+	 */
+	public static function get_entity_by_post( $post ) {
+		if ( is_numeric( $post ) || is_array( $post ) ) {
+			$post = get_post( $post );
+		} elseif ( is_object( $post ) && $post instanceof Entity ) {
+			return $post;
+		}
 
-    /**
-     * @param $object
-     * @return mixed
-     */
-    public abstract function update($object, $new_values = null);
+		$post_type = $post->post_type;
 
-    /**
-     * @return mixed
-     */
-    public abstract function register_post_type();
+		return self::get_entity_by_post_type( $post_type, $post );
+	}
+
+	/**
+	 *
+	 * @param string $post_type
+	 * @param integer|\WP_Post $post optional post ID or WordPress post data for creation of Entity
+	 *
+	 * @throws \Exception
+	 * @return \Tainacan\Entities\Entity|boolean the entity for post_type, with data if $post is given or false
+	 */
+	public static function get_entity_by_post_type( $post_type, $post = 0 ) {
+		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
+
+		// Is it a collection Item?
+		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
+			$cpts = self::get_collections_db_identifier();
+			if ( array_key_exists( $post_type, $cpts ) ) {
+				return $entity = new \Tainacan\Entities\Item( $post );
+			} else {
+				throw new \Exception( 'Collection object not found for this post' );
+			}
+		} else {
+			global $Tainacan_Collections, $Tainacan_Fields, $Tainacan_Item_Metadata, $Tainacan_Filters, $Tainacan_Taxonomies, $Tainacan_Terms, $Tainacan_Logs;
+			$tnc_globals = [
+				$Tainacan_Collections,
+				$Tainacan_Fields,
+				$Tainacan_Item_Metadata,
+				$Tainacan_Filters,
+				$Tainacan_Taxonomies,
+				$Tainacan_Terms,
+				$Tainacan_Logs
+			];
+			foreach ( $tnc_globals as $tnc_repository ) {
+				$entity_post_type = $tnc_repository->entities_type::get_post_type();
+				if ( $entity_post_type == $post_type ) {
+					return new $tnc_repository->entities_type( $post );
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Return Entity's Repository
+	 *
+	 * @param Entity $entity
+	 *
+	 * @return \Tainacan\Repositories\Repository|bool return the entity Repository or false
+	 */
+	public static function get_repository( $entity ) {
+		$post_type = $entity->get_post_type();
+		$prefix    = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
+
+		// its is a collection Item?
+		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
+			global $Tainacan_Items;
+
+			return $Tainacan_Items;
+		} else {
+			global $Tainacan_Collections, $Tainacan_Fields, $Tainacan_Item_Metadata, $Tainacan_Filters, $Tainacan_Taxonomies, $Tainacan_Terms, $Tainacan_Logs;
+			$tnc_globals = [
+				$Tainacan_Collections,
+				$Tainacan_Fields,
+				$Tainacan_Item_Metadata,
+				$Tainacan_Filters,
+				$Tainacan_Taxonomies,
+				$Tainacan_Terms,
+				$Tainacan_Logs
+			];
+			foreach ( $tnc_globals as $tnc_repository ) {
+				$entity_post_type = $tnc_repository->entities_type::get_post_type();
+				if ( $entity_post_type == $post_type ) {
+					return $tnc_repository;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param $object
+	 *
+	 * @return mixed
+	 */
+	public abstract function delete( $object );
+
+	/**
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
+	public abstract function fetch( $args, $output = null );
+
+	/**
+	 * @param $object
+	 *
+	 * @return mixed
+	 */
+	public abstract function update( $object, $new_values = null );
+
+	/**
+	 * @return mixed
+	 */
+	public abstract function register_post_type();
 
 	/**
 	 * Check if $user can edit/create a entity
@@ -469,28 +477,27 @@ abstract class Repository {
 	 * @return boolean
 	 * @throws \Exception
 	 */
-    public function can_edit(Entities\Entity $entity, $user = null) {
-    	if(is_null($user)) {
-    		$user = get_current_user_id();
-    	}
-    	elseif(is_object($user)) {
-    		$user = $user->ID;
-    	}
-    	$entity = self::get_entity_by_post($entity);
-    	$entity_cap = $entity->get_capabilities();
-    	
-    	if (!isset($entity_cap->edit_post)) {
-            return false;
-        }
-        
-        if (is_integer($entity->get_id())) {
-        	return user_can($user, $entity_cap->edit_post, $entity->get_id());
-        } else {
-            // creating new
-        	return user_can($user, $entity_cap->edit_posts);
-        }
+	public function can_edit( Entities\Entity $entity, $user = null ) {
+		if ( is_null( $user ) ) {
+			$user = get_current_user_id();
+		} elseif ( is_object( $user ) ) {
+			$user = $user->ID;
+		}
+		$entity     = self::get_entity_by_post( $entity );
+		$entity_cap = $entity->get_capabilities();
 
-    }
+		if ( ! isset( $entity_cap->edit_post ) ) {
+			return false;
+		}
+
+		if ( is_integer( $entity->get_id() ) ) {
+			return user_can( $user, $entity_cap->edit_post, $entity->get_id() );
+		} else {
+			// creating new
+			return user_can( $user, $entity_cap->edit_posts );
+		}
+
+	}
 
 	/**
 	 * Check if $user can read the entity
@@ -501,25 +508,25 @@ abstract class Repository {
 	 * @return boolean
 	 * @throws \Exception
 	 */
-    public function can_read($entity, $user = null) {
-    	if(is_null($user)) {
-    		$user = get_current_user_id();
-    	}
-    	elseif(is_object($user)) {
-    		$user = $user->ID;
-    	}
-    	$entity = self::get_entity_by_post($entity);
-    	$entity_cap = $entity->get_capabilities();
-    	
-    	if (!isset($entity_cap->read)) {
-    		if($entity->get_post_type() === false) { // Allow read of not post entities
-    			return true;
-    		}
-    		return false;
-    	}
-    	
-    	return user_can($user, $entity_cap->read, $entity->get_id());
-    }
+	public function can_read( $entity, $user = null ) {
+		if ( is_null( $user ) ) {
+			$user = get_current_user_id();
+		} elseif ( is_object( $user ) ) {
+			$user = $user->ID;
+		}
+		$entity     = self::get_entity_by_post( $entity );
+		$entity_cap = $entity->get_capabilities();
+
+		if ( ! isset( $entity_cap->read ) ) {
+			if ( $entity->get_post_type() === false ) { // Allow read of not post entities
+				return true;
+			}
+
+			return false;
+		}
+
+		return user_can( $user, $entity_cap->read, $entity->get_id() );
+	}
 
 	/**
 	 * Check if $user can delete the entity
@@ -530,22 +537,21 @@ abstract class Repository {
 	 * @return boolean
 	 * @throws \Exception
 	 */
-    public function can_delete($entity, $user = null) {
-    	if(is_null($user)) {
-    		$user = get_current_user_id();
-    	}
-    	elseif(is_object($user)) {
-    		$user = $user->ID;
-    	}
-   		$entity = self::get_entity_by_post($entity);
-   		$entity_cap = $entity->get_capabilities();
-   		
-   		if (!isset($entity_cap->delete_post)) {
-   			return false;
-   		}
-    	
-   		return user_can($user, $entity_cap->delete_post, $entity->get_id());
-    }
+	public function can_delete( $entity, $user = null ) {
+		if ( is_null( $user ) ) {
+			$user = get_current_user_id();
+		} elseif ( is_object( $user ) ) {
+			$user = $user->ID;
+		}
+		$entity     = self::get_entity_by_post( $entity );
+		$entity_cap = $entity->get_capabilities();
+
+		if ( ! isset( $entity_cap->delete_post ) ) {
+			return false;
+		}
+
+		return user_can( $user, $entity_cap->delete_post, $entity->get_id() );
+	}
 
 	/**
 	 * Check if $user can publish the entity
@@ -556,21 +562,21 @@ abstract class Repository {
 	 * @return boolean
 	 * @throws \Exception
 	 */
-    public function can_publish($entity, $user = null) {
-    	if(is_null($user)) {
-    		$user = get_current_user_id();
-    	}
-    	elseif(is_object($user)) {
-    		$user = $user->ID;
-    	}
-    	$entity = self::get_entity_by_post($entity);
-    	$entity_cap = $entity->get_capabilities();
-    	
-    	if (!isset($entity_cap->publish_posts)) {
-    		return false;
-    	}
-    	return user_can($user, $entity_cap->publish_posts, $entity->get_id());
-    }
+	public function can_publish( $entity, $user = null ) {
+		if ( is_null( $user ) ) {
+			$user = get_current_user_id();
+		} elseif ( is_object( $user ) ) {
+			$user = $user->ID;
+		}
+		$entity     = self::get_entity_by_post( $entity );
+		$entity_cap = $entity->get_capabilities();
+
+		if ( ! isset( $entity_cap->publish_posts ) ) {
+			return false;
+		}
+
+		return user_can( $user, $entity_cap->publish_posts, $entity->get_id() );
+	}
 
 	/**
 	 * Compare two repository entities
@@ -581,51 +587,49 @@ abstract class Repository {
 	 * @return array List of diff values
 	 * @throws \Exception
 	 */
-    public function diff($old = 0, $new) {
-    	$old_entity = null;
-    	if($old === 0) { // self diff or other entity?
-    		$id = $new->get_id();
-    		if(!empty($id)) { // there is a repository entity?
-    			$old_entity = $this->get_entity_by_post($new->WP_Post->ID);
-    		}
-    		else {
-    			$entity_type = get_class($new);
-    			$old_entity = new $entity_type; // there is no saved entity, let compare with a new empty one
-    		}
-    	} else { // get entity from repository
-    		$old_entity = $this->get_entity_by_post($old);
-    	}
-    	$new_entity = $this->get_entity_by_post($new);
-    	
-    	$map = $this->get_map();
-    	
-    	$diff = [];
-    	
-    	foreach ($map as $prop => $mapped) {
-   			if($old_entity->get_mapped_property($prop) != $new_entity->get_mapped_property($prop) ) {
-   				if($mapped['map'] == 'meta_multi') {
-   					$meta_diff = array_diff( $new_entity->get_mapped_property($prop), $old_entity->get_mapped_property($prop) );
-   					if( !empty($meta_diff) ) {
-	   					$diff[$prop] = [
-	   						'new' => $new_entity->get_mapped_property($prop),
-	   						'old' => $old_entity->get_mapped_property($prop),
-	   						'diff' => $meta_diff //TODO better expose difference
-	   					];
-   					}
-   				}
-   				else {
-   					$diff[$prop] = [
-   						'new' => $new_entity->get_mapped_property($prop),
-   						'old' => $old_entity->get_mapped_property($prop)
-   					];
-   				}
-   			}
-    	}
-    	$diff = apply_filters('tainacan-entity-diff', $diff, $new, $old);
-    	
-    	return $diff;
-    }
-    
+	public function diff( $old = 0, $new ) {
+		$old_entity = null;
+		if ( $old === 0 ) { // self diff or other entity?
+			$id = $new->get_id();
+			if ( ! empty( $id ) ) { // there is a repository entity?
+				$old_entity = $this->get_entity_by_post( $new->WP_Post->ID );
+			} else {
+				$entity_type = get_class( $new );
+				$old_entity  = new $entity_type; // there is no saved entity, let compare with a new empty one
+			}
+		} else { // get entity from repository
+			$old_entity = $this->get_entity_by_post( $old );
+		}
+		$new_entity = $this->get_entity_by_post( $new );
+
+		$map = $this->get_map();
+
+		$diff = [];
+
+		foreach ( $map as $prop => $mapped ) {
+			if ( $old_entity->get_mapped_property( $prop ) != $new_entity->get_mapped_property( $prop ) ) {
+				if ( $mapped['map'] == 'meta_multi' ) {
+					$meta_diff = array_diff( $new_entity->get_mapped_property( $prop ), $old_entity->get_mapped_property( $prop ) );
+					if ( ! empty( $meta_diff ) ) {
+						$diff[ $prop ] = [
+							'new'  => $new_entity->get_mapped_property( $prop ),
+							'old'  => $old_entity->get_mapped_property( $prop ),
+							'diff' => $meta_diff //TODO better expose difference
+						];
+					}
+				} else {
+					$diff[ $prop ] = [
+						'new' => $new_entity->get_mapped_property( $prop ),
+						'old' => $old_entity->get_mapped_property( $prop )
+					];
+				}
+			}
+		}
+		$diff = apply_filters( 'tainacan-entity-diff', $diff, $new, $old );
+
+		return $diff;
+	}
+
 }
 
 ?>
