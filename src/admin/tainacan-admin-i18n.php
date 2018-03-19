@@ -33,6 +33,8 @@ return [
     'private' => __('Private', 'tainacan'),
     'trash' => __('Trash', 'tainacan'),
     'auto-draft' => __('Automatic Draft', 'tainacan'),
+    'publish_visibility' => __('Visible to everyone', 'tainacan'),
+    'private_visibility' => __('Visible only for editors', 'tainacan'),
 
     // Page Titles (used mainly on Router)
     'title_collections_page' => __('Collections Page', 'tainacan'),
@@ -113,6 +115,9 @@ return [
 
     // Instructions. More complex sentences to guide user and placeholders
     'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to Collection.', 'tainacan'),
+    'instruction_dragndrop_filters_collection' => __('Drag and drop Fields to create Filters on Collection.', 'tainacan'),
+    'instruction_dragndrop_fields_repository' => __('Drag and drop Fields here to Repository.', 'tainacan'),
+    'instruction_dragndrop_filters_repository' => __('Drag and drop Fields to create Filters on Repository.', 'tainacan'),
     'instruction_delete_selected_collections' => __('Delete selected collections', 'tainacan'),
     'instruction_delete_selected_items' => __('Delete selected items', 'tainacan'),
     'instruction_image_upload_box' => __('Drop an image here or click to upload.', 'tainacan'),

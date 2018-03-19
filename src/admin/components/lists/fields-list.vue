@@ -2,7 +2,7 @@
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"></b-loading>
         <div class="page-title">
-            <h2>{{ $i18n.get('instruction_dragndrop_fields_collection')}}</h2>
+            <h2>{{ isRepositoryLevel ? $i18n.get('instruction_dragndrop_fields_repository') : $i18n.get('instruction_dragndrop_fields_collection')}}</h2>
         </div>
         <div class="columns">
             <div class="column">        
@@ -23,7 +23,7 @@
                         v-for="(field, index) in activeFieldList" :key="index">
                         <div class="handle">
                             <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                            <span class="field-name">{{ field.name }}</span>
+                            <span class="field-name" :class="{'is-danger': formWithErrors == field.id}">{{ field.name }}</span>
                             <span v-if="field.id !== undefined" class="label-details">({{ $i18n.get(field.field_type_object.component)}})</span><span class="loading-spinner" v-if="field.id == undefined"></span>
                             <span class="controls" v-if="field.id !== undefined">
                                 <b-switch size="is-small" v-model="field.enabled" @input="onChangeEnable($event, index)"></b-switch>
@@ -51,6 +51,7 @@
                                 :isRepositoryLevel="isRepositoryLevel"
                                 @onEditionFinished="onEditionFinished()"
                                 @onEditionCanceled="onEditionCanceled()"
+                                @onErrorFound="formWithErrors = field.id"
                                 :field="editForm"></field-edition-form>
                         </div>
                     </div>
@@ -73,7 +74,7 @@
                             :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
                             v-for="(field, index) in availableFieldList" 
                             :key="index">
-                            <b-icon type="is-gray" class="is-pulled-left"  icon="drag"></b-icon> <span class="field-name">{{ field.name }}</span>
+                            <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon> <span class="field-name">{{ field.name }}</span>
                         </div>
                     </draggable>
                 </div>
@@ -97,6 +98,7 @@ export default {
             isLoadingFields: false,
             isLoadingField: false,
             openedFieldId: '',
+            formWithErrors: '',
             hightlightedField: '',
             editForm: {},
         }
@@ -188,10 +190,12 @@ export default {
             }            
         },
         onEditionFinished() {
+            this.formWithErrors = '';
             this.openedFieldId = '';
             this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
         onEditionCanceled() {
+            this.formWithErrors = '';
             this.openedFieldId = '';
         }
 
@@ -274,11 +278,7 @@ export default {
         .collapse {
             display: initial;
         }
-        .list-item {
-            visibility: visible;
-            opacity: 1;
-            transition: all 5s;
-        }
+
         .active-field-item {
             background-color: white;
             padding: 0.8em;
@@ -333,6 +333,9 @@ export default {
                 
                 .field-name {
                     color: $primary !important;
+                    &.is-danger {
+                        color: $danger !important;
+                    }
                 }
                 .label-details, .icon {
                     color: $gray !important;
@@ -342,7 +345,7 @@ export default {
                 color: $gray;
             }    
         }
-        .active-field-item:hover {
+        .active-field-item:hover:not(.not-sortable-item) {
             background-color: $secondary;
             border-color: $secondary;
             color: white !important;
@@ -354,20 +357,18 @@ export default {
 
             .switch.is-small {
                 input[type="checkbox"] + .check {
-                    border: 2px solid white !important;
+                    border: 1.5px solid white !important;
                     &::before { background-color: white !important; }
                 } 
-
                 input[type="checkbox"]:checked + .check {
-                    border: 2px solid white !important;
+                    border: 1.5px solid white !important;
                     &::before { background-color: white !important; }
                 }
                 &:hover input[type="checkbox"] + .check {
-                    border: 2px solid white !important;
+                    border: 1.5px solid white !important;
                     background-color: $secondary !important;
                 }
             }
-
         }
         .sortable-ghost {
             border: 1px dashed $draggable-border-color;

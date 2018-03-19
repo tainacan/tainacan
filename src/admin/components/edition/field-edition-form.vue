@@ -5,7 +5,7 @@
             :addons="false"
             :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['name'] != undefined ? formErrors['name'] : ''"> 
-            <label class="label">{{$i18n.get('label_name')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+            <label class="label">{{$i18n.get('label_name')}} <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
             <b-input v-model="editForm.name" name="name" @focus="clearErrors('name')"></b-input>
         </b-field>
 
@@ -22,54 +22,67 @@
             :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
             <label class="label">{{$i18n.get('label_status')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
-            <b-select
+            <div class="inline-block">
+                <b-radio 
                     @focus="clearErrors('label_status')"
-                    id="tainacan-select-status"
-                    name="status"
+                    id="tainacan-select-status-publish"
+                    name="status" 
                     v-model="editForm.status"
-                    :placeholder="$i18n.get('instruction_select_a_status')">
-                <option value="publish" selected>{{ $i18n.get('publish')}}</option>
-                <option value="private">{{ $i18n.get('private')}}</option>
-            </b-select>
+                    native-value="publish">
+                    {{ $i18n.get('publish_visibility') }}
+                </b-radio>
+                <br>
+                <b-radio 
+                    @focus="clearErrors('label_status')"
+                    id="tainacan-select-status-private"
+                    name="status" 
+                    v-model="editForm.status"
+                    native-value="private">
+                    {{ $i18n.get('private_visibility') }}
+                </b-radio>
+            </div>
         </b-field>
-
+        <br>
         <b-field
             :type="formErrors['required'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
-            <b-switch 
+            <b-checkbox
                 @input="clearErrors('required')"
                 v-model="editForm.required"
                 true-value="yes" 
                 false-value="no"
                 name="required">
-                {{ $i18n.get('label_required') }} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-            </b-switch>
+                {{ $i18n.get('label_required') }}
+            </b-checkbox>
+            <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
         </b-field>
 
         <b-field
             :type="formErrors['multiple'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
-            <b-switch 
+            <b-checkbox 
                 @input="clearErrors('multiple')"
                 v-model="editForm.multiple"
                 true-value="yes" 
                 false-value="no"
                 name="multiple">
-                {{ $i18n.get('label_allow_multiple') }} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-            </b-switch>
+                {{ $i18n.get('label_allow_multiple') }}
+            </b-checkbox>
+            <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
         </b-field>
 
         <b-field 
             :type="formErrors['unique'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['unique'] != undefined ? formErrors['unique'] : ''">
-            <b-switch 
+            <b-checkbox 
                 @input="clearErrors('unique')"
                 v-model="editForm.unique"
                 true-value="yes" 
                 false-value="no"
                 name="collecion_key">
-                {{ $i18n.get('label_unique_value') }} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-            </b-switch>
+                {{ $i18n.get('label_unique_value') }}
+            </b-checkbox>
+            <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
         </b-field>
 
         <div class="separator"></div>
@@ -139,6 +152,7 @@ export default {
                                 this.formErrors[attribute] = error[attribute];
                         }
                         this.formErrorMessage = errors.error_message;
+                        this.$emit('onErrorFound');
                     });
             } else {
                 let formElement = document.getElementById('fieldEditForm');
@@ -161,6 +175,7 @@ export default {
                                 this.formErrors[attribute] = error[attribute];
                         }
                         this.formErrorMessage = errors.error_message;
+                        this.$emit('onErrorFound');
                     });
             }           
         },

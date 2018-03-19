@@ -92,8 +92,14 @@ html {
         font-weight: normal;
         font-size: 14px; 
     }
+    .required-field-asterisk {
+        color: $gray;
+        &.is-danger {
+            color: $danger;
+        }
+    }
     .help-button {
-        font-size: 0.8em;
+        i { font-size: 0.7em; }
         color: $gray;
         &:hover {
             color: $primary;
@@ -110,6 +116,22 @@ html {
         &.is-danger {
           background-color: #ece0e0;  
         }
+    }
+    .radio {
+        margin-bottom: 0.2em;
+        .control-label { 
+            padding-left: 0.8em; 
+            font-size: 14px;
+        }
+        
+    }
+    .checkbox {
+        margin-bottom: 0.2em;
+        .control-label { 
+            padding-left: 0.8em; 
+            font-size: 14px;
+        }
+        
     }
     .select {
         padding-top: 0px !important;
