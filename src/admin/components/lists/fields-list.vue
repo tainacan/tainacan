@@ -22,8 +22,12 @@
                         :class="{'not-sortable-item': field.id == undefined || openedFieldId == field.id, 'not-focusable-item': openedFieldId == field.id, 'disabled-field': field.enabled == false}" 
                         v-for="(field, index) in activeFieldList" :key="index">
                         <div class="handle">
-                            <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                            <span class="field-name" :class="{'is-danger': formWithErrors == field.id}">{{ field.name }}</span>
+                            <grip-icon></grip-icon>
+                            <span 
+                                class="field-name" 
+                                :class="{'is-danger': formWithErrors == field.id || (editForms[field.id] != undefined && openedFieldId != field.id)}">
+                                {{ field.name }}
+                            </span>
                             <span v-if="field.id !== undefined" class="label-details">({{ $i18n.get(field.field_type_object.component)}})</span><span class="loading-spinner" v-if="field.id == undefined"></span>
                             <span class="controls" v-if="field.id !== undefined">
                                 <b-switch size="is-small" v-model="field.enabled" @input="onChangeEnable($event, index)"></b-switch>
@@ -52,7 +56,7 @@
                                 @onEditionFinished="onEditionFinished()"
                                 @onEditionCanceled="onEditionCanceled()"
                                 @onErrorFound="formWithErrors = field.id"
-                                :field="editForm"></field-edition-form>
+                                :field="editForms[field.id]"></field-edition-form>
                         </div>
                     </div>
                 </draggable> 
@@ -74,7 +78,7 @@
                             :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
                             v-for="(field, index) in availableFieldList" 
                             :key="index">
-                            <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon> <span class="field-name">{{ field.name }}</span>
+                           <grip-icon></grip-icon>  <span class="field-name">{{ field.name }}</span>   
                         </div>
                     </draggable>
                 </div>
@@ -85,6 +89,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import GripIcon from '../other/grip-icon.vue';
 import FieldEditionForm from './../edition/field-edition-form.vue';
 
 export default {
@@ -100,11 +105,12 @@ export default {
             openedFieldId: '',
             formWithErrors: '',
             hightlightedField: '',
-            editForm: {},
+            editForms: {}
         }
     },
     components: {
-        FieldEditionForm
+        FieldEditionForm,
+        GripIcon
     },
     methods: {
         ...mapActions('fields', [
@@ -180,22 +186,28 @@ export default {
             });
         },
         editField(field) {
-            if (this.openedFieldId == field.id) {
+            if (this.openedFieldId == field.id) {    
+                if (this.editForms[this.openedFieldId] == JSON.parse(JSON.stringify(field))) {
+                    delete this.editForms[this.openedFieldId];
+                }
                 this.openedFieldId = '';
-                this.editForm = {};
             } else {
                 this.openedFieldId = field.id;
-                this.editForm = JSON.parse(JSON.stringify(field));
-                this.editForm.status = 'publish';
-            }            
+                if (this.editForms[this.openedFieldId] == undefined || this.editForms[this.openedFieldId] == null) {
+                    this.editForms[this.openedFieldId] = JSON.parse(JSON.stringify(field));
+                    this.editForms[this.openedFieldId].status = 'publish'; 
+                }         
+            }
         },
         onEditionFinished() {
             this.formWithErrors = '';
+            delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
             this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
+            delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
         }
 
@@ -289,7 +301,12 @@ export default {
             position: relative;
             transition: top 0.1s linear;
             cursor: grab;
-
+            
+            .grip-icon { 
+                fill: $gray; 
+                top: 2px;
+                position: relative;
+            }
             .field-name {
                 text-overflow: ellipsis;
                 overflow-x: hidden;
@@ -297,6 +314,10 @@ export default {
                 font-weight: bold;
                 margin-left: 0.4em;
                 margin-right: 0.4em;
+
+                &.is-danger {
+                    color: $danger !important;
+                }
             }
             .label-details {
                 font-weight: normal;
@@ -333,9 +354,6 @@ export default {
                 
                 .field-name {
                     color: $primary !important;
-                    &.is-danger {
-                        color: $danger !important;
-                    }
                 }
                 .label-details, .icon {
                     color: $gray !important;
@@ -353,6 +371,10 @@ export default {
 
             .label-details, .icon {
                 color: white !important;
+            }
+
+            .grip-icon { 
+                fill: white; 
             }
 
             .switch.is-small {
@@ -416,6 +438,11 @@ export default {
             border-radius: 1px;
             transition: left 0.2s ease;
             
+            .grip-icon { 
+                fill: $gray;
+                top: 2px;
+                position: relative;
+            }
             .icon {
                 position: relative;
                 bottom: 3px;
@@ -482,10 +509,10 @@ export default {
             }
         }
         @keyframes hightlighten-icon {
-            0%   { color: #b1b1b1; }
-            25%  { color: white; }
-            75%  { color: white; }
-            100% { color: #b1b1b1; }
+            0%   { fill: #b1b1b1; }
+            25%  { fill: white; }
+            75%  { fill: white; }
+            100% { fill: #b1b1b1; }
         }
         @keyframes hightlighten-arrow {
             0%   {
@@ -513,7 +540,7 @@ export default {
             animation-duration: 1.0s;
             animation-iteration-count: 2;
             
-            .icon{
+            .grip-icon{
                 animation-name: hightlighten-icon;
                 animation-duration: 1.0s;
                 animation-iteration-count: 2; 
@@ -542,6 +569,11 @@ export default {
             .icon {
                 color: white !important;
             }
+          
+            .grip-icon { 
+                fill: white;
+            }
+            
         }
     }
 

@@ -23,6 +23,7 @@ return [
     'export' => __('Export', 'tainacan'),
     'cancel' => __('Cancel', 'tainacan'),
     'save' => __('Save', 'tainacan'),
+    'next' => __('Next', 'tainacan'),
     'see' => __('See', 'tainacan'),
     'search' => __('Search', 'tainacan'),
     'advanced_search' => __('Advanced Search', 'tainacan'),

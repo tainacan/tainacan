@@ -98,10 +98,10 @@
 
         <div class="field is-grouped form-submit">  
             <div class="control">
-                <button class="button is-outlined" @click.prevent="cancelEdition()" slot="trigger">Cancel</button>
+                <button class="button is-outlined" @click.prevent="cancelEdition()" slot="trigger">{{ $i18n.get('cancel')}}</button>
             </div>
             <div class="control">
-                <button class="button is-success" type="submit">Submit</button>
+                <button class="button is-success" type="submit">{{ $i18n.get('save')}}</button>
             </div>
         </div>
         <p class="help is-danger">{{formErrorMessage}}</p>

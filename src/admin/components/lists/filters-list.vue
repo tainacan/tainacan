@@ -19,10 +19,10 @@
                         animation: '250'}">
                     <div  
                         class="active-filter-item" 
-                        :class="{'not-sortable-item': filter.id == undefined || openedFilterId == filter.id, 'not-focusable-item': openedFilterId == filter.id, 'disabled-filter': filter.enabled == false}" 
+                        :class="{'not-sortable-item': filter.id == undefined || openedFilterId == filter.id || choosenField.name == filter.name, 'not-focusable-item': openedFilterId == filter.id, 'disabled-filter': filter.enabled == false}" 
                         v-for="(filter, index) in activeFilterList" :key="index">
                             <div class="handle">
-                                <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
+                                <grip-icon></grip-icon>
                                 <span v-if="filter.id !== undefined" class="filter-name">{{ filter.name }}</span>
                                 <span v-if="filter.id !== undefined" class="label-details"><span class="loading-spinner" v-if="filter.id == undefined"></span>
                                 <span class="controls" v-if="filter.id != undefined">
@@ -36,8 +36,8 @@
                                         <b-icon icon="pencil"></b-icon>
                                     </a>
                                 </span>
-                                    <b-modal :active.sync="isModalOpened" :width="320" scroll="keep">
-                                    <div class="filter-selection-modal">
+                                <div v-if="choosenField.name == filter.name">
+                                    <form class="tainacan-form">
                                         <b-field :label="$i18n.get('label_filter_type')">
                                             <b-select
                                                     v-model="selectedFilterType"
@@ -50,23 +50,24 @@
                                                     {{ filterType.name }}</option>  
                                             </b-select>
                                         </b-field>
-                                        <div class="field is-grouped is-grouped-centered">
+                                        <div class="field is-grouped form-submit">
+                                            <div class="control"> 
+                                                <button 
+                                                    class="button is-outlined" 
+                                                    @click.prevent="cancelFilterTypeSelection()" 
+                                                    slot="trigger">{{ $i18n.get('cancel')}}</button>
+                                            </div>
                                             <div class="control">
                                                 <button 
-                                                    class="button is-secondary" 
+                                                    class="button is-success" 
                                                     type="submit" 
                                                     :disabled="Object.keys(selectedFilterType).length == 0"
-                                                    @click.prevent="confirmSelectedFilterType()">Submit</button>
+                                                    @click.prevent="confirmSelectedFilterType()">{{ $i18n.get('next')}}</button>
                                             </div>
-                                            <div class="control">
-                                                <button 
-                                                    class="button is-text" 
-                                                    @click.prevent="cancelFilterTypeSelection()" 
-                                                    slot="trigger">Cancel</button>
-                                            </div>
+                                            
                                         </div>
+                                    </form>
                                     </div>
-                                    </b-modal>
                             </div>
                             <b-field v-if="openedFilterId == filter.id">
                                 <filter-edition-form
@@ -93,7 +94,7 @@
                             v-for="(field, index) in availableFieldList" 
                             :key="index"
                             @click.prevent="addFieldViaButton(field)">  
-                            <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon> <span class="field-name">{{ field.name }}</span>
+                            <grip-icon></grip-icon> <span class="field-name">{{ field.name }}</span>
                         </div>
                     </draggable>   
                 </div>
@@ -104,6 +105,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import GripIcon from '../other/grip-icon.vue';
 import FilterEditionForm from './../edition/filter-edition-form.vue';
 
 export default {
@@ -124,11 +126,12 @@ export default {
             allowedFilterTypes: [],
             selectedFilterType: {},
             choosenField: {},
-            newIndex: 0
+            newIndex: 0        
         }
     },
     components: {
-        FilterEditionForm
+        FilterEditionForm,
+        GripIcon
     },
     methods: {
         ...mapActions('filter', [
@@ -271,7 +274,7 @@ export default {
                 this.openedFilterId = filter.id;
             }     
         },
-         onEditionFinished() {
+        onEditionFinished() {
             this.openedFilterId = '';
             this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
@@ -380,12 +383,6 @@ export default {
             display: initial;
         }
 
-        .filter-selection-modal{
-            padding: 20px;
-            background-color: white;
-            border-radius: 3px;
-        }
-
         .active-filter-item {
             background-color: white;
             padding: 0.8em;
@@ -396,6 +393,11 @@ export default {
             transition: top 0.1s ease;
             cursor: grab;
         
+            .grip-icon { 
+                fill: $gray;
+                top: 2px;
+                position: relative;
+            }
             .filter-name {
                 text-overflow: ellipsis;
                 overflow-x: hidden;
@@ -431,6 +433,12 @@ export default {
                 height: 1em; 
                 width: 1em;
             }
+            form {
+                padding: 1.0em 2.0em;
+                border-top: 1px solid $draggable-border-color;
+                border-bottom: 1px solid $draggable-border-color;
+                margin-top: 1.0em;
+            }
             &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover  {
                 box-shadow: none !important;
                 top: 0px !important;
@@ -453,6 +461,10 @@ export default {
             border-color: $secondary;
             color: white !important;
             top: -2px;
+
+            .grip-icon { 
+                fill: $white;
+            }
 
             .label-details, .icon {
                 color: white !important;
@@ -519,6 +531,12 @@ export default {
             border-radius: 1px;
             transition: left 0.2s ease;
             
+            .grip-icon { 
+                fill: $gray;
+                top: 2px;
+                position: relative;
+            }
+
             .icon {
                 position: relative;
                 bottom: 3px;
@@ -584,10 +602,10 @@ export default {
             }
         }
         @keyframes hightlighten-icon {
-            0%   { color: #b1b1b1; }
-            25%  { color: white; }
-            75%  { color: white; }
-            100% { color: #b1b1b1; }
+            0%   { fill: #b1b1b1; }
+            25%  { fill: white; }
+            75%  { fill: white; }
+            100% { fill: #b1b1b1; }
         }
         @keyframes hightlighten-arrow {
             0%   {
@@ -615,7 +633,7 @@ export default {
             animation-duration: 1.0s;
             animation-iteration-count: 2;
             
-            .icon{
+            .grip-icon{
                 animation-name: hightlighten-icon;
                 animation-duration: 1.0s;
                 animation-iteration-count: 2; 
@@ -641,8 +659,8 @@ export default {
             &:before {
                 border-color: transparent $secondary transparent transparent;
             }
-            .icon {
-                color: white !important;
+            .grip-icon {
+                fill: white !important;
             }
         }
     }
