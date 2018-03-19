@@ -171,9 +171,11 @@ class Items extends Repository {
 						add_post_meta( $id, $prop, wp_slash( $value ) );
 					}
 				}
-			} elseif ( $mapped['map'] === 'thumbnail_id' ) {
-				set_post_thumbnail( $item->WP_Post, $item->get_mapped_property( $prop ) );
 			}
+		}
+
+		if ( method_exists( $item, 'get_featured_img_id' ) ) {
+			set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
 		}
 
 		do_action( 'tainacan-insert', $item );
