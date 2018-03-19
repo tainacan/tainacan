@@ -2,7 +2,7 @@
         <b-field :label="field.field.name"
                  :message="getErrorMessage"
                  :type="fieldTypeMessage">
-            <div>
+            <div v-if="isTextInputComponent( field.field.field_type_object.component )">
                 <component :id="field.field.field_type_object.component + '-' + field.field.slug" :is="field.field.field_type_object.component" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
                 <div v-if="field.field.multiple == 'yes'">
                     <div v-if="index > 0" v-for="(input, index) in inputsList " v-bind:key="index" class="multiple-inputs">
@@ -10,6 +10,12 @@
                     </div>
                     <a class="button" @click="addInput">+</a>
                 </div>
+            </div>
+            <div v-else>
+                <component
+                        :id="field.field.field_type_object.component + '-' + field.field.slug"
+                        :is="field.field.field_type_object.component" v-model="inputs"
+                        :field="field" @blur="changeValue()"></component>
             </div>
         </b-field>
 </template>
@@ -69,6 +75,10 @@
             removeInput(index) {
                 this.inputs.splice(index, 1);
                 this.changeValue();
+            },
+            isTextInputComponent( component ){
+                let array = ['tainacan-relationship','tainacan-category'];
+                return !( array.indexOf( component ) >= 0 );
             }
         }
     }
