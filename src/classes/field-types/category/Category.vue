@@ -1,31 +1,52 @@
 <template>
     <component
             :is="getComponent()"
-            :options="terms"></component>
+            v-model="valueComponent"
+            :allowNew="allowNew"
+            :terms="terms"
+            :options="getOptions(0)"></component>
 </template>
 <script>
     import { tainacan as axios } from '../../../js/axios/axios'
     import TainacanCategoryRadio from './CategoryRadio.vue'
+    import TainacanCategoryCheckbox from './CategoryCheckbox.vue'
+    import TainacanCategoryTagInput from './CategoryTaginput.vue'
 
     export default {
         created(){
-            this.component = ( this.field.field
-                && this.field.field.field_type_options && this.field.field.field_type_options.input_type )
+            let field_type_options = this.field.field.field_type_options;
+            this.component = ( field_type_options && field_type_options.input_type )
                 ? this.field.field.field_type_options.input_type : this.componentAttribute
 
             this.collectionId = this.field.field.collection_id;
-            this.taxonomy = this.field.field.field_type_options.taxonomy_id;
+            this.taxonomy = field_type_options.taxonomy_id;
+
+            if( field_type_options && field_type_options.allow_new_terms ){
+                this.allowNew = field_type_options.allow_new_terms === 'yes'
+            }
             this.getTermsFromTaxonomy();
+            this.getTermsId();
         },
         components: {
-            TainacanCategoryRadio
+            TainacanCategoryRadio,
+            TainacanCategoryCheckbox,
+            TainacanCategoryTagInput
         },
         data(){
             return {
+                valueComponent: null,
                 component: '',
                 collectionId: '',
                 taxonomy: '',
-                terms:[]
+                terms:[], // object with names
+                allowNew: false
+            }
+        },
+        watch: {
+            valueComponent( val ){
+                this.valueComponent = val;
+                this.$emit('input', val);
+                this.$emit('blur');
             }
         },
         props: {
@@ -35,6 +56,7 @@
             componentAttribute: {
                 type: String
             },
+            value: [ Number, String, Array,Object ],
             id: ''
         },
         methods: {
@@ -53,6 +75,40 @@
                 .catch(error => {
                     console.log(error);
                 });
+            },
+            getOptions( parent, level = 0 ){ // retrieve only ids
+                let result = [];
+                if ( this.terms ){
+                    for( let term of this.terms ){
+                        if( term.parent == parent ){
+                            term['level'] = level;
+                            result.push( term );
+                            const levelTerm =  level + 1;
+                            const children =  this.getOptions( term.term_id, levelTerm);
+                            result = result.concat( children );
+                        }
+                    }
+                }
+                return result;
+            },
+            getTermsId(){
+              let values = [];
+              if( this.value && this.value.length > 0){
+                  for( let term of this.value ){
+                      if( term && term.term_id)
+                        values.push(term.term_id);
+                  }
+              }
+
+              if( values.length > 0 && this.field.field){
+                  this.valueComponent = (  this.field.field && this.field.field.multiple === 'no' ) ? values[0] : values
+              }
+
+            },
+            onInput($event) {
+                this.inputValue = $event;
+                this.$emit('input', this.inputValue);
+                this.$emit('blur');
             }
         }
     }
