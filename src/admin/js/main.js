@@ -6,11 +6,10 @@ import Buefy from 'buefy'
 import Text from '../../classes/field-types/text/Text.vue';
 import Textarea from '../../classes/field-types/textarea/Textarea.vue';
 import Selectbox from '../../classes/field-types/selectbox/Selectbox.vue';
-import Checkbox from '../../classes/field-types/checkbox/Checkbox.vue';
-import Radio from '../../classes/field-types/radio/Radio.vue';
 import Numeric from '../../classes/field-types/numeric/Numeric.vue';
 import Date from '../../classes/field-types/date/Date.vue';
 import Relationship from '../../classes/field-types/relationship/Relationship.vue';
+import Category from '../../classes/field-types/category/Category.vue';
 
 import FormRelationship from '../../classes/field-types/relationship/FormRelationship.vue';
 import FormCategory from '../../classes/field-types/category/FormCategory.vue';
@@ -46,11 +45,10 @@ Vue.use(Buefy);
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
 Vue.component('tainacan-selectbox', Selectbox);
-Vue.component('tainacan-checkbox', Checkbox);
-Vue.component('tainacan-radio', Radio);
 Vue.component('tainacan-numeric', Numeric);
 Vue.component('tainacan-date', Date);
 Vue.component('tainacan-relationship', Relationship);
+Vue.component('tainacan-category', Category);
 
 Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-category', FormCategory);

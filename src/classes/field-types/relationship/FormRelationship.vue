@@ -1,10 +1,14 @@
 <template>
     <section>
         <b-field
-                :label="$i18n.get('label_collection_related')"
+                :addons="false"
                 :listen="setError"
                 :type="collectionType"
                 :message="collectionMessage">
+            <label class="label">
+                {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <b-select
                     name="field_type_relationship[collection_id]"
                     placeholder="Select the collection to fetch items"
@@ -28,7 +32,11 @@
                 class="loading-spinner"></div>
             <b-field
                     v-if="hasFields"
-                    :label="$i18n.get('label_fields_for_search')">
+                    :addons="false">
+                <label class="label">
+                    {{ $i18n.get('label_fields_for_search') }}
+                    <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                </label>
                 <div class="block">
                     <div
                         v-for="option in fields"
@@ -46,15 +54,16 @@
         </transition>
 
 
-        <b-field :label="$i18n.get('label_allow_repeated_items')">
+        <b-field :addons="false">
+
             <div class="block">
-                <b-switch v-model="modelRepeated"
-                          type="is-primary"
+                <b-checkbox v-model="modelRepeated"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
-                    {{ labelRepeated()  }}
-                </b-switch>
+                        {{ $i18n.get('label_allow_repeated_items') }}
+                </b-checkbox>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </div>
         </b-field>
     </section>
@@ -122,7 +131,7 @@
         computed: {
             setError(){
                 if( this.errors && this.errors.collection_id !== '' ){
-                    this.collectionType = 'is-warning';
+                    this.collectionType = 'is-danger';
                     this.collectionMessage = this.errors.collection_id;
                 } else {
                     this.collectionType = '';

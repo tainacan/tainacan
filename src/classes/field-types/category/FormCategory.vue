@@ -2,10 +2,14 @@
     <section
             v-if="isReady"
             :listen="setError">
-        <b-field :label="$i18n.get('label_select_category')"
+        <b-field :addons="false"
                  :type="taxonomyType"
                  :message="taxonomyMessage"
         >
+            <label class="label">
+                {{ $i18n.get('label_select_category') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <b-select
                     name="field_type_options[taxonomy_id]"
                     placeholder="Select the taxonomy"
@@ -23,8 +27,11 @@
             </b-select>
         </b-field>
 
-        <b-field :label="$i18n.get('label_select_category_input_type')">
-
+        <b-field :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_select_category_input_type') }}
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <b-select
                     v-if="listInputType"
                     name="field_type_options[component_type]"
@@ -56,15 +63,15 @@
 
         </b-field>
 
-        <b-field :label="$i18n.get('label_category_allow_new_terms')">
+        <b-field :addons="false">
             <div class="block">
-                <b-switch v-model="allow_new_terms"
-                          type="is-primary"
+                <b-checkbox v-model="allow_new_terms"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
-                    {{ labelNewTerms()  }}
-                </b-switch>
+                    {{ $i18n.get('label_category_allow_new_terms') }}
+                </b-checkbox>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </div>
         </b-field>
 
@@ -73,8 +80,10 @@
 
 <script>
     import { tainacan as axios }  from '../../../js/axios/axios';
+    import BCheckbox from "../../../../node_modules/buefy/src/components/checkbox/Checkbox.vue";
 
     export default {
+        components: {BCheckbox},
         props: {
             value: [ String, Object, Array ],
             field: [ String, Object ],
@@ -114,7 +123,7 @@
             },
             setError(){
                 if( this.errors && this.errors.taxonomy_id !== '' ){
-                    this.taxonomyType = 'is-warning';
+                    this.taxonomyType = 'is-danger';
                     this.taxonomyMessage = this.errors.taxonomy_id;
                 } else {
                     this.taxonomyType = '';

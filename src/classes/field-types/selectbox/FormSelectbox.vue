@@ -1,10 +1,14 @@
 <template>
     <section
             :listen="setError">
-        <b-field :label="$i18n.get('label_options')"
+        <b-field :addons="false"
                  :type="optionType"
                  :message="optionMessage"
         >
+            <label class="label">
+                {{ $i18n.get('label_options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <b-taginput
                     v-model="options"
                     @input="emitValues()"
@@ -38,7 +42,7 @@
         computed: {
             setError(){
                 if( this.errors && this.errors.options !== '' ){
-                    this.optionType = 'is-warning';
+                    this.optionType = 'is-danger';
                     this.optionMessage = this.errors.options;
                 } else {
                     this.optionType = '';
