@@ -15,12 +15,15 @@ $primary-lighter: lighten($primary-light, 15%);
 $primary-dark: #55A0AF;
 $primary-darker: darken($primary-dark, 5%);
 
+$success: #25a189;
+$success-invert: findColorInvert($success);
+
 $separator-color: #2a6e77;
 $header-color: #ececec;
 $tainacan-input-color: #f0f0f0;
 $draggable-border-color: #d8d8d8;
 
-$gray: #898d8f; 
+$gray: #b1b1b1; 
 $gray-invert: findColorInvert($gray);
 $gray-light: #898d8f; 
 $gray-light-invert: findColorInvert($gray-light);

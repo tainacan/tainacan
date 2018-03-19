@@ -14,24 +14,34 @@
                     :options="{ 
                             group: { name:'fields', pull: false, put: true }, 
                             handle: '.handle', 
-                            ghostClass: 'sortable-ghost', 
-                            filter: '.not-sortable-item', 
+                            ghostClass: 'sortable-ghost',
+                            filter: 'not-sortable-item', 
                             animation: '250'}">
                     <div  
                         class="active-field-item"
-                        :class="{'not-sortable-item': field.id == undefined, 'not-focusable-item': openedFieldId == field.id, 'inherited-field': field.collection_id != collectionId}" 
+                        :class="{'not-sortable-item': field.id == undefined || openedFieldId == field.id, 'not-focusable-item': openedFieldId == field.id, 'disabled-field': field.enabled == false}" 
                         v-for="(field, index) in activeFieldList" :key="index">
                         <div class="handle">
                             <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
                             <span class="field-name">{{ field.name }}</span>
-                            <span v-if="field.id !== undefined" class="label-details">{{ $i18n.get(field.field_type_object.component)}}</span><span class="loading-spinner" v-if="field.id == undefined"></span>
+                            <span v-if="field.id !== undefined" class="label-details">({{ $i18n.get(field.field_type_object.component)}})</span><span class="loading-spinner" v-if="field.id == undefined"></span>
                             <span class="controls" v-if="field.id !== undefined">
                                 <b-switch size="is-small" v-model="field.enabled" @input="onChangeEnable($event, index)"></b-switch>
-                                <a @click.prevent="removeField(field)">
-                                    <b-icon icon="delete"></b-icon>
+                                <a  :style="{ visibility: 
+                                                field.collection_id != collectionId 
+                                                ? 'hidden' : 'visible'
+                                            }" 
+                                    @click.prevent="editField(field)">
+                                    <b-icon type="is-gray" icon="pencil"></b-icon>
                                 </a>
-                                <a @click.prevent="editField(field)">
-                                    <b-icon icon="pencil"></b-icon>
+                                <a  :style="{ visibility: 
+                                                field.collection_id != collectionId || 
+                                                field.field_type == 'Tainacan\\Field_Types\\Core_Title' || 
+                                                field.field_type == 'Tainacan\\Field_Types\\Core_Description' 
+                                                ? 'hidden' : 'visible'
+                                            }" 
+                                    @click.prevent="removeField(field)">
+                                    <b-icon type="is-gray" icon="delete"></b-icon>
                                 </a>
                             </span>
                         </div>
@@ -59,7 +69,8 @@
                         }">
                         <div 
                             @click.prevent="addFieldViaButton(field)" 
-                            class="available-field-item" 
+                            class="available-field-item"
+                            :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
                             v-for="(field, index) in availableFieldList" 
                             :key="index">
                             <b-icon type="is-gray" class="is-pulled-left"  icon="drag"></b-icon> <span class="field-name">{{ field.name }}</span>
@@ -86,6 +97,7 @@ export default {
             isLoadingFields: false,
             isLoadingField: false,
             openedFieldId: '',
+            hightlightedField: '',
             editForm: {},
         }
     },
@@ -128,12 +140,15 @@ export default {
                 fieldsOrder.push({'id': field.id, 'enabled': field.enabled});
             }
             this.updateCollectionFieldsOrder({ collectionId: this.collectionId, fieldsOrder: fieldsOrder });
-
         },
         addFieldViaButton(fieldType) {
             let lastIndex = this.activeFieldList.length;
             this.activeFieldList.push(fieldType);
             this.addNewField(fieldType, lastIndex);
+            
+            // Higlights the clicker field
+            this.hightlightedField = fieldType.name;
+
         },
         addNewField(newField, newIndex) {
             this.sendField({collectionId: this.collectionId, name: newField.name, fieldType: newField.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel, newIndex: newIndex})
@@ -143,6 +158,7 @@ export default {
                     this.updateFieldsOrder();
 
                 this.editField(field);
+                this.hightlightedField = '';
             })
             .catch((error) => {
                 console.log(error);
@@ -218,7 +234,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
     @import "../../scss/_variables.scss";
 
@@ -226,15 +242,30 @@ export default {
         border-bottom: 1px solid $secondary;
         h2 {
             color: $tertiary;
+            font-weight: 500;
         }
-        margin: 1em 0em 1.6em -1.2em;
+        margin: 1em 0em 2.0em -1em;
+
+        @media screen and (max-width: 769px) {
+            margin: 1em 0em 2.0em 0em;
+        }
     }
 
     .active-fields-area {
         font-size: 14px;
-        min-height: 40px;
-        padding: 10px;
-        margin-right: 6em; 
+        margin-right: 0.8em;
+        margin-left: -0.8em;
+        padding-right: 6em;
+        min-height: 330px;
+
+        @media screen and (max-width: 769px) {
+            min-height: 45px;
+            margin: 0; 
+            padding-right: 0em;
+        }
+        @media screen and (max-width: 1216px) {
+            padding-right: 1em;
+        }
 
         &.fields-area-receive {
             border: 1px dashed gray;
@@ -250,11 +281,13 @@ export default {
         }
         .active-field-item {
             background-color: white;
-            padding: 0.6em;
+            padding: 0.8em;
             margin: 4px;
             min-height: 42px;
             display: block; 
-            transition: top 0.2s ease;
+            top: 0;
+            position: relative;
+            transition: top 0.1s linear;
             cursor: grab;
 
             .field-name {
@@ -267,10 +300,20 @@ export default {
             }
             .label-details {
                 font-weight: normal;
-                font-style: italic;
-                color: gray;
+                color: $gray;
             }
-            .controls { float: right }
+            .controls { 
+                float: right;
+                .switch {
+                    position: relative;
+                    bottom: 3px;
+                }
+            }
+            .icon {
+                bottom: 1px;   
+                position: relative;
+                font-size: 18px;
+            }
             .loading-spinner {
                 animation: spinAround 500ms infinite linear;
                 border: 2px solid #dbdbdb;
@@ -292,12 +335,12 @@ export default {
                     color: $primary !important;
                 }
                 .label-details, .icon {
-                    color: gray !important;
+                    color: $gray !important;
                 }
             }
-            &.inherited-field {
-                color: gray;
-            }           
+            &.disabled-field {
+                color: $gray;
+            }    
         }
         .active-field-item:hover {
             background-color: $secondary;
@@ -308,36 +351,31 @@ export default {
             .label-details, .icon {
                 color: white !important;
             }
+
+            .switch.is-small {
+                input[type="checkbox"] + .check {
+                    border: 2px solid white !important;
+                    &::before { background-color: white !important; }
+                } 
+
+                input[type="checkbox"]:checked + .check {
+                    border: 2px solid white !important;
+                    &::before { background-color: white !important; }
+                }
+                &:hover input[type="checkbox"] + .check {
+                    border: 2px solid white !important;
+                    background-color: $secondary !important;
+                }
+            }
+
         }
         .sortable-ghost {
-            border-left: 1px solid $draggable-border-color;
-            border-right: 1px dashed $draggable-border-color;
-            border-top: 1px dashed $draggable-border-color;
-            border-bottom: 1px dashed $draggable-border-color;
+            border: 1px dashed $draggable-border-color;
             display: block;
+            padding: 0.8em;
+            margin: 4px;
+            min-height: 42px;
             position: relative;
-            height: 42px;
-
-            // &:after,
-            // &:before {
-            //     content: '';
-            //     display: block;
-            //     position: absolute;
-            //     left: 0%;
-            //     width: 0;
-            //     height: 0;
-            //     border-style: solid;
-            // }
-            // &:after {
-            //     top: 0px;
-            //     border-color: $secondary transparent $secondary $secondary;
-            //     border-width: 20px;
-            // }
-            // &:before {
-            //     top: -1px;
-            //     border-color: $secondary transparent $secondary $secondary;
-            //     border-width: 21px;
-            // }
         }
     }
 
@@ -347,13 +385,26 @@ export default {
         max-width: 280px;
         font-size: 14px;
 
+        @media screen and (max-width: 769px) {
+            max-width: 100%;
+            padding: 10px;
+            h3 {
+                margin: 1em 0em 1em 0em !important;
+            }
+            .available-field-item::before, 
+            .available-field-item::after {
+                display: none !important;
+            }
+        }
+
         h3 {
             color: $secondary;
-            margin: 1.0em 0em;
+            margin: 0.2em 0em 1em -1.2em;
+            font-weight: 500;
         }
 
         .available-field-item {
-            padding: 0.6em;
+            padding: 0.7em;
             margin: 4px;
             background-color: white;
             cursor: pointer;
@@ -361,8 +412,13 @@ export default {
             height: 42px;
             position: relative;
             border: 1px solid $draggable-border-color;
+            border-radius: 1px;
             transition: left 0.2s ease;
             
+            .icon {
+                position: relative;
+                bottom: 3px;
+            }
             .field-name {
                 text-overflow: ellipsis;
                 overflow-x: hidden;
@@ -381,21 +437,94 @@ export default {
                 border-style: solid;
             }
             &:after {
-                top: 0px;
+                top: -1px;
                 border-color: transparent white transparent transparent;
-                border-width: 20px;
+                border-right-width: 16px;
+                border-top-width: 21px;
+                border-bottom-width: 21px;
+                left: -19px;
             }
             &:before {
                 top: -1px;
                 border-color: transparent $draggable-border-color transparent transparent;
-                border-width: 21px;
-            }
-
-            .sortable-drag {
-                opacity: 1 !important;
+                border-right-width: 16px;
+                border-top-width: 21px;
+                border-bottom-width: 21px;
+                left: -20px;
             }
         }
 
+        .sortable-drag {
+            opacity: 1 !important;
+        }
+
+        @keyframes hightlighten {
+            0%   {
+                color: #222;             
+                background-color: white;
+                border-color: white;
+            }
+            25%  {
+                color: white;            
+                background-color: #2cb4c1; 
+                border-color: #2cb4c1;
+            }
+            75%  {
+                color: white;            
+                background-color: #2cb4c1; 
+                border-color: #2cb4c1;
+            }
+            100% {
+                color: #222;             
+                background-color: white;
+                border-color: white;
+            }
+        }
+        @keyframes hightlighten-icon {
+            0%   { color: #b1b1b1; }
+            25%  { color: white; }
+            75%  { color: white; }
+            100% { color: #b1b1b1; }
+        }
+        @keyframes hightlighten-arrow {
+            0%   {
+                border-color: transparent white transparent transparent;
+                border-color: transparent white transparent transparent; 
+            }
+            25%  {
+                border-color: transparent #2cb4c1 transparent transparent;
+                border-color: transparent #2cb4c1 transparent transparent; 
+            }
+            75%  {
+                border-color: transparent #2cb4c1 transparent transparent;
+                border-color: transparent #2cb4c1 transparent transparent; 
+            }
+            100% {
+                border-color: transparent white transparent transparent;
+                border-color: transparent white transparent transparent;  
+            }
+        }
+        .hightlighted-field {
+            background-color: white;
+            position: relative;
+            left: 0px;
+            animation-name: hightlighten;
+            animation-duration: 1.0s;
+            animation-iteration-count: 2;
+            
+            .icon{
+                animation-name: hightlighten-icon;
+                animation-duration: 1.0s;
+                animation-iteration-count: 2; 
+            }
+
+            &::before,
+            &::after {
+                animation-name: hightlighten-arrow;
+                animation-duration: 1.0s;
+                animation-iteration-count: 2;
+            }
+        }
         .available-field-item:hover {
             background-color: $secondary;
             border-color: $secondary;
@@ -416,7 +545,3 @@ export default {
     }
 
 </style>
-
-
-
-

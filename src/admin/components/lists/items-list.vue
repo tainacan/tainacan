@@ -34,8 +34,8 @@
                          
                     <template v-if="column.field == 'row_actions'">
                         <!-- <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a> -->
-                        <a id="button-edit" :aria-label="$i18n.getFrom('items','edit_item')" @click="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
-                        <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
+                        <a id="button-edit" :aria-label="$i18n.getFrom('items','edit_item')" @click="goToItemEditPage(props.row.id)"><b-icon type="is-gray" icon="pencil"></a>
+                        <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click="deleteOneItem(props.row.id)"><b-icon type="is-gray" icon="delete"></a>
                     </template>
                 </b-table-column>
 

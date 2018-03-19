@@ -2,17 +2,35 @@
     <form id="fieldEditForm" class="tainacan-form" v-on:submit.prevent="saveEdition(editForm)">    
         
         <b-field 
-            :label="$i18n.get('label_name')" 
+            :addons="false"
             :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
-            :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
+            :message="formErrors['name'] != undefined ? formErrors['name'] : ''"> 
+            <label class="label">{{$i18n.get('label_name')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
             <b-input v-model="editForm.name" name="name" @focus="clearErrors('name')"></b-input>
         </b-field>
 
         <b-field
-            :label="$i18n.get('label_description')" 
+            :addons="false" 
             :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
+            <label class="label">{{$i18n.get('label_description')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
             <b-input type="textarea" name="description" v-model="editForm.description" @focus="clearErrors('description')" ></b-input>
+        </b-field>
+
+        <b-field 
+            :addons="false"
+            :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
+            :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
+            <label class="label">{{$i18n.get('label_status')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+            <b-select
+                    @focus="clearErrors('label_status')"
+                    id="tainacan-select-status"
+                    name="status"
+                    v-model="editForm.status"
+                    :placeholder="$i18n.get('instruction_select_a_status')">
+                <option value="publish" selected>{{ $i18n.get('publish')}}</option>
+                <option value="private">{{ $i18n.get('private')}}</option>
+            </b-select>
         </b-field>
 
         <b-field
@@ -24,7 +42,7 @@
                 true-value="yes" 
                 false-value="no"
                 name="required">
-                {{ $i18n.get('label_required') }}
+                {{ $i18n.get('label_required') }} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </b-switch>
         </b-field>
 
@@ -37,7 +55,7 @@
                 true-value="yes" 
                 false-value="no"
                 name="multiple">
-                {{ $i18n.get('label_allow_multiple') }}
+                {{ $i18n.get('label_allow_multiple') }} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </b-switch>
         </b-field>
 
@@ -50,24 +68,11 @@
                 true-value="yes" 
                 false-value="no"
                 name="collecion_key">
-                {{ $i18n.get('label_unique_value') }}
+                {{ $i18n.get('label_unique_value') }} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </b-switch>
         </b-field>
 
-        <b-field 
-            :label="$i18n.get('label_status')"
-            :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
-            :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <b-select
-                    @focus="clearErrors('label_status')"
-                    id="tainacan-select-status"
-                    name="status"
-                    v-model="editForm.status"
-                    :placeholder="$i18n.get('instruction_select_a_status')">
-                <option value="publish" selected>{{ $i18n.get('publish')}}</option>
-                <option value="private">{{ $i18n.get('private')}}</option>
-            </b-select>
-        </b-field>
+        <div class="separator"></div>
 
         <component
                 :errors="formErrors['field_type_options']"
@@ -78,12 +83,12 @@
         </component>
         <div v-html="editForm.edit_form" v-else></div>
 
-        <div class="field is-grouped is-grouped-centered">
+        <div class="field is-grouped form-submit">  
             <div class="control">
-                <button class="button is-secondary" type="submit">Submit</button>
+                <button class="button is-outlined" @click.prevent="cancelEdition()" slot="trigger">Cancel</button>
             </div>
             <div class="control">
-                <button class="button is-text" @click.prevent="cancelEdition()" slot="trigger">Cancel</button>
+                <button class="button is-success" type="submit">Submit</button>
             </div>
         </div>
         <p class="help is-danger">{{formErrorMessage}}</p>
@@ -180,11 +185,13 @@ export default {
     form {
         padding: 1.0em 2.0em;
         border-top: 1px solid $draggable-border-color;
+        border-bottom: 1px solid $draggable-border-color;
         margin-top: 1.0em;
-        font-size: 16px;
 
-        .field {
-            font-weight: normal !important;
+        .separator {
+            color: $draggable-border-color;
+            height: 1px;
+            width: 60%;
         }
     }
 
