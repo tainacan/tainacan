@@ -7,7 +7,7 @@
                  :message="taxonomyMessage"
         >
             <label class="label">
-                {{ $i18n.get('label_select_category') }}
+                {{ $i18n.get('label_select_category') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
                 <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </label>
             <b-select
@@ -124,7 +124,7 @@
             },
             setError(){
                 if( this.errors && this.errors.taxonomy_id !== '' ){
-                    this.taxonomyType = 'is-warning';
+                    this.taxonomyType = 'is-danger';
                     this.taxonomyMessage = this.errors.taxonomy_id;
                 } else {
                     this.taxonomyType = '';

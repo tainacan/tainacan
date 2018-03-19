@@ -6,7 +6,7 @@
                 :type="collectionType"
                 :message="collectionMessage">
             <label class="label">
-                {{ $i18n.get('label_collection_related') }}
+                {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
                 <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </label>
             <b-select
@@ -133,7 +133,7 @@
         computed: {
             setError(){
                 if( this.errors && this.errors.collection_id !== '' ){
-                    this.collectionType = 'is-warning';
+                    this.collectionType = 'is-danger';
                     this.collectionMessage = this.errors.collection_id;
                 } else {
                     this.collectionType = '';
