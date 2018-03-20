@@ -32,7 +32,7 @@ class Entity_Factory {
 	public function create_entity($type, $args = [], $is_validated_and_in_db = false, $publish = false){
 		ini_set('display_errors', 1);
         
-        global $Tainacan_Item_Metadata;
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
         
 		try {
 			if(empty($type)){

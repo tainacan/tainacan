@@ -94,7 +94,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
 		$this->assertEquals( 'pending', $data['status'] );
-		global $Tainacan_Logs;
+		$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
 		$query = $Tainacan_Logs->fetch(['post_status' => 'pending']);
 		
 		$log = false;
@@ -155,7 +155,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
 		$this->assertEquals( 'pending', $data['status'] );
-		global $Tainacan_Logs;
+		$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
 		$query = $Tainacan_Logs->fetch(['post_status' => 'pending']);
 		
 		$log = false;

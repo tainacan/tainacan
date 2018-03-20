@@ -268,7 +268,7 @@ class Item extends Entity {
 	 * @return array Array of ItemMetadata objects
 	 */
 	function get_fields() {
-		global $Tainacan_Item_Metadata;
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
 		return $Tainacan_Item_Metadata->fetch( $this, 'OBJECT' );
 

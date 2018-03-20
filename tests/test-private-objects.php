@@ -52,7 +52,7 @@ class PrivateObjects extends TAINACAN_UnitTestCase {
 			true
 		);
         
-        global $Tainacan_Items;
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
         
         $items = $Tainacan_Items->fetch([], $collection);
         

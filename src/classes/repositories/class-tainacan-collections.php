@@ -12,10 +12,25 @@ use Tainacan\Entities\Collection;
 class Collections extends Repository {
 	public $entities_type = '\Tainacan\Entities\Collection';
 
-	public function __construct() {
-		parent::__construct();
-		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
-	}
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Collections constructor.
+     */
+    protected function __construct() {
+        parent::__construct();
+        add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -206,7 +221,7 @@ class Collections extends Repository {
 	 * @see \Tainacan\Repositories\Repository::insert()
 	 */
 	public function insert( $collection ) {
-		global $Tainacan_Fields;
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
 		$this->pre_update_moderators( $collection );
 		$new_collection = parent::insert( $collection );

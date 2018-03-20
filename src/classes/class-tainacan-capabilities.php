@@ -381,7 +381,7 @@ class Capabilities {
 			}
 		}
 		
-		global $Tainacan_Collections;
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
 		$collections = $Tainacan_Collections->fetch([], 'OBJECT');
 		foreach ($collections as $collection) {
 			$this->set_items_capabilities($collection, $defaults_caps);

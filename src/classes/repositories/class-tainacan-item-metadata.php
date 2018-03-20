@@ -6,8 +6,26 @@ use Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Item_Metadata extends Repository {
-	public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
-    
+
+    protected function __construct()
+    {
+        parent::__construct();
+    }
+
+    public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
     public function insert($item_metadata) {
 
         $unique = !$item_metadata->is_multiple();
@@ -56,7 +74,7 @@ class Item_Metadata extends Repository {
             $value = $item_metadata->get_value();
             $item->$set_method( is_array( $value ) ? $value[0] : $value );
             if ($item->validate_core_fields()) {
-                global $Tainacan_Items;
+                $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
                 $Tainacan_Items->insert($item);
             } else {
                 throw new \Exception('Item metadata should be validated beforehand');

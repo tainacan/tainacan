@@ -52,7 +52,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
         
-        global $Tainacan_Items;
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
         
         $item = $Tainacan_Items->fetch($i->get_id());
 
@@ -103,7 +103,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
         
-        global $Tainacan_Items;
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
         
         $item = $Tainacan_Items->fetch($i->get_id());
         $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
@@ -157,7 +157,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		    true
 	    );
         
-        global $Tainacan_Items;
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
 
         $item = $Tainacan_Items->fetch($i->get_id());
 
@@ -178,7 +178,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
     }
     
     function teste_fetch(){
-        global $Tainacan_Item_Metadata;
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',

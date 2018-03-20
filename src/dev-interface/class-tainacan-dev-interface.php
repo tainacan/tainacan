@@ -94,7 +94,7 @@ class DevInterface {
             
         }
         
-        global $Tainacan_Collections;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         
         foreach ($collections as $col) {
@@ -121,23 +121,23 @@ class DevInterface {
     }
     
     function properties_metabox_Collections() {
-        global $Tainacan_Collections;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
         $this->properties_metabox($Tainacan_Collections);
     }
     function properties_metabox_Filters() {
-        global $Tainacan_Filters;
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
         $this->properties_metabox($Tainacan_Filters);
     }
     function properties_metabox_Logs() {
-        global $Tainacan_Logs;
+        $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
         $this->properties_metabox($Tainacan_Logs);
     }
     function properties_metabox_Fields() {
-        global $Tainacan_Fields;
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
         $this->properties_metabox($Tainacan_Fields);
     }
     function properties_metabox_Taxonomies() {
-        global $Tainacan_Taxonomies;
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
         $this->properties_metabox($Tainacan_Taxonomies);
     }
     
@@ -356,7 +356,7 @@ class DevInterface {
 
     function field_type_dropdown($id,$selected) {
 
-        global $Tainacan_Fields;
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
         $class = ( class_exists( $selected ) ) ? new $selected() : '';
 
@@ -383,7 +383,7 @@ class DevInterface {
 
     function filter_type_dropdown($id,$selected) {
 
-        global $Tainacan_Filters;
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
 
         $class = ( class_exists( $selected ) ) ? new $selected() : '';
 
@@ -414,7 +414,7 @@ class DevInterface {
     }
     
     function collections_checkbox_list($selected) {
-        global $Tainacan_Collections;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         $selected = json_decode($selected);
         ?>

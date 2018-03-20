@@ -10,7 +10,24 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Items extends Repository {
 	public $entities_type = '\Tainacan\Entities\Item';
 
-	public function get_map() {
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    protected function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'title'             => [
 				'map'         => 'post_title',
@@ -204,7 +221,7 @@ class Items extends Repository {
 	 */
 	public function fetch( $args = [], $collections = [], $output = null ) {
 
-		global $Tainacan_Collections;
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
 
 		if ( is_numeric( $args ) ) {
 			$existing_post = get_post( $args );

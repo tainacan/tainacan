@@ -15,7 +15,7 @@ abstract class Repository {
 	/**
 	 * Register hooks
 	 */
-	function __construct() {
+	protected function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
 		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
 	}
@@ -334,7 +334,7 @@ abstract class Repository {
 	 * @return array[]
 	 */
 	public static function get_collections_db_identifier() {
-		global $Tainacan_Collections;
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
 		$cpts        = [];
 		foreach ( $collections as $col ) {
@@ -417,7 +417,7 @@ abstract class Repository {
 
 		// its is a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
-			global $Tainacan_Items;
+			$Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
 
 			return $Tainacan_Items;
 		} else {

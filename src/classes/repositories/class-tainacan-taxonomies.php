@@ -12,8 +12,20 @@ use \Respect\Validation\Validator as v;
  */
 class Taxonomies extends Repository {
 	public $entities_type = '\Tainacan\Entities\Taxonomy';
-	
-	public function __construct() {
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+	protected function __construct() {
 		parent::__construct();
  		add_action('tainacan-taxonomy-removed-from-collection', array($this, 'removed_collection'), 10, 2);
  		add_action('tainacan-taxonomy-added-to-collection', array($this, 'added_collection'), 10, 2);

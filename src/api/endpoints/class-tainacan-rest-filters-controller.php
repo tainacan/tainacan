@@ -28,11 +28,11 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function init_objects() {
 		$this->collection = new Entities\Collection();
-		$this->collection_repository = new Repositories\Collections();
+		$this->collection_repository = Repositories\Collections::getInstance();
 		
-		$this->field_repository = new Repositories\Fields();
+		$this->field_repository = Repositories\Fields::getInstance();
 		
-		$this->filter_repository = new Repositories\Filters();
+		$this->filter_repository = Repositories\Filters::getInstance();
 	}
 
 	public function register_routes() {

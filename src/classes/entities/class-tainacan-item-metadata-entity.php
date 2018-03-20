@@ -91,7 +91,7 @@ class Item_Metadata_Entity extends Entity {
         if (isset($this->value))
             return $this->value;
         
-        global $Tainacan_Item_Metadata;
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
         return $Tainacan_Item_Metadata->get_value($this);
     }
     

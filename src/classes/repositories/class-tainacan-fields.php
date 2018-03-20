@@ -20,10 +20,23 @@ class Fields extends Repository {
 	    'Tainacan\Field_Types\Core_Title',
 	    'Tainacan\Field_Types\Core_Description'
     ];
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
     /**
      * Register specific hooks for field repository
      */
-    function __construct() {
+    protected function __construct() {
         parent::__construct();
         add_filter('pre_trash_post', array( &$this, 'disable_delete_core_fields' ), 10, 2 );
         add_filter('pre_delete_post', array( &$this, 'force_delete_core_fields' ), 10, 3 );
@@ -423,7 +436,7 @@ class Fields extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($field){
-        global $Tainacan_Fields;
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
     	$this->pre_update_category_field($field);
         $new_field = parent::insert($field);

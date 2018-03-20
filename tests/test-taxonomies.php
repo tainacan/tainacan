@@ -18,7 +18,7 @@ class Taxonomies extends TAINACAN_UnitTestCase {
      * Teste da insercao de uma taxonomia simples
      */
     function test_add() {
-        global $Tainacan_Taxonomies;
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
 
         $taxonomy = $this->tainacan_entity_factory->create_entity(
         	'taxonomy',
