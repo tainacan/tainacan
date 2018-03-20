@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="block" v-for="option,index in options">
+        <div v-for="option,index in options">
             <b-radio
                     :id="id"
                     :style="{ paddingLeft: (option.level * 30)  + 'px' }"
@@ -11,6 +11,7 @@
                     border>
                 {{ option.name }}
             </b-radio>
+            <br>
         </div>
     </div>
 </template>

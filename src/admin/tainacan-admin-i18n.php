@@ -113,6 +113,8 @@ return [
     'label_collection_items' => __('Collection Items', 'tainacan'),
     'label_collection_fields' => __('Collection Fields', 'tainacan'),
     'label_collection_filters' => __('Collection Filters', 'tainacan'),
+    'label_parent_term' => __('Parent Term', 'tainacan'),
+    'label_add_new_term' => __('Add New Term', 'tainacan'),
 
     // Instructions. More complex sentences to guide user and placeholders
     'instruction_dragndrop_fields_collection' => __('Drag and drop Fields here to Collection.', 'tainacan'),
@@ -126,6 +128,7 @@ return [
     'instruction_select_a_filter_type' => __('Select a filter type:', 'tainacan'), 
 
     // Info. Other feedback to user.
+    'info_name_is_required' => __('Name is required.', 'tainacan'),
     'info_no_collection_created' => __('No collection was created in this repository.', 'tainacan'),
     'info_no_item_created' => __('No item was created in this collection.', 'tainacan'),
     'info_error_deleting_collection' => __('Error on deleting collection.', 'tainacan'),
