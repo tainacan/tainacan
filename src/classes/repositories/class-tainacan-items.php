@@ -145,12 +145,12 @@ class Items extends Repository {
 
 		// iterate through the native post properties
 		foreach ( $map as $prop => $mapped ) {
-			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'terms' && $mapped['map'] != 'thumbnail_id' ) {
+			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'terms' ) {
 				$item->WP_Post->{$mapped['map']} = $item->get_mapped_property( $prop );
 			}
 		}
 
-		// save post and geet its ID
+		// save post and get its ID
 		$item->WP_Post->post_type = $cpt;
 		//$item->WP_Post->post_status = 'publish';
 
