@@ -294,7 +294,7 @@ export default {
         }
     }
 
-     .loading-spinner {
+    .loading-spinner {
         animation: spinAround 500ms infinite linear;
         border: 2px solid #dbdbdb;
         border-radius: 290486px;

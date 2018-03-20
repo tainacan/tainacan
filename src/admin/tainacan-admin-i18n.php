@@ -153,5 +153,15 @@ return [
     'tainacan-selectbox'  => __('Select box', 'tainacan'),
     'tainacan-relationship'  => __('Relationship', 'tainacan'),
     'tainacan-category'  => __('Category', 'tainacan'),
+
+    // Tainacan Filter Types
+    'tainacan-filter-custom-interval'  => __('Custom Interval', 'tainacan'),
+    'tainacan-filter-selectbox'  => __('Select Box', 'tainacan'),
+    'tainacan-filter-autocomplete'  => __('Autocomplete', 'tainacan'),
+    'tainacan-filter-taginput'  => __('Tag Input', 'tainacan'),
+    'tainacan-filter-checkbox'  => __('Check Box', 'tainacan'),
+    'tainacan-filter-category-taginput'  => __('Category Tag Input', 'tainacan'),
+    'tainacan-filter-category-checkbox'  => __('Category Check Box', 'tainacan'),
+    'tainacan-filter-category-selectbox'  => __('Category Select Box', 'tainacan')
 ]
  ?>
