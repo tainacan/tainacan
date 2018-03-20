@@ -19,13 +19,14 @@
 <script>
 
     export default {
-        created(){
-            if( this.value )
-                this.checked = this.value;
-        },
         data(){
             return {
-                checked:''
+                checked: ( this.value ) ? this.value : ''
+            }
+        },
+        watch: {
+            value( val ){
+                this.checked = val;
             }
         },
         props: {

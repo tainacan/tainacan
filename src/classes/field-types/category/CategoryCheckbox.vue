@@ -28,6 +28,11 @@
                 checked: []
             }
         },
+        watch: {
+            value( val ){
+                this.checked = val;
+            }
+        },
         props: {
             options: {
                 type: Array

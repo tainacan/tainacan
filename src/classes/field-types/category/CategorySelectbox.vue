@@ -28,6 +28,11 @@
                 selected: ''
             }
         },
+        watch: {
+            value( val ){
+                this.selected = val;
+            }
+        },
         props: {
             id: String,
             options: {

@@ -89,14 +89,16 @@
                     .then( res => {
                         instance.name = '';
                         instance.parent = 0;
+
                         if( res.data && res.data.term_id || res.term_id ){
                             let term_id = ( res.term_id ) ? res.term_id : res.data.term_id;
                             let val = this.value;
+
                             if( !Array.isArray( val ) && this.field.field.multiple === 'no' ){
                                 axios.patch(`/item/${this.item_id}/metadata/${this.field_id}`, {
                                     values: term_id,
                                 }).then( res => {
-                                    instance.$emit('newTerm', true);
+                                    instance.$emit('newTerm', term_id);
                                 })
                             } else {
                                 val = ( val ) ? val : [];
@@ -104,10 +106,9 @@
                                 axios.patch(`/item/${this.item_id}/metadata/${this.field_id}`, {
                                     values: val,
                                 }).then( res => {
-                                    instance.$emit('newTerm', true);
+                                    instance.$emit('newTerm', val);
                                 })
                             }
-
                         }
                     });
                 }

@@ -125,7 +125,9 @@
                 this.$emit('input', this.inputValue);
                 this.$emit('blur');
             },
-            reload(){
+            reload( val ){
+                this.valueComponent = val;
+
                 this.terms = [];
                 this.getTermsFromTaxonomy();
                 this.getTermsId();
