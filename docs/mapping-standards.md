@@ -47,12 +47,12 @@ The Class of the ontology that this mapping refers to. For example `CreativeWork
 		{
 			'name': 'publisher',
 			'label': 'Publisher',
-			'URI': 'http://dublincore.org/documents/dcmi-terms/'
+			'URI': 'http://purl.org/dc/terms/publisher'
 		},
 		... And so on...
 	},
 	'allow_extra_fields': true,
-	'context_url': ''
+	'context_url': 'http://dublincore.org/documents/dcmi-terms/'
 }
 ```
 
