@@ -23,7 +23,11 @@
                         v-for="(filter, index) in activeFilterList" :key="index">
                             <div class="handle">
                                 <grip-icon></grip-icon>
-                                <span v-if="filter.id !== undefined" class="filter-name">{{ filter.name }}</span>
+                                <span 
+                                    class="filter-name"
+                                    :class="{'is-danger': formWithErrors == filter.id || (editForms[filter.id] != undefined && editForms[filter.id].saved != true) }">
+                                    {{ filter.name }}
+                                </span>
                                 <span v-if="filter.id !== undefined" class="label-details"><span class="loading-spinner" v-if="filter.id == undefined"></span>
                                 <span class="controls" v-if="filter.id != undefined">
                                     <b-switch size="is-small" v-model="filter.enabled" @input="onChangeEnable($event, index)"></b-switch>
@@ -73,7 +77,7 @@
                                 <filter-edition-form
                                     @onEditionFinished="onEditionFinished()"
                                     @onEditionCanceled="onEditionCanceled()"
-                                    :filter="editForm"></filter-edition-form>
+                                    :filter="editForms[openedFilterId]"></filter-edition-form>
                             </b-field>
                         </div>
                 </draggable> 
@@ -120,9 +124,10 @@ export default {
             isLoadingFilterTypes: false,
             isLoadingFilter: false,
             openedFilterId: '',
+            formWithErrors: '',
             isModalOpened: false,
             hightlightedField: '',
-            editForm: {},
+            editForms: {},
             allowedFilterTypes: [],
             selectedFilterType: {},
             choosenField: {},
@@ -266,19 +271,25 @@ export default {
         },
         editFilter(filter) {
             if (this.openedFilterId == filter.id) {
-                this.editForm = {};
                 this.openedFilterId = '';
             } else {
-                this.editForm = JSON.parse(JSON.stringify(filter));
-                this.editForm.status = 'publish';
                 this.openedFilterId = filter.id;
+                
+                if (this.editForms[this.openedFilterId] == undefined || this.editForms[this.openedFilterId].saved == true) {
+                    this.editForms[this.openedFilterId] = JSON.parse(JSON.stringify(filter));
+                    this.editForms[this.openedFieldId].saved = true;
+                    this.editForms[this.openedFilterId].status = 'publish';
+                }
+                
             }     
         },
         onEditionFinished() {
+            this.formWithErrors = '';
             this.openedFilterId = '';
             this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
         onEditionCanceled() {
+            this.formWithErrors = '';
             this.openedFilterId = '';
         }
 
@@ -385,9 +396,10 @@ export default {
 
         .active-filter-item {
             background-color: white;
-            padding: 0.8em;
+            padding: 0.7em 0.9em;
             margin: 4px;
             top: 0;
+            min-height: 40px;
             position: relative;
             display: block; 
             transition: top 0.1s ease;
@@ -457,7 +469,7 @@ export default {
             }    
         }
         .active-filter-item:hover:not(.not-sortable-item) {
-           background-color: $secondary;
+            background-color: $secondary;
             border-color: $secondary;
             color: white !important;
             top: -2px;
@@ -488,9 +500,9 @@ export default {
         .sortable-ghost {
             border: 1px dashed $draggable-border-color;
             display: block;
-            padding: 0.8em;
+            padding: 0.7em 0.9em;
             margin: 4px;
-            min-height: 42px;
+            height: 40px;
             position: relative;
         }
     }
@@ -525,7 +537,8 @@ export default {
             background-color: white;
             cursor: pointer;
             left: 0;
-            height: 42px;
+            line-height: 1.3em;
+            height: 40px;
             position: relative;
             border: 1px solid $draggable-border-color;
             border-radius: 1px;
@@ -562,16 +575,16 @@ export default {
                 top: -1px;
                 border-color: transparent white transparent transparent;
                 border-right-width: 16px;
-                border-top-width: 21px;
-                border-bottom-width: 21px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
                 left: -19px;
             }
             &:before {
                 top: -1px;
                 border-color: transparent $draggable-border-color transparent transparent;
                 border-right-width: 16px;
-                border-top-width: 21px;
-                border-bottom-width: 21px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
                 left: -20px;
             }
         }

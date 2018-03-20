@@ -25,10 +25,18 @@
                             <grip-icon></grip-icon>
                             <span 
                                 class="field-name" 
-                                :class="{'is-danger': formWithErrors == field.id || (editForms[field.id] != undefined && openedFieldId != field.id)}">
+                                :class="{'is-danger': formWithErrors == field.id || (editForms[field.id] != undefined && editForms[field.id].saved != true) }">
                                 {{ field.name }}
                             </span>
-                            <span v-if="field.id !== undefined" class="label-details">({{ $i18n.get(field.field_type_object.component)}})</span><span class="loading-spinner" v-if="field.id == undefined"></span>
+                            <span   
+                                v-if="field.id != undefined"
+                                class="label-details">  
+                                  ({{ $i18n.get(field.field_type_object.component) }})  
+                                    <em v-if="editForms[field.id] != undefined && editForms[field.id].saved != true"> 
+                                      {{ $i18n.get('info_not_saved') }}
+                                    </em>
+                            </span>
+                            <span class="loading-spinner" v-if="field.id == undefined"></span>
                             <span class="controls" v-if="field.id !== undefined">
                                 <b-switch size="is-small" v-model="field.enabled" @input="onChangeEnable($event, index)"></b-switch>
                                 <a  :style="{ visibility: 
@@ -78,7 +86,7 @@
                             :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
                             v-for="(field, index) in availableFieldList" 
                             :key="index">
-                           <grip-icon></grip-icon>  <span class="field-name">{{ field.name }}</span>   
+                           <grip-icon></grip-icon>  <span class="field-name">{{ field.name }} <span class="loading-spinner" v-if="hightlightedField == field.name"></span></span>   
                         </div>
                     </draggable>
                 </div>
@@ -186,28 +194,47 @@ export default {
             });
         },
         editField(field) {
+            // Closing collapse
             if (this.openedFieldId == field.id) {    
-                if (this.editForms[this.openedFieldId] == JSON.parse(JSON.stringify(field))) {
-                    delete this.editForms[this.openedFieldId];
-                }
+                
+                // Form - and possibily edited - Field
+                let currentForm = JSON.parse(JSON.stringify(this.editForms[this.openedFieldId]));
+
+                // Real Field
+                let nonEditedForm = JSON.parse(JSON.stringify(field));
+                
+                if (JSON.stringify(nonEditedForm) != JSON.stringify(currentForm)) 
+                    this.editForms[this.openedFieldId].saved = false;
+                
                 this.openedFieldId = '';
+
+            // Opening collapse
             } else {
                 this.openedFieldId = field.id;
-                if (this.editForms[this.openedFieldId] == undefined || this.editForms[this.openedFieldId] == null) {
+                // First time opening
+                if (this.editForms[this.openedFieldId] == undefined) {
                     this.editForms[this.openedFieldId] = JSON.parse(JSON.stringify(field));
-                    this.editForms[this.openedFieldId].status = 'publish'; 
-                }         
+                    this.editForms[this.openedFieldId].saved = true;
+                    
+                    // Field inserted now
+                    if (this.editForms[this.openedFieldId].status == 'auto-draft') {
+                        this.editForms[this.openedFieldId].status = 'publish'; 
+                        this.editForms[this.openedFieldId].saved = false;
+                    }
+                // Already opened before
+                } else {
+                    this.editForms[this.openedFieldId].saved = true;
+                }
+                       
             }
         },
         onEditionFinished() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
             this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
         }
 
@@ -267,6 +294,18 @@ export default {
         }
     }
 
+     .loading-spinner {
+        animation: spinAround 500ms infinite linear;
+        border: 2px solid #dbdbdb;
+        border-radius: 290486px;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        content: "";
+        display: inline-block;
+        height: 1em; 
+        width: 1em;
+    }
+
     .active-fields-area {
         font-size: 14px;
         margin-right: 0.8em;
@@ -293,13 +332,13 @@ export default {
 
         .active-field-item {
             background-color: white;
-            padding: 0.8em;
+            padding: 0.7em 0.9em;
             margin: 4px;
-            min-height: 42px;
+            min-height: 40px;
             display: block; 
             top: 0;
             position: relative;
-            transition: top 0.1s linear;
+            transition: top 0.05s linear;
             cursor: grab;
             
             .grip-icon { 
@@ -335,17 +374,7 @@ export default {
                 position: relative;
                 font-size: 18px;
             }
-            .loading-spinner {
-                animation: spinAround 500ms infinite linear;
-                border: 2px solid #dbdbdb;
-                border-radius: 290486px;
-                border-right-color: transparent;
-                border-top-color: transparent;
-                content: "";
-                display: inline-block;
-                height: 1em; 
-                width: 1em;
-            }
+    
             &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover {
                 box-shadow: none !important;
                 top: 0px !important;
@@ -353,7 +382,7 @@ export default {
                 background-color: white !important;
                 
                 .field-name {
-                    color: $primary !important;
+                    color: $primary;
                 }
                 .label-details, .icon {
                     color: $gray !important;
@@ -395,10 +424,14 @@ export default {
         .sortable-ghost {
             border: 1px dashed $draggable-border-color;
             display: block;
-            padding: 0.8em;
+            padding: 0.7em 0.9em;
             margin: 4px;
-            min-height: 42px;
+            height: 40px;
             position: relative;
+
+            .grip-icon { 
+                fill: white; 
+            }
         }
     }
 
@@ -432,7 +465,8 @@ export default {
             background-color: white;
             cursor: pointer;
             left: 0;
-            height: 42px;
+            line-height: 1.3em;
+            height: 40px;
             position: relative;
             border: 1px solid $draggable-border-color;
             border-radius: 1px;
@@ -445,7 +479,7 @@ export default {
             }
             .icon {
                 position: relative;
-                bottom: 3px;
+                bottom: 1px;
             }
             .field-name {
                 text-overflow: ellipsis;
@@ -468,16 +502,16 @@ export default {
                 top: -1px;
                 border-color: transparent white transparent transparent;
                 border-right-width: 16px;
-                border-top-width: 21px;
-                border-bottom-width: 21px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
                 left: -19px;
             }
             &:before {
                 top: -1px;
                 border-color: transparent $draggable-border-color transparent transparent;
                 border-right-width: 16px;
-                border-top-width: 21px;
-                border-bottom-width: 21px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
                 left: -20px;
             }
         }

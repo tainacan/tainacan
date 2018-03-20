@@ -143,6 +143,7 @@ return [
     'info_of'  => __(' of ', 'tainacan'),
     'info_created_by'  => __('Created by: ', 'tainacan'),
     'info_date'  => __('Date: ', 'tainacan'),
+    'info_not_saved'  => __('Not saved ', 'tainacan'),
 
     // Tainacan Field Types
     'tainacan-text'  => __('Text', 'tainacan'),
