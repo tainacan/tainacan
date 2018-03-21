@@ -27,6 +27,7 @@ return [
     'see' => __('See', 'tainacan'),
     'search' => __('Search', 'tainacan'),
     'advanced_search' => __('Advanced Search', 'tainacan'),
+    'continue' => __('Continue', 'tainacan'),
 
     // Wordpress Status
     'publish' => __('Publish', 'tainacan'),
@@ -147,6 +148,8 @@ return [
     'info_created_by'  => __('Created by: ', 'tainacan'),
     'info_date'  => __('Date: ', 'tainacan'),
     'info_not_saved'  => __('Not saved ', 'tainacan'),
+    'info_warning_fields_not_saved' => __('Are you sure? There are fields not saved, changes will be lost.', 'tainacan'),
+    'info_warning_filters_not_saved' => __('Are you sure? There are filters not saved, changes will be lost.', 'tainacan'),
 
     // Tainacan Field Types
     'tainacan-text'  => __('Text', 'tainacan'),

@@ -30,7 +30,7 @@
                             <grip-icon></grip-icon>
                             <span 
                                 class="field-name" 
-                                :class="{'is-danger': formWithErrors == field.id || field.status == 'auto-draft' || (editForms[field.id] != undefined && editForms[field.id].saved != true) }">
+                                :class="{'is-danger': formWithErrors == field.id }">
                                 {{ field.name }}
                             </span>
                             <span   
@@ -129,6 +129,27 @@ export default {
         FieldEditionForm,
         GripIcon
     },
+    beforeRouteLeave ( to, from, next ) {
+        let hasUnsavedForms = false;
+        for (let editForm in this.editForms) {
+            if (!this.editForms[editForm].saved) 
+                hasUnsavedForms = true;
+        }
+        if ((this.openedFieldId != '' && this.openedFieldId != undefined) || hasUnsavedForms ) {
+            this.$dialog.confirm({
+                message: this.$i18n.get('info_warning_fields_not_saved'),
+                    onConfirm: () => {
+                        this.onEditionCanceled();
+                        next();
+                    },
+                    cancelText: this.$i18n.get('cancel'),
+                    confirmText: this.$i18n.get('continue'),
+                    type: 'is-secondary'
+                });  
+        } else {
+            next()
+        }  
+    },
     methods: {
         ...mapActions('fields', [
             'fetchFieldTypes',
@@ -209,6 +230,7 @@ export default {
 
             // Opening collapse
             } else {
+
                 this.openedFieldId = field.id;
                 // First time opening
                 if (this.editForms[this.openedFieldId] == undefined) {
