@@ -126,7 +126,14 @@ class Admin {
             'user_prefs' => $prefs,
             'base_url' => $TAINACAN_BASE_URL
 		];
-        
+
+        $settings['maps'] = [
+            'collections' => $Tainacan_Collections->get_map(),
+            'fields' => $Tainacan_Fields->get_map(),
+            'filters' => $Tainacan_Filters->get_map(),
+            'items' => $Tainacan_Items->get_map(),
+            'taxonomies' => $Tainacan_Taxonomies->get_map(),
+        ];
         
 
         wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
