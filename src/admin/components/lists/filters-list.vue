@@ -153,6 +153,27 @@ export default {
         FilterEditionForm,
         GripIcon
     },
+    beforeRouteLeave ( to, from, next ) {
+        let hasUnsavedForms = false;
+        for (let editForm in this.editForms) {
+            if (!this.editForms[editForm].saved) 
+                hasUnsavedForms = true;
+        }
+        if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
+            this.$dialog.confirm({
+                message: this.$i18n.get('info_warning_filters_not_saved'),
+                    onConfirm: () => {
+                        this.onEditionCanceled();
+                        next();
+                    },
+                    cancelText: this.$i18n.get('cancel'),
+                    confirmText: this.$i18n.get('continue'),
+                    type: 'is-secondary'
+                });  
+        } else {
+            next()
+        }  
+    },
     methods: {
         ...mapActions('filter', [
             'fetchFilterTypes',

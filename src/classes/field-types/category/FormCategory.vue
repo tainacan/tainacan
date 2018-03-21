@@ -64,14 +64,17 @@
         </b-field>
 
         <b-field :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_category_allow_new_terms') }}
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <div class="block">
                 <b-checkbox v-model="allow_new_terms"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
-                    {{ $i18n.get('label_category_allow_new_terms') }}
+                    {{ labelNewTerms() }}
                 </b-checkbox>
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </div>
         </b-field>
 

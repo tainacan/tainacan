@@ -6,7 +6,7 @@
                  :message="optionMessage"
         >
             <label class="label">
-                {{ $i18n.get('label_options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.get('lavel_insert_options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
                 <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </label>
             <b-taginput

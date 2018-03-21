@@ -16,7 +16,9 @@
             :addons="false"
             :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-            <label class="label">{{$i18n.get('label_description')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+            <label class="label">{{$i18n.get('label_description')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon>
+            <!-- <help-tooltip title="Ajuda Gente!" message="Este é um exemplo de mensagem de ajuda. Aqui vai um monte de informações úteis."></help-tooltip> -->
+            </a></label>
             <b-input type="textarea" name="description" v-model="editForm.description" @focus="clearErrors('description')" ></b-input>
         </b-field>
 
@@ -46,49 +48,51 @@
             </div>
         </b-field>
         <br>
-        <b-field
-            :type="formErrors['required'] != undefined ? 'is-danger' : ''" 
-            :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
-            <b-checkbox
-                @input="clearErrors('required')"
-                v-model="editForm.required"
-                true-value="yes" 
-                false-value="no"
-                name="required">
-                {{ $i18n.get('label_required') }}
-            </b-checkbox>
-            <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-        </b-field>
-
-        <b-field
-            :type="formErrors['multiple'] != undefined ? 'is-danger' : ''" 
-            :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
-            <b-checkbox 
-                @input="clearErrors('multiple')"
-                v-model="editForm.multiple"
-                true-value="yes" 
-                false-value="no"
-                name="multiple">
-                {{ $i18n.get('label_allow_multiple') }}
-            </b-checkbox>
-            <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-        </b-field>
-
         <b-field 
-            :type="formErrors['unique'] != undefined ? 'is-danger' : ''" 
-            :message="formErrors['unique'] != undefined ? formErrors['unique'] : ''">
-            <b-checkbox 
-                @input="clearErrors('unique')"
-                v-model="editForm.unique"
-                true-value="yes" 
-                false-value="no"
-                name="collecion_key">
-                {{ $i18n.get('label_unique_value') }}
-            </b-checkbox>
-            <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-        </b-field>
+            :addons="false"
+            :label="$i18n.get('label_options')">
+            <b-field
+                :type="formErrors['required'] != undefined ? 'is-danger' : ''" 
+                :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
+                <b-checkbox
+                    @input="clearErrors('required')"
+                    v-model="editForm.required"
+                    true-value="yes" 
+                    false-value="no"
+                    name="required">
+                    {{ $i18n.get('label_required') }}
+                </b-checkbox>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </b-field>
 
-        <div v-if="(!Array.isArray(editForm.field_type_options))" class="separator"></div>
+            <b-field
+                :type="formErrors['multiple'] != undefined ? 'is-danger' : ''" 
+                :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
+                <b-checkbox 
+                    @input="clearErrors('multiple')"
+                    v-model="editForm.multiple"
+                    true-value="yes" 
+                    false-value="no"
+                    name="multiple">
+                    {{ $i18n.get('label_allow_multiple') }}
+                </b-checkbox>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </b-field>
+
+            <b-field 
+                :type="formErrors['unique'] != undefined ? 'is-danger' : ''" 
+                :message="formErrors['unique'] != undefined ? formErrors['unique'] : ''">
+                <b-checkbox 
+                    @input="clearErrors('unique')"
+                    v-model="editForm.unique"
+                    true-value="yes" 
+                    false-value="no"
+                    name="collecion_key">
+                    {{ $i18n.get('label_unique_value') }}
+                </b-checkbox>
+                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </b-field>
+        </b-field>
 
         <component
                 :errors="formErrors['field_type_options']"
@@ -113,6 +117,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import HelpTooltip from '../other/help-tooltip.vue';
 
 export default {
     name: 'FieldEditionForm',
@@ -131,6 +136,9 @@ export default {
         originalField: '', 
         isRepositoryLevel: false,
         collectionId: ''
+    },
+    components: {
+        HelpTooltip
     },
     created() {
         this.editForm = this.editedField;
@@ -220,13 +228,6 @@ export default {
         border-top: 1px solid $draggable-border-color;
         border-bottom: 1px solid $draggable-border-color;
         margin-top: 1.0em;
-
-        .separator {
-            background-color: $draggable-border-color;
-            margin: 1.8em 0;
-            height: 1px;
-            width: 75%;
-        }
     }
 
 </style>
