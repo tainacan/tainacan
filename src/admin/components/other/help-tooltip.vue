@@ -25,14 +25,16 @@ export default {
         background-color: #e8f9f5;
         border: 1px solid #338591;
         border-radius: 10px;
-        margin: 0;
+        margin: 0px 0px 14px -37px;
         position: absolute;
         z-index: 99999999999999;
-        top: 0%;
+        bottom: 100%;
+        left: 0%;
         display: block;
-        
+        min-width: 250px;
+
         .help-tooltip-header {
-            padding: 0.8em 1.2em 0.6em 1.2em;
+            padding: 0.8em 0.8em 0.6em 0.8em;
             border-bottom: 1px solid #909293;
             font-size: 18px;
             font-weight: bold;
@@ -48,7 +50,7 @@ export default {
             content: "";
             display: block;
             position: absolute;
-            left: 10%;
+            left: 24px;
             width: 0;
             height: 0;
             border-style: solid;

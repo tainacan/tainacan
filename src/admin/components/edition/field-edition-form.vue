@@ -76,7 +76,7 @@
                     name="multiple">
                     {{ $i18n.get('label_allow_multiple') }}
                 </b-checkbox>
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <a class="help-button">  <b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
             </b-field>
 
             <b-field 

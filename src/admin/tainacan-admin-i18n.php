@@ -1,22 +1,6 @@
 <?php
 
 return [
-<<<<<<< HEAD
-	// Tainacan common terms
-	'repository'                               => __( 'Repository', 'tainacan' ),
-	'collections'                              => __( 'Collections', 'tainacan' ),
-	'items'                                    => __( 'Items', 'tainacan' ),
-	'fields'                                   => __( 'Fields', 'tainacan' ),
-	'filters'                                  => __( 'Filters', 'tainacan' ),
-	'categories'                               => __( 'Categories', 'tainacan' ),
-	'events'                                   => __( 'Events', 'tainacan' ),
-	'collection'                               => __( 'Collection', 'tainacan' ),
-	'item'                                     => __( 'Item', 'tainacan' ),
-	'field'                                    => __( 'Field', 'tainacan' ),
-	'filter'                                   => __( 'Filter', 'tainacan' ),
-	'category'                                 => __( 'Category', 'tainacan' ),
-	'event'                                    => __( 'Event', 'tainacan' ),
-=======
     // Tainacan common terms 
     'repository' => __('Repository', 'tainacan'),
     'collections' => __('Collections', 'tainacan'),
@@ -44,7 +28,6 @@ return [
     'search' => __('Search', 'tainacan'),
     'advanced_search' => __('Advanced Search', 'tainacan'),
     'continue' => __('Continue', 'tainacan'),
->>>>>>> b40fd2e6c01f7f0c9da528b7b29b860bf201bf78
 
 	// Actions
 	'edit'                                     => __( 'Edit', 'tainacan' ),
@@ -67,19 +50,6 @@ return [
 	'publish_visibility'                       => __( 'Visible to everyone', 'tainacan' ),
 	'private_visibility'                       => __( 'Visible only for editors', 'tainacan' ),
 
-<<<<<<< HEAD
-	// Page Titles (used mainly on Router)
-	'title_collections_page'                   => __( 'Collections Page', 'tainacan' ),
-	'title_items_page'                         => __( 'Items Page', 'tainacan' ),
-	'title_fields_page'                        => __( 'Fields Page', 'tainacan' ),
-	'title_filters_page'                       => __( 'Filters Page', 'tainacan' ),
-	'title_categories_page'                    => __( 'Categories Page', 'tainacan' ),
-	'title_terms_page'                         => __( 'Terms Page', 'tainacan' ),
-	'title_events_page'                        => __( 'Events Page', 'tainacan' ),
-	'title_collection_page'                    => __( 'Collection Page', 'tainacan' ),
-	'title_item_page'                          => __( 'Item Page', 'tainacan' ),
-	'title_field_page'                         => __( 'Field Page', 'tainacan' ),
-=======
     // Labels (used mainly on Aria Labels and Inputs)
     'label_menu' => __('Menu', 'tainacan'),
     'label_main_menu' => __('Main Menu', 'tainacan'),
@@ -121,8 +91,8 @@ return [
     'label_select_category_input_type' => __('Input type', 'tainacan'),
     'label_category_allow_new_terms' => __('Allow new terms', 'tainacan'),
     'label_selectbox_init' => __('Select', 'tainacan'),
-    'lavel_insert_options' => __('Insert options', 'tainacan'),
-    'lavel_options' => __('Options', 'tainacan'),
+    'label_insert_options' => __('Insert options', 'tainacan'),
+    'label_options' => __('Options', 'tainacan'),
     'label_attachments' => __('Attachments', 'tainacan'),
     'label_enabled' => __('Enabled', 'tainacan'),
     'label_disabled' => __('Disabled', 'tainacan'),
@@ -132,7 +102,6 @@ return [
     'label_collection_filters' => __('Collection Filters', 'tainacan'),
     'label_parent_term' => __('Parent Term', 'tainacan'),
     'label_add_new_term' => __('Add New Term', 'tainacan'),
->>>>>>> b40fd2e6c01f7f0c9da528b7b29b860bf201bf78
 
 	/* translators: alkdjklasdj laksjd klsadj */
 	'title_filter_page'                        => __( 'Filter Page', 'tainacan' ),
@@ -149,60 +118,6 @@ return [
 	'title_filter_edition'                     => __( 'Filter Edition Page', 'tainacan' ),
 	'title_collection_fields_edition'          => __( 'Collection Fields Edition Page', 'tainacan' ),
 
-<<<<<<< HEAD
-	// Labels (used mainly on Aria Labels and Inputs)
-	'label_menu'                               => __( 'Menu', 'tainacan' ),
-	'label_main_menu'                          => __( 'Main Menu', 'tainacan' ),
-	'label_collection_menu'                    => __( 'Collection Menu', 'tainacan' ),
-	'label_title'                              => __( 'Title', 'tainacan' ),
-	'label_actions'                            => __( 'Actions', 'tainacan' ),
-	'label_name'                               => __( 'Name', 'tainacan' ),
-	'label_description'                        => __( 'Description', 'tainacan' ),
-	'label_status'                             => __( 'Status', 'tainacan' ),
-	'label_slug'                               => __( 'Slug', 'tainacan' ),
-	'label_image'                              => __( 'Image', 'tainacan' ),
-	'label_thumbnail'                          => __( 'Thumbnail', 'tainacan' ),
-	'label_button_view'                        => __( 'Button View', 'tainacan' ),
-	'label_button_edit'                        => __( 'Button Edit', 'tainacan' ),
-	'label_button_delete'                      => __( 'Button Delete', 'tainacan' ),
-	'label_button_edit_thumb'                  => __( 'Button Edit Thumbnail', 'tainacan' ),
-	'label_button_delete_thumb'                => __( 'Button Delete Thumbnail', 'tainacan' ),
-	'label_collections_per_page'               => __( 'Collections per Page:', 'tainacan' ),
-	'label_categories_per_page'                => __( 'Categories per Page:', 'tainacan' ),
-	'label_items_per_page'                     => __( 'Items per Page:', 'tainacan' ),
-	'label_active_fields'                      => __( 'Active Fields', 'tainacan' ),
-	'label_available_fields'                   => __( 'Available Fields', 'tainacan' ),
-	'label_available_field_types'              => __( 'Available Field Types', 'tainacan' ),
-	'label_active_filters'                     => __( 'Active Filters', 'tainacan' ),
-	'label_filter_type'                        => __( 'Filter Type', 'tainacan' ),
-	'label_available_filters'                  => __( 'Available Filters', 'tainacan' ),
-	'label_available_filter_types'             => __( 'Available Filter Types', 'tainacan' ),
-	'label_per_page'                           => __( 'per Page', 'tainacan' ),
-	'label_table_fields'                       => __( 'Fields on table', 'tainacan' ),
-	'label_required'                           => __( 'Required', 'tainacan' ),
-	'label_allow_multiple'                     => __( 'Allow multiple values', 'tainacan' ),
-	'label_default_value'                      => __( 'Default value', 'tainacan' ),
-	'label_unique_value'                       => __( 'Unique value', 'tainacan' ),
-	'label_yes'                                => __( 'Yes', 'tainacan' ),
-	'label_no'                                 => __( 'No', 'tainacan' ),
-	'label_collection_related'                 => __( 'Collection Related', 'tainacan' ),
-	'label_fields_for_search'                  => __( 'Fields for search', 'tainacan' ),
-	'label_allow_repeated_items'               => __( 'Allow repeated items', 'tainacan' ),
-	'label_select_category'                    => __( 'Select category', 'tainacan' ),
-	'label_select_category_input_type'         => __( 'Input type', 'tainacan' ),
-	'label_category_allow_new_terms'           => __( 'Allow new terms', 'tainacan' ),
-	'label_selectbox_init'                     => __( 'Select', 'tainacan' ),
-	'label_options'                            => __( 'Insert options', 'tainacan' ),
-	'label_attachments'                        => __( 'Attachments', 'tainacan' ),
-	'label_enabled'                            => __( 'Enabled', 'tainacan' ),
-	'label_disabled'                           => __( 'Disabled', 'tainacan' ),
-	'label_creation'                           => __( 'Creation', 'tainacan' ),
-	'label_collection_items'                   => __( 'Collection Items', 'tainacan' ),
-	'label_collection_fields'                  => __( 'Collection Fields', 'tainacan' ),
-	'label_collection_filters'                 => __( 'Collection Filters', 'tainacan' ),
-	'label_parent_term'                        => __( 'Parent Term', 'tainacan' ),
-	'label_add_new_term'                       => __( 'Add New Term', 'tainacan' ),
-=======
     // Info. Other feedback to user.
     'info_name_is_required' => __('Name is required.', 'tainacan'),
     'info_no_collection_created' => __('No collection was created in this repository.', 'tainacan'),
@@ -225,7 +140,6 @@ return [
     'info_not_saved'  => __('Not saved ', 'tainacan'),
     'info_warning_fields_not_saved' => __('Are you sure? There are fields not saved, changes will be lost.', 'tainacan'),
     'info_warning_filters_not_saved' => __('Are you sure? There are filters not saved, changes will be lost.', 'tainacan'),
->>>>>>> b40fd2e6c01f7f0c9da528b7b29b860bf201bf78
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
