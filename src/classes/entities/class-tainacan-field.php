@@ -20,7 +20,7 @@ class Field extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Fields';
+	protected $repository = 'Fields';
 	
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_name();

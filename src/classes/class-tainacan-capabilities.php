@@ -270,11 +270,22 @@ class Capabilities {
 			]
 		],
 	];
-	
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
 	/**
 	 * Register hooks
 	 */
-	function __construct() {
+	private function __construct() {
 		add_action('tainacan-insert-tainacan-collection', array(&$this, 'new_collection'));
 		
         add_action('tainacan-add-collection-moderators', array(&$this, 'add_moderators'), 10, 2);
@@ -381,7 +392,7 @@ class Capabilities {
 			}
 		}
 		
-		global $Tainacan_Collections;
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
 		$collections = $Tainacan_Collections->fetch([], 'OBJECT');
 		foreach ($collections as $collection) {
 			$this->set_items_capabilities($collection, $defaults_caps);

@@ -143,7 +143,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_get_item_and_collection_metadata(){
-		global $Tainacan_Item_Metadata;
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -405,7 +405,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_fetch_all_field_values(){
-		global $Tainacan_Item_Metadata;
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

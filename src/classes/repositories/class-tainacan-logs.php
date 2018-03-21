@@ -13,8 +13,20 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Logs extends Repository {
 	public $entities_type = '\Tainacan\Entities\Log';
-	
-	public function __construct() {
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+
+	protected function __construct() {
 		parent::__construct();
 		add_action('tainacan-insert', array($this, 'log_inserts'));
 	}

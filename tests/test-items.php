@@ -125,7 +125,7 @@ class Items extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-        global $Tainacan_Items;
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
 
         $i = $this->tainacan_entity_factory->create_entity(
         	'item',

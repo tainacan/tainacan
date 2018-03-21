@@ -20,7 +20,7 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	}
 
 	public function init_objects(){
-		$this->logs_repository = new Repositories\Logs();
+		$this->logs_repository = Repositories\Logs::getInstance();
 		$this->log = new Entities\Log();
 	}
 

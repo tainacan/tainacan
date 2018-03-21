@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Collection extends Entity {
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::post_type
 	 * @var string
@@ -20,7 +20,7 @@ class Collection extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Collections';
+	protected $repository = 'Collections';
 
 	/**
 	 * Prefix used to create the db_identifier
@@ -61,9 +61,9 @@ class Collection extends Entity {
 	 * @return \WP_Post_Type|\WP_Error
 	 */
 	function register_collection_item_post_type() {
-		global ${$this->repository};
+		$repository = $this->get_repository();
 
-		$cpt_labels = ${$this->repository}->get_cpt_labels();
+		$cpt_labels = $repository->get_cpt_labels();
 
 		$cpt_labels['menu_name'] = $this->get_name();
 
@@ -351,7 +351,7 @@ class Collection extends Entity {
 	 * @throws \Exception
 	 */
 	function get_fields() {
-		$Tainacan_Fields = new \Tainacan\Repositories\Fields();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
 		return $Tainacan_Fields->fetch_by_collection( $this, [], 'OBJECT' );
 	}

@@ -17,8 +17,10 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 
 	
     function test_category_field_types() {
-        
-        global $Tainacan_Item_Metadata, $Tainacan_Items, $Tainacan_Fields, $Tainacan_Terms;
+
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -131,8 +133,8 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
     }
 	
 	function test_relate_taxonomy() {
-        
-        global $Tainacan_Item_Metadata, $Tainacan_Items, $Tainacan_Fields, $Tainacan_Terms, $Tainacan_Taxonomies;
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

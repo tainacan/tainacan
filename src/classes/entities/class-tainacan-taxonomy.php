@@ -29,7 +29,7 @@ class Taxonomy extends Entity {
      * @see \Tainacan\Entities\Entity::repository
      * @var string
      */
-    protected $repository = 'Tainacan_Taxonomies';
+    protected $repository = 'Taxonomies';
 
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_name();

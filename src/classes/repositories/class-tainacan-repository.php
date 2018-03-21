@@ -15,7 +15,7 @@ abstract class Repository {
 	/**
 	 * Register hooks
 	 */
-	function __construct() {
+	protected function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
 		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
 	}
@@ -334,7 +334,7 @@ abstract class Repository {
 	 * @return array[]
 	 */
 	public static function get_collections_db_identifier() {
-		global $Tainacan_Collections;
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
 		$cpts        = [];
 		foreach ( $collections as $col ) {
@@ -383,7 +383,14 @@ abstract class Repository {
 				throw new \Exception( 'Collection object not found for this post' );
 			}
 		} else {
-			global $Tainacan_Collections, $Tainacan_Fields, $Tainacan_Item_Metadata, $Tainacan_Filters, $Tainacan_Taxonomies, $Tainacan_Terms, $Tainacan_Logs;
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+            $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+            $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+			$Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
+
 			$tnc_globals = [
 				$Tainacan_Collections,
 				$Tainacan_Fields,
@@ -417,11 +424,18 @@ abstract class Repository {
 
 		// its is a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
-			global $Tainacan_Items;
+			$Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
 
 			return $Tainacan_Items;
 		} else {
-			global $Tainacan_Collections, $Tainacan_Fields, $Tainacan_Item_Metadata, $Tainacan_Filters, $Tainacan_Taxonomies, $Tainacan_Terms, $Tainacan_Logs;
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+            $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+            $Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
+            $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+
 			$tnc_globals = [
 				$Tainacan_Collections,
 				$Tainacan_Fields,

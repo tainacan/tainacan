@@ -78,7 +78,7 @@ class Objects extends TAINACAN_UnitTestCase {
 				true
 				);
 		
-		global $Tainacan_Items;
+		$Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
 		
 		$i = $this->tainacan_entity_factory->create_entity(
 				'item',
@@ -125,7 +125,7 @@ class Objects extends TAINACAN_UnitTestCase {
         $collection->set_name('');
         $this->assertEquals('', $collection->get_name());
         
-        global $Tainacan_Collections;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
         $this->assertTrue($collection->validate());
         $newCol = $Tainacan_Collections->insert($collection);
         $this->assertEquals('', $newCol->get_name());

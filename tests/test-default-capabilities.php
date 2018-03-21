@@ -17,7 +17,7 @@ class DefaultCapabilities extends TAINACAN_UnitTestCase {
 
     function test_capabilities_present() {
         
-		global $Tainacan_Capabilities;
+		$Tainacan_Capabilities = \Tainacan\Capabilities::getInstance();
 		$c = new \Tainacan\Entities\Collection();
 		$caps = $c->get_capabilities();
 		

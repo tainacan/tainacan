@@ -9,7 +9,24 @@ use \Respect\Validation\Validator as v;
 class Filters extends Repository {
 	public $entities_type = '\Tainacan\Entities\Filter';
     public $filters_types = [];
-	
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    protected function __construct()
+    {
+        parent::__construct();
+    }
+
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(),  [
             'name'                => [

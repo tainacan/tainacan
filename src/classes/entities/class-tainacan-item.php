@@ -14,7 +14,7 @@ class Item extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Items';
+	protected $repository = 'Items';
 
 	/**
 	 * {@inheritDoc}
@@ -268,7 +268,7 @@ class Item extends Entity {
 	 * @return array Array of ItemMetadata objects
 	 */
 	function get_fields() {
-		global $Tainacan_Item_Metadata;
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
 		return $Tainacan_Item_Metadata->fetch( $this, 'OBJECT' );
 
