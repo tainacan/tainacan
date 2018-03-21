@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="block" v-for="option,index in options">
+        <div v-for="option,index in options">
             <b-radio
                     :id="id"
                     :style="{ paddingLeft: (option.level * 30)  + 'px' }"
@@ -11,6 +11,7 @@
                     border>
                 {{ option.name }}
             </b-radio>
+            <br>
         </div>
     </div>
 </template>
@@ -18,13 +19,14 @@
 <script>
 
     export default {
-        created(){
-            if( this.value )
-                this.checked = this.value;
-        },
         data(){
             return {
-                checked:''
+                checked: ( this.value ) ? this.value : ''
+            }
+        },
+        watch: {
+            value( val ){
+                this.checked = val;
             }
         },
         props: {

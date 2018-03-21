@@ -1,16 +1,29 @@
 <template>
-    <component
-            :is="getComponent()"
-            v-model="valueComponent"
-            :allowNew="allowNew"
-            :terms="terms"
-            :options="getOptions(0)"></component>
+    <div>
+        <component
+                :is="getComponent()"
+                v-model="valueComponent"
+                :allowNew="allowNew"
+                :terms="terms"
+                :options="getOptions(0)"></component>
+        <add-new-term
+                class="add-new-term"
+                v-if="getComponent() !== 'tainacan-category-tag-input' && allowNew"
+                :taxonomy_id="taxonomy"
+                :field="field"
+                :item_id="field.item.id"
+                :value="valueComponent"
+                :options="getOptions(0)"
+                @newTerm="reload"></add-new-term>
+    </div>
 </template>
 <script>
     import { tainacan as axios } from '../../../js/axios/axios'
     import TainacanCategoryRadio from './CategoryRadio.vue'
     import TainacanCategoryCheckbox from './CategoryCheckbox.vue'
     import TainacanCategoryTagInput from './CategoryTaginput.vue'
+    import TainacanCategorySelectbox from './CategorySelectbox.vue'
+    import AddNewTerm from  './AddNewTerm.vue'
 
     export default {
         created(){
@@ -30,7 +43,9 @@
         components: {
             TainacanCategoryRadio,
             TainacanCategoryCheckbox,
-            TainacanCategoryTagInput
+            TainacanCategoryTagInput,
+            TainacanCategorySelectbox,
+            AddNewTerm
         },
         data(){
             return {
@@ -109,7 +124,21 @@
                 this.inputValue = $event;
                 this.$emit('input', this.inputValue);
                 this.$emit('blur');
+            },
+            reload( val ){
+                this.valueComponent = val;
+
+                this.terms = [];
+                this.getTermsFromTaxonomy();
+                this.getTermsId();
             }
         }
     }
 </script>
+
+<style scoped>
+    .add-new-term{
+        margin-top: 15px;
+        margin-bottom: 30px;
+    }
+</style>

@@ -5,6 +5,7 @@
                 rounded
                 icon="magnify"
                 :allowNew="allowNew"
+                @input="emitChange"
                 v-model="selected"
                 :data="labels"
                 field="label"
@@ -22,19 +23,6 @@
             }
         },
         watch: {
-            selected( val ){
-                this.selected = val;
-                let results = [];
-                for( let term of val ){
-                    if( term.value ){
-                        results.push( term.value );
-                    } else {
-                        results.push( term );
-                    }
-                }
-                this.$emit('input', results);
-                this.$emit('blur');
-            },
             terms( val ){
                 this.selectedValues();
             }
@@ -74,6 +62,19 @@
                     }
                     this.selected = selected;
                 }
+            },
+            emitChange(){
+                 let val = this.selected;
+                let results = [];
+                for( let term of val ){
+                    if( term.value ){
+                        results.push( term.value );
+                    } else {
+                        results.push( term );
+                    }
+                }
+                this.$emit('input', results);
+                this.$emit('blur');
             }
         }
     }

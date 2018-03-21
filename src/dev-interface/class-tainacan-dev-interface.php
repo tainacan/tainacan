@@ -107,14 +107,6 @@ class DevInterface {
                 
             );
             
-            add_meta_box(
-                $col->get_db_identifier() . '_metadata_js', 
-                __('Field Components', 'tainacan'),
-                array(&$this, 'metadata_components_metabox'),
-                $col->get_db_identifier(), //post type
-                'normal' 
-                
-            );
         }
         
         

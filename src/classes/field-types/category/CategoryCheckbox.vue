@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="block" v-for="option,index in options">
+        <div v-for="option,index in options">
             <b-checkbox
                     :id="id"
                     :style="{ paddingLeft: (option.level * 30)  + 'px' }"
@@ -11,6 +11,7 @@
                     border>
                 {{ option.name }}
             </b-checkbox>
+            <br>
         </div>
     </div>
 </template>
@@ -25,6 +26,11 @@
         data(){
             return {
                 checked: []
+            }
+        },
+        watch: {
+            value( val ){
+                this.checked = val;
             }
         },
         props: {
