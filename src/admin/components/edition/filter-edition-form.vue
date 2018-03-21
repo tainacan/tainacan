@@ -176,12 +176,6 @@ export default {
         border-top: 1px solid $draggable-border-color;
         border-bottom: 1px solid $draggable-border-color;
         margin-top: 1.0em;
-
-        .separator {
-            color: $draggable-border-color;
-            height: 1px;
-            width: 60%;
-        }
     }
 
 </style>

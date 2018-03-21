@@ -88,7 +88,7 @@
             <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
         </b-field>
 
-        <div class="separator"></div>
+        <div v-if="(!Array.isArray(editForm.field_type_options))" class="separator"></div>
 
         <component
                 :errors="formErrors['field_type_options']"
@@ -222,9 +222,10 @@ export default {
         margin-top: 1.0em;
 
         .separator {
-            color: $draggable-border-color;
+            background-color: $draggable-border-color;
+            margin: 1.8em 0;
             height: 1px;
-            width: 60%;
+            width: 75%;
         }
     }
 
