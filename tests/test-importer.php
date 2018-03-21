@@ -37,7 +37,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
      * @group importer
      */
     public function test_file_csv () {
-        global $Tainacan_Fields, $Tainacan_Items;
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();

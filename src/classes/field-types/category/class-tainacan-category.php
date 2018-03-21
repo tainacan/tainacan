@@ -46,7 +46,7 @@ class Category extends Field_Type {
 		if (empty($this->get_option('taxonomy_id')))
 			return ['taxonomy_id' => __('Please select a category', 'tainacan')];
 		
-		global $Tainacan_Fields;
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 		
 		$category_fields = $Tainacan_Fields->fetch([
 			'collection_id' => $field->get_collection_id(),

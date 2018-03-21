@@ -17,7 +17,7 @@ class Filter extends Entity {
      * @see \Tainacan\Entities\Entity::repository
      * @var string
      */
-    protected $repository = 'Tainacan_Filters';
+    protected $repository = 'Filters';
 
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_name();

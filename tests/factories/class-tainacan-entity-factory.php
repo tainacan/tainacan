@@ -32,7 +32,7 @@ class Entity_Factory {
 	public function create_entity($type, $args = [], $is_validated_and_in_db = false, $publish = false){
 		ini_set('display_errors', 1);
         
-        global $Tainacan_Item_Metadata;
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
         
 		try {
 			if(empty($type)){
@@ -55,7 +55,7 @@ class Entity_Factory {
 			}
 
 			$this->entity     = new $this->entity_type();
-			$this->repository = new $this->repository_type();
+			$this->repository = $this->repository_type::getInstance();
 			
 			if($publish) {
 				$this->entity->set_status('publish');

@@ -30,10 +30,10 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * Initialize objects after post_type register
 	 */
 	public function init_objects() {
-		$this->items_repository = new Repositories\Items();
+		$this->items_repository = Repositories\Items::getInstance();
 		$this->item = new Entities\Item();
-		$this->item_metadata = new Repositories\Item_Metadata();
-		$this->collections_repository = new Repositories\Collections();
+		$this->item_metadata = Repositories\Item_Metadata::getInstance();
+		$this->collections_repository = Repositories\Collections::getInstance();
 	}
 
 	/**

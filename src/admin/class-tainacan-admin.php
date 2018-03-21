@@ -7,8 +7,19 @@ namespace Tainacan;
 class Admin {
 
     private $menu_slug = 'tainacan_admin';
-    
-    public function __construct() {
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    private function __construct() {
 
         add_action( 'admin_menu', array(&$this, 'add_admin_menu') );
         add_filter( 'admin_body_class', array(&$this, 'admin_body_class') );
@@ -66,7 +77,13 @@ class Admin {
     }
     
     function admin_page() {
-	    global $TAINACAN_BASE_URL, $Tainacan_Collections, $Tainacan_Fields, $Tainacan_Filters, $Tainacan_Items, $Tainacan_Taxonomies;
+	    global $TAINACAN_BASE_URL;
+
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
 
 	    // TODO move it to a separate file and start the Vue project
         echo "<div id='tainacan-admin-app'></div>";

@@ -224,7 +224,9 @@ abstract class Importer {
      * @return Tainacan\Entities\Item Item inserted
      */
     public function insert( $index, $processed_item ){
-        global $Tainacan_Items, $Tainacan_Item_Metadata, $Tainacan_Fields;
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
 
         $isUpdate = ( is_array( $this->processed_items ) && isset( $this->processed_items[ $index ] ) )
             ? $this->processed_items[ $index ] : 0;

@@ -6,7 +6,7 @@ class Item_Metadata_Factory {
 	private $item_metadata;
 
 	public function create_item_metadata(\Tainacan\Entities\Item $item, \Tainacan\Entities\Field $field, $value = ''){
-		global $Tainacan_Item_Metadata;
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
         $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $field);
         
         if (!empty($value))

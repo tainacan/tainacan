@@ -14,7 +14,7 @@ class Log extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Logs';
+	protected $repository = 'Logs';
 	
 	public function __construct($which=0) {
 		parent::__construct($which);
@@ -211,7 +211,7 @@ class Log extends Entity {
 			throw new \Exception('msn or new_value is need to log');
 		}
 
-		global $Tainacan_Logs;
+		$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
 
 		if ($log->validate()) {
             return $Tainacan_Logs->insert($log);
@@ -226,7 +226,8 @@ class Log extends Entity {
 	 * @see \Tainacan\Repositories\Logs::approve
      */
     public function approve() {
-    	global ${$this->repository};
-    	return ${$this->repository}->approve($this);
+        $repository = $this->get_repository();
+
+        return $repository->approve($this);
     }
 }
