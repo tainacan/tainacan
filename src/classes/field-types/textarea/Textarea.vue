@@ -10,8 +10,8 @@
 <script>
     export default {
         created(){
-            if( this.field && this.field.value ){
-                this.inputValue = this.field.value
+            if( this.value ){
+                this.inputValue = this.value
             }
         },
         data() {
