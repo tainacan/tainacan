@@ -19,73 +19,80 @@
                         animation: '250'}">
                     <div  
                         class="active-filter-item" 
-                        :class="{'not-sortable-item': filter.id == undefined || openedFilterId == filter.id || choosenField.name == filter.name, 'not-focusable-item': openedFilterId == filter.id, 'disabled-filter': filter.enabled == false}" 
+                        :class="{
+                            'not-sortable-item': filter.id == undefined || openedFilterId == filter.id || choosenField.name == filter.name, 
+                            'not-focusable-item': openedFilterId == filter.id, 
+                            'disabled-filter': filter.enabled == false
+                        }" 
                         v-for="(filter, index) in activeFilterList" :key="index">
                             <div class="handle">
                                 <grip-icon></grip-icon>
                                 <span 
                                     class="filter-name"
-                                    :class="{'is-danger': formWithErrors == filter.id || (editForms[filter.id] != undefined && editForms[filter.id].saved != true) }">
+                                    :class="{'is-danger': formWithErrors == filter.id || filter.status == 'auto-draft' || (editForms[filter.id] != undefined && editForms[filter.id].saved != true) }">
                                     {{ filter.name }}
                                 </span>
                                 <span   
                                     v-if="filter.filter_type_object != undefined"
                                     class="label-details">  
                                     ({{ $i18n.get(filter.filter_type_object.component) }})  
-                                        <em v-if="editForms[filter.id] != undefined && editForms[filter.id].saved != true"> 
+                                        <em v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
                                         {{ $i18n.get('info_not_saved') }}
                                         </em>
                                 </span> 
                                 <span class="loading-spinner" v-if="filter.id == undefined"></span>
-                                <span class="controls" v-if="filter.id != undefined">
+                                <span class="controls" v-if="filter.filter_type != undefined">
                                     <b-switch size="is-small" v-model="filter.enabled" @input="onChangeEnable($event, index)"></b-switch>
-                                    <a :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
-                                        @click.prevent="removeFilter(filter)">
-                                        <b-icon icon="delete"></b-icon>
-                                    </a>
                                     <a  :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
                                         @click.prevent="editFilter(filter)">
-                                        <b-icon icon="pencil"></b-icon>
+                                        <b-icon type="is-gray" icon="pencil"></b-icon>
+                                    </a>
+                                    <a :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
+                                        @click.prevent="removeFilter(filter)">
+                                        <b-icon type="is-gray" icon="delete"></b-icon>
                                     </a>
                                 </span>
-                                <div v-if="choosenField.name == filter.name">
-                                    <form class="tainacan-form">
-                                        <b-field :label="$i18n.get('label_filter_type')">
-                                            <b-select
-                                                    v-model="selectedFilterType"
-                                                    :placeholder="$i18n.get('instruction_select_a_filter_type')">
-                                                <option 
-                                                    v-for="(filterType, index) in allowedFilterTypes" 
-                                                    :key="index"
-                                                    :selected="index == 0"
-                                                    :value="filterType">
-                                                    {{ filterType.name }}</option>  
-                                            </b-select>
-                                        </b-field>
-                                        <div class="field is-grouped form-submit">
-                                            <div class="control"> 
-                                                <button 
-                                                    class="button is-outlined" 
-                                                    @click.prevent="cancelFilterTypeSelection()" 
-                                                    slot="trigger">{{ $i18n.get('cancel')}}</button>
-                                            </div>
-                                            <div class="control">
-                                                <button 
-                                                    class="button is-success" 
-                                                    type="submit" 
-                                                    :disabled="Object.keys(selectedFilterType).length == 0"
-                                                    @click.prevent="confirmSelectedFilterType()">{{ $i18n.get('next')}}</button>
-                                            </div>
-                                            
+                            </div>
+                            <div v-if="choosenField.name == filter.name && openedFilterId == ''">
+                                <form class="tainacan-form">
+                                    <b-field :label="$i18n.get('label_filter_type')">
+                                        <b-select
+                                                v-model="selectedFilterType"
+                                                :placeholder="$i18n.get('instruction_select_a_filter_type')">
+                                            <option 
+                                                v-for="(filterType, index) in allowedFilterTypes" 
+                                                :key="index"
+                                                :selected="index == 0"
+                                                :value="filterType">
+                                                {{ filterType.name }}</option>  
+                                        </b-select>
+                                    </b-field>
+                                    <div class="field is-grouped form-submit">
+                                        <div class="control"> 
+                                            <button 
+                                                class="button is-outlined" 
+                                                @click.prevent="cancelFilterTypeSelection()" 
+                                                slot="trigger">{{ $i18n.get('cancel')}}</button>
                                         </div>
-                                    </form>
+                                        <div class="control">
+                                            <button 
+                                                class="button is-success" 
+                                                type="submit" 
+                                                :disabled="Object.keys(selectedFilterType).length == 0"
+                                                @click.prevent="confirmSelectedFilterType()">{{ $i18n.get('next')}}</button>
+                                        </div>
+                                        
                                     </div>
+                                </form>
                             </div>
                             <b-field v-if="openedFilterId == filter.id">
                                 <filter-edition-form
                                     @onEditionFinished="onEditionFinished()"
                                     @onEditionCanceled="onEditionCanceled()"
-                                    :filter="editForms[openedFilterId]"></filter-edition-form>
+                                    @onErrorFound="formWithErrors = filter.id"
+                                    :index="index"
+                                    :originalFilter="filter"
+                                    :editedFilter="editForms[openedFilterId]"></filter-edition-form>
                             </b-field>
                         </div>
                 </draggable> 
@@ -101,12 +108,12 @@
                             dragClass: 'sortable-drag'
                         }">
                         <div 
-                            class="available-field-item" 
-                            :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
+                            class="available-field-item"
                             v-for="(field, index) in availableFieldList" 
                             :key="index"
-                            @click.prevent="addFieldViaButton(field)">  
-                            <grip-icon></grip-icon> <span class="field-name">{{ field.name }} <span class="loading-spinner" v-if="hightlightedField == field.name"></span></span>
+                            @click.prevent="addFieldViaButton(field, index)">  
+                            <grip-icon></grip-icon> 
+                              <span class="field-name">{{ field.name }}</span>
                         </div>
                     </draggable>   
                 </div>
@@ -133,8 +140,6 @@ export default {
             isLoadingFilter: false,
             openedFilterId: '',
             formWithErrors: '',
-            isModalOpened: false,
-            hightlightedField: '',
             editForms: {},
             allowedFilterTypes: [],
             selectedFilterType: {},
@@ -190,17 +195,18 @@ export default {
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
 
         },
-        addFieldViaButton(fieldType) {
+        addFieldViaButton(fieldType, fieldIndex) {
+            this.availableFieldList.splice(fieldIndex, 1);
+
             let lastIndex = this.activeFilterList.length;
             this.activeFilterList.push(fieldType);
             this.addNewFilter(fieldType, lastIndex);
-
-            // Higlights the clicker field
-            this.hightlightedField = fieldType.name;
         },
         addNewFilter(choosenField, newIndex) {
+            console.log(choosenField);
             this.choosenField = choosenField;
             this.newIndex = newIndex;
+            this.openedFilterId = '';
             this.allowedFilterTypes = [];
             this.selectedFilterType = {};
 
@@ -210,9 +216,6 @@ export default {
                         this.allowedFilterTypes.push(filter);
                 }
             }
-            this.isModalOpened = true;
-
-            this.hightlightedField = '';
         },
         createChoosenFilter() {
             
@@ -230,17 +233,17 @@ export default {
                 if (!this.isRepositoryLevel)
                     this.updateFiltersOrder();
 
-                this.editFilter(filter);
-
                 this.newIndex = 0;
-                this.choosenField.name = '';
+                this.choosenField = {};
                 this.selectedFilterType = {}
                 this.allowedFilterTypes = [];
+
+                this.editFilter(filter);
             })
             .catch((error) => {
                 console.log(error);
                 this.newIndex = 0;
-                this.choosenField.name = '';
+                this.choosenField = {};
                 this.selectedFilterType = {}
                 this.allowedFilterTypes = [];
             });
@@ -268,12 +271,11 @@ export default {
             });
         },
         confirmSelectedFilterType() {
-            this.isModalOpened = false;
             this.createChoosenFilter();
         },
         cancelFilterTypeSelection() {
-           this.isModalOpened = false;
-           this.choosenField = '';
+           this.availableFieldList.push(this.choosenField);
+           this.choosenField = {};
            this.allowedFilterTypes = [];
            this.selectedFilterType = {};
            this.activeFilterList.splice(this.newIndex, 1);
@@ -281,21 +283,20 @@ export default {
         },
         editFilter(filter) {
             // Closing collapse
-            if (this.openedFilterId == filter.id) {
-                
-                // Form - and possibily edited - Filter
-                let currentForm = JSON.parse(JSON.stringify(this.editForms[this.openedFilterId]));
-
-                // Real Filter
-                let nonEditedForm = JSON.parse(JSON.stringify(filter));
-                
-                if (JSON.stringify(nonEditedForm) != JSON.stringify(currentForm)) 
-                    this.editForms[this.openedFilterId].saved = false;
-                
+            if (this.openedFilterId == filter.id) {                
                 this.openedFilterId = '';
 
             // Opening collapse
             } else {
+                console.log(this.choosenField);
+                if (this.openedFilterId == '' && this.choosenField.id != undefined) {
+                    this.availableFieldList.push(this.choosenField);
+                    this.choosenField = {};
+                    this.allowedFilterTypes = [];
+                    this.selectedFilterType = {};
+                    this.activeFilterList.splice(this.newIndex, 1);
+                    this.newIndex = 0;
+                }
                 this.openedFilterId = filter.id;
                 // First time opening
                 if (this.editForms[this.openedFilterId] == undefined) {
@@ -307,20 +308,17 @@ export default {
                         this.editForms[this.openedFilterId].status = 'publish'; 
                         this.editForms[this.openedFilterId].saved = false;
                     }
-                // Already opened before
-                } else {
-                    this.editForms[this.openedFilterId].saved = true;
-                }
-                       
+                }      
             }   
         },
         onEditionFinished() {
             this.formWithErrors = '';
+            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
-            this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
+            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
         }
 
@@ -394,11 +392,7 @@ export default {
             color: $tertiary;
             font-weight: 500;
         }
-        margin: 1em 0em 2.0em -1em;
-
-        @media screen and (max-width: 769px) {
-            margin: 1em 0em 2.0em 0em;
-        }
+        margin: 1em 0em 2.0em 0em;
     }
 
     .loading-spinner {
@@ -441,13 +435,15 @@ export default {
             background-color: white;
             padding: 0.7em 0.9em;
             margin: 4px;
-            top: 0;
             min-height: 40px;
             position: relative;
             display: block; 
             transition: top 0.1s ease;
             cursor: grab;
         
+            .handle {
+                padding-right: 6em;
+            }
             .grip-icon { 
                 fill: $gray;
                 top: 2px;
@@ -470,7 +466,9 @@ export default {
                 color: $gray;
             }
             .controls { 
-                float: right; 
+                position: absolute;
+                right: 5px; 
+                top: 10px;
                 .switch {
                     position: relative;
                     bottom: 3px;
@@ -479,7 +477,7 @@ export default {
             .icon {
                 bottom: 1px;   
                 position: relative;
-                font-size: 18px;
+                i, i:before { font-size: 20px; }
             }
             form {
                 padding: 1.0em 2.0em;
@@ -489,7 +487,6 @@ export default {
             }
             &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover  {
                 box-shadow: none !important;
-                top: 0px !important;
                 background-color: white !important;
                 cursor: default;
 
@@ -508,7 +505,6 @@ export default {
             background-color: $secondary;
             border-color: $secondary;
             color: white !important;
-            top: -2px;
 
             .grip-icon { 
                 fill: $white;
@@ -540,6 +536,12 @@ export default {
             margin: 4px;
             height: 40px;
             position: relative;
+
+            .grip-icon { 
+                fill: $gray;
+                top: 2px;
+                position: relative;
+            }
         }
     }
 
@@ -582,10 +584,10 @@ export default {
             
             .grip-icon { 
                 fill: $gray;
-                top: 2px;
+                top: -3px;
                 position: relative;
+                display: inline-block;
             }
-
             .icon {
                 position: relative;
                 bottom: 3px;
@@ -596,6 +598,8 @@ export default {
                 white-space: nowrap;
                 font-weight: bold;
                 margin-left: 0.4em;
+                display: inline-block;
+                max-width: 200px;
             }
             &:after,
             &:before {
@@ -626,74 +630,6 @@ export default {
         }
         .sortable-drag {
             opacity: 1 !important;
-        }
-
-        @keyframes hightlighten {
-            0%   {
-                color: #222;             
-                background-color: white;
-                border-color: white;
-            }
-            25%  {
-                color: white;            
-                background-color: #2cb4c1; 
-                border-color: #2cb4c1;
-            }
-            75%  {
-                color: white;            
-                background-color: #2cb4c1; 
-                border-color: #2cb4c1;
-            }
-            100% {
-                color: #222;             
-                background-color: white;
-                border-color: white;
-            }
-        }
-        @keyframes hightlighten-icon {
-            0%   { fill: #b1b1b1; }
-            25%  { fill: white; }
-            75%  { fill: white; }
-            100% { fill: #b1b1b1; }
-        }
-        @keyframes hightlighten-arrow {
-            0%   {
-                border-color: transparent white transparent transparent;
-                border-color: transparent white transparent transparent; 
-            }
-            25%  {
-                border-color: transparent #2cb4c1 transparent transparent;
-                border-color: transparent #2cb4c1 transparent transparent; 
-            }
-            75%  {
-                border-color: transparent #2cb4c1 transparent transparent;
-                border-color: transparent #2cb4c1 transparent transparent; 
-            }
-            100% {
-                border-color: transparent white transparent transparent;
-                border-color: transparent white transparent transparent;  
-            }
-        }
-        .hightlighted-field {
-            background-color: white;
-            position: relative;
-            left: 0px;
-            animation-name: hightlighten;
-            animation-duration: 1.0s;
-            animation-iteration-count: 2;
-            
-            .grip-icon{
-                animation-name: hightlighten-icon;
-                animation-duration: 1.0s;
-                animation-iteration-count: 2; 
-            }
-
-            &::before,
-            &::after {
-                animation-name: hightlighten-arrow;
-                animation-duration: 1.0s;
-                animation-iteration-count: 2;
-            }
         }
         .available-field-item:hover {
             background-color: $secondary;

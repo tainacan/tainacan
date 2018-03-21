@@ -59,29 +59,6 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel}) => {
     });
 }
 
-
-export const fetchFilter = ({ commit }, {collectionId, filterId, isRepositoryLevel}) => {
-    return new Promise((resolve, reject) => {
-
-        let endpoint = '';
-        if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/filters/' + filterId; 
-        else
-            endpoint = '/filters/' + filterId;
-
-        axios.tainacan.get(endpoint + '?context=edit')
-        .then((res) => {
-            let filter = res.data;
-            commit('setSingleFilter', filter);
-            resolve (filter);
-        }) 
-        .catch((error) => {
-            console.log(error);
-            reject(error);
-        });
-    });
-}
-
 export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterType, status, isRepositoryLevel, newIndex }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
@@ -107,14 +84,15 @@ export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterTyp
     });
 };
 
-export const updateFilter = ( { commit }, { filterId, options }) => {
+export const updateFilter = ( { commit }, { filterId, index, options }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '/filters/' + filterId;
 
         axios.tainacan.put(endpoint, options)
             .then( res => {
-                commit('setSingleFilter', res.data);
-                resolve( res.data );
+                let filter = res.data;
+                commit('setSingleFilter', { filter: filter, index: index });
+                resolve( filter );
             })
             .catch(error => {
                 console.log(error);

@@ -19,20 +19,23 @@
                             animation: '250'}">
                     <div  
                         class="active-field-item"
-                        :class="{'not-sortable-item': field.id == undefined || openedFieldId == field.id, 'not-focusable-item': openedFieldId == field.id, 'disabled-field': field.enabled == false}" 
+                        :class="{
+                            'not-sortable-item': field.id == undefined || openedFieldId == field.id, 
+                            'not-focusable-item': openedFieldId == field.id, 
+                            'disabled-field': field.enabled == false}" 
                         v-for="(field, index) in activeFieldList" :key="index">
                         <div class="handle">
                             <grip-icon></grip-icon>
                             <span 
                                 class="field-name" 
-                                :class="{'is-danger': formWithErrors == field.id || (editForms[field.id] != undefined && editForms[field.id].saved != true) }">
+                                :class="{'is-danger': formWithErrors == field.id || field.status == 'auto-draft' || (editForms[field.id] != undefined && editForms[field.id].saved != true) }">
                                 {{ field.name }}
                             </span>
                             <span   
                                 v-if="field.id != undefined"
                                 class="label-details">  
                                   ({{ $i18n.get(field.field_type_object.component) }})  
-                                    <em v-if="editForms[field.id] != undefined && editForms[field.id].saved != true"> 
+                                    <em v-if="(editForms[field.id] != undefined && editForms[field.id].saved != true) || field.status == 'auto-draft'"> 
                                       {{ $i18n.get('info_not_saved') }}
                                     </em>
                             </span>
@@ -64,7 +67,9 @@
                                 @onEditionFinished="onEditionFinished()"
                                 @onEditionCanceled="onEditionCanceled()"
                                 @onErrorFound="formWithErrors = field.id"
-                                :field="editForms[field.id]"></field-edition-form>
+                                :index="index"
+                                :originalField="field"
+                                :editedField="editForms[field.id]"></field-edition-form>
                         </div>
                     </div>
                 </draggable> 
@@ -86,7 +91,9 @@
                             :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
                             v-for="(field, index) in availableFieldList" 
                             :key="index">
-                           <grip-icon></grip-icon>  <span class="field-name">{{ field.name }} <span class="loading-spinner" v-if="hightlightedField == field.name"></span></span>   
+                           <grip-icon></grip-icon>  
+                             <span class="field-name">{{ field.name }}</span> 
+                             <span class="loading-spinner" v-if="hightlightedField == field.name"></span>   
                         </div>
                     </draggable>
                 </div>
@@ -196,16 +203,6 @@ export default {
         editField(field) {
             // Closing collapse
             if (this.openedFieldId == field.id) {    
-                
-                // Form - and possibily edited - Field
-                let currentForm = JSON.parse(JSON.stringify(this.editForms[this.openedFieldId]));
-
-                // Real Field
-                let nonEditedForm = JSON.parse(JSON.stringify(field));
-                
-                if (JSON.stringify(nonEditedForm) != JSON.stringify(currentForm)) 
-                    this.editForms[this.openedFieldId].saved = false;
-                
                 this.openedFieldId = '';
 
             // Opening collapse
@@ -214,27 +211,24 @@ export default {
                 // First time opening
                 if (this.editForms[this.openedFieldId] == undefined) {
                     this.editForms[this.openedFieldId] = JSON.parse(JSON.stringify(field));
-                    this.editForms[this.openedFieldId].saved = true;
-                    
+                    this.editForms[this.openedFieldId].saved = true;  
+
                     // Field inserted now
                     if (this.editForms[this.openedFieldId].status == 'auto-draft') {
                         this.editForms[this.openedFieldId].status = 'publish'; 
                         this.editForms[this.openedFieldId].saved = false;
                     }
-                // Already opened before
-                } else {
-                    this.editForms[this.openedFieldId].saved = true;
-                }
-                       
+                }     
             }
         },
         onEditionFinished() {
             this.formWithErrors = '';
+            delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
-            this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
+            delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
         }
 
@@ -287,11 +281,7 @@ export default {
             color: $tertiary;
             font-weight: 500;
         }
-        margin: 1em 0em 2.0em -1em;
-
-        @media screen and (max-width: 769px) {
-            margin: 1em 0em 2.0em 0em;
-        }
+        margin: 1em 0em 2.0em 0em;
     }
 
     .loading-spinner {
@@ -336,11 +326,12 @@ export default {
             margin: 4px;
             min-height: 40px;
             display: block; 
-            top: 0;
             position: relative;
-            transition: top 0.05s linear;
             cursor: grab;
             
+            .handle {
+                padding-right: 6em;
+            }
             .grip-icon { 
                 fill: $gray; 
                 top: 2px;
@@ -363,7 +354,9 @@ export default {
                 color: $gray;
             }
             .controls { 
-                float: right;
+                position: absolute;
+                right: 5px;
+                top: 10px;
                 .switch {
                     position: relative;
                     bottom: 3px;
@@ -372,12 +365,11 @@ export default {
             .icon {
                 bottom: 1px;   
                 position: relative;
-                font-size: 18px;
+                i, i:before { font-size: 20px; }
             }
     
             &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover {
                 box-shadow: none !important;
-                top: 0px !important;
                 cursor: default;
                 background-color: white !important;
                 
@@ -396,7 +388,6 @@ export default {
             background-color: $secondary;
             border-color: $secondary;
             color: white !important;
-            top: -2px;
 
             .label-details, .icon {
                 color: white !important;
@@ -474,8 +465,9 @@ export default {
             
             .grip-icon { 
                 fill: $gray;
-                top: 2px;
+                top: -3px;
                 position: relative;
+                display: inline-block;
             }
             .icon {
                 position: relative;
@@ -487,6 +479,8 @@ export default {
                 white-space: nowrap;
                 font-weight: bold;
                 margin-left: 0.4em;
+                display: inline-block;
+                max-width: 200px;
             }
             &:after,
             &:before {

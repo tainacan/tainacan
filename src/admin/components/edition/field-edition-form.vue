@@ -5,7 +5,10 @@
             :addons="false"
             :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['name'] != undefined ? formErrors['name'] : ''"> 
-            <label class="label">{{$i18n.get('label_name')}} <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+            <label class="label">
+                {{$i18n.get('label_name')}} 
+                  <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
+                  <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
             <b-input v-model="editForm.name" name="name" @focus="clearErrors('name')"></b-input>
         </b-field>
 
@@ -89,7 +92,7 @@
 
         <component
                 :errors="formErrors['field_type_options']"
-                v-if="(editForm.field_type_object && field.field_type_object.form_component) || field.edit_form == ''"
+                v-if="(editForm.field_type_object && editForm.field_type_object.form_component) || editForm.edit_form == ''"
                 :is="editForm.field_type_object.form_component"
                 :field="editForm"
                 v-model="editForm.field_type_options">
@@ -116,17 +119,33 @@ export default {
     data(){
         return {
             editForm: {},
+            oldForm: {},
             formErrors: {},
-            formErrorMessage: ''
+            formErrorMessage: '',
+            closedByForm: false
         }
     }, 
     props: {
-        field: {}, 
+        index: '',
+        editedField: {},
+        originalField: '', 
         isRepositoryLevel: false,
         collectionId: ''
     },
     created() {
-        this.editForm = this.field;
+        this.editForm = this.editedField;
+        this.oldForm = JSON.parse(JSON.stringify(this.originalField));
+    },
+    beforeDestroy() {
+        if (this.closedByForm) {
+            this.editedField.saved = true;
+        } else {
+            this.oldForm.saved = this.editForm.saved;
+            if (JSON.stringify(this.editForm) != JSON.stringify(this.oldForm)) 
+                this.editedField.saved = false;
+            else    
+                this.editedField.saved = true;
+        }
     },
     methods: {
         ...mapActions('fields', [
@@ -139,11 +158,12 @@ export default {
 
             if ((field.field_type_object && field.field_type_object.form_component) || field.edit_form == '') {
                 
-                this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: this.editForm})
+                this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, index: this.index, options: this.editForm})
                     .then((field) => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
+                        this.closedByForm = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((errors) => {
@@ -162,11 +182,12 @@ export default {
                 for (let [key, value] of formData.entries())  
                     formObj[key] = value;
                 
-                this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, options: formObj})
+                this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, index: this.index, options: formObj})
                     .then((field) => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
+                        this.closedByForm = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((errors) => {
@@ -183,10 +204,7 @@ export default {
             this.formErrors[attribute] = undefined;
         },
         cancelEdition() {
-            this.editForm = {};
-            this.formErrors = {};
-            this.formErrors = {};
-            this.formErrorMessage = '';
+            this.closedByForm = true;
             this.$emit('onEditionCanceled');
         },
     }

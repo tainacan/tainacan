@@ -5,7 +5,11 @@
             :addons="false"
             :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-            <label class="label">{{$i18n.get('label_name')}} <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+            <label class="label">
+                {{$i18n.get('label_name')}} 
+                  <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
+                  <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+            </label>
             <b-input v-model="editForm.name" name="name" @focus="clearErrors('name')"></b-input>
         </b-field>
 
@@ -46,7 +50,7 @@
 
         <component
                 :errors="formErrors['filter_type_options']"
-                v-if="(editForm.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == ''"
+                v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component) || editForm.edit_form == ''"
                 :is="editForm.filter_type_object.form_component"
                 :filter="editForm"
                 v-model="editForm.filter_type_options">
@@ -73,15 +77,31 @@ export default {
     data(){
         return {
             editForm: {},
+            oldForm: {},
             formErrors: {},
-            formErrorMessage: ''
+            formErrorMessage: '',
+            closedByForm: false
         }
     }, 
     props: {
-        filter: {}
+        index: '',
+        editedFilter: {},
+        originalFilter: {},
     },
     created() {
-        this.editForm = this.filter;
+        this.editForm = this.editedFilter;
+        this.oldForm = JSON.parse(JSON.stringify(this.originalFilter));
+    },
+    beforeDestroy() {
+        if (this.closedByForm) {
+            this.editedFilter.saved = true;
+        } else {
+            this.oldForm.saved = this.editForm.saved;
+            if (JSON.stringify(this.editForm) != JSON.stringify(this.oldForm)) 
+                this.editedFilter.saved = false;
+            else    
+                this.editedFilter.saved = true;
+        }
     },
     methods: {
         ...mapActions('filter', [
@@ -94,11 +114,12 @@ export default {
 
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
                 
-                this.updateFilter({ filterId: filter.id, options: this.editForm})
+                this.updateFilter({ filterId: filter.id, index: this.index, options: this.editForm})
                     .then((filter) => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
+                        this.closedByForm = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((errors) => {
@@ -107,6 +128,7 @@ export default {
                                 this.formErrors[attribute] = error[attribute];
                         }
                         this.formErrorMessage = errors.error_message;
+                        this.$emit('onErrorFound');
                     });
             } else {
                 let formElement = document.getElementById('filterEditForm');
@@ -116,11 +138,12 @@ export default {
                 for (let [key, value] of formData.entries())  
                     formObj[key] = value;
                 
-                this.updateFilter({ filterId: filter.id, options: formObj})
+                this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
                     .then((filter) => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
+                        this.closedByForm = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((errors) => {
@@ -129,6 +152,7 @@ export default {
                                 this.formErrors[attribute] = error[attribute];
                         }
                         this.formErrorMessage = errors.error_message;
+                        this.$emit('onErrorFound');
                     });
             }           
         },
@@ -136,10 +160,7 @@ export default {
             this.formErrors[attribute] = undefined;
         },
         cancelEdition() {
-            this.editForm = {};
-            this.formErrors = {};
-            this.formErrors = {};
-            this.formErrorMessage = '';
+            this.closedByForm = true;
             this.$emit('onEditionCanceled');
         },
     }

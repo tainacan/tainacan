@@ -99,7 +99,7 @@ html {
         }
     }
     .help-button {
-        i { font-size: 0.7em; }
+        i, i::before { font-size: 0.9em !important; }
         color: $gray;
         &:hover {
             color: $primary;
@@ -250,10 +250,10 @@ html {
     }
 
     &.is-small {
-        font-size: 10px;
+        font-size: 9px;
 
         input[type="checkbox"] + .check {
-            border: 1.4px solid $gray;
+            border: 1.5px solid $gray;
 
             &::before {
                 width: 1.05em;
