@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ## Run the build script whenever there is a change in src folder
 
 

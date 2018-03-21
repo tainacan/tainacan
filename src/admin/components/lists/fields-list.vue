@@ -13,6 +13,8 @@
                     :list="activeFieldList" 
                     :options="{ 
                             group: { name:'fields', pull: false, put: true }, 
+                            sort: openedFieldId == '' || openedFieldId == undefined, 
+                            disabled: openedFieldId != '' && openedFieldId != undefined,
                             handle: '.handle', 
                             ghostClass: 'sortable-ghost',
                             filter: 'not-sortable-item', 
@@ -20,7 +22,7 @@
                     <div  
                         class="active-field-item"
                         :class="{
-                            'not-sortable-item': field.id == undefined || openedFieldId == field.id, 
+                            'not-sortable-item': field.id == undefined || openedFieldId != '' , 
                             'not-focusable-item': openedFieldId == field.id, 
                             'disabled-field': field.enabled == false}" 
                         v-for="(field, index) in activeFieldList" :key="index">
@@ -368,11 +370,17 @@ export default {
                 i, i:before { font-size: 20px; }
             }
     
-            &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover {
-                box-shadow: none !important;
+            &.not-sortable-item, &.not-sortable-item:hover {
                 cursor: default;
                 background-color: white !important;
-                
+
+                .label-details, .icon {
+                    color: $gray !important;
+                }
+            } 
+            &.not-focusable-item, &.not-focusable-item:hover {
+                cursor: default;
+               
                 .field-name {
                     color: $primary;
                 }

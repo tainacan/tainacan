@@ -13,6 +13,8 @@
                     :list="activeFilterList" 
                     :options="{
                         group: { name:'filters', pull: false, put: true }, 
+                        sort: openedFilterId == '' || openedFilterId == undefined, 
+                        disabled: openedFilterId != '' && openedFilterId != undefined,
                         handle: '.handle', 
                         ghostClass: 'sortable-ghost',
                         filter: 'not-sortable-item', 
@@ -20,7 +22,7 @@
                     <div  
                         class="active-filter-item" 
                         :class="{
-                            'not-sortable-item': filter.id == undefined || openedFilterId == filter.id || choosenField.name == filter.name, 
+                            'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenField.name == filter.name, 
                             'not-focusable-item': openedFilterId == filter.id, 
                             'disabled-filter': filter.enabled == false
                         }" 
@@ -485,11 +487,17 @@ export default {
                 border-bottom: 1px solid $draggable-border-color;
                 margin-top: 1.0em;
             }
-            &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover  {
-                box-shadow: none !important;
-                background-color: white !important;
+            &.not-sortable-item, &.not-sortable-item:hover {
                 cursor: default;
+                background-color: white !important;
 
+                .label-details, .icon {
+                    color: $gray !important;
+                }
+            } 
+            &.not-focusable-item, &.not-focusable-item:hover {
+                cursor: default;
+               
                 .field-name {
                     color: $primary;
                 }
