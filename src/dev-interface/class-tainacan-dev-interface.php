@@ -8,8 +8,20 @@ class DevInterface {
     
     var $repositories = [];
     var $has_errors = false;
-    
-    public function __construct() {
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    private function __construct() {
 
         add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
         add_action('save_post', array(&$this, 'save_post'), 10, 2);
@@ -17,7 +29,11 @@ class DevInterface {
 
         add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
         
-        global $Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Fields, $Tainacan_Taxonomies;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+        $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
         
         $repositories = [$Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Fields, $Tainacan_Taxonomies];
         
@@ -214,8 +230,10 @@ class DevInterface {
     
     
     function metadata_metabox() {
-        global $Tainacan_Collections, $Tainacan_Item_Metadata, $pagenow, $typenow, $post;
-        
+        global $typenow, $post;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         
         // get current collection
@@ -284,7 +302,9 @@ class DevInterface {
     }
     
     function metadata_components_metabox() {
-        global $Tainacan_Collections, $Tainacan_Item_Metadata, $pagenow, $typenow, $post;
+        global $typenow, $post;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
         
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         
@@ -488,8 +508,12 @@ class DevInterface {
             // Check if post type is an item from a collection
             // TODO: there should ve a method in the repository to find this out
             // or I could try to initialize an entity and find out what type it is
-            
-            global $Tainacan_Collections, $Tainacan_Items, $Tainacan_Fields, $Tainacan_Item_Metadata;
+
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+            $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+
             $collections = $Tainacan_Collections->fetch([], 'OBJECT');
             $cpts = [];
             foreach($collections as $col) {

@@ -14,7 +14,7 @@ class Item extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Items';
+	protected $repository = 'Items';
 
 	/**
 	 * {@inheritDoc}

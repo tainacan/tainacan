@@ -17,8 +17,9 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
      * Teste da insercao de um metadado simples sem o tipo
      */
     function test_add() {
-        
-        global $Tainacan_Fields, $Tainacan_Item_Metadata;
+
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
@@ -68,7 +69,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
      * Teste da insercao de um metadado simples com o tipo
      */
     function teste_required(){
-        global $Tainacan_Fields, $Tainacan_Item_Metadata;
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
@@ -121,7 +123,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
     }
     
     function teste_collection_key(){
-        global $Tainacan_Fields, $Tainacan_Item_Metadata;
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
 	        'collection',

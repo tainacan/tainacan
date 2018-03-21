@@ -125,7 +125,8 @@ class Items extends Repository {
 	 */
 	public function register_post_type() {
 
-		global $Tainacan_Collections, $Tainacan_Taxonomies;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
 
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
 		$taxonomies  = $Tainacan_Taxonomies->fetch( [], 'OBJECT' );

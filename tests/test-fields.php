@@ -202,7 +202,8 @@ class Fields extends TAINACAN_UnitTestCase {
      *
      */
     function test_ordenation_fields(){
-        global $Tainacan_Collections, $Tainacan_Fields;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
             'collection',

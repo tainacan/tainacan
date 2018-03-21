@@ -14,7 +14,7 @@ class Item_Metadata_Entity extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Item_Metadata';
+	protected $repository = 'Item_Metadata';
 	
     function __construct(Item $item, Field $field) {
         
@@ -187,7 +187,7 @@ class Item_Metadata_Entity extends Entity {
             }
             
             if ($this->is_collection_key()) {
-            	$Tainacan_Items = new \Tainacan\Repositories\Items();
+                $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
                 
                 $test = $Tainacan_Items->fetch([
                     'meta_query' => [

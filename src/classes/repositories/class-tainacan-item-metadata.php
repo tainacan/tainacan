@@ -105,7 +105,7 @@ class Item_Metadata extends Repository {
 	 */
     public function fetch($object, $output = null ){
         if($object instanceof Entities\Item){
-            global $Tainacan_Items, $Tainacan_Fields;
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
             
             $collection = $object->get_collection();
             

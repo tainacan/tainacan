@@ -124,7 +124,15 @@ class Entity {
             }
     	}
     }
-    
+
+    public function get_repository()
+    {
+        $namespace = '\Tainacan\Repositories\\'.$this->repository;
+        $repository = $namespace::getInstance();
+
+        return $repository;
+    }
+
     /**
      * return the value for a mapped property
      * @param string $prop id of property
@@ -135,8 +143,9 @@ class Entity {
     		return $this->$prop;
     	}
     	//prop is not set at object, try to get from database
-        global ${$this->repository};
-        return ${$this->repository}->get_mapped_property($this, $prop);
+    	$repository = $this->get_repository();
+
+        return $repository->get_mapped_property($this, $prop);
     }
     
     /**
@@ -166,9 +175,9 @@ class Entity {
      * @return boolean
      */
     public function validate() {
-        
-        global ${$this->repository};
-        $map = ${$this->repository}->get_map();
+
+        $repository = $this->get_repository();
+        $map = $repository->get_map();
         
         $is_valid = true;
 
@@ -190,8 +199,8 @@ class Entity {
      * @return boolean
      */
     public function validate_prop($prop) {
-        global ${$this->repository};
-        $map = ${$this->repository}->get_map();
+        $repository = $this->get_repository();
+        $map = $repository->get_map();
         $mapped = $map[$prop];
         
         $is_valid = true;
@@ -289,8 +298,8 @@ class Entity {
     }
 
     public function __toArray(){
-	    global ${$this->repository};
-	    $map = ${$this->repository}->get_map();
+        $repository = $this->get_repository();
+	    $map = $repository->get_map();
 
 	    $attributes = [];
 	    foreach($map as $prop => $content) {
@@ -310,8 +319,8 @@ class Entity {
 	 * @return bool
 	 */
 	public function can_read($user = null) {
-		global ${$this->repository};
-		return ${$this->repository}->can_read($this, $user);
+        $repository = $this->get_repository();
+		return $repository->can_read($this, $user);
 	}
 	
 	/**
@@ -320,8 +329,8 @@ class Entity {
 	 * @return bool
 	 */
 	public function can_edit($user = null)	{
-		global ${$this->repository};
-		return ${$this->repository}->can_edit($this, $user);
+        $repository = $this->get_repository();
+		return $repository->can_edit($this, $user);
 	}
 	
 	/**
@@ -330,8 +339,8 @@ class Entity {
 	 * @return bool
 	 */
 	public function can_delete($user = null)	{
-		global ${$this->repository};
-		return ${$this->repository}->can_delete($this, $user);
+        $repository = $this->get_repository();
+		return $repository->can_delete($this, $user);
 	}
 	
 	/**
@@ -340,8 +349,8 @@ class Entity {
 	 * @return bool
 	 */
 	public function can_publish($user = null)	{
-		global ${$this->repository};
-		return ${$this->repository}->can_publish($this, $user);
+        $repository = $this->get_repository();
+		return $repository->can_publish($this, $user);
 	}
 	
 	/**
@@ -370,8 +379,8 @@ class Entity {
 	 * @return array
 	 */
 	public function diff($which = 0) {
-		global ${$this->repository};
-		return ${$this->repository}->diff($which, $this);
+        $repository = $this->get_repository();
+		return $repository->diff($which, $this);
 	}
 	
 }
