@@ -191,7 +191,6 @@ class Taxonomies extends Repository {
 
             $args = array_merge([
                 'posts_per_page' => -1,
-                'post_status'    => 'publish'
             ], $args);
 
             $args = $this->parse_fetch_args($args);

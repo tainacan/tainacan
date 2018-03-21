@@ -6,6 +6,7 @@ import collection from './modules/collection/';
 import fields from './modules/fields/';
 import filter from './modules/filter/';
 import search from './modules/search/';
+import category from './modules/category/'
 
 Vue.use(Vuex);
 
@@ -15,6 +16,7 @@ export default new Vuex.Store({
         collection,
         fields,
         filter,
-        search
+        search,
+        category,
     }
 })

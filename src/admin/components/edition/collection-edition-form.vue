@@ -40,9 +40,9 @@
                             <b-upload 
                                 model="thumbnail"
                                 @input="uploadThumbnail($event)">
-                                <a id="button-edit" :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"></a>
+                                <a id="button-edit" :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"></b-icon></a>
                             </b-upload>
-                            <a id="button-delete" :aria-label="$i18n.get('label_button_delete_thumb')" @click="deleteThumbnail()"><b-icon icon="delete"></a>
+                            <a id="button-delete" :aria-label="$i18n.get('label_button_delete_thumb')" @click="deleteThumbnail()"><b-icon icon="delete"></b-icon></a>
                         </div>
                     </div> 
                 </div>
@@ -104,7 +104,7 @@
             <p class="help is-danger">{{formErrorMessage}}</p>
         </form>
 
-        <b-loading :active.sync="isLoading" :canCancel="false">
+        <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
     </div>
 </template>
 

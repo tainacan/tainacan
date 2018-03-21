@@ -40,7 +40,7 @@
                     <b-icon size="is-small" icon="shape"></b-icon> <span class="menu-text">{{ $i18n.getFrom('categories', 'name') }}</span>
                 </router-link></li>
                 <li><router-link tag="a" to="/events" :class="activeRoute == 'EventsPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="bell"></b-icon> <span class="menu-text">{{ $i18n.getFrom('events', 'name') }}</span>
+                    <b-icon size="is-small" icon="bell"></b-icon> <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link></li>
             </ul>
         </aside>

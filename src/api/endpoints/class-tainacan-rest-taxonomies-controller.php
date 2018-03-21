@@ -227,14 +227,30 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	public function get_items( $request ) {
 		$args = $this->prepare_filters($request);
 
-		$taxonomies = $this->taxonomy_repository->fetch($args, 'OBJECT');
+		$taxonomies = $this->taxonomy_repository->fetch($args);
 
 		$response = [];
-		foreach ($taxonomies as $taxonomy) {
-			array_push($response, $this->prepare_item_for_response( $taxonomy, $request ));
+		if($taxonomies->have_posts()){
+			while ($taxonomies->have_posts()){
+				$taxonomies->the_post();
+
+				$taxonomy = new Entities\Taxonomy($taxonomies->post);
+
+				array_push($response, $this->prepare_item_for_response($taxonomy, $request));
+			}
+
+			wp_reset_postdata();
 		}
 
-		return new WP_REST_Response($response, 200);
+		$total_taxonomies  = (int) $taxonomies->found_posts;
+		$max_pages = ceil($total_taxonomies / (int) $taxonomies->query_vars['posts_per_page']);
+
+		$rest_response = new WP_REST_Response($response, 200);
+
+		$rest_response->header('X-WP-Total', $total_taxonomies);
+		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
+
+		return $rest_response;
 	}
 
 	/**
