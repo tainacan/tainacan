@@ -18,8 +18,8 @@
 
     export default {
         created(){
-            if( this.field && this.field.value ){
-                this.selected = this.field.value
+            if( this.value && this.value ){
+                this.selected = this.value
             }
         },
         data(){
