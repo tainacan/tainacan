@@ -31,16 +31,16 @@
                                 <grip-icon></grip-icon>
                                 <span 
                                     class="filter-name"
-                                    :class="{'is-danger': formWithErrors == filter.id || filter.status == 'auto-draft' || (editForms[filter.id] != undefined && editForms[filter.id].saved != true) }">
+                                    :class="{'is-danger': formWithErrors == filter.id }">
                                     {{ filter.name }}
                                 </span>
                                 <span   
                                     v-if="filter.filter_type_object != undefined"
                                     class="label-details">  
                                     ({{ $i18n.get(filter.filter_type_object.component) }})  
-                                        <em v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
+                                        <span class="not-saved" v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
                                         {{ $i18n.get('info_not_saved') }}
-                                        </em>
+                                        </span>
                                 </span> 
                                 <span class="loading-spinner" v-if="filter.id == undefined"></span>
                                 <span class="controls" v-if="filter.filter_type != undefined">
@@ -488,6 +488,11 @@ export default {
                 font-weight: normal;
                 color: $gray;
             }
+            .not-saved {
+                font-style: italic;
+                font-weight: bold;
+                color: $danger;
+            }
             .controls { 
                 position: absolute;
                 right: 5px; 
@@ -512,7 +517,7 @@ export default {
                 cursor: default;
                 background-color: white !important;
 
-                .label-details, .icon {
+                .handle .label-details, .handle .icon, .handle .not-saved {
                     color: $gray !important;
                 }
             } 
@@ -522,7 +527,7 @@ export default {
                 .field-name {
                     color: $primary;
                 }
-                .label-details, .icon {
+                .handle .label-details, .handle .icon, .handle .not-saved {
                     color: $gray !important;
                 }
             }

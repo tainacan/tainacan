@@ -14,7 +14,7 @@ I18NPlugin.install = function (Vue, options = {}) {
     Vue.prototype.$i18n = {
         get(key) {
             let string = tainacan_plugin.i18n[key];
-            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
+            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + key;
         },
         getFrom(entity, key) {
             if (entity == 'categories') // Temporary hack, while we decide this terminology...
@@ -22,8 +22,28 @@ I18NPlugin.install = function (Vue, options = {}) {
             if (tainacan_plugin.i18n['entities_labels'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
             let string = tainacan_plugin.i18n['entities_labels'][entity][key];
-            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
-        }
+            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + key;
+        },
+        getHelperTitle(entity, key) {
+            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+                entity = 'taxonomies'
+            if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
+                return 'Invalid i18n entity: ' + entity;
+            if (tainacan_plugin.i18n['helpers_label'][entity][key] == undefined)
+                return 'Invalid i18n key: ' + key;
+            let string = tainacan_plugin.i18n['helpers_label'][entity][key].title;
+            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n helper object.";
+        },
+        getHelperMessage(entity, key) {
+            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+                entity = 'taxonomies'
+            if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
+                return 'Invalid i18n entity: ' + entity;
+            if (tainacan_plugin.i18n['helpers_label'][entity][key] == undefined)
+                return 'Invalid i18n key: ' + key;
+            let string = tainacan_plugin.i18n['helpers_label'][entity][key].description;
+            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n helper object. ";
+        },
     }
 
 }

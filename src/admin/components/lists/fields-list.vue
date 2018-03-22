@@ -37,9 +37,9 @@
                                 v-if="field.id != undefined"
                                 class="label-details">  
                                   ({{ $i18n.get(field.field_type_object.component) }})  
-                                    <em v-if="(editForms[field.id] != undefined && editForms[field.id].saved != true) || field.status == 'auto-draft'"> 
+                                    <span class="not-saved" v-if="(editForms[field.id] != undefined && editForms[field.id].saved != true) || field.status == 'auto-draft'"> 
                                       {{ $i18n.get('info_not_saved') }}
-                                    </em>
+                                    </span>
                             </span>
                             <span class="loading-spinner" v-if="field.id == undefined"></span>
                             <span class="controls" v-if="field.id !== undefined">
@@ -377,6 +377,11 @@ export default {
                 font-weight: normal;
                 color: $gray;
             }
+            .not-saved {
+                font-style: italic;
+                font-weight: bold;
+                color: $danger;
+            }
             .controls { 
                 position: absolute;
                 right: 5px;
@@ -396,7 +401,7 @@ export default {
                 cursor: default;
                 background-color: white !important;
 
-                .label-details, .icon {
+                .handle .label-details, .handle .icon, .handle .not-saved {
                     color: $gray !important;
                 }
             } 
@@ -406,7 +411,7 @@ export default {
                 .field-name {
                     color: $primary;
                 }
-                .label-details, .icon {
+                .handle .label-details, .handle .icon, .handle .not-saved {
                     color: $gray !important;
                 }
             }
@@ -419,7 +424,7 @@ export default {
             border-color: $secondary;
             color: white !important;
 
-            .label-details, .icon {
+            .label-details, .icon, .not-saved {
                 color: white !important;
             }
 

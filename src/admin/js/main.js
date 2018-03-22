@@ -26,6 +26,7 @@ import TaincanFiltersList from '../../classes/filter-types/tainacan-filters-list
 
 // Remaining imports
 import AdminPage from '../admin.vue'
+import HelpButton from '../components/other/help-button.vue';
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
@@ -56,6 +57,8 @@ Vue.component('tainacan-form-selectbox', FormSelectbox);
 
 Vue.component('tainacan-form-item', TaincanFormItem);
 Vue.component('tainacan-filters-list', TaincanFiltersList);
+
+Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
 
 /* Filters */

@@ -99,15 +99,6 @@ html {
             color: $danger;
         }
     }
-    a.help-button, a.help-button i, a.help-button i::before{
-        font-size: 0.9em !important;
-        color: $gray;
-        position: relative;
-        &:hover {
-            color: $primary !important;
-            i, i::before {color: $primary !important;}
-        }
-    }
     .input, .textarea {
         font-size: 14px;
         border: none;

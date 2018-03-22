@@ -7,8 +7,11 @@
             :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
             <label class="label">
                 {{$i18n.get('label_name')}} 
-                  <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
-                  <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
+                <help-button 
+                    :title="$i18n.getHelperTitle('filters', 'name')" 
+                    :message="$i18n.getHelperMessage('filters', 'name')">
+                </help-button>
             </label>
             <b-input v-model="editForm.name" name="name" @focus="clearErrors('name')"></b-input>
         </b-field>
@@ -17,7 +20,13 @@
             :addons="false" 
             :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-            <label class="label">{{$i18n.get('label_description')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+            <label class="label">
+                {{$i18n.get('label_description')}} 
+                <help-button 
+                    :title="$i18n.getHelperTitle('filters', 'description')" 
+                    :message="$i18n.getHelperMessage('filters', 'description')">
+                </help-button>    
+            </label>
             <b-input type="textarea" name="description" v-model="editForm.description" @focus="clearErrors('description')" ></b-input>
         </b-field>
 
@@ -25,7 +34,13 @@
             :addons="false"
             :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <label class="label">{{$i18n.get('label_status')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+            <label class="label">
+                {{$i18n.get('label_status')}} 
+                <help-button 
+                    :title="$i18n.getHelperTitle('filters', 'status')" 
+                    :message="$i18n.getHelperMessage('filters', 'status')">
+                </help-button>
+            </label>
             <div class="inline-block">
                 <b-radio 
                     @focus="clearErrors('label_status')"
@@ -46,14 +61,13 @@
                 </b-radio>
             </div>
         </b-field>
-        <br>
 
         <component
-                :errors="formErrors['filter_type_options']"
-                v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component) || editForm.edit_form == ''"
-                :is="editForm.filter_type_object.form_component"
-                :filter="editForm"
-                v-model="editForm.filter_type_options">
+            :errors="formErrors['filter_type_options']"
+            v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component) || editForm.edit_form == ''"
+            :is="editForm.filter_type_object.form_component"
+            :filter="editForm"
+            v-model="editForm.filter_type_options">
         </component>
         <div v-html="editForm.edit_form" v-else></div>
 

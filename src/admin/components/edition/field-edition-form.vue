@@ -7,8 +7,12 @@
             :message="formErrors['name'] != undefined ? formErrors['name'] : ''"> 
             <label class="label">
                 {{$i18n.get('label_name')}} 
-                  <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
-                  <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+                <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
+                <help-button 
+                    :title="$i18n.getHelperTitle('fields', 'name')" 
+                    :message="$i18n.getHelperMessage('fields', 'name')">
+                </help-button>
+            </label>
             <b-input v-model="editForm.name" name="name" @focus="clearErrors('name')"></b-input>
         </b-field>
 
@@ -16,9 +20,13 @@
             :addons="false"
             :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-            <label class="label">{{$i18n.get('label_description')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon>
-            <help-tooltip title="Ajuda Gente!" message="Este é um exemplo de mensagem de ajuda. Aqui vai um monte de informações úteis."></help-tooltip>
-            </a></label>
+            <label class="label">
+                {{$i18n.get('label_description')}}
+                <help-button 
+                    :title="$i18n.getHelperTitle('fields', 'description')" 
+                    :message="$i18n.getHelperMessage('fields', 'description')">
+                </help-button>
+            </label>
             <b-input type="textarea" name="description" v-model="editForm.description" @focus="clearErrors('description')" ></b-input>
         </b-field>
 
@@ -26,7 +34,13 @@
             :addons="false"
             :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <label class="label">{{$i18n.get('label_status')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a></label>
+            <label class="label">
+                {{$i18n.get('label_status')}} 
+                <help-button 
+                    :title="$i18n.getHelperTitle('fields', 'status')" 
+                    :message="$i18n.getHelperMessage('fields', 'status')">
+                </help-button>
+            </label>
             <div class="inline-block">
                 <b-radio 
                     @focus="clearErrors('label_status')"
@@ -62,7 +76,10 @@
                     name="required">
                     {{ $i18n.get('label_required') }}
                 </b-checkbox>
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <help-button 
+                    :title="$i18n.getHelperTitle('fields', 'required')" 
+                    :message="$i18n.getHelperMessage('fields', 'required')">
+                </help-button>
             </b-field>
 
             <b-field
@@ -76,7 +93,10 @@
                     name="multiple">
                     {{ $i18n.get('label_allow_multiple') }}
                 </b-checkbox>
-                <a class="help-button">  <b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <help-button 
+                    :title="$i18n.getHelperTitle('fields', 'multiple')" 
+                    :message="$i18n.getHelperMessage('fields', 'multiple')">
+                </help-button>
             </b-field>
 
             <b-field 
@@ -90,16 +110,19 @@
                     name="collecion_key">
                     {{ $i18n.get('label_unique_value') }}
                 </b-checkbox>
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <help-button 
+                    :title="$i18n.getHelperTitle('fields', 'unique')" 
+                    :message="$i18n.getHelperMessage('fields', 'unique')">
+                </help-button>
             </b-field>
         </b-field>
 
         <component
-                :errors="formErrors['field_type_options']"
-                v-if="(editForm.field_type_object && editForm.field_type_object.form_component) || editForm.edit_form == ''"
-                :is="editForm.field_type_object.form_component"
-                :field="editForm"
-                v-model="editForm.field_type_options">
+            :errors="formErrors['field_type_options']"
+            v-if="(editForm.field_type_object && editForm.field_type_object.form_component) || editForm.edit_form == ''"
+            :is="editForm.field_type_object.form_component"
+            :field="editForm"
+            v-model="editForm.field_type_options">
         </component>
         <div v-html="editForm.edit_form" v-else></div>
 
@@ -117,7 +140,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import HelpTooltip from '../other/help-tooltip.vue';
 
 export default {
     name: 'FieldEditionForm',
@@ -136,9 +158,6 @@ export default {
         originalField: '', 
         isRepositoryLevel: false,
         collectionId: ''
-    },
-    components: {
-        HelpTooltip
     },
     created() {
         this.editForm = this.editedField;
