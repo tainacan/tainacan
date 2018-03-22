@@ -80,7 +80,7 @@ abstract class Repository {
 
 		// First iterate through the native post properties
 		foreach ( $map as $prop => $mapped ) {
-			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'thumbnail_id' ) {
+			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' ) {
 				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property( $prop );
 			}
 		}

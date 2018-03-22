@@ -53,6 +53,12 @@ export default {
         ...mapGetters('item', [
             'getItemTitle'
         ]),
+        ...mapActions('category', [
+            'fetchCategoryName'
+        ]),
+        ...mapGetters('category', [
+            'getCategoryName'
+        ]),
         generateViewPath() {
 
             for (let i = 0; i < this.arrayRealPath.length; i++) {
@@ -66,12 +72,17 @@ export default {
                             this.fetchCollectionName(this.arrayRealPath[i])
                                 .then(collectionName => this.arrayViewPath.splice(i, 1, collectionName))
                                 .catch((error) => console.log(error));
-                        break;
+                            break;
                         case 'items':
                             this.fetchItemTitle(this.arrayRealPath[i])
-                                .then(itemTitle => this.arrayViewPath.splice(i, 1,itemTitle))
+                                .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
                                 .catch((error) => console.log(error));
-                        break;
+                            break;
+                        case 'categories':
+                            this.fetchCategoryName(this.arrayRealPath[i])
+                                .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
+                                .catch((error) => console.log(error));
+                            break;
                     }
                     
                 } else {

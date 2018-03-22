@@ -38,7 +38,7 @@ class Taxonomies extends Repository {
                 'title'       => __('Name', 'tainacan'),
                 'type'        => 'string',
                 'description' => __('Name of the taxonomy', 'tainacan'),
-                'on_error'    => __('The taxonomy should be a text value and not empty', 'tainacan'),
+                'on_error'    => __('The taxonomy name should be a text value and not empty', 'tainacan'),
                 'validation'  => v::stringType()->notEmpty(),
             ],
             'description'     =>  [
