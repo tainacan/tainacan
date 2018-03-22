@@ -6,9 +6,14 @@
 
                 <!-- Name -------------------------------- -->
                 <b-field
+                        :addons="false"
                         :label="$i18n.get('label_name')"
                         :type="editFormErrors['name'] != undefined ? 'is-danger' : ''"
                         :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                    <help-button 
+                            :title="$i18n.getHelperTitle('categories', 'name')" 
+                            :message="$i18n.getHelperMessage('categories', 'name')">
+                    </help-button>
                     <b-input
                             id="tainacan-text-name"
                             v-model="form.name"
@@ -19,9 +24,14 @@
 
                 <!-- Description -------------------------------- -->
                 <b-field
+                        :addons="false"
                         :label="$i18n.get('label_description')"
                         :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
                         :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                    <help-button 
+                            :title="$i18n.getHelperTitle('categories', 'description')" 
+                            :message="$i18n.getHelperMessage('categories', 'description')">
+                    </help-button>
                     <b-input
                             id="tainacan-text-description"
                             type="textarea"
@@ -32,9 +42,14 @@
 
                 <!-- Status -------------------------------- -->
                 <b-field
+                        :addons="false"
                         :label="$i18n.get('label_status')"
                         :type="editFormErrors['status'] != undefined ? 'is-danger' : ''"
                         :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                    <help-button 
+                            :title="$i18n.getHelperTitle('categories', 'status')" 
+                            :message="$i18n.getHelperMessage('categories', 'status')">
+                    </help-button>
                     <b-select
                             id="tainacan-select-status"
                             v-model="form.status"
@@ -51,9 +66,14 @@
 
                 <!-- Slug -------------------------------- -->
                 <b-field
+                        :addons="false"
                         :label="$i18n.get('label_slug')"
                         :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
                         :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                    <help-button 
+                            :title="$i18n.getHelperTitle('categories', 'slug')" 
+                            :message="$i18n.getHelperMessage('categories', 'slug')">
+                    </help-button>
                     <b-input
                             id="tainacan-text-slug"
                             v-model="form.slug"
@@ -63,11 +83,13 @@
                 </b-field>
 
                 <!-- Allow Insert -->
-                <b-field :addons="false">
-                    <label class="label">
-                        {{ $i18n.get('label_category_allow_new_terms') }}
-                        <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-                    </label>
+                <b-field 
+                        :addons="false"
+                        :label="$i18n.get('label_category_allow_new_terms')">
+                    <help-button 
+                        :title="$i18n.getHelperTitle('categories', 'allow_insert')" 
+                        :message="$i18n.getHelperMessage('categories', 'allow_insert')">
+                    </help-button>
                     <div class="block" >
                         <b-checkbox
                                 v-model="form.allowInsert"
@@ -78,15 +100,21 @@
                     </div>
                 </b-field>
 
-                <button
-                        id="button-cancel-category-creation"
-                        class="button"
-                        type="button"
-                        @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-                <button
-                        id="button-submit-category-creation"
-                        @click.prevent="onSubmit"
-                        class="button is-primary">{{ $i18n.get('save') }}</button>
+                <div class="field is-grouped form-submit">
+                    <div class="control">
+                        <button
+                                id="button-cancel-category-creation"
+                                class="button is-outlined"
+                                type="button"
+                                @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                    </div>
+                    <div class="control">
+                        <button
+                                id="button-submit-category-creation"
+                                @click.prevent="onSubmit"
+                                class="button is-success">{{ $i18n.get('save') }}</button>
+                    </div>
+                </div>
                 <p class="help is-danger">{{formErrorMessage}}</p>
             </form>
 

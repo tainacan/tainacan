@@ -63,7 +63,7 @@ export default {
         display: block;
         visibility: hidden;
         opacity: 0;
-        transition: opacity 0.4s ease, margin-bottom 0.4s ease;
+        transition: opacity 0.4s ease, margin-bottom 0.3s ease;
 
         .help-tooltip-header {
             padding: 0.8em 0.8em 0.6em 0.8em;
