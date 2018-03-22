@@ -24,7 +24,7 @@
                     
                     <router-link tag="span" class="clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
                         <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">
-                            {{ props.row.metadata[column.slug].multiple == 'yes' ? props.row.metadata[column.slug].value.join(', ') : props.row.metadata[column.slug].value}}
+                            {{  showValue( props.row.metadata[column.slug] ) }}
                         </template>
                     </router-link>
                     
@@ -158,6 +158,20 @@ export default {
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
+        showValue( metadata ){
+            if( metadata.value === false )
+                return '';
+
+            if( Array.isArray( metadata.value ) ){
+                let result = [];
+                for( let val of metadata.value ){
+                    result.push( ( val.name ) ? val.name : val )
+                }
+                return result.join(', ');
+            } else {
+                return metadata.value.name ? metadata.value.name : metadata.value
+            }
+        }
     }
 }
 </script>
