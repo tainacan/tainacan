@@ -92,6 +92,7 @@ html {
     .label { 
         font-weight: normal;
         font-size: 14px; 
+        display: inline-block;
     }
     .required-field-asterisk {
         color: $gray;
