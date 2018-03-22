@@ -20,6 +20,26 @@ class Relationship extends Field_Type {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+       return [
+           'collection_id' => [
+               'title' => __( 'Collection Related', 'tainacan' ),
+               'description' => __( 'Select the collection to fetch items', 'tainacan' ),
+           ],
+           'search' => [
+               'title' => __( 'Fields for search', 'tainacan' ),
+               'description' => __( 'Select the fields to help the search', 'tainacan' ),
+           ],
+           'repeated' => [
+               'title' =>__( 'Allow repeated items', 'tainacan' ),
+               'description' => __( 'Allow different items with the same item selected', 'tainacan' ),
+           ]
+       ];
+    }
+
+    /**
      * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */

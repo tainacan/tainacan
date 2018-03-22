@@ -6,8 +6,11 @@
                  :message="optionMessage"
         >
             <label class="label">
-                {{ $i18n.get('lavel_insert_options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-selectbox', 'options')"
+                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')">
+                </help-button>
             </label>
             <b-taginput
                     v-model="options"
