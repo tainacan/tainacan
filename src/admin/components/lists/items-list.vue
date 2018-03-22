@@ -159,7 +159,7 @@ export default {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
         showValue( metadata ){
-            if( metadata.value === false )
+            if( ! metadata || metadata.value === false )
                 return '';
 
             if( Array.isArray( metadata.value ) ){

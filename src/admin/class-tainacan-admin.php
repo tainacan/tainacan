@@ -153,13 +153,19 @@ class Admin {
 			'base_url'    => $TAINACAN_BASE_URL
 		];
 
-		$settings['maps'] = [
+		$maps = [
 			'collections' => $Tainacan_Collections->get_map(),
 			'fields'      => $Tainacan_Fields->get_map(),
 			'filters'     => $Tainacan_Filters->get_map(),
 			'items'       => $Tainacan_Items->get_map(),
 			'taxonomies'  => $Tainacan_Taxonomies->get_map(),
 		];
+
+		foreach( $maps as $type => $map ){
+		    foreach ( $map as $field => $details){
+                $settings['i18n']['helpers_label'][$type][$field] = [ 'title' => $details['title'], 'description' => $details['description'] ];
+            }
+        }
 
 
 		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
