@@ -18,6 +18,17 @@ class Selectbox extends Field_Type {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'options' => [
+                'title' => __( 'Options', 'tainacan' ),
+                'description' => __( 'Create the options for the select, hit enter to add new one', 'tainacan' ),
+            ]
+        ];
+    }
+    /**
      * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */

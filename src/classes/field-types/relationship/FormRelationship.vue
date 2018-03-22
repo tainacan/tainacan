@@ -7,7 +7,10 @@
                 :message="collectionMessage">
             <label class="label">
                 {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
+                        :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')">
+                </help-button>
             </label>
             <b-select
                     name="field_type_relationship[collection_id]"
@@ -35,7 +38,10 @@
                     :addons="false">
                 <label class="label">
                     {{ $i18n.get('label_fields_for_search') }}
-                    <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                    <help-button
+                            :title="$i18n.getHelperTitle('tainacan-relationship', 'search')"
+                            :message="$i18n.getHelperMessage('tainacan-relationship', 'search')">
+                    </help-button>
                 </label>
                 <div class="block">
                     <div
@@ -57,7 +63,10 @@
         <b-field :addons="false">
             <label class="label">
                 {{ $i18n.get('label_allow_repeated_items') }}
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-relationship', 'repeated')"
+                        :message="$i18n.getHelperMessage('tainacan-relationship', 'repeated')">
+                </help-button>
             </label>
             <div class="block">
                 <b-checkbox v-model="modelRepeated"

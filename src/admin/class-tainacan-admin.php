@@ -161,10 +161,16 @@ class Admin {
 			'taxonomies'  => $Tainacan_Taxonomies->get_map(),
 		];
 
+		$field_types = $Tainacan_Fields->fetch_field_types();
+
 		foreach( $maps as $type => $map ){
 		    foreach ( $map as $field => $details){
                 $settings['i18n']['helpers_label'][$type][$field] = [ 'title' => $details['title'], 'description' => $details['description'] ];
             }
+        }
+        foreach ( $field_types as $index => $field_type){
+		    $class = new $field_type;
+            $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
         }
 
 

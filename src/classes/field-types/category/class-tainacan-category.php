@@ -24,6 +24,26 @@ class Category extends Field_Type {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'taxonomy_id' => [
+                'title' => __( 'Collection Related', 'tainacan' ),
+                'description' => __( 'Select the collection to fetch items', 'tainacan' ),
+            ],
+            'input_type' => [
+                'title' => __( 'Input type', 'tainacan' ),
+                'description' => __( 'The html type of the terms list ', 'tainacan' ),
+            ],
+            'allow_new_terms' => [
+                'title' => __( 'Allow new terms', 'tainacan' ),
+                'description' => __( 'Allow create new terms', 'tainacan' ),
+            ]
+        ];
+    }
+
+    /**
      * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */

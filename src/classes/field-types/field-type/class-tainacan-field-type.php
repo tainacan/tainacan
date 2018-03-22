@@ -148,6 +148,12 @@ abstract class Field_Type  {
     }
 
     /**
+     * allow i18n from messages
+     */
+    public function get_form_labels(){
+       return [];
+    }
+    /**
      * generate the fields for this field type
      */
     public function form(){

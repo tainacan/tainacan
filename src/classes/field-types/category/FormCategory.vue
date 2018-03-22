@@ -8,7 +8,10 @@
         >
             <label class="label">
                 {{ $i18n.get('label_select_category') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-category', 'taxonomy_id')"
+                        :message="$i18n.getHelperMessage('tainacan-category', 'taxonomy_id')">
+                </help-button>
             </label>
             <b-select
                     name="field_type_options[taxonomy_id]"
@@ -30,7 +33,10 @@
         <b-field :addons="false">
             <label class="label">
                 {{ $i18n.get('label_select_category_input_type') }}
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-category', 'input_type')"
+                        :message="$i18n.getHelperMessage('tainacan-category', 'input_type')">
+                </help-button>
             </label>
             <b-select
                     v-if="listInputType"
@@ -66,7 +72,10 @@
         <b-field :addons="false">
             <label class="label">
                 {{ $i18n.get('label_category_allow_new_terms') }}
-                <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-category', 'allow_new_terms')"
+                        :message="$i18n.getHelperMessage('tainacan-category', 'allow_new_terms')">
+                </help-button>
             </label>
             <div class="block">
                 <b-checkbox v-model="allow_new_terms"
