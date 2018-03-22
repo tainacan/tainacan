@@ -103,7 +103,8 @@ return [
     'label_parent_term' => __('Parent Term', 'tainacan'),
     'label_add_new_term' => __('Add New Term', 'tainacan'),
 
-	/* translators: alkdjklasdj laksjd klsadj */
+    /* translators: alkdjklasdj laksjd klsadj */
+    'title_collection_page'                    => __( 'Collection Page', 'tainacan' ),
 	'title_filter_page'                        => __( 'Filter Page', 'tainacan' ),
 	'title_category_page'                      => __( 'Category Page', 'tainacan' ),
 	'title_term_page'                          => __( 'Term Page', 'tainacan' ),

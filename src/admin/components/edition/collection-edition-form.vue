@@ -1,5 +1,5 @@
 <template>
-    <div class="page-container">
+    <div class="page-container" :class="{'primary-page' : isNewCollection }">
         <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag>
         <form v-if="collection != null && collection != undefined" class="tainacan-form" label-width="120px">
             
@@ -143,6 +143,7 @@ export default {
             }],
             editFormErrors: {},
             formErrorMessage: '',
+            isNewCollection: false
         }
     },
     methods: {
@@ -264,6 +265,7 @@ export default {
 
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewCollection();
+            this.isNewCollection = true;
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
             this.isLoading = true;

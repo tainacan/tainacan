@@ -17,7 +17,7 @@
             :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
             :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
             <label class="label">{{$i18n.get('label_description')}} <a class="help-button"><b-icon size="is-small" icon="help-circle-outline"></b-icon>
-            <!-- <help-tooltip title="Ajuda Gente!" message="Este é um exemplo de mensagem de ajuda. Aqui vai um monte de informações úteis."></help-tooltip> -->
+            <help-tooltip title="Ajuda Gente!" message="Este é um exemplo de mensagem de ajuda. Aqui vai um monte de informações úteis."></help-tooltip>
             </a></label>
             <b-input type="textarea" name="description" v-model="editForm.description" @focus="clearErrors('description')" ></b-input>
         </b-field>
