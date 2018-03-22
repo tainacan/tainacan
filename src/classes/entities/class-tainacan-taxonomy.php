@@ -173,4 +173,23 @@ class Taxonomy extends Entity {
 	function set_allow_insert($value) {
         $this->set_mapped_property('allow_insert', $value);
     }
+
+	/**
+	 * Validate Taxonomy
+	 *
+	 * @return bool
+	 */
+	function validate() {
+		if ( ! in_array( $this->get_status(), apply_filters( 'tainacan-status-require-validation', [
+			'publish',
+			'future',
+			'private'
+		] ) ) ) {
+			return true;
+		}
+
+		return parent::validate();
+
+	}
+
 }

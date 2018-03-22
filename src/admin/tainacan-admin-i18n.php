@@ -126,6 +126,7 @@ return [
 	'instruction_dragndrop_filters_repository' => __( 'Drag and drop Fields to create Filters on Repository.', 'tainacan' ),
 	'instruction_delete_selected_collections'  => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'        => __( 'Delete selected items', 'tainacan' ),
+	'instruction_delete_selected_categories'   => __( 'Delete selected categories', 'tainacan' ),
 	'instruction_image_upload_box'             => __( 'Drop an image here or click to upload.', 'tainacan' ),
 	'instruction_select_a_status'              => __( 'Select a status:', 'tainacan' ),
 	'instruction_select_a_filter_type'         => __( 'Select a filter type:', 'tainacan' ),

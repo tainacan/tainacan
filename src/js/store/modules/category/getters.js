@@ -5,3 +5,7 @@ export const getCategory = state => {
 export const getCategories = state => {
   return state.categories;
 };
+
+export const getCategoryName = state => {
+  return state.categoryName;
+};

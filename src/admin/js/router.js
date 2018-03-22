@@ -11,6 +11,7 @@ import ItemPage from '../pages/singles/item-page.vue'
 import FieldsPage from '../pages/lists/fields-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
 import CategoriesPage from '../pages/lists/categories-page.vue'
+import CategoryPage from '../pages/singles/category-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 
 // Edition Form Components
@@ -62,6 +63,7 @@ const routes = [
     { path: '/categories', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_categories_page'), icon: 'shape'} },
     { path: '/categories/new', name: 'CategoryEditionForm', component: CategoryEditionForm, meta: {title: i18nGet('title_create_category_page'), icon: 'shape'} },
     { path: '/categories/:categoryId/edit', name: 'CategoryEditionForm', component: CategoryEditionForm, meta: {title: i18nGet('title_category_edition_page'), icon: 'shape'} },
+    { path: '/categories/:categoryId', name: 'CategoryPage', component: CategoryPage, meta: {title: i18nGet('title_category_page'), icon: 'shape'} },
 
     { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_events_page'), icon: 'bell'} },
 

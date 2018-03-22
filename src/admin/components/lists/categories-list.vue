@@ -94,7 +94,7 @@
 
 <script>
 
-    //import { mapActions } from 'vuex'
+    import { mapActions } from 'vuex'
 
     export default {
         name: 'CategoriesList',
@@ -111,9 +111,9 @@
             }
         },
         methods: {
-            // ...mapActions('category', [
-            //     'deleteCategory'
-            // ]),
+            ...mapActions('category', [
+                'deleteCategory'
+            ]),
             deleteOneCategory(categoryId) {
                 this.$dialog.confirm({
                     message: this.$i18n.get('info_warning_category_delete'),

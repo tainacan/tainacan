@@ -4,7 +4,8 @@ import * as mutations from './mutations';
 
 const state = {
     categories: [],
-    category: null,
+    category: {},
+    categoryName: String,
 };
 
 export default {
