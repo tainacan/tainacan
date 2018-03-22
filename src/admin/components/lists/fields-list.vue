@@ -401,7 +401,7 @@ export default {
                 cursor: default;
                 background-color: white !important;
 
-                .handle .label-details, .handle .icon, .handle .not-saved {
+                .handle .label-details, .handle .icon {
                     color: $gray !important;
                 }
             } 
@@ -411,7 +411,7 @@ export default {
                 .field-name {
                     color: $primary;
                 }
-                .handle .label-details, .handle .icon, .handle .not-saved {
+                .handle .label-details, .handle .icon {
                     color: $gray !important;
                 }
             }

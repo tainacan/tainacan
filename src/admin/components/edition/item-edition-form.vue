@@ -15,6 +15,10 @@
                             :disabled="statusOption.disabled">{{ statusOption.label }}
                     </option>
                 </b-select>
+                <help-button 
+                    :title="$i18n.getHelperTitle('items', 'status')" 
+                    :message="$i18n.getHelperMessage('items', 'status')">
+                </help-button>
             </b-field>
 
             <!-- Thumbnail -------------------------------- --> 
@@ -50,7 +54,6 @@
                 </div>
             </b-field> 
                   
-            
             <!-- Fields from Collection-------------------------------- -->   
             <tainacan-form-item                 
                 v-for="(field, index) in fieldList"
