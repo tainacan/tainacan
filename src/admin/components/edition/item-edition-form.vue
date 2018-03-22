@@ -2,7 +2,13 @@
     <div class="page-container">
         <b-tag v-if="!isLoading" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag>
         <form  v-if="!isLoading" class="tainacan-form" label-width="120px">
-            <b-field :label="$i18n.get('label_status')">
+            <b-field 
+                :addons="false"
+                :label="$i18n.get('label_status')">
+                <help-button 
+                    :title="$i18n.getHelperTitle('items', 'status')" 
+                    :message="$i18n.getHelperMessage('items', 'status')">
+                </help-button>
                 <b-select 
                         id="status-select"
                         v-model="form.status"
@@ -15,10 +21,6 @@
                             :disabled="statusOption.disabled">{{ statusOption.label }}
                     </option>
                 </b-select>
-                <help-button 
-                    :title="$i18n.getHelperTitle('items', 'status')" 
-                    :message="$i18n.getHelperMessage('items', 'status')">
-                </help-button>
             </b-field>
 
             <!-- Thumbnail -------------------------------- --> 
@@ -104,16 +106,22 @@
                             :src="attachment.url"/>
                     </figure>
                 </div>  
-            </div>     
-            <button
-                id="button-cancel-item-creation"
-                class="button"
-                type="button"
-                @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-            <button
-                id="button-submit-item-creation"
-                @click.prevent="onSubmit"
-                class="button is-primary" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
+            </div>
+            <div class="field is-grouped form-submit">
+                <div class="control">     
+                    <button
+                        id="button-cancel-item-creation"
+                        class="button is-outlined"
+                        type="button"
+                        @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                </div>
+                <div class="control">
+                    <button
+                        id="button-submit-item-creation"
+                        @click.prevent="onSubmit"
+                        class="button is-success" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
+                </div>
+            </div>
         </form>
 
         <b-loading :active.sync="isLoading" :canCancel="false">
