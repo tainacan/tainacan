@@ -6,7 +6,7 @@
                 <h5>{{ title }}</h5><a @click="isOpened = false"><b-icon icon="close"></b-icon></a>
             </div>
             <div class="help-tooltip-body">
-                <p>{{ message }}</p>
+                <p>{{ (message != '' && message != undefined) ? message : $i18n.get('info_no_description_provided') }}</p>
             </div>
         </div>   
     </span>
@@ -46,6 +46,7 @@ export default {
     .help-tooltip.opened {
         visibility: visible;
         opacity: 1;
+        margin-bottom: 14px;
     }
 
     .help-tooltip {
@@ -53,7 +54,7 @@ export default {
         background-color: #e8f9f5;
         border: 1px solid #338591;
         border-radius: 10px;
-        margin: 0px 0px 14px -37px;
+        margin: 0px 0px 0px -37px;
         position: absolute;
         z-index: 99999999999999;
         bottom: 100%;
@@ -62,7 +63,7 @@ export default {
         display: block;
         visibility: hidden;
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.4s ease, margin-bottom 0.4s ease;
 
         .help-tooltip-header {
             padding: 0.8em 0.8em 0.6em 0.8em;
