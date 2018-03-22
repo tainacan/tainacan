@@ -80,3 +80,7 @@ Cypress.Commands.add('loginByUI', () => {
     cy.url().should('include', '/wp-admin')
     cy.get('h1').should('contain', 'Dashboard')
   })
+
+Cypress.Commands.add('clearDB', () => {
+  cy.request('POST', '/wp-json/tainacan/v2/database')
+})
