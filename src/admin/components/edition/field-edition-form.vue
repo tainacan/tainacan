@@ -160,8 +160,13 @@ export default {
         collectionId: ''
     },
     created() {
+        
         this.editForm = this.editedField;
+        this.formErrors = this.editForm.formErrors != undefined ? this.editForm.formErrors : {};
+        this.formErrorMessage = this.editForm.formErrors != undefined ? this.editForm.formErrorMessage : ''; 
+        
         this.oldForm = JSON.parse(JSON.stringify(this.originalField));
+
     },
     beforeDestroy() {
         if (this.closedByForm) {
@@ -180,9 +185,6 @@ export default {
         ]),
         saveEdition(field) {
 
-            this.formErrors = {};
-            this.formErrorMessage = '';
-
             if ((field.field_type_object && field.field_type_object.form_component) || field.edit_form == '') {
                 
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, index: this.index, options: this.editForm})
@@ -200,6 +202,9 @@ export default {
                         }
                         this.formErrorMessage = errors.error_message;
                         this.$emit('onErrorFound');
+
+                        this.editForm.formErrors = this.formErrors;
+                        this.editForm.formErrorMessage = this.formErrorMessage;
                     });
             } else {
                 let formElement = document.getElementById('fieldEditForm');
@@ -224,6 +229,9 @@ export default {
                         }
                         this.formErrorMessage = errors.error_message;
                         this.$emit('onErrorFound');
+
+                        this.editForm.formErrors = this.formErrors;
+                        this.editForm.formErrorMessage = this.formErrorMessage;
                     });
             }           
         },

@@ -501,12 +501,13 @@ export default {
                     position: relative;
                     bottom: 3px;
                 }
+                .icon {
+                    bottom: 1px;   
+                    position: relative;
+                    i, i:before { font-size: 20px; }
+                }
             }
-            .icon {
-                bottom: 1px;   
-                position: relative;
-                i, i:before { font-size: 20px; }
-            }
+
             form {
                 padding: 1.0em 2.0em;
                 border-top: 1px solid $draggable-border-color;

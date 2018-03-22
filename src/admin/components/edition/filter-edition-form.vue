@@ -103,7 +103,11 @@ export default {
         originalFilter: {},
     },
     created() {
+
         this.editForm = this.editedFilter;
+        this.formErrors = this.editForm.formErrors != undefined ? this.editForm.formErrors : {};
+        this.formErrorMessage = this.editForm.formErrors != undefined ? this.editForm.formErrorMessage : ''; 
+
         this.oldForm = JSON.parse(JSON.stringify(this.originalFilter));
     },
     beforeDestroy() {
@@ -123,9 +127,6 @@ export default {
         ]),
         saveEdition(filter) {
 
-            this.formErrors = {};
-            this.formErrorMessage = '';
-
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
                 
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.editForm})
@@ -143,6 +144,9 @@ export default {
                         }
                         this.formErrorMessage = errors.error_message;
                         this.$emit('onErrorFound');
+
+                        this.editForm.formErrors = this.formErrors;
+                        this.editForm.formErrorMessage = this.formErrorMessage;
                     });
             } else {
                 let formElement = document.getElementById('filterEditForm');
@@ -167,6 +171,9 @@ export default {
                         }
                         this.formErrorMessage = errors.error_message;
                         this.$emit('onErrorFound');
+
+                        this.editForm.formErrors = this.formErrors;
+                        this.editForm.formErrorMessage = this.formErrorMessage;
                     });
             }           
         },

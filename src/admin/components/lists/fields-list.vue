@@ -390,11 +390,11 @@ export default {
                     position: relative;
                     bottom: 3px;
                 }
-            }
-            .icon {
-                bottom: 1px;   
-                position: relative;
-                i, i:before { font-size: 20px; }
+                .icon {
+                    bottom: 1px;   
+                    position: relative;
+                    i, i:before { font-size: 20px; }
+                }
             }
     
             &.not-sortable-item, &.not-sortable-item:hover {
