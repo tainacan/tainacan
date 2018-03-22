@@ -3,6 +3,7 @@
             :id="id"
             type="number"
             :value="inputValue"
+            step="0.01"
             @blur="onBlur"
             @change="onBlur"
             @input="onInput($event)"></b-input>
