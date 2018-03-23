@@ -124,23 +124,22 @@
                 if( this.field && this.field.multiple === 'no' ){
                     let types = Object.keys( this.single_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.input_type = ( hasValue ) ? this.value.input_type : 'tainacan-category-radio';
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-category-radio' );
                     return true;
                 } else {
                     let types = Object.keys( this.multiple_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.input_type = ( hasValue ) ? this.value.input_type : 'tainacan-category-checkbox';
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-category-checkbox' );
                     return false;
                 }
             },
             setError(){
                 if( this.errors && this.errors.taxonomy_id !== '' ){
-                    this.taxonomyType = 'is-danger';
-                    this.taxonomyMessage = this.errors.taxonomy_id;
+                    this.setErrorsAttributes( 'is-danger', this.errors.taxonomy_id );
                 } else {
-                    this.taxonomyType = '';
-                    this.taxonomyMessage = '';
+                    this.setErrorsAttributes( '', '' );
                 }
+                return true;
             }
         },
         data(){
@@ -158,6 +157,13 @@
             }
         },
         methods: {
+            setInputType( input ){
+                this.input_type = input;
+            },
+            setErrorsAttributes( type, message ){
+                this.taxonomyType = type;
+                this.taxonomyMessage = message;
+            },
             fetchTaxonomies(){
                 return axios.get('/taxonomies')
                     .then(res => {
@@ -172,7 +178,6 @@
                     })
                     .catch(error => {
                         console.log(error);
-                        reject(error);
                     });
             },
             labelNewTerms(){

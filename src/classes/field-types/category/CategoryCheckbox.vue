@@ -42,7 +42,7 @@
             value: [ Number, String, Array ]
         },
         methods: {
-            onChecked(option) {
+            onChecked() {
                 this.$emit('blur');
                 this.onInput(this.checked)
             },

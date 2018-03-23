@@ -35,12 +35,12 @@
                 let msg = '';
                 let errors = eventFilterBus.getErrors( this.filter.id );
                 if ( errors) {
-                    this.filterTypeMessage = 'is-danger';
+                    this.setFilterTypeMessage('is-danger');
                     for (let index in errors) {
                         msg += errors[index] + '\n';
                     }
                 } else {
-                    this.filterTypeMessage = '';
+                    this.setFilterTypeMessage('');
                 }
                 return msg;
             },
@@ -61,6 +61,9 @@
                 eventFilterBus.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
                 router.push({ query: {} });
                 router.push({ query: this.getPostQuery() });
+            },
+            setFilterTypeMessage( message ){
+                this.filterTypeMessage = message;
             }
         }
     }

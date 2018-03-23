@@ -53,7 +53,7 @@
             }
         },
         methods: {
-            loadOptions(){deleteFile
+            loadOptions(){
                 let promise = null;
                 this.isLoading = true;
 
