@@ -88,7 +88,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
             },
             getOptions( parent, level = 0 ){ // retrieve only ids

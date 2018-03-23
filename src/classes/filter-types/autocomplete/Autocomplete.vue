@@ -59,7 +59,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
         },
         data(){
@@ -104,7 +104,7 @@
                 promise.then( () => {
                     this.isLoading = false;
                 }).catch( error => {
-                    console.log('error select', error );
+                    this.$console.log('error select', error );
                     this.isLoading = false;
                 });
             },
@@ -127,12 +127,12 @@
                             .then( res => {
                                 for (let item of res.data) {
                                    // instance.selected.push({ label: item.title, value: item.id, img: '' });
-                                    console.log(item.title);
+                                    this.$console.log(item.title);
                                     instance.results = item.title;
                                 }
                             })
                             .catch(error => {
-                                console.log(error);
+                                this.$console.log(error);
                             });
                     } else {
                         instance.results = metadata.value;
