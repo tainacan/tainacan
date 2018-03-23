@@ -130,7 +130,7 @@ export default {
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
                 
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.editForm})
-                    .then((filter) => {
+                    .then(() => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
@@ -157,7 +157,7 @@ export default {
                     formObj[key] = value;
                 
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
-                    .then((filter) => {
+                    .then(() => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';

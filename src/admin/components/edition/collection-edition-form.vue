@@ -128,7 +128,7 @@
                         class="button is-success">{{ $i18n.get('save') }}</button>
                 </div>
             </div>
-            <p class="help is-danger">{{formErrorMessage}}</p>
+            <p class="help is-danger">{{formErrorMessage}}</p> 
         </form>
 
         <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
@@ -280,7 +280,7 @@ export default {
         deleteThumbnail() {
 
             this.updateThumbnail({collectionId: this.collectionId, thumbnailId: 0})
-            .then((res) => {
+            .then(() => {
                 this.collection.featured_image = false;
             })
             .catch((error) => {

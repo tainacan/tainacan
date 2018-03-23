@@ -118,7 +118,9 @@
                 <p class="help is-danger">{{formErrorMessage}}</p>
             </form>
 
-            <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
+            <b-loading 
+                    :active.sync="isLoading" 
+                    :canCancel="false"></b-loading>
         </div>
     </div>
 </template>
@@ -224,7 +226,6 @@
                     status: 'private',
                     allowInsert: this.form.allowInsert
                 };
-
                 console.log(data);
 
                 this.updateCategory(data)

@@ -45,7 +45,7 @@
                     @input="emitValues()"
                     v-model="input_type">
                 <option
-                        v-for="option,index in single_types"
+                        v-for="(option, index) in single_types"
                         :value="index"
                         :key="index">
                     {{ option }}
@@ -60,7 +60,7 @@
                     v-else>
 
                 <option
-                        v-for="option,index in multiple_types"
+                        v-for="(option, index) in multiple_types"
                         :value="index"
                         :key="index">
                     {{ option }}
@@ -102,7 +102,7 @@
             errors: [ String, Object, Array ]
         },
         created(){
-            this.fetchTaxonomies().then( res => {
+            this.fetchTaxonomies().then(() => {
                 if ( this.value ) {
                     this.taxonomy_id = this.value.taxonomy_id;
                 }
@@ -124,12 +124,12 @@
                 if( this.field && this.field.multiple === 'no' ){
                     let types = Object.keys( this.single_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.input_type =  ( hasValue ) ? this.value.input_type : 'tainacan-category-radio';
+                    this.input_type = ( hasValue ) ? this.value.input_type : 'tainacan-category-radio';
                     return true;
                 } else {
                     let types = Object.keys( this.multiple_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.input_type =  ( hasValue ) ? this.value.input_type : 'tainacan-category-checkbox';
+                    this.input_type = ( hasValue ) ? this.value.input_type : 'tainacan-category-checkbox';
                     return false;
                 }
             },

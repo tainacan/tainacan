@@ -56,7 +56,7 @@ export default {
         border-radius: 10px;
         margin: 0px 0px 0px -37px;
         position: absolute;
-        z-index: 99999999999999;
+        z-index: 999999999999999;
         bottom: 100%;
         left: 0%;
         min-width: 250px;

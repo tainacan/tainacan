@@ -220,7 +220,7 @@ export default {
                 if (!this.isRepositoryLevel)
                     this.updateFieldsOrder(); 
             })
-            .catch((error) => {
+            .catch(() => {
             });
         },
         editField(field) {
@@ -270,10 +270,10 @@ export default {
         this.isLoadingFields = true;
 
         this.fetchFieldTypes()
-            .then((res) => {
+            .then(() => {
                 this.isLoadingFieldTypes = false;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoadingFieldTypes = false;
             });
 
@@ -285,10 +285,10 @@ export default {
         
 
         this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-            .then((res) => {
+            .then(() => {
                 this.isLoadingFields = false;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoadingFields = false;
             });
     }

@@ -103,7 +103,7 @@
                         this.isLoading = false;
                         this.totalCategories = res.total;
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.isLoading = false;
                     });
             },
@@ -126,7 +126,7 @@
                 .then((value) => {
                     this.categoriesPerPage = value;
                 })
-                .catch((error) => {
+                .catch(() => {
                     this.$userPrefs.set('categories_per_page', 12, null);
                 });
         },

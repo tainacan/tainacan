@@ -15,7 +15,6 @@
 
 <script>
     import { eventFilterBus } from '../../js/event-bus-filters'
-    import qs from 'qs';
     import { mapActions, mapGetters } from 'vuex';
     import router from '../../admin/js/router'
 

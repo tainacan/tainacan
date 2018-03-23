@@ -135,7 +135,7 @@ export default {
             'search_by_collection'
         ]),
         onChangeTableFields(field) {
-            let prevValue = this.prefTableFields;
+           // let prevValue = this.prefTableFields;
             let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
             if (index >= 0) {
                 //prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
@@ -187,11 +187,10 @@ export default {
                 this.alterQueryString();
             }
 
-
-            promisse.then((res) => {
+            promisse.then(() => {
                 this.isLoading = false;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoading = false;
             });
         },
@@ -233,7 +232,7 @@ export default {
         .then((value) => {
             this.itemsPerPage = value;
         })
-        .catch((error) => {
+        .catch(() => {
             this.$userPrefs.set('items_per_page', 12, null);
         });     
     },
@@ -307,11 +306,12 @@ export default {
             background-color: $primary-lighter;
             margin-left: -$page-small-side-padding;
             padding: $page-small-side-padding;
-
+            
             .label {
+                font-size: 12px;
                 font-weight: normal;
-                font-size: 0.85em;
             }
+            
         }
 
         .table-container {

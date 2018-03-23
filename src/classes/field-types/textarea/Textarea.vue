@@ -34,9 +34,6 @@
                 this.inputValue = $event;
                 this.$emit('input', this.inputValue);
             }
-        },
-        created(){
-            this.inputValue = this.value;
         }
     }
 </script>

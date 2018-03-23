@@ -188,7 +188,7 @@ export default {
             if ((field.field_type_object && field.field_type_object.form_component) || field.edit_form == '') {
                 
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, index: this.index, options: this.editForm})
-                    .then((field) => {
+                    .then(() => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
@@ -215,7 +215,7 @@ export default {
                     formObj[key] = value;
                 
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, index: this.index, options: formObj})
-                    .then((field) => {
+                    .then(() => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';

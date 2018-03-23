@@ -280,17 +280,15 @@ export default {
                     this.activeFilterList.splice(index, 1);
                     this.isLoadingFieldTypes = true;
                     this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-                    .then((res) => {
+                    .then(() => {
                         this.isLoadingFieldTypes = false;
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.isLoadingFieldTypes = false;
                     });
                 
                 if (!this.isRepositoryLevel)
                     this.updateFiltersOrder(); 
-            })
-            .catch((error) => {
             });
         },
         confirmSelectedFilterType() {
@@ -379,26 +377,26 @@ export default {
         this.isLoadingFilterTypes = true;
 
         this.fetchFilterTypes()
-            .then((res) => {
+            .then(() => {
                 this.isLoadingFilterTypes = false;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoadingFilterTypes = false;
             });        
 
         this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-            .then((res) => {
+            .then(() => {
                 this.isLoadingFilters = false;
                 // Needs to be done after activeFilterList exists to compare and remove chosen fields.
                 this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-                    .then((res) => {
+                    .then(() => {
                         this.isLoadingFieldTypes = false;
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.isLoadingFieldTypes = false;
                     });
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoadingFilters = false;
             });
     }

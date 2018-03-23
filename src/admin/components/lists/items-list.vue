@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     name: 'ItemsList',
@@ -92,7 +92,7 @@ export default {
             this.$dialog.confirm({
                 message: this.$i18n.get('info_warning_item_delete'),
                 onConfirm: () => {
-                    this.deleteItem(itemId).then((res) => {
+                    this.deleteItem(itemId).then(() => {
                         this.loadItems();
                         this.$toast.open({
                             duration: 3000,
@@ -105,7 +105,7 @@ export default {
                             if (this.selectedItems[i].id == this.itemId)
                                 this.selectedItems.splice(i, 1);
                         }
-                    }).catch(( error ) => {
+                    }).catch(() => {
 
                         this.$toast.open({ 
                             duration: 3000,
@@ -125,7 +125,7 @@ export default {
 
                     for (let item of this.selectedItems) {
                         this.deleteItem(item.id)
-                        .then((res) => {
+                        .then(() => {
                             this.loadItems();
                             this.$toast.open({
                                 duration: 3000,
@@ -135,7 +135,7 @@ export default {
                                 queue: false
                             });
                                                       
-                        }).catch((err) => { 
+                        }).catch(() => { 
                             this.$toast.open({
                                 duration: 3000,
                                 message: this.$i18n.get('info_error_deleting_item'),

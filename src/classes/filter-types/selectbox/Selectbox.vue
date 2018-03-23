@@ -8,7 +8,7 @@
                 expanded>
             <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
             <option
-                    v-for="option,index in options"
+                    v-for="(option, index) in options"
                     :key="index"
                     :label="option.label"
                     :value="option.value"
@@ -66,7 +66,7 @@
                     promise = this.getValuesPlainText( this.field );
                 }
 
-                promise.then( data => {
+                promise.then(() => {
                     this.isLoading = false;
                     instance.selectedValues();
                 })

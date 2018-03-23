@@ -58,7 +58,7 @@ export default {
         }
     },
     watch: {
-        '$route' (to, from) {
+        '$route' (to) {
             this.isCompressed = (to.params.collectionId != undefined);
             this.activeRoute = to.name;
         }

@@ -93,7 +93,7 @@ export default {
         }
     },
     watch: {
-        '$route' (to, from) {
+        '$route' (to) {
             this.onSecondaryPage = (to.params.collectionId != undefined);
             this.pageTitle = this.$route.meta.title;
             this.currentIcon = this.$route.meta.icon;

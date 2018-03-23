@@ -70,7 +70,7 @@ export default {
         let loadingInstance = this;
 
         // Obtains Item 
-        this.fetchItem(this.itemId).then(res => {
+        this.fetchItem(this.itemId).then(() => {
             loadingInstance.isLoading = false;
         });
     }

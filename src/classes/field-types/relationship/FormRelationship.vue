@@ -45,7 +45,8 @@
                 </label>
                 <div class="block">
                     <div
-                        v-for="option in fields"
+                        v-for="(option, index) in fields"
+                        :key="index"
                         class="field">
                         <b-checkbox
                                 name="field_type_relationship[search][]"
@@ -82,7 +83,6 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
-    import Vue from 'vue';
 
     export default {
         props: {
@@ -125,7 +125,7 @@
             }
         },
         created(){
-           this.fetchCollections().then( data => {
+           this.fetchCollections().then(() => {
                if( this.collection_id && this.collection_id !== '' ){
                    this.collection = this.collection_id;
                } else if ( this.value ) {
@@ -165,7 +165,6 @@
                     })
                     .catch(error => {
                         console.log(error);
-                        reject(error);
                     });
             },
             fetchFieldsFromCollection( value ){
@@ -198,7 +197,7 @@
                             })
                         }
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.hasFields = false;
                     });
 

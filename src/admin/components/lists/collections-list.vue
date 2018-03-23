@@ -6,7 +6,6 @@
         <b-table
                 ref="collectionTable"
                 :data="collections"
-                @selection-change="handleSelectionChange"
                 :checked-rows.sync="selectedCollections"
                 checkable
                 :loading="isLoading"
@@ -70,7 +69,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
     name: 'CollectionsList',
@@ -126,7 +125,7 @@ export default {
 
                     for (let collection of this.selectedCollections) {
                         this.deleteCollection(collection.id)
-                        .then((res) => {
+                        .then(() => {
                             this.loadCollections();
                             this.$toast.open({
                                 duration: 3000,
@@ -135,7 +134,7 @@ export default {
                                 type: 'is-secondary',
                                 queue: false
                             })                            
-                        }).catch((err) => { 
+                        }).catch(() => { 
                             this.$toast.open({
                                 duration: 3000,
                                 message: this.$i18n.get('info_error_deleting_collection'),
@@ -148,8 +147,6 @@ export default {
                     this.selectedCollections =  [];
                 }
             });
-        },
-        handleSelectionChange(value) {
         },
         goToCollectionPage(collectionId) {
             this.$router.push(this.$routerHelper.getCollectionPath(collectionId));

@@ -5,7 +5,7 @@
             v-model="selected" 
             @input="onChecked()">
             <option
-                    v-for="option,index in getOptions"
+                    v-for="(option, index) in getOptions"
                     :key="index"
                     :label="option"
                     :value="option"

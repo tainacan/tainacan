@@ -14,7 +14,6 @@
                 v-if="totalCategories > 0"
                 ref="categoryTable"
                 :data="categories"
-                @selection-change="handleSelectionChange"
                 :checked-rows.sync="selectedCategories"
                 checkable
                 :loading="isLoading"
@@ -150,7 +149,7 @@
 
                         for (let category of this.selectedCategories) {
                             this.deleteCategory(category.id)
-                                .then((res) => {
+                                .then(() => {
                                     this.loadCategories();
                                     this.$toast.open({
                                         duration: 3000,
@@ -159,7 +158,7 @@
                                         type: 'is-secondary',
                                         queue: false
                                     })
-                                }).catch((err) => {
+                                }).catch(() => {
                                 this.$toast.open({
                                     duration: 3000,
                                     message: this.$i18n.get('info_error_deleting_category'),
@@ -172,8 +171,6 @@
                         this.selectedCategories = [];
                     }
                 });
-            },
-            handleSelectionChange(value) {
             },
             goToCategoryPage(categoryId) {
                 this.$router.push(this.$routerHelper.getCategoryPath(categoryId));

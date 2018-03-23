@@ -22,7 +22,7 @@
                                 v-model="parent">
                             <option :value="0" selected> ---{{ $i18n.get('label_parent_term') }}--- </option>
                             <option
-                                    v-for="option,index in options"
+                                    v-for="(option,index) in options"
                                     :key="index"
                                     :value="option.term_id"
                                     v-html="setSpaces( option.level ) + option.name"></option>
@@ -97,7 +97,7 @@
                             if( !Array.isArray( val ) && this.field.field.multiple === 'no' ){
                                 axios.patch(`/item/${this.item_id}/metadata/${this.field_id}`, {
                                     values: term_id,
-                                }).then( res => {
+                                }).then(() => {
                                     instance.$emit('newTerm', term_id);
                                 })
                             } else {

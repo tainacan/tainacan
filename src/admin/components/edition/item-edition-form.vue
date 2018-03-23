@@ -195,7 +195,7 @@ export default {
 
                 this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
             }).catch(error => {
-                
+                console.log(error);
                 this.isLoading = false;
             });
         },
@@ -234,7 +234,7 @@ export default {
         },
         loadMetadata() { 
             // Obtains Item Field
-            this.fetchFields(this.itemId).then(res => {
+            this.fetchFields(this.itemId).then(() => {
                 this.isLoading = false;
             });
         }, 
@@ -245,7 +245,7 @@ export default {
             
             for (let file of $event) {
                 this.sendAttachment({ item_id: this.itemId, file: file })
-                .then((res) => {
+                .then(() => {
                     
                 })
                 .catch((error) => {
@@ -273,7 +273,7 @@ export default {
         },
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
-            .then((res) => {
+            .then(() => {
                 this.item.featured_image = false;
             })
             .catch((error) => {
@@ -281,7 +281,7 @@ export default {
             });    
         },
         deleteFile(index) {
-
+            console.log("Delete:" + index);
         }
     },
     computed: {

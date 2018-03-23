@@ -1,6 +1,8 @@
 <template>
     <div>
-        <div v-for="option,index in options">
+        <div   
+                v-for="(option, index) in options"
+                :key="index">
             <b-checkbox
                     :id="id"
                     :style="{ paddingLeft: (option.level * 30)  + 'px' }"

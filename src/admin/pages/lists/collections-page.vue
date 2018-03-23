@@ -103,7 +103,7 @@ export default {
                 this.isLoading = false;
                 this.totalCollections = res.total;
             }) 
-            .catch((error) => {
+            .catch(() => {
                 this.isLoading = false;
             });
         },
@@ -126,7 +126,7 @@ export default {
             .then((value) => {
                 this.collectionsPerPage = value;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.$userPrefs.set('collections_per_page', 12, null);
             }); 
     },

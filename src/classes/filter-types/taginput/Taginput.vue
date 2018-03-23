@@ -81,7 +81,7 @@
                     promise = this.getValuesPlainText( this.field, query );
                 }
 
-                promise.then( data => {
+                promise.then(() => {
                     this.isLoading = false;
                 }).catch( error => {
                     console.log('error select', error );
