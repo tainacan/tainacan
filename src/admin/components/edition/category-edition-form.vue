@@ -223,7 +223,7 @@
                     .then(samplePermalink => {
 
                         let promise = htmlToJSON.parse(samplePermalink, {
-                            permalink($doc, $) {
+                            permalink($doc) {
                                 return $doc.find('#editable-post-name-full').text();
                             }
                         });

@@ -127,7 +127,7 @@
                     message: this.$i18n.get('info_warning_category_delete'),
                     onConfirm: () => {
                         this.deleteCategory(categoryId)
-                            .then((res) => {
+                            .then(() => {
                                 this.$toast.open({
                                     duration: 3000,
                                     message: this.$i18n.get('info_category_deleted'),
@@ -140,7 +140,7 @@
                                         this.selectedCategories.splice(i, 1);
                                 }
                             })
-                            .catch((error) => {
+                            .catch(() => {
                                 this.$toast.open({
                                     duration: 3000,
                                     message: this.$i18n.get('info_error_deleting_category'),
