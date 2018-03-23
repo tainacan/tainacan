@@ -97,13 +97,13 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 		$collection1 = $this->tainacan_entity_factory->create_entity('collection', '', true);
 
 		// Delete permanently
-		$delete_permanently = json_encode(['is_permanently' => true]);
+		$delete_permanently = ['permanently' => true];
 
 		$request  = new \WP_REST_Request(
 			'DELETE',
 			$this->namespace . '/collections/' . $collection1->get_id()
 		);
-		$request->set_body($delete_permanently);
+		$request->set_query_params($delete_permanently);
 
 		$response = $this->server->dispatch($request);
 
@@ -122,13 +122,13 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 	    $collection2 = $this->tainacan_entity_factory->create_entity('collection', '', true);
 
 	    // Move to trash
-	    $delete_permanently = json_encode(['is_permanently' => false]);
+	    $delete_permanently = ['permanently' => false];
 
 	    $request  = new \WP_REST_Request(
 		    'DELETE',
 		    $this->namespace . '/collections/' . $collection2->get_id()
 	    );
-	    $request->set_body($delete_permanently);
+	    $request->set_query_params($delete_permanently);
 
 	    $response = $this->server->dispatch($request);
 
