@@ -25,14 +25,17 @@ export const createCategory = ({commit}, category) => {
 
 export const deleteCategory = ({ commit }, categoryId) => {
   return new Promise(( resolve, reject ) => {
-      axios.tainacan.delete(`/taxonomies/${categoryId}`, {
-          'is_permanently': true
-      })
+      axios.tainacan.delete(`/taxonomies/${categoryId}?permanently=${true}`)
           .then(res => {
+              console.info(res);
 
-              resolve( res.data );
+              commit('deleteCategory', res.data);
+
+              resolve( res );
           })
           .catch(error => {
+              console.error(error);
+
               reject( error )
           });
   });

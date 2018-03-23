@@ -94,7 +94,6 @@ export default {
                 message: this.$i18n.get('info_warning_collection_delete'),
                 onConfirm: () => {
                     this.deleteCollection(collectionId).then(() => {
-                        this.loadCollections();
                         this.$toast.open({
                             duration: 3000,
                             message: this.$i18n.get('info_collection_deleted'),

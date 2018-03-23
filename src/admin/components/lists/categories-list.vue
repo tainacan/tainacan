@@ -92,7 +92,6 @@
 </template>
 
 <script>
-
     import { mapActions } from 'vuex'
 
     export default {
@@ -117,28 +116,29 @@
                 this.$dialog.confirm({
                     message: this.$i18n.get('info_warning_category_delete'),
                     onConfirm: () => {
-                        this.deleteCategory(categoryId).then(() => {
-                            this.loadCategories();
-                            this.$toast.open({
-                                duration: 3000,
-                                message: this.$i18n.get('info_category_deleted'),
-                                position: 'is-bottom',
-                                type: 'is-secondary',
-                                queue: true
-                            });
-                            for (let i = 0; i < this.selectedCategories.length; i++) {
-                                if (this.selectedCategories[i].id === this.categoryId)
-                                    this.selectedCategories.splice(i, 1);
-                            }
-                        }).catch(() =>
-                            this.$toast.open({
-                                duration: 3000,
-                                message: this.$i18n.get('info_error_deleting_category'),
-                                position: 'is-bottom',
-                                type: 'is-danger',
-                                queue: true
+                        this.deleteCategory(categoryId)
+                            .then((res) => {
+                                this.$toast.open({
+                                    duration: 3000,
+                                    message: this.$i18n.get('info_category_deleted'),
+                                    position: 'is-bottom',
+                                    type: 'is-secondary',
+                                    queue: true
+                                });
+                                for (let i = 0; i < this.selectedCategories.length; i++) {
+                                    if (this.selectedCategories[i].id === this.categoryId)
+                                        this.selectedCategories.splice(i, 1);
+                                }
                             })
-                        );
+                            .catch((error) => {
+                                this.$toast.open({
+                                    duration: 3000,
+                                    message: this.$i18n.get('info_error_deleting_category'),
+                                    position: 'is-bottom',
+                                    type: 'is-danger',
+                                    queue: true
+                                });
+                            });
                     }
                 });
             },
