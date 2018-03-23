@@ -48,12 +48,12 @@
                 let msg = '';
                 let errors = eventBus.getErrors(this.field.field.id);
                 if ( errors) {
-                    this.fieldTypeMessage = 'is-danger';
+                    this.setFieldTypeMessage('is-danger');
                     for (let index in errors) {
                       msg += errors[index] + '\n';
                     }
                 } else {
-                    this.fieldTypeMessage = '';
+                    this.setFieldTypeMessage('');
                 }
                 return msg;
             }
@@ -85,6 +85,9 @@
             isTextInputComponent( component ){
                 let array = ['tainacan-relationship','tainacan-category'];
                 return !( array.indexOf( component ) >= 0 );
+            },
+            setFieldTypeMessage( message ){
+                this.fieldTypeMessage = message;
             }
         }
     }

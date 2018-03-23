@@ -105,7 +105,7 @@
                                 val.push( term_id );
                                 axios.patch(`/item/${this.item_id}/metadata/${this.field_id}`, {
                                     values: val,
-                                }).then( res => {
+                                }).then( () => {
                                     instance.$emit('newTerm', val);
                                 })
                             }

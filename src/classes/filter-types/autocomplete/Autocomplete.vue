@@ -37,6 +37,7 @@
 <script>
     import { tainacan as axios } from '../../../js/axios/axios'
     import { filter_type_mixin } from '../filter-types-mixin'
+    import qs from 'qs';
 
     export default {
         created(){
@@ -95,7 +96,7 @@
                     promise = this.getValuesPlainText( this.field, query );
                 }
 
-                promise.then( data => {
+                promise.then( () => {
                     this.isLoading = false;
                 }).catch( error => {
                     console.log('error select', error );

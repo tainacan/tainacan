@@ -45,12 +45,11 @@
         computed: {
             setError(){
                 if( this.errors && this.errors.options !== '' ){
-                    this.optionType = 'is-danger';
-                    this.optionMessage = this.errors.options;
+                    this.setErrorsAttributes( 'is-danger', this.errors.options )
                 } else {
-                    this.optionType = '';
-                    this.optionMessage = '';
+                    this.setErrorsAttributes( '', '' )
                 }
+                return true;
             }
         },
         methods: {
@@ -62,6 +61,10 @@
                 this.$emit('input',{
                     options: ( this.options.length > 0 ) ? this.options.join('\n') : ''
                 })
+            },
+            setErrorsAttributes( type, message ){
+                this.optionType = type;
+                this.optionMessage = message;
             }
         }
     }

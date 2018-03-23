@@ -23,7 +23,7 @@
             }
         },
         watch: {
-            terms( val ){
+            terms(){
                 this.selectedValues();
             }
         },

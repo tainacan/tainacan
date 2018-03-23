@@ -142,15 +142,18 @@
         computed: {
             setError(){
                 if( this.errors && this.errors.collection_id !== '' ){
-                    this.collectionType = 'is-danger';
-                    this.collectionMessage = this.errors.collection_id;
+                    this.setErrorsAttributes( 'is-danger', this.errors.collection_id );
                 } else {
-                    this.collectionType = '';
-                    this.collectionMessage = '';
+                    this.setErrorsAttributes( '', '' );
                 }
+                return true;
             },
         },
         methods:{
+            setErrorsAttributes( type, message ){
+                this.collectionType = type;
+                this.collectionType = message;
+            },
             fetchCollections(){
                 return axios.get('/collections')
                     .then(res => {

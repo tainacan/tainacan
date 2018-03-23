@@ -83,15 +83,10 @@
                     this.loading = true;
                     this.options = [];
                     let collectionId = ( this.field && this.field.field.field_type_options.collection_id ) ? this.field.field.field_type_options.collection_id : this.collection_id;
-                    axios.get('/collection/'+collectionId+'/items')
+                    axios.get('/collection/'+collectionId+'/items?search=' + query)
                     .then( res => {
-                        let result = [];
                         this.loading = false;
-                        result = res.data.filter(item => {
-                            return item.title.toLowerCase()
-                                .indexOf(query.toLowerCase()) > -1;
-                        });
-
+                        let result = res.data;
                         for (let item of result) {
                             this.options.push({ label: item.title, value: item.id })
                         }
