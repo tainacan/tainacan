@@ -2,7 +2,7 @@
     <b-datepicker
             :id="id"
             v-model="dateValue"
-            @input="onInput($event)"></b-datepicker>
+            @input="onInput($event)"/>
 </template>
 
 <script>

@@ -2,16 +2,15 @@
     <section
             v-if="isReady"
             :listen="setError">
-        <b-field :addons="false"
-                 :type="taxonomyType"
-                 :message="taxonomyMessage"
-        >
+        <b-field 
+                :addons="false"
+                :type="taxonomyType"
+                :message="taxonomyMessage">
             <label class="label">
                 {{ $i18n.get('label_select_category') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-category', 'taxonomy_id')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'taxonomy_id')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-category', 'taxonomy_id')"/>
             </label>
             <b-select
                     name="field_type_options[taxonomy_id]"
@@ -35,8 +34,7 @@
                 {{ $i18n.get('label_select_category_input_type') }}
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-category', 'input_type')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'input_type')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-category', 'input_type')"/>
             </label>
             <b-select
                     v-if="listInputType"
@@ -74,14 +72,14 @@
                 {{ $i18n.get('label_category_allow_new_terms') }}
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-category', 'allow_new_terms')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'allow_new_terms')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-category', 'allow_new_terms')"/>
             </label>
             <div class="block">
-                <b-checkbox v-model="allow_new_terms"
-                          @input="emitValues()"
-                          true-value="yes"
-                          false-value="no">
+                <b-checkbox 
+                        v-model="allow_new_terms"
+                        @input="emitValues()"
+                        true-value="yes"
+                        false-value="no">
                     {{ labelNewTerms() }}
                 </b-checkbox>
             </div>

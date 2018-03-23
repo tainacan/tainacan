@@ -9,8 +9,7 @@
                 {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
-                        :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')"/>
             </label>
             <b-select
                     name="field_type_relationship[collection_id]"
@@ -32,7 +31,7 @@
         <transition name="fade">
             <div
                 v-if="loadingFields"
-                class="loading-spinner"></div>
+                class="loading-spinner"/>
             <b-field
                     v-if="hasFields"
                     :addons="false">
@@ -40,8 +39,7 @@
                     {{ $i18n.get('label_fields_for_search') }}
                     <help-button
                             :title="$i18n.getHelperTitle('tainacan-relationship', 'search')"
-                            :message="$i18n.getHelperMessage('tainacan-relationship', 'search')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('tainacan-relationship', 'search')"/>
                 </label>
                 <div class="block">
                     <div
@@ -66,15 +64,15 @@
                 {{ $i18n.get('label_allow_repeated_items') }}
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'repeated')"
-                        :message="$i18n.getHelperMessage('tainacan-relationship', 'repeated')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-relationship', 'repeated')"/>
             </label>
             <div class="block">
-                <b-checkbox v-model="modelRepeated"
-                          @input="emitValues()"
-                          true-value="yes"
-                          false-value="no">
-                        {{ labelRepeated() }}
+                <b-checkbox 
+                        v-model="modelRepeated"
+                        @input="emitValues()"
+                        true-value="yes"
+                        false-value="no">
+                    {{ labelRepeated() }}
                 </b-checkbox>
             </div>
         </b-field>

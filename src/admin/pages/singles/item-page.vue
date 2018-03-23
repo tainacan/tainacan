@@ -1,12 +1,17 @@
 <template>
     <div>
-        <b-loading :active.sync="isLoading" :canCancel="false">
-
-        </b-loading>
+        <b-loading 
+                :active.sync="isLoading" 
+                :can-cancel="false"/>
         <div class="card">
-            <div class="card-image" v-if="item.featured_image">
+            <div 
+                    class="card-image" 
+                    v-if="item.featured_image">
                 <figure class="image is-4by3">
-                    <img :src="item.featured_image" class="image" :alt="item.title">
+                    <img 
+                            :src="item.featured_image" 
+                            class="image" 
+                            :alt="item.title">
                 </figure>
             </div>
             <div class="card-content">
@@ -18,16 +23,18 @@
                 </div>
 
                 <div class="content">
-                    {{item.description}}
+                    {{ item.description }}
                 </div>
             </div>
             <footer class="card-footer">
                 <router-link
-                        class="card-footer-item" :to="{ path: $routerHelper.getCollectionPath(collectionId)}">
+                        class="card-footer-item" 
+                        :to="{ path: $routerHelper.getCollectionPath(collectionId)}">
                     {{ $i18n.get('see') + ' ' + $i18n.get('collection') }}
                 </router-link>
                 <router-link
-                        class="card-footer-item" :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
+                        class="card-footer-item" 
+                        :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                     {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
                 </router-link>
             </footer>

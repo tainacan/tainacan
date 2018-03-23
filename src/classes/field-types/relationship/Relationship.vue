@@ -7,8 +7,7 @@
                 autocomplete
                 :loading="loading"
                 field="label"
-                @typing="search">
-        </b-taginput>
+                @typing="search"/>
     </div>
 </template>
 

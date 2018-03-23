@@ -1,14 +1,15 @@
 <template>
-    <b-field :label="filter.name"
-             :message="getErrorMessage"
-             :type="filterTypeMessage">
+    <b-field 
+            :label="filter.name"
+            :message="getErrorMessage"
+            :type="filterTypeMessage">
         <div>
             <component
                     :id="filter.filter_type_object.component + '-' + filter.slug"
                     :is="filter.filter_type_object.component"
                     :filter="getFilter"
                     :query="query"
-                    @input="listen( $event )"></component>
+                    @input="listen( $event )"/>
         </div>
     </b-field>
 </template>
@@ -21,8 +22,8 @@
     export default {
         name: 'TainacanFiltersList',
         props: {
-            filter: {},
-            query: {}
+            filter: Object,
+            query: Object
         },
         data(){
             return {

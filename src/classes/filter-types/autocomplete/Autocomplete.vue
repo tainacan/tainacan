@@ -12,8 +12,12 @@
                 @select="option => setResults(option) ">
             <template slot-scope="props">
                 <div class="media">
-                    <div class="media-left" v-if="props.option.img">
-                        <img width="32" :src="`${props.option.img}`">
+                    <div 
+                            class="media-left" 
+                            v-if="props.option.img">
+                        <img 
+                                width="32" 
+                                :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
                         {{ props.option.label }}
@@ -23,11 +27,12 @@
         </b-autocomplete>
         <br>
         <div class="field has-text-centered">
-            <b-tag v-if="results !== ''"
-                   type="is-primary"
-                   size="is-small"
-                   closable
-                   @close="clearSearch()">
+            <b-tag 
+                    v-if="results !== ''"
+                    type="is-primary"
+                    size="is-small"
+                    closable
+                    @close="clearSearch()">
                 {{ results }}
             </b-tag>
         </div>

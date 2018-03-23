@@ -1,7 +1,12 @@
 <template>
     <div>     
-        <b-field grouped group-multiline>
-            <button v-if="selectedCollections.length > 0" class="button field is-danger" @click="deleteSelectedCollections()"><span>{{$i18n.get('instruction_delete_selected_collections')}} </span><b-icon icon="delete"></b-icon></button>
+        <b-field 
+                grouped 
+                group-multiline>
+            <button 
+                    v-if="selectedCollections.length > 0" 
+                    class="button field is-danger" 
+                    @click="deleteSelectedCollections()"><span>{{ $i18n.get('instruction_delete_selected_collections') }} </span><b-icon icon="delete"/></button>
         </b-field>
         <b-table
                 ref="collectionTable"
@@ -15,33 +20,84 @@
                 backend-sorting>
             <template slot-scope="props">
                 
-                <b-table-column tabindex="0" :label="$i18n.get('label_thumbnail')" :aria-label="$i18n.get('label_thumbnail')" field="featured_image" width="55">
-                    <template v-if="props.row.featured_image" slot-scope="scope">
-                        <router-link tag="img" :to="{path: $routerHelper.getCollectionPath(props.row.id)}" class="table-thumb clickable-row" :src="`${props.row.featured_image}`"></router-link>
+                <b-table-column 
+                        tabindex="0" 
+                        :label="$i18n.get('label_thumbnail')" 
+                        :aria-label="$i18n.get('label_thumbnail')" 
+                        field="featured_image" 
+                        width="55">
+                    <template 
+                            v-if="props.row.featured_image" 
+                            slot-scope="scope">
+                        <router-link 
+                                tag="img" 
+                                :to="{path: $routerHelper.getCollectionPath(props.row.id)}" 
+                                class="table-thumb clickable-row" 
+                                :src="`${props.row.featured_image}`"/>
                     </template>
                 </b-table-column>
 
-                <b-table-column tabindex="0" :label="$i18n.get('label_name')" :aria-label="$i18n.get('label_name')" field="props.row.name">
-                    <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
+                <b-table-column 
+                        tabindex="0" 
+                        :label="$i18n.get('label_name')" 
+                        :aria-label="$i18n.get('label_name')" 
+                        field="props.row.name">
+                    <router-link 
+                            class="clickable-row" 
+                            tag="span" 
+                            :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
                     {{ props.row.name }}
                     </router-link>
                 </b-table-column>
 
-                <b-table-column tabindex="0" :aria-label="$i18n.get('label_description')" :label="$i18n.get('label_description')" property="description" show-overflow-tooltip field="props.row.description">
-                    <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
+                <b-table-column 
+                        tabindex="0" 
+                        :aria-label="$i18n.get('label_description')" 
+                        :label="$i18n.get('label_description')" 
+                        property="description" 
+                        show-overflow-tooltip 
+                        field="props.row.description">
+                    <router-link 
+                            class="clickable-row" 
+                            tag="span" 
+                            :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
                     {{ props.row.description }}
                     </router-link>
                 </b-table-column>
 
-                <b-table-column class="row-creation" tabindex="0" :aria-label="$i18n.get('label_creation') + ': ' + props.row.creation" :label="$i18n.get('label_creation')" property="creation" show-overflow-tooltip field="props.row.creation">
-                    <router-link class="clickable-row" v-html="props.row.creation" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
-                    </router-link>
+                <b-table-column 
+                        class="row-creation" 
+                        tabindex="0" 
+                        :aria-label="$i18n.get('label_creation') + ': ' + props.row.creation" 
+                        :label="$i18n.get('label_creation')" 
+                        property="creation" 
+                        show-overflow-tooltip 
+                        field="props.row.creation">
+                    <router-link 
+                            class="clickable-row" 
+                            v-html="props.row.creation" 
+                            tag="span" 
+                            :to="{path: $routerHelper.getCollectionPath(props.row.id)}"/>
                 </b-table-column>
 
-                <b-table-column tabindex="0" :label="$i18n.get('label_actions')" width="78" :aria-label="$i18n.get('label_actions')">
+                <b-table-column 
+                        tabindex="0" 
+                        :label="$i18n.get('label_actions')" 
+                        width="78" 
+                        :aria-label="$i18n.get('label_actions')">
                     <!-- <a id="button-view" :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a> -->
-                    <a id="button-edit" :aria-label="$i18n.getFrom('collections','edit_item')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon type="is-gray" icon="pencil"></a>
-                    <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon type="is-gray" icon="delete"></a>
+                    <a 
+                            id="button-edit" 
+                            :aria-label="$i18n.getFrom('collections','edit_item')" 
+                            @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon 
+                            type="is-gray" 
+                            icon="pencil"/></a>
+                    <a 
+                            id="button-delete" 
+                            :aria-label="$i18n.get('label_button_delete')" 
+                            @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon 
+                            type="is-gray" 
+                            icon="delete"/></a>
                 </b-table-column>
             </template>
 
@@ -52,12 +108,13 @@
                         <p>
                             <b-icon
                                 icon="inbox"
-                                size="is-large">
-                            </b-icon>
+                                size="is-large"/>
                         </p>
-                        <p>{{$i18n.get('info_no_collection_created')}}</p>
-                        <router-link tag="button" class="button is-primary"
-                                    :to="{ path: $routerHelper.getNewCollectionPath() }">
+                        <p>{{ $i18n.get('info_no_collection_created') }}</p>
+                        <router-link 
+                                tag="button" 
+                                class="button is-primary"
+                                :to="{ path: $routerHelper.getNewCollectionPath() }">
                             {{ $i18n.getFrom('collections', 'new_item') }}
                         </router-link>
                     </div>
@@ -83,7 +140,7 @@ export default {
         totalCollections: 0,
         page: 1,
         collectionsPerPage: 12,
-        collections: []
+        collections: Array
     },
     methods: {
         ...mapActions('collection', [

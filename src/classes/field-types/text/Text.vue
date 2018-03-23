@@ -1,9 +1,9 @@
 <template>
     <b-input
-    :id="id"
-    :value="inputValue"
-    @blur="onBlur"
-    @input="onInput($event)"></b-input>
+            :id="id"
+            :value="inputValue"
+            @blur="onBlur"
+            @input="onInput($event)"/>
 </template>
 
 <script>

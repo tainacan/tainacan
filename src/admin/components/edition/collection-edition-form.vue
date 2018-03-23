@@ -1,7 +1,15 @@
 <template>
-    <div class="page-container" :class="{'primary-page' : isNewCollection }">
-        <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag>
-        <form v-if="collection != null && collection != undefined" class="tainacan-form" label-width="120px">
+    <div 
+            class="page-container" 
+            :class="{'primary-page' : isNewCollection }">
+        <b-tag 
+                v-if="collection != null && collection != undefined" 
+                :type="'is-' + getStatusColor(collection.status)" 
+                v-text="collection.status"/>
+        <form 
+                v-if="collection != null && collection != undefined" 
+                class="tainacan-form" 
+                label-width="120px">
             
             <!-- Name -------------------------------- --> 
             <b-field 
@@ -11,13 +19,11 @@
                 :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
                 <help-button 
                     :title="$i18n.getHelperTitle('collections', 'name')" 
-                    :message="$i18n.getHelperMessage('collections', 'name')">
-                </help-button>
+                    :message="$i18n.getHelperMessage('collections', 'name')"/>
                 <b-input
                     id="tainacan-text-name"
                     v-model="form.name"
-                    @focus="clearErrors('name')">
-                </b-input>  
+                    @focus="clearErrors('name')"/>  
             </b-field>
 
             <!-- Thumbnail -------------------------------- --> 
@@ -33,23 +39,29 @@
                         <div class="content has-text-centered">
                             <p>
                             <b-icon
-                                icon="upload">
-                            </b-icon>
+                                icon="upload"/>
                             </p>
                             <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
                         </div>
                     </b-upload>
                     <div v-else> 
                         <figure class="image is-128x128">
-                            <img :alt="$i18n.get('label_thumbnail')" :src="collection.featured_image"/>
+                            <img 
+                                    :alt="$i18n.get('label_thumbnail')" 
+                                    :src="collection.featured_image">
                         </figure>
                         <div class="thumbnail-buttons-row">
                             <b-upload 
-                                model="thumbnail"
-                                @input="uploadThumbnail($event)">
-                                <a id="button-edit" :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"></b-icon></a>
+                                    model="thumbnail"
+                                    @input="uploadThumbnail($event)">
+                                <a 
+                                        id="button-edit" 
+                                        :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"/></a>
                             </b-upload>
-                            <a id="button-delete" :aria-label="$i18n.get('label_button_delete_thumb')" @click="deleteThumbnail()"><b-icon icon="delete"></b-icon></a>
+                            <a 
+                                    id="button-delete" 
+                                    :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                    @click="deleteThumbnail()"><b-icon icon="delete"/></a>
                         </div>
                     </div> 
                 </div>
@@ -57,32 +69,29 @@
                   
             <!-- Description -------------------------------- --> 
             <b-field
-                :addons="false" 
-                :label="$i18n.get('label_description')"
-                :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
-                :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                    :addons="false" 
+                    :label="$i18n.get('label_description')"
+                    :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                    :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                 <help-button 
-                    :title="$i18n.getHelperTitle('collections', 'description')" 
-                    :message="$i18n.getHelperMessage('collections', 'description')">
-                </help-button>
+                        :title="$i18n.getHelperTitle('collections', 'description')" 
+                        :message="$i18n.getHelperMessage('collections', 'description')"/>
                 <b-input
                         id="tainacan-text-description"
                         type="textarea"
                         v-model="form.description"
-                        @focus="clearErrors('description')">
-                </b-input>
+                        @focus="clearErrors('description')"/>
             </b-field>
 
              <!-- Status -------------------------------- --> 
             <b-field
-                :addons="false" 
-                :label="$i18n.get('label_status')"
-                :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                    :addons="false" 
+                    :label="$i18n.get('label_status')"
+                    :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                    :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
                 <help-button 
-                    :title="$i18n.getHelperTitle('collections', 'status')" 
-                    :message="$i18n.getHelperMessage('collections', 'status')">
-                </help-button>
+                        :title="$i18n.getHelperTitle('collections', 'status')" 
+                        :message="$i18n.getHelperMessage('collections', 'status')"/>
                 <b-select
                         id="tainacan-select-status"
                         v-model="form.status"
@@ -99,39 +108,39 @@
 
             <!-- Slug -------------------------------- --> 
             <b-field
-                :addons="false" 
-                :label="$i18n.get('label_slug')"
-                :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
-                :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                    :addons="false" 
+                    :label="$i18n.get('label_slug')"
+                    :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
+                    :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
                 <help-button 
-                    :title="$i18n.getHelperTitle('collections', 'slug')" 
-                    :message="$i18n.getHelperMessage('collections', 'slug')">
-                </help-button>
+                        :title="$i18n.getHelperTitle('collections', 'slug')" 
+                        :message="$i18n.getHelperMessage('collections', 'slug')"/>
                 <b-input
-                    id="tainacan-text-slug"
-                    v-model="form.slug"
-                    @focus="clearErrors('slug')">
-                </b-input>
+                        id="tainacan-text-slug"
+                        v-model="form.slug"
+                        @focus="clearErrors('slug')"/>
             </b-field>
             <div class="field is-grouped form-submit">
                 <div class="control">
                     <button
-                        id="button-cancel-collection-creation"
-                        class="button is-outlined"
-                        type="button"
-                        @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                            id="button-cancel-collection-creation"
+                            class="button is-outlined"
+                            type="button"
+                            @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
                 <div class="control">
                     <button
-                        id="button-submit-collection-creation"
-                        @click.prevent="onSubmit"
-                        class="button is-success">{{ $i18n.get('save') }}</button>
+                            id="button-submit-collection-creation"
+                            @click.prevent="onSubmit"
+                            class="button is-success">{{ $i18n.get('save') }}</button>
                 </div>
             </div>
-            <p class="help is-danger">{{formErrorMessage}}</p> 
+            <p class="help is-danger">{{ formErrorMessage }}</p> 
         </form>
 
-        <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
+        <b-loading 
+:active.sync="isLoading" 
+:can-cancel="false"/>
     </div>
 </template>
 

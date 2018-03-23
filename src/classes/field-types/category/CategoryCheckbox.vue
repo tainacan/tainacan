@@ -5,7 +5,7 @@
                 :key="index">
             <b-checkbox
                     :id="id"
-                    :style="{ paddingLeft: (option.level * 30)  + 'px' }"
+                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
                     :key="index"
                     v-model="checked"
                     @input="onChecked(option)"

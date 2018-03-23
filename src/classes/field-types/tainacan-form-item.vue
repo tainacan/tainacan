@@ -1,27 +1,47 @@
 <template>
     <b-field
-        :addons="false"
-        :label="field.field.name"
-        :message="getErrorMessage"
-        :type="fieldTypeMessage">
+            :addons="false"
+            :label="field.field.name"
+            :message="getErrorMessage"
+            :type="fieldTypeMessage">
         <help-button 
-            :title="field.field.name" 
-            :message="field.field.description">
-        </help-button>
+                :title="field.field.name" 
+                :message="field.field.description"/>
         <div v-if="isTextInputComponent( field.field.field_type_object.component )">
-            <component :id="field.field.field_type_object.component + '-' + field.field.slug" :is="field.field.field_type_object.component" v-model="inputs[0]" :field="field" @blur="changeValue()"></component>
+            <component 
+                    :id="field.field.field_type_object.component + '-' + field.field.slug" 
+                    :is="field.field.field_type_object.component" 
+                    v-model="inputs[0]" 
+                    :field="field" 
+                    @blur="changeValue()"/>
             <div v-if="field.field.multiple == 'yes'">
-                <div v-if="index > 0" v-for="(input, index) in inputsList " v-bind:key="index" class="multiple-inputs">
-                    <component :id="field.field.field_type_object.component + '-' + field.field.slug" :is="field.field.field_type_object.component" v-model="inputs[index]" :field="field" @blur="changeValue()"></component><a class="button" v-if="index > 0" @click="removeInput(index)">-</a>
+                <div 
+                        v-if="index > 0" 
+                        v-for="(input, index) in inputsList " 
+                        :key="index" 
+                        class="multiple-inputs">
+                    <component 
+                            :id="field.field.field_type_object.component + '-' + field.field.slug" 
+                            :is="field.field.field_type_object.component" 
+                            v-model="inputs[index]" 
+                            :field="field" 
+                            @blur="changeValue()"/><a 
+                            class="button" 
+                            v-if="index > 0" 
+                            @click="removeInput(index)">-</a>
                 </div>
-                <a class="button" @click="addInput">+</a>
+                <a 
+                        class="button" 
+                        @click="addInput">+</a>
             </div>
         </div>
         <div v-else>
             <component
                     :id="field.field.field_type_object.component + '-' + field.field.slug"
-                    :is="field.field.field_type_object.component" v-model="inputs"
-                    :field="field" @blur="changeValue()"></component>
+                    :is="field.field.field_type_object.component" 
+                    v-model="inputs"
+                    :field="field" 
+                    @blur="changeValue()"/>
         </div>
     </b-field>
 </template>
@@ -32,7 +52,7 @@
     export default {
         name: 'TainacanFormItem',
         props: {
-            field: {}
+            field: Object
         },
         data(){
             return {

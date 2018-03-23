@@ -3,8 +3,8 @@
         <tainacan-filters-list
                 :query="getPostQuery()"
                 v-for="(filter, index) in filters"
-                v-bind:key="index"
-                :filter="filter"></tainacan-filters-list>
+                :key="index"
+                :filter="filter"/>
     </div>
 </template>
 <script>
