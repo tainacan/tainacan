@@ -12,7 +12,7 @@ class Field extends Entity {
     // Collection getter and setter declared here
     use \Tainacan\Traits\Entity_Collection_Relation;
 	
-	public $disabled_for_collection = false;
+	public $enabled_for_collection = true;
 	
 	protected static $post_type = 'tainacan-field';
 	/**
@@ -20,7 +20,7 @@ class Field extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Fields';
+	protected $repository = 'Fields';
 	
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_name();
@@ -348,11 +348,11 @@ class Field extends Entity {
 	 * Used by the API to tell front end when a field is disabled
 	 * 
 	 */
-	public function get_disabled_for_collection() {
-		return $this->disabled_for_collection;
+	public function get_enabled_for_collection() {
+		return $this->enabled_for_collection;
 	}
-	public function set_disabled_for_collection($value) {
-		$this->disabled_for_collection = $value;
+	public function set_enabled_for_collection($value) {
+		$this->enabled_for_collection = $value;
 	}
 	
 

@@ -155,6 +155,16 @@ export default {
             display: inline-block;
             padding-right: 8em;
         }
+
+        @media screen and (max-width: 769px) {
+            height: 60px;
+            margin-top: -0.5em;
+            padding-top: 0.9em;
+            
+            .header-item {
+                padding-right: 0.5em;
+            }
+        }
     }
 
     .above-subheader {
@@ -175,6 +185,17 @@ export default {
             margin-right: -$page-small-side-padding;
             padding: 3em 2.5em;
         }
+
+        @media screen and (max-width: 769px) {
+             .filters-menu {
+                display: none;
+            }
+            .table-container {
+                margin-right: 0;
+                padding: .85em 0em;
+            }
+        }
+
     }
 
 </style>

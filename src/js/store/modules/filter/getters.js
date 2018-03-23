@@ -16,5 +16,5 @@ export const getFilters = state => {
 }
 
 export const getFilterTypes = state => {
-    return state.flterTypes;
+    return state.filterTypes;
 }

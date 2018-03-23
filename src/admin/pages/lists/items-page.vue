@@ -44,10 +44,10 @@
                 </items-list>
                 <!-- Footer -->
                 <div class="table-footer">
-                    <div class="shown-items"> 
+                    <div class="shown-items">
                         {{ 
-                            $i18n.get('info_showing_items') + 
-                            (itemsPerPage*(page - 1) + 1) + 
+                            $i18n.get('info_showing_items') +
+                            getFirstItem() +
                             $i18n.get('info_to') + 
                             getLastItemNumber() + 
                             $i18n.get('info_of') + totalItems + '.'
@@ -95,10 +95,12 @@ export default {
             isRepositoryLevel: false,
             tableFields: [],
             prefTableFields: [],
-            totalItems: 0,
-            page: 1,
-            itemsPerPage: 12,
             isLoading: false
+        }
+    },
+    watch: {
+        page( value ){
+            this.page = ( value > 0 ) ? value : 1;
         }
     },
     components: {
@@ -114,18 +116,28 @@ export default {
             'getItems',
             'getFields'
         ]),
+        ...mapGetters('search', [
+            'getPostQuery',
+            'getTotalItems',
+            'getPage',
+            'getItemsPerPage'
+        ]),
         ...mapActions('fields', [
             'fetchFields'
         ]),
         ...mapGetters('fields', [
             'getFields'
         ]),
+        ...mapActions('search', [
+            'set_postquery',
+            'setPage',
+            'setItemsPerPage',
+            'search_by_collection'
+        ]),
         onChangeTableFields(field) {
             let prevValue = this.prefTableFields;
             let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
             if (index >= 0) {
-                console.log(prevValue[index].visible);
-                console.log(this.prefTableFields[index].visible);
                 //prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
             }
             
@@ -141,21 +153,43 @@ export default {
             //this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
         },
         onChangeItemsPerPage(value) {
+            if( this.itemsPerPage == value){
+                return false;
+            }
+
             let prevValue = this.itemsPerPage;
-            this.itemsPerPage = value;
+            this.setItemsPerPage( value );
             this.$userPrefs.set('items_per_page', value, prevValue);
+            this.alterQueryString();
             this.loadItems();
         },
         onPageChange(page) {
-            this.page = page;
+            if(page == 0)
+                return;
+
+            this.setPage(  page );
+            this.alterQueryString();
             this.loadItems();
         },
         loadItems() {
             this.isLoading = true;
-            this.fetchItems({ 'collectionId': this.collectionId, 'page': this.page, 'itemsPerPage': this.itemsPerPage })
-            .then((res) => {
+            let promisse = null;
+
+            if( Object.keys( this.$route.query ).length > 0 ) {
+                this.set_postquery(this.$route.query);
+                if (this.$route.params && this.$route.params.collectionId) {
+                    promisse = this.search_by_collection(this.$route.params.collectionId);
+                }
+            }
+
+            if(!promisse){
+                promisse = this.fetchItems({ 'collectionId': this.collectionId, 'page': this.page, 'itemsPerPage': this.itemsPerPage });
+                this.alterQueryString();
+            }
+
+
+            promisse.then((res) => {
                 this.isLoading = false;
-                this.totalItems = res.total;
             })
             .catch((error) => {
                 this.isLoading = false;
@@ -165,11 +199,30 @@ export default {
             let last = (Number(this.itemsPerPage*(this.page - 1)) + Number(this.itemsPerPage));
             
             return last > this.totalItems ? this.totalItems : last;
+        },
+        getFirstItem(){
+            if( this.totalItems == 0 )
+                return 0;
+
+            return ( this.itemsPerPage * ( this.page - 1 ) + 1)
+        },
+        alterQueryString(){
+            this.$router.push({ query: {} });
+            this.$router.push({ query: this.getPostQuery() });
         }
     },
     computed: {
         items(){
             return this.getItems();
+        },
+        totalItems(){
+            return this.getTotalItems();
+        },
+        page(){
+            return this.getPage();
+        },
+        itemsPerPage(){
+            return this.getItemsPerPage();
         }
     },
     created() {
@@ -188,13 +241,14 @@ export default {
         this.loadItems();
         this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false }).then((res) => {
             let rawFields = res;
+            this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', visible: true });
             for (let field of rawFields) {
                 this.tableFields.push(
                     { label: field.name, field: field.description, slug: field.slug,  visible: true }
                 );
             }
             this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
-            
+   
             this.prefTableFields = this.tableFields;
             // this.$userPrefs.get('table_columns_' + this.collectionId)
             //     .then((value) => {
@@ -229,6 +283,16 @@ export default {
             display: inline-block;
             padding-right: 8em;
         }
+        
+        @media screen and (max-width: 769px) {
+            height: 60px;
+            margin-top: -0.5em;
+            padding-top: 0.90em;
+
+            .header-item {
+                padding-right: 0.5em;
+            }
+        }
     }
 
     .above-subheader {
@@ -242,12 +306,27 @@ export default {
             max-width: $side-menu-width;
             background-color: $primary-lighter;
             margin-left: -$page-small-side-padding;
-            padding-left: $page-small-side-padding
+            padding: $page-small-side-padding;
+
+            .label {
+                font-weight: normal;
+                font-size: 0.85em;
+            }
         }
 
         .table-container {
             margin-right: -$page-small-side-padding;
             padding: 3em 2.5em;
+        }
+
+        @media screen and (max-width: 769px) {
+             .filters-menu {
+                display: none;
+            }
+            .table-container {
+                margin-right: 0;
+                padding: .85em 0em;
+            }
         }
     }
 

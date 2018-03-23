@@ -53,7 +53,6 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 	}
 	
 	public function test_create_suggestion_item_metadata_in_a_collection(){
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
 		
 		extract($this->create_meta_requirements());
 
@@ -94,7 +93,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
 		$this->assertEquals( 'pending', $data['status'] );
-		global $Tainacan_Logs;
+		$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
 		$query = $Tainacan_Logs->fetch(['post_status' => 'pending']);
 		
 		$log = false;
@@ -125,7 +124,6 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 	
 	function test_create_anonymous_suggestion_item_metadata_in_a_collection() {
 		extract($this->create_meta_requirements());
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
 		
 		$item__metadata_json = json_encode([
 			'values'       => 'TestValues_metadado',
@@ -155,7 +153,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
 		$this->assertEquals( 'pending', $data['status'] );
-		global $Tainacan_Logs;
+		$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
 		$query = $Tainacan_Logs->fetch(['post_status' => 'pending']);
 		
 		$log = false;

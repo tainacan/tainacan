@@ -1,88 +1,124 @@
 <template>
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"></b-loading>
+        <div class="page-title">
+            <h2>{{ isRepositoryLevel ? $i18n.get('instruction_dragndrop_filters_collection') : $i18n.get('instruction_dragndrop_filters_collection') }}</h2>
+        </div>
         <div class="columns">
-            <div class="column">
-                <b-filter :label="$i18n.get('label_active_filters')" is-grouped>
-                    <draggable 
-                        class="box active-filters-area"
-                        @change="handleChange"
-                        :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                        :list="activeFilterList" 
-                        :options="{group: { name:'filters', pull: false, put: true }, 'handle': '.handle', chosenClass: 'sortable-chosen', filter: '.not-sortable-item'}">
-                        <div  
-                            class="active-filter-item" 
-                            :class="{'not-sortable-item': filter.id == undefined, 'not-focusable-item': openedFilterId == filter.id, 'inherited-filter': filter.collection_id != collectionId}" 
-                            v-for="(filter, index) in activeFilterList" :key="index">
-                                <div class="handle">
-                                    <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                                    <span class="filter-name">{{ filter.name }}</span>
-                                    <span v-if="filter.id !== undefined" class="label-details">{{ $i18n.get(filter.filter_type_object.component)}}</span><span class="loading-spinner" v-if="filter.id == undefined"></span>
-                                    <span class="controls" v-if="filter.id != undefined">
-                                        <b-switch size="is-small" v-model="filter.disabled" @input="onChangeEnable($event, index)">{{ filter.disabled ? $i18n.get('label_disabled') : $i18n.get('label_enabled') }}</b-switch>
-                                        <a @click.prevent="removeFilter(filter)">
-                                            <b-icon icon="delete"></b-icon>
-                                        </a>
-                                        <a @click.prevent="editFilter(filter)">
-                                            <b-icon icon="pencil"></b-icon>
-                                        </a>
-                                    </span>
-                                     <b-modal :active.sync="isModalOpened" :width="320" scroll="keep">
-                                        <div class="filter-selection-modal">
-                                            <b-field :label="$i18n.get('label_filter_type')">
-                                                <b-select
-                                                        
-                                                        :placeholder="$i18n.get('instruction_select_a_filter_type')">
-                                                    <option value="publish" selected>{{ $i18n.get('publish')}}</option>
-                                                    <option value="private">{{ $i18n.get('private')}}</option>
-                                                </b-select>
-                                            </b-field>
-                                            <div class="field is-grouped is-grouped-centered">
-                                                <div class="control">
-                                                    <button 
-                                                        class="button is-secondary" 
-                                                        type="submit" 
-                                                        @click.prevent="confirmSelectedFilterType()">Submit</button>
-                                                </div>
-                                                <div class="control">
-                                                    <button 
-                                                        class="button is-text" 
-                                                        @click.prevent="cancelFilterTypeSelection()" 
-                                                        slot="trigger">Cancel</button>
-                                                </div>
-                                            </div>
+            <div class="column">         
+                <draggable 
+                    class="active-filters-area"
+                    @change="handleChange"
+                    :class="{'filters-area-receive': isDraggingFromAvailable}" 
+                    :list="activeFilterList" 
+                    :options="{
+                        group: { name:'filters', pull: false, put: true }, 
+                        sort: openedFilterId == '' || openedFilterId == undefined, 
+                        disabled: openedFilterId != '' && openedFilterId != undefined,
+                        handle: '.handle', 
+                        ghostClass: 'sortable-ghost',
+                        filter: 'not-sortable-item', 
+                        animation: '250'}">
+                    <div  
+                        class="active-filter-item" 
+                        :class="{
+                            'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenField.name == filter.name, 
+                            'not-focusable-item': openedFilterId == filter.id, 
+                            'disabled-filter': filter.enabled == false
+                        }" 
+                        v-for="(filter, index) in activeFilterList" :key="index">
+                            <div class="handle">
+                                <grip-icon></grip-icon>
+                                <span 
+                                    class="filter-name"
+                                    :class="{'is-danger': formWithErrors == filter.id }">
+                                    {{ filter.name }}
+                                </span>
+                                <span   
+                                    v-if="filter.filter_type_object != undefined"
+                                    class="label-details">  
+                                    ({{ $i18n.get(filter.filter_type_object.component) }})  
+                                        <span class="not-saved" v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
+                                        {{ $i18n.get('info_not_saved') }}
+                                        </span>
+                                </span> 
+                                <span class="loading-spinner" v-if="filter.id == undefined"></span>
+                                <span class="controls" v-if="filter.filter_type != undefined">
+                                    <b-switch size="is-small" v-model="filter.enabled" @input="onChangeEnable($event, index)"></b-switch>
+                                    <a  :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
+                                        @click.prevent="editFilter(filter)">
+                                        <b-icon type="is-gray" icon="pencil"></b-icon>
+                                    </a>
+                                    <a :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
+                                        @click.prevent="removeFilter(filter)">
+                                        <b-icon type="is-gray" icon="delete"></b-icon>
+                                    </a>
+                                </span>
+                            </div>
+                            <div v-if="choosenField.name == filter.name && openedFilterId == ''">
+                                <form class="tainacan-form">
+                                    <b-field :label="$i18n.get('label_filter_type')">
+                                        <b-select
+                                                v-model="selectedFilterType"
+                                                :placeholder="$i18n.get('instruction_select_a_filter_type')">
+                                            <option 
+                                                v-for="(filterType, index) in allowedFilterTypes" 
+                                                :key="index"
+                                                :selected="index == 0"
+                                                :value="filterType">
+                                                {{ filterType.name }}</option>  
+                                        </b-select>
+                                    </b-field>
+                                    <div class="field is-grouped form-submit">
+                                        <div class="control"> 
+                                            <button 
+                                                class="button is-outlined" 
+                                                @click.prevent="cancelFilterTypeSelection()" 
+                                                slot="trigger">{{ $i18n.get('cancel')}}</button>
                                         </div>
-                                     </b-modal>
-                                </div>
-                                <b-filter v-if="openedFilterId == filter.id">
-                                    <!-- <filter-edition-form 
-                                        :collectionId="collectionId"
-                                        :isRepositoryLevel="isRepositoryLevel"
-                                        @onEditionFinished="onEditionFinished()"
-                                        @onEditionCanceled="onEditionCanceled()"
-                                        :filter="editForm"></filter-edition-form> -->
-                                </b-filter>
+                                        <div class="control">
+                                            <button 
+                                                class="button is-success" 
+                                                type="submit" 
+                                                :disabled="Object.keys(selectedFilterType).length == 0"
+                                                @click.prevent="confirmSelectedFilterType()">{{ $i18n.get('next')}}</button>
+                                        </div>
+                                        
+                                    </div>
+                                </form>
                             </div>
-                                             
-                        <!-- <div class="not-sortable-item" slot="footer">{{ $i18n.get('instruction_dragndrop_filters_collection') }}</div> -->
-                    </draggable> 
-                </b-filter>
+                            <b-field v-if="openedFilterId == filter.id">
+                                <filter-edition-form
+                                    @onEditionFinished="onEditionFinished()"
+                                    @onEditionCanceled="onEditionCanceled()"
+                                    @onErrorFound="formWithErrors = filter.id"
+                                    :index="index"
+                                    :originalFilter="filter"
+                                    :editedFilter="editForms[openedFilterId]"></filter-edition-form>
+                            </b-field>
+                        </div>
+                </draggable> 
             </div>
-            <div class="column">
-                <b-filter :label="$i18n.get('label_available_field_types')">
-                    <div class="columns box available-fields-area" >
-                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: 'clone', put: false, revertClone: true }}">
-                            <div class="available-field-item" v-if="index % 2 == 0" v-for="(field, index) in availableFieldList" :key="index">
-                                {{ field.name }}  <b-icon type="is-gray" class="is-pulled-left" icon="drag"></b-icon>
-                            </div>
-                        </draggable>
-                        <draggable class="column" :list="availableFieldList" :options="{ sort: false, group: { name:'filters', pull: 'clone', put: false, revertClone: true }}">
-                            <div class="available-field-item" v-if="index % 2 != 0" v-for="(field, index) in availableFieldList" :key="index">
-                                {{ field.name }}  <b-iiltercon type="is-gray" class="is-pulled-left" icon="drag"></b-iiltercon>
-                            </div>       
-                        </draggable> 
-                   </div>
-                </b-filter>
+            <div class="column available-fields-area">
+                <div class="field">
+                    <h3 class="label"> {{ $i18n.get('label_available_field_types') }}</h3>
+                    <draggable 
+                        :list="availableFieldList" 
+                        :options="{ 
+                            sort: false, 
+                            group: { name:'filters', pull: true, put: false, revertClone: true },
+                            dragClass: 'sortable-drag'
+                        }">
+                        <div 
+                            class="available-field-item"
+                            v-for="(field, index) in availableFieldList" 
+                            :key="index"
+                            @click.prevent="addFieldViaButton(field, index)">  
+                            <grip-icon></grip-icon> 
+                              <span class="field-name">{{ field.name }}</span>
+                        </div>
+                    </draggable>   
+                </div>
             </div>
         </div>
     </div> 
@@ -90,6 +126,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import GripIcon from '../other/grip-icon.vue';
 import FilterEditionForm from './../edition/filter-edition-form.vue';
 
 export default {
@@ -104,12 +141,38 @@ export default {
             isLoadingFilterTypes: false,
             isLoadingFilter: false,
             openedFilterId: '',
-            isModalOpened: false,
-            editForm: {}
+            formWithErrors: '',
+            editForms: {},
+            allowedFilterTypes: [],
+            selectedFilterType: {},
+            choosenField: {},
+            newIndex: 0        
         }
     },
     components: {
-        //FilterEditionForm
+        FilterEditionForm,
+        GripIcon
+    },
+    beforeRouteLeave ( to, from, next ) {
+        let hasUnsavedForms = false;
+        for (let editForm in this.editForms) {
+            if (!this.editForms[editForm].saved) 
+                hasUnsavedForms = true;
+        }
+        if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
+            this.$dialog.confirm({
+                message: this.$i18n.get('info_warning_filters_not_saved'),
+                    onConfirm: () => {
+                        this.onEditionCanceled();
+                        next();
+                    },
+                    cancelText: this.$i18n.get('cancel'),
+                    confirmText: this.$i18n.get('continue'),
+                    type: 'is-secondary'
+                });  
+        } else {
+            next()
+        }  
     },
     methods: {
         ...mapActions('filter', [
@@ -124,10 +187,10 @@ export default {
             'getFilterTypes'
         ]),
         ...mapActions('fields', [
-            'fetchFieldTypes'
+            'fetchFields'
         ]),
         ...mapGetters('fields',[
-            'getFieldTypes'
+            'getFields'
         ]),
         handleChange($event) {     
             if ($event.added) {
@@ -142,48 +205,87 @@ export default {
         updateFiltersOrder() {
             let filtersOrder = [];
             for (let filter of this.activeFilterList) {
-                filtersOrder.push({'id': filter.id, 'enabled': !filter.disabled});
+                filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
         },
         onChangeEnable($event, index) {
-            this.activeFilterList[index].disabled = $event;
+            this.activeFilterList[index].enabled = $event;
             let filtersOrder = [];
             for (let filter of this.activeFilterList) {
-                filtersOrder.push({'id': filter.id, 'enabled': !filter.disabled});
+                filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
 
         },
-        addNewFilter(newFilter, newIndex) {
-            this.isModalOpened = true;
-        },
-        createChoosenFilter(field, newFilter, newIndex) {
-            this.sendFilter({collectionId: this.collectionId, fieldId: field.id, name: newFilter.name, filterType: newFilter.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel})
-            .then((filter) => {
+        addFieldViaButton(fieldType, fieldIndex) {
+            this.availableFieldList.splice(fieldIndex, 1);
 
-                if (newIndex < 0) {
-                    this.activeFilterList.pop();
-                    this.activeFilterList.push(filter);
-                } else {
-                   this.activeFilterList.splice(newIndex, 1, filter);  
+            let lastIndex = this.activeFilterList.length;
+            this.activeFilterList.push(fieldType);
+            this.addNewFilter(fieldType, lastIndex);
+        },
+        addNewFilter(choosenField, newIndex) {
+            console.log(choosenField);
+            this.choosenField = choosenField;
+            this.newIndex = newIndex;
+            this.openedFilterId = '';
+            this.allowedFilterTypes = [];
+            this.selectedFilterType = {};
+
+            for (let filter of this.filterTypes) {
+                for (let supportedType of filter['supported_types']) {
+                    if (choosenField.field_type_object.primitive_type == supportedType)
+                        this.allowedFilterTypes.push(filter);
                 }
+            }
+        },
+        createChoosenFilter() {
+            
+            this.sendFilter({
+                collectionId: this.collectionId, 
+                fieldId: this.choosenField.id, 
+                name: this.choosenField.name, 
+                filterType: this.selectedFilterType.name, 
+                status: 'auto-draft', 
+                isRepositoryLevel: this.isRepositoryLevel,
+                newIndex: this.newIndex
+            })
+            .then((filter) => {
 
                 if (!this.isRepositoryLevel)
                     this.updateFiltersOrder();
+
+                this.newIndex = 0;
+                this.choosenField = {};
+                this.selectedFilterType = {}
+                this.allowedFilterTypes = [];
 
                 this.editFilter(filter);
             })
             .catch((error) => {
                 console.log(error);
+                this.newIndex = 0;
+                this.choosenField = {};
+                this.selectedFilterType = {}
+                this.allowedFilterTypes = [];
             });
         },
         removeFilter(removedFilter) {
-            this.deleteFilter({ collectionId: this.collectionId, filterId: removedFilter.id, isRepositoryLevel: this.isRepositoryLevel})
+            this.deleteFilter(removedFilter.id)
             .then((filter) => {
                 let index = this.activeFilterList.findIndex(deletedFilter => deletedFilter.id === filter.id);
                 if (index >= 0) 
+                    
                     this.activeFilterList.splice(index, 1);
+                    this.isLoadingFieldTypes = true;
+                    this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
+                    .then((res) => {
+                        this.isLoadingFieldTypes = false;
+                    })
+                    .catch((error) => {
+                        this.isLoadingFieldTypes = false;
+                    });
                 
                 if (!this.isRepositoryLevel)
                     this.updateFiltersOrder(); 
@@ -192,74 +294,109 @@ export default {
             });
         },
         confirmSelectedFilterType() {
-           // this.createChoosenFilter();
+            this.createChoosenFilter();
         },
         cancelFilterTypeSelection() {
-           // this.createChoosenFilter();
-           this.$modal.close();
+           this.availableFieldList.push(this.choosenField);
+           this.choosenField = {};
+           this.allowedFilterTypes = [];
+           this.selectedFilterType = {};
+           this.activeFilterList.splice(this.newIndex, 1);
+           this.newIndex = 0;
         },
         editFilter(filter) {
-            if (this.openedFilterId == filter.id) {
+            // Closing collapse
+            if (this.openedFilterId == filter.id) {                
                 this.openedFilterId = '';
-                this.editForm = {};
+
+            // Opening collapse
             } else {
+                console.log(this.choosenField);
+                if (this.openedFilterId == '' && this.choosenField.id != undefined) {
+                    this.availableFieldList.push(this.choosenField);
+                    this.choosenField = {};
+                    this.allowedFilterTypes = [];
+                    this.selectedFilterType = {};
+                    this.activeFilterList.splice(this.newIndex, 1);
+                    this.newIndex = 0;
+                }
                 this.openedFilterId = filter.id;
-                this.editForm = JSON.parse(JSON.stringify(filter));
-                this.editForm.status = 'publish';
-            }            
+                // First time opening
+                if (this.editForms[this.openedFilterId] == undefined) {
+                    this.editForms[this.openedFilterId] = JSON.parse(JSON.stringify(filter));
+                    this.editForms[this.openedFilterId].saved = true;
+                    
+                    // Filter inserted now
+                    if (this.editForms[this.openedFilterId].status == 'auto-draft') {
+                        this.editForms[this.openedFilterId].status = 'publish'; 
+                        this.editForms[this.openedFilterId].saved = false;
+                    }
+                }      
+            }   
         },
         onEditionFinished() {
+            this.formWithErrors = '';
+            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
-            this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel});
         },
         onEditionCanceled() {
+            this.formWithErrors = '';
+            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
         }
 
     },
     computed: {
         availableFieldList() {
-            return this.getFieldTypes();
+            let availableFields = this.getFields();  
+            for (let activeFilter of this.activeFilterList) {
+                for (let i = availableFields.length - 1; i >= 0 ; i--) {
+                    if (activeFilter.field != undefined) {
+                        if (activeFilter.field.field_id == availableFields[i].id) 
+                            availableFields.splice(i, 1);
+                    }
+                }
+            }
+            return availableFields;
         },
         activeFilterList() {
             return this.getFilters();
         },
-        filterTypes() {
+        filterTypes() { 
             return this.getFilterTypes();
         }
     },
     created() {
-        this.isLoadingFieldTypes = true;
-        this.isLoadingFilters = true;
-        this.isLoadingFilterTypes = true;
-
-        this.fetchFieldTypes()
-            .then((res) => {
-                this.isLoadingFieldTypes = false;
-            })
-            .catch((error) => {
-                this.isLoadingFieldTypes = false;
-            });
-
-        this.fetchFilterTypes()
-            .then((res) => {
-                console.log(res);
-                this.isLoadingFilterTypes = false;
-            })
-            .catch((error) => {
-                this.isLoadingFilterTypes = false;
-            });
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
         if (this.isRepositoryLevel)
             this.collectionId = 'default';
         else
             this.collectionId = this.$route.params.collectionId;
-        
+
+        this.isLoadingFieldTypes = true;
+        this.isLoadingFilters = true;
+        this.isLoadingFilterTypes = true;
+
+        this.fetchFilterTypes()
+            .then((res) => {
+                this.isLoadingFilterTypes = false;
+            })
+            .catch((error) => {
+                this.isLoadingFilterTypes = false;
+            });        
 
         this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
             .then((res) => {
                 this.isLoadingFilters = false;
+                // Needs to be done after activeFilterList exists to compare and remove chosen fields.
+                this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
+                    .then((res) => {
+                        this.isLoadingFieldTypes = false;
+                    })
+                    .catch((error) => {
+                        this.isLoadingFieldTypes = false;
+                    });
             })
             .catch((error) => {
                 this.isLoadingFilters = false;
@@ -268,16 +405,48 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
     @import "../../scss/_variables.scss";
 
+    .page-title {
+        border-bottom: 1px solid $secondary;
+        h2 {
+            color: $tertiary;
+            font-weight: 500;
+        }
+        margin: 1em 0em 2.0em 0em;
+    }
+
+    .loading-spinner {
+        animation: spinAround 500ms infinite linear;
+        border: 2px solid #dbdbdb;
+        border-radius: 290486px;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        content: "";
+        display: inline-block;
+        height: 1em; 
+        width: 1em;
+    }
+
     .active-filters-area {
-        min-height: 40px;
-        padding: 10px;
+        font-size: 14px;
+        margin-right: 0.8em;
+        margin-left: -0.8em;
+        padding-right: 6em;
+        min-height: 330px;
+
+        @media screen and (max-width: 769px) {
+            min-height: 45px;
+            margin: 0; 
+            padding-right: 0em;
+        }
+        @media screen and (max-width: 1216px) {
+            padding-right: 1em;
+        }
 
         &.filters-area-receive {
-            background-color: whitesmoke;
             border: 1px dashed gray;
         }
 
@@ -285,91 +454,234 @@ export default {
             display: initial;
         }
 
-        .filter-selection-modal{
-            padding: 20px;
-            background-color: white;
-            border-radius: 3px;
-        }
-
         .active-filter-item {
             background-color: white;
-            padding: 0.4em;
-            margin: 10px;
-            border-radius: 5px;
-            border: 1px solid gainsboro;
+            padding: 0.7em 0.9em;
+            margin: 4px;
+            min-height: 40px;
+            position: relative;
             display: block; 
-            transition: top 0.2s ease;
+            transition: top 0.1s ease;
             cursor: grab;
         
+            .handle {
+                padding-right: 6em;
+            }
+            .grip-icon { 
+                fill: $gray;
+                top: 2px;
+                position: relative;
+            }
             .filter-name {
                 text-overflow: ellipsis;
                 overflow-x: hidden;
                 white-space: nowrap;
+                font-weight: bold;
+                margin-left: 0.4em;
+                margin-right: 0.4em;
+
+                &.is-danger {
+                    color: $danger !important;
+                }
             }
             .label-details {
                 font-weight: normal;
+                color: $gray;
+            }
+            .not-saved {
                 font-style: italic;
-                color: gray;
+                font-weight: bold;
+                color: $danger;
             }
-            .controls { float: right }
-            .loading-spinner {
-                animation: spinAround 500ms infinite linear;
-                border: 2px solid #dbdbdb;
-                border-radius: 290486px;
-                border-right-color: transparent;
-                border-top-color: transparent;
-                content: "";
-                display: inline-block;
-                height: 1em; 
-                width: 1em;
+            .controls { 
+                position: absolute;
+                right: 5px; 
+                top: 10px;
+                .switch {
+                    position: relative;
+                    bottom: 3px;
+                }
+                .icon {
+                    bottom: 1px;   
+                    position: relative;
+                    i, i:before { font-size: 20px; }
+                }
             }
-            &.not-sortable-item, &.not-sortable-item:hover, &.not-focusable-item, &.not-focusable-item:hover  {
-                box-shadow: none !important;
-                top: 0px !important;
-                color: gray;
-                cursor: default;
-            }
-            &.inherited-filter {
-                color: gray;
-            }
-        }
-        .active-filter-item:hover {
-            box-shadow: 0 3px 4px rgba(0,0,0,0.25);
-            position: relative;
-            top: -2px;
-        }
 
-        .sortable-chosen {
-            background-color: $primary-lighter;
-            margin: 10px;
-            border-radius: 5px;
-            border: 1px dashed $primary-light;
-            display: block; 
+            form {
+                padding: 1.0em 2.0em;
+                border-top: 1px solid $draggable-border-color;
+                border-bottom: 1px solid $draggable-border-color;
+                margin-top: 1.0em;
+            }
+            &.not-sortable-item, &.not-sortable-item:hover {
+                cursor: default;
+                background-color: white !important;
+
+                .handle .label-details, .handle .icon {
+                    color: $gray !important;
+                }
+            } 
+            &.not-focusable-item, &.not-focusable-item:hover {
+                cursor: default;
+               
+                .field-name {
+                    color: $primary;
+                }
+                .handle .label-details, .handle .icon {
+                    color: $gray !important;
+                }
+            }
+            &.disabled-field {
+                color: $gray;
+            }    
+        }
+        .active-filter-item:hover:not(.not-sortable-item) {
+            background-color: $secondary;
+            border-color: $secondary;
+            color: white !important;
+
+            .grip-icon { 
+                fill: $white;
+            }
+
+            .label-details, .icon {
+                color: white !important;
+            }
+
+            .switch.is-small {
+                input[type="checkbox"] + .check {
+                    border: 1.5px solid white !important;
+                    &::before { background-color: white !important; }
+                } 
+                input[type="checkbox"]:checked + .check {
+                    border: 1.5px solid white !important;
+                    &::before { background-color: white !important; }
+                }
+                &:hover input[type="checkbox"] + .check {
+                    border: 1.5px solid white !important;
+                    background-color: $secondary !important;
+                }
+            }
+        }
+        .sortable-ghost {
+            border: 1px dashed $draggable-border-color;
+            display: block;
+            padding: 0.7em 0.9em;
+            margin: 4px;
+            height: 40px;
+            position: relative;
+
+            .grip-icon { 
+                fill: $gray;
+                top: 2px;
+                position: relative;
+            }
         }
     }
 
     .available-fields-area {
-        padding: 0 10px;
+        padding: 10px 0px 10px 10px;
         margin: 0;
-        background-color: whitesmoke;
+        max-width: 280px;
+        font-size: 14px;
+
+        @media screen and (max-width: 769px) {
+            max-width: 100%;
+            padding: 10px;
+            h3 {
+                margin: 1em 0em 1em 0em !important;
+            }
+            .available-field-item::before, 
+            .available-field-item::after {
+                display: none !important;
+            }
+        }
+
+        h3 {
+            color: $secondary;
+            margin: 0.2em 0em 1em -1.2em;
+            font-weight: 500;
+        }
 
         .available-field-item {
-            padding: 0.4em;
-            margin: 10px 10% 10px 0px;
-            border-radius: 5px;
+            padding: 0.7em;
+            margin: 4px;
             background-color: white;
-            border: 1px solid gainsboro;
-            width: 100%;
-            cursor: grab;
-            top: 0;
-            transition: top 0.2s ease;
+            cursor: pointer;
+            left: 0;
+            line-height: 1.3em;
+            height: 40px;
+            position: relative;
+            border: 1px solid $draggable-border-color;
+            border-radius: 1px;
+            transition: left 0.2s ease;
+            
+            .grip-icon { 
+                fill: $gray;
+                top: -3px;
+                position: relative;
+                display: inline-block;
+            }
+            .icon {
+                position: relative;
+                bottom: 3px;
+            }
+            .field-name {
+                text-overflow: ellipsis;
+                overflow-x: hidden;
+                white-space: nowrap;
+                font-weight: bold;
+                margin-left: 0.4em;
+                display: inline-block;
+                max-width: 200px;
+            }
+            &:after,
+            &:before {
+                content: '';
+                display: block;
+                position: absolute;
+                right: 100%;
+                width: 0;
+                height: 0;
+                border-style: solid;
+            }
+            &:after {
+                top: -1px;
+                border-color: transparent white transparent transparent;
+                border-right-width: 16px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                left: -19px;
+            }
+            &:before {
+                top: -1px;
+                border-color: transparent $draggable-border-color transparent transparent;
+                border-right-width: 16px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                left: -20px;
+            }
+        }
+        .sortable-drag {
+            opacity: 1 !important;
         }
         .available-field-item:hover {
-            border: 1px solid lightgrey;
-            box-shadow: 2px 3px 4px rgba(0,0,0,.25);
+            background-color: $secondary;
+            border-color: $secondary;
+            color: white;
             position: relative;
-            top: -2px;
-            left: -2px;
+            left: -4px;
+
+            &:after {
+                border-color: transparent $secondary transparent transparent;
+            }
+            &:before {
+                border-color: transparent $secondary transparent transparent;
+            }
+            .grip-icon {
+                fill: white !important;
+            }
         }
     }
 

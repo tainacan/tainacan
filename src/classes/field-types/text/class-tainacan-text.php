@@ -13,7 +13,7 @@ class Text extends Field_Type {
         // call field type constructor
         parent::__construct();
         parent::set_primitive_type('string');
-        $this->component = 'tainacan-text';
+        parent::set_component('tainacan-text');
     }
 
     /**

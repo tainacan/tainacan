@@ -12,7 +12,7 @@ use Tainacan\Entities;
       * @param string $name_field (optional) default 'tnc_prop_collections_id'
       */
     public static function collections_dropdown($selected, $name_field = 'tnc_prop_collection_id'){
-        global $Tainacan_Collections;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         ?>
         <select name="<?php echo $name_field ?>">
@@ -30,7 +30,7 @@ use Tainacan\Entities;
       * @param string $name_field (optional) default 'tnc_prop_collections_ids[]'
       */
     public static function collections_checkbox_list($selected,$name_field = 'tnc_prop_collections_ids[]') {
-        global $Tainacan_Collections;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         $selected = json_decode($selected);
         ?>
@@ -51,7 +51,7 @@ use Tainacan\Entities;
       * @param array $args (optional) filter the field list
       */
      public static function metadata_dropdown( $collection  , $selected, $name_field = 'tnc_prop_field_id', $args = []){
-         global $Tainacan_Fields;
+         $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
          $collection = ( is_numeric( $collection ) ) ? new Entities\Collection( $collection ) : $collection;
          $field = $Tainacan_Fields->fetch_by_collection( $collection, $args, 'OBJECT');
          ?>
@@ -74,7 +74,7 @@ use Tainacan\Entities;
       * @param array $args (optional) filter the field list
       */
      public static function metadata_checkbox_list( $collection , $selected,$name_field = 'tnc_prop_tnc_field_ids[]', $args = []) {
-         global $Tainacan_Fields;
+         $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
          $collection = ( is_numeric( $collection ) ) ? new Entities\Collection( $collection ) : $collection;
          $field = $Tainacan_Fields->fetch_by_collection( $collection, $args, 'OBJECT');
          $selected =  ( is_array( $selected) ) ? $selected : json_decode($selected);

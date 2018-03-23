@@ -54,6 +54,7 @@ html {
     padding: $page-top-padding $page-side-padding;
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     
     @media screen and (max-width: 769px) {
         padding: $page-mobile-top-padding $page-mobile-side-padding;
@@ -76,16 +77,56 @@ html {
 
 // Input components used in forms are gray in Tainacan
 .tainacan-form {
+    color: black;
+    .form-submit {
+        justify-content: space-between !important;
+        padding: 1em 1.2em 0.4em 1.2em;
+        margin-bottom: 0px;
+        .button {
+            padding: 2px 30px !important;
+        }
+        .button.is-outlined {
+            color: $tertiary;
+        }
+    }
+    .label { 
+        font-weight: normal;
+        font-size: 14px; 
+        display: inline-block;
+    }
+    .required-field-asterisk {
+        color: $gray;
+        &.is-danger {
+            color: $danger;
+        }
+    }
     .input, .textarea {
+        font-size: 14px;
         border: none;
         border-radius: 1px !important;
         background-color: $tainacan-input-color;
         color: black;
         box-shadow: none;
+
+        &.is-danger {
+          background-color: #ece0e0;  
+        }
+    }
+    .radio {
+        margin-bottom: 0.2em;   
+    }
+    .checkbox {
+        margin-bottom: 0.2em;       
+    }
+    .control-label { // The value part in checkbox, radio and switches
+        color: black;
+        padding-left: 0.8em;
+        font-size: 12px;
     }
     .select {
         padding-top: 0px !important;
         select {
+            font-size: 14px;
             border: none;
             border-radius: 1px !important;
             font-weight: normal;
@@ -163,6 +204,62 @@ html {
         }
     }
 }
+.switch {
+    input[type="checkbox"] + .check {
+        background-color: transparent;
+        border: 1.6px solid $gray;
+
+        &::before {
+            background-color: $gray;
+            box-shadow: none;
+        }
+    } 
+    &:hover input[type="checkbox"]:checked + .check {
+        background-color: $primary-light;
+    }
+
+    input[type="checkbox"]:checked + .check {
+        border: 1.6px solid $secondary;
+        background-color: transparent;
+
+        &::before {
+            background-color: $secondary;
+            transform: translate3d(83%, 0, 0);
+        }
+    }
+    &:hover input[type="checkbox"] + .check {
+        background-color: $tainacan-input-color;
+    }
+
+    &:focus input[type="checkbox"] + .check,
+    &:focus input[type="checkbox"]:checked + .check {
+        box-shadow: none;
+    }
+
+    &.is-small {
+        font-size: 9px;
+
+        input[type="checkbox"] + .check {
+            border: 1.5px solid $gray;
+
+            &::before {
+                width: 1.05em;
+                height: 1.05em;
+            }
+        }
+        input[type="checkbox"]:checked + .check {
+            border: 1.5px solid $secondary;
+
+            &::before {
+                transform: translate3d(93%, 0, 0);
+            }
+        }
+    }
+
+}
+
+
+// Tables
 .table {
     tbody {
         td { border-bottom: 0px solid $gray-light !important; }

@@ -14,7 +14,7 @@ class Term extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Terms';
+	protected $repository = 'Terms';
 
 	/**
 	 * Term constructor.

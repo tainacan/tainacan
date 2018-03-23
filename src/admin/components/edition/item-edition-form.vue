@@ -1,8 +1,14 @@
 <template>
     <div class="page-container">
-        <b-tag v-if="item != null && item != undefined" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag>
-        <form class="tainacan-form" label-width="120px">
-            <b-field :label="$i18n.get('label_status')">
+        <b-tag v-if="!isLoading" :type="'is-' + getStatusColor(item.status)" v-text="item.status"></b-tag>
+        <form  v-if="!isLoading" class="tainacan-form" label-width="120px">
+            <b-field 
+                :addons="false"
+                :label="$i18n.get('label_status')">
+                <help-button 
+                    :title="$i18n.getHelperTitle('items', 'status')" 
+                    :message="$i18n.getHelperMessage('items', 'status')">
+                </help-button>
                 <b-select 
                         id="status-select"
                         v-model="form.status"
@@ -16,54 +22,106 @@
                     </option>
                 </b-select>
             </b-field>
-            <b-field
-                    :label="$i18n.get('label_image')">
-                <b-upload v-model="form.files"
-                          multiple
-                          drag-drop
-                          @input="uploadAttachment($event)">
-                    <section class="section">
+
+            <!-- Thumbnail -------------------------------- --> 
+            <b-field :label="$i18n.get('label_image')">
+                <div class="thumbnail-field">
+                    <b-upload 
+                        v-if="item.featured_image == undefined || item.featured_image == false"
+                        v-model="thumbnail"
+                        drag-drop
+                        @input="uploadThumbnail($event)">
                         <div class="content has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="upload"
-                                        size="is-large">
-                                </b-icon>
+                            <b-icon
+                                icon="upload">
+                            </b-icon>
                             </p>
                             <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
                         </div>
-                    </section>
-                </b-upload>
-            </b-field>    
-            <div class="uploaded-files">
-                <div v-for="(file, index) in form.files"
-                    :key="index">
-                    <span class="tag is-primary">
-                        {{ file.name }}
-                        <button class="delete is-small"
-                            type="button"
-                            @click="deleteFile(index)">
-                        </button>
-                    </span>
-                    <!-- <progress class="progress is-secondary" value="15" max="100">30%</progress> -->
+                    </b-upload>
+                    <div v-else> 
+                        <figure class="image is-128x128">
+                            <img :alt="$i18n.get('label_thumbnail')" :src="item.featured_image"/>
+                        </figure>
+                        <div class="thumbnail-buttons-row">
+                            <b-upload 
+                                model="thumbnail"
+                                @input="uploadThumbnail($event)">
+                                <a id="button-edit" :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"></a>
+                            </b-upload>
+                            <a id="button-delete" :aria-label="$i18n.get('label_button_delete_thumb')" @click="deleteThumbnail()"><b-icon icon="delete"></a>
+                        </div>
+                    </div> 
                 </div>
-            </div>    
+            </b-field> 
+                  
+            <!-- Fields from Collection-------------------------------- -->   
             <tainacan-form-item                 
                 v-for="(field, index) in fieldList"
                 v-bind:key="index"
-                :field="field"></tainacan-form-item>    
-            <div>
-                <p v-for="(attachment, index) of attachmentsList" :key="index">{{attachment}}</p>
-            </div>       
-            <button
-                id="button-cancel-item-creation"
-                class="button"
-                type="button"
-                @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-            <button
-                id="button-submit-item-creation"
-                @click.prevent="onSubmit"
-                class="button is-primary" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
+                :field="field"></tainacan-form-item>  
+
+            <!-- Attachments ------------------------------------------ -->
+            <div class="columns is-multiline">
+                <div class="column is-4">
+                    <b-field :label="$i18n.get('label_image')">
+                        <b-upload v-model="form.files"
+                                multiple
+                                drag-drop
+                                @input="uploadAttachment($event)">
+                            <section class="section">
+                                <div class="content has-text-centered">
+                                    <p>
+                                        <b-icon
+                                                icon="upload"
+                                                size="is-large">
+                                        </b-icon>
+                                    </p>
+                                    <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
+                                </div>
+                            </section>
+                        </b-upload>
+                    </b-field>
+                    <div class="uploaded-files">
+                        <div v-for="(file, index) in form.files"
+                            :key="index">
+                            <span class="tag is-primary">
+                                {{ file.name }}
+                                <button class="delete is-small"
+                                    type="button"
+                                    @click="deleteFile(index)">
+                                </button>
+                            </span>
+                            <!-- <progress class="progress is-secondary" value="15" max="100">30%</progress> -->
+                        </div>
+                    </div>     
+                </div>
+                <div class="column is-narrow"
+                        v-for="(attachment, index) of item.attachments" 
+                        :key="index">
+                    <figure class="image is-128x128">
+                        <img 
+                            :alt="attachment.title"
+                            :src="attachment.url"/>
+                    </figure>
+                </div>  
+            </div>
+            <div class="field is-grouped form-submit">
+                <div class="control">     
+                    <button
+                        id="button-cancel-item-creation"
+                        class="button is-outlined"
+                        type="button"
+                        @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                </div>
+                <div class="control">
+                    <button
+                        id="button-submit-item-creation"
+                        @click.prevent="onSubmit"
+                        class="button is-success" :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
+                </div>
+            </div>
         </form>
 
         <b-loading :active.sync="isLoading" :canCancel="false">
@@ -86,8 +144,9 @@ export default {
             form: {
                 collectionId: Number,
                 status: '',
-                files:[]
+                files:[],
             },
+            thumbnail: {},
             // Can be obtained from api later
             statusOptions: [{ 
                 value: 'publish',
@@ -112,13 +171,12 @@ export default {
             'sendField',
             'fetchItem',
             'cleanFields',
-            'fetchAttachments',
-            'sendAttachment'
+            'sendAttachment',
+            'updateThumbnail'
         ]),
         ...mapGetters('item',[
             'getFields',
             'getItem',
-            'getAttachments'
         ]),
         onSubmit() {
             // Puts loading on Item edition
@@ -195,6 +253,33 @@ export default {
                 });
             }
         },
+        uploadThumbnail($event) {
+
+            this.sendAttachment({ item_id: this.itemId, file: $event[0] })
+            .then((res) => {
+
+                this.updateThumbnail({itemId: this.itemId, thumbnailId: res.id})
+                .then((res) => {
+                    this.item.featured_image = res.featured_image;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+            
+        },
+        deleteThumbnail() {
+            this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
+            .then((res) => {
+                this.item.featured_image = false;
+            })
+            .catch((error) => {
+                console.log(error);
+            });    
+        },
         deleteFile(index) {
 
         }
@@ -205,10 +290,7 @@ export default {
         },
         formHasErrors(){
             return eventBus.errors.length > 0;
-        },
-        attachmentsList(){
-            return this.getAttachments();
-        }   
+        } 
 
     },
     created(){
@@ -241,7 +323,38 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    .thumbnail-field {
+        width: 128px;
+        height: 128px;
+        max-width: 128px;
+        max-height: 128px;
+        
+        .content {
+            padding: 10px;
+            font-size: 0.8em;
+        }
+        img {
+            bottom: 0;
+            position: absolute;
+        }
+
+        .thumbnail-buttons-row {
+            display: none;
+        }
+        &:hover {
+             .thumbnail-buttons-row {
+                display: inline-block;
+                position: relative;
+                bottom: 31px;
+                background-color: rgba(255,255,255,0.8);
+                padding: 2px 8px;
+                border-radius: 0px 4px 0px 0px;
+            }
+        }
+    }
+
 
 </style>
 

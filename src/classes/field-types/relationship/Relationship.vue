@@ -75,6 +75,10 @@
                 this.$emit('blur');
             },
             search(query){
+                if( this.selected.length > 0  && this.field.field.multiple === 'no'){
+                    return '';
+                }
+
                 if (query !== '') {
                     this.loading = true;
                     this.options = [];

@@ -16,12 +16,10 @@
                 backend-sorting>
             <template slot-scope="props">
                 
-                <b-table-column tabindex="0" label="Imagem" :aria-label="$i18n.get('label_image')" field="featured_image" width="55">
-                    <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
+                <b-table-column tabindex="0" :label="$i18n.get('label_thumbnail')" :aria-label="$i18n.get('label_thumbnail')" field="featured_image" width="55">
                     <template v-if="props.row.featured_image" slot-scope="scope">
-                        <img class="table-thumb" :src="`${props.row.featured_image}`"/>
+                        <router-link tag="img" :to="{path: $routerHelper.getCollectionPath(props.row.id)}" class="table-thumb clickable-row" :src="`${props.row.featured_image}`"></router-link>
                     </template>
-                    </router-link>
                 </b-table-column>
 
                 <b-table-column tabindex="0" :label="$i18n.get('label_name')" :aria-label="$i18n.get('label_name')" field="props.row.name">
@@ -43,8 +41,8 @@
 
                 <b-table-column tabindex="0" :label="$i18n.get('label_actions')" width="78" :aria-label="$i18n.get('label_actions')">
                     <!-- <a id="button-view" :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a> -->
-                    <a id="button-edit" :aria-label="$i18n.getFrom('collections','edit_item')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon icon="pencil"></a>
-                    <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon icon="delete"></a>
+                    <a id="button-edit" :aria-label="$i18n.getFrom('collections','edit_item')" @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon type="is-gray" icon="pencil"></a>
+                    <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon type="is-gray" icon="delete"></a>
                 </b-table-column>
             </template>
 
@@ -172,7 +170,7 @@ export default {
         vertical-align: middle !important;
     }
 
-    .row-creation {
+    .row-creation span {
         color: $gray-light;
         font-size: 0.75em;
         line-height: 1.5

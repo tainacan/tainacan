@@ -12,10 +12,10 @@ class Core_Title extends Field_Type {
     function __construct(){
         // call field type constructor
         parent::__construct();
-        parent::set_primitive_type('string');
-        $this->core = true;
-        $this->related_mapped_prop = 'title';
-        $this->component = 'tainacan-text';
+        $this->set_primitive_type('string');
+        $this->set_core(true);
+        $this->set_related_mapped_prop('title');
+        $this->set_component('tainacan-text');
     }
 
     /**

@@ -155,19 +155,27 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
-            a{ padding: 1em 0.8em !important; }
-            .menu-header { display: none;
-            }
-            .menu-text {
-                padding-left: 0.3em !important;
-            }
+            .separator, .menu-header { display: none; }
+
             ul { 
+                flex-flow: wrap;
                 display: flex;
                 align-items: stretch;
                 justify-content: space-evenly;
-                
-                .separator, li.search-area {
-                    display: none;
+                a { 
+                    padding: 0.5em 0.7em !important; 
+                    text-align: center;
+                }
+                .menu-text {
+                    padding-left: 0.3em !important;
+                }
+                .search-area { 
+                    flex-basis: 100%; 
+                    padding-top: 1.0em !important;
+                    .field {
+                        padding: 0 0.8em !important;
+                        margin-bottom: 0px;
+                    }
                 }
             }
         }

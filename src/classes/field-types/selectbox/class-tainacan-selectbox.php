@@ -12,11 +12,22 @@ class Selectbox extends Field_Type {
     function __construct(){
         // call field type constructor
         parent::__construct();
-        parent::set_primitive_type('string');
-        $this->component = 'tainacan-selectbox';
-        $this->form_component = 'tainacan-form-selectbox';
+        $this->set_primitive_type('string');
+        $this->set_component('tainacan-selectbox');
+        $this->set_form_component('tainacan-form-selectbox');
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'options' => [
+                'title' => __( 'Options', 'tainacan' ),
+                'description' => __( 'Create the options for the select, hit enter to add new one', 'tainacan' ),
+            ]
+        ];
+    }
     /**
      * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string

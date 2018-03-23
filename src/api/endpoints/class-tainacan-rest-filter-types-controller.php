@@ -19,6 +19,25 @@ class TAINACAN_REST_Filter_Types_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => [
+						'filter-type' => [
+							'description' => __('The structure of objects returned.'),
+							'items'       => [
+								'className'       => [
+									'type' => 'string'
+								],
+								'component'       => [
+									'type' => 'string'
+								],
+								'supported_types' => [
+									'type'  => 'array',
+									'items' => [
+										'type' => 'string'
+									]
+								]
+							]
+						]
+					]
 				)
 			)
 		);
@@ -46,7 +65,7 @@ class TAINACAN_REST_Filter_Types_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		global $Tainacan_Filters;
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types('NAME');
 

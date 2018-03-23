@@ -40,7 +40,7 @@
                     <b-icon size="is-small" icon="shape"></b-icon> <span class="menu-text">{{ $i18n.getFrom('categories', 'name') }}</span>
                 </router-link></li>
                 <li><router-link tag="a" to="/events" :class="activeRoute == 'EventsPage' ? 'is-active':''">
-                    <b-icon size="is-small" icon="bell"></b-icon> <span class="menu-text">{{ $i18n.getFrom('events', 'name') }}</span>
+                    <b-icon size="is-small" icon="bell"></b-icon> <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link></li>
             </ul>
         </aside>
@@ -175,7 +175,36 @@ export default {
 
         @media screen and (max-width: 769px) {
             width: 100% !important;
-            max-width: 100% !important;
+            max-width: 100% !important; 
+            
+            .menu-header {
+                height: 60px;
+            }
+
+            ul { 
+                flex-flow: wrap;
+                display: flex;
+                align-items: stretch;
+                justify-content: space-evenly; 
+                .separator { display: none; }
+                .search-area { 
+                    flex-basis: 100%; 
+                    padding-top: 1.0em !important;
+                    .field {
+                        padding: 0 0.8em !important;
+                        margin-bottom: 0px;
+                    }
+                }
+                a{ 
+                    padding: 0.8em !important;
+                    text-align: center;
+                }
+                li + li {
+                    .menu-text{
+                        display: none !important;
+                    }     
+                }
+            }
 
             &.is-compressed {
 
@@ -190,20 +219,9 @@ export default {
                     }
                     
                 }
-            }
-            .separator {
-                width: 2px;
-                height: auto;
-                margin: 0;
-            }
-            a{ padding: 1em 0.8em !important;}
-            .menu-text {
-                display: none !important;
-            }
-            ul { 
-                display: flex;
-                align-items: stretch;
-                justify-content: space-evenly; 
+                .search-area { 
+                    display: none;
+                }
             }
         }
     }

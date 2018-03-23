@@ -63,11 +63,12 @@ function tainacan_autoload($class_name){
 		    $dir = CLASSES_DIR;
 	    }
 
-	    if( in_array('Field_Types', $class_path) || in_array('Filter_Types', $class_path) ){
-            if(  in_array('Filter_Types', $class_path) && in_array('Category', $class_path) ){
-                $dir = strtolower( $dir );
-            } else {
-                $dir.= strtolower(str_replace('_', '-' , $class_name)).DIRECTORY_SEPARATOR;
+        if( in_array('Field_Types', $class_path) || in_array('Filter_Types', $class_path) ){
+    	    $exceptions = ['categorytaginput','categorycheckbox','categoryselectbox'];
+    	    if( in_array( strtolower( $class_name ), $exceptions) ){
+                $dir.= 'category/';
+            }else{
+                $dir.= strtolower(str_replace('_', '-' , $class_name)).'/';
             }
         }
 
@@ -79,14 +80,11 @@ function tainacan_autoload($class_name){
     }
 }
 
-global $Tainacan_Collections;
-$Tainacan_Collections = new \Tainacan\Repositories\Collections();
+$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
 
-global $Tainacan_Item_Metadata;
-$Tainacan_Item_Metadata = new \Tainacan\Repositories\Item_Metadata();
+$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 
-global $Tainacan_Fields;
-$Tainacan_Fields = new \Tainacan\Repositories\Fields();
+$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
 //register field types
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Text');
@@ -97,8 +95,7 @@ $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Selectbox');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Relationship');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Category');
 
-global $Tainacan_Filters;
-$Tainacan_Filters = new \Tainacan\Repositories\Filters();
+$Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
 
 //register filter type
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Custom_Interval');
@@ -106,21 +103,17 @@ $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Autocomplete');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Taginput');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Checkbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Category\Taginput');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Category\Checkbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Category\Selectbox');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategoryTaginput');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategoryCheckbox');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategorySelectbox');
 
-global $Tainacan_Taxonomies;
-$Tainacan_Taxonomies = new \Tainacan\Repositories\Taxonomies();
+$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
 
-global $Tainacan_Items;
-$Tainacan_Items = new \Tainacan\Repositories\Items();
+$Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
 
-global $Tainacan_Terms;
-$Tainacan_Terms = new \Tainacan\Repositories\Terms();
+$Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
 
-global $Tainacan_Logs;
-$Tainacan_Logs = new \Tainacan\Repositories\Logs();
+$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
 
 global $Tainacan_Exposers;
 $Tainacan_Exposers = new \Tainacan\Exposers\Exposers();

@@ -1,8 +1,12 @@
 import Vue from 'vue';
 
 // METAQUERIES ----------------------------------------------------------------------------
-export const setPostQuery = ( state, { attr, value }) => {
+export const setPostQueryAttribute = ( state, { attr, value }) => {
     Vue.set( state.postquery, attr , value );
+};
+
+export const setPostQuery = ( state, postquery ) => {
+    state.postquery = postquery;
 };
  
 export const addMetaQuery = ( state, filter ) => {
@@ -27,7 +31,7 @@ export const addMetaQuery = ( state, filter ) => {
 export const removeMetaQuery = ( state, filter ) => {
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
     if (index >= 0) {
-        state.metaquery.splice(index, 1);
+        state.postquery.metaquery.splice(index, 1);
     }
 }
 
@@ -39,14 +43,8 @@ export const deleteFilter = ( state, filter ) => {
     }
 }
 
-export const setSingleFilter = (state, filter) => {
-    let index = state.filters.findIndex(newFilter => newFilter.id === filter.id);
-    
-    if ( index >= 0){
-        Vue.set( state.filters, index, filter );
-    } else {
-        state.filters.push( filter );
-    }
+export const setSingleFilter = (state, { filter, index}) => {
+    Vue.set( state.filters, index, filter );
 }
 
 export const setFilters = (state, filters) => {

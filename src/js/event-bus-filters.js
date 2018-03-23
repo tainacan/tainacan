@@ -13,11 +13,9 @@ export const eventFilterBus = new Vue({
     },
     methods: {
         add_metaquery( data ){
-
-            console.log( data , data.collection_id  );
             if ( data && data.collection_id ){
-                this.$store.dispatch('filter/add_metaquery', data );
-                const promisse = this.$store.dispatch('filter/search_by_collection', data.collection_id );
+                store.dispatch('search/add_metaquery', data );
+                const promisse = store.dispatch('search/search_by_collection', data.collection_id );
                 promisse.then( response => {
 
                 }, error => {

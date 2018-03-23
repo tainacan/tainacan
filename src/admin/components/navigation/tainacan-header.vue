@@ -1,7 +1,7 @@
 <template>
-    <div id="tainacan-header" class="level">
+    <div id="tainacan-header" class="level" :class="{'secondary-page': onSecondaryPage}">
         <div class="level-left">
-            <div class="level-item" :class="{'secondary-page': onSecondaryPage}">
+            <div class="level-item">
                 <h1 class="has-text-weight-bold is-uppercase has-text-primary"><b-icon size="is-small" :icon="currentIcon"></b-icon>{{pageTitle}}</h1>
                 <nav class="breadcrumbs">
                     <router-link tag="a" :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
@@ -53,6 +53,12 @@ export default {
         ...mapGetters('item', [
             'getItemTitle'
         ]),
+        ...mapActions('category', [
+            'fetchCategoryName'
+        ]),
+        ...mapGetters('category', [
+            'getCategoryName'
+        ]),
         generateViewPath() {
 
             for (let i = 0; i < this.arrayRealPath.length; i++) {
@@ -66,12 +72,17 @@ export default {
                             this.fetchCollectionName(this.arrayRealPath[i])
                                 .then(collectionName => this.arrayViewPath.splice(i, 1, collectionName))
                                 .catch((error) => console.log(error));
-                        break;
+                            break;
                         case 'items':
                             this.fetchItemTitle(this.arrayRealPath[i])
-                                .then(itemTitle => this.arrayViewPath.splice(i, 1,itemTitle))
+                                .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
                                 .catch((error) => console.log(error));
-                        break;
+                            break;
+                        case 'categories':
+                            this.fetchCategoryName(this.arrayRealPath[i])
+                                .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
+                                .catch((error) => console.log(error));
+                            break;
                     }
                     
                 } else {
@@ -111,7 +122,7 @@ export default {
     @import "../../scss/_variables.scss";
     
     // Tainacan Header
-    #tainacan-header{
+    #tainacan-header {
         background-color: $header-color;
         height: $header-height;
         max-height: $header-height;
@@ -137,24 +148,29 @@ export default {
             .level-item {
                 display: inline-block;
                 margin-left: 268px;
-            }
-            .secondary-page {
+            }  
+        }
+        &.secondary-page {
+            .level-item {
                 margin-left: 310px;
             }
-            
         }
 
         @media screen and (max-width: 769px) {
             .level-left {
+                margin-left: 0px !important;
                 .level-item {
-                    margin-left: 0px;
+                    margin-left: 30px;
                 }
             }
             .level-right {
                 display: none;
             }
 
-            position: relative !important;
+            top: 206px;
+            &.secondary-page {
+                top: 237px !important;  
+            }
             margin-bottom: 0px !important;
         }
 

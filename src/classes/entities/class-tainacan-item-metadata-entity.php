@@ -14,7 +14,7 @@ class Item_Metadata_Entity extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Tainacan_Item_Metadata';
+	protected $repository = 'Item_Metadata';
 	
     function __construct(Item $item, Field $field) {
         
@@ -27,8 +27,8 @@ class Item_Metadata_Entity extends Entity {
 	}
 
     public function  __toArray(){
-        $as_array['value']    = $this->get_value();
-	    $as_array['item']     = $this->get_item()->__toArray();
+        $as_array['value'] = $this->get_value();
+	    $as_array['item']  = $this->get_item()->__toArray();
 	    $as_array['field'] = $this->get_field()->__toArray();
 
 	    return $as_array;
@@ -91,7 +91,7 @@ class Item_Metadata_Entity extends Entity {
         if (isset($this->value))
             return $this->value;
         
-        global $Tainacan_Item_Metadata;
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
         return $Tainacan_Item_Metadata->get_value($this);
     }
     
@@ -187,12 +187,12 @@ class Item_Metadata_Entity extends Entity {
             }
             
             if ($this->is_collection_key()) {
-            	$Tainacan_Items = new \Tainacan\Repositories\Items();
+                $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
                 
                 $test = $Tainacan_Items->fetch([
-                    'meta_query'    => [
+                    'meta_query' => [
                         [
-                            'key' => $this->field->get_id(),
+                            'key'   => $this->field->get_id(),
                             'value' => $value
                         ],
                     ]

@@ -19,7 +19,7 @@ class Logs extends TAINACAN_UnitTestCase {
      * Teste da insercao de um log simples apenas se criar o dado bruto
      */
     function test_add() {
-        global $Tainacan_Logs;
+        $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
 
         $log = $this->tainacan_entity_factory->create_entity(
         	'log',
@@ -51,7 +51,7 @@ class Logs extends TAINACAN_UnitTestCase {
 	        true
         );
         
-        global $Tainacan_Collections;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
         
         $value->set_name('new_testeLogs');
         $value->validate();

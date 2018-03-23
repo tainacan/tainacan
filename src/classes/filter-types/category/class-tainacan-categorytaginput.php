@@ -1,17 +1,16 @@
 <?php
-namespace Tainacan\Filter_Types\Category;
-use Tainacan\Filter_Types;
+namespace Tainacan\Filter_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class Taginput
  */
-class Taginput extends Filter_Types\Filter_Type {
+class CategoryTaginput extends Filter_Type {
 
     function __construct(){
-        parent::set_supported_types(['term']);
-        $this->component = 'tainacan-filter-category-taginput';
+        $this->set_supported_types(['term']);
+        $this->set_component('tainacan-filter-category-taginput');
     }
 
     /**

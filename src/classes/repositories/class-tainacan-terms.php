@@ -12,7 +12,24 @@ use \Respect\Validation\Validator as v;
 class Terms extends Repository {
 	
 	public $entities_type = '\Tainacan\Entities\Term';
-    
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    protected function __construct()
+    {
+        parent::__construct();
+    }
+
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
             'term_id'     => [
@@ -120,7 +137,7 @@ class Terms extends Repository {
      */
     public function fetch( $args = [], $taxonomies = []){
 
-        global $Tainacan_Taxonomies;
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
 
         if ( $taxonomies instanceof Entities\Taxonomy ) {
             $cpt = $taxonomies->get_db_identifier();

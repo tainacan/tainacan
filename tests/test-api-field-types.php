@@ -15,7 +15,7 @@ class TAINACAN_REST_Field_Types_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $ftype_response->get_data();
 
-		global $Tainacan_Fields;
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
 		$field_types = $Tainacan_Fields->fetch_field_types('NAME');
 

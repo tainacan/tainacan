@@ -7,15 +7,8 @@ export const deleteField = ( state, field ) => {
     }
 }
 
-export const setSingleField = (state, field) => {
-    let index = state.fields.findIndex(newField => newField.id === field.id);
-    
-    if ( index >= 0){
-        //state.fields[index] = field;
-        Vue.set( state.fields, index, field );
-    } else {
-        state.fields.push( field );
-    }
+export const setSingleField = (state, {field, index}) => {
+    Vue.set( state.fields, index, field);
 }
 
 export const setFields = (state, fields) => {

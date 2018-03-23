@@ -22,8 +22,28 @@ I18NPlugin.install = function (Vue, options = {}) {
             if (tainacan_plugin.i18n['entities_labels'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
             let string = tainacan_plugin.i18n['entities_labels'][entity][key];
-            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
-        }
+            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + key;
+        },
+        getHelperTitle(entity, key) {
+            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+                entity = 'taxonomies'
+            if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
+                return 'Invalid i18n entity: ' + entity;
+            if (tainacan_plugin.i18n['helpers_label'][entity][key] == undefined)
+                return 'Invalid i18n key: ' + key;
+            let string = tainacan_plugin.i18n['helpers_label'][entity][key].title;
+            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n helper object.";
+        },
+        getHelperMessage(entity, key) {
+            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+                entity = 'taxonomies'
+            if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
+                return 'Invalid i18n entity: ' + entity;
+            if (tainacan_plugin.i18n['helpers_label'][entity][key] == undefined)
+                return 'Invalid i18n key: ' + key;
+            let string = tainacan_plugin.i18n['helpers_label'][entity][key].description;
+            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n helper object. ";
+        },
     }
 
 }
@@ -105,7 +125,7 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/items/?' + qs.stringify(query);
         },
         getCategoriesPath(query) {
-            return '/items/?' + qs.stringify(query);
+            return '/categories/?' + qs.stringify(query);
         },
         getCategoryTermsPath(categoryId, query) {
             return '/categoryId/' + categoryId + 'terms/?' + qs.stringify(query);

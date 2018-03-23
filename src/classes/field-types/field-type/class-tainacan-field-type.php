@@ -24,45 +24,45 @@ abstract class Field_Type  {
     private $primitive_type;
     
     /**
-     * Array of options spececific to this field type. Stored in field_type_options property of the Field object
-     * @var Array
+     * Array of options specific to this field type. Stored in field_type_options property of the Field object
+     * @var array
      */
-    public $options = [];
+    private $options = [];
     
     /**
      * The default values for the field type options array
-     * @var Array
+     * @var array
      */
-    public $default_options = [];
+    private $default_options = [];
     
-    public $errors;
+    private $errors;
     
     /**
-     * Indicates wether this is a core Field Type or not
+     * Indicates whether this is a core Field Type or not
      *
      * Core field types are used by Title and description fields. These fields:
      * * Can only be used once, they belong to the repository and can not be deleted
      * * Its values are saved in th wp_post table, and not as post_meta 
      * 
      */
-    public $core = false;
+    private $core = false;
     
     /**
      * Used by core field types to indicate where it should be saved
      */
-    public $related_mapped_prop = false;
+    private $related_mapped_prop = false;
     
     /**
      * The name of the web component used by this field type
      * @var string
      */
-    public $component;
+    private $component;
 
     /**
      * The name of the web component used by the Form
      * @var bool | string
      */
-    public $form_component = false;
+    private $form_component = false;
     
     abstract function render( $itemMetadata );
 
@@ -72,6 +72,14 @@ abstract class Field_Type  {
 
     public function validate(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
         return true;
+    }
+
+    public function get_related_mapped_prop(){
+    	return $this->related_mapped_prop;
+    }
+
+    public function set_related_mapped_prop($related_mapped_prop){
+    	$this->related_mapped_prop = $related_mapped_prop;
     }
     
     public function get_validation_errors() {
@@ -94,15 +102,23 @@ abstract class Field_Type  {
         return $this->component;
     }
 
+    public function set_component($component){
+    	$this->component = $component;
+    }
+
     public function get_form_component() {
         return $this->form_component;
+    }
+
+    public function set_form_component($form_component){
+    	$this->form_component = $form_component;
     }
 
     /**
      * @param $options
      */
     public function set_options( $options ){
-        $this->options = ( is_array( $options ) ) ? $options : unserialize( $options );
+	    $this->options = ( is_array( $options ) ) ? $options : (!is_array(unserialize( $options )) ? [] : unserialize( $options ));
     }
     
     public function set_default_options(Array $options) {
@@ -112,7 +128,7 @@ abstract class Field_Type  {
     /**
      * Gets the options for this field types, including default values for options
      * that were not set yet.
-     * @return Array Fielt type options
+     * @return array Field type options
      */
     public function get_options() {
         return array_merge($this->default_options, $this->options);
@@ -132,6 +148,12 @@ abstract class Field_Type  {
     }
 
     /**
+     * allow i18n from messages
+     */
+    public function get_form_labels(){
+       return [];
+    }
+    /**
      * generate the fields for this field type
      */
     public function form(){
@@ -140,12 +162,15 @@ abstract class Field_Type  {
     
     public function __toArray(){
 	    $attributes = [];
-        
-        $attributes['className'] = get_class($this);
-        $attributes['core'] = $this->core;
-        $attributes['component'] = $this->get_component();
-        $attributes['primitive_type'] = $this->get_primitive_type();
-        $attributes['form_component'] = $this->get_form_component();
+
+	    $attributes['errors']              = $this->get_errors();
+	    $attributes['related_mapped_prop'] = $this->get_related_mapped_prop();
+	    $attributes['options']             = $this->get_options();
+        $attributes['className']           = get_class($this);
+        $attributes['core']                = $this->get_core();
+        $attributes['component']           = $this->get_component();
+        $attributes['primitive_type']      = $this->get_primitive_type();
+        $attributes['form_component']      = $this->get_form_component();
 
         return $attributes;
         
@@ -163,4 +188,14 @@ abstract class Field_Type  {
         return true;
     }
 
+	/**
+	 * @return mixed
+	 */
+	public function get_core() {
+		return $this->core;
+	}
+
+	public function set_core($core){
+		$this->core = $core;
+	}
 }

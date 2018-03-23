@@ -3,12 +3,13 @@ import qs from 'qs';
 
 // METAQUERIES ----------------------------------------------------
 export const search_by_collection = ({  state, dispatch, rootGetters }, collectionId) => {
-
     return new Promise((resolve, reject) =>{
         axios.tainacan.get('/collection/' + collectionId + '/items?' + qs.stringify( state.postquery ))
             .then(res => {
-                 resolve( res.data );
-                 dispatch('collection/setItems', res.data, { root: true } );
+                let items = res.data;
+                dispatch('collection/setItems', res.data, { root: true } );
+                dispatch('collection/setTotalItems', res.headers['x-wp-total'], { root: true } );
+                resolve({'items': items, 'total': res.headers['x-wp-total'] });
             })
             .catch(error => {
                  reject( error )
@@ -17,11 +18,19 @@ export const search_by_collection = ({  state, dispatch, rootGetters }, collecti
 };
 
 export const set_postquery_attribute = ({ commit }, filter, value ) => {
-    commit('setPostQuery', {  attr: filter, value: value } );
+    commit('setPostQueryAttribute', {  attr: filter, value: value } );
+};
+
+export const set_postquery = ({ commit }, postquery ) => {
+    commit('setPostQuery', postquery );
 };
 
 export const add_metaquery = ( { commit }, filter  ) => {
-    commit('addMetaQuery', filter  );
+    if( filter && filter.value.length === 0 ){
+        commit('removeMetaQuery', filter  );
+    } else {
+        commit('addMetaQuery', filter  );
+    }
 };
 
 export const remove_metaquery = ( { commit }, filter  ) => {
@@ -33,11 +42,11 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/filters/'; 
+            endpoint = '/collection/' + collectionId + '/filters?context=edit';
         else
-            endpoint = '/filters/';
+            endpoint = '/filters?context=edit';
 
-        axios.tainacan.get(endpoint + '?context=edit')
+        axios.tainacan.get(endpoint)
         .then((res) => {
             let filters= res.data;
             commit('setFilters', filters);
@@ -50,30 +59,7 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel}) => {
     });
 }
 
-
-export const fetchFilter = ({ commit }, {collectionId, filterId, isRepositoryLevel}) => {
-    return new Promise((resolve, reject) => {
-
-        let endpoint = '';
-        if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/filters/' + filterId; 
-        else
-            endpoint = '/filters/' + filterId;
-
-        axios.tainacan.get(endpoint + '?context=edit')
-        .then((res) => {
-            let filter = res.data;
-            commit('setSingleFilter', filter);
-            resolve (filter);
-        }) 
-        .catch((error) => {
-            console.log(error);
-            reject(error);
-        });
-    });
-}
-
-export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterType, status, isRepositoryLevel }) => {
+export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterType, status, isRepositoryLevel, newIndex }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
@@ -81,13 +67,15 @@ export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterTyp
         else
             endpoint = '/filters/';
         axios.tainacan.post(endpoint + '?context=edit', {
-            name: name,
             filter_type: filterType, 
-            status: status
+            filter: {
+                name: name,
+                status: status
+            }
         })
             .then( res => {
                 let filter = res.data;
-                commit('setSingleFilter', filter);
+                commit('setSingleFilter', { filter: filter , index: newIndex});
                 resolve( filter );
             })
             .catch(error => {
@@ -96,19 +84,15 @@ export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterTyp
     });
 };
 
-export const updateFilter = ( { commit }, { collectionId, fieldId, filterId, isRepositoryLevel, options }) => {
+export const updateFilter = ( { commit }, { filterId, index, options }) => {
     return new Promise(( resolve, reject ) => {
-        let endpoint = '';
-
-        if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/field/' + fieldId +'/filters/'; 
-        else
-            endpoint = '/filters/' + filterId;
+        let endpoint = '/filters/' + filterId;
 
         axios.tainacan.put(endpoint, options)
             .then( res => {
-                commit('setSingleFilter', res.data);
-                resolve( res.data );
+                let filter = res.data;
+                commit('setSingleFilter', { filter: filter, index: index });
+                resolve( filter );
             })
             .catch(error => {
                 console.log(error);
@@ -118,17 +102,13 @@ export const updateFilter = ( { commit }, { collectionId, fieldId, filterId, isR
 };
 
 
-export const deleteFilter = ({ commit }, { collectionId, fieldId, filterId, isRepositoryLevel }) => {
-    let endpoint = '';
-    if (!isRepositoryLevel) 
-        endpoint = '/collection/' + collectionId + '/field/' + fieldId +'/filters/';  
-    else
-        endpoint = '/filters/' + filterId;
+export const deleteFilter = ({ commit }, filterId ) => {
+    let endpoint = '/filters/' + filterId;
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.delete(endpoint)
+        axios.tainacan.delete(endpoint, { data:{ is_permanently: false }})
         .then( res => {
-            commit('deleteFilter', { filterId } );
+            commit('deleteFilter', filterId );
             resolve( res.data );
         }).catch((error) => { 
             console.log(error);

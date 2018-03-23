@@ -1,10 +1,17 @@
 <template>
     <section>
         <b-field
-                :label="$i18n.get('label_collection_related')"
+                :addons="false"
                 :listen="setError"
                 :type="collectionType"
                 :message="collectionMessage">
+            <label class="label">
+                {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
+                        :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')">
+                </help-button>
+            </label>
             <b-select
                     name="field_type_relationship[collection_id]"
                     placeholder="Select the collection to fetch items"
@@ -28,7 +35,14 @@
                 class="loading-spinner"></div>
             <b-field
                     v-if="hasFields"
-                    :label="$i18n.get('label_fields_for_search')">
+                    :addons="false">
+                <label class="label">
+                    {{ $i18n.get('label_fields_for_search') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('tainacan-relationship', 'search')"
+                            :message="$i18n.getHelperMessage('tainacan-relationship', 'search')">
+                    </help-button>
+                </label>
                 <div class="block">
                     <div
                         v-for="option in fields"
@@ -46,15 +60,21 @@
         </transition>
 
 
-        <b-field :label="$i18n.get('label_allow_repeated_items')">
+        <b-field :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_allow_repeated_items') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-relationship', 'repeated')"
+                        :message="$i18n.getHelperMessage('tainacan-relationship', 'repeated')">
+                </help-button>
+            </label>
             <div class="block">
-                <b-switch v-model="modelRepeated"
-                          type="is-primary"
+                <b-checkbox v-model="modelRepeated"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
-                    {{ labelRepeated()  }}
-                </b-switch>
+                        {{ labelRepeated() }}
+                </b-checkbox>
             </div>
         </b-field>
     </section>
@@ -122,7 +142,7 @@
         computed: {
             setError(){
                 if( this.errors && this.errors.collection_id !== '' ){
-                    this.collectionType = 'is-warning';
+                    this.collectionType = 'is-danger';
                     this.collectionMessage = this.errors.collection_id;
                 } else {
                     this.collectionType = '';

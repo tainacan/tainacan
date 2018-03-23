@@ -20,10 +20,23 @@ class Fields extends Repository {
 	    'Tainacan\Field_Types\Core_Title',
 	    'Tainacan\Field_Types\Core_Description'
     ];
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
     /**
      * Register specific hooks for field repository
      */
-    function __construct() {
+    protected function __construct() {
         parent::__construct();
         add_filter('pre_trash_post', array( &$this, 'disable_delete_core_fields' ), 10, 2 );
         add_filter('pre_delete_post', array( &$this, 'force_delete_core_fields' ), 10, 3 );
@@ -33,7 +46,7 @@ class Fields extends Repository {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
             'name'           => [
                 'map'        => 'post_title',
-                'title'       => __('Name', 'tainacan'),
+                'title'      => __('Name', 'tainacan'),
                 'type'       => 'string',
                 'description'=> __('Name of the field', 'tainacan'),
                 'on_error'   => __('The name should be a text value and not empty', 'tainacan'),
@@ -49,7 +62,7 @@ class Fields extends Repository {
             'order'          => [
                 'map'        => 'menu_order',
                 'title'       => __('Order', 'tainacan'),
-                'type'       => 'string',
+                'type'       => 'string/integer',
                 'description'=> __('Field order. Field used if collections are manually ordered', 'tainacan'),
                 'on_error'   => __('The menu order should be a numeric value', 'tainacan'),
                 //'validation' => v::numeric(),
@@ -59,6 +72,7 @@ class Fields extends Repository {
                 'title'      => __('Parent', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('Parent field', 'tainacan'),
+                'default'    => 0
                 //'on_error'   => __('The Parent should be numeric value', 'tainacan'),
                 //'validation' => v::numeric(),
             ],
@@ -109,7 +123,7 @@ class Fields extends Repository {
             'cardinality'    => [
                 'map'        => 'meta',
                 'title'      => __('Cardinality', 'tainacan'),
-                'type'       => 'string',
+                'type'       => 'string/number',
                 'description'=> __('Number of multiples possible fields', 'tainacan'),
                 'on_error'   => __('The number of fields not allowed', 'tainacan'),
                 'validation' => v::numeric()->positive(),
@@ -141,15 +155,15 @@ class Fields extends Repository {
             'field_type_options' => [ // not showed in form
                 'map'        => 'meta',
                 'title'      => __('Field Type options', 'tainacan'),
-                'type'       => 'array',
+                'type'       => 'array/object/string',
+                'items'      => ['type' => 'array/string/integer/object'],
                 'description'=> __('Options specific for field type', 'tainacan'),
-                'default'    => [],
                // 'validation' => ''
             ],
             'collection_id'  => [ // not showed in form
                 'map'        => 'meta',
                 'title'      => __('Collection', 'tainacan'),
-                'type'       => 'integer',
+                'type'       => 'integer/string',
                 'description'=> __('The collection ID', 'tainacan'),
                 //'validation' => ''
             ],
@@ -188,7 +202,7 @@ class Fields extends Repository {
 	 */
 	public function get_cpt_labels() {
 		return array(
-			'name'               => __('Field', 'tainacan'),
+			'name'               => __('Fields', 'tainacan'),
             'singular_name'      => __('Field', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
             'add_new_item'       => __('Add new Field', 'tainacan'),
@@ -381,9 +395,10 @@ class Fields extends Repository {
                         // skipping fields disabled if the arg is set
                         if( !$include_disabled && isset( $order[$index]['enable'] ) && !$order[$index]['enable'] ) {
 						   continue;
-					   } elseif ($include_disabled && isset( $order[$index]['enable'] ) && !$order[$index]['enable']) {
-						   $item->set_disabled_for_collection(true);
-					   }
+					   	}
+
+					   $enable =  ( isset( $order[$index]['enable'] )) ?  $order[$index]['enable'] : true;
+					   $item->set_enabled_for_collection($enable);
 
                         $result_ordinate[$index] = $item;
                     } else {
@@ -430,7 +445,7 @@ class Fields extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($field){
-        global $Tainacan_Fields;
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
 
     	$this->pre_update_category_field($field);
         $new_field = parent::insert($field);
@@ -495,18 +510,18 @@ class Fields extends Repository {
         // TODO: create a better way to retrieve this data
         $data_core_fields = [
             'core_description' => [
-                'name' => 'Description',
-                'description' => 'description',
+                'name'          => 'Description',
+                'description'   => 'description',
                 'collection_id' => $collection->get_id(),
-                'field_type' => 'Tainacan\Field_Types\Core_Description',
-                'status'     => 'publish'
+                'field_type'    => 'Tainacan\Field_Types\Core_Description',
+                'status'        => 'publish'
             ],
-            'core_title' => [
-                'name' => 'Title',
-                'description' => 'title',
+            'core_title'       => [
+                'name'          => 'Title',
+                'description'   => 'title',
                 'collection_id' => $collection->get_id(),
-                'field_type' => 'Tainacan\Field_Types\Core_Title',
-                'status'     => 'publish'
+                'field_type'    => 'Tainacan\Field_Types\Core_Title',
+                'status'        => 'publish'
             ]
         ];
 
@@ -670,9 +685,8 @@ class Fields extends Repository {
 				);
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
-
 				if (!empty($pre_result)) {
-					$results[] = $pre_result[0];
+					$results[] = $pre_result;
 				}
 			}
 		} elseif ( current_user_can( $capabilities->read_private_posts) ) {
@@ -701,7 +715,7 @@ class Fields extends Repository {
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
 
 				if (!empty($pre_result)) {
-					$results[] = $pre_result[0];
+					$results[] = $pre_result;
 				}
 			}
 		}

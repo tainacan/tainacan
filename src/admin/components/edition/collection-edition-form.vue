@@ -1,21 +1,70 @@
 <template>
-    <div class="page-container">
+    <div class="page-container" :class="{'primary-page' : isNewCollection }">
         <b-tag v-if="collection != null && collection != undefined" :type="'is-' + getStatusColor(collection.status)" v-text="collection.status"></b-tag>
-        <form class="tainacan-form" label-width="120px">
+        <form v-if="collection != null && collection != undefined" class="tainacan-form" label-width="120px">
+            
+            <!-- Name -------------------------------- --> 
             <b-field 
+                :addons="false"
                 :label="$i18n.get('label_name')"
                 :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
                 :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                <help-button 
+                    :title="$i18n.getHelperTitle('collections', 'name')" 
+                    :message="$i18n.getHelperMessage('collections', 'name')">
+                </help-button>
                 <b-input
                     id="tainacan-text-name"
                     v-model="form.name"
                     @focus="clearErrors('name')">
-                </b-input>
+                </b-input>  
             </b-field>
+
+            <!-- Thumbnail -------------------------------- --> 
             <b-field 
-                    :label="$i18n.get('label_description')"
-                    :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
-                    :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                :addons="false"
+                :label="$i18n.get('label_image')">
+                <div class="thumbnail-field">
+                    <b-upload 
+                        v-if="collection.featured_image == undefined || collection.featured_image == false"
+                        v-model="thumbnail"
+                        drag-drop
+                        @input="uploadThumbnail($event)">
+                        <div class="content has-text-centered">
+                            <p>
+                            <b-icon
+                                icon="upload">
+                            </b-icon>
+                            </p>
+                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
+                        </div>
+                    </b-upload>
+                    <div v-else> 
+                        <figure class="image is-128x128">
+                            <img :alt="$i18n.get('label_thumbnail')" :src="collection.featured_image"/>
+                        </figure>
+                        <div class="thumbnail-buttons-row">
+                            <b-upload 
+                                model="thumbnail"
+                                @input="uploadThumbnail($event)">
+                                <a id="button-edit" :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"></b-icon></a>
+                            </b-upload>
+                            <a id="button-delete" :aria-label="$i18n.get('label_button_delete_thumb')" @click="deleteThumbnail()"><b-icon icon="delete"></b-icon></a>
+                        </div>
+                    </div> 
+                </div>
+            </b-field> 
+                  
+            <!-- Description -------------------------------- --> 
+            <b-field
+                :addons="false" 
+                :label="$i18n.get('label_description')"
+                :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                <help-button 
+                    :title="$i18n.getHelperTitle('collections', 'description')" 
+                    :message="$i18n.getHelperMessage('collections', 'description')">
+                </help-button>
                 <b-input
                         id="tainacan-text-description"
                         type="textarea"
@@ -23,10 +72,17 @@
                         @focus="clearErrors('description')">
                 </b-input>
             </b-field>
-            <b-field 
+
+             <!-- Status -------------------------------- --> 
+            <b-field
+                :addons="false" 
                 :label="$i18n.get('label_status')"
                 :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
                 :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                <help-button 
+                    :title="$i18n.getHelperTitle('collections', 'status')" 
+                    :message="$i18n.getHelperMessage('collections', 'status')">
+                </help-button>
                 <b-select
                         id="tainacan-select-status"
                         v-model="form.status"
@@ -40,40 +96,42 @@
                     </option>
                 </b-select>
             </b-field>
+
+            <!-- Slug -------------------------------- --> 
             <b-field
-                    :type="editFormErrors['image'] != undefined ? 'is-danger' : ''" 
-                    :message="editFormErrors['image'] != undefined ? editFormErrors['image'] : ''"
-                    :label="$i18n.get('label_image')">
-                <b-upload v-model="form.files"
-                          multiple
-                          drag-drop
-                          @focus="clearErrors('image')">
-                    <section class="section">
-                        <div class="content has-text-centered">
-                            <p>
-                                <b-icon
-                                        icon="upload"
-                                        size="is-large">
-                                </b-icon>
-                            </p>
-                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
-                        </div>
-                    </section>
-                </b-upload>
+                :addons="false" 
+                :label="$i18n.get('label_slug')"
+                :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
+                :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                <help-button 
+                    :title="$i18n.getHelperTitle('collections', 'slug')" 
+                    :message="$i18n.getHelperMessage('collections', 'slug')">
+                </help-button>
+                <b-input
+                    id="tainacan-text-slug"
+                    v-model="form.slug"
+                    @focus="clearErrors('slug')">
+                </b-input>
             </b-field>
-            <button
-                id="button-cancel-collection-creation"
-                class="button"
-                type="button"
-                @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-            <button
-                id="button-submit-collection-creation"
-                @click.prevent="onSubmit"
-                class="button is-primary">{{ $i18n.get('save') }}</button>
+            <div class="field is-grouped form-submit">
+                <div class="control">
+                    <button
+                        id="button-cancel-collection-creation"
+                        class="button is-outlined"
+                        type="button"
+                        @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                </div>
+                <div class="control">
+                    <button
+                        id="button-submit-collection-creation"
+                        @click.prevent="onSubmit"
+                        class="button is-success">{{ $i18n.get('save') }}</button>
+                </div>
+            </div>
             <p class="help is-danger">{{formErrorMessage}}</p>
         </form>
 
-        <b-loading :active.sync="isLoading" :canCancel="false">
+        <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
     </div>
 </template>
 
@@ -91,8 +149,11 @@ export default {
                 name: '',
                 status: '',
                 description: '',
+                slug: '',
+                featured_image: '',
                 files:[]
             },
+            thumbnail: {},
             // Can be obtained from api later
             statusOptions: [{ 
                 value: 'publish',
@@ -109,13 +170,16 @@ export default {
             }],
             editFormErrors: {},
             formErrorMessage: '',
+            isNewCollection: false
         }
     },
     methods: {
         ...mapActions('collection', [
             'sendCollection',
             'updateCollection',
-            'fetchCollection'
+            'fetchCollection',
+            'sendAttachment',
+            'updateThumbnail'
         ]),
         ...mapGetters('collection',[
             'getCollection'
@@ -124,13 +188,14 @@ export default {
             // Puts loading on Draft Collection creation
             this.isLoading = true;
 
-            let data = {collection_id: this.collectionId, name: this.form.name, description: this.form.description, status: this.form.status};
+            let data = {collection_id: this.collectionId, name: this.form.name, description: this.form.description, slug: this.form.slug, status: this.form.status};
             this.updateCollection(data).then(updatedCollection => {    
                 
                 this.collection = updatedCollection;
 
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
+                this.form.slug = this.collection.slug;
                 this.form.description = this.collection.description;
                 this.form.status = this.collection.status;
 
@@ -178,6 +243,7 @@ export default {
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
+                this.form.slug = this.collection.slug;
                 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -192,12 +258,41 @@ export default {
         },
         cancelBack(){
             this.$router.push(this.$routerHelper.getCollectionsPath());
+        },
+        uploadThumbnail($event) {
+
+            this.sendAttachment({ collection_id: this.collectionId, file: $event[0] })
+            .then((res) => {
+
+                this.updateThumbnail({collectionId: this.collectionId, thumbnailId: res.id})
+                .then((res) => {
+                    this.collection.featured_image = res.featured_image;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+            
+        },
+        deleteThumbnail() {
+
+            this.updateThumbnail({collectionId: this.collectionId, thumbnailId: 0})
+            .then((res) => {
+                this.collection.featured_image = false;
+            })
+            .catch((error) => {
+                console.log(error);
+            });    
         }
     },
     created(){
 
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewCollection();
+            this.isNewCollection = true;
         } else if (this.$route.fullPath.split("/").pop() == "edit") {
 
             this.isLoading = true;
@@ -212,6 +307,7 @@ export default {
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
+                this.form.slug = this.collection.slug;
                 this.form.status = this.collection.status;
 
                 this.isLoading = false; 
@@ -222,7 +318,37 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    .thumbnail-field {
+        width: 128px;
+        height: 128px;
+        max-width: 128px;
+        max-height: 128px;
+        
+        .content {
+            padding: 10px;
+            font-size: 0.8em;
+        }
+        img {
+            bottom: 0;
+            position: absolute;
+        }
+
+        .thumbnail-buttons-row {
+            display: none;
+        }
+        &:hover {
+             .thumbnail-buttons-row {
+                display: inline-block;
+                position: relative;
+                bottom: 31px;
+                background-color: rgba(255,255,255,0.8);
+                padding: 2px 8px;
+                border-radius: 0px 4px 0px 0px;
+            }
+        }
+    }
 
 </style>
 

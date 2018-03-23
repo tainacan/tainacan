@@ -160,11 +160,10 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$termA = $data[0];
-		$termB = $data[1];
+		$terms_name = [$data[0]['name'], $data[1]['name']];
 
-		$this->assertEquals('Trap', $termB['name']);
-		$this->assertEquals('Rock', $termA['name']);
+		$this->assertContains('Rock', $terms_name);
+		$this->assertContains('Trap', $terms_name);
 
 		#### FETCH A TERM ####
 

@@ -8,8 +8,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 abstract class Filter_Type {
 
     private $supported_types = [];
-    public $options;
-    public $component;
+    private $options = [];
+    private $component;
 
     public function __construct(){
         add_action('register_filter_types', array(&$this, 'register_filter_type'));
@@ -46,6 +46,7 @@ abstract class Filter_Type {
     public function get_component() {
         return $this->component;
     }
+
     /**
      * @return array
      */
@@ -63,7 +64,7 @@ abstract class Filter_Type {
      * @param $options
      */
     public function set_options( $options ){
-        $this->options = ( is_array( $options ) ) ? $options : unserialize( $options );
+	    $this->options = ( is_array( $options ) ) ? $options : (!is_array(unserialize( $options )) ? [] : unserialize( $options ));
     }
 
 	/**
@@ -73,7 +74,7 @@ abstract class Filter_Type {
 	 *
 	 * @param  \Tainacan\Entities\Filter $filter The field object that is beeing validated
 	 *
-	 * @return true|Array True if options are valid. If invalid, returns an array where keys are the field keys and values are error messages.
+	 * @return true|array True if options are valid. If invalid, returns an array where keys are the field keys and values are error messages.
 	 * @throws \Exception
 	 */
     public function validate_options(\Tainacan\Entities\Filter $filter) {
@@ -91,4 +92,18 @@ abstract class Filter_Type {
             return ['unsupported_type' => __('The field primitive type is not supported by this filter', 'tainacan')];
         }
     }
+
+	/**
+	 * @param mixed $component
+	 */
+	public function set_component( $component ) {
+		$this->component = $component;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function get_options() {
+		return $this->options;
+	}
 }

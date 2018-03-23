@@ -14,8 +14,6 @@ Vue.use(VueCustomElement);
 import Text from '../classes/field-types/text/Text.vue';
 import Textarea from '../classes/field-types/textarea/Textarea.vue';
 import Selectbox from '../classes/field-types/selectbox/Selectbox.vue';
-import Checkbox from '../classes/field-types/checkbox/Checkbox.vue';
-import Radio from '../classes/field-types/radio/Radio.vue';
 import Numeric from '../classes/field-types/numeric/Numeric.vue';
 import Date from '../classes/field-types/date/Date.vue';
 import Relationship from '../classes/field-types/relationship/Relationship.vue';
@@ -36,12 +34,6 @@ eventBus.registerComponent( 'tainacan-textarea' );
 
 Vue.customElement('tainacan-selectbox', Selectbox);
 eventBus.registerComponent( 'tainacan-selectbox' );
-
-Vue.customElement('tainacan-checkbox', Checkbox);
-eventBus.registerComponent( 'tainacan-checkbox' );
-
-Vue.customElement('tainacan-radio', Radio);
-eventBus.registerComponent( 'tainacan-radio' );
 
 Vue.customElement('tainacan-numeric', Numeric);
 eventBus.registerComponent( 'tainacan-numeric' );

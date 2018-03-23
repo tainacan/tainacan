@@ -28,12 +28,11 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function init_objects() {
 		$this->collection = new Entities\Collection();
-		$this->collection_repository = new Repositories\Collections();
+		$this->collection_repository = Repositories\Collections::getInstance();
 		
-		$this->field = new Entities\Field();
-		$this->field_repository = new Repositories\Fields();
+		$this->field_repository = Repositories\Fields::getInstance();
 		
-		$this->filter_repository = new Repositories\Filters();
+		$this->filter_repository = Repositories\Filters::getInstance();
 	}
 
 	public function register_routes() {
@@ -41,48 +40,61 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
-				'permission_callback' => array($this, 'create_item_permissions_check')
+				'permission_callback' => array($this, 'create_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE)
 			),
 		));
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base, array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
-				'permission_callback' => array($this, 'get_items_permissions_check')
+				'permission_callback' => array($this, 'get_items_permissions_check'),
+				'args'                => $this->get_collection_params()
 			),
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
-				'permission_callback' => array($this, 'create_item_permissions_check')
+				'permission_callback' => array($this, 'create_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE)
 			)
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base, array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
-				'permission_callback' => array($this, 'get_items_permissions_check')
+				'permission_callback' => array($this, 'get_items_permissions_check'),
+				'args'                => $this->get_collection_params()
 			),
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
-				'permission_callback' => array($this, 'create_item_permissions_check')
+				'permission_callback' => array($this, 'create_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE)
 			)
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<filter_id>[\d]+)', array(
 			array(
 				'methods'             => WP_REST_Server::DELETABLE,
 				'callback'            => array($this, 'delete_item'),
-				'permission_callback' => array($this, 'delete_item_permissions_check')
+				'permission_callback' => array($this, 'delete_item_permissions_check'),
+				'args'                => array(
+	            	'body_args' => array(
+		                'description' => __('To delete permanently, in body you can pass \'is_permanently\' as true. By default this will only trash collection'),
+			            'default'     => 'false'
+		            ),
+	            )
 			),
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array($this, 'update_item'),
-				'permission_callback' => array($this, 'update_item_permissions_check')
+				'permission_callback' => array($this, 'update_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE)
 			),
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
-				'permission_callback' => array($this, 'get_item_permissions_check')
+				'permission_callback' => array($this, 'get_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::READABLE)
 			)
 		));
 	}
@@ -123,7 +135,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 			}
 		}
 
-		if(isset($request['collection_id']) && isset($request['filter_id'])) {
+		if(isset($request['collection_id']) && isset($request['field_id'])) {
 			$collection_id = $request['collection_id'];
 			$field_id      = $request['field_id'];
 
@@ -314,7 +326,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
-				$item_arr['filter_type_object'] = $item->get_filter_type_object();
+				$item_arr['filter_type_object'] = $item->get_filter_type_object()->__toArray();
 			}
 
 			return $item_arr;
@@ -359,7 +371,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		if(!isset($request['collection_id'])) {
-			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_read( $this->filter ) ) {
+			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_read( new Entities\Filter() ) ) {
 				return false;
 			}
 
@@ -409,6 +421,57 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_endpoint_args_for_item_schema( $method = null ) {
+		$endpoint_args = [];
+		if($method === WP_REST_Server::READABLE) {
+			$endpoint_args['context'] = array(
+				'type'    => 'string',
+				'default' => 'view',
+				'items'   => array( 'view, edit' )
+			);
+		} elseif ($method === WP_REST_Server::CREATABLE || $method === WP_REST_Server::EDITABLE) {
+			$map = $this->filter_repository->get_map();
+
+			foreach ($map as $mapped => $value){
+				$set_ = 'set_'. $mapped;
+
+				// Show only args that has a method set
+				if( !method_exists(new Entities\Filter(), "$set_") ){
+					unset($map[$mapped]);
+				}
+			}
+
+			$endpoint_args = $map;
+		}
+
+		return $endpoint_args;
+	}
+
+	/**
+	 * @param null $object_name
+	 *
+	 * @return array|void
+	 */
+	public function get_collection_params( $object_name = null ) {
+		$query_params['context']['default'] = 'view';
+
+		$query_params = array_merge($query_params, parent::get_collection_params('filter'));
+
+		$query_params['name'] = array(
+			'description' => __('Limit result set to filter with specific name.'),
+			'type'        => 'string',
+		);
+
+		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+		return $query_params;
 	}
 }
 ?>

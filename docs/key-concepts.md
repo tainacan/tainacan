@@ -3,10 +3,9 @@
 The typical workflow when you create a Digital Repository with Tainacan is:
 
 * Create a collection
-* Configure which fields the item in this collections will have
-* Configure the collection
-* Configure which filters will be used when browsing the collection
-* Upload items to the collection or import them from an external source
+* Choose which fields the item in this collections will have
+* Choose which filters will be used when browsing the collection
+* Insert items to the collection or import them from an external source
 
 ## Collections
 
@@ -30,7 +29,7 @@ Each field has a set of settings. Is it required? Is it supposed to be unique (a
 
 You may have repository-level fields, that will be inherited by all collections of your repository. In the same way, collections inherit fields from their parent collection.
 
-(Note: you can import/export presets of field)
+(Note: you can use and import/export presets of fields)
 
 ## Field Types
 
@@ -58,4 +57,34 @@ Filter Types can be created via plugins and extend the default set of types ship
 
 Categories (or Taxonomies) can be created and used to classify items. Typical Taxonomies are Genre, Country, etc.
 
-They are the same WordPress Taxonomies you already know, and they can be shared among many collections.
+In WordPress language, they are Taxonomies, and they can be shared among many collections.
+
+Each Category has a set of terms. For example, the category Genre may have terms like "drama" and "comedy".
+
+Terms can have hierarchy, which means that when you browse for items that have a parente term (for instance, "Rock"), the results will include items that have any of the child terms (for instance, "Progressive Rock" and "Classic Rock").
+
+Terms also have a description, may have an icon or image that represents it and may also be linked to a existing concept of an ontology. They can have their own URL in your site, with a page listing all items that are related to them, despite their collection. In that way, they behave as if they were a collection themselves.
+
+## Item types
+
+Item types gives you the abiity to specialize the desription of an item based on its nature. So, inside the same collection you may have items that vary in its nature and, therefore, have a different set of metadata.
+
+For each item type you can choose a group of Fields, in the same way you do for a collection. When you create an item inside a collection, it will have all the fields chosen for that collection plus the fields related to its type.
+
+AN item type can be anything. For example, LPs, Books and paintings are õbvious distinct item types that may have specific fields. But it could also more abstract concepts, such as "financial transactions".
+
+## Under discussion
+
+### Desktop
+
+Desktop holds items that are not part of any collections yet. You might want to use it when you want to upload a bunch of items and organize them afterwards, instead of having to thinh an prepare all the collections beforehand.
+
+Items in Desktop are not publicly visible and have only the fields configured in repository level.
+
+### Thematic Collections
+
+Thematic Collections is another way to organize the items in your repository. In essecen, they are a Category, that can hold items from any collections, and an item can be part of many Thematic Collections.
+
+They work in exactly the same way as categories, the only difference is that you have another way to manage it,..
+
+Another idea here is, intead of having a "fixed category" called thematic collections, we could just have a menu item "Categories" or "Organize by categories" that lets you browse the items by category, instead of by collections, and manipulate them.

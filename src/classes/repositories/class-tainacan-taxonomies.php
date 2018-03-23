@@ -12,8 +12,20 @@ use \Respect\Validation\Validator as v;
  */
 class Taxonomies extends Repository {
 	public $entities_type = '\Tainacan\Entities\Taxonomy';
-	
-	public function __construct() {
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+	protected function __construct() {
 		parent::__construct();
  		add_action('tainacan-taxonomy-removed-from-collection', array($this, 'removed_collection'), 10, 2);
  		add_action('tainacan-taxonomy-added-to-collection', array($this, 'added_collection'), 10, 2);
@@ -26,7 +38,7 @@ class Taxonomies extends Repository {
                 'title'       => __('Name', 'tainacan'),
                 'type'        => 'string',
                 'description' => __('Name of the taxonomy', 'tainacan'),
-                'on_error'    => __('The taxonomy should be a text value and not empty', 'tainacan'),
+                'on_error'    => __('The taxonomy name should be a text value and not empty', 'tainacan'),
                 'validation'  => v::stringType()->notEmpty(),
             ],
             'description'     =>  [
@@ -179,7 +191,6 @@ class Taxonomies extends Repository {
 
             $args = array_merge([
                 'posts_per_page' => -1,
-                'post_status'    => 'publish'
             ], $args);
 
             $args = $this->parse_fetch_args($args);

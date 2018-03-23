@@ -6,6 +6,7 @@
                 v-model = "selected"
                 @input = "onSelect()"
                 expanded>
+            <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
             <option
                     v-for="option,index in options"
                     :key="index"
@@ -17,14 +18,26 @@
 </template>
 
 <script>
-    import axios from '../../../js/axios/axios'
+    import { tainacan as axios } from '../../../js/axios/axios';
+    import { filter_type_mixin } from '../filter-types-mixin'
 
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.collection_id;
-            this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
-            this.loadOptions();
+            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
+            const vm = this;
+            axios.get('/collection/' + this.collection + '/fields/' +  this.field )
+                .then( res => {
+                    let result = res.data;
+                    if( result && result.field_type ){
+                        vm.field_object = result;
+                        vm.type = result.field_type;
+                        vm.loadOptions();
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
         data(){
             return {
@@ -36,62 +49,18 @@
                 selected: '',
             }
         },
-        props: {
-            filter: {
-                type: Object // concentrate all attributes field id and type
-            },
-            field_id: [Number], // not required, but overrides the filter field id if is set
-            collection_id: [Number], // not required, but overrides the filter field id if is set
-            filter_type: [String],  // not required, but overrides the filter field type if is set
-            id: ''
-        },
+        mixins: [filter_type_mixin],
         methods: {
-            getValuesPlainText( field_id ){
-                return axios.get( '/collection/' + this.collection_id  + '/fields/' + field_id + '?fetch=all_field_values')
-                    .then( res => {
-                        for (let metadata of res.data) {
-                            let index = this.options.findIndex(itemMetadata => itemMetadata.value === metadata.mvalue);
-                            if( index < 0 ){
-                                this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
-                            }
-
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            },
-            getValuesCategory( taxonomy ){
-                // TODO: get taxonomy terms
-            },
-            getValuesRelationship( collectionTarget ){
-                 return axios.get( '/collection/' + collectionTarget  + '/items' )
-                    .then( res => {
-
-                        for (let item of res.data) {
-                            this.options.push({ label: item.title, value: item.id })
-                        }
-
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            },
             loadOptions(){
                 let promise = null;
                 this.isLoading = true;
+                let instance = this;
 
-                if ( this.type === 'Tainacan\Field_types\Relationship' ) {
+                if ( this.type === 'Tainacan\\Field_types\\Relationship' ) {
 
                     let collectionTarget = ( this.filter && this.filter.field.field_type_options.collection_id ) ?
                         this.filter.field.field_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget );
-
-                } else if ( this.type === 'Tainacan\Field_types\Category' ) {
-
-                    let collectionTarget = ( this.filter && this.filter.field.field_type_options.taxonomy ) ?
-                        this.filter.field.field_type_options.taxonomy : this.taxonomy;
-                    promise = this.getValuesCategory( collectionTarget );
 
                 } else {
                     promise = this.getValuesPlainText( this.field );
@@ -99,6 +68,7 @@
 
                 promise.then( data => {
                     this.isLoading = false;
+                    instance.selectedValues();
                 })
                 .catch( error => {
                     console.log('error select', error );
@@ -106,19 +76,24 @@
                 });
             },
             onSelect(){
-                let filter = null;
-                if ( this.type ) {
-                    filter = 'term';
-                } else {
-                    filter = 'selectbox';
-                }
-
                 this.$emit('input', {
-                    filter: filter,
-                    field_id: ( this.field_id ) ? this.field_id : this.filter.field,
+                    filter: 'selectbox',
+                    field_id: this.field,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: this.selected
                 });
+            },
+            selectedValues(){
+                if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
+                    return false;
+
+                let index = this.query.metaquery.findIndex(newField => newField.key === this.field );
+                if ( index >= 0){
+                    let metadata = this.query.metaquery[ index ];
+                    this.selected = metadata.value;
+                } else {
+                    return false;
+                }
             }
         }
     }

@@ -6,14 +6,32 @@ use Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Item_Metadata extends Repository {
-	public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
-    
+
+    protected function __construct()
+    {
+        parent::__construct();
+    }
+
+    public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
+
+    private static $instance = null;
+
+    public static function getInstance()
+    {
+        if(!isset(self::$instance))
+        {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
     public function insert($item_metadata) {
 
         $unique = !$item_metadata->is_multiple();
 		
 		$field_type = $item_metadata->get_field()->get_field_type_object();
-		if ($field_type->core) {
+		if ($field_type->get_core()) {
 			$this->save_core_field_value($item_metadata);
 		} elseif ($field_type->get_primitive_type() == 'term') {
 			$this->save_terms_field_value($item_metadata);
@@ -50,13 +68,13 @@ class Item_Metadata extends Repository {
 
     public function save_core_field_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
         $field_type = $item_metadata->get_field()->get_field_type_object();
-        if ($field_type->core) {
+        if ($field_type->get_core()) {
             $item = $item_metadata->get_item();
-            $set_method = 'set_' . $field_type->related_mapped_prop;
+            $set_method = 'set_' . $field_type->get_related_mapped_prop();
             $value = $item_metadata->get_value();
             $item->$set_method( is_array( $value ) ? $value[0] : $value );
             if ($item->validate_core_fields()) {
-                global $Tainacan_Items;
+                $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
                 $Tainacan_Items->insert($item);
             } else {
                 throw new \Exception('Item metadata should be validated beforehand');
@@ -87,7 +105,7 @@ class Item_Metadata extends Repository {
 	 */
     public function fetch($object, $output = null ){
         if($object instanceof Entities\Item){
-            global $Tainacan_Items, $Tainacan_Fields;
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
             
             $collection = $object->get_collection();
             
@@ -121,10 +139,10 @@ class Item_Metadata extends Repository {
         $unique = ! $item_metadata->is_multiple();
         
         $field_type = $item_metadata->get_field()->get_field_type_object();
-        if ($field_type->core) {
+        if ($field_type->get_core()) {
             $item = $item_metadata->get_item();
             
-            $get_method = 'get_' . $field_type->related_mapped_prop;
+            $get_method = 'get_' . $field_type->get_related_mapped_prop();
             return $item->$get_method();
         
 		} elseif ($field_type->get_primitive_type() == 'term') {

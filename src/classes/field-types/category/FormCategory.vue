@@ -2,10 +2,17 @@
     <section
             v-if="isReady"
             :listen="setError">
-        <b-field :label="$i18n.get('label_select_category')"
+        <b-field :addons="false"
                  :type="taxonomyType"
                  :message="taxonomyMessage"
         >
+            <label class="label">
+                {{ $i18n.get('label_select_category') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-category', 'taxonomy_id')"
+                        :message="$i18n.getHelperMessage('tainacan-category', 'taxonomy_id')">
+                </help-button>
+            </label>
             <b-select
                     name="field_type_options[taxonomy_id]"
                     placeholder="Select the taxonomy"
@@ -23,8 +30,14 @@
             </b-select>
         </b-field>
 
-        <b-field :label="$i18n.get('label_select_category_input_type')">
-
+        <b-field :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_select_category_input_type') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-category', 'input_type')"
+                        :message="$i18n.getHelperMessage('tainacan-category', 'input_type')">
+                </help-button>
+            </label>
             <b-select
                     v-if="listInputType"
                     name="field_type_options[component_type]"
@@ -56,15 +69,21 @@
 
         </b-field>
 
-        <b-field :label="$i18n.get('label_category_allow_new_terms')">
+        <b-field :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_category_allow_new_terms') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-category', 'allow_new_terms')"
+                        :message="$i18n.getHelperMessage('tainacan-category', 'allow_new_terms')">
+                </help-button>
+            </label>
             <div class="block">
-                <b-switch v-model="allow_new_terms"
-                          type="is-primary"
+                <b-checkbox v-model="allow_new_terms"
                           @input="emitValues()"
                           true-value="yes"
                           false-value="no">
-                    {{ labelNewTerms()  }}
-                </b-switch>
+                    {{ labelNewTerms() }}
+                </b-checkbox>
             </div>
         </b-field>
 
@@ -73,8 +92,10 @@
 
 <script>
     import { tainacan as axios }  from '../../../js/axios/axios';
+    import BCheckbox from "../../../../node_modules/buefy/src/components/checkbox/Checkbox.vue";
 
     export default {
+        components: {BCheckbox},
         props: {
             value: [ String, Object, Array ],
             field: [ String, Object ],
@@ -114,7 +135,7 @@
             },
             setError(){
                 if( this.errors && this.errors.taxonomy_id !== '' ){
-                    this.taxonomyType = 'is-warning';
+                    this.taxonomyType = 'is-danger';
                     this.taxonomyMessage = this.errors.taxonomy_id;
                 } else {
                     this.taxonomyType = '';

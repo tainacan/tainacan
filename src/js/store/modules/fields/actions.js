@@ -22,31 +22,7 @@ export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel}) => {
     });
 }
 
-
-export const fetchField = ({ commit }, {collectionId, fieldId, isRepositoryLevel}) => {
-    return new Promise((resolve, reject) => {
-
-        let endpoint = '';
-        if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/fields/' + fieldId; 
-        else
-            endpoint = '/fields/' + fieldId;
-
-        axios.tainacan.get(endpoint + '?context=edit')
-        .then((res) => {
-            let field = res.data;
-            commit('setSingleField', field);
-            resolve (field);
-        }) 
-        .catch((error) => {
-            console.log(error);
-            reject(error);
-        });
-    });
-}
-
-
-export const sendField = ( { commit }, { collectionId, name, fieldType, status, isRepositoryLevel }) => {
+export const sendField = ( { commit }, { collectionId, name, fieldType, status, isRepositoryLevel, newIndex }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
@@ -60,7 +36,7 @@ export const sendField = ( { commit }, { collectionId, name, fieldType, status, 
         })
             .then( res => {
                 let field = res.data;
-                commit('setSingleField', field);
+                commit('setSingleField', { field: field, index: newIndex});
                 resolve( res.data );
             })
             .catch(error => {
@@ -69,7 +45,7 @@ export const sendField = ( { commit }, { collectionId, name, fieldType, status, 
     });
 };
 
-export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLevel, options }) => {
+export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLevel, index, options }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
 
@@ -80,8 +56,9 @@ export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLe
 
         axios.tainacan.put(endpoint + '?context=edit', options)
             .then( res => {
-                commit('setSingleField', res.data);
-                resolve( res.data );
+                let field = res.data
+                commit('setSingleField', { field: field, index: index });
+                resolve( field );
             })
             .catch(error => {
                 console.log(error);

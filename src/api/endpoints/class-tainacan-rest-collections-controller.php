@@ -28,7 +28,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
      * Initialize objects after post_type register
      */
     public function init_objects() {
-    	$this->collections_repository = new Repositories\Collections();
+    	$this->collections_repository = Repositories\Collections::getInstance();
     	$this->collection = new Entities\Collection();
     }
 
@@ -408,17 +408,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
 		}
 
 	    return $endpoint_args;
-    }
-
-	/**
-	 * @return array|mixed|void
-	 */
-	public function get_item_schema() {
-		$schema['collection']['type']        = 'array/object';
-		$schema['collection']['description'] = __('Passed in body.');
-		$schema['collection']['properties']  = $this->collections_repository->get_map();
-
-		return $schema;
     }
 
 	/**

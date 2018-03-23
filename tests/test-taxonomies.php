@@ -18,7 +18,7 @@ class Taxonomies extends TAINACAN_UnitTestCase {
      * Teste da insercao de uma taxonomia simples
      */
     function test_add() {
-        global $Tainacan_Taxonomies;
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
 
         $taxonomy = $this->tainacan_entity_factory->create_entity(
         	'taxonomy',
@@ -40,7 +40,8 @@ class Taxonomies extends TAINACAN_UnitTestCase {
     }
 
     function test_add_term_taxonomy(){
-        global $Tainacan_Taxonomies, $Tainacan_Terms;
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+        $Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
 
 	    $taxonomy = $this->tainacan_entity_factory->create_entity(
 		    'taxonomy',

@@ -3,6 +3,7 @@
             :id="id"
             type="number"
             :value="inputValue"
+            step="0.01"
             @blur="onBlur"
             @change="onBlur"
             @input="onInput($event)"></b-input>
@@ -11,8 +12,8 @@
 <script>
     export default {
         created(){
-            if( this.field && this.field.value ){
-                this.inputValue = this.field.value
+            if( this.value ){
+                this.inputValue = this.value
             }
         },
         data() {

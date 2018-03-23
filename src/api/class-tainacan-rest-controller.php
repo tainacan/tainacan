@@ -189,7 +189,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		}
 
 		$user_id = $user->ID;
-		$metas = $field_name === 'meta' ? $meta : '';
+		$metas = $field_name === 'meta' ? $meta : [];
 
 		$map = [
 			'metakey',

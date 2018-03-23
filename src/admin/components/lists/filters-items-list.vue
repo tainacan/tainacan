@@ -1,13 +1,15 @@
 <template>
     <div>
         <tainacan-filters-list
+                :query="getPostQuery()"
                 v-for="(filter, index) in filters"
                 v-bind:key="index"
                 :filter="filter"></tainacan-filters-list>
     </div>
 </template>
 <script>
-    import { mapActions } from 'vuex';
+    import { mapActions, mapGetters } from 'vuex';
+    import { eventFilterBus } from '../../../js/event-bus-filters'
 
     export default {
         data(){
@@ -28,6 +30,9 @@
         methods: {
             ...mapActions('filter',[
                 'fetchFilters'
+            ]),
+            ...mapGetters('search',[
+                'getPostQuery'
             ])
         }
     }

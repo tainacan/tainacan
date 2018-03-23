@@ -24,20 +24,18 @@
                     
                     <router-link tag="span" class="clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
                         <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">
-                            {{ props.row.metadata[column.slug].multiple == 'yes' ? props.row.metadata[column.slug].value.join(', ') : props.row.metadata[column.slug].value}}
+                            {{  showValue( props.row.metadata[column.slug] ) }}
                         </template>
                     </router-link>
                     
-                    <router-link tag="span" class="clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
-                        <template v-if="column.field == 'featured_image'">
-                            <img class="table-thumb" :src="`${ props.row[column.slug] }`"/>
-                        </template>
-                    </router-link>
-                    
+                    <template v-if="column.field == 'featured_image'">
+                        <router-link tag="img" class="table-thumb clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}" :src="props.row[column.slug]"></router-link>
+                    </template>
+                         
                     <template v-if="column.field == 'row_actions'">
                         <!-- <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a> -->
-                        <a id="button-edit" :aria-label="$i18n.getFrom('items','edit_item')" @click="goToItemEditPage(props.row.id)"><b-icon icon="pencil"></a>
-                        <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click="deleteOneItem(props.row.id)"><b-icon icon="delete"></a>
+                        <a id="button-edit" :aria-label="$i18n.getFrom('items','edit_item')" @click="goToItemEditPage(props.row.id)"><b-icon type="is-gray" icon="pencil"></a>
+                        <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click="deleteOneItem(props.row.id)"><b-icon type="is-gray" icon="delete"></a>
                     </template>
                 </b-table-column>
 
@@ -160,6 +158,20 @@ export default {
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
+        showValue( metadata ){
+            if( ! metadata || metadata.value === false )
+                return '';
+
+            if( Array.isArray( metadata.value ) ){
+                let result = [];
+                for( let val of metadata.value ){
+                    result.push( ( val.name ) ? val.name : val )
+                }
+                return result.join(', ');
+            } else {
+                return metadata.value.name ? metadata.value.name : metadata.value
+            }
+        }
     }
 }
 </script>

@@ -1,10 +1,17 @@
 <template>
     <section
             :listen="setError">
-        <b-field :label="$i18n.get('label_options')"
+        <b-field :addons="false"
                  :type="optionType"
                  :message="optionMessage"
         >
+            <label class="label">
+                {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-selectbox', 'options')"
+                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')">
+                </help-button>
+            </label>
             <b-taginput
                     v-model="options"
                     @input="emitValues()"
@@ -38,7 +45,7 @@
         computed: {
             setError(){
                 if( this.errors && this.errors.options !== '' ){
-                    this.optionType = 'is-warning';
+                    this.optionType = 'is-danger';
                     this.optionMessage = this.errors.options;
                 } else {
                     this.optionType = '';

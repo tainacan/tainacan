@@ -23,10 +23,10 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function init_objects() {
-		$this->field_repository = new Repositories\Fields();
-		$this->item_metadata_repository = new Repositories\Item_Metadata();
-		$this->item_repository = new Repositories\Items();
-		$this->collection_repository = new Repositories\Collections();
+		$this->field_repository = Repositories\Fields::getInstance();
+		$this->item_metadata_repository = Repositories\Item_Metadata::getInstance();
+		$this->item_repository = Repositories\Items::getInstance();
+		$this->collection_repository = Repositories\Collections::getInstance();
 	}
 
 	/**
@@ -37,6 +37,8 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * id body of requisition
 	 *
 	 * Both of GETs return the field of matched objects
+	 *
+	 * @throws Exception
 	 */
 	public function register_routes() {
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<field_id>[\d]+)',
@@ -44,18 +46,20 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
+					'permission_callback' => array($this, 'update_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE)
 				),
 				// ENDPOINT X. THIS ENDPOINT DO THE SAME THING OF ENDPOINT Z. I hope in a brief future it function changes.
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_item_permissions_check')
+					'permission_callback' => array($this, 'delete_item_permissions_check'),
 				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
-					'permission_callback' => array($this, 'get_item_permissions_check')
+					'permission_callback' => array($this, 'get_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::READABLE),
 				),
 			)
 		);
@@ -65,12 +69,13 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					//'args'                => $this->get_collection_params(),
+					'args'                => $this->get_collection_params(),
 				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
-					'permission_callback' => array($this, 'create_item_permissions_check')
+					'permission_callback' => array($this, 'create_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
 				),
 			)
 		);
@@ -79,12 +84,14 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
-					'permission_callback' => array($this, 'create_item_permissions_check')
+					'permission_callback' => array($this, 'create_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
 				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
-					'permission_callback' => array($this, 'get_items_permissions_check')
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_collection_params(),
 				)
 			)
 		);
@@ -99,7 +106,8 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
-					'permission_callback' => array($this, 'update_item_permissions_check')
+					'permission_callback' => array($this, 'update_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE)
 				),
 			)
 		);
@@ -191,28 +199,9 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			if($prepared->validate()) {
 				$field = $this->field_repository->insert( $prepared);
 
-				$items = $this->item_repository->fetch([], $collection_id, 'WP_Query');
+				$response = $this->prepare_item_for_response($field, $request);
 
-				$field_added = '';
-				if($items->have_posts()){
-					while ($items->have_posts()){
-						$items->the_post();
-
-						$item = new Entities\Item($items->post);
-						$item_meta = new Entities\Item_Metadata_Entity($item, $field);
-
-						$field_added = $this->item_metadata_repository->insert($item_meta);
-					}
-
-					$response = $this->prepare_item_for_response($field_added->get_field(), $request);
-
-					return new WP_REST_Response($response, 201);
-				}
-				else {
-					$response = $this->prepare_item_for_response($prepared, $request);
-
-					return new WP_REST_Response($response, 201);
-				}
+				return new WP_REST_Response($response, 201);
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
@@ -236,8 +225,8 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 			} else {
 				return new WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
-					'errors'        => $this->field->get_errors(),
-					'field'         => $this->prepare_item_for_response($this->field, $request),
+					'errors'        => $prepared->get_errors(),
+					'field'         => $this->prepare_item_for_response($prepared, $request),
 				], 400);
 			}
 
@@ -280,8 +269,8 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 				$item->get_field_type_object()->form();
 				$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
-				$item_arr['field_type_object'] = $item->get_field_type_object();
-				$item_arr['disabled'] = $item->get_disabled_for_collection();
+				$item_arr['field_type_object'] = $item->get_field_type_object()->__toArray();
+				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
 			return $item_arr;
@@ -350,13 +339,13 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-			$field_id = $request['field_id'];
+		$field_id = $request['field_id'];
 
-			$field_trashed = $this->field_repository->delete($field_id);
+		$field_trashed = $this->field_repository->delete($field_id);
 
-			$prepared = $this->prepare_item_for_response($field_trashed, $request);
+		$prepared = $this->prepare_item_for_response($field_trashed, $request);
 
-			return new WP_REST_Response($prepared, 200);
+		return new WP_REST_Response($prepared, 200);
 	}
 
 	/**
@@ -383,7 +372,7 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function update_item( $request ) {
-		$collection_id = $request['collection_id'];
+		$collection_id = is_numeric($request['collection_id']) ? $request['collection_id'] : null;
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
@@ -464,6 +453,63 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
         }
 
         return $this->field_repository->can_edit(new Entities\Field());
+	}
+
+	/**
+	 * @param null $object_name
+	 *
+	 * @return array|void
+	 */
+	public function get_collection_params( $object_name = null ) {
+		$query_params['context']['default'] = 'view';
+
+		$query_params = array_merge($query_params, parent::get_collection_params('field'));
+
+		$query_params['name'] = array(
+			'description' => __('Limit result set to field with specific name.'),
+			'type'        => 'string',
+		);
+
+		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+		return $query_params;
+	}
+
+	/**
+	 * @param null $method
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	public function get_endpoint_args_for_item_schema( $method = null ) {
+		$endpoint_args = [];
+		if($method === WP_REST_Server::READABLE) {
+			$endpoint_args['fetch'] = [
+				'type'        => 'string',
+				'description' => __('Fetch all values of a field from a collection in all it collection items'),
+				'enum'        => ['all_field_values']
+			];
+			$endpoint_args['context'] = array(
+				'type'    => 'string',
+				'default' => 'view',
+				'items'   => array( 'view, edit' )
+			);
+		} elseif ($method === WP_REST_Server::CREATABLE || $method === WP_REST_Server::EDITABLE) {
+			$map = $this->field_repository->get_map();
+
+			foreach ($map as $mapped => $value){
+				$set_ = 'set_'. $mapped;
+
+				// Show only args that has a method set
+				if( !method_exists(new Entities\Field(), "$set_") ){
+					unset($map[$mapped]);
+				}
+			}
+
+			$endpoint_args = $map;
+		}
+
+		return $endpoint_args;
 	}
 }
 
