@@ -71,17 +71,17 @@ export default {
                         case 'collections':
                             this.fetchCollectionName(this.arrayRealPath[i])
                                 .then(collectionName => this.arrayViewPath.splice(i, 1, collectionName))
-                                .catch((error) => console.log(error));
+                                .catch((error) => this.$console.error(error));
                             break;
                         case 'items':
                             this.fetchItemTitle(this.arrayRealPath[i])
                                 .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
-                                .catch((error) => console.log(error));
+                                .catch((error) => this.$console.error(error));
                             break;
                         case 'categories':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
-                                .catch((error) => console.log(error));
+                                .catch((error) => this.$console.error(error));
                             break;
                     }
                     

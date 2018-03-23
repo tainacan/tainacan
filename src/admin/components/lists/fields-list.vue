@@ -207,7 +207,7 @@ export default {
                 this.hightlightedField = '';
             })
             .catch((error) => {
-                console.log(error);
+                this.$console.error(error);
             });
         },
         removeField(removedField) {

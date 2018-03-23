@@ -226,13 +226,13 @@
                     status: 'private',
                     allowInsert: this.form.allowInsert
                 };
-                console.log(data);
+                this.$console.log(data);
 
                 this.updateCategory(data)
                     .then(updatedCategory => {
                         this.category = updatedCategory;
 
-                        console.info(this.category);
+                        this.$console.info(this.category);
 
                         // Fill this.form data with current data.
                         this.form.name = this.category.name;
@@ -303,7 +303,7 @@
 
                     }
                 )
-                    .catch(error => console.log(error));
+                    .catch(error => this.$console.error(error));
             },
             clearErrors(attribute) {
                 this.editFormErrors[attribute] = undefined;

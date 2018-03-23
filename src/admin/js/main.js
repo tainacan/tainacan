@@ -30,17 +30,18 @@ import HelpButton from '../components/other/help-button.vue';
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin } from './utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
 
 // Configure and Register Plugins
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title
     next()
 });
+Vue.use(Buefy); 
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
-Vue.use(Buefy); 
+Vue.use(ConsolePlugin, {visual: false});
 
 // Register Components
 Vue.component('tainacan-text', Text);

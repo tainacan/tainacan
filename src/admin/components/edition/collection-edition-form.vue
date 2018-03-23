@@ -251,7 +251,7 @@ export default {
                 this.isLoading = false;
                 
             })
-            .catch(error => console.log(error));
+            .catch(error => this.$console.error(error));
         },
         clearErrors(attribute) {
             this.editFormErrors[attribute] = undefined;
@@ -269,11 +269,11 @@ export default {
                     this.collection.featured_image = res.featured_image;
                 })
                 .catch((error) => {
-                    console.log(error);
+                    this.$console.error(error);
                 });
             })
             .catch((error) => {
-                console.log(error);
+                this.$console.error(error);
             });
             
         },
@@ -284,7 +284,7 @@ export default {
                 this.collection.featured_image = false;
             })
             .catch((error) => {
-                console.log(error);
+                this.$console.error(error);
             });    
         }
     },

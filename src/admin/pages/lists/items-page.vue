@@ -143,12 +143,12 @@ export default {
             
 
             // for (let currentField of this.prefTableFields)
-            //     console.log(currentField.slug, currentField.visible);
+            //     this.$console.log(currentField.slug, currentField.visible);
             
 
 
             // for (let oldField of prevValue)
-            //     console.log(oldField.slug, oldField.visible);
+            //     this.$console.log(oldField.slug, oldField.visible);
 
             //this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
         },

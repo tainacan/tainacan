@@ -195,7 +195,7 @@ export default {
 
                 this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
             }).catch(error => {
-                console.log(error);
+                this.$console.error(error);
                 this.isLoading = false;
             });
         },
@@ -230,7 +230,7 @@ export default {
                 this.loadMetadata();
                 
             })
-            .catch(error => console.log(error));
+            .catch(error => this.$console.error(error));
         },
         loadMetadata() { 
             // Obtains Item Field
@@ -249,7 +249,7 @@ export default {
                     
                 })
                 .catch((error) => {
-                    console.log(error);
+                    this.$console.error(error);
                 });
             }
         },
@@ -263,11 +263,11 @@ export default {
                     this.item.featured_image = res.featured_image;
                 })
                 .catch((error) => {
-                    console.log(error);
+                    this.$console.error(error);
                 });
             })
             .catch((error) => {
-                console.log(error);
+                this.$console.error(error);
             });
             
         },
@@ -277,11 +277,11 @@ export default {
                 this.item.featured_image = false;
             })
             .catch((error) => {
-                console.log(error);
+                this.$console.error(error);
             });    
         },
         deleteFile(index) {
-            console.log("Delete:" + index);
+            this.$console.log("Delete:" + index);
         }
     },
     computed: {

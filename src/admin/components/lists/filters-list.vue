@@ -226,7 +226,7 @@ export default {
             this.addNewFilter(fieldType, lastIndex);
         },
         addNewFilter(choosenField, newIndex) {
-            console.log(choosenField);
+            this.$console.log(choosenField);
             this.choosenField = choosenField;
             this.newIndex = newIndex;
             this.openedFilterId = '';
@@ -264,7 +264,7 @@ export default {
                 this.editFilter(filter);
             })
             .catch((error) => {
-                console.log(error);
+                this.$console.error(error);
                 this.newIndex = 0;
                 this.choosenField = {};
                 this.selectedFilterType = {}
@@ -309,7 +309,7 @@ export default {
 
             // Opening collapse
             } else {
-                console.log(this.choosenField);
+                this.$console.log(this.choosenField);
                 if (this.openedFilterId == '' && this.choosenField.id != undefined) {
                     this.availableFieldList.push(this.choosenField);
                     this.choosenField = {};
