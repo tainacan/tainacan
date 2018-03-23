@@ -36,7 +36,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
         },
         data(){
@@ -71,7 +71,7 @@
                     instance.selectedValues();
                 })
                 .catch( error => {
-                    console.log('error select', error );
+                    this.$console.log('error select', error );
                     this.isLoading = false;
                 });
             },

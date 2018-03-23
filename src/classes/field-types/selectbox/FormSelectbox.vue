@@ -1,24 +1,22 @@
 <template>
     <section
             :listen="setError">
-        <b-field :addons="false"
-                 :type="optionType"
-                 :message="optionMessage"
-        >
+        <b-field 
+                :addons="false"
+                :type="optionType"
+                :message="optionMessage">
             <label class="label">
                 {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-selectbox', 'options')"
-                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')"/>
             </label>
             <b-taginput
                     v-model="options"
                     @input="emitValues()"
                     @focus="clear()"
                     icon="label"
-                    :placeholder="$i18n.get('new')">
-            </b-taginput>
+                    :placeholder="$i18n.get('new')"/>
         </b-field>
     </section>
 </template>

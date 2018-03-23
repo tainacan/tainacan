@@ -1,12 +1,14 @@
 <template>
     <div>
-        <b-field grouped group-multiline>
+        <b-field 
+                grouped 
+                group-multiline>
             <button
                     v-if="selectedCategories.length > 0"
                     class="button field is-danger"
                     @click="deleteSelectedCategories()">
                 <span>{{ $i18n.get('instruction_delete_selected_categories') }} </span>
-                <b-icon icon="delete"></b-icon>
+                <b-icon icon="delete"/>
             </button>
         </b-field>
 
@@ -43,7 +45,10 @@
                         property="description"
                         show-overflow-tooltip
                         field="props.row.description">
-                    <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCategoryPath(props.row.id)}">
+                    <router-link 
+                            class="clickable-row" 
+                            tag="span" 
+                            :to="{path: $routerHelper.getCategoryPath(props.row.id)}">
                         {{ props.row.description }}
                     </router-link>
                 </b-table-column>
@@ -58,13 +63,17 @@
                             id="button-edit"
                             :aria-label="$i18n.getFrom('categories','edit_item')"
                             @click.prevent.stop="goToCategoryEditPage(props.row.id)">
-                        <b-icon type="is-gray" icon="pencil" ></b-icon>
+                        <b-icon 
+                                type="is-gray" 
+                                icon="pencil" />
                     </a>
                     <a
                             id="button-delete"
                             :aria-label="$i18n.get('label_button_delete')"
                             @click.prevent.stop="deleteOneCategory(props.row.id)">
-                        <b-icon type="is-gray" icon="delete" ></b-icon>
+                        <b-icon 
+                                type="is-gray" 
+                                icon="delete" />
                     </a>
                 </b-table-column>
             </template>
@@ -77,12 +86,13 @@
                     <p>
                         <b-icon
                                 icon="inbox"
-                                size="is-large">
-                        </b-icon>
+                                size="is-large"/>
                     </p>
                     <p>{{ $i18n.get('info_no_category_created') }}</p>
-                    <router-link tag="button" class="button is-secondary"
-                                 :to="{ path: $routerHelper.getNewCategoryPath() }">
+                    <router-link 
+                            tag="button" 
+                            class="button is-secondary"
+                            :to="{ path: $routerHelper.getNewCategoryPath() }">
                         {{ $i18n.get('new') + ' ' + $i18n.get('category') }}
                     </router-link>
                 </div>
@@ -101,7 +111,7 @@
             totalCategories: 0,
             page: 1,
             categoriesPerPage: 12,
-            categories: []
+            categories: Array
         },
         data() {
             return {

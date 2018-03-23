@@ -1,9 +1,15 @@
 <template>
     <span class="help-wrapper">
-        <a class="help-button" @click="isOpened = !isOpened"><b-icon size="is-small" icon="help-circle-outline"></b-icon></a>
-        <div class="help-tooltip" :class="{ 'opened': isOpened }">
+        <a 
+                class="help-button" 
+                @click="isOpened = !isOpened"><b-icon 
+                size="is-small" 
+                icon="help-circle-outline"/></a>
+        <div 
+                class="help-tooltip" 
+                :class="{ 'opened': isOpened }">
             <div class="help-tooltip-header">
-                <h5>{{ title }}</h5><a @click="isOpened = false"><b-icon icon="close"></b-icon></a>
+                <h5>{{ title }}</h5><a @click="isOpened = false"><b-icon icon="close"/></a>
             </div>
             <div class="help-tooltip-body">
                 <p>{{ (message != '' && message != undefined) ? message : $i18n.get('info_no_description_provided') }}</p>

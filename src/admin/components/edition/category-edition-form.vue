@@ -1,8 +1,14 @@
 <template>
     <div>
         <div class="page-container primary-page">
-            <b-tag v-if="category != null && category != undefined" :type="'is-' + getStatusColor(category.status)" v-text="category.status"></b-tag>
-            <form v-if="category != null && category != undefined" class="tainacan-form" label-width="120px">
+            <b-tag
+                    v-if="category != null && category != undefined" 
+                    :type="'is-' + getStatusColor(category.status)" 
+                    v-text="category.status"/>
+            <form 
+                    v-if="category != null && category != undefined" 
+                    class="tainacan-form" 
+                    label-width="120px">
 
                 <!-- Name -------------------------------- -->
                 <b-field
@@ -12,14 +18,12 @@
                         :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'name')" 
-                            :message="$i18n.getHelperMessage('categories', 'name')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('categories', 'name')"/>
                     <b-input
                             id="tainacan-text-name"
                             v-model="form.name"
                             @focus="clearErrors('name')"
-                            @blur="updateSlug()">
-                    </b-input>
+                            @blur="updateSlug()"/>
                 </b-field>
 
                 <!-- Description -------------------------------- -->
@@ -30,14 +34,12 @@
                         :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'description')" 
-                            :message="$i18n.getHelperMessage('categories', 'description')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('categories', 'description')"/>
                     <b-input
                             id="tainacan-text-description"
                             type="textarea"
                             v-model="form.description"
-                            @focus="clearErrors('description')">
-                    </b-input>
+                            @focus="clearErrors('description')"/>
                 </b-field>
 
                 <!-- Status -------------------------------- -->
@@ -48,8 +50,7 @@
                         :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'status')" 
-                            :message="$i18n.getHelperMessage('categories', 'status')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('categories', 'status')"/>
                     <b-select
                             id="tainacan-select-status"
                             v-model="form.status"
@@ -72,14 +73,12 @@
                         :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'slug')" 
-                            :message="$i18n.getHelperMessage('categories', 'slug')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('categories', 'slug')"/>
                     <b-input
                             id="tainacan-text-slug"
                             v-model="form.slug"
                             @focus="clearErrors('slug')"
-                            :disabled="isUpdatingSlug">
-                    </b-input>
+                            :disabled="isUpdatingSlug"/>
                 </b-field>
 
                 <!-- Allow Insert -->
@@ -88,8 +87,7 @@
                         :label="$i18n.get('label_category_allow_new_terms')">
                     <help-button 
                         :title="$i18n.getHelperTitle('categories', 'allow_insert')" 
-                        :message="$i18n.getHelperMessage('categories', 'allow_insert')">
-                    </help-button>
+                        :message="$i18n.getHelperMessage('categories', 'allow_insert')"/>
                     <div class="block" >
                         <b-checkbox
                                 v-model="form.allowInsert"
@@ -115,12 +113,12 @@
                                 class="button is-success">{{ $i18n.get('save') }}</button>
                     </div>
                 </div>
-                <p class="help is-danger">{{formErrorMessage}}</p>
+                <p class="help is-danger">{{ formErrorMessage }}</p>
             </form>
 
             <b-loading 
                     :active.sync="isLoading" 
-                    :canCancel="false"></b-loading>
+                    :can-cancel="false"/>
         </div>
     </div>
 </template>

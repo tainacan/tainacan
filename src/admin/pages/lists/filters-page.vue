@@ -1,6 +1,6 @@
 <template>
     <div class="primary-page page-container">
-        <filters-list></filters-list>
+        <filters-list/>
     </div>
 </template>
 

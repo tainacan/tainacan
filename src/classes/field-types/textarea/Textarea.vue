@@ -4,7 +4,7 @@
             type="textarea"
             :value="inputValue"
             @blur="onBlur"
-            @input="onInput($event)"></b-input>
+            @input="onInput($event)"/>
 </template>
 
 <script>

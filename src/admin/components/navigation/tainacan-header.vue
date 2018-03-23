@@ -1,15 +1,24 @@
 <template>
-    <div id="tainacan-header" class="level" :class="{'secondary-page': onSecondaryPage}">
+    <div
+            id="tainacan-header" 
+            class="level" 
+            :class="{'secondary-page': onSecondaryPage}">
         <div class="level-left">
             <div class="level-item">
-                <h1 class="has-text-weight-bold is-uppercase has-text-primary"><b-icon size="is-small" :icon="currentIcon"></b-icon>{{pageTitle}}</h1>
+                <h1 class="has-text-weight-bold is-uppercase has-text-primary"><b-icon 
+                        size="is-small" 
+                        :icon="currentIcon"/>{{ pageTitle }}</h1>
                 <nav class="breadcrumbs">
-                    <router-link tag="a" :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                    <span v-for="(pathItem, index) in arrayRealPath" :key="index">
-                        <router-link 
+                    <router-link 
                             tag="a" 
-                            :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
-                                {{ arrayViewPath[index] }}
+                            :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
+                    <span 
+                            v-for="(pathItem, index) in arrayRealPath" 
+                            :key="index">
+                        <router-link 
+                                tag="a" 
+                                :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
+                            {{ arrayViewPath[index] }}
                         </router-link>
                         <span v-if="index != arrayRealPath.length - 1"> > </span>
                     </span>   
@@ -17,8 +26,10 @@
             </div>
         </div>
         <div class="level-right">
-            <a class="level-item" :href="wordpressAdmin">
-                <b-icon icon="close"></b-icon>
+            <a 
+                    class="level-item" 
+                    :href="wordpressAdmin">
+                <b-icon icon="close"/>
             </a>
         </div>
     </div>

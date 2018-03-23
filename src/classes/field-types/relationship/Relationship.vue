@@ -7,8 +7,7 @@
                 autocomplete
                 :loading="loading"
                 field="label"
-                @typing="search">
-        </b-taginput>
+                @typing="search"/>
     </div>
 </template>
 
@@ -29,7 +28,7 @@
                         }
                     })
                     .catch(error => {
-                        console.log(error);
+                        this.$console.log(error);
                     });
             }
         },
@@ -92,7 +91,7 @@
                         }
                     })
                     .catch(error => {
-                        console.log(error);
+                        this.$console.log(error);
                     });
                 } else {
                     this.options = [];
