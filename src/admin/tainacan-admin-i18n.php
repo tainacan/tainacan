@@ -67,6 +67,10 @@ return [
 	'title_collection_fields_edition'          => __( 'Collection Fields Edition Page', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
+    'label_clean'                              => __( 'Clear', 'tainacan' ),
+    'label_selected'                           => __( 'Selected', 'tainacan' ),
+    'label_relationship_new_search'            => __( 'New Search', 'tainacan' ),
+    'label_relationship_items_found'           => __( 'Items found', 'tainacan' ),
 	'label_menu'                               => __( 'Menu', 'tainacan' ),
 	'label_main_menu'                          => __( 'Main Menu', 'tainacan' ),
 	'label_collection_menu'                    => __( 'Collection Menu', 'tainacan' ),
