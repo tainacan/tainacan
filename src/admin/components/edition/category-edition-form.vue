@@ -126,10 +126,13 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex'
+    import { wpAjax } from "../../js/mixins";
+    import { mapActions, mapGetters } from 'vuex';
+    import htmlToJSON from 'html-to-json';
 
     export default {
         name: 'CategoryEditionForm',
+        mixins: [ wpAjax ],
         data(){
             return {
                 categoryId: Number,
@@ -218,40 +221,25 @@
 
                 this.isUpdatingSlug = true;
 
-                let data = {
-                    categoryId: this.categoryId,
-                    name: this.form.name,
-                    description: this.form.description,
-                    //slug: '',
-                    status: 'private',
-                    allowInsert: this.form.allowInsert
-                };
-                this.$console.log(data);
+                this.getSamplePermalink(this.categoryId, this.form.name, this.form.slug)
+                    .then(samplePermalink => {
 
-                this.updateCategory(data)
-                    .then(updatedCategory => {
-                        this.category = updatedCategory;
+                        let promise = htmlToJSON.parse(samplePermalink, {
+                            permalink($doc, $) {
+                                return $doc.find('#editable-post-name-full').text();
+                            }
+                        });
 
-                        this.$console.info(this.category);
-
-                        // Fill this.form data with current data.
-                        this.form.name = this.category.name;
-                        this.form.slug = this.category.slug;
-                        this.form.description = this.category.description;
-                        this.form.status = this.category.status;
-                        this.allowInsert = this.category.allow_insert;
+                        promise.done((result) => {
+                            this.form.slug = result.permalink;
+                        });
 
                         this.isUpdatingSlug = false;
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
                     })
                     .catch(errors => {
-                        for (let error of errors.errors) {
-                            for (let attribute of Object.keys(error)) {
-                                this.editFormErrors[attribute] = error[attribute];
-                            }
-                        }
-                        this.formErrorMessage = errors.error_message;
+                        this.$console.error(errors);
 
                         this.isLoading = false;
                     });

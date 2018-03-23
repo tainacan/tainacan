@@ -59,6 +59,9 @@ module.exports = {
         historyApiFallback: true,
         noInfo: true
     },
+    node: {
+        fs: 'empty'
+    },
 }
 
 if (process.env.NODE_ENV === 'production') {
