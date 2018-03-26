@@ -100,32 +100,45 @@
                     </div>
                 </b-field>
 
-                <!-- Terms -->
+                <!-- Terms List -->
                 <b-field
                         :addons="false"
                         :label="$i18n.get('label_category_terms')">
                     <button
-                            class="button is-secondary"
+                            class="button is-secondary is-small"
                             type="button"
                             @click="addNewTerm()">
-                        {{ $i18n.get('label_add_new_term') }}
+                        {{ $i18n.get('label_new_term') }}
                     </button>    
-                    
-                    <div 
+                    <!-- Term item -->
+                    <div    
+                            class="term-item"
+                            :class="{
+                                'not-sortable-item': term.term_id == 'new' || term.term_id == undefined || openedTermId != '' , 
+                                'not-focusable-item': openedTermId == term.term_id
+                            }" 
                             v-for="(term, index) in termsList" 
                             :key="index">
-                        
                         <span 
-                                class="field-name" 
-                                :class="{'is-danger': formWithErrors == term.id }">
-                                {{ term.name }}
+                                class="term-name" 
+                                :class="{'is-danger': formWithErrors == term.term_id }">
+                            {{ term.name }}
+                        </span>
+                        <span   
+                                v-if="term.term_id != undefined"
+                                class="label-details">
+                            <span 
+                                    class="not-saved" 
+                                    v-if="(editForms[term.term_id] != undefined && editForms[term.term_id].saved != true) || term.term_id == 'new'"> 
+                                {{ $i18n.get('info_not_saved') }}
+                            </span>
                         </span>
                         <span 
                                 class="loading-spinner" 
-                                v-if="term.id == undefined"/>
+                                v-if="term.term_id == undefined"/>
                         <span 
                                 class="controls" 
-                                v-if="term.id !== undefined">
+                                v-if="term.term_id !== undefined || term.term_id !== 'new'">
     
                             <a @click.prevent="editTerm(term)">
                                 <b-icon 
@@ -138,6 +151,17 @@
                                         icon="delete"/>
                             </a>
                         </span>
+                        <div v-if="openedTermId == term.term_id">
+                            <term-edition-form   
+                                    :category-id="categoryId"
+                                    @onEditionFinished="onTermEditionFinished()"
+                                    @onEditionCanceled="onTermEditionCanceled()"
+                                    @onErrorFound="formWithErrors = term.term_id"
+                                    :index="index"
+                                    :original-term="term"
+                                    :edited-term="editForms[term.term_id]"/>
+
+                        </div>
                     </div>
 
                 </b-field>
@@ -171,6 +195,7 @@
 <script>
     import { wpAjax } from "../../js/mixins";
     import { mapActions, mapGetters } from 'vuex';
+    import TermEditionForm from './term-edition-form.vue'
     import htmlToJSON from 'html-to-json';
 
     export default {
@@ -181,7 +206,6 @@
                 categoryId: Number,
                 category: null,
                 isLoadingCategory: false,
-                isLoadingTerms: false,
                 isUpdatingSlug: false,
                 form: {
                     name: String,
@@ -205,12 +229,23 @@
                 }],
                 editFormErrors: {},
                 formErrorMessage: '',
+                // Terms related
+                isLoadingTerms: false,
+                formWithErrors: '',
+                openedTermId: '',
+                editForms: [],
+                orderedTermsList: []
             }
         },
         computed: {
             termsList() {
-                return this.getCategoryTerms();
+                //this.orderedTermsList = new Array();
+                //this.buildOrderedTermsList(0, 0); 
+                return this.getTerms();
             }
+        },
+        components: {
+            TermEditionForm
         },
         methods: {
             ...mapActions('category', [
@@ -218,16 +253,16 @@
                 'updateCategory',
                 'fetchCategory',
                 'fetchOnlySlug',
-                'fetchCategoryTerms',
-                'sendTerm',
+                'fetchTerms',
                 'updateTerm',
                 'deleteTerm'
             ]),
             ...mapGetters('category',[
                 'getCategory',
-                'getCategoryTerms'
+                'getTerms'
             ]),
             onSubmit() {
+
                 this.isLoadingCategory = true;
 
                 let data = {
@@ -358,30 +393,71 @@
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
             },
             addNewTerm() {
-                this.$console.log("CREATING NEW TERM");
-
-                this.sendTerm({category: this.categoryId, status: 'auto-draft'})
-                .then(() => {
-
-                })
-                .catch(() => {
-
-                });
+                let newTerm = {
+                    categoryId: this.categoryId,
+                    name: '',
+                    description: '',
+                    parent: 0,
+                    term_id: 'new'
+                }
+                this.termsList.push(newTerm);
+                this.editTerm(newTerm);
             },
             editTerm(term) {
-                this.$console.log(term);
+
+                // Closing collapse
+                if (this.openedTermId == term.term_id) {    
+                    this.openedTermId = '';
+
+                // Opening collapse
+                } else {
+
+                    this.openedTermId = term.term_id;
+                    // First time opening
+                    if (this.editForms[this.openedTermId] == undefined) {
+                        this.editForms[this.openedTermId] = JSON.parse(JSON.stringify(term));
+                        this.editForms[this.openedTermId].saved = true;
+                        
+                        if (term.term_id == 'new')
+                            this.editForms[this.openedTermId].saved = false;
+                    }     
+                }
             },
             removeTerm(term) {
                 this.$console.log(term);
                 
-                this.deleteTerm(term.id)
+                this.deleteTerm({categoryId: this.categoryId, termId: term.term_id})
                 .then(() => {
 
                 })
-                .catch(() => {
-
+                .catch((error) => {
+                    this.$console.log(error);
                 });
-            }
+            },
+            onTermEditionFinished() {
+                this.formWithErrors = '';
+                delete this.editForms[this.openedTermId];
+                this.openedTermId = '';
+            },
+            onTermEditionCanceled() {
+                this.formWithErrors = '';
+                delete this.editForms[this.openedTermId];
+                this.openedTermId = '';
+            },
+            buildOrderedTermsList(parentId, termDepth) {
+    
+                for (let term of this.termsList) {
+
+                    if (term['parent'] != parentId ) {    
+                        continue;
+                    } 
+                    
+                    term.depth = termDepth;
+                    this.orderedTermsList.push(term);
+
+                    this.buildOrderedTermsList(term.term_id, termDepth + 1);
+                }
+            },
         },
         created(){
 
@@ -413,14 +489,39 @@
                 .then(() => {
                     // Fill this.form data with current data.
                     this.isLoadingCategory = false;
+                })
+                .catch((error) => {
+                    this.$console.log(error);
                 });
             }
+        },
+        beforeRouteLeave ( to, from, next ) {
+            let hasUnsavedForms = false;
+            for (let editForm in this.editForms) {
+                if (!this.editForms[editForm].saved) 
+                    hasUnsavedForms = true;
+            }
+            if ((this.openedTermId != '' && this.openedTermId != undefined) || hasUnsavedForms ) {
+                this.$dialog.confirm({
+                    message: this.$i18n.get('info_warning_terms_not_saved'),
+                        onConfirm: () => {
+                            this.onEditionCanceled();
+                            next();
+                        },
+                        cancelText: this.$i18n.get('cancel'),
+                        confirmText: this.$i18n.get('continue'),
+                        type: 'is-secondary'
+                    });  
+            } else {
+                next()
+            }  
         }
-
     }
 </script>
 
 <style lang="scss" scoped>
+
+    @import "../../scss/_variables.scss";
 
     .thumbnail-field {
         width: 128px;
@@ -449,6 +550,102 @@
                 padding: 2px 8px;
                 border-radius: 0px 4px 0px 0px;
             }
+        }
+    }
+
+    .loading-spinner {
+        animation: spinAround 500ms infinite linear;
+        border: 2px solid #dbdbdb;
+        border-radius: 290486px;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        content: "";
+        display: inline-block;
+        height: 1em; 
+        width: 1em;
+    }
+
+    .term-item {
+        background-color: white;
+        padding: 0.7em 0.9em;
+        margin: 4px;
+        min-height: 40px;
+        display: block; 
+        position: relative;
+        cursor: grab;
+        
+        .handle {
+            padding-right: 6em;
+        }
+        .grip-icon { 
+            fill: $gray; 
+            top: 2px;
+            position: relative;
+        }
+        .term-name {
+            text-overflow: ellipsis;
+            overflow-x: hidden;
+            white-space: nowrap;
+            font-weight: bold;
+            margin-left: 0.4em;
+            margin-right: 0.4em;
+
+            &.is-danger {
+                color: $danger !important;
+            }
+        }
+        .label-details {
+            font-weight: normal;
+            color: $gray;
+        }
+        .not-saved {
+            font-style: italic;
+            font-weight: bold;
+            color: $danger;
+        }
+        .controls { 
+            position: absolute;
+            right: 5px;
+            top: 10px;
+
+            .icon {
+                bottom: 1px;   
+                position: relative;
+                i, i:before { font-size: 20px; }
+            }
+        }
+
+        &.not-sortable-item, &.not-sortable-item:hover {
+            cursor: default;
+            background-color: white !important;
+
+            .handle .label-details, .handle .icon {
+                color: $gray !important;
+            }
+        } 
+        &.not-focusable-item, &.not-focusable-item:hover {
+            cursor: default;
+            
+            .term-name {
+                color: $primary;
+            }
+            .handle .label-details, .handle .icon {
+                color: $gray !important;
+            }
+        }
+  
+    }
+    .term-item:hover:not(.not-sortable-item) {
+        background-color: $secondary;
+        border-color: $secondary;
+        color: white !important;
+
+        .label-details, .icon, .not-saved {
+            color: white !important;
+        }
+
+        .grip-icon { 
+            fill: white; 
         }
     }
 

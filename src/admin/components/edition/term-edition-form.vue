@@ -39,38 +39,6 @@
                     v-model="editForm.description" 
                     @focus="clearErrors('description')" />
         </b-field>
-
-        <!-- <b-field 
-                :addons="false"
-                :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
-                :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <label class="label">
-                {{ $i18n.get('label_status') }} 
-                <help-button 
-                        :title="$i18n.getHelperTitle('terms', 'status')" 
-                        :message="$i18n.getHelperMessage('terms', 'status')"/>
-            </label>
-            <div class="inline-block">
-                <b-radio 
-                        @focus="clearErrors('label_status')"
-                        id="tainacan-select-status-publish"
-                        name="status" 
-                        v-model="editForm.status"
-                        native-value="publish">
-                    {{ $i18n.get('publish_visibility') }}
-                </b-radio>
-                <br>
-                <b-radio 
-                        @focus="clearErrors('label_status')"
-                        id="tainacan-select-status-private"
-                        name="status" 
-                        v-model="editForm.status"
-                        native-value="private">
-                    {{ $i18n.get('private_visibility') }}
-                </b-radio>
-            </div>
-        </b-field> -->
-        <br>
        
        <b-field 
                 :addons="false"
@@ -84,20 +52,20 @@
             </label>
             <b-select
                 id="parent_term_select"
-                v-model="editForm.parent_term"
+                v-model="editForm.parent"
                 :placeholder="$i18n.get('instruction_select_a_parent_term')">
                 <option
                         @focus="clearErrors('label_parent_term')"
                         id="tainacan-select-parent-term"
                         v-for="(parentTerm, index) in parentTermsList"
                         :key="index"
-                        :value="editForm.parent_term.id">
+                        :value="editForm.parent.id">
                     {{ parentTerm.name }}
                 </option>
             </b-select>
         </b-field>
 
-        <div class="term is-grouped form-submit">  
+        <div class="field is-grouped form-submit">  
             <div class="control">
                 <button 
                         class="button is-outlined" 
@@ -165,6 +133,7 @@ export default {
     },
     methods: {
         ...mapActions('category', [
+            'sendTerm',
             'updateTerm'
         ]),
         ...mapGetters('category', [
@@ -172,25 +141,55 @@ export default {
         ]),
         saveEdition(term) {
 
-            this.updateTerm({repositoryId: this.repositoryId, termId: term.id, index: this.index, options: this.editForm})
-                .then(() => {
-                    this.editForm = {};
-                    this.formErrors = {};
-                    this.formErrorMessage = '';
-                    this.closedByForm = true;
-                    this.$emit('onEditionFinished');
-                })
-                .catch((errors) => {
-                    for (let error of errors.errors) {     
-                        for (let attribute of Object.keys(error))
-                            this.formErrors[attribute] = error[attribute];
-                    }
-                    this.formErrorMessage = errors.error_message;
-                    this.$emit('onErrorFound');
+            if (term.term_id == 'new') {
+                this.sendTerm({
+                    categoryId: this.categoryId, 
+                    index: this.index, 
+                    name: this.editForm.name,
+                    description: this.editForm.description,
+                    parent: this.editForm.parent
+                    })
+                    .then(() => {
+                        this.editForm = {};
+                        this.formErrors = {};
+                        this.formErrorMessage = '';
+                        this.closedByForm = true;
+                        this.$emit('onEditionFinished');
+                    })
+                    .catch((error) => {
+                        // for (let error of errors.errors) {     
+                        //     for (let attribute of Object.keys(error))
+                        //         this.formErrors[attribute] = error[attribute];
+                        // }
+                        // this.formErrorMessage = errors.error_message;
+                        this.$emit('onErrorFound');
+                        this.$console.log(error);
+                        // this.editForm.formErrors = this.formErrors;
+                        // this.editForm.formErrorMessage = this.formErrorMessage;
+                    });
 
-                    this.editForm.formErrors = this.formErrors;
-                    this.editForm.formErrorMessage = this.formErrorMessage;
-                });
+            } else {
+  
+                this.updateTerm({categoryId: this.categoryId, termId: term.term_id, index: this.index, options: this.editForm})
+                    .then(() => {
+                        this.editForm = {};
+                        this.formErrors = {};
+                        this.formErrorMessage = '';
+                        this.closedByForm = true;
+                        this.$emit('onEditionFinished');
+                    })
+                    .catch((error) => {
+                        // for (let error of errors.errors) {     
+                        //     for (let attribute of Object.keys(error))
+                        //         this.formErrors[attribute] = error[attribute];
+                        // }
+                        // this.formErrorMessage = errors.error_message;
+                        this.$emit('onErrorFound');
+                        this.$console.log(error);
+                        // this.editForm.formErrors = this.formErrors;
+                        // this.editForm.formErrorMessage = this.formErrorMessage;
+                    });
+            }
         },
         clearErrors(attribute) {
             this.formErrors[attribute] = undefined;

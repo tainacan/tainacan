@@ -9,3 +9,7 @@ export const getCategories = state => {
 export const getCategoryName = state => {
   return state.categoryName;
 };
+
+export const getTerms = state => {
+  return state.terms;
+};

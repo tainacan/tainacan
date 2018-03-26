@@ -274,7 +274,6 @@ export default {
             delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
         }
-
     },
     computed: {
         availableFieldList() {
