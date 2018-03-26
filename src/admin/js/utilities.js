@@ -7,19 +7,19 @@ const wpApi = axios.create({
 
 wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 
-// I18N PLUGIN - Allows access to Wordpress translation file.
+// CONSOLE PLUGIN - Allows custom use of console functions and avoids eslint warnings.
 export const ConsolePlugin = {};
 ConsolePlugin.install = function (Vue, options = { visual: false }) {
-
+    
     Vue.prototype.$console = {
         log(something) {
             if (options.visual) {
-                this.$snackbar.open({
+                Vue.prototype.$snackbar.open({
                     message: something,
                     type: 'is-secondary',
                     position: 'is-bottom-right',
                     indefinite: true,
-                    queue: true
+                    queue: false
                 });
             } else {
                 console.log(something);
@@ -27,12 +27,12 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         },
         info(someInfo) {
             if (options.visual) {
-                this.$snackbar.open({
+                Vue.prototype.$snackbar.open({
                     message: someInfo,
                     type: 'is-primary',
                     position: 'is-bottom-right',
                     duration: 5000,
-                    queue: true
+                    queue: false
                 });
             } else { 
                 console.info(someInfo);
@@ -40,12 +40,12 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         },
         error(someError) {
             if (options.visual) {
-                this.$snackbar.open({
+                Vue.prototype.$snackbar.open({
                     message: someError,
                     type: 'is-danger',
                     position: 'is-bottom-right',
                     indefinite: true,
-                    queue: true
+                    queue: false
                 });
             } else { 
                 console.error(someError);

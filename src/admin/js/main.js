@@ -37,13 +37,14 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title
     next()
 });
-Vue.use(Buefy); 
+Vue.use(Buefy);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 
 // Register Components
+/* Fields */
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
 Vue.component('tainacan-selectbox', Selectbox);
@@ -55,20 +56,18 @@ Vue.component('tainacan-category', Category);
 Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-category', FormCategory);
 Vue.component('tainacan-form-selectbox', FormSelectbox);
-
 Vue.component('tainacan-form-item', TaincanFormItem);
 Vue.component('tainacan-filters-list', TaincanFiltersList);
 
-Vue.component('help-button', HelpButton);
-Vue.component('draggable', draggable);
-
 /* Filters */
-
 Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
 Vue.component('tainacan-filter-selectbox', FilterSelectbox);
 Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
 Vue.component('tainacan-filter-checkbox', FilterCheckbox);
 Vue.component('tainacan-filter-taginput', FilterTaginput);
+/* Others */
+Vue.component('help-button', HelpButton);
+Vue.component('draggable', draggable);
 
 new Vue({
     el: '#tainacan-admin-app',
