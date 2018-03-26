@@ -98,6 +98,49 @@
                     </div>
                 </b-field>
 
+                <!-- Terms -->
+                <b-field
+                        :addons="false"
+                        :label="$i18n.get('label_category_terms')">
+                    <button
+                            class="button is-secondary"
+                            type="button"
+                            @click="addNewTerm()">
+                        {{ $i18n.get('label_add_new_term') }}
+                    </button>    
+                    
+                    <div 
+                            v-for="(term, index) in termsList" 
+                            :key="index">
+                        
+                        <span 
+                                class="field-name" 
+                                :class="{'is-danger': formWithErrors == term.id }">
+                                {{ term.name }}
+                        </span>
+                        <span 
+                                class="loading-spinner" 
+                                v-if="term.id == undefined"/>
+                        <span 
+                                class="controls" 
+                                v-if="term.id !== undefined">
+    
+                            <a @click.prevent="editTerm(term)">
+                                <b-icon 
+                                        type="is-gray" 
+                                        icon="pencil"/>
+                            </a>
+                            <a @click.prevent="removeTerm(term)">
+                                <b-icon 
+                                        type="is-gray" 
+                                        icon="delete"/>
+                            </a>
+                        </span>
+                    </div>
+
+                </b-field>
+
+                <!-- Submit -->
                 <div class="field is-grouped form-submit">
                     <div class="control">
                         <button
@@ -135,14 +178,15 @@
             return {
                 categoryId: Number,
                 category: null,
-                isLoading: false,
+                isLoadingCategory: false,
+                isLoadingTerms: false,
                 isUpdatingSlug: false,
                 form: {
                     name: String,
                     status: String,
                     description: String,
                     slug: String,
-                    allowInsert: String,
+                    allowInsert: String
                 },
                 statusOptions: [{
                     value: 'publish',
@@ -161,18 +205,28 @@
                 formErrorMessage: '',
             }
         },
+        computed: {
+            termsList() {
+                return this.getCategoryTerms();
+            }
+        },
         methods: {
             ...mapActions('category', [
                 'createCategory',
                 'updateCategory',
                 'fetchCategory',
                 'fetchOnlySlug',
+                'fetchCategoryTerms',
+                'sendTerm',
+                'updateTerm',
+                'deleteTerm'
             ]),
             ...mapGetters('category',[
-                'getCategory'
+                'getCategory',
+                'getCategoryTerms'
             ]),
             onSubmit() {
-                this.isLoading = true;
+                this.isLoadingCategory = true;
 
                 let data = {
                     categoryId: this.categoryId,
@@ -195,7 +249,7 @@
                         this.form.status = this.category.status;
                         this.allowInsert = this.category.allow_insert;
 
-                        this.isLoading = false;
+                        this.isLoadingCategory = false;
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
 
@@ -209,7 +263,7 @@
                         }
                         this.formErrorMessage = errors.error_message;
 
-                        this.isLoading = false;
+                        this.isLoadingCategory = false;
                     });
             },
             updateSlug(){
@@ -239,7 +293,7 @@
                     .catch(errors => {
                         this.$console.error(errors);
 
-                        this.isLoading = false;
+                        this.isUpdatingSlug = false;
                     });
 
             },
@@ -259,7 +313,7 @@
             },
             createNewCategory() {
                 // Puts loading on Draft Category creation
-                this.isLoading = true;
+                this.isLoadingCategory = true;
 
                 // Creates draft Category
                 let data = {
@@ -285,7 +339,7 @@
                         // Pre-fill status with publish to incentivate it
                         this.form.status = 'publish';
 
-                        this.isLoading = false;
+                        this.isLoadingCategory = false;
 
                     }
                 )
@@ -300,6 +354,31 @@
             labelNewTerms(){
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
             },
+            addNewTerm() {
+                this.$console.log("CREATING NEW TERM");
+
+                this.sendTerm({category: this.categoryId, status: 'auto-draft'})
+                .then(() => {
+
+                })
+                .catch(() => {
+
+                });
+            },
+            editTerm(term) {
+                this.$console.log(term);
+            },
+            removeTerm(term) {
+                this.$console.log(term);
+                
+                this.deleteTerm(term.id)
+                .then(() => {
+
+                })
+                .catch(() => {
+
+                });
+            }
         },
         created(){
 
@@ -307,7 +386,8 @@
                 this.createNewCategory();
             } else if (this.$route.fullPath.split("/").pop() === "edit") {
 
-                this.isLoading = true;
+                this.isLoadingCategory = true;
+                this.isLoadingTerms = true;
 
                 // Obtains current category ID from URL
                 this.pathArray = this.$route.fullPath.split("/").reverse();
@@ -323,7 +403,13 @@
                     this.form.status = this.category.status;
                     this.form.allowInsert = this.category.allow_insert;
 
-                    this.isLoading = false;
+                    this.isLoadingCategory = false;
+                });
+
+                this.fetchTerms(this.categoryId)
+                .then(() => {
+                    // Fill this.form data with current data.
+                    this.isLoadingCategory = false;
                 });
             }
         }

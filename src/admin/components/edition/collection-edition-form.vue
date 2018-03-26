@@ -145,7 +145,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
     name: 'CollectionEditionForm',
@@ -189,9 +189,6 @@ export default {
             'fetchCollection',
             'sendAttachment',
             'updateThumbnail'
-        ]),
-        ...mapGetters('collection',[
-            'getCollection'
         ]),
         onSubmit() {
             // Puts loading on Draft Collection creation
