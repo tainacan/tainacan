@@ -3,9 +3,9 @@
         <component
                 :is="getComponent()"
                 v-model="valueComponent"
-                :allowNew="allowNew"
+                :allow-new="allowNew"
                 :terms="terms"
-                :options="getOptions(0)"></component>
+                :options="getOptions(0)"/>
         <add-new-term
                 class="add-new-term"
                 v-if="getComponent() !== 'tainacan-category-tag-input' && allowNew"
@@ -14,7 +14,7 @@
                 :item_id="field.item.id"
                 :value="valueComponent"
                 :options="getOptions(0)"
-                @newTerm="reload"></add-new-term>
+                @newTerm="reload"/>
     </div>
 </template>
 <script>
@@ -88,7 +88,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
             },
             getOptions( parent, level = 0 ){ // retrieve only ids

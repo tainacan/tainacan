@@ -1,9 +1,11 @@
 <template>
-    <div id="tainacan-admin-app" class="columns is-fullheight">
-        <primary-menu></primary-menu>
-        <tainacan-header></tainacan-header>
+    <div 
+            id="tainacan-admin-app" 
+            class="columns is-fullheight">
+        <primary-menu/>
+        <tainacan-header/>
         <div class="column is-main-content">  
-            <router-view></router-view> 
+            <router-view/> 
         </div>
     </div>
 </template>

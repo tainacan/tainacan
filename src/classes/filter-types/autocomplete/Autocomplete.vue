@@ -12,8 +12,12 @@
                 @select="option => setResults(option) ">
             <template slot-scope="props">
                 <div class="media">
-                    <div class="media-left" v-if="props.option.img">
-                        <img width="32" :src="`${props.option.img}`">
+                    <div 
+                            class="media-left" 
+                            v-if="props.option.img">
+                        <img 
+                                width="32" 
+                                :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
                         {{ props.option.label }}
@@ -23,11 +27,12 @@
         </b-autocomplete>
         <br>
         <div class="field has-text-centered">
-            <b-tag v-if="results !== ''"
-                   type="is-primary"
-                   size="is-small"
-                   closable
-                   @close="clearSearch()">
+            <b-tag 
+                    v-if="results !== ''"
+                    type="is-primary"
+                    size="is-small"
+                    closable
+                    @close="clearSearch()">
                 {{ results }}
             </b-tag>
         </div>
@@ -37,6 +42,7 @@
 <script>
     import { tainacan as axios } from '../../../js/axios/axios'
     import { filter_type_mixin } from '../filter-types-mixin'
+    import qs from 'qs';
 
     export default {
         created(){
@@ -53,7 +59,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
         },
         data(){
@@ -95,10 +101,10 @@
                     promise = this.getValuesPlainText( this.field, query );
                 }
 
-                promise.then( data => {
+                promise.then( () => {
                     this.isLoading = false;
                 }).catch( error => {
-                    console.log('error select', error );
+                    this.$console.log('error select', error );
                     this.isLoading = false;
                 });
             },
@@ -121,12 +127,12 @@
                             .then( res => {
                                 for (let item of res.data) {
                                    // instance.selected.push({ label: item.title, value: item.id, img: '' });
-                                    console.log(item.title);
+                                    this.$console.log(item.title);
                                     instance.results = item.title;
                                 }
                             })
                             .catch(error => {
-                                console.log(error);
+                                this.$console.log(error);
                             });
                     } else {
                         instance.results = metadata.value;

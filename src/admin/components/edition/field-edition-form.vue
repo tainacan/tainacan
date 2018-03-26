@@ -1,140 +1,152 @@
 <template>
-    <form id="fieldEditForm" class="tainacan-form" v-on:submit.prevent="saveEdition(editForm)">    
+    <form 
+            id="fieldEditForm" 
+            class="tainacan-form" 
+            @submit.prevent="saveEdition(editForm)">    
         
         <b-field 
-            :addons="false"
-            :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
-            :message="formErrors['name'] != undefined ? formErrors['name'] : ''"> 
+                :addons="false"
+                :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
+                :message="formErrors['name'] != undefined ? formErrors['name'] : ''"> 
             <label class="label">
-                {{$i18n.get('label_name')}} 
-                <span class="required-field-asterisk" :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
+                {{ $i18n.get('label_name') }} 
+                <span 
+                        class="required-field-asterisk" 
+                        :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
                 <help-button 
-                    :title="$i18n.getHelperTitle('fields', 'name')" 
-                    :message="$i18n.getHelperMessage('fields', 'name')">
-                </help-button>
+                        :title="$i18n.getHelperTitle('fields', 'name')" 
+                        :message="$i18n.getHelperMessage('fields', 'name')"/>
             </label>
-            <b-input v-model="editForm.name" name="name" @focus="clearErrors('name')"></b-input>
+            <b-input 
+                    v-model="editForm.name" 
+                    name="name" 
+                    @focus="clearErrors('name')"/>
         </b-field>
 
         <b-field
-            :addons="false"
-            :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
-            :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
+                :addons="false"
+                :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
+                :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
             <label class="label">
-                {{$i18n.get('label_description')}}
+                {{ $i18n.get('label_description') }}
                 <help-button 
-                    :title="$i18n.getHelperTitle('fields', 'description')" 
-                    :message="$i18n.getHelperMessage('fields', 'description')">
-                </help-button>
+                        :title="$i18n.getHelperTitle('fields', 'description')" 
+                        :message="$i18n.getHelperMessage('fields', 'description')"/>
             </label>
-            <b-input type="textarea" name="description" v-model="editForm.description" @focus="clearErrors('description')" ></b-input>
+            <b-input 
+                    type="textarea" 
+                    name="description" 
+                    v-model="editForm.description" 
+                    @focus="clearErrors('description')" />
         </b-field>
 
         <b-field 
-            :addons="false"
-            :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
-            :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
+                :addons="false"
+                :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
+                :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
             <label class="label">
-                {{$i18n.get('label_status')}} 
+                {{ $i18n.get('label_status') }} 
                 <help-button 
-                    :title="$i18n.getHelperTitle('fields', 'status')" 
-                    :message="$i18n.getHelperMessage('fields', 'status')">
-                </help-button>
+                        :title="$i18n.getHelperTitle('fields', 'status')" 
+                        :message="$i18n.getHelperMessage('fields', 'status')"/>
             </label>
             <div class="inline-block">
                 <b-radio 
-                    @focus="clearErrors('label_status')"
-                    id="tainacan-select-status-publish"
-                    name="status" 
-                    v-model="editForm.status"
-                    native-value="publish">
+                        @focus="clearErrors('label_status')"
+                        id="tainacan-select-status-publish"
+                        name="status" 
+                        v-model="editForm.status"
+                        native-value="publish">
                     {{ $i18n.get('publish_visibility') }}
                 </b-radio>
                 <br>
                 <b-radio 
-                    @focus="clearErrors('label_status')"
-                    id="tainacan-select-status-private"
-                    name="status" 
-                    v-model="editForm.status"
-                    native-value="private">
+                        @focus="clearErrors('label_status')"
+                        id="tainacan-select-status-private"
+                        name="status" 
+                        v-model="editForm.status"
+                        native-value="private">
                     {{ $i18n.get('private_visibility') }}
                 </b-radio>
             </div>
         </b-field>
         <br>
         <b-field 
-            :addons="false"
-            :label="$i18n.get('label_options')">
+                :addons="false"
+                :label="$i18n.get('label_options')">
             <b-field
-                :type="formErrors['required'] != undefined ? 'is-danger' : ''" 
-                :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
+                    :type="formErrors['required'] != undefined ? 'is-danger' : ''" 
+                    :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
                 <b-checkbox
-                    @input="clearErrors('required')"
-                    v-model="editForm.required"
-                    true-value="yes" 
-                    false-value="no"
-                    name="required">
+                        @input="clearErrors('required')"
+                        v-model="editForm.required"
+                        true-value="yes" 
+                        false-value="no"
+                        name="required">
                     {{ $i18n.get('label_required') }}
                 </b-checkbox>
                 <help-button 
-                    :title="$i18n.getHelperTitle('fields', 'required')" 
-                    :message="$i18n.getHelperMessage('fields', 'required')">
-                </help-button>
+                        :title="$i18n.getHelperTitle('fields', 'required')" 
+                        :message="$i18n.getHelperMessage('fields', 'required')"/>
             </b-field>
 
             <b-field
-                :type="formErrors['multiple'] != undefined ? 'is-danger' : ''" 
-                :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
+                    :type="formErrors['multiple'] != undefined ? 'is-danger' : ''" 
+                    :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                 <b-checkbox 
-                    @input="clearErrors('multiple')"
-                    v-model="editForm.multiple"
-                    true-value="yes" 
-                    false-value="no"
-                    name="multiple">
+                        @input="clearErrors('multiple')"
+                        v-model="editForm.multiple"
+                        true-value="yes" 
+                        false-value="no"
+                        name="multiple">
                     {{ $i18n.get('label_allow_multiple') }}
                 </b-checkbox>
                 <help-button 
-                    :title="$i18n.getHelperTitle('fields', 'multiple')" 
-                    :message="$i18n.getHelperMessage('fields', 'multiple')">
-                </help-button>
+                        :title="$i18n.getHelperTitle('fields', 'multiple')" 
+                        :message="$i18n.getHelperMessage('fields', 'multiple')"/>
             </b-field>
 
             <b-field 
-                :type="formErrors['unique'] != undefined ? 'is-danger' : ''" 
-                :message="formErrors['unique'] != undefined ? formErrors['unique'] : ''">
+                    :type="formErrors['unique'] != undefined ? 'is-danger' : ''" 
+                    :message="formErrors['unique'] != undefined ? formErrors['unique'] : ''">
                 <b-checkbox 
-                    @input="clearErrors('unique')"
-                    v-model="editForm.unique"
-                    true-value="yes" 
-                    false-value="no"
-                    name="collecion_key">
+                        @input="clearErrors('unique')"
+                        v-model="editForm.unique"
+                        true-value="yes" 
+                        false-value="no"
+                        name="collecion_key">
                     {{ $i18n.get('label_unique_value') }}
                 </b-checkbox>
                 <help-button 
                     :title="$i18n.getHelperTitle('fields', 'unique')" 
-                    :message="$i18n.getHelperMessage('fields', 'unique')">
-                </help-button>
+                    :message="$i18n.getHelperMessage('fields', 'unique')"/>
             </b-field>
         </b-field>
 
         <component
-            :errors="formErrors['field_type_options']"
-            v-if="(editForm.field_type_object && editForm.field_type_object.form_component) || editForm.edit_form == ''"
-            :is="editForm.field_type_object.form_component"
-            :field="editForm"
-            v-model="editForm.field_type_options">
-        </component>
-        <div v-html="editForm.edit_form" v-else></div>
+                :errors="formErrors['field_type_options']"
+                v-if="(editForm.field_type_object && editForm.field_type_object.form_component) || editForm.edit_form == ''"
+                :is="editForm.field_type_object.form_component"
+                :field="editForm"
+                v-model="editForm.field_type_options"/>
+        <div 
+                v-html="editForm.edit_form" 
+                v-else/>
 
         <div class="field is-grouped form-submit">  
             <div class="control">
-                <button class="button is-outlined" @click.prevent="cancelEdition()" slot="trigger">{{ $i18n.get('cancel')}}</button>
+                <button 
+                        class="button is-outlined" 
+                        @click.prevent="cancelEdition()" 
+                        slot="trigger">{{ $i18n.get('cancel') }}</button>
             </div>
             <div class="control">
-                <button class="button is-success" type="submit">{{ $i18n.get('save')}}</button>
+                <button 
+                        class="button is-success" 
+                        type="submit">{{ $i18n.get('save') }}</button>
             </div>
         </div>
-        <p class="help is-danger">{{formErrorMessage}}</p>
+        <p class="help is-danger">{{ formErrorMessage }}</p>
     </form>
 </template>
 
@@ -154,8 +166,8 @@ export default {
     }, 
     props: {
         index: '',
-        editedField: {},
-        originalField: '', 
+        editedField: Object,
+        originalField: Object, 
         isRepositoryLevel: false,
         collectionId: ''
     },
@@ -188,7 +200,7 @@ export default {
             if ((field.field_type_object && field.field_type_object.form_component) || field.edit_form == '') {
                 
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, index: this.index, options: this.editForm})
-                    .then((field) => {
+                    .then(() => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
@@ -215,7 +227,7 @@ export default {
                     formObj[key] = value;
                 
                 this.updateField({collectionId: this.collectionId, fieldId: field.id, isRepositoryLevel: this.isRepositoryLevel, index: this.index, options: formObj})
-                    .then((field) => {
+                    .then(() => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';

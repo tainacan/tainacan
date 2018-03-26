@@ -6,7 +6,7 @@
             step="0.01"
             @blur="onBlur"
             @change="onBlur"
-            @input="onInput($event)"></b-input>
+            @input="onInput($event)"/>
 </template>
 
 <script>

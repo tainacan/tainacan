@@ -1,77 +1,94 @@
 <template>
     <div>
-        <b-loading :active.sync="isLoadingFieldTypes"></b-loading>
+        <b-loading :active.sync="isLoadingFieldTypes"/>
         <div class="page-title">
-            <h2>{{ isRepositoryLevel ? $i18n.get('instruction_dragndrop_fields_repository') : $i18n.get('instruction_dragndrop_fields_collection')}}</h2>
+            <h2>{{ isRepositoryLevel ? $i18n.get('instruction_dragndrop_fields_repository') : $i18n.get('instruction_dragndrop_fields_collection') }}</h2>
         </div>
         <div class="columns">
             <div class="column">        
                 <draggable 
-                    class="active-fields-area"
-                    @change="handleChange"
-                    :class="{'fields-area-receive': isDraggingFromAvailable}" 
-                    :list="activeFieldList" 
-                    :options="{ 
-                            group: { name:'fields', pull: false, put: true }, 
-                            sort: openedFieldId == '' || openedFieldId == undefined, 
-                            disabled: openedFieldId != '' && openedFieldId != undefined,
-                            handle: '.handle', 
-                            ghostClass: 'sortable-ghost',
-                            filter: 'not-sortable-item', 
-                            animation: '250'}">
+                        class="active-fields-area"
+                        @change="handleChange"
+                        :class="{'fields-area-receive': isDraggingFromAvailable}" 
+                        :list="activeFieldList" 
+                        :options="{ 
+                                group: { name:'fields', pull: false, put: true }, 
+                                sort: openedFieldId == '' || openedFieldId == undefined, 
+                                disabled: openedFieldId != '' && openedFieldId != undefined,
+                                handle: '.handle', 
+                                ghostClass: 'sortable-ghost',
+                                filter: 'not-sortable-item', 
+                                animation: '250'}">
                     <div  
-                        class="active-field-item"
-                        :class="{
-                            'not-sortable-item': field.id == undefined || openedFieldId != '' , 
-                            'not-focusable-item': openedFieldId == field.id, 
-                            'disabled-field': field.enabled == false}" 
-                        v-for="(field, index) in activeFieldList" :key="index">
+                            class="active-field-item"
+                            :class="{
+                                'not-sortable-item': field.id == undefined || openedFieldId != '' , 
+                                'not-focusable-item': openedFieldId == field.id, 
+                                'disabled-field': field.enabled == false
+                            }" 
+                            v-for="(field, index) in activeFieldList" 
+                            :key="index">
                         <div class="handle">
-                            <grip-icon></grip-icon>
+                            <grip-icon/>
                             <span 
-                                class="field-name" 
-                                :class="{'is-danger': formWithErrors == field.id }">
-                                {{ field.name }}
+                                    class="field-name" 
+                                    :class="{'is-danger': formWithErrors == field.id }">
+                                    {{ field.name }}
                             </span>
                             <span   
-                                v-if="field.id != undefined"
-                                class="label-details">  
-                                  ({{ $i18n.get(field.field_type_object.component) }})  
-                                    <span class="not-saved" v-if="(editForms[field.id] != undefined && editForms[field.id].saved != true) || field.status == 'auto-draft'"> 
+                                    v-if="field.id != undefined"
+                                    class="label-details">  
+                                 ({{ $i18n.get(field.field_type_object.component) }})  
+                                    <span 
+                                        class="not-saved" 
+                                        v-if="(editForms[field.id] != undefined && editForms[field.id].saved != true) || field.status == 'auto-draft'"> 
                                       {{ $i18n.get('info_not_saved') }}
                                     </span>
                             </span>
-                            <span class="loading-spinner" v-if="field.id == undefined"></span>
-                            <span class="controls" v-if="field.id !== undefined">
-                                <b-switch size="is-small" v-model="field.enabled" @input="onChangeEnable($event, index)"></b-switch>
-                                <a  :style="{ visibility: 
+                            <span 
+                                    class="loading-spinner" 
+                                    v-if="field.id == undefined"/>
+                            <span 
+                                    class="controls" 
+                                    v-if="field.id !== undefined">
+                                <b-switch 
+                                        size="is-small" 
+                                        v-model="field.enabled" 
+                                        @input="onChangeEnable($event, index)"/>
+                                <a 
+                                        :style="{ visibility: 
                                                 field.collection_id != collectionId 
                                                 ? 'hidden' : 'visible'
                                             }" 
-                                    @click.prevent="editField(field)">
-                                    <b-icon type="is-gray" icon="pencil"></b-icon>
+                                        @click.prevent="editField(field)">
+                                    <b-icon 
+                                            type="is-gray" 
+                                            icon="pencil"/>
                                 </a>
-                                <a  :style="{ visibility: 
+                                <a 
+                                        :style="{ visibility: 
                                                 field.collection_id != collectionId || 
                                                 field.field_type == 'Tainacan\\Field_Types\\Core_Title' || 
                                                 field.field_type == 'Tainacan\\Field_Types\\Core_Description' 
                                                 ? 'hidden' : 'visible'
                                             }" 
-                                    @click.prevent="removeField(field)">
-                                    <b-icon type="is-gray" icon="delete"></b-icon>
+                                        @click.prevent="removeField(field)">
+                                    <b-icon 
+                                            type="is-gray" 
+                                            icon="delete"/>
                                 </a>
                             </span>
                         </div>
                         <div v-if="openedFieldId == field.id">
                             <field-edition-form   
-                                :collectionId="collectionId"
-                                :isRepositoryLevel="isRepositoryLevel"
-                                @onEditionFinished="onEditionFinished()"
-                                @onEditionCanceled="onEditionCanceled()"
-                                @onErrorFound="formWithErrors = field.id"
-                                :index="index"
-                                :originalField="field"
-                                :editedField="editForms[field.id]"></field-edition-form>
+                                    :collection-id="collectionId"
+                                    :is-repository-level="isRepositoryLevel"
+                                    @onEditionFinished="onEditionFinished()"
+                                    @onEditionCanceled="onEditionCanceled()"
+                                    @onErrorFound="formWithErrors = field.id"
+                                    :index="index"
+                                    :original-field="field"
+                                    :edited-field="editForms[field.id]"/>
                         </div>
                     </div>
                 </draggable> 
@@ -79,23 +96,25 @@
           
             <div class="column available-fields-area" >
                 <div class="field">
-                    <h3 class="label">{{ $i18n.get('label_available_field_types')}}</h3>
+                    <h3 class="label">{{ $i18n.get('label_available_field_types') }}</h3>
                     <draggable 
-                        :list="availableFieldList" 
-                        :options="{ 
-                            sort: false, 
-                            group: { name:'fields', pull: 'clone', put: false, revertClone: true },
-                            dragClass: 'sortable-drag'
-                        }">
+                            :list="availableFieldList" 
+                            :options="{ 
+                                sort: false, 
+                                group: { name:'fields', pull: 'clone', put: false, revertClone: true },
+                                dragClass: 'sortable-drag'
+                            }">
                         <div 
-                            @click.prevent="addFieldViaButton(field)" 
-                            class="available-field-item"
-                            :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
-                            v-for="(field, index) in availableFieldList" 
-                            :key="index">
-                           <grip-icon></grip-icon>  
+                                @click.prevent="addFieldViaButton(field)" 
+                                class="available-field-item"
+                                :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
+                                v-for="(field, index) in availableFieldList" 
+                                :key="index">
+                           <grip-icon/>  
                              <span class="field-name">{{ field.name }}</span> 
-                             <span class="loading-spinner" v-if="hightlightedField == field.name"></span>   
+                             <span 
+                                    class="loading-spinner" 
+                                    v-if="hightlightedField == field.name"/>   
                         </div>
                     </draggable>
                 </div>
@@ -207,7 +226,7 @@ export default {
                 this.hightlightedField = '';
             })
             .catch((error) => {
-                console.log(error);
+                this.$console.error(error);
             });
         },
         removeField(removedField) {
@@ -220,7 +239,7 @@ export default {
                 if (!this.isRepositoryLevel)
                     this.updateFieldsOrder(); 
             })
-            .catch((error) => {
+            .catch(() => {
             });
         },
         editField(field) {
@@ -255,7 +274,6 @@ export default {
             delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
         }
-
     },
     computed: {
         availableFieldList() {
@@ -270,10 +288,10 @@ export default {
         this.isLoadingFields = true;
 
         this.fetchFieldTypes()
-            .then((res) => {
+            .then(() => {
                 this.isLoadingFieldTypes = false;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoadingFieldTypes = false;
             });
 
@@ -285,10 +303,10 @@ export default {
         
 
         this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-            .then((res) => {
+            .then(() => {
                 this.isLoadingFields = false;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoadingFields = false;
             });
     }

@@ -1,29 +1,29 @@
 <template>
-    <b-field :label="filter.name"
-             :message="getErrorMessage"
-             :type="filterTypeMessage">
+    <b-field 
+            :label="filter.name"
+            :message="getErrorMessage"
+            :type="filterTypeMessage">
         <div>
             <component
                     :id="filter.filter_type_object.component + '-' + filter.slug"
                     :is="filter.filter_type_object.component"
                     :filter="getFilter"
                     :query="query"
-                    @input="listen( $event )"></component>
+                    @input="listen( $event )"/>
         </div>
     </b-field>
 </template>
 
 <script>
     import { eventFilterBus } from '../../js/event-bus-filters'
-    import qs from 'qs';
     import { mapActions, mapGetters } from 'vuex';
     import router from '../../admin/js/router'
 
     export default {
         name: 'TainacanFiltersList',
         props: {
-            filter: {},
-            query: {}
+            filter: Object,
+            query: Object
         },
         data(){
             return {
@@ -36,12 +36,12 @@
                 let msg = '';
                 let errors = eventFilterBus.getErrors( this.filter.id );
                 if ( errors) {
-                    this.filterTypeMessage = 'is-danger';
+                    this.setFilterTypeMessage('is-danger');
                     for (let index in errors) {
                         msg += errors[index] + '\n';
                     }
                 } else {
-                    this.filterTypeMessage = '';
+                    this.setFilterTypeMessage('');
                 }
                 return msg;
             },
@@ -62,6 +62,9 @@
                 eventFilterBus.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
                 router.push({ query: {} });
                 router.push({ query: this.getPostQuery() });
+            },
+            setFilterTypeMessage( message ){
+                this.filterTypeMessage = message;
             }
         }
     }

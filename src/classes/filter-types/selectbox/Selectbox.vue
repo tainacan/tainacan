@@ -8,7 +8,7 @@
                 expanded>
             <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
             <option
-                    v-for="option,index in options"
+                    v-for="(option, index) in options"
                     :key="index"
                     :label="option.label"
                     :value="option.value"
@@ -36,7 +36,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
         },
         data(){
@@ -66,12 +66,12 @@
                     promise = this.getValuesPlainText( this.field );
                 }
 
-                promise.then( data => {
+                promise.then(() => {
                     this.isLoading = false;
                     instance.selectedValues();
                 })
                 .catch( error => {
-                    console.log('error select', error );
+                    this.$console.log('error select', error );
                     this.isLoading = false;
                 });
             },

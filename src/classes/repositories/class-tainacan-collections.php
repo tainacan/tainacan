@@ -243,8 +243,8 @@ class Collections extends Repository {
 	 * @return mixed|Collection
 	 */
 	public function delete( $args ) {
-		if ( ! empty( $args[1] ) && $args[1]['is_permanently'] === true ) {
-			return new Entities\Collection( wp_delete_post( $args[0], $args[1]['is_permanently'] ) );
+		if ( ! empty( $args[1] ) && $args[1] === true ) {
+			return new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
 		}
 
 		return new Entities\Collection( wp_trash_post( $args[0] ) );

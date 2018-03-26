@@ -304,8 +304,8 @@ class Items extends Repository {
 	 * @return mixed|Entities\Item
 	 */
 	public function delete( $args ) {
-		if ( ! empty( $args[1] ) && $args[1]['is_permanently'] === true ) {
-			return new Entities\Item( wp_delete_post( $args[0], $args[1]['is_permanently'] ) );
+		if ( ! empty( $args[1] ) && $args[1] === true ) {
+			return new Entities\Item( wp_delete_post( $args[0], $args[1] ) );
 		}
 
 		return new Entities\Item( wp_trash_post( $args[0] ) );

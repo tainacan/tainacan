@@ -2,8 +2,10 @@
     <div>
          <span>
              <a
-                 class="button"
-                 @click="showForm = !showForm"><b-icon size="is-small" icon="plus"></b-icon>&nbsp;{{ $i18n.get('label_add_new_term') }}</a>
+                class="button"
+                @click="showForm = !showForm"><b-icon 
+                size="is-small" 
+                icon="plus"/>&nbsp;{{ $i18n.get('label_add_new_term') }}</a>
          </span>
         <div class="columns">
             <transition name="fade">
@@ -14,24 +16,26 @@
                         style="padding-left: 0px;">
 
                     <b-field :label="$i18n.get('label_name')">
-                        <b-input v-model="name"></b-input>
+                        <b-input v-model="name"/>
                     </b-field>
 
                     <b-field :label="$i18n.get('label_parent_term')">
                         <b-select
                                 v-model="parent">
-                            <option :value="0" selected> ---{{ $i18n.get('label_parent_term') }}--- </option>
+                            <option 
+                                    :value="0" 
+                                    selected> ---{{ $i18n.get('label_parent_term') }}--- </option>
                             <option
-                                    v-for="option,index in options"
+                                    v-for="(option,index) in options"
                                     :key="index"
                                     :value="option.term_id"
-                                    v-html="setSpaces( option.level ) + option.name"></option>
+                                    v-html="setSpaces( option.level ) + option.name"/>
                         </b-select>
                     </b-field>
 
                     <a
-                        class="button is-primary"
-                        @click="save">{{ $i18n.get('save') }}</a>
+                            class="button is-primary"
+                            @click="save">{{ $i18n.get('save') }}</a>
                 </section>
 
             </transition>
@@ -97,7 +101,7 @@
                             if( !Array.isArray( val ) && this.field.field.multiple === 'no' ){
                                 axios.patch(`/item/${this.item_id}/metadata/${this.field_id}`, {
                                     values: term_id,
-                                }).then( res => {
+                                }).then(() => {
                                     instance.$emit('newTerm', term_id);
                                 })
                             } else {
@@ -105,7 +109,7 @@
                                 val.push( term_id );
                                 axios.patch(`/item/${this.item_id}/metadata/${this.field_id}`, {
                                     values: val,
-                                }).then( res => {
+                                }).then( () => {
                                     instance.$emit('newTerm', val);
                                 })
                             }

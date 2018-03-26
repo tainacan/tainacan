@@ -4,7 +4,7 @@
             type="textarea"
             :value="inputValue"
             @blur="onBlur"
-            @input="onInput($event)"></b-input>
+            @input="onInput($event)"/>
 </template>
 
 <script>
@@ -34,9 +34,6 @@
                 this.inputValue = $event;
                 this.$emit('input', this.inputValue);
             }
-        },
-        created(){
-            this.inputValue = this.value;
         }
     }
 </script>

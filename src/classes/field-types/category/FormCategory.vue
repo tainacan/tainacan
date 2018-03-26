@@ -2,16 +2,15 @@
     <section
             v-if="isReady"
             :listen="setError">
-        <b-field :addons="false"
-                 :type="taxonomyType"
-                 :message="taxonomyMessage"
-        >
+        <b-field 
+                :addons="false"
+                :type="taxonomyType"
+                :message="taxonomyMessage">
             <label class="label">
                 {{ $i18n.get('label_select_category') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-category', 'taxonomy_id')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'taxonomy_id')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-category', 'taxonomy_id')"/>
             </label>
             <b-select
                     name="field_type_options[taxonomy_id]"
@@ -35,8 +34,7 @@
                 {{ $i18n.get('label_select_category_input_type') }}
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-category', 'input_type')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'input_type')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-category', 'input_type')"/>
             </label>
             <b-select
                     v-if="listInputType"
@@ -45,7 +43,7 @@
                     @input="emitValues()"
                     v-model="input_type">
                 <option
-                        v-for="option,index in single_types"
+                        v-for="(option, index) in single_types"
                         :value="index"
                         :key="index">
                     {{ option }}
@@ -60,7 +58,7 @@
                     v-else>
 
                 <option
-                        v-for="option,index in multiple_types"
+                        v-for="(option, index) in multiple_types"
                         :value="index"
                         :key="index">
                     {{ option }}
@@ -74,14 +72,14 @@
                 {{ $i18n.get('label_category_allow_new_terms') }}
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-category', 'allow_new_terms')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'allow_new_terms')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-category', 'allow_new_terms')"/>
             </label>
             <div class="block">
-                <b-checkbox v-model="allow_new_terms"
-                          @input="emitValues()"
-                          true-value="yes"
-                          false-value="no">
+                <b-checkbox 
+                        v-model="allow_new_terms"
+                        @input="emitValues()"
+                        true-value="yes"
+                        false-value="no">
                     {{ labelNewTerms() }}
                 </b-checkbox>
             </div>
@@ -102,7 +100,7 @@
             errors: [ String, Object, Array ]
         },
         created(){
-            this.fetchTaxonomies().then( res => {
+            this.fetchTaxonomies().then(() => {
                 if ( this.value ) {
                     this.taxonomy_id = this.value.taxonomy_id;
                 }
@@ -124,23 +122,22 @@
                 if( this.field && this.field.multiple === 'no' ){
                     let types = Object.keys( this.single_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.input_type =  ( hasValue ) ? this.value.input_type : 'tainacan-category-radio';
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-category-radio' );
                     return true;
                 } else {
                     let types = Object.keys( this.multiple_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.input_type =  ( hasValue ) ? this.value.input_type : 'tainacan-category-checkbox';
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-category-checkbox' );
                     return false;
                 }
             },
             setError(){
                 if( this.errors && this.errors.taxonomy_id !== '' ){
-                    this.taxonomyType = 'is-danger';
-                    this.taxonomyMessage = this.errors.taxonomy_id;
+                    this.setErrorsAttributes( 'is-danger', this.errors.taxonomy_id );
                 } else {
-                    this.taxonomyType = '';
-                    this.taxonomyMessage = '';
+                    this.setErrorsAttributes( '', '' );
                 }
+                return true;
             }
         },
         data(){
@@ -158,6 +155,13 @@
             }
         },
         methods: {
+            setInputType( input ){
+                this.input_type = input;
+            },
+            setErrorsAttributes( type, message ){
+                this.taxonomyType = type;
+                this.taxonomyMessage = message;
+            },
             fetchTaxonomies(){
                 return axios.get('/taxonomies')
                     .then(res => {
@@ -171,8 +175,7 @@
                         }
                     })
                     .catch(error => {
-                        console.log(error);
-                        reject(error);
+                        this.$console.log(error);
                     });
             },
             labelNewTerms(){

@@ -7,6 +7,53 @@ const wpApi = axios.create({
 
 wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 
+// CONSOLE PLUGIN - Allows custom use of console functions and avoids eslint warnings.
+export const ConsolePlugin = {};
+ConsolePlugin.install = function (Vue, options = { visual: false }) {
+    
+    Vue.prototype.$console = {
+        log(something) {
+            if (options.visual) {
+                Vue.prototype.$snackbar.open({
+                    message: something,
+                    type: 'is-secondary',
+                    position: 'is-bottom-right',
+                    indefinite: true,
+                    queue: false
+                });
+            } else {
+                console.log(something);
+            }
+        },
+        info(someInfo) {
+            if (options.visual) {
+                Vue.prototype.$snackbar.open({
+                    message: someInfo,
+                    type: 'is-primary',
+                    position: 'is-bottom-right',
+                    duration: 5000,
+                    queue: false
+                });
+            } else { 
+                console.info(someInfo);
+            }
+        },
+        error(someError) {
+            if (options.visual) {
+                Vue.prototype.$snackbar.open({
+                    message: someError,
+                    type: 'is-danger',
+                    position: 'is-bottom-right',
+                    indefinite: true,
+                    queue: false
+                });
+            } else { 
+                console.error(someError);
+            }
+        }
+    }
+}
+
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
 I18NPlugin.install = function (Vue, options = {}) {

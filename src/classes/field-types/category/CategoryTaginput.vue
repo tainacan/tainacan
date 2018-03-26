@@ -4,14 +4,13 @@
                 size="is-small"
                 rounded
                 icon="magnify"
-                :allowNew="allowNew"
+                :allow-new="allowNew"
                 @input="emitChange"
                 v-model="selected"
                 :data="labels"
                 field="label"
                 autocomplete
-                @typing="search">
-        </b-taginput>
+                @typing="search"/>
     </div>
 </template>
 <script>
@@ -23,7 +22,7 @@
             }
         },
         watch: {
-            terms( val ){
+            terms(){
                 this.selectedValues();
             }
         },

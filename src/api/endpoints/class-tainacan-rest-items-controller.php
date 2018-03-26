@@ -77,8 +77,8 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 					'args'                => array(
-						'body_args' => array(
-							'description' => __('To delete permanently, in body you can pass \'is_permanently\' as true. By default this will only trash collection'),
+						'permanently' => array(
+							'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection'),
 							'default'     => 'false'
 						),
 					)
@@ -306,10 +306,10 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		$item_id        = $request['item_id'];
-		$is_permanently = json_decode($request->get_body(), true);
+		$item_id     = $request['item_id'];
+		$permanently = $request['permanently'];
 
-		$args = [$item_id, $is_permanently];
+		$args = [$item_id, $permanently];
 
 		$item = $this->items_repository->delete($args);
 

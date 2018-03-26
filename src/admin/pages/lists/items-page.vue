@@ -1,25 +1,34 @@
 <template>  
-    <div class="page-container-small" :class="{'primary-page': isRepositoryLevel}">
+    <div 
+            class="page-container-small" 
+            :class="{'primary-page': isRepositoryLevel}">
         <div class="sub-header">
             <div class="header-item">
-                <router-link tag="button" class="button is-secondary"
+                <router-link 
+                        tag="button" 
+                        class="button is-secondary"
                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                     {{ $i18n.getFrom('items', 'new_item') }}
                 </router-link>
             </div>
             <div class="header-item">
                 <b-dropdown>
-                    <button class="button" slot="trigger" :disabled="items.length <= 0">
-                        <span>{{$i18n.get('label_table_fields')}}</span>
-                        <b-icon icon="menu-down"></b-icon>
+                    <button 
+                            class="button" 
+                            slot="trigger" 
+                            :disabled="items.length <= 0">
+                        <span>{{ $i18n.get('label_table_fields') }}</span>
+                        <b-icon icon="menu-down"/>
                     </button>
-                    <b-dropdown-item v-for="(column, index) in tableFields" 
-                        :key="index"
-                        class="control" custom>
+                    <b-dropdown-item 
+                            v-for="(column, index) in tableFields" 
+                            :key="index"
+                            class="control" 
+                            custom>
                         <b-checkbox
-                            @input="onChangeTableFields(column)"
-                            v-model="column.visible" 
-                            :native-value="column.field">
+                                @input="onChangeTableFields(column)"
+                                v-model="column.visible" 
+                                :native-value="column.field">
                             {{ column.label }}
                         </b-checkbox>
                     </b-dropdown-item>
@@ -29,19 +38,18 @@
         <div class="columns above-subheader">
             <aside class="column filters-menu">
                 <h3>{{ $i18n.get('filters') }}</h3>
-                <filters-items-list></filters-items-list>
+                <filters-items-list/>
             </aside>
             <div class="column table-container">
                 <items-list
-                    :collection-id="collectionId"
-                    :tableFields="tableFields"
-                    :prefTableFields="prefTableFields"
-                    :totalItems="totalItems"
-                    :page="page"
-                    :items="items" 
-                    :isLoading="isLoading"
-                    :itemsPerPage="itemsPerPage">
-                </items-list>
+                        :collection-id="collectionId"
+                        :table-fields="tableFields"
+                        :pref-table-fields="prefTableFields"
+                        :total-items="totalItems"
+                        :page="page"
+                        :items="items" 
+                        :is-loading="isLoading"
+                        :items-per-page="itemsPerPage"/>
                 <!-- Footer -->
                 <div class="table-footer">
                     <div class="shown-items">
@@ -54,7 +62,9 @@
                         }} 
                     </div> 
                     <div class="items-per-page">
-                        <b-field horizontal :label="$i18n.get('label_items_per_page')"> 
+                        <b-field 
+                                horizontal 
+                                :label="$i18n.get('label_items_per_page')"> 
                             <b-select 
                                     :value="itemsPerPage"
                                     @input="onChangeItemsPerPage" 
@@ -68,13 +78,12 @@
                     </div>
                     <div class="pagination"> 
                         <b-pagination
-                            @change="onPageChange"
-                            :total="totalItems"
-                            :current.sync="page"
-                            order="is-centered"
-                            size="is-small"
-                            :per-page="itemsPerPage">
-                        </b-pagination> 
+                                @change="onPageChange"
+                                :total="totalItems"
+                                :current.sync="page"
+                                order="is-centered"
+                                size="is-small"
+                                :per-page="itemsPerPage"/> 
                     </div>
                 </div>
             </div>
@@ -135,7 +144,7 @@ export default {
             'search_by_collection'
         ]),
         onChangeTableFields(field) {
-            let prevValue = this.prefTableFields;
+           // let prevValue = this.prefTableFields;
             let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
             if (index >= 0) {
                 //prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
@@ -143,12 +152,12 @@ export default {
             
 
             // for (let currentField of this.prefTableFields)
-            //     console.log(currentField.slug, currentField.visible);
+            //     this.$console.log(currentField.slug, currentField.visible);
             
 
 
             // for (let oldField of prevValue)
-            //     console.log(oldField.slug, oldField.visible);
+            //     this.$console.log(oldField.slug, oldField.visible);
 
             //this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
         },
@@ -187,11 +196,10 @@ export default {
                 this.alterQueryString();
             }
 
-
-            promisse.then((res) => {
+            promisse.then(() => {
                 this.isLoading = false;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoading = false;
             });
         },
@@ -233,7 +241,7 @@ export default {
         .then((value) => {
             this.itemsPerPage = value;
         })
-        .catch((error) => {
+        .catch(() => {
             this.$userPrefs.set('items_per_page', 12, null);
         });     
     },
@@ -307,11 +315,12 @@ export default {
             background-color: $primary-lighter;
             margin-left: -$page-small-side-padding;
             padding: $page-small-side-padding;
-
+            
             .label {
+                font-size: 12px;
                 font-weight: normal;
-                font-size: 0.85em;
             }
+            
         }
 
         .table-container {

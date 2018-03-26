@@ -1,120 +1,136 @@
 <template>
     <div>
-        <b-loading :active.sync="isLoadingFieldTypes"></b-loading>
+        <b-loading :active.sync="isLoadingFieldTypes"/>
         <div class="page-title">
             <h2>{{ isRepositoryLevel ? $i18n.get('instruction_dragndrop_filters_collection') : $i18n.get('instruction_dragndrop_filters_collection') }}</h2>
         </div>
         <div class="columns">
             <div class="column">         
                 <draggable 
-                    class="active-filters-area"
-                    @change="handleChange"
-                    :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                    :list="activeFilterList" 
-                    :options="{
-                        group: { name:'filters', pull: false, put: true }, 
-                        sort: openedFilterId == '' || openedFilterId == undefined, 
-                        disabled: openedFilterId != '' && openedFilterId != undefined,
-                        handle: '.handle', 
-                        ghostClass: 'sortable-ghost',
-                        filter: 'not-sortable-item', 
-                        animation: '250'}">
+                        class="active-filters-area"
+                        @change="handleChange"
+                        :class="{'filters-area-receive': isDraggingFromAvailable}" 
+                        :list="activeFilterList" 
+                        :options="{
+                            group: { name:'filters', pull: false, put: true }, 
+                            sort: openedFilterId == '' || openedFilterId == undefined, 
+                            disabled: openedFilterId != '' && openedFilterId != undefined,
+                            handle: '.handle', 
+                            ghostClass: 'sortable-ghost',
+                            filter: 'not-sortable-item', 
+                            animation: '250'}">
                     <div  
-                        class="active-filter-item" 
-                        :class="{
-                            'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenField.name == filter.name, 
-                            'not-focusable-item': openedFilterId == filter.id, 
-                            'disabled-filter': filter.enabled == false
-                        }" 
-                        v-for="(filter, index) in activeFilterList" :key="index">
-                            <div class="handle">
-                                <grip-icon></grip-icon>
-                                <span 
+                            class="active-filter-item" 
+                            :class="{
+                                'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenField.name == filter.name, 
+                                'not-focusable-item': openedFilterId == filter.id, 
+                                'disabled-filter': filter.enabled == false
+                            }" 
+                            v-for="(filter, index) in activeFilterList" 
+                            :key="index">
+                        <div class="handle">
+                            <grip-icon/>
+                            <span 
                                     class="filter-name"
                                     :class="{'is-danger': formWithErrors == filter.id }">
                                     {{ filter.name }}
-                                </span>
-                                <span   
-                                    v-if="filter.filter_type_object != undefined"
-                                    class="label-details">  
-                                    ({{ $i18n.get(filter.filter_type_object.component) }})  
-                                        <span class="not-saved" v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
+                            </span>
+                            <span   
+                                v-if="filter.filter_type_object != undefined"
+                                class="label-details">  
+                                ({{ $i18n.get(filter.filter_type_object.component) }})  
+                                    <span 
+                                            class="not-saved" 
+                                            v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
                                         {{ $i18n.get('info_not_saved') }}
-                                        </span>
-                                </span> 
-                                <span class="loading-spinner" v-if="filter.id == undefined"></span>
-                                <span class="controls" v-if="filter.filter_type != undefined">
-                                    <b-switch size="is-small" v-model="filter.enabled" @input="onChangeEnable($event, index)"></b-switch>
-                                    <a  :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
+                                    </span>
+                            </span> 
+                            <span 
+                                    class="loading-spinner" 
+                                    v-if="filter.id == undefined"/>
+                            <span 
+                                    class="controls" 
+                                    v-if="filter.filter_type != undefined">
+                                <b-switch 
+                                        size="is-small" 
+                                        v-model="filter.enabled" 
+                                        @input="onChangeEnable($event, index)"/>
+                                <a 
+                                        :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
                                         @click.prevent="editFilter(filter)">
-                                        <b-icon type="is-gray" icon="pencil"></b-icon>
-                                    </a>
-                                    <a :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
+                                    <b-icon 
+                                            type="is-gray" 
+                                            icon="pencil"/>
+                                </a>
+                                <a 
+                                        :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
                                         @click.prevent="removeFilter(filter)">
-                                        <b-icon type="is-gray" icon="delete"></b-icon>
-                                    </a>
-                                </span>
-                            </div>
-                            <div v-if="choosenField.name == filter.name && openedFilterId == ''">
-                                <form class="tainacan-form">
-                                    <b-field :label="$i18n.get('label_filter_type')">
-                                        <b-select
-                                                v-model="selectedFilterType"
-                                                :placeholder="$i18n.get('instruction_select_a_filter_type')">
-                                            <option 
+                                    <b-icon 
+                                            type="is-gray" 
+                                            icon="delete"/>
+                                </a>
+                            </span>
+                        </div>
+                        <div v-if="choosenField.name == filter.name && openedFilterId == ''">
+                            <form class="tainacan-form">
+                                <b-field :label="$i18n.get('label_filter_type')">
+                                    <b-select
+                                            v-model="selectedFilterType"
+                                            :placeholder="$i18n.get('instruction_select_a_filter_type')">
+                                        <option 
                                                 v-for="(filterType, index) in allowedFilterTypes" 
                                                 :key="index"
                                                 :selected="index == 0"
                                                 :value="filterType">
                                                 {{ filterType.name }}</option>  
-                                        </b-select>
-                                    </b-field>
-                                    <div class="field is-grouped form-submit">
-                                        <div class="control"> 
-                                            <button 
+                                    </b-select>
+                                </b-field>
+                                <div class="field is-grouped form-submit">
+                                    <div class="control"> 
+                                        <button 
                                                 class="button is-outlined" 
                                                 @click.prevent="cancelFilterTypeSelection()" 
-                                                slot="trigger">{{ $i18n.get('cancel')}}</button>
-                                        </div>
-                                        <div class="control">
-                                            <button 
+                                                slot="trigger">{{ $i18n.get('cancel') }}</button>
+                                    </div>
+                                    <div class="control">
+                                        <button 
                                                 class="button is-success" 
                                                 type="submit" 
                                                 :disabled="Object.keys(selectedFilterType).length == 0"
-                                                @click.prevent="confirmSelectedFilterType()">{{ $i18n.get('next')}}</button>
-                                        </div>
-                                        
+                                                @click.prevent="confirmSelectedFilterType()">{{ $i18n.get('next') }}</button>
                                     </div>
-                                </form>
-                            </div>
-                            <b-field v-if="openedFilterId == filter.id">
-                                <filter-edition-form
+                                    
+                                </div>
+                            </form>
+                        </div>
+                        <b-field v-if="openedFilterId == filter.id">
+                            <filter-edition-form
                                     @onEditionFinished="onEditionFinished()"
                                     @onEditionCanceled="onEditionCanceled()"
                                     @onErrorFound="formWithErrors = filter.id"
                                     :index="index"
-                                    :originalFilter="filter"
-                                    :editedFilter="editForms[openedFilterId]"></filter-edition-form>
-                            </b-field>
-                        </div>
+                                    :original-filter="filter"
+                                    :edited-filter="editForms[openedFilterId]"/>
+                        </b-field>
+                    </div>
                 </draggable> 
             </div>
             <div class="column available-fields-area">
                 <div class="field">
                     <h3 class="label"> {{ $i18n.get('label_available_field_types') }}</h3>
                     <draggable 
-                        :list="availableFieldList" 
-                        :options="{ 
-                            sort: false, 
-                            group: { name:'filters', pull: true, put: false, revertClone: true },
-                            dragClass: 'sortable-drag'
-                        }">
+                            :list="availableFieldList" 
+                            :options="{ 
+                                sort: false, 
+                                group: { name:'filters', pull: true, put: false, revertClone: true },
+                                dragClass: 'sortable-drag'
+                            }">
                         <div 
-                            class="available-field-item"
-                            v-for="(field, index) in availableFieldList" 
-                            :key="index"
-                            @click.prevent="addFieldViaButton(field, index)">  
-                            <grip-icon></grip-icon> 
+                                class="available-field-item"
+                                v-for="(field, index) in availableFieldList" 
+                                :key="index"
+                                @click.prevent="addFieldViaButton(field, index)">  
+                            <grip-icon/> 
                               <span class="field-name">{{ field.name }}</span>
                         </div>
                     </draggable>   
@@ -226,7 +242,7 @@ export default {
             this.addNewFilter(fieldType, lastIndex);
         },
         addNewFilter(choosenField, newIndex) {
-            console.log(choosenField);
+            this.$console.log(choosenField);
             this.choosenField = choosenField;
             this.newIndex = newIndex;
             this.openedFilterId = '';
@@ -264,7 +280,7 @@ export default {
                 this.editFilter(filter);
             })
             .catch((error) => {
-                console.log(error);
+                this.$console.error(error);
                 this.newIndex = 0;
                 this.choosenField = {};
                 this.selectedFilterType = {}
@@ -280,17 +296,15 @@ export default {
                     this.activeFilterList.splice(index, 1);
                     this.isLoadingFieldTypes = true;
                     this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-                    .then((res) => {
+                    .then(() => {
                         this.isLoadingFieldTypes = false;
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.isLoadingFieldTypes = false;
                     });
                 
                 if (!this.isRepositoryLevel)
                     this.updateFiltersOrder(); 
-            })
-            .catch((error) => {
             });
         },
         confirmSelectedFilterType() {
@@ -311,7 +325,7 @@ export default {
 
             // Opening collapse
             } else {
-                console.log(this.choosenField);
+                this.$console.log(this.choosenField);
                 if (this.openedFilterId == '' && this.choosenField.id != undefined) {
                     this.availableFieldList.push(this.choosenField);
                     this.choosenField = {};
@@ -379,26 +393,26 @@ export default {
         this.isLoadingFilterTypes = true;
 
         this.fetchFilterTypes()
-            .then((res) => {
+            .then(() => {
                 this.isLoadingFilterTypes = false;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoadingFilterTypes = false;
             });        
 
         this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-            .then((res) => {
+            .then(() => {
                 this.isLoadingFilters = false;
                 // Needs to be done after activeFilterList exists to compare and remove chosen fields.
                 this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-                    .then((res) => {
+                    .then(() => {
                         this.isLoadingFieldTypes = false;
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.isLoadingFieldTypes = false;
                     });
             })
-            .catch((error) => {
+            .catch(() => {
                 this.isLoadingFilters = false;
             });
     }

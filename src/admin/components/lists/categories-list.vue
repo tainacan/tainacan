@@ -1,12 +1,14 @@
 <template>
     <div>
-        <b-field grouped group-multiline>
+        <b-field 
+                grouped 
+                group-multiline>
             <button
                     v-if="selectedCategories.length > 0"
                     class="button field is-danger"
                     @click="deleteSelectedCategories()">
                 <span>{{ $i18n.get('instruction_delete_selected_categories') }} </span>
-                <b-icon icon="delete"></b-icon>
+                <b-icon icon="delete"/>
             </button>
         </b-field>
 
@@ -14,7 +16,6 @@
                 v-if="totalCategories > 0"
                 ref="categoryTable"
                 :data="categories"
-                @selection-change="handleSelectionChange"
                 :checked-rows.sync="selectedCategories"
                 checkable
                 :loading="isLoading"
@@ -44,7 +45,10 @@
                         property="description"
                         show-overflow-tooltip
                         field="props.row.description">
-                    <router-link class="clickable-row" tag="span" :to="{path: $routerHelper.getCategoryPath(props.row.id)}">
+                    <router-link 
+                            class="clickable-row" 
+                            tag="span" 
+                            :to="{path: $routerHelper.getCategoryPath(props.row.id)}">
                         {{ props.row.description }}
                     </router-link>
                 </b-table-column>
@@ -59,13 +63,17 @@
                             id="button-edit"
                             :aria-label="$i18n.getFrom('categories','edit_item')"
                             @click.prevent.stop="goToCategoryEditPage(props.row.id)">
-                        <b-icon type="is-gray" icon="pencil" ></b-icon>
+                        <b-icon 
+                                type="is-gray" 
+                                icon="pencil" />
                     </a>
                     <a
                             id="button-delete"
                             :aria-label="$i18n.get('label_button_delete')"
                             @click.prevent.stop="deleteOneCategory(props.row.id)">
-                        <b-icon type="is-gray" icon="delete" ></b-icon>
+                        <b-icon 
+                                type="is-gray" 
+                                icon="delete" />
                     </a>
                 </b-table-column>
             </template>
@@ -78,12 +86,13 @@
                     <p>
                         <b-icon
                                 icon="inbox"
-                                size="is-large">
-                        </b-icon>
+                                size="is-large"/>
                     </p>
                     <p>{{ $i18n.get('info_no_category_created') }}</p>
-                    <router-link tag="button" class="button is-secondary"
-                                 :to="{ path: $routerHelper.getNewCategoryPath() }">
+                    <router-link 
+                            tag="button" 
+                            class="button is-secondary"
+                            :to="{ path: $routerHelper.getNewCategoryPath() }">
                         {{ $i18n.get('new') + ' ' + $i18n.get('category') }}
                     </router-link>
                 </div>
@@ -93,7 +102,6 @@
 </template>
 
 <script>
-
     import { mapActions } from 'vuex'
 
     export default {
@@ -103,7 +111,7 @@
             totalCategories: 0,
             page: 1,
             categoriesPerPage: 12,
-            categories: []
+            categories: Array
         },
         data() {
             return {
@@ -118,28 +126,29 @@
                 this.$dialog.confirm({
                     message: this.$i18n.get('info_warning_category_delete'),
                     onConfirm: () => {
-                        this.deleteCategory(categoryId).then(() => {
-                            this.loadCategories();
-                            this.$toast.open({
-                                duration: 3000,
-                                message: this.$i18n.get('info_category_deleted'),
-                                position: 'is-bottom',
-                                type: 'is-secondary',
-                                queue: true
-                            });
-                            for (let i = 0; i < this.selectedCategories.length; i++) {
-                                if (this.selectedCategories[i].id === this.categoryId)
-                                    this.selectedCategories.splice(i, 1);
-                            }
-                        }).catch(() =>
-                            this.$toast.open({
-                                duration: 3000,
-                                message: this.$i18n.get('info_error_deleting_category'),
-                                position: 'is-bottom',
-                                type: 'is-danger',
-                                queue: true
+                        this.deleteCategory(categoryId)
+                            .then(() => {
+                                this.$toast.open({
+                                    duration: 3000,
+                                    message: this.$i18n.get('info_category_deleted'),
+                                    position: 'is-bottom',
+                                    type: 'is-secondary',
+                                    queue: true
+                                });
+                                for (let i = 0; i < this.selectedCategories.length; i++) {
+                                    if (this.selectedCategories[i].id === this.categoryId)
+                                        this.selectedCategories.splice(i, 1);
+                                }
                             })
-                        );
+                            .catch(() => {
+                                this.$toast.open({
+                                    duration: 3000,
+                                    message: this.$i18n.get('info_error_deleting_category'),
+                                    position: 'is-bottom',
+                                    type: 'is-danger',
+                                    queue: true
+                                });
+                            });
                     }
                 });
             },
@@ -150,7 +159,7 @@
 
                         for (let category of this.selectedCategories) {
                             this.deleteCategory(category.id)
-                                .then((res) => {
+                                .then(() => {
                                     this.loadCategories();
                                     this.$toast.open({
                                         duration: 3000,
@@ -159,7 +168,7 @@
                                         type: 'is-secondary',
                                         queue: false
                                     })
-                                }).catch((err) => {
+                                }).catch(() => {
                                 this.$toast.open({
                                     duration: 3000,
                                     message: this.$i18n.get('info_error_deleting_category'),
@@ -172,8 +181,6 @@
                         this.selectedCategories = [];
                     }
                 });
-            },
-            handleSelectionChange(value) {
             },
             goToCategoryPage(categoryId) {
                 this.$router.push(this.$routerHelper.getCategoryPath(categoryId));

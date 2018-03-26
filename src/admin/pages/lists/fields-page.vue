@@ -1,6 +1,6 @@
 <template>
         <div class="primary-page page-container">
-            <fields-list></fields-list>    
+            <fields-list/>    
         </div>
 </template>
 
