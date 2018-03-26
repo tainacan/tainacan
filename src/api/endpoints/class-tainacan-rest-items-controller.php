@@ -147,7 +147,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 
 		$response = $this->prepare_item_for_response($item, $request);
 
-		return new WP_REST_Response($response, 200);
+		return new WP_REST_Response(apply_filters('tainacan-rest-response', $response, $request), 200);
 	}
 
 	/**
