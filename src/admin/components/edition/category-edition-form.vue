@@ -74,7 +74,9 @@
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'slug')" 
                             :message="$i18n.getHelperMessage('categories', 'slug')"/>
+                    <b-icon :class="{'is-loading': isUpdatingSlug}"/>
                     <b-input
+                            @input="updateSlug()"
                             id="tainacan-text-slug"
                             v-model="form.slug"
                             @focus="clearErrors('slug')"
@@ -284,6 +286,7 @@
 
                         promise.done((result) => {
                             this.form.slug = result.permalink;
+                            this.$console.info(this.form.slug);
                         });
 
                         this.isUpdatingSlug = false;
