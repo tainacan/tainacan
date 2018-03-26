@@ -95,7 +95,8 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'hideempty'    => 'hide_empty',
 			'perpage'      => 'posts_per_page',
 			'paged'        => 'paged',
-			'postin'       => 'post__in'
+			'postin'       => 'post__in',
+			'relation'     => 'relation'
 		];
 
 		$meta_query = [
