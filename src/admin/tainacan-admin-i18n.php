@@ -121,7 +121,8 @@ return [
 	'label_collection_fields'                  => __( 'Collection Fields', 'tainacan' ),
 	'label_collection_filters'                 => __( 'Collection Filters', 'tainacan' ),
 	'label_parent_term'                        => __( 'Parent Term', 'tainacan' ),
-	'label_add_new_term'                       => __( 'Add New Term', 'tainacan' ),
+	'label_new_term'                       	   => __( 'New Term', 'tainacan' ),
+	'label_category_terms'                     => __( 'Category Terms', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
@@ -134,6 +135,7 @@ return [
 	'instruction_image_upload_box'             => __( 'Drop an image here or click to upload.', 'tainacan' ),
 	'instruction_select_a_status'              => __( 'Select a status:', 'tainacan' ),
 	'instruction_select_a_filter_type'         => __( 'Select a filter type:', 'tainacan' ),
+	'instruction_select_a_parent_term'         => __( 'Select a parent term:', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
@@ -163,6 +165,7 @@ return [
 	'info_warning_fields_not_saved'            => __('Are you sure? There are fields not saved, changes will be lost.', 'tainacan'),
     'info_warning_filters_not_saved'           => __('Are you sure? There are filters not saved, changes will be lost.', 'tainacan'),
     'info_no_description_provided'             => __('No description provided.', 'tainacan'),
+    'info_warning_terms_not_saved'             => __('Are you sure? There are terms not saved, changes will be lost.', 'tainacan'),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

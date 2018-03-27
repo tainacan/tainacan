@@ -118,7 +118,6 @@
             },
             mountQuery( search ){
                 let query = []
-                query['search'] = search;
                 if( this.searchFields.length > 0){
                     query['metaquery'] = [];
                     const metaquery = query['metaquery'];
@@ -131,6 +130,8 @@
                     }
 
                     query['metaquery'] = metaquery;
+                } else {
+                    query['search'] = search;
                 }
                 return query;
             }
