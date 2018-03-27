@@ -6,27 +6,23 @@
         
         <b-field 
                 :addons="false"
-                :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
-                :message="formErrors['name'] != undefined ? formErrors['name'] : ''"> 
+                :type="editForm.name == '' ? 'is-danger' : ''" 
+                :message="editForm.name == '' ? $i18n.get('info_name_is_required') : ''"> 
             <label class="label">
                 {{ $i18n.get('label_name') }} 
                 <span 
                         class="required-term-asterisk" 
-                        :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
+                        :class="editForm.name == '' ? 'is-danger' : ''">*</span> 
                 <help-button 
                         :title="$i18n.getHelperTitle('terms', 'name')" 
                         :message="$i18n.getHelperMessage('terms', 'name')"/>
             </label>
             <b-input 
                     v-model="editForm.name" 
-                    name="name" 
-                    @focus="clearErrors('name')"/>
+                    name="name"/>
         </b-field>
 
-        <b-field
-                :addons="false"
-                :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
-                :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
+        <b-field :addons="false">
             <label class="label">
                 {{ $i18n.get('label_description') }}
                 <help-button 
@@ -36,14 +32,10 @@
             <b-input 
                     type="textarea" 
                     name="description" 
-                    v-model="editForm.description" 
-                    @focus="clearErrors('description')" />
+                    v-model="editForm.description"/>
         </b-field>
        
-       <b-field 
-                :addons="false"
-                :type="formErrors['parent_term'] != undefined ? 'is-danger' : ''" 
-                :message="formErrors['parent_term'] != undefined ? formErrors['parent_term'] : ''">
+        <b-field :addons="false">
             <label class="label">
                 {{ $i18n.get('label_parent_term') }} 
                 <help-button 
@@ -51,16 +43,17 @@
                         :message="$i18n.getHelperMessage('terms', 'parent_term')"/>
             </label>
             <b-select
-                id="parent_term_select"
-                v-model="editForm.parent"
-                :placeholder="$i18n.get('instruction_select_a_parent_term')">
+                    id="parent_term_select"
+                    v-model="editForm.parent"
+                    :class="{'is-empty': editForm.parent == 0}"
+                    :placeholder="$i18n.get('instruction_select_a_parent_term')">
                 <option
-                        @focus="clearErrors('label_parent_term')"
                         id="tainacan-select-parent-term"
                         v-for="(parentTerm, index) in parentTermsList"
+                        v-if="editForm.id != parentTerm.id"
                         :key="index"
-                        :value="editForm.parent.id">
-                    {{ parentTerm.name }}
+                        :value="editForm.parent">
+                    {{ parentTerm.name == 0 ? $i18n.get('instruction_select_a_parent_term') : parentTerm.name }}
                 </option>
             </b-select>
         </b-field>
@@ -77,12 +70,12 @@
             <div class="control">
                 <button 
                         class="button is-success" 
-                        type="submit">
+                        type="submit"
+                        :disabled="editForm.name == '' || editForm.name == undefined">
                     {{ $i18n.get('save') }}
                 </button>
             </div>
         </div>
-        <p class="help is-danger">{{ formErrorMessage }}</p>
     </form>
 </template>
 
@@ -95,8 +88,6 @@ export default {
         return {
             editForm: {},
             oldForm: {},
-            formErrors: {},
-            formErrorMessage: '',
             closedByForm: false
         }
     }, 
@@ -113,10 +104,7 @@ export default {
     },
     created() {
         
-        this.editForm = this.editedTerm;
-        this.formErrors = this.editForm.formErrors != undefined ? this.editForm.formErrors : {};
-        this.formErrorMessage = this.editForm.formErrors != undefined ? this.editForm.formErrorMessage : ''; 
-        
+        this.editForm = this.editedTerm;     
         this.oldForm = JSON.parse(JSON.stringify(this.originalTerm));
 
     },
@@ -141,58 +129,45 @@ export default {
         ]),
         saveEdition(term) {
 
-            if (term.term_id == 'new') {
+            if (term.id == 'new') {
                 this.sendTerm({
-                    categoryId: this.categoryId, 
-                    index: this.index, 
-                    name: this.editForm.name,
-                    description: this.editForm.description,
-                    parent: this.editForm.parent
+                        categoryId: this.categoryId, 
+                        index: this.index, 
+                        name: this.editForm.name,
+                        description: this.editForm.description,
+                        parent: this.editForm.parent
                     })
                     .then(() => {
                         this.editForm = {};
-                        this.formErrors = {};
-                        this.formErrorMessage = '';
                         this.closedByForm = true;
+                        this.$console.log("Tudo OK AQUI.");
                         this.$emit('onEditionFinished');
                     })
                     .catch((error) => {
-                        // for (let error of errors.errors) {     
-                        //     for (let attribute of Object.keys(error))
-                        //         this.formErrors[attribute] = error[attribute];
-                        // }
-                        // this.formErrorMessage = errors.error_message;
                         this.$emit('onErrorFound');
                         this.$console.log(error);
-                        // this.editForm.formErrors = this.formErrors;
-                        // this.editForm.formErrorMessage = this.formErrorMessage;
                     });
 
             } else {
   
-                this.updateTerm({categoryId: this.categoryId, termId: term.term_id, index: this.index, options: this.editForm})
+                this.updateTerm({
+                        categoryId: this.categoryId, 
+                        termId: term.id, 
+                        index: this.index, 
+                        name: this.editForm.name,
+                        description: this.editForm.description,
+                        parent: this.editForm.parent
+                    })
                     .then(() => {
                         this.editForm = {};
-                        this.formErrors = {};
-                        this.formErrorMessage = '';
                         this.closedByForm = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((error) => {
-                        // for (let error of errors.errors) {     
-                        //     for (let attribute of Object.keys(error))
-                        //         this.formErrors[attribute] = error[attribute];
-                        // }
-                        // this.formErrorMessage = errors.error_message;
                         this.$emit('onErrorFound');
                         this.$console.log(error);
-                        // this.editForm.formErrors = this.formErrors;
-                        // this.editForm.formErrorMessage = this.formErrorMessage;
                     });
             }
-        },
-        clearErrors(attribute) {
-            this.formErrors[attribute] = undefined;
         },
         cancelEdition() {
             this.closedByForm = true;

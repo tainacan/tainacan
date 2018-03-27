@@ -34,9 +34,8 @@ export const setTerms = (state, terms) => {
     state.terms = terms;
 };
 
-export const deleteTerm = ( state, term ) => {
-    let index = state.terms.findIndex(deletedTerm => deletedTerm.id === term.id);
-
+export const deleteTerm = ( state, termId ) => {
+    let index = state.terms.findIndex(deletedTerm => deletedTerm.id === termId);
     if (index >= 0) {
         state.terms.splice(index, 1);
     }
