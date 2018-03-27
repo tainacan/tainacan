@@ -160,7 +160,6 @@ export const updateTerm = ({ commit }, { categoryId, termId, index, name, descri
         })
             .then( res => {
                 let term = res.data;
-                console.log(term);
                 commit('setSingleTerm', term);
                 resolve( term );
             })

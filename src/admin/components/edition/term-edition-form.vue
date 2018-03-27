@@ -50,10 +50,9 @@
                 <option
                         id="tainacan-select-parent-term"
                         v-for="(parentTerm, index) in parentTermsList"
-                        v-if="editForm.id != parentTerm.id"
                         :key="index"
-                        :value="editForm.parent">
-                    {{ parentTerm.name == 0 ? $i18n.get('instruction_select_a_parent_term') : parentTerm.name }}
+                        :value="parentTerm.id">
+                    {{ parentTerm.name }}
                 </option>
             </b-select>
         </b-field>
@@ -99,7 +98,13 @@ export default {
     },
     computed: {
         parentTermsList() {
-            return this.getTerms();
+            let parentTerms = [];
+            parentTerms.push({name: this.$i18n.get('label_no_parent_term'), id: 0});
+            for (let term of this.getTerms()) {
+                if (term.id != this.editForm.id)
+                    parentTerms.push({id: term.id, name: term.name});
+            }
+            return parentTerms;
         }
     },
     created() {
@@ -140,7 +145,6 @@ export default {
                     .then(() => {
                         this.editForm = {};
                         this.closedByForm = true;
-                        this.$console.log("Tudo OK AQUI.");
                         this.$emit('onEditionFinished');
                     })
                     .catch((error) => {

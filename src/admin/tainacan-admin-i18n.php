@@ -123,6 +123,7 @@ return [
 	'label_parent_term'                        => __( 'Parent Term', 'tainacan' ),
 	'label_new_term'                       	   => __( 'New Term', 'tainacan' ),
 	'label_category_terms'                     => __( 'Category Terms', 'tainacan' ),
+	'label_no_parent_term'                     => __( 'No parent term', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),

@@ -12,7 +12,8 @@
                     'not-sortable-item': term.id == 'new' || term.id == undefined || openedTermId != '' , 
                     'not-focusable-item': openedTermId == term.id
                 }" 
-                v-for="(term, index) in termsList"
+                :style="{'margin-left': (term.depth * 20) + 'px'}"
+                v-for="(term, index) in orderedTermsList"
                 :key="index">
             <span 
                     class="term-name" 
@@ -57,6 +58,9 @@
 
             </div>
         </div>
+        <b-loading 
+                :active.sync="isLoadingTerms" 
+                :can-cancel="false"/>
     </div>
 </template>
 
@@ -77,13 +81,16 @@ export default {
         }
     },
     props: {
-        categoryId: Number
+        categoryId: String
     },
     computed: {
         termsList() {
-            //this.orderedTermsList = new Array();
-            //this.buildOrderedTermsList(0, 0); 
             return this.getTerms();
+        }
+    },
+    watch: {
+        'termsList'() {
+            this.generateOrderedTerms();
         }
     },
     components: {
@@ -117,7 +124,6 @@ export default {
             'deleteTerm'
         ]),
         ...mapGetters('category',[
-
             'getTerms'
         ]),
         addNewTerm() {
@@ -188,7 +194,7 @@ export default {
 
             for (let term of this.termsList) {
 
-                if (term['parent'] != parentId ) {    
+                if (term.parent != parentId ) {    
                     continue;
                 } 
                 
@@ -198,6 +204,11 @@ export default {
                 this.buildOrderedTermsList(term.id, termDepth + 1);
             }
         },
+        generateOrderedTerms() {
+            this.orderedTermsList = new Array();
+            this.buildOrderedTermsList(0, 0);
+            this.$console.log(this.orderedTermsList);
+        }
     },
     created() {
 
@@ -207,6 +218,7 @@ export default {
             .then(() => {
                 // Fill this.form data with current data.
                 this.isLoadingTerms = false;
+                this.generateOrderedTerms();
             })
             .catch((error) => {
                 this.$console.log(error);
