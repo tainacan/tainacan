@@ -32,9 +32,9 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 				'field_type'		=> $type,
 				'exposer_mapping'	=> [
 					'dublin-core' => [
-						'name' => 'title',
-						'label' => 'Title',
-						'URI' => 'http://purl.org/dc/terms/title',
+						'name' => 'language',
+						'label' => 'language',
+						'URI' => 'http://purl.org/dc/terms/language',
 					]
 				]
 			),
@@ -102,6 +102,25 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$data = $response->get_data();
 		
 		$this->assertEquals('TestValues_exposers', $data['dc:title']);
+		
+		$item_exposer_json = json_encode([
+			'exposer-type'       => 'Xml',
+			'exposer-map'       => 'Dublin Core',
+		]);
+		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
+		$request->set_body($item_exposer_json);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data();
+		
+		$xml = new \SimpleXMLElement($data);
+		$rdf = $xml->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_RDF_NAMESPACE);
+		$dc = $rdf->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE);
+		
+		$this->assertEquals('adasdasdsa', $dc->description);
+		$this->assertEquals('TestValues_exposers', $dc->title);
+		
+		//echo $rdf->asXML();
 	}
 }
 
