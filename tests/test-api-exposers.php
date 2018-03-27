@@ -101,7 +101,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
 		
-		$this->assertEquals('TestValues_exposers', $data['dc:title']);
+		$this->assertEquals('TestValues_exposers', $data['dc:language']);
 		
 		$item_exposer_json = json_encode([
 			'exposer-type'       => 'Xml',
@@ -118,7 +118,8 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$dc = $rdf->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE);
 		
 		$this->assertEquals('adasdasdsa', $dc->description);
-		$this->assertEquals('TestValues_exposers', $dc->title);
+		$this->assertEquals('item_teste_Expose', $dc->title);
+		$this->assertEquals('TestValues_exposers', $dc->language);
 		
 		//echo $rdf->asXML();
 	}
