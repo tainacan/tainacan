@@ -248,9 +248,23 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	private function prepare_meta($mapped, $request, $query, $mapped_v, $args){
 		$request_meta_query = $request[$mapped];
 
+		// if the meta/date/taxquery has a root relation
+        if( isset( $request_meta_query['relation']) )
+            $args[ $mapped_v ]['relation'] = $request_meta_query['relation'];
+
 		// If is a multidimensional array (array of array)
 		if($this->contains_array($request_meta_query, $query)) {
 			foreach ( $request_meta_query as $index1 => $a ) {
+
+                // handle core field
+                if( array_key_exists("key", $a) ){
+                    $field = new Tainacan\Entities\Field($a['key']);
+                    if( strpos( $field->get_field_type(), 'Core') !== false ){
+                        // $args[ 'post_title_in' ] = ( is_array( $a['value'] ) ) ? $a['value'] : [$a['value']];
+                        continue;
+                    }
+                }
+
 				foreach ( $query as $mapped_meta => $meta_v ) {
 					if ( isset( $a[ $meta_v ] ) ) {
 						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $meta_v ];
