@@ -10,8 +10,9 @@ class Xml extends Type {
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		$response->set_headers( ['Content-Type: application/xml; charset=' . get_option( 'blog_charset' )] );
-		$xml = new \SimpleXMLElement('<?xml version="1.0"?><data></data>');
-		$xml = $this->array_to_xml($response->get_data(), $xml);
+		$xml = new \SimpleXMLElement(apply_filters('tainacan-exposer-head', '<?xml version="1.0"?><data></data>'));
+		$namespace = apply_filters('tainacan-xml-namespace', null);
+		$this->array_to_xml($response->get_data(), apply_filters('tainacan-xml-root', $xml), $namespace);
 		$response->set_data($xml->asXml());
 		return $response;
 	}
@@ -22,16 +23,16 @@ class Xml extends Type {
 	 * @param \SimpleXMLElement $xml_data
 	 * @return \SimpleXMLElement
 	 */
-	protected function array_to_xml( $data, $xml_data ) {
+	protected function array_to_xml( $data, $xml_data, $namespace = null ) {
 		foreach( $data as $key => $value ) {
 			if( is_numeric($key) ){
 				$key = 'item'.$key; //dealing with <0/>..<n/> issues
 			}
 			if( is_array($value) ) {
-				$subnode = $xml_data->addChild($key);
-				$this->array_to_xml($value, $subnode);
+				$subnode = $xml_data->addChild($key, null, $namespace);
+				$this->array_to_xml($value, $subnode, $namespace);
 			} else {
-				$xml_data->addChild("$key",htmlspecialchars("$value"));
+				$xml_data->addChild($key,htmlspecialchars("$value"), $namespace);
 			}
 		}
 		return $xml_data;
