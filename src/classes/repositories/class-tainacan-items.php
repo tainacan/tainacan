@@ -319,7 +319,7 @@ class Items extends Repository {
      * @param $wp_query
      * @return string
      */
-    public function title_in_posts_where( $where, &$wp_query ) {
+    public function title_in_posts_where( $where, $wp_query ) {
         global $wpdb;
         if ( $post_title_in = $wp_query->get( 'post_title_in' ) ) {
             if(is_array( $post_title_in ) && isset( $post_title_in['value']) ){

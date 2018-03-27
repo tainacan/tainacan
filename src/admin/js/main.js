@@ -1,6 +1,6 @@
 // Main imports
-import Vue from 'vue'
-import Buefy from 'buefy'
+import Vue from 'vue';
+import Buefy from 'buefy';
 
 // Custom elements
 import Text from '../../classes/field-types/text/Text.vue';
@@ -32,11 +32,13 @@ import store from '../../js/store/store'
 import router from './router'
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
 
-// Configure and Register Plugins
+// Changing title of pages
 router.beforeEach((to, from, next) => {
-    document.title = to.meta.title
-    next()
+    document.title = to.meta.title;
+    next();
 });
+
+// Configure and Register Plugins
 Vue.use(Buefy);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
@@ -65,6 +67,7 @@ Vue.component('tainacan-filter-selectbox', FilterSelectbox);
 Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
 Vue.component('tainacan-filter-checkbox', FilterCheckbox);
 Vue.component('tainacan-filter-taginput', FilterTaginput);
+
 /* Others */
 Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
