@@ -28,7 +28,7 @@
                             <option
                                     v-for="(option,index) in options"
                                     :key="index"
-                                    :value="option.term_id"
+                                    :value="option.id"
                                     v-html="setSpaces( option.level ) + option.name"/>
                         </b-select>
                     </b-field>
@@ -94,19 +94,19 @@
                         instance.name = '';
                         instance.parent = 0;
 
-                        if( res.data && res.data.term_id || res.term_id ){
-                            let term_id = ( res.term_id ) ? res.term_id : res.data.term_id;
+                        if( res.data && res.data.id || res.id ){
+                            let id = ( res.id ) ? res.id : res.data.id;
                             let val = this.value;
 
                             if( !Array.isArray( val ) && this.field.field.multiple === 'no' ){
                                 axios.patch(`/item/${this.item_id}/metadata/${this.field_id}`, {
-                                    values: term_id,
+                                    values: id,
                                 }).then(() => {
-                                    instance.$emit('newTerm', term_id);
+                                    instance.$emit('newTerm', id);
                                 })
                             } else {
                                 val = ( val ) ? val : [];
-                                val.push( term_id );
+                                val.push( id );
                                 axios.patch(`/item/${this.item_id}/metadata/${this.field_id}`, {
                                     values: val,
                                 }).then( () => {

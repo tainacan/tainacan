@@ -792,8 +792,8 @@ msgstr ""
 
 #: api/class-tainacan-rest-controller.php:501
 msgid ""
-"Select taxonomy term by. Possible values are term_id, name, slug or "
-"term_taxonomy_id. Default value is term_id."
+"Select taxonomy term by. Possible values are id, name, slug or "
+"term_taxonomy_id. Default value is id."
 msgstr ""
 
 #: api/class-tainacan-rest-controller.php:505

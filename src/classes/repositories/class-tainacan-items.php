@@ -25,6 +25,7 @@ class Items extends Repository {
     protected function __construct()
     {
         parent::__construct();
+        add_filter( 'posts_where', array(&$this, 'title_in_posts_where'), 10, 2 );
     }
 
     public function get_map() {
@@ -311,4 +312,25 @@ class Items extends Repository {
 		return new Entities\Item( wp_trash_post( $args[0] ) );
 	}
 
+    /**
+     * allow wp query filter post by array of titles
+     *
+     * @param $where
+     * @param $wp_query
+     * @return string
+     */
+    public function title_in_posts_where( $where, $wp_query ) {
+        global $wpdb;
+        if ( $post_title_in = $wp_query->get( 'post_title_in' ) ) {
+            if(is_array( $post_title_in ) && isset( $post_title_in['value']) ){
+                $quotes = [];
+                foreach ($post_title_in['value'] as $title) {
+                    $quotes[] = "'" .   esc_sql( $wpdb->esc_like( $title ) ). "'";
+                }
+            }
+
+            $where .= ' '.$post_title_in['relation'].' ' . $wpdb->posts . '.post_title IN ( ' .implode(',', $quotes ) . ')';
+        }
+        return $where;
+    }
 }

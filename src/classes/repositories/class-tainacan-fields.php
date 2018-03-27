@@ -664,6 +664,30 @@ class Fields extends Repository {
 		// Clear the result cache
 		$wpdb->flush();
 
+		$field = new Entities\Field( $field_id );
+
+		// handle core titles
+		if( strpos( $field->get_field_type(), 'Core') !== false ){
+		    $collection = new Entities\Collection( $collection_id );
+		    $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+            $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT');
+            $return = [];
+
+            foreach ($items as $item) {
+                if( strpos( $field->get_field_type(), 'Core_Title')  !== false  ){
+                    $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $item->get_title()  ];
+                } else {
+                    $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $item->get_description()  ];
+                }
+            }
+
+            if (!empty($return)) {
+                $results[] = $return;
+            }
+
+            return $results;
+        }
+
 		$item_post_type = "%%{$collection_id}_item";
 
 		$collection = new Entities\Collection($collection_id);

@@ -1,5 +1,5 @@
-var path = require('path')
-var webpack = require('webpack')
+let path = require('path');
+let webpack = require('webpack');
 
 module.exports = {
     entry:  {
@@ -65,7 +65,10 @@ module.exports = {
     node: {
         fs: 'empty'
     },
-}
+    performance: {
+        hints: false
+    },
+};
 
 if (process.env.NODE_ENV === 'production') {
     module.exports.devtool = 'inline-source-map';
@@ -76,16 +79,16 @@ if (process.env.NODE_ENV === 'production') {
                 NODE_ENV: '"production"'
             }
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            }
-        }),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true
-        })
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false
+        //     }
+        // }),
+        // new webpack.LoaderOptionsPlugin({
+        //     minimize: true
+        // })
     ]);
-    module.exports.resolve.alias = {
-        'vue$': 'vue/dist/vue.min.js'
-    }
+    // module.exports.resolve.alias = {
+    //     'vue$': 'vue/dist/vue.min.js'
+    // }
 }

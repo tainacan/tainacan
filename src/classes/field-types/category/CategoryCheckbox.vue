@@ -9,7 +9,7 @@
                     :key="index"
                     v-model="checked"
                     @input="onChecked(option)"
-                    :native-value="option.term_id"
+                    :native-value="option.id"
                     border>
                 {{ option.name }}
             </b-checkbox>

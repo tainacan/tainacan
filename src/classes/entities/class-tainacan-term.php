@@ -45,6 +45,19 @@ class Term extends Entity {
 		return 'Hello, my name is '. $this->get_name();
 	}
 
+	public function __toArray(){
+		$term_array = parent::__toArray();
+
+		$term_id = $term_array['term_id'];
+
+		unset($term_array['term_id']);
+		unset($term_array['status']);
+
+		$term_array['id'] = $term_id;
+
+		return $term_array;
+	}
+
     // Getters
 
 	/**
