@@ -93,8 +93,13 @@ class Terms extends Repository {
     	unset($defaults['id']);
     	return $defaults;
     }
-    
-    public function insert($term){
+
+	/**
+	 * @param Entities\Entity $term
+	 *
+	 * @return Entities\Entity|Entities\Term
+	 */
+	public function insert($term){
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -104,22 +109,39 @@ class Terms extends Repository {
         }
 
         // save post and get its ID
-        $term_inserted = wp_insert_term( $term->get_name(), $term->get_taxonomy(), [
-            'parent'      => $term->get_parent(),
-            'description' => $term->get_description(),
-        ]);
+	    if(isset($term->WP_Term->term_id)){
+
+        	$args = [];
+		    foreach ($map as $prop => $mapped) {
+			    if ($mapped['map'] != 'termmeta') {
+			    	$get_ = 'get_'. $prop;
+
+				    if( !empty($term->WP_Term->{$mapped['map']}) ){
+				    	$args[$mapped['map']] =  $term->$get_();
+					}
+
+			    }
+		    }
+
+        	$term_saved = wp_update_term( $term->get_id(), $term->get_taxonomy(), $args);
+	    } else {
+		    $term_saved = wp_insert_term( $term->get_name(), $term->get_taxonomy(), [
+			    'parent'      => $term->get_parent(),
+			    'description' => $term->get_description(),
+		    ] );
+	    }
 
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] == 'termmeta') {
-                update_term_meta($term_inserted['term_id'], $prop, wp_slash( $term->get_mapped_property($prop) ));
+                update_term_meta($term_saved['term_id'], $prop, wp_slash( $term->get_mapped_property($prop) ));
             }
         }
         
         do_action('tainacan-insert', $term);
         do_action('tainacan-insert-Term', $term);
-        //var_dump($term);
-		return new Entities\Term($term_inserted['term_id'], $term->get_taxonomy());
+
+		return new Entities\Term($term_saved['term_id'], $term->get_taxonomy());
     }
 
     /**
@@ -178,7 +200,7 @@ class Terms extends Repository {
         }
     }
 
-    public function update($object, $tax_name = null){
+    public function update($object, $args = null){
     	return $this->insert($object);
     }
 
