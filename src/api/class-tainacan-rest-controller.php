@@ -260,7 +260,10 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
                 if( array_key_exists("key", $a) ){
                     $field = new Tainacan\Entities\Field($a['key']);
                     if( strpos( $field->get_field_type(), 'Core') !== false ){
-                        // $args[ 'post_title_in' ] = ( is_array( $a['value'] ) ) ? $a['value'] : [$a['value']];
+                        $args[ 'post_title_in' ] = [
+                            'relation' => ( isset( $request_meta_query['relation']) ) ? $request_meta_query['relation'] : 'AND' ,
+                            'value' => ( is_array( $a['value'] ) ) ? $a['value'] : [$a['value']]
+                        ];
                         continue;
                     }
                 }

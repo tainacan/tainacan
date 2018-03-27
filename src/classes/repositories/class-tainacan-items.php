@@ -322,14 +322,14 @@ class Items extends Repository {
     public function title_in_posts_where( $where, &$wp_query ) {
         global $wpdb;
         if ( $post_title_in = $wp_query->get( 'post_title_in' ) ) {
-            if(is_array( $post_title_in )){
+            if(is_array( $post_title_in ) && isset( $post_title_in['value']) ){
                 $quotes = [];
-                foreach ($post_title_in as $title) {
+                foreach ($post_title_in['value'] as $title) {
                     $quotes[] = "'" .   esc_sql( $wpdb->esc_like( $title ) ). "'";
                 }
             }
 
-            $where .= ' AND ' . $wpdb->posts . '.post_title IN ( ' .implode(',', $quotes ) . ')';
+            $where .= ' '.$post_title_in['relation'].' ' . $wpdb->posts . '.post_title IN ( ' .implode(',', $quotes ) . ')';
         }
         return $where;
     }
