@@ -514,14 +514,28 @@ class Fields extends Repository {
                 'description'   => 'description',
                 'collection_id' => $collection->get_id(),
                 'field_type'    => 'Tainacan\Field_Types\Core_Description',
-                'status'        => 'publish'
+                'status'        => 'publish',
+            	'exposer_mapping'	=> [
+            		'dublin-core' => [
+            			'name'	=> 'description',
+            			'label'	=> __('Description', 'tainacan'),
+            			'URI'	=> 'http://purl.org/dc/terms/description',
+            		]
+            	]
             ],
             'core_title'       => [
                 'name'          => 'Title',
                 'description'   => 'title',
                 'collection_id' => $collection->get_id(),
                 'field_type'    => 'Tainacan\Field_Types\Core_Title',
-                'status'        => 'publish'
+                'status'        => 'publish',
+            	'exposer_mapping'	=> [
+            		'dublin-core' => [
+            			'name'	=> 'title',
+            			'label'	=> __('Title', 'tainacan'),
+            			'URI'	=> 'http://purl.org/dc/terms/title',
+            		]
+            	]
             ]
         ];
 
