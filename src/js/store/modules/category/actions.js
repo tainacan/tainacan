@@ -142,7 +142,7 @@ export const deleteTerm = ({ commit }, { categoryId, termId }) => {
         axios.tainacan.delete(`/taxonomy/${categoryId}/terms/${termId}?permanently=${true}`)
             .then(res => {
                 let term = res.data;
-                commit('deleteTerm', term);
+                commit('deleteTerm', termId);
                 resolve( term );
             })
             .catch(error => {
@@ -151,9 +151,13 @@ export const deleteTerm = ({ commit }, { categoryId, termId }) => {
     });
 };
 
-export const updateTerm = ({ commit }, { categoryId, termId, index, options }) => {
+export const updateTerm = ({ commit }, { categoryId, termId, index, name, description, parent }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch('/taxonomy/' + categoryId + '/terms/' + termId, options)
+        axios.tainacan.patch('/taxonomy/' + categoryId + '/terms/' + termId, {
+            name: name,
+            description: description,
+            parent: parent
+        })
             .then( res => {
                 let term = res.data;
                 console.log(term);
@@ -170,7 +174,7 @@ export const updateTerm = ({ commit }, { categoryId, termId, index, options }) =
 
 export const fetchTerms = ({ commit }, categoryId ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/taxonomy/${categoryId}/terms/`)
+        axios.tainacan.get(`/taxonomy/${categoryId}/terms/?hideempty=0`)
             .then(res => {
                 let terms = res.data;
                 commit('setTerms', terms);
