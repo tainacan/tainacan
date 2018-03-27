@@ -10,7 +10,7 @@
                 <option
                         v-for="(option, index) in options"
                         :key="index"
-                        :value="option.term_id"
+                        :value="option.id"
                         v-html="setSpaces( option.level ) + option.name"/>
             </b-select>
         </div>
