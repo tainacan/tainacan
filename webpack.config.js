@@ -1,5 +1,6 @@
 let path = require('path');
 let webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     entry:  {
@@ -55,7 +56,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.js'
+            'vue$': 'vue/dist/vue.esm.js'
         }
     },
     devServer: {
@@ -79,16 +80,15 @@ if (process.env.NODE_ENV === 'production') {
                 NODE_ENV: '"production"'
             }
         }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false
-        //     }
-        // }),
-        // new webpack.LoaderOptionsPlugin({
-        //     minimize: true
-        // })
+        new UglifyJsPlugin({
+            parallel: true,
+            sourceMap: true,
+        }),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true
+        })
     ]);
-    // module.exports.resolve.alias = {
-    //     'vue$': 'vue/dist/vue.min.js'
-    // }
+    module.exports.resolve.alias = {
+        'vue$': 'vue/dist/vue.min.js'
+    }
 }

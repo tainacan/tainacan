@@ -17,8 +17,6 @@ export default {
             collectionId: Number
         }
     },
-    methods: {
-    },
     components: {
         SecondaryMenu
     },
