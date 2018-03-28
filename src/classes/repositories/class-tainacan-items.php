@@ -26,6 +26,7 @@ class Items extends Repository {
     {
         parent::__construct();
         add_filter( 'posts_where', array(&$this, 'title_in_posts_where'), 10, 2 );
+        add_filter( 'posts_where', array(&$this, 'content_in_posts_where'), 10, 2 );
     }
 
     public function get_map() {
@@ -330,6 +331,28 @@ class Items extends Repository {
             }
 
             $where .= ' '.$post_title_in['relation'].' ' . $wpdb->posts . '.post_title IN ( ' .implode(',', $quotes ) . ')';
+        }
+        return $where;
+    }
+
+    /**
+     * allow wp query filter post by array of content
+     *
+     * @param $where
+     * @param $wp_query
+     * @return string
+     */
+    public function content_in_posts_where( $where, $wp_query ) {
+        global $wpdb;
+        if ( $post_content_in = $wp_query->get( 'post_content_in' ) ) {
+            if(is_array( $post_content_in ) && isset( $post_content_in['value']) ){
+                $quotes = [];
+                foreach ($post_content_in['value'] as $title) {
+                    $quotes[] = "'" .   esc_sql( $wpdb->esc_like( $title ) ). "'";
+                }
+            }
+
+            $where .= ' '.$post_content_in['relation'].' ' . $wpdb->posts . '.post_content IN ( ' .implode(',', $quotes ) . ')';
         }
         return $where;
     }
