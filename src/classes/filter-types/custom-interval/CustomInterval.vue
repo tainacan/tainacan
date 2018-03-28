@@ -5,37 +5,36 @@
                     size="is-small"
                     v-model="date_init"
                     @input="validate_values()"
-                    icon="calendar-today">
-            </b-datepicker>
+                    icon="calendar-today"/>
             <br>
             <b-datepicker
                     size="is-small"
                     v-model="date_end"
                     @input="validate_values()"
                     @focus="isTouched = true"
-                    icon="calendar-today">
-            </b-datepicker>
+                    icon="calendar-today"/>
             <br>
         </div>
-        <div class="columns" v-else>
+        <div 
+                class="columns" 
+                v-else>
             <b-input
                     size="is-small"
                     type="number"
                     @input="validate_values()"
                     class="column"
-                    v-model="value_init">
-            </b-input>
+                    v-model="value_init"/>
             <b-input
                     size="is-small"
                     type="number"
                     @input="validate_values()"
                     @focus="isTouched = true"
                     class="column"
-                    v-model="value_end">
-            </b-input>
+                    v-model="value_end"/>
         </div>
         <div class="field has-text-centered">
-            <b-tag v-if="isValid && !clear"
+            <b-tag 
+                    v-if="isValid && !clear"
                    type="is-primary"
                    size="is-small"
                    closable
@@ -66,7 +65,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
         },
         data(){
@@ -91,7 +90,7 @@
             field_id: [Number], // not required, but overrides the filter field id if is set
             collection_id: [Number], // not required, but overrides the filter field id if is set
             id: '',
-            query: {}
+            query: Object
         },
         methods: {
             // only validate if the first value is higher than first

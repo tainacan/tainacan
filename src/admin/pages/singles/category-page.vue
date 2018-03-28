@@ -16,6 +16,9 @@
                             :to="{ path: $routerHelper.getCategoryEditPath(categoryId)}">
                         {{ $i18n.get('edit') + ' ' + $i18n.get('category') }}
                     </router-link>
+                    <a class="card-footer-item">
+                        Edit terms
+                    </a>
                 </footer>
             </div>
         </div>

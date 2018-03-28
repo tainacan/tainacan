@@ -1,6 +1,6 @@
 // Main imports
-import Vue from 'vue'
-import Buefy from 'buefy'
+import Vue from 'vue';
+import Buefy from 'buefy';
 
 // Custom elements
 import Text from '../../classes/field-types/text/Text.vue';
@@ -30,19 +30,23 @@ import HelpButton from '../components/other/help-button.vue';
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin } from './utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
+
+// Changing title of pages
+router.beforeEach((to, from, next) => {
+    document.title = to.meta.title;
+    next();
+});
 
 // Configure and Register Plugins
-router.beforeEach((to, from, next) => {
-    document.title = to.meta.title
-    next()
-});
+Vue.use(Buefy);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
-Vue.use(Buefy); 
+Vue.use(ConsolePlugin, {visual: false});
 
 // Register Components
+/* Fields */
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
 Vue.component('tainacan-selectbox', Selectbox);
@@ -54,20 +58,19 @@ Vue.component('tainacan-category', Category);
 Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-category', FormCategory);
 Vue.component('tainacan-form-selectbox', FormSelectbox);
-
 Vue.component('tainacan-form-item', TaincanFormItem);
 Vue.component('tainacan-filters-list', TaincanFiltersList);
 
-Vue.component('help-button', HelpButton);
-Vue.component('draggable', draggable);
-
 /* Filters */
-
 Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
 Vue.component('tainacan-filter-selectbox', FilterSelectbox);
 Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
 Vue.component('tainacan-filter-checkbox', FilterCheckbox);
 Vue.component('tainacan-filter-taginput', FilterTaginput);
+
+/* Others */
+Vue.component('help-button', HelpButton);
+Vue.component('draggable', draggable);
 
 new Vue({
     el: '#tainacan-admin-app',

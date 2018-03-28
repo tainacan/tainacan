@@ -1,8 +1,8 @@
 <template>
     <div class="columns is-fullheight">
-        <secondary-menu :id="collectionId"></secondary-menu>
+        <secondary-menu :id="collectionId"/>
         <section class="column is-secondary-content">
-            <router-view class="page-container"></router-view>
+            <router-view class="page-container"/>
         </section>
     </div>
 </template>
@@ -16,8 +16,6 @@ export default {
         return {
             collectionId: Number
         }
-    },
-    methods: {
     },
     components: {
         SecondaryMenu

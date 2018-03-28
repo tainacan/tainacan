@@ -1,24 +1,22 @@
 <template>
     <section
             :listen="setError">
-        <b-field :addons="false"
-                 :type="optionType"
-                 :message="optionMessage"
-        >
+        <b-field 
+                :addons="false"
+                :type="optionType"
+                :message="optionMessage">
             <label class="label">
                 {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-selectbox', 'options')"
-                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')">
-                </help-button>
+                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')"/>
             </label>
             <b-taginput
                     v-model="options"
                     @input="emitValues()"
                     @focus="clear()"
                     icon="label"
-                    :placeholder="$i18n.get('new')">
-            </b-taginput>
+                    :placeholder="$i18n.get('new')"/>
         </b-field>
     </section>
 </template>
@@ -45,12 +43,11 @@
         computed: {
             setError(){
                 if( this.errors && this.errors.options !== '' ){
-                    this.optionType = 'is-danger';
-                    this.optionMessage = this.errors.options;
+                    this.setErrorsAttributes( 'is-danger', this.errors.options )
                 } else {
-                    this.optionType = '';
-                    this.optionMessage = '';
+                    this.setErrorsAttributes( '', '' )
                 }
+                return true;
             }
         },
         methods: {
@@ -62,6 +59,10 @@
                 this.$emit('input',{
                     options: ( this.options.length > 0 ) ? this.options.join('\n') : ''
                 })
+            },
+            setErrorsAttributes( type, message ){
+                this.optionType = type;
+                this.optionMessage = message;
             }
         }
     }

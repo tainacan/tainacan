@@ -19,13 +19,13 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$is_permanently = json_encode(['is_permanently' => false]);
+		$permanently = [ 'permanently' => false ];
 
 		$request_trash = new \WP_REST_Request(
 			'DELETE', $this->namespace . '/taxonomies/' . $taxonomy->get_id()
 		);
 
-		$request_trash->set_body($is_permanently);
+		$request_trash->set_query_params($permanently);
 
 		$this->server->dispatch($request_trash);
 
@@ -36,13 +36,13 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_UnitApiTestCase {
 
 		################ DELETE ###
 
-		$is_permanently = json_encode(['is_permanently' => true]);
+		$permanently = [ 'permanently' => true ];
 
 		$request_delete = new \WP_REST_Request(
 			'DELETE', $this->namespace . '/taxonomies/' . $taxonomy->get_id()
 		);
 
-		$request_delete->set_body($is_permanently);
+		$request_delete->set_query_params($permanently);
 
 		$this->server->dispatch($request_delete);
 
@@ -122,8 +122,10 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$this->assertEquals($taxonomy1->get_name(), $data[1]['name']);
-		$this->assertEquals($taxonomy2->get_name(), $data[0]['name']);
+		$names = [ $data[1]['name'], $data[0]['name']];
+
+		$this->assertContains($taxonomy1->get_name(), $names);
+		$this->assertContains($taxonomy2->get_name(), $names);
 	}
 
 	public function test_update_taxonomy(){

@@ -3,9 +3,9 @@
         <component
                 :is="getComponent()"
                 v-model="valueComponent"
-                :allowNew="allowNew"
+                :allow-new="allowNew"
                 :terms="terms"
-                :options="getOptions(0)"></component>
+                :options="getOptions(0)"/>
         <add-new-term
                 class="add-new-term"
                 v-if="getComponent() !== 'tainacan-category-tag-input' && allowNew"
@@ -14,7 +14,7 @@
                 :item_id="field.item.id"
                 :value="valueComponent"
                 :options="getOptions(0)"
-                @newTerm="reload"></add-new-term>
+                @newTerm="reload"/>
     </div>
 </template>
 <script>
@@ -88,7 +88,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
             },
             getOptions( parent, level = 0 ){ // retrieve only ids
@@ -99,7 +99,7 @@
                             term['level'] = level;
                             result.push( term );
                             const levelTerm =  level + 1;
-                            const children =  this.getOptions( term.term_id, levelTerm);
+                            const children =  this.getOptions( term.id, levelTerm);
                             result = result.concat( children );
                         }
                     }
@@ -110,8 +110,8 @@
               let values = [];
               if( this.value && this.value.length > 0){
                   for( let term of this.value ){
-                      if( term && term.term_id)
-                        values.push(term.term_id);
+                      if( term && term.id)
+                        values.push(term.id);
                   }
               }
 

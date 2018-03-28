@@ -1,15 +1,24 @@
 <template>
-    <div id="tainacan-header" class="level" :class="{'secondary-page': onSecondaryPage}">
+    <div
+            id="tainacan-header" 
+            class="level" 
+            :class="{'secondary-page': onSecondaryPage}">
         <div class="level-left">
             <div class="level-item">
-                <h1 class="has-text-weight-bold is-uppercase has-text-primary"><b-icon size="is-small" :icon="currentIcon"></b-icon>{{pageTitle}}</h1>
+                <h1 class="has-text-weight-bold is-uppercase has-text-primary"><b-icon 
+                        size="is-small" 
+                        :icon="currentIcon"/>{{ pageTitle }}</h1>
                 <nav class="breadcrumbs">
-                    <router-link tag="a" :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                    <span v-for="(pathItem, index) in arrayRealPath" :key="index">
-                        <router-link 
+                    <router-link 
                             tag="a" 
-                            :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
-                                {{ arrayViewPath[index] }}
+                            :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
+                    <span 
+                            v-for="(pathItem, index) in arrayRealPath" 
+                            :key="index">
+                        <router-link 
+                                tag="a" 
+                                :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
+                            {{ arrayViewPath[index] }}
                         </router-link>
                         <span v-if="index != arrayRealPath.length - 1"> > </span>
                     </span>   
@@ -17,8 +26,10 @@
             </div>
         </div>
         <div class="level-right">
-            <a class="level-item" :href="wordpressAdmin">
-                <b-icon icon="close"></b-icon>
+            <a 
+                    class="level-item" 
+                    :href="wordpressAdmin">
+                <b-icon icon="close"/>
             </a>
         </div>
     </div>
@@ -71,17 +82,17 @@ export default {
                         case 'collections':
                             this.fetchCollectionName(this.arrayRealPath[i])
                                 .then(collectionName => this.arrayViewPath.splice(i, 1, collectionName))
-                                .catch((error) => console.log(error));
+                                .catch((error) => this.$console.error(error));
                             break;
                         case 'items':
                             this.fetchItemTitle(this.arrayRealPath[i])
                                 .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
-                                .catch((error) => console.log(error));
+                                .catch((error) => this.$console.error(error));
                             break;
                         case 'categories':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
-                                .catch((error) => console.log(error));
+                                .catch((error) => this.$console.error(error));
                             break;
                     }
                     
@@ -93,7 +104,7 @@ export default {
         }
     },
     watch: {
-        '$route' (to, from) {
+        '$route' (to) {
             this.onSecondaryPage = (to.params.collectionId != undefined);
             this.pageTitle = this.$route.meta.title;
             this.currentIcon = this.$route.meta.icon;

@@ -7,8 +7,8 @@
                 autocomplete
                 :loading="loading"
                 field="label"
-                @typing="search">
-        </b-taginput>
+                @typing="search"/>
+
     </div>
 </template>
 
@@ -18,8 +18,8 @@
 
     export default {
         created(){
+            let collectionId = ( this.field && this.field.field.field_type_options.collection_id ) ? this.field.field.field_type_options.collection_id : this.collection_id;
             if( this.field.value ){
-                let collectionId = ( this.field && this.field.field.field_type_options.collection_id ) ? this.field.field.field_type_options.collection_id : this.collection_id;
                 let query = qs.stringify({ postin: ( Array.isArray( this.field.value ) ) ? this.field.value : [ this.field.value ]  });
 
                 axios.get('/collection/'+collectionId+'/items?' + query)
@@ -29,7 +29,21 @@
                         }
                     })
                     .catch(error => {
-                        console.log(error);
+                        this.$console.log(error);
+                    });
+            }
+
+            if( this.field.field.field_type_options
+                    && this.field.field.field_type_options.search.length > 0){
+                axios.get('/collection/'+ collectionId +'/fields?context=edit')
+                    .then( res => {
+                        for (let item of res.data) {
+                            if( this.field.field.field_type_options.search.indexOf( item.id ) >= 0 )
+                                this.searchFields.push( item );
+                        }
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
                     });
             }
         },
@@ -40,7 +54,10 @@
                 options: [],
                 loading: false,
                 collectionId: 0,
-                inputValue: null
+                inputValue: null,
+                searchFields: [],
+                queryObject: {},
+                itemsFound: []
             }
         },
         props: {
@@ -80,28 +97,43 @@
                 }
 
                 if (query !== '') {
+                    let metaquery = this.mountQuery( query );
                     this.loading = true;
                     this.options = [];
                     let collectionId = ( this.field && this.field.field.field_type_options.collection_id ) ? this.field.field.field_type_options.collection_id : this.collection_id;
-                    axios.get('/collection/'+collectionId+'/items')
+                    axios.get('/collection/'+collectionId+'/items?' + qs.stringify( metaquery ))
                     .then( res => {
-                        let result = [];
                         this.loading = false;
-                        result = res.data.filter(item => {
-                            return item.title.toLowerCase()
-                                .indexOf(query.toLowerCase()) > -1;
-                        });
-
+                        let result = res.data;
                         for (let item of result) {
                             this.options.push({ label: item.title, value: item.id })
                         }
                     })
                     .catch(error => {
-                        console.log(error);
+                        this.$console.log(error);
                     });
                 } else {
                     this.options = [];
                 }
+            },
+            mountQuery( search ){
+                let query = []
+                if( this.searchFields.length > 0){
+                    query['metaquery'] = [];
+                    const metaquery = query['metaquery'];
+                    metaquery['relation'] = 'OR'
+                    for( let index in this.searchFields ){
+                        metaquery[index] = {
+                            key: this.searchFields[index].id,
+                            value: search
+                        }
+                    }
+
+                    query['metaquery'] = metaquery;
+                } else {
+                    query['search'] = search;
+                }
+                return query;
             }
         }
     }

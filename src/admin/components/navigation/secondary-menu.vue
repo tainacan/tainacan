@@ -1,11 +1,25 @@
 <template>
-    <nav id="secondary-menu" role="navigation" :aria-label="$i18n.get('label_collection_menu')" class="column is-sidebar-menu">
+    <nav 
+            id="secondary-menu" 
+            role="navigation" 
+            :aria-label="$i18n.get('label_collection_menu')" 
+            class="column is-sidebar-menu">
         <aside class="menu">
             <div class="menu-header">
-                <ul class="menu-list"><li><router-link tag="a" to="/" target='_blank'>
-                    <b-icon size="is-medium" icon="chevron-left"></b-icon>
-                    <img class="tainacan-logo"  alt="Tainacan Logo" :src="logoHeader"/>
-                </router-link></li></ul> 
+                <ul class="menu-list"><li>
+                    <router-link 
+                            tag="a" 
+                            to="/" 
+                            target='_blank'>
+                        <b-icon 
+                                size="is-medium" 
+                                icon="chevron-left"/>
+                        <img 
+                                class="tainacan-logo" 
+                                alt="Tainacan Logo" 
+                                :src="logoHeader">
+                    </router-link>
+                </li></ul> 
             </div>
 
             <ul class="menu-list">
@@ -15,41 +29,52 @@
                             :placeholder="$i18n.getFrom('items', 'search_items')"
                             type="search"
                             size="is-small"
-                            icon="magnify">
-                        </b-input>
+                            icon="magnify"/>
                     </b-field>
-                    <router-link tag="a" to="">
-                        <b-icon size="is-small" icon="magnify"></b-icon> <span class="menu-text">{{ $i18n.get('advanced_search')}}</span>
+                    <router-link 
+                            tag="a" 
+                            to="">
+                        <b-icon 
+                                size="is-small" 
+                                icon="magnify"/> <span class="menu-text">{{ $i18n.get('advanced_search') }}</span>
                     </router-link>
                 </li>
-                <li class="separator"></li>
+                <li class="separator"/>
                 <li><router-link  
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
                         :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
                         :aria-label="$i18n.get('label_collection_fields')">
-                    <b-icon size="is-small" icon="file-multiple"></b-icon> <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
+                    <b-icon 
+                            size="is-small" 
+                            icon="file-multiple"/> <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
                         :aria-label="$i18n.getFrom('collections','edit_item')">
-                    <b-icon size="is-small" icon="pencil"></b-icon> <span class="menu-text">{{ $i18n.get('edit') }}</span>
+                    <b-icon 
+                            size="is-small" 
+                            icon="pencil"/> <span class="menu-text">{{ $i18n.get('edit') }}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionFieldsPath(id) }" 
                         :class="activeRoute == 'FieldsList' ? 'is-active':''" 
                         :aria-label="$i18n.get('label_collection_fields')">
-                    <b-icon size="is-small" icon="format-list-checks"></b-icon> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
+                    <b-icon 
+                        size="is-small" 
+                        icon="format-list-checks"/> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
                         :aria-label="$i18n.get('label_collection_filters')">
-                    <b-icon size="is-small" icon="filter"></b-icon> <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+                    <b-icon 
+                            size="is-small" 
+                            icon="filter"/> <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                 </router-link></li>
             </ul>
         </aside>
@@ -69,7 +94,7 @@ export default {
         id: Number
     },
     watch: {
-        '$route' (to, from) {
+        '$route' (to) {
             this.activeRoute = to.name;
         }
     },

@@ -4,14 +4,13 @@
                 size="is-small"
                 rounded
                 icon="magnify"
-                :allowNew="allowNew"
+                :allow-new="allowNew"
                 @input="emitChange"
                 v-model="selected"
                 :data="labels"
                 field="label"
                 autocomplete
-                @typing="search">
-        </b-taginput>
+                @typing="search"/>
     </div>
 </template>
 <script>
@@ -23,7 +22,7 @@
             }
         },
         watch: {
-            terms( val ){
+            terms(){
                 this.selectedValues();
             }
         },
@@ -45,20 +44,20 @@
                     });
                     this.labels = [];
                     for( let term of result){
-                        this.labels.push({label: term.name, value: term.term_id})
+                        this.labels.push({label: term.name, value: term.id})
                     }
                 }
             },
             selectedValues(){
                 if( this.value && this.value.length > 0 && this.selected.length === 0){
                     let result = this.terms.filter( ( item ) => {
-                        let id = item.term_id;
+                        let id = item.id;
                         return ( this.value.indexOf( id ) >= 0 )
                     });
 
                     let selected = [];
                     for( let term of result){
-                        selected.push({label: term.name, value: term.term_id})
+                        selected.push({label: term.name, value: term.id})
                     }
                     this.selected = selected;
                 }

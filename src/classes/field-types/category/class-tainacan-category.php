@@ -2,6 +2,10 @@
 
 namespace Tainacan\Field_Types;
 
+use Tainacan\Entities\Field;
+use Tainacan\Entities\Item_Metadata_Entity;
+use Tainacan\Repositories\Fields;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
@@ -44,7 +48,7 @@ class Category extends Field_Type {
     }
 
     /**
-     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
+     * @param $itemMetadata Item_Metadata_Entity The instace of the entity itemMetadata
      * @return string
      */
 
@@ -58,7 +62,7 @@ class Category extends Field_Type {
                                        name="'.$itemMetadata->get_field()->get_name().'"></tainacan-selectbox>';
     }
 	
-	public function validate_options(\Tainacan\Entities\Field $field) {
+	public function validate_options( Field $field) {
 		
 		if ( !in_array($field->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
             return true;
@@ -66,7 +70,7 @@ class Category extends Field_Type {
 		if (empty($this->get_option('taxonomy_id')))
 			return ['taxonomy_id' => __('Please select a category', 'tainacan')];
 		
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		$Tainacan_Fields = Fields::getInstance();
 		
 		$category_fields = $Tainacan_Fields->fetch([
 			'collection_id' => $field->get_collection_id(),
@@ -90,18 +94,18 @@ class Category extends Field_Type {
 		return true;
 		
 	}
-	
+
 	/**
-     * Validate item based on field type categories options
-     *
-     * @param  TainacanEntitiesItem_Metadata_Entity $item_metadata
-     * @return bool Valid or not
-     */
-    public function validate(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+	 * Validate item based on field type categories options
+	 *
+	 * @param Item_Metadata_Entity $item_metadata
+	 *
+	 * @return bool Valid or not
+	 */
+    public function validate( Item_Metadata_Entity $item_metadata) {
         
         $item = $item_metadata->get_item();
-        $field = $item_metadata->get_field();
-		
+
         if ( !in_array($item->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
             return true;
 

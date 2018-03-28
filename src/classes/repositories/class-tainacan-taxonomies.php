@@ -209,9 +209,9 @@ class Taxonomies extends Repository {
     public function delete($args){
 	    $taxonomy_id    = $args[0];
 	    $taxonomy_name  = $args[1];
-	    $is_permanently = $args[2]['is_permanently'];
+	    $permanently    = $args[2];
 
-	    if($is_permanently === true){
+	    if($permanently === true){
 		    $unregistered = unregister_taxonomy($taxonomy_name);
 
 		    if($unregistered instanceof \WP_Error){

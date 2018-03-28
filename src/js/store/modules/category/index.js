@@ -6,6 +6,7 @@ const state = {
     categories: [],
     category: {},
     categoryName: String,
+    terms: []
 };
 
 export default {

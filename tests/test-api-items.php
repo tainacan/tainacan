@@ -93,13 +93,13 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		);
 
 		// Move to trash
-		$delete_permanently = json_encode(['is_permanently' => false]);
+		$delete_permanently = ['permanently' => false];
 
 		$request  = new \WP_REST_Request(
 			'DELETE',
 			$this->namespace . '/items/' . $item1->get_id()
 		);
-		$request->set_body($delete_permanently);
+		$request->set_query_params($delete_permanently);
 
 		$response = $this->server->dispatch($request);
 
@@ -126,13 +126,13 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		);
 
 		// Delete permanently
-		$delete_permanently = json_encode(['is_permanently' => true]);
+		$delete_permanently = ['permanently' => true];
 
 		$request  = new \WP_REST_Request(
 			'DELETE',
 			$this->namespace . '/items/' . $item2->get_id()
 		);
-		$request->set_body($delete_permanently);
+		$request->set_query_params($delete_permanently);
 
 		$response = $this->server->dispatch($request);
 

@@ -1,7 +1,14 @@
 <template>
     <div>
-        <b-field grouped group-multiline>
-            <button v-if="selectedItems.length > 0" class="button field is-danger" @click="deleteSelectedItems()"><span>{{$i18n.get('instruction_delete_selected_items')}} </span><b-icon icon="delete"></b-icon></button>
+        <b-field 
+                grouped 
+                group-multiline>
+                        <button 
+                                v-if="selectedItems.length > 0" 
+                                class="button field is-danger" 
+                                @click="deleteSelectedItems()">
+                            <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
+                        </button>
         </b-field>
         <b-table 
                 ref="itemsTable"
@@ -15,27 +22,44 @@
                 selectable
                 backend-sorting>
             <template slot-scope="props">
-
-                <b-table-column v-for="(column, index) in tableFields"
-                    :key="index"
-                    :label="column.label"
-                    :visible="column.visible"
-                    :width="column.field == 'row_actions' ? 78 : column.field == 'featured_image' ? 55 : undefined ">
-                    
-                    <router-link tag="span" class="clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
+                <b-table-column 
+                        v-for="(column, index) in tableFields"
+                        :key="index"
+                        :label="column.label"
+                        :visible="column.visible"
+                        :width="column.field == 'row_actions' ? 78 : column.field == 'featured_image' ? 55 : undefined ">
+                        
+                    <router-link 
+                            tag="span" 
+                            class="clickable-row" 
+                            :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
                         <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">
-                            {{  showValue( props.row.metadata[column.slug] ) }}
+                            {{ showValue( props.row.metadata[column.slug] ) }}
                         </template>
                     </router-link>
                     
                     <template v-if="column.field == 'featured_image'">
-                        <router-link tag="img" class="table-thumb clickable-row" :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}" :src="props.row[column.slug]"></router-link>
+                        <router-link 
+                                tag="img" 
+                                class="table-thumb clickable-row" 
+                                :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}" 
+                                :src="props.row[column.slug]"/>
                     </template>
                          
                     <template v-if="column.field == 'row_actions'">
                         <!-- <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a> -->
-                        <a id="button-edit" :aria-label="$i18n.getFrom('items','edit_item')" @click="goToItemEditPage(props.row.id)"><b-icon type="is-gray" icon="pencil"></a>
-                        <a id="button-delete" :aria-label="$i18n.get('label_button_delete')" @click="deleteOneItem(props.row.id)"><b-icon type="is-gray" icon="delete"></a>
+                        <a 
+                                id="button-edit" 
+                                :aria-label="$i18n.getFrom('items','edit_item')" 
+                                @click="goToItemEditPage(props.row.id)"><b-icon 
+                                type="is-gray" 
+                                icon="pencil"/></a>
+                        <a 
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click="deleteOneItem(props.row.id)"><b-icon 
+                                type="is-gray" 
+                                icon="delete"/></a>
                     </template>
                 </b-table-column>
 
@@ -46,15 +70,15 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <b-icon
-                                icon="inbox"
-                                size="is-large">
-                            </b-icon>
+                                    icon="inbox"
+                                    size="is-large"/>
                         </p>
-                        <p>{{$i18n.get('info_no_item_created')}}</p>
+                        <p>{{ $i18n.get('info_no_item_created') }}</p>
                         <router-link
-                                    id="button-create" 
-                                    tag="button" class="button is-primary"
-                                    :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
+                                id="button-create" 
+                                tag="button" 
+                                class="button is-primary"
+                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                             {{ $i18n.getFrom('items', 'new_item') }}
                         </router-link>
                     </div>
@@ -65,7 +89,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     name: 'ItemsList',
@@ -76,12 +100,12 @@ export default {
     },
     props: {
         collectionId: Number,
-        tableFields: [],
-        prefTableFields: [],
+        tableFields: Array,
+        prefTableFields: Array,
         totalItems: 0,
         page: 1,
         itemsPerPage: 12,
-        items: [],
+        items: Array,
         isLoading: false
     },
     methods: {
@@ -92,7 +116,7 @@ export default {
             this.$dialog.confirm({
                 message: this.$i18n.get('info_warning_item_delete'),
                 onConfirm: () => {
-                    this.deleteItem(itemId).then((res) => {
+                    this.deleteItem(itemId).then(() => {
                         this.loadItems();
                         this.$toast.open({
                             duration: 3000,
@@ -105,7 +129,7 @@ export default {
                             if (this.selectedItems[i].id == this.itemId)
                                 this.selectedItems.splice(i, 1);
                         }
-                    }).catch(( error ) => {
+                    }).catch(() => {
 
                         this.$toast.open({ 
                             duration: 3000,
@@ -125,7 +149,7 @@ export default {
 
                     for (let item of this.selectedItems) {
                         this.deleteItem(item.id)
-                        .then((res) => {
+                        .then(() => {
                             this.loadItems();
                             this.$toast.open({
                                 duration: 3000,
@@ -135,7 +159,7 @@ export default {
                                 queue: false
                             });
                                                       
-                        }).catch((err) => { 
+                        }).catch(() => { 
                             this.$toast.open({
                                 duration: 3000,
                                 message: this.$i18n.get('info_error_deleting_item'),

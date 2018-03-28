@@ -1,13 +1,15 @@
 <template>
     <div>
-        <div v-for="option,index in options">
+        <div   
+                v-for="(option, index) in options"
+                :key="index">
             <b-checkbox
                     :id="id"
-                    :style="{ paddingLeft: (option.level * 30)  + 'px' }"
+                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
                     :key="index"
                     v-model="checked"
                     @input="onChecked(option)"
-                    :native-value="option.term_id"
+                    :native-value="option.id"
                     border>
                 {{ option.name }}
             </b-checkbox>
@@ -40,7 +42,7 @@
             value: [ Number, String, Array ]
         },
         methods: {
-            onChecked(option) {
+            onChecked() {
                 this.$emit('blur');
                 this.onInput(this.checked)
             },

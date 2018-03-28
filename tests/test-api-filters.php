@@ -84,14 +84,12 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$is_permanently = json_encode([
-			'is_permanently' => false
-		]);
+		$permanently = [ 'permanently' => false ];
 
 		$request = new \WP_REST_Request(
 			'DELETE', $this->namespace . '/filters/' . $filter->get_id());
 
-		$request->set_body($is_permanently);
+		$request->set_query_params($permanently);
 
 		$response = $this->server->dispatch($request);
 
@@ -105,14 +103,12 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 		##### DELETE #####
 
-		$is_permanently = json_encode([
-			'is_permanently' => true
-		]);
+		$permanently = [ 'permanently' => true ];
 
 		$request = new \WP_REST_Request(
 			'DELETE', $this->namespace . '/filters/' . $filter->get_id());
 
-		$request->set_body($is_permanently);
+		$request->set_query_params($permanently);
 
 		$response = $this->server->dispatch($request);
 

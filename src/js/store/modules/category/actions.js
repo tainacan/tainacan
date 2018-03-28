@@ -1,5 +1,6 @@
 import axios from '../../../axios/axios'
 
+// CATEGORIES
 export const createCategory = ({commit}, category) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post('/taxonomies', {
@@ -25,14 +26,17 @@ export const createCategory = ({commit}, category) => {
 
 export const deleteCategory = ({ commit }, categoryId) => {
   return new Promise(( resolve, reject ) => {
-      axios.tainacan.delete(`/taxonomies/${categoryId}`, {
-          'is_permanently': true
-      })
+      axios.tainacan.delete(`/taxonomies/${categoryId}?permanently=${true}`)
           .then(res => {
+              console.info(res);
 
-              resolve( res.data );
+              commit('deleteCategory', res.data);
+
+              resolve( res );
           })
           .catch(error => {
+              console.error(error);
+
               reject( error )
           });
   });
@@ -110,5 +114,73 @@ export const fetchCategoryName = ({ commit }, categoryId) => {
             .catch(error => {
                 reject(error)
             })
+    });
+};
+
+// CATEGORY TERMS
+export const sendTerm = ({commit}, { categoryId, index, name, description, parent }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.post('/taxonomy/' + categoryId + '/terms/', {
+            name: name,
+            description: description,
+            parent: parent
+        })
+            .then( res => {
+                let term = res.data;
+                commit('setSingleTerm', term);
+                resolve( term );
+            })
+            .catch(error => {
+                console.log(error);
+                reject( error );
+            });
+    });
+};
+
+export const deleteTerm = ({ commit }, { categoryId, termId }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.delete(`/taxonomy/${categoryId}/terms/${termId}?permanently=${true}`)
+            .then(res => {
+                let term = res.data;
+                commit('deleteTerm', termId);
+                resolve( term );
+            })
+            .catch(error => {
+                reject( error )
+            });
+    });
+};
+
+export const updateTerm = ({ commit }, { categoryId, termId, index, name, description, parent }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.patch('/taxonomy/' + categoryId + '/terms/' + termId, {
+            name: name,
+            description: description,
+            parent: parent
+        })
+            .then( res => {
+                let term = res.data;
+                commit('setSingleTerm', term);
+                resolve( term );
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error)
+                //reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+    });
+};
+
+export const fetchTerms = ({ commit }, categoryId ) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(`/taxonomy/${categoryId}/terms/?hideempty=0`)
+            .then(res => {
+                let terms = res.data;
+                commit('setTerms', terms);
+                resolve( terms );
+            })
+            .catch(error => {
+                reject( error );
+            });
     });
 };

@@ -2,8 +2,10 @@
     <div class="primary-page page-container-small">
         <div class="sub-header">
             <div class="header-item">
-                <router-link tag="button" class="button is-secondary"
-                            :to="{ path: $routerHelper.getNewCollectionPath() }">
+                <router-link 
+                        tag="button" 
+                        class="button is-secondary"
+                        :to="{ path: $routerHelper.getNewCollectionPath() }">
                     {{ $i18n.getFrom('collections', 'new_item') }}
                 </router-link>
             </div>
@@ -14,12 +16,11 @@
             </aside>
             <div class="column table-container">
                 <collections-list
-                    :isLoading="isLoading"
-                    :totalCollections="totalCollections"
-                    :page="page"
-                    :collectionsPerPage="collectionsPerPage"
-                    :collections="collections">
-                </collections-list>  
+                        :is-loading="isLoading"
+                        :total-collections="totalCollections"
+                        :page="page"
+                        :collections-per-page="collectionsPerPage"
+                        :collections="collections"/>  
                 <!-- Footer -->
                 <div class="table-footer">
                     <div class="shown-items"> 
@@ -32,7 +33,9 @@
                         }} 
                     </div> 
                     <div class="items-per-page">
-                        <b-field horizontal :label="$i18n.get('label_collections_per_page')"> 
+                        <b-field 
+                                horizontal 
+                                :label="$i18n.get('label_collections_per_page')"> 
                             <b-select 
                                     :value="collectionsPerPage"
                                     @input="onChangeCollectionsPerPage" 
@@ -46,13 +49,12 @@
                     </div>
                     <div class="pagination"> 
                         <b-pagination
-                            @change="onPageChange"
-                            :total="totalCollections"
-                            :current.sync="page"
-                            order="is-centered"
-                            size="is-small"
-                            :per-page="collectionsPerPage">
-                        </b-pagination> 
+                                @change="onPageChange"
+                                :total="totalCollections"
+                                :current.sync="page"
+                                order="is-centered"
+                                size="is-small"
+                                :per-page="collectionsPerPage"/> 
                     </div>
                 </div>    
             </div> 
@@ -103,7 +105,7 @@ export default {
                 this.isLoading = false;
                 this.totalCollections = res.total;
             }) 
-            .catch((error) => {
+            .catch(() => {
                 this.isLoading = false;
             });
         },
@@ -126,7 +128,7 @@ export default {
             .then((value) => {
                 this.collectionsPerPage = value;
             })
-            .catch((error) => {
+            .catch(() => {
                 this.$userPrefs.set('collections_per_page', 12, null);
             }); 
     },

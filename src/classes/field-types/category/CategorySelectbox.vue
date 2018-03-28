@@ -5,12 +5,13 @@
                     :id="id"
                     v-model="selected"
                     @input="emitChange()"
-                    :placeholder="$i18n.get('label_select_category')" expanded>
+                    :placeholder="$i18n.get('label_select_category')" 
+                    expanded>
                 <option
-                        v-for="option,index in options"
+                        v-for="(option, index) in options"
                         :key="index"
-                        :value="option.term_id"
-                        v-html="setSpaces( option.level ) + option.name"></option>
+                        :value="option.id"
+                        v-html="setSpaces( option.level ) + option.name"/>
             </b-select>
         </div>
     </div>

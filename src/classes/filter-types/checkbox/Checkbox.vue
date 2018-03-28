@@ -1,7 +1,7 @@
 <template>
     <div class="block">
         <div
-                v-for="option,index in options"
+                v-for="(option, index) in options"
                 :key="index"
                 class="field">
             <b-checkbox
@@ -31,7 +31,7 @@
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.log(error);
                 });
         },
         data(){
@@ -57,7 +57,7 @@
                 let promise = null;
                 this.isLoading = true;
 
-                if ( this.type === 'Tainacan\Field_types\Relationship' ) {
+                if ( this.type === 'Tainacan\\Field_types\\Relationship' ) {
 
                     let collectionTarget = ( this.filter && this.filter.field.field_type_options.collection_id ) ?
                         this.filter.field.field_type_options.collection_id : this.collection_id;
@@ -67,12 +67,12 @@
                     promise = this.getValuesPlainText( this.field );
                 }
 
-                promise.then( data => {
+                promise.then(() => {
                     this.isLoading = false;
                     this.selectedValues()
                 })
                 .catch( error => {
-                    console.log('error select', error );
+                    this.$console.log('error select', error );
                     this.isLoading = false;
                 });
             },

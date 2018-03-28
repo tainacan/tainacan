@@ -1,10 +1,14 @@
 <template>
     <div>
         <div class="primary-page page-container-small">
-            <div class="sub-header" v-if="totalCategories > 0">
+            <div 
+                    class="sub-header" 
+                    v-if="totalCategories > 0">
                 <div class="header-item">
-                    <router-link tag="button" class="button is-secondary"
-                                 :to="{ path: $routerHelper.getNewCategoryPath() }">
+                    <router-link 
+                            tag="button" 
+                            class="button is-secondary"
+                            :to="{ path: $routerHelper.getNewCategoryPath() }">
                         {{ $i18n.get('new') + ' ' + $i18n.get('category') }}
                     </router-link>
                 </div>
@@ -13,14 +17,15 @@
             <div class="columns above-subheader">
                 <div class="column table-container">
                     <categories-list
-                            :isLoading="isLoading"
-                            :totalCategories="totalCategories"
+                            :is-loading="isLoading"
+                            :total-categories="totalCategories"
                             :page="page"
-                            :categoriesPerPage="categoriesPerPage"
-                            :categories="categories">
-                    </categories-list>
+                            :categories-per-page="categoriesPerPage"
+                            :categories="categories"/>
                     <!-- Footer -->
-                    <div class="table-footer" v-if="totalCategories > 0">
+                    <div 
+                            class="table-footer" 
+                            v-if="totalCategories > 0">
                         <div class="shown-items">
                             {{
                                 $i18n.get('info_showing_categories') +
@@ -31,7 +36,9 @@
                             }}
                         </div>
                         <div class="items-per-page">
-                            <b-field horizontal :label="$i18n.get('label_categories_per_page')">
+                            <b-field 
+                                    horizontal 
+                                    :label="$i18n.get('label_categories_per_page')">
                                 <b-select
                                         :value="categoriesPerPage"
                                         @input="onChangeCategoriesPerPage"
@@ -50,8 +57,7 @@
                                     :current.sync="page"
                                     order="is-centered"
                                     size="is-small"
-                                    :per-page="categoriesPerPage">
-                            </b-pagination>
+                                    :per-page="categoriesPerPage"/>
                         </div>
                     </div>
                 </div>
@@ -103,7 +109,7 @@
                         this.isLoading = false;
                         this.totalCategories = res.total;
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.isLoading = false;
                     });
             },
@@ -126,7 +132,7 @@
                 .then((value) => {
                     this.categoriesPerPage = value;
                 })
-                .catch((error) => {
+                .catch(() => {
                     this.$userPrefs.set('categories_per_page', 12, null);
                 });
         },

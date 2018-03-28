@@ -1,8 +1,14 @@
 <template>
     <div>
         <div class="page-container primary-page">
-            <b-tag v-if="category != null && category != undefined" :type="'is-' + getStatusColor(category.status)" v-text="category.status"></b-tag>
-            <form v-if="category != null && category != undefined" class="tainacan-form" label-width="120px">
+            <b-tag
+                    v-if="category != null && category != undefined" 
+                    :type="'is-' + getStatusColor(category.status)" 
+                    v-text="category.status"/>
+            <form 
+                    v-if="category != null && category != undefined" 
+                    class="tainacan-form" 
+                    label-width="120px">
 
                 <!-- Name -------------------------------- -->
                 <b-field
@@ -12,14 +18,12 @@
                         :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'name')" 
-                            :message="$i18n.getHelperMessage('categories', 'name')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('categories', 'name')"/>
                     <b-input
                             id="tainacan-text-name"
                             v-model="form.name"
                             @focus="clearErrors('name')"
-                            @blur="updateSlug()">
-                    </b-input>
+                            @blur="updateSlug()"/>
                 </b-field>
 
                 <!-- Description -------------------------------- -->
@@ -30,14 +34,12 @@
                         :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'description')" 
-                            :message="$i18n.getHelperMessage('categories', 'description')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('categories', 'description')"/>
                     <b-input
                             id="tainacan-text-description"
                             type="textarea"
                             v-model="form.description"
-                            @focus="clearErrors('description')">
-                    </b-input>
+                            @focus="clearErrors('description')"/>
                 </b-field>
 
                 <!-- Status -------------------------------- -->
@@ -48,8 +50,7 @@
                         :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'status')" 
-                            :message="$i18n.getHelperMessage('categories', 'status')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('categories', 'status')"/>
                     <b-select
                             id="tainacan-select-status"
                             v-model="form.status"
@@ -72,14 +73,14 @@
                         :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
                     <help-button 
                             :title="$i18n.getHelperTitle('categories', 'slug')" 
-                            :message="$i18n.getHelperMessage('categories', 'slug')">
-                    </help-button>
+                            :message="$i18n.getHelperMessage('categories', 'slug')"/>
+                    <b-icon :class="{'is-loading': isUpdatingSlug}"/>
                     <b-input
+                            @input="updateSlug()"
                             id="tainacan-text-slug"
                             v-model="form.slug"
                             @focus="clearErrors('slug')"
-                            :disabled="isUpdatingSlug">
-                    </b-input>
+                            :disabled="isUpdatingSlug"/>
                 </b-field>
 
                 <!-- Allow Insert -->
@@ -88,8 +89,7 @@
                         :label="$i18n.get('label_category_allow_new_terms')">
                     <help-button 
                         :title="$i18n.getHelperTitle('categories', 'allow_insert')" 
-                        :message="$i18n.getHelperMessage('categories', 'allow_insert')">
-                    </help-button>
+                        :message="$i18n.getHelperMessage('categories', 'allow_insert')"/>
                     <div class="block" >
                         <b-checkbox
                                 v-model="form.allowInsert"
@@ -100,6 +100,14 @@
                     </div>
                 </b-field>
 
+                <!-- Terms List -->
+                <b-field
+                        :addons="false"
+                        :label="$i18n.get('label_category_terms')">    
+                    <terms-list :category-id="categoryId"/>
+                </b-field>
+
+                <!-- Submit -->
                 <div class="field is-grouped form-submit">
                     <div class="control">
                         <button
@@ -115,31 +123,37 @@
                                 class="button is-success">{{ $i18n.get('save') }}</button>
                     </div>
                 </div>
-                <p class="help is-danger">{{formErrorMessage}}</p>
+                <p class="help is-danger">{{ formErrorMessage }}</p>
             </form>
 
-            <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
+            <b-loading 
+                    :active.sync="isLoadingCategory" 
+                    :can-cancel="false"/>
         </div>
     </div>
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex'
+    import { wpAjax } from "../../js/mixins";
+    import { mapActions, mapGetters } from 'vuex';
+    import TermsList from '../lists/terms-list.vue'
+    import htmlToJSON from 'html-to-json';
 
     export default {
         name: 'CategoryEditionForm',
+        mixins: [ wpAjax ],
         data(){
             return {
                 categoryId: Number,
                 category: null,
-                isLoading: false,
+                isLoadingCategory: false,
                 isUpdatingSlug: false,
                 form: {
                     name: String,
                     status: String,
                     description: String,
                     slug: String,
-                    allowInsert: String,
+                    allowInsert: String
                 },
                 statusOptions: [{
                     value: 'publish',
@@ -155,8 +169,11 @@
                     label: this.$i18n.get('trash')
                 }],
                 editFormErrors: {},
-                formErrorMessage: '',
+                formErrorMessage: ''
             }
+        },
+        components: {
+            TermsList
         },
         methods: {
             ...mapActions('category', [
@@ -166,10 +183,11 @@
                 'fetchOnlySlug',
             ]),
             ...mapGetters('category',[
-                'getCategory'
+                'getCategory',
             ]),
             onSubmit() {
-                this.isLoading = true;
+
+                this.isLoadingCategory = true;
 
                 let data = {
                     categoryId: this.categoryId,
@@ -192,7 +210,7 @@
                         this.form.status = this.category.status;
                         this.allowInsert = this.category.allow_insert;
 
-                        this.isLoading = false;
+                        this.isLoadingCategory = false;
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
 
@@ -206,7 +224,7 @@
                         }
                         this.formErrorMessage = errors.error_message;
 
-                        this.isLoading = false;
+                        this.isLoadingCategory = false;
                     });
             },
             updateSlug(){
@@ -216,43 +234,28 @@
 
                 this.isUpdatingSlug = true;
 
-                let data = {
-                    categoryId: this.categoryId,
-                    name: this.form.name,
-                    description: this.form.description,
-                    //slug: '',
-                    status: 'private',
-                    allowInsert: this.form.allowInsert
-                };
+                this.getSamplePermalink(this.categoryId, this.form.name, this.form.slug)
+                    .then(samplePermalink => {
 
-                console.log(data);
+                        let promise = htmlToJSON.parse(samplePermalink, {
+                            permalink($doc) {
+                                return $doc.find('#editable-post-name-full').text();
+                            }
+                        });
 
-                this.updateCategory(data)
-                    .then(updatedCategory => {
-                        this.category = updatedCategory;
-
-                        console.info(this.category);
-
-                        // Fill this.form data with current data.
-                        this.form.name = this.category.name;
-                        this.form.slug = this.category.slug;
-                        this.form.description = this.category.description;
-                        this.form.status = this.category.status;
-                        this.allowInsert = this.category.allow_insert;
+                        promise.done((result) => {
+                            this.form.slug = result.permalink;
+                            this.$console.info(this.form.slug);
+                        });
 
                         this.isUpdatingSlug = false;
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
                     })
                     .catch(errors => {
-                        for (let error of errors.errors) {
-                            for (let attribute of Object.keys(error)) {
-                                this.editFormErrors[attribute] = error[attribute];
-                            }
-                        }
-                        this.formErrorMessage = errors.error_message;
+                        this.$console.error(errors);
 
-                        this.isLoading = false;
+                        this.isUpdatingSlug = false;
                     });
 
             },
@@ -272,7 +275,7 @@
             },
             createNewCategory() {
                 // Puts loading on Draft Category creation
-                this.isLoading = true;
+                this.isLoadingCategory = true;
 
                 // Creates draft Category
                 let data = {
@@ -298,11 +301,10 @@
                         // Pre-fill status with publish to incentivate it
                         this.form.status = 'publish';
 
-                        this.isLoading = false;
+                        this.isLoadingCategory = false;
 
-                    }
-                )
-                    .catch(error => console.log(error));
+                    })
+                    .catch(error => this.$console.error(error));
             },
             clearErrors(attribute) {
                 this.editFormErrors[attribute] = undefined;
@@ -312,7 +314,7 @@
             },
             labelNewTerms(){
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
-            },
+            }
         },
         created(){
 
@@ -320,7 +322,7 @@
                 this.createNewCategory();
             } else if (this.$route.fullPath.split("/").pop() === "edit") {
 
-                this.isLoading = true;
+                this.isLoadingCategory = true;
 
                 // Obtains current category ID from URL
                 this.pathArray = this.$route.fullPath.split("/").reverse();
@@ -336,11 +338,10 @@
                     this.form.status = this.category.status;
                     this.form.allowInsert = this.category.allow_insert;
 
-                    this.isLoading = false;
+                    this.isLoadingCategory = false;
                 });
             }
         }
-
     }
 </script>
 

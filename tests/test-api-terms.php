@@ -97,7 +97,8 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		);
 
 		$new_attributes = json_encode([
-			'name' => 'Trap'
+			'name' => 'Trap',
+			'user' => 7
 		]);
 
 		$request = new \WP_REST_Request(
@@ -112,6 +113,7 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 
 		$this->assertNotEquals('Rock', $data['name']);
 		$this->assertEquals('Trap', $data['name']);
+		$this->assertEquals(7, $data['user']);
 
 		$this->assertEquals($taxonomy->get_db_identifier(), $data['taxonomy']);
 	}

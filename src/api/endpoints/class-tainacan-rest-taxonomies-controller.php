@@ -58,9 +58,9 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 					'args'                => array(
-						'body_args' => array(
-							'description' => __('To delete permanently, in body you can pass \'is_permanently\' as true. By default this will only trash collection'),
-							'default'     => 'false'
+						'permanently' => array(
+							'description' => __('To delete permanently, you can pass \'permanently\' as true. By default this will only trash collection'),
+							'default'     => 'false',
 						),
 					)
 				),
@@ -164,22 +164,14 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function delete_item( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];
-
-		if(empty($request->get_body())){
-			return new WP_REST_Response([
-				'error_message' => __('Body can not be empty.', 'tainacan'),
-				'body'          => $request->get_body()
-			], 400);
-		}
-
-		$is_permanently = json_decode($request->get_body(), true);
+		$permanently = $request['permanently'];
 
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
 		if(!empty($taxonomy)) {
 			$taxonomy_name = $taxonomy->get_db_identifier();
 
-			$args = [ $taxonomy_id, $taxonomy_name, $is_permanently ];
+			$args = [ $taxonomy_id, $taxonomy_name, $permanently ];
 
 			$deleted = $this->taxonomy_repository->delete( $args );
 
