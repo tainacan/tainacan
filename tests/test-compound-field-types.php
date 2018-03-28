@@ -98,9 +98,6 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 		
 		global $wpdb;
 		
-		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
-		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->posts WHERE parent = {$field->get_id()}"));
-		
 		$compoundValue = $compoundItem->get_value();
 		
 		$this->assertTrue( is_array($compoundValue), 'value of a compound should return array' );
@@ -115,15 +112,6 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 		
 		$this->assertEquals( 'Red', $compoundValue[$field_child1->get_id()]->get_value() , 'First element of value should have "Red" value' );
 		$this->assertEquals( 'Blue', $compoundValue[$field_child2->get_id()]->get_value() , 'Second element of value should have "Blue" value' );
-		
-		// pq ele tem o ->get_meta_id() e aí ele sabe direitinho quem ele é
-		// 
-		// entao era so dar um ->insert($compoundValue[0])
-		
-		//var_dump($compoundValue[0]->get_field()->get_id());
-		//var_dump($field_child2->get_id());
-		//var_dump($field_child1->get_id());
-		//var_dump($field->get_id());
 		
     }
 	
@@ -206,9 +194,6 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 		$item_metadata1 = $Tainacan_Item_Metadata->insert($item_metadata1);
 		
 		
-		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
-		
-		
 		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $field_child2, null, $item_metadata1->get_parent_meta_id());
 		$item_metadata->set_value('Blue');
 		
@@ -216,7 +201,6 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 
 		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 		
-		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
 		
 		// Second Instance
 		$item_metadata3 = new \Tainacan\Entities\Item_Metadata_Entity($i, $field_child1);
@@ -227,9 +211,6 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 		$item_metadata3 = $Tainacan_Item_Metadata->insert($item_metadata3);
 		
 		
-		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
-		
-		
 		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $field_child2, null, $item_metadata3->get_parent_meta_id());
 		$item_metadata->set_value('Yellow');
 		
@@ -237,8 +218,6 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 
 		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 		
-		
-		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
 		
 		
 		$compoundItem = new \Tainacan\Entities\Item_Metadata_Entity($i, $field);
@@ -266,14 +245,6 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 		
 		$this->assertEquals( 'Green', $compoundValue[1][$field_child1->get_id()]->get_value() , 'First element of value should have "Red" value' );
 		$this->assertEquals( 'Yellow', $compoundValue[1][$field_child2->get_id()]->get_value() , 'Second element of value should have "Blue" value' );
-		// pq ele tem o ->get_meta_id() e aí ele sabe direitinho quem ele é
-		// 
-		// entao era so dar um ->insert($compoundValue[0])
-		
-		//var_dump($compoundValue[0]->get_field()->get_id());
-		//var_dump($field_child2->get_id());
-		//var_dump($field_child1->get_id());
-		//var_dump($field->get_id());
 		
     }
 	

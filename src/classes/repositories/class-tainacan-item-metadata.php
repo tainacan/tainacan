@@ -45,25 +45,19 @@ class Item_Metadata extends Repository {
 					update_metadata_by_mid( 'post', $item_metadata->get_meta_id(), wp_slash( $item_metadata->get_value() ) );
 				} else {
 					
+					/**
+					 * When we are adding a field that is child of another, this means it is inside a compound field 
+					 *
+					 * In that case, if the Item_Metadata object is not set with a meta_id, it means we want to create a new one 
+					 * and not update an existing. This is the case of a multiple compound field.
+					 */
 					if ( $item_metadata->get_field()->get_parent() > 0 && is_null($item_metadata->get_meta_id()) ) {
 						$added_meta_id = add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+						$added_compound = $this->add_compound_value($item_metadata, $added_meta_id);
 					} else {
-						$added_meta_id = update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+						update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
 					}
 					
-					// update_post_meta returns meta ID on addition and true on update
-					
-				}
-				
-				// handle fields inside Compound fields when adding a new meta value
-				
-				//var_dump($item_metadata->get_field()->get_parent());
-				//var_dump($item_metadata->get_parent_meta_id());
-				//var_dump($item_metadata->get_value());
-				//die;
-				
-				if ( ( $item_metadata->get_field()->get_parent() > 0 || $item_metadata->get_parent_meta_id() > 0 ) && is_int($added_meta_id)) {
-					$added_compound = $this->add_compound_value($item_metadata, $added_meta_id);
 				}
 				
 	        } else {
@@ -145,7 +139,6 @@ class Item_Metadata extends Repository {
 		if (is_object($current_value))
 		 	$current_value = $current_value->meta_value;
 			
-		//var_dump($current_value); die;
 		if ( !is_array($current_value) )
 			$current_value = [];
 		

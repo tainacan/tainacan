@@ -36,6 +36,19 @@ class Compound extends Field_Type {
     public function form(){
 
     }
+	
+	
+	public function validate_options( Field $field ) {
+		
+		// TODO: You cant have a multiple field inside a compound field (except category)
+		// 
+		// TODO: You cant have a Category field inside a multiple compound field
+		
+		return true;
+	}
+	
+	
+	
 
     
 }
