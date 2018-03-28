@@ -13,7 +13,7 @@
                     'not-focusable-item': openedTermId == term.id
                 }" 
                 :style="{'margin-left': (term.depth * 20) + 'px'}"
-                v-for="(term, index) in termsList"
+                v-for="(term, index) in orderedTermsList"
                 :key="index">
             <span 
                     class="term-name" 
@@ -191,7 +191,8 @@ export default {
         },
         buildOrderedTermsList(parentId, termDepth) {
 
-            for (let term of this.termsList) {
+            for (let i = 1; i < this.termsList.length; i++) {
+                let term = this.termsList[i];
 
                 if (term.parent != parentId ) {    
                     continue;
@@ -206,7 +207,6 @@ export default {
         generateOrderedTerms() {
             this.orderedTermsList = new Array();
             this.buildOrderedTermsList(0, 0);
-            this.$console.log(this.orderedTermsList);
         }
     },
     created() {
