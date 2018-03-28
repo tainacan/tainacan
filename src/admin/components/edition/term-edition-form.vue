@@ -107,11 +107,9 @@ export default {
             return parentTerms;
         }
     },
-    created() {
-        
+    created() {  
         this.editForm = this.editedTerm;     
         this.oldForm = JSON.parse(JSON.stringify(this.originalTerm));
-
     },
     beforeDestroy() {
         if (this.closedByForm) {
@@ -153,16 +151,15 @@ export default {
                     });
 
             } else {
-  
                 this.updateTerm({
                         categoryId: this.categoryId, 
-                        termId: term.id, 
+                        termId: this.editForm.id, 
                         index: this.index, 
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.editForm.parent
                     })
-                    .then(() => {
+                    .then((res) => {
                         this.editForm = {};
                         this.closedByForm = true;
                         this.$emit('onEditionFinished');

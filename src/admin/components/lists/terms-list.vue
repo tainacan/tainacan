@@ -13,7 +13,7 @@
                     'not-focusable-item': openedTermId == term.id
                 }" 
                 :style="{'margin-left': (term.depth * 20) + 'px'}"
-                v-for="(term, index) in orderedTermsList"
+                v-for="(term, index) in termsList"
                 :key="index">
             <span 
                     class="term-name" 
@@ -72,7 +72,6 @@ export default {
     name: 'TermsList',
     data(){
         return {
-            // Terms related
             isLoadingTerms: false,
             formWithErrors: '',
             openedTermId: '',
@@ -89,7 +88,7 @@ export default {
         }
     },
     watch: {
-        'termsList'() {
+        termsList() {
             this.generateOrderedTerms();
         }
     },
@@ -182,12 +181,12 @@ export default {
                 this.termsList.splice(index, 1);
             }      
             this.formWithErrors = '';
-            delete this.editForms[this.openedTermId];
+            this.$delete(this.editForms, this.openedTermId);
             this.openedTermId = '';
         },
         onTermEditionCanceled() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedTermId];
+            this.$delete(this.editForms, this.openedTermId);
             this.openedTermId = '';
         },
         buildOrderedTermsList(parentId, termDepth) {
@@ -251,7 +250,7 @@ export default {
         min-height: 40px;
         display: block; 
         position: relative;
-        cursor: grab;
+        //cursor: grab;
         
         .handle {
             padding-right: 6em;

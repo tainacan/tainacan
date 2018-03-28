@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 // CATEGORIES
 export const setCategory = (state, category) => {
     state.category = category;
