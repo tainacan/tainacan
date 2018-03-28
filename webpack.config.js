@@ -12,7 +12,6 @@ module.exports = {
         publicPath: './src/assets/',
         filename: '[name]-components.js'
     },
-    devtool: 'eval-source-map',
     module: {
         rules: [
             {
@@ -59,12 +58,10 @@ module.exports = {
             'vue$': 'vue/dist/vue.esm.js'
         }
     },
-    devServer: {
-        historyApiFallback: true,
-        noInfo: true
-    },
     node: {
-        fs: 'empty'
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
     },
     performance: {
         hints: false
@@ -72,7 +69,7 @@ module.exports = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = 'inline-source-map';
+    module.exports.devtool = ''; //'eval-source-map'; // Add it to use vue dev tools
     // http://vue-loader.vuejs.org/en/workflow/production.html
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
@@ -82,7 +79,7 @@ if (process.env.NODE_ENV === 'production') {
         }),
         new UglifyJsPlugin({
             parallel: true,
-            sourceMap: true,
+            sourceMap: false, //Changes to true to use vue dev tools
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true

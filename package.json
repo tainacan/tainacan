@@ -4,22 +4,17 @@
   "author": "Eduardo <eduardo.humberto1992@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack --mode development --open --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --mode production --progress --hide-modules"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "buefy": "^0.6.3",
     "bulma": "^0.6.2",
-    "fs": "0.0.1-security",
     "html-to-json": "^0.6.0",
     "mdi": "^2.1.99",
     "moment": "^2.21.0",
-    "net": "^1.0.2",
     "node-sass": "^4.7.2",
-    "qs": "^6.5.1",
     "sass-loader": "^6.0.6",
-    "tls": "0.0.1",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
     "vuedraggable": "^2.16.0",
