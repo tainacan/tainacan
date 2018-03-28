@@ -131,7 +131,6 @@ export const sendTerm = ({commit}, { categoryId, index, name, description, paren
                 resolve( term );
             })
             .catch(error => {
-                console.log(error);
                 reject( error );
             });
     });
@@ -160,12 +159,10 @@ export const updateTerm = ({ commit }, { categoryId, termId, index, name, descri
         })
             .then( res => {
                 let term = res.data;
-                console.log(term);
                 commit('setSingleTerm', term);
                 resolve( term );
             })
             .catch(error => {
-                console.log(error);
                 reject(error)
                 //reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });

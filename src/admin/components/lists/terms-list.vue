@@ -12,7 +12,8 @@
                     'not-sortable-item': term.id == 'new' || term.id == undefined || openedTermId != '' , 
                     'not-focusable-item': openedTermId == term.id
                 }" 
-                v-for="(term, index) in termsList"
+                :style="{'margin-left': (term.depth * 20) + 'px'}"
+                v-for="(term, index) in orderedTermsList"
                 :key="index">
             <span 
                     class="term-name" 
@@ -57,6 +58,9 @@
 
             </div>
         </div>
+        <b-loading 
+                :active.sync="isLoadingTerms" 
+                :can-cancel="false"/>
     </div>
 </template>
 
@@ -68,7 +72,6 @@ export default {
     name: 'TermsList',
     data(){
         return {
-            // Terms related
             isLoadingTerms: false,
             formWithErrors: '',
             openedTermId: '',
@@ -77,13 +80,16 @@ export default {
         }
     },
     props: {
-        categoryId: Number
+        categoryId: String
     },
     computed: {
         termsList() {
-            //this.orderedTermsList = new Array();
-            //this.buildOrderedTermsList(0, 0); 
             return this.getTerms();
+        }
+    },
+    watch: {
+        termsList() {
+            this.generateOrderedTerms();
         }
     },
     components: {
@@ -117,7 +123,6 @@ export default {
             'deleteTerm'
         ]),
         ...mapGetters('category',[
-
             'getTerms'
         ]),
         addNewTerm() {
@@ -176,19 +181,20 @@ export default {
                 this.termsList.splice(index, 1);
             }      
             this.formWithErrors = '';
-            delete this.editForms[this.openedTermId];
+            this.$delete(this.editForms, this.openedTermId);
             this.openedTermId = '';
         },
         onTermEditionCanceled() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedTermId];
+            this.$delete(this.editForms, this.openedTermId);
             this.openedTermId = '';
         },
         buildOrderedTermsList(parentId, termDepth) {
 
-            for (let term of this.termsList) {
+            for (let i = 1; i < this.termsList.length; i++) {
+                let term = this.termsList[i];
 
-                if (term['parent'] != parentId ) {    
+                if (term.parent != parentId ) {    
                     continue;
                 } 
                 
@@ -198,6 +204,10 @@ export default {
                 this.buildOrderedTermsList(term.id, termDepth + 1);
             }
         },
+        generateOrderedTerms() {
+            this.orderedTermsList = new Array();
+            this.buildOrderedTermsList(0, 0);
+        }
     },
     created() {
 
@@ -207,6 +217,7 @@ export default {
             .then(() => {
                 // Fill this.form data with current data.
                 this.isLoadingTerms = false;
+                this.generateOrderedTerms();
             })
             .catch((error) => {
                 this.$console.log(error);
@@ -239,7 +250,7 @@ export default {
         min-height: 40px;
         display: block; 
         position: relative;
-        cursor: grab;
+        //cursor: grab;
         
         .handle {
             padding-right: 6em;

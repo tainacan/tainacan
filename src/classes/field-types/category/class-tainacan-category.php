@@ -23,7 +23,6 @@ class Category extends Field_Type {
         ]);
 
         $this->set_form_component('tainacan-form-category');
-        // TODO: Set component depending on options. If multiple is checkbox. if single, select. etc.
         $this->set_component('tainacan-category');
     }
 

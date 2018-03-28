@@ -127,7 +127,7 @@
             </form>
 
             <b-loading 
-                    :active.sync="isLoading" 
+                    :active.sync="isLoadingCategory" 
                     :can-cancel="false"/>
         </div>
     </div>

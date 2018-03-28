@@ -82,5 +82,11 @@ Cypress.Commands.add('loginByUI', () => {
   })
 
 Cypress.Commands.add('clearDB', () => {
+  cy.contains('WPress').click()
+  cy.get('#default-api-namespace').clear()
+  cy.get('#default-api-namespace').type('tainacan/v2')
+  cy.get('#default-db-prefix').clear()
+  cy.get('#default-db-prefix').type('wptests_')
+  cy.get('#submit').click()
   cy.request('POST', '/wp-json/tainacan/v2/database')
 })

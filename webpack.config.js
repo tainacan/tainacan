@@ -1,5 +1,6 @@
 let path = require('path');
 let webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     entry:  {
@@ -11,7 +12,6 @@ module.exports = {
         publicPath: './src/assets/',
         filename: '[name]-components.js'
     },
-    devtool: 'eval-source-map',
     module: {
         rules: [
             {
@@ -55,15 +55,13 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.js'
+            'vue$': 'vue/dist/vue.esm.js'
         }
     },
-    devServer: {
-        historyApiFallback: true,
-        noInfo: true
-    },
     node: {
-        fs: 'empty'
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
     },
     performance: {
         hints: false
@@ -71,7 +69,7 @@ module.exports = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = 'inline-source-map';
+    module.exports.devtool = ''; //'eval-source-map'; // Add it to use vue dev tools
     // http://vue-loader.vuejs.org/en/workflow/production.html
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
@@ -79,16 +77,15 @@ if (process.env.NODE_ENV === 'production') {
                 NODE_ENV: '"production"'
             }
         }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false
-        //     }
-        // }),
-        // new webpack.LoaderOptionsPlugin({
-        //     minimize: true
-        // })
+        new UglifyJsPlugin({
+            parallel: true,
+            sourceMap: false, //Changes to true to use vue dev tools
+        }),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true
+        })
     ]);
-    // module.exports.resolve.alias = {
-    //     'vue$': 'vue/dist/vue.min.js'
-    // }
+    module.exports.resolve.alias = {
+        'vue$': 'vue/dist/vue.min.js'
+    }
 }

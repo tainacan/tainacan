@@ -52,7 +52,9 @@
     export default {
         name: 'TainacanFormItem',
         props: {
-            field: Object
+            field: {
+                type: Object
+            }
         },
         data(){
             return {
