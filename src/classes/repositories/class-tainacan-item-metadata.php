@@ -44,8 +44,15 @@ class Item_Metadata extends Repository {
 				if (is_int($item_metadata->get_meta_id())) {
 					update_metadata_by_mid( 'post', $item_metadata->get_meta_id(), wp_slash( $item_metadata->get_value() ) );
 				} else {
+					
+					if ( $item_metadata->get_field()->get_parent() > 0 && is_null($item_metadata->get_meta_id()) ) {
+						$added_meta_id = add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+					} else {
+						$added_meta_id = update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+					}
+					
 					// update_post_meta returns meta ID on addition and true on update
-					$added_meta_id = update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+					
 				}
 				
 				// handle fields inside Compound fields when adding a new meta value
@@ -87,7 +94,7 @@ class Item_Metadata extends Repository {
 			$new_entity->set_meta_id($added_meta_id);
 		}
 		
-		return $new_entity;
+		return $new_entity;	
 		
     }
 
@@ -282,7 +289,7 @@ class Item_Metadata extends Repository {
 				$post_meta_object = get_metadata_by_mid( 'post', $id );
 				if ( is_object($post_meta_object) ) {
 					$field = new Entities\Field($post_meta_object->meta_key);
-					$return_value[] = new Entities\Item_Metadata_Entity( $item, $field, $id, $compund_meta_id );
+					$return_value[$field->get_id()] = new Entities\Item_Metadata_Entity( $item, $field, $id, $compund_meta_id );
 				}
 				
 			}

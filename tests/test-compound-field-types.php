@@ -98,7 +98,7 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 		
 		global $wpdb;
 		
-		var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
+		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
 		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->posts WHERE parent = {$field->get_id()}"));
 		
 		$compoundValue = $compoundItem->get_value();
@@ -106,17 +106,169 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 		$this->assertTrue( is_array($compoundValue), 'value of a compound should return array' );
 		$this->assertEquals( 2, sizeof($compoundValue), 'value should have 2 item metadata' );
 		
-		$this->assertTrue( $compoundValue[0] instanceof \Tainacan\Entities\Item_Metadata_Entity , 'First element of value should be an item metadata entity' );
-		$this->assertTrue( $compoundValue[1] instanceof \Tainacan\Entities\Item_Metadata_Entity , 'Second element of value should be an item metadata entity' );
+		$this->assertTrue( isset($compoundValue[$field_child1->get_id()]), 'First element of value must be set' );
+		$this->assertTrue( isset($compoundValue[$field_child2->get_id()]), 'Second element of value must be set' );
 		
-		//var_dump($compoundValue);
-		$metas = [];
-		foreach ($compoundValue as $val) {
-			$metas[$val->get_field()->get_id()] = $val->get_value();
-		}
+		$this->assertTrue( $compoundValue[$field_child1->get_id()] instanceof \Tainacan\Entities\Item_Metadata_Entity , 'First element of value should be an item metadata entity' );
+		$this->assertTrue( $compoundValue[$field_child2->get_id()] instanceof \Tainacan\Entities\Item_Metadata_Entity , 'Second element of value should be an item metadata entity' );
 		
-		$this->assertEquals( 'Red', $metas[$field_child1->get_id()] , 'First element of value should have "Red" value' );
-		$this->assertEquals( 'Blue', $metas[$field_child2->get_id()] , 'Second element of value should have "Blue" value' );
+		
+		$this->assertEquals( 'Red', $compoundValue[$field_child1->get_id()]->get_value() , 'First element of value should have "Red" value' );
+		$this->assertEquals( 'Blue', $compoundValue[$field_child2->get_id()]->get_value() , 'Second element of value should have "Blue" value' );
+		
+		// pq ele tem o ->get_meta_id() e aí ele sabe direitinho quem ele é
+		// 
+		// entao era so dar um ->insert($compoundValue[0])
+		
+		//var_dump($compoundValue[0]->get_field()->get_id());
+		//var_dump($field_child2->get_id());
+		//var_dump($field_child1->get_id());
+		//var_dump($field->get_id());
+		
+    }
+	
+	function test_multiple_compound_field_types() {
+
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+        $field = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'meta',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Compound',
+				'status'	 => 'publish',
+				'multiple'   => 'yes'
+	        ),
+	        true
+        );
+        
+        $field_child1 = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'meta2',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Text',
+				'status'	 => 'publish',
+				'parent' 	 => $field->get_id(),
+	        ),
+	        true
+        );
+		
+		$field_child2 = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'meta3',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Text',
+				'status'	 => 'publish',
+				'parent' 	 => $field->get_id(),
+	        ),
+	        true
+        );
+        
+        
+        $i = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'         => 'item test',
+				'description'   => 'adasdasdsa',
+				'collection'    => $collection,
+				'status'		   => 'publish',
+			),
+			true
+		);
+	    
+		global $wpdb;
+		
+		
+		
+		
+		// First Instance
+		$item_metadata1 = new \Tainacan\Entities\Item_Metadata_Entity($i, $field_child1);
+		$item_metadata1->set_value('Red');
+		
+		$item_metadata1->validate();
+
+		$item_metadata1 = $Tainacan_Item_Metadata->insert($item_metadata1);
+		
+		
+		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
+		
+		
+		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $field_child2, null, $item_metadata1->get_parent_meta_id());
+		$item_metadata->set_value('Blue');
+		
+		$item_metadata->validate();
+
+		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
+		
+		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
+		
+		// Second Instance
+		$item_metadata3 = new \Tainacan\Entities\Item_Metadata_Entity($i, $field_child1);
+		$item_metadata3->set_value('Green');
+		
+		$item_metadata3->validate();
+
+		$item_metadata3 = $Tainacan_Item_Metadata->insert($item_metadata3);
+		
+		
+		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
+		
+		
+		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $field_child2, null, $item_metadata3->get_parent_meta_id());
+		$item_metadata->set_value('Yellow');
+		
+		$item_metadata->validate();
+
+		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
+		
+		
+		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
+		
+		
+		$compoundItem = new \Tainacan\Entities\Item_Metadata_Entity($i, $field);
+		
+		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
+		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->posts WHERE parent = {$field->get_id()}"));
+		
+		$compoundValue = $compoundItem->get_value();
+		
+		$this->assertTrue( is_array($compoundValue), 'value of a compound should return array' );
+		$this->assertEquals( 2, sizeof($compoundValue), 'value should have 2 values' );
+		
+		$this->assertTrue( is_array($compoundValue[0]), 'value of a compound should return array' );
+		$this->assertTrue( is_array($compoundValue[1]), 'value of a compound should return array' );
+		
+		$this->assertTrue( isset($compoundValue[0][$field_child1->get_id()]), 'First element of value must be set' );
+		$this->assertTrue( isset($compoundValue[1][$field_child2->get_id()]), 'Second element of value must be set' );
+		
+		$this->assertTrue( $compoundValue[0][$field_child1->get_id()] instanceof \Tainacan\Entities\Item_Metadata_Entity , 'First element of value should be an item metadata entity' );
+		$this->assertTrue( $compoundValue[1][$field_child2->get_id()] instanceof \Tainacan\Entities\Item_Metadata_Entity , 'Second element of value should be an item metadata entity' );
+		
+		
+		$this->assertEquals( 'Red', $compoundValue[0][$field_child1->get_id()]->get_value() , 'First element of value should have "Red" value' );
+		$this->assertEquals( 'Blue', $compoundValue[0][$field_child2->get_id()]->get_value() , 'Second element of value should have "Blue" value' );
+		
+		$this->assertEquals( 'Green', $compoundValue[1][$field_child1->get_id()]->get_value() , 'First element of value should have "Red" value' );
+		$this->assertEquals( 'Yellow', $compoundValue[1][$field_child2->get_id()]->get_value() , 'Second element of value should have "Blue" value' );
+		// pq ele tem o ->get_meta_id() e aí ele sabe direitinho quem ele é
+		// 
+		// entao era so dar um ->insert($compoundValue[0])
 		
 		//var_dump($compoundValue[0]->get_field()->get_id());
 		//var_dump($field_child2->get_id());
