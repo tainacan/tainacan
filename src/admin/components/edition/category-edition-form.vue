@@ -1,134 +1,137 @@
 <template>
     <div>
         <div class="page-container primary-page">
-            <b-tag
-                    v-if="category != null && category != undefined" 
-                    :type="'is-' + getStatusColor(category.status)" 
-                    v-text="category.status"/>
-            <form 
-                    v-if="category != null && category != undefined" 
-                    class="tainacan-form" 
-                    label-width="120px">
+            <b-tabs v-model="activeTab">
 
-                <!-- Name -------------------------------- -->
-                <b-field
-                        :addons="false"
-                        :label="$i18n.get('label_name')"
-                        :type="editFormErrors['name'] != undefined ? 'is-danger' : ''"
-                        :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
-                    <help-button 
-                            :title="$i18n.getHelperTitle('categories', 'name')" 
-                            :message="$i18n.getHelperMessage('categories', 'name')"/>
-                    <b-input
-                            id="tainacan-text-name"
-                            v-model="form.name"
-                            @focus="clearErrors('name')"
-                            @blur="updateSlug()"/>
-                </b-field>
+                <b-tab-item :label="$i18n.get('category')">
+                    <b-tag
+                            v-if="category != null && category != undefined" 
+                            :type="'is-' + getStatusColor(category.status)" 
+                            v-text="category.status"/>
+                    <form 
+                            v-if="category != null && category != undefined" 
+                            class="tainacan-form" 
+                            label-width="120px">
 
-                <!-- Description -------------------------------- -->
-                <b-field
-                        :addons="false"
-                        :label="$i18n.get('label_description')"
-                        :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
-                        :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
-                    <help-button 
-                            :title="$i18n.getHelperTitle('categories', 'description')" 
-                            :message="$i18n.getHelperMessage('categories', 'description')"/>
-                    <b-input
-                            id="tainacan-text-description"
-                            type="textarea"
-                            v-model="form.description"
-                            @focus="clearErrors('description')"/>
-                </b-field>
+                        <!-- Name -------------------------------- -->
+                        <b-field
+                                :addons="false"
+                                :label="$i18n.get('label_name')"
+                                :type="editFormErrors['name'] != undefined ? 'is-danger' : ''"
+                                :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('categories', 'name')" 
+                                    :message="$i18n.getHelperMessage('categories', 'name')"/>
+                            <b-input
+                                    id="tainacan-text-name"
+                                    v-model="form.name"
+                                    @focus="clearErrors('name')"
+                                    @blur="updateSlug()"/>
+                        </b-field>
 
-                <!-- Status -------------------------------- -->
-                <b-field
-                        :addons="false"
-                        :label="$i18n.get('label_status')"
-                        :type="editFormErrors['status'] != undefined ? 'is-danger' : ''"
-                        :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                    <help-button 
-                            :title="$i18n.getHelperTitle('categories', 'status')" 
-                            :message="$i18n.getHelperMessage('categories', 'status')"/>
-                    <b-select
-                            id="tainacan-select-status"
-                            v-model="form.status"
-                            @focus="clearErrors('status')"
-                            :placeholder="$i18n.get('instruction_select_a_status')">
-                        <option
-                                v-for="statusOption in statusOptions"
-                                :key="statusOption.value"
-                                :value="statusOption.value"
-                                :disabled="statusOption.disabled">{{ statusOption.label }}
-                        </option>
-                    </b-select>
-                </b-field>
+                        <!-- Description -------------------------------- -->
+                        <b-field
+                                :addons="false"
+                                :label="$i18n.get('label_description')"
+                                :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
+                                :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('categories', 'description')" 
+                                    :message="$i18n.getHelperMessage('categories', 'description')"/>
+                            <b-input
+                                    id="tainacan-text-description"
+                                    type="textarea"
+                                    v-model="form.description"
+                                    @focus="clearErrors('description')"/>
+                        </b-field>
 
-                <!-- Slug -------------------------------- -->
-                <b-field
-                        :addons="false"
-                        :label="$i18n.get('label_slug')"
-                        :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
-                        :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
-                    <help-button 
-                            :title="$i18n.getHelperTitle('categories', 'slug')" 
-                            :message="$i18n.getHelperMessage('categories', 'slug')"/>
-                    <b-icon :class="{'is-loading': isUpdatingSlug}"/>
-                    <b-input
-                            @input="updateSlug()"
-                            id="tainacan-text-slug"
-                            v-model="form.slug"
-                            @focus="clearErrors('slug')"
-                            :disabled="isUpdatingSlug"/>
-                </b-field>
+                        <!-- Status -------------------------------- -->
+                        <b-field
+                                :addons="false"
+                                :label="$i18n.get('label_status')"
+                                :type="editFormErrors['status'] != undefined ? 'is-danger' : ''"
+                                :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('categories', 'status')" 
+                                    :message="$i18n.getHelperMessage('categories', 'status')"/>
+                            <b-select
+                                    id="tainacan-select-status"
+                                    v-model="form.status"
+                                    @focus="clearErrors('status')"
+                                    :placeholder="$i18n.get('instruction_select_a_status')">
+                                <option
+                                        v-for="statusOption in statusOptions"
+                                        :key="statusOption.value"
+                                        :value="statusOption.value"
+                                        :disabled="statusOption.disabled">{{ statusOption.label }}
+                                </option>
+                            </b-select>
+                        </b-field>
 
-                <!-- Allow Insert -->
-                <b-field 
-                        :addons="false"
-                        :label="$i18n.get('label_category_allow_new_terms')">
-                    <help-button 
-                        :title="$i18n.getHelperTitle('categories', 'allow_insert')" 
-                        :message="$i18n.getHelperMessage('categories', 'allow_insert')"/>
-                    <div class="block" >
-                        <b-checkbox
-                                v-model="form.allowInsert"
-                                true-value="yes"
-                                false-value="no">
-                            {{ labelNewTerms() }}
-                        </b-checkbox>
-                    </div>
-                </b-field>
+                        <!-- Slug -------------------------------- -->
+                        <b-field
+                                :addons="false"
+                                :label="$i18n.get('label_slug')"
+                                :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
+                                :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('categories', 'slug')" 
+                                    :message="$i18n.getHelperMessage('categories', 'slug')"/>
+                            <b-icon :class="{'is-loading': isUpdatingSlug}"/>
+                            <b-input
+                                    @input="updateSlug()"
+                                    id="tainacan-text-slug"
+                                    v-model="form.slug"
+                                    @focus="clearErrors('slug')"
+                                    :disabled="isUpdatingSlug"/>
+                        </b-field>
 
-                <!-- Terms List -->
-                <b-field
-                        :addons="false"
-                        :label="$i18n.get('label_category_terms')">    
-                    <terms-list :category-id="categoryId"/>
-                </b-field>
+                        <!-- Allow Insert -->
+                        <b-field 
+                                :addons="false"
+                                :label="$i18n.get('label_category_allow_new_terms')">
+                            <help-button 
+                                :title="$i18n.getHelperTitle('categories', 'allow_insert')" 
+                                :message="$i18n.getHelperMessage('categories', 'allow_insert')"/>
+                            <div class="block" >
+                                <b-checkbox
+                                        v-model="form.allowInsert"
+                                        true-value="yes"
+                                        false-value="no">
+                                    {{ labelNewTerms() }}
+                                </b-checkbox>
+                            </div>
+                        </b-field>
 
-                <!-- Submit -->
-                <div class="field is-grouped form-submit">
-                    <div class="control">
-                        <button
-                                id="button-cancel-category-creation"
-                                class="button is-outlined"
-                                type="button"
-                                @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-                    </div>
-                    <div class="control">
-                        <button
-                                id="button-submit-category-creation"
-                                @click.prevent="onSubmit"
-                                class="button is-success">{{ $i18n.get('save') }}</button>
-                    </div>
-                </div>
-                <p class="help is-danger">{{ formErrorMessage }}</p>
-            </form>
+                        <!-- Submit -->
+                        <div class="field is-grouped form-submit">
+                            <div class="control">
+                                <button
+                                        id="button-cancel-category-creation"
+                                        class="button is-outlined"
+                                        type="button"
+                                        @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                            </div>
+                            <div class="control">
+                                <button
+                                        id="button-submit-category-creation"
+                                        @click.prevent="onSubmit"
+                                        class="button is-success">{{ $i18n.get('save') }}</button>
+                            </div>
+                        </div>
+                        <p class="help is-danger">{{ formErrorMessage }}</p>
+                    </form>
+                </b-tab-item>
+                
+                <b-tab-item :label="$i18n.get('terms')">
+                    <!-- Terms List -->    
+                    <terms-list :category-id="categoryId"/>       
+                </b-tab-item>
 
-            <b-loading 
-                    :active.sync="isLoadingCategory" 
-                    :can-cancel="false"/>
+                <b-loading 
+                        :active.sync="isLoadingCategory" 
+                        :can-cancel="false"/>
+            </b-tabs>
         </div>
     </div>
 </template>
@@ -145,6 +148,7 @@
         data(){
             return {
                 categoryId: Number,
+                activeTab: 0,
                 category: null,
                 isLoadingCategory: false,
                 isUpdatingSlug: false,

@@ -84,7 +84,7 @@ if (production === true) {
         new webpack.LoaderOptionsPlugin({
             minimize: true
         })
-    ]);
+    ])
 
     module.exports.resolve = {
         alias: {

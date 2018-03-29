@@ -34,7 +34,7 @@
                     name="description" 
                     v-model="editForm.description"/>
         </b-field>
-       
+<!--        
         <b-field :addons="false">
             <label class="label">
                 {{ $i18n.get('label_parent_term') }} 
@@ -56,7 +56,7 @@
                 </option>
             </b-select>
         </b-field>
-
+ -->
         <div class="field is-grouped form-submit">  
             <div class="control">
                 <button 
@@ -96,17 +96,17 @@ export default {
         originalTerm: Object, 
         categoryId: ''
     },
-    computed: {
-        parentTermsList() {
-            let parentTerms = [];
-            parentTerms.push({name: this.$i18n.get('label_no_parent_term'), id: 0});
-            for (let term of this.getTerms()) {
-                if (term.id != this.editForm.id)
-                    parentTerms.push({id: term.id, name: term.name});
-            }
-            return parentTerms;
-        }
-    },
+    // computed: {
+    //     parentTermsList() {
+    //         let parentTerms = [];
+    //         parentTerms.push({name: this.$i18n.get('label_no_parent_term'), id: 0});
+    //         for (let term of this.getTerms()) {
+    //             if (term.id != this.editForm.id)
+    //                 parentTerms.push({id: term.id, name: term.name});
+    //         }
+    //         return parentTerms;
+    //     }
+    // },
     created() {  
         this.editForm = this.editedTerm;     
         this.oldForm = JSON.parse(JSON.stringify(this.originalTerm));
@@ -135,7 +135,7 @@ export default {
             if (term.id == 'new') {
                 this.sendTerm({
                         categoryId: this.categoryId, 
-                        index: this.index, 
+                        index: this.index,
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.editForm.parent

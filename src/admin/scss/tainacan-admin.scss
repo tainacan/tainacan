@@ -156,11 +156,17 @@ html {
 .button {
     border-radius: 6px !important;
     font-weight: normal;
-    height: 30px !important;
     padding: 2px 15px !important;
     margin-top: 0px !important;
     margin-bottom: 0px !important;
 }
+.button.is-small {
+    height: 26px !important;
+}
+.button:not(.is-small):not(.is-medium):not(.is-large) {
+    height: 30px !important;
+}
+
 .select {
     padding-top: 0px !important;
     select {

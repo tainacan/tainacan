@@ -1,11 +1,17 @@
 <template>
     <div>
-        <button
-                class="button is-secondary is-small"
-                type="button"
-                @click="addNewTerm()">
-            {{ $i18n.get('label_new_term') }}
-        </button>
+        <b-field
+                :addons="false"
+                :label="$i18n.get('label_category_terms')">
+            <button
+                    class="button is-secondary is-pulled-right"
+                    type="button"
+                    @click="addNewTerm()">
+                {{ $i18n.get('label_new_term') }}
+            </button>
+        </b-field>
+        <br>
+        <br>
         <div    
                 class="term-item"
                 :class="{
@@ -34,20 +40,27 @@
                     v-if="term.id == undefined"/>
             <span class="controls" >
 
+                <button
+                        class="button is-secondary is-small"
+                        type="button"
+                        @click="addNewChildTerm(term, index)">
+                    {{ $i18n.get('label_new_child') }}
+                </button>
+
                 <a @click.prevent="editTerm(term)">
                     <b-icon 
                             type="is-gray" 
                             icon="pencil"/>
                 </a>
                 <a 
-                    @click.prevent="removeTerm(term)">
+                    @click.prevent="tryToRemoveTerm(term)">
                     <b-icon 
                             type="is-gray" 
                             icon="delete"/>
                 </a>
             </span>
             <div v-if="openedTermId == term.id">
-                <term-edition-form   
+                <term-edition-form 
                         :category-id="categoryId"
                         @onEditionFinished="onTermEditionFinished()"
                         @onEditionCanceled="onTermEditionCanceled()"
@@ -90,6 +103,9 @@ export default {
     watch: {
         termsList() {
             this.generateOrderedTerms();
+        },
+        openedTermId() {
+            this.$console.log(this.openedTermId);
         }
     },
     components: {
@@ -128,12 +144,25 @@ export default {
         addNewTerm() {
             let newTerm = {
                 categoryId: this.categoryId,
-                name: '',
+                name: this.$i18n.get('label_term_without_name'),
                 description: '',
                 parent: 0,
                 id: 'new'
             }
-            this.termsList.push(newTerm);
+            this.orderedTermsList.push(newTerm);
+            this.openedTermId = '';
+            this.editTerm(newTerm);
+        },
+        addNewChildTerm(parent, parentIndex) {
+            let newTerm = {
+                categoryId: this.categoryId,
+                name:  this.$i18n.get('label_term_without_name'),
+                description: '',
+                parent: parent.id,
+                id: 'new'
+            }
+            this.orderedTermsList.splice(parentIndex + 1, 0, newTerm);
+            this.openedTermId = '';
             this.editTerm(newTerm);
         },
         editTerm(term) {
@@ -156,16 +185,36 @@ export default {
                 }     
             }
         },
+        tryToRemoveTerm(term) {
+
+            // Checks if user is deleting a term with unsaved info.
+            if (term.id == 'new' || this.openedTermId == term.id || (this.editForms[term.id] != undefined && !this.editForms[term.id].saved)) {
+                this.$dialog.confirm({
+                    message: this.$i18n.get('info_warning_terms_not_saved'),
+                        onCancel: () => { return },
+                        onConfirm: () => { this.removeTerm(term);},
+                        cancelText: this.$i18n.get('cancel'),
+                        confirmText: this.$i18n.get('continue'),
+                        type: 'is-secondary'
+                    });  
+            } else{
+                this.removeTerm(term);
+            }
+
+        },
         removeTerm(term) {
+
+            // If all checks passed, term can be deleted
             if (term.id == 'new') {
-                let index = this.termsList.findIndex(deletedTerm => deletedTerm.id == 'new');
+                let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
                 if (index >= 0) {
-                    this.termsList.splice(index, 1);
+                    this.orderedTermsList.splice(index, 1);
                 }
                 if (this.openedTermId == 'new')
                     this.openedTermId = '';
                 delete this.editForms['new'];
             } else {
+                
                 this.deleteTerm({categoryId: this.categoryId, termId: term.id})
                 .then(() => {
 
@@ -173,20 +222,38 @@ export default {
                 .catch((error) => {
                     this.$console.log(error);
                 });
-            }
+
+                // Updates parent IDs for orphans
+                for (let orphanTerm of this.termsList) {
+                    if (orphanTerm.parent == term.id) {
+                        this.updateTerm({
+                            categoryId: this.categoryId, 
+                            termId: orphanTerm.id, 
+                            index: '', 
+                            name: orphanTerm.name,
+                            description: orphanTerm.description,
+                            parent: term.parent
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        });
+                    }
+                }
+            }   
         },
         onTermEditionFinished() {   
-            let index = this.termsList.findIndex(deletedTerm => deletedTerm.id == 'new');
+            let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
             if (index >= 0) {
-                this.termsList.splice(index, 1);
+                this.orderedTermsList.splice(index, 1);
             }      
             this.formWithErrors = '';
-            this.$delete(this.editForms, this.openedTermId);
+            delete this.editForms[this.openedTermId];
             this.openedTermId = '';
+            this.$console.log("EMITED");
         },
         onTermEditionCanceled() {
             this.formWithErrors = '';
-            this.$delete(this.editForms, this.openedTermId);
+            delete this.editForms[this.openedTermId];
             this.openedTermId = '';
         },
         buildOrderedTermsList(parentId, termDepth) {
@@ -291,6 +358,9 @@ export default {
                 position: relative;
                 i, i:before { font-size: 20px; }
             }
+            .button {
+                margin-right: 1em;
+            }
         }
 
         &.not-sortable-item, &.not-sortable-item:hover {
@@ -313,19 +383,19 @@ export default {
         }
   
     }
-    .term-item:hover:not(.not-sortable-item) {
-        background-color: $secondary;
-        border-color: $secondary;
-        color: white !important;
+    // .term-item:hover:not(.not-sortable-item) {
+    //     background-color: $secondary;
+    //     border-color: $secondary;
+    //     color: white !important;
 
-        .label-details, .icon, .not-saved {
-            color: white !important;
-        }
+    //     .label-details, .icon, .not-saved {
+    //         color: white !important;
+    //     }
 
-        .grip-icon { 
-            fill: white; 
-        }
-    }
+    //     .grip-icon { 
+    //         fill: white; 
+    //     }
+    // }
 
 </style>
 
