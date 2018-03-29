@@ -35,9 +35,31 @@ class Item_Metadata extends Repository {
 			$this->save_core_field_value($item_metadata);
 		} elseif ($field_type->get_primitive_type() == 'term') {
 			$this->save_terms_field_value($item_metadata);
+		} elseif ($field_type->get_primitive_type() == 'compound') {
+			// do nothing. Compound values are updated when its child fields are updated
+			return $item_metadata;
 		} else {
 			if ($unique) {
-	            update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+				
+				if (is_int($item_metadata->get_meta_id())) {
+					update_metadata_by_mid( 'post', $item_metadata->get_meta_id(), wp_slash( $item_metadata->get_value() ) );
+				} else {
+					
+					/**
+					 * When we are adding a field that is child of another, this means it is inside a compound field 
+					 *
+					 * In that case, if the Item_Metadata object is not set with a meta_id, it means we want to create a new one 
+					 * and not update an existing. This is the case of a multiple compound field.
+					 */
+					if ( $item_metadata->get_field()->get_parent() > 0 && is_null($item_metadata->get_meta_id()) ) {
+						$added_meta_id = add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+						$added_compound = $this->add_compound_value($item_metadata, $added_meta_id);
+					} else {
+						update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+					}
+					
+				}
+				
 	        } else {
 	            delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
 	            
@@ -56,7 +78,18 @@ class Item_Metadata extends Repository {
         do_action('tainacan-insert', $item_metadata);
         do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
 
-        return new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
+        $new_entity = new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
+		
+		if (isset($added_compound) && is_int($added_compound)) {
+			$new_entity->set_parent_meta_id($added_compound);
+		}
+		
+		if (isset($added_meta_id) && is_int($added_meta_id)) {
+			$new_entity->set_meta_id($added_meta_id);
+		}
+		
+		return $new_entity;	
+		
     }
 
 	/**
@@ -93,6 +126,33 @@ class Item_Metadata extends Repository {
 
 
 		}
+	}
+	
+	/**
+	 * 
+	 * @return null|ind the meta id of the created compound metadata
+	 */
+	public function add_compound_value(Entities\Item_Metadata_Entity $item_metadata, $meta_id) {
+		
+		$current_value = get_metadata_by_mid( 'post', $item_metadata->get_parent_meta_id() );
+		
+		if (is_object($current_value))
+		 	$current_value = $current_value->meta_value;
+			
+		if ( !is_array($current_value) )
+			$current_value = [];
+		
+		if ( !in_array( $meta_id, $current_value ) ) {
+			$current_value[] = $meta_id;
+		}
+		
+		if ( $item_metadata->get_parent_meta_id() > 0 ) {
+			update_metadata_by_mid( 'post', $item_metadata->get_parent_meta_id(), $current_value );
+		} elseif ( $item_metadata->get_field()->get_parent() > 0 ) {
+			return add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_parent(), $current_value );
+		}
+		
+		
 	}
 
 	/**
@@ -164,12 +224,73 @@ class Item_Metadata extends Repository {
 				$terms = reset($terms);
 			
 			return $terms;
+		
+		} elseif ($field_type->get_primitive_type() == 'compound') {
+			
+			global $wpdb;
+			$rows = $wpdb->get_results( 
+				$wpdb->prepare("SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item_metadata->get_item()->get_id(), $item_metadata->field->get_id()), 
+				ARRAY_A );
+			
+			$return_value = [];
+			
+			if (is_array($rows)) {
+				
+				foreach ($rows as $row) {
+					$value = $this->extract_compound_value(maybe_unserialize($row['meta_value']), $item_metadata->get_item(), $row['meta_id']);
+					if ( $unique ) {
+						$return_value = $value;
+						break;
+					} else {
+						$return_value[] = $value;
+					}
+				}
+				
+			}
+			
+			return $return_value; 
 			
         } else {
-            return get_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), $unique);
+            if (is_int($item_metadata->get_meta_id())) {
+				$value = get_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
+				if ( is_object($value) && isset( $value->meta_value) ) {
+					return $value->meta_value;
+				}
+			} else {
+				return get_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), $unique);
+			}
+			
         }
         
     }
+	
+	/**
+	 * Transforms the array saved as meta_value with the IDs of post_meta saved as a value for compound fields
+	 * and converts it into an array of Item Metadatada Entitites
+	 *
+	 * @param array $ids The array of post_meta ids
+	 * @param Entities\Item $item The item this post_meta is related to
+	 * @param int $compund_meta_id the meta_id of the parent compound metadata
+	 * @return array An array of Item_Metadata_Entity objects
+	 */
+	private function extract_compound_value(array $ids, Entities\Item $item, $compund_meta_id) {
+		
+		$return_value = [];
+		
+		if (is_array($ids)) { 
+			foreach ($ids as $id) {
+				$post_meta_object = get_metadata_by_mid( 'post', $id );
+				if ( is_object($post_meta_object) ) {
+					$field = new Entities\Field($post_meta_object->meta_key);
+					$return_value[$field->get_id()] = new Entities\Item_Metadata_Entity( $item, $field, $id, $compund_meta_id );
+				}
+				
+			}
+		}
+		
+		return $return_value;
+		
+	}
 
     public function register_post_type() { }
     

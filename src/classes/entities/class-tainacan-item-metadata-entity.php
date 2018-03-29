@@ -16,10 +16,26 @@ class Item_Metadata_Entity extends Entity {
 	 */
 	protected $repository = 'Item_Metadata';
 	
-    function __construct(Item $item, Field $field) {
+	/**
+	 * 
+	 * @param Item   $item    Item Entity
+	 * @param Field  $field   Field Entity
+	 * @param int $meta_id ID for a specific meta row 
+	 */
+    function __construct(Item $item, Field $field, $meta_id = null, $parent_meta_id = null) {
         
         $this->set_item($item);
         $this->set_field($field);
+		
+		if (!is_null($meta_id) && is_int($meta_id)) {
+			$this->set_meta_id($meta_id);
+		}
+		
+		if (!is_null($parent_meta_id) && is_int($parent_meta_id)) {
+			$this->set_parent_meta_id($parent_meta_id);
+		}
+		
+		
     }
 
 	public function  __toString(){
@@ -63,6 +79,39 @@ class Item_Metadata_Entity extends Entity {
     function set_field(Field $field) {
         $this->field = $field;
     }
+	
+	/**
+	 * Set the specific meta ID for this metadata.
+	 *
+	 * When this value is set, get_value() will use it to fetch the value from 
+	 * the post_meta table, instead of considering the item and field IDs
+	 * 
+	 * @param int $meta_id the ID of a specifica post_meta row
+	 */
+	function set_meta_id($meta_id) {
+		if (is_int($meta_id)) {
+			$this->meta_id = $meta_id;
+			return true;
+			// TODO: Should we check here to see if this meta_id is really from this field and item?
+		}
+		return false;
+	}
+	
+	/**
+	 * Set parent_meta_id. Used when a item_metadata is inside a compound Field 
+	 *
+	 * When you have a multiple compound field, this indicates of which instace of the value this item_metadata is attached to
+	 * 
+	 * @param [type] $parent_meta_id [description]
+	 */
+	function set_parent_meta_id($parent_meta_id) {
+		if (is_int($parent_meta_id)) {
+			$this->parent_meta_id = $parent_meta_id;
+			return true;
+			// TODO: Should we check here to see if this meta_id is really from this field and item?
+		}
+		return false;
+	}
     
     /**
      * Return the item
@@ -80,6 +129,24 @@ class Item_Metadata_Entity extends Entity {
      */
     function get_field() {
         return $this->field;
+    }
+	
+	/**
+     * Return the meta_id
+     *
+     * @return Field
+     */
+    function get_meta_id() {
+        return isset($this->meta_id) ? $this->meta_id : null;
+    }
+	
+	/**
+     * Return the meta_id
+     *
+     * @return Field
+     */
+    function get_parent_meta_id() {
+        return isset($this->parent_meta_id) ? $this->parent_meta_id : 0;
     }
     
     /**
@@ -157,10 +224,6 @@ class Item_Metadata_Entity extends Entity {
                 foreach($value as $val) {
                     if (!empty($val))
                         $one_filled = true;
-                    
-                    // TODO: call fieldtype validation
-                    // if (invalid) $valid = false;
-                    
                 }
                 
                 if ($this->is_required() && !$one_filled) {

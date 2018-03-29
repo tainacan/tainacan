@@ -309,6 +309,11 @@ class Item extends Entity {
 					if ( $pos !== false ) {
 						continue;
 					}
+					
+					// skip validation for Compound Fields
+					if ( $itemMetadata->get_field()->get_field_type() == 'Tainacan\Field_Types\Compound' ) {
+						continue;
+					}
 
 					if ( ! $itemMetadata->validate() ) {
 						$errors = $itemMetadata->get_errors();
