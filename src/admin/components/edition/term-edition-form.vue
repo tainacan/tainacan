@@ -159,7 +159,7 @@ export default {
                         description: this.editForm.description,
                         parent: this.editForm.parent
                     })
-                    .then((res) => {
+                    .then(() => {
                         this.editForm = {};
                         this.closedByForm = true;
                         this.$emit('onEditionFinished');

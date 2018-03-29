@@ -118,7 +118,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                     
                 });
         },
-        get(key) {
+        get() {
             return new Promise(( resolve, reject ) => {
                 wpApi.get('/users/me/')
                 .then( res => {

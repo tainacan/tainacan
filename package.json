@@ -4,7 +4,7 @@
   "author": "Eduardo <eduardo.humberto1992@gmail.com>",
   "private": true,
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --mode production --progress --hide-modules"
+    "build": "cross-env NODE_ENV=production webpack --display-error-details --mode production --progress --hide-modules"
   },
   "dependencies": {
     "axios": "^0.18.0",

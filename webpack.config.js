@@ -53,11 +53,6 @@ module.exports = {
 
         ]
     },
-    resolve: {
-        alias: {
-            'vue$': 'vue/dist/vue.esm.js'
-        }
-    },
     node: {
         fs: 'empty',
         net: 'empty',
@@ -68,24 +63,53 @@ module.exports = {
     },
 };
 
-if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = ''; //'eval-source-map'; // Add it to use vue dev tools
-    // http://vue-loader.vuejs.org/en/workflow/production.html
+// Change to false for development mode
+let production = false;
+
+if (production === true) {
+    console.log({'production': production});
+
+    module.exports.devtool = '';
+
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: '"production"'
+                NODE_ENV: JSON.stringify('production')
             }
         }),
         new UglifyJsPlugin({
             parallel: true,
-            sourceMap: false, //Changes to true to use vue dev tools
+            sourceMap: false
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true
         })
     ]);
-    module.exports.resolve.alias = {
-        'vue$': 'vue/dist/vue.min.js'
+
+    module.exports.resolve = {
+        alias: {
+            'vue$': 'vue/dist/vue.min'
+        }
+    }
+} else {
+    console.log({'production': production});
+
+    module.exports.devtool = '';
+
+    module.exports.plugins = [
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify('development')
+            },
+        }),
+    ];
+
+    module.exports.mode = 'development';
+
+    module.exports.resolve = {
+        alias: {
+            //'vue$': 'vue/dist/vue.esm' // uncomment this and comment the above to use vue dev tools (can cause type error)
+            'vue$': 'vue/dist/vue.min'
+        }
     }
 }
