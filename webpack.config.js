@@ -77,13 +77,13 @@ if (process.env.NODE_ENV === 'production') {
                 NODE_ENV: '"production"'
             }
         }),
-        new UglifyJsPlugin({
-            parallel: true,
-            sourceMap: false, //Changes to true to use vue dev tools
-        }),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true
-        })
+        // new UglifyJsPlugin({
+        //     parallel: true,
+        //     sourceMap: false, //Changes to true to use vue dev tools
+        // }),
+        // new webpack.LoaderOptionsPlugin({
+        //     minimize: true
+        // })
     ]);
     module.exports.resolve.alias = {
         'vue$': 'vue/dist/vue.min.js'

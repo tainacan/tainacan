@@ -15,6 +15,8 @@ return [
 	'filter'                                   => __( 'Filter', 'tainacan' ),
 	'category'                                 => __( 'Category', 'tainacan' ),
 	'event'                                    => __( 'Event', 'tainacan' ),
+	'term'                                     => __( 'Term', 'tainacan' ),
+	'terms'                                    => __( 'Terms', 'tainacan' ),
 
 	// Actions
 	'edit'                                     => __( 'Edit', 'tainacan' ),
@@ -122,8 +124,10 @@ return [
 	'label_collection_filters'                 => __( 'Collection Filters', 'tainacan' ),
 	'label_parent_term'                        => __( 'Parent Term', 'tainacan' ),
 	'label_new_term'                       	   => __( 'New Term', 'tainacan' ),
+	'label_new_child'                          => __( 'New Child', 'tainacan' ),
 	'label_category_terms'                     => __( 'Category Terms', 'tainacan' ),
 	'label_no_parent_term'                     => __( 'No parent term', 'tainacan' ),
+	'label_term_without_name'                  => __( 'Term without name', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
@@ -167,6 +171,7 @@ return [
     'info_warning_filters_not_saved'           => __('Are you sure? There are filters not saved, changes will be lost.', 'tainacan'),
     'info_no_description_provided'             => __('No description provided.', 'tainacan'),
     'info_warning_terms_not_saved'             => __('Are you sure? There are terms not saved, changes will be lost.', 'tainacan'),
+    'info_warning_orphan_terms'                => __('Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan'),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),
