@@ -57,14 +57,10 @@ class CSV extends Importer {
     /**
      * @inheritdoc
      */
-    public function get_total_items(){
-        if( isset( $this->total_items ) ){
-            return $this->total_items;
-        } else {
-            $file = new \SplFileObject( $this->tmp_file, 'r' );
-            $file->seek(PHP_INT_MAX);
-            // -1 removing header
-            return $this->total_items = $file->key() - 1;
-        }
+    public function get_total_items_from_source(){
+        $file = new \SplFileObject( $this->tmp_file, 'r' );
+        $file->seek(PHP_INT_MAX);
+        // -1 removing header
+        return $this->total_items = $file->key() - 1;
     }
 }

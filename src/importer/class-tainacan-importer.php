@@ -1,6 +1,7 @@
 <?php
 namespace Tainacan\Importer;
 use Tainacan;
+use Tainacan\Entities;
 
 abstract class Importer {
 
@@ -17,7 +18,7 @@ abstract class Importer {
 	 * 
 	 * @var bool
 	 */
-	public $import_structure_and_mapping = false;
+	protected $import_structure_and_mapping = false;
 	
     /**
      * The collection the items are going to be imported to.
@@ -46,7 +47,7 @@ abstract class Importer {
 	 * The total number of items to be imported.
 	 * @var int
 	 */
-	protected $total_items;
+	private $total_items;
     
 	/**
 	 * THe number of items to be processes in each step
@@ -71,6 +72,11 @@ abstract class Importer {
 	private $options = [];
 	
 	private $default_options = [];
+	
+	private $accpets = [
+		'file' => true,
+		'url'  => false,
+	];
 
     public function __construct() {
         if (!session_id()) {
@@ -113,7 +119,7 @@ abstract class Importer {
     /**
      * @param Tainacan\Entities\Collection $collection
      */
-    public function set_collection( Tainacan\Entities\Collection $collection ){
+    public function set_collection( Entities\Collection $collection ){
         $this->collection = $collection;
     }
 
@@ -219,7 +225,18 @@ abstract class Importer {
      *
      * @return int Total of items
      */
-    abstract public function get_total_items();
+    public function get_total_items() {
+		if ( !isset( $this->total_items ) ) {
+            $this->total_items = $this->get_total_items_from_source();
+		}
+		return $this->total_items;
+	}
+	
+	/**
+	 * Method implemented by the child importer class to return the number of items to be imported
+	 * @return int
+	 */
+	abstract public function get_total_items_from_source();
 	
 	/**
      * Gets the options for this importer, including default values for options
@@ -243,12 +260,55 @@ abstract class Importer {
         return isset($options[$key]) ? $options[$key] : '';
     }
 	
+	/**
+	 * Set the default options values.
+	 *
+	 * Must be called from the __construct method of the child importer class to set default values.
+	 * 
+	 * @param array $options 
+	 */
 	protected function set_default_options($options) {
 		$this->default_options = $options;
 	}
 	
+	/**
+	 * Set the options array
+	 * @param array $options 
+	 */
 	public function set_options($options) {
 		$this->options = $options;
+	}
+	
+	/**
+	 * Adds a new method accepeted by the importer
+	 *
+	 * Current possible methods are file and url
+	 * 
+	 * @param string $method file or url
+	 * @return bool true for success, false if method does not exist
+	 */
+	public function add_import_method($method) {
+		if ( array_key_exists($method, $this->accpets) ) {
+			$this->acceps[$method] = true;
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Removes method accepeted by the importer
+	 *
+	 * Current possible methods are file and url
+	 * 
+	 * @param string $method file or url
+	 * @return bool true for success, false if method does not exist
+	 */
+	public function remove_import_method($method) {
+		if ( array_key_exists($method, $this->accpets) ) {
+			$this->acceps[$method] = false;
+			return true;
+		}
+		return false;
 	}
 	
     /**
@@ -289,7 +349,7 @@ abstract class Importer {
 
         $isUpdate = ( is_array( $this->processed_items ) && isset( $this->processed_items[ $index ] ) )
             ? $this->processed_items[ $index ] : 0;
-        $item = new Tainacan\Entities\Item( $isUpdate );
+        $item = new Entities\Item( $isUpdate );
         $itemMetadataArray = [];
 
         if( !isset( $this->mapping ) ){
@@ -302,8 +362,8 @@ abstract class Importer {
                 $tainacan_field_id = array_search( $field_source, $this->mapping );
                 $field = $Tainacan_Fields->fetch( $tainacan_field_id );
 
-                if( $field instanceof Tainacan\Entities\Field ){
-                    $singleItemMetadata = new Tainacan\Entities\Item_Metadata_Entity( $item, $field);
+                if( $field instanceof Entities\Field ){
+                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $field);
                     $singleItemMetadata->set_value( $values );
                     $itemMetadataArray[] = $singleItemMetadata;
                 }
@@ -311,7 +371,7 @@ abstract class Importer {
             }
         }
 
-        if( !empty( $itemMetadataArray ) && $this->collection instanceof Tainacan\Entities\Collection ){
+        if( !empty( $itemMetadataArray ) && $this->collection instanceof Entities\Collection ){
             $item->set_collection( $this->collection );
 
             if( $item->validate() ){
@@ -359,7 +419,25 @@ abstract class Importer {
      * run the process
      */
     public function run(){
-        $this->process( $this->start );
+        
+		if ( ( !isset($this->collection) || ! $this->collection instanceof Entities\Collection ) && $this->import_structure_and_mapping ) {
+			$new_collection = new Entities\Collection();
+			$new_collection->set_name('New Imported Collection');
+			$new_collection->set_status('publish');
+			$new_collection->validade();
+			$new_collection = \Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
+			
+			$this->set_collection($new_collection);
+			
+			if (!method_exists($this, 'create_fields_and_mapping')) {
+				throw new Exception('Importers with import_structure_and_mapping true must implement create_fields_and_mapping method');
+			}
+			
+			$this->create_fields_and_mapping();
+			
+		}
+		
+		$this->process( $this->start );
 		return sizeof($this->get_processed_items());
     }
 }
