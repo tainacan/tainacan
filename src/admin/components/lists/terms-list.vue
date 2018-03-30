@@ -15,29 +15,27 @@
         <div    
                 class="term-item"
                 :class="{
-                    'not-sortable-item': term.id == 'new' || term.id == undefined || openedTermId != '' , 
-                    'not-focusable-item': openedTermId == term.id
+                    'not-sortable-item': term.opened || !term.saved, 
+                    'not-focusable-item': term.opened
                 }" 
                 :style="{'margin-left': (term.depth * 20) + 'px'}"
                 v-for="(term, index) in orderedTermsList"
-                :key="index">
+                :key="term.id"> 
             <span 
                     class="term-name" 
                     :class="{'is-danger': formWithErrors == term.id }">
-                {{ term.name }}
+                {{ term.saved && !term.opened ? term.name : getUnsavedTermName(term) }}
             </span>
             <span   
                     v-if="term.id != undefined"
                     class="label-details">
                 <span 
                         class="not-saved" 
-                        v-if="(editForms[term.id] != undefined && editForms[term.id].saved != true) || term.id == 'new'"> 
+                        v-if="!term.saved"> 
                     {{ $i18n.get('info_not_saved') }}
                 </span>
             </span>
-            <span 
-                    class="loading-spinner" 
-                    v-if="term.id == undefined"/>
+          
             <span class="controls" >
 
                 <button
@@ -47,7 +45,7 @@
                     {{ $i18n.get('label_new_child') }}
                 </button>
 
-                <a @click.prevent="editTerm(term)">
+                <a @click.prevent="editTerm(term, index)">
                     <b-icon 
                             type="is-gray" 
                             icon="pencil"/>
@@ -59,15 +57,13 @@
                             icon="delete"/>
                 </a>
             </span>
-            <div v-if="openedTermId == term.id">
+            <div v-show="term.opened">
                 <term-edition-form 
                         :category-id="categoryId"
                         @onEditionFinished="onTermEditionFinished()"
-                        @onEditionCanceled="onTermEditionCanceled()"
+                        @onEditionCanceled="onTermEditionCanceled(term)"
                         @onErrorFound="formWithErrors = term.id"
-                        :index="index"
-                        :original-term="term"
-                        :edited-term="editForms[term.id]"/>
+                        :edit-form="term"/>
 
             </div>
         </div>
@@ -87,8 +83,6 @@ export default {
         return {
             isLoadingTerms: false,
             formWithErrors: '',
-            openedTermId: '',
-            editForms: [],
             orderedTermsList: []
         }
     },
@@ -103,9 +97,6 @@ export default {
     watch: {
         termsList() {
             this.generateOrderedTerms();
-        },
-        openedTermId() {
-            this.$console.log(this.openedTermId);
         }
     },
     components: {
@@ -113,11 +104,11 @@ export default {
     },
     beforeRouteUpdate ( to, from, next ) {
         let hasUnsavedForms = false;
-        for (let editForm in this.editForms) {
-            if (!this.editForms[editForm].saved) 
+        for (let term in this.orderedTermsList) {
+            if (!term.saved || term.opened || term.id == 'new') 
                 hasUnsavedForms = true;
         }
-        if ((this.openedTermId != '' && this.openedTermId != undefined) || hasUnsavedForms ) {
+        if (hasUnsavedForms) {
             this.$dialog.confirm({
                 message: this.$i18n.get('info_warning_terms_not_saved'),
                     onConfirm: () => {
@@ -147,11 +138,12 @@ export default {
                 name: this.$i18n.get('label_term_without_name'),
                 description: '',
                 parent: 0,
-                id: 'new'
+                id: 'new',
+                saved: false,
+                depth: 0
             }
             this.orderedTermsList.push(newTerm);
-            this.openedTermId = '';
-            this.editTerm(newTerm);
+            this.editTerm(newTerm, this.orderedTermsList.length - 1);
         },
         addNewChildTerm(parent, parentIndex) {
             let newTerm = {
@@ -159,36 +151,74 @@ export default {
                 name:  this.$i18n.get('label_term_without_name'),
                 description: '',
                 parent: parent.id,
-                id: 'new'
+                id: 'new',
+                saved: false,
+                depth: parent.depth + 1
             }
             this.orderedTermsList.splice(parentIndex + 1, 0, newTerm);
-            this.openedTermId = '';
-            this.editTerm(newTerm);
+            this.editTerm(newTerm, parentIndex + 1);
         },
-        editTerm(term) {
+        editTerm(term, index) {
+     
+            if (!term.opened) {
 
-            // Closing collapse
-            if (this.openedTermId == term.id) {    
-                this.openedTermId = '';
-
-            // Opening collapse
-            } else {
-
-                this.openedTermId = term.id;
-                // First time opening
-                if (this.editForms[this.openedTermId] == undefined) {
-                    this.editForms[this.openedTermId] = JSON.parse(JSON.stringify(term));
-                    this.editForms[this.openedTermId].saved = true;
+                for (let i = 0; i < this.orderedTermsList.length; i++) {
+                    // Checks if other terms are opened
+                    if (term.id != this.orderedTermsList[i].id && this.orderedTermsList[i].opened) {
+                        let otherTerm = this.orderedTermsList[i];
                     
-                    if (term.id == 'new')
-                        this.editForms[this.openedTermId].saved = false;
-                }     
+                        // Checks there's an original version of term (wasn't saved)
+                        let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === otherTerm.id);
+                        if (originalIndex >= 0) {
+                            let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
+                            originalTerm.saved = otherTerm.saved;
+                            originalTerm.opened = otherTerm.opened;
+                            if (JSON.stringify(otherTerm) != JSON.stringify(originalTerm)) {
+                                otherTerm.saved = false;
+                            } else {
+                                otherTerm.saved = true;
+                            }
+                        // A new term is being closed
+                        } else {
+                            otherTerm.saved = false;
+                        }
+                                      
+                        otherTerm.opened = false;
+                        this.orderedTermsList.splice(i, 1, otherTerm);
+                    }
+                }
+            } else {
+                let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === term.id);
+                if (originalIndex >= 0) {
+                    let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
+                    originalTerm.saved = term.saved;
+                    originalTerm.opened = term.opened;
+                    if (JSON.stringify(term) != JSON.stringify(originalTerm)) {
+
+                        term.saved = false;
+                    } else {
+                        term.saved = true;
+                    }
+                } else {
+                    term.saved = false;
+                }
             }
+            
+            term.opened = !term.opened;
+            this.orderedTermsList.splice(index, 1, term);
+        
+        },
+        getOriginalTerm(termId){
+            let index = this.orderedTermsList.findIndex(originalTerm => originalTerm.id == termId);
+            if (index >= 0) {
+                return this.termsList[index];
+            }
+            return null
         },
         tryToRemoveTerm(term) {
 
             // Checks if user is deleting a term with unsaved info.
-            if (term.id == 'new' || this.openedTermId == term.id || (this.editForms[term.id] != undefined && !this.editForms[term.id].saved)) {
+            if (term.id == 'new' || !term.saved || term.opened) {
                 this.$dialog.confirm({
                     message: this.$i18n.get('info_warning_terms_not_saved'),
                         onCancel: () => { return },
@@ -210,9 +240,6 @@ export default {
                 if (index >= 0) {
                     this.orderedTermsList.splice(index, 1);
                 }
-                if (this.openedTermId == 'new')
-                    this.openedTermId = '';
-                delete this.editForms['new'];
             } else {
                 
                 this.deleteTerm({categoryId: this.categoryId, termId: term.id})
@@ -229,7 +256,6 @@ export default {
                         this.updateTerm({
                             categoryId: this.categoryId, 
                             termId: orphanTerm.id, 
-                            index: '', 
                             name: orphanTerm.name,
                             description: orphanTerm.description,
                             parent: term.parent
@@ -242,23 +268,23 @@ export default {
             }   
         },
         onTermEditionFinished() {   
-            let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
-            if (index >= 0) {
-                this.orderedTermsList.splice(index, 1);
-            }      
-            this.formWithErrors = '';
-            delete this.editForms[this.openedTermId];
-            this.openedTermId = '';
-            this.$console.log("EMITED");
+
         },
-        onTermEditionCanceled() {
-            this.formWithErrors = '';
-            delete this.editForms[this.openedTermId];
-            this.openedTermId = '';
+        onTermEditionCanceled(term) {
+
+            let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id == term.id);
+            let canceledIndex = this.orderedTermsList.findIndex(canceledTerm => canceledTerm.id == term.id);
+            if (originalIndex >= 0 && canceledIndex >= 0) {
+                let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
+                this.orderedTermsList.splice(canceledIndex, 1, originalTerm);
+            } else {
+                if (term.id == 'new')
+                    this.removeTerm(term);
+            }
         },
         buildOrderedTermsList(parentId, termDepth) {
 
-            for (let i = 1; i < this.termsList.length; i++) {
+            for (let i = 0; i < this.termsList.length; i++) {
                 let term = this.termsList[i];
 
                 if (term.parent != parentId ) {    
@@ -266,7 +292,14 @@ export default {
                 } 
                 
                 term.depth = termDepth;
-                this.orderedTermsList.push(term);
+                if (this.orderedTermsList[term.id] == undefined ) {
+                    term.opened = false;
+                    term.saved = true ;
+                } else {
+                    term.opened = (this.orderedTermsList[term.id].opened == undefined ? false : this.orderedTermsList[term.id].opened);
+                    term.saved = (this.orderedTermsList[term.id].saved == undefined ? true : this.orderedTermsList[term.id].saved);
+                }
+                this.orderedTermsList.push(JSON.parse(JSON.stringify(term)));
 
                 this.buildOrderedTermsList(term.id, termDepth + 1);
             }
@@ -274,6 +307,13 @@ export default {
         generateOrderedTerms() {
             this.orderedTermsList = new Array();
             this.buildOrderedTermsList(0, 0);
+        },
+        getUnsavedTermName(term) {
+            let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id == term.id);
+            if (originalIndex >= 0)
+                return this.termsList[originalIndex].name;
+            else 
+                return term.name;
         }
     },
     created() {
@@ -297,21 +337,9 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .loading-spinner {
-        animation: spinAround 500ms infinite linear;
-        border: 2px solid #dbdbdb;
-        border-radius: 290486px;
-        border-right-color: transparent;
-        border-top-color: transparent;
-        content: "";
-        display: inline-block;
-        height: 1em; 
-        width: 1em;
-    }
-
     .term-item {
         font-size: 14px;
-        background-color: white;
+        border-left: 1px solid #eee;
         padding: 0.7em 0.9em;
         margin: 4px;
         min-height: 40px;

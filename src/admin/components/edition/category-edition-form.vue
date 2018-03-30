@@ -324,7 +324,7 @@
 
             if (this.$route.fullPath.split("/").pop() === "new") {
                 this.createNewCategory();
-            } else if (this.$route.fullPath.split("/").pop() === "edit") {
+            } else if (this.$route.fullPath.split("/").pop() === "edit" || this.$route.fullPath.split("/").pop() === "terms") {
 
                 this.isLoadingCategory = true;
 
@@ -344,6 +344,9 @@
 
                     this.isLoadingCategory = false;
                 });
+
+                if (this.$route.fullPath.split("/").pop() === "terms") 
+                    this.activeTab = 1;
             }
         }
     }

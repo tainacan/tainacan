@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import qs from 'qs';
 
 // Main Pages
-import AdminPage from '../admin.vue'
 import CollectionsPage from '../pages/lists/collections-page.vue'
 import CollectionPage from '../pages/singles/collection-page.vue'
 import ItemsPage from '../pages/lists/items-page.vue'
@@ -17,14 +16,10 @@ import EventsPage from '../pages/lists/events-page.vue'
 // Edition Form Components
 import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
 import ItemEditionForm from '../components/edition/item-edition-form.vue'
-import FilterEditionForm from '../components/edition/filter-edition-form.vue'
 import CategoryEditionForm from '../components/edition/category-edition-form.vue'
 
 // Listing components
-import CollectionsList from '../components/lists/collections-list.vue'
-import ItemsList from '../components/lists/items-list.vue'
 import FiltersList from '../components/lists/filters-list.vue'
-import CategoriesList from '../components/lists/categories-list.vue'
 import FieldsList from '../components/lists/fields-list.vue'
 
 Vue.use(VueRouter);
