@@ -5,33 +5,22 @@ use Tainacan;
 
 class CSV extends Importer {
 
-    public $delimiter = ',';
-
     public function __construct() {
         parent::__construct();
-    }
-
-    /**
-     * @return string $delimiter value that divides each column
-     */
-    public function get_delimiter(){
-        return $this->delimiter;
-    }
-
-    /**
-     * @param $delimiter
-     */
-    public function set_delimiter( $delimiter ){
-        $this->delimiter = $delimiter;
+		
+		$this->set_default_options([
+			'delimiter' => ','
+		]);
+		
     }
 
     /**
      * @inheritdoc
      */
-    public function get_fields_source(){
+    public function get_fields(){
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
         $file->seek(0 );
-        return $file->fgetcsv( $this->get_delimiter() );
+        return $file->fgetcsv( $this->get_option('delimiter') );
     }
 
 
@@ -40,7 +29,7 @@ class CSV extends Importer {
      */
     public function process_item( $index ){
         $processedItem = [];
-        $headers = $this->get_fields_source();
+        $headers = $this->get_fields();
         
         // search the index in the file and get values
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
@@ -49,9 +38,9 @@ class CSV extends Importer {
         if( $index === 0 ){
             $file->current();
             $file->next();
-            $values = $file->fgetcsv( $this->get_delimiter() );
+            $values = $file->fgetcsv( $this->get_option('delimiter') );
         }else{
-            $values = $file->fgetcsv( $this->get_delimiter() );
+            $values = $file->fgetcsv( $this->get_option('delimiter') );
         }
 
         if( count( $headers ) !== count( $values ) ){
@@ -63,13 +52,6 @@ class CSV extends Importer {
         }
 
         return $processedItem;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function get_options(){
-        // TODO: Implement get_options() method.
     }
 
     /**
