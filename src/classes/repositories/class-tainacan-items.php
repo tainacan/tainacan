@@ -295,6 +295,28 @@ class Items extends Repository {
 
 		return $this->fetch_output( $wp_query, $output );
 	}
+	
+	/**
+	 * fetch items IDs based on WP_Query args
+	 *
+	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+	 * appropriate WP_Query argument
+	 *
+	 * The second paramater specifies from which collections item should be fetched.
+	 * You can pass the Collection ID or object, or an Array of IDs or collection objects
+	 *
+	 * @param array $args WP_Query args || int $args the item id
+	 * @param array $collections Array Entities\Collection || Array int collections IDs || int collection id || Entities\Collection collection object
+	 *
+	 * @return Array array of IDs;
+	 */
+	public function fetch_ids( $args = [], $collections = [] ) {
+		
+		$args['fields'] = 'ids';
+		
+		return $this->fetch( $args, $collections )->get_posts();
+	}
 
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );

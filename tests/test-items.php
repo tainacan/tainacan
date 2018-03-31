@@ -255,6 +255,19 @@ class Items extends TAINACAN_UnitTestCase {
             ]
         ], $collection2);
         $this->assertEquals(2, $test_query->post_count);
-
+		
+		// test fetch ids
+		$test_query = $Tainacan_Items->fetch_ids([]);
+        $this->assertTrue( is_array($test_query) );
+        $this->assertEquals(4, sizeof($test_query) );
+		$this->assertTrue( is_int($test_query[0]) );
+		$this->assertTrue( is_int($test_query[1]) );
+		$this->assertTrue( is_int($test_query[2]) );
+		$this->assertTrue( is_int($test_query[3]) );
+		
+		$test_query = $Tainacan_Items->fetch_ids(['title' => 'inexistent']);
+		$this->assertTrue( is_array($test_query) );
+		$this->assertEquals(0, sizeof($test_query) );
+		
     }
 }
