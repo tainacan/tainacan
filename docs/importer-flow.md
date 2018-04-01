@@ -1,6 +1,6 @@
 # The Importer flow
 
-This page describes how Tainacan importer works and is a reference to write your own importer. For detailed instructions on each method you have to implement, check Writing an Importer.
+This page describes how Tainacan importer works and is a reference to write your own importer. 
 
 ## Initializing a new importer
 
@@ -157,8 +157,8 @@ Finally, everything is ready. The importer runs.
 
 The `run()` method is called, the importer runs a step of the import process, and returns the number of items imported so far. The client (browser) will repeat this request as many times as necessary to complete the process and will give feedback to the user about the progress. 
 
-In order to allow this, the importer must implement the `get_total_items_from_source()` method, which will inform the total number of items present in the source file.
+In order to allow this, the importer must implement the `get_total_items_from_source()` method, which will inform the total number of items present in the source.
 
-All the steps and insertion are handled by the Importer super class. The importer class only have to implement one method (`process_item()`) to handle one single item. It will receive the index of this item and it must return the item in the format of a mapped array, where the key is the identifier of the source field (the same used in the mapping array), and the value is the field value.
+All the steps and insertion are handled by the Importer super class. The importer class only have to implement one method (`process_item()`) to handle one single item. It will receive the index of this item and it must return the item in as an array, where each key is the identifier of the source field (the same used in the mapping array), and the values are each field value.
 
 In the end, a report is generated with all the logs generated in the process. 
