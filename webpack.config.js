@@ -1,6 +1,5 @@
 let path = require('path');
 let webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     entry:  {
@@ -64,9 +63,11 @@ module.exports = {
 };
 
 // Change to false for development mode
-let production = false;
+const production = false;
 
 if (production === true) {
+    const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
     console.log({'production': production});
 
     module.exports.devtool = '';
@@ -84,7 +85,7 @@ if (production === true) {
         new webpack.LoaderOptionsPlugin({
             minimize: true
         })
-    ])
+    ]);
 
     module.exports.resolve = {
         alias: {
