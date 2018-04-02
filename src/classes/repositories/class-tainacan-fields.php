@@ -68,7 +68,7 @@ class Fields extends Repository {
                 //'validation' => v::numeric(),
             ],
             'parent'         => [
-                'map'        => 'parent',
+                'map'        => 'post_parent',
                 'title'      => __('Parent', 'tainacan'),
                 'type'       => 'integer',
                 'description'=> __('Parent field', 'tainacan'),
@@ -261,7 +261,10 @@ class Fields extends Repository {
      * @param $class_name string | object The class name or the instance
      */
     public function register_field_type( $class_name ){
-        if( is_object( $class_name ) ){
+        
+		// TODO: we shoud not allow registration of field types of retricted core field types (e.g. compound, term) by plugins
+		
+		if( is_object( $class_name ) ){
             $class_name = get_class( $class_name );
         }
 

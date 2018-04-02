@@ -142,6 +142,7 @@ class Entity {
     	if (isset($this->$prop) ){
     		return $this->$prop;
     	}
+
     	//prop is not set at object, try to get from database
     	$repository = $this->get_repository();
 
@@ -157,7 +158,7 @@ class Entity {
         $this->set_validated(false);
         $this->$prop = $value;
     }
-    
+
     /**
      * set the status of the entity
      * @param string $value

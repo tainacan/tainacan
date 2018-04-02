@@ -1,10 +1,10 @@
 import Vue from 'vue'
+import Buefy from 'buefy'
 
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
 import { eventBus } from './event-bus-web-components';
 import { eventFilterBus } from './event-bus-filters';
-import Buefy from 'buefy'
 
 Vue.use(Buefy);
 

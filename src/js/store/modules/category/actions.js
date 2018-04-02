@@ -12,8 +12,6 @@ export const createCategory = ({commit}, category) => {
         })
             .then( res => {
                 let category = res.data;
-
-                console.log(category);
                 commit('setCategory', category);
 
                 resolve( category );
@@ -28,15 +26,11 @@ export const deleteCategory = ({ commit }, categoryId) => {
   return new Promise(( resolve, reject ) => {
       axios.tainacan.delete(`/taxonomies/${categoryId}?permanently=${true}`)
           .then(res => {
-              console.info(res);
-
               commit('deleteCategory', res.data);
 
               resolve( res );
           })
           .catch(error => {
-              console.error(error);
-
               reject( error )
           });
   });
@@ -118,7 +112,7 @@ export const fetchCategoryName = ({ commit }, categoryId) => {
 };
 
 // CATEGORY TERMS
-export const sendTerm = ({commit}, { categoryId, index, name, description, parent }) => {
+export const sendTerm = ({commit}, { categoryId, name, description, parent }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post('/taxonomy/' + categoryId + '/terms/', {
             name: name,
@@ -150,7 +144,7 @@ export const deleteTerm = ({ commit }, { categoryId, termId }) => {
     });
 };
 
-export const updateTerm = ({ commit }, { categoryId, termId, index, name, description, parent }) => {
+export const updateTerm = ({ commit }, { categoryId, termId, name, description, parent }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.patch('/taxonomy/' + categoryId + '/terms/' + termId, {
             name: name,

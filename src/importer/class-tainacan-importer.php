@@ -1,21 +1,82 @@
 <?php
 namespace Tainacan\Importer;
 use Tainacan;
+use Tainacan\Entities;
 
 abstract class Importer {
 
     private $id;
-    private $processed_items;
-    private $last_index;
-
-    public $collection;
-    public $mapping;
-    public $tmp_file;
-    public $total_items;
-    public $limit_query;
-    public $start;
-    public $end;
-    public $logs = [];
+    private $processed_items = [];
+	
+	/**
+	 * indicates wether this importer will create all the fields collection and set the mapping
+	 * without user interaction
+	 *
+	 * if set to true, user will have the ability to choose to create a new collection upon importing.
+	 *
+	 * The importer will have to implement the create_fields_and_mapping() method.
+	 * 
+	 * @var bool
+	 */
+	protected $import_structure_and_mapping = false;
+	
+    /**
+     * The collection the items are going to be imported to.
+     * 
+     * @var \Tainacan\Entities\Collection 
+     */
+	public $collection;
+    
+	/**
+	 * The mapping from the source metadata structure to the Field Ids of the destination collection
+	 *
+	 * The format is an array where the keys are the field IDs of the destination collection and the 
+	 * values are the identifier from the source. This coulb be an ID or a string or whatever the importer finds appropriate to http_persistent_handles_clean
+	 * 
+	 * @var array
+	 */
+	public $mapping;
+    
+	/**
+	 * The path to the temporary file created when user uploads a file
+	 * @var string
+	 */
+	public $tmp_file;
+    
+	/**
+	 * The total number of items to be imported.
+	 * @var int
+	 */
+	private $total_items;
+    
+	/**
+	 * THe number of items to be processes in each step
+	 * @var int
+	 */
+	private $items_per_step = 100;
+    
+	/**
+	 * The index of the item to start the import in the next step.
+	 *
+	 * (items are imported in a series of steps, via ajax, to avoid timeout)
+	 * @var int
+	 */
+	private $start = 0;
+    
+	/**
+	 * The log with everything that happened during the import process. It generates a report afterwards
+	 * @var array
+	 */
+	public $logs = [];
+	
+	private $options = [];
+	
+	private $default_options = [];
+	
+	private $accpets = [
+		'file' => true,
+		'url'  => false,
+	];
 
     public function __construct() {
         if (!session_id()) {
@@ -23,11 +84,7 @@ abstract class Importer {
         }
 
         $this->id = uniqid();
-        $this->limit_query = 100;
-        $this->start = 0;
-        $this->end = $this->start + $this->limit_query;
-        $this->processed_items = [];
-        $_SESSION['tainacan_importer'][$this->id] = $this;
+        $_SESSION['tainacan_importer'][$this->get_id()] = $this;
     }
 
     /**
@@ -53,13 +110,6 @@ abstract class Importer {
     }
 
     /**
-     * @return mixed the last index from source
-     */
-    public function get_last_index(){
-        return $this->last_index;
-    }
-
-    /**
      * @return array the last index from source
      */
     public function get_logs(){
@@ -69,7 +119,7 @@ abstract class Importer {
     /**
      * @param Tainacan\Entities\Collection $collection
      */
-    public function set_collection( Tainacan\Entities\Collection $collection ){
+    public function set_collection( Entities\Collection $collection ){
         $this->collection = $collection;
     }
 
@@ -83,12 +133,12 @@ abstract class Importer {
     }
 
     /**
-     * set the limit of query to be processed
+     * set how many items should be processes in each step
      *
      * @param $size The total of items
      */
-    public function set_limit_query( $size ){
-        $this->limit_query = $size;
+    public function set_items_per_step( $size ){
+        $this->items_per_step = $size;
     }
 
     /**
@@ -96,13 +146,6 @@ abstract class Importer {
      */
     public function set_start( $start ){
         $this->start = $start;
-    }
-
-    /**
-     * @param mixed $end the last index in process
-     */
-    public function set_end( $end ){
-        $this->end = $end;
     }
 
     /**
@@ -159,19 +202,12 @@ abstract class Importer {
     }
 
     /**
-     * @return mixed
-     */
-    public function get_collection_fields(){
-        return $this->collection;
-    }
-
-    /**
      * get the fields of file/url to allow mapping
-     * should returns an array
+     * should return an array
      *
      * @return array $fields_source the fields from the source
      */
-    abstract public function get_fields_source();
+    abstract public function get_fields();
 
     /**
      * get values for a single item
@@ -185,25 +221,106 @@ abstract class Importer {
     abstract public function process_item( $index );
 
     /**
-     * @return mixed
-     */
-    abstract public function get_options();
-
-    /**
      * return the all items found
      *
      * @return int Total of items
      */
-    abstract public function get_total_items();
-
+    public function get_total_items() {
+		if ( !isset( $this->total_items ) ) {
+            $this->total_items = $this->get_total_items_from_source();
+		}
+		return $this->total_items;
+	}
+	
+	/**
+	 * Method implemented by the child importer class to return the number of items to be imported
+	 * @return int
+	 */
+	abstract public function get_total_items_from_source();
+	
+	/**
+     * Gets the options for this importer, including default values for options
+     * that were not set yet.
+     * @return array Importer options
+     */
+    public function get_options() {
+        return array_merge($this->default_options, $this->options);
+    }
+    
+    /**
+     * Gets one option from the options array.
+     *
+     * Checks if option exist or if it have a default value. Otherwise return an empty string
+     * 
+     * @param  string $key the desired option
+     * @return mixed the option value, the default value or an empty string
+     */
+    public function get_option($key) {
+        $options = $this->get_options();
+        return isset($options[$key]) ? $options[$key] : '';
+    }
+	
+	/**
+	 * Set the default options values.
+	 *
+	 * Must be called from the __construct method of the child importer class to set default values.
+	 * 
+	 * @param array $options 
+	 */
+	protected function set_default_options($options) {
+		$this->default_options = $options;
+	}
+	
+	/**
+	 * Set the options array
+	 * @param array $options 
+	 */
+	public function set_options($options) {
+		$this->options = $options;
+	}
+	
+	/**
+	 * Adds a new method accepeted by the importer
+	 *
+	 * Current possible methods are file and url
+	 * 
+	 * @param string $method file or url
+	 * @return bool true for success, false if method does not exist
+	 */
+	public function add_import_method($method) {
+		if ( array_key_exists($method, $this->accpets) ) {
+			$this->acceps[$method] = true;
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Removes method accepeted by the importer
+	 *
+	 * Current possible methods are file and url
+	 * 
+	 * @param string $method file or url
+	 * @return bool true for success, false if method does not exist
+	 */
+	public function remove_import_method($method) {
+		if ( array_key_exists($method, $this->accpets) ) {
+			$this->acceps[$method] = false;
+			return true;
+		}
+		return false;
+	}
+	
     /**
      * process a limited size of items
      *
-     * @param $start init index
-     * @param $end last index
+     * @param int $start the index of the item to start processing from
      */
-    public function process( $start, $end ){
-        while ( $start <  $end && count( $this->get_processed_items() ) <= $this->get_total_items() ){
+    public function process( $start ){
+        
+		$end = $start + $this->items_per_step;
+		
+		while ( $start <  $end && count( $this->get_processed_items() ) <= $this->get_total_items() ) {
             $processed_item = $this->process_item( $start );
             if( $processed_item) {
                 $this->insert( $start, $processed_item );
@@ -213,6 +330,8 @@ abstract class Importer {
             }
             $start++;
         }
+		
+		$this->set_start($start);
     }
 
     /**
@@ -230,7 +349,7 @@ abstract class Importer {
 
         $isUpdate = ( is_array( $this->processed_items ) && isset( $this->processed_items[ $index ] ) )
             ? $this->processed_items[ $index ] : 0;
-        $item = new Tainacan\Entities\Item( $isUpdate );
+        $item = new Entities\Item( $isUpdate );
         $itemMetadataArray = [];
 
         if( !isset( $this->mapping ) ){
@@ -243,8 +362,8 @@ abstract class Importer {
                 $tainacan_field_id = array_search( $field_source, $this->mapping );
                 $field = $Tainacan_Fields->fetch( $tainacan_field_id );
 
-                if( $field instanceof Tainacan\Entities\Field ){
-                    $singleItemMetadata = new Tainacan\Entities\Item_Metadata_Entity( $item, $field);
+                if( $field instanceof Entities\Field ){
+                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $field);
                     $singleItemMetadata->set_value( $values );
                     $itemMetadataArray[] = $singleItemMetadata;
                 }
@@ -252,13 +371,13 @@ abstract class Importer {
             }
         }
 
-        if( !empty( $itemMetadataArray ) && $this->collection instanceof Tainacan\Entities\Collection ){
+        if( !empty( $itemMetadataArray ) && $this->collection instanceof Entities\Collection ){
             $item->set_collection( $this->collection );
 
             if( $item->validate() ){
                 $insertedItem = $Tainacan_Items->insert( $item );
             } else {
-                $this->add_log( 'error', 'Item ' . $index . ': '. $item->get_errors() );
+                $this->add_log( 'error', 'Item ' . $index . ': ' ); // TODO add the  $item->get_errors() array
                 return false;
             }
 
@@ -287,9 +406,6 @@ abstract class Importer {
             // inserted the id on processed item with its index as array index
             $this->processed_items[ $index ] = $item->get_id();
 
-            // set the last index
-            $this->last_index = $index;
-
             $Tainacan_Items->update( $item );
             return $item;
         } else {
@@ -303,6 +419,25 @@ abstract class Importer {
      * run the process
      */
     public function run(){
-        $this->process( $this->start, $this->end );
+        
+		if ( ( !isset($this->collection) || ! $this->collection instanceof Entities\Collection ) && $this->import_structure_and_mapping ) {
+			$new_collection = new Entities\Collection();
+			$new_collection->set_name('New Imported Collection');
+			$new_collection->set_status('publish');
+			$new_collection->validade();
+			$new_collection = \Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
+			
+			$this->set_collection($new_collection);
+			
+			if (!method_exists($this, 'create_fields_and_mapping')) {
+				throw new Exception('Importers with import_structure_and_mapping true must implement create_fields_and_mapping method');
+			}
+			
+			$this->create_fields_and_mapping();
+			
+		}
+		
+		$this->process( $this->start );
+		return sizeof($this->get_processed_items());
     }
 }

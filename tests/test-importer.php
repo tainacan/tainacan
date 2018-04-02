@@ -42,7 +42,9 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
-
+		
+		$_SESSION['tainacan_importer'][$id]->set_items_per_step(2);
+		
         // open the file "demosaved.csv" for writing
         $file = fopen('demosaved.csv', 'w');
 
@@ -75,7 +77,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_total_items() );
 
         // get fields to mapping
-        $headers =  $_SESSION['tainacan_importer'][$id]->get_fields_source();
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_fields();
         $this->assertEquals( $headers[4], 'Column 5' );
 
         // inserting the collection
@@ -109,7 +111,12 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_mapping(), $map );
 
         //execute the process
-        $_SESSION['tainacan_importer'][$id]->run();
+        
+		$this->assertEquals(2, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 2 items');
+		$this->assertEquals(4, $_SESSION['tainacan_importer'][$id]->run(), 'second step should import 2 items');
+		$this->assertEquals(5, $_SESSION['tainacan_importer'][$id]->run(), 'third step should import 3 items');
+		
+		$this->assertEquals(5, $_SESSION['tainacan_importer'][$id]->run(), 'if call run again after finish, do nothing');
 
         $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
 

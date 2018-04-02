@@ -34,28 +34,6 @@
                     name="description" 
                     v-model="editForm.description"/>
         </b-field>
-       
-        <b-field :addons="false">
-            <label class="label">
-                {{ $i18n.get('label_parent_term') }} 
-                <help-button 
-                        :title="$i18n.getHelperTitle('terms', 'parent_term')" 
-                        :message="$i18n.getHelperMessage('terms', 'parent_term')"/>
-            </label>
-            <b-select
-                    id="parent_term_select"
-                    v-model="editForm.parent"
-                    :class="{'is-empty': editForm.parent == 0}"
-                    :placeholder="$i18n.get('instruction_select_a_parent_term')">
-                <option
-                        id="tainacan-select-parent-term"
-                        v-for="(parentTerm, index) in parentTermsList"
-                        :key="index"
-                        :value="parentTerm.id">
-                    {{ parentTerm.name }}
-                </option>
-            </b-select>
-        </b-field>
 
         <div class="field is-grouped form-submit">  
             <div class="control">
@@ -83,44 +61,9 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'TermEditionForm',
-    data(){
-        return {
-            editForm: {},
-            oldForm: {},
-            closedByForm: false
-        }
-    }, 
     props: {
-        index: '',
-        editedTerm: Object,
-        originalTerm: Object, 
+        editForm: Object,
         categoryId: ''
-    },
-    computed: {
-        parentTermsList() {
-            let parentTerms = [];
-            parentTerms.push({name: this.$i18n.get('label_no_parent_term'), id: 0});
-            for (let term of this.getTerms()) {
-                if (term.id != this.editForm.id)
-                    parentTerms.push({id: term.id, name: term.name});
-            }
-            return parentTerms;
-        }
-    },
-    created() {  
-        this.editForm = this.editedTerm;     
-        this.oldForm = JSON.parse(JSON.stringify(this.originalTerm));
-    },
-    beforeDestroy() {
-        if (this.closedByForm) {
-            this.editedTerm.saved = true;
-        } else {
-            this.oldForm.saved = this.editForm.saved;
-            if (JSON.stringify(this.editForm) != JSON.stringify(this.oldForm)) 
-                this.editedTerm.saved = false;
-            else    
-                this.editedTerm.saved = true;
-        }
     },
     methods: {
         ...mapActions('category', [
@@ -135,14 +78,12 @@ export default {
             if (term.id == 'new') {
                 this.sendTerm({
                         categoryId: this.categoryId, 
-                        index: this.index, 
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.editForm.parent
                     })
                     .then(() => {
                         this.editForm = {};
-                        this.closedByForm = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((error) => {
@@ -154,14 +95,12 @@ export default {
                 this.updateTerm({
                         categoryId: this.categoryId, 
                         termId: this.editForm.id, 
-                        index: this.index, 
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.editForm.parent
                     })
-                    .then((res) => {
-                        this.editForm = {};
-                        this.closedByForm = true;
+                    .then(() => {
+                        this.editForm.saved = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((error) => {
@@ -171,8 +110,7 @@ export default {
             }
         },
         cancelEdition() {
-            this.closedByForm = true;
-            this.$emit('onEditionCanceled');
+            this.$emit('onEditionCanceled', this.editForm);
         },
     }
 }

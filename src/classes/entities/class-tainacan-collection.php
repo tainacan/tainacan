@@ -9,6 +9,27 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Collection extends Entity {
 
+    protected
+        $diplay_name,
+        $full,
+        $featured_img_id,
+        $modification_date,
+        $creation_date,
+        $author_id,
+        $url,
+        $name,
+        $slug,
+        $order,
+        $parent,
+        $description,
+        $default_order,
+        $default_orderby,
+        $columns,
+        $default_view_mode,
+        $fields_order,
+        $filters_order,
+        $moderators_ids;
+
     /**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::post_type
@@ -160,8 +181,7 @@ class Collection extends Entity {
 		return $attachments_prepared;
 	}
 
-
-	/**
+    /**
 	 * @return string
 	 */
 	function get_author_name() {
@@ -185,10 +205,12 @@ class Collection extends Entity {
 	/**
 	 * @return int|string
 	 */
+
 	function get_featured_img_id() {
-		if ( isset( $this->featured_img_id ) ) {
-			return $this->featured_img_id;
-		}
+        $featured_img_id = $this->get_mapped_property("featured_img_id");
+        if ( isset( $featured_img_id ) ) {
+            return $featured_img_id;
+        }
 
 		return get_post_thumbnail_id( $this->get_id() );
 	}

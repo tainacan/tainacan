@@ -94,6 +94,7 @@ $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Numeric');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Selectbox');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Relationship');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Category');
+$Tainacan_Fields->register_field_type('Tainacan\Field_Types\Compound');
 
 $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
 
