@@ -128,6 +128,7 @@ return [
 	'label_category_terms'                     => __( 'Category Terms', 'tainacan' ),
 	'label_no_parent_term'                     => __( 'No parent term', 'tainacan' ),
 	'label_term_without_name'                  => __( 'Term without name', 'tainacan' ),
+	'label_inherited'						   => __( 'Inherited', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
@@ -172,6 +173,7 @@ return [
     'info_no_description_provided'             => __('No description provided.', 'tainacan'),
     'info_warning_terms_not_saved'             => __('Are you sure? There are terms not saved, changes will be lost.', 'tainacan'),
     'info_warning_orphan_terms'                => __('Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan'),
+	'info_there_is_no_field'                   => __('There is no field here.', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

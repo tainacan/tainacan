@@ -5,7 +5,7 @@
                 class="button"
                 @click="showForm = !showForm"><b-icon 
                 size="is-small" 
-                icon="plus"/>&nbsp;{{ $i18n.get('label_add_new_term') }}</a>
+                icon="plus"/>&nbsp;{{ $i18n.get('label_new_term') }}</a>
          </span>
         <div class="columns">
             <transition name="fade">

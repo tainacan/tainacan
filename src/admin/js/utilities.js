@@ -213,7 +213,7 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/collections/' + collectionId + '/items/new';
         },
         getNewFieldPath() {
-            return '/field/new';
+            return '/fields';
         },
         getNewFilterPath() {
             return '/filters/new';

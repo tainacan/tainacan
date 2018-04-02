@@ -116,7 +116,9 @@
                 </draggable> 
             </div>
             <div class="column available-fields-area">
-                <div class="field">
+                <div 
+                        class="field" 
+                        v-if="availableFieldList.length > 0">
                     <h3 class="label"> {{ $i18n.get('label_available_field_types') }}</h3>
                     <draggable 
                             :list="availableFieldList" 
@@ -134,6 +136,21 @@
                               <span class="field-name">{{ field.name }}</span>
                         </div>
                     </draggable>   
+                </div>
+                <div 
+                        v-else
+                        class="field is-grouped-centered">
+                    <h3 class="label"> {{ $i18n.get('label_available_field_types') }}</h3>
+                    <div>
+                        {{ $i18n.get('info_there_is_no_field' ) }}
+                    </div>
+                    <div class="control">
+                        <router-link
+                                :to="$routerHelper.getNewFieldPath()"
+                                tag="button" 
+                                class="button is-secondary is-centered">
+                            {{ $i18n.getFrom('fields', 'new_item') }}</router-link>
+                    </div>
                 </div>
             </div>
         </div>
