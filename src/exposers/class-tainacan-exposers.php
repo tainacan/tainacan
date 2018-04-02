@@ -13,6 +13,7 @@ class Exposers {
 	
 	public function __construct() {
 		$this->register_exposer_type('Tainacan\Exposers\Types\Xml');
+		$this->register_exposer_type('Tainacan\Exposers\Types\OAI_PMH');
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Dublin_Core');
 		
 		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 );
