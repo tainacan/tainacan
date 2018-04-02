@@ -26,7 +26,7 @@ class Xml extends Type {
 	protected function array_to_xml( $data, $xml_data, $namespace = null ) {
 		foreach( $data as $key => $value ) {
 			if( is_numeric($key) ){
-				$key = 'item'.$key; //dealing with <0/>..<n/> issues
+				$key = apply_filters('tainacan-exposer-numeric-item-prefix', __('item', 'tainacan').'-', get_class($this)).$key; //dealing with <0/>..<n/> issues
 			}
 			if( is_array($value) ) {
 				$subnode = $xml_data->addChild($key, null, $namespace);
