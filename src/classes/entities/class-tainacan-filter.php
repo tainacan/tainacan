@@ -9,7 +9,16 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Filter extends Entity {
     use \Tainacan\Traits\Entity_Collection_Relation;
-    
+
+    protected
+        $name,
+        $description,
+        $order,
+        $color,
+        $field,
+        $filter_type,
+        $filter_type_options;
+
     protected static $post_type = 'tainacan-filter';
     
     /**

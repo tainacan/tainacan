@@ -8,7 +8,22 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Represents the Entity Field
  */
 class Field extends Entity {
-	
+	protected
+        $name,
+        $slug,
+        $order,
+        $parent,
+        $description,
+        $required,
+        $multiple,
+        $cardinality,
+        $collection_key,
+        $mask,
+        $privacy,
+        $default_value,
+        $field_type,
+        $field_type_options;
+
     // Collection getter and setter declared here
     use \Tainacan\Traits\Entity_Collection_Relation;
 	

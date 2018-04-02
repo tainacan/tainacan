@@ -8,6 +8,15 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Represents entity Log
  */
 class Log extends Entity {
+
+    protected
+        $title,
+        $order,
+        $parent,
+        $decription,
+        $blog_id,
+        $user_id;
+
 	protected static $post_type = 'tainacan-log';
 	/**
 	 * {@inheritDoc}

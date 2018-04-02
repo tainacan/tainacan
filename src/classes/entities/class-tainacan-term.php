@@ -8,6 +8,15 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Represents the Entity Term
 */
 class Term extends Entity {
+    protected
+        $term_id,
+        $name,
+        $parent,
+        $description,
+        $user,
+        $taxonomy;
+
+
 	protected static $post_type = false;
 	/**
 	 * {@inheritDoc}

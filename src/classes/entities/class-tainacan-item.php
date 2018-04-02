@@ -9,6 +9,22 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Item extends Entity {
 	use \Tainacan\Traits\Entity_Collection_Relation;
+    protected
+        $terms,
+        $diplay_name,
+        $full,
+        $featured_img_id,
+        $modification_date,
+        $creation_date,
+        $author_id,
+        $url,
+        $id,
+        $title,
+        $order,
+        $parent,
+        $decription,
+        $collection_id;
+
 	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::repository
@@ -114,10 +130,19 @@ class Item extends Entity {
 	/**
 	 * @return int|string
 	 */
+    /*function get_featured_img_id() {
+        $featured_img_id = $this->get_featured_img_id();
+        if ( isset( $featured_img_id ) ) {
+            return $featured_img_id;
+        }
+
+        return get_post_thumbnail_id( $this->get_id() );
+    }*/
 	function get_featured_img_id() {
-		if ( isset( $this->featured_img_id ) ) {
-			return $this->featured_img_id;
-		}
+        $featured_img_id = $this->get_mapped_property("featured_img_id");
+        if ( isset( $featured_img_id ) ) {
+            return $featured_img_id;
+        }
 
 		return get_post_thumbnail_id( $this->get_id() );
 	}
