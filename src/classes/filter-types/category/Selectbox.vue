@@ -17,7 +17,6 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios'
 
     export default {
         created(){
@@ -54,7 +53,7 @@
                     this.filter.field.field_type_options.taxonomy_id : this.taxonomy_id;
                 promise = this.getValuesCategory( collectionTarget );
 
-                promise.then( data => {
+                promise.then( () => {
                     this.isLoading = false;
                 })
                 .catch( error => {

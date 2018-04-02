@@ -13,7 +13,6 @@
 </template>
 
 <script>
-    import axios from '../../../js/axios/axios'
 
     export default {
         created(){
@@ -57,7 +56,7 @@
 
                 promise = this.getValuesCategory( this.field );
 
-                promise.then( data => {
+                promise.then( () => {
                     this.isLoading = false;
                 })
                 .catch( error => {

@@ -63,8 +63,9 @@
                 }
             },
             emitChange(){
-                 let val = this.selected;
+                let val = this.selected;
                 let results = [];
+
                 for( let term of val ){
                     if( term.value ){
                         results.push( term.value );
@@ -72,6 +73,7 @@
                         results.push( term );
                     }
                 }
+
                 this.$emit('input', results);
                 this.$emit('blur');
             }

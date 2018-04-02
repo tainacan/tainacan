@@ -14,7 +14,6 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios'
 
     export default {
         created(){

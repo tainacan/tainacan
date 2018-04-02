@@ -2,7 +2,6 @@
 
 namespace Tainacan\Repositories;
 use Tainacan\Entities;
-use Tainacan\Field_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -775,23 +774,31 @@ class Fields extends Repository {
 		}
 		
 		if ($new_tax != $this->current_taxonomy) {
-			if (!empty($this->current_taxonomy)) {
-				do_action('tainacan-taxonomy-removed-from-collection', $this->current_taxonomy, $field->get_collection());
+			$collection = $field->get_collection();
+
+			if (!empty($this->current_taxonomy) && $collection) {
+				do_action('tainacan-taxonomy-removed-from-collection', $this->current_taxonomy, $collection);
 			}
-			if (!empty($new_tax)) {
-				do_action('tainacan-taxonomy-added-to-collection', $new_tax, $field->get_collection());
+
+			if (!empty($new_tax) && $collection) {
+				do_action('tainacan-taxonomy-added-to-collection', $new_tax, $collection);
 			}
-				
+
 		}
 	}
 	
 	private function delete_category_field($field_id) {
 		$field = $this->fetch($field_id);
 		$field_type = $field->get_field_type_object();
+
 		if ($field_type->get_primitive_type() == 'term') {
 			$removed_tax = $field_type->get_option('taxonomy_id');
-			if (!empty($removed_tax))
-				do_action('tainacan-taxonomy-removed-from-collection', $removed_tax, $field->get_collection());
+
+			$collection = $field->get_collection();
+
+			if (!empty($removed_tax) &&  $collection) {
+				do_action( 'tainacan-taxonomy-removed-from-collection', $removed_tax, $collection );
+			}
 		}
 	}
 }
