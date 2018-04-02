@@ -2,6 +2,8 @@
 
 namespace Tainacan\Field_Types;
 
+use Tainacan\Entities\Field;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
