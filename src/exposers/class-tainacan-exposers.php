@@ -13,8 +13,14 @@ class Exposers {
 	
 	public function __construct() {
 		$this->register_exposer_type('Tainacan\Exposers\Types\Xml');
+		$this->register_exposer_type('Tainacan\Exposers\Types\Txt');
+		$this->register_exposer_type('Tainacan\Exposers\Types\Html');
+		$this->register_exposer_type('Tainacan\Exposers\Types\Csv');
 		$this->register_exposer_type('Tainacan\Exposers\Types\OAI_PMH');
+		do_action('tainacan-register-exposer-types');
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Dublin_Core');
+		do_action('tainacan-register-exposer-mappers');
+		
 		
 		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 );
 		add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 );
