@@ -13,7 +13,6 @@ source build-config.cfg
 
 plugin_tainacan=`basename $wp_plugin_dir`
 plugin_wpclear='wpress-db-cleaner'
-
 test_db_prefix='wptests_'
 cy_record_key='a15e6599-d240-4d98-b582-dea93a3008c0'
 
@@ -29,6 +28,10 @@ wp core install --url=$wp_url --title=Test --admin_user=admin --admin_password=a
 
 # Activate Tainacan
 wp plugin activate $plugin_tainacan $plugin_wpclear
+
+# Add options wpress plugin_wpclear
+wp option add api_namespace tainacan/v2
+wp option add wpress_prefix $test_db_prefix
 
 # back to tainacan dev directory
 cd -
