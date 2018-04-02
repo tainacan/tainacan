@@ -6,14 +6,14 @@ Its important that you first get familiar with the [key concepts](key-concepts.m
 
 This page gives an overview of the API. Detailed documentation and reference on each entity can be found below:
 
-* Collections Reference
-* Items Reference
-* Item Metadata Reference
-* Fields Reference
-* Filters Reference
-* Taxonomies Reference
-* Terms Reference
-* Logs Reference
+* [Collections Reference](class-reference-collections.md)
+* [Items Reference](class-reference-items.md)
+* [Item Metadata Reference](class-reference-item-metadata.md)
+* [Fields Reference](class-reference-fields.md)
+* [Filters Reference](class-reference-filters.md)
+* [Taxonomies Reference](class-reference-taxonomies.md)
+* [Terms Reference](class-reference-terms.md)
+* [Logs Reference](class-reference-logs.md)
 
 ## Overview
 
@@ -132,3 +132,10 @@ By default, it is a `WP_Query` object, which you can use to build your loop just
 
 But it also can be an array of Taincan Entities objects. This is very useful when you want to manipulate them.
 
+## Inserting
+
+
+### More about validating
+
+
+## Checking for permissions
