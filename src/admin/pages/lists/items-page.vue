@@ -38,7 +38,7 @@
         <div class="columns above-subheader">
             <aside class="column filters-menu">
                 <h3>{{ $i18n.get('filters') }}</h3>
-                <filters-items-list v-if="items.length > 0"/>
+                <filters-items-list />
             </aside>
             <div class="column table-container">
                 <items-list
