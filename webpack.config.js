@@ -62,13 +62,15 @@ module.exports = {
     },
 };
 
-// Change to false for development mode
+// Change to true for production mode
 const production = false;
 
 if (production === true) {
     const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
     console.log({'production': production});
+
+    module.exports.mode = 'production';
 
     module.exports.devtool = '';
 
@@ -104,8 +106,6 @@ if (production === true) {
             },
         }),
     ];
-
-    module.exports.mode = 'development';
 
     module.exports.resolve = {
         alias: {
