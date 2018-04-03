@@ -218,7 +218,7 @@
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
 
-                        this.$router.push(this.$routerHelper.getCategoryPath(this.categoryId));
+                        this.$router.push(this.$routerHelper.getCategoriesPath());
                     })
                     .catch((errors) => {
                         for (let error of errors.errors) {
