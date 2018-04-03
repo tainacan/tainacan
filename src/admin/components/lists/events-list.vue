@@ -1,13 +1,13 @@
 <template>
     <div>
-        <b-field
-                grouped
-                group-multiline>
-            <button
-                    v-if="selectedEvents.length > 0"
-                    class="button field is-danger"
-                    @click="deleteSelectedEvents()"><span>{{ $i18n.get('instruction_delete_selected_events') }} </span><b-icon icon="delete"/></button>
-        </b-field>
+        <!--<b-field-->
+                <!--grouped-->
+                <!--group-multiline>-->
+            <!--<button-->
+                    <!--v-if="selectedEvents.length > 0"-->
+                    <!--class="button field is-danger"-->
+                    <!--@click="deleteSelectedEvents()"><span>{{ $i18n.get('instruction_delete_selected_events') }} </span><b-icon icon="delete"/></button>-->
+        <!--</b-field>-->
 
         <b-table
                 ref="eventsTable"
@@ -72,20 +72,19 @@
 
                     <a
                             id="button-approve"
-                            :aria-label="$i18n.getFrom('events','approve_item')"
+                            :aria-label="$i18n.get('approve_item')"
                             @click.prevent.stop="approve(props.row.id)">
                         <b-icon
-                            type="is-gray"
-                            icon="check"/>
+                            icon="check" />
                     </a>
 
                     <a
                             id="button-not-approve"
-                            :aria-label="$i18n.getFrom('events','not_approve_item')"
+                            :aria-label="$i18n.get('not_approve_item')"
                             @click.prevent.stop="notApprove(props.row.id)">
                         <b-icon
-                            type="is-gray"
-                            icon="block"/>
+                            type="is-danger"
+                            icon="close-circle-outline" />
                     </a>
 
 
