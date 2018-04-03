@@ -113,7 +113,7 @@
                                     :edited-filter="editForms[openedFilterId]"/>
                         </b-field>
                     </div>
-                </draggable> 
+                </draggable>
             </div>
             <div class="column available-fields-area">
                 <div 
