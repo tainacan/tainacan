@@ -319,8 +319,8 @@ abstract class Importer {
     public function process( $start ){
         
 		$end = $start + $this->items_per_step;
-		
-		while ( $start <  $end && count( $this->get_processed_items() ) <= $this->get_total_items() ) {
+
+		while ( $start <  $end && count( $this->get_processed_items() ) < $this->get_total_items() ) {
             $processed_item = $this->process_item( $start );
             if( $processed_item) {
                 $this->insert( $start, $processed_item );
