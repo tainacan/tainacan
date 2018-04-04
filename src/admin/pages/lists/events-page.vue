@@ -12,15 +12,15 @@
                             :events="events"/>
                     <!-- Footer -->
                     <div
-                            class="table-footer"
+                            class="pagination-area"
                             v-if="totalEvents > 0">
                         <div class="shown-items">
                             {{
-                            $i18n.get('info_showing_events') +
-                            (eventsPerPage * (page - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastEventNumber() +
-                            $i18n.get('info_of') + totalEvents + '.'
+                                $i18n.get('info_showing_events') +
+                                (eventsPerPage * (page - 1) + 1) +
+                                $i18n.get('info_to') +
+                                getLastEventNumber() +
+                                $i18n.get('info_of') + totalEvents + '.'
                             }}
                         </div>
                         <div class="items-per-page">

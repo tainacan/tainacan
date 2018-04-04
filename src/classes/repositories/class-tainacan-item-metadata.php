@@ -222,6 +222,15 @@ class Item_Metadata extends Repository {
 			
 			if ($unique)
 				$terms = reset($terms);
+
+			if(is_array($terms)){
+				$terms_array = [];
+				foreach ($terms as $term){
+					$terms_array[] = new Entities\Term($term);
+				}
+
+				return $terms_array;
+			}
 			
 			return $terms;
 		
