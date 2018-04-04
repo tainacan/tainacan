@@ -77,6 +77,7 @@
                 } else {
                     this.setFieldTypeMessage('');
                 }
+                
                 return msg;
             }
         },
