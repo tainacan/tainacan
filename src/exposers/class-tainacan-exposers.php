@@ -22,8 +22,8 @@ class Exposers {
 		do_action('tainacan-register-exposer-mappers');
 		
 		
-		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 );
-		add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 );
+		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer mapping
+		add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 ); // exposer types
 	}
 	
 	/**
