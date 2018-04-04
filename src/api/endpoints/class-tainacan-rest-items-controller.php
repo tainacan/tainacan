@@ -99,9 +99,10 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_REST_Controller {
 		foreach($item_metadata as $index => $me){
 			$field = $me->get_field();
 			$slug = $field->get_slug();
+			$item_metadata_array = $me->__toArray();
 
 			$item_array['metadata'][$slug]['name']     = $field->get_name();
-			$item_array['metadata'][$slug]['value']    = $me->get_value();
+			$item_array['metadata'][$slug]['value']    = $item_metadata_array['value'];
 			$item_array['metadata'][$slug]['multiple'] = $field->get_multiple();
 		}
 

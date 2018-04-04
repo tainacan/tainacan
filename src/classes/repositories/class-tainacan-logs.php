@@ -243,7 +243,7 @@ class Logs extends Repository {
 				(method_exists($new_value, 'get_title') ? $new_value->get_title() : $new_value->get_field()->get_name());
 
 			$msn  = sprintf( esc_html__( 'A %s has been created/updated.', 'tainacan' ), $class_name);
-			$description = sprintf( esc_html__("The '%s' %s has been created/updated.", 'tainacan' ), $name, strtolower($class_name));
+			$description = sprintf( esc_html__("The %s %s has been created/updated.", 'tainacan' ), $name, strtolower($class_name));
 
 		}
 

@@ -185,9 +185,10 @@ export default {
             if( ! metadata || metadata.value === false || metadata.value == undefined || metadata.value == '' )
                 return '';
 
-            if( Array.isArray( metadata.value ) ){
+            if(  metadata.value instanceof Array ){
                 let result = [];
                 for( let val of metadata.value ){
+                    this.$console.log(val);
                     result.push( ( val.name ) ? val.name : val )
                 }
                 return result.join(', ');
