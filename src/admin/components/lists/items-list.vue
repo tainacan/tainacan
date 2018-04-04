@@ -3,12 +3,12 @@
         <b-field 
                 grouped 
                 group-multiline>
-                        <button 
-                                v-if="selectedItems.length > 0" 
-                                class="button field is-danger" 
-                                @click="deleteSelectedItems()">
-                            <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
-                        </button>
+                    <button 
+                            v-if="selectedItems.length > 0" 
+                            class="button field is-danger" 
+                            @click="deleteSelectedItems()">
+                        <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
+                    </button>
         </b-field>
         <b-table 
                 ref="itemsTable"
@@ -25,6 +25,7 @@
                 <b-table-column 
                         v-for="(column, index) in tableFields"
                         :key="index"
+                        :custom-key="column.slug"
                         :label="column.label"
                         :visible="column.visible"
                         :width="column.field == 'row_actions' ? 78 : column.field == 'featured_image' ? 55 : undefined ">
@@ -180,7 +181,8 @@ export default {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
         showValue( metadata ){
-            if( ! metadata || metadata.value === false )
+
+            if( ! metadata || metadata.value === false || metadata.value == undefined || metadata.value == '' )
                 return '';
 
             if( Array.isArray( metadata.value ) ){

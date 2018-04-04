@@ -2,6 +2,7 @@
     <b-datepicker
             :id="id"
             v-model="dateValue"
+            @blur="onBlur"
             @input="onInput($event)"/>
 </template>
 
@@ -14,7 +15,7 @@
         },
         data() {
             return {
-                dateValue: new Date()
+                dateValue: ''
             }
         },
         props: {
@@ -25,6 +26,9 @@
             value: [String, Number, Array],
         },
         methods: {
+            onBlur() {
+                this.$emit('blur');
+            },
             onInput($event) {
                 this.dateValue = $event;
                 let date_init = this.dateValue.getUTCFullYear() + '-' +
