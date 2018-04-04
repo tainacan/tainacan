@@ -3,12 +3,12 @@
         <b-field 
                 grouped 
                 group-multiline>
-                        <button 
-                                v-if="selectedItems.length > 0" 
-                                class="button field is-danger" 
-                                @click="deleteSelectedItems()">
-                            <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
-                        </button>
+                    <button 
+                            v-if="selectedItems.length > 0" 
+                            class="button field is-danger" 
+                            @click="deleteSelectedItems()">
+                        <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
+                    </button>
         </b-field>
         <b-table 
                 ref="itemsTable"
