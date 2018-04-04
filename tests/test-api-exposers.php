@@ -145,6 +145,27 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('adasdasdsa', $dc->description);
 		$this->assertEquals('item_teste_Expose', $dc->title);
 	}
+	
+	/**
+	 * @group exposer-type-html
+	 */
+	public function test_html_type() {
+		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		
+		extract($this->create_meta_requirements());
+		
+		$item_exposer_json = json_encode([
+			'exposer-type'       => 'Html',
+		]);
+		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
+		$request->set_body($item_exposer_json);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data();
+		
+		var_dump($data);
+	}
+	
 }
 
 ?>
