@@ -7,21 +7,23 @@
                 @input = "onSelect()"
                 expanded>
             <option
-                    v-for="option,index in options"
+                    v-for=" (option, index) in options"
                     :key="index"
-                    :label="option.label"
-                    :value="option.value"
-                    border>{{ option.label }}</option>
+                    :label="option.name"
+                    :value="option.id"
+                    border>{{ option.name }}</option>
         </b-select>
     </div>
 </template>
 
 <script>
+    import { tainacan as axios } from '../../../js/axios/axios';
 
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.collection_id;
+            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
+            this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
             this.loadOptions();
         },
         data(){
@@ -42,30 +44,66 @@
             filter_type: [String],  // not required, but overrides the filter field type if is set
             id: ''
         },
+        watch: {
+            selected: function(val){
+                this.selected = val;
+                this.onSelect();
+            }
+        },
         methods: {
             getValuesCategory( taxonomy ){
-                // TODO: get taxonomy terms
+                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
+                    for (let item of res.data) {
+                        this.options.push(item);
+                    }
+                })
+                    .catch(error => {
+                        this.$console.log(error);
+                    });
             },
             loadOptions(){
                 let promise = null;
                 this.isLoading = true;
-                let collectionTarget = ( this.filter && this.filter.field.field_type_options.taxonomy_id ) ?
-                    this.filter.field.field_type_options.taxonomy_id : this.taxonomy_id;
-                promise = this.getValuesCategory( collectionTarget );
 
-                promise.then( () => {
-                    this.isLoading = false;
-                })
-                .catch( error => {
-                    console.log('error select', error );
-                    this.isLoading = false;
-                });
+                axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                    .then( res => {
+                        let field = res.data;
+                        promise = this.getValuesCategory( field.field_type_options.taxonomy_id );
+
+                        promise.then( () => {
+                            this.isLoading = false;
+                        })
+                            .catch( error => {
+                                this.$console.log('error select', error );
+                                this.isLoading = false;
+                            });
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    });
+            },
+            getOptions( parent, level = 0 ){ // retrieve only ids
+                let result = [];
+                if ( this.options ){
+                    for( let term of this.options ){
+                        if( term.parent == parent ){
+                            term['level'] = level;
+                            result.push( term );
+                            const levelTerm =  level + 1;
+                            const children =  this.getOptions( term.id, levelTerm);
+                            result = result.concat( children );
+                        }
+                    }
+                }
+                return result;
             },
             onSelect(){
+                this.$console.log(this.selected);
+
                 this.$emit('input', {
                     filter: 'term',
-                    field_id: ( this.field_id ) ? this.field_id : this.filter.field,
-                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                    field_id: this.field,
+                    collection_id: this.collection,
                     value: this.selected
                 });
             }
