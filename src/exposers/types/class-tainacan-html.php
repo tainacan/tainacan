@@ -14,13 +14,17 @@ class Html extends Type {
 			<!DOCTYPE html>
 			<html>
 				<body>
+					<table>
 		';
-					$html = $this->array_to_html($response->get_data(), apply_filters('tainacan-exposer-html', $html));
-					$html .= '
+						$html = $this->array_to_html($response->get_data());
+						$html .= '
+					</table>
 				</body>
 			</html>
 		';
 		
+		$html = apply_filters('tainacan-exposer-html', $html);
+					
 		$response->set_data($html);
 		return $response;
 	}
@@ -31,17 +35,21 @@ class Html extends Type {
 	 * @param string $html
 	 * @return string
 	 */
-	protected function array_to_html( $data, $html ) {
+	protected function array_to_html( $data ) {
+		$heads = [];
+		$html = '';
 		foreach( $data as $key => $value ) {
 			if( is_numeric($key) ){
-				//$key = apply_filters('tainacan-exposer-numeric-item-prefix', __('item', 'tainacan').'-', get_class($this)).$key; //dealing with <0/>..<n/> issues
+				$key = apply_filters('tainacan-exposer-numeric-item-prefix', __('item', 'tainacan').'-', get_class($this)).$key; //dealing with <0/>..<n/> issues
 			}
+			$heads[] = $key;
 			if( is_array($value) ) {
-				//$html .= $key.": ".$this->array_to_html($value, '['.$html.']\n');
+				$html .= '<td>'.$this->array_to_html($value).'</td>';
 			} else {
-				//$html .= $key.": ".$value .'\n';
+				$html .= '<td>'.htmlspecialchars($value).'</td>';
 			}
 		}
+		if(count($data > 0)) $html = '<th>'.implode('</th><th>', $heads).'</th>'.$html;
 		return $html;
 	}
 }
