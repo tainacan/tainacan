@@ -83,11 +83,9 @@
                     });
             },
             getValuesCategory( taxonomy, query ){
+                this.$console.log( query );
                 return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
                     for (let item of res.data) {
-                        this.$console.log(item.name, query , 'sdfsdddddf');
-                        this.$console.log(item.name, query , 'sdfsdddddf');
-                        this.$console.log(item.name, query , 'sdfsdddddf');
                         if( item.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 )
                             this.options.push(item);
                     }
