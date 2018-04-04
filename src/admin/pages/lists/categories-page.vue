@@ -24,7 +24,7 @@
                             :categories="categories"/>
                     <!-- Footer -->
                     <div 
-                            class="table-footer" 
+                            class="pagination-area" 
                             v-if="totalCategories > 0">
                         <div class="shown-items">
                             {{

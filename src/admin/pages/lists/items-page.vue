@@ -38,54 +38,17 @@
         <div class="columns above-subheader">
             <aside class="column filters-menu">
                 <h3>{{ $i18n.get('filters') }}</h3>
-                <filters-items-list/>
+                <filters-items-list />
             </aside>
             <div class="column table-container">
                 <items-list
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :pref-table-fields="prefTableFields"
-                        :total-items="totalItems"
-                        :page="page"
                         :items="items" 
-                        :is-loading="isLoading"
-                        :items-per-page="itemsPerPage"/>
-                <!-- Footer -->
-                <div class="table-footer">
-                    <div class="shown-items">
-                        {{ 
-                            $i18n.get('info_showing_items') +
-                            getFirstItem() +
-                            $i18n.get('info_to') + 
-                            getLastItemNumber() + 
-                            $i18n.get('info_of') + totalItems + '.'
-                        }} 
-                    </div> 
-                    <div class="items-per-page">
-                        <b-field 
-                                horizontal 
-                                :label="$i18n.get('label_items_per_page')"> 
-                            <b-select 
-                                    :value="itemsPerPage"
-                                    @input="onChangeItemsPerPage" 
-                                    :disabled="items.length <= 0">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="48">48</option>
-                                <option value="96">96</option>
-                            </b-select>
-                        </b-field>
-                    </div>
-                    <div class="pagination"> 
-                        <b-pagination
-                                @change="onPageChange"
-                                :total="totalItems"
-                                :current.sync="page"
-                                order="is-centered"
-                                size="is-small"
-                                :per-page="itemsPerPage"/> 
-                    </div>
-                </div>
+                        :is-loading="isLoading"/>
+                <!-- Pagination Footer -->
+                <pagination v-if="items.length > 0"/>
             </div>
         </div>      
     </div>
@@ -93,7 +56,8 @@
 
 <script>
 import ItemsList from '../../components/lists/items-list.vue';
-import FiltersItemsList from '../../components/lists/filters-items-list.vue';
+import FiltersItemsList from '../../components/search/filters-items-list.vue';
+import Pagination from '../../components/search/pagination.vue'
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -107,14 +71,10 @@ export default {
             isLoading: false
         }
     },
-    watch: {
-        page( value ){
-            this.page = ( value > 0 ) ? value : 1;
-        }
-    },
     components: {
         ItemsList,
-        FiltersItemsList
+        FiltersItemsList,
+        Pagination
     },
     methods: {
         ...mapActions('collection', [
@@ -126,10 +86,7 @@ export default {
             'getFields'
         ]),
         ...mapGetters('search', [
-            'getPostQuery',
-            'getTotalItems',
-            'getPage',
-            'getItemsPerPage'
+            'getPostQuery'
         ]),
         ...mapActions('fields', [
             'fetchFields'
@@ -139,8 +96,6 @@ export default {
         ]),
         ...mapActions('search', [
             'set_postquery',
-            'setPage',
-            'setItemsPerPage',
             'search_by_collection'
         ]),
         onChangeTableFields(field) {
@@ -161,92 +116,44 @@ export default {
 
             //this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
         },
-        onChangeItemsPerPage(value) {
-            if( this.itemsPerPage == value){
-                return false;
-            }
-
-            let prevValue = this.itemsPerPage;
-            this.setItemsPerPage( value );
-            this.$userPrefs.set('items_per_page', value, prevValue);
-            this.alterQueryString();
-            this.loadItems();
-        },
-        onPageChange(page) {
-            if(page == 0)
-                return;
-
-            this.setPage(  page );
-            this.alterQueryString();
-            this.loadItems();
-        },
         loadItems() {
             this.isLoading = true;
-            let promisse = null;
-
-            if( Object.keys( this.$route.query ).length > 0 ) {
-                this.set_postquery(this.$route.query);
-                if (this.$route.params && this.$route.params.collectionId) {
-                    promisse = this.search_by_collection(this.$route.params.collectionId);
-                }
-            }
-
-            if(!promisse){
-                promisse = this.fetchItems({ 'collectionId': this.collectionId, 'page': this.page, 'itemsPerPage': this.itemsPerPage });
-                this.alterQueryString();
-            }
-
-            promisse.then(() => {
-                this.isLoading = false;
-            })
-            .catch(() => {
-                this.isLoading = false;
-            });
-        },
-        getLastItemNumber() {
-            let last = (Number(this.itemsPerPage*(this.page - 1)) + Number(this.itemsPerPage));
             
-            return last > this.totalItems ? this.totalItems : last;
-        },
-        getFirstItem(){
-            if( this.totalItems == 0 )
-                return 0;
+            this.set_postquery(this.$route.query);            
 
-            return ( this.itemsPerPage * ( this.page - 1 ) + 1)
-        },
-        alterQueryString(){
-            this.$router.push({ query: {} });
-            this.$router.push({ query: this.getPostQuery() });
+            if (this.$route.params && this.$route.params.collectionId) {
+                this.search_by_collection(this.$route.params.collectionId).then(() => {
+                    this.isLoading = false;
+                })
+                .catch(() => {
+                    this.isLoading = false;
+                });
+            }
+        }
+    },
+    watch: {
+        '$route.query'() {
+            if (this.$route.query.perpage == undefined)
+                this.$route.query.perpage = 12;
+            if (this.$route.query.paged == undefined)
+                this.$route.query.paged = 1;
+
+            this.loadItems();
         }
     },
     computed: {
         items(){
             return this.getItems();
-        },
-        totalItems(){
-            return this.getTotalItems();
-        },
-        page(){
-            return this.getPage();
-        },
-        itemsPerPage(){
-            return this.getItemsPerPage();
         }
     },
     created() {
         this.collectionId = this.$route.params.collectionId;
-        this.isRepositoryLevel  = (this.collectionId == undefined);
-        
-        this.$userPrefs.get('items_per_page')
-        .then((value) => {
-            this.itemsPerPage = value;
-        })
-        .catch(() => {
-            this.$userPrefs.set('items_per_page', 12, null);
-        });     
+        this.isRepositoryLevel  = (this.collectionId == undefined);    
     },
     mounted(){
+
         this.loadItems();
+
         this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false }).then((res) => {
             let rawFields = res;
             this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', visible: true });

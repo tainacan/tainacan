@@ -4,6 +4,7 @@ import qs from 'qs';
 // METAQUERIES ----------------------------------------------------
 export const search_by_collection = ({  state, dispatch, commit }, collectionId) => {
     return new Promise((resolve, reject) =>{
+
         axios.tainacan.get('/collection/' + collectionId + '/items?' + qs.stringify( state.postquery ))
             .then(res => {
                 let items = res.data;
