@@ -163,7 +163,7 @@ export default {
                 );
             }
             this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
-   
+            this.$console.log(this.tableFields);
             this.prefTableFields = this.tableFields;
             // this.$userPrefs.get('table_columns_' + this.collectionId)
             //     .then((value) => {
