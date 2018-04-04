@@ -33,7 +33,7 @@
                     <router-link
                             class="clickable-row"
                             tag="span"
-                            :to="{path: $routerHelper.getCategoryPath(props.row.id)}">
+                            :to="{path: $routerHelper.getCategoryEditPath(props.row.id)}">
                         {{ props.row.name }}
                     </router-link>
                 </b-table-column>
@@ -48,7 +48,7 @@
                     <router-link 
                             class="clickable-row" 
                             tag="span" 
-                            :to="{path: $routerHelper.getCategoryPath(props.row.id)}">
+                            :to="{path: $routerHelper.getCategoryEditPath(props.row.id)}">
                         {{ props.row.description }}
                     </router-link>
                 </b-table-column>

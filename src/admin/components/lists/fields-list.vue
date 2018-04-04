@@ -38,7 +38,7 @@
                             <span   
                                     v-if="field.id != undefined"
                                     class="label-details">  
-                                 ({{ $i18n.get(field.field_type_object.component) }})  
+                                 ({{ $i18n.get(field.field_type_object.component) }}) <em>{{ (field.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>   
                                     <span 
                                         class="not-saved" 
                                         v-if="(editForms[field.id] != undefined && editForms[field.id].saved != true) || field.status == 'auto-draft'"> 

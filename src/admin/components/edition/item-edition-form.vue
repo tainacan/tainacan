@@ -19,7 +19,7 @@
                         v-model="form.status"
                         :placeholder="$i18n.get('instruction_select_a_status')">
                     <option
-                            id="{{'status-option-' + statusOption.value}}"
+                            :id="`status-option-${statusOption.value}`"
                             v-for="statusOption in statusOptions"
                             :key="statusOption.value"
                             :value="statusOption.value"

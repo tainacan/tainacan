@@ -7,10 +7,9 @@
             <div 
                     class="card-image" 
                     v-if="item.featured_image">
-                <figure class="image is-4by3">
+                <figure class="image">
                     <img 
                             :src="item.featured_image" 
-                            class="image" 
                             :alt="item.title">
                 </figure>
             </div>
@@ -18,7 +17,6 @@
                 <div class="media">
                     <div class="media-content">
                         <p class="title is-4">{{ item.title }}</p>
-                        <!--p class="subtitle is-6">@johnsmith</p-->
                     </div>
                 </div>
 
@@ -84,38 +82,5 @@ export default {
 
 }
 </script>
-
-<style scoped>
-
-    .time {
-        font-size: 13px;
-        color: #999;
-    }
-
-    .bottom {
-        margin-top: 13px;
-        line-height: 12px;
-    }
-
-    el-button {
-        padding: 0;
-        float: right;
-    }
-
-    .image {
-        width: 100%;
-        display: block;
-    }
-
-    .clearfix:before,
-    .clearfix:after {
-        display: table;
-        content: "";
-    }
-
-    .clearfix:after {
-        clear: both
-    }
-</style>
 
 

@@ -22,7 +22,7 @@
                         :collections-per-page="collectionsPerPage"
                         :collections="collections"/>  
                 <!-- Footer -->
-                <div class="table-footer">
+                <div class="pagination-area">
                     <div class="shown-items"> 
                         {{ 
                             $i18n.get('info_showing_collections') + 

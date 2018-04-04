@@ -4,8 +4,6 @@ namespace Tainacan\Field_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-use Tainacan\Helpers;
-
 /**
  * Class TainacanFieldType
  */

@@ -1,0 +1,130 @@
+<template>
+    <div class="pagination-area">
+        <div class="shown-items">
+            {{ 
+                $i18n.get('info_showing_items') +
+                getFirstItem() +
+                $i18n.get('info_to') + 
+                getLastItemNumber() + 
+                $i18n.get('info_of') + totalItems + '.'
+            }} 
+        </div> 
+        <div class="items-per-page">
+            <b-field 
+                    horizontal 
+                    :label="$i18n.get('label_items_per_page')"> 
+                <b-select 
+                        :value="itemsPerPage"
+                        @input="onChangeItemsPerPage">
+                    <option value="12">12</option>
+                    <option value="24">24</option>
+                    <option value="48">48</option>
+                    <option value="96">96</option>
+                </b-select>
+            </b-field>
+        </div>
+        <div class="pagination"> 
+            <b-pagination
+                    @change="onPageChange"
+                    :total="totalItems"
+                    :current.sync="page"
+                    order="is-centered"
+                    size="is-small"
+                    :per-page="itemsPerPage"/> 
+        </div>
+    </div>
+</template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex';
+import { eventFilterBus } from '../../../js/event-bus-filters'
+
+export default {
+    name: 'Pagination',
+    data(){
+        return {
+        }
+    },
+    computed: {
+        totalItems(){    
+            return this.getTotalItems();
+        },
+        page(){
+            return this.getPage();
+        },
+        itemsPerPage(){
+            return this.getItemsPerPage();
+        }
+    },
+    watch: {
+        page( value ){
+            this.page = ( value > 0 ) ? value : 1;
+        }
+    },
+    methods: {
+        ...mapGetters('search', [
+            'getTotalItems',
+            'getPage',
+            'getItemsPerPage',
+            'getPostQuery'
+        ]),
+        ...mapActions('search', [
+            'setPage',
+            'setItemsPerPage'
+        ]),
+        onChangeItemsPerPage(value) {
+            if( this.itemsPerPage == value){
+                return false;
+            }
+
+            let prevValue = this.itemsPerPage;
+            this.setItemsPerPage( value );
+            this.$userPrefs.set('items_per_page', value, prevValue);
+            
+            this.updateURLQueries();
+        },
+        onPageChange(page) {
+            if(page == 0)
+                return;
+
+            this.setPage( page );
+            this.updateURLQueries();
+        },
+        getLastItemNumber() {
+            let last = (Number(this.itemsPerPage*(this.page - 1)) + Number(this.itemsPerPage));
+            
+            return last > this.totalItems ? this.totalItems : last;
+        },
+        getFirstItem(){
+            if( this.totalItems == 0 )
+                return 0;
+
+            return ( this.itemsPerPage * ( this.page - 1 ) + 1)
+        },
+        updateURLQueries(){
+            this.$router.push({ query: {} });
+            this.$router.push({ query: this.getPostQuery() });
+        }
+    },
+    created () {
+        this.$userPrefs.get('items_per_page')
+        .then((value) => {
+            this.itemsPerPage = value;
+            this.setPage(this.page);
+            this.setItemsPerPage(this.itemsPerPage);
+            this.updateURLQueries();
+        })
+        .catch(() => {
+            this.$userPrefs.set('items_per_page', 12, null);
+            this.itemsPerPage = 12;
+            this.setPage(this.page);
+            this.setItemsPerPage(this.itemsPerPage);
+            this.updateURLQueries();
+        });
+    }
+}
+</script>
+
+<style scoped>
+
+</style>

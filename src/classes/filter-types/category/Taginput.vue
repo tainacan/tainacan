@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-taginput
+                size="is-small"
                 rounded
                 icon="magnify"
                 v-model="selected"
@@ -8,8 +9,7 @@
                 autocomplete
                 :loading="loading"
                 field="label"
-                @typing="search">
-        </b-taginput>
+                @typing="search" />
     </div>
 </template>
 
@@ -19,7 +19,7 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.collection_id;
+            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
         },
         data(){
@@ -30,8 +30,7 @@
                 isLoading: false,
                 type: '',
                 collection: '',
-                field: '',
-                selected: '',
+                field: ''
             }
         },
         props: {
@@ -64,19 +63,37 @@
             search( query ){
                 let promise = null;
                 this.options = [];
-                promise = this.getValuesCategory( this.field, query );
+                const q = query;
 
-                promise.then( data => {
-                    this.isLoading = false;
-                })
-                    .catch( error => {
-                        console.log('error select', error );
-                        this.isLoading = false;
+                axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                    .then( res => {
+                        let field = res.data;
+                        promise = this.getValuesCategory( field.field_type_options.taxonomy_id, q );
+
+                        promise.then( () => {
+                            this.isLoading = false;
+                        })
+                            .catch( error => {
+                                this.$console.log('error select', error );
+                                this.isLoading = false;
+                            });
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
                     });
             },
-            getValuesCategory( taxonomy ){
-                // TODO: get taxonomy terms
-            },
+            getValuesCategory( taxonomy, query ){
+                this.$console.log( query );
+                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
+                    for (let item of res.data) {
+                        if( item.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 )
+                            this.options.push(item);
+                    }
+                })
+                .catch(error => {
+                    this.$console.log(error);
+                });
+            }
         }
     }
 </script>

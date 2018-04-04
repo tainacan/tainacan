@@ -21,6 +21,10 @@ import FilterAutocomplete from '../../classes/filter-types/autocomplete/Autocomp
 import FilterCheckbox from '../../classes/filter-types/checkbox/Checkbox.vue';
 import FilterTaginput from '../../classes/filter-types/taginput/Taginput.vue';
 
+import FilterCategoryCheckbox from '../../classes/filter-types/category/Checkbox.vue';
+import FilterCategoryTaginput from '../../classes/filter-types/category/Taginput.vue';
+import FilterCategorySelectbox from '../../classes/filter-types/category/Selectbox.vue';
+
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filters-list.vue';
 
@@ -67,6 +71,9 @@ Vue.component('tainacan-filter-selectbox', FilterSelectbox);
 Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
 Vue.component('tainacan-filter-checkbox', FilterCheckbox);
 Vue.component('tainacan-filter-taginput', FilterTaginput);
+Vue.component('tainacan-filter-category-checkbox', FilterCategoryCheckbox);
+Vue.component('tainacan-filter-category-taginput', FilterCategoryTaginput);
+Vue.component('tainacan-filter-category-selectbox', FilterCategorySelectbox);
 
 /* Others */
 Vue.component('help-button', HelpButton);

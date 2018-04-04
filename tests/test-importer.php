@@ -10,10 +10,103 @@ use Tainacan\Importer;
 
 class ImporterTests extends TAINACAN_UnitTestCase {
 
+    public function test_intance_old_tainacan()
+    {
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'          => 'OtherOldTainacan',
+                'description'   => 'Collection from old tainacan',
+                'default_order' => 'DESC',
+                'status'		=> 'publish'
+            ),
+            true
+        );
+
+        $old_tainacan_importer = new Importer\Old_Tainacan();
+        $id = $old_tainacan_importer->get_id();
+        $_SESSION['tainacan_importer'][$id]->set_collection( $collection );
+        $this->assertEquals( $collection->get_id(),  $_SESSION['tainacan_importer'][$id]->collection->get_id() );
+
+        /*$_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wp-json/tainacan/v1/collections/860/items' );
+        $_SESSION['tainacan_importer'][$id]->process_item(2);*/
+    }
+    public function test_file_old_tainacan () {
+        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+
+        $old_tainacan = new Importer\Old_Tainacan();
+        $id = $old_tainacan->get_id();
+
+        $_SESSION['tainacan_importer'][$id]->set_items_per_step(2);
+
+        if(!copy('./tests/attachment/json_old_tainacan_base.txt', './tests/attachment/json_old_tainacan.txt'))
+        {
+            return false;
+        }
+
+        $_SESSION['tainacan_importer'][$id]->set_file( './tests/attachment/json_old_tainacan.txt' );
+
+        //$_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wp-json/tainacan/v1/collections/970/items' );
+
+        // file isset on importer
+        $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
+
+        // count size of old tainacan file
+        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_total_items() );
+
+        // get fields to mapping
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_fields();
+        $this->assertEquals( $headers[5], 'post_title' );
+
+        // inserting the collection
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'          => 'OtherOldTainacan',
+                'description'   => 'Collection from old tainacan',
+                'default_order' => 'DESC',
+                'status'		=> 'publish'
+            ),
+            true
+        );
+
+        // set the importer
+        $_SESSION['tainacan_importer'][$id]->set_collection( $collection );
+
+        // get collection fields to map
+        $fields = $Tainacan_Fields->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+
+        //create a random mapping
+        $map = [];
+        foreach ( $fields as $index => $field ){
+            $map[$field->get_id()] = $headers[$index];
+        }
+
+        // set the mapping
+        $_SESSION['tainacan_importer'][$id]->set_mapping( $map );
+
+        // check is equal
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_mapping(), $map );
+
+        //execute the process
+
+        $this->assertEquals(2, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 2 items');
+        $this->assertEquals(4, $_SESSION['tainacan_importer'][$id]->run(), 'second step should import 2 items');
+        $this->assertEquals(5, $_SESSION['tainacan_importer'][$id]->run(), 'third step should import 1 item');
+
+        $this->assertEquals(5, $_SESSION['tainacan_importer'][$id]->run(), 'if call run again after finish, do nothing');
+
+        $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
+
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_total_items(), count( $items ) );
+
+    }
     /**
      * @group importer
      */
     public function test_instance_csv () {
+
         $collection = $this->tainacan_entity_factory->create_entity(
             'collection',
             array(

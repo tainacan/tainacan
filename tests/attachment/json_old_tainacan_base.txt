@@ -1,0 +1,152 @@
+{
+ "found_items": "5",
+ "items_per_page": 5,
+ "page": 1,
+ "items": [
+   {
+     "item": {
+       "ID": 1019,
+       "post_author": "1",
+       "post_date": "2018-04-03 13:47:04",
+       "post_date_gmt": "2018-04-03 16:47:04",
+       "post_content": "",
+       "post_title": "Tesla Model X - Teste Webmotors em Las Vegas",
+       "post_excerpt": "",
+       "post_status": "publish",
+       "comment_status": "open",
+       "ping_status": "closed",
+       "post_name": "tesla-model-x-teste-webmotors-em-las-vegas",
+       "post_modified": "2018-04-03 13:47:04",
+       "post_modified_gmt": "2018-04-03 16:47:04",
+       "post_content_filtered": "",
+       "post_parent": 970,
+       "guid": "http:\/\/localhost\/colecao\/colecao-de-testes\/tesla-model-x-teste-webmotors-em-las-vegas",
+       "comment_count": "0",
+       "filter": "raw",
+       "link": [
+         {
+           "rel": "self",
+           "href": "http:\/\/localhost\/wp-json\/tainacan\/v1\/collections\/970\/items\/1019"
+         }
+       ],
+       "thumbnail": "http:\/\/localhost\/wp-content\/uploads\/2018\/04\/unnamed-file.jpg"
+     }
+   },
+   {
+     "item": {
+       "ID": 1018,
+       "post_author": "1",
+       "post_date": "2018-04-03 13:44:27",
+       "post_date_gmt": "2018-04-03 16:44:27",
+       "post_content": "",
+       "post_title": "Roads_Autumn_Forests_Trees_7867x5172",
+       "post_excerpt": "",
+       "post_status": "publish",
+       "comment_status": "open",
+       "ping_status": "closed",
+       "post_name": "roads_autumn_forests_trees_7867x5172-2",
+       "post_modified": "2018-04-03 13:44:33",
+       "post_modified_gmt": "2018-04-03 16:44:33",
+       "post_content_filtered": "",
+       "post_parent": 970,
+       "guid": "http:\/\/localhost\/colecao\/colecao-de-testes\/roads_autumn_forests_trees_7867x5172-2",
+       "comment_count": "0",
+       "filter": "raw",
+       "link": [
+         {
+           "rel": "self",
+           "href": "http:\/\/localhost\/wp-json\/tainacan\/v1\/collections\/970\/items\/1018"
+         }
+       ],
+       "thumbnail": "http:\/\/localhost\/wp-content\/uploads\/2018\/04\/Roads_Autumn_Forests_Trees_7867x5172.jpg"
+     }
+   },
+   {
+     "item": {
+       "ID": 1017,
+       "post_author": "1",
+       "post_date": "2018-04-03 13:44:26",
+       "post_date_gmt": "2018-04-03 16:44:26",
+       "post_content": "",
+       "post_title": "Times_Square_new_york_usa_city_cities_neon_lights_traffic_crowd_people__o_6000x4000",
+       "post_excerpt": "",
+       "post_status": "publish",
+       "comment_status": "open",
+       "ping_status": "closed",
+       "post_name": "times_square_new_york_usa_city_cities_neon_lights_traffic_crowd_people__o_6000x4000-2",
+       "post_modified": "2018-04-03 13:44:32",
+       "post_modified_gmt": "2018-04-03 16:44:32",
+       "post_content_filtered": "",
+       "post_parent": 970,
+       "guid": "http:\/\/localhost\/colecao\/colecao-de-testes\/times_square_new_york_usa_city_cities_neon_lights_traffic_crowd_people__o_6000x4000-2",
+       "comment_count": "0",
+       "filter": "raw",
+       "link": [
+         {
+           "rel": "self",
+           "href": "http:\/\/localhost\/wp-json\/tainacan\/v1\/collections\/970\/items\/1017"
+         }
+       ],
+       "thumbnail": "http:\/\/localhost\/wp-content\/uploads\/2018\/04\/Times_Square_new_york_usa_city_cities_neon_lights_traffic_crowd_people__o_6000x4000.jpg"
+     }
+   },
+   {
+     "item": {
+       "ID": 1002,
+       "post_author": "1",
+       "post_date": "2018-04-03 13:41:51",
+       "post_date_gmt": "2018-04-03 16:41:51",
+       "post_content": "Item 2",
+       "post_title": "Item 2",
+       "post_excerpt": "",
+       "post_status": "publish",
+       "comment_status": "open",
+       "ping_status": "closed",
+       "post_name": "item-2",
+       "post_modified": "2018-04-03 13:43:37",
+       "post_modified_gmt": "2018-04-03 16:43:37",
+       "post_content_filtered": "",
+       "post_parent": 970,
+       "guid": "http:\/\/localhost\/colecao\/colecao-de-testes\/item-2",
+       "comment_count": "0",
+       "filter": "raw",
+       "link": [
+         {
+           "rel": "self",
+           "href": "http:\/\/localhost\/wp-json\/tainacan\/v1\/collections\/970\/items\/1002"
+         }
+       ],
+       "thumbnail": "http:\/\/localhost\/wp-content\/uploads\/2018\/04\/giau-pass-2880x1800-mountain-pass-fall-sunset-italy-4k-11444.jpg"
+     }
+   },
+   {
+     "item": {
+       "ID": 978,
+       "post_author": "1",
+       "post_date": "2018-04-03 13:40:49",
+       "post_date_gmt": "2018-04-03 16:40:49",
+       "post_content": "Item 1",
+       "post_title": "Item 1",
+       "post_excerpt": "",
+       "post_status": "publish",
+       "comment_status": "open",
+       "ping_status": "closed",
+       "post_name": "item-1",
+       "post_modified": "2018-04-03 13:41:46",
+       "post_modified_gmt": "2018-04-03 16:41:46",
+       "post_content_filtered": "",
+       "post_parent": 970,
+       "guid": "http:\/\/localhost\/colecao\/colecao-de-testes\/item-1",
+       "comment_count": "0",
+       "filter": "raw",
+       "link": [
+         {
+           "rel": "self",
+           "href": "http:\/\/localhost\/wp-json\/tainacan\/v1\/collections\/970\/items\/978"
+         }
+       ],
+       "thumbnail": "http:\/\/localhost\/wp-content\/uploads\/2018\/04\/autumn-leaves-2880x1800-hd-4k-11825-1.jpg"
+     }
+   }
+ ]
+}
