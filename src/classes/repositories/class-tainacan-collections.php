@@ -138,14 +138,16 @@ class Collections extends Repository {
 			'fields_order'      => [
 				'map'         => 'meta',
 				'title'       => __( 'Ordination fields', 'tainacan' ),
-				'type'        => 'array',
+				'type'       => 'array/object/string',
+				'items'      => ['type' => 'array/string/integer/object'],
 				'description' => __( 'Collection fields ordination', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'filters_order'     => [
 				'map'         => 'meta',
 				'title'       => __( 'Ordination filters', 'tainacan' ),
-				'type'        => 'array',
+				'type'       => 'array/object/string',
+				'items'      => ['type' => 'array/string/integer/object'],
 				'description' => __( 'Collection filters ordination', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
