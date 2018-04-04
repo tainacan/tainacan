@@ -23,8 +23,9 @@
                 backend-sorting>
             <template slot-scope="props">
                 <b-table-column 
-                        v-for="(column) in tableFields"
-                        :key="column.slug"
+                        v-for="(column, index) in tableFields"
+                        :key="index"
+                        :custom-key="column.slug"
                         :label="column.label"
                         :visible="column.visible"
                         :width="column.field == 'row_actions' ? 78 : column.field == 'featured_image' ? 55 : undefined ">
