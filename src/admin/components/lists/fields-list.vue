@@ -302,7 +302,7 @@ export default {
             this.collectionId = this.$route.params.collectionId;
         
 
-        this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
+        this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true})
             .then(() => {
                 this.isLoadingFields = false;
             })

@@ -68,27 +68,20 @@ export default {
             'getItemsPerPage',
             'getPostQuery'
         ]),
-        ...mapActions('search', [
-            'setPage',
-            'setItemsPerPage'
-        ]),
         onChangeItemsPerPage(value) {
             if( this.itemsPerPage == value){
                 return false;
             }
-
-            let prevValue = this.itemsPerPage;
-            this.setItemsPerPage( value );
-            this.$userPrefs.set('items_per_page', value, prevValue);
             
-            this.updateURLQueries();
+            let prevValue = this.itemsPerPage;
+            this.itemsPerPage = value;
+            eventFilterBus.setItemsPerPage(value);
+            this.$userPrefs.set('items_per_page', value, prevValue);
         },
         onPageChange(page) {
             if(page == 0)
                 return;
-
-            this.setPage( page );
-            this.updateURLQueries();
+            eventFilterBus.setPage(this.page);
         },
         getLastItemNumber() {
             let last = (Number(this.itemsPerPage*(this.page - 1)) + Number(this.itemsPerPage));
@@ -101,25 +94,19 @@ export default {
 
             return ( this.itemsPerPage * ( this.page - 1 ) + 1)
         },
-        updateURLQueries(){
-            this.$router.push({ query: {} });
-            this.$router.push({ query: this.getPostQuery() });
-        }
     },
     created () {
         this.$userPrefs.get('items_per_page')
         .then((value) => {
             this.itemsPerPage = value;
-            this.setPage(this.page);
-            this.setItemsPerPage(this.itemsPerPage);
-            this.updateURLQueries();
+            eventFilterBus.setPage(this.page);
+            eventFilterBus.setItemsPerPage(this.itemsPerPage);
         })
         .catch(() => {
             this.$userPrefs.set('items_per_page', 12, null);
             this.itemsPerPage = 12;
-            this.setPage(this.page);
-            this.setItemsPerPage(this.itemsPerPage);
-            this.updateURLQueries();
+            eventFilterBus.setPage(this.page);
+            eventFilterBus.setItemsPerPage(this.itemsPerPage);
         });
     }
 }

@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import store from './store/store'
+import router from './../admin/js/router.js';
 
 export const eventFilterBus = new Vue({
+    router,
     store,
     data: {
         componentsTag: [],
@@ -10,6 +12,11 @@ export const eventFilterBus = new Vue({
     },
     created(){
         this.$on('input', data => this.add_metaquery(data) );
+    },
+    watch: {
+        '$route.query' () {
+            console.log(this.$route.query);
+        }
     },
     methods: {
         add_metaquery( data ){
@@ -57,5 +64,15 @@ export const eventFilterBus = new Vue({
                 });
             }
         },
+        setPage(page) {
+            store.dispatch('search/setPage', page);
+            router.push({ query: {} });
+            router.push({ query: store.getters['search/getPostQuery'] });
+        },
+        setItemsPerPage(itemsPerPage) {
+            store.dispatch('search/setItemsPerPage', itemsPerPage);
+            router.push({ query: {} });
+            router.push({ query: store.getters['search/getPostQuery'] });
+        }
     }
 });

@@ -1,7 +1,7 @@
 import axios from '../../../axios/axios';
 import qs from 'qs';
 
-export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel}) => {
+export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
@@ -9,7 +9,10 @@ export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel}) => {
         else
             endpoint = '/fields/';
 
-        axios.tainacan.get(endpoint + '?context=edit')
+        if (isContextEdit)
+            endpoint += '?context=edit';
+
+        axios.tainacan.get(endpoint)
         .then((res) => {
             let fields= res.data;
             commit('setFields', fields);

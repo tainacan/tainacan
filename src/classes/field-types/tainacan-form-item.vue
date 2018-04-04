@@ -4,6 +4,10 @@
             :label="field.field.name"
             :message="getErrorMessage"
             :type="fieldTypeMessage">
+             <span
+                    v-if="field.field.required == 'yes'" 
+                    class="required-field-asterisk" 
+                    :class="fieldTypeMessage">*</span> 
         <help-button 
                 :title="field.field.name" 
                 :message="field.field.description"/>

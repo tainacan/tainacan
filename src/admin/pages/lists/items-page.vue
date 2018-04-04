@@ -154,7 +154,7 @@ export default {
 
         this.loadItems();
 
-        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false }).then((res) => {
+        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false }).then((res) => {
             let rawFields = res;
             this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', visible: true });
             for (let field of rawFields) {
