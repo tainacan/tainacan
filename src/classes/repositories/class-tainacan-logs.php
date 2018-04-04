@@ -186,7 +186,7 @@ class Logs extends Repository {
 
 		} elseif ( is_array( $args ) ) {
 			$args = array_merge( [
-				'posts_per_page' => 1,
+				'posts_per_page' => -1,
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );
@@ -210,7 +210,7 @@ class Logs extends Repository {
 	public function fetch_last() {
 		$args = [
 			'post_type'      => Entities\Log::get_post_type(),
-			'posts_per_page' => 1,
+			'posts_per_page' => -1,
 		];
 
 		$logs = $this->fetch( $args, 'OBJECT' );

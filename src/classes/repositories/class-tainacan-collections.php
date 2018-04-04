@@ -12,25 +12,23 @@ use Tainacan\Entities\Collection;
 class Collections extends Repository {
 	public $entities_type = '\Tainacan\Entities\Collection';
 
-    private static $instance = null;
+	private static $instance = null;
 
-    public static function getInstance()
-    {
-        if(!isset(self::$instance))
-        {
-            self::$instance = new self();
-        }
+	public static function getInstance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new self();
+		}
 
-        return self::$instance;
-    }
+		return self::$instance;
+	}
 
-    /**
-     * Collections constructor.
-     */
-    protected function __construct() {
-        parent::__construct();
-        add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
-    }
+	/**
+	 * Collections constructor.
+	 */
+	protected function __construct() {
+		parent::__construct();
+		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -138,16 +136,16 @@ class Collections extends Repository {
 			'fields_order'      => [
 				'map'         => 'meta',
 				'title'       => __( 'Ordination fields', 'tainacan' ),
-				'type'       => 'array/object/string',
-				'items'      => ['type' => 'array/string/integer/object'],
+				'type'        => 'array/object/string',
+				'items'       => [ 'type' => 'array/string/integer/object' ],
 				'description' => __( 'Collection fields ordination', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'filters_order'     => [
 				'map'         => 'meta',
 				'title'       => __( 'Ordination filters', 'tainacan' ),
-				'type'       => 'array/object/string',
-				'items'      => ['type' => 'array/string/integer/object'],
+				'type'        => 'array/object/string',
+				'items'       => [ 'type' => 'array/string/integer/object' ],
 				'description' => __( 'Collection filters ordination', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
