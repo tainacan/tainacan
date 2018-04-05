@@ -77,6 +77,7 @@ abstract class Repository {
 		}
 
 		$old = $obj;
+		if( $obj->get_id() ) $old = $obj->get_repository()->fetch($obj->get_id()); //TODO get props obj before update
 		
 		$map = $this->get_map();
 
