@@ -14,30 +14,32 @@ class Dublin_Core extends Mapper {
 	public $options = [];
 	
 	public function rest_response($item_arr, $request) {
+		$ret = $item_arr;
 		if(array_key_exists('field', $item_arr)){ // getting a unique field
 			$field_mapping = $item_arr['field']['exposer_mapping'];
 			if(array_key_exists('dublin-core', $field_mapping)) {
-				$item_arr = ['dc:'.$field_mapping['dublin-core']['name'] => $item_arr['value']];
+				$ret = ['dc:'.$field_mapping['dublin-core']['name'] => $item_arr['value']];
 			}
 		} else { // array of elements
-			$item_arr = [];
+			$ret = [];
 			foreach ($item_arr as $item_field) {
 				$field_mapping = $item_field['field']['exposer_mapping'];
 				if(array_key_exists('dublin-core', $field_mapping)) {
-					$item_arr['dc:'.$field_mapping['dublin-core']['name']] = $item_field['value'];
+					$ret['dc:'.$field_mapping['dublin-core']['name']] = $item_field['value'];
 				}
 			}
-			$body = json_decode( $request->get_body(), true );
 		}
+		$body = json_decode( $request->get_body(), true );
 		if( // treat special cases TODO better way
 			is_array($body) && array_key_exists('exposer-type', $body) &&
 			strtolower($body['exposer-type']) == 'xml'
 		) {
+			
 			add_filter('tainacan-exposer-head', [$this, 'tainacan_xml_exposer_head']);
 			add_filter('tainacan-xml-namespace', function($namespace) {return self::XML_DC_NAMESPACE;});
 			add_filter('tainacan-xml-root', function($xml) { return $xml->addChild('rdf:Description'); });
 		}
-		return $item_arr;
+		return $ret;
 	}
 	
 	public function tainacan_xml_exposer_head($head) {
