@@ -19,6 +19,7 @@ class Exposers {
 		$this->register_exposer_type('Tainacan\Exposers\Types\OAI_PMH');
 		do_action('tainacan-register-exposer-types');
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Dublin_Core');
+		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Value');
 		do_action('tainacan-register-exposer-mappers');
 		
 		
