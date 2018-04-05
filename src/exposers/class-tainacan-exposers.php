@@ -66,15 +66,7 @@ class Exposers {
 	
 	public function rest_response($item_arr, $request) {
 		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
-			$body = json_decode( $request->get_body(), true );
-			$class_prefix = 'Tainacan\Exposers\Mappers\\';
-			
-			if(
-				is_array($body) && array_key_exists('exposer-map', $body) &&
-				in_array($this->check_class_name($body['exposer-map'], false, $class_prefix), $this->mappers)
-			) {
-				$type = $this->check_class_name($body['exposer-map'], true, $class_prefix);
-				$exposer = new $type;
+			if($exposer = $this->hasMapper($request)) {
 				return $exposer->rest_response($item_arr, $request);
 			}
 		}
@@ -90,17 +82,40 @@ class Exposers {
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
-			$body = json_decode( $request->get_body(), true );
-			if(
-				is_array($body) && array_key_exists('exposer-type', $body) &&
-				in_array($this->check_class_name($body['exposer-type']), $this->types)
-			) {
-				$type = $this->check_class_name($body['exposer-type'], true);
-				$exposer = new $type;
+			if($exposer = $this->hasType($request)) {
 				return $exposer->rest_request_after_callbacks($response, $handler, $request);
 			}
 		}
 		// default JSON response
 		return $response;
+	}
+	
+	/**
+	 * Return Type with request has type, false otherwise
+	 * @param \WP_REST_Request $request
+	 * @return Types\Type|boolean
+	 */
+	public function hasType($request) {
+		$body = json_decode( $request->get_body(), true );
+		if(
+			is_array($body) && array_key_exists('exposer-type', $body) &&
+			in_array($this->check_class_name($body['exposer-type']), $this->types)
+		) {
+			$type = $this->check_class_name($body['exposer-type'], true);
+			return new $type;
+		}
+		return false;
+	}
+	
+	public function hasMapper($request) {
+		$body = json_decode( $request->get_body(), true );
+		$class_prefix = 'Tainacan\Exposers\Mappers\\';
+		if(
+			is_array($body) && array_key_exists('exposer-map', $body) &&
+			in_array($this->check_class_name($body['exposer-map'], false, $class_prefix), $this->mappers)
+		) {
+			$mapper = $this->check_class_name($body['exposer-map'], true, $class_prefix);
+			return new $mapper;
+		}
 	}
 }
