@@ -1,26 +1,43 @@
 <template>
-    <div class="header-item">
-        <b-dropdown>
-            <button 
-                    class="button" 
-                    slot="trigger">
-                <span>{{ $i18n.get('label_table_fields') }}</span>
-                <b-icon icon="menu-down"/>
+    <span>
+        <div class="header-item">
+            <b-dropdown>
+                <button 
+                        class="button" 
+                        slot="trigger">
+                    <span>{{ $i18n.get('label_table_fields') }}</span>
+                    <b-icon icon="menu-down"/>
+                </button>
+                <b-dropdown-item 
+                        v-for="(column, index) in tableFields" 
+                        :key="index"
+                        class="control" 
+                        custom>
+                    <b-checkbox
+                            @input="onChangeTableFields(column)"
+                            v-model="column.visible" 
+                            :native-value="column.field">
+                        {{ column.label }}
+                    </b-checkbox>
+                </b-dropdown-item>
+            </b-dropdown>
+        </div>
+        <div class="header-item">
+            <b-field>
+            <b-select :placeholder="$i18n.get('label_sorting')">
+                <option
+                    v-for="(field, index) in tableFields"
+                    :value="field"
+                    :key="index">
+                    {{ field.label }}
+                </option>
+            </b-select>
+            <button>
+                <b-icon icon="sort-ascending"/>
             </button>
-            <b-dropdown-item 
-                    v-for="(column, index) in tableFields" 
-                    :key="index"
-                    class="control" 
-                    custom>
-                <b-checkbox
-                        @input="onChangeTableFields(column)"
-                        v-model="column.visible" 
-                        :native-value="column.field">
-                    {{ column.label }}
-                </b-checkbox>
-            </b-dropdown-item>
-        </b-dropdown>
-    </div>
+            </b-field>
+        </div>
+    </span>
 </template>
 
 <script>
@@ -77,4 +94,12 @@ export default {
     }
 }
 </script>
+
+<style>
+    .header-item {
+        display: inline-block;
+        padding-right: 8em;
+    }
+</style>
+
 

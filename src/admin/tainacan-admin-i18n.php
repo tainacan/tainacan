@@ -132,6 +132,7 @@ return [
 	'label_no_parent_term'                     => __( 'No parent term', 'tainacan' ),
 	'label_term_without_name'                  => __( 'Term without name', 'tainacan' ),
 	'label_inherited'						   => __( 'Inherited', 'tainacan' ),
+	'label_sorting'							   => __( 'Sorting', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
