@@ -156,6 +156,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		
 		$item_exposer_json = json_encode([
 			'exposer-type'       => 'Html',
+			'exposer-map'       => 'Value'
 		]);
 		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
 		$request->set_body($item_exposer_json);
@@ -163,7 +164,36 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
 		
-		var_dump($data);
+		// Parse HTML reponse
+		$doc = new \DOMDocument();
+		$this->assertTrue($doc->loadHTML($data));
+		
+		$headers = $doc->getElementsByTagName('th');
+		$values = $doc->getElementsByTagName('td');
+		
+		$htmlheaders = [];
+		
+		foreach($headers as $nodeHeader) {
+			$htmlheaders[] = trim($nodeHeader->textContent);
+		}
+		
+		$htmlValues = [];
+		$row = 0;
+		$col = 0;
+		foreach ($values as $nodeValue) {
+			if(!array_key_exists($row, $htmlValues)) $htmlValues[$row] = [];
+			$htmlValues[$row][$htmlheaders[$col]] = trim($nodeValue->textContent);
+			$col++;
+			if(count($htmlValues[$row]) == count($htmlheaders)) {
+				$row++;
+				$col = 0;
+			}
+		}
+		// End of Parse HTML reponse
+		
+		$this->assertEquals('adasdasdsa', $htmlValues[0]['Description']);
+		$this->assertEquals('', $htmlValues[0]['teste_Expose']);
+		$this->assertEquals('item_teste_Expose', $htmlValues[0]['Title']);
 	}
 	
 }
