@@ -28,7 +28,7 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'log_inserts' ) );
+		add_action( 'tainacan-insert', array( $this, 'log_inserts' ), 10, 2 );
 	}
 
 	public function get_map() {
