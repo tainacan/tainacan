@@ -76,6 +76,8 @@ abstract class Repository {
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
+		$old = $obj;
+		
 		$map = $this->get_map();
 
 		// First iterate through the native post properties
@@ -110,7 +112,7 @@ abstract class Repository {
 			set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
 		}
 
-		do_action( 'tainacan-insert', $obj );
+		do_action( 'tainacan-insert', $obj, $old );
 		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
 
 		// return a brand new object
