@@ -102,7 +102,6 @@ export default {
     props: {
         collectionId: Number,
         tableFields: Array,
-        prefTableFields: Array,
         items: Array,
         isLoading: false
     },

@@ -18,15 +18,17 @@ export const eventSearchBus = new Vue({
         });
     },
     watch: {
-        '$route.query' () {
-            if (this.$route.query.perpage == undefined)
-                this.$route.query.perpage = 12;
-            if (this.$route.query.paged == undefined)
-                this.$route.query.paged = 1;
+        '$route.query' () {     
+            if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
+                if (this.$route.query.perpage == undefined)
+                    this.$route.query.perpage = 12;
+                if (this.$route.query.paged == undefined)
+                    this.$route.query.paged = 1;
 
-            store.dispatch('search/set_postquery', this.$route.query);
-            //console.log(this.$route.query);
-            this.loadItems();
+                store.dispatch('search/set_postquery', this.$route.query);
+                //console.log(this.$route.query);
+                this.loadItems();
+            } 
         }
     },
     methods: {
@@ -65,16 +67,14 @@ export const eventSearchBus = new Vue({
             store.dispatch('search/set_postquery', this.$route.query);
         },
         loadItems() {
-            //this.isLoading = true;            
-
-            if (this.$route.params && this.$route.params.collectionId) {
-                store.dispatch('collection/fetchItems', this.$route.params.collectionId).then(() => {
-                    //this.isLoading = false;
-                })
-                .catch(() => {
-                    //this.isLoading = false;
-                });
-            }
+            this.$emit( 'isLoadingItems', true);        
+            store.dispatch('collection/fetchItems', this.$route.params.collectionId).then(() => {
+                this.$emit( 'isLoadingItems', false);
+            })
+            .catch(() => {
+                this.$emit( 'isLoadingItems', false);
+            });
+            
         },
 
          /* Dev interfaces methods */

@@ -4,7 +4,11 @@ import qs from 'qs';
 export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
     return new Promise ((resolve, reject) => {
         let postQueries = rootGetters['search/getPostQuery'];
-        axios.tainacan.get('/collection/'+collectionId+'/items?' + qs.stringify(postQueries) )
+        let endpoint = '/collection/'+collectionId+'/items?'
+        if (collectionId == undefined)
+            endpoint = '/items?'
+        
+        axios.tainacan.get(endpoint + qs.stringify(postQueries) )
         .then(res => {
             let items = res.data;
             commit('setItems', items );
