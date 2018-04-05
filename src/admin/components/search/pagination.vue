@@ -37,7 +37,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { eventFilterBus } from '../../../js/event-bus-filters'
+import { eventSearchBus } from '../../../js/event-search-bus'
 
 export default {
     name: 'Pagination',
@@ -59,7 +59,7 @@ export default {
     watch: {
         page( value ){
             if (value < 1)
-                eventFilterBus.setPage(1);
+                eventSearchBus.setPage(1);
         }
     },
     methods: {
@@ -75,13 +75,13 @@ export default {
             }
             
             let prevValue = this.itemsPerPage;
-            eventFilterBus.setItemsPerPage(value);
+            eventSearchBus.setItemsPerPage(value);
             this.$userPrefs.set('items_per_page', value, prevValue);
         },
         onPageChange(page) {
             if(page == 0)
                 return;
-            eventFilterBus.setPage(page);
+            eventSearchBus.setPage(page);
         },
         getLastItemNumber() {
             let last = (Number(this.itemsPerPage*(this.page - 1)) + Number(this.itemsPerPage));

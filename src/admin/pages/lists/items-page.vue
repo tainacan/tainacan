@@ -58,7 +58,7 @@
 import ItemsList from '../../components/lists/items-list.vue';
 import FiltersItemsList from '../../components/search/filters-items-list.vue';
 import Pagination from '../../components/search/pagination.vue'
-import { eventFilterBus } from '../../../js/event-bus-filters'
+import { eventSearchBus } from '../../../js/event-search-bus'
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -113,8 +113,8 @@ export default {
         this.isRepositoryLevel  = (this.collectionId == undefined);      
     },
     mounted(){
-        eventFilterBus.updateStoreFromURL();
-        eventFilterBus.loadItems();
+        eventSearchBus.updateStoreFromURL();
+        eventSearchBus.loadItems();
 
         this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false }).then((res) => {
             let rawFields = res;

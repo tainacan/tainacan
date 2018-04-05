@@ -2,7 +2,7 @@ import Vue from 'vue';
 import store from './store/store'
 import router from './../admin/js/router.js';
 
-export const eventFilterBus = new Vue({
+export const eventSearchBus = new Vue({
     router,
     store,
     data: {
