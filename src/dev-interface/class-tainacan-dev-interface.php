@@ -53,7 +53,11 @@ class DevInterface {
             'nonce' => wp_create_nonce( 'wp_rest' ),
             'components' => $components
         ];
-
+		
+		$tainacan_settings = \Tainacan\Admin::getInstance()->get_admin_js_localization_params();
+		
+		$settings = array_merge($settings, $tainacan_settings);
+		
         wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/dev_admin-components.js', [] , null, true);
 	    wp_localize_script( 'tainacan-dev-admin', 'tainacan_plugin', $settings );
     }
