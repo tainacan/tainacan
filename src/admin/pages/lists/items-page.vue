@@ -58,6 +58,7 @@
 import ItemsList from '../../components/lists/items-list.vue';
 import FiltersItemsList from '../../components/search/filters-items-list.vue';
 import Pagination from '../../components/search/pagination.vue'
+import { eventFilterBus } from '../../../js/event-bus-filters'
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -86,9 +87,6 @@ export default {
         ...mapActions('fields', [
             'fetchFields'
         ]),
-        ...mapActions('search', [
-            'search_by_collection'
-        ]),
         onChangeTableFields(field) {
             // let prevValue = this.prefTableFields;
             // let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
@@ -103,23 +101,6 @@ export default {
             //     this.$console.log(oldField.slug, oldField.visible);
 
             // this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
-        },
-        loadItems() {
-            this.isLoading = true;            
-
-            if (this.$route.params && this.$route.params.collectionId) {
-                this.search_by_collection(this.$route.params.collectionId).then(() => {
-                    this.isLoading = false;
-                })
-                .catch(() => {
-                    this.isLoading = false;
-                });
-            }
-        }
-    },
-    watch: {
-        '$route.query'() {
-            this.loadItems();
         }
     },
     computed: {
@@ -129,11 +110,11 @@ export default {
     },
     created() {
         this.collectionId = this.$route.params.collectionId;
-        this.isRepositoryLevel  = (this.collectionId == undefined);    
+        this.isRepositoryLevel  = (this.collectionId == undefined);      
     },
     mounted(){
-
-        this.loadItems();
+        eventFilterBus.updateStoreFromURL();
+        eventFilterBus.loadItems();
 
         this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false }).then((res) => {
             let rawFields = res;

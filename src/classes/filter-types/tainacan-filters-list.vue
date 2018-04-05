@@ -57,7 +57,6 @@
                 'getPostQuery'
             ]),
             listen( event ){
-                this.setPage(1);
                 eventFilterBus.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
             },
             setFilterTypeMessage( message ){

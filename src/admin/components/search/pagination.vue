@@ -58,7 +58,8 @@ export default {
     },
     watch: {
         page( value ){
-            this.page = ( value > 0 ) ? value : 1;
+            if (value < 1)
+                eventFilterBus.setPage(1);
         }
     },
     methods: {
@@ -74,14 +75,13 @@ export default {
             }
             
             let prevValue = this.itemsPerPage;
-            this.itemsPerPage = value;
             eventFilterBus.setItemsPerPage(value);
             this.$userPrefs.set('items_per_page', value, prevValue);
         },
         onPageChange(page) {
             if(page == 0)
                 return;
-            eventFilterBus.setPage(this.page);
+            eventFilterBus.setPage(page);
         },
         getLastItemNumber() {
             let last = (Number(this.itemsPerPage*(this.page - 1)) + Number(this.itemsPerPage));
@@ -95,20 +95,6 @@ export default {
             return ( this.itemsPerPage * ( this.page - 1 ) + 1)
         },
     },
-    created () {
-        this.$userPrefs.get('items_per_page')
-        .then((value) => {
-            this.itemsPerPage = value;
-            eventFilterBus.setPage(this.page);
-            eventFilterBus.setItemsPerPage(this.itemsPerPage);
-        })
-        .catch(() => {
-            this.$userPrefs.set('items_per_page', 12, null);
-            this.itemsPerPage = 12;
-            eventFilterBus.setPage(this.page);
-            eventFilterBus.setItemsPerPage(this.itemsPerPage);
-        });
-    }
 }
 </script>
 
