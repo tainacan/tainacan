@@ -16,7 +16,7 @@ class Html extends Type {
 				<body>
 					<table>
 		';
-						$html = $this->array_to_html($response->get_data());
+						$html .= $this->array_to_html($response->get_data());
 						$html .= '
 					</table>
 				</body>
@@ -49,7 +49,7 @@ class Html extends Type {
 				$html .= '<td>'.htmlspecialchars($value).'</td>';
 			}
 		}
-		if(count($data > 0)) $html = '<th>'.implode('</th><th>', $heads).'</th>'.$html;
+		if(count($data > 0)) $html = '<th>'.implode('</th><th>', $heads).'</th><tr>'.$html.'</tr>';
 		return $html;
 	}
 }
