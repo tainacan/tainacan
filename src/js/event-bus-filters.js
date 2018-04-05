@@ -11,23 +11,27 @@ export const eventFilterBus = new Vue({
         query: {}
     },
     created(){
-        this.$on('input', data => this.add_metaquery(data) );
+        this.$on('input', data => {
+            this.add_metaquery(data) 
+            router.push({ query: {} });
+            router.push({ query: store.getters['search/getPostQuery'] });
+        });
     },
     watch: {
         '$route.query' () {
-            console.log(this.$route.query);
+            if (this.$route.query.perpage == undefined)
+                this.$route.query.perpage = 12;
+            if (this.$route.query.paged == undefined)
+            this.$route.query.paged = 1;
+
+            store.dispatch('search/set_postquery', this.$route.query);
+            //console.log(this.$route.query);
         }
     },
     methods: {
         add_metaquery( data ){
             if ( data && data.collection_id ){
                 store.dispatch('search/add_metaquery', data );
-                const promisse = store.dispatch('search/search_by_collection', data.collection_id );
-                promisse.then( response => {
-
-                }, error => {
-
-                });
             }
         },
         getErrors( filter_id ){

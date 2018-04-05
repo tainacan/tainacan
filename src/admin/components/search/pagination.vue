@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { eventFilterBus } from '../../../js/event-bus-filters'
 
 export default {

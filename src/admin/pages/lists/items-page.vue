@@ -79,47 +79,33 @@ export default {
     methods: {
         ...mapActions('collection', [
             'fetchItems',
-            'fetchFields'
         ]),
         ...mapGetters('collection', [
-            'getItems',
-            'getFields'
-        ]),
-        ...mapGetters('search', [
-            'getPostQuery'
+            'getItems'
         ]),
         ...mapActions('fields', [
             'fetchFields'
         ]),
-        ...mapGetters('fields', [
-            'getFields'
-        ]),
         ...mapActions('search', [
-            'set_postquery',
             'search_by_collection'
         ]),
         onChangeTableFields(field) {
-           // let prevValue = this.prefTableFields;
-            let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
-            if (index >= 0) {
-                //prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
-            }
-            
+            // let prevValue = this.prefTableFields;
+            // let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
+            // if (index >= 0) {
+            //     prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
+            // }
 
             // for (let currentField of this.prefTableFields)
             //     this.$console.log(currentField.slug, currentField.visible);
-            
-
 
             // for (let oldField of prevValue)
             //     this.$console.log(oldField.slug, oldField.visible);
 
-            //this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
+            // this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
         },
         loadItems() {
-            this.isLoading = true;
-            
-            this.set_postquery(this.$route.query);            
+            this.isLoading = true;            
 
             if (this.$route.params && this.$route.params.collectionId) {
                 this.search_by_collection(this.$route.params.collectionId).then(() => {
@@ -133,11 +119,6 @@ export default {
     },
     watch: {
         '$route.query'() {
-            if (this.$route.query.perpage == undefined)
-                this.$route.query.perpage = 12;
-            if (this.$route.query.paged == undefined)
-                this.$route.query.paged = 1;
-
             this.loadItems();
         }
     },
@@ -163,7 +144,6 @@ export default {
                 );
             }
             this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
-            this.$console.log(this.tableFields);
             this.prefTableFields = this.tableFields;
             // this.$userPrefs.get('table_columns_' + this.collectionId)
             //     .then((value) => {

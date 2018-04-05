@@ -17,7 +17,6 @@
 <script>
     import { eventFilterBus } from '../../js/event-bus-filters'
     import { mapActions, mapGetters } from 'vuex';
-    import router from '../../admin/js/router'
 
     export default {
         name: 'TainacanFiltersList',
@@ -60,8 +59,6 @@
             listen( event ){
                 this.setPage(1);
                 eventFilterBus.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
-                router.push({ query: {} });
-                router.push({ query: this.getPostQuery() });
             },
             setFilterTypeMessage( message ){
                 this.filterTypeMessage = message;
