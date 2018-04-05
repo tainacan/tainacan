@@ -36,8 +36,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import { eventFilterBus } from '../../../js/event-bus-filters'
+import { mapGetters } from 'vuex';
+import { eventSearchBus } from '../../../js/event-search-bus'
 
 export default {
     name: 'Pagination',
@@ -58,7 +58,8 @@ export default {
     },
     watch: {
         page( value ){
-            this.page = ( value > 0 ) ? value : 1;
+            if (value < 1)
+                eventSearchBus.setPage(1);
         }
     },
     methods: {
@@ -68,27 +69,19 @@ export default {
             'getItemsPerPage',
             'getPostQuery'
         ]),
-        ...mapActions('search', [
-            'setPage',
-            'setItemsPerPage'
-        ]),
         onChangeItemsPerPage(value) {
             if( this.itemsPerPage == value){
                 return false;
             }
-
-            let prevValue = this.itemsPerPage;
-            this.setItemsPerPage( value );
-            this.$userPrefs.set('items_per_page', value, prevValue);
             
-            this.updateURLQueries();
+            let prevValue = this.itemsPerPage;
+            eventSearchBus.setItemsPerPage(value);
+            this.$userPrefs.set('items_per_page', value, prevValue);
         },
         onPageChange(page) {
             if(page == 0)
                 return;
-
-            this.setPage( page );
-            this.updateURLQueries();
+            eventSearchBus.setPage(page);
         },
         getLastItemNumber() {
             let last = (Number(this.itemsPerPage*(this.page - 1)) + Number(this.itemsPerPage));
@@ -101,27 +94,7 @@ export default {
 
             return ( this.itemsPerPage * ( this.page - 1 ) + 1)
         },
-        updateURLQueries(){
-            this.$router.push({ query: {} });
-            this.$router.push({ query: this.getPostQuery() });
-        }
     },
-    created () {
-        this.$userPrefs.get('items_per_page')
-        .then((value) => {
-            this.itemsPerPage = value;
-            this.setPage(this.page);
-            this.setItemsPerPage(this.itemsPerPage);
-            this.updateURLQueries();
-        })
-        .catch(() => {
-            this.$userPrefs.set('items_per_page', 12, null);
-            this.itemsPerPage = 12;
-            this.setPage(this.page);
-            this.setItemsPerPage(this.itemsPerPage);
-            this.updateURLQueries();
-        });
-    }
 }
 </script>
 

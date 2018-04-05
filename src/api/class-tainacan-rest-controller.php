@@ -244,6 +244,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 * @param $args
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	private function prepare_meta($mapped, $request, $query, $mapped_v, $args){
 		$request_meta_query = $request[$mapped];

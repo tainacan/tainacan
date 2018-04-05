@@ -1,7 +1,7 @@
 import axios from '../../../axios/axios';
 import qs from 'qs';
 
-export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel}) => {
+export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
@@ -9,7 +9,10 @@ export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel}) => {
         else
             endpoint = '/fields/';
 
-        axios.tainacan.get(endpoint + '?context=edit')
+        if (isContextEdit)
+            endpoint += '?context=edit';
+
+        axios.tainacan.get(endpoint)
         .then((res) => {
             let fields= res.data;
             commit('setFields', fields);
@@ -61,7 +64,6 @@ export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLe
                 resolve( field );
             })
             .catch(error => {
-                console.log(error);
                 reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
@@ -88,12 +90,12 @@ export const deleteField = ({ commit }, { collectionId, fieldId, isRepositoryLev
     }); 
 };
 
-export const updateCollectionFieldsOrder = ({ commit }, { collectionId, fieldsOrder }) => {
+export const updateCollectionFieldsOrder = ({ commit, dispatch }, { collectionId, fieldsOrder }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId, {
             fields_order: fieldsOrder
         }).then( res => {
-            commit('setCollection', res.data);
+           // dispatch('collection/setCollection', res.data, {root: true});
             resolve( res.data );
         }).catch( error => { 
             reject( error.response );

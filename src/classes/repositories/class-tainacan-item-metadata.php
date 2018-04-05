@@ -189,12 +189,14 @@ class Item_Metadata extends Repository {
         }
     }
 
-    /**
-     * Get the value for a Item field.
-     *
-     * @param Entities\Item_Metadata_Entity $item_metadata
-     * @return mixed
-     */
+	/**
+	 * Get the value for a Item field.
+	 *
+	 * @param Entities\Item_Metadata_Entity $item_metadata
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 */
     public function get_value(Entities\Item_Metadata_Entity $item_metadata) {
         $unique = ! $item_metadata->is_multiple();
         
@@ -222,6 +224,15 @@ class Item_Metadata extends Repository {
 			
 			if ($unique)
 				$terms = reset($terms);
+
+			if(is_array($terms)){
+				$terms_array = [];
+				foreach ($terms as $term){
+					$terms_array[] = new Entities\Term($term);
+				}
+
+				return $terms_array;
+			}
 			
 			return $terms;
 		
@@ -263,7 +274,7 @@ class Item_Metadata extends Repository {
         }
         
     }
-	
+
 	/**
 	 * Transforms the array saved as meta_value with the IDs of post_meta saved as a value for compound fields
 	 * and converts it into an array of Item Metadatada Entitites
@@ -271,7 +282,9 @@ class Item_Metadata extends Repository {
 	 * @param array $ids The array of post_meta ids
 	 * @param Entities\Item $item The item this post_meta is related to
 	 * @param int $compund_meta_id the meta_id of the parent compound metadata
+	 *
 	 * @return array An array of Item_Metadata_Entity objects
+	 * @throws \Exception
 	 */
 	private function extract_compound_value(array $ids, Entities\Item $item, $compund_meta_id) {
 		

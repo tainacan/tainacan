@@ -43,7 +43,20 @@ class Item_Metadata_Entity extends Entity {
 	}
 
     public function  __toArray(){
-        $as_array['value'] = $this->get_value();
+    	$value = $this->get_value();
+
+    	if(is_array($value) && $value[0] instanceof Term){
+    		$values_arr = [];
+
+    		foreach ($value as $val){
+    			$values_arr[] = $val->__toArray();
+		    }
+
+		    $as_array['value'] = $values_arr;
+	    } else {
+		    $as_array['value'] = $this->get_value();
+	    }
+
 	    $as_array['item']  = $this->get_item()->__toArray();
 	    $as_array['field'] = $this->get_field()->__toArray();
 

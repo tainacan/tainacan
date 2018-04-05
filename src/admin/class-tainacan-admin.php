@@ -40,6 +40,7 @@ class Admin {
 
 	function load_admin_page() {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_admin_css' ), 90 );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_admin_js' ), 90 );
 	}
 
 	function login_styles_reset( $style ) {
@@ -49,12 +50,12 @@ class Admin {
 
 		return $style;
 	}
-
+	
 	function add_admin_css() {
 		global $TAINACAN_BASE_URL;
-
+		
 		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css' );
-
+		
 		$undesired_wp_styles = [
 			'admin-menu',
 			'admin-bar',
@@ -88,32 +89,33 @@ class Admin {
 
 		wp_dequeue_style( $undesired_wp_styles );
 		wp_deregister_style( $undesired_wp_styles );
-
+		
 	}
-
-	function admin_body_class( $classes ) {
-		global $pagenow;
-		if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] == $this->menu_slug ) {
-			$classes .= ' tainacan-admin-page';
-		}
-
-		return $classes;
-	}
-
-	function admin_page() {
+	
+	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
+		
+		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [], null, true );
 
+		$settings = $this->get_admin_js_localization_params();
+
+		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
+		
+		
+	}
+	
+	/**
+	 * Also used by DevInterface
+	 */
+	function get_admin_js_localization_params() {
+		global $TAINACAN_BASE_URL;
+		
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
 		$Tainacan_Fields      = \Tainacan\Repositories\Fields::getInstance();
 		$Tainacan_Filters     = \Tainacan\Repositories\Filters::getInstance();
 		$Tainacan_Items       = \Tainacan\Repositories\Items::getInstance();
 		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::getInstance();
-
-		// TODO move it to a separate file and start the Vue project
-		echo "<div id='tainacan-admin-app'></div>";
-		//wp_enqueue_script( 'tainacan-dev-admin', $TAINACAN_BASE_URL . '/assets/dev_admin-components.js', [] , null, true);
-		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [], null, true );
-
+		
 		$tainacan_admin_i18n = require( 'tainacan-admin-i18n.php' );
 
 		$entities_labels = [
@@ -174,9 +176,25 @@ class Admin {
 		    $class = new $field_type;
             $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
         }
+		
+		return $settings;
+		
+	}
 
+	function admin_body_class( $classes ) {
+		global $pagenow;
+		if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] == $this->menu_slug ) {
+			$classes .= ' tainacan-admin-page';
+		}
 
-		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
+		return $classes;
+	}
+
+	function admin_page() {
+		global $TAINACAN_BASE_URL;
+
+		// TODO move it to a separate file and start the Vue project
+		echo "<div id='tainacan-admin-app'></div>";
 
 	}
 

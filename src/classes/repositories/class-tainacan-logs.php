@@ -28,7 +28,7 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'log_inserts' ) );
+		add_action( 'tainacan-insert', array( $this, 'log_inserts' ), 10, 2 );
 	}
 
 	public function get_map() {
@@ -186,7 +186,7 @@ class Logs extends Repository {
 
 		} elseif ( is_array( $args ) ) {
 			$args = array_merge( [
-				'posts_per_page' => 1,
+				'posts_per_page' => -1,
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );
@@ -210,7 +210,7 @@ class Logs extends Repository {
 	public function fetch_last() {
 		$args = [
 			'post_type'      => Entities\Log::get_post_type(),
-			'posts_per_page' => 1,
+			'posts_per_page' => -1,
 		];
 
 		$logs = $this->fetch( $args, 'OBJECT' );
@@ -228,6 +228,8 @@ class Logs extends Repository {
 	 */
 	public function log_inserts( $new_value, $value = null ) {
 		$msn = "";
+		$description = "";
+
 		if ( is_object( $new_value ) ) {
 			// do not log a log
 			if ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() == 'tainacan-log' ) {
@@ -235,12 +237,20 @@ class Logs extends Repository {
 			}
 
 			$type = get_class( $new_value );
-			$msn  = sprintf( esc_html__( 'a %s has been created/updated.', 'tainacan' ), $type );
+			$class_name = explode('\\', $type)[2];
+
+			$name = method_exists($new_value, 'get_name') ? $new_value->get_name() :
+				(method_exists($new_value, 'get_title') ? $new_value->get_title() : $new_value->get_field()->get_name());
+
+			$msn  = sprintf( esc_html__( 'A %s has been created/updated.', 'tainacan' ), $class_name);
+			$description = sprintf( esc_html__("The %s %s has been created/updated.", 'tainacan' ), $name, strtolower($class_name));
+
 		}
 
 		$msn = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
+		$description = apply_filters('tainacan-insert-log-description', $description, $type, $new_value);
 
-		return Entities\Log::create( $msn, '', $new_value, $value );
+		return Entities\Log::create( $msn, $description, $new_value, $value );
 	}
 
 	/**

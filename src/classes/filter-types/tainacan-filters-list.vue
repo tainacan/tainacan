@@ -15,9 +15,8 @@
 </template>
 
 <script>
-    import { eventFilterBus } from '../../js/event-bus-filters'
+    import { eventSearchBus } from '../../js/event-search-bus'
     import { mapActions, mapGetters } from 'vuex';
-    import router from '../../admin/js/router'
 
     export default {
         name: 'TainacanFiltersList',
@@ -34,7 +33,7 @@
         computed: {
             getErrorMessage() {
                 let msg = '';
-                let errors = eventFilterBus.getErrors( this.filter.id );
+                let errors = eventSearchBus.getErrors( this.filter.id );
                 if ( errors) {
                     this.setFilterTypeMessage('is-danger');
                     for (let index in errors) {
@@ -58,10 +57,7 @@
                 'getPostQuery'
             ]),
             listen( event ){
-                this.setPage(1);
-                eventFilterBus.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
-                router.push({ query: {} });
-                router.push({ query: this.getPostQuery() });
+                eventSearchBus.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
             },
             setFilterTypeMessage( message ){
                 this.filterTypeMessage = message;

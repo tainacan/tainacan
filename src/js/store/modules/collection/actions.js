@@ -1,11 +1,17 @@
 import axios from '../../../axios/axios';
+import qs from 'qs';
 
-export const fetchItems = ({ commit, dispatch }, { collectionId, page, itemsPerPage }) => {
+export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
     return new Promise ((resolve, reject) => {
-        axios.tainacan.get('/collection/'+collectionId+'/items?paged='+page+'&perpage='+itemsPerPage)
+        let postQueries = rootGetters['search/getPostQuery'];
+        let endpoint = '/collection/'+collectionId+'/items?'
+        if (collectionId == undefined)
+            endpoint = '/items?'
+        
+        axios.tainacan.get(endpoint + qs.stringify(postQueries) )
         .then(res => {
             let items = res.data;
-            commit('setItems', items);
+            commit('setItems', items );
             dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
             resolve({'items': items, 'total': res.headers['x-wp-total'] });
         })

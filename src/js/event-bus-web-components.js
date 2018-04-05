@@ -11,7 +11,6 @@ export const eventBus = new Vue({
         if( tainacan_plugin.components ){
             this.componentsTag = tainacan_plugin.components;
         }
-        this.$on('input', data => this.updateValue(data) );
     },
     methods : {
         registerComponent( name ){
@@ -61,6 +60,7 @@ export const eventBus = new Vue({
         },
         getErrors(field_id){
             let error = this.errors.find( errorItem => errorItem.field_id === field_id );
+            console.log(this.errors);
             return ( error ) ? error.errors : false
         },
         setValues(){
@@ -101,7 +101,7 @@ export const eventBus = new Vue({
                     }
                 }
             }
-        },
+        }
     }
 
 });

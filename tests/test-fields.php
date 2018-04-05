@@ -252,9 +252,9 @@ class Fields extends TAINACAN_UnitTestCase {
 
         $collection->set_fields_order(
             [
-                array( 'id' => $field3->get_id(), 'enable' => false ),
-                array( 'id' => $field2->get_id(), 'enable' => true ),
-                array( 'id' => $field1->get_id(), 'enable' => true )
+                array( 'id' => $field3->get_id(), 'enabled' => false ),
+                array( 'id' => $field2->get_id(), 'enabled' => true ),
+                array( 'id' => $field1->get_id(), 'enabled' => true )
             ]);
 
         $update_collection = $Tainacan_Collections->update( $collection );

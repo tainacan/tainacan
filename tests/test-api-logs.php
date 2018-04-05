@@ -36,8 +36,9 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$this->assertEquals('Log 1', $data[1]['title']);
-		$this->assertEquals('Log 2', $data[0]['title']);
+		$log_titles = [$data[1]['title'], $data[0]['title']];
+		$this->assertContains('Log 1', $log_titles);
+		$this->assertContains('Log 2', $log_titles);
 	}
 
 	public function test_get_a_log(){

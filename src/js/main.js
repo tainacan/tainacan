@@ -4,7 +4,7 @@ import Buefy from 'buefy'
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
 import { eventBus } from './event-bus-web-components';
-import { eventFilterBus } from './event-bus-filters';
+import { eventSearchBus } from './event-search-bus';
 
 Vue.use(Buefy);
 
@@ -53,19 +53,19 @@ eventBus.registerComponent( 'tainacan-form-relationship' );
 /* Filters */
 
 Vue.customElement('tainacan-filter-custom-interval', FilterCustomInterval);
-eventFilterBus.registerComponent( 'tainacan-filter-custom-interval' );
+eventSearchBus.registerComponent( 'tainacan-filter-custom-interval' );
 
 Vue.customElement('tainacan-filter-selectbox', FilterSelectbox);
-eventFilterBus.registerComponent( 'tainacan-filter-selectbox' );
+eventSearchBus.registerComponent( 'tainacan-filter-selectbox' );
 
 
 Vue.customElement('tainacan-filter-autocomplete', FilterAutocomplete);
-eventFilterBus.registerComponent( 'tainacan-filter-autocomplete' );
+eventSearchBus.registerComponent( 'tainacan-filter-autocomplete' );
 
 Vue.customElement('tainacan-filter-checkbox', FilterCheckbox);
-eventFilterBus.registerComponent( 'tainacan-filter-checkbox' );
+eventSearchBus.registerComponent( 'tainacan-filter-checkbox' );
 
 Vue.customElement('tainacan-filter-taginput', FilterTaginput);
-eventFilterBus.registerComponent( 'tainacan-filter-taginput' );
+eventSearchBus.registerComponent( 'tainacan-filter-taginput' );
 
-eventFilterBus.listener();
+eventSearchBus.listener();

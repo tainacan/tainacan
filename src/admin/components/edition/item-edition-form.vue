@@ -136,6 +136,7 @@
                             :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
                 </div>
             </div>
+            <p class="help is-danger">{{ formErrorMessage }}</p> 
         </form>
 
         <b-loading 
@@ -175,7 +176,8 @@ export default {
                 }, {
                 value: 'trash',
                 label: this.$i18n.get('trash')
-            }]
+            }],
+            formErrorMessage: '',
         }
     },
     methods: {
@@ -209,8 +211,19 @@ export default {
                 this.isLoading = false;
 
                 this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
-            }).catch(error => {
-                this.$console.error(error);
+            })
+            .catch((errors) => {
+                for (let error of errors.errors) {     
+                    for (let attribute of Object.keys(error)){
+                        //this.editFormErrors[attribute] = error[attribute];
+                        this.$console.log(error);
+                        
+                       eventBus.errors.push({ field_id: 7031, errors: error[attribute]});
+                    }  
+                }
+                this.$console.log(eventBus.errors);
+                this.formErrorMessage = errors.error_message;
+
                 this.isLoading = false;
             });
         },
@@ -306,7 +319,6 @@ export default {
         formHasErrors(){
             return eventBus.errors.length > 0;
         } 
-
     },
     created(){
         // Obtains collection ID

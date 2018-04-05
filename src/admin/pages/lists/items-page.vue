@@ -11,29 +11,12 @@
                     {{ $i18n.getFrom('items', 'new_item') }}
                 </router-link>
             </div>
-            <div class="header-item">
-                <b-dropdown>
-                    <button 
-                            class="button" 
-                            slot="trigger" 
-                            :disabled="items.length <= 0">
-                        <span>{{ $i18n.get('label_table_fields') }}</span>
-                        <b-icon icon="menu-down"/>
-                    </button>
-                    <b-dropdown-item 
-                            v-for="(column, index) in tableFields" 
-                            :key="index"
-                            class="control" 
-                            custom>
-                        <b-checkbox
-                                @input="onChangeTableFields(column)"
-                                v-model="column.visible" 
-                                :native-value="column.field">
-                            {{ column.label }}
-                        </b-checkbox>
-                    </b-dropdown-item>
-                </b-dropdown>
-            </div>
+            <search-control
+                    v-if="items.length > 0"
+                    :is-repository-level="isRepositoryLevel" 
+                    :collection-id="collectionId"
+                    :table-fields="tableFields"
+                    :pref-table-fields="prefTableFields"/>
         </div>
         <div class="columns above-subheader">
             <aside class="column filters-menu">
@@ -44,7 +27,6 @@
                 <items-list
                         :collection-id="collectionId"
                         :table-fields="tableFields"
-                        :pref-table-fields="prefTableFields"
                         :items="items" 
                         :is-loading="isLoading"/>
                 <!-- Pagination Footer -->
@@ -55,9 +37,11 @@
 </template>
 
 <script>
+import SearchControl from '../../components/search/search-control.vue'
 import ItemsList from '../../components/lists/items-list.vue';
 import FiltersItemsList from '../../components/search/filters-items-list.vue';
 import Pagination from '../../components/search/pagination.vue'
+import { eventSearchBus } from '../../../js/event-search-bus'
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -72,6 +56,7 @@ export default {
         }
     },
     components: {
+        SearchControl,
         ItemsList,
         FiltersItemsList,
         Pagination
@@ -79,67 +64,10 @@ export default {
     methods: {
         ...mapActions('collection', [
             'fetchItems',
-            'fetchFields'
         ]),
         ...mapGetters('collection', [
-            'getItems',
-            'getFields'
+            'getItems'
         ]),
-        ...mapGetters('search', [
-            'getPostQuery'
-        ]),
-        ...mapActions('fields', [
-            'fetchFields'
-        ]),
-        ...mapGetters('fields', [
-            'getFields'
-        ]),
-        ...mapActions('search', [
-            'set_postquery',
-            'search_by_collection'
-        ]),
-        onChangeTableFields(field) {
-           // let prevValue = this.prefTableFields;
-            let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
-            if (index >= 0) {
-                //prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
-            }
-            
-
-            // for (let currentField of this.prefTableFields)
-            //     this.$console.log(currentField.slug, currentField.visible);
-            
-
-
-            // for (let oldField of prevValue)
-            //     this.$console.log(oldField.slug, oldField.visible);
-
-            //this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
-        },
-        loadItems() {
-            this.isLoading = true;
-            
-            this.set_postquery(this.$route.query);            
-
-            if (this.$route.params && this.$route.params.collectionId) {
-                this.search_by_collection(this.$route.params.collectionId).then(() => {
-                    this.isLoading = false;
-                })
-                .catch(() => {
-                    this.isLoading = false;
-                });
-            }
-        }
-    },
-    watch: {
-        '$route.query'() {
-            if (this.$route.query.perpage == undefined)
-                this.$route.query.perpage = 12;
-            if (this.$route.query.paged == undefined)
-                this.$route.query.paged = 1;
-
-            this.loadItems();
-        }
     },
     computed: {
         items(){
@@ -148,32 +76,14 @@ export default {
     },
     created() {
         this.collectionId = this.$route.params.collectionId;
-        this.isRepositoryLevel  = (this.collectionId == undefined);    
+        this.isRepositoryLevel  = (this.collectionId == undefined);      
+        eventSearchBus.$on('isLoadingItems', isLoadingItems => {
+            this.isLoading = isLoadingItems;
+        });
     },
     mounted(){
-
-        this.loadItems();
-
-        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false }).then((res) => {
-            let rawFields = res;
-            this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', visible: true });
-            for (let field of rawFields) {
-                this.tableFields.push(
-                    { label: field.name, field: field.description, slug: field.slug,  visible: true }
-                );
-            }
-            this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
-   
-            this.prefTableFields = this.tableFields;
-            // this.$userPrefs.get('table_columns_' + this.collectionId)
-            //     .then((value) => {
-            //         this.prefTableFields = value;
-            //     })
-            //     .catch((error) => {
-            //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
-            //     });
-
-        }).catch();
+        eventSearchBus.updateStoreFromURL();
+        eventSearchBus.loadItems();
     }
 
 }
