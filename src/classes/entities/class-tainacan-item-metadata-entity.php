@@ -45,7 +45,7 @@ class Item_Metadata_Entity extends Entity {
     public function  __toArray(){
     	$value = $this->get_value();
 
-    	if(is_array($value) && $value[0] instanceof Term){
+    	if(is_array($value) && isset($value[0]) && $value[0] instanceof Term){
     		$values_arr = [];
 
     		foreach ($value as $val){
