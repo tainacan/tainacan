@@ -5,6 +5,7 @@
         <div class="sub-header">
             <div class="header-item">
                 <router-link 
+                        id="button-item-creation"
                         tag="button" 
                         class="button is-secondary"
                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }">

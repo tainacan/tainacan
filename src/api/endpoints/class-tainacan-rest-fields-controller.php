@@ -262,14 +262,15 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
 			$item_arr = $item->__toArray();
-
+			
+			$item_arr['field_type_object'] = $item->get_field_type_object()->__toArray();
+			
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 				ob_start();
 				$item->get_field_type_object()->form();
 				$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
-				$item_arr['field_type_object'] = $item->get_field_type_object()->__toArray();
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 

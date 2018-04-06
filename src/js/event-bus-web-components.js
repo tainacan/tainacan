@@ -11,6 +11,7 @@ export const eventBus = new Vue({
         if( tainacan_plugin.components ){
             this.componentsTag = tainacan_plugin.components;
         }
+		this.$on('input', data => this.updateValue(data) );
     },
     methods : {
         registerComponent( name ){
@@ -22,6 +23,7 @@ export const eventBus = new Vue({
             const components = this.getAllComponents();
             for (let eventElement of components){
                 eventElement.addEventListener('input', (event) => {
+					
                     if (event.detail && event.detail[0] ){
                         this.updateValue({ 
                             item_id: $(eventElement).attr("item_id"), 
