@@ -70,6 +70,9 @@ export default {
         ...mapGetters('category', [
             'getCategoryName'
         ]),
+        ...mapActions('event', [
+            'fetchEventTitle'
+        ]),
         generateViewPath() {
 
             for (let i = 0; i < this.arrayRealPath.length; i++) {
@@ -92,6 +95,11 @@ export default {
                         case 'categories':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
+                                .catch((error) => this.$console.error(error));
+                            break;
+                        case 'events':
+                            this.fetchEventTitle(this.arrayRealPath[i])
+                                .then(eventName => this.arrayViewPath.splice(i, 1, eventName))
                                 .catch((error) => this.$console.error(error));
                             break;
                     }

@@ -69,7 +69,7 @@ class Item_Metadata_Entity extends Entity {
      * @param Item $item
      * @return void
      */
-    function set_item(Item $item) {
+    function set_item(Item $item = null) {
         $this->item = $item;
     }
     
@@ -89,7 +89,7 @@ class Item_Metadata_Entity extends Entity {
      * @param Field $field
      * @return void
      */
-    function set_field(Field $field) {
+    function set_field(Field $field = null) {
         $this->field = $field;
     }
 	

@@ -236,8 +236,6 @@ class Entity {
     }
     
     public function get_errors() {
-        $this->errors['id'] = $this->get_mapped_property('id');
-
         return $this->errors;
     }
     

@@ -5,7 +5,7 @@ import * as mutations from './mutations';
 const state = {
     events: [],
     event: {},
-    eventName: String,
+    eventTitle: String,
 };
 
 export default {

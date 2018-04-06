@@ -13,11 +13,9 @@
                 ref="eventsTable"
                 :data="events"
                 :checked-rows.sync="selectedEvents"
-                checkable
                 :loading="isLoading"
                 hoverable
                 striped
-                selectable
                 backend-sorting>
             <template slot-scope="props">
 
@@ -52,8 +50,8 @@
                 <b-table-column
                         class="row-creation"
                         tabindex="0"
-                        :aria-label="$i18n.get('label_creation') + ': ' + props.row.creation"
-                        :label="$i18n.get('label_creation')"
+                        :aria-label="$i18n.get('label_who_when') + ': ' + props.row.creation"
+                        :label="$i18n.get('label_who_when')"
                         property="by"
                         show-overflow-tooltip
                         field="props.row.by">
@@ -114,7 +112,7 @@
             events: Array
         },
         methods: {
-            ...mapActions('events', [
+            ...mapActions('event', [
                 'approve',
                 'notApprove'
             ])

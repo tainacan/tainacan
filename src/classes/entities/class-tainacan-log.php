@@ -289,12 +289,13 @@ class Log extends Entity {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::diff()
 	 */
-	public function diff($which = 0)
-	{
+	public function diff($which = 0) {
 		$log = $this;
+
 		if($which != 0) {
 			$log = new self($which);
 		}
+
 		$value = $log->get_value();
 		$old = $log->get_old_value();
 		return $value->diff($old);

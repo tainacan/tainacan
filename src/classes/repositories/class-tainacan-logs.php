@@ -76,9 +76,9 @@ class Logs extends Repository {
 				'description' => __( 'The log slug' ),
 				'validation'  => ''
 			],
-			'itens_per_page' => [
+			'items_per_page' => [
 				'map'         => 'meta',
-				'title'       => __( 'Itens per page', 'tainacan' ),
+				'title'       => __( 'Items per page', 'tainacan' ),
 				'type'        => 'integer',
 				'description' => __( 'The quantity of items that should be load' ),
 				'validation'  => ''
@@ -222,11 +222,11 @@ class Logs extends Repository {
 	 * Insert a log when a new entity is inserted
 	 *
 	 * @param Entity $new_value
-	 * @param Entity $value
+	 * @param Entity $old_value
 	 *
 	 * @return Entities\Log new created log
 	 */
-	public function log_inserts( $new_value, $value = null ) {
+	public function log_inserts( $new_value, $old_value = null ) {
 		$msn = "";
 		$description = "";
 
@@ -250,7 +250,7 @@ class Logs extends Repository {
 		$msn = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
 		$description = apply_filters('tainacan-insert-log-description', $description, $type, $new_value);
 
-		return Entities\Log::create( $msn, $description, $new_value, $value );
+		return Entities\Log::create( $msn, $description, $new_value, $old_value );
 	}
 
 	/**
@@ -265,7 +265,9 @@ class Logs extends Repository {
 		if ( $log->get_status() == 'pending' ) {
 			/** @var Entity $value * */
 			$value = $log->get_value();
+
 			//$value->set_status('publish'); // TODO check if publish the entity on approve
+
 			$repository = self::get_repository( $value );
 
 			return $repository->insert( $value );

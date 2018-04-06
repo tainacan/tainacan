@@ -73,10 +73,10 @@
             EventsList
         },
         methods: {
-            ...mapActions('events', [
+            ...mapActions('event', [
                 'fetchEvents',
             ]),
-            ...mapGetters('events', [
+            ...mapGetters('event', [
                 'getEvents'
             ]),
             onChangeEventsPerPage(value) {

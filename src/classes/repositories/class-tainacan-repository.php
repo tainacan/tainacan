@@ -77,7 +77,10 @@ abstract class Repository {
 		}
 
 		$old = $obj;
-		if( $obj->get_id() ) $old = $obj->get_repository()->fetch($obj->get_id()); //TODO get props obj before update
+		// TODO get props obj before update
+		if( $obj->get_id() ) {
+			$old = $obj->get_repository()->fetch( $obj->get_id() );
+		}
 		
 		$map = $this->get_map();
 
@@ -385,19 +388,19 @@ abstract class Repository {
 			} else {
 				throw new \Exception( 'Collection object not found for this post' );
 			}
+		} elseif ($post_type === \Tainacan\Repositories\Item_Metadata::getInstance()->entities_type::get_post_type()){
+			return new Entities\Item_Metadata_Entity(null, null);
 		} else {
             $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
             $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
             $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
             $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
             $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
-			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
 			$Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
 				$Tainacan_Fields,
-				$Tainacan_Item_Metadata,
 				$Tainacan_Filters,
 				$Tainacan_Taxonomies,
 				$Tainacan_Terms,

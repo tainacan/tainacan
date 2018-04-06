@@ -79,4 +79,30 @@ class Logs extends TAINACAN_UnitTestCase {
         $this->assertEquals($collection->get_description(), 'adasdasdsa123');
         $this->assertEquals($collection->get_default_order(), 'DESC');
     }
+
+    public function test_log_diff(){
+    	$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+    	$Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+
+    	$filter = $this->tainacan_entity_factory->create_entity(
+    		'filter',
+		    array(
+		    	'name' => 'No name'
+		    ),
+		    true
+	    );
+
+	    // Modify filter name
+	    $filter->set_name('With name');
+
+	    $Tainacan_Filters->update($filter);
+
+	    $log = $Tainacan_Logs->fetch_last();
+
+
+    	$diff = $log->diff();
+
+    	$this->assertEquals('With name', $diff['name']['new']);
+    	$this->assertEquals('No name', $diff['name']['old']);
+    }
 }
