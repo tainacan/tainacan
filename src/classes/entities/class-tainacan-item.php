@@ -342,7 +342,7 @@ class Item extends Entity {
 
 					if ( ! $itemMetadata->validate() ) {
 						$errors = $itemMetadata->get_errors();
-						$this->add_error( $itemMetadata->get_field()->get_name(), $errors );
+						$this->add_error( $itemMetadata->get_field()->get_id(), $errors );
 
 						return false;
 					}
