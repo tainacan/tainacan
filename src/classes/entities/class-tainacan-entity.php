@@ -219,13 +219,13 @@ class Entity {
                 foreach ($prop_value as $val) {
                     if (!$validation->validate($val)) {
 
-                        $this->add_error($this->get_id() .' '. $prop, $message);
+                        $this->add_error($prop, $message);
                         $is_valid = false;
                     }
                 }
             } else {
                 if (!$validation->validate($prop_value)) {
-                	$this->add_error($this->get_id() .' '. $prop, $message);
+                	$this->add_error($prop, $message);
 	                $is_valid = false;
                 }
             }
@@ -236,6 +236,8 @@ class Entity {
     }
     
     public function get_errors() {
+        $this->errors['id'] = $this->get_mapped_property('id');
+
         return $this->errors;
     }
     
