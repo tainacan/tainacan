@@ -165,15 +165,6 @@ class Fields extends Repository {
     			'default'	 => false,
     			'validation' => v::boolType()
     	    ],
-            'can_delete'        => [
-                'map'        => 'meta',
-                'title'      => __('Can delete', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field can be deleted', 'tainacan'),
-                'on_error'   => __('Can delete is invalid', 'tainacan'),
-                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
-                'default'    => 'yes'
-            ],
         ]);
     }
 	
