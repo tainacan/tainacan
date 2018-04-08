@@ -19,7 +19,6 @@ class Field extends Entity {
         $cardinality,
         $collection_key,
         $mask,
-        $privacy,
         $default_value,
         $field_type,
         $field_type_options;
@@ -129,15 +128,6 @@ class Field extends Entity {
      */
     function get_mask(){
         return $this->get_mapped_property('mask');
-    }
-
-    /**
-     * Return the privacy type
-     *
-     * @return string
-     */
-    function get_privacy(){
-        return $this->get_mapped_property('privacy');
     }
 
     /**
@@ -292,16 +282,6 @@ class Field extends Entity {
      */
     function set_mask( $value ){
         $this->set_mapped_property('mask', $value);
-    }
-
-    /**
-     * Set privacy
-     *
-     * @param [string] $value
-     * @return void
-     */
-    function set_privacy( $value ){
-        $this->set_mapped_property('privacy', $value);
     }
 
     /**

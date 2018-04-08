@@ -128,15 +128,6 @@ class Fields extends Repository {
                 'validation' => v::numeric()->positive(),
                 'default'    => 1
             ],
-            'privacy'        => [
-                'map'        => 'meta',
-                'title'      => __('Privacy', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field should be omitted in item view', 'tainacan'),
-                'on_error'   => __('Privacy is invalid', 'tainacan'),
-                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
-                'default'    => 'no'
-            ],
             'mask'           => [
                 'map'        => 'meta',
                 'title'      => __('Mask', 'tainacan'),
