@@ -91,8 +91,23 @@ class Items extends Repository {
 				'type'        => 'array',
 				'description' => __( 'The item term IDs', 'tainacan' ),
 			],
-			//'collection' => 'relation...',
-			// field .. field...
+			'document_type'       => [
+                'map'        => 'meta',
+                'title'      => __('Document Type', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The document type, can be a local attachment, an external URL or a text', 'tainacan'),
+                'on_error'   => __('Invalid document type', 'tainacan'),
+                'validation' => v::stringType()->in(['attachment', 'url', 'text']),
+                'default'    => 'attachment'
+            ],
+			'document'       => [
+                'map'        => 'meta',
+                'title'      => __('Document', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The document itself. An ID in case of attachment, an URL in case of url or a text in the case of text', 'tainacan'),
+                'on_error'   => __('Invalid document', 'tainacan'),
+                'default'    => ''
+            ],
 		] );
 	}
 
