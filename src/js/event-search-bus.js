@@ -24,6 +24,10 @@ export const eventSearchBus = new Vue({
                     this.$route.query.perpage = 12;
                 if (this.$route.query.paged == undefined)
                     this.$route.query.paged = 1;
+                if (this.$route.query.order == undefined)
+                    this.$route.query.order = 'DESC';
+                if (this.$route.query.orderby == undefined)
+                    this.$route.query.orderby = 'date';
 
                 store.dispatch('search/set_postquery', this.$route.query);
                 //console.log(this.$route.query);
@@ -63,8 +67,8 @@ export const eventSearchBus = new Vue({
             store.dispatch('search/setOrderBy', newOrderBy);
             this.updateURLQueries();
         },
-        setOrderAsc(newOrderAsc) {
-            store.dispatch('search/setOrderBy', newOrderAsc);
+        setOrder(newOrder) {
+            store.dispatch('search/setOrder', newOrder);
             this.updateURLQueries();
         },
         updateURLQueries() {

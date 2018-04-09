@@ -30,15 +30,15 @@
                 <option
                     v-for="(field, index) in tableFields"
                     v-if="field.id != undefined"
-                    :value="field"
+                    :value="field.id"
                     :key="index">
                     {{ field.label }}
                 </option>
             </b-select>
             <button 
                     class="button is-small"
-                    @click="onChangeOrderAsc()">
-                <b-icon :icon="orderAsc ? 'sort-ascending' : 'sort-descending'"/>
+                    @click="onChangeOrder()">
+                <b-icon :icon="order == 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
             </button>
             </b-field>
         </div>
@@ -46,26 +46,32 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { eventSearchBus } from '../../../js/event-search-bus';
 
 export default {
     name: 'SearchControl',
-    data() {
-        return {
-            orderBy: 'date',
-            orderAsc: false
-        }
-    },
     props: {
         collectionId: Number,
         isRepositoryLevel: false,
         tableFields: Array,
         prefTableFields: Array    
     },
+    computed: {
+        orderBy() {
+            return this.getOrderBy();
+        },
+        order() {
+            return this.getOrder();
+        }
+    },
     methods: {
         ...mapActions('fields', [
             'fetchFields'
+        ]),
+        ...mapGetters('search', [
+            'getOrderBy',
+            'getOrder'
         ]),
         onChangeTableFields(field) {
             // let prevValue = this.prefTableFields;
@@ -82,13 +88,11 @@ export default {
 
             // this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
         },
-        onChangeOrderBy(event) {
-            this.orderBy = event.id;  
-            eventSearchBus.setOrderBy(this.orderBy);
+        onChangeOrderBy(fieldId) {  
+            eventSearchBus.setOrderBy(fieldId);
         },
-        onChangeOrderAsc() {
-            this.orderAsc = !this.orderAsc;
-            eventSearchBus.setOrderAsc(this.orderAsc);
+        onChangeOrder() {
+            this.order == 'DESC' ? eventSearchBus.setOrder('ASC') : eventSearchBus.setOrder('DESC');
         }
     },
     mounted() {

@@ -21,3 +21,11 @@ export const getPage = state => {
 export const getItemsPerPage = state => {
     return state.postquery.perpage;
 };
+
+export const getOrder = state => {
+    return state.postquery.order;
+}
+
+export const getOrderBy = state => {
+    return state.postquery.orderby;
+};

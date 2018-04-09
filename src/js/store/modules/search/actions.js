@@ -38,11 +38,8 @@ export const setOrderBy = ({ commit }, orderBy ) => {
     commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy } );
 };
 
-export const setOrder = ({ commit }, isOrderAsc ) => {
-    if (isOrderAsc)
-        commit('setPostQueryAttribute', {  attr: 'order', value: 'ASC' } );
-    else
-        commit('setPostQueryAttribute', {  attr: 'order', value: 'DESC' } );
+export const setOrder = ({ commit }, order ) => {
+    commit('setPostQueryAttribute', {  attr: 'order', value: order } );
 };
 
 
