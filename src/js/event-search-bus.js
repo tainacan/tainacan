@@ -59,6 +59,14 @@ export const eventSearchBus = new Vue({
             store.dispatch('search/setItemsPerPage', itemsPerPage);
             this.updateURLQueries();
         },
+        setOrderBy(newOrderBy) {
+            store.dispatch('search/setOrderBy', newOrderBy);
+            this.updateURLQueries();
+        },
+        setOrderAsc(newOrderAsc) {
+            store.dispatch('search/setOrderBy', newOrderAsc);
+            this.updateURLQueries();
+        },
         updateURLQueries() {
             router.push({ query: {} });
             router.push({ query: store.getters['search/getPostQuery'] });

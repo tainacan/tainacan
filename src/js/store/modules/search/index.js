@@ -4,6 +4,8 @@ import * as mutations from './mutations';
 
 const state = {
     postquery: {
+        orderby: 'date',
+        order: 'DESC',
         paged: 1,
         perpage: 12,
         post_type: [],
