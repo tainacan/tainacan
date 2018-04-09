@@ -409,4 +409,29 @@ class Item extends Entity {
 
 		return parent::validate();
 	}
+	
+	
+	public function __toHtml() {
+		
+		$return = '';
+		$id = $this->get_id();
+		
+		if ( $id ) {
+			
+			$link = get_permalink( (int) $id );
+			
+			if (is_string($link)) {
+				
+				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
+				$return.= $this->get_title();
+				$return .= "</a>";
+				
+			}
+			
+		}
+
+		return $return;
+		
+	}
+	
 }
