@@ -3,6 +3,7 @@
             :id="id"
             v-model="dateValue"
             @blur="onBlur"
+            :readonly="false"
             @input="onInput($event)"/>
 </template>
 

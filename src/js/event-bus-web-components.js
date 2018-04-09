@@ -44,7 +44,7 @@ export const eventBus = new Vue({
                     if ( index >= 0){
                         this.errors.splice( index, 1);
                     }
-                }, error => {
+                }).catch((error) => {
                     let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
                     let messages = null;
 

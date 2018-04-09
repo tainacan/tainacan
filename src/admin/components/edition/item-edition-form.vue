@@ -8,118 +8,127 @@
                 v-if="!isLoading" 
                 class="tainacan-form" 
                 label-width="120px">
-            <b-field 
-                    :addons="false"
-                    :label="$i18n.get('label_status')">
-                <help-button 
-                        :title="$i18n.getHelperTitle('items', 'status')" 
-                        :message="$i18n.getHelperMessage('items', 'status')"/>
-                <b-select 
-                        id="status-select"
-                        v-model="form.status"
-                        :placeholder="$i18n.get('instruction_select_a_status')">
-                    <option
-                            :id="`status-option-${statusOption.value}`"
-                            v-for="statusOption in statusOptions"
-                            :key="statusOption.value"
-                            :value="statusOption.value"
-                            :disabled="statusOption.disabled">{{ statusOption.label }}
-                    </option>
-                </b-select>
-            </b-field>
 
-            <!-- Thumbnail -------------------------------- --> 
-            <b-field :label="$i18n.get('label_image')">
-                <div class="thumbnail-field">
-                    <b-upload 
-                            v-if="item.featured_image == undefined || item.featured_image == false"
-                            v-model="thumbnail"
-                            drag-drop
-                            @input="uploadThumbnail($event)">
-                        <div class="content has-text-centered">
-                            <p>
-                            <b-icon
-                                icon="upload"/>
-                            </p>
-                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
-                        </div>
-                    </b-upload>
-                    <div v-else> 
-                        <figure class="image is-128x128">
-                            <img 
-                                    :alt="$i18n.get('label_thumbnail')" 
-                                    :src="item.featured_image">
-                        </figure>
-                        <div class="thumbnail-buttons-row">
-                            <b-upload 
-                                    model="thumbnail"
-                                    @input="uploadThumbnail($event)">
-                                <a 
-                                        id="button-edit" 
-                                        :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"/></a>
-                            </b-upload>
-                            <a 
-                                    id="button-delete" 
-                                    :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                    @click="deleteThumbnail()"><b-icon icon="delete"/></a>
-                        </div>
-                    </div> 
-                </div>
-            </b-field> 
-                  
-            <!-- Fields from Collection-------------------------------- -->   
-            <tainacan-form-item                 
-                v-for="(field, index) in fieldList"
-                :key="index"
-                :field="field"/>  
-
-            <!-- Attachments ------------------------------------------ -->
-            <div class="columns is-multiline">
-                <div class="column is-4">
+            <div class="columns">
+                <div class="column is-narrow">
+                    <!-- Thumbnail -------------------------------- --> 
                     <b-field :label="$i18n.get('label_image')">
-                        <b-upload 
-                                v-model="form.files"
-                                multiple
-                                drag-drop
-                                @input="uploadAttachment($event)">
-                            <section class="section">
+                        <div class="thumbnail-field">
+                            <b-upload 
+                                    v-if="item.featured_image == undefined || item.featured_image == false"
+                                    v-model="thumbnail"
+                                    drag-drop
+                                    @input="uploadThumbnail($event)">
                                 <div class="content has-text-centered">
                                     <p>
-                                        <b-icon
-                                                icon="upload"
-                                                size="is-large"/>
+                                    <b-icon
+                                        icon="upload"/>
                                     </p>
                                     <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
                                 </div>
-                            </section>
-                        </b-upload>
-                    </b-field>
-                    <div class="uploaded-files">
-                        <div 
-                                v-for="(file, index) in form.files"
-                                :key="index">
-                            <span class="tag is-primary">
-                                {{ file.name }}
-                                <button 
-                                    class="delete is-small"
-                                    type="button"
-                                    @click="deleteFile(index)"/>
-                            </span>
-                            <!-- <progress class="progress is-secondary" value="15" max="100">30%</progress> -->
+                            </b-upload>
+                            <div v-else> 
+                                <figure class="image is-128x128">
+                                    <img 
+                                            :alt="$i18n.get('label_thumbnail')" 
+                                            :src="item.featured_image">
+                                </figure>
+                                <div class="thumbnail-buttons-row">
+                                    <b-upload 
+                                            model="thumbnail"
+                                            @input="uploadThumbnail($event)">
+                                        <a 
+                                                id="button-edit" 
+                                                :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"/></a>
+                                    </b-upload>
+                                    <a 
+                                            id="button-delete" 
+                                            :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                            @click="deleteThumbnail()"><b-icon icon="delete"/></a>
+                                </div>
+                            </div> 
                         </div>
-                    </div>     
+                    </b-field>
+
+                    <!-- Attachments ------------------------------------------ -->
+                    <div class="columns is-multiline">
+                        <div class="column is-4">
+                            <b-field :label="$i18n.get('label_image')">
+                                <b-upload 
+                                        v-model="form.files"
+                                        multiple
+                                        drag-drop
+                                        @input="uploadAttachment($event)">
+                                    <section class="section">
+                                        <div class="content has-text-centered">
+                                            <p>
+                                                <b-icon
+                                                        icon="upload"
+                                                        size="is-large"/>
+                                            </p>
+                                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
+                                        </div>
+                                    </section>
+                                </b-upload>
+                            </b-field>
+                            <div class="uploaded-files">
+                                <div 
+                                        v-for="(file, index) in form.files"
+                                        :key="index">
+                                    <span class="tag is-primary">
+                                        {{ file.name }}
+                                        <button 
+                                            class="delete is-small"
+                                            type="button"
+                                            @click="deleteFile(index)"/>
+                                    </span>
+                                    <!-- <progress class="progress is-secondary" value="15" max="100">30%</progress> -->
+                                </div>
+                            </div>   
+                        </div>  
+                    </div>
+                    <div 
+                            class="column is-narrow"
+                            v-for="(attachment, index) of item.attachments" 
+                            :key="index">
+                        <figure class="image is-128x128">
+                            <img 
+                                    :alt="attachment.title"
+                                    :src="attachment.url">
+                        </figure>
+                    </div>
                 </div>
-                <div 
-                        class="column is-narrow"
-                        v-for="(attachment, index) of item.attachments" 
-                        :key="index">
-                    <figure class="image is-128x128">
-                        <img 
-                                :alt="attachment.title"
-                                :src="attachment.url">
-                    </figure>
-                </div>  
+
+                <div class="column">
+                    <!-- Status -------------------------------- --> 
+                    <b-field 
+                            :addons="false"
+                            :label="$i18n.get('label_status')">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('items', 'status')" 
+                                :message="$i18n.getHelperMessage('items', 'status')"/>
+                        <b-select 
+                                id="status-select"
+                                v-model="form.status"
+                                :placeholder="$i18n.get('instruction_select_a_status')">
+                            <option
+                                    :id="`status-option-${statusOption.value}`"
+                                    v-for="statusOption in statusOptions"
+                                    :key="statusOption.value"
+                                    :value="statusOption.value"
+                                    :disabled="statusOption.disabled">{{ statusOption.label }}
+                            </option>
+                        </b-select>
+                    </b-field> 
+                        
+                    <!-- Fields from Collection-------------------------------- -->   
+                    <tainacan-form-item                 
+                        v-for="(field, index) in fieldList"
+                        :key="index"
+                        :field="field"/>    
+                </div>
             </div>
+
             <div class="field is-grouped form-submit">
                 <div class="control">     
                     <button
@@ -213,15 +222,14 @@ export default {
                 this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
             })
             .catch((errors) => {
-                for (let error of errors.errors) {     
-                    for (let attribute of Object.keys(error)){
-                        //this.editFormErrors[attribute] = error[attribute];
-                        this.$console.log(error);
+                // for (let error of errors.errors) {     
+                //     for (let attribute of Object.keys(error)){
+                //         //this.editFormErrors[attribute] = error[attribute];
+                //         this.$console.log(error);
                         
-                       eventBus.errors.push({ field_id: 7031, errors: error[attribute]});
-                    }  
-                }
-                this.$console.log(eventBus.errors);
+                //        eventBus.errors.push({ field_id: 7031, errors: error[attribute]});
+                //     }  
+                // }
                 this.formErrorMessage = errors.error_message;
 
                 this.isLoading = false;
@@ -267,7 +275,8 @@ export default {
             });
         }, 
         cancelBack(){
-            this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+            this.$console.log(this.fieldList);
+            //this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
         },
         uploadAttachment($event) {
             
@@ -317,7 +326,15 @@ export default {
             return this.getFields();
         },
         formHasErrors(){
-            return eventBus.errors.length > 0;
+            // for (let field of this.fieldList) {
+            //     if (field.field.required == 'yes' &&
+            //         (field.value == '' || field.value == undefined) && 
+            //         this.form.status == 'publish') {
+            //             return true;
+            //         }
+            // }
+
+            return false;
         } 
     },
     created(){

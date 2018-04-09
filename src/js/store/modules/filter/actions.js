@@ -86,7 +86,7 @@ export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filters
         axios.tainacan.patch('/collections/' + collectionId, {
             filters_order: filtersOrder
         }).then( res => {
-            commit('setCollection', res.data);
+            commit('collection/setCollection', res.data, { root: true });
             resolve( res.data );
         }).catch( error => { 
             reject( error.response );
