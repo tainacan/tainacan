@@ -14,7 +14,6 @@
                         class="control" 
                         custom>
                     <b-checkbox
-                            @input="onChangeTableFields(column)"
                             v-model="column.visible" 
                             :native-value="column.field">
                         {{ column.label }}
@@ -29,10 +28,10 @@
                         :placeholder="$i18n.get('label_sorting')">
                     <option
                         v-for="(field, index) in tableFields"
-                        v-if="field.id != undefined"
+                        v-if="field.id != undefined && field.field_type != 'Tainacan\Field_Types\Core_Description'"
                         :value="field"
                         :key="index">
-                        {{ field.label }}
+                        {{ field.name }}
                     </option>
                 </b-select>
                 <button 
@@ -46,7 +45,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { eventSearchBus } from '../../../js/event-search-bus';
 
 export default {
@@ -74,21 +73,6 @@ export default {
             'getOrderBy',
             'getOrder'
         ]),
-        onChangeTableFields(field) {
-            // let prevValue = this.prefTableFields;
-            // let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
-            // if (index >= 0) {
-            //     prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
-            // }
-
-            // for (let currentField of this.prefTableFields)
-            //     this.$console.log(currentField.slug, currentField.visible);
-
-            // for (let oldField of prevValue)
-            //     this.$console.log(oldField.slug, oldField.visible);
-
-            // this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
-        },
         onChangeOrderBy(field) {  
             eventSearchBus.setOrderBy(field);
         },

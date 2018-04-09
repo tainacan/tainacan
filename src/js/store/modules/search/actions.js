@@ -41,8 +41,8 @@ export const setOrderBy = ({ commit }, orderBy ) => {
         });
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value_num' } );
-    } else if (orderBy.field_type == 'Tainacan\\Field_Types\\Core_Title') {
-        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'title' } );
+    } else if (orderBy.field_type == orderBy.field_type_object.core) {
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.field_type_object.related_mapped_prop } );
     } else {
         commit('addMetaQuery', {
             field_id: orderBy.id

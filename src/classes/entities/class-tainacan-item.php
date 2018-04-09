@@ -368,6 +368,10 @@ class Item extends Entity {
 
 		$is_valid = true;
 
+		if ( parent::validate() === false ) {
+			$is_valid = false;
+		}
+
 		$arrayItemMetadata = $this->get_fields();
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {
