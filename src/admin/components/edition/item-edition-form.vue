@@ -142,7 +142,7 @@
                             id="button-submit-item-creation"
                             @click.prevent="onSubmit"
                             class="button is-success" 
-                            :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
+                            >{{ $i18n.get('save') }}</button> 
                 </div>
             </div>
             <p class="help is-danger">{{ formErrorMessage }}</p> 
@@ -222,14 +222,13 @@ export default {
                 this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
             })
             .catch((errors) => {
-                // for (let error of errors.errors) {     
-                //     for (let attribute of Object.keys(error)){
-                //         //this.editFormErrors[attribute] = error[attribute];
-                //         this.$console.log(error);
-                        
-                //        eventBus.errors.push({ field_id: 7031, errors: error[attribute]});
-                //     }  
-                // }
+                this.$console.log(errors);
+                for (let error of errors.errors) {     
+                    for (let attribute of Object.keys(error)){                        
+                       eventBus.errors.push({ field_id: attribute, errors: error[attribute]});
+                    }  
+                }
+                this.$console.log(eventBus.errors);
                 this.formErrorMessage = errors.error_message;
 
                 this.isLoading = false;

@@ -128,15 +128,6 @@ class Fields extends Repository {
                 'validation' => v::numeric()->positive(),
                 'default'    => 1
             ],
-            'privacy'        => [
-                'map'        => 'meta',
-                'title'      => __('Privacy', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field should be omitted in item view', 'tainacan'),
-                'on_error'   => __('Privacy is invalid', 'tainacan'),
-                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
-                'default'    => 'no'
-            ],
             'mask'           => [
                 'map'        => 'meta',
                 'title'      => __('Mask', 'tainacan'),
@@ -174,15 +165,6 @@ class Fields extends Repository {
     			'default'	 => false,
     			'validation' => v::boolType()
     	    ],
-            'can_delete'        => [
-                'map'        => 'meta',
-                'title'      => __('Can delete', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field can be deleted', 'tainacan'),
-                'on_error'   => __('Can delete is invalid', 'tainacan'),
-                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
-                'default'    => 'yes'
-            ],
         ]);
     }
 	

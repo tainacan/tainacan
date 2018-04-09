@@ -105,7 +105,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		
 		$pending = $log->get_value();
 		
-		$this->assertEquals('TestValuesSuggestion_metadado', $pending->value);
+		$this->assertEquals('TestValuesSuggestion_metadado', $pending->get_value());
 		
 		wp_set_current_user($this->user_id);
 		
@@ -165,7 +165,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		
 		$pending = $log->get_value();
 		
-		$this->assertEquals('TestValuesAnonymousSuggestion_metadado', $pending->value);
+		$this->assertEquals('TestValuesAnonymousSuggestion_metadado', $pending->get_value());
 		
 		wp_set_current_user($this->user_id);
 		

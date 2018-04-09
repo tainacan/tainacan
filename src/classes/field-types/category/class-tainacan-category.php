@@ -120,8 +120,8 @@ class Category extends Field_Type {
 				$terms = array($terms);
 			
 			foreach ($terms as $term) {
-				if (is_object($term) && $term instanceof \WP_Term) {
-					$term = $term->term_id;
+				if (is_object($term) && $term instanceof \Tainacan\Entities\Term) {
+					$term = $term->get_id();
 				}
 				
 				if (!term_exists($term)) {
@@ -135,5 +135,41 @@ class Category extends Field_Type {
 		return $valid;
         
     }
+	
+	public function __value_to_html(Item_Metadata_Entity $item_metadata) {
+		
+		$value = $item_metadata->get_value();
+		
+		$return = '';
+		
+		if ( $item_metadata->is_multiple() ) {
+			
+			$count = 1;
+			$total = sizeof($value);
+			
+			foreach ( $value as $term ) {
+				if ( $term instanceof \Tainacan\Entities\Term ) {
+					$return .= $term->__toHtml();
+				}
+				
+				$count ++;
+				
+				if ( $count <= $total ) {
+					$return .= ', ';
+				}
+				
+			}
+			
+		} else {
+			
+			if ( $value instanceof \Tainacan\Entities\Term ) {
+				$return .= $value->__toHtml();
+			}
+			
+		}
+		
+		return $return;
+		
+	}
 	
 }

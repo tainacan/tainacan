@@ -28,8 +28,21 @@ class Item_Metadata extends Repository {
 
     public function insert($item_metadata) {
 
-        $unique = !$item_metadata->is_multiple();
+		if ( ! $item_metadata->get_validated() ) {
+			throw new \Exception( 'Entities must be validated before you can save them' );
+			// TODO: Throw Warning saying you must validate object before insert()
+		}
+
+	    $old = $item_metadata;
+	    $is_update = false;
+	    // TODO get props obj before update
+	    if( $item_metadata->get_id() ) {
+		    $is_update = true;
+		    $old = $item_metadata->get_repository()->fetch( $item_metadata->get_id() );
+	    }
 		
+		$unique = !$item_metadata->is_multiple();
+
 		$field_type = $item_metadata->get_field()->get_field_type_object();
 		if ($field_type->get_core()) {
 			$this->save_core_field_value($item_metadata);
@@ -52,22 +65,22 @@ class Item_Metadata extends Repository {
 					 * and not update an existing. This is the case of a multiple compound field.
 					 */
 					if ( $item_metadata->get_field()->get_parent() > 0 && is_null($item_metadata->get_meta_id()) ) {
-						$added_meta_id = add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+						$added_meta_id = add_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id(), wp_slash( $item_metadata->get_value() ) );
 						$added_compound = $this->add_compound_value($item_metadata, $added_meta_id);
 					} else {
-						update_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $item_metadata->get_value() ) );
+						update_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id(), wp_slash( $item_metadata->get_value() ) );
 					}
 					
 				}
 				
 	        } else {
-	            delete_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id());
+	            delete_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id());
 	            
 	            if (is_array($item_metadata->get_value())){
 	            	$values = $item_metadata->get_value();
 
 	                foreach ($values as $value){
-	                    add_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), wp_slash( $value ));
+	                    add_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id(), wp_slash( $value ));
 	                }
 	            }
 	        }
@@ -75,7 +88,7 @@ class Item_Metadata extends Repository {
 		
         
         
-        do_action('tainacan-insert', $item_metadata);
+        do_action('tainacan-insert', $item_metadata, $old, $is_update);
         do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
 
         $new_entity = new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
@@ -222,8 +235,12 @@ class Item_Metadata extends Repository {
 
 			$terms = wp_get_object_terms($item_metadata->get_item()->get_id(), $taxonomy_slug );
 			
-			if ($unique)
+			if ($unique) {
 				$terms = reset($terms);
+				
+				if (false !== $terms)
+					$terms = new Entities\Term($terms);
+			}
 
 			if(is_array($terms)){
 				$terms_array = [];
@@ -240,7 +257,7 @@ class Item_Metadata extends Repository {
 			
 			global $wpdb;
 			$rows = $wpdb->get_results( 
-				$wpdb->prepare("SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item_metadata->get_item()->get_id(), $item_metadata->field->get_id()), 
+				$wpdb->prepare("SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id()), 
 				ARRAY_A );
 			
 			$return_value = [];
@@ -268,7 +285,7 @@ class Item_Metadata extends Repository {
 					return $value->meta_value;
 				}
 			} else {
-				return get_post_meta($item_metadata->item->get_id(), $item_metadata->field->get_id(), $unique);
+				return get_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id(), $unique);
 			}
 			
         }

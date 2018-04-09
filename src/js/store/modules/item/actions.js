@@ -47,7 +47,7 @@ export const fetchFields = ({ commit }, item_id) => {
     });
 };
 
-export const cleanFields = ({ commit }, item_id) => {
+export const cleanFields = ({ commit }) => {
     commit('cleanFields');
 };
 

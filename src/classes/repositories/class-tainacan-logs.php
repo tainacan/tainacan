@@ -28,7 +28,7 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'log_inserts' ), 10, 2 );
+		add_action( 'tainacan-insert', array( $this, 'log_inserts' ), 10, 3 );
 	}
 
 	public function get_map() {
@@ -211,6 +211,7 @@ class Logs extends Repository {
 		$args = [
 			'post_type'      => Entities\Log::get_post_type(),
 			'posts_per_page' => -1,
+			'orderby'        => 'date',
 		];
 
 		$logs = $this->fetch( $args, 'OBJECT' );
@@ -226,7 +227,7 @@ class Logs extends Repository {
 	 *
 	 * @return Entities\Log new created log
 	 */
-	public function log_inserts( $new_value, $old_value = null ) {
+	public function log_inserts( $new_value, $old_value = null, $is_update = null ) {
 		$msn = "";
 		$description = "";
 
@@ -242,8 +243,29 @@ class Logs extends Repository {
 			$name = method_exists($new_value, 'get_name') ? $new_value->get_name() :
 				(method_exists($new_value, 'get_title') ? $new_value->get_title() : $new_value->get_field()->get_name());
 
-			$msn  = sprintf( esc_html__( 'A %s has been created/updated.', 'tainacan' ), $class_name);
-			$description = sprintf( esc_html__("The %s %s has been created/updated.", 'tainacan' ), $name, strtolower($class_name));
+			$articleA = 'A';
+			$articleAn = 'An';
+			$vowels = 'aeiou';
+
+			if($is_update){
+				if(substr_count($vowels, strtolower(substr($class_name, 0, 1))) > 0){
+					$msn  = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleAn, $class_name);
+					$description = sprintf( __("The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower($class_name));
+				} else {
+					$msn  = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleA, $class_name);
+					$description = sprintf( __("The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower($class_name));
+				}
+
+			} else {
+				if(substr_count($vowels, strtolower(substr($class_name, 0, 1))) > 0){
+					$msn  = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleAn, $class_name);
+					$description = sprintf( __("The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower($class_name));
+				} else {
+					$msn  = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleA, $class_name);
+					$description = sprintf( __("The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower($class_name));
+				}
+			}
+
 
 		}
 

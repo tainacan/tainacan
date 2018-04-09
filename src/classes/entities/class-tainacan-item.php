@@ -23,6 +23,8 @@ class Item extends Entity {
         $order,
         $parent,
         $decription,
+        $document_type,
+        $document,
         $collection_id;
 
 	/**
@@ -219,6 +221,24 @@ class Item extends Entity {
 	function get_description() {
 		return $this->get_mapped_property( 'description' );
 	}
+	
+	/**
+	 * Return the item document type
+	 *
+	 * @return string
+	 */
+	function get_document_type() {
+		return $this->get_mapped_property( 'document_type' );
+	}
+	
+	/**
+	 * Return the item document
+	 *
+	 * @return string
+	 */
+	function get_document() {
+		return $this->get_mapped_property( 'document' );
+	}
 
 	/**
 	 *
@@ -273,6 +293,28 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Define the document type
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_document_type( $value ) {
+		$this->set_mapped_property( 'document_type', $value );
+	}
+	
+	/**
+	 * Define the document
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_document( $value ) {
+		$this->set_mapped_property( 'document', $value );
+	}
+	
+	/**
 	 * Define the description
 	 *
 	 * @param [string] $value
@@ -324,32 +366,29 @@ class Item extends Entity {
 			return true;
 		}
 
-		if ( parent::validate() ) {
-			$arrayItemMetadata = $this->get_fields();
-			if ( $arrayItemMetadata ) {
-				foreach ( $arrayItemMetadata as $itemMetadata ) {
+		$is_valid = true;
 
-					// avoid core fields to re-validate
-					$pos = strpos( $itemMetadata->get_field()->get_field_type(), 'Core' );
-					if ( $pos !== false ) {
-						continue;
-					}
-					
-					// skip validation for Compound Fields
-					if ( $itemMetadata->get_field()->get_field_type() == 'Tainacan\Field_Types\Compound' ) {
-						continue;
-					}
+		if ( parent::validate() === false ) {
+			$is_valid = false;
+		}
 
-					if ( ! $itemMetadata->validate() ) {
-						$errors = $itemMetadata->get_errors();
-						$this->add_error( $itemMetadata->get_field()->get_id(), $errors );
+		$arrayItemMetadata = $this->get_fields();
+		if ( $arrayItemMetadata ) {
+			foreach ( $arrayItemMetadata as $itemMetadata ) {
+				
+				// skip validation for Compound Fields
+				if ( $itemMetadata->get_field()->get_field_type() == 'Tainacan\Field_Types\Compound' ) {
+					continue;
+				}
 
-						return false;
-					}
+				if ( ! $itemMetadata->validate() ) {
+					$errors = $itemMetadata->get_errors();
+					$this->add_error( $itemMetadata->get_field()->get_id(), $errors );
+					$is_valid = false;
 				}
 			}
 
-			return true;
+			return $is_valid;
 		}
 
 		return false;
@@ -370,4 +409,29 @@ class Item extends Entity {
 
 		return parent::validate();
 	}
+	
+	
+	public function __toHtml() {
+		
+		$return = '';
+		$id = $this->get_id();
+		
+		if ( $id ) {
+			
+			$link = get_permalink( (int) $id );
+			
+			if (is_string($link)) {
+				
+				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
+				$return.= $this->get_title();
+				$return .= "</a>";
+				
+			}
+			
+		}
+
+		return $return;
+		
+	}
+	
 }

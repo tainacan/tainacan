@@ -14,7 +14,6 @@
                         class="control" 
                         custom>
                     <b-checkbox
-                            @input="onChangeTableFields(column)"
                             v-model="column.visible" 
                             :native-value="column.field">
                         {{ column.label }}
@@ -24,73 +23,62 @@
         </div>
         <div class="header-item">
             <b-field>
-            <b-select :placeholder="$i18n.get('label_sorting')">
-                <option
-                    v-for="(field, index) in tableFields"
-                    :value="field"
-                    :key="index">
-                    {{ field.label }}
-                </option>
-            </b-select>
-            <button>
-                <b-icon icon="sort-ascending"/>
-            </button>
+                <b-select
+                        @input="onChangeOrderBy($event)" 
+                        :placeholder="$i18n.get('label_sorting')">
+                    <option
+                        v-for="(field, index) in tableFields"
+                        v-if="field.id != undefined && field.field_type != 'Tainacan\Field_Types\Core_Description'"
+                        :value="field"
+                        :key="index">
+                        {{ field.name }}
+                    </option>
+                </b-select>
+                <button 
+                        class="button is-small"
+                        @click="onChangeOrder()">
+                    <b-icon :icon="order == 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
+                </button>
             </b-field>
         </div>
     </span>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
+import { eventSearchBus } from '../../../js/event-search-bus';
 
 export default {
     name: 'SearchControl',
+    data() {
+        return {
+            prefTableFields: []
+        }
+    },
     props: {
         collectionId: Number,
         isRepositoryLevel: false,
-        tableFields: Array,
-        prefTableFields: Array,
+        tableFields: Array   
     },
-    methods: {
-        ...mapActions('fields', [
-            'fetchFields'
-        ]),
-        onChangeTableFields(field) {
-            // let prevValue = this.prefTableFields;
-            // let index = this.prefTableFields.findIndex(alteredField => alteredField.slug === field.slug);
-            // if (index >= 0) {
-            //     prevValue[index].visible = this.prefTableFields[index].visible ? false : true;
-            // }
-
-            // for (let currentField of this.prefTableFields)
-            //     this.$console.log(currentField.slug, currentField.visible);
-
-            // for (let oldField of prevValue)
-            //     this.$console.log(oldField.slug, oldField.visible);
-
-            // this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
+    computed: {
+        orderBy() {
+            return this.getOrderBy();
+        },
+        order() {
+            return this.getOrder();
         }
     },
-    mounted() {
-        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: false }).then((res) => {
-            let rawFields = res;
-            this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', visible: true });
-            for (let field of rawFields) {
-                this.tableFields.push(
-                    { label: field.name, field: field.description, slug: field.slug,  visible: true }
-                );
-            }
-            this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
-            this.prefTableFields = this.tableFields;
-            // this.$userPrefs.get('table_columns_' + this.collectionId)
-            //     .then((value) => {
-            //         this.prefTableFields = value;
-            //     })
-            //     .catch((error) => {
-            //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
-            //     });
-
-        }).catch();
+    methods: {
+        ...mapGetters('search', [
+            'getOrderBy',
+            'getOrder'
+        ]),
+        onChangeOrderBy(field) {  
+            eventSearchBus.setOrderBy(field);
+        },
+        onChangeOrder() {
+            this.order == 'DESC' ? eventSearchBus.setOrder('ASC') : eventSearchBus.setOrder('DESC');
+        }
     }
 }
 </script>

@@ -5,7 +5,6 @@
         <div class="sub-header">
             <div class="header-item">
                 <router-link 
-                        id="button-item-creation"
                         tag="button" 
                         class="button is-secondary"
                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
@@ -69,6 +68,9 @@ export default {
         ...mapGetters('collection', [
             'getItems'
         ]),
+        ...mapActions('fields', [
+            'fetchFields'
+        ]),
     },
     computed: {
         items(){
@@ -77,10 +79,29 @@ export default {
     },
     created() {
         this.collectionId = this.$route.params.collectionId;
-        this.isRepositoryLevel  = (this.collectionId == undefined);      
+        this.isRepositoryLevel  = (this.collectionId == undefined);    
+
         eventSearchBus.$on('isLoadingItems', isLoadingItems => {
             this.isLoading = isLoadingItems;
         });
+
+        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: false }).then((res) => {
+            let rawFields = res;
+            this.tableFields.push({ name: this.$i18n.get('label_thumbnail'), field: 'featured_image', field_type: undefined, slug: 'featured_image', id: undefined, visible: true });
+            for (let field of rawFields) {
+                this.tableFields.push(field);
+            }
+            this.tableFields.push({ name: this.$i18n.get('label_actions'), field: 'row_actions', field_type: undefined, slug: 'actions', id: undefined, visible: true });
+            //this.prefTableFields = this.tableFields;
+            // this.$userPrefs.get('table_columns_' + this.collectionId)
+            //     .then((value) => {
+            //         this.prefTableFields = value;
+            //     })
+            //     .catch((error) => {
+            //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
+            //     });
+
+        }).catch();
     },
     mounted(){
         eventSearchBus.updateStoreFromURL();
@@ -104,11 +125,6 @@ export default {
         padding-left: $page-small-side-padding;
         padding-right: $page-small-side-padding;
         border-bottom: 0.5px solid #ddd;
-
-        .header-item {
-            display: inline-block;
-            padding-right: 8em;
-        }
         
         @media screen and (max-width: 769px) {
             height: 60px;

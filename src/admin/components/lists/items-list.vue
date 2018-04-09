@@ -26,18 +26,17 @@
                         v-for="(column, index) in tableFields"
                         :key="index"
                         :custom-key="column.slug"
-                        :label="column.label"
+                        :label="column.name"
                         :visible="column.visible"
                         :width="column.field == 'row_actions' ? 78 : column.field == 'featured_image' ? 55 : undefined ">
                         
-                    <router-link 
-                            tag="span" 
-                            class="clickable-row" 
-                            :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}">
-                        <template v-if="column.field != 'featured_image' && column.field != 'row_actions'">
-                            {{ showValue( props.row.metadata[column.slug] ) }}
-                        </template>
-                    </router-link>
+                    <template>
+                        <span 
+                                class="clickable-row" 
+                                @click.prevent="goToItemPage(props.row.id)"
+                                v-if="column.field != 'featured_image' && column.field != 'row_actions'"
+                                v-html="renderMetadata( props.row.metadata[column.slug] )" />   
+                    </template>
                     
                     <template v-if="column.field == 'featured_image'">
                         <router-link 
@@ -85,7 +84,7 @@
                     </div>
                 </section>
             </template>
-        </b-table>
+        </b-table> 
     </div>
 </template>
 
@@ -179,20 +178,14 @@ export default {
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
-        showValue( metadata ){
+        renderMetadata( metadata ){
 
-            if( ! metadata || metadata.value === false || metadata.value == undefined || metadata.value == '' )
+            if( ! metadata || metadata.value === false || metadata.value == undefined )
                 return '';
-
-            if(  metadata.value instanceof Array ){
-                let result = [];
-                for( let val of metadata.value ){
-                    result.push( ( val.name ) ? val.name : val )
-                }
-                return result.join(', ');
-            } else {
-                return metadata.value.name ? metadata.value.name : metadata.value
-            }
+            else if (metadata)
+                return metadata.value_as_html;
+            else
+                return metadata.value_as_html;
         }
     }
 }

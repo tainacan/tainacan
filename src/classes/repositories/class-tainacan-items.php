@@ -91,8 +91,23 @@ class Items extends Repository {
 				'type'        => 'array',
 				'description' => __( 'The item term IDs', 'tainacan' ),
 			],
-			//'collection' => 'relation...',
-			// field .. field...
+			'document_type'       => [
+                'map'        => 'meta',
+                'title'      => __('Document Type', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The document type, can be a local attachment, an external URL or a text', 'tainacan'),
+                'on_error'   => __('Invalid document type', 'tainacan'),
+                'validation' => v::stringType()->in(['attachment', 'url', 'text']),
+                'default'    => 'attachment'
+            ],
+			'document'       => [
+                'map'        => 'meta',
+                'title'      => __('Document', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The document itself. An ID in case of attachment, an URL in case of url or a text in the case of text', 'tainacan'),
+                'on_error'   => __('Invalid document', 'tainacan'),
+                'default'    => ''
+            ],
 		] );
 	}
 
@@ -152,6 +167,14 @@ class Items extends Repository {
 
 	public function insert( $item ) {
 
+		$old = $item;
+		$is_update = false;
+		// TODO get props obj before update
+		if( $item->get_id() ) {
+			$is_update = true;
+			$old = $item->get_repository()->fetch( $item->get_id() );
+		}
+
 		$map = $this->get_map();
 
 		// get collection to determine post type
@@ -198,7 +221,7 @@ class Items extends Repository {
 			set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
 		}
 
-		do_action( 'tainacan-insert', $item );
+		do_action( 'tainacan-insert', $item, $old, $is_update );
 		do_action( 'tainacan-insert-Item', $item );
 
 		// return a brand new object

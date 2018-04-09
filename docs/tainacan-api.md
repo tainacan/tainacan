@@ -139,7 +139,6 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
             "collection_key": "string",
             "multiple": "string",
             "cardinality": "string",
-            "privacy": "string",
             "mask": "string",
             "default_value": "string",
             "field_type_options": "string",

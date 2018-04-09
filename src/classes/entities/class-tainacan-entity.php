@@ -275,6 +275,7 @@ class Entity {
     
     public function add_error($type, $message) {
         $this->errors[] = [$type => $message];
+		$this->set_validated(false);
     }
     
     /**
