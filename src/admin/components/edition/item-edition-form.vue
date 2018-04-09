@@ -213,12 +213,10 @@ export default {
                 this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
             })
             .catch((errors) => {
+                this.$console.log(errors);
                 for (let error of errors.errors) {     
-                    for (let attribute of Object.keys(error)){
-                        //this.editFormErrors[attribute] = error[attribute];
-                        this.$console.log(error);
-                        
-                       eventBus.errors.push({ field_id: 7031, errors: error[attribute]});
+                    for (let attribute of Object.keys(error)){                        
+                       eventBus.errors.push({ field_id: attribute, errors: error[attribute]});
                     }  
                 }
                 this.$console.log(eventBus.errors);

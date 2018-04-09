@@ -35,7 +35,21 @@ export const setItemsPerPage = ({ commit }, page ) => {
 
 // Sorting queries
 export const setOrderBy = ({ commit }, orderBy ) => {
-    commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy } );
+    if (orderBy.field_type == 'Tainacan\\Field_Types\\Numeric') {
+        commit('addMetaQuery', {
+            field_id: orderBy.id
+        });
+        commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value_num' } );
+    } else if (orderBy.field_type == 'Tainacan\\Field_Types\\Core_Title') {
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'title' } );
+    } else {
+        commit('addMetaQuery', {
+            field_id: orderBy.id
+        });
+        commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
+    }
 };
 
 export const setOrder = ({ commit }, order ) => {

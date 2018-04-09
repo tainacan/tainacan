@@ -39,30 +39,31 @@ export const eventBus = new Vue({
                 let values = ( Array.isArray( data.values[0] ) ) ? data.values[0] : data.values ;
                 const promisse = this.$store.dispatch('item/updateMetadata',
                     { item_id: data.item_id, field_id: data.field_id, values: values });
-                promisse.then( () => {
-                    let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
+                
+                    promisse.then( () => {
+                    let index = this.errors.findIndex( errorItem => errorItem.field_id == data.field_id );
                     if ( index >= 0){
                         this.errors.splice( index, 1);
                     }
-                }, error => {
-                    let index = this.errors.findIndex( errorItem => errorItem.field_id === data.field_id );
-                    let messages = null;
+                })
+                .catch((error) => {
+                    let index = this.errors.findIndex( errorItem => errorItem.field_id == data.field_id );
+                    let messages = [];
 
                     for (let index in error) {
-                        messages = error[index]
+                        messages.push(error[index]);
                     }
 
                     if ( index >= 0){
                         Vue.set( this.errors, index, { field_id: data.field_id, errors: messages });
-                    }else{
+                    } else {
                         this.errors.push( { field_id: data.field_id, errors: messages } );
                     }
                 });
             }
         },
         getErrors(field_id){
-            let error = this.errors.find( errorItem => errorItem.field_id === field_id );
-            console.log(this.errors);
+            let error = this.errors.find( errorItem => errorItem.field_id == field_id );
             return ( error ) ? error.errors : false
         },
         setValues(){

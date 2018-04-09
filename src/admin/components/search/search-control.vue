@@ -24,22 +24,22 @@
         </div>
         <div class="header-item">
             <b-field>
-            <b-select
-                    @input="onChangeOrderBy($event)" 
-                    :placeholder="$i18n.get('label_sorting')">
-                <option
-                    v-for="(field, index) in tableFields"
-                    v-if="field.id != undefined"
-                    :value="field.id"
-                    :key="index">
-                    {{ field.label }}
-                </option>
-            </b-select>
-            <button 
-                    class="button is-small"
-                    @click="onChangeOrder()">
-                <b-icon :icon="order == 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
-            </button>
+                <b-select
+                        @input="onChangeOrderBy($event)" 
+                        :placeholder="$i18n.get('label_sorting')">
+                    <option
+                        v-for="(field, index) in tableFields"
+                        v-if="field.id != undefined"
+                        :value="field"
+                        :key="index">
+                        {{ field.label }}
+                    </option>
+                </b-select>
+                <button 
+                        class="button is-small"
+                        @click="onChangeOrder()">
+                    <b-icon :icon="order == 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
+                </button>
             </b-field>
         </div>
     </span>
@@ -51,11 +51,15 @@ import { eventSearchBus } from '../../../js/event-search-bus';
 
 export default {
     name: 'SearchControl',
+    data() {
+        return {
+            prefTableFields: []
+        }
+    },
     props: {
         collectionId: Number,
         isRepositoryLevel: false,
-        tableFields: Array,
-        prefTableFields: Array    
+        tableFields: Array   
     },
     computed: {
         orderBy() {
@@ -66,9 +70,6 @@ export default {
         }
     },
     methods: {
-        ...mapActions('fields', [
-            'fetchFields'
-        ]),
         ...mapGetters('search', [
             'getOrderBy',
             'getOrder'
@@ -88,33 +89,12 @@ export default {
 
             // this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
         },
-        onChangeOrderBy(fieldId) {  
-            eventSearchBus.setOrderBy(fieldId);
+        onChangeOrderBy(field) {  
+            eventSearchBus.setOrderBy(field);
         },
         onChangeOrder() {
             this.order == 'DESC' ? eventSearchBus.setOrder('ASC') : eventSearchBus.setOrder('DESC');
         }
-    },
-    mounted() {
-        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: false }).then((res) => {
-            let rawFields = res;
-            this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', id: undefined, visible: true });
-            for (let field of rawFields) {
-                this.tableFields.push(
-                    { label: field.name, field: field.description, slug: field.slug, id: field.id, visible: true }
-                );
-            }
-            this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', id: undefined, visible: true });
-            this.prefTableFields = this.tableFields;
-            // this.$userPrefs.get('table_columns_' + this.collectionId)
-            //     .then((value) => {
-            //         this.prefTableFields = value;
-            //     })
-            //     .catch((error) => {
-            //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
-            //     });
-
-        }).catch();
     }
 }
 </script>

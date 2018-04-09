@@ -366,32 +366,25 @@ class Item extends Entity {
 			return true;
 		}
 
-		if ( parent::validate() ) {
-			$arrayItemMetadata = $this->get_fields();
-			if ( $arrayItemMetadata ) {
-				foreach ( $arrayItemMetadata as $itemMetadata ) {
+		$is_valid = true;
 
-					// avoid core fields to re-validate
-					$pos = strpos( $itemMetadata->get_field()->get_field_type(), 'Core' );
-					if ( $pos !== false ) {
-						continue;
-					}
-					
-					// skip validation for Compound Fields
-					if ( $itemMetadata->get_field()->get_field_type() == 'Tainacan\Field_Types\Compound' ) {
-						continue;
-					}
+		$arrayItemMetadata = $this->get_fields();
+		if ( $arrayItemMetadata ) {
+			foreach ( $arrayItemMetadata as $itemMetadata ) {
+				
+				// skip validation for Compound Fields
+				if ( $itemMetadata->get_field()->get_field_type() == 'Tainacan\Field_Types\Compound' ) {
+					continue;
+				}
 
-					if ( ! $itemMetadata->validate() ) {
-						$errors = $itemMetadata->get_errors();
-						$this->add_error( $itemMetadata->get_field()->get_id(), $errors );
-
-						return false;
-					}
+				if ( ! $itemMetadata->validate() ) {
+					$errors = $itemMetadata->get_errors();
+					$this->add_error( $itemMetadata->get_field()->get_id(), $errors );
+					$is_valid = false;
 				}
 			}
 
-			return true;
+			return $is_valid;
 		}
 
 		return false;
