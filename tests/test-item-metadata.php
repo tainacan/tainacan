@@ -59,7 +59,9 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
         $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
         $item_metadata->set_value('teste_value');
-
+		
+		$item_metadata->validate();
+		
         $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
         
         $this->assertEquals('teste_value', $item_metadata->get_value());

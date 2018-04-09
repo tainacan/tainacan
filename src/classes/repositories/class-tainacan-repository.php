@@ -364,6 +364,9 @@ abstract class Repository {
 			return $post;
 		}
 
+		if (!$post instanceof \WP_Post)
+			return false;
+		
 		$post_type = $post->post_type;
 
 		return self::get_entity_by_post_type( $post_type, $post );

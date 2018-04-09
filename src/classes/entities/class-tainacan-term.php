@@ -172,4 +172,28 @@ class Term extends Entity {
 	function set_taxonomy($value) {
         $this->set_mapped_property('taxonomy', $value);
     }
+	
+	
+	public function __toHtml() {
+		
+		$return = '';
+		$id = $this->get_id();
+		
+		if ( $id ) {
+			
+			$link = get_term_link( (int) $id );
+			
+			if (is_string($link)) {
+				
+				$return = "<a data-linkto='term' data-id='$id' href='$link'>";
+				$return.= $this->get_name();
+				$return .= "</a>";
+				
+			}
+			
+		}
+
+		return $return;
+		
+	}
 }
