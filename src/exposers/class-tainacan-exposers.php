@@ -110,12 +110,19 @@ class Exposers {
 	public function hasMapper($request) {
 		$body = json_decode( $request->get_body(), true );
 		$class_prefix = 'Tainacan\Exposers\Mappers\\';
+		$type = $this->hasType($request);
 		if(
 			is_array($body) && array_key_exists('exposer-map', $body) &&
 			in_array($this->check_class_name($body['exposer-map'], false, $class_prefix), $this->mappers)
 		) {
-			$mapper = $this->check_class_name($body['exposer-map'], true, $class_prefix);
-			return new $mapper;
+			if($type === false || empty($type->mappers) || in_array($body['exposer-map'], $type->mappers) ) {
+				$mapper = $this->check_class_name($body['exposer-map'], true, $class_prefix);
+				return new $mapper;
+			} elseif( is_array($type->mappers) && count($type->mappers) > 0 ){
+				$mapper = $this->check_class_name($type->mappers[0], true, $class_prefix);
+				return new $mapper;
+			}
 		}
+		return false;
 	}
 }
