@@ -16,6 +16,13 @@ class Item_Metadata_Entity extends Entity {
 	 */
 	protected $repository = 'Item_Metadata';
 	
+	protected
+        $item,
+		$field,
+		$parent_meta_id,
+		$meta_id,
+		$value;
+	
 	/**
 	 * 
 	 * @param Item   $item    Item Entity
@@ -38,25 +45,99 @@ class Item_Metadata_Entity extends Entity {
 		
     }
 
-	public function  __toString(){
-		return 'Hello, I\'m the Item Field Entity';
+	public function  __value_to_html(){
+		$field = $this->get_field();
+		
+		if (is_object($field)) {
+			$fto = $field->get_field_type_object();
+			if (is_object($fto)) {
+				
+				if ( method_exists($fto, '__value_to_html') ) {
+					return $fto->__value_to_html($this);
+				}
+				
+			}
+		}
+		
+		$value = $this->get_value();
+		
+		$return = '';
+		
+		if ( $this->is_multiple() ) {
+			
+			$total = sizeof($value);
+			$count = 0;
+			
+			foreach ($value as $v) {
+				$return .= (string) $v;
+				
+				$count ++;
+				if ($count <= $total)
+					$return .= ', ';
+			}
+			
+		} else {
+			$return = (string) $value;
+		}
+
+		return $return;
+		
+		
+	}
+	
+	public function __value_to_string() {
+		return strip_tags($this->__value_to_html());
+	}
+	
+	public function __value_to_array() {
+		$field = $this->get_field();
+		if (is_object($field)) {
+			$fto = $field->get_field_type_object();
+			if (is_object($fto)) {
+				
+				if ( method_exists($fto, '__value_to_array') ) {
+					return $fto->__value_to_array($this);
+				}
+
+			}
+
+		}
+		
+		$value = $this->get_value();
+		
+		if ( $this->is_multiple() ) {
+			
+			$return = [];
+			
+			foreach ($value as $v) {
+				if ( $v instanceof Term || $v instanceof ItemMetadataEntity ) {
+					$return[] = $v->__toArray();
+				} else {
+					$return[] = $v;
+				}
+			}
+			
+		} else {
+			
+			$return = '';
+			
+			if ( $value instanceof Term || $value instanceof ItemMetadataEntity ) {
+				$return = $value->__toArray();
+			} else {
+				$return = $value;
+			}
+		}
+
+		return $return;
+
 	}
 
     public function  __toArray(){
-    	$value = $this->get_value();
-
-    	if(is_array($value) && isset($value[0]) && $value[0] instanceof Term){
-    		$values_arr = [];
-
-    		foreach ($value as $val){
-    			$values_arr[] = $val->__toArray();
-		    }
-
-		    $as_array['value'] = $values_arr;
-	    } else {
-		    $as_array['value'] = $this->get_value();
-	    }
-
+		$as_array = [];
+		
+		$as_array['value'] = $this->__value_to_array();
+		$as_array['value_as_html'] = $this->__value_to_html();
+		$as_array['value_as_string'] = $this->__value_to_string();
 	    $as_array['item']  = $this->get_item()->__toArray();
 	    $as_array['field'] = $this->get_field()->__toArray();
 
@@ -258,7 +339,7 @@ class Item_Metadata_Entity extends Entity {
         } else {
 
             if( is_array($value) ){
-                $this->add_error('not_multiple', $field->get_name() . ' do not accept array as value');
+				$this->add_error('not_multiple', $field->get_name() . ' do not accept array as value');
                 return false;
             }
             

@@ -133,7 +133,7 @@
                             id="button-submit-item-creation"
                             @click.prevent="onSubmit"
                             class="button is-success" 
-                            :disabled="formHasErrors">{{ $i18n.get('save') }}</button> 
+                            >{{ $i18n.get('save') }}</button> 
                 </div>
             </div>
             <p class="help is-danger">{{ formErrorMessage }}</p> 

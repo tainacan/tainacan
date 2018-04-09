@@ -5,7 +5,6 @@
         <div class="sub-header">
             <div class="header-item">
                 <router-link 
-                        id="button-item-creation"
                         tag="button" 
                         class="button is-secondary"
                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
@@ -104,11 +103,6 @@ export default {
         padding-left: $page-small-side-padding;
         padding-right: $page-small-side-padding;
         border-bottom: 0.5px solid #ddd;
-
-        .header-item {
-            display: inline-block;
-            padding-right: 8em;
-        }
         
         @media screen and (max-width: 769px) {
             height: 60px;

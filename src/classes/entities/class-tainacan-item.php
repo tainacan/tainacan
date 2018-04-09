@@ -23,6 +23,8 @@ class Item extends Entity {
         $order,
         $parent,
         $decription,
+        $document_type,
+        $document,
         $collection_id;
 
 	/**
@@ -219,6 +221,24 @@ class Item extends Entity {
 	function get_description() {
 		return $this->get_mapped_property( 'description' );
 	}
+	
+	/**
+	 * Return the item document type
+	 *
+	 * @return string
+	 */
+	function get_document_type() {
+		return $this->get_mapped_property( 'document_type' );
+	}
+	
+	/**
+	 * Return the item document
+	 *
+	 * @return string
+	 */
+	function get_document() {
+		return $this->get_mapped_property( 'document' );
+	}
 
 	/**
 	 *
@@ -272,6 +292,28 @@ class Item extends Entity {
 		$this->set_mapped_property( 'parent', $value );
 	}
 
+	/**
+	 * Define the document type
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_document_type( $value ) {
+		$this->set_mapped_property( 'document_type', $value );
+	}
+	
+	/**
+	 * Define the document
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_document( $value ) {
+		$this->set_mapped_property( 'document', $value );
+	}
+	
 	/**
 	 * Define the description
 	 *

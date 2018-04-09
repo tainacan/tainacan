@@ -278,13 +278,6 @@ Return the mask
 
 **Returns:** string
 
-### `function get_privacy()`
-
-Return the privacy type 
-
-
-**Returns:** string
-
 ### `function get_default_value()`
 
 Return the field default value 

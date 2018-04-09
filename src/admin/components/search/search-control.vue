@@ -24,16 +24,21 @@
         </div>
         <div class="header-item">
             <b-field>
-            <b-select :placeholder="$i18n.get('label_sorting')">
+            <b-select
+                    @input="onChangeOrderBy($event)" 
+                    :placeholder="$i18n.get('label_sorting')">
                 <option
                     v-for="(field, index) in tableFields"
+                    v-if="field.id != undefined"
                     :value="field"
                     :key="index">
                     {{ field.label }}
                 </option>
             </b-select>
-            <button>
-                <b-icon icon="sort-ascending"/>
+            <button 
+                    class="button is-small"
+                    @click="onChangeOrderAsc()">
+                <b-icon :icon="orderAsc ? 'sort-ascending' : 'sort-descending'"/>
             </button>
             </b-field>
         </div>
@@ -42,14 +47,21 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { eventSearchBus } from '../../../js/event-search-bus';
 
 export default {
     name: 'SearchControl',
+    data() {
+        return {
+            orderBy: 'date',
+            orderAsc: false
+        }
+    },
     props: {
         collectionId: Number,
         isRepositoryLevel: false,
         tableFields: Array,
-        prefTableFields: Array,
+        prefTableFields: Array    
     },
     methods: {
         ...mapActions('fields', [
@@ -69,18 +81,26 @@ export default {
             //     this.$console.log(oldField.slug, oldField.visible);
 
             // this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, prevValue);
+        },
+        onChangeOrderBy(event) {
+            this.orderBy = event.id;  
+            eventSearchBus.setOrderBy(this.orderBy);
+        },
+        onChangeOrderAsc() {
+            this.orderAsc = !this.orderAsc;
+            eventSearchBus.setOrderAsc(this.orderAsc);
         }
     },
     mounted() {
         this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: false }).then((res) => {
             let rawFields = res;
-            this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', visible: true });
+            this.tableFields.push({ label: this.$i18n.get('label_thumbnail'), field: 'featured_image', slug: 'featured_image', id: undefined, visible: true });
             for (let field of rawFields) {
                 this.tableFields.push(
-                    { label: field.name, field: field.description, slug: field.slug,  visible: true }
+                    { label: field.name, field: field.description, slug: field.slug, id: field.id, visible: true }
                 );
             }
-            this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', visible: true });
+            this.tableFields.push({ label: this.$i18n.get('label_actions'), field: 'row_actions', slug: 'actions', id: undefined, visible: true });
             this.prefTableFields = this.tableFields;
             // this.$userPrefs.get('table_columns_' + this.collectionId)
             //     .then((value) => {

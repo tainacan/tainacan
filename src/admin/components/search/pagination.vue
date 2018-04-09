@@ -37,7 +37,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { eventSearchBus } from '../../../js/event-search-bus'
+import { eventSearchBus } from '../../../js/event-search-bus';
 
 export default {
     name: 'Pagination',
