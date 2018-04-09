@@ -99,7 +99,6 @@ class Logs extends TAINACAN_UnitTestCase {
 
 	    $log = $Tainacan_Logs->fetch_last();
 
-
     	$diff = $log->diff();
 
     	$this->assertEquals('With name', $diff['name']['new']);

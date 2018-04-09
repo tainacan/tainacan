@@ -238,8 +238,10 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$first_filter = $data[0];
 		$second_filter = $data[1];
 
-		$this->assertEquals($filter->get_name(), $first_filter['name']);
-		$this->assertEquals($filter2->get_name(), $second_filter['name']);
+		$names = [$first_filter['name'], $second_filter['name']];
+
+		$this->assertContains($filter->get_name(), $names);
+		$this->assertContains($filter2->get_name(), $names);
 
 		#### FETCH A FILTER ####
 

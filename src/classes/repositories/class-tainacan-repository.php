@@ -77,8 +77,10 @@ abstract class Repository {
 		}
 
 		$old = $obj;
+		$is_update = false;
 		// TODO get props obj before update
 		if( $obj->get_id() ) {
+			$is_update = true;
 			$old = $obj->get_repository()->fetch( $obj->get_id() );
 		}
 		
@@ -116,7 +118,7 @@ abstract class Repository {
 			set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
 		}
 
-		do_action( 'tainacan-insert', $obj, $old );
+		do_action( 'tainacan-insert', $obj, $old, $is_update );
 		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
 
 		// return a brand new object
@@ -609,6 +611,7 @@ abstract class Repository {
 	 */
 	public function diff( $old = 0, $new ) {
 		$old_entity = null;
+
 		if ( $old === 0 ) { // self diff or other entity?
 			$id = $new->get_id();
 			if ( ! empty( $id ) ) { // there is a repository entity?
@@ -620,6 +623,7 @@ abstract class Repository {
 		} else { // get entity from repository
 			$old_entity = $this->get_entity_by_post( $old );
 		}
+
 		$new_entity = $this->get_entity_by_post( $new );
 
 		$map = $this->get_map();
@@ -628,8 +632,10 @@ abstract class Repository {
 
 		foreach ( $map as $prop => $mapped ) {
 			if ( $old_entity->get_mapped_property( $prop ) != $new_entity->get_mapped_property( $prop ) ) {
+
 				if ( $mapped['map'] == 'meta_multi' ) {
 					$meta_diff = array_diff( $new_entity->get_mapped_property( $prop ), $old_entity->get_mapped_property( $prop ) );
+
 					if ( ! empty( $meta_diff ) ) {
 						$diff[ $prop ] = [
 							'new'  => $new_entity->get_mapped_property( $prop ),
@@ -643,8 +649,10 @@ abstract class Repository {
 						'old' => $old_entity->get_mapped_property( $prop )
 					];
 				}
+
 			}
 		}
+
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $new, $old );
 
 		return $diff;

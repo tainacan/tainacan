@@ -152,6 +152,14 @@ class Items extends Repository {
 
 	public function insert( $item ) {
 
+		$old = $item;
+		$is_update = false;
+		// TODO get props obj before update
+		if( $item->get_id() ) {
+			$is_update = true;
+			$old = $item->get_repository()->fetch( $item->get_id() );
+		}
+
 		$map = $this->get_map();
 
 		// get collection to determine post type
@@ -198,7 +206,7 @@ class Items extends Repository {
 			set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
 		}
 
-		do_action( 'tainacan-insert', $item );
+		do_action( 'tainacan-insert', $item, $old, $is_update );
 		do_action( 'tainacan-insert-Item', $item );
 
 		// return a brand new object

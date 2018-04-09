@@ -28,6 +28,14 @@ class Item_Metadata extends Repository {
 
     public function insert($item_metadata) {
 
+	    $old = $item_metadata;
+	    $is_update = false;
+	    // TODO get props obj before update
+	    if( $item_metadata->get_id() ) {
+		    $is_update = true;
+		    $old = $item_metadata->get_repository()->fetch( $item_metadata->get_id() );
+	    }
+
         $unique = !$item_metadata->is_multiple();
 		
 		$field_type = $item_metadata->get_field()->get_field_type_object();
@@ -75,7 +83,7 @@ class Item_Metadata extends Repository {
 		
         
         
-        do_action('tainacan-insert', $item_metadata);
+        do_action('tainacan-insert', $item_metadata, $old, $is_update);
         do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
 
         $new_entity = new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());

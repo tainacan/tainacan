@@ -100,6 +100,15 @@ class Terms extends Repository {
 	 * @return Entities\Entity|Entities\Term
 	 */
 	public function insert($term){
+
+		$old = $term;
+		$is_update = false;
+		// TODO get props obj before update
+		if( $term->get_id() ) {
+			$is_update = true;
+			$old = $term->get_repository()->fetch( $term->get_id() );
+		}
+
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
@@ -138,7 +147,7 @@ class Terms extends Repository {
             }
         }
         
-        do_action('tainacan-insert', $term);
+        do_action('tainacan-insert', $term, $old, $is_update);
         do_action('tainacan-insert-Term', $term);
 
 		return new Entities\Term($term_saved['term_id'], $term->get_taxonomy());
