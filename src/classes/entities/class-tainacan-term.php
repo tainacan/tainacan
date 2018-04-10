@@ -209,7 +209,7 @@ class Term extends Entity {
 		$name_match = null;
 		if ( $name_matches ) {
 			foreach ( $name_matches as $_match ) {
-				if ( strtolower( $name ) === strtolower( $_match->name ) ) {
+				if ( is_object($_match) && isset($_match) && strtolower( $name ) === strtolower( $_match->name ) ) {
 					$name_match = $_match;
 					break;
 				}
