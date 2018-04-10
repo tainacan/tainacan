@@ -66,12 +66,12 @@ class Compound extends Field_Type {
 				
 				foreach ( $compound_element as $meta ) {
 					if ( $meta instanceof Item_Metadata_Entity ) {
-						$return .= '<h4>' . $meta->get_field()->get_name() . '</h4>';
+						$return .= '<h4>' . $meta->get_field()->get_name() . "</h4>\n";
 						$return .= '<p>' . $meta->__value_to_html() . '</p>';
 					}
 				}
 				
-				$return .= '<hr />';
+				$return .= "<hr />\n\n";
 				
 			}
 			
@@ -81,7 +81,7 @@ class Compound extends Field_Type {
 			foreach ( $value as $meta ) {
 				
 				if ( $meta instanceof Item_Metadata_Entity ) {
-					$return .= '<h4>' . $meta->get_field()->get_name() . '</h4>';
+					$return .= '<h4>' . $meta->get_field()->get_name() . "</h4>\n";
 					$return .= '<p>' . $meta->__value_to_html() . '</p>';
 				}
 				
