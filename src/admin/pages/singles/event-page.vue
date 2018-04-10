@@ -31,13 +31,13 @@
                                     <p/>
                                     <div
                                             class="has-text-weight-bold is-capitalized"
-                                            :class="{'has-text-primary': !diff.old }">
+                                            :class="{'has-text-success': !diff.old }">
                                         {{ `${key.replace('_', ' ')}:` }}
                                     </div>
                                     <div
                                             v-for="(d, i) in diff.new"
                                             :key="i"
-                                            :class="{'has-text-primary': diff.diff_with_index.hasOwnProperty(i) }"
+                                            :class="{'has-text-success': diff.diff_with_index.hasOwnProperty(i) }"
                                             class="content is-inline" >
                                         {{ d }}
                                     </div>

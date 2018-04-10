@@ -2,6 +2,7 @@
 
 namespace Tainacan\Tests;
 
+use Tainacan\Entities\Collection;
 use Tainacan\Entities\Log;
 
 /**
@@ -55,8 +56,7 @@ class Logs extends TAINACAN_UnitTestCase {
 
 		$old_value = $value;
 
-		$value->set_name( 'new_testeLogs' );
-		$value->validate();
+		$value->set_name( 'newtesteLogs' );
 
 		$new_value = $Tainacan_Collections->update( $value );
 
@@ -78,7 +78,7 @@ class Logs extends TAINACAN_UnitTestCase {
 
 		$collection = $last_log->get_value();
 
-		$this->assertEquals( 'new_testeLogs', $collection->get_name() );
+		$this->assertEquals( 'newtesteLogs', $collection->get_name() );
 		$this->assertEquals( 'adasdasdsa123', $collection->get_description() );
 		$this->assertEquals( 'DESC', $collection->get_default_order() );
 	}
@@ -104,7 +104,7 @@ class Logs extends TAINACAN_UnitTestCase {
 
 		$diff = $log->diff();
 
-		$this->assertEquals( 'With name', $diff['name']['new'] );
+		$this->assertEquals( 'With name', "{$diff['name']['new'][0]} {$diff['name']['new'][1]}" );
 		$this->assertEquals( 'No name', $diff['name']['old'] );
 		$this->assertEquals( 'With', $diff['name']['diff_with_index'][0] );
 	}
