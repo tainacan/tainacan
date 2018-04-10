@@ -179,6 +179,36 @@
         components: {
             TermsList
         },
+        beforeRouteLeave( to, from, next ) {
+            this.$console.log(this.category)
+            this.$console.log(this.form)
+            let formNotSaved = false;
+
+            if (this.category.name != this.form.name)
+                formNotSaved = true;
+            if (this.category.description != this.form.description)
+                formNotSaved = true;
+            if (this.category.slug != this.form.slug)
+                formNotSaved = true;
+            if (this.category.allow_insert != this.form.allowInsert)
+                formNotSaved = true;
+            if (this.category.status != this.form.status)
+                formNotSaved = true;
+
+            if (formNotSaved) {
+                this.$dialog.confirm({
+                    message: this.$i18n.get('info_warning_category_not_saved'),
+                        onConfirm: () => {
+                            next();
+                        },
+                        cancelText: this.$i18n.get('cancel'),
+                        confirmText: this.$i18n.get('continue'),
+                        type: 'is-secondary'
+                    });  
+            } else {
+                next()
+            }  
+        },
         methods: {
             ...mapActions('category', [
                 'createCategory',
@@ -212,7 +242,7 @@
                         this.form.slug = this.category.slug;
                         this.form.description = this.category.description;
                         this.form.status = this.category.status;
-                        this.allowInsert = this.category.allow_insert;
+                        this.form.allowInsert = this.category.allow_insert;
 
                         this.isLoadingCategory = false;
                         this.formErrorMessage = '';

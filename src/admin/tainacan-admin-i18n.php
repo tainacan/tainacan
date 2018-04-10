@@ -178,8 +178,9 @@ return [
 	'info_warning_fields_not_saved'            => __('Are you sure? There are fields not saved, changes will be lost.', 'tainacan'),
     'info_warning_filters_not_saved'           => __('Are you sure? There are filters not saved, changes will be lost.', 'tainacan'),
     'info_no_description_provided'             => __('No description provided.', 'tainacan'),
-    'info_warning_terms_not_saved'             => __('Are you sure? There are terms not saved, changes will be lost.', 'tainacan'),
-    'info_warning_orphan_terms'                => __('Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan'),
+    'info_warning_category_not_saved'          => __('Are you sure? The category is not saved, changes will be lost.', 'tainacan'),
+	'info_warning_terms_not_saved'             => __('Are you sure? There are terms not saved, changes will be lost.', 'tainacan'),
+	'info_warning_orphan_terms'                => __('Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan'),
 	'info_there_is_no_field'                   => __('There is no field here.', 'tainacan' ),
 
 	// Tainacan Field Types

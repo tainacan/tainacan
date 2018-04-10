@@ -53,7 +53,7 @@ export const updateCategory = ({ commit }, category) => {
                 resolve( category );
             })
             .catch(error => {
-                reject( error.response );
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
 };

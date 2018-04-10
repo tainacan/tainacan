@@ -29,7 +29,7 @@
             <a 
                     class="level-item" 
                     :href="wordpressAdmin">
-                <b-icon icon="close"/>
+                <b-icon icon="wordpress"/>
             </a>
         </div>
     </div>
