@@ -97,37 +97,19 @@ export default {
     watch: {
         termsList() {
             this.generateOrderedTerms();
+        },
+        categoryId() {
+            this.loadTerms();
         }
     },
     components: {
         TermEditionForm
     },
-    beforeRouteUpdate ( to, from, next ) {
-        let hasUnsavedForms = false;
-        for (let term in this.orderedTermsList) {
-            if (!term.saved || term.opened || term.id == 'new') 
-                hasUnsavedForms = true;
-        }
-        if (hasUnsavedForms) {
-            this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_terms_not_saved'),
-                    onConfirm: () => {
-                        this.onEditionCanceled();
-                        next();
-                    },
-                    cancelText: this.$i18n.get('cancel'),
-                    confirmText: this.$i18n.get('continue'),
-                    type: 'is-secondary'
-                });  
-        } else {
-            next()
-        }  
-    },
     methods: {
         ...mapActions('category', [
-            'fetchTerms',
             'updateTerm',
-            'deleteTerm'
+            'deleteTerm',
+            'fetchTerms'
         ]),
         ...mapGetters('category',[
             'getTerms'
@@ -299,7 +281,8 @@ export default {
                     term.opened = (this.orderedTermsList[term.id].opened == undefined ? false : this.orderedTermsList[term.id].opened);
                     term.saved = (this.orderedTermsList[term.id].saved == undefined ? true : this.orderedTermsList[term.id].saved);
                 }
-                this.orderedTermsList.push(JSON.parse(JSON.stringify(term)));
+                if (term.taxonomy != null)
+                    this.orderedTermsList.push(JSON.parse(JSON.stringify(term)));
 
                 this.buildOrderedTermsList(term.id, termDepth + 1);
             }
@@ -314,22 +297,26 @@ export default {
                 return this.termsList[originalIndex].name;
             else 
                 return term.name;
+        },
+        loadTerms() {
+            this.isLoadingTerms = true;
+            this.fetchTerms(this.categoryId)
+                .then(() => {
+                    // Fill this.form data with current data.
+                    this.isLoadingTerms = false;
+                    this.generateOrderedTerms();
+                })
+                .catch((error) => {
+                    this.$console.log(error);
+                });
         }
     },
     created() {
-
-        this.isLoadingTerms = true;
-
-        this.fetchTerms(this.categoryId)
-            .then(() => {
-                // Fill this.form data with current data.
-                this.isLoadingTerms = false;
-                this.generateOrderedTerms();
-            })
-            .catch((error) => {
-                this.$console.log(error);
-            });
+        if (this.categoryId !== String) {
+            this.loadTerms();
+        }
     }
+    
 }
 </script>
 

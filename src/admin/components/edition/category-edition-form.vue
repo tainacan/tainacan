@@ -147,7 +147,7 @@
         mixins: [ wpAjax ],
         data(){
             return {
-                categoryId: Number,
+                categoryId: String,
                 activeTab: 0,
                 category: null,
                 isLoadingCategory: false,
@@ -184,7 +184,7 @@
                 'createCategory',
                 'updateCategory',
                 'fetchCategory',
-                'fetchOnlySlug',
+                'fetchOnlySlug'
             ]),
             ...mapGetters('category',[
                 'getCategory',

@@ -125,7 +125,7 @@ export const sendTerm = ({commit}, { categoryId, name, description, parent }) =>
                 resolve( term );
             })
             .catch(error => {
-                reject( error );
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
 };
@@ -139,7 +139,7 @@ export const deleteTerm = ({ commit }, { categoryId, termId }) => {
                 resolve( term );
             })
             .catch(error => {
-                reject( error )
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
 };
@@ -157,8 +157,7 @@ export const updateTerm = ({ commit }, { categoryId, termId, name, description, 
                 resolve( term );
             })
             .catch(error => {
-                reject(error)
-                //reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
 };
