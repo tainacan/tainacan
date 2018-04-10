@@ -170,6 +170,10 @@ class Terms extends Repository {
 
         $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
 
+		if (is_numeric($taxonomies)){
+			$taxonomies = $Tainacan_Taxonomies->fetch( $taxonomies );
+		}
+
         if ( $taxonomies instanceof Entities\Taxonomy ) {
             $cpt = $taxonomies->get_db_identifier();
         } elseif (is_array( $taxonomies )) {
