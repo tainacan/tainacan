@@ -21,6 +21,7 @@ class Item_Metadata_Entity extends Entity {
 		$field,
 		$parent_meta_id,
 		$meta_id,
+		$has_value,
 		$value;
 	
 	/**
@@ -257,6 +258,20 @@ class Item_Metadata_Entity extends Entity {
         
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
         return $Tainacan_Item_Metadata->get_value($this);
+    }
+	
+	/**
+     * Check wether the item has a value stored in the database or not
+     *
+     * @return bool
+     */
+    function has_value() {
+        if (isset($this->has_value))
+            return $this->has_value;
+        
+		$value = $this->get_value();
+		$this->has_value = !empty($value);
+		return $this->has_value;
     }
     
     /**

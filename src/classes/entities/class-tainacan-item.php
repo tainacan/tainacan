@@ -434,4 +434,64 @@ class Item extends Entity {
 		
 	}
 	
+	/**
+	 * Return the item metadata as a HTML string to be used as output.
+	 *
+	 * Each metadata is a label with the field name and the value.
+	 *
+	 * If an ID, a slug or a Tainacan\Entities\Field object is passed, it returns only one metadata, otherwise
+	 * it returns all metadata
+	 * 
+	 * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
+	 * @param bool $hide_empty Wether to hide or not fields the item has no value to
+	 * @return string        The HTML output
+	 */
+	public function get_metadata_as_html($field = null, $hide_empty = true) {
+		
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		
+		$return = '';
+		
+		if (!is_null($field)) {
+			
+			$field_object = null;
+			
+			if ( $field instanceof \Tainacan\Entities\Field ) {
+				$field_object = $field;
+			} elseif ( is_int($field) ) {
+				$field_object = $Tainacan_Fields->fetch($field);
+			} elseif ( is_string($field) ) {
+				$query = $Tainacan_Fields->fetch(['slug' => $field], 'OBJECT');
+				if ( is_array($query) && sizeof($query) == 1 && isset($field[0])) {
+					$field_object = $field[0];
+				}
+			}
+			
+			if ( $field_object instanceof \Tainacan\Entities\Field ) {
+				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $field_object);
+				if ($item_meta->has_value() || !$hide_empty) {
+					$return .= '<h3>' . $field_object->get_name() . '</h3>';
+					$return .= $item_meta->get_value_as_html();
+				}
+				
+			}
+			
+			return $return;
+			
+		}
+		
+		$fields = $this->get_fields();
+		
+		foreach ( $fields as $item_meta ) {
+			if ($item_meta->has_value() || !$hide_empty) {
+				$return .= '<h3>' . $item_meta->get_field()->get_name() . '</h3>';
+				$return .= $item_meta->get_value_as_html();
+			}
+		}
+		
+		return $return;
+		
+	}
+	
 }
