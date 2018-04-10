@@ -59,7 +59,7 @@
 
     .is-secondary-content {
         padding: 0px;
-        margin: 78px auto 0 auto;
+        margin: $header-height auto 0 auto;
         position: relative;
         overflow-y: auto;
 
@@ -68,6 +68,11 @@
                 overflow-y: visible;
             }
         } 
+
+        .columns {
+            margin-left: 0px;
+            margin-right: 0px;
+        }
     }
 
 </style>

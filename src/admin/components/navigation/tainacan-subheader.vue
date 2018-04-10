@@ -33,7 +33,9 @@
                     :aria-label="$i18n.get('label_collection_fields')">
                 <b-icon 
                         size="is-small" 
-                        icon="file-multiple"/> <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
+                        icon="file-multiple"/>
+                <br>
+                <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
             </router-link></li>
             <li class="level-item"><router-link 
                     tag="a" 
@@ -42,7 +44,9 @@
                     :aria-label="$i18n.getFrom('collections','edit_item')">
                 <b-icon 
                         size="is-small" 
-                        icon="pencil"/> <span class="menu-text">{{ $i18n.get('edit') }}</span>
+                        icon="pencil"/>
+                <br>
+                <span class="menu-text">{{ $i18n.get('edit') }}</span>
             </router-link></li>
             <li class="level-item"><router-link 
                     tag="a" 
@@ -51,7 +55,9 @@
                     :aria-label="$i18n.get('label_collection_fields')">
                 <b-icon 
                     size="is-small" 
-                    icon="format-list-checks"/> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
+                    icon="format-list-checks"/>
+                <br>
+                <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
             </router-link></li>
             <li class="level-item"><router-link 
                     tag="a" 
@@ -60,7 +66,9 @@
                     :aria-label="$i18n.get('label_collection_filters')">
                 <b-icon 
                         size="is-small" 
-                        icon="filter"/> <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+                        icon="filter"/>
+                <br>
+                <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
             </router-link></li>
           
         </ul>
@@ -82,13 +90,22 @@ export default {
             currentIcon: ''
         }
     },
+    props: {
+        id: Number
+    },
     watch: {
         '$route' (to) {
             this.activeRoute = to.name;
+
+            this.onSecondaryPage = (to.params.collectionId != undefined);
+            this.pageTitle = this.$route.meta.title;
+            this.currentIcon = this.$route.meta.icon;
+
+            this.arrayRealPath = to.path.split("/");
+            this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
+            
+            this.generateViewPath();
         }
-    },
-    created () {
-        this.activeRoute = this.$route.name;
     },
     methods: {
         ...mapActions('collection', [
@@ -150,19 +167,9 @@ export default {
             }
         }
     },
-    watch: {
-        '$route' (to) {
-            this.onSecondaryPage = (to.params.collectionId != undefined);
-            this.pageTitle = this.$route.meta.title;
-            this.currentIcon = this.$route.meta.icon;
-
-            this.arrayRealPath = to.path.split("/");
-            this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
-            
-            this.generateViewPath();
-        }
-    },
     created() {
+        this.activeRoute = this.$route.name;
+
         this.onSecondaryPage = (this.$route.params.collectionId != undefined);
         this.pageTitle = this.$route.meta.title;
         this.currentIcon = this.$route.meta.icon;
@@ -180,17 +187,17 @@ export default {
     @import "../../scss/_variables.scss";
     
     // Tainacan Header
-    #tainacan-header {
+    #tainacan-subheader {
         background-color: $primary-lighter;
-        height: $header-height;
-        max-height: $header-height;
+        height: $subheader-height;
+        max-height: $subheader-height;
         width: 100%;
         border-bottom: 0.5px solid #ddd;
         padding: 1.0em;
+        margin: 0px;
         vertical-align: middle; 
         left: 0;
         right: 0;
-        position: absolute;
         z-index: 9;
 
         .icon {
@@ -205,12 +212,57 @@ export default {
         .level-left {
             .level-item {
                 display: inline-block;
-                margin-left: 268px;
+                margin-left: 45px;
             }  
         }
-        &.secondary-page {
-            .level-item {
-                margin-left: 310px;
+
+        li{
+            a {
+                color: $secondary;
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+                padding: 1.0em 1.8em;
+                line-height: 1.5em;
+                border-radius: 0px;
+                -webkit-transition: padding 0.3s linear; /* Safari */
+                transition: padding 0.3s linear; 
+            }
+            a:hover {
+                background-color: rgba(255,255,255,0.4);
+                color: $tertiary;
+            }
+            a.is-active {
+                background-color: rgba(255,255,255,0.6);
+                color: $tertiary;
+            }
+            .icon {
+                margin: 0;
+                padding: 0;
+            }
+            .menu-text {
+                opacity: 1;
+                visibility: visible;
+                transition: opacity 0.3s linear, visibility 0.3s linear;
+                -webkit-transition: opacity 0.3s linear, visibility 0.3s linear;
+            }
+        }
+
+        @media screen and (max-width: 769px) {
+            width: 100% !important;
+            max-width: 100% !important;
+            ul { 
+                flex-flow: wrap;
+                display: flex;
+                align-items: stretch;
+                justify-content: space-evenly;
+                a { 
+                    padding: 0.5em 0.7em !important; 
+                    text-align: center;
+                }
+                .menu-text {
+                    padding-left: 0.3em !important;
+                }
             }
         }
 
@@ -221,14 +273,7 @@ export default {
                     margin-left: 30px;
                 }
             }
-            .level-right {
-                display: none;
-            }
-
             top: 206px;
-            &.secondary-page {
-                top: 237px !important;  
-            }
             margin-bottom: 0px !important;
         }
 

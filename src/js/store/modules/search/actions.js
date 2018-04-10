@@ -35,18 +35,17 @@ export const setItemsPerPage = ({ commit }, page ) => {
 
 // Sorting queries
 export const setOrderBy = ({ commit }, orderBy ) => {
-    if (orderBy.field_type == 'Tainacan\\Field_Types\\Numeric') {
-        commit('addMetaQuery', {
-            field_id: orderBy.id
-        });
+    // Primitive Types: string, date, item, term, compound
+    if (orderBy.field_type_object.primitive_type == 'float' || orderBy.field_type_object.primitive_type == 'int') {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value_num' } );
-    } else if (orderBy.field_type == orderBy.field_type_object.core) {
+    } else if (orderBy.field_type_object.primitive_type == 'date') {
+        commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
+        commit('setPostQueryAttribute', {  attr: 'meta_type', value: 'DATETIME' } );
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } ); 
+    } else if (orderBy.field_type_object.core) {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.field_type_object.related_mapped_prop } );
     } else {
-        commit('addMetaQuery', {
-            field_id: orderBy.id
-        });
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
     }
