@@ -1,6 +1,6 @@
 <template>
     <div
-            id="tainacan-header" 
+            id="tainacan-subheader" 
             class="level" 
             :class="{'secondary-page': onSecondaryPage}">
         <div class="level-left">
@@ -10,14 +10,12 @@
                         :icon="currentIcon"/>{{ pageTitle }}</h1>
                 <nav class="breadcrumbs">
                     <router-link 
-                            class="has-text-tertiary"
                             tag="a" 
                             :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
                     <span 
                             v-for="(pathItem, index) in arrayRealPath" 
                             :key="index">
                         <router-link 
-                                class="has-text-tertiary"
                                 tag="a" 
                                 :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
                             {{ arrayViewPath[index] }}
@@ -27,14 +25,45 @@
                 </nav>
             </div>
         </div>
-        <div class="level-right">
-            <a 
-                    class="level-item has-text-tertiary" 
-                    :href="wordpressAdmin">
+        <ul class="menu-list level-right">
+            <li class="level-item"><router-link  
+                    tag="a" 
+                    :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
+                    :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
+                    :aria-label="$i18n.get('label_collection_fields')">
                 <b-icon 
-                    icon="wordpress"/>
-            </a>
-        </div>
+                        size="is-small" 
+                        icon="file-multiple"/> <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
+            </router-link></li>
+            <li class="level-item"><router-link 
+                    tag="a" 
+                    :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
+                    :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
+                    :aria-label="$i18n.getFrom('collections','edit_item')">
+                <b-icon 
+                        size="is-small" 
+                        icon="pencil"/> <span class="menu-text">{{ $i18n.get('edit') }}</span>
+            </router-link></li>
+            <li class="level-item"><router-link 
+                    tag="a" 
+                    :to="{ path: $routerHelper.getCollectionFieldsPath(id) }" 
+                    :class="activeRoute == 'FieldsList' ? 'is-active':''" 
+                    :aria-label="$i18n.get('label_collection_fields')">
+                <b-icon 
+                    size="is-small" 
+                    icon="format-list-checks"/> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
+            </router-link></li>
+            <li class="level-item"><router-link 
+                    tag="a" 
+                    :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
+                    :class="activeRoute == 'FiltersList' ? 'is-active':''" 
+                    :aria-label="$i18n.get('label_collection_filters')">
+                <b-icon 
+                        size="is-small" 
+                        icon="filter"/> <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+            </router-link></li>
+          
+        </ul>
     </div>
 </template>
 
@@ -42,17 +71,24 @@
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-    name: 'TainacanHeader',
+    name: 'TainacanSubheader',
     data(){
         return {
-            wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
-            onSecondaryPage: false,
+            activeRoute: 'ItemsList',
             pageTitle: '',
             arrayRealPath: [],
             arrayViewPath: [],
             activeRouteName: '',
             currentIcon: ''
         }
+    },
+    watch: {
+        '$route' (to) {
+            this.activeRoute = to.name;
+        }
+    },
+    created () {
+        this.activeRoute = this.$route.name;
     },
     methods: {
         ...mapActions('collection', [
@@ -145,7 +181,7 @@ export default {
     
     // Tainacan Header
     #tainacan-header {
-        background-color: $primary;
+        background-color: $primary-lighter;
         height: $header-height;
         max-height: $header-height;
         width: 100%;

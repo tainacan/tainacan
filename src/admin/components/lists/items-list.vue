@@ -182,8 +182,6 @@ export default {
 
             if( ! metadata || metadata.value === false || metadata.value == undefined )
                 return '';
-            else if (metadata)
-                return metadata.value_as_html;
             else
                 return metadata.value_as_html;
         }
