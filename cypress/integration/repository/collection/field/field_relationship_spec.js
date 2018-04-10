@@ -1,4 +1,4 @@
-context('create relationship-type fields tests', function(){
+context('Relationship field test', function(){
   beforeEach(() => {
     cy.loginByUI()
   })
@@ -9,8 +9,8 @@ context('create relationship-type fields tests', function(){
 
   it('create collection for create fields', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
-    cy.contains('New Collection').click()
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+    cy.get('#button-collection-creation').click()
     cy.get('#tainacan-text-name').type('Book Fields')
     cy.get('#tainacan-text-description').type('Descrição book Fields')
     cy.get('#tainacan-select-status').select('Publish').should('have.value', 'publish')
@@ -21,7 +21,7 @@ context('create relationship-type fields tests', function(){
 
   it('create collection for create relationship', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.contains('New Collection').click()
     cy.get('#tainacan-text-name').type('Book relationship')
     cy.get('#tainacan-text-description').type('Descrição book relationship')
@@ -33,7 +33,7 @@ context('create relationship-type fields tests', function(){
 
   it('canceled create relationship-type field public', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.get(':nth-child(2) > [data-label="Name"] > :nth-child(1) > .clickable-row').click()
     cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
     cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -49,7 +49,7 @@ context('create relationship-type fields tests', function(){
 
   it('create relationship-type field public', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.get(':nth-child(2) > [data-label="Name"] > :nth-child(1) > .clickable-row').click()
     cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
     cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -68,7 +68,7 @@ context('create relationship-type fields tests', function(){
 
   it('create relationship-type field private', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.get(':nth-child(2) > [data-label="Name"] > :nth-child(1) > .clickable-row').click()
     cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
     cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -87,7 +87,7 @@ context('create relationship-type fields tests', function(){
 
   it('create relationship-type field public required', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.get(':nth-child(2) > [data-label="Name"] > :nth-child(1) > .clickable-row').click()
     cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
     cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -107,7 +107,7 @@ context('create relationship-type fields tests', function(){
 
   it('create relationship-type field public multiple values', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.get(':nth-child(2) > [data-label="Name"] > :nth-child(1) > .clickable-row').click()
     cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
     cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -127,7 +127,7 @@ context('create relationship-type fields tests', function(){
 
   it('create relationship-type field public unique values', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.get(':nth-child(2) > [data-label="Name"] > :nth-child(1) > .clickable-row').click()
     cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
     cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -147,7 +147,7 @@ context('create relationship-type fields tests', function(){
 
   it('check if fields are updated to page', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.get(':nth-child(2) > [data-label="Name"] > :nth-child(1) > .clickable-row').click()
     cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
     cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()

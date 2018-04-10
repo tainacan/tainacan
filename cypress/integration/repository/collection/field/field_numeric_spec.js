@@ -9,8 +9,7 @@ describe('Numeric field test', function() {
 
   it('create collection for create fields', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.get('h1').should('contain', 'Collections Page')
-    cy.contains('New Collection').click()
+    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
     cy.get('#button-collection-creation').click()
     cy.get('#tainacan-text-name').type('Numeric Fields')
     cy.get('#tainacan-text-description').type('Description Numeric Fields')
@@ -23,7 +22,7 @@ describe('Numeric field test', function() {
   context('CRUD numeric field', function(){
     it('create counter field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -38,7 +37,7 @@ describe('Numeric field test', function() {
 
     it('check create counter field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -48,7 +47,7 @@ describe('Numeric field test', function() {
 
     it('create code field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -63,7 +62,7 @@ describe('Numeric field test', function() {
 
     it('check create code field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -73,7 +72,7 @@ describe('Numeric field test', function() {
 
     it('edit code field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -88,7 +87,7 @@ describe('Numeric field test', function() {
 
     it('create number field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -103,7 +102,7 @@ describe('Numeric field test', function() {
 
     it('delete number field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -115,7 +114,7 @@ describe('Numeric field test', function() {
 
     it('check not contain year field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -127,7 +126,7 @@ describe('Numeric field test', function() {
   context('Diseble numeric field', function(){
     it('create registration number field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -142,7 +141,7 @@ describe('Numeric field test', function() {
 
     it('disebled registration number field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -153,7 +152,7 @@ describe('Numeric field test', function() {
 
     it('check disebled registration number field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -165,7 +164,7 @@ describe('Numeric field test', function() {
   context('Check required fields', function(){
     it('create blank field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -185,7 +184,7 @@ describe('Numeric field test', function() {
 
     it('check not contain blank field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -197,7 +196,7 @@ describe('Numeric field test', function() {
   context('Create numeric field private', function(){
     it('create date private field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -205,29 +204,28 @@ describe('Numeric field test', function() {
       cy.get('.field > :nth-child(2) > :nth-child(4)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}Numeric private')
       cy.get('.textarea').type('description private')
-      cy.get('#tainacan-select-status-publish > .check').click()
-      //cy.get('#tainacan-select-status-private > .check').click()
+      cy.get('#tainacan-select-status-private > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      //cy.get('.active-fields-area >').should('contain', 'Numeric private')
+      cy.get('.active-fields-area >').should('contain', 'Numeric private')
     })
 
-    // it('check create numeric private field', function(){
-    //   cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    //   cy.get('h1').should('contain', 'Collections Page')
-    //   cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
-    //   cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
-    //   cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
-    //   cy.get('h1').should('contain', 'Collection Fields Edition Page')
-    //   cy.get('.active-fields-area > :nth-child(6) > .handle > .field-name').should('contain', 'Numeric private')
-    //   cy.get(':nth-child(6) > .handle > .controls > :nth-child(2) > .icon > .mdi').click()
-    //   cy.get('#tainacan-select-status-private > .check').should('be.selected')
-    // })
+    it('check create numeric private field', function(){
+      cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
+      cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
+      cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
+      cy.get('h1').should('contain', 'Collection Fields Edition Page')
+      cy.get('.active-fields-area > :nth-child(6) > .handle > .field-name').should('contain', 'Numeric private')
+      cy.get(':nth-child(6) > .handle > .controls > :nth-child(2) > .icon > .mdi').click()
+      cy.get('#tainacan-select-status-private > .check').should('be.selected')
+    })
   })
 
   context('"Not saved" label vs. "cancel button"', function(){
     it('create amount field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -242,7 +240,7 @@ describe('Numeric field test', function() {
 
     it('check that ‘Not Saved’ label wasn’t inserted, and changes were lost', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -259,7 +257,7 @@ describe('Numeric field test', function() {
 
     it('check if the message “Not Saved” appeared next to the field name', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -285,7 +283,7 @@ describe('Numeric field test', function() {
   context('create date-types fields tests', function(){
     it('canceled create numeric field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -300,7 +298,7 @@ describe('Numeric field test', function() {
 
     it('create numeric-type field public required', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -316,7 +314,7 @@ describe('Numeric field test', function() {
 
     it('create numeric-type field public multiple values', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -332,7 +330,7 @@ describe('Numeric field test', function() {
 
     it('create numeric-type field public unique values', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -350,7 +348,7 @@ describe('Numeric field test', function() {
   context('Leave page without saving field editions', function(){
     it('Leave page without saving field editions', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -372,7 +370,7 @@ describe('Numeric field test', function() {
   context('Field loading for paging and persistence testing', function(){
     it('create numerics fields', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -431,7 +429,7 @@ describe('Numeric field test', function() {
 
     it('check if fields are updated to page', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.get('h1').should('contain', 'Collections Page')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
