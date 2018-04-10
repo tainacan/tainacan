@@ -89,7 +89,9 @@ export default {
             let rawFields = res;
             this.tableFields.push({ name: this.$i18n.get('label_thumbnail'), field: 'featured_image', field_type: undefined, slug: 'featured_image', id: undefined, visible: true });
             for (let field of rawFields) {
-                this.tableFields.push(field);
+                this.tableFields.push(
+                    {name: field.name, field: field.description, slug: field.slug, field_type: field.field_type, field_type_object: field.field_type_object, id: field.id, visible: true }
+                );
             }
             this.tableFields.push({ name: this.$i18n.get('label_actions'), field: 'row_actions', field_type: undefined, slug: 'actions', id: undefined, visible: true });
             //this.prefTableFields = this.tableFields;

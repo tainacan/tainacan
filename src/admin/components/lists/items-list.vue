@@ -180,7 +180,7 @@ export default {
         },
         renderMetadata( metadata ){
 
-            if( ! metadata || metadata.value === false || metadata.value == undefined )
+            if( !metadata )
                 return '';
             else
                 return metadata.value_as_html;

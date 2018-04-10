@@ -15,8 +15,8 @@
                         custom>
                     <b-checkbox
                             v-model="column.visible" 
-                            :native-value="column.field">
-                        {{ column.label }}
+                            :native-value="column.slug">
+                        {{ column.name }}
                     </b-checkbox>
                 </b-dropdown-item>
             </b-dropdown>
@@ -28,7 +28,7 @@
                         :placeholder="$i18n.get('label_sorting')">
                     <option
                         v-for="(field, index) in tableFields"
-                        v-if="field.id != undefined && field.field_type != 'Tainacan\Field_Types\Core_Description'"
+                        v-if="field.id != undefined && field.field_type_object.related_mapped_prop != 'description'"
                         :value="field"
                         :key="index">
                         {{ field.name }}
