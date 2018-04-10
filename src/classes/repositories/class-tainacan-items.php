@@ -146,7 +146,7 @@ class Items extends Repository {
         $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
 
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
-		$taxonomies  = $Tainacan_Taxonomies->fetch( [], 'OBJECT' );
+		$taxonomies  = $Tainacan_Taxonomies->fetch( ['status' => ['auto-draft', 'draft', 'publish', 'private']], 'OBJECT' );
 
 		if ( ! is_array( $collections ) ) {
 			return;
