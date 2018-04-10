@@ -54,7 +54,7 @@ class Compound extends Field_Type {
 	 * @param  Item_Metadata_Entity $item_metadata 
 	 * @return string The HTML representation of the value, each HTML representation of the value of each field composing this metadata
 	 */
-	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		
 		$value = $item_metadata->get_value();
 		

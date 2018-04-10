@@ -72,7 +72,7 @@ class Relationship extends Field_Type {
 	 * @param  Item_Metadata_Entity $item_metadata 
 	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
 	 */
-	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		
 		$value = $item_metadata->get_value();
 		
