@@ -67,8 +67,12 @@ class Relationship extends Field_Type {
         return true;
     }
 	
-	
-	public function __value_to_html(Item_Metadata_Entity $item_metadata) {
+	/**
+	 * Return the value of an Item_Metadata_Entity using a field of this field type as an html string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
+	 */
+	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		
 		$value = $item_metadata->get_value();
 		
@@ -99,14 +103,20 @@ class Relationship extends Field_Type {
 					// item not found 
 				}
 				
-				
-				
 			}
 			
 		} else {
 			
-			if ( $value instanceof \Tainacan\Entities\Item ) {
-				$return .= $value->__toHtml();
+			try {
+				
+				$item = new \Tainacan\Entities\Item($value);
+				
+				if ( $item instanceof \Tainacan\Entities\Item ) {
+					$return .= $item->__toHtml();
+				}
+				
+			} catch (Exception $e) {
+				// item not found 
 			}
 			
 		}

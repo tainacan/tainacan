@@ -263,11 +263,11 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		
 		$meta = $Tainacan_ItemMetadata->insert($meta);
 		
-		$this->assertInternalType( 'string', $meta->__value_to_html() );
-		$this->assertInternalType( 'string', $meta->__value_to_string() );
+		$this->assertInternalType( 'string', $meta->get_value_as_html() );
+		$this->assertInternalType( 'string', $meta->get_value_as_string() );
 		
-		$this->assertInternalType( 'integer', strpos($meta->__value_to_html(), '<a ') );
-		$this->assertFalse( strpos($meta->__value_to_string(), '<a ') );
+		$this->assertInternalType( 'integer', strpos($meta->get_value_as_html(), '<a ') );
+		$this->assertFalse( strpos($meta->get_value_as_string(), '<a ') );
 		
 		
     }

@@ -44,16 +44,20 @@ class Item_Metadata_Entity extends Entity {
 		
 		
     }
-
-	public function  __value_to_html(){
+	
+	/**
+	 * Get the value as a HTML string, with markup and links
+	 * @return string
+	 */
+	public function  get_value_as_html(){
 		$field = $this->get_field();
 		
 		if (is_object($field)) {
 			$fto = $field->get_field_type_object();
 			if (is_object($fto)) {
 				
-				if ( method_exists($fto, '__value_to_html') ) {
-					return $fto->__value_to_html($this);
+				if ( method_exists($fto, 'get_value_as_html') ) {
+					return $fto->get_value_as_html($this);
 				}
 				
 			}
@@ -85,24 +89,19 @@ class Item_Metadata_Entity extends Entity {
 		
 	}
 	
-	public function __value_to_string() {
-		return strip_tags($this->__value_to_html());
+	/**
+	 * Get the value as a plain text string
+	 * @return string
+	 */
+	public function get_value_as_string() {
+		return strip_tags($this->get_value_as_html());
 	}
 	
-	public function __value_to_array() {
-		$field = $this->get_field();
-		if (is_object($field)) {
-			$fto = $field->get_field_type_object();
-			if (is_object($fto)) {
-				
-				if ( method_exists($fto, '__value_to_array') ) {
-					return $fto->__value_to_array($this);
-				}
-
-			}
-
-		}
-		
+	/**
+	 * Get value as an array
+	 * @return [type] [description]
+	 */
+	public function get_value_as_array() {
 		$value = $this->get_value();
 		
 		if ( $this->is_multiple() ) {
@@ -131,13 +130,17 @@ class Item_Metadata_Entity extends Entity {
 		return $return;
 
 	}
-
+	
+	/**
+	 * Convert the object to an Array
+	 * @return array the representation of this object as an array
+	 */
     public function  __toArray(){
 		$as_array = [];
 		
-		$as_array['value'] = $this->__value_to_array();
-		$as_array['value_as_html'] = $this->__value_to_html();
-		$as_array['value_as_string'] = $this->__value_to_string();
+		$as_array['value'] = $this->get_value_as_array();
+		$as_array['value_as_html'] = $this->get_value_as_html();
+		$as_array['value_as_string'] = $this->get_value_as_string();
 	    $as_array['item']  = $this->get_item()->__toArray();
 	    $as_array['field'] = $this->get_field()->__toArray();
 

@@ -136,7 +136,12 @@ class Category extends Field_Type {
         
     }
 	
-	public function __value_to_html(Item_Metadata_Entity $item_metadata) {
+	/**
+	 * Return the value of an Item_Metadata_Entity using a field of this field type as an html string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The HTML representation of the value, containing one or multiple terms, separated by comma, linked to term page
+	 */
+	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		
 		$value = $item_metadata->get_value();
 		
