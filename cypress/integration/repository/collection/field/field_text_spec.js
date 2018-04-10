@@ -202,7 +202,7 @@ describe('Text field test', function() {
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
       cy.get('h1').should('contain', 'Collection Fields Edition Page')
       cy.get('.field > :nth-child(2) > :nth-child(1)').click()
-      cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}Text Text Private')
+      cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}Text Private')
       cy.get('.textarea').type('description private')
       cy.get('#tainacan-select-status-private > .check').click()
       cy.get(':nth-child(2) > .button').click()
