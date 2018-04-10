@@ -212,6 +212,7 @@ class Logs extends Repository {
 			'post_type'      => Entities\Log::get_post_type(),
 			'posts_per_page' => -1,
 			'orderby'        => 'date',
+			'order'          => 'DESC'
 		];
 
 		$logs = $this->fetch( $args, 'OBJECT' );
@@ -265,8 +266,6 @@ class Logs extends Repository {
 					$description = sprintf( __("The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower($class_name));
 				}
 			}
-
-
 		}
 
 		$msn = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );

@@ -6,12 +6,13 @@
                     <div class="tile is-parent">
                         <article class="tile notification is-child is-light">
                             <div class="content">
-                                <p class="title">Before change</p>
+                                <div class="title">Before change</div>
                                 <div
                                         v-for="(diff, key) in event.log_diff"
                                         v-if="diff.old"
                                         :key="key">
 
+                                    <p/>
                                     <div class="has-text-weight-bold is-capitalized">{{ `${key.replace('_', ' ')}:` }}</div>
                                     <div class="content">{{ diff.old }}</div>
                                 </div>
@@ -22,13 +23,24 @@
                     <div class="tile is-parent">
                         <article class="tile notification is-child is-light">
                             <div class="content">
-                                <p class="title">What was changed</p>
+                                <div class="title">What was changed</div>
                                 <div
                                         v-for="(diff, key) in event.log_diff"
                                         :key="key">
 
-                                    <div class="has-text-weight-bold is-capitalized">{{ `${key.replace('_', ' ')}:` }}</div>
-                                    <div class="content has-text-primary">{{ diff.new }}</div>
+                                    <p/>
+                                    <div
+                                            class="has-text-weight-bold is-capitalized"
+                                            :class="{'has-text-primary': !diff.old }">
+                                        {{ `${key.replace('_', ' ')}:` }}
+                                    </div>
+                                    <div
+                                            v-for="(d, i) in diff.new"
+                                            :key="i"
+                                            :class="{'has-text-primary': diff.diff_with_index.hasOwnProperty(i) }"
+                                            class="content is-inline" >
+                                        {{ d }}
+                                    </div>
                                 </div>
                             </div>
                         </article>

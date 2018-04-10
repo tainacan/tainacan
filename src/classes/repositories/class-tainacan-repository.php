@@ -617,6 +617,7 @@ abstract class Repository {
 
 		if ( $old === 0 ) { // self diff or other entity?
 			$id = $new->get_id();
+
 			if ( ! empty( $id ) ) { // there is a repository entity?
 				$old_entity = $this->get_entity_by_post( $new->WP_Post->ID );
 			} else {
@@ -637,19 +638,29 @@ abstract class Repository {
 			if ( $old_entity->get_mapped_property( $prop ) != $new_entity->get_mapped_property( $prop ) ) {
 
 				if ( $mapped['map'] == 'meta_multi' ) {
-					$meta_diff = array_diff( $new_entity->get_mapped_property( $prop ), $old_entity->get_mapped_property( $prop ) );
 
-					if ( ! empty( $meta_diff ) ) {
+					// Array of diffs with index of diff in new array
+					$array_diff_with_index = array_diff_assoc($new_entity->get_mapped_property( $prop ), $old_entity->get_mapped_property( $prop ));
+
+					if ( ! empty( $array_diff_with_index ) ) {
+
 						$diff[ $prop ] = [
 							'new'  => $new_entity->get_mapped_property( $prop ),
 							'old'  => $old_entity->get_mapped_property( $prop ),
-							'diff' => $meta_diff //TODO better expose difference
+							'diff_with_index' => $array_diff_with_index,
 						];
 					}
 				} else {
+					$new_as_array = explode(' ', $new_entity->get_mapped_property( $prop ));
+					$old_as_array = explode(' ', $old_entity->get_mapped_property( $prop ));
+
+					// Array of diffs with index of diff in new array
+					$array_diff_with_index = array_diff_assoc($new_as_array, $old_as_array);
+
 					$diff[ $prop ] = [
-						'new' => $new_entity->get_mapped_property( $prop ),
-						'old' => $old_entity->get_mapped_property( $prop )
+						'new' => $new_as_array,
+						'old' => $old_entity->get_mapped_property( $prop ),
+						'diff_with_index' => $array_diff_with_index,
 					];
 				}
 

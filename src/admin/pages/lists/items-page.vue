@@ -2,7 +2,9 @@
     <div 
             class="page-container-small" 
             :class="{'primary-page': isRepositoryLevel}">
-        <div class="sub-header">
+        <div
+                class="sub-header"
+                v-if="items.length > 0">
             <div class="header-item">
                 <router-link 
                         tag="button" 
@@ -19,7 +21,9 @@
                     :pref-table-fields="prefTableFields"/>
         </div>
         <div class="columns above-subheader">
-            <aside class="column filters-menu">
+            <aside
+                    class="column filters-menu"
+                    v-if="items.length > 0">
                 <h3>{{ $i18n.get('filters') }}</h3>
                 <filters-items-list />
             </aside>

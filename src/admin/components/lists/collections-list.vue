@@ -9,6 +9,7 @@
                     @click="deleteSelectedCollections()"><span>{{ $i18n.get('instruction_delete_selected_collections') }} </span><b-icon icon="delete"/></button>
         </b-field>
         <b-table
+                v-if="totalCollections > 0"
                 ref="collectionTable"
                 :data="collections"
                 :checked-rows.sync="selectedCollections"
@@ -100,27 +101,27 @@
                             icon="delete"/></a>
                 </b-table-column>
             </template>
+        </b-table>
 
-            <!-- Empty state image -->
-            <template slot="empty">
-                <section class="section">
-                    <div class="content has-text-grey has-text-centered">
-                        <p>
-                            <b-icon
+        <!-- Empty state image -->
+        <div v-if="!totalCollections || totalCollections <= 0">
+            <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <p>
+                        <b-icon
                                 icon="inbox"
                                 size="is-large"/>
-                        </p>
-                        <p>{{ $i18n.get('info_no_collection_created') }}</p>
-                        <router-link 
-                                tag="button" 
-                                class="button is-primary"
-                                :to="{ path: $routerHelper.getNewCollectionPath() }">
-                            {{ $i18n.getFrom('collections', 'new_item') }}
-                        </router-link>
-                    </div>
-                </section>
-            </template>
-        </b-table>
+                    </p>
+                    <p>{{ $i18n.get('info_no_collection_created') }}</p>
+                    <router-link
+                            tag="button"
+                            class="button is-primary"
+                            :to="{ path: $routerHelper.getNewCollectionPath() }">
+                        {{ $i18n.getFrom('collections', 'new_item') }}
+                    </router-link>
+                </div>
+            </section>
+        </div>
 
     </div>
 </template>
@@ -157,7 +158,7 @@ export default {
                             position: 'is-bottom',
                             type: 'is-secondary',
                             queue: true
-                        })
+                        });
                         for (let i = 0; i < this.selectedCollections.length; i++) {
                             if (this.selectedCollections[i].id == this.collectionId)
                                 this.selectedCollections.splice(i, 1);
