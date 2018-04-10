@@ -180,8 +180,6 @@
             TermsList
         },
         beforeRouteLeave( to, from, next ) {
-            this.$console.log(this.category)
-            this.$console.log(this.form)
             let formNotSaved = false;
 
             if (this.category.name != this.form.name)
