@@ -97,7 +97,12 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 			'paged'        => 'paged',
 			'postin'       => 'post__in',
 			'relation'     => 'relation',
+<<<<<<< HEAD
 			'nopaging'     => 'nopaging'
+=======
+			'meta_key'     => 'meta_key',
+			'meta_type'     => 'meta_type'
+>>>>>>> 081c9b2e44413a5eb9b01c5fb20b6cd94b0dc233
 		];
 
 		$meta_query = [
@@ -381,6 +386,8 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 				'slug',
 				'include_slugs',
 				'title',
+				'meta_value',
+				'meta_value_num'
 			),
 		);
 

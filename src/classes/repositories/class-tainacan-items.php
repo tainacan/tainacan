@@ -371,11 +371,15 @@ class Items extends Repository {
             if(is_array( $post_title_in ) && isset( $post_title_in['value']) ){
                 $quotes = [];
                 foreach ($post_title_in['value'] as $title) {
-                    $quotes[] = "'" .   esc_sql( $wpdb->esc_like( $title ) ). "'";
+                    $quotes[] = " $wpdb->posts.post_title  LIKE  '%" .   esc_sql( $wpdb->esc_like( $title ) ). "%'";
                 }
             }
 
-            $where .= ' '.$post_title_in['relation'].' ' . $wpdb->posts . '.post_title IN ( ' .implode(',', $quotes ) . ')';
+            // retrieve only posts for the specified collection and status
+            $type = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0]."' ";
+            $status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
+            $where .= ' '.$post_title_in['relation'] . '( ( ' .implode(' OR ', $quotes ) . ' ) AND ' .
+                $status . ' AND  ' . $type . ' )';
         }
         return $where;
     }
@@ -393,11 +397,15 @@ class Items extends Repository {
             if(is_array( $post_content_in ) && isset( $post_content_in['value']) ){
                 $quotes = [];
                 foreach ($post_content_in['value'] as $title) {
-                    $quotes[] = "'" .   esc_sql( $wpdb->esc_like( $title ) ). "'";
+                    $quotes[] = " $wpdb->posts.post_content  LIKE  '%" .esc_sql( $wpdb->esc_like( $title ) ). "%'";
                 }
             }
 
-            $where .= ' '.$post_content_in['relation'].' ' . $wpdb->posts . '.post_content IN ( ' .implode(',', $quotes ) . ')';
+            // retrieve only posts for the specified collection and status
+            $type = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0]."' ";
+            $status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
+            $where .= ' '.$post_content_in['relation'] . '( ( ' .implode(' OR ', $quotes ) . ' ) AND ' .
+                $status . ' AND  ' . $type . ' )';
         }
         return $where;
     }

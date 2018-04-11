@@ -7,7 +7,6 @@
                 v-model="selected"
                 :data="options"
                 autocomplete
-                :loading="loading"
                 field="label"
                 @typing="search" />
     </div>
@@ -83,11 +82,10 @@
                     });
             },
             getValuesCategory( taxonomy, query ){
-                this.$console.log( query );
                 return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
-                    for (let item of res.data) {
-                        if( item.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 )
-                            this.options.push(item);
+                    for (let term of res.data) {
+                        if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 )
+                            this.options.push({label: term.name, value: term.id});
                     }
                 })
                 .catch(error => {

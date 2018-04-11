@@ -39,16 +39,7 @@ class Compound extends Field_Type {
 
     }
 	
-	
-	public function validate_options( Field $field ) {
 		
-		// TODO: You cant have a multiple field inside a compound field (except category)
-		// 
-		// TODO: You cant have a Category field inside a multiple compound field
-		
-		return true;
-	}
-	
 	/**
 	 * Return the value of an Item_Metadata_Entity using a field of this field type as an html string
 	 * @param  Item_Metadata_Entity $item_metadata 

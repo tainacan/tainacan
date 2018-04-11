@@ -379,6 +379,38 @@ class Field extends Entity {
         if (false === $is_valid)
             return false;
         
+		// You cant have a multiple field inside a compound field (except category)
+		if ($this->get_parent() > 0) {
+			if ( $this->is_multiple() && $this->get_field_type_object()->get_primitive_type() != 'term') {
+				$this->add_error($this->get_id(), __('Compound fields do not support fields with multiple values (except categories)', 'tainacan'));
+				return false;
+			}
+		}
+		
+		// You cant have a category field inside a multiple compound field 
+		if ( $this->get_parent() > 0 && $this->get_field_type_object()->get_primitive_type() == 'term' ) {
+			$parent_field = new \Tainacan\Entities\Field($this->get_parent());
+			if ( $parent_field->is_multiple() ) {
+				$this->add_error($this->get_id(), __('Category fields can not be used inside Compound field with multiple values', 'tainacan'));
+				return false;
+			}
+		}
+		if ( $this->get_field_type() == 'Tainacan\Field_Types\Compound' && $this->is_multiple() ) {
+			$Tainacan_fields = \Tainacan\Repositories\Fields::getInstance();
+			$children = $Tainacan_fields->fetch(
+				[
+					'parent' => $this->get_id(),
+					'field_type' => 'Tainacan\Field_Types\Category',
+					'post_status' => 'any'
+				]
+				, 'OBJECT');
+			
+			if ( sizeof($children) > 0 ) {
+				$this->add_error($this->get_id(), __('Category fields can not be used inside Compound field with multiple values', 'tainacan'));
+				return false;
+			}
+		}
+		
         $fto = $this->get_field_type_object();
 
         if (is_object($fto)) {

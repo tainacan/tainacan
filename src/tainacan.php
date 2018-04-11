@@ -35,6 +35,10 @@ register_activation_hook( __FILE__, array( $Tainacan_Capabilities, 'init' ) );
 require_once('admin/class-tainacan-admin.php');
 $Tainacan_Admin = \Tainacan\Admin::getInstance();
 
+require_once('theme-helper/class-tainacan-theme-helper.php');
+require_once('theme-helper/template-tags.php');
+$Tainacan_Admin = \Tainacan\Theme_Helper::getInstance();
+
 function tainacan_load_plugin_textdomain() {
     load_plugin_textdomain( 'tainacan', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 }

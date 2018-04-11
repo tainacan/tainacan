@@ -5,19 +5,17 @@
             :class="{'secondary-page': onSecondaryPage}">
         <div class="level-left">
             <div class="level-item">
-                <h1 class="has-text-weight-bold is-uppercase has-text-tertiary"><b-icon 
+                <h1 class="has-text-weight-bold is-uppercase"><b-icon 
                         size="is-small" 
                         :icon="currentIcon"/>{{ pageTitle }}</h1>
                 <nav class="breadcrumbs">
                     <router-link 
-                            class="has-text-tertiary"
                             tag="a" 
                             :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
                     <span 
                             v-for="(pathItem, index) in arrayRealPath" 
                             :key="index">
                         <router-link 
-                                class="has-text-tertiary"
                                 tag="a" 
                                 :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
                             {{ arrayViewPath[index] }}
@@ -28,11 +26,13 @@
             </div>
         </div>
         <div class="level-right">
+            <a class="level-item">
+                <b-icon icon="magnify"/>  
+            </a>
             <a 
-                    class="level-item has-text-tertiary" 
+                    class="level-item" 
                     :href="wordpressAdmin">
-                <b-icon 
-                    icon="wordpress"/>
+                <b-icon icon="wordpress"/>
             </a>
         </div>
     </div>
@@ -145,7 +145,7 @@ export default {
     
     // Tainacan Header
     #tainacan-header {
-        background-color: $primary;
+        background-color: $secondary;
         height: $header-height;
         max-height: $header-height;
         width: 100%;
@@ -156,6 +156,7 @@ export default {
         right: 0;
         position: absolute;
         z-index: 9;
+        color: white;
 
         .icon {
             padding-right: 1.3em;
@@ -174,7 +175,7 @@ export default {
         }
         &.secondary-page {
             .level-item {
-                margin-left: 310px;
+                margin-left: 87px;
             }
         }
 

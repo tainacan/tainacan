@@ -224,7 +224,7 @@ export default {
             .catch((errors) => {
                 for (let error of errors.errors) {     
                     for (let field of Object.keys(error)){                        
-                       eventBus.errors.push({ field_id: attribute, errors: error[field]});
+                       eventBus.errors.push({ field_id: field, errors: error[field]});
                     }  
                 }
                 this.formErrorMessage = errors.error_message;

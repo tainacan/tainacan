@@ -3,14 +3,14 @@ import qs from 'qs';
 
 export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit }) => {
     return new Promise((resolve, reject) => {
-        let endpoint = '';
+        let endpoint = '?perpage=-1';
         if (!isRepositoryLevel) 
             endpoint = '/collection/' + collectionId + '/fields/'; 
         else
             endpoint = '/fields/';
 
         if (isContextEdit)
-            endpoint += '?context=edit';
+            endpoint += '&context=edit';
 
         axios.tainacan.get(endpoint)
         .then((res) => {

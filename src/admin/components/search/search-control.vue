@@ -15,7 +15,7 @@
                         custom>
                     <b-checkbox
                             v-model="column.visible" 
-                            :native-value="column.slug">
+                            :native-value="column.field">
                         {{ column.name }}
                     </b-checkbox>
                 </b-dropdown-item>

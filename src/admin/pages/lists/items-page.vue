@@ -20,21 +20,21 @@
                     :table-fields="tableFields"
                     :pref-table-fields="prefTableFields"/>
         </div>
-        <div class="columns above-subheader">
-            <aside
-                    class="column filters-menu"
-                    v-if="items.length > 0">
+        <div class="columns">
+            <aside class="column filters-menu">
                 <h3>{{ $i18n.get('filters') }}</h3>
                 <filters-items-list />
             </aside>
-            <div class="column table-container">
-                <items-list
-                        :collection-id="collectionId"
-                        :table-fields="tableFields"
-                        :items="items" 
-                        :is-loading="isLoading"/>
-                <!-- Pagination Footer -->
-                <pagination v-if="items.length > 0"/>
+            <div class="column">
+                <div class="table-container above-subheader">
+                    <items-list
+                            :collection-id="collectionId"
+                            :table-fields="tableFields"
+                            :items="items" 
+                            :is-loading="isLoading"/>
+                    <!-- Pagination Footer -->
+                    <pagination v-if="items.length > 0"/>
+                </div>
             </div>
         </div>      
     </div>
@@ -121,9 +121,14 @@ export default {
 
     @import '../../scss/_variables.scss';
 
+    .page-container-small>.columns {
+        margin-top: 0;
+     
+    }
+
     .sub-header {
-        max-height: $header-height;
-        height: $header-height;
+        max-height: $subheader-height;
+        height: $subheader-height;
         margin-left: -$page-small-side-padding;
         margin-right: -$page-small-side-padding;
         margin-top: -$page-small-top-padding;
@@ -147,35 +152,35 @@ export default {
         margin-bottom: 0;
         margin-top: 0;
         min-height: 100%;
-        height: auto;
+        height: auto; 
+    }
 
-        .filters-menu {
-            min-width: $side-menu-width;
-            max-width: $side-menu-width;
-            background-color: $primary-lighter;
-            margin-left: -$page-small-side-padding;
-            padding: $page-small-side-padding;
-            
-            .label {
-                font-size: 12px;
-                font-weight: normal;
-            }
-            
+    .filters-menu {
+        min-width: $side-menu-width;
+        max-width: $side-menu-width;
+        background-color: $tainacan-input-color;
+        margin-left: -$page-small-side-padding;
+        padding: $page-small-side-padding;
+        
+        .label {
+            font-size: 12px;
+            font-weight: normal;
         }
+        
+    }
 
+    .table-container {
+        margin-right: -$page-small-side-padding;
+        padding: 3em 2.5em;
+    }
+
+    @media screen and (max-width: 769px) {
+            .filters-menu {
+            display: none;
+        }
         .table-container {
-            margin-right: -$page-small-side-padding;
-            padding: 3em 2.5em;
-        }
-
-        @media screen and (max-width: 769px) {
-             .filters-menu {
-                display: none;
-            }
-            .table-container {
-                margin-right: 0;
-                padding: .85em 0em;
-            }
+            margin-right: 0;
+            padding: .85em 0em;
         }
     }
 

@@ -39,7 +39,8 @@ cd -
 # cypress beginning
 if [ ${SKIP_HEAD} = "0" ]
 then
- ./node_modules/.bin/cypress run --config baseUrl=$wp_url --record --key $cy_record_key
+# ./node_modules/.bin/cypress run --config baseUrl=$wp_url --record --key $cy_record_key
+  ./node_modules/.bin/cypress run  --spec cypress/integration/repository/collection/field/field_text_spec.js --config baseUrl=$wp_url
 else
  ./node_modules/.bin/cypress open --config baseUrl=$wp_url
 fi
