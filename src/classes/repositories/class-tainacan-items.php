@@ -12,7 +12,7 @@ class Items extends Repository {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -142,8 +142,8 @@ class Items extends Repository {
 	 */
 	public function register_post_type() {
 
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
 		$taxonomies  = $Tainacan_Taxonomies->fetch( ['status' => ['auto-draft', 'draft', 'publish', 'private']], 'OBJECT' );
@@ -247,7 +247,7 @@ class Items extends Repository {
 	 */
 	public function fetch( $args = [], $collections = [], $output = null ) {
 
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		if ( is_numeric( $args ) ) {
 			$existing_post = get_post( $args );

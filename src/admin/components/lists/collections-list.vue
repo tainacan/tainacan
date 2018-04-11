@@ -114,6 +114,7 @@
                     </p>
                     <p>{{ $i18n.get('info_no_collection_created') }}</p>
                     <router-link
+                            id="button-create-collection"
                             tag="button"
                             class="button is-primary"
                             :to="{ path: $routerHelper.getNewCollectionPath() }">

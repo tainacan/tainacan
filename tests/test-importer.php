@@ -27,13 +27,31 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $id = $old_tainacan_importer->get_id();
         $_SESSION['tainacan_importer'][$id]->set_collection( $collection );
         $this->assertEquals( $collection->get_id(),  $_SESSION['tainacan_importer'][$id]->collection->get_id() );
-
-        /*$_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wp-json/tainacan/v1/collections/860/items' );
-        $_SESSION['tainacan_importer'][$id]->process_item(2);*/
     }
+
+    public function test_automapping_old_tainacan()
+    {
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+
+        $old_tainacan = new Importer\Old_Tainacan(true);
+        $id = $old_tainacan->get_id();
+
+        $_SESSION['tainacan_importer'][$id]->set_items_per_step(2);
+
+        if(!copy('./tests/attachment/json_old_tainacan_base.txt', './tests/attachment/json_old_tainacan.txt'))
+        {
+            return false;
+        }
+
+        $_SESSION['tainacan_importer'][$id]->set_file( './tests/attachment/json_old_tainacan.txt' );
+
+        $_SESSION['tainacan_importer'][$id]->run();
+    }
+
     public function test_file_old_tainacan () {
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
         $old_tainacan = new Importer\Old_Tainacan();
         $id = $old_tainacan->get_id();
@@ -100,7 +118,6 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_total_items(), count( $items ) );
-
     }
     /**
      * @group importer
@@ -130,8 +147,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
      * @group importer
      */
     public function test_file_csv () {
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
@@ -223,7 +240,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
     public function test_fetch_file(){
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
-        $_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wordpress-test/wp-json' );
-        $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
+        //$_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wordpress-test/wp-json' );
+        //$this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
     }
 }

@@ -23,7 +23,7 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function init_objects() {
 		$this->taxonomy = new Entities\Taxonomy();
-		$this->taxonomy_repository = Repositories\Taxonomies::getInstance();
+		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
 	}
 
 	public function register_routes() {

@@ -5,11 +5,12 @@
                     class="sub-header" 
                     v-if="totalCategories > 0">
                 <div class="header-item">
-                    <router-link 
+                    <router-link
+                            id="button-create-category" 
                             tag="button" 
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getNewCategoryPath() }">
-                        {{ $i18n.get('new') + ' ' + $i18n.get('category') }}
+                        {{ $i18n.getFrom('taxonomies', 'new_item') }}
                     </router-link>
                 </div>
             </div>

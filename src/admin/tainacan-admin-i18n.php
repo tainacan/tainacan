@@ -186,6 +186,8 @@ return [
 	'info_no_events'                           => __( 'No events', 'tainacan' ),
 	'info_logs_before'                         => __( 'Before updating', 'tainacan' ),
 	'info_logs_after'                          => __( 'What was updated', 'tainacan' ),
+	'info_there_is_no_field'                   => __('There is no field here yet.', 'tainacan' ),
+	'info_there_is_no_filter'                  => __('There is no filter here yet.', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

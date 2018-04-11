@@ -14,7 +14,7 @@ class Collections extends Repository {
 
 	private static $instance = null;
 
-	public static function getInstance() {
+	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self();
 		}
@@ -221,7 +221,7 @@ class Collections extends Repository {
 	 * @see \Tainacan\Repositories\Repository::insert()
 	 */
 	public function insert( $collection ) {
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
 		$this->pre_update_moderators( $collection );
 		$new_collection = parent::insert( $collection );

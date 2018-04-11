@@ -26,7 +26,7 @@ import FilterCategoryTaginput from '../../classes/filter-types/category/Taginput
 import FilterCategorySelectbox from '../../classes/filter-types/category/Selectbox.vue';
 
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
-import TaincanFiltersList from '../../classes/filter-types/tainacan-filters-list.vue';
+import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
@@ -63,7 +63,7 @@ Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-category', FormCategory);
 Vue.component('tainacan-form-selectbox', FormSelectbox);
 Vue.component('tainacan-form-item', TaincanFormItem);
-Vue.component('tainacan-filters-list', TaincanFiltersList);
+Vue.component('tainacan-filter-item', TaincanFiltersList);
 
 /* Filters */
 Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);

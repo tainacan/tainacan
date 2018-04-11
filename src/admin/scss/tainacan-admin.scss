@@ -27,7 +27,6 @@ html {
     width: 100%;
     z-index: 999999;
     overflow-y: auto;
-    height: 100%;
     margin: 0px !important; 
     font-family: $family-sans-serif;
 }
@@ -62,7 +61,7 @@ html {
 }
 .page-container-small{
     padding: $page-small-top-padding $page-small-side-padding;
-    height: 100%;
+    height: calc(100% - 78px);
     overflow-y: auto;
 
     @media screen and (max-width: 769px) {

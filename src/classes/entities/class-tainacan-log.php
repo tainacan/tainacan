@@ -264,7 +264,7 @@ class Log extends Entity {
 			throw new \Exception( 'msn or new_value is need to log' );
 		}
 
-		$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+		$Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
 
 		if ( $log->validate() ) {
 			return $Tainacan_Logs->insert( $log );

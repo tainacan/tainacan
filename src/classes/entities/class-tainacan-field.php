@@ -396,7 +396,7 @@ class Field extends Entity {
 			}
 		}
 		if ( $this->get_field_type() == 'Tainacan\Field_Types\Compound' && $this->is_multiple() ) {
-			$Tainacan_fields = \Tainacan\Repositories\Fields::getInstance();
+			$Tainacan_fields = \Tainacan\Repositories\Fields::get_instance();
 			$children = $Tainacan_fields->fetch(
 				[
 					'parent' => $this->get_id(),

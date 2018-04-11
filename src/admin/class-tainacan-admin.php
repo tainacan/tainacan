@@ -8,7 +8,7 @@ class Admin {
 	private $menu_slug = 'tainacan_admin';
 	private static $instance = null;
 
-	public static function getInstance() {
+	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self();
 		}
@@ -110,11 +110,11 @@ class Admin {
 	function get_admin_js_localization_params() {
 		global $TAINACAN_BASE_URL;
 		
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-		$Tainacan_Fields      = \Tainacan\Repositories\Fields::getInstance();
-		$Tainacan_Filters     = \Tainacan\Repositories\Filters::getInstance();
-		$Tainacan_Items       = \Tainacan\Repositories\Items::getInstance();
-		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::getInstance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+		$Tainacan_Fields      = \Tainacan\Repositories\Fields::get_instance();
+		$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
+		$Tainacan_Items       = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 		
 		$tainacan_admin_i18n = require( 'tainacan-admin-i18n.php' );
 

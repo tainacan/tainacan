@@ -11,7 +11,7 @@ class DevInterface {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -29,11 +29,11 @@ class DevInterface {
 
         add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
         
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
-        $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+        $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
         
         $repositories = [$Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Fields, $Tainacan_Taxonomies];
         
@@ -54,7 +54,7 @@ class DevInterface {
             'components' => $components
         ];
 		
-		$tainacan_settings = \Tainacan\Admin::getInstance()->get_admin_js_localization_params();
+		$tainacan_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 		
 		$settings = array_merge($settings, $tainacan_settings);
 		
@@ -114,7 +114,7 @@ class DevInterface {
             
         }
         
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         
         foreach ($collections as $col) {
@@ -133,23 +133,23 @@ class DevInterface {
     }
     
     function properties_metabox_Collections() {
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         $this->properties_metabox($Tainacan_Collections);
     }
     function properties_metabox_Filters() {
-        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
         $this->properties_metabox($Tainacan_Filters);
     }
     function properties_metabox_Logs() {
-        $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+        $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
         $this->properties_metabox($Tainacan_Logs);
     }
     function properties_metabox_Fields() {
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
         $this->properties_metabox($Tainacan_Fields);
     }
     function properties_metabox_Taxonomies() {
-        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
         $this->properties_metabox($Tainacan_Taxonomies);
     }
     
@@ -227,8 +227,8 @@ class DevInterface {
     
     function metadata_metabox() {
         global $typenow, $post;
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         
@@ -299,8 +299,8 @@ class DevInterface {
     
     function metadata_components_metabox() {
         global $typenow, $post;
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         
@@ -372,7 +372,7 @@ class DevInterface {
 
     function field_type_dropdown($id,$selected) {
 
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
         $class = ( class_exists( $selected ) ) ? new $selected() : '';
 
@@ -399,7 +399,7 @@ class DevInterface {
 
     function filter_type_dropdown($id,$selected) {
 
-        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
         $class = ( class_exists( $selected ) ) ? new $selected() : '';
 
@@ -430,7 +430,7 @@ class DevInterface {
     }
     
     function collections_checkbox_list($selected) {
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         $collections = $Tainacan_Collections->fetch([], 'OBJECT');
         $selected = json_decode($selected);
         ?>
@@ -505,10 +505,10 @@ class DevInterface {
             // TODO: there should ve a method in the repository to find this out
             // or I could try to initialize an entity and find out what type it is
 
-            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-            $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
-            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+            $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
             $collections = $Tainacan_Collections->fetch([], 'OBJECT');
             $cpts = [];

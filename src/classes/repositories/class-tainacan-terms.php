@@ -15,7 +15,7 @@ class Terms extends Repository {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -168,7 +168,7 @@ class Terms extends Repository {
      */
     public function fetch( $args = [], $taxonomies = []){
 
-        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
 		if (is_numeric($taxonomies)){
 			$taxonomies = $Tainacan_Taxonomies->fetch( $taxonomies );

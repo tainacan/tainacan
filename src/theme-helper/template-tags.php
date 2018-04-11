@@ -19,7 +19,7 @@ use Tainacan\Entities;
  */
 function get_tainacan_the_metadata($field = null, $hide_empty = true) {
 	$post = get_post();
-	$theme_helper = \Tainacan\Theme_Helper::getInstance();
+	$theme_helper = \Tainacan\Theme_Helper::get_instance();
 	
 	if (!$theme_helper->is_post_an_item($post));
 		return;

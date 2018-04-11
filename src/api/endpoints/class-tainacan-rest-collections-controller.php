@@ -28,7 +28,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_REST_Controller {
      * Initialize objects after post_type register
      */
     public function init_objects() {
-    	$this->collections_repository = Repositories\Collections::getInstance();
+    	$this->collections_repository = Repositories\Collections::get_instance();
     	$this->collection = new Entities\Collection();
     }
 
