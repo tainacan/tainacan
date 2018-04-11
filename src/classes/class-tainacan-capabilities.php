@@ -272,7 +272,7 @@ class Capabilities {
 	];
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -392,7 +392,7 @@ class Capabilities {
 			}
 		}
 		
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$collections = $Tainacan_Collections->fetch([], 'OBJECT');
 		foreach ($collections as $collection) {
 			$this->set_items_capabilities($collection, $defaults_caps);

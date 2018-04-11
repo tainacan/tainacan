@@ -16,7 +16,7 @@ class Item_Metadata extends Repository {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -120,7 +120,7 @@ class Item_Metadata extends Repository {
             $value = $item_metadata->get_value();
             $item->$set_method( is_array( $value ) ? $value[0] : $value );
             if ($item->validate_core_fields()) {
-                $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+                $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
                 $Tainacan_Items->insert($item);
             } else {
                 throw new \Exception('Item metadata should be validated beforehand');
@@ -178,7 +178,7 @@ class Item_Metadata extends Repository {
 	 */
     public function fetch($object, $output = null ){
         if($object instanceof Entities\Item){
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
             
             $collection = $object->get_collection();
             

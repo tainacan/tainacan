@@ -66,7 +66,7 @@ class Collections extends TAINACAN_UnitTestCase {
         
         $collection_test->add_moderator_id($current_user_id);
         $collection_test->validate();
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         
         $collection_test = $Tainacan_Collections->insert($collection_test);
         
@@ -146,7 +146,7 @@ class Collections extends TAINACAN_UnitTestCase {
 			true
 		);
 
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         
         $this->assertEquals('Tainacan\Entities\Collection', get_class($x));
         
@@ -210,7 +210,7 @@ class Collections extends TAINACAN_UnitTestCase {
         
         $this->assertEquals($x->get_slug(), $y->get_slug());
         
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         $x->set_status('publish');
         $x->validate();
         $x = $Tainacan_Collections->insert($x);
@@ -233,7 +233,7 @@ class Collections extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         $collection = $Tainacan_Collections->fetch($x->get_id());
 
 	    $i = $this->tainacan_entity_factory->create_entity(
@@ -247,7 +247,7 @@ class Collections extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $item = $Tainacan_Items->fetch( $i->get_id() );
         
         $this->assertEquals($item->get_title(), 'item test');
@@ -281,7 +281,7 @@ class Collections extends TAINACAN_UnitTestCase {
     }
     
     function test_hooks() {
-    	$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+    	$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
     	$this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
     }
     

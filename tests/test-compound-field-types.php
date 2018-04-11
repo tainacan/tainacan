@@ -18,9 +18,9 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 	
     function test_compound_field_types() {
 
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -117,9 +117,9 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 	
 	function test_multiple_compound_field_types() {
 
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

@@ -20,7 +20,7 @@ require_once(API_DIR     . 'tainacan-rest-creator.php');
 
 require_once('dev-interface/class-tainacan-dev-interface.php');
 if ( tnc_enable_dev_wp_interface() ) {
-	$Tainacan_Dev_interface = \Tainacan\DevInterface\DevInterface::getInstance();
+	$Tainacan_Dev_interface = \Tainacan\DevInterface\DevInterface::get_instance();
 }
 
 
@@ -28,12 +28,12 @@ function tnc_enable_dev_wp_interface() {
     return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }
 
-$Tainacan_Capabilities = \Tainacan\Capabilities::getInstance();
+$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 register_activation_hook( __FILE__, array( $Tainacan_Capabilities, 'init' ) );
 
 // TODO move it somewhere else?
 require_once('admin/class-tainacan-admin.php');
-$Tainacan_Admin = \Tainacan\Admin::getInstance();
+$Tainacan_Admin = \Tainacan\Admin::get_instance();
 
 require_once('theme-helper/class-tainacan-theme-helper.php');
 require_once('theme-helper/template-tags.php');

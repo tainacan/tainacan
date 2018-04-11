@@ -22,7 +22,7 @@ class Fields extends Repository {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -419,7 +419,7 @@ class Fields extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($field){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
     	$this->pre_update_category_field($field);
         $new_field = parent::insert($field);
@@ -629,7 +629,7 @@ class Fields extends Repository {
 		// handle core titles
 		if( strpos( $field->get_field_type(), 'Core') !== false ){
 		    $collection = new Entities\Collection( $collection_id );
-		    $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+		    $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
             $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT');
             $return = [];
 

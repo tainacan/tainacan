@@ -16,7 +16,7 @@ trait Entity_Collections_Relation {
             return $this->collections;
         
         if (is_array($this->get_collections_ids()) && !empty($this->get_collections_ids())) {
-            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 			
 			$this->collections = [];
 			

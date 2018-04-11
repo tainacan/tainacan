@@ -373,7 +373,7 @@ class Collection extends Entity {
 	 * @throws \Exception
 	 */
 	function get_fields() {
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
 		return $Tainacan_Fields->fetch_by_collection( $this, [], 'OBJECT' );
 	}

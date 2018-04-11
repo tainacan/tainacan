@@ -17,7 +17,7 @@ class Logs extends Repository {
 	public $entities_type = '\Tainacan\Entities\Log';
 	private static $instance = null;
 
-	public static function getInstance() {
+	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self();
 		}

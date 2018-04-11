@@ -74,11 +74,11 @@ function tainacan_autoload($class_name){
     }
 }
 
-$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
-$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
-$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
 //register field types
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Text');
@@ -90,7 +90,7 @@ $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Relationship');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Category');
 $Tainacan_Fields->register_field_type('Tainacan\Field_Types\Compound');
 
-$Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
 //register filter type
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Custom_Interval');
@@ -102,12 +102,12 @@ $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategoryTaginput'
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategoryCheckbox');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategorySelectbox');
 
-$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
-$Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
-$Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
+$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 
-$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+$Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
 
 ?>

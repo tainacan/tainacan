@@ -52,7 +52,7 @@ class PrivateObjects extends TAINACAN_UnitTestCase {
 			true
 		);
         
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $items = $Tainacan_Items->fetch([], $collection);
         
@@ -135,8 +135,8 @@ class PrivateObjects extends TAINACAN_UnitTestCase {
         $new_contributor_user = $this->factory()->user->create(array( 'role' => 'contributor' ));
 		wp_set_current_user($new_contributor_user);
 
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         
         $items = $Tainacan_Items->fetch([], $collection);
         $this->assertEquals(2, $items->found_posts, 'items of a public collections should be visible');

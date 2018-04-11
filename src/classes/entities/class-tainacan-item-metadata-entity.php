@@ -256,7 +256,7 @@ class Item_Metadata_Entity extends Entity {
         if (isset($this->value))
             return $this->value;
         
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         return $Tainacan_Item_Metadata->get_value($this);
     }
 	
@@ -362,7 +362,7 @@ class Item_Metadata_Entity extends Entity {
             }
             
             if ($this->is_collection_key()) {
-                $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+                $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
                 
                 $test = $Tainacan_Items->fetch([
                     'meta_query' => [

@@ -15,7 +15,7 @@ class TAINACAN_REST_Filter_Types_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $ftype_response->get_data();
 
-		$Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types('NAME');
 

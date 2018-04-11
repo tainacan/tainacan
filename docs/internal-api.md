@@ -24,7 +24,7 @@ This layer is based on a Repository pattern. Each entity Tainacan deals with hav
 Repositories are the classes that comunicate with the database and know where everything is stored and how to find things. It is a singleton class, so it have only one instance available to be used by any part of the application.
 
 ```PHP
-$fields_repo = Tainacan\Repositories\Fields::getInstance();
+$fields_repo = Tainacan\Repositories\Fields::get_instance();
 ```
 Entities classes are the representation of the individual of each repository. 
 
@@ -46,7 +46,7 @@ Tainacan will automatically map the values of the attributes to and from where t
 When you want to fetch entities from the database, this abstraction layer steps aside and let you use all the power and flexibility of `WP_Query`, which you know and love. For example:
 
 ```PHP
-Repositories\Fields::getInstance()->fetch('s=test');
+Repositories\Fields::get_instance()->fetch('s=test');
 ```
 
 The `fetch` method from the repositories accept exactly the same arguments accepted by `WP_Query` and uses it internally. In fact, you could use `WP_Query` directly if you prefer, but using the repository class gives you some advantages. You dont have to know the name of the post type, you can also fetch by some mapped attribute calling it directly, withour having to use `meta_query` (or even know wether a property is stored as a post attribute or post_meta). See more details in the Fetch section below.
@@ -68,7 +68,7 @@ $collection = new Tainacan\Entities\Collection($collection_id);
 This will have the same effect as calling the `fetch` method from the repository passing an integer as argument. THe repository will assume it is the collection ID.
 
 ```PHP
-$collection = Tainacan\Repositories\Collections::getInstance()->fetch($collection_id);
+$collection = Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
 ```
 
 ### Fethcing many individuals
@@ -80,8 +80,8 @@ To fetch collections (or any other entity) based on a query search, you may call
 Examples:
 
 ```PHP
-$repo = Tainacan\Repositories\Collections::getInstance();
-$items_repo = Tainacan\Repositories\Collections::getInstance();
+$repo = Tainacan\Repositories\Collections::get_instance();
+$items_repo = Tainacan\Repositories\Collections::get_instance();
 
 
 $collections = $repo->fetch(); // get all public collections (or any private collections current user can view. It works exactly the same way WP_Query)
@@ -106,7 +106,7 @@ $items = $items_repo->fetch([
 Note that you can use the mapped attribute names to build your query, but it is just fine if you want to use the native WordPress names. The same can be achievied with attributes stored as post_meta:
 
 ```PHP
-$repo = Tainacan\Repositories\Fields::getInstance();
+$repo = Tainacan\Repositories\Fields::get_instance();
 
 $fields = $repo->fetch([
 	'required' => 'yes'
@@ -143,7 +143,7 @@ However, before insertion, you must validate the entity, calling the `validate()
 So this is a typical routine for creating an entity:
 
 ```PHP
-$collectionsRepo = \Tainacan\Repositories\Collections::getInstance();
+$collectionsRepo = \Tainacan\Repositories\Collections::get_instance();
 $collection = new \Tainacan\Entities\Collection();
 $collection->set_name('New Collection');
 
@@ -187,7 +187,7 @@ $itemMetadada = new \Tainacan\Entities\ItemMetadataEntity($item, $field);
 $itemMetadata->set_value('Red');
 
 if ($itemMetadata->validate()) {
-	$ItemMetadataRepo = \Tainacan\Repositories\ItemMetadata::getInstance();
+	$ItemMetadataRepo = \Tainacan\Repositories\ItemMetadata::get_instance();
 	$ItemMetadata = $ItemMetadataRepo->insert($ItemMetadata);
 } else {
 	$errors = $ItemMetadata->get_errors();
@@ -313,7 +313,7 @@ $item->can_edit();
 So now you know how to check the permision when a user wants to update an item. Here is the complete code:
 
 ```PHP
-$collectionsRepo = \Tainacan\Repositories\Collections::getInstance();
+$collectionsRepo = \Tainacan\Repositories\Collections::get_instance();
 $collection = new \Tainacan\Entities\Collection(23);
 
 if ($collection->can_edit()) {

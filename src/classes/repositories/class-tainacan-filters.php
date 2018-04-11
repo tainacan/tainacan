@@ -12,7 +12,7 @@ class Filters extends Repository {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {

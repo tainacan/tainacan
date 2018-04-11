@@ -342,7 +342,7 @@ abstract class Repository {
 	 * @return array[]
 	 */
 	public static function get_collections_db_identifier() {
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
 		$cpts        = [];
 		foreach ( $collections as $col ) {
@@ -393,15 +393,15 @@ abstract class Repository {
 			} else {
 				throw new \Exception( 'Collection object not found for this post' );
 			}
-		} elseif ($post_type === \Tainacan\Repositories\Item_Metadata::getInstance()->entities_type::get_post_type()){
+		} elseif ($post_type === \Tainacan\Repositories\Item_Metadata::get_instance()->entities_type::get_post_type()){
 			return new Entities\Item_Metadata_Entity(null, null);
 		} else {
-            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-            $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
-            $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
-			$Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+            $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+            $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+			$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
@@ -435,17 +435,17 @@ abstract class Repository {
 
 		// its is a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
-			$Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+			$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
 			return $Tainacan_Items;
 		} else {
-            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-            $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
-            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
-            $Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
-            $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+            $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+            $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+            $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
