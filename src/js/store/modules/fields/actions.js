@@ -3,12 +3,13 @@ import qs from 'qs';
 
 export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit }) => {
     return new Promise((resolve, reject) => {
-        let endpoint = '?perpage=-1';
+        let endpoint = '';
         if (!isRepositoryLevel) 
             endpoint = '/collection/' + collectionId + '/fields/'; 
         else
             endpoint = '/fields/';
 
+        //endpoint += '?perpage=-1'
         if (isContextEdit)
             endpoint += '&context=edit';
 

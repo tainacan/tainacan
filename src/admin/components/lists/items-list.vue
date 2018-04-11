@@ -62,27 +62,6 @@
                                 icon="delete"/></a>
                     </template>
                 </b-table-column>
-
-            </template>
-            <!-- Empty state image -->
-            <template slot="empty">
-                <section class="section">
-                    <div class="content has-text-grey has-text-centered">
-                        <p>
-                            <b-icon
-                                    icon="inbox"
-                                    size="is-large"/>
-                        </p>
-                        <p>{{ $i18n.get('info_no_item_created') }}</p>
-                        <router-link
-                                id="button-create" 
-                                tag="button" 
-                                class="button is-primary"
-                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ $i18n.getFrom('items', 'new_item') }}
-                        </router-link>
-                    </div>
-                </section>
             </template>
         </b-table> 
     </div>

@@ -28,10 +28,30 @@
             <div class="column">
                 <div class="table-container above-subheader">
                     <items-list
+                            v-if="items.length > 0"
                             :collection-id="collectionId"
                             :table-fields="tableFields"
                             :items="items" 
                             :is-loading="isLoading"/>
+                    <section 
+                            v-else 
+                            class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="inbox"
+                                        size="is-large"/>
+                            </p>
+                            <p>{{ $i18n.get('info_no_item_created') }}</p>
+                            <router-link
+                                    id="button-create" 
+                                    tag="button" 
+                                    class="button is-primary"
+                                    :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
+                                {{ $i18n.getFrom('items', 'new_item') }}
+                            </router-link>
+                        </div>
+                    </section>
                     <!-- Pagination Footer -->
                     <pagination v-if="items.length > 0"/>
                 </div>
