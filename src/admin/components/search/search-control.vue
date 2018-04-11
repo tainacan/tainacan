@@ -28,7 +28,12 @@
                         :placeholder="$i18n.get('label_sorting')">
                     <option
                         v-for="(field, index) in tableFields"
-                        v-if="field.id != undefined && field.field_type_object.related_mapped_prop != 'description'"
+                        v-if="
+                            field.id != undefined && 
+                            field.field_type_object.related_mapped_prop != 'description' &&
+                            field.field_type_object.primitive_type != 'term' &&
+                            field.field_type_object.primitive_type != 'item' &&
+                            field.field_type_object.primitive_type != 'compound'"
                         :value="field"
                         :key="index">
                         {{ field.name }}

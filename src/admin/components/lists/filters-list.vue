@@ -116,11 +116,10 @@
                 </draggable>
             </div>
             <div class="column available-fields-area">
-                <div 
-                        class="field" 
-                        v-if="availableFieldList.length > 0">
+                <div class="field" >
                     <h3 class="label"> {{ $i18n.get('label_available_field_types') }}</h3>
-                    <draggable 
+                    <draggable
+                            v-if="availableFieldList.length > 0" 
                             :list="availableFieldList" 
                             :options="{ 
                                 sort: false, 
@@ -136,21 +135,25 @@
                               <span class="field-name">{{ field.name }}</span>
                         </div>
                     </draggable>   
-                </div>
-                <div 
-                        v-else
-                        class="field is-grouped-centered">
-                    <h3 class="label"> {{ $i18n.get('label_available_field_types') }}</h3>
-                    <div>
-                        {{ $i18n.get('info_there_is_no_field' ) }}
-                    </div>
-                    <div class="control">
-                        <router-link
-                                :to="isRepositoryLevel ? $routerHelper.getNewFieldPath() : $routerHelper.getNewCollectionFieldPath(collectionId)"
-                                tag="button" 
-                                class="button is-secondary is-centered">
-                            {{ $i18n.getFrom('fields', 'new_item') }}</router-link>
-                    </div>
+                
+                    <section 
+                            v-else
+                            class="field is-grouped-centered section">
+                        <div class="content has-text-gray has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="format-list-checks"
+                                        size="is-large"/>
+                            </p>
+                            <p>{{ $i18n.get('info_there_is_no_field' ) }}</p>  
+                            <router-link
+                                    id="button-create-field"
+                                    :to="isRepositoryLevel ? $routerHelper.getNewFieldPath() : $routerHelper.getNewCollectionFieldPath(collectionId)"
+                                    tag="button" 
+                                    class="button is-secondary is-centered">
+                                {{ $i18n.getFrom('fields', 'new_item') }}</router-link>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>

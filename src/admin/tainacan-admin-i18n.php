@@ -181,7 +181,8 @@ return [
     'info_warning_category_not_saved'          => __('Are you sure? The category is not saved, changes will be lost.', 'tainacan'),
 	'info_warning_terms_not_saved'             => __('Are you sure? There are terms not saved, changes will be lost.', 'tainacan'),
 	'info_warning_orphan_terms'                => __('Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan'),
-	'info_there_is_no_field'                   => __('There is no field here.', 'tainacan' ),
+	'info_there_is_no_field'                   => __('There is no field here yet.', 'tainacan' ),
+	'info_there_is_no_filter'                  => __('There is no filter here yet.', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

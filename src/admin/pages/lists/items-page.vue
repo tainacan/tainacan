@@ -7,6 +7,7 @@
                 v-if="items.length > 0">
             <div class="header-item">
                 <router-link 
+                        id="button-create-item"
                         tag="button" 
                         class="button is-secondary"
                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
@@ -44,7 +45,7 @@
                             </p>
                             <p>{{ $i18n.get('info_no_item_created') }}</p>
                             <router-link
-                                    id="button-create" 
+                                    id="button-create-item" 
                                     tag="button" 
                                     class="button is-primary"
                                     :to="{ path: $routerHelper.getNewItemPath(collectionId) }">

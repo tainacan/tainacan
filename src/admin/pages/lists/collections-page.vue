@@ -5,7 +5,7 @@
                 v-if="totalCollections > 0">
             <div class="header-item">
                 <router-link 
-                        id="button-collection-creation"
+                        id="button-create-collection"
                         tag="button" 
                         class="button is-secondary"
                         :to="{ path: $routerHelper.getNewCollectionPath() }">
