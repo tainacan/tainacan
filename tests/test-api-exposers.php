@@ -132,7 +132,6 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		
 		$item_exposer_json = json_encode([
 			'exposer-type'       => 'OAI-PMH',
-			'exposer-map'       => 'Dublin Core',
 		]);
 		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
 		$request->set_body($item_exposer_json);
@@ -156,7 +155,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		
 		$item_exposer_json = json_encode([
 			'exposer-type'       => 'Html',
-			'exposer-map'       => 'Value'
+			'exposer-map'       => 'value'
 		]);
 		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
 		$request->set_body($item_exposer_json);
@@ -194,6 +193,26 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('adasdasdsa', $htmlValues[0]['Description']);
 		$this->assertEquals('', $htmlValues[0]['teste_Expose']);
 		$this->assertEquals('item_teste_Expose', $htmlValues[0]['Title']);
+	}
+	
+	/**
+	 * @group exposer-type-csv
+	 */
+	public function test_csv_type() {
+		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		
+		extract($this->create_meta_requirements());
+		
+		$item_exposer_json = json_encode([
+			'exposer-type'       => 'Csv',
+		]);
+		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
+		$request->set_body($item_exposer_json);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals(200, $response->get_status());
+		//$data = $response->get_data();
+		
+		//var_dump($data);
 	}
 	
 }
