@@ -101,7 +101,7 @@ class Theme_Helper {
 	
 	function tax_archive_pre_get_posts($wp_query) {
 		
-		if (!is_tax() || !$wp_query->is_main_query())
+		if (!$wp_query->is_tax() || !$wp_query->is_main_query())
 			return $wp_query;
 		
 		$term = get_queried_object();
