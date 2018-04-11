@@ -87,6 +87,8 @@ class Collection extends Entity {
 		$cpt_labels = $repository->get_cpt_labels();
 
 		$cpt_labels['menu_name'] = $this->get_name();
+		$cpt_labels['name'] = $this->get_name();
+		$cpt_labels['singular_name'] = $this->get_name();
 
 		$cpt_slug     = $this->get_db_identifier();
 		$capabilities = $this->get_items_capabilities();
