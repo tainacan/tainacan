@@ -56,7 +56,7 @@
                         tabindex="0"
                         :aria-label="$i18n.get('label_who_when') + ': ' + props.row.creation"
                         :label="$i18n.get('label_who_when')"
-                        property="by"R
+                        property="by"
                         show-overflow-tooltip
                         field="props.row.by">
                     <router-link
