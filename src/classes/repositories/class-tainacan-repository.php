@@ -341,12 +341,12 @@ abstract class Repository {
 	 *
 	 * @return array[]
 	 */
-	public static function get_collections_db_identifier() {
+	public static function get_collections_db_identifiers() {
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
 		$cpts        = [];
 		foreach ( $collections as $col ) {
-			$cpts[ $col->get_db_identifier() ] = $col;
+			$cpts[] = $col->get_db_identifier();
 		}
 
 		return $cpts;
@@ -387,8 +387,8 @@ abstract class Repository {
 
 		// Is it a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
-			$cpts = self::get_collections_db_identifier();
-			if ( array_key_exists( $post_type, $cpts ) ) {
+			$cpts = self::get_collections_db_identifiers();
+			if ( in_array( $post_type, $cpts ) ) {
 				return $entity = new \Tainacan\Entities\Item( $post );
 			} else {
 				throw new \Exception( 'Collection object not found for this post' );
