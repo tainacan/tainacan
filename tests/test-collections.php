@@ -306,11 +306,11 @@ class Collections extends TAINACAN_UnitTestCase {
     	
     	$diff = $x->diff();
     	$this->assertEquals(3, count($diff));
-    	$this->assertEquals($diff['name']['new'], 'OtherValue');
+    	$this->assertEquals($diff['name']['new'][0], 'OtherValue');
     	$this->assertEquals($diff['name']['old'], 'testeDiff');
-    	$this->assertEquals($diff['description']['new'], 'testeDiff2');
+    	$this->assertEquals($diff['description']['new'][0], 'testeDiff2');
     	$this->assertEquals($diff['description']['old'], 'adasdasdsa');
-    	$this->assertEquals([1 => 4, 2 => 5], $diff['moderators_ids']['diff']);
+    	$this->assertEquals([1 => 4, 2 => 5, 0 => 3], $diff['moderators_ids']['diff_with_index']);
     	
     }
 }

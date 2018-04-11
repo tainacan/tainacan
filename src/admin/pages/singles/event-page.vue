@@ -6,7 +6,7 @@
                     <div class="tile is-parent">
                         <article class="tile notification is-child is-light">
                             <div class="content">
-                                <div class="title">Before change</div>
+                                <div class="title">{{ this.$i18n.get('info_logs_before') }}</div>
                                 <div
                                         v-for="(diff, key) in event.log_diff"
                                         v-if="diff.old"
@@ -23,7 +23,7 @@
                     <div class="tile is-parent">
                         <article class="tile notification is-child is-light">
                             <div class="content">
-                                <div class="title">What was changed</div>
+                                <div class="title">{{ this.$i18n.get('info_logs_after') }}</div>
                                 <div
                                         v-for="(diff, key) in event.log_diff"
                                         :key="key">
@@ -31,13 +31,13 @@
                                     <p/>
                                     <div
                                             class="has-text-weight-bold is-capitalized"
-                                            :class="{'has-text-success': !diff.old }">
+                                            :class="{'has-text-success': !diff.old, 'back-hlight': !diff.old }">
                                         {{ `${key.replace('_', ' ')}:` }}
                                     </div>
                                     <div
                                             v-for="(d, i) in diff.new"
                                             :key="i"
-                                            :class="{'has-text-success': diff.diff_with_index.hasOwnProperty(i) }"
+                                            :class="{'has-text-success': diff.diff_with_index.hasOwnProperty(i), 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }"
                                             class="content is-inline" >
                                         {{ d }}
                                     </div>
@@ -84,5 +84,7 @@
 </script>
 
 <style scoped>
-
+    .back-hlight {
+        background-color: hsl(0, 0%, 93%);
+    }
 </style>

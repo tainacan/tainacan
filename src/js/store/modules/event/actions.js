@@ -3,7 +3,7 @@ import axios from '../../../axios/axios'
 
 export const fetchEvents = ({ commit }, { page, eventsPerPage } ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/logs?paged=${page}&perpage=${eventsPerPage}`)
+        axios.tainacan.get(`/logs?paged=${page}&perpage=${eventsPerPage}&context=edit`)
             .then(res => {
                 let events = res.data;
 

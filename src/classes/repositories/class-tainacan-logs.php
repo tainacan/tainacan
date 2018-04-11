@@ -210,14 +210,14 @@ class Logs extends Repository {
 	public function fetch_last() {
 		$args = [
 			'post_type'      => Entities\Log::get_post_type(),
-			'posts_per_page' => -1,
-			'orderby'        => 'date',
+			'posts_per_page' => 1,
+			'orderby'        => 'ID',
 			'order'          => 'DESC'
 		];
 
 		$logs = $this->fetch( $args, 'OBJECT' );
 
-		return array_pop( $logs );
+		return array_pop($logs);
 	}
 
 	/**
@@ -234,8 +234,16 @@ class Logs extends Repository {
 
 		if ( is_object( $new_value ) ) {
 			// do not log a log
-			if ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() == 'tainacan-log' ) {
+			if ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() == 'tainacan-log' || $new_value->get_status() === 'auto-draft' ) {
 				return;
+			}
+
+			if($new_value instanceof Entities\Field){
+				$type = $new_value->get_field_type();
+
+				if($type === 'Tainacan\Field_Types\Core_Title' || $type === 'Tainacan\Field_Types\Core_Description'){
+					return;
+				}
 			}
 
 			$type = get_class( $new_value );
@@ -244,6 +252,10 @@ class Logs extends Repository {
 			$name = method_exists($new_value, 'get_name') ? $new_value->get_name() :
 				(method_exists($new_value, 'get_title') ? $new_value->get_title() : $new_value->get_field()->get_name());
 
+			if(!$name){
+				$name = $new_value->get_status();
+			}
+
 			$articleA = 'A';
 			$articleAn = 'An';
 			$vowels = 'aeiou';
@@ -251,19 +263,32 @@ class Logs extends Repository {
 			if($is_update){
 				if(substr_count($vowels, strtolower(substr($class_name, 0, 1))) > 0){
 					$msn  = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleAn, $class_name);
-					$description = sprintf( __("The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower($class_name));
 				} else {
 					$msn  = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleA, $class_name);
-					$description = sprintf( __("The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower($class_name));
 				}
-
+				$description = sprintf( __("The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower($class_name));
 			} else {
 				if(substr_count($vowels, strtolower(substr($class_name, 0, 1))) > 0){
 					$msn  = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleAn, $class_name);
-					$description = sprintf( __("The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower($class_name));
 				} else {
 					$msn  = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleA, $class_name);
-					$description = sprintf( __("The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower($class_name));
+				}
+
+				if($new_value instanceof Entities\Field){
+					$collection =  $new_value->get_collection();
+					$parent = $collection;
+
+					if($collection) {
+						$parent = $collection->get_name();
+
+						if ( ! $parent ) {
+							$parent = $collection->get_status();
+						}
+					}
+
+					$description = sprintf( __( "The \"%s\" %s has been created on %s.", 'tainacan' ), $name, strtolower( $class_name ), $parent );
+				} else {
+					$description = sprintf( __( "The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower( $class_name ) );
 				}
 			}
 		}

@@ -134,6 +134,7 @@ return [
 	'label_inherited'						   => __( 'Inherited', 'tainacan' ),
 	'label_sorting'							   => __( 'Sorting', 'tainacan' ),
 	'label_who_when'                           => __( 'Who and when', 'tainacan' ),
+	'label_event_title'                        => __( 'Event', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
@@ -182,6 +183,9 @@ return [
 	'info_warning_terms_not_saved'             => __('Are you sure? There are terms not saved, changes will be lost.', 'tainacan'),
 	'info_warning_orphan_terms'                => __('Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan'),
 	'info_there_is_no_field'                   => __('There is no field here.', 'tainacan' ),
+	'info_no_events'                           => __( 'No events', 'tainacan' ),
+	'info_logs_before'                         => __( 'Before updating', 'tainacan' ),
+	'info_logs_after'                          => __( 'What was updated', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),
