@@ -21,7 +21,7 @@ class Taxonomy extends Entity {
      * @see \Tainacan\Entities\Entity::post_type
 	 * @var string
 	 */
-    protected static $post_type = 'tainacan-taxonomy';
+    static $post_type = 'tainacan-taxonomy';
     
     /**
 	 * {@inheritDoc}

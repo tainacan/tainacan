@@ -28,7 +28,7 @@ class Field extends Entity {
 	
 	public $enabled_for_collection = true;
 	
-	protected static $post_type = 'tainacan-field';
+	static $post_type = 'tainacan-field';
 	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::repository

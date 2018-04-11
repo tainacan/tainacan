@@ -22,12 +22,15 @@ class Theme_Helper {
 		
 		
 		/**
-		 * Replace collection single template with the respective post type archive
-		 * TODO: if collections is not set to use a cover page
+		 * Replace collections permalink to post type archive if cover not enabled
+		 * TODO: Replace single query (via pre_get_post) to post type archvive
+		 * TODO: Replace single query to the page content set as cover for the colllection
 		 */
 		add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
+		// TODO: Not working yet
+		//add_action('pre_get_posts', array(&$this, 'collection_single_pre_get_posts'));
 		
-		
+		// make archive for terms work with items
 		add_action('pre_get_posts', array(&$this, 'tax_archive_pre_get_posts'));
 
 	}
@@ -86,7 +89,12 @@ class Theme_Helper {
         if (!is_admin() && $post->post_type == $collection_post_type) {
             
             $collection = new \Tainacan\Entities\Collection($post);
-            $items_post_type = $collection->get_db_identifier();
+            
+			if ($collection->get_enable_cover_page() == 'yes') {
+				return $permalink;
+			}
+			
+			$items_post_type = $collection->get_db_identifier();
             
             $post_type_object = get_post_type_object($items_post_type);
             
@@ -109,6 +117,22 @@ class Theme_Helper {
 		if ($this->is_term_a_tainacan_term($term)) {
 			// TODO: Why post_type = any does not work?
 			$wp_query->set( 'post_type', \Tainacan\Repositories\Repository::get_collections_db_identifiers() );
+		}
+		
+		return $wp_query;
+		
+	}
+	
+	// TODO: Not working yet
+	function collection_single_pre_get_posts($wp_query) {
+		
+		if (!$wp_query->is_single() || !$wp_query->is_main_query())
+			return $wp_query;
+		
+		if ($wp_query->get('post_type') == \Tainacan\Entities\Collection::$post_type) {
+			$wp_query->set('query', [
+				'post_type' => \Tainacan\Entities\Collection::$post_type
+			]);
 		}
 		
 		return $wp_query;

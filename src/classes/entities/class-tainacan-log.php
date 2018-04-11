@@ -19,7 +19,7 @@ class Log extends Entity {
 		$log_date,
 		$user_name;
 
-	protected static $post_type = 'tainacan-log';
+	static $post_type = 'tainacan-log';
 	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::repository

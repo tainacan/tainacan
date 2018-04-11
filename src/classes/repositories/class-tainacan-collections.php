@@ -149,6 +149,24 @@ class Collections extends Repository {
 				'description' => __( 'Collection filters ordination', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
+			'enable_cover_page' => [
+                'map'        => 'meta',
+                'title'      => __('Enable Cover Page', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('Use page as the home page of this collection', 'tainacan'),
+                'on_error'   => __('Value should be yes or no', 'tainacan'),
+                'validation' => v::stringType()->in(['yes', 'no']), // yes or no
+                'default'    => 'no'
+            ],
+			'cover_page_id' => [
+                'map'        => 'meta',
+                'title'      => __('Cover Page ID', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The page to be used as cover for this collection', 'tainacan'),
+                'on_error'   => __('Invalid page', 'tainacan'),
+                //'validation' => v::numeric(),
+                'default'    => ''
+            ],
 			'moderators_ids'    => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Moderators', 'tainacan' ),
