@@ -2,9 +2,12 @@
     <div 
             class="page-container-small" 
             :class="{'primary-page': isRepositoryLevel}">
-        <div class="sub-header">
+        <div
+                class="sub-header"
+                v-if="items.length > 0">
             <div class="header-item">
                 <router-link 
+                        id="button-create-item"
                         tag="button" 
                         class="button is-secondary"
                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
@@ -18,19 +21,41 @@
                     :table-fields="tableFields"
                     :pref-table-fields="prefTableFields"/>
         </div>
-        <div class="columns above-subheader">
+        <div class="columns">
             <aside class="column filters-menu">
                 <h3>{{ $i18n.get('filters') }}</h3>
                 <filters-items-list />
             </aside>
-            <div class="column table-container">
-                <items-list
-                        :collection-id="collectionId"
-                        :table-fields="tableFields"
-                        :items="items" 
-                        :is-loading="isLoading"/>
-                <!-- Pagination Footer -->
-                <pagination v-if="items.length > 0"/>
+            <div class="column">
+                <div class="table-container above-subheader">
+                    <items-list
+                            v-if="items.length > 0"
+                            :collection-id="collectionId"
+                            :table-fields="tableFields"
+                            :items="items" 
+                            :is-loading="isLoading"/>
+                    <section 
+                            v-else 
+                            class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="inbox"
+                                        size="is-large"/>
+                            </p>
+                            <p>{{ $i18n.get('info_no_item_created') }}</p>
+                            <router-link
+                                    id="button-create-item" 
+                                    tag="button" 
+                                    class="button is-primary"
+                                    :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
+                                {{ $i18n.getFrom('items', 'new_item') }}
+                            </router-link>
+                        </div>
+                    </section>
+                    <!-- Pagination Footer -->
+                    <pagination v-if="items.length > 0"/>
+                </div>
             </div>
         </div>      
     </div>
@@ -68,6 +93,9 @@ export default {
         ...mapGetters('collection', [
             'getItems'
         ]),
+        ...mapActions('fields', [
+            'fetchFields'
+        ]),
     },
     computed: {
         items(){
@@ -76,10 +104,31 @@ export default {
     },
     created() {
         this.collectionId = this.$route.params.collectionId;
-        this.isRepositoryLevel  = (this.collectionId == undefined);      
+        this.isRepositoryLevel  = (this.collectionId == undefined);    
+
         eventSearchBus.$on('isLoadingItems', isLoadingItems => {
             this.isLoading = isLoadingItems;
         });
+
+        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: false }).then((res) => {
+            let rawFields = res;
+            this.tableFields.push({ name: this.$i18n.get('label_thumbnail'), field: 'featured_image', field_type: undefined, slug: 'featured_image', id: undefined, visible: true });
+            for (let field of rawFields) {
+                this.tableFields.push(
+                    {name: field.name, field: field.description, slug: field.slug, field_type: field.field_type, field_type_object: field.field_type_object, id: field.id, visible: true }
+                );
+            }
+            this.tableFields.push({ name: this.$i18n.get('label_actions'), field: 'row_actions', field_type: undefined, slug: 'actions', id: undefined, visible: true });
+            //this.prefTableFields = this.tableFields;
+            // this.$userPrefs.get('table_columns_' + this.collectionId)
+            //     .then((value) => {
+            //         this.prefTableFields = value;
+            //     })
+            //     .catch((error) => {
+            //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
+            //     });
+
+        }).catch();
     },
     mounted(){
         eventSearchBus.updateStoreFromURL();
@@ -93,9 +142,14 @@ export default {
 
     @import '../../scss/_variables.scss';
 
+    .page-container-small>.columns {
+        margin-top: 0;
+     
+    }
+
     .sub-header {
-        max-height: $header-height;
-        height: $header-height;
+        max-height: $subheader-height;
+        height: $subheader-height;
         margin-left: -$page-small-side-padding;
         margin-right: -$page-small-side-padding;
         margin-top: -$page-small-top-padding;
@@ -103,11 +157,6 @@ export default {
         padding-left: $page-small-side-padding;
         padding-right: $page-small-side-padding;
         border-bottom: 0.5px solid #ddd;
-
-        .header-item {
-            display: inline-block;
-            padding-right: 8em;
-        }
         
         @media screen and (max-width: 769px) {
             height: 60px;
@@ -124,35 +173,35 @@ export default {
         margin-bottom: 0;
         margin-top: 0;
         min-height: 100%;
-        height: auto;
+        height: auto; 
+    }
 
-        .filters-menu {
-            min-width: $side-menu-width;
-            max-width: $side-menu-width;
-            background-color: $primary-lighter;
-            margin-left: -$page-small-side-padding;
-            padding: $page-small-side-padding;
-            
-            .label {
-                font-size: 12px;
-                font-weight: normal;
-            }
-            
+    .filters-menu {
+        min-width: $side-menu-width;
+        max-width: $side-menu-width;
+        background-color: $tainacan-input-color;
+        margin-left: -$page-small-side-padding;
+        padding: $page-small-side-padding;
+        
+        .label {
+            font-size: 12px;
+            font-weight: normal;
         }
+        
+    }
 
+    .table-container {
+        margin-right: -$page-small-side-padding;
+        padding: 3em 2.5em;
+    }
+
+    @media screen and (max-width: 769px) {
+            .filters-menu {
+            display: none;
+        }
         .table-container {
-            margin-right: -$page-small-side-padding;
-            padding: 3em 2.5em;
-        }
-
-        @media screen and (max-width: 769px) {
-             .filters-menu {
-                display: none;
-            }
-            .table-container {
-                margin-right: 0;
-                padding: .85em 0em;
-            }
+            margin-right: 0;
+            padding: .85em 0em;
         }
     }
 

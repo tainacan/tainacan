@@ -19,7 +19,6 @@ class Field extends Entity {
         $cardinality,
         $collection_key,
         $mask,
-        $privacy,
         $default_value,
         $field_type,
         $field_type_options;
@@ -129,15 +128,6 @@ class Field extends Entity {
      */
     function get_mask(){
         return $this->get_mapped_property('mask');
-    }
-
-    /**
-     * Return the privacy type
-     *
-     * @return string
-     */
-    function get_privacy(){
-        return $this->get_mapped_property('privacy');
     }
 
     /**
@@ -302,16 +292,6 @@ class Field extends Entity {
     }
 
     /**
-     * Set privacy
-     *
-     * @param [string] $value
-     * @return void
-     */
-    function set_privacy( $value ){
-        $this->set_mapped_property('privacy', $value);
-    }
-
-    /**
      * Set default value
      *
      * @param [string || integer] $value
@@ -414,6 +394,38 @@ class Field extends Entity {
         if (false === $is_valid)
             return false;
         
+		// You cant have a multiple field inside a compound field (except category)
+		if ($this->get_parent() > 0) {
+			if ( $this->is_multiple() && $this->get_field_type_object()->get_primitive_type() != 'term') {
+				$this->add_error($this->get_id(), __('Compound fields do not support fields with multiple values (except categories)', 'tainacan'));
+				return false;
+			}
+		}
+		
+		// You cant have a category field inside a multiple compound field 
+		if ( $this->get_parent() > 0 && $this->get_field_type_object()->get_primitive_type() == 'term' ) {
+			$parent_field = new \Tainacan\Entities\Field($this->get_parent());
+			if ( $parent_field->is_multiple() ) {
+				$this->add_error($this->get_id(), __('Category fields can not be used inside Compound field with multiple values', 'tainacan'));
+				return false;
+			}
+		}
+		if ( $this->get_field_type() == 'Tainacan\Field_Types\Compound' && $this->is_multiple() ) {
+			$Tainacan_fields = \Tainacan\Repositories\Fields::get_instance();
+			$children = $Tainacan_fields->fetch(
+				[
+					'parent' => $this->get_id(),
+					'field_type' => 'Tainacan\Field_Types\Category',
+					'post_status' => 'any'
+				]
+				, 'OBJECT');
+			
+			if ( sizeof($children) > 0 ) {
+				$this->add_error($this->get_id(), __('Category fields can not be used inside Compound field with multiple values', 'tainacan'));
+				return false;
+			}
+		}
+		
         $fto = $this->get_field_type_object();
 
         if (is_object($fto)) {

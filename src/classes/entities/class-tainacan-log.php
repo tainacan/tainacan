@@ -264,7 +264,7 @@ class Log extends Entity {
 			throw new \Exception( 'msn or new_value is need to log' );
 		}
 
-		$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+		$Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
 
 		if ( $log->validate() ) {
 			return $Tainacan_Logs->insert( $log );
@@ -289,12 +289,13 @@ class Log extends Entity {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::diff()
 	 */
-	public function diff($which = 0)
-	{
+	public function diff($which = 0) {
 		$log = $this;
+
 		if($which != 0) {
 			$log = new self($which);
 		}
+
 		$value = $log->get_value();
 		$old = $log->get_old_value();
 		return $value->diff($old);

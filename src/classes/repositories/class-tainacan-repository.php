@@ -77,7 +77,12 @@ abstract class Repository {
 		}
 
 		$old = $obj;
-		if( $obj->get_id() ) $old = $obj->get_repository()->fetch($obj->get_id()); //TODO get props obj before update
+		$is_update = false;
+		// TODO get props obj before update
+		if( $obj->get_id() ) {
+			$is_update = true;
+			$old = $obj->get_repository()->fetch( $obj->get_id() );
+		}
 		
 		$map = $this->get_map();
 
@@ -113,7 +118,7 @@ abstract class Repository {
 			set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
 		}
 
-		do_action( 'tainacan-insert', $obj, $old );
+		do_action( 'tainacan-insert', $obj, $old, $is_update );
 		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
 
 		// return a brand new object
@@ -337,7 +342,7 @@ abstract class Repository {
 	 * @return array[]
 	 */
 	public static function get_collections_db_identifier() {
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
 		$cpts        = [];
 		foreach ( $collections as $col ) {
@@ -361,6 +366,9 @@ abstract class Repository {
 			return $post;
 		}
 
+		if (!$post instanceof \WP_Post)
+			return false;
+		
 		$post_type = $post->post_type;
 
 		return self::get_entity_by_post_type( $post_type, $post );
@@ -385,19 +393,19 @@ abstract class Repository {
 			} else {
 				throw new \Exception( 'Collection object not found for this post' );
 			}
+		} elseif ($post_type === \Tainacan\Repositories\Item_Metadata::get_instance()->entities_type::get_post_type()){
+			return new Entities\Item_Metadata_Entity(null, null);
 		} else {
-            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-            $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
-            $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
-			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-			$Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+            $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+            $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+			$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
 				$Tainacan_Fields,
-				$Tainacan_Item_Metadata,
 				$Tainacan_Filters,
 				$Tainacan_Taxonomies,
 				$Tainacan_Terms,
@@ -427,17 +435,17 @@ abstract class Repository {
 
 		// its is a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
-			$Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+			$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
 			return $Tainacan_Items;
 		} else {
-            $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-            $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
-            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
-            $Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
-            $Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+            $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+            $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+            $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
@@ -606,8 +614,10 @@ abstract class Repository {
 	 */
 	public function diff( $old = 0, $new ) {
 		$old_entity = null;
+
 		if ( $old === 0 ) { // self diff or other entity?
 			$id = $new->get_id();
+
 			if ( ! empty( $id ) ) { // there is a repository entity?
 				$old_entity = $this->get_entity_by_post( $new->WP_Post->ID );
 			} else {
@@ -617,6 +627,7 @@ abstract class Repository {
 		} else { // get entity from repository
 			$old_entity = $this->get_entity_by_post( $old );
 		}
+
 		$new_entity = $this->get_entity_by_post( $new );
 
 		$map = $this->get_map();
@@ -625,23 +636,37 @@ abstract class Repository {
 
 		foreach ( $map as $prop => $mapped ) {
 			if ( $old_entity->get_mapped_property( $prop ) != $new_entity->get_mapped_property( $prop ) ) {
+
 				if ( $mapped['map'] == 'meta_multi' ) {
-					$meta_diff = array_diff( $new_entity->get_mapped_property( $prop ), $old_entity->get_mapped_property( $prop ) );
-					if ( ! empty( $meta_diff ) ) {
+
+					// Array of diffs with index of diff in new array
+					$array_diff_with_index = array_diff_assoc($new_entity->get_mapped_property( $prop ), $old_entity->get_mapped_property( $prop ));
+
+					if ( ! empty( $array_diff_with_index ) ) {
+
 						$diff[ $prop ] = [
 							'new'  => $new_entity->get_mapped_property( $prop ),
 							'old'  => $old_entity->get_mapped_property( $prop ),
-							'diff' => $meta_diff //TODO better expose difference
+							'diff_with_index' => $array_diff_with_index,
 						];
 					}
 				} else {
+					$new_as_array = explode(' ', $new_entity->get_mapped_property( $prop ));
+					$old_as_array = explode(' ', $old_entity->get_mapped_property( $prop ));
+
+					// Array of diffs with index of diff in new array
+					$array_diff_with_index = array_diff_assoc($new_as_array, $old_as_array);
+
 					$diff[ $prop ] = [
-						'new' => $new_entity->get_mapped_property( $prop ),
-						'old' => $old_entity->get_mapped_property( $prop )
+						'new' => $new_as_array,
+						'old' => $old_entity->get_mapped_property( $prop ),
+						'diff_with_index' => $array_diff_with_index,
 					];
 				}
+
 			}
 		}
+
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $new, $old );
 
 		return $diff;

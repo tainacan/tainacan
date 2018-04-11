@@ -65,7 +65,7 @@ class TAINACAN_REST_Filter_Types_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types('NAME');
 

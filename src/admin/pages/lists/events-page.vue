@@ -73,10 +73,10 @@
             EventsList
         },
         methods: {
-            ...mapActions('events', [
+            ...mapActions('event', [
                 'fetchEvents',
             ]),
-            ...mapGetters('events', [
+            ...mapGetters('event', [
                 'getEvents'
             ]),
             onChangeEventsPerPage(value) {
@@ -113,7 +113,7 @@
                 for (let event of eventsList)
                     event['by'] = this.$i18n.get('info_by') +
                         event['user_name'] + '<br>' + this.$i18n.get('info_date') +
-                        moment(event['log_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
+                        moment(event['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
                 return eventsList;
             }

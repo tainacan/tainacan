@@ -39,17 +39,50 @@ class Compound extends Field_Type {
 
     }
 	
-	
-	public function validate_options( Field $field ) {
 		
-		// TODO: You cant have a multiple field inside a compound field (except category)
-		// 
-		// TODO: You cant have a Category field inside a multiple compound field
+	/**
+	 * Return the value of an Item_Metadata_Entity using a field of this field type as an html string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The HTML representation of the value, each HTML representation of the value of each field composing this metadata
+	 */
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		
-		return true;
+		$value = $item_metadata->get_value();
+		
+		$return = '';
+		
+		if ( $item_metadata->is_multiple() ) {
+			
+			foreach ( $value as $compound_element ) {
+				
+				foreach ( $compound_element as $meta ) {
+					if ( $meta instanceof Item_Metadata_Entity ) {
+						$return .= '<h4>' . $meta->get_field()->get_name() . "</h4>\n";
+						$return .= '<p>' . $meta->__value_to_html() . '</p>';
+					}
+				}
+				
+				$return .= "<hr />\n\n";
+				
+			}
+			
+			
+		} else {
+			
+			foreach ( $value as $meta ) {
+				
+				if ( $meta instanceof Item_Metadata_Entity ) {
+					$return .= '<h4>' . $meta->get_field()->get_name() . "</h4>\n";
+					$return .= '<p>' . $meta->__value_to_html() . '</p>';
+				}
+				
+			}
+			
+		}
+		
+		return $return;
+		
 	}
-	
-	
 	
 
     

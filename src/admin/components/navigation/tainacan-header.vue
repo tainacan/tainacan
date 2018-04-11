@@ -5,7 +5,7 @@
             :class="{'secondary-page': onSecondaryPage}">
         <div class="level-left">
             <div class="level-item">
-                <h1 class="has-text-weight-bold is-uppercase has-text-primary"><b-icon 
+                <h1 class="has-text-weight-bold is-uppercase"><b-icon 
                         size="is-small" 
                         :icon="currentIcon"/>{{ pageTitle }}</h1>
                 <nav class="breadcrumbs">
@@ -26,10 +26,13 @@
             </div>
         </div>
         <div class="level-right">
+            <a class="level-item">
+                <b-icon icon="magnify"/>  
+            </a>
             <a 
                     class="level-item" 
                     :href="wordpressAdmin">
-                <b-icon icon="close"/>
+                <b-icon icon="wordpress"/>
             </a>
         </div>
     </div>
@@ -70,6 +73,9 @@ export default {
         ...mapGetters('category', [
             'getCategoryName'
         ]),
+        ...mapActions('event', [
+            'fetchEventTitle'
+        ]),
         generateViewPath() {
 
             for (let i = 0; i < this.arrayRealPath.length; i++) {
@@ -92,6 +98,11 @@ export default {
                         case 'categories':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
+                                .catch((error) => this.$console.error(error));
+                            break;
+                        case 'events':
+                            this.fetchEventTitle(this.arrayRealPath[i])
+                                .then(eventName => this.arrayViewPath.splice(i, 1, eventName))
                                 .catch((error) => this.$console.error(error));
                             break;
                     }
@@ -134,7 +145,7 @@ export default {
     
     // Tainacan Header
     #tainacan-header {
-        background-color: $header-color;
+        background-color: $secondary;
         height: $header-height;
         max-height: $header-height;
         width: 100%;
@@ -145,6 +156,7 @@ export default {
         right: 0;
         position: absolute;
         z-index: 9;
+        color: white;
 
         .icon {
             padding-right: 1.3em;
@@ -163,7 +175,7 @@ export default {
         }
         &.secondary-page {
             .level-item {
-                margin-left: 310px;
+                margin-left: 87px;
             }
         }
 

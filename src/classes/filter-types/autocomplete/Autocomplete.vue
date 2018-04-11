@@ -33,7 +33,7 @@
                     size="is-small"
                     closable
                     @close="clearSearch()">
-                {{ results }}
+                {{ label }}
             </b-tag>
         </div>
     </div>
@@ -71,6 +71,7 @@
                 type: '',
                 collection: '',
                 field: '',
+                label: ''
             }
         },
         mixins: [filter_type_mixin],
@@ -79,6 +80,7 @@
                 if(!option)
                     return;
                 this.results = option.value;
+                this.label = option.label;
                 this.onSelect()
             },
             onSelect(){
@@ -95,7 +97,7 @@
                 if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
                     let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ?
                         this.field_object.field_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget, query );
+                    promise = this.getValuesRelationship( collectionTarget );
 
                 } else {
                     promise = this.getValuesPlainText( this.field, query );
@@ -129,6 +131,7 @@
                                    // instance.selected.push({ label: item.title, value: item.id, img: '' });
                                     this.$console.log(item.title);
                                     instance.results = item.title;
+                                    instance.label = item.title;
                                 }
                             })
                             .catch(error => {
@@ -143,6 +146,7 @@
             },
             clearSearch(){
                 this.results = '';
+                this.label = '';
                 this.selected = '';
                 this.$emit('input', {
                     filter: 'autocomplete',

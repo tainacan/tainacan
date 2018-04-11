@@ -17,7 +17,7 @@ class Logs extends Repository {
 	public $entities_type = '\Tainacan\Entities\Log';
 	private static $instance = null;
 
-	public static function getInstance() {
+	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self();
 		}
@@ -28,7 +28,7 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'log_inserts' ), 10, 2 );
+		add_action( 'tainacan-insert', array( $this, 'log_inserts' ), 10, 3 );
 	}
 
 	public function get_map() {
@@ -76,9 +76,9 @@ class Logs extends Repository {
 				'description' => __( 'The log slug' ),
 				'validation'  => ''
 			],
-			'itens_per_page' => [
+			'items_per_page' => [
 				'map'         => 'meta',
-				'title'       => __( 'Itens per page', 'tainacan' ),
+				'title'       => __( 'Items per page', 'tainacan' ),
 				'type'        => 'integer',
 				'description' => __( 'The quantity of items that should be load' ),
 				'validation'  => ''
@@ -211,6 +211,8 @@ class Logs extends Repository {
 		$args = [
 			'post_type'      => Entities\Log::get_post_type(),
 			'posts_per_page' => -1,
+			'orderby'        => 'date',
+			'order'          => 'DESC'
 		];
 
 		$logs = $this->fetch( $args, 'OBJECT' );
@@ -222,11 +224,11 @@ class Logs extends Repository {
 	 * Insert a log when a new entity is inserted
 	 *
 	 * @param Entity $new_value
-	 * @param Entity $value
+	 * @param Entity $old_value
 	 *
 	 * @return Entities\Log new created log
 	 */
-	public function log_inserts( $new_value, $value = null ) {
+	public function log_inserts( $new_value, $old_value = null, $is_update = null ) {
 		$msn = "";
 		$description = "";
 
@@ -242,15 +244,34 @@ class Logs extends Repository {
 			$name = method_exists($new_value, 'get_name') ? $new_value->get_name() :
 				(method_exists($new_value, 'get_title') ? $new_value->get_title() : $new_value->get_field()->get_name());
 
-			$msn  = sprintf( esc_html__( 'A %s has been created/updated.', 'tainacan' ), $class_name);
-			$description = sprintf( esc_html__("The %s %s has been created/updated.", 'tainacan' ), $name, strtolower($class_name));
+			$articleA = 'A';
+			$articleAn = 'An';
+			$vowels = 'aeiou';
 
+			if($is_update){
+				if(substr_count($vowels, strtolower(substr($class_name, 0, 1))) > 0){
+					$msn  = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleAn, $class_name);
+					$description = sprintf( __("The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower($class_name));
+				} else {
+					$msn  = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleA, $class_name);
+					$description = sprintf( __("The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower($class_name));
+				}
+
+			} else {
+				if(substr_count($vowels, strtolower(substr($class_name, 0, 1))) > 0){
+					$msn  = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleAn, $class_name);
+					$description = sprintf( __("The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower($class_name));
+				} else {
+					$msn  = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleA, $class_name);
+					$description = sprintf( __("The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower($class_name));
+				}
+			}
 		}
 
 		$msn = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
 		$description = apply_filters('tainacan-insert-log-description', $description, $type, $new_value);
 
-		return Entities\Log::create( $msn, $description, $new_value, $value );
+		return Entities\Log::create( $msn, $description, $new_value, $old_value );
 	}
 
 	/**
@@ -265,7 +286,9 @@ class Logs extends Repository {
 		if ( $log->get_status() == 'pending' ) {
 			/** @var Entity $value * */
 			$value = $log->get_value();
+
 			//$value->set_status('publish'); // TODO check if publish the entity on approve
+
 			$repository = self::get_repository( $value );
 
 			return $repository->insert( $value );

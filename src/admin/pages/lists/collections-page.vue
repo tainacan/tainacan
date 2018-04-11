@@ -1,8 +1,11 @@
 <template>
     <div class="primary-page page-container-small">
-        <div class="sub-header">
+        <div
+                class="sub-header"
+                v-if="totalCollections > 0">
             <div class="header-item">
                 <router-link 
+                        id="button-create-collection"
                         tag="button" 
                         class="button is-secondary"
                         :to="{ path: $routerHelper.getNewCollectionPath() }">
@@ -11,7 +14,9 @@
             </div>
         </div>
         <div class="columns above-subheader">
-            <aside class="column filters-menu">
+            <aside
+                    class="column filters-menu"
+                    v-if="totalCollections > 0">
                 <h3>{{ $i18n.getFrom('filters', 'name') }}</h3>
             </aside>
             <div class="column table-container">
@@ -22,7 +27,9 @@
                         :collections-per-page="collectionsPerPage"
                         :collections="collections"/>  
                 <!-- Footer -->
-                <div class="pagination-area">
+                <div
+                        class="pagination-area"
+                        v-if="totalCollections > 0">
                     <div class="shown-items"> 
                         {{ 
                             $i18n.get('info_showing_collections') + 
@@ -130,7 +137,7 @@ export default {
             })
             .catch(() => {
                 this.$userPrefs.set('collections_per_page', 12, null);
-            }); 
+            });
     },
     mounted(){
         this.loadCollections();

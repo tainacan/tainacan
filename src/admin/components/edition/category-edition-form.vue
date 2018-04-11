@@ -147,7 +147,7 @@
         mixins: [ wpAjax ],
         data(){
             return {
-                categoryId: Number,
+                categoryId: String,
                 activeTab: 0,
                 category: null,
                 isLoadingCategory: false,
@@ -179,12 +179,40 @@
         components: {
             TermsList
         },
+        beforeRouteLeave( to, from, next ) {
+            let formNotSaved = false;
+
+            if (this.category.name != this.form.name)
+                formNotSaved = true;
+            if (this.category.description != this.form.description)
+                formNotSaved = true;
+            if (this.category.slug != this.form.slug)
+                formNotSaved = true;
+            if (this.category.allow_insert != this.form.allowInsert)
+                formNotSaved = true;
+            if (this.category.status != this.form.status)
+                formNotSaved = true;
+
+            if (formNotSaved) {
+                this.$dialog.confirm({
+                    message: this.$i18n.get('info_warning_category_not_saved'),
+                        onConfirm: () => {
+                            next();
+                        },
+                        cancelText: this.$i18n.get('cancel'),
+                        confirmText: this.$i18n.get('continue'),
+                        type: 'is-secondary'
+                    });  
+            } else {
+                next()
+            }  
+        },
         methods: {
             ...mapActions('category', [
                 'createCategory',
                 'updateCategory',
                 'fetchCategory',
-                'fetchOnlySlug',
+                'fetchOnlySlug'
             ]),
             ...mapGetters('category',[
                 'getCategory',
@@ -212,7 +240,7 @@
                         this.form.slug = this.category.slug;
                         this.form.description = this.category.description;
                         this.form.status = this.category.status;
-                        this.allowInsert = this.category.allow_insert;
+                        this.form.allowInsert = this.category.allow_insert;
 
                         this.isLoadingCategory = false;
                         this.formErrorMessage = '';

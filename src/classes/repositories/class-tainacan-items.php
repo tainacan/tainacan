@@ -12,7 +12,7 @@ class Items extends Repository {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -91,8 +91,23 @@ class Items extends Repository {
 				'type'        => 'array',
 				'description' => __( 'The item term IDs', 'tainacan' ),
 			],
-			//'collection' => 'relation...',
-			// field .. field...
+			'document_type'       => [
+                'map'        => 'meta',
+                'title'      => __('Document Type', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The document type, can be a local attachment, an external URL or a text', 'tainacan'),
+                'on_error'   => __('Invalid document type', 'tainacan'),
+                'validation' => v::stringType()->in(['attachment', 'url', 'text']),
+                'default'    => 'attachment'
+            ],
+			'document'       => [
+                'map'        => 'meta',
+                'title'      => __('Document', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The document itself. An ID in case of attachment, an URL in case of url or a text in the case of text', 'tainacan'),
+                'on_error'   => __('Invalid document', 'tainacan'),
+                'default'    => ''
+            ],
 		] );
 	}
 
@@ -127,11 +142,11 @@ class Items extends Repository {
 	 */
 	public function register_post_type() {
 
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
 		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
-		$taxonomies  = $Tainacan_Taxonomies->fetch( [], 'OBJECT' );
+		$taxonomies  = $Tainacan_Taxonomies->fetch( ['status' => ['auto-draft', 'draft', 'publish', 'private']], 'OBJECT' );
 
 		if ( ! is_array( $collections ) ) {
 			return;
@@ -151,6 +166,14 @@ class Items extends Repository {
 	}
 
 	public function insert( $item ) {
+
+		$old = $item;
+		$is_update = false;
+		// TODO get props obj before update
+		if( $item->get_id() ) {
+			$is_update = true;
+			$old = $item->get_repository()->fetch( $item->get_id() );
+		}
 
 		$map = $this->get_map();
 
@@ -198,7 +221,7 @@ class Items extends Repository {
 			set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
 		}
 
-		do_action( 'tainacan-insert', $item );
+		do_action( 'tainacan-insert', $item, $old, $is_update );
 		do_action( 'tainacan-insert-Item', $item );
 
 		// return a brand new object
@@ -224,7 +247,7 @@ class Items extends Repository {
 	 */
 	public function fetch( $args = [], $collections = [], $output = null ) {
 
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		if ( is_numeric( $args ) ) {
 			$existing_post = get_post( $args );
@@ -348,11 +371,15 @@ class Items extends Repository {
             if(is_array( $post_title_in ) && isset( $post_title_in['value']) ){
                 $quotes = [];
                 foreach ($post_title_in['value'] as $title) {
-                    $quotes[] = "'" .   esc_sql( $wpdb->esc_like( $title ) ). "'";
+                    $quotes[] = " $wpdb->posts.post_title  LIKE  '%" .   esc_sql( $wpdb->esc_like( $title ) ). "%'";
                 }
             }
 
-            $where .= ' '.$post_title_in['relation'].' ' . $wpdb->posts . '.post_title IN ( ' .implode(',', $quotes ) . ')';
+            // retrieve only posts for the specified collection and status
+            $type = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0]."' ";
+            $status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
+            $where .= ' '.$post_title_in['relation'] . '( ( ' .implode(' OR ', $quotes ) . ' ) AND ' .
+                $status . ' AND  ' . $type . ' )';
         }
         return $where;
     }
@@ -370,11 +397,15 @@ class Items extends Repository {
             if(is_array( $post_content_in ) && isset( $post_content_in['value']) ){
                 $quotes = [];
                 foreach ($post_content_in['value'] as $title) {
-                    $quotes[] = "'" .   esc_sql( $wpdb->esc_like( $title ) ). "'";
+                    $quotes[] = " $wpdb->posts.post_content  LIKE  '%" .esc_sql( $wpdb->esc_like( $title ) ). "%'";
                 }
             }
 
-            $where .= ' '.$post_content_in['relation'].' ' . $wpdb->posts . '.post_content IN ( ' .implode(',', $quotes ) . ')';
+            // retrieve only posts for the specified collection and status
+            $type = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0]."' ";
+            $status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
+            $where .= ' '.$post_content_in['relation'] . '( ( ' .implode(' OR ', $quotes ) . ' ) AND ' .
+                $status . ' AND  ' . $type . ' )';
         }
         return $where;
     }

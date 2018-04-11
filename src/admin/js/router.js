@@ -12,6 +12,7 @@ import FiltersPage from '../pages/lists/filters-page.vue'
 import CategoriesPage from '../pages/lists/categories-page.vue'
 import CategoryPage from '../pages/singles/category-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
+import EventPage from '../pages/singles/event-page.vue'
 
 // Edition Form Components
 import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
@@ -27,7 +28,7 @@ Vue.use(VueRouter);
 const i18nGet = function (key) {
   let string = tainacan_plugin.i18n[key];
   return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
-}
+};
 
 const routes = [
     { path: '/', redirect:'/collections' },
@@ -61,9 +62,10 @@ const routes = [
     { path: '/categories/:categoryId', name: 'CategoryPage', component: CategoryPage, meta: {title: i18nGet('title_category_page'), icon: 'shape'} },
 
     { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_events_page'), icon: 'bell'} },
+    { path: '/events/:eventId', name: 'EventPage', component: EventPage, meta: {title: i18nGet('title_event_page'), icon: 'bell'} },
 
     { path: '*', redirect: '/'}
-]
+];
 
 export default new VueRouter ({
     routes,
@@ -72,8 +74,8 @@ export default new VueRouter ({
         return qs.parse(query);
     },
     stringifyQuery(query) {
-        var result = qs.stringify(query);
+        let result = qs.stringify(query);
 
         return result ? ('?' + result) : '';
     }
-})
+});

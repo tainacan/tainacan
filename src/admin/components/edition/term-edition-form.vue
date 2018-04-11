@@ -6,13 +6,11 @@
         
         <b-field 
                 :addons="false"
-                :type="editForm.name == '' ? 'is-danger' : ''" 
-                :message="editForm.name == '' ? $i18n.get('info_name_is_required') : ''"> 
+                :type="(formErrors.name != '' && formErrors.name != undefined) ? 'is-danger' : ''"
+                :message="formErrors.name"> 
             <label class="label">
                 {{ $i18n.get('label_name') }} 
-                <span 
-                        class="required-term-asterisk" 
-                        :class="editForm.name == '' ? 'is-danger' : ''">*</span> 
+                <span class="required-term-asterisk">*</span> 
                 <help-button 
                         :title="$i18n.getHelperTitle('terms', 'name')" 
                         :message="$i18n.getHelperMessage('terms', 'name')"/>
@@ -22,7 +20,10 @@
                     name="name"/>
         </b-field>
 
-        <b-field :addons="false">
+        <b-field 
+                :addons="false"
+                :type="formErrors['description'] != '' && formErrors['description'] != undefined ? 'is-danger' : ''"
+                :message="formErrors['description']">
             <label class="label">
                 {{ $i18n.get('label_description') }}
                 <help-button 
@@ -47,8 +48,7 @@
             <div class="control">
                 <button 
                         class="button is-success" 
-                        type="submit"
-                        :disabled="editForm.name == '' || editForm.name == undefined">
+                        type="submit">
                     {{ $i18n.get('save') }}
                 </button>
             </div>
@@ -61,6 +61,11 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'TermEditionForm',
+    data () {
+        return { 
+            formErrors: {}
+        }
+    },
     props: {
         editForm: Object,
         categoryId: ''
@@ -84,11 +89,16 @@ export default {
                     })
                     .then(() => {
                         this.editForm = {};
+                        this.formErrors = {};
                         this.$emit('onEditionFinished');
                     })
-                    .catch((error) => {
+                    .catch((errors) => {
+                        for (let error of errors.errors) {
+                            for (let field of Object.keys(error)){   
+                                this.$set(this.formErrors, field, (this.formErrors[field] != undefined ? this.formErrors[field] : '') + error[field] + '\n');
+                            }
+                        }
                         this.$emit('onErrorFound');
-                        this.$console.log(error);
                     });
 
             } else {
@@ -101,11 +111,16 @@ export default {
                     })
                     .then(() => {
                         this.editForm.saved = true;
+                        this.formErrors = {};
                         this.$emit('onEditionFinished');
                     })
-                    .catch((error) => {
+                    .catch((errors) => {
+                        for (let error of errors.errors) {
+                            for (let field of Object.keys(error)){   
+                                this.$set(this.formErrors, field, (this.formErrors[field] != undefined ? this.formErrors[field] : '') + error[field] + '\n');
+                            }
+                        }
                         this.$emit('onErrorFound');
-                        this.$console.log(error);
                     });
             }
         },

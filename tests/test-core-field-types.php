@@ -18,8 +18,8 @@ class CoreFieldTypes extends TAINACAN_UnitTestCase {
 	
     function test_core_field_types() {
 
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

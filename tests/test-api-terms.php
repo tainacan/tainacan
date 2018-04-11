@@ -179,6 +179,41 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals('Trap', $data['name']);
 	}
+	
+	
+	function test_terms_of_draft_taxonomy() {
+		
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+        	'taxonomy',
+	        array(
+	        	'name'         => 'genero',
+		        'description'  => 'tipos de musica',
+		        'allow_insert' => 'yes',
+				'status'       => 'auto-draft'
+	        ),
+	        true
+        );
+		
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+		
+		$new_attributes = [
+			'hideempty' => false,
+		];
+		$request = new \WP_REST_Request(
+			'GET', $this->namespace  . '/taxonomy/' . $taxonomy->get_id() . '/terms'
+		);
+		
+		$request->set_query_params($new_attributes);
+		
+		$response = $this->server->dispatch($request);
+		
+		$data = $response->get_data();
+		
+		$this->assertEquals(0, sizeof($data), 'new auto draft taxonomy should return 0 terms');
+		
+	}
+	
 }
 
 ?>

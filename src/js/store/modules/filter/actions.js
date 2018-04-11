@@ -1,13 +1,17 @@
 import axios from '../../../axios/axios';
 
 // FILTERS --------------------------------------------------------
-export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel}) => {
+export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/filters?context=edit';
+            endpoint = '/collection/' + collectionId + '/filters/';
         else
-            endpoint = '/filters?context=edit';
+            endpoint = '/filters/';
+
+        endpoint += '?nopaging=1'
+        if (isContextEdit)
+            endpoint += '&context=edit';
 
         axios.tainacan.get(endpoint)
         .then((res) => {
@@ -86,7 +90,7 @@ export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filters
         axios.tainacan.patch('/collections/' + collectionId, {
             filters_order: filtersOrder
         }).then( res => {
-            commit('setCollection', res.data);
+            commit('collection/setCollection', res.data, { root: true });
             resolve( res.data );
         }).catch( error => { 
             reject( error.response );

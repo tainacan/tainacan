@@ -9,8 +9,9 @@ export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel, isCont
         else
             endpoint = '/fields/';
 
+        endpoint += '?nopaging=1'
         if (isContextEdit)
-            endpoint += '?context=edit';
+            endpoint += '&context=edit';
 
         axios.tainacan.get(endpoint)
         .then((res) => {

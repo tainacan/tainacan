@@ -15,7 +15,7 @@ class Filters extends TAINACAN_UnitTestCase {
 
 
     function teste_add(){
-        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
@@ -43,7 +43,7 @@ class Filters extends TAINACAN_UnitTestCase {
     }
 
     function test_add_with_metadata_and_type(){
-        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
@@ -96,7 +96,7 @@ class Filters extends TAINACAN_UnitTestCase {
     }
 
     function test_get_filters_type(){
-        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
         $all_filter_types = $Tainacan_Filters->fetch_filter_types();
         $this->assertEquals( 8, count( $all_filter_types ) );
@@ -109,7 +109,7 @@ class Filters extends TAINACAN_UnitTestCase {
      * @group filter
      */
     function test_validate_supported_filters(){
-        $Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+        $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
             'collection',

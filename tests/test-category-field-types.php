@@ -18,9 +18,9 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 	
     function test_category_field_types() {
 
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -55,6 +55,17 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 	        true
         );
         
+		$i = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'         => 'item test',
+				'description'   => 'adasdasdsa',
+				'collection'    => $collection,
+				'status'		   => 'publish',
+			),
+			true
+		);
+		
         $field2 = $this->tainacan_entity_factory->create_entity(
         	'field',
 	        array(
@@ -68,16 +79,7 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
         );
         
         
-        $i = $this->tainacan_entity_factory->create_entity(
-			'item',
-			array(
-				'title'         => 'item test',
-				'description'   => 'adasdasdsa',
-				'collection'    => $collection,
-				'status'		   => 'publish',
-			),
-			true
-		);
+        
 	   
 		
 		$term = $this->tainacan_entity_factory->create_entity(
@@ -118,7 +120,7 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 
 		$check_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($checkItem, $field);
 
-		$this->assertEquals('WP_Term', get_class($check_item_metadata->get_value()));
+		$this->assertEquals('Tainacan\Entities\Term', get_class($check_item_metadata->get_value()));
 		
 		// test 2 fields with same category
 		$field2->set_field_type_options([
@@ -133,8 +135,8 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
     }
 	
 	function test_relate_taxonomy() {
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -200,6 +202,72 @@ class CategoryFieldTypes extends TAINACAN_UnitTestCase {
 		
 		
 		
+		
+		
+    }
+	
+	function test_values_and_html() {
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+        $Tainacan_ItemMetadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+			),
+			true
+		);
+		
+		$item = $this->tainacan_entity_factory->create_entity(
+				'item',
+				array(
+					'title'      => 'orange',
+					'collection' => $collection,
+					'status'	 => 'publish'
+				),
+				true
+				);
+		
+        $field = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'meta',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Category',
+				'status'	 => 'publish',
+				'field_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => true
+				]
+	        ),
+	        true
+        );
+		
+	
+        
+		$meta = new \Tainacan\Entities\Item_Metadata_Entity($item, $field);
+		
+		$meta->set_value('new_term');
+		
+		$meta->validate();
+		
+		$meta = $Tainacan_ItemMetadata->insert($meta);
+		
+		$this->assertInternalType( 'string', $meta->get_value_as_html() );
+		$this->assertInternalType( 'string', $meta->get_value_as_string() );
+		
+		$this->assertInternalType( 'integer', strpos($meta->get_value_as_html(), '<a ') );
+		$this->assertFalse( strpos($meta->get_value_as_string(), '<a ') );
 		
 		
     }

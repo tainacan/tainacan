@@ -66,4 +66,63 @@ class Relationship extends Field_Type {
         }
         return true;
     }
+	
+	/**
+	 * Return the value of an Item_Metadata_Entity using a field of this field type as an html string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
+	 */
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		
+		$value = $item_metadata->get_value();
+		
+		$return = '';
+		
+		if ( $item_metadata->is_multiple() ) {
+			
+			$count = 1;
+			$total = sizeof($value);
+			
+			foreach ( $value as $item_id ) {
+				
+				try {
+					
+					$item = new \Tainacan\Entities\Item($item_id);
+					
+					if ( $item instanceof \Tainacan\Entities\Item ) {
+						$return .= $item->__toHtml();
+					}
+					
+					$count ++;
+					
+					if ( $count <= $total ) {
+						$return .= ', ';
+					}
+					
+				} catch (Exception $e) {
+					// item not found 
+				}
+				
+			}
+			
+		} else {
+			
+			try {
+				
+				$item = new \Tainacan\Entities\Item($value);
+				
+				if ( $item instanceof \Tainacan\Entities\Item ) {
+					$return .= $item->__toHtml();
+				}
+				
+			} catch (Exception $e) {
+				// item not found 
+			}
+			
+		}
+		
+		return $return;
+		
+	}
+	
 }

@@ -71,12 +71,17 @@
                 return this.inputs;
             },
             getErrorMessage() {
+                
                 let msg = '';
                 let errors = eventBus.getErrors(this.field.field.id);
+                
                 if ( errors) {
                     this.setFieldTypeMessage('is-danger');
-                    for (let index in errors) {
-                      msg += errors[index] + '\n';
+                    for (let error of errors) { 
+                        for (let index of Object.keys(error)) {
+                            this.$console.log(index);
+                            msg += error[index] + '\n';
+                        }
                     }
                 } else {
                     this.setFieldTypeMessage('');

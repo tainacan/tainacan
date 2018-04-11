@@ -6,6 +6,6 @@ export const getEvent = state => {
     return state.event;
 };
 
-export const getEventName = state => {
-    return state.eventName;
+export const getEventTitle = state => {
+    return state.eventTitle;
 };

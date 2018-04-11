@@ -22,7 +22,7 @@ class Fields extends Repository {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -128,15 +128,6 @@ class Fields extends Repository {
                 'validation' => v::numeric()->positive(),
                 'default'    => 1
             ],
-            'privacy'        => [
-                'map'        => 'meta',
-                'title'      => __('Privacy', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field should be omitted in item view', 'tainacan'),
-                'on_error'   => __('Privacy is invalid', 'tainacan'),
-                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
-                'default'    => 'no'
-            ],
             'mask'           => [
                 'map'        => 'meta',
                 'title'      => __('Mask', 'tainacan'),
@@ -167,31 +158,22 @@ class Fields extends Repository {
                 //'validation' => ''
             ],
             'accept_suggestion' => [
-    			'map'		 => 'meta',
-    			'title'		 => __('Field Value Accepts Suggestions', 'tainacan'),
-    			'type'		 => 'bool',
-    			'description'=> __('Allow the community suggest a different values for that field', 'tainacan'),
-    			'default'	 => false,
-    			'validation' => v::boolType()
-    	    ],
-            'can_delete'        => [
-                'map'        => 'meta',
-                'title'      => __('Can delete', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field can be deleted', 'tainacan'),
-                'on_error'   => __('Can delete is invalid', 'tainacan'),
-                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
-                'default'    => 'yes'
+                'map'		 => 'meta',
+                'title'		 => __('Field Value Accepts Suggestions', 'tainacan'),
+                'type'		 => 'bool',
+                'description'=> __('Allow the community suggest a different values for that field', 'tainacan'),
+                'default'	 => false,
+                'validation' => v::boolType()
             ],
-    		'exposer_mapping'        => [
-    			'map'        => 'meta',
-    			'title'      => __('exposer_mapping', 'tainacan'),
-    			'type'       => 'array',
-    			'description'=> __('The field mapping options', 'tainacan'),
-    			'on_error'   => __('Invalid Field Mapping', 'tainacan'),
-    			'validation' =>  v::arrayType(),
-    			'default'    => []
-    		],
+            'exposer_mapping'        => [
+    		'map'        => 'meta',
+    		'title'      => __('exposer_mapping', 'tainacan'),
+    		'type'       => 'array',
+    		'description'=> __('The field mapping options', 'tainacan'),
+    		'on_error'   => __('Invalid Field Mapping', 'tainacan'),
+    		'validation' =>  v::arrayType(),
+    		'default'    => []
+    	    ],
         ]);
     }
 	
@@ -316,7 +298,6 @@ class Fields extends Repository {
 
             $args = array_merge([
                 'posts_per_page' => -1,
-                'post_status'    => 'publish'
             ], $args);
 			
 			$args = $this->parse_fetch_args($args);
@@ -447,7 +428,7 @@ class Fields extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($field){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
     	$this->pre_update_category_field($field);
         $new_field = parent::insert($field);
@@ -671,7 +652,7 @@ class Fields extends Repository {
 		// handle core titles
 		if( strpos( $field->get_field_type(), 'Core') !== false ){
 		    $collection = new Entities\Collection( $collection_id );
-		    $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+		    $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
             $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT');
             $return = [];
 

@@ -19,7 +19,7 @@
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
-        name: 'TainacanFiltersList',
+        name: 'TainacanFilterItem',
         props: {
             filter: Object,
             query: Object

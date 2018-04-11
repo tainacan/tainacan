@@ -23,10 +23,10 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function init_objects() {
 		$this->field = new Entities\Field();
-		$this->field_repository = Repositories\Fields::getInstance();
-		$this->item_metadata_repository = Repositories\Item_Metadata::getInstance();
-		$this->item_repository = Repositories\Items::getInstance();
-		$this->collection_repository = Repositories\Collections::getInstance();
+		$this->field_repository = Repositories\Fields::get_instance();
+		$this->item_metadata_repository = Repositories\Item_Metadata::get_instance();
+		$this->item_repository = Repositories\Items::get_instance();
+		$this->collection_repository = Repositories\Collections::get_instance();
 	}
 
 	/**

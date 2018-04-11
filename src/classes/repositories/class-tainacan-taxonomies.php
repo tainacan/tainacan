@@ -15,7 +15,7 @@ class Taxonomies extends Repository {
 
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if(!isset(self::$instance))
         {
@@ -137,31 +137,6 @@ class Taxonomies extends Repository {
         
         // return a brand new object
         return $new_taxonomy;
-    }
-
-    public function tainacan_taxonomy( $taxonomy_name ){
-        $labels = array(
-            'name'              => __( 'Taxonomies', 'textdomain' ),
-            'singular_name'     => __( 'Taxonomy','textdomain' ),
-            'search_items'      => __( 'Search taxonomies', 'textdomain' ),
-            'all_items'         => __( 'All taxonomies', 'textdomain' ),
-            'parent_item'       => __( 'Parent taxonomy', 'textdomain' ),
-            'parent_item_colon' => __( 'Parent taxonomy:', 'textdomain' ),
-            'edit_item'         => __( 'Edit taxonomy', 'textdomain' ),
-            'update_item'       => __( 'Update taxonomy', 'textdomain' ),
-            'add_new_item'      => __( 'Add New taxonomy', 'textdomain' ),
-            'new_item_name'     => __( 'New Genre taxonomy', 'textdomain' ),
-            'menu_name'         => __( 'Genre', 'textdomain' ),
-        );
-
-        $args = array(
-            'hierarchical'      => true,
-            'labels'            => $labels,
-            'show_ui'           => tnc_enable_dev_wp_interface(),
-            'show_admin_column' => tnc_enable_dev_wp_interface(),
-        );
-
-        register_taxonomy( $taxonomy_name, array( ), $args );
     }
 
     /**

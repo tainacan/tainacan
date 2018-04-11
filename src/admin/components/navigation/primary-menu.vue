@@ -23,23 +23,6 @@
             </div>
             
             <ul class="menu-list">
-                <li class="search-area">
-                    <b-field>
-                        <b-input 
-                            :placeholder="$i18n.get('search')"
-                            type="search"
-                            size="is-small"
-                            icon="magnify"/>
-                    </b-field>
-                    <router-link 
-                            tag="a" 
-                            to="">
-                        <b-icon 
-                                size="is-small" 
-                                icon="magnify"/> <span class="menu-text">{{ $i18n.get('advanced_search') }}</span>
-                    </router-link>
-                </li>
-                <li class="separator"/>
                 <li><router-link 
                         tag="a" 
                         to="/collections" 

@@ -23,6 +23,8 @@ class Item extends Entity {
         $order,
         $parent,
         $decription,
+        $document_type,
+        $document,
         $collection_id;
 
 	/**
@@ -219,6 +221,24 @@ class Item extends Entity {
 	function get_description() {
 		return $this->get_mapped_property( 'description' );
 	}
+	
+	/**
+	 * Return the item document type
+	 *
+	 * @return string
+	 */
+	function get_document_type() {
+		return $this->get_mapped_property( 'document_type' );
+	}
+	
+	/**
+	 * Return the item document
+	 *
+	 * @return string
+	 */
+	function get_document() {
+		return $this->get_mapped_property( 'document' );
+	}
 
 	/**
 	 *
@@ -273,6 +293,28 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Define the document type
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_document_type( $value ) {
+		$this->set_mapped_property( 'document_type', $value );
+	}
+	
+	/**
+	 * Define the document
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_document( $value ) {
+		$this->set_mapped_property( 'document', $value );
+	}
+	
+	/**
 	 * Define the description
 	 *
 	 * @param [string] $value
@@ -293,7 +335,7 @@ class Item extends Entity {
 	 * @return array Array of ItemMetadata objects
 	 */
 	function get_fields() {
-		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
 		return $Tainacan_Item_Metadata->fetch( $this, 'OBJECT' );
 
@@ -324,32 +366,29 @@ class Item extends Entity {
 			return true;
 		}
 
-		if ( parent::validate() ) {
-			$arrayItemMetadata = $this->get_fields();
-			if ( $arrayItemMetadata ) {
-				foreach ( $arrayItemMetadata as $itemMetadata ) {
+		$is_valid = true;
 
-					// avoid core fields to re-validate
-					$pos = strpos( $itemMetadata->get_field()->get_field_type(), 'Core' );
-					if ( $pos !== false ) {
-						continue;
-					}
-					
-					// skip validation for Compound Fields
-					if ( $itemMetadata->get_field()->get_field_type() == 'Tainacan\Field_Types\Compound' ) {
-						continue;
-					}
+		if ( parent::validate() === false ) {
+			$is_valid = false;
+		}
 
-					if ( ! $itemMetadata->validate() ) {
-						$errors = $itemMetadata->get_errors();
-						$this->add_error( $itemMetadata->get_field()->get_name(), $errors );
+		$arrayItemMetadata = $this->get_fields();
+		if ( $arrayItemMetadata ) {
+			foreach ( $arrayItemMetadata as $itemMetadata ) {
+				
+				// skip validation for Compound Fields
+				if ( $itemMetadata->get_field()->get_field_type() == 'Tainacan\Field_Types\Compound' ) {
+					continue;
+				}
 
-						return false;
-					}
+				if ( ! $itemMetadata->validate() ) {
+					$errors = $itemMetadata->get_errors();
+					$this->add_error( $itemMetadata->get_field()->get_id(), $errors );
+					$is_valid = false;
 				}
 			}
 
-			return true;
+			return $is_valid;
 		}
 
 		return false;
@@ -370,4 +409,89 @@ class Item extends Entity {
 
 		return parent::validate();
 	}
+	
+	
+	public function __toHtml() {
+		
+		$return = '';
+		$id = $this->get_id();
+		
+		if ( $id ) {
+			
+			$link = get_permalink( (int) $id );
+			
+			if (is_string($link)) {
+				
+				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
+				$return.= $this->get_title();
+				$return .= "</a>";
+				
+			}
+			
+		}
+
+		return $return;
+		
+	}
+	
+	/**
+	 * Return the item metadata as a HTML string to be used as output.
+	 *
+	 * Each metadata is a label with the field name and the value.
+	 *
+	 * If an ID, a slug or a Tainacan\Entities\Field object is passed, it returns only one metadata, otherwise
+	 * it returns all metadata
+	 * 
+	 * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
+	 * @param bool $hide_empty Wether to hide or not fields the item has no value to
+	 * @return string        The HTML output
+	 */
+	public function get_metadata_as_html($field = null, $hide_empty = true) {
+		
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+		
+		$return = '';
+		
+		if (!is_null($field)) {
+			
+			$field_object = null;
+			
+			if ( $field instanceof \Tainacan\Entities\Field ) {
+				$field_object = $field;
+			} elseif ( is_int($field) ) {
+				$field_object = $Tainacan_Fields->fetch($field);
+			} elseif ( is_string($field) ) {
+				$query = $Tainacan_Fields->fetch(['slug' => $field], 'OBJECT');
+				if ( is_array($query) && sizeof($query) == 1 && isset($field[0])) {
+					$field_object = $field[0];
+				}
+			}
+			
+			if ( $field_object instanceof \Tainacan\Entities\Field ) {
+				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $field_object);
+				if ($item_meta->has_value() || !$hide_empty) {
+					$return .= '<h3>' . $field_object->get_name() . '</h3>';
+					$return .= $item_meta->get_value_as_html();
+				}
+				
+			}
+			
+			return $return;
+			
+		}
+		
+		$fields = $this->get_fields();
+		
+		foreach ( $fields as $item_meta ) {
+			if ($item_meta->has_value() || !$hide_empty) {
+				$return .= '<h3>' . $item_meta->get_field()->get_name() . '</h3>';
+				$return .= $item_meta->get_value_as_html();
+			}
+		}
+		
+		return $return;
+		
+	}
+	
 }

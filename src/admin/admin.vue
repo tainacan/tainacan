@@ -45,6 +45,7 @@
         margin: 0 auto;
         position: relative;
         overflow-y: auto;
+        height: 100%;
 
         @media screen and (max-width: 769px) {
             & {
@@ -59,15 +60,21 @@
 
     .is-secondary-content {
         padding: 0px;
-        margin: 78px auto 0 auto;
+        margin: $header-height auto 0 auto;
         position: relative;
         overflow-y: auto;
+        height: calc(100% - 58px);
 
         @media screen and (max-width: 769px) {
             & {
                 overflow-y: visible;
             }
         } 
+
+        .columns {
+            margin-left: 0px;
+            margin-right: 0px;
+        }
     }
 
 </style>

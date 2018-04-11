@@ -24,6 +24,10 @@ export const eventSearchBus = new Vue({
                     this.$route.query.perpage = 12;
                 if (this.$route.query.paged == undefined)
                     this.$route.query.paged = 1;
+                if (this.$route.query.order == undefined)
+                    this.$route.query.order = 'DESC';
+                if (this.$route.query.orderby == undefined)
+                    this.$route.query.orderby = 'date';
 
                 store.dispatch('search/set_postquery', this.$route.query);
                 //console.log(this.$route.query);
@@ -57,6 +61,14 @@ export const eventSearchBus = new Vue({
         },
         setItemsPerPage(itemsPerPage) {
             store.dispatch('search/setItemsPerPage', itemsPerPage);
+            this.updateURLQueries();
+        },
+        setOrderBy(newOrderBy) {
+            store.dispatch('search/setOrderBy', newOrderBy);
+            this.updateURLQueries();
+        },
+        setOrder(newOrder) {
+            store.dispatch('search/setOrder', newOrder);
             this.updateURLQueries();
         },
         updateURLQueries() {

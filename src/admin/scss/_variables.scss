@@ -19,7 +19,6 @@ $success: #25a189;
 $success-invert: findColorInvert($success);
 
 $separator-color: #2a6e77;
-$header-color: #ececec;
 $tainacan-input-color: #f0f0f0;
 $draggable-border-color: #d8d8d8;
 
@@ -54,9 +53,10 @@ $colors: map-merge($colors, $addColors);
 $size-small: 0.85em; // 0.75em on Bulma.
 
 // Tainacan Header and side menus
-$header-height: 78px;
+$header-height: 58px;
+$subheader-height: 78px;
 $side-menu-width: 222px;
-$page-height: calc(100% - 78px);
+$page-height: calc(100% - 58px);
 
 // Overall Pages padding:
 $page-side-padding: 4em;

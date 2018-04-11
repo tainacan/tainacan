@@ -25,9 +25,9 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function init_objects() {
 		$this->term = new Entities\Term();
-		$this->terms_repository = Repositories\Terms::getInstance();
+		$this->terms_repository = Repositories\Terms::get_instance();
 		$this->taxonomy = new Entities\Taxonomy();
-		$this->taxonomy_repository = Repositories\Taxonomies::getInstance();
+		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
 	}
 
 	public function register_routes() {

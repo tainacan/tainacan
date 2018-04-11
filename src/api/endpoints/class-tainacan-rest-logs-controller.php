@@ -20,7 +20,7 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	}
 
 	public function init_objects(){
-		$this->logs_repository = Repositories\Logs::getInstance();
+		$this->logs_repository = Repositories\Logs::get_instance();
 		$this->log = new Entities\Log();
 	}
 
@@ -64,7 +64,22 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
-			return $item->__toArray();
+
+			if(!isset($request['fetch_only'])) {
+				$item_array = $item->__toArray();
+
+				if ( $request['context'] === 'edit' ) {
+					$log_diff = $item->diff();
+
+					$item_array['log_diff'] = $log_diff;
+				}
+
+				return $item_array;
+			}
+
+			$attributes_to_filter = $request['fetch_only'];
+
+			return $this->filter_object_by_attributes($item, $attributes_to_filter);
 		}
 
 		return $item;
@@ -136,8 +151,12 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	public function get_item_permissions_check( $request ) {
 		$log = $this->logs_repository->fetch($request['log_id']);
 
-		if($log instanceof Entities\Log){
-			return $log->can_read();
+		if(($log instanceof Entities\Log)) {
+			if('edit' === $request['context'] && !$log->can_read()) {
+				return false;
+			}
+
+			return true;
 		}
 
 		return false;

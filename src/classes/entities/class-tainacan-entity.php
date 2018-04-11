@@ -128,7 +128,7 @@ class Entity {
     public function get_repository()
     {
         $namespace = '\Tainacan\Repositories\\'.$this->repository;
-        $repository = $namespace::getInstance();
+        $repository = $namespace::get_instance();
 
         return $repository;
     }
@@ -219,13 +219,13 @@ class Entity {
                 foreach ($prop_value as $val) {
                     if (!$validation->validate($val)) {
 
-                        $this->add_error($this->get_id() .' '. $prop, $message);
+                        $this->add_error($prop, $message);
                         $is_valid = false;
                     }
                 }
             } else {
                 if (!$validation->validate($prop_value)) {
-                	$this->add_error($this->get_id() .' '. $prop, $message);
+                	$this->add_error($prop, $message);
 	                $is_valid = false;
                 }
             }
@@ -275,6 +275,7 @@ class Entity {
     
     public function add_error($type, $message) {
         $this->errors[] = [$type => $message];
+		$this->set_validated(false);
     }
     
     /**

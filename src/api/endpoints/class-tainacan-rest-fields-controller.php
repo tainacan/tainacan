@@ -23,10 +23,10 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	 * @throws Exception
 	 */
 	public function init_objects() {
-		$this->field_repository = Repositories\Fields::getInstance();
-		$this->item_metadata_repository = Repositories\Item_Metadata::getInstance();
-		$this->item_repository = Repositories\Items::getInstance();
-		$this->collection_repository = Repositories\Collections::getInstance();
+		$this->field_repository = Repositories\Fields::get_instance();
+		$this->item_metadata_repository = Repositories\Item_Metadata::get_instance();
+		$this->item_repository = Repositories\Items::get_instance();
+		$this->collection_repository = Repositories\Collections::get_instance();
 	}
 
 	/**
@@ -262,14 +262,15 @@ class TAINACAN_REST_Fields_Controller extends TAINACAN_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
 			$item_arr = $item->__toArray();
-
+			
+			$item_arr['field_type_object'] = $item->get_field_type_object()->__toArray();
+			
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 				ob_start();
 				$item->get_field_type_object()->form();
 				$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
-				$item_arr['field_type_object'] = $item->get_field_type_object()->__toArray();
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 

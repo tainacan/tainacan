@@ -27,7 +27,6 @@ html {
     width: 100%;
     z-index: 999999;
     overflow-y: auto;
-    height: 100%;
     margin: 0px !important; 
     font-family: $family-sans-serif;
 }
@@ -62,7 +61,7 @@ html {
 }
 .page-container-small{
     padding: $page-small-top-padding $page-small-side-padding;
-    height: 100%;
+    height: calc(100% - 78px);
     overflow-y: auto;
 
     @media screen and (max-width: 769px) {
@@ -83,6 +82,7 @@ html {
         padding: 1em 1.2em 0.4em 1.2em;
         margin-bottom: 0px;
         .button {
+            border-width: 1px;
             padding: 2px 30px !important;
         }
         .button.is-outlined {
@@ -154,6 +154,7 @@ html {
 
 // Some components have a different style in listing pages
 .button {
+    border-width: 0;
     border-radius: 6px !important;
     font-weight: normal;
     padding: 2px 15px !important;

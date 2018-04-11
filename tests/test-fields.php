@@ -18,7 +18,7 @@ class Fields extends TAINACAN_UnitTestCase {
      * Test insert a regular field with type
      */
     function test_add() {
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
@@ -52,7 +52,7 @@ class Fields extends TAINACAN_UnitTestCase {
      * Test insert a regular field with type
      */
     function test_add_type(){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
 	        'collection',
@@ -85,7 +85,7 @@ class Fields extends TAINACAN_UnitTestCase {
      * test if parent field are visible for children collection
      */
     function test_hierarchy_metadata(){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
 	    $this->tainacan_entity_factory->create_entity(
         	'field',
@@ -170,7 +170,7 @@ class Fields extends TAINACAN_UnitTestCase {
      * test remove core fields
      */
     function test_core_fields(){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
         $collection_grandfather = $this->tainacan_entity_factory->create_entity(
             'collection',
@@ -193,7 +193,7 @@ class Fields extends TAINACAN_UnitTestCase {
      * test if the defaults types are registered
      */
     function test_metadata_field_type(){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
         $this->assertEquals( 8, sizeof( $Tainacan_Fields->fetch_field_types() ) );
     }
 
@@ -202,8 +202,8 @@ class Fields extends TAINACAN_UnitTestCase {
      *
      */
     function test_ordenation_fields(){
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
             'collection',
@@ -322,7 +322,7 @@ class Fields extends TAINACAN_UnitTestCase {
         
         $this->assertEquals($x->get_slug(), $y->get_slug());
         
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
         $x->set_status('publish');
         $x->validate();
         $x = $Tainacan_Fields->insert($x);
@@ -335,7 +335,7 @@ class Fields extends TAINACAN_UnitTestCase {
     }
 
     function test_validation_of_field_types() {
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',

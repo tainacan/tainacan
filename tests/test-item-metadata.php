@@ -18,8 +18,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
      */
     function test_add() {
 
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
@@ -53,13 +53,15 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
         
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $item = $Tainacan_Items->fetch($i->get_id());
 
         $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
         $item_metadata->set_value('teste_value');
-
+		
+		$item_metadata->validate();
+		
         $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
         
         $this->assertEquals('teste_value', $item_metadata->get_value());
@@ -69,8 +71,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
      * Teste da insercao de um metadado simples com o tipo
      */
     function teste_required(){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
@@ -105,7 +107,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	        true
         );
         
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $item = $Tainacan_Items->fetch($i->get_id());
         $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
@@ -123,8 +125,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
     }
     
     function teste_collection_key(){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
 	        'collection',
@@ -160,7 +162,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		    true
 	    );
         
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
         $item = $Tainacan_Items->fetch($i->get_id());
 
@@ -181,7 +183,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
     }
     
     function teste_fetch(){
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',

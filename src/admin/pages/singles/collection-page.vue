@@ -1,14 +1,14 @@
 <template>
     <div class="columns is-fullheight">
-        <secondary-menu :id="collectionId"/>
         <section class="column is-secondary-content">
+            <tainacan-subheader :id="collectionId"/>
             <router-view class="page-container"/>
         </section>
     </div>
 </template>
 
 <script>
-import SecondaryMenu from '../../components/navigation/secondary-menu.vue';
+import TainacanSubheader from '../../components/navigation/tainacan-subheader.vue';
 
 export default {
     name: 'CollectionPage',
@@ -18,7 +18,7 @@ export default {
         }
     },
     components: {
-        SecondaryMenu
+        TainacanSubheader
     },
     created(){
         this.collectionId = parseInt(this.$route.params.collectionId);

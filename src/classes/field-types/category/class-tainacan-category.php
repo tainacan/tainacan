@@ -69,7 +69,7 @@ class Category extends Field_Type {
 		if (empty($this->get_option('taxonomy_id')))
 			return ['taxonomy_id' => __('Please select a category', 'tainacan')];
 		
-		$Tainacan_Fields = Fields::getInstance();
+		$Tainacan_Fields = Fields::get_instance();
 		
 		$category_fields = $Tainacan_Fields->fetch([
 			'collection_id' => $field->get_collection_id(),
@@ -120,8 +120,8 @@ class Category extends Field_Type {
 				$terms = array($terms);
 			
 			foreach ($terms as $term) {
-				if (is_object($term) && $term instanceof \WP_Term) {
-					$term = $term->term_id;
+				if (is_object($term) && $term instanceof \Tainacan\Entities\Term) {
+					$term = $term->get_id();
 				}
 				
 				if (!term_exists($term)) {
@@ -135,5 +135,46 @@ class Category extends Field_Type {
 		return $valid;
         
     }
+	
+	/**
+	 * Return the value of an Item_Metadata_Entity using a field of this field type as an html string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The HTML representation of the value, containing one or multiple terms, separated by comma, linked to term page
+	 */
+	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
+		
+		$value = $item_metadata->get_value();
+		
+		$return = '';
+		
+		if ( $item_metadata->is_multiple() ) {
+			
+			$count = 1;
+			$total = sizeof($value);
+			
+			foreach ( $value as $term ) {
+				if ( $term instanceof \Tainacan\Entities\Term ) {
+					$return .= $term->__toHtml();
+				}
+				
+				$count ++;
+				
+				if ( $count <= $total ) {
+					$return .= ', ';
+				}
+				
+			}
+			
+		} else {
+			
+			if ( $value instanceof \Tainacan\Entities\Term ) {
+				$return .= $value->__toHtml();
+			}
+			
+		}
+		
+		return $return;
+		
+	}
 	
 }

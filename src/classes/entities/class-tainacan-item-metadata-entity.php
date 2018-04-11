@@ -16,6 +16,14 @@ class Item_Metadata_Entity extends Entity {
 	 */
 	protected $repository = 'Item_Metadata';
 	
+	protected
+        $item,
+		$field,
+		$parent_meta_id,
+		$meta_id,
+		$has_value,
+		$value;
+	
 	/**
 	 * 
 	 * @param Item   $item    Item Entity
@@ -37,26 +45,103 @@ class Item_Metadata_Entity extends Entity {
 		
 		
     }
+	
+	/**
+	 * Get the value as a HTML string, with markup and links
+	 * @return string
+	 */
+	public function  get_value_as_html(){
+		$field = $this->get_field();
+		
+		if (is_object($field)) {
+			$fto = $field->get_field_type_object();
+			if (is_object($fto)) {
+				
+				if ( method_exists($fto, 'get_value_as_html') ) {
+					return $fto->get_value_as_html($this);
+				}
+				
+			}
+		}
+		
+		$value = $this->get_value();
+		
+		$return = '';
+		
+		if ( $this->is_multiple() ) {
+			
+			$total = sizeof($value);
+			$count = 0;
+			
+			foreach ($value as $v) {
+				$return .= (string) $v;
+				
+				$count ++;
+				if ($count <= $total)
+					$return .= ', ';
+			}
+			
+		} else {
+			$return = (string) $value;
+		}
 
-	public function  __toString(){
-		return 'Hello, I\'m the Item Field Entity';
+		return $return;
+		
+		
 	}
+	
+	/**
+	 * Get the value as a plain text string
+	 * @return string
+	 */
+	public function get_value_as_string() {
+		return strip_tags($this->get_value_as_html());
+	}
+	
+	/**
+	 * Get value as an array
+	 * @return [type] [description]
+	 */
+	public function get_value_as_array() {
+		$value = $this->get_value();
+		
+		if ( $this->is_multiple() ) {
+			
+			$return = [];
+			
+			foreach ($value as $v) {
+				if ( $v instanceof Term || $v instanceof ItemMetadataEntity ) {
+					$return[] = $v->__toArray();
+				} else {
+					$return[] = $v;
+				}
+			}
+			
+		} else {
+			
+			$return = '';
+			
+			if ( $value instanceof Term || $value instanceof ItemMetadataEntity ) {
+				$return = $value->__toArray();
+			} else {
+				$return = $value;
+			}
+		}
 
+		return $return;
+
+	}
+	
+	/**
+	 * Convert the object to an Array
+	 * @return array the representation of this object as an array
+	 */
     public function  __toArray(){
-    	$value = $this->get_value();
-
-    	if(is_array($value) && $value[0] instanceof Term){
-    		$values_arr = [];
-
-    		foreach ($value as $val){
-    			$values_arr[] = $val->__toArray();
-		    }
-
-		    $as_array['value'] = $values_arr;
-	    } else {
-		    $as_array['value'] = $this->get_value();
-	    }
-
+		$as_array = [];
+		
+		$as_array['value'] = $this->get_value_as_array();
+		$as_array['value_as_html'] = $this->get_value_as_html();
+		$as_array['value_as_string'] = $this->get_value_as_string();
 	    $as_array['item']  = $this->get_item()->__toArray();
 	    $as_array['field'] = $this->get_field()->__toArray();
 
@@ -69,7 +154,7 @@ class Item_Metadata_Entity extends Entity {
      * @param Item $item
      * @return void
      */
-    function set_item(Item $item) {
+    function set_item(Item $item = null) {
         $this->item = $item;
     }
     
@@ -89,7 +174,7 @@ class Item_Metadata_Entity extends Entity {
      * @param Field $field
      * @return void
      */
-    function set_field(Field $field) {
+    function set_field(Field $field = null) {
         $this->field = $field;
     }
 	
@@ -171,8 +256,22 @@ class Item_Metadata_Entity extends Entity {
         if (isset($this->value))
             return $this->value;
         
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         return $Tainacan_Item_Metadata->get_value($this);
+    }
+	
+	/**
+     * Check wether the item has a value stored in the database or not
+     *
+     * @return bool
+     */
+    function has_value() {
+        if (isset($this->has_value))
+            return $this->has_value;
+        
+		$value = $this->get_value();
+		$this->has_value = !empty($value);
+		return $this->has_value;
     }
     
     /**
@@ -258,12 +357,12 @@ class Item_Metadata_Entity extends Entity {
         } else {
 
             if( is_array($value) ){
-                $this->add_error('not_multiple', $field->get_name() . ' do not accept array as value');
+				$this->add_error('not_multiple', $field->get_name() . ' do not accept array as value');
                 return false;
             }
             
             if ($this->is_collection_key()) {
-                $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+                $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
                 
                 $test = $Tainacan_Items->fetch([
                     'meta_query' => [

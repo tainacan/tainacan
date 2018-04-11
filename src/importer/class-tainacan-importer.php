@@ -343,9 +343,9 @@ abstract class Importer {
      * @return Tainacan\Entities\Item Item inserted
      */
     public function insert( $index, $processed_item ){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
         $isUpdate = ( is_array( $this->processed_items ) && isset( $this->processed_items[ $index ] ) )
             ? $this->processed_items[ $index ] : 0;
@@ -424,15 +424,15 @@ abstract class Importer {
 			$new_collection = new Entities\Collection();
 			$new_collection->set_name('New Imported Collection');
 			$new_collection->set_status('publish');
-			$new_collection->validade();
-			$new_collection = \Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
+            $new_collection->validate();
+			$new_collection = Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
 			
 			$this->set_collection($new_collection);
 			
 			if (!method_exists($this, 'create_fields_and_mapping')) {
 				throw new Exception('Importers with import_structure_and_mapping true must implement create_fields_and_mapping method');
 			}
-			
+
 			$this->create_fields_and_mapping();
 			
 		}

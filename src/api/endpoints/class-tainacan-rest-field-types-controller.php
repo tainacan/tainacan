@@ -80,7 +80,7 @@ class TAINACAN_REST_Field_Types_Controller extends TAINACAN_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
 		$field_types = $Tainacan_Fields->fetch_field_types('NAME');
 

@@ -18,9 +18,9 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 	
     function test_compound_field_types() {
 
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -117,9 +117,9 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 	
 	function test_multiple_compound_field_types() {
 
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::getInstance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -247,5 +247,123 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 		$this->assertEquals( 'Yellow', $compoundValue[1][$field_child2->get_id()]->get_value() , 'Second element of value should have "Blue" value' );
 		
     }
+	
+	function test_validations_category_in_multiple() {
+		
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+        $field = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'meta',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Compound',
+				'status'	 => 'publish',
+				'multiple'   => 'yes'
+	        ),
+	        true
+        );
+		
+		$newField = new \Tainacan\Entities\Field();
+		$newField->set_name('test_multiple');
+		$newField->set_field_type('Tainacan\Field_Types\Category');
+		$newField->set_parent($field->get_id());
+		
+		$this->assertFalse($newField->validate(), 'You cant add a category field inside a multiple compound field');
+		
+		$newField->set_field_type('Tainacan\Field_Types\Text');
+		$this->assertTrue($newField->validate());
+		
+		
+	}
+	
+	function test_validations_category_in_multiple_2() {
+		
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+        $field = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'meta',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Compound',
+				'status'	 => 'publish',
+				'multiple'   => 'no'
+	        ),
+	        true
+        );
+		
+		$newField = new \Tainacan\Entities\Field();
+		$newField->set_name('test_multiple');
+		$newField->set_field_type('Tainacan\Field_Types\Category');
+		$newField->set_parent($field->get_id());
+		
+		$this->assertTrue($newField->validate(), 'You can add a category field inside a not multiple compound field');
+		$newField = $Tainacan_Fields->insert($newField);
+		
+		$field->set_multiple('yes');
+		
+		$this->assertFalse($field->validate(), 'You cant turn a compound field into multiple when there is a category field inside it');
+		
+		
+	}
+	
+	function test_validations_multiple_fields() {
+		
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+		
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+		);
+		
+        $field = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'meta',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Compound',
+				'status'	 => 'publish',
+				'multiple'   => 'no'
+	        ),
+	        true
+        );
+		
+		$newField = new \Tainacan\Entities\Field();
+		$newField->set_name('test_multiple');
+		$newField->set_multiple('yes');
+		$newField->set_field_type('Tainacan\Field_Types\Text');
+		$newField->set_parent($field->get_id());
+		
+		$this->assertFalse($newField->validate(), 'You cant add a multiple field inside a compound field');
+		
+		$newField->set_multiple('no');
+		
+		$this->assertTrue($newField->validate());
+		
+		
+	}
 	
 }
