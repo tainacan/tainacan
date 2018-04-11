@@ -203,6 +203,17 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		
 		extract($this->create_meta_requirements());
 		
+		$item__metadata_json = json_encode([
+			'values'       => 'TestValues_exposers',
+		]);
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $field->get_id() );
+		$request->set_body($item__metadata_json);
+		
+		$response = $this->server->dispatch($request);
+		
+		$this->assertEquals(200, $response->get_status());
+		
 		$item_exposer_json = json_encode([
 			'exposer-type'       => 'Csv',
 		]);
@@ -210,9 +221,24 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$request->set_body($item_exposer_json);
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
-		//$data = $response->get_data();
+		$data = $response->get_data();
+		file_put_contents('/tmp/1.csv', $data);
 		
-		//var_dump($data);
+		$lines = explode(PHP_EOL, $data);
+		$csv_lines = [];
+		foreach ($lines as $line) {
+			$csv_lines[] = str_getcsv($line, ';');
+		}
+		array_walk($csv_lines, function(&$a) use ($csv_lines) {
+			if(count($a) == count($csv_lines)) {
+				$a = array_combine($csv_lines[0], $a);
+			}
+		});
+		array_shift($csv_lines);
+		
+		$this->assertEquals('adasdasdsa', $csv_lines[0]['Description']);
+		$this->assertEquals('TestValues_exposers', $csv_lines[0]['teste_Expose']);
+		$this->assertEquals('item_teste_Expose', $csv_lines[0]['Title']);
 	}
 	
 }
