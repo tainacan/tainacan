@@ -9,7 +9,7 @@ describe('Selectbox field test', function() {
 
   it('create collection for create fields', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+    cy.location('hash').should('eq', '#/collections')
     cy.get('#button-collection-creation').click()
     cy.get('#tainacan-text-name').type('Selectbox Fields')
     cy.get('#tainacan-text-description').type('Description Selectbox Fields')
@@ -22,7 +22,7 @@ describe('Selectbox field test', function() {
   context('CRUD selectbox field', function(){
     it('create reviewed field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -38,7 +38,7 @@ describe('Selectbox field test', function() {
 
     it('check create reviewed field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -48,7 +48,7 @@ describe('Selectbox field test', function() {
 
     it('create edited field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -64,7 +64,7 @@ describe('Selectbox field test', function() {
 
     it('check create edited field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -74,7 +74,7 @@ describe('Selectbox field test', function() {
 
     it('edit edited field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -90,7 +90,7 @@ describe('Selectbox field test', function() {
 
     it('create itsCool field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -106,7 +106,7 @@ describe('Selectbox field test', function() {
 
     it('delete itsCool field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -118,7 +118,7 @@ describe('Selectbox field test', function() {
 
     it('check not contain itsCool field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -130,7 +130,7 @@ describe('Selectbox field test', function() {
   context('Diseble selectbox field', function(){
     it('create verified field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -146,7 +146,7 @@ describe('Selectbox field test', function() {
 
     it('disebled verified field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -157,7 +157,7 @@ describe('Selectbox field test', function() {
 
     it('check disebled verified field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -169,7 +169,7 @@ describe('Selectbox field test', function() {
   context('Check required fields', function(){
     it('create blank field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -190,7 +190,7 @@ describe('Selectbox field test', function() {
 
     it('check not contain blank field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -202,7 +202,7 @@ describe('Selectbox field test', function() {
   context('Create selectbox field private', function(){
     it('create selectbox private field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -210,30 +210,29 @@ describe('Selectbox field test', function() {
       cy.get('.field > :nth-child(2) > :nth-child(5)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}Selectbox private')
       cy.get('.textarea').type('description private')
-      cy.get('#tainacan-select-status-publish > .check').click()
-      //cy.get('#tainacan-select-status-private > .check').click()
+      cy.get('#tainacan-select-status-private > .check').click()
       cy.get('.autocomplete > .control > .input').type('yes{enter}no')
       cy.get(':nth-child(2) > .button').click()
       cy.get('.active-fields-area >').should('contain', 'Selectbox private')
     })
 
-    // it('check create selectbox private field', function(){
-    //   cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    //   cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
-    //   cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
-    //   cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
-    //   cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
-    //   cy.get('h1').should('contain', 'Collection Fields Edition Page')
-    //   cy.get('.active-fields-area > :nth-child(6) > .handle > .field-name').should('contain', 'Selectbox private')
-    //   cy.get(':nth-child(6) > .handle > .controls > :nth-child(2) > .icon > .mdi').click()
-    //   cy.get('#tainacan-select-status-private > .check').should('be.selected')
-    // })
+    it('check create selectbox private field', function(){
+      cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
+      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
+      cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
+      cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
+      cy.get('h1').should('contain', 'Collection Fields Edition Page')
+      cy.get('.active-fields-area > :nth-child(6) > .handle > .field-name').should('contain', 'Selectbox private')
+      cy.get(':nth-child(6) > .handle > .controls > :nth-child(2) > .icon > .mdi').click()
+      cy.get('#tainacan-select-status-private > .check').should('be.selected')
+    })
   })
 
   context('"Not saved" label vs. "cancel button"', function(){
     it('create likes field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -249,7 +248,7 @@ describe('Selectbox field test', function() {
 
     it('check that ‘Not Saved’ label wasn’t inserted, and changes were lost', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -267,7 +266,7 @@ describe('Selectbox field test', function() {
 
     it('check if the message “Not Saved” appeared next to the field name', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -295,7 +294,7 @@ describe('Selectbox field test', function() {
   context('create selectbox-types fields tests', function(){
     it('canceled create selectbox field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -311,7 +310,7 @@ describe('Selectbox field test', function() {
 
     it('create selectbox-type field public required', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -328,7 +327,7 @@ describe('Selectbox field test', function() {
 
     it('create selectbox-type field public multiple values', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -345,7 +344,7 @@ describe('Selectbox field test', function() {
 
     it('create selectbox-type field public unique values', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -364,7 +363,7 @@ describe('Selectbox field test', function() {
   context('Leave page without saving field editions', function(){
     it('Leave page without saving field editions', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -386,7 +385,7 @@ describe('Selectbox field test', function() {
   context('Field loading for paging and persistence testing', function(){
     it('create selectbox fields', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -455,7 +454,7 @@ describe('Selectbox field test', function() {
 
     it('check if fields are updated to page', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()

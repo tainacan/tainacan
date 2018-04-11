@@ -7,37 +7,19 @@ describe('Item tests', function () {
     cy.clearDB()
   })
 
-  Cypress.Commands.add('createCollection', (name) => {
+  it('create collection for crud items', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
     cy.location('hash').should('eq', '#/collections')
     cy.get('#button-collection-creation').click()
     cy.location('hash').should('eq', '#/collections/new')
-    cy.get('#tainacan-text-name').type(name)
-    cy.get('#tainacan-text-description').type('description'+name)
+    cy.get('#tainacan-text-name').type('Book Items')
+    cy.get('#tainacan-text-description').type('description book items')
     cy.get('#tainacan-select-status').select('Publish').should('have.value', 'publish')
     cy.get('#button-submit-collection-creation').click()
     cy.get('.breadcrumbs > :nth-child(2) > .router-link-active').click()
     cy.location('hash').should('eq', '#/collections')
-    cy.get('.b-table').should('contain', name)
+    cy.get('.b-table').should('contain', 'Book Items')
   })
-
-  it('create collection', function(){
-    cy.createCollection('Book itens')
-  })
-
-  // it('create collection for crud items', function(){
-  //   cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-  //   cy.location('hash').should('eq', '#/collections')
-  //   cy.get('#button-collection-creation').click()
-  //   cy.location('hash').should('eq', '#/collections/new')
-  //   cy.get('#tainacan-text-name').type('Book Items')
-  //   cy.get('#tainacan-text-description').type('description book items')
-  //   cy.get('#tainacan-select-status').select('Publish').should('have.value', 'publish')
-  //   cy.get('#button-submit-collection-creation').click()
-  //   cy.get('.breadcrumbs > :nth-child(2) > .router-link-active').click()
-  //   cy.location('hash').should('eq', '#/collections')
-  //   cy.get('.b-table').should('contain', 'Book Items')
-  // })
 
   context('CRUD items', function(){
     it('canceled create item', function(){
