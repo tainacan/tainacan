@@ -56,10 +56,9 @@
                 this.isLoading = true;
                 let instance = this;
 
-                if ( this.type === 'Tainacan\\Field_types\\Relationship' ) {
-
-                    let collectionTarget = ( this.filter && this.filter.field.field_type_options.collection_id ) ?
-                        this.filter.field.field_type_options.collection_id : this.collection_id;
+                if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
+                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ?
+                        this.field_object.field_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget );
 
                 } else {
