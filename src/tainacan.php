@@ -37,7 +37,7 @@ $Tainacan_Admin = \Tainacan\Admin::get_instance();
 
 require_once('theme-helper/class-tainacan-theme-helper.php');
 require_once('theme-helper/template-tags.php');
-$Tainacan_Admin = \Tainacan\Theme_Helper::getInstance();
+$Tainacan_Admin = \Tainacan\Theme_Helper::get_instance();
 
 function tainacan_load_plugin_textdomain() {
     load_plugin_textdomain( 'tainacan', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );

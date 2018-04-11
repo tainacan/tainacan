@@ -83,8 +83,8 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 	        true
         );
 		
-		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
-		$Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 
 		$terms = $Tainacan_Terms->fetch(['hide_empty' => false], $taxonomy->get_id());
 		

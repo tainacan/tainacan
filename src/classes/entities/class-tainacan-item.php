@@ -448,8 +448,8 @@ class Item extends Entity {
 	 */
 	public function get_metadata_as_html($field = null, $hide_empty = true) {
 		
-		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::getInstance();
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 		
 		$return = '';
 		

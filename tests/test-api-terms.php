@@ -194,8 +194,8 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 	        true
         );
 		
-		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::getInstance();
-		$Tainacan_Terms = \Tainacan\Repositories\Terms::getInstance();
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 		
 		$new_attributes = [
 			'hideempty' => false,

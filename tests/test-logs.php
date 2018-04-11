@@ -26,8 +26,8 @@ class Logs extends TAINACAN_UnitTestCase {
 	 * Teste da insercao de um log simples apenas se criar o dado bruto
 	 */
 	function test_add() {
-		$Tainacan_Logs = \Tainacan\Repositories\Logs::getInstance();
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::getInstance();
+		$Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
         $log = $this->tainacan_entity_factory->create_entity(
         	'log',
@@ -135,8 +135,8 @@ class Logs extends TAINACAN_UnitTestCase {
     	$Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
     	$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 	public function test_log_diff() {
-		$Tainacan_Logs    = \Tainacan\Repositories\Logs::getInstance();
-		$Tainacan_Filters = \Tainacan\Repositories\Filters::getInstance();
+		$Tainacan_Logs    = \Tainacan\Repositories\Logs::get_instance();
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
     	$filter = $this->tainacan_entity_factory->create_entity(
     		'filter',

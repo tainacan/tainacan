@@ -8,7 +8,7 @@ class Theme_Helper {
 
 	private static $instance = null;
 
-	public static function getInstance() {
+	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self();
 		}

@@ -250,7 +250,7 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 	
 	function test_validations_category_in_multiple() {
 		
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 		
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -288,7 +288,7 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 	
 	function test_validations_category_in_multiple_2() {
 		
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 		
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -328,7 +328,7 @@ class CompoundFieldTypes extends TAINACAN_UnitTestCase {
 	
 	function test_validations_multiple_fields() {
 		
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::getInstance();
+		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 		
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
