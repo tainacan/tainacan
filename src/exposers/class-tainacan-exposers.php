@@ -1,6 +1,8 @@
 <?php
 namespace Tainacan\Exposers;
 
+use Tainacan\Exposers\Mappers\Mapper;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
@@ -93,7 +95,7 @@ class Exposers {
 	/**
 	 * Return Type with request has type, false otherwise
 	 * @param \WP_REST_Request $request
-	 * @return Types\Type|boolean
+	 * @return Types\Type|boolean false
 	 */
 	public function hasType($request) {
 		$body = json_decode( $request->get_body(), true );
@@ -107,22 +109,30 @@ class Exposers {
 		return false;
 	}
 	
+	/**
+	 * Check if there is a mapper
+	 * @param \WP_REST_Request $request
+	 * @return Mappers/Mapper|boolean false
+	 */
 	public function hasMapper($request) {
 		$body = json_decode( $request->get_body(), true );
 		$class_prefix = 'Tainacan\Exposers\Mappers\\';
 		$type = $this->hasType($request);
-		if(
+		if( // There are a defined mapper
 			is_array($body) && array_key_exists('exposer-map', $body) &&
 			in_array($this->check_class_name($body['exposer-map'], false, $class_prefix), $this->mappers)
 		) {
-			if($type === false || empty($type->mappers) || in_array($body['exposer-map'], $type->mappers) ) {
+			if(
+				$type === false || // do not have a exposer type
+				$type->mappers === true || // the type accept all mappers
+				( is_array($type->mappers) && in_array($body['exposer-map'], $type->mappers) ) ) { // the current mapper is accepted by type
 				$mapper = $this->check_class_name($body['exposer-map'], true, $class_prefix);
 				return new $mapper;
-			} elseif( is_array($type->mappers) && count($type->mappers) > 0 ){
-				$mapper = $this->check_class_name($type->mappers[0], true, $class_prefix);
-				return new $mapper;
-			}
+			} 
+		} elseif( is_array($type->mappers) && count($type->mappers) > 0 ) { //there are no defined mapper, let use the first one o list if has a list
+			$mapper = $this->check_class_name($type->mappers[0], true, $class_prefix);
+			return new $mapper;
 		}
-		return false;
+		return false; // No mapper need, using Tainacan defautls
 	}
 }
