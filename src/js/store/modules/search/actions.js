@@ -35,6 +35,7 @@ export const setItemsPerPage = ({ commit }, page ) => {
 
 // Sorting queries
 export const setOrderBy = ({ commit }, orderBy ) => {
+
     // Primitive Types: string, date, item, term, compound, float
     if (orderBy.field_type_object.primitive_type == 'float' || orderBy.field_type_object.primitive_type == 'int') {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );

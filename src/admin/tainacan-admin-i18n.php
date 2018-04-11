@@ -154,6 +154,7 @@ return [
 	'info_no_collection_created'               => __( 'No collection was created in this repository.', 'tainacan' ),
 	'info_no_category_created'                 => __( 'No category was created in this repository.', 'tainacan' ),
 	'info_no_item_created'                     => __( 'No item was created in this collection.', 'tainacan' ),
+	'info_no_item_found'                     => __( 'No item was found here with these filters.', 'tainacan' ),
 	'info_error_deleting_collection'           => __( 'Error on deleting collection.', 'tainacan' ),
 	'info_error_deleting_category'             => __( 'Error on deleting category', 'tainacan' ),
 	'info_collection_deleted'                  => __( 'Collection deleted.', 'tainacan' ),

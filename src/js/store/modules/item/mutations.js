@@ -4,6 +4,10 @@ export const setItem = ( state, item ) => {
     state.item = item;
 }
 
+export const cleanItem = ( state ) => {
+    state.item = [];
+}
+
 export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
@@ -18,8 +22,20 @@ export const setAttachments = ( state, attachments ) => {
     state.attachments = attachments;
 }
 
+export const cleanAttachment = (state) => {
+    state.attachment = {};
+}
+
+export const cleanAttachments = (state) => {
+    state.attachments = [];
+}
+
 export const setItemTitle = ( state, itemTitle ) => {
     state.itemTitle = itemTitle;
+}
+
+export const cleanItemTitle = ( state ) => {
+    state.itemTitle = '';
 }
 
 export const setFields = ( state, fields) => {

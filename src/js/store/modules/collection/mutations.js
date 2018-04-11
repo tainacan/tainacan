@@ -4,6 +4,9 @@ export const setItems = ( state, items ) => {
     state.items = items;
 }
 
+export const cleanItems = (state) => {
+    state.items = [];
+}
 
 export const deleteItem = ( state, item ) => {
     let index = state.items.findIndex(deletedItem => deletedItem.id === item.id);
@@ -23,16 +26,24 @@ export const setCollections = (state, collections) => {
     state.collections = collections;
 }
 
-export const setFields = (state, fields) => {
-    state.fields = fields;
+export const cleanCollections = (state) => {
+    state.collections = [];
 }
 
 export const setCollection = (state, collection) => {
     state.collection = collection;
 }
 
+export const cleanCollection = (state) => {
+    state.collection = [];
+}
+
 export const setCollectionName = (state, collectionName) => {
     state.collectionName = collectionName;
+}
+
+export const cleanCollectionName = (state) => {
+    state.collectionName = '';
 }
 
 export const setSingleAttachment = ( state, attachment ) => {
@@ -47,4 +58,8 @@ export const setSingleAttachment = ( state, attachment ) => {
 
 export const setAttachments = ( state, attachments ) => {
     state.attachments = attachments;
+}
+
+export const cleanAttachments = (state) => {
+    state.attachments = [];
 }

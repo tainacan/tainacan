@@ -27,7 +27,7 @@
                         @input="onChangeOrderBy($event)" 
                         :placeholder="$i18n.get('label_sorting')">
                     <option
-                        v-for="(field, index) in tableFields"
+                        v-for="field in tableFields"
                         v-if="
                             field.id != undefined && 
                             field.field_type_object.related_mapped_prop != 'description' &&
@@ -35,7 +35,7 @@
                             field.field_type_object.primitive_type != 'item' &&
                             field.field_type_object.primitive_type != 'compound'"
                         :value="field"
-                        :key="index">
+                        :key="field.id">
                         {{ field.name }}
                     </option>
                 </b-select>
@@ -51,7 +51,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { eventSearchBus } from '../../../js/event-search-bus';
+import { eventBusSearch } from '../../../js/event-bus-search';
 
 export default {
     name: 'SearchControl',
@@ -63,7 +63,7 @@ export default {
     props: {
         collectionId: Number,
         isRepositoryLevel: false,
-        tableFields: Array   
+        tableFields: Array  
     },
     computed: {
         orderBy() {
@@ -78,11 +78,11 @@ export default {
             'getOrderBy',
             'getOrder'
         ]),
-        onChangeOrderBy(field) {  
-            eventSearchBus.setOrderBy(field);
+        onChangeOrderBy(field) {
+            eventBusSearch.setOrderBy(field);
         },
         onChangeOrder() {
-            this.order == 'DESC' ? eventSearchBus.setOrder('ASC') : eventSearchBus.setOrder('DESC');
+            this.order == 'DESC' ? eventBusSearch.setOrder('ASC') : eventBusSearch.setOrder('DESC');
         }
     }
 }
