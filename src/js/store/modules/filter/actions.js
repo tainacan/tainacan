@@ -1,13 +1,17 @@
 import axios from '../../../axios/axios';
 
 // FILTERS --------------------------------------------------------
-export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel}) => {
+export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/filters?context=edit';
+            endpoint = '/collection/' + collectionId + '/filters/';
         else
-            endpoint = '/filters?context=edit';
+            endpoint = '/filters/';
+
+        endpoint += '?nopaging=1'
+        if (isContextEdit)
+            endpoint += '&context=edit';
 
         axios.tainacan.get(endpoint)
         .then((res) => {

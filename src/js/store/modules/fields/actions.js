@@ -9,7 +9,7 @@ export const fetchFields = ({ commit }, {collectionId, isRepositoryLevel, isCont
         else
             endpoint = '/fields/';
 
-        //endpoint += '?perpage=-1'
+        endpoint += '?nopaging=1'
         if (isContextEdit)
             endpoint += '&context=edit';
 

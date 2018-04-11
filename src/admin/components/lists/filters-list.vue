@@ -71,7 +71,7 @@
                                 </a>
                             </span>
                         </div>
-                        <div v-if="choosenField.name == filter.name && openedFilterId == ''">
+                        <div v-if="choosenField.id == filter.id && openedFilterId == ''">
                             <form class="tainacan-form">
                                 <b-field :label="$i18n.get('label_filter_type')">
                                     <b-select
@@ -146,7 +146,7 @@
                     </div>
                     <div class="control">
                         <router-link
-                                :to="$routerHelper.getNewFieldPath()"
+                                :to="isRepositoryLevel ? $routerHelper.getNewFieldPath() : $routerHelper.getNewCollectionFieldPath(collectionId)"
                                 tag="button" 
                                 class="button is-secondary is-centered">
                             {{ $i18n.getFrom('fields', 'new_item') }}</router-link>
@@ -416,7 +416,7 @@ export default {
                 this.isLoadingFilterTypes = false;
             });        
 
-        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
+        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
             .then(() => {
                 this.isLoadingFilters = false;
                 // Needs to be done after activeFilterList exists to compare and remove chosen fields.

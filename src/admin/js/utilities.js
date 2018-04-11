@@ -212,6 +212,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewItemPath(collectionId) {
             return '/collections/' + collectionId + '/items/new';
         },
+        getNewCollectionFieldPath(collectionId) {
+            return '/collections/' + collectionId + '/fields/';
+        },
         getNewFieldPath() {
             return '/fields';
         },

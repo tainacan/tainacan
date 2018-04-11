@@ -19,7 +19,7 @@
         },
         created(){
             this.collectionId = ( this.$route.params.collectionId ) ?  this.$route.params.collectionId : null;
-            this.fetchFilters( { collectionId: this.collectionId, isRepositoryLevel: !( this.collectionId )  })
+            this.fetchFilters( { collectionId: this.collectionId, isRepositoryLevel: !( this.collectionId ), isContextEdit: true })
                 .then( res => {
                     if( res && res.length > 0){
                         this.filters = res;
