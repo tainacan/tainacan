@@ -3,6 +3,9 @@
 namespace Tainacan\Exposers\Types;
 
 class Csv extends Type {
+	
+	public $mappers = ['value']; 
+	
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -13,9 +16,13 @@ class Csv extends Type {
 			'Content-Type: text/csv; charset=' . get_option( 'blog_charset' ),
 			'Content-disposition: attachment;filename=tainacan.csv'] // TODO filter/optional 
 		);
-		$csv = '';
-		$csv = $this->array_to_csv($response->get_data(), apply_filters('tainacan-exposer-csv', $csv));
-		$response->set_data($csv);
+		ob_start();
+		$csv = fopen('php://output', 'w');
+		$this->array_to_csv($response->get_data(), apply_filters('tainacan-exposer-csv', $csv));
+		$ret_csv = ob_get_clean();
+		ob_end_clean();
+		fclose($csv);
+		$response->set_data($ret_csv);
 		return $response;
 	}
 	
@@ -26,16 +33,9 @@ class Csv extends Type {
 	 * @return string
 	 */
 	protected function array_to_csv( $data, $csv ) {
-		foreach( $data as $key => $value ) {
-			if( is_numeric($key) ){
-				//$key = apply_filters('tainacan-exposer-numeric-item-prefix', __('item', 'tainacan').'-', get_class($this)).$key; //dealing with <0/>..<n/> issues
-			}
-			if( is_array($value) ) {
-				//$csv .= $key.": ".$this->array_to_csv($value, '['.$csv.']\n');
-			} else {
-				//$csv .= $key.": ".$value .'\n';
-			}
-		}
+		$values = [];
+		fputcsv($csv, array_keys($data), apply_filters('tainacan-exposer-csv-delimiter', ';') );
+		fputcsv($csv, array_values($data), apply_filters('tainacan-exposer-csv-delimiter', ';') );
 		return $csv;
 	}
 }
