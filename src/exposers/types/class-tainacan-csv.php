@@ -16,11 +16,11 @@ class Csv extends Type {
 			'Content-Type: text/csv; charset=' . get_option( 'blog_charset' ),
 			'Content-disposition: attachment;filename=tainacan.csv'] // TODO filter/optional 
 		);
-		ob_start();
-		$csv = fopen('php://output', 'w');
+		
+		$csv = fopen('php://memory', 'w');
 		$this->array_to_csv($response->get_data(), apply_filters('tainacan-exposer-csv', $csv));
-		$ret_csv = ob_get_clean();
-		ob_end_clean();
+		rewind($csv);
+		$ret_csv = stream_get_contents($csv);
 		fclose($csv);
 		$response->set_data($ret_csv);
 		return $response;
