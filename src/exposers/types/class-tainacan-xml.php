@@ -10,9 +10,24 @@ class Xml extends Type {
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		$response->set_headers( ['Content-Type: application/xml; charset=' . get_option( 'blog_charset' )] );
-		$xml = new \SimpleXMLElement(apply_filters('tainacan-exposer-head', '<?xml version="1.0"?><data></data>'));
-		$namespace = apply_filters('tainacan-xml-namespace', null);
-		$this->array_to_xml($response->get_data(), apply_filters('tainacan-xml-root', $xml), $namespace);
+		$mapper = \Tainacan\Exposers\Exposers::request_has_mapper($request);
+		$xml = new \SimpleXMLElement( '<?xml version="1.0"?><data></data>' );
+		$namespace = null;
+		$xml_root = $xml;
+		
+		if($mapper) {
+			if(!empty($mapper->header)) {
+				$xml = new \SimpleXMLElement( $mapper->header );
+			}
+			if(property_exists($mapper, 'XML_namespace') && !empty($mapper->XML_namespace)) {
+				$namespace = $mapper->XML_namespace;
+			}
+			if(property_exists($mapper, 'XML_append_root') && !empty($mapper->XML_append_root)) {
+				$xml_root = $xml->addChild($mapper->XML_append_root);
+			}
+		}
+		
+		$this->array_to_xml($response->get_data(), $xml_root, $namespace);
 		$response->set_data($xml->asXml());
 		return $response;
 	}

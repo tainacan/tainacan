@@ -4,7 +4,7 @@ namespace Tainacan\Exposers\Types;
 
 class Txt extends Type {
 	
-	public $mappers = ['value'];
+	public $mappers = ['Value'];
 	
 	/**
 	 * 

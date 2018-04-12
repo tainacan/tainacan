@@ -58,6 +58,9 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		return ['collection' => $collection, 'item' => $item, 'field' => $field];
 	}
 	
+	/**
+	 * @group xml_exposer
+	 */
 	public function test_xml_exposer() {
 		global $Tainacan_Fields, $Tainacan_Item_Metadata;
 		
@@ -99,7 +102,6 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
-		
 		$this->assertEquals('TestValues_exposers', $data['dc:language']);
 		
 		$item_exposer_json = json_encode([
@@ -155,14 +157,13 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		
 		$item_exposer_json = json_encode([
 			'exposer-type'       => 'Html',
-			'exposer-map'       => 'value'
+			'exposer-map'       => 'Value'
 		]);
 		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
 		$request->set_body($item_exposer_json);
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
-		
 		// Parse HTML reponse
 		$doc = new \DOMDocument();
 		$this->assertTrue($doc->loadHTML($data));

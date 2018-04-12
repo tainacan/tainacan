@@ -12,6 +12,16 @@ class Exposers {
 	
 	private $types = [];
 	private $mappers = [];
+	private static $instance = null;
+	const MAPPER_CLASS_PREFIX = 'Tainacan\Exposers\Mappers\\';
+	
+	public static function get_instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new self();
+		}
+		
+		return self::$instance;
+	}
 	
 	public function __construct() {
 		$this->register_exposer_type('Tainacan\Exposers\Types\Xml');
@@ -59,17 +69,30 @@ class Exposers {
 		}
 	}
 	
-	protected function check_class_name($class_name, $root = false, $prefix = 'Tainacan\Exposers\Types\\') {
+	/**
+	 * Return namespaced class name 
+	 * @param string $class_name
+	 * @param boolean $root
+	 * @param string $prefix
+	 * @return string
+	 */
+	public function check_class_name($class_name, $root = false, $prefix = 'Tainacan\Exposers\Types\\') {
 		$class = $prefix.sanitize_text_field($class_name);
 		$class = str_replace(['-', ' '], ['_', '_'], $class);
 		
 		return ($root ? '\\' : '').$class;
 	}
 	
+	/**
+	 * Check if rest response need mapper
+	 * @param array $item_arr
+	 * @param \WP_REST_Request $request
+	 * @return array
+	 */
 	public function rest_response($item_arr, $request) {
 		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
-			if($exposer = $this->hasMapper($request)) {
-				return $exposer->rest_response($item_arr, $request);
+			if($exposer = $this->request_has_mapper($request)) {
+				return $this->map($item_arr, $exposer, $request); //TODO request -> args
 			}
 		}
 		return $item_arr;
@@ -77,6 +100,36 @@ class Exposers {
 	
 	/**
 	 * 
+	 * @param array $item_arr
+	 * @param Mappers\Mapper $mapper
+	 * @param \WP_REST_Request $resquest
+	 * @return array
+	 */
+	protected function map($item_arr, $mapper, $resquest) {
+		$ret = $item_arr;
+		if(array_key_exists('field', $item_arr)){ // getting a unique field
+			$field_mapping = $item_arr['field']['exposer_mapping'];
+			if(array_key_exists($mapper->slug, $field_mapping)) {
+				$ret = [$mapper->prefix.$field_mapping[$mapper->slug]['name'].$mapper->sufix => $item_arr['value']];
+			} else if($mapper->slug == 'value') {
+				$ret = [$item_field['field']['name'] => $item_arr['value']];
+			}
+		} else { // array of elements
+			$ret = [];
+			foreach ($item_arr as $item_field) {
+				$field_mapping = $item_field['field']['exposer_mapping'];
+				if(array_key_exists($mapper->slug, $field_mapping)) {
+					$ret[$mapper->prefix.$field_mapping[$mapper->slug]['name'].$mapper->sufix] = $item_field['value'];
+				} else if($mapper->slug == 'value') {
+					$ret[$item_field['field']['name']] = $item_field['value'];
+				}
+			}
+		}
+		return $ret;
+	}
+	
+	/**
+	 * adapt request response to exposer type 
 	 * @param \WP_REST_Response $response
 	 * @param \WP_REST_Server $handler
 	 * @param \WP_REST_Request $request
@@ -84,7 +137,7 @@ class Exposers {
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
-			if($exposer = $this->hasType($request)) {
+			if($exposer = $this->request_has_type($request)) {
 				return $exposer->rest_request_after_callbacks($response, $handler, $request);
 			}
 		}
@@ -93,44 +146,63 @@ class Exposers {
 	}
 	
 	/**
+	 * Return if type is registered
+	 * @param string $type
+	 * @return boolean
+	 */
+	public function has_type($type) {
+		return in_array($this->check_class_name($type), $this->types);
+	}
+	/**
 	 * Return Type with request has type, false otherwise
 	 * @param \WP_REST_Request $request
 	 * @return Types\Type|boolean false
 	 */
-	public function hasType($request) {
+	public static function request_has_type($request) {
 		$body = json_decode( $request->get_body(), true );
+		$Tainacan_Exposers = self::get_instance();
 		if(
 			is_array($body) && array_key_exists('exposer-type', $body) &&
-			in_array($this->check_class_name($body['exposer-type']), $this->types)
+			$Tainacan_Exposers->has_type($body['exposer-type'])
 		) {
-			$type = $this->check_class_name($body['exposer-type'], true);
+			$type = $Tainacan_Exposers->check_class_name($body['exposer-type'], true);
 			return new $type;
 		}
 		return false;
 	}
 	
 	/**
+	 * Return if mapper is registered 
+	 * @param string $mapper
+	 * @return boolean
+	 */
+	public function has_mapper($mapper) {
+		return in_array($this->check_class_name($mapper, false, self::MAPPER_CLASS_PREFIX), $this->mappers);
+	}
+	
+	/**
 	 * Check if there is a mapper
 	 * @param \WP_REST_Request $request
-	 * @return Mappers/Mapper|boolean false
+	 * @return Mappers\Mapper|boolean false
 	 */
-	public function hasMapper($request) {
+	public static function request_has_mapper($request) {
 		$body = json_decode( $request->get_body(), true );
-		$class_prefix = 'Tainacan\Exposers\Mappers\\';
-		$type = $this->hasType($request);
+		$Tainacan_Exposers = self::get_instance();
+		
+		$type = self::request_has_type($request);
 		if( // There are a defined mapper
 			is_array($body) && array_key_exists('exposer-map', $body) &&
-			in_array($this->check_class_name($body['exposer-map'], false, $class_prefix), $this->mappers)
+			$Tainacan_Exposers->has_mapper($body['exposer-map'])
 		) {
 			if(
 				$type === false || // do not have a exposer type
 				$type->mappers === true || // the type accept all mappers
 				( is_array($type->mappers) && in_array($body['exposer-map'], $type->mappers) ) ) { // the current mapper is accepted by type
-				$mapper = $this->check_class_name($body['exposer-map'], true, $class_prefix);
+				$mapper = $Tainacan_Exposers->check_class_name($body['exposer-map'], true, self::MAPPER_CLASS_PREFIX);
 				return new $mapper;
 			} 
 		} elseif( is_array($type->mappers) && count($type->mappers) > 0 ) { //there are no defined mapper, let use the first one o list if has a list
-			$mapper = $this->check_class_name($type->mappers[0], true, $class_prefix);
+			$mapper = $Tainacan_Exposers->check_class_name($type->mappers[0], true, self::MAPPER_CLASS_PREFIX);
 			return new $mapper;
 		}
 		return false; // No mapper need, using Tainacan defautls

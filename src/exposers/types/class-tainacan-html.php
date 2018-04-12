@@ -4,7 +4,7 @@ namespace Tainacan\Exposers\Types;
 
 class Html extends Type {
 	
-	public $mappers = ['value']; 
+	public $mappers = ['Value']; 
 	
 	/**
 	 * 
