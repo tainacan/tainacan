@@ -29,11 +29,12 @@
                     <option
                         v-for="field in tableFields"
                         v-if="
+                            field.id == 'date' || (
                             field.id != undefined && 
                             field.field_type_object.related_mapped_prop != 'description' &&
                             field.field_type_object.primitive_type != 'term' &&
                             field.field_type_object.primitive_type != 'item' &&
-                            field.field_type_object.primitive_type != 'compound'"
+                            field.field_type_object.primitive_type != 'compound')"
                         :value="field"
                         :key="field.id">
                         {{ field.name }}

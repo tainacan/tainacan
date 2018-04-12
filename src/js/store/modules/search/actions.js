@@ -37,7 +37,9 @@ export const setItemsPerPage = ({ commit }, page ) => {
 export const setOrderBy = ({ commit }, orderBy ) => {
 
     // Primitive Types: string, date, item, term, compound, float
-    if (orderBy.field_type_object.primitive_type == 'float' || orderBy.field_type_object.primitive_type == 'int') {
+    if (orderBy.id == 'date') {
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'date' } );
+    } else if (orderBy.field_type_object.primitive_type == 'float' || orderBy.field_type_object.primitive_type == 'int') {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value_num' } );
     } else if (orderBy.field_type_object.primitive_type == 'date') {

@@ -28,22 +28,33 @@
                         :custom-key="column.slug"
                         :label="column.name"
                         :visible="column.visible"
-                        :width="column.field == 'row_actions' ? 78 : column.field == 'featured_image' ? 55 : undefined ">
+                        :class="column.field == 'row_creation' ? 'row-creation' : ''"
+                        :width="column.field == 'row_actions' ? 78 : column.field == 'row_thumbnail' ? 55 : undefined ">
                         
                     <template>
-                        <span 
+                        <span
                                 class="clickable-row" 
                                 @click.prevent="goToItemPage(props.row.id)"
-                                v-if="column.field != 'featured_image' && column.field != 'row_actions'"
+                                v-if="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation'"
                                 v-html="renderMetadata( props.row.metadata[column.slug] )" />   
                     </template>
                     
-                    <template v-if="column.field == 'featured_image'">
+                    <template v-if="column.field == 'row_thumbnail'">
                         <router-link 
                                 tag="img" 
                                 class="table-thumb clickable-row" 
                                 :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}" 
                                 :src="props.row[column.slug]"/>
+                    </template>
+
+                    <template 
+                            class="row-creation" 
+                            v-if="column.field == 'row_creation'">
+                        <router-link 
+                                class="clickable-row" 
+                                v-html="getCreationHtml(props.row)"
+                                tag="span" 
+                                :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}"/>
                     </template>
                          
                     <template v-if="column.field == 'row_actions'">
@@ -51,15 +62,17 @@
                         <a 
                                 id="button-edit" 
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
-                                @click="goToItemEditPage(props.row.id)"><b-icon 
-                                type="is-gray" 
-                                icon="pencil"/></a>
+                                @click="goToItemEditPage(props.row.id)">
+                            <b-icon 
+                                    type="is-gray" 
+                                    icon="pencil"/></a>
                         <a 
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
-                                @click="deleteOneItem(props.row.id)"><b-icon 
-                                type="is-gray" 
-                                icon="delete"/></a>
+                                @click="deleteOneItem(props.row.id)">
+                            <b-icon 
+                                    type="is-gray" 
+                                    icon="delete"/></a>
                     </template>
                 </b-table-column>
             </template>
@@ -69,6 +82,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import moment from 'moment';
 
 export default {
     name: 'ItemsList',
@@ -163,17 +177,31 @@ export default {
                 return '';
             else
                 return metadata.value_as_html;
+        },
+        getCreationHtml(item) {
+            return this.$i18n.get('info_created_by') + item['author_name'] + '<br>' + this.$i18n.get('info_date') + moment( item['creation_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
         }
     }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    @import "../../scss/_variables.scss";
 
     .table-thumb {
         max-height: 55px !important;
+    }
+    td {
         vertical-align: middle !important;
     }
+
+    .row-creation span {
+        color: $gray-light;
+        font-size: 0.75em;
+        line-height: 1.5
+    }
+
     .clickable-row{ cursor: pointer !important }
 
 </style>
