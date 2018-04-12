@@ -226,6 +226,8 @@ class Logs extends Repository {
 	 * @param Entity $new_value
 	 * @param Entity $old_value
 	 *
+	 * @param null $is_update
+	 *
 	 * @return Entities\Log new created log
 	 */
 	public function log_inserts( $new_value, $old_value = null, $is_update = null ) {
@@ -244,6 +246,8 @@ class Logs extends Repository {
 				if($type === 'Tainacan\Field_Types\Core_Title' || $type === 'Tainacan\Field_Types\Core_Description'){
 					return;
 				}
+			} elseif (!$is_update && $new_value instanceof Entities\Item || $new_value instanceof Entities\Collection) {
+				return;
 			}
 
 			$type = get_class( $new_value );

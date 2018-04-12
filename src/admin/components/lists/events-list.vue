@@ -35,22 +35,6 @@
                     </router-link>
                 </b-table-column>
 
-                <!--<b-table-column-->
-                        <!--tabindex="0"-->
-                        <!--:aria-label="$i18n.get('label_description')"-->
-                        <!--:label="$i18n.get('label_description')"-->
-                        <!--property="description"-->
-                        <!--show-overflow-tooltip-->
-                        <!--field="props.row.description">-->
-                    <!--<router-link-->
-                            <!--class="clickable-row"-->
-                            <!--tag="span"-->
-                            <!--:event="props.row.log_diff.length > 0 ? '': 'click'"-->
-                            <!--:to="{path: $routerHelper.getEventPath(props.row.id)}">-->
-                        <!--{{ props.row.description }}-->
-                    <!--</router-link>-->
-                <!--</b-table-column>-->
-
                 <b-table-column
                         class="row-creation"
                         tabindex="0"

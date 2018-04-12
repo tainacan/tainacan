@@ -74,6 +74,9 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 					$item_array['log_diff'] = $log_diff;
 				}
 
+				unset($item_array['value']);
+				unset($item_array['old_value']);
+
 				return $item_array;
 			}
 
@@ -89,6 +92,7 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return WP_Error|WP_REST_Response
+	 * @throws Exception
 	 */
 	public function get_items( $request ) {
 		$args = $this->prepare_filters($request);

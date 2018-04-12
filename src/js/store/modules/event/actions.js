@@ -49,7 +49,15 @@ export const fetchEventTitle = ({ commit }, eventId) => {
 };
 
 export const approve = ({commit}, eventId) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(`/logs/${eventId}/approve`)
+            .then(res => {
+                let event = res.data;
 
+                this.$console.log(event);
+            })
+            .catch(error => reject(error))
+    });
 };
 
 export const notApprove = ({commit}, eventId) => {

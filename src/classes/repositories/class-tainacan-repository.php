@@ -650,7 +650,7 @@ abstract class Repository {
 							'diff_with_index' => $array_diff_with_index,
 						];
 					}
-				} else if($mapped['map'] !==  'post_modified') {
+				} elseif($mapped['map'] !==  'post_modified') {
 					$new_as_array = explode(' ', $new_entity->get_mapped_property( $prop ));
 					$old_as_array = explode(' ', $old_entity->get_mapped_property( $prop ));
 
