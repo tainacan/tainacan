@@ -11,6 +11,4 @@ abstract class Mapper {
 	public $prefix = '';
 	public $sufix = '';
 	public $header = false;
-	
-	//public abstract function rest_response($item_arr, $request);
 }
