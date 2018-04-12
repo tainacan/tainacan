@@ -46,7 +46,7 @@ class Compound extends Field_Type {
 	 * @param  Item_Metadata_Entity $item_metadata 
 	 * @return string The HTML representation of the value, each HTML representation of the value of each field composing this metadata
 	 */
-	public function get_value_as_html(\Item_Metadata_Entity $item_metadata) {
+	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		
 		$value = $item_metadata->get_value();
 		
@@ -54,28 +54,38 @@ class Compound extends Field_Type {
 		
 		if ( $item_metadata->is_multiple() ) {
 			
+			$return .= '<div class="tainacan-compund-group">';
+			
 			foreach ( $value as $compound_element ) {
+				
+				$return .= '<div class="tainacan-compund-field">';
 				
 				foreach ( $compound_element as $meta ) {
 					if ( $meta instanceof Item_Metadata_Entity ) {
 						$return .= '<h4>' . $meta->get_field()->get_name() . "</h4>\n";
-						$return .= '<p>' . $meta->__value_to_html() . '</p>';
+						$return .= '<p>' . $meta->get_value_as_html() . '</p>' . "\n\n";
 					}
 				}
 				
-				$return .= "<hr />\n\n";
+				$return .= '</div>' . "\n\n";
 				
 			}
+			
+			$return .= '</div>' . "\n\n";
 			
 			
 		} else {
 			
 			foreach ( $value as $meta ) {
 				
+				$return .= '<div class="tainacan-compund-field">';
+				
 				if ( $meta instanceof Item_Metadata_Entity ) {
 					$return .= '<h4>' . $meta->get_field()->get_name() . "</h4>\n";
-					$return .= '<p>' . $meta->__value_to_html() . '</p>';
+					$return .= '<p>' . $meta->get_value_as_html() . '</p>';
 				}
+				
+				$return .= '</div>' . "\n\n";	
 				
 			}
 			
