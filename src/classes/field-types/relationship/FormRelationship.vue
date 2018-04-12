@@ -153,7 +153,7 @@
                 this.collectionType = message;
             },
             fetchCollections(){
-                return axios.get('/collections')
+                return axios.get('/collections?nopaging=1')
                     .then(res => {
                         let collections = res.data;
                         this.loading = false;
