@@ -221,7 +221,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     .table-thumb {
-        max-height: 38px !important;
+        max-height: 55px !important;
         vertical-align: middle !important;
     }
 
