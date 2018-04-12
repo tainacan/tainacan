@@ -134,6 +134,7 @@ return [
 	'label_inherited'						   => __( 'Inherited', 'tainacan' ),
 	'label_sorting'							   => __( 'Sorting', 'tainacan' ),
 	'label_who_when'                           => __( 'Who and when', 'tainacan' ),
+	'label_event_title'                        => __( 'Event', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
@@ -153,6 +154,7 @@ return [
 	'info_no_collection_created'               => __( 'No collection was created in this repository.', 'tainacan' ),
 	'info_no_category_created'                 => __( 'No category was created in this repository.', 'tainacan' ),
 	'info_no_item_created'                     => __( 'No item was created in this collection.', 'tainacan' ),
+	'info_no_item_found'                     => __( 'No item was found here with these filters.', 'tainacan' ),
 	'info_error_deleting_collection'           => __( 'Error on deleting collection.', 'tainacan' ),
 	'info_error_deleting_category'             => __( 'Error on deleting category', 'tainacan' ),
 	'info_collection_deleted'                  => __( 'Collection deleted.', 'tainacan' ),
@@ -181,6 +183,10 @@ return [
     'info_warning_category_not_saved'          => __('Are you sure? The category is not saved, changes will be lost.', 'tainacan'),
 	'info_warning_terms_not_saved'             => __('Are you sure? There are terms not saved, changes will be lost.', 'tainacan'),
 	'info_warning_orphan_terms'                => __('Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan'),
+	'info_there_is_no_field'                   => __('There is no field here.', 'tainacan' ),
+	'info_no_events'                           => __( 'No events', 'tainacan' ),
+	'info_logs_before'                         => __( 'Before updating', 'tainacan' ),
+	'info_logs_after'                          => __( 'What was updated', 'tainacan' ),
 	'info_there_is_no_field'                   => __('There is no field here yet.', 'tainacan' ),
 	'info_there_is_no_filter'                  => __('There is no filter here yet.', 'tainacan' ),
 

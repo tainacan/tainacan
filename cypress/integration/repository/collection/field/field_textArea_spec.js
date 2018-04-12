@@ -9,7 +9,7 @@ describe('TextArea field test', function() {
 
   it('create collection for create fields', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-    cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+    cy.location('hash').should('eq', '#/collections')
     cy.get('#button-collection-creation').click()
     cy.get('#tainacan-text-name').type('TextArea Fields')
     cy.get('#tainacan-text-description').type('Description TextArea Fields')
@@ -22,7 +22,7 @@ describe('TextArea field test', function() {
   context('CRUD textArea field', function(){
     it('create model field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -37,7 +37,7 @@ describe('TextArea field test', function() {
 
     it('check create model field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -47,7 +47,7 @@ describe('TextArea field test', function() {
 
     it('create color field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -62,7 +62,7 @@ describe('TextArea field test', function() {
 
     it('check create color field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -72,7 +72,7 @@ describe('TextArea field test', function() {
 
     it('edit color field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -87,7 +87,7 @@ describe('TextArea field test', function() {
 
     it('create door field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -102,7 +102,7 @@ describe('TextArea field test', function() {
 
     it('delete door field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -114,7 +114,7 @@ describe('TextArea field test', function() {
 
     it('check not contain door field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -126,7 +126,7 @@ describe('TextArea field test', function() {
   context('Diseble textArea field', function(){
     it('create motor field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -141,7 +141,7 @@ describe('TextArea field test', function() {
 
     it('disebled motor field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -152,7 +152,7 @@ describe('TextArea field test', function() {
 
     it('check disebled motor field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -164,7 +164,7 @@ describe('TextArea field test', function() {
   context('Check required fields', function(){
     it('create blank field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -184,7 +184,7 @@ describe('TextArea field test', function() {
 
     it('check not contain blank field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -196,7 +196,7 @@ describe('TextArea field test', function() {
   context('Create textArea field private', function(){
     it('create private field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -211,7 +211,7 @@ describe('TextArea field test', function() {
 
     it('check create private field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -225,7 +225,7 @@ describe('TextArea field test', function() {
   context('"Not saved" label vs. "cancel button"', function(){
     it('create brand field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -240,7 +240,7 @@ describe('TextArea field test', function() {
 
     it('check that ‘Not Saved’ label wasn’t inserted, and changes were lost', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -257,7 +257,7 @@ describe('TextArea field test', function() {
 
     it('check if the message “Not Saved” appeared next to the field name', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -283,7 +283,7 @@ describe('TextArea field test', function() {
   context('create textArea-types fields tests', function(){
     it('canceled create textArea field', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -298,7 +298,7 @@ describe('TextArea field test', function() {
 
     it('create textArea-type field public required', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -314,7 +314,7 @@ describe('TextArea field test', function() {
 
     it('create textArea-type field public multiple values', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -330,7 +330,7 @@ describe('TextArea field test', function() {
 
     it('create textArea-type field public unique values', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -348,7 +348,7 @@ describe('TextArea field test', function() {
   context('Leave page without saving field editions', function(){
     it('Leave page without saving field editions', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -370,7 +370,7 @@ describe('TextArea field test', function() {
   context('Field loading for paging and persistence testing', function(){
     it('create textAreas fields', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()
@@ -380,55 +380,46 @@ describe('TextArea field test', function() {
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 2')
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 3')
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 4')
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 5')
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 6')
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 7')
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 8')
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 9')
       cy.get('.textarea').type('description textArea')
       cy.get('#tainacan-select-status-publish > .check').click()
       cy.get(':nth-child(2) > .button').click()
-      cy.wait(500)
       cy.get('.field > :nth-child(2) > :nth-child(2)').click()
       cy.get('#fieldEditForm > :nth-child(1) > .control > .input').type('{selectall}{del}TextArea 10')
       cy.get('.textarea').type('description textArea')
@@ -438,7 +429,7 @@ describe('TextArea field test', function() {
 
     it('check if fields are updated to page', function(){
       cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
-      cy.location().should((loc) => {expect(loc.hash).to.eq('#/collections')})
+      cy.location('hash').should('eq', '#/collections')
       cy.get('[data-label="Name"] > :nth-child(1) > .clickable-row').click()
       cy.get(':nth-child(4) > .router-link-active').should('contain', 'Items')
       cy.get('.menu > :nth-child(2) > :nth-child(5) > a').click()

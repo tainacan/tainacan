@@ -150,8 +150,8 @@ export default {
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        max-height: $header-height;
-        height: $header-height;
+        min-height: $subheader-height;
+        height: $subheader-height;
         margin-left: -$page-small-side-padding;
         margin-right: -$page-small-side-padding;
         margin-top: -$page-small-top-padding;

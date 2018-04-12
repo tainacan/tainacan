@@ -19,7 +19,7 @@ class Filter extends Entity {
         $filter_type,
         $filter_type_options;
 
-    protected static $post_type = 'tainacan-filter';
+    static $post_type = 'tainacan-filter';
     
     /**
      * {@inheritDoc}

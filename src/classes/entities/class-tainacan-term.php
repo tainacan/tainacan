@@ -17,7 +17,7 @@ class Term extends Entity {
         $taxonomy;
 
 
-	protected static $post_type = false;
+	static $post_type = false;
 	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::repository

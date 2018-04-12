@@ -34,6 +34,7 @@ export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
 };
 
 export const fetchFields = ({ commit }, item_id) => {
+    commit('cleanFields');
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/item/'+item_id+'/metadata')
         .then(res => {
@@ -53,6 +54,7 @@ export const cleanFields = ({ commit }) => {
 
 // Actions directly related to Item
 export const fetchItem = ({ commit }, item_id) => {
+    commit('cleanItem')
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/items/'+item_id)
         .then(res => {
@@ -67,6 +69,7 @@ export const fetchItem = ({ commit }, item_id) => {
 };
 
 export const fetchItemTitle = ({ commit }, id) => {
+    commit('cleanItemTitle');
     return new Promise((resolve, reject) =>{ 
         axios.tainacan.get('/items/' + id + '?fetch_only=title')
         .then(res => {
@@ -111,6 +114,7 @@ export const updateItem = ({ commit }, { item_id, status }) => {
 
 // Attachments =======================================
 export const sendAttachment = ( { commit }, { item_id, file }) => {
+    commit('cleanAttachment');
     return new Promise(( resolve, reject ) => {
         axios.wp.post('/media/?post=' + item_id, file, {
             headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
@@ -130,6 +134,7 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
 };
 
 export const fetchAttachments = ({ commit }, item_id) => {
+    commit('cleanAttachments');
     return new Promise((resolve, reject) => {
         axios.wp.get('/media/?post=' + item_id)
         .then(res => {

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ $# - lt 2 ]; then
-	echo "usage: $0 [skip-head]"
-exit 1
+if [ $# -lt 1 ]; then
+	echo -e "* Enter <OPTION> 1 to open the cypress test suite.\n* Enter <OPTION> 2 to run all headless tests on the temrinal.\n* Enter <OPTION> 3 to run a specific test class, and enter the <PATH> for the class you want from cypress/integration/repository/<PATH>."
+	exit 1
 fi
 
-SKIP_HEAD=${1-1}
+OPTION=$1
 
 source build-config.cfg
 
@@ -37,12 +37,15 @@ wp option add wpress_prefix $test_db_prefix
 cd -
 
 # cypress beginning
-if [ ${SKIP_HEAD} = "0" ]
-then
-# ./node_modules/.bin/cypress run --config baseUrl=$wp_url --record --key $cy_record_key
-  ./node_modules/.bin/cypress run  --spec cypress/integration/repository/collection/field/field_text_spec.js --config baseUrl=$wp_url
+if [ "$OPTION" == "1" ]; then
+	./node_modules/.bin/cypress open --config baseUrl=$wp_url
+elif [ "$OPTION" == "2" ]; then
+	./node_modules/.bin/cypress run --config baseUrl=$wp_url --record --key $cy_record_key
+elif [ "$OPTION" == "3" ] && [ -n "$2" ]; then
+		UNIQUE_SPEC=cypress/integration/repository/${2}
+		./node_modules/.bin/cypress run --spec $UNIQUE_SPEC --config baseUrl=$wp_url
 else
- ./node_modules/.bin/cypress open --config baseUrl=$wp_url
+	echo -e "\nThe parameters provided are invalid\n"
 fi
 
 ################## teardown cypress environment

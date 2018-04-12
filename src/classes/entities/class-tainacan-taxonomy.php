@@ -21,7 +21,7 @@ class Taxonomy extends Entity {
      * @see \Tainacan\Entities\Entity::post_type
 	 * @var string
 	 */
-    protected static $post_type = 'tainacan-taxonomy';
+    static $post_type = 'tainacan-taxonomy';
     
     /**
 	 * {@inheritDoc}
@@ -36,7 +36,14 @@ class Taxonomy extends Entity {
      * @var string
      */
     protected $repository = 'Taxonomies';
-
+	
+	/**
+	 * Prefix used to create the db_identifier
+	 *
+	 * @var string
+	 */
+	static $db_identifier_prefix = 'tnc_tax_';
+	
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_name();
 	}
@@ -138,7 +145,7 @@ class Taxonomy extends Entity {
 	 * @return bool|string
 	 */
 	function get_db_identifier() {
-        return $this->get_id() ? 'tnc_tax_' . $this->get_id() : false;
+        return $this->get_id() ? self::$db_identifier_prefix . $this->get_id() : false;
     }
 
     // Setters

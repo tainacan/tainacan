@@ -22,10 +22,8 @@ class Fields extends Repository {
 
     private static $instance = null;
 
-    public static function get_instance()
-    {
-        if(!isset(self::$instance))
-        {
+    public static function get_instance() {
+        if(!isset(self::$instance)) {
             self::$instance = new self();
         }
 
@@ -640,6 +638,7 @@ class Fields extends Repository {
 	 * @param $field_id
 	 *
 	 * @return array|null|object
+	 * @throws \Exception
 	 */
 	public function fetch_all_field_values($collection_id, $field_id){
 		global $wpdb;
@@ -759,15 +758,16 @@ class Fields extends Repository {
 		}
 		$this->current_taxonomy = $current_tax;
 	}
-	
+
 	/**
 	 * Triggers hooks when saving a Category Field, indicating wich taxonomy was added or removed from a collection.
 	 *
 	 * This is used by Taxonomies repository to update the collections_ids property of the taxonomy as
 	 * a field type category is inserted or removed
-	 * 
+	 *
 	 * @param  [type] $field [description]
-	 * @return [type]        [description]
+	 *
+	 * @return void [type]        [description]
 	 */
 	private function update_category_field($field) {
 		$field_type = $field->get_field_type_object();

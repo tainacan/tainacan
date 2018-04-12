@@ -5,4 +5,4 @@ phpunit
 
 echo "Running integration tests headless in Crypess..."
 # the value 0 leaves the cypress headless
-./run-cypress.sh 0
+./run-cypress.sh 2

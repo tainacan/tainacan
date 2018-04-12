@@ -2,7 +2,7 @@ import Vue from 'vue';
 import store from './store/store'
 import router from './../admin/js/router.js';
 
-export const eventSearchBus = new Vue({
+export const eventBusSearch = new Vue({
     router,
     store,
     data: {
@@ -80,13 +80,13 @@ export const eventSearchBus = new Vue({
         },
         loadItems() {
             this.$emit( 'isLoadingItems', true);        
-            store.dispatch('collection/fetchItems', this.$route.params.collectionId).then(() => {
+            store.dispatch('collection/fetchItems', this.$route.params.collectionId).then((res) => {
                 this.$emit( 'isLoadingItems', false);
+                this.$emit( 'hasFiltered', res.hasFiltered);
             })
             .catch(() => {
                 this.$emit( 'isLoadingItems', false);
             });
-            
         },
 
          /* Dev interfaces methods */

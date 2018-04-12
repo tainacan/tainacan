@@ -2,8 +2,18 @@ import axios from '../../../axios/axios';
 import qs from 'qs';
 
 export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
+    commit('cleanItems');
     return new Promise ((resolve, reject) => {
+        
+        // Adds queries for filtering
         let postQueries = rootGetters['search/getPostQuery'];
+        
+        // Sets a flag to inform components that an empty sate is or not due to filtering
+        let hasFiltered = false;
+        if (postQueries.metaquery != undefined && postQueries.metaquery.length > 0)
+            hasFiltered = true;
+
+        // Differentiates between repository level and collection level queries
         let endpoint = '/collection/'+collectionId+'/items?'
         if (collectionId == undefined)
             endpoint = '/items?'
@@ -13,7 +23,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
             let items = res.data;
             commit('setItems', items );
             dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
-            resolve({'items': items, 'total': res.headers['x-wp-total'] });
+            resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
         })
         .catch(error => reject(error));
     });
@@ -33,6 +43,7 @@ export const deleteItem = ({ commit }, item_id ) => {
 };
 
 export const fetchCollections = ({commit} , { page, collectionsPerPage }) => {
+    commit('cleanCollections');
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/collections?paged='+page+'&perpage='+collectionsPerPage)
         .then(res => {
@@ -48,6 +59,7 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage }) => {
 }
 
 export const fetchCollection = ({ commit }, id) => {
+    commit('cleanCollection');
     return new Promise((resolve, reject) =>{ 
         axios.tainacan.get('/collections/' + id)
         .then(res => {
@@ -62,6 +74,7 @@ export const fetchCollection = ({ commit }, id) => {
 }
 
 export const fetchCollectionName = ({ commit }, id) => {
+    commit('cleanCollectionName');
     return new Promise((resolve, reject) =>{ 
         axios.tainacan.get('/collections/' + id + '?fetch_only=name')
         .then(res => {
@@ -149,6 +162,7 @@ export const sendAttachment = ( { commit }, { collection_id, file }) => {
 };
 
 export const fetchAttachments = ({ commit }, collection_id) => {
+    commit('cleanAttachments')
     return new Promise((resolve, reject) => {
         axios.wp.get('/media/?post=' + collection_id)
         .then(res => {

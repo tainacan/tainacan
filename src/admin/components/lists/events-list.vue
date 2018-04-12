@@ -10,6 +10,7 @@
         <!--</b-field>-->
 
         <b-table
+                v-if="totalEvents > 0"
                 ref="eventsTable"
                 :data="events"
                 :checked-rows.sync="selectedEvents"
@@ -21,29 +22,16 @@
 
                 <b-table-column
                         tabindex="0"
-                        :label="$i18n.get('label_name')"
-                        :aria-label="$i18n.get('label_name')"
+                        :label="$i18n.get('label_event_title')"
+                        :aria-label="$i18n.get('label_event_title')"
                         field="props.row.title">
                     <router-link
                             class="clickable-row"
                             tag="span"
+                            router-link-active
+                            :active="props.row.log_diff.length > 0"
                             :to="{path: $routerHelper.getEventPath(props.row.id)}">
                         {{ props.row.title }}
-                    </router-link>
-                </b-table-column>
-
-                <b-table-column
-                        tabindex="0"
-                        :aria-label="$i18n.get('label_description')"
-                        :label="$i18n.get('label_description')"
-                        property="description"
-                        show-overflow-tooltip
-                        field="props.row.description">
-                    <router-link
-                            class="clickable-row"
-                            tag="span"
-                            :to="{path: $routerHelper.getEventPath(props.row.id)}">
-                        {{ props.row.description }}
                     </router-link>
                 </b-table-column>
 
@@ -59,6 +47,7 @@
                             class="clickable-row"
                             v-html="props.row.by"
                             tag="span"
+                            :active="props.row.log_diff.length > 0"
                             :to="{path: $routerHelper.getEventPath(props.row.id)}"/>
                 </b-table-column>
 
@@ -78,18 +67,27 @@
 
                     <a
                             id="button-not-approve"
+                            class="delete"
                             :aria-label="$i18n.get('not_approve_item')"
-                            @click.prevent.stop="notApprove(props.row.id)">
-                        <b-icon
-                            type="is-danger"
-                            icon="close-circle-outline" />
-                    </a>
-
+                            @click.prevent.stop="notApprove(props.row.id)" />
 
                 </b-table-column>
             </template>
 
         </b-table>
+
+        <section
+                v-if="totalEvents <= 0 || !totalEvents"
+                class="hero is-bold is-large">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <h1 class="title">
+                        <b-icon icon="notifications-none" />
+                        {{ this.$i18n.get('info_no_events') }}
+                    </h1>
+                </div>
+            </div>
+        </section>
 
     </div>
 </template>

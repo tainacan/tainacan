@@ -28,6 +28,8 @@ class Collection extends Entity {
         $default_view_mode,
         $fields_order,
         $filters_order,
+        $enable_cover_page,
+        $cover_page_id,
         $moderators_ids;
 
     /**
@@ -35,7 +37,7 @@ class Collection extends Entity {
 	 * @see \Tainacan\Entities\Entity::post_type
 	 * @var string
 	 */
-	protected static $post_type = 'tainacan-collection';
+	static $post_type = 'tainacan-collection';
 	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::repository
@@ -334,6 +336,24 @@ class Collection extends Entity {
 	function get_fields_order() {
 		return $this->get_mapped_property( 'fields_order' );
 	}
+	
+	/**
+	 * Get enable cover page attribute
+	 *
+	 * @return string
+	 */
+	function get_enable_cover_page() {
+		return $this->get_mapped_property( 'enable_cover_page' );
+	}
+	
+	/**
+	 * Get enable cover page attribute
+	 *
+	 * @return string
+	 */
+	function get_cover_page_id() {
+		return $this->get_mapped_property( 'cover_page_id' );
+	}
 
 	/**
 	 * Get collection filters ordination
@@ -505,6 +525,28 @@ class Collection extends Entity {
 	 */
 	function set_filters_order( $value ) {
 		$this->set_mapped_property( 'filters_order', $value );
+	}
+	
+	/**
+	 * Set enable cover page attribute
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_enable_cover_page( $value ) {
+		$this->set_mapped_property( 'enable_cover_page', $value );
+	}
+	
+	/**
+	 * Set cover page ID
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_cover_page_id( $value ) {
+		$this->set_mapped_property( 'cover_page_id', $value );
 	}
 
 	/**
