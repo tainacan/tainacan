@@ -116,7 +116,6 @@ $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 
 $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
 
-global $Tainacan_Exposers;
-$Tainacan_Exposers = new \Tainacan\Exposers\Exposers();
+$Tainacan_Exposers = \Tainacan\Exposers\Exposers::get_instance();
 
 ?>
