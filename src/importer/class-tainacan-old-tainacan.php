@@ -70,25 +70,54 @@ class Old_Tainacan extends Importer
 
         $file = new \SplFileObject( $this->tmp_file, 'r' );
         $json = json_decode($file->fread($file->getSize()), true);
+        $item = $json['items'][0]['item'];
+        $fields_repository = \Tainacan\Repositories\Fields::get_instance();
 
-        print ".";
+        $avoid = [
+            'ID',
+            'post_author',
+            'post_date',
+            'post_date_gmt',
+            'post_content',
+            'post_title',
+            'post_excerpt',
+            'post_status',
+            'comment_status',
+            'ping_status',
+            'post_name',
+            'post_modified',
+            'post_modified_gmt',
+            'post_content_filtered',
+            'post_parent',
+            'guid',
+            'comment_count',
+            'filter',
+            'link',
+            'thumbnail'
+        ];
 
-        /*$fields_repository = \Tainacan\Repositories\Fields::get_instance();
-        $newField = new \Tainacan\Entities\Field();
-        $newField->set_name = 'New Field';
-        $newField->set_field_type = 'Tainacan\Field_Types\Text';
-        $newField->set_collection($this->collection);
+        foreach($item as $field_name => $value)
+        {
+            if(!in_array($field_name, $avoid))
+            {
+                $newField = new \Tainacan\Entities\Field();
 
-        $newField->validate(); // there is no user input here, so we can be sure it will validate.
+                $newField->set_name($field_name);
+                $newField->set_field_type('Tainacan\Field_Types\Text');
 
-        $newField = $fields_repository->insert($newField);
+                $newField->set_collection($this->collection);
+                $newField->validate(); // there is no user input here, so we can be sure it will validate.
 
-        $source_fields = $this->get_fields();
+                $newField = $fields_repository->insert($newField);
 
-        $this->set_mapping([
-            $newField->get_id() => $source_fields[0]
-        ]);*/
+                $source_fields = $this->get_fields();
 
+                $source_id = array_search($field_name, $source_fields);
+                $this->set_mapping([
+                    $newField->get_id() => $source_fields[$source_id]
+                ]);
+            }
+        }
     }
 
 
