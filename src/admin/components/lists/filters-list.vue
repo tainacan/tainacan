@@ -286,7 +286,7 @@ export default {
         addFieldViaButton(fieldType, fieldIndex) {
             this.availableFieldList.splice(fieldIndex, 1);
             let lastIndex = this.activeFilterList.length;
-            
+
             // Updates store with temporary Filter
             this.addTemporaryFilter(fieldType);
 
@@ -429,7 +429,7 @@ export default {
                 this.isLoadingFilters = false;
                 // Needs to be done after activeFilterList exists to compare and remove chosen fields.
                 this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
-                    .then((fields) => {
+                    .then(() => {
                         this.isLoadingFieldTypes = false;
                         this.updateListOfFields();
                     })

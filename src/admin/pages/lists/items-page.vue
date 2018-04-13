@@ -29,7 +29,7 @@
                         :active.sync="isLoadingFilters"/>
                 <h3>{{ $i18n.get('filters') }}</h3>
                 <filters-items-list 
-                        v-if="filters.length > 0" 
+                        v-if="!isLoadingFilters && filters.length > 0" 
                         :filters="filters"/>
                 <section 
                         v-else
