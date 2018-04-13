@@ -20,6 +20,12 @@
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
+
+            axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                .then( res => {
+                    let field = res.data;
+                    this.selectedValues( field.field_type_options.taxonomy_id );
+                });
         },
         data(){
             return {
@@ -29,7 +35,8 @@
                 isLoading: false,
                 type: '',
                 collection: '',
-                field: ''
+                field: '',
+                taxonomy: ''
             }
         },
         props: {
@@ -39,7 +46,10 @@
             field_id: [Number], // not required, but overrides the filter field id if is set
             collection_id: [Number], // not required, but overrides the filter field id if is set
             filter_type: [String],  // not required, but overrides the filter field type if is set
-            id: ''
+            id: '',
+            query: {
+                type: Object // concentrate all attributes field id and type
+            }
         },
         watch: {
             selected( value ){
@@ -52,9 +62,11 @@
                 }
                 this.$emit('input', {
                     filter: 'taginput',
+                    compare: 'IN',
+                    taxonomy: this.taxonomy,
                     field_id: ( this.field_id ) ? this.field_id : this.filter.field,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: values
+                    terms: values
                 });
             }
         },
@@ -84,13 +96,37 @@
             getValuesCategory( taxonomy, query ){
                 return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
                     for (let term of res.data) {
-                        if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 )
+                        if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                            this.taxonomy = term.taxonomy;
                             this.options.push({label: term.name, value: term.id});
+                        }
                     }
                 })
                 .catch(error => {
                     this.$console.log(error);
                 });
+            },
+            selectedValues( taxonomy ){
+                if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
+                    return false;
+
+                let index = this.query.taxquery.findIndex(newField => newField.taxonomy === this.taxonomy );
+                if ( index >= 0){
+                    let metadata = this.query.taxquery[ index ];
+                    for ( let id of metadata.terms ){
+                       this.getTerm( taxonomy, id );
+                    }
+                } else {
+                    return false;
+                }
+            },
+            getTerm( taxonomy, id ){
+              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id ).then( res => {
+                  this.$console.log(res);
+              })
+              .catch(error => {
+                  this.$console.log(error);
+              });
             }
         }
     }

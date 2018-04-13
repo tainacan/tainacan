@@ -7,7 +7,7 @@ export const setPostQueryAttribute = ( state, { attr, value }) => {
 export const setPostQuery = ( state, postquery ) => {
     state.postquery = postquery;
 };
- 
+
 export const addMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
@@ -28,10 +28,35 @@ export const addMetaQuery = ( state, filter ) => {
     }
 };
 
+export const addTaxQuery = ( state, filter ) => {
+    state.postquery.taxquery = ( ! state.postquery.taxquery ) ? [] : state.postquery.taxquery;
+    let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
+    if ( index >= 0 ){
+        Vue.set( state.postquery.taxquery, index, {
+            taxonomy: filter.taxonomy,
+            terms: filter.terms,
+            compare: filter.compare
+        } );
+    }else{
+        state.postquery.taxquery.push({
+            taxonomy: filter.taxonomy,
+            terms: filter.terms,
+            compare: filter.compare
+        });
+    }
+};
+
 export const removeMetaQuery = ( state, filter ) => {
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
     if (index >= 0) {
         state.postquery.metaquery.splice(index, 1);
+    }
+};
+
+export const removeTaxQuery = ( state, filter ) => {
+    let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
+    if (index >= 0) {
+        state.postquery.taxquery.splice(index, 1);
     }
 };
 

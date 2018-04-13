@@ -104,6 +104,7 @@
                     axios.get('/collection/'+collectionId+'/items?' + qs.stringify( metaquery ))
                     .then( res => {
                         this.loading = false;
+			this.options = [];
                         let result = res.data;
                         for (let item of result) {
                             this.options.push({ label: item.title, value: item.id })
