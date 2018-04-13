@@ -30,9 +30,17 @@ class Theme_Helper {
 		// TODO: Not working yet
 		//add_action('pre_get_posts', array(&$this, 'collection_single_pre_get_posts'));
 		
+		add_action('wp_print_scripts', array(&$this, 'print_scripts'));
+		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array(&$this, 'tax_archive_pre_get_posts'));
 
+	}
+	
+	public function print_scripts() {
+		if ( is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) ) {
+			\Tainacan\Admin::get_instance()->add_admin_js();
+		}
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
