@@ -98,6 +98,12 @@ class Exposers {
 		return $item_arr;
 	}
 	
+	/**
+	 * Return array of mapped field 
+	 * @param array $item_arr
+	 * @param Mappers\Mapper $mapper
+	 * @return array
+	 */
 	protected function map_field($item_arr, $mapper) {
 		$ret = $item_arr;
 		$field_mapping = $item_arr['field']['exposer_mapping'];
@@ -122,8 +128,8 @@ class Exposers {
 			$ret = $this->map_field($item_arr, $mapper);
 		} else { // array of elements
 			$ret = [];
-			foreach ($item_arr as $item_field) {
-				$ret = array_merge($ret, $this->map_field($item_field, $mapper) );
+			foreach ($item_arr as $item) {
+				$ret = array_merge($ret, $this->map($item, $mapper, $resquest) );
 			}
 		}
 		return $ret;
