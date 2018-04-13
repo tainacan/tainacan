@@ -98,6 +98,17 @@ class Exposers {
 		return $item_arr;
 	}
 	
+	protected function map_field($item_arr, $mapper) {
+		$ret = $item_arr;
+		$field_mapping = $item_arr['field']['exposer_mapping'];
+		if(array_key_exists($mapper->slug, $field_mapping)) {
+			$ret = [$mapper->prefix.$field_mapping[$mapper->slug]['name'].$mapper->sufix => $item_arr['value']];
+		} else if($mapper->slug == 'value') {
+			$ret = [$item_arr['field']['name'] => $item_arr['value']];
+		}
+		return $ret;
+	}
+	
 	/**
 	 * 
 	 * @param array $item_arr
@@ -108,21 +119,11 @@ class Exposers {
 	protected function map($item_arr, $mapper, $resquest) {
 		$ret = $item_arr;
 		if(array_key_exists('field', $item_arr)){ // getting a unique field
-			$field_mapping = $item_arr['field']['exposer_mapping'];
-			if(array_key_exists($mapper->slug, $field_mapping)) {
-				$ret = [$mapper->prefix.$field_mapping[$mapper->slug]['name'].$mapper->sufix => $item_arr['value']];
-			} else if($mapper->slug == 'value') {
-				$ret = [$item_field['field']['name'] => $item_arr['value']];
-			}
+			$ret = $this->map_field($item_arr, $mapper);
 		} else { // array of elements
 			$ret = [];
 			foreach ($item_arr as $item_field) {
-				$field_mapping = $item_field['field']['exposer_mapping'];
-				if(array_key_exists($mapper->slug, $field_mapping)) {
-					$ret[$mapper->prefix.$field_mapping[$mapper->slug]['name'].$mapper->sufix] = $item_field['value'];
-				} else if($mapper->slug == 'value') {
-					$ret[$item_field['field']['name']] = $item_field['value'];
-				}
+				$ret = array_merge($ret, $this->map_field($item_field, $mapper) );
 			}
 		}
 		return $ret;
