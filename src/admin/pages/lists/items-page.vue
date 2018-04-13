@@ -56,13 +56,13 @@
                             :is-full-page="false" 
                             :active.sync="isLoadingItems"/>
                     <items-list
-                            v-if="items.length > 0"
+                            v-if="!isLoadingItems && items.length > 0"
                             :collection-id="collectionId"
                             :table-fields="tableFields"
                             :items="items" 
                             :is-loading="isLoading"/>
                     <section 
-                            v-else 
+                            v-if="!isLoadingItems && items.length <= 0" 
                             class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
