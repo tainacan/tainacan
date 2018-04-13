@@ -7,10 +7,10 @@
         <div class="columns">
             <div class="column">        
                 <draggable 
+                        v-model="activeFieldList"
                         class="active-fields-area"
                         @change="handleChange"
                         :class="{'fields-area-receive': isDraggingFromAvailable}" 
-                        :list="activeFieldList" 
                         :options="{ 
                                 group: { name:'fields', pull: false, put: true }, 
                                 sort: openedFieldId == '' || openedFieldId == undefined, 
@@ -98,7 +98,7 @@
                 <div class="field">
                     <h3 class="label">{{ $i18n.get('label_available_field_types') }}</h3>
                     <draggable 
-                            :list="availableFieldList" 
+                            v-model="availableFieldList" 
                             :options="{ 
                                 sort: false, 
                                 group: { name:'fields', pull: 'clone', put: false, revertClone: true },
@@ -148,6 +148,25 @@ export default {
         FieldEditionForm,
         GripIcon
     },
+    computed: {
+        availableFieldList: {
+            get() {
+                return this.getFieldTypes();
+            },
+            set(value) {
+                console.log("OIEEE")
+                return this.updateFieldTypes(value);
+            }
+        },
+        activeFieldList: {
+            get() {
+                return this.getFields();
+            },
+            set(value) {
+                this.updateFields(value);
+            }
+        }
+    },
     beforeRouteLeave ( to, from, next ) {
         let hasUnsavedForms = false;
         for (let editForm in this.editForms) {
@@ -172,21 +191,23 @@ export default {
     methods: {
         ...mapActions('fields', [
             'fetchFieldTypes',
+            'updateFieldTypes',
             'fetchFields',
             'sendField',
             'deleteField',
+            'updateFields',
             'updateCollectionFieldsOrder'
         ]),
         ...mapGetters('fields',[
             'getFieldTypes',
             'getFields'
         ]),
-        handleChange($event) {     
-            if ($event.added) {
-                this.addNewField($event.added.element, $event.added.newIndex);
-            } else if ($event.removed) {
-                this.removeField($event.removed.element);
-            } else if ($event.moved) {
+        handleChange(event) {     
+            if (event.added) {
+                this.addNewField(event.added.element, event.added.newIndex);
+            } else if (event.removed) {
+                this.removeField(event.removed.element);
+            } else if (event.moved) {
                 if (!this.isRepositoryLevel)
                     this.updateFieldsOrder(); 
             }
@@ -208,7 +229,6 @@ export default {
         },
         addFieldViaButton(fieldType) {
             let lastIndex = this.activeFieldList.length;
-            this.activeFieldList.push(fieldType);
             this.addNewField(fieldType, lastIndex);
             
             // Higlights the clicker field
@@ -231,11 +251,7 @@ export default {
         },
         removeField(removedField) {
             this.deleteField({ collectionId: this.collectionId, fieldId: removedField.id, isRepositoryLevel: this.isRepositoryLevel})
-            .then((field) => {
-                let index = this.activeFieldList.findIndex(deletedField => deletedField.id === field.id);
-                if (index >= 0) 
-                    this.activeFieldList.splice(index, 1);
-                
+            .then(() => {
                 if (!this.isRepositoryLevel)
                     this.updateFieldsOrder(); 
             })
@@ -273,14 +289,6 @@ export default {
             this.formWithErrors = '';
             delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
-        }
-    },
-    computed: {
-        availableFieldList() {
-            return this.getFieldTypes();
-        },
-        activeFieldList() {
-            return this.getFields();
         }
     },
     created() {

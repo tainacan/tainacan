@@ -43,6 +43,14 @@ export const deleteFilter = ( state, filter ) => {
     }
 }
 
+export const addTemporaryFilter = ( state, filter) => {
+    state.filters.push(filter);
+}
+
+export const deleteTemporaryFilter = ( state, index) => {
+    state.filters.splice(index, 1);
+}
+
 export const setSingleFilter = (state, { filter, index}) => {
     Vue.set( state.filters, index, filter );
 }

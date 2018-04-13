@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
 export const deleteField = ( state, field ) => {
-    let index = state.fields.findIndex(deletedField => deletedField.id === field.id);
+    let index = state.fields.findIndex(deletedField => deletedField.id == field.id);
     if (index >= 0) {
         state.fields.splice(index, 1);
     }
