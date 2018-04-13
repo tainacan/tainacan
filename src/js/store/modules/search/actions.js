@@ -16,6 +16,15 @@ export const add_metaquery = ( { commit }, filter  ) => {
     }
 };
 
+// Tax Queries from filters
+export const add_taxquery = ( { commit }, filter  ) => {
+    if( filter && filter.terms.length === 0 ){
+        commit('removeTaxQuery', filter  );
+    } else {
+        commit('addTaxQuery', filter  );
+    }
+};
+
 export const remove_metaquery = ( { commit }, filter  ) => {
     commit('removeMetaQuery', filter  );
 };
@@ -45,7 +54,7 @@ export const setOrderBy = ({ commit }, orderBy ) => {
     } else if (orderBy.field_type_object.primitive_type == 'date') {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'meta_type', value: 'DATETIME' } );
-        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } ); 
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
     } else if (orderBy.field_type_object.core) {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.field_type_object.related_mapped_prop } );
     } else {
@@ -57,5 +66,3 @@ export const setOrderBy = ({ commit }, orderBy ) => {
 export const setOrder = ({ commit }, order ) => {
     commit('setPostQueryAttribute', {  attr: 'order', value: order } );
 };
-
-

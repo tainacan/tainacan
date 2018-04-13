@@ -10,7 +10,7 @@
                         class="active-filters-area"
                         @change="handleChange"
                         :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                        :list="activeFilterList" 
+                        v-model="activeFilterList" 
                         :options="{
                             group: { name:'filters', pull: false, put: true }, 
                             sort: openedFilterId == '' || openedFilterId == undefined, 
@@ -120,7 +120,7 @@
                     <h3 class="label"> {{ $i18n.get('label_available_field_types') }}</h3>
                     <draggable
                             v-if="availableFieldList.length > 0" 
-                            :list="availableFieldList" 
+                            v-model="availableFieldList" 
                             :options="{ 
                                 sort: false, 
                                 group: { name:'filters', pull: true, put: false, revertClone: true },
@@ -182,7 +182,19 @@ export default {
             allowedFilterTypes: [],
             selectedFilterType: {},
             choosenField: {},
-            newIndex: 0        
+            newIndex: 0,
+            availableFieldList: [],
+            filterTypes: []        
+        }
+    },
+    computed: {
+        activeFilterList: {
+            get() {
+                return this.getFilters();
+            },
+            set(value) {
+                this.updateFilters(value);
+            }
         }
     },
     components: {
@@ -216,6 +228,9 @@ export default {
             'fetchFilters',
             'sendFilter',
             'deleteFilter',
+            'addTemporaryFilter',
+            'deleteTemporaryFilter',
+            'updateFilters',
             'updateCollectionFiltersOrder'
         ]),
         ...mapGetters('filter',[
@@ -223,10 +238,10 @@ export default {
             'getFilterTypes'
         ]),
         ...mapActions('fields', [
-            'fetchFields'
+            'fetchFields',
         ]),
-        ...mapGetters('fields',[
-            'getFields'
+        ...mapGetters('fields', [
+            'getFields',
         ]),
         handleChange($event) {     
             if ($event.added) {
@@ -245,6 +260,21 @@ export default {
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
         },
+        updateListOfFields() {
+
+            let availableFields = JSON.parse(JSON.stringify(this.getFields())) ;
+
+            for (let activeFilter of this.activeFilterList) {
+                for (let i = availableFields.length - 1; i >= 0 ; i--) {
+                    if (activeFilter.field != undefined) {
+                        if (activeFilter.field.field_id == availableFields[i].id) 
+                            availableFields.splice(i, 1);
+                    }
+                }
+            }
+
+            this.availableFieldList = availableFields;
+        },
         onChangeEnable($event, index) {
             this.activeFilterList[index].enabled = $event;
             let filtersOrder = [];
@@ -252,13 +282,14 @@ export default {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
-
         },
         addFieldViaButton(fieldType, fieldIndex) {
             this.availableFieldList.splice(fieldIndex, 1);
-
             let lastIndex = this.activeFilterList.length;
-            this.activeFilterList.push(fieldType);
+
+            // Updates store with temporary Filter
+            this.addTemporaryFilter(fieldType);
+
             this.addNewFilter(fieldType, lastIndex);
         },
         addNewFilter(choosenField, newIndex) {
@@ -307,24 +338,17 @@ export default {
             });
         },
         removeFilter(removedFilter) {
+
             this.deleteFilter(removedFilter.id)
-            .then((filter) => {
-                let index = this.activeFilterList.findIndex(deletedFilter => deletedFilter.id === filter.id);
-                if (index >= 0) 
-                    
-                    this.activeFilterList.splice(index, 1);
-                    this.isLoadingFieldTypes = true;
-                    this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel})
-                    .then(() => {
-                        this.isLoadingFieldTypes = false;
-                    })
-                    .catch(() => {
-                        this.isLoadingFieldTypes = false;
-                    });
-                
-                if (!this.isRepositoryLevel)
-                    this.updateFiltersOrder(); 
-            });
+            .then(() => {
+                // Reload Available Field Types List
+                this.updateListOfFields();
+   
+            })
+            .catch((error) => { this.$console.log(error)});
+        
+            if (!this.isRepositoryLevel)
+                this.updateFiltersOrder(); 
         },
         confirmSelectedFilterType() {
             this.createChoosenFilter();
@@ -334,7 +358,7 @@ export default {
            this.choosenField = {};
            this.allowedFilterTypes = [];
            this.selectedFilterType = {};
-           this.activeFilterList.splice(this.newIndex, 1);
+           this.deleteTemporaryFilter(this.newIndex);
            this.newIndex = 0;
         },
         editFilter(filter) {
@@ -350,7 +374,7 @@ export default {
                     this.choosenField = {};
                     this.allowedFilterTypes = [];
                     this.selectedFilterType = {};
-                    this.activeFilterList.splice(this.newIndex, 1);
+                    this.deleteTemporaryFilter(this.newIndex);
                     this.newIndex = 0;
                 }
                 this.openedFilterId = filter.id;
@@ -379,26 +403,6 @@ export default {
         }
 
     },
-    computed: {
-        availableFieldList() {
-            let availableFields = this.getFields();  
-            for (let activeFilter of this.activeFilterList) {
-                for (let i = availableFields.length - 1; i >= 0 ; i--) {
-                    if (activeFilter.field != undefined) {
-                        if (activeFilter.field.field_id == availableFields[i].id) 
-                            availableFields.splice(i, 1);
-                    }
-                }
-            }
-            return availableFields;
-        },
-        activeFilterList() {
-            return this.getFilters();
-        },
-        filterTypes() { 
-            return this.getFilterTypes();
-        }
-    },
     created() {
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
@@ -412,8 +416,9 @@ export default {
         this.isLoadingFilterTypes = true;
 
         this.fetchFilterTypes()
-            .then(() => {
+            .then((filterTypes) => {
                 this.isLoadingFilterTypes = false;
+                this.filterTypes = filterTypes;
             })
             .catch(() => {
                 this.isLoadingFilterTypes = false;
@@ -426,6 +431,7 @@ export default {
                 this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
                     .then(() => {
                         this.isLoadingFieldTypes = false;
+                        this.updateListOfFields();
                     })
                     .catch(() => {
                         this.isLoadingFieldTypes = false;

@@ -70,6 +70,9 @@ export const updateField = ( { commit }, { collectionId, fieldId, isRepositoryLe
     });
 };
 
+export const updateFields = ( { commit }, fields) => {
+    commit('setFields', fields);
+};
 
 export const deleteField = ({ commit }, { collectionId, fieldId, isRepositoryLevel }) => {
     let endpoint = '';
@@ -81,7 +84,7 @@ export const deleteField = ({ commit }, { collectionId, fieldId, isRepositoryLev
     return new Promise((resolve, reject) => {
         axios.tainacan.delete(endpoint)
         .then( res => {
-            commit('deleteField', { fieldId } );
+            commit('deleteField', res.data );
             resolve( res.data );
         }).catch((error) => { 
             console.log(error);
@@ -119,3 +122,8 @@ export const updateCollectionFieldsOrder = ({ commit, dispatch }, { collectionId
         });
     });
 }
+
+
+export const updateFieldTypes = ( { commit }, fieldTypes) => {
+    commit('setFieldTypes', fieldTypes);
+};

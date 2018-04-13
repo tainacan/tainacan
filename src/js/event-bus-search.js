@@ -13,12 +13,18 @@ export const eventBusSearch = new Vue({
     created(){
         this.$on('input', data => {
             store.dispatch('search/setPage', 1);
-            this.add_metaquery(data) 
+
+            if( data.taxonomy ){
+              this.add_taxquery(data);
+            } else {
+                this.add_metaquery(data);
+            }
+
             this.updateURLQueries();
         });
     },
     watch: {
-        '$route.query' () {     
+        '$route.query' () {
             if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
                 if (this.$route.query.perpage == undefined)
                     this.$route.query.perpage = 12;
@@ -32,13 +38,18 @@ export const eventBusSearch = new Vue({
                 store.dispatch('search/set_postquery', this.$route.query);
                 //console.log(this.$route.query);
                 this.loadItems();
-            } 
+            }
         }
     },
     methods: {
         add_metaquery( data ){
             if ( data && data.collection_id ){
                 store.dispatch('search/add_metaquery', data );
+            }
+        },
+        add_taxquery( data ){
+            if ( data && data.collection_id ){
+                store.dispatch('search/add_taxquery', data );
             }
         },
         getErrors( filter_id ){
@@ -79,7 +90,7 @@ export const eventBusSearch = new Vue({
             store.dispatch('search/set_postquery', this.$route.query);
         },
         loadItems() {
-            this.$emit( 'isLoadingItems', true);        
+            this.$emit( 'isLoadingItems', true);
             store.dispatch('collection/fetchItems', this.$route.params.collectionId).then((res) => {
                 this.$emit( 'isLoadingItems', false);
                 this.$emit( 'hasFiltered', res.hasFiltered);

@@ -6,6 +6,7 @@
                 v-model = "selected"
                 @input = "onSelect()"
                 expanded>
+            <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
             <option
                     v-for=" (option, index) in options"
                     :key="index"
@@ -33,6 +34,7 @@
                 collection: '',
                 field: '',
                 selected: '',
+                taxonomy: ''
             }
         },
         props: {
@@ -42,7 +44,10 @@
             field_id: [Number], // not required, but overrides the filter field id if is set
             collection_id: [Number], // not required, but overrides the filter field id if is set
             filter_type: [String],  // not required, but overrides the filter field type if is set
-            id: ''
+            id: '',
+            query: {
+                type: Object // concentrate all attributes field id and type
+            }
         },
         watch: {
             selected: function(val){
@@ -54,6 +59,7 @@
             getValuesCategory( taxonomy ){
                 return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
                     for (let item of res.data) {
+                        this.taxonomy = item.taxonomy;
                         this.options.push(item);
                     }
                 })
@@ -72,6 +78,7 @@
 
                         promise.then( () => {
                             this.isLoading = false;
+                            this.selectedValues();
                         })
                             .catch( error => {
                                 this.$console.log('error select', error );
@@ -97,14 +104,26 @@
                 }
                 return result;
             },
-            onSelect(){
-                this.$console.log(this.selected);
+            selectedValues(){
+                if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
+                    return false;
 
+                let index = this.query.taxquery.findIndex(newField => newField.taxonomy === this.taxonomy );
+                if ( index >= 0){
+                    let metadata = this.query.taxquery[ index ];
+                    this.selected = metadata.terms;
+                } else {
+                    return false;
+                }
+            },
+            onSelect(){
                 this.$emit('input', {
-                    filter: 'term',
+                    filter: 'selectbox',
+                    compare: 'IN',
+                    taxonomy: this.taxonomy,
                     field_id: this.field,
                     collection_id: this.collection,
-                    value: this.selected
+                    terms: this.selected
                 });
             }
         }

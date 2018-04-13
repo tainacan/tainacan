@@ -10,7 +10,7 @@ describe('Selectbox field test', function() {
   it('create collection for create fields', function(){
     cy.visit('/wp-admin/admin.php?page=tainacan_admin#/collections')
     cy.location('hash').should('eq', '#/collections')
-    cy.get('#button-collection-creation').click()
+    cy.get('#button-create-collection').click()
     cy.get('#tainacan-text-name').type('Selectbox Fields')
     cy.get('#tainacan-text-description').type('Description Selectbox Fields')
     cy.get('#tainacan-select-status').select('Publish').should('have.value', 'publish')

@@ -68,6 +68,9 @@ export const updateFilter = ( { commit }, { filterId, index, options }) => {
     });
 };
 
+export const updateFilters = ( { commit }, filters) => {
+    commit('setFilters', filters);
+};
 
 export const deleteFilter = ({ commit }, filterId ) => {
     let endpoint = '/filters/' + filterId;
@@ -75,7 +78,7 @@ export const deleteFilter = ({ commit }, filterId ) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.delete(endpoint, { data:{ is_permanently: false }})
         .then( res => {
-            commit('deleteFilter', filterId );
+            commit('deleteFilter', res.data );
             resolve( res.data );
         }).catch((error) => { 
             console.log(error);
@@ -83,6 +86,14 @@ export const deleteFilter = ({ commit }, filterId ) => {
         });
 
     }); 
+};
+
+export const deleteTemporaryFilter = ({ commit }, index ) => {
+    commit('deleteTemporaryFilter', index );
+};
+
+export const addTemporaryFilter = ({ commit }, filter ) => {
+    commit('addTemporaryFilter', filter );
 };
 
 export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filtersOrder }) => {
@@ -112,4 +123,8 @@ export const fetchFilterTypes = ({ commit} ) => {
             reject(error);
         });
     });
-}   
+}  
+
+export const updateFilteTypes = ( { commit }, filterTypes) => {
+    commit('setFilterTypes', filterTypes);
+};

@@ -334,6 +334,10 @@ class Fields extends Repository {
             'value'   => $parents,
             'compare' => 'IN',
         );
+		
+		$args = array_merge([
+			'parent' => 0
+		], $args);
 
         if( isset( $args['meta_query'] ) ){
             $args['meta_query'][] = $meta_query;

@@ -42,8 +42,8 @@ if [ "$OPTION" == "1" ]; then
 elif [ "$OPTION" == "2" ]; then
 	./node_modules/.bin/cypress run --config baseUrl=$wp_url --record --key $cy_record_key
 elif [ "$OPTION" == "3" ] && [ -n "$2" ]; then
-		UNIQUE_SPEC=cypress/integration/repository/${2}
-		./node_modules/.bin/cypress run --spec $UNIQUE_SPEC --config baseUrl=$wp_url
+	UNIQUE_SPEC=cypress/integration/repository/${2}
+	./node_modules/.bin/cypress run --spec $UNIQUE_SPEC --config baseUrl=$wp_url
 else
 	echo -e "\nThe parameters provided are invalid\n"
 fi

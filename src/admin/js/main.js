@@ -27,6 +27,7 @@ import FilterCategorySelectbox from '../../classes/filter-types/category/Selectb
 
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
+import ItemsPage from '../pages/lists/items-page.vue';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
@@ -50,6 +51,7 @@ Vue.use(RouterHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 
 // Register Components
+Vue.component('items-page',ItemsPage);
 /* Fields */
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
