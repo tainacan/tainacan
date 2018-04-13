@@ -59,6 +59,52 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	}
 	
 	/**
+	 * @group value_exposer
+	 */
+	public function test_value_exposer() {
+		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		
+		extract($this->create_meta_requirements());
+		
+		$item__metadata_json = json_encode([
+			'values'       => 'TestValues_exposers',
+		]);
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $field->get_id() );
+		$request->set_body($item__metadata_json);
+		
+		$response = $this->server->dispatch($request);
+		
+		$this->assertEquals(200, $response->get_status());
+		
+		$data = $response->get_data();
+		
+		$this->assertEquals($item->get_id(), $data['item']['id']);
+		$this->assertEquals('TestValues_exposers', $data['value']);
+		
+		$item_exposer_json = json_encode([
+			'exposer-map'       => 'Value',
+		]);
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/'. $field->get_id() );
+		$request->set_body($item_exposer_json);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data();
+		
+		$this->assertEquals('TestValues_exposers', $data['teste_Expose']);
+		
+		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
+		$request->set_body($item_exposer_json);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data();
+		
+		$this->assertEquals('adasdasdsa', $data['Description']);
+		$this->assertEquals('item_teste_Expose', $data['Title']);
+		$this->assertEquals('TestValues_exposers', $data['teste_Expose']);
+	}
+	
+	/**
 	 * @group xml_exposer
 	 */
 	public function test_xml_exposer() {
