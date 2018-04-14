@@ -27,8 +27,8 @@ class Theme_Helper {
 		 * TODO: Replace single query to the page content set as cover for the colllection
 		 */
 		add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
-		// TODO: Not working yet
-		//add_action('pre_get_posts', array(&$this, 'collection_single_pre_get_posts'));
+
+		add_action('wp', array(&$this, 'collection_single_redirect'));
 		
 		add_action('wp_print_scripts', array(&$this, 'print_scripts'));
 		
@@ -98,7 +98,7 @@ class Theme_Helper {
             
             $collection = new \Tainacan\Entities\Collection($post);
             
-			if ($collection->get_enable_cover_page() == 'yes') {
+			if ( $collection->is_cover_page_enabled() ) {
 				return $permalink;
 			}
 			
@@ -131,19 +131,22 @@ class Theme_Helper {
 		
 	}
 	
-	// TODO: Not working yet
-	function collection_single_pre_get_posts($wp_query) {
+	function collection_single_redirect() {
 		
-		if (!$wp_query->is_single() || !$wp_query->is_main_query())
-			return $wp_query;
-		
-		if ($wp_query->get('post_type') == \Tainacan\Entities\Collection::$post_type) {
-			$wp_query->set('query', [
-				'post_type' => \Tainacan\Entities\Collection::$post_type
-			]);
+		if (is_single() && get_post_type() == \Tainacan\Entities\Collection::$post_type) {
+			
+			$post = get_post();
+			
+			$collection = new \Tainacan\Entities\Collection($post);
+			
+			if ( ! $collection->is_cover_page_enabled() ) {
+				
+				wp_redirect(get_post_type_archive_link( $collection->get_db_identifier() ));
+				
+			}
+			
 		}
 		
-		return $wp_query;
 		
 	}
 	

@@ -347,6 +347,15 @@ class Collection extends Entity {
 	}
 	
 	/**
+	 * Return true if enabled cover page is set to yes
+	 *
+	 * @return boolean
+	 */
+	function is_cover_page_enabled() {
+        return $this->get_enable_cover_page() === 'yes';
+    }
+	
+	/**
 	 * Get enable cover page attribute
 	 *
 	 * @return string
