@@ -21,19 +21,18 @@ class Theme_Helper {
 		add_filter( 'the_content', [&$this, 'the_content_filter'] );
 		
 		
-		/**
-		 * Replace collections permalink to post type archive if cover not enabled
-		 * TODO: Replace single query (via pre_get_post) to post type archvive
-		 * TODO: Replace single query to the page content set as cover for the colllection
-		 */
+		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
 
+		// Replace single query to the page content set as cover for the colllection
+		// Redirect to post type archive if no cover page is set
 		add_action('wp', array(&$this, 'collection_single_redirect'));
 		
 		add_action('wp_print_scripts', array(&$this, 'print_scripts'));
 		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array(&$this, 'tax_archive_pre_get_posts'));
+		
 
 	}
 	
@@ -118,7 +117,7 @@ class Theme_Helper {
 	function tax_archive_pre_get_posts($wp_query) {
 		
 		if (!$wp_query->is_tax() || !$wp_query->is_main_query())
-			return $wp_query;
+			return;
 		
 		$term = get_queried_object();
 		
@@ -126,8 +125,6 @@ class Theme_Helper {
 			// TODO: Why post_type = any does not work?
 			$wp_query->set( 'post_type', \Tainacan\Repositories\Repository::get_collections_db_identifiers() );
 		}
-		
-		return $wp_query;
 		
 	}
 	
@@ -143,6 +140,19 @@ class Theme_Helper {
 				
 				wp_redirect(get_post_type_archive_link( $collection->get_db_identifier() ));
 				
+			} else {
+				
+				$cover_page_id = $collection->get_cover_page_id();
+				
+				if ($cover_page_id) {
+					
+					// TODO: it would be better to do this via pre_get_posts. But have to find out how to do it
+					// Without generating a redirect.
+					
+					global $wp_query;
+					$wp_query = new \WP_Query('page_id=' . $cover_page_id);
+				}
+				
 			}
 			
 		}
@@ -150,7 +160,5 @@ class Theme_Helper {
 		
 	}
 	
-	
-
 }
 
