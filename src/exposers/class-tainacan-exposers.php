@@ -218,7 +218,7 @@ class Exposers {
 				$mapper = $Tainacan_Exposers->check_class_name($body['exposer-map'], true, self::MAPPER_CLASS_PREFIX);
 				return new $mapper;
 			} 
-		} elseif( is_array($type->mappers) && count($type->mappers) > 0 ) { //there are no defined mapper, let use the first one o list if has a list
+		} elseif( is_object($type) && is_array($type->mappers) && count($type->mappers) > 0 ) { //there are no defined mapper, let use the first one o list if has a list
 			$mapper = $Tainacan_Exposers->check_class_name($type->mappers[0], true, self::MAPPER_CLASS_PREFIX);
 			return new $mapper;
 		}
