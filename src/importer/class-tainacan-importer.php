@@ -47,7 +47,7 @@ abstract class Importer {
 	 * The total number of items to be imported.
 	 * @var int
 	 */
-	private $total_items;
+	protected $total_items;
     
 	/**
 	 * THe number of items to be processes in each step

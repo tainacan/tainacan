@@ -149,7 +149,6 @@ export default {
         }
     },
     created() {
-        this.$console.log(this.collectionId);
         this.finalCollectionId = (this.collectionId != undefined && this.collectionId != null && this.collectionId != '' ) ? this.collectionId : this.$route.params.collectionId;
         this.isRepositoryLevel  = (this.finalCollectionId == undefined);    
 

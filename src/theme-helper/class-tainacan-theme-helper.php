@@ -21,18 +21,28 @@ class Theme_Helper {
 		add_filter( 'the_content', [&$this, 'the_content_filter'] );
 		
 		
-		/**
-		 * Replace collections permalink to post type archive if cover not enabled
-		 * TODO: Replace single query (via pre_get_post) to post type archvive
-		 * TODO: Replace single query to the page content set as cover for the colllection
-		 */
+		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
-		// TODO: Not working yet
-		//add_action('pre_get_posts', array(&$this, 'collection_single_pre_get_posts'));
+
+		// Replace single query to the page content set as cover for the colllection
+		// Redirect to post type archive if no cover page is set
+		add_action('wp', array(&$this, 'collection_single_redirect'));
+		
+		add_action('wp_print_scripts', array(&$this, 'print_scripts'));
 		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array(&$this, 'tax_archive_pre_get_posts'));
+		
+		add_action('archive_template_hierarchy', array(&$this, 'items_template_hierachy'));
+		add_action('single_template_hierarchy', array(&$this, 'items_template_hierachy'));
+		
 
+	}
+	
+	public function print_scripts() {
+		if ( is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) ) {
+			\Tainacan\Admin::get_instance()->add_admin_js();
+		}
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
@@ -90,7 +100,7 @@ class Theme_Helper {
             
             $collection = new \Tainacan\Entities\Collection($post);
             
-			if ($collection->get_enable_cover_page() == 'yes') {
+			if ( $collection->is_cover_page_enabled() ) {
 				return $permalink;
 			}
 			
@@ -110,7 +120,7 @@ class Theme_Helper {
 	function tax_archive_pre_get_posts($wp_query) {
 		
 		if (!$wp_query->is_tax() || !$wp_query->is_main_query())
-			return $wp_query;
+			return;
 		
 		$term = get_queried_object();
 		
@@ -119,27 +129,68 @@ class Theme_Helper {
 			$wp_query->set( 'post_type', \Tainacan\Repositories\Repository::get_collections_db_identifiers() );
 		}
 		
-		return $wp_query;
-		
 	}
 	
-	// TODO: Not working yet
-	function collection_single_pre_get_posts($wp_query) {
+	function collection_single_redirect() {
 		
-		if (!$wp_query->is_single() || !$wp_query->is_main_query())
-			return $wp_query;
-		
-		if ($wp_query->get('post_type') == \Tainacan\Entities\Collection::$post_type) {
-			$wp_query->set('query', [
-				'post_type' => \Tainacan\Entities\Collection::$post_type
-			]);
+		if (is_single() && get_post_type() == \Tainacan\Entities\Collection::$post_type) {
+			
+			$post = get_post();
+			
+			$collection = new \Tainacan\Entities\Collection($post);
+			
+			if ( ! $collection->is_cover_page_enabled() ) {
+				
+				wp_redirect(get_post_type_archive_link( $collection->get_db_identifier() ));
+				
+			} else {
+				
+				$cover_page_id = $collection->get_cover_page_id();
+				
+				if ($cover_page_id) {
+					
+					// TODO: it would be better to do this via pre_get_posts. But have to find out how to do it
+					// Without generating a redirect.
+					// Another question is that, doing this way, hooking in wp, assures that the template loader 
+					// still looks for tainacan-collection-single, and not for page.
+					
+					global $wp_query;
+					$wp_query = new \WP_Query('page_id=' . $cover_page_id);
+				}
+				
+			}
+			
 		}
 		
-		return $wp_query;
 		
 	}
 	
+	function items_template_hierachy($templates) {
+		
+		if (is_post_type_archive() || is_single()) {
+			
+			$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
+			$current_post_type = get_post_type();
+			
+			if (in_array($current_post_type, $collections_post_types)) {
+				
+				$last_template = array_pop($templates);
+				
+				if (is_post_type_archive()) {
+					array_push($templates, 'tainacan/archive-items.php');
+				} elseif (is_single()) {
+					array_push($templates, 'tainacan/single-items.php');
+				}
+				
+				array_push($templates, $last_template);
+				
+			}
+			
+		}
+		
+		return $templates;
+		
+	}
 	
-
 }
 
