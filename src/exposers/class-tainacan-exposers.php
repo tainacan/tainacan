@@ -92,6 +92,16 @@ class Exposers {
 	public function rest_response($item_arr, $request) {
 		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
 			if($exposer = $this->request_has_mapper($request)) {
+				if(substr($request->get_route(), 0, strlen('/tainacan/v2/items')) == '/tainacan/v2/items') { //TODO do it at rest not here
+					$repos_items = \Tainacan\Repositories\Items::get_instance();
+					$item = $repos_items->fetch($item_arr['id']);
+					$items_metadata = $item->get_fields();
+					$prepared_item = [];
+					foreach ($items_metadata as $item_metadata){
+						array_push($prepared_item, $item_metadata->__toArray());
+					}
+					$item_arr = $prepared_item;
+				}
 				return $this->map($item_arr, $exposer, $request); //TODO request -> args
 			}
 		}
