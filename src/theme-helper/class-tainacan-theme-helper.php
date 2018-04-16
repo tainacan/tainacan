@@ -33,6 +33,9 @@ class Theme_Helper {
 		// make archive for terms work with items
 		add_action('pre_get_posts', array(&$this, 'tax_archive_pre_get_posts'));
 		
+		add_action('archive_template_hierarchy', array(&$this, 'items_template_hierachy'));
+		add_action('single_template_hierarchy', array(&$this, 'items_template_hierachy'));
+		
 
 	}
 	
@@ -148,6 +151,8 @@ class Theme_Helper {
 					
 					// TODO: it would be better to do this via pre_get_posts. But have to find out how to do it
 					// Without generating a redirect.
+					// Another question is that, doing this way, hooking in wp, assures that the template loader 
+					// still looks for tainacan-collection-single, and not for page.
 					
 					global $wp_query;
 					$wp_query = new \WP_Query('page_id=' . $cover_page_id);
@@ -157,6 +162,33 @@ class Theme_Helper {
 			
 		}
 		
+		
+	}
+	
+	function items_template_hierachy($templates) {
+		
+		if (is_post_type_archive() || is_single()) {
+			
+			$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
+			$current_post_type = get_post_type();
+			
+			if (in_array($current_post_type, $collections_post_types)) {
+				
+				$last_template = array_pop($templates);
+				
+				if (is_post_type_archive()) {
+					array_push($templates, 'tainacan/archive-items.php');
+				} elseif (is_single()) {
+					array_push($templates, 'tainacan/single-items.php');
+				}
+				
+				array_push($templates, $last_template);
+				
+			}
+			
+		}
+		
+		return $templates;
 		
 	}
 	
