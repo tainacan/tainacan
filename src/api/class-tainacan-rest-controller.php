@@ -259,10 +259,11 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 
 		// If is a multidimensional array (array of array)
 		if($this->contains_array($request_meta_query, $query)) {
+
 			foreach ( $request_meta_query as $index1 => $a ) {
 
                 // handle core field
-                if( array_key_exists("key", $a) ){
+                if( is_array($a) && array_key_exists("key", $a) ){
                     $field = new Tainacan\Entities\Field($a['key']);
                     if( strpos( $field->get_field_type(), 'Core_Title') !== false ){
                         $args[ 'post_title_in' ] = [
@@ -284,7 +285,9 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $meta_v ];
 					}
 				}
+				
 			}
+
 		} else {
 			foreach ( $query as $mapped_meta => $meta_v ) {
 				if(isset($request[$mapped][$meta_v])) {
