@@ -509,9 +509,9 @@ class Item extends Entity {
 			if ( wp_attachment_is_image($this->get_document()) ) {
 				
 				$img = wp_get_attachment_image($this->get_document(), $img_size);
-				$img_full = wp_get_attachment_image($this->get_document(), 'full');
+				$img_full = wp_get_attachment_url($this->get_document());
 				
-				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $img);
+				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
 				
 			} else {
 				
