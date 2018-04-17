@@ -30,13 +30,13 @@ export const filter_type_mixin = {
                 });
         },
         getValuesRelationship(collectionTarget, search) {
-            let url = '/collection/' + collectionTarget + '/items';
+            let url = '/collection/' + collectionTarget + '/items?';
 
             if( search ){
-                url += "?search=" + search;
+                url += "search=" + search;
             }
 
-            return axios.get( url )
+            return axios.get( url + '&nopaging=1')
                 .then(res => {
                     if (res.data.length > 0) {
                         for (let item of res.data) {

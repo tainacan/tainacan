@@ -4,6 +4,7 @@ namespace Tainacan\Repositories;
 
 use Tainacan\Entities;
 use \Respect\Validation\Validator as v;
+use Tainacan\Entities\Item;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -250,7 +251,7 @@ class Items extends Repository {
 	 * @param array $collections Array Entities\Collection || Array int collections IDs || int collection id || Entities\Collection collection object
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
-	 * @return \WP_Query|Array an instance of wp query OR array of entities;
+	 * @return \WP_Query|Array|Item an instance of wp query OR array of entities OR a Item;
 	 */
 	public function fetch( $args = [], $collections = [], $output = null ) {
 

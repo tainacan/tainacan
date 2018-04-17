@@ -156,12 +156,21 @@ class Fields extends Repository {
                 //'validation' => ''
             ],
             'accept_suggestion' => [
-    			'map'		 => 'meta',
-    			'title'		 => __('Field Value Accepts Suggestions', 'tainacan'),
-    			'type'		 => 'bool',
-    			'description'=> __('Allow the community suggest a different values for that field', 'tainacan'),
-    			'default'	 => false,
-    			'validation' => v::boolType()
+                'map'		 => 'meta',
+                'title'		 => __('Field Value Accepts Suggestions', 'tainacan'),
+                'type'		 => 'bool',
+                'description'=> __('Allow the community suggest a different values for that field', 'tainacan'),
+                'default'	 => false,
+                'validation' => v::boolType()
+            ],
+            'exposer_mapping'        => [
+    		'map'        => 'meta',
+    		'title'      => __('exposer_mapping', 'tainacan'),
+    		'type'       => 'array',
+    		'description'=> __('The field mapping options', 'tainacan'),
+    		'on_error'   => __('Invalid Field Mapping', 'tainacan'),
+    		'validation' =>  v::arrayType(),
+    		'default'    => []
     	    ],
         ]);
     }
@@ -490,14 +499,28 @@ class Fields extends Repository {
                 'description'   => 'description',
                 'collection_id' => $collection->get_id(),
                 'field_type'    => 'Tainacan\Field_Types\Core_Description',
-                'status'        => 'publish'
+                'status'        => 'publish',
+            	'exposer_mapping'	=> [
+            		'dublin-core' => [
+            			'name'	=> 'description',
+            			'label'	=> __('Description', 'tainacan'),
+            			'URI'	=> 'http://purl.org/dc/terms/description',
+            		]
+            	]
             ],
             'core_title'       => [
                 'name'          => 'Title',
                 'description'   => 'title',
                 'collection_id' => $collection->get_id(),
                 'field_type'    => 'Tainacan\Field_Types\Core_Title',
-                'status'        => 'publish'
+                'status'        => 'publish',
+            	'exposer_mapping'	=> [
+            		'dublin-core' => [
+            			'name'	=> 'title',
+            			'label'	=> __('Title', 'tainacan'),
+            			'URI'	=> 'http://purl.org/dc/terms/title',
+            		]
+            	]
             ]
         ];
 

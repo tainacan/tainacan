@@ -10,6 +10,7 @@ const TAPI_DIR          = __DIR__ . '/../api/';
 const ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
 const HELPERS_DIR      = __DIR__ . '/../helpers/';
 const IMPORTER_DIR      = __DIR__ . '/../importer/';
+const EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 
 const DIRS = [
     CLASSES_DIR,
@@ -20,12 +21,14 @@ const DIRS = [
     TRAITS_DIR,
 	TAPI_DIR,
 	ENDPOINTS_DIR,
-    IMPORTER_DIR
+    IMPORTER_DIR,
+	EXPOSERS_DIR
 ];
 
 require_once(VENDOR_DIR . 'autoload.php');
 require_once(HELPERS_DIR . 'class-tainacan-helpers-html.php');
 require_once(IMPORTER_DIR . 'class-tainacan-importer.php');
+require_once(EXPOSERS_DIR . 'class-tainacan-exposers.php');
 
 spl_autoload_register('tainacan_autoload');
 
@@ -47,11 +50,14 @@ function tainacan_autoload($class_name){
 
     	if( isset( $class_path[1] ) && $class_path[1] === 'Importer' ){
             $dir = IMPORTER_DIR;
-        } else if($sliced) {
+    	} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
+    		$dir = EXPOSERS_DIR;
+    		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+    	} else if($sliced) {
 		    $lower     = $sliced[0];
 		    $sliced[0] = strtolower( $lower );
 
-		    $dir = implode( DIRECTORY_SEPARATOR, $sliced ) . '/';
+		    $dir = implode( DIRECTORY_SEPARATOR, $sliced ) . DIRECTORY_SEPARATOR;
 		    $dir = CLASSES_DIR . str_replace( '_', '-', $dir );
 	    } else {
 		    $dir = CLASSES_DIR;
@@ -109,5 +115,9 @@ $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 
 $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
+
+$Tainacan_Exposers = \Tainacan\Exposers\Exposers::get_instance();
+
+$Tainacan_Embed = \Tainacan\Embed::get_instance();
 
 ?>

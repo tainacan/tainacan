@@ -169,6 +169,21 @@ class Field extends Entity {
         return $this->get_mapped_property('field_type_options');
     }
 
+    /**
+     * Return true if this field allow community suggestions, false otherwise
+     * @return bool
+     */
+    function get_accept_suggestion() {
+    	return $this->get_mapped_property('accept_suggestion');
+    }
+    
+    /**
+     * Return array of exposer mapping configurations
+     * @return array
+     */
+    public function get_exposer_mapping() {
+    	return $this->get_mapped_property('exposer_mapping');
+    }
 
     /**
      * Set the field name
@@ -180,14 +195,6 @@ class Field extends Entity {
         $this->set_mapped_property('name', $value);
     }
 
-    /**
-     * Return true if this field allow community suggestions, false otherwise
-     * @return bool
-     */
-    function get_accept_suggestion() {
-    	return $this->get_mapped_property('accept_suggestion');
-    }
-    
     /**
      * Set the field slug
      *
@@ -319,6 +326,14 @@ class Field extends Entity {
      */
     function set_field_type_options( $value ){
         $this->set_mapped_property('field_type_options', $value);
+    }
+    
+    /**
+     * Set exposers mapping configuration for this field
+     * @param array $value
+     */
+    public function set_exposer_mapping( $value ) {
+    	$this->set_mapped_property('exposer_mapping', $value);
     }
 	
 	

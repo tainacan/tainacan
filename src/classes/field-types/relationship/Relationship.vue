@@ -22,7 +22,7 @@
             if( this.field.value ){
                 let query = qs.stringify({ postin: ( Array.isArray( this.field.value ) ) ? this.field.value : [ this.field.value ]  });
 
-                axios.get('/collection/'+collectionId+'/items?' + query)
+                axios.get('/collection/'+collectionId+'/items?' + query + '?nopaging=1')
                     .then( res => {
                         for (let item of res.data) {
                             this.selected.push({ label: item.title, value: item.id, img: '' });
