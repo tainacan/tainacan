@@ -118,4 +118,6 @@ $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
 
 $Tainacan_Exposers = \Tainacan\Exposers\Exposers::get_instance();
 
+$Tainacan_Embed = \Tainacan\Embed::get_instance();
+
 ?>
