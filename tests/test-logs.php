@@ -22,7 +22,6 @@ class Logs extends TAINACAN_UnitTestCase {
 	 */
 	function test_add() {
 		$Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		$log = $this->tainacan_entity_factory->create_entity(
 			'log',
@@ -43,44 +42,6 @@ class Logs extends TAINACAN_UnitTestCase {
 		$this->assertEquals( 'someone did that', $test->get_description() );
 		$this->assertEquals( $user_id, $test->get_user_id() );
 		$this->assertEquals( $blog_id, $test->get_blog_id() );
-
-		$value = $this->tainacan_entity_factory->create_entity(
-			'collection',
-			array(
-				'name'          => 'testeLogs',
-				'description'   => 'adasdasdsa123',
-				'default_order' => 'DESC'
-			),
-			true
-		);
-
-		$old_value = $value;
-
-		$value->set_name( 'newtesteLogs' );
-
-		$new_value = $Tainacan_Collections->update( $value );
-
-		$create_log = Log::create( 'teste create', 'testing a log creation function', $new_value, $old_value );
-
-		$this->assertEquals( 'teste create', $create_log->get_title() );
-		$this->assertEquals( 'testing a log creation function', $create_log->get_description() );
-		$this->assertEquals( $new_value, $create_log->get_value() );
-		$this->assertEquals( $old_value, $create_log->get_old_value() );
-
-		$testDB = $Tainacan_Logs->fetch( $create_log->get_id() );
-
-		$this->assertEquals( 'teste create', $testDB->get_title() );
-		$this->assertEquals( 'testing a log creation function', $testDB->get_description() );
-		$this->assertEquals( $new_value, $testDB->get_value() );
-		$this->assertEquals( $old_value, $testDB->get_old_value() );
-
-		$last_log = $Tainacan_Logs->fetch_last();
-
-		$collection = $last_log->get_value();
-
-		$this->assertEquals( 'newtesteLogs', $collection->get_name() );
-		$this->assertEquals( 'adasdasdsa123', $collection->get_description() );
-		$this->assertEquals( 'DESC', $collection->get_default_order() );
 	}
 
 	public function test_log_diff() {
@@ -102,7 +63,7 @@ class Logs extends TAINACAN_UnitTestCase {
 
 		$log = $Tainacan_Logs->fetch_last();
 
-		$diff = $log->diff();
+		$diff = $log->get_log_diffs();
 
 		$this->assertEquals( 'With name', "{$diff['name']['new'][0]} {$diff['name']['new'][1]}" );
 		$this->assertEquals( 'No name', $diff['name']['old'] );

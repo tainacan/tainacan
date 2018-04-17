@@ -27,7 +27,7 @@ Logs are stored as posts. Check WP_Query docs to learn all args accepted in the 
 
 **Returns:** `\WP_Query|Array` — an instance of wp query OR array of entities;
 
-### `public function log_inserts($new_value, $value = null)`
+### `public function insert_log($new_value, $value = null)`
 
 Insert a log when a new entity is inserted 
 **Parameters:**
