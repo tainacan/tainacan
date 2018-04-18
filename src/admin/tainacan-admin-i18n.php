@@ -135,6 +135,9 @@ return [
 	'label_sorting'							   => __( 'Sorting', 'tainacan' ),
 	'label_who_when'                           => __( 'Who and when', 'tainacan' ),
 	'label_event_title'                        => __( 'Event', 'tainacan' ),
+	'label_cover_image'                        => __( 'Cover Image', 'tainacan' ),
+	'label_enable_cover_page'                  => __( 'Enable Cover Page', 'tainacan' ),
+	'label_cover_page'      		           => __( 'Cover Page', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),

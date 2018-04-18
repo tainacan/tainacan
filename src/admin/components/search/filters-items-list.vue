@@ -1,7 +1,7 @@
 <template>
     <div>
         <tainacan-filter-item        
-                :query="getPostQuery()"
+                :query="getQuery"
                 v-for="(filter, index) in filters"
                 :key="index"
                 :filter="filter"/>
@@ -19,6 +19,11 @@
             ...mapGetters('search',[
                 'getPostQuery'
             ])
+        },
+        computed: {
+            getQuery() {
+                return this.getPostQuery();
+            }
         }
     }
 </script>
