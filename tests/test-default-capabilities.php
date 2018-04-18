@@ -24,6 +24,8 @@ class DefaultCapabilities extends TAINACAN_UnitTestCase {
 		
 		$defaults_caps = $Tainacan_Capabilities->defaults;
 		
+		$tainacan_roles = $Tainacan_Capabilities->get_tainacan_roles();
+		
 		foreach ($defaults_caps as $post_type => $wp_append_roles) {
 			if($post_type == 'tainacan-items') continue;
 			$entity = Repository::get_entity_by_post_type($post_type);
@@ -42,8 +44,10 @@ class DefaultCapabilities extends TAINACAN_UnitTestCase {
 				$new_user = $this->factory()->user->create(array( 'role' => 'tainacan-' . $role_name ));
 				wp_set_current_user($new_user);
 				
-				foreach ($caps as $cap) {
-					$this->assertTrue(current_user_can($entity_cap->$cap), "tainacan-$role_name does not have capability {$entity_cap->$cap}");
+				if(in_array($role_name, $tainacan_roles) ) {
+					foreach ($caps as $cap) {
+						$this->assertTrue(current_user_can($entity_cap->$cap), "tainacan-$role_name does not have capability {$entity_cap->$cap}");
+					}
 				}
 				
 				

@@ -119,11 +119,11 @@ class Collections extends Repository {
 				'default'     => 'ASC',
 				'validation'  => v::stringType()->in( [ 'ASC', 'DESC' ] ),
 			],
-			'columns'           => [
+			'default_displayed_fields'           => [
 				'map'         => 'meta',
-				'title'       => __( 'Columns', 'tainacan' ),
+				'title'       => __( 'Default Displayed Fields', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'List of collections property that will be displayed in the table view', 'tainacan' ),
+				'description' => __( 'List of collections property that will be displayed in the table view.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'default_view_mode' => [

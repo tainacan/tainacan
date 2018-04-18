@@ -24,6 +24,7 @@ export default {
     },
     created(){
         this.collectionId = parseInt(this.$route.params.collectionId);
+        this.$eventBusSearch.setCollectionId(this.collectionId);
     }
 
 }

@@ -51,9 +51,9 @@
                     </b-field>
 
                     <!-- Attachments ------------------------------------------ -->
-                    <div class="columns is-multiline">
-                        <div class="column is-4">
-                            <b-field :label="$i18n.get('label_image')">
+                    <b-field :label="$i18n.get('label_attachments')">
+                        <div class="columns is-multiline">
+                            <div class="column is-8"> 
                                 <b-upload 
                                         v-model="form.files"
                                         multiple
@@ -70,33 +70,34 @@
                                         </div>
                                     </section>
                                 </b-upload>
-                            </b-field>
-                            <div class="uploaded-files">
-                                <div 
-                                        v-for="(file, index) in form.files"
-                                        :key="index">
-                                    <span class="tag is-primary">
-                                        {{ file.name }}
-                                        <button 
-                                            class="delete is-small"
-                                            type="button"
-                                            @click="deleteFile(index)"/>
-                                    </span>
-                                    <!-- <progress class="progress is-secondary" value="15" max="100">30%</progress> -->
-                                </div>
-                            </div>   
-                        </div>  
-                    </div>
-                    <div 
-                            class="column is-narrow"
-                            v-for="(attachment, index) of item.attachments" 
-                            :key="index">
-                        <figure class="image is-128x128">
-                            <img 
-                                    :alt="attachment.title"
-                                    :src="attachment.url">
-                        </figure>
-                    </div>
+                                <div class="uploaded-files">
+                                    <div 
+                                            v-for="(file, index) in form.files"
+                                            :key="index">
+                                        <span class="tag is-primary">
+                                            {{ file.name }}
+                                            <button 
+                                                class="delete is-small"
+                                                type="button"
+                                                @click="deleteFile(index)"/>
+                                        </span>
+                                        <!-- <progress class="progress is-secondary" value="15" max="100">30%</progress> -->
+                                    </div>
+                                </div>   
+                            </div>    
+                            <div 
+                                    class="column is-narrow"
+                                    v-for="(attachment, index) of item.attachments" 
+                                    :key="index">
+                                <figure class="image is-128x128">
+                                    <img 
+                                            :alt="attachment.title"
+                                            :src="attachment.url">
+                                </figure>
+                            </div>
+                        </div>
+                    </b-field>
+                    
                 </div>
 
                 <div class="column">
@@ -272,8 +273,7 @@ export default {
             });
         }, 
         cancelBack(){
-            this.$console.log(this.fieldList);
-            //this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+            this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
         },
         uploadAttachment($event) {
             

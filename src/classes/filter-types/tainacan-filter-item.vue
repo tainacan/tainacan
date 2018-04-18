@@ -7,7 +7,7 @@
             <component
                     :id="filter.filter_type_object.component + '-' + filter.slug"
                     :is="filter.filter_type_object.component"
-                    :filter="getFilter"
+                    :filter="filter"
                     :query="query"
                     @input="listen( $event )"/>
         </div>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex';
+    import { mapActions } from 'vuex';
 
     export default {
         name: 'TainacanFilterItem',
@@ -42,18 +42,11 @@
                     this.setFilterTypeMessage('');
                 }
                 return msg;
-            },
-            getFilter(){
-                return this.filter;
             }
-
         },
         methods: {
             ...mapActions('search', [
                 'setPage'
-            ]),
-            ...mapGetters('search', [
-                'getPostQuery'
             ]),
             listen( event ){
                 this.$eventBusSearch.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
