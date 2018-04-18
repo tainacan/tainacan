@@ -3,7 +3,7 @@
         <div class="tile is-ancestor">
 
             <div class="tile is-parent">
-                <article class="tile notification is-child is-light">
+                <article class="tile box is-child">
                     <div class="content">
                         <div class="title">{{ this.$i18n.get('info_logs_before') }}</div>
                         <div
@@ -35,7 +35,7 @@
             </div>
 
             <div class="tile is-parent">
-                <article class="tile notification is-child is-light">
+                <article class="tile box is-child">
                     <div class="content">
                         <div class="title">{{ this.$i18n.get('info_logs_after') }}</div>
                         <div
@@ -48,7 +48,13 @@
                                     :class="{ 'has-text-success': !diff.old, 'back-hlight': !diff.old }">
                                 {{ `${key.replace('_', ' ')}:` }}
                             </div>
+                            <div v-if="key === 'featured_image'">
+                                <div class="image is-128x128">
+                                    <img :src="diff.new">
+                                </div>
+                            </div>
                             <div
+                                    v-else
                                     v-for="(d, i) in diff.new"
                                     :key="i"
                                     :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }"
@@ -59,7 +65,7 @@
                                         :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }"
                                         v-if="!Array.isArray(d) && d.constructor.name !== 'Object' ">{{ d }}
                                 </div>
-
+                                <!-- TODO: Modify exhibition for attachment -->
                                 <div
                                         v-else
                                         v-for="(e, i2) in d"

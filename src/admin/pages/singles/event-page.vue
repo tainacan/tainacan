@@ -70,6 +70,6 @@
 
 <style>
     .back-hlight {
-        background-color: rgb(186, 255, 220);
+        background-color: rgb(231, 255, 237);
     }
 </style>

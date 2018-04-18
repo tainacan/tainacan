@@ -226,7 +226,42 @@ class Items extends Repository {
 		}
 
 		if ( method_exists( $item, 'get_featured_img_id' ) ) {
-			set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
+			if ( ! get_post_thumbnail_id( $item->WP_Post->ID ) ) {
+				// was added a thumbnail
+
+				$settled = set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $item->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => '',
+						'diff_with_index' => 0,
+					];
+
+				}
+
+			} else {
+
+				// was update a thumbnail
+
+				$old_thumbnail = get_the_post_thumbnail_url( $item->WP_Post->ID );
+
+				$settled = set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $item->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => $old_thumbnail,
+						'diff_with_index' => 0,
+					];
+				}
+			}
 		}
 
 		do_action( 'tainacan-insert', $item, $diffs, $is_update );

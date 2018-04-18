@@ -25,8 +25,11 @@ export default {
                 });
             },
             watch: {
-                '$route.query' () {
-                    //if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
+                '$route' () {
+                    if (this.$route.params.collectionId) 
+                        this.collectionId = parseInt(this.$route.params.collectionId);
+                    
+                    if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
                         if (this.$route.query.perpage == undefined)
                             this.$route.query.perpage = 12;
                         if (this.$route.query.paged == undefined)
@@ -35,10 +38,10 @@ export default {
                             this.$route.query.order = 'DESC';
                         if (this.$route.query.orderby == undefined)
                             this.$route.query.orderby = 'date';
-        
+
                         this.$store.dispatch('search/set_postquery', this.$route.query); 
                         this.loadItems();
-                    //}
+                    }
                 }
             },
             methods: {
@@ -90,6 +93,7 @@ export default {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
                 loadItems() {
+
                     this.$emit( 'isLoadingItems', true);
                     this.$store.dispatch('collection/fetchItems', this.collectionId).then((res) => {
                         this.$emit( 'isLoadingItems', false);

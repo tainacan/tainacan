@@ -37,12 +37,6 @@ import { router} from './router'
 import eventBusSearch from '../../js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
 
-// Changing title of pages
-router.beforeEach((to, from, next) => {
-    document.title = to.meta.title;
-    next();
-});
-
 // Configure and Register Plugins
 Vue.use(Buefy);
 Vue.use(I18NPlugin);
@@ -80,6 +74,12 @@ Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
 
 Vue.use(eventBusSearch, { store: store, router: router});
+
+// Changing title of pages
+router.beforeEach((to, from, next) => {
+    document.title = to.meta.title;
+    next();
+});
 
 new Vue({
     el: '#tainacan-admin-app',

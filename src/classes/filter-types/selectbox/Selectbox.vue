@@ -2,9 +2,9 @@
     <div class="block">
         <b-select
                 :id = "id"
-                :laoding = "isLoading"
+                :loading = "isLoading"
                 v-model = "selected"
-                @input = "onSelect()"
+                @input = "onSelect($event)"
                 expanded>
             <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
             <option
@@ -36,7 +36,7 @@
                     }
                 })
                 .catch(error => {
-                    this.$console.log(error);
+                    this.$console.error(error);
                 });
         },
         data(){
@@ -45,41 +45,51 @@
                 options: [],
                 type: '',
                 collection: '',
-                field: '',
-                selected: '',
+                field: ''
             }
         },
         mixins: [filter_type_mixin],
+        computed: {
+            selected() {
+                if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
+
+                    let index = this.query.metaquery.findIndex(newField => newField.key === this.field );
+                    if ( index >= 0){
+                        let metadata = this.query.metaquery[ index ];
+                        return metadata.value;
+                    }
+                }
+                return '';          
+            }
+        },
         methods: {
             loadOptions(){
-                let promise = null;
                 this.isLoading = true;
+
+                let promise = null;
                 let instance = this;
 
                 if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
-                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ?
-                        this.field_object.field_type_options.collection_id : this.collection_id;
+                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ? this.field_object.field_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget );
-
                 } else {
                     promise = this.getValuesPlainText( this.field );
                 }
 
                 promise.then(() => {
                     this.isLoading = false;
-                    instance.selectedValues();
                 })
                 .catch( error => {
-                    this.$console.log('error select', error );
+                    this.$console.error('error select', error );
                     this.isLoading = false;
                 });
             },
-            onSelect(){
+            onSelect(value){
                 this.$emit('input', {
                     filter: 'selectbox',
                     field_id: this.field,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: this.selected
+                    value: value
                 });
             },
             selectedValues(){
