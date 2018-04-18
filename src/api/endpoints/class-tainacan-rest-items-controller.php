@@ -165,7 +165,7 @@ class REST_Items_Controller extends REST_Controller {
 		$args = $this->prepare_filters($request);
 
 		$collection_id = $request['collection_id'];
-		$items = $this->items_repository->fetch($args, $collection_id, '\WP_Query');
+		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 
 		$response = [];
 		if ($items->have_posts()) {
