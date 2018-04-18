@@ -309,7 +309,7 @@ class Capabilities {
 	 * 
 	 * @return array Tainacan roles
 	 */
-	private function get_tainacan_roles() {
+	public function get_tainacan_roles() {
 		$tainacan_roles = [
 			'editor' => [
 				'slug' => 'tainacan-editor',
