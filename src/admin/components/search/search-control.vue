@@ -52,7 +52,6 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { eventBusSearch } from '../../../js/event-bus-search';
 
 export default {
     name: 'SearchControl',
@@ -80,10 +79,10 @@ export default {
             'getOrder'
         ]),
         onChangeOrderBy(field) {
-            eventBusSearch.setOrderBy(field);
+            this.$eventBusSearch.setOrderBy(field);
         },
         onChangeOrder() {
-            this.order == 'DESC' ? eventBusSearch.setOrder('ASC') : eventBusSearch.setOrder('DESC');
+            this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
         }
     }
 }

@@ -11,14 +11,14 @@
                         id="button-create-item"
                         tag="button" 
                         class="button is-secondary"
-                        :to="{ path: $routerHelper.getNewItemPath(finalCollectionId) }">
+                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                     {{ $i18n.getFrom('items', 'new_item') }}
                 </router-link>
             </div>
             <search-control
                     v-if="fields.length > 0 && (items.length != 0 || isLoadingItems)"
                     :is-repository-level="isRepositoryLevel" 
-                    :collection-id="finalCollectionId"
+                    :collection-id="collectionId"
                     :table-fields="tableFields"
                     :pref-table-fields="prefTableFields"/>
         </div>
@@ -43,7 +43,7 @@
                         <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
                         <router-link
                                 id="button-create-filter"
-                                :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(finalCollectionId)"
+                                :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                                 tag="button" 
                                 class="button is-secondary is-centered">
                             {{ $i18n.getFrom('filters', 'new_item') }}</router-link>
@@ -57,7 +57,7 @@
                             :active.sync="isLoadingItems"/>
                     <items-list
                             v-if="!isLoadingItems && items.length > 0"
-                            :collection-id="finalCollectionId"
+                            :collection-id="collectionId"
                             :table-fields="tableFields"
                             :items="items" 
                             :is-loading="isLoading"/>
@@ -76,7 +76,7 @@
                                     id="button-create-item" 
                                     tag="button" 
                                     class="button is-primary"
-                                    :to="{ path: $routerHelper.getNewItemPath(finalCollectionId) }">
+                                    :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                                 {{ $i18n.getFrom('items', 'new_item') }}
                             </router-link>
                         </div>
@@ -94,14 +94,12 @@ import SearchControl from '../../components/search/search-control.vue'
 import ItemsList from '../../components/lists/items-list.vue';
 import FiltersItemsList from '../../components/search/filters-items-list.vue';
 import Pagination from '../../components/search/pagination.vue'
-import { eventBusSearch } from '../../../js/event-bus-search'
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'ItemsPage',
     data(){
         return {
-            finalCollectionId: Number,
             isRepositoryLevel: false,
             tableFields: [],
             prefTableFields: [],
@@ -149,24 +147,24 @@ export default {
         }
     },
     created() {
-        this.finalCollectionId = (this.collectionId != undefined && this.collectionId != null && this.collectionId != '' ) ? this.collectionId : this.$route.params.collectionId;
-        this.isRepositoryLevel  = (this.finalCollectionId == undefined);    
 
-        eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+        this.isRepositoryLevel = (this.collectionId == undefined);    
+
+        this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
             this.isLoadingItems = isLoadingItems;
         });
 
-        eventBusSearch.$on('hasFiltered', hasFiltered => {
+        this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
             this.hasFiltered = hasFiltered;
         });
 
         this.isLoadingFilters = true;
-        this.fetchFilters( { collectionId: this.finalCollectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
+        this.fetchFilters( { collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
             .then(() => this.isLoadingFilters = false) 
             .catch(() => this.isLoadingFilters = false);
 
         this.isLoadingFields = true;
-        this.fetchFields({ collectionId: this.finalCollectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: false }).then(() => {
+        this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: false }).then(() => {
 
             this.tableFields.push({ name: this.$i18n.get('label_thumbnail'), field: 'row_thumbnail', field_type: undefined, slug: 'featured_image', id: undefined, visible: true });
             for (let field of this.fields) {
@@ -179,12 +177,12 @@ export default {
             this.tableFields.push({ name: this.$i18n.get('label_actions'), field: 'row_actions', field_type: undefined, slug: 'actions', id: undefined, visible: true });
             
             //this.prefTableFields = this.tableFields;
-            // this.$userPrefs.get('table_columns_' + this.finalCollectionId)
+            // this.$userPrefs.get('table_columns_' + this.collectionId)
             //     .then((value) => {
             //         this.prefTableFields = value;
             //     })
             //     .catch((error) => {
-            //         this.$userPrefs.set('table_columns_' + this.finalCollectionId, this.prefTableFields, null);
+            //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
             //     });
             this.isLoadingFields = false;
 
@@ -193,8 +191,9 @@ export default {
         });
     },
     mounted(){
-        eventBusSearch.updateStoreFromURL();
-        eventBusSearch.loadItems();
+        this.$eventBusSearch.setCollectionId(this.collectionId);
+        this.$eventBusSearch.updateStoreFromURL();
+        this.$eventBusSearch.loadItems();
     }
 
 }

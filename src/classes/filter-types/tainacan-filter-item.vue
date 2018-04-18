@@ -15,7 +15,6 @@
 </template>
 
 <script>
-    import { eventBusSearch } from '../../js/event-bus-search'
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -33,7 +32,7 @@
         computed: {
             getErrorMessage() {
                 let msg = '';
-                let errors = eventBusSearch.getErrors( this.filter.id );
+                let errors = this.$eventBusSearch.getErrors( this.filter.id );
                 if ( errors) {
                     this.setFilterTypeMessage('is-danger');
                     for (let index in errors) {
@@ -57,7 +56,7 @@
                 'getPostQuery'
             ]),
             listen( event ){
-                eventBusSearch.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
+                this.$eventBusSearch.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
             },
             setFilterTypeMessage( message ){
                 this.filterTypeMessage = message;
