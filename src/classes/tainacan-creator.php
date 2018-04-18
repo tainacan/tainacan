@@ -53,6 +53,10 @@ function tainacan_autoload($class_name){
     	} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
     		$dir = EXPOSERS_DIR;
     		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+    	} else if( isset( $class_path[1] ) && $class_path[1] === 'API' ){
+    		$dir = TAPI_DIR;
+    		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+    		//echo 'AAAAAAAAaaaaaaaaaaaaaaa';print_r($class_path);echo $dir; die();
     	} else if($sliced) {
 		    $lower     = $sliced[0];
 		    $sliced[0] = strtolower( $lower );
@@ -74,6 +78,10 @@ function tainacan_autoload($class_name){
 
         $file = $dir . 'class-tainacan-'. strtolower(str_replace('_', '-' , $class_name)) . '.php';
 
+        if( isset( $class_path[1] ) && $class_path[1] === 'API' ){
+        	echo 'AAAAAAAAaaaaaaaaaaaaaaa';echo $file;//die();
+        }
+        
         if(file_exists($file)) {
             require_once($file);
         }

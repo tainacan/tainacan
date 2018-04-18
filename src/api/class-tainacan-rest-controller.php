@@ -1,10 +1,12 @@
 <?php
 
-class TAINACAN_REST_Controller extends WP_REST_Controller {
+namespace Tainacan\API;
+
+class REST_Controller extends \WP_REST_Controller {
 
 
 	/**
-	 * TAINACAN_REST_Controller constructor.
+	 * REST_Controller constructor.
 	 */
 	public function __construct() {
 		//add_action( 'rest_api_init', function () {
@@ -52,7 +54,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 * @param $object
 	 * @param $new_values
 	 *
-	 * @return Tainacan\Entities\Entity
+	 * @return \Tainacan\Entities\Entity
 	 */
 	protected function prepare_item_for_updating($object, $new_values){
 
@@ -72,7 +74,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 * @param $request
 	 *
 	 * @return array
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function prepare_filters($request){
 		$queries = [
@@ -161,7 +163,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 * @param $field_name
 	 * @param $request
 	 *
-	 * @return WP_Error
+	 * @return \WP_Error
 	 */
 	function gt_user_meta( $data, $field_name, $request ) {
 		if( $data['id'] ){
@@ -169,7 +171,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 		}
 
 		if ( !$user_meta ) {
-			return new WP_Error( 'No user meta found', 'No user meta found', array( 'status' => 404 ) );
+			return new \WP_Error( 'No user meta found', 'No user meta found', array( 'status' => 404 ) );
 		}
 
 		foreach ($user_meta as $key => $value) {
@@ -186,11 +188,11 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 *
 	 * @param $request
 	 *
-	 * @return mixed|WP_Error
+	 * @return mixed|\WP_Error
 	 */
 	public function up_user_meta( $meta, $user, $field_name, $request ) {
 		if ( !$user->ID ) {
-			return new WP_Error( 'No user found', 'No user found', array( 'status' => 404 ) );
+			return new \WP_Error( 'No user found', 'No user found', array( 'status' => 404 ) );
 		}
 
 		$user_id = $user->ID;
@@ -248,7 +250,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 	 * @param $args
 	 *
 	 * @return mixed
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	private function prepare_meta($mapped, $request, $query, $mapped_v, $args){
 		$request_meta_query = $request[$mapped];
@@ -264,7 +266,7 @@ class TAINACAN_REST_Controller extends WP_REST_Controller {
 
                 // handle core field
                 if( is_array($a) && array_key_exists("key", $a) ){
-                    $field = new Tainacan\Entities\Field($a['key']);
+                    $field = new \Tainacan\Entities\Field($a['key']);
                     if( strpos( $field->get_field_type(), 'Core_Title') !== false ){
                         $args[ 'post_title_in' ] = [
                             'relation' => ( isset( $request_meta_query['relation']) ) ? $request_meta_query['relation'] : 'AND' ,

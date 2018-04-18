@@ -1,9 +1,13 @@
 <?php
 
-class TAINACAN_REST_Field_Types_Controller extends TAINACAN_REST_Controller {
+namespace Tainacan\API\EndPoints;
+
+use \Tainacan\API\REST_Controller;
+
+class REST_Field_Types_Controller extends REST_Controller {
 
 	/**
-	 * TAINACAN_REST_Field_Types_Controller constructor.
+	 * REST_Field_Types_Controller constructor.
 	 */
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
@@ -16,7 +20,7 @@ class TAINACAN_REST_Field_Types_Controller extends TAINACAN_REST_Controller {
 		register_rest_route($this->namespace, '/' . $this->rest_base,
 			array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
+					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => [
@@ -60,9 +64,9 @@ class TAINACAN_REST_Field_Types_Controller extends TAINACAN_REST_Controller {
 
 	/**
 	 * @param $item
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return mixed|WP_Error|WP_REST_Response
+	 * @return mixed|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		$name = "\Tainacan\Field_Types\\$item";
@@ -75,9 +79,9 @@ class TAINACAN_REST_Field_Types_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_items( $request ) {
 		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
@@ -89,13 +93,13 @@ class TAINACAN_REST_Field_Types_Controller extends TAINACAN_REST_Controller {
 			array_push($prepared, $this->prepare_item_for_response($field_type, $request));
 		}
 
-		return new WP_REST_Response($prepared, 200);
+		return new \WP_REST_Response($prepared, 200);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
 		return true;

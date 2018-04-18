@@ -1,9 +1,12 @@
 <?php
 
+namespace Tainacan\API\EndPoints;
+
+use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
+class REST_Filters_Controller extends REST_Controller {
 	private $collection;
 	private $collection_repository;
 
@@ -13,7 +16,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	private $filter_repository;
 
 	/**
-	 * TAINACAN_REST_Filters_Controller constructor.
+	 * REST_Filters_Controller constructor.
 	 */
 	public function __construct() {
 		$this->namespace = 'tainacan/v2';
@@ -38,43 +41,43 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	public function register_routes() {
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/field/(?P<field_id>[\d]+)/' . $this->rest_base, array(
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
+				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'create_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE)
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
 			),
 		));
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base, array(
 			array(
-				'methods'             => WP_REST_Server::READABLE,
+				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
 				'permission_callback' => array($this, 'get_items_permissions_check'),
 				'args'                => $this->get_collection_params()
 			),
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
+				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'create_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE)
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
 			)
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base, array(
 			array(
-				'methods'             => WP_REST_Server::READABLE,
+				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
 				'permission_callback' => array($this, 'get_items_permissions_check'),
 				'args'                => $this->get_collection_params()
 			),
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
+				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'create_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE)
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
 			)
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<filter_id>[\d]+)', array(
 			array(
-				'methods'             => WP_REST_Server::DELETABLE,
+				'methods'             => \WP_REST_Server::DELETABLE,
 				'callback'            => array($this, 'delete_item'),
 				'permission_callback' => array($this, 'delete_item_permissions_check'),
 				'args'                => array(
@@ -85,25 +88,25 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	            )
 			),
 			array(
-				'methods'             => WP_REST_Server::EDITABLE,
+				'methods'             => \WP_REST_Server::EDITABLE,
 				'callback'            => array($this, 'update_item'),
 				'permission_callback' => array($this, 'update_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE)
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 			),
 			array(
-				'methods'             => WP_REST_Server::READABLE,
+				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
 				'permission_callback' => array($this, 'get_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::READABLE)
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
 			)
 		));
 	}
 
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return object|void|WP_Error
+	 * @return object|void|\WP_Error
 	 */
 	public function prepare_item_for_database( $request ) {
 		$body = json_decode($request->get_body(), true);
@@ -115,7 +118,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 		$received_type = $body['filter_type'];
 
 		if(empty($received_type)){
-			throw new \InvalidArgumentException('The type can\'t be empty');
+			throw new \InvalidArgument\Exception('The type can\'t be empty');
 		} elseif(!strrchr($received_type, '_')){
 			$received_type = ucfirst(strtolower($received_type));
 		} else {
@@ -157,9 +160,9 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function create_item( $request ) {
 
@@ -169,26 +172,26 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 			if ($filter_obj->validate()){
 				$filter_inserted = $this->filter_repository->insert($filter_obj);
 
-				return new WP_REST_Response($this->prepare_item_for_response($filter_inserted, $request), 200);
+				return new \WP_REST_Response($this->prepare_item_for_response($filter_inserted, $request), 200);
 			}
 
-			return new WP_REST_Response([
+			return new \WP_REST_Response([
 				'error_message' => __('One or more attributes are invalid', 'tainacan'),
 				'error'         => $filter_obj->get_errors()
 			], 400);
 		}
 
-		return new WP_REST_Response([
+		return new \WP_REST_Response([
 			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $request->get_body()
 		], 400);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
-	 * @throws Exception
+	 * @return bool|\WP_Error
+	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
 		if(isset($request['collection_id']) && isset($request['field_id'])) {
@@ -212,9 +215,9 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
 		$filter_id = $request['filter_id'];
@@ -224,13 +227,13 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 
 		$filter = $this->filter_repository->delete($args);
 
-		return new WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
+		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
@@ -245,7 +248,7 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	/**
 	 * @param $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function update_item( $request ) {
 		$filter_id = $request['filter_id'];
@@ -267,24 +270,24 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 				if($prepared_filter->validate()) {
 					$updated_filter = $this->filter_repository->update( $prepared_filter );
 
-					return new WP_REST_Response($this->prepare_item_for_response($updated_filter, $request), 200);
+					return new \WP_REST_Response($this->prepare_item_for_response($updated_filter, $request), 200);
 				}
 
-				return new WP_REST_Response([
+				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $prepared_filter->get_errors(),
 					'filters'       => $this->prepare_item_for_response($prepared_filter, $request)
 				], 400);
 			}
 
-			return new WP_REST_Response([
+			return new \WP_REST_Response([
 				'error_message' => __('Filter with that ID not found', 'tainacan' ),
 				'filter_id'     => $filter_id
 			], 400);
 
 		}
 
-		return new WP_REST_Response([
+		return new \WP_REST_Response([
 			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $body
 		], 400);
@@ -292,9 +295,9 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
@@ -308,9 +311,9 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 
 	/**
 	 * @param $item
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return array|mixed|WP_Error|WP_REST_Response
+	 * @return array|mixed|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)) {
@@ -328,9 +331,9 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_items( $request ) {
 		$args = $this->prepare_filters( $request );
@@ -353,13 +356,13 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 			array_push( $response, $this->prepare_item_for_response( $filter, $request ) );
 		}
 
-		return new WP_REST_Response($response, 200);
+		return new \WP_REST_Response($response, 200);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
 		if(!isset($request['collection_id'])) {
@@ -384,22 +387,22 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_item( $request ) {
 		$filter_id = $request['filter_id'];
 
 		$filter = $this->filter_repository->fetch($filter_id);
 
-		return new WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
+		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
@@ -422,13 +425,13 @@ class TAINACAN_REST_Filters_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
-		if($method === WP_REST_Server::READABLE) {
+		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args['context'] = array(
 				'type'    => 'string',
 				'default' => 'view',
 				'items'   => array( 'view, edit' )
 			);
-		} elseif ($method === WP_REST_Server::CREATABLE || $method === WP_REST_Server::EDITABLE) {
+		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->filter_repository->get_map();
 
 			foreach ($map as $mapped => $value){
