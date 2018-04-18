@@ -176,8 +176,8 @@
                 <b-autocomplete
                         id="tainacan-text-cover-page"
                         :data="coverPages"
-                        v-model="coverPageName"
-                        @select="option => { form.cover_page_id = option.id; coverPageName = option.title.rendered}"
+                        v-model="coverPageTitle"
+                        @select="onSelectCoverPage($event)"
                         :loading="isFetchingPages"
                         @input="fecthCoverPages()"
                         @focus="clearErrors('cover_page_id')">
@@ -186,6 +186,31 @@
                     </template>
                     <template slot="empty">No esults found</template>
                 </b-autocomplete>
+                <br>
+                <b-field 
+                        id="tainacan-cover-page" 
+                        v-if="coverPage != undefined && coverPage.title != undefined">    
+                    <div class="control">
+                        <b-taglist attached>
+                            <b-tag
+                                    size="is-medium" 
+                                    type="is-primary" 
+                                    v-html="coverPage.title.rendered" />
+                            <b-tag 
+                                    size="is-medium"
+                                    type="is-tertiary"
+                                    @close="removeCoverPage()"
+                                    closable>
+                                <a 
+                                        target="blank" 
+                                        :href="coverPageEditPath">Edit</a>
+                                &nbsp;&nbsp;
+                                <a 
+                                        target="_blank" 
+                                        :href="coverPage.link">View</a></b-tag>
+                        </b-taglist>
+                    </div>
+                </b-field>
             </b-field>
 
             <!-- Slug -------------------------------- --> 
@@ -229,7 +254,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
 
 export default {
     name: 'CollectionEditionForm',
@@ -266,7 +291,9 @@ export default {
             }],
             isFetchingPages: false,
             coverPages: [],
-            coverPageName: '',
+            coverPage: '',
+            coverPageTitle: '',
+            coverPageEditPath: '',
             editFormErrors: {},
             formErrorMessage: '',
             isNewCollection: false
@@ -292,6 +319,7 @@ export default {
                 name: this.form.name, 
                 description: this.form.description,
                 enable_cover_page: this.form.enable_cover_page, 
+                cover_page_id: this.form.cover_page_id, 
                 slug: this.form.slug, 
                 status: this.form.status
             };
@@ -304,6 +332,7 @@ export default {
                 this.form.slug = this.collection.slug;
                 this.form.description = this.collection.description;
                 this.form.status = this.collection.status;
+                this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
 
                 this.isLoading = false;
@@ -351,6 +380,8 @@ export default {
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
+                this.form.cover_page_id = this.collection.cover_page_id;
+                this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.slug = this.collection.slug;
                 
                 // Pre-fill status with publish to incentivate it
@@ -426,15 +457,27 @@ export default {
         fecthCoverPages() {
             this.isFetchingPages = true;
             this.fetchPages()
-            .then((pages) => {
-                this.coverPages = pages;
-                this.isFetchingPages = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
-                this.isFetchingPages = false;
-            }); 
+                .then((pages) => {
+                    this.coverPages = pages;
+                    this.isFetchingPages = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isFetchingPages = false;
+                });
+        },
+        onSelectCoverPage(selectedPage) { 
+            this.form.cover_page_id = selectedPage.id; 
+            this.coverPage = selectedPage;
+            this.coverPageTitle = this.coverPage.title.rendered;
+            this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + selectedPage.id + '&action=edit';
+        },
+        removeCoverPage() {
+            this.coverPage = {};
+            this.coverPageTitle = '';
+            this.form.cover_page_id = '';
         }
+        
     },
     created(){
 
@@ -458,13 +501,17 @@ export default {
                 this.form.slug = this.collection.slug;
                 this.form.status = this.collection.status;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
+                this.form.cover_page_id = this.collection.cover_page_id;
                 
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
                     
                     this.isFetchingPages = true;
+                    
                     this.fetchPage(this.form.cover_page_id)
                     .then((page) => {
-                        this.coverPageName = page.title.rendered;
+                        this.coverPage = page;
+                        this.coverPageTitle = this.coverPage.title.rendered;
+                        this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + page.id + '&action=edit';
                         this.isFetchingPages = false;
                     })
                     .catch((error) => {

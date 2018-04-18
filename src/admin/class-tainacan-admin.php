@@ -154,7 +154,8 @@ class Admin {
 			'i18n'                   => $tainacan_admin_i18n,
 			'user_caps'              => $user_caps,
 			'user_prefs'             => $prefs,
-			'base_url'               => $TAINACAN_BASE_URL
+			'base_url'               => $TAINACAN_BASE_URL,
+			'admin_url'              => admin_url()
 		];
 
 		$maps = [
