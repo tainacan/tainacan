@@ -154,7 +154,7 @@ return [
 	'info_no_collection_created'               => __( 'No collection was created in this repository.', 'tainacan' ),
 	'info_no_category_created'                 => __( 'No category was created in this repository.', 'tainacan' ),
 	'info_no_item_created'                     => __( 'No item was created in this collection.', 'tainacan' ),
-	'info_no_item_found'                     => __( 'No item was found here with these filters.', 'tainacan' ),
+	'info_no_item_found'                       => __( 'No item was found here with these filters.', 'tainacan' ),
 	'info_error_deleting_collection'           => __( 'Error on deleting collection.', 'tainacan' ),
 	'info_error_deleting_category'             => __( 'Error on deleting category', 'tainacan' ),
 	'info_collection_deleted'                  => __( 'Collection deleted.', 'tainacan' ),
@@ -189,6 +189,7 @@ return [
 	'info_logs_after'                          => __( 'What was updated', 'tainacan' ),
 	'info_there_is_no_field'                   => __('There is no field here yet.', 'tainacan' ),
 	'info_there_is_no_filter'                  => __('There is no filter here yet.', 'tainacan' ),
+	'info_changes'                             => __( 'Changes', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

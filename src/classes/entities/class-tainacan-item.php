@@ -75,16 +75,24 @@ class Item extends Entity {
 	}
 
 	/**
+	 * @param null $exclude
+	 *
 	 * @return array
 	 */
-	function get_attachments() {
+	function get_attachments($exclude = null){
 		$item_id = $this->get_id();
+
+		if(!$exclude){
+			$to_exclude = get_post_thumbnail_id( $item_id );
+		} else {
+			$to_exclude = $exclude;
+		}
 
 		$attachments_query = [
 			'post_type'     => 'attachment',
-			'post_per_page' => - 1,
+			'post_per_page' => -1,
 			'post_parent'   => $item_id,
-			'exclude'       => get_post_thumbnail_id( $item_id )
+			'exclude'       => $to_exclude,
 		];
 
 		$attachments = get_posts( $attachments_query );
@@ -132,14 +140,6 @@ class Item extends Entity {
 	/**
 	 * @return int|string
 	 */
-    /*function get_featured_img_id() {
-        $featured_img_id = $this->get_featured_img_id();
-        if ( isset( $featured_img_id ) ) {
-            return $featured_img_id;
-        }
-
-        return get_post_thumbnail_id( $this->get_id() );
-    }*/
 	function get_featured_img_id() {
         $featured_img_id = $this->get_mapped_property("featured_img_id");
         if ( isset( $featured_img_id ) ) {
@@ -433,7 +433,7 @@ class Item extends Entity {
 		return $return;
 		
 	}
-	
+
 	/**
 	 * Return the item metadata as a HTML string to be used as output.
 	 *
@@ -441,10 +441,12 @@ class Item extends Entity {
 	 *
 	 * If an ID, a slug or a Tainacan\Entities\Field object is passed, it returns only one metadata, otherwise
 	 * it returns all metadata
-	 * 
+	 *
 	 * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
 	 * @param bool $hide_empty Wether to hide or not fields the item has no value to
+	 *
 	 * @return string        The HTML output
+	 * @throws \Exception
 	 */
 	public function get_metadata_as_html($field = null, $hide_empty = true) {
 		

@@ -77,18 +77,18 @@ abstract class Repository {
 		}
 
 		$is_update = false;
-		$diffs = [];
+		$diffs     = [];
 		if ( $obj->get_id() ) {
 
-			$old   = $obj->get_repository()->fetch( $obj->get_id() );
+			$old = $obj->get_repository()->fetch( $obj->get_id() );
 
-			if(method_exists($old, 'get_status') && $old->get_status() === 'auto-draft') {
+			if ( method_exists( $old, 'get_status' ) && $old->get_status() === 'auto-draft' ) {
 				$is_update = false;
 			} else {
 				$is_update = true;
 			}
 
-			$diffs = $this->diff($old, $obj);
+			$diffs = $this->diff( $old, $obj );
 		}
 
 		$map = $this->get_map();
@@ -122,7 +122,42 @@ abstract class Repository {
 		}
 
 		if ( method_exists( $obj, 'get_featured_img_id' ) ) {
-			set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+			if ( ! get_post_thumbnail_id( $obj->WP_Post->ID ) ) {
+				// was added a thumbnail
+
+				$settled = set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => '',
+						'diff_with_index' => 0,
+					];
+
+				}
+
+			} else {
+
+				// was update a thumbnail
+
+				$old_thumbnail = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+				$settled = set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => $old_thumbnail,
+						'diff_with_index' => 0,
+					];
+				}
+			}
 		}
 
 		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
@@ -623,7 +658,7 @@ abstract class Repository {
 	public function diff( $old = 0, $new ) {
 		$old_entity = null;
 
-		if ( $old === 0) { // self diff or other entity?
+		if ( $old === 0 ) { // self diff or other entity?
 			$id = $new->get_id();
 
 			if ( ! empty( $id ) ) { // there is a repository entity?
@@ -643,19 +678,6 @@ abstract class Repository {
 		$diff = [];
 
 		foreach ( $map as $prop => $mapped ) {
-			if(method_exists($new_entity, 'get_featured_image')){
-				$old_image = $old_entity->get_featured_image();
-				$new_image = $new_entity->get_featured_image();
-
-				if($old_image != $new_image){
-					$diff['featured_image'] = [
-						'new'             => $new_image,
-						'old'             => $old_image,
-						'diff_with_index' => 0,
-					];
-				}
-			}
-
 			if ( $old_entity->get_mapped_property( $prop ) != $new_entity->get_mapped_property( $prop ) ) {
 
 				if ( $mapped['map'] === 'meta_multi' || ( $mapped['map'] === 'meta' && is_array( $new_entity->get_mapped_property( $prop ) ) ) ) {
@@ -664,10 +686,10 @@ abstract class Repository {
 					$new_v = $new_entity->get_mapped_property( $prop );
 					$old_v = $old_entity->get_mapped_property( $prop );
 
-					$old_v = !is_array($old_v) && empty($old_v) && !is_string($old_v) ? array() : ( !is_string($old_v) ? $old_v : [$old_v] );
+					$old_v = ! is_array( $old_v ) && empty( $old_v ) && ! is_string( $old_v ) ? array() : ( ! is_string( $old_v ) ? $old_v : [ $old_v ] );
 
-					$array_diff_with_index = array_map('unserialize',
-						array_diff_assoc(array_map('serialize', $new_v), array_map('serialize', $old_v)));
+					$array_diff_with_index = array_map( 'unserialize',
+						array_diff_assoc( array_map( 'serialize', $new_v ), array_map( 'serialize', $old_v ) ) );
 
 					if ( ! empty( $array_diff_with_index ) ) {
 
