@@ -1,7 +1,7 @@
 <?php 
 
-namespace Tainacan;
-use Tainacan\Entities;
+use \Tainacan\Entities;
+use \Tainacan\Repositories;
 
 /**
  * To be used inside The Loop
@@ -17,7 +17,7 @@ use Tainacan\Entities;
  * @param bool $hide_empty Wether to hide or not fields the item has no value to
  * @return string        The HTML output
  */
-function get_tainacan_the_metadata($field = null, $hide_empty = true) {
+function tainacan_get_the_metadata($field = null, $hide_empty = true) {
 	$post = get_post();
 	$theme_helper = \Tainacan\Theme_Helper::get_instance();
 	
@@ -32,4 +32,13 @@ function get_tainacan_the_metadata($field = null, $hide_empty = true) {
 
 function tainacan_the_metadata($field = null, $hide_empty = true) {
 	echo get_tainacan_the_metadata($field, $hide_empty);
+}
+
+/**
+ * When visiting a collection archive or single, returns the current collection id
+ *
+ * @uses get_post_type() WordPress function, which looks for the global $wp_query variable
+ */
+function tainacan_get_collection_id() {
+	return Repositories\Collections::get_instance()->get_id_by_db_identifier(get_post_type());
 }
