@@ -132,16 +132,16 @@ class Log extends Entity {
 		return maybe_unserialize( base64_decode( $this->get_mapped_property( 'value' ) ) );
 	}
 
-	/**
-	 * Get old value of log entry object
-	 *
-	 * @param mixed $value
-	 *
-	 * @return void
-	 */
-	public function get_old_value() {
-		return maybe_unserialize( base64_decode( $this->get_mapped_property( 'old_value' ) ) );
-	}
+//	/**
+//	 * Get old value of log entry object
+//	 *
+//	 * @param mixed $value
+//	 *
+//	 * @return void
+//	 */
+//	public function get_old_value() {
+//		return maybe_unserialize( base64_decode( $this->get_mapped_property( 'old_value' ) ) );
+//	}
 
 	/**
 	 * Set log tittle
@@ -226,15 +226,29 @@ class Log extends Entity {
 		$this->set_mapped_property( 'value', base64_encode( maybe_serialize( $value ) ) );
 	}
 
+//	/**
+//	 * Set old value of log entry
+//	 *
+//	 * @param [mixed] $value
+//	 *
+//	 * @return void
+//	 */
+//	protected function set_old_value( $value = null ) {
+//		$this->set_mapped_property( 'old_value', base64_encode( maybe_serialize( $value ) ) );
+//	}
+
 	/**
-	 * Set old value of log entry
-	 *
-	 * @param [mixed] $value
-	 *
-	 * @return void
+	 * @param $diffs
 	 */
-	protected function set_old_value( $value = null ) {
-		$this->set_mapped_property( 'old_value', base64_encode( maybe_serialize( $value ) ) );
+	public function set_log_diffs($diffs){
+		$this->set_mapped_property( 'log_diffs', $diffs );
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	public function get_log_diffs(){
+		return $this->get_mapped_property('log_diffs');
 	}
 
 	/**
@@ -242,24 +256,22 @@ class Log extends Entity {
 	 * @param boolean|string $msn
 	 * @param string $desc
 	 * @param mixed $new_value
-	 * @param mixed $old_value
+	 * @param array $diffs
 	 * @param string $status 'publish', 'private' or 'pending'
 	 *
-	 * @throws \Exception
 	 * @return \Tainacan\Entities\Log
+	 * @throws \Exception
 	 */
-	public static function create( $msn = false, $desc = '', $new_value = null, $old_value = null, $status = 'publish' ) {
+	public static function create( $msn = false, $desc = '', $new_value = null, $diffs = [], $status = 'publish' ) {
+
 		$log = new Log();
 		$log->set_title( $msn );
 		$log->set_description( $desc );
 		$log->set_status( $status );
+		$log->set_log_diffs( $diffs );
 
 		if ( ! is_null( $new_value ) ) {
 			$log->set_value( $new_value );
-
-			if ( ! is_null( $old_value ) ) {
-				$log->set_old_value( $old_value );
-			}
 		} elseif ( $msn === false ) {
 			throw new \Exception( 'msn or new_value is need to log' );
 		}
@@ -284,20 +296,20 @@ class Log extends Entity {
 		return $repository->approve( $this );
 	}
 	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \Tainacan\Entities\Entity::diff()
-	 */
-	public function diff($which = 0) {
-		$log = $this;
-
-		if($which != 0) {
-			$log = new self($which);
-		}
-
-		$value = $log->get_value();
-		$old = $log->get_old_value();
-		return $value->diff($old);
-	}
+//	/**
+//	 *
+//	 * {@inheritDoc}
+//	 * @see \Tainacan\Entities\Entity::diff()
+//	 */
+//	public function diff($which = 0) {
+//		$log = $this;
+//
+//		if($which != 0) {
+//			$log = new self($which);
+//		}
+//
+//		$value = $log->get_value();
+//		$old = $log->get_old_value();
+//		return $value->diff($old);
+//	}
 }

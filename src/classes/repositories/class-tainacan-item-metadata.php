@@ -7,8 +7,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Item_Metadata extends Repository {
 
-    protected function __construct()
-    {
+    protected function __construct() {
         parent::__construct();
     }
 
@@ -16,10 +15,8 @@ class Item_Metadata extends Repository {
 
     private static $instance = null;
 
-    public static function get_instance()
-    {
-        if(!isset(self::$instance))
-        {
+    public static function get_instance() {
+        if(!isset(self::$instance)) {
             self::$instance = new self();
         }
 
@@ -33,12 +30,19 @@ class Item_Metadata extends Repository {
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
-	    $old = $item_metadata;
 	    $is_update = false;
-	    // TODO get props obj before update
-	    if( $item_metadata->get_id() ) {
-		    $is_update = true;
-		    $old = $item_metadata->get_repository()->fetch( $item_metadata->get_id() );
+	    $diffs = [];
+	    if ( $item_metadata->get_id() ) {
+
+	    	if($item_metadata->get_status() === 'auto-draft') {
+			    $is_update = false;
+		    } else {
+	    		$is_update = true;
+		    }
+
+		    $old   = $item_metadata->get_repository()->fetch( $item_metadata->get_id() );
+
+		    $diffs = $this->diff($old, $item_metadata);
 	    }
 		
 		$unique = !$item_metadata->is_multiple();
@@ -84,12 +88,10 @@ class Item_Metadata extends Repository {
 	                }
 	            }
 	        }
+
+			do_action('tainacan-insert', $item_metadata, $diffs, $is_update);
+			do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
 		}
-		
-        
-        
-        do_action('tainacan-insert', $item_metadata, $old, $is_update);
-        do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
 
         $new_entity = new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
 		
@@ -133,11 +135,18 @@ class Item_Metadata extends Repository {
 		if ($field_type->get_primitive_type() == 'term') {
 			$new_terms = $item_metadata->get_value();
 			$taxonomy = new Entities\Taxonomy( $field_type->get_option('taxonomy_id') );
+
 			if( $taxonomy ){
-                wp_set_object_terms($item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
+				$old = $item_metadata;
+
+                $success = wp_set_object_terms($item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
+
+                if(!$success instanceof \WP_Error) {
+	                $diffs = $this->diff($old, $item_metadata);
+
+	                do_action( 'tainacan-insert', $item_metadata, $diffs, true );
+                }
             }
-
-
 		}
 	}
 	

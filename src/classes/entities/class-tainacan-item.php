@@ -494,4 +494,49 @@ class Item extends Entity {
 		
 	}
 	
+	public function get_document_html($img_size = 'large') {
+		
+		$type = $this->get_document_type();
+		
+		$output = '';
+		
+		if ( $type == 'url' ) {
+			$output .= apply_filters('the_content', $this->get_document());
+		} elseif ( $type == 'text' ) {
+			$output .= $this->get_document();
+		} elseif ( $type == 'attachment' ) {
+			
+			if ( wp_attachment_is_image($this->get_document()) ) {
+				
+				$img = wp_get_attachment_image($this->get_document(), $img_size);
+				$img_full = wp_get_attachment_url($this->get_document());
+				
+				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
+				
+			} else {
+				
+				global $wp_embed;
+				
+				$url = wp_get_attachment_url($this->get_document());
+				
+				$embed = $wp_embed->autoembed($url);
+				
+				if ( $embed == $url ) {
+					
+					// No embed handler found
+					// TODO: Add filter to allow customization
+					$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
+				} else {
+					$output .= $embed;
+				}
+				
+				
+			}
+			
+		}
+		
+		return $output;
+		
+	}
+	
 }

@@ -154,7 +154,6 @@ export default {
                 return this.getFieldTypes();
             },
             set(value) {
-                console.log("OIEEE")
                 return this.updateFieldTypes(value);
             }
         },

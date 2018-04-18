@@ -7,7 +7,7 @@
                     <div class="content">
                         <div class="title">{{ this.$i18n.get('info_logs_before') }}</div>
                         <div
-                                v-for="(diff, key) in event.log_diff"
+                                v-for="(diff, key) in event.log_diffs"
                                 v-if="diff.old"
                                 :key="key">
 
@@ -39,7 +39,7 @@
                     <div class="content">
                         <div class="title">{{ this.$i18n.get('info_logs_after') }}</div>
                         <div
-                                v-for="(diff, key) in event.log_diff"
+                                v-for="(diff, key) in event.log_diffs"
                                 :key="key">
 
                             <p/>
@@ -55,7 +55,7 @@
                                     class="content is-inline" >
 
                                 <div
-                                        class="is-inline has-text-success"
+                                        class="is-inline"
                                         :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }"
                                         v-if="!Array.isArray(d) && d.constructor.name !== 'Object' ">{{ d }}
                                 </div>
@@ -67,7 +67,7 @@
                                         class="is-inline">
 
                                     <div
-                                        class="is-capitalized is-inline has-text-success"
+                                        class="is-capitalized"
                                         :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
                                     {{ `${i2.replace('_', ' ')}: ${e} ` }}
                                     </div>

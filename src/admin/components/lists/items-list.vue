@@ -106,7 +106,6 @@ export default {
                 message: this.$i18n.get('info_warning_item_delete'),
                 onConfirm: () => {
                     this.deleteItem(itemId).then(() => {
-                        this.loadItems();
                         this.$toast.open({
                             duration: 3000,
                             message: this.$i18n.get('info_item_deleted'),
@@ -139,7 +138,6 @@ export default {
                     for (let item of this.selectedItems) {
                         this.deleteItem(item.id)
                         .then(() => {
-                            this.loadItems();
                             this.$toast.open({
                                 duration: 3000,
                                 message: this.$i18n.get('info_item_deleted'),

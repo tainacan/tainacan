@@ -28,7 +28,7 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'log_inserts' ), 10, 3 );
+		add_action( 'tainacan-insert', array( $this, 'insert_log' ), 10, 3 );
 	}
 
 	public function get_map() {
@@ -104,13 +104,16 @@ class Logs extends Repository {
 				'description' => __( 'The actual log value' ),
 				'validation'  => ''
 			],
-			'old_value'      => [
+//			'old_value'      => [
+//				'map'         => 'meta',
+//				'title'       => __( 'Old value', 'tainacan' ),
+//				'type'        => 'string',
+//				'description' => __( 'The old log value' ),
+//				'validation'  => ''
+//			],
+			'log_diffs'      => [
 				'map'         => 'meta',
-				'title'       => __( 'Old value', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The old log value' ),
-				'validation'  => ''
-			],
+			]
 		] );
 	}
 
@@ -230,24 +233,22 @@ class Logs extends Repository {
 	 *
 	 * @return Entities\Log new created log
 	 */
-	public function log_inserts( $new_value, $old_value = null, $is_update = null ) {
+	public function insert_log( $new_value, $diffs, $is_update = null ) {
 		$msn = "";
 		$description = "";
 
 		if ( is_object( $new_value ) ) {
 			// do not log a log
-			if ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() == 'tainacan-log' || $new_value->get_status() === 'auto-draft' ) {
-				return;
+			if ( (method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() === 'tainacan-log') || $new_value->get_status() === 'auto-draft' ) {
+				return false;
 			}
 
 			if($new_value instanceof Entities\Field){
 				$type = $new_value->get_field_type();
 
 				if($type === 'Tainacan\Field_Types\Core_Title' || $type === 'Tainacan\Field_Types\Core_Description'){
-					return;
+					return false;
 				}
-			} elseif (!$is_update && $new_value instanceof Entities\Item || $new_value instanceof Entities\Collection) {
-				return;
 			}
 
 			$type = get_class( $new_value );
@@ -300,7 +301,9 @@ class Logs extends Repository {
 		$msn = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
 		$description = apply_filters('tainacan-insert-log-description', $description, $type, $new_value);
 
-		return Entities\Log::create( $msn, $description, $new_value, $old_value );
+		if(!empty($diffs)) {
+			return Entities\Log::create( $msn, $description, $new_value, $diffs );
+		}
 	}
 
 	/**

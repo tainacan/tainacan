@@ -22,3 +22,4 @@ src/assets/css/tainacan-admin.css.map
 cypress/videos
 cypress/screenshots
 .vscode
+src/pdf-viewer/pdfjs-dist

@@ -98,15 +98,18 @@ class Terms extends Repository {
 	 * @param Entities\Entity $term
 	 *
 	 * @return Entities\Entity|Entities\Term
+	 * @throws \Exception
 	 */
 	public function insert($term){
 
-		$old = $term;
 		$is_update = false;
-		// TODO get props obj before update
-		if( $term->get_id() ) {
+		$diffs = [];
+		if ( $term->get_id() ) {
 			$is_update = true;
-			$old = $term->get_repository()->fetch( $term->get_id() );
+
+			$old   = $this->fetch( $term->get_id(), $term->get_taxonomy() );
+
+			$diffs = $this->diff($old, $term);
 		}
 
         // First iterate through the native post properties
@@ -147,7 +150,7 @@ class Terms extends Repository {
             }
         }
         
-        do_action('tainacan-insert', $term, $old, $is_update);
+        do_action('tainacan-insert', $term, $diffs, $is_update);
         do_action('tainacan-insert-Term', $term);
 
 		return new Entities\Term($term_saved['term_id'], $term->get_taxonomy());
@@ -188,8 +191,12 @@ class Terms extends Repository {
                 }
             }
 
-        } else {
-            return [];
+        } elseif (is_string($taxonomies) && is_numeric($args)){ // if taxonomy is taxonomy_db_identifier
+            $cpt = $taxonomies;
+
+            $term = get_term_by('id', $args, $cpt);
+
+            return new Entities\Term($term);
         }
 
         if(is_array( $args ) && !empty( $cpt ) ){ // if an array of arguments is
