@@ -72,4 +72,8 @@
     .back-hlight {
         background-color: rgb(231, 255, 237);
     }
+
+    .bottom-space-tainacan {
+        margin-bottom: 0.2rem;
+    }
 </style>
