@@ -67,6 +67,44 @@
                 </div>
             </b-field>
 
+            <button 
+                    id="frame-uploader"
+                    class="buttton"
+                    @click="openFrameUploader($event)">Enviar</button>
+
+            
+            <!-- Your image container, which can be manipulated with js -->
+            <div class="custom-img-container">
+                <img 
+                    v-if="you_have_img"
+                    :src="your_img_src" 
+                    alt="" 
+                    style="max-width:100%;">
+            </div>
+
+            <!-- Your add & remove image links -->
+            <p class="hide-if-no-js">
+                <a 
+                        class="upload-custom-img" 
+                        :class="{ 'hidden': you_have_img, 'hidden' : !you_have_img}"
+                        :href="upload_link">
+                    Set custom image
+                </a>
+                <a 
+                        class="delete-custom-img" 
+                        :class="{'hidden' : !you_have_img, 'visible' : you_have_img }" 
+                        href="#">
+                    Remove this image
+                </a>
+            </p>
+
+            <!-- A hidden input to set and post the chosen image id -->
+            <input 
+                class="custom-img-id" 
+                name="custom-img-id" 
+                type="hidden" 
+                :value="your_img_id">
+
             <!-- Cover  Image-------------------------------- --> 
             <b-field 
                 :addons="false"
@@ -228,7 +266,7 @@
                         @focus="clearErrors('slug')"/>
             </b-field>
 
-            <!-- Attachments -------------------------------- --> 
+            <!-- Form submit -------------------------------- --> 
             <div class="field is-grouped form-submit">
                 <div class="control">
                     <button
@@ -296,7 +334,15 @@ export default {
             coverPageEditPath: '',
             editFormErrors: {},
             formErrorMessage: '',
-            isNewCollection: false
+            isNewCollection: false,
+            // Fream Uploader variables
+            frameUploader: undefined,
+            your_img_src: '',
+            your_img_id: '',
+            you_have_img: false,
+            upload_link: '',
+            custom_img_id: ''
+
         }
     },
     methods: {
@@ -476,6 +522,42 @@ export default {
             this.coverPage = {};
             this.coverPageTitle = '';
             this.form.cover_page_id = '';
+        },
+        openFrameUploader(event) {
+            event.preventDefault();
+
+             // If the media frame already exists, reopen it.
+            if ( this.frameUploader ) {
+                this.frameUploader.open();
+                return;
+            }
+            
+            // Create a new media frame
+            this.frameUploader = wp.media.frames.frame_uploader = wp.media({
+                title: 'Select or Upload Media Of Your Chosen Persuasion',
+                button: {
+                    text: 'Use this media'
+                },
+                multiple: false,
+
+            });
+
+            wp.media.view.settings.post = {
+                id: this.collectionId,
+                featuredImageId: this.collection.featured_img_id
+            }
+
+            //console.log(wp.wp_get_image_editor())
+
+            this.frameUploader.on('select', () => {
+                
+                let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
+
+                console.log(media);
+
+            });
+
+            this.frameUploader.open();
         }
         
     },
