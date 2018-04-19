@@ -430,8 +430,6 @@ class Fields extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($field){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
-
     	$this->pre_update_category_field($field);
         $new_field = parent::insert($field);
 
@@ -452,7 +450,14 @@ class Fields extends Repository {
 
     public function delete($field_id){
 		$this->delete_category_field($field_id);
-		return new Entities\Field( wp_trash_post( $field_id ) );
+
+		$deleted =  new Entities\Field( wp_trash_post( $field_id ) );
+
+		if($deleted) {
+			do_action( 'tainacan-deleted', $deleted, $is_update = false, $is_delete_permanently = true );
+		}
+
+		return $deleted;
     }
 
     /**

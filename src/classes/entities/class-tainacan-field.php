@@ -432,11 +432,15 @@ class Field extends Entity {
             $is_valid = $fto->validate_options($this);
         }
         
-        if (true === $is_valid)
-            return true;
+        if (true === $is_valid) {
+	        $this->set_as_valid();
+
+	        return true;
+        }
             
-        if (!is_array($is_valid))
-            throw new \Exception("Return of validate_options field type method should be an Array in case of error");
+        if (!is_array($is_valid)) {
+	        throw new \Exception( "Return of validate_options field type method should be an Array in case of error" );
+        }
 
 	    $this->add_error('field_type_options', $is_valid);
         

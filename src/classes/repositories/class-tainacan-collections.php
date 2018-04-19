@@ -262,10 +262,22 @@ class Collections extends Repository {
 	 */
 	public function delete( $args ) {
 		if ( ! empty( $args[1] ) && $args[1] === true ) {
-			return new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
+			$deleted = new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
+
+			if($deleted) {
+				do_action( 'tainacan-deleted', $deleted, $is_update = false, $is_delete_permanently = true );
+			}
+
+			return $deleted;
 		}
 
-		return new Entities\Collection( wp_trash_post( $args[0] ) );
+		$trashed = new Entities\Collection( wp_trash_post( $args[0] ) );
+
+		if($trashed) {
+			do_action( 'tainacan-trashed', $trashed, $is_update = false, $is_delete_permanently = false );
+		}
+
+		return $trashed;
 	}
 
 	/**

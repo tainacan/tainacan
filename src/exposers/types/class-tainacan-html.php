@@ -52,7 +52,7 @@ class Html extends Type {
 				$html .= '<td>'.htmlspecialchars($value).'</td>';
 			}
 		}
-		if(count($data > 0)) $html = '<th>'.implode('</th><th>', $heads).'</th><tr>'.$html.'</tr>';
+		if(count($data) > 0) $html = '<th>'.implode('</th><th>', $heads).'</th><tr>'.$html.'</tr>';
 		return $html;
 	}
 }

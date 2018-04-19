@@ -225,7 +225,15 @@ class Terms extends Repository {
     }
 
     public function delete($args){
-    	return wp_delete_term($args[0], $args[1]);
+    	$deleted = wp_delete_term($args[0], $args[1]);
+
+    	if($deleted) {
+    		$deleted_term_tainacan = new Entities\Term($args[0], $args[1]);
+
+		    do_action( 'tainacan-deleted', $deleted_term_tainacan, $is_update = false, $is_delete_permanently = true );
+	    }
+
+    	return $deleted;
     }
     
     public function register_post_type() { }

@@ -221,6 +221,7 @@ class Term extends Entity {
 			return false; 
 		}
 
+		$this->set_as_valid();
 		return true;
 
 	}

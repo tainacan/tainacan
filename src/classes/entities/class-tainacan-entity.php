@@ -189,7 +189,10 @@ class Entity {
             }
         }
         
-        $this->set_validated($is_valid);
+        if($is_valid){
+        	$this->set_as_valid();
+        }
+
         return $is_valid;
     }
     
