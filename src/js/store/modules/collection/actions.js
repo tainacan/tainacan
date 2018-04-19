@@ -103,16 +103,17 @@ export const deleteCollection = ({ commit }, id) => {
     });
 }
 
-export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page }) => {
+export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
             name: name,
             description: description,
             status: status,
             slug: slug,
+            cover_page_id: "" + cover_page_id,
             enable_cover_page: enable_cover_page
         }).then( res => {
-            commit('setCollection', { id: collection_id, name: name, description: description, slug: slug, status: status, enable_cover_page: enable_cover_page });
+            commit('setCollection', { id: collection_id, name: name, description: description, slug: slug, status: status, enable_cover_page: enable_cover_page, cover_page_id: cover_page_id });
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -222,7 +223,7 @@ export const fetchPages = () => {
     });
 };
 
-export const fetchPage = (pageId) => {
+export const fetchPage = ({ commit }, pageId ) => {
     return new Promise((resolve, reject) => {
         axios.wp.get('/pages/' + pageId)
         .then(res => {

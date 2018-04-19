@@ -57,46 +57,51 @@ class Admin {
 		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css' );
 		
 		$undesired_wp_styles = [
-			'admin-menu',
-			'admin-bar',
-			'code-editor',
-			'color-picker',
-			'customize-controls',
-			'customize-nav-menus',
-			'customize-widgets',
-			'dashboard',
-			'dashicons',
-			'deprecated-media',
-			'edit',
-			'wp-pointer',
-			'farbtastic',
-			'forms',
-			'common',
-			'install',
-			'wp-auth-check',
-			'site-icon',
-			'buttons',
-			'l10n',
-			'list-tables',
-			'login',
-			'media',
-			'nav-menus',
-			'revisions',
-			'themes',
-			'widgets',
-			'wp-admin'
+			//'admin-menu',
+			//'admin-bar',
+			//'code-editor',
+			//'color-picker',
+			//'customize-controls',
+			//'customize-nav-menus',
+			//'customize-widgets',
+			//'dashboard',
+			//'dashicons',
+			//'deprecated-media',
+			//'edit',
+			//'wp-pointer',
+			//'farbtastic',
+			//'forms',
+			//'common',
+			//'install',
+			//'wp-auth-check',
+			//'site-icon',
+			//'buttons',
+			//'l10n',
+			//'list-tables',
+			//'login',
+			//'media',
+			//'nav-menus',
+			//'revisions',
+			//'themes',
+			//'widgets',
+			//'wp-admin'
 		];
 
 		wp_dequeue_style( $undesired_wp_styles );
 		wp_deregister_style( $undesired_wp_styles );
+
+
 		
 	}
 	
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
-		
-		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [], null, true );
 
+		wp_enqueue_media();
+		wp_enqueue_script('jcrop');
+
+		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [], null, true );
+		 
 		$settings = $this->get_admin_js_localization_params();
 
 		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
@@ -154,7 +159,8 @@ class Admin {
 			'i18n'                   => $tainacan_admin_i18n,
 			'user_caps'              => $user_caps,
 			'user_prefs'             => $prefs,
-			'base_url'               => $TAINACAN_BASE_URL
+			'base_url'               => $TAINACAN_BASE_URL,
+			'admin_url'              => admin_url()
 		];
 
 		$maps = [
