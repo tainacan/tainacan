@@ -323,8 +323,8 @@ class Collection extends Entity {
 	 *
 	 * @return string
 	 */
-	function get_columns() {
-		return $this->get_mapped_property( 'columns' );
+	function get_default_displayed_fields() {
+		return $this->get_mapped_property( 'default_displayed_fields' );
 	}
 
 	/**
@@ -507,8 +507,8 @@ class Collection extends Entity {
 	 *
 	 * @return void
 	 */
-	function set_columns( $value ) {
-		$this->set_mapped_property( 'columns', $value );
+	function set_default_displayed_fields( $value ) {
+		$this->set_mapped_property( 'default_displayed_fields', $value );
 	}
 
 	/**
