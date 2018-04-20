@@ -138,6 +138,7 @@ return [
 	'label_cover_image'                        => __( 'Cover Image', 'tainacan' ),
 	'label_enable_cover_page'                  => __( 'Enable Cover Page', 'tainacan' ),
 	'label_cover_page'      		           => __( 'Cover Page', 'tainacan' ),
+	'label_default_displayed_fields'      	   => __( 'Default Displayed Fields', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),

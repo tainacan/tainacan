@@ -72,39 +72,6 @@
                     class="buttton"
                     @click="openFrameUploader($event)">Enviar</button>
 
-            
-            <!-- Your image container, which can be manipulated with js -->
-            <div class="custom-img-container">
-                <img 
-                    v-if="you_have_img"
-                    :src="your_img_src" 
-                    alt="" 
-                    style="max-width:100%;">
-            </div>
-
-            <!-- Your add & remove image links -->
-            <p class="hide-if-no-js">
-                <a 
-                        class="upload-custom-img" 
-                        :class="{ 'hidden': you_have_img, 'hidden' : !you_have_img}"
-                        :href="upload_link">
-                    Set custom image
-                </a>
-                <a 
-                        class="delete-custom-img" 
-                        :class="{'hidden' : !you_have_img, 'visible' : you_have_img }" 
-                        href="#">
-                    Remove this image
-                </a>
-            </p>
-
-            <!-- A hidden input to set and post the chosen image id -->
-            <input 
-                class="custom-img-id" 
-                name="custom-img-id" 
-                type="hidden" 
-                :value="your_img_id">
-
             <!-- Cover  Image-------------------------------- --> 
             <b-field 
                 :addons="false"
@@ -217,7 +184,7 @@
                         v-model="coverPageTitle"
                         @select="onSelectCoverPage($event)"
                         :loading="isFetchingPages"
-                        @input="fecthCoverPages()"
+                        @input="fecthCoverPages($event)"
                         @focus="clearErrors('cover_page_id')">
                     <template slot-scope="props">
                         {{ props.option.title.rendered }}
@@ -266,6 +233,27 @@
                         @focus="clearErrors('slug')"/>
             </b-field>
 
+            <!-- Default Displayed Fields ------------ -->
+             <b-field
+                    :addons="false" 
+                    :label="$i18n.get('label_default_displayed_fields')"
+                    :type="editFormErrors['default_displayed_fields'] != undefined ? 'default_displayed_fields' : ''" 
+                    :message="editFormErrors['default_displayed_fields'] != undefined ? editFormErrors['default_displayed_fields'] : ''">
+                <help-button 
+                        :title="$i18n.getHelperTitle('collections', 'default_displayed_fields')" 
+                        :message="$i18n.getHelperMessage('collections', 'default_displayed_fields')"/>
+                
+                    <div class="block">
+                        <b-checkbox
+                                v-for="(field, index) in collectionFields"
+                                :key="index" 
+                                v-model="form.default_displayed_fields"
+                                :native-value="field.visible">
+                            {{ field.name }}
+                        </b-checkbox>
+                    </div>
+             </b-field>
+
             <!-- Form submit -------------------------------- --> 
             <div class="field is-grouped form-submit">
                 <div class="control">
@@ -313,6 +301,7 @@ export default {
             },
             thumbnail: {},
             cover: {},
+            collectionFields: [],
             // Can be obtained from api later
             statusOptions: [{ 
                 value: 'publish',
@@ -336,13 +325,7 @@ export default {
             formErrorMessage: '',
             isNewCollection: false,
             // Fream Uploader variables
-            frameUploader: undefined,
-            your_img_src: '',
-            your_img_id: '',
-            you_have_img: false,
-            upload_link: '',
-            custom_img_id: ''
-
+            frameUploader: undefined
         }
     },
     methods: {
@@ -356,6 +339,9 @@ export default {
             'fetchPages',
             'fetchPage'
         ]),
+        ...mapActions('fields', [
+            'fetchFields'
+        ]),
         onSubmit() {
             // Puts loading on Draft Collection creation
             this.isLoading = true;
@@ -366,6 +352,7 @@ export default {
                 description: this.form.description,
                 enable_cover_page: this.form.enable_cover_page, 
                 cover_page_id: this.form.cover_page_id, 
+                default_displayed_fields: this.form.default_displayed_fields,
                 slug: this.form.slug, 
                 status: this.form.status
             };
@@ -380,6 +367,7 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
+                this.form.default_displayed_fields = this.collection.default_displayed_fields;
 
                 this.isLoading = false;
                 this.formErrorMessage = '';
@@ -427,7 +415,7 @@ export default {
                 this.form.description = this.collection.description;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
-                this.form.cover_page_id = this.collection.cover_page_id;
+                this.form.default_displayed_fields = this.collection.default_displayed_fields;
                 this.form.slug = this.collection.slug;
                 
                 // Pre-fill status with publish to incentivate it
@@ -500,9 +488,9 @@ export default {
                 this.$console.error(error);
             });    
         },
-        fecthCoverPages() {
+        fecthCoverPages(search) {
             this.isFetchingPages = true;
-            this.fetchPages()
+            this.fetchPages(search)
                 .then((pages) => {
                     this.coverPages = pages;
                     this.isFetchingPages = false;
@@ -547,12 +535,9 @@ export default {
                 featuredImageId: this.collection.featured_img_id
             }
 
-            //console.log(wp.wp_get_image_editor())
-
             this.frameUploader.on('select', () => {
                 
                 let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
-
                 console.log(media);
 
             });
@@ -584,7 +569,9 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
+                this.form.default_displayed_fields = this.collection.default_displayed_fields;
                 
+                // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
                     
                     this.isFetchingPages = true;
@@ -601,6 +588,42 @@ export default {
                         this.isFetchingPages = false;
                     }); 
                 } 
+
+                // Generates List of Displayed Field Types based on default_displayed_fields
+                this.fetchFields({ collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
+                .then((fields) => {
+                    
+                    this.collectionFields.push({ name: this.$i18n.get('label_thumbnail'), field: 'row_thumbnail', field_type: undefined, slug: 'featured_image', id: undefined, visible: true });
+
+                    for (let field of fields) {
+                        
+                        // Configuring fields default visibility.
+                        let fieldIsVisible;
+                        let fieldIndex = this.collection.default_displayed_fields.find(aField => aField.id == field.id); 
+                        
+                        if (fieldIndex > 0){
+                            // If the field is configured, we use the option selected by user
+                            if (this.collection.default_displayed_fields[fieldIndex].visible != undefined)
+                                fieldIsVisible = this.collection.default_displayed_fields[fieldIndex].visible;
+                        } else {
+                            // else we keep false value, except for core the field is configured, we use the option selected by user
+                            if (field.field_type_object.core)
+                                fieldIsVisible = true;
+                            else
+                                fieldIsVisible = false;
+                        }
+                        // All fields are listed
+                        this.collectionFields.push(
+                            { name: field.name, field: field.description, slug: field.slug, field_type: field.field_type, field_type_object: field.field_type_object, id: field.id, visible: fieldIsVisible }
+                        );
+                    }
+
+                    this.collectionFields.push({ name: this.$i18n.get('label_creation'), field: 'row_creation', field_type: undefined, slug: 'creation', id: 'date', visible: true});
+
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                }); 
 
                 this.isLoading = false; 
             });
