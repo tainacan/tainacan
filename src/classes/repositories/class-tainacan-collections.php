@@ -124,6 +124,7 @@ class Collections extends Repository {
 				'title'       => __( 'Default Displayed Fields', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'default'     => [],
 				'description' => __( 'List of collections property that will be displayed in the table view.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],

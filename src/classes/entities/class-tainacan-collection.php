@@ -507,7 +507,7 @@ class Collection extends Entity {
 	 *
 	 * @return void
 	 */
-	function set_default_displayed_fields( $value = [] ) {
+	function set_default_displayed_fields( $value ) {
 		$this->set_mapped_property( 'default_displayed_fields', $value );
 	}
 
