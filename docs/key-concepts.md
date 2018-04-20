@@ -29,9 +29,13 @@ Document is the main information of the item. It is the object which all metadat
 * URL: An URL pointing to an external website or file. It can be a general website, a specific file, or media services. In the case of media services, Tainacan recognizes addresses and displays the appropriate player, using [oEmbed](https://oembed.com/)
 * Text: A plain text, stored directly in the database, the user can type upon creating or editing an item
 
+### Metadata
+
+Data about the item. Each item have a metadata value for each field of the collection it belongs to.
+
 ## Fields
 
-Every collection have a set of fields. They are the description of the items of this collection. 
+Every collection have a set of fields. They are the description of the items of this collection. They define the metadata items in this collection will have.
 
 Each field has a set of settings. Is it required? Is it supposed to be unique (an ID number for example)? Does it accept multiple values? What is it Field Type? (TODO: see the complete list of field attributes).
 
