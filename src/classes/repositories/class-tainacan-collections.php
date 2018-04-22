@@ -173,7 +173,7 @@ class Collections extends Repository {
                 'map'        => 'meta',
                 'title'      => __('Header Image', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('The image to be used in collectino header', 'tainacan'),
+                'description'=> __('The image to be used in collection header', 'tainacan'),
                 'on_error'   => __('Invalid image', 'tainacan'),
                 //'validation' => v::numeric(),
                 'default'    => ''
