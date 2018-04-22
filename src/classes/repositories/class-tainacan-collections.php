@@ -169,6 +169,15 @@ class Collections extends Repository {
                 //'validation' => v::numeric(),
                 'default'    => ''
             ],
+			'header_image_id' => [
+                'map'        => 'meta',
+                'title'      => __('Header Image', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The image to be used in collectino header', 'tainacan'),
+                'on_error'   => __('Invalid image', 'tainacan'),
+                //'validation' => v::numeric(),
+                'default'    => ''
+            ],
 			'moderators_ids'    => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Moderators', 'tainacan' ),

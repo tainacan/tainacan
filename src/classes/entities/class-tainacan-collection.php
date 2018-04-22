@@ -30,6 +30,7 @@ class Collection extends Entity {
         $filters_order,
         $enable_cover_page,
         $cover_page_id,
+        $header_image_id,
         $moderators_ids;
 
     /**
@@ -355,6 +356,15 @@ class Collection extends Entity {
 	}
 	
 	/**
+	 * Get Header Image ID attribute
+	 *
+	 * @return string
+	 */
+	function get_header_image_id() {
+		return $this->get_mapped_property( 'header_image_id' );
+	}
+	
+	/**
 	 * Return true if enabled cover page is set to yes
 	 *
 	 * @return boolean
@@ -564,6 +574,17 @@ class Collection extends Entity {
 	 */
 	function set_cover_page_id( $value ) {
 		$this->set_mapped_property( 'cover_page_id', $value );
+	}
+	
+	/**
+	 * Set Header Image ID
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_header_image_id( $value ) {
+		$this->set_mapped_property( 'header_image_id', $value );
 	}
 
 	/**
