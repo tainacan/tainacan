@@ -79,6 +79,7 @@ class Theme_Helper {
 		$content = '';
 		
 		// document
+		$content .= $item->get_document_html();
 		
 		// metadata
 		$content .= $item->get_metadata_as_html();
