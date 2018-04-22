@@ -14,6 +14,7 @@ class Term extends Entity {
         $parent,
         $description,
         $user,
+		$header_image_id,
         $taxonomy;
 
 
@@ -125,6 +126,15 @@ class Term extends Entity {
 	function get_taxonomy() {
         return $this->get_mapped_property('taxonomy');
     }
+	
+	/**
+	 * Get Header Image ID attribute
+	 *
+	 * @return string
+	 */
+	function get_header_image_id() {
+		return $this->get_mapped_property( 'header_image_id' );
+	}
 
     // Setters
 
@@ -172,6 +182,17 @@ class Term extends Entity {
 	function set_taxonomy($value) {
         $this->set_mapped_property('taxonomy', $value);
     }
+	
+	/**
+	 * Set Header Image ID
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_header_image_id( $value ) {
+		$this->set_mapped_property( 'header_image_id', $value );
+	}
 	
 	
 	/**

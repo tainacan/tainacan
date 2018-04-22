@@ -80,6 +80,15 @@ class Terms extends Repository {
 				'default'    => get_current_user_id(),
                 'validation' => v::numeric(),
             ],
+			'header_image_id' => [
+                'map'        => 'termmeta',
+                'title'      => __('Header Image', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The image to be used in term header', 'tainacan'),
+                'on_error'   => __('Invalid image', 'tainacan'),
+                //'validation' => v::numeric(),
+                'default'    => ''
+            ],
 		    'hide_empty'  => [
 		    	'map'        => 'hide_empty',
 			    'type'       => 'bool'
