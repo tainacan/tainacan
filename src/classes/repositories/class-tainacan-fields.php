@@ -164,13 +164,13 @@ class Fields extends Repository {
                 'validation' => v::boolType()
             ],
             'exposer_mapping'        => [
-    		'map'        => 'meta',
-    		'title'      => __('exposer_mapping', 'tainacan'),
-    		'type'       => 'array',
-    		'description'=> __('The field mapping options', 'tainacan'),
-    		'on_error'   => __('Invalid Field Mapping', 'tainacan'),
-    		'validation' =>  v::arrayType(),
-    		'default'    => []
+	    		'map'        => 'meta',
+	    		'title'      => __('exposer_mapping', 'tainacan'),
+	    		'type'       => 'array',
+	    		'description'=> __('The field mapping options', 'tainacan'),
+	    		'on_error'   => __('Invalid Field Mapping', 'tainacan'),
+	    		//'validation' =>  v::arrayType(),
+	    		'default'    => []
     	    ],
         ]);
     }
@@ -501,11 +501,7 @@ class Fields extends Repository {
                 'field_type'    => 'Tainacan\Field_Types\Core_Description',
                 'status'        => 'publish',
             	'exposer_mapping'	=> [
-            		'dublin-core' => [
-            			'name'	=> 'description',
-            			'label'	=> __('Description', 'tainacan'),
-            			'URI'	=> 'http://purl.org/dc/terms/description',
-            		]
+            		'dublin-core' => 'description'
             	]
             ],
             'core_title'       => [
@@ -515,11 +511,7 @@ class Fields extends Repository {
                 'field_type'    => 'Tainacan\Field_Types\Core_Title',
                 'status'        => 'publish',
             	'exposer_mapping'	=> [
-            		'dublin-core' => [
-            			'name'	=> 'title',
-            			'label'	=> __('Title', 'tainacan'),
-            			'URI'	=> 'http://purl.org/dc/terms/title',
-            		]
+            		'dublin-core' => 'title'
             	]
             ]
         ];

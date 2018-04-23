@@ -31,11 +31,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 				'collection'        => $collection,
 				'field_type'		=> $type,
 				'exposer_mapping'	=> [
-					'dublin-core' => [
-						'name' => 'language',
-						'label' => 'language',
-						'URI' => 'http://purl.org/dc/terms/language',
-					]
+					'dublin-core' => 'language'
 				]
 			),
 			true,
