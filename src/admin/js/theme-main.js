@@ -27,13 +27,13 @@ import FilterCategorySelectbox from '../../classes/filter-types/category/Selectb
 
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
+import ItemsPage from '../pages/lists/items-page.vue';
 
 // Remaining imports
-import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
-import { router} from './router'
+import { routerTheme } from './router.js'
 import eventBusSearch from '../../js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
 
@@ -72,18 +72,20 @@ Vue.component('tainacan-filter-category-selectbox', FilterCategorySelectbox);
 /* Others */
 Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
+Vue.component('items-page', ItemsPage);
 
-Vue.use(eventBusSearch, { store: store, router: router});
-
-// Changing title of pages
-router.beforeEach((to, from, next) => {
-    document.title = to.meta.title;
-    next();
-});
+Vue.use(eventBusSearch, { store: store, router: routerTheme});
 
 new Vue({
-    el: '#tainacan-admin-app',
+    el: '#tainacan-items-page',
     store,
-    router,
-    render: h => h(AdminPage)
+    router: routerTheme,
+    data: {
+        collectionId: ''
+    },  
+    template: '<items-page :collection-id="collectionId"></items-page>',
+    beforeMount () {
+        if (this.$el.attributes['collection-id'] != undefined)
+            this.collectionId = this.$el.attributes['collection-id'].value;
+    }
 });

@@ -15,6 +15,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
 
         // Differentiates between repository level and collection level queries
         let endpoint = '/collection/'+collectionId+'/items?'
+
         if (collectionId == undefined)
             endpoint = '/items?'
         
@@ -102,15 +103,17 @@ export const deleteCollection = ({ commit }, id) => {
     });
 }
 
-export const updateCollection = ({ commit }, { collection_id, name, description, slug, status }) => {
+export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
             name: name,
             description: description,
             status: status,
-            slug: slug
+            slug: slug,
+            cover_page_id: "" + cover_page_id,
+            enable_cover_page: enable_cover_page
         }).then( res => {
-            commit('setCollection', { id: collection_id, name: name, description: description, slug: slug, status: status });
+            commit('setCollection', { id: collection_id, name: name, description: description, slug: slug, status: status, enable_cover_page: enable_cover_page, cover_page_id: cover_page_id });
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -189,4 +192,46 @@ export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
         });
 
     }); 
+};
+
+export const updateCover = ({ commit }, { collectionId, coverId }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.patch('/collections/' + collectionId, {
+            cover_img_id: coverId 
+        }).then( res => {
+            let collection = res.data
+            commit('setCollection', collection);
+            resolve( collection );
+        }).catch( error => { 
+            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+        });
+
+    }); 
+};
+
+// Collection Cover Page
+export const fetchPages = () => {
+    return new Promise((resolve, reject) => {
+        axios.wp.get('/pages/')
+        .then(res => {
+            let pages = res.data;
+            resolve( pages );
+        })
+        .catch(error => {
+            reject( error );
+        });
+    });
+};
+
+export const fetchPage = ({ commit }, pageId ) => {
+    return new Promise((resolve, reject) => {
+        axios.wp.get('/pages/' + pageId)
+        .then(res => {
+            let page = res.data;
+            resolve( page );
+        })
+        .catch(error => {
+            reject( error );
+        });
+    });
 };

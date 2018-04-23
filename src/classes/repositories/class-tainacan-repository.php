@@ -76,14 +76,21 @@ abstract class Repository {
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
-		$old = $obj;
 		$is_update = false;
-		// TODO get props obj before update
-		if( $obj->get_id() ) {
-			$is_update = true;
+		$diffs     = [];
+		if ( $obj->get_id() ) {
+
 			$old = $obj->get_repository()->fetch( $obj->get_id() );
+
+			if ( method_exists( $old, 'get_status' ) && $old->get_status() === 'auto-draft' ) {
+				$is_update = false;
+			} else {
+				$is_update = true;
+			}
+
+			$diffs = $this->diff( $old, $obj );
 		}
-		
+
 		$map = $this->get_map();
 
 		// First iterate through the native post properties
@@ -115,10 +122,45 @@ abstract class Repository {
 		}
 
 		if ( method_exists( $obj, 'get_featured_img_id' ) ) {
-			set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+			if ( ! get_post_thumbnail_id( $obj->WP_Post->ID ) ) {
+				// was added a thumbnail
+
+				$settled = set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => '',
+						'diff_with_index' => 0,
+					];
+
+				}
+
+			} else {
+
+				// was update a thumbnail
+
+				$old_thumbnail = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+				$settled = set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => $old_thumbnail,
+						'diff_with_index' => 0,
+					];
+				}
+			}
 		}
 
-		do_action( 'tainacan-insert', $obj, $old, $is_update );
+		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
 		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
 
 		// return a brand new object
@@ -343,8 +385,8 @@ abstract class Repository {
 	 */
 	public static function get_collections_db_identifiers() {
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
-		$cpts        = [];
+		$collections          = $Tainacan_Collections->fetch( [], 'OBJECT' );
+		$cpts                 = [];
 		foreach ( $collections as $col ) {
 			$cpts[] = $col->get_db_identifier();
 		}
@@ -366,9 +408,10 @@ abstract class Repository {
 			return $post;
 		}
 
-		if (!$post instanceof \WP_Post)
+		if ( ! $post instanceof \WP_Post ) {
 			return false;
-		
+		}
+
 		$post_type = $post->post_type;
 
 		return self::get_entity_by_post_type( $post_type, $post );
@@ -393,15 +436,15 @@ abstract class Repository {
 			} else {
 				throw new \Exception( 'Collection object not found for this post' );
 			}
-		} elseif ($post_type === \Tainacan\Repositories\Item_Metadata::get_instance()->entities_type::get_post_type()){
-			return new Entities\Item_Metadata_Entity(null, null);
+		} elseif ( $post_type === \Tainacan\Repositories\Item_Metadata::get_instance()->entities_type::get_post_type() ) {
+			return new Entities\Item_Metadata_Entity( null, null );
 		} else {
-            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-            $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
-            $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
-            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
-			$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+			$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+			$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
+			$Tainacan_Logs        = \Tainacan\Repositories\Logs::get_instance();
+			$Tainacan_Fields      = \Tainacan\Repositories\Fields::get_instance();
+			$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
+			$Tainacan_Terms       = \Tainacan\Repositories\Terms::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
@@ -439,13 +482,13 @@ abstract class Repository {
 
 			return $Tainacan_Items;
 		} else {
-            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
-            $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-            $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
-            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
-            $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
-            $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
+			$Tainacan_Collections   = \Tainacan\Repositories\Collections::get_instance();
+			$Tainacan_Fields        = \Tainacan\Repositories\Fields::get_instance();
+			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+			$Tainacan_Filters       = \Tainacan\Repositories\Filters::get_instance();
+			$Tainacan_Taxonomies    = \Tainacan\Repositories\Taxonomies::get_instance();
+			$Tainacan_Terms         = \Tainacan\Repositories\Terms::get_instance();
+			$Tainacan_Logs          = \Tainacan\Repositories\Logs::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
@@ -624,11 +667,11 @@ abstract class Repository {
 				$entity_type = get_class( $new );
 				$old_entity  = new $entity_type; // there is no saved entity, let compare with a new empty one
 			}
-		} else { // get entity from repository
-			$old_entity = $this->get_entity_by_post( $old );
+		} else {
+			$old_entity = $old;
 		}
 
-		$new_entity = $this->get_entity_by_post( $new );
+		$new_entity = $new;
 
 		$map = $this->get_map();
 
@@ -637,29 +680,35 @@ abstract class Repository {
 		foreach ( $map as $prop => $mapped ) {
 			if ( $old_entity->get_mapped_property( $prop ) != $new_entity->get_mapped_property( $prop ) ) {
 
-				if ( $mapped['map'] == 'meta_multi' || is_array($new_entity->get_mapped_property( $prop ))) {
+				if ( $mapped['map'] === 'meta_multi' || ( $mapped['map'] === 'meta' && is_array( $new_entity->get_mapped_property( $prop ) ) ) ) {
 
 					// Array of diffs with index of diff in new array
-					$array_diff_with_index = array_diff_assoc($new_entity->get_mapped_property( $prop ), $old_entity->get_mapped_property( $prop ));
+					$new_v = $new_entity->get_mapped_property( $prop );
+					$old_v = $old_entity->get_mapped_property( $prop );
+
+					$old_v = ! is_array( $old_v ) && empty( $old_v ) && ! is_string( $old_v ) ? array() : ( ! is_string( $old_v ) ? $old_v : [ $old_v ] );
+
+					$array_diff_with_index = array_map( 'unserialize',
+						array_diff_assoc( array_map( 'serialize', $new_v ), array_map( 'serialize', $old_v ) ) );
 
 					if ( ! empty( $array_diff_with_index ) ) {
 
 						$diff[ $prop ] = [
-							'new'  => $new_entity->get_mapped_property( $prop ),
-							'old'  => $old_entity->get_mapped_property( $prop ),
+							'new'             => $new_entity->get_mapped_property( $prop ),
+							'old'             => $old_entity->get_mapped_property( $prop ),
 							'diff_with_index' => $array_diff_with_index,
 						];
 					}
-				} elseif($mapped['map'] !==  'post_modified') {
-					$new_as_array = explode(' ', $new_entity->get_mapped_property( $prop ));
-					$old_as_array = explode(' ', $old_entity->get_mapped_property( $prop ));
+				} elseif ( $mapped['map'] !== 'post_modified' ) {
+					$new_as_array = explode( ' ', $new_entity->get_mapped_property( $prop ) );
+					$old_as_array = explode( ' ', $old_entity->get_mapped_property( $prop ) );
 
 					// Array of diffs with index of diff in new array
-					$array_diff_with_index = array_diff_assoc($new_as_array, $old_as_array);
+					$array_diff_with_index = array_diff_assoc( $new_as_array, $old_as_array );
 
 					$diff[ $prop ] = [
-						'new' => $new_as_array,
-						'old' => $old_entity->get_mapped_property( $prop ),
+						'new'             => $new_as_array,
+						'old'             => $old_entity->get_mapped_property( $prop ),
 						'diff_with_index' => $array_diff_with_index,
 					];
 				}

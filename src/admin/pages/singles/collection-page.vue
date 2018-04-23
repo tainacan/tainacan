@@ -2,7 +2,9 @@
     <div class="columns is-fullheight">
         <section class="column is-secondary-content">
             <tainacan-subheader :id="collectionId"/>
-            <router-view class="page-container"/>
+            <router-view 
+                    :collection-id="collectionId" 
+                    class="page-container"/>
         </section>
     </div>
 </template>
@@ -22,6 +24,7 @@ export default {
     },
     created(){
         this.collectionId = parseInt(this.$route.params.collectionId);
+        this.$eventBusSearch.setCollectionId(this.collectionId);
     }
 
 }

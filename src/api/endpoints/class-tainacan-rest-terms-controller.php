@@ -1,22 +1,23 @@
 <?php
 
+namespace Tainacan\API\EndPoints;
+
+use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
+class REST_Terms_Controller extends REST_Controller {
 	private $term;
 	private $terms_repository;
 	private $taxonomy;
 	private $taxonomy_repository;
 
 	/**
-	 * TAINACAN_REST_Terms_Controller constructor.
+	 * REST_Terms_Controller constructor.
 	 */
 	public function __construct() {
-		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'terms';
-
-		add_action('rest_api_init', array($this, 'register_routes'));
+		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
 	
@@ -34,13 +35,13 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 		register_rest_route($this->namespace,  '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base,
 			array(
 				array(
-					'methods'             => WP_REST_Server::CREATABLE,
+					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE)
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
 				),
 				array(
-					'methods'             => WP_REST_Server::READABLE,
+					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_collection_params()
@@ -50,7 +51,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 		register_rest_route($this->namespace,'/taxonomy/(?P<taxonomy_id>[\d]+)/'. $this->rest_base . '/(?P<term_id>[\d]+)' ,
 			array(
 				array(
-					'methods'             => WP_REST_Server::DELETABLE,
+					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
 					'args'                => [
@@ -60,25 +61,25 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 					]
 				),
 				array(
-					'methods'             => WP_REST_Server::EDITABLE,
+					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::EDITABLE)
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 				),
 				array(
-					'methods'             => WP_REST_Server::READABLE,
+					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(WP_REST_Server::READABLE)
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
 				)
 			)
 		);
 	}
 
 	/**
-	 * @param WP_REST_Request $to_prepare
+	 * @param \WP_REST_Request $to_prepare
 	 *
-	 * @return object|void|WP_Error
+	 * @return object|void|\WP_Error
 	 */
 	public function prepare_item_for_database( $to_prepare ) {
 		$attributes = $to_prepare[0];
@@ -98,9 +99,9 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function create_item( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];
@@ -116,25 +117,25 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 			if($this->term->validate()){
 				$term_inserted = $this->terms_repository->insert($this->term);
 
-				return new WP_REST_Response($this->prepare_item_for_response($term_inserted, $request), 200);
+				return new \WP_REST_Response($this->prepare_item_for_response($term_inserted, $request), 200);
 			} else {
-				return new WP_REST_Response([
+				return new \WP_REST_Response([
 					'error_message' => 'One or more attributes are invalid.',
 					'errors'        => $this->term->get_errors(),
 				], 400);
 			}
 		}
 
-		return new WP_REST_Response([
+		return new \WP_REST_Response([
 			'error_message' => 'The body couldn\'t be empty.',
 			'body'          => $body,
 		], 400);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
         $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
@@ -147,9 +148,9 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
 		$term_id = $request['term_id'];
@@ -158,7 +159,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 		$taxonomy_name = $this->taxonomy_repository->fetch( $taxonomy_id )->get_db_identifier();
 
 		if(!$taxonomy_name){
-			return new WP_REST_Response([
+			return new \WP_REST_Response([
 				'error_message' => 'The ID of taxonomy may be incorrect.'
 			]);
 		}
@@ -167,13 +168,13 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 		$is_deleted = $this->terms_repository->delete($args);
 
-		return new WP_REST_Response($is_deleted, 200);
+		return new \WP_REST_Response($is_deleted, 200);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function delete_item_permissions_check( $request ) {
         $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
@@ -186,9 +187,9 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function update_item( $request ) {
 		$term_id = $request['term_id'];
@@ -214,33 +215,33 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 				if($prepared_term->validate()){
 					$updated_term = $this->terms_repository->update($prepared_term, $tax_name);
 
-					return new WP_REST_Response($this->prepare_item_for_response($updated_term, $request), 200);
+					return new \WP_REST_Response($this->prepare_item_for_response($updated_term, $request), 200);
 				}
 
-				return new WP_REST_Response([
+				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $prepared_term->get_errors(),
 					'term'          => $this->prepare_item_for_response($prepared_term, $request)
 				], 400);
 			}
 
-			return new WP_REST_Response([
+			return new \WP_REST_Response([
 				'error_message' => __('Term or Taxonomy with that IDs not found', 'tainacan' ),
 				'term_id'       => $term_id,
 				'taxonomy_id'   => $taxonomy_id
 			], 400);
 		}
 
-		return new WP_REST_Response([
+		return new \WP_REST_Response([
 			'error_message' => __('The body could not be empty', 'tainacan'),
 			'body'          => $body
 		], 400);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
         $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
@@ -254,9 +255,9 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 	/**
 	 * @param mixed $item
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return array|mixed|WP_Error|WP_REST_Response
+	 * @return array|mixed|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
@@ -279,9 +280,9 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_items( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];
@@ -297,13 +298,13 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 			array_push($response, $this->prepare_item_for_response( $term, $request ));
 		}
 
-		return new WP_REST_Response($response, 200);
+		return new \WP_REST_Response($response, 200);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
@@ -320,9 +321,9 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_item( $request ) {
 		$term_id = $request['term_id'];
@@ -332,13 +333,13 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-		return new WP_REST_Response($this->prepare_item_for_response($term, $request), 200);
+		return new \WP_REST_Response($this->prepare_item_for_response($term, $request), 200);
 	}
 
 	/**
-	 * @param WP_REST_Request $request
+	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
@@ -361,13 +362,13 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_REST_Controller {
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
-		if($method === WP_REST_Server::READABLE) {
+		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args['context'] = array(
 				'type'    => 'string',
 				'default' => 'view',
 				'items'   => array( 'view, edit' )
 			);
-		} elseif ($method === WP_REST_Server::CREATABLE || $method === WP_REST_Server::EDITABLE) {
+		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->terms_repository->get_map();
 
 			foreach ($map as $mapped => $value){

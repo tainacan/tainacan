@@ -119,11 +119,11 @@ class Collections extends Repository {
 				'default'     => 'ASC',
 				'validation'  => v::stringType()->in( [ 'ASC', 'DESC' ] ),
 			],
-			'columns'           => [
+			'default_displayed_fields'           => [
 				'map'         => 'meta',
-				'title'       => __( 'Columns', 'tainacan' ),
+				'title'       => __( 'Default Displayed Fields', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'List of collections property that will be displayed in the table view', 'tainacan' ),
+				'description' => __( 'List of collections property that will be displayed in the table view.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'default_view_mode' => [
@@ -307,9 +307,21 @@ class Collections extends Repository {
 		}
 	}
 
-	// TODO: Implement this method
 	public function fetch_by_db_identifier( $db_identifier ) {
-
+		if ( $id = $this->get_id_by_db_identifier($db_identifier) ) {
+			return $this->fetch($id);
+		}
+	}
+	
+	public function get_id_by_db_identifier($db_identifier) {
+		$prefix = \Tainacan\Entities\Collection::$db_identifier_prefix;
+		$sufix = \Tainacan\Entities\Collection::$db_identifier_sufix;
+		$id = str_replace($prefix, '', $db_identifier);
+		$id = str_replace($sufix, '', $id);
+		if (is_numeric($id)) {
+			return (int) $id;
+		}
+		return false;
 	}
 
 	function pre_update_moderators( $collection ) {

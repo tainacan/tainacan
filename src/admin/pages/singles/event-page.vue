@@ -2,22 +2,27 @@
     <div>
         <div class="is-fullheight">
             <div class="page-container primary-page">
-
-                <div class="">
-                    <div class="field">
-                        <b-switch
-                                v-model="comp"
-                                true-value="Unified"
-                                false-value="Split"
-                                class="is-pulled-right">
-                            {{ comp }}
-                        </b-switch>
+                <div class="title">{{ event.description }}</div>
+                <div class="level">
+                    <div class="level-left"/>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <b-switch
+                                    v-model="comp"
+                                    true-value="Unified"
+                                    false-value="Split"
+                                    class="is-pulled-right">
+                                {{ comp }}
+                            </b-switch>
+                        </div>
                     </div>
                 </div>
 
+                <hr class="divider">
+
                 <component
                         :is="comp"
-                        :event="event" />
+                        :event="event"/>
             </div>
         </div>
     </div>
@@ -51,8 +56,8 @@
             }
         },
         components: {
-          Split,
-          Unified
+            Split,
+            Unified
         },
         created() {
             this.eventId = parseInt(this.$route.params.eventId);
@@ -66,5 +71,9 @@
 <style>
     .back-hlight {
         background-color: rgb(231, 255, 237);
+    }
+
+    .bottom-space-tainacan {
+        margin-bottom: 0.2rem;
     }
 </style>

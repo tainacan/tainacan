@@ -28,7 +28,10 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'log_inserts' ), 10, 3 );
+		add_action( 'tainacan-insert', array( $this, 'insert_log' ), 10, 3 );
+
+		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10, 3 );
+//		add_action( 'attachment_updated', array( $this, 'prepare_attachment_log_before_insert' ), 10, 3);
 	}
 
 	public function get_map() {
@@ -104,13 +107,10 @@ class Logs extends Repository {
 				'description' => __( 'The actual log value' ),
 				'validation'  => ''
 			],
-			'old_value'      => [
-				'map'         => 'meta',
-				'title'       => __( 'Old value', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The old log value' ),
-				'validation'  => ''
-			],
+			'log_diffs'      => [
+				'map'   => 'meta',
+				'title' => __( 'Log differences', 'tainacan' ),
+			]
 		] );
 	}
 
@@ -186,7 +186,7 @@ class Logs extends Repository {
 
 		} elseif ( is_array( $args ) ) {
 			$args = array_merge( [
-				'posts_per_page' => -1,
+				'posts_per_page' => - 1,
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );
@@ -217,7 +217,53 @@ class Logs extends Repository {
 
 		$logs = $this->fetch( $args, 'OBJECT' );
 
-		return array_pop($logs);
+		return array_pop( $logs );
+	}
+
+
+	public function prepare_attachment_log_before_insert( $post_ID, $post_after = null, $post_before = null ) {
+
+		if ( ! $post_after && ! $post_before ) {
+			// is add attachment
+			$attachment = get_post( $post_ID );
+			$post       = $attachment->post_parent;
+
+			if ( $post ) {
+				// was added attachment on a tainacan object
+
+				$tainacan_post = Repository::get_entity_by_post( $post );
+
+				if($tainacan_post) {
+					// was added a normal attachment
+
+					// get all attachments except the new
+					$old_attachments = $tainacan_post->get_attachments( $post_ID );
+
+					foreach ( $old_attachments as $attachment ) {
+						unset( $attachment['id'] );
+					}
+
+					$new_attachments[] = [
+						'title'       => $attachment->post_title,
+						'description' => $attachment->post_content,
+						'mime_type'   => $attachment->post_mime_type,
+						'url'         => $attachment->guid,
+					];
+
+					$array_diff_with_index = array_map( 'unserialize',
+						array_diff_assoc( array_map( 'serialize', $new_attachments ), array_map( 'serialize', $old_attachments ) ) );
+
+					$diff['attachments'] = [
+						'new'             => $new_attachments,
+						'old'             => $old_attachments,
+						'diff_with_index' => $array_diff_with_index
+					];
+
+					$this->insert_log( $tainacan_post, $diff, true );
+
+				}
+			}
+		}
 	}
 
 	/**
@@ -230,59 +276,57 @@ class Logs extends Repository {
 	 *
 	 * @return Entities\Log new created log
 	 */
-	public function log_inserts( $new_value, $old_value = null, $is_update = null ) {
-		$msn = "";
+	public function insert_log( $new_value, $diffs, $is_update = null ) {
+		$msn         = "";
 		$description = "";
 
 		if ( is_object( $new_value ) ) {
 			// do not log a log
-			if ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() == 'tainacan-log' || $new_value->get_status() === 'auto-draft' ) {
-				return;
+			if ( ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() === 'tainacan-log' ) || $new_value->get_status() === 'auto-draft' ) {
+				return false;
 			}
 
-			if($new_value instanceof Entities\Field){
+			if ( $new_value instanceof Entities\Field ) {
 				$type = $new_value->get_field_type();
 
-				if($type === 'Tainacan\Field_Types\Core_Title' || $type === 'Tainacan\Field_Types\Core_Description'){
-					return;
+				if ( $type === 'Tainacan\Field_Types\Core_Title' || $type === 'Tainacan\Field_Types\Core_Description' ) {
+					return false;
 				}
-			} elseif (!$is_update && $new_value instanceof Entities\Item || $new_value instanceof Entities\Collection) {
-				return;
 			}
 
-			$type = get_class( $new_value );
-			$class_name = explode('\\', $type)[2];
+			$type       = get_class( $new_value );
+			$class_name = explode( '\\', $type )[2];
 
-			$name = method_exists($new_value, 'get_name') ? $new_value->get_name() :
-				(method_exists($new_value, 'get_title') ? $new_value->get_title() : $new_value->get_field()->get_name());
+			$name = method_exists( $new_value, 'get_name' ) ? $new_value->get_name() :
+				( method_exists( $new_value, 'get_title' ) ? $new_value->get_title() : $new_value->get_field()->get_name() );
 
-			if(!$name){
+			if ( ! $name ) {
 				$name = $new_value->get_status();
 			}
 
-			$articleA = 'A';
+			$articleA  = 'A';
 			$articleAn = 'An';
-			$vowels = 'aeiou';
+			$vowels    = 'aeiou';
 
-			if($is_update){
-				if(substr_count($vowels, strtolower(substr($class_name, 0, 1))) > 0){
-					$msn  = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleAn, $class_name);
+			if ( $is_update ) {
+				if ( substr_count( $vowels, strtolower( substr( $class_name, 0, 1 ) ) ) > 0 ) {
+					$msn = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleAn, $class_name );
 				} else {
-					$msn  = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleA, $class_name);
+					$msn = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleA, $class_name );
 				}
-				$description = sprintf( __("The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower($class_name));
+				$description = sprintf( __( "The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower( $class_name ) );
 			} else {
-				if(substr_count($vowels, strtolower(substr($class_name, 0, 1))) > 0){
-					$msn  = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleAn, $class_name);
+				if ( substr_count( $vowels, strtolower( substr( $class_name, 0, 1 ) ) ) > 0 ) {
+					$msn = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleAn, $class_name );
 				} else {
-					$msn  = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleA, $class_name);
+					$msn = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleA, $class_name );
 				}
 
-				if($new_value instanceof Entities\Field){
-					$collection =  $new_value->get_collection();
-					$parent = $collection;
+				if ( $new_value instanceof Entities\Field ) {
+					$collection = $new_value->get_collection();
+					$parent     = $collection;
 
-					if($collection) {
+					if ( $collection ) {
 						$parent = $collection->get_name();
 
 						if ( ! $parent ) {
@@ -297,10 +341,12 @@ class Logs extends Repository {
 			}
 		}
 
-		$msn = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
-		$description = apply_filters('tainacan-insert-log-description', $description, $type, $new_value);
+		$msn         = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
+		$description = apply_filters( 'tainacan-insert-log-description', $description, $type, $new_value );
 
-		return Entities\Log::create( $msn, $description, $new_value, $old_value );
+		if ( ! empty( $diffs ) ) {
+			return Entities\Log::create( $msn, $description, $new_value, $diffs );
+		}
 	}
 
 	/**

@@ -26,7 +26,7 @@ export const filter_type_mixin = {
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.error(error);
                 });
         },
         getValuesRelationship(collectionTarget, search) {
@@ -45,7 +45,7 @@ export const filter_type_mixin = {
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$console.error(error);
                 });
         }
     }

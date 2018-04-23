@@ -29,7 +29,7 @@
                             class="clickable-row"
                             tag="span"
                             router-link-active
-                            :active="props.row.log_diff.length > 0"
+                            :active="props.row.log_diffs.length > 0"
                             :to="{path: $routerHelper.getEventPath(props.row.id)}">
                         {{ props.row.title }}
                     </router-link>
@@ -47,7 +47,7 @@
                             class="clickable-row"
                             v-html="props.row.by"
                             tag="span"
-                            :active="props.row.log_diff.length > 0"
+                            :active="props.row.log_diffs.length > 0"
                             :to="{path: $routerHelper.getEventPath(props.row.id)}"/>
                 </b-table-column>
 
@@ -58,18 +58,22 @@
                         :aria-label="$i18n.get('label_actions')">
 
                     <a
+                            v-if="props.row.status === 'pending'"
                             id="button-approve"
                             :aria-label="$i18n.get('approve_item')"
-                            @click.prevent.stop="approve(props.row.id)">
+                            @click.prevent.stop="approveEvent(props.row.id)">
                         <b-icon
                             icon="check" />
                     </a>
 
                     <a
+                            v-if="props.row.status === 'pending'"
                             id="button-not-approve"
                             class="delete"
                             :aria-label="$i18n.get('not_approve_item')"
-                            @click.prevent.stop="notApprove(props.row.id)" />
+                            @click.prevent.stop="notApproveEvent(props.row.id)" />
+
+                    <small v-if="props.row.status !== 'pending'"> Approved </small>
 
                 </b-table-column>
             </template>
@@ -113,7 +117,13 @@
             ...mapActions('event', [
                 'approve',
                 'notApprove'
-            ])
+            ]),
+            approveEvent(eventId){
+               this.approve(eventId);
+            },
+            notApproveEvent(eventId){
+                this.notApprove(eventId);
+            }
         }
     }
 </script>

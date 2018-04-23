@@ -153,16 +153,24 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * @param null $exclude
+	 *
 	 * @return array
 	 */
-	function get_attachments() {
+	function get_attachments($exclude = null) {
 		$collection_id = $this->get_id();
+
+		if(!$exclude){
+			$to_exclude = get_post_thumbnail_id( $collection_id );
+		} else {
+			$to_exclude = $exclude;
+		}
 
 		$attachments_query = [
 			'post_type'     => 'attachment',
-			'post_per_page' => - 1,
+			'post_per_page' => -1,
 			'post_parent'   => $collection_id,
-			'exclude'       => get_post_thumbnail_id( $collection_id )
+			'exclude'       => $to_exclude
 		];
 
 		$attachments = get_posts( $attachments_query );

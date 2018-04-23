@@ -168,12 +168,19 @@ class Items extends Repository {
 
 	public function insert( $item ) {
 
-		$old = $item;
 		$is_update = false;
-		// TODO get props obj before update
-		if( $item->get_id() ) {
-			$is_update = true;
-			$old = $item->get_repository()->fetch( $item->get_id() );
+		$diffs = [];
+		if ( $item->get_id() ) {
+
+			$old   = $item->get_repository()->fetch( $item->get_id() );
+
+			if($old->get_status() === 'auto-draft') {
+				$is_update = false;
+			} else {
+				$is_update = true;
+			}
+
+			$diffs = $this->diff($old, $item);
 		}
 
 		$map = $this->get_map();
@@ -181,7 +188,7 @@ class Items extends Repository {
 		// get collection to determine post type
 		$collection = $item->get_collection();
 
-		if ( ! $collection ) {
+		if ( !$collection ) {
 			return false;
 		}
 
@@ -219,10 +226,45 @@ class Items extends Repository {
 		}
 
 		if ( method_exists( $item, 'get_featured_img_id' ) ) {
-			set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
+			if ( ! get_post_thumbnail_id( $item->WP_Post->ID ) ) {
+				// was added a thumbnail
+
+				$settled = set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $item->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => '',
+						'diff_with_index' => 0,
+					];
+
+				}
+
+			} else {
+
+				// was update a thumbnail
+
+				$old_thumbnail = get_the_post_thumbnail_url( $item->WP_Post->ID );
+
+				$settled = set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $item->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => $old_thumbnail,
+						'diff_with_index' => 0,
+					];
+				}
+			}
 		}
 
-		do_action( 'tainacan-insert', $item, $old, $is_update );
+		do_action( 'tainacan-insert', $item, $diffs, $is_update );
 		do_action( 'tainacan-insert-Item', $item );
 
 		// return a brand new object

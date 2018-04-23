@@ -67,8 +67,23 @@ const routes = [
     { path: '*', redirect: '/'}
 ];
 
-export default new VueRouter ({
+export const router = new VueRouter ({
     routes,
+    // set custom query resolver
+    parseQuery(query) {
+        return qs.parse(query);
+    },
+    stringifyQuery(query) {
+        let result = qs.stringify(query);
+
+        return result ? ('?' + result) : '';
+    }
+});
+
+const themeRoutes = [];
+
+export const routerTheme = new VueRouter ({
+    themeRoutes,
     // set custom query resolver
     parseQuery(query) {
         return qs.parse(query);

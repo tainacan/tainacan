@@ -178,7 +178,7 @@ export default {
         },
         deleteSelectedCollections() {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_selected_collections_delete'),
+                message: this.$i18n.get('info_warning_selected_collections_delete'),
                 onConfirm: () => {
 
                     for (let collection of this.selectedCollections) {

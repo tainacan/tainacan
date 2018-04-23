@@ -111,7 +111,7 @@ export default {
         transition: max-width 0.2s linear; 
         max-width: $side-menu-width;
         z-index: 99;
-
+        .menu { padding-top: 0px; }
         .menu-header {
             background-color: rgba(0,0,0,0.1);
             height: $header-height; 

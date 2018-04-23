@@ -12,18 +12,15 @@ class Filters extends Repository {
 
     private static $instance = null;
 
-    public static function get_instance()
-    {
-        if(!isset(self::$instance))
-        {
+    public static function get_instance() {
+        if(!isset(self::$instance)) {
             self::$instance = new self();
         }
 
         return self::$instance;
     }
 
-    protected function __construct()
-    {
+    protected function __construct() {
         parent::__construct();
     }
 

@@ -4,6 +4,7 @@ let webpack = require('webpack');
 module.exports = {
     entry:  {
        dev_admin: './src/js/main.js',
+       user_search: './src/admin/js/theme-main.js',
        user_admin: './src/admin/js/main.js'
     },
     output: {

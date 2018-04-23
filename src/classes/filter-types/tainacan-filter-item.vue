@@ -7,7 +7,7 @@
             <component
                     :id="filter.filter_type_object.component + '-' + filter.slug"
                     :is="filter.filter_type_object.component"
-                    :filter="getFilter"
+                    :filter="filter"
                     :query="query"
                     @input="listen( $event )"/>
         </div>
@@ -15,8 +15,7 @@
 </template>
 
 <script>
-    import { eventBusSearch } from '../../js/event-bus-search'
-    import { mapActions, mapGetters } from 'vuex';
+    import { mapActions } from 'vuex';
 
     export default {
         name: 'TainacanFilterItem',
@@ -33,7 +32,7 @@
         computed: {
             getErrorMessage() {
                 let msg = '';
-                let errors = eventBusSearch.getErrors( this.filter.id );
+                let errors = this.$eventBusSearch.getErrors( this.filter.id );
                 if ( errors) {
                     this.setFilterTypeMessage('is-danger');
                     for (let index in errors) {
@@ -43,21 +42,14 @@
                     this.setFilterTypeMessage('');
                 }
                 return msg;
-            },
-            getFilter(){
-                return this.filter;
             }
-
         },
         methods: {
             ...mapActions('search', [
                 'setPage'
             ]),
-            ...mapGetters('search', [
-                'getPostQuery'
-            ]),
             listen( event ){
-                eventBusSearch.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
+                this.$eventBusSearch.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
             },
             setFilterTypeMessage( message ){
                 this.filterTypeMessage = message;

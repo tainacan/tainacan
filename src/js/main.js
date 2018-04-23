@@ -4,7 +4,7 @@ import Buefy from 'buefy'
 // include vue-custom-element plugin to Vue
 import VueCustomElement from 'vue-custom-element';
 import { eventBus } from './event-bus-web-components';
-import { eventBusSearch } from './event-bus-search';
+import eventBusSearch from './event-bus-search';
 
 Vue.use(Buefy);
 
@@ -25,47 +25,48 @@ import FilterAutocomplete from '../classes/filter-types/autocomplete/Autocomplet
 import FilterCheckbox from '../classes/filter-types/checkbox/Checkbox.vue';
 import FilterTaginput from '../classes/filter-types/taginput/Taginput.vue';
 
+Vue.use(eventBusSearch);
+
 Vue.customElement('tainacan-text', Text);
-eventBus.registerComponent( 'tainacan-text' );
+//eventBus.registerComponent( 'tainacan-text' );
 
 Vue.customElement('tainacan-textarea', Textarea);
-eventBus.registerComponent( 'tainacan-textarea' );
+//eventBus.registerComponent( 'tainacan-textarea' );
 
 Vue.customElement('tainacan-selectbox', Selectbox);
-eventBus.registerComponent( 'tainacan-selectbox' );
+//eventBus.registerComponent( 'tainacan-selectbox' );
 
 Vue.customElement('tainacan-numeric', Numeric);
-eventBus.registerComponent( 'tainacan-numeric' );
+//eventBus.registerComponent( 'tainacan-numeric' );
 
 Vue.customElement('tainacan-date', Date);
-eventBus.registerComponent( 'tainacan-date' );
+//eventBus.registerComponent( 'tainacan-date' );
 
 Vue.customElement('tainacan-relationship', Relationship);
-eventBus.registerComponent( 'tainacan-relationship' );
+//eventBus.registerComponent( 'tainacan-relationship' );
 
-eventBus.listener();
+//eventBus.listener();
 
 /* Form */
 
 Vue.customElement('tainacan-form-relationship', FormRelationship);
-eventBus.registerComponent( 'tainacan-form-relationship' );
+//eventBus.registerComponent( 'tainacan-form-relationship' );
 
 /* Filters */
 
 Vue.customElement('tainacan-filter-custom-interval', FilterCustomInterval);
-eventBusSearch.registerComponent( 'tainacan-filter-custom-interval' );
+//eventBusSearch.registerComponent( 'tainacan-filter-custom-interval' );
 
 Vue.customElement('tainacan-filter-selectbox', FilterSelectbox);
-eventBusSearch.registerComponent( 'tainacan-filter-selectbox' );
-
+//eventBusSearch.registerComponent( 'tainacan-filter-selectbox' );
 
 Vue.customElement('tainacan-filter-autocomplete', FilterAutocomplete);
-eventBusSearch.registerComponent( 'tainacan-filter-autocomplete' );
+//eventBusSearch.registerComponent( 'tainacan-filter-autocomplete' );
 
 Vue.customElement('tainacan-filter-checkbox', FilterCheckbox);
-eventBusSearch.registerComponent( 'tainacan-filter-checkbox' );
+//eventBusSearch.registerComponent( 'tainacan-filter-checkbox' );
 
 Vue.customElement('tainacan-filter-taginput', FilterTaginput);
-eventBusSearch.registerComponent( 'tainacan-filter-taginput' );
+//eventBusSearch.registerComponent( 'tainacan-filter-taginput' );
 
-eventBusSearch.listener();
+//eventBusSearch.listener();
