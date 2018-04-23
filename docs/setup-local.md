@@ -84,7 +84,7 @@ The parameters are:
 * Database name
 * MySQL username
 * MySQL password
-* WordPress Test Directory (In order to test the API, this folder must be inside your local webserver)
+* WordPress Test Directory
 * MySQL host
 * WordPress version
 * Optional: skip create database
