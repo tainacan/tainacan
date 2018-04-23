@@ -37,19 +37,20 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $old_tainacan = new Importer\Old_Tainacan(true);
         $id = $old_tainacan->get_id();
 
-        $_SESSION['tainacan_importer'][$id]->set_items_per_step(2);
+        $_SESSION['tainacan_importer'][$id]->set_items_per_step(50);
 
-        if(!copy('./tests/attachment/json_old_tainacan_base.txt', './tests/attachment/json_old_tainacan.txt'))
+        /*if(!copy('./tests/attachment/json_old_tainacan_base.txt', './tests/attachment/json_old_tainacan.txt'))
         {
             return false;
         }
 
         $_SESSION['tainacan_importer'][$id]->set_file( './tests/attachment/json_old_tainacan.txt' );
+        $_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/colecao/colecao-to-import/' );
 
         $_SESSION['tainacan_importer'][$id]->run();
     }*/
 
-    public function test_file_old_tainacan () {
+    /*public function test_file_old_tainacan () {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
@@ -72,7 +73,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
 
         $_SESSION['tainacan_importer'][$id]->run();
-        /*// count size of old tainacan file
+
         $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_total_items() );
 
         // get fields to mapping
@@ -119,8 +120,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
 
-        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_total_items(), count( $items ) );*/
-    }
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_total_items(), count( $items ) );
+    }*/
     /**
      * @group importer
      */
@@ -151,14 +152,14 @@ class ImporterTests extends TAINACAN_UnitTestCase {
     public function test_file_csv () {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
-
+        $file_name = 'demosaved.csv';
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
 		
 		$_SESSION['tainacan_importer'][$id]->set_items_per_step(2);
 		
         // open the file "demosaved.csv" for writing
-        $file = fopen('demosaved.csv', 'w');
+        $file = fopen($file_name, 'w');
 
         // save the column headers
         fputcsv($file, array('Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
@@ -180,7 +181,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // Close the file
         fclose($file);
 
-        $_SESSION['tainacan_importer'][$id]->set_file( 'demosaved.csv' );
+        $_SESSION['tainacan_importer'][$id]->set_file( $file_name );
 
         // file isset on importer
         $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
