@@ -28,10 +28,12 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'insert_log' ), 10, 3 );
+		add_action( 'tainacan-insert', array( $this, 'insert_log' ), 10, 4 );
+		add_action( 'tainacan-deleted', array( $this, 'insert_log'), 10, 4 );
+		add_action( 'tainacan-trashed', array( $this, 'insert_log'), 10, 4 );
 
-		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10, 3 );
-//		add_action( 'attachment_updated', array( $this, 'prepare_attachment_log_before_insert' ), 10, 3);
+		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10 );
+		add_action( 'attachment_updated', array( $this, 'prepare_attachment_log_before_insert' ), 10, 3);
 	}
 
 	public function get_map() {
@@ -263,6 +265,8 @@ class Logs extends Repository {
 
 				}
 			}
+		} else {
+			// TODO: Save a log when a attachment is updated
 		}
 	}
 
@@ -270,16 +274,16 @@ class Logs extends Repository {
 	 * Insert a log when a new entity is inserted
 	 *
 	 * @param Entity $new_value
-	 * @param Entity $old_value
-	 *
+	 * @param array $diffs
 	 * @param null $is_update
 	 *
 	 * @return Entities\Log new created log
 	 */
-	public function insert_log( $new_value, $diffs, $is_update = null ) {
+	public function insert_log( $new_value, $diffs = [], $is_update = null, $is_delete_permanently = null ) {
 		$msn         = "";
 		$description = "";
 
+		// TODO: Continue with is_delete_permanently
 		if ( is_object( $new_value ) ) {
 			// do not log a log
 			if ( ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() === 'tainacan-log' ) || $new_value->get_status() === 'auto-draft' ) {

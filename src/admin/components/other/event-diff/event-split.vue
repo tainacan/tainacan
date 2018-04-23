@@ -33,7 +33,7 @@
                                         <div class="media-content">
                                             <div class="content">
                                                 <p>
-                                                    <strong class="is-capitalized">{{ o.title }}</strong> <small>{{ o.mime_type }}</small>
+                                                    <strong class="is-capitalized">{{ o.title }}</strong> <small class="tag is-light">{{ o.mime_type }}</small>
                                                     <br>
                                                     {{ o.description }}
                                                 </p>
@@ -99,7 +99,7 @@
                                         <div class="media-content">
                                             <div class="content">
                                                 <p>
-                                                    <strong class="is-capitalized">{{ d.title }}</strong> <small>{{ d.mime_type }}</small>
+                                                    <strong class="is-capitalized">{{ d.title }}</strong> <small class="tag is-light">{{ d.mime_type }}</small>
                                                     <br>
                                                     {{ d.description }}
                                                 </p>

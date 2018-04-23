@@ -36,7 +36,8 @@ class Theme_Helper {
 		add_action('archive_template_hierarchy', array(&$this, 'items_template_hierachy'));
 		add_action('single_template_hierarchy', array(&$this, 'items_template_hierachy'));
 		
-
+		add_filter('theme_mod_header_image', array(&$this, 'header_image'));
+		
 	}
 	
 	public function print_scripts() {
@@ -78,6 +79,7 @@ class Theme_Helper {
 		$content = '';
 		
 		// document
+		$content .= $item->get_document_html();
 		
 		// metadata
 		$content .= $item->get_metadata_as_html();
@@ -193,6 +195,31 @@ class Theme_Helper {
 		
 		return $templates;
 		
+	}
+	
+	function header_image($image) {
+		
+		$object = false;
+		
+		if ($collection_id = tainacan_get_collection_id()) {
+			$object = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+		} elseif ($term = tainacan_get_term()) {
+			$object = \Tainacan\Repositories\Terms::get_instance()->fetch($term->term_id, $term->taxonomy);
+		}
+		
+		if (!$object)
+			return $image;
+		
+		$header_image = $object->get_header_image_id();
+		
+		if (is_numeric($header_image)) {
+			$src = wp_get_attachment_image_src($header_image, 'full');
+			if (is_array($src)) {
+				$image = $src[0];
+			}
+		}
+		
+		return $image;
 	}
 	
 }

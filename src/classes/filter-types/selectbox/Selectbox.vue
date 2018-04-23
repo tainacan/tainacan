@@ -59,7 +59,7 @@
                         return metadata.value;
                     }
                 }
-                return '';          
+                return '';
             }
         },
         methods: {
@@ -67,13 +67,7 @@
                 this.isLoading = true;
 
                 let promise = null;
-                
-                if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
-                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ? this.field_object.field_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget );
-                } else {
-                    promise = this.getValuesPlainText( this.field );
-                }
+                promise = this.getValuesPlainText( this.field );
 
                 promise.then(() => {
                     this.isLoading = false;

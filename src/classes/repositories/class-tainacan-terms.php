@@ -80,6 +80,15 @@ class Terms extends Repository {
 				'default'    => get_current_user_id(),
                 'validation' => v::numeric(),
             ],
+			'header_image_id' => [
+                'map'        => 'termmeta',
+                'title'      => __('Header Image', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The image to be used in term header', 'tainacan'),
+                'on_error'   => __('Invalid image', 'tainacan'),
+                //'validation' => v::numeric(),
+                'default'    => ''
+            ],
 		    'hide_empty'  => [
 		    	'map'        => 'hide_empty',
 			    'type'       => 'bool'
@@ -225,7 +234,15 @@ class Terms extends Repository {
     }
 
     public function delete($args){
-    	return wp_delete_term($args[0], $args[1]);
+    	$deleted = wp_delete_term($args[0], $args[1]);
+
+    	if($deleted) {
+    		$deleted_term_tainacan = new Entities\Term($args[0], $args[1]);
+
+		    do_action( 'tainacan-deleted', $deleted_term_tainacan, $is_update = false, $is_delete_permanently = true );
+	    }
+
+    	return $deleted;
     }
     
     public function register_post_type() { }

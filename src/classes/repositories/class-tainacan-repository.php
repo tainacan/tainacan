@@ -108,6 +108,19 @@ abstract class Repository {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
+		if( $obj instanceof Entities\Item ){
+			// get collection to determine post type
+			$collection = $obj->get_collection();
+
+			if ( !$collection ) {
+				return false;
+			}
+
+			$post_t = $collection->get_db_identifier();
+
+			$obj->WP_Post->post_type = $post_t;
+		}
+
 		// TODO verificar se salvou mesmo
 		$id = wp_insert_post( $obj->WP_Post );
 

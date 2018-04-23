@@ -22,6 +22,7 @@ class Old_Tainacan extends Importer
 
     public function fetch_from_remote( $url ){
         $url_json = explode('/colecao/', $url)[0] . "/wp-json/tainacan/v1/collections";
+
         $all_collections_info = wp_remote_get($url_json);
 
         if(isset($all_collections_info['body']))
@@ -54,19 +55,11 @@ class Old_Tainacan extends Importer
                 {
                     $items_array = json_decode($items['body']);
 
-                    //Get Metatype
-                    $meta_type = wp_remote_get($link."/metadata");
-                    if(isset($meta_type['body']))
-                    {
-                        $meta_type_array = json_decode($meta_type['body']);
-                        $file_info['items'] = $items_array;
-                        $file_info['meta'] = $meta_type_array;
+                    $file = fopen( $this->get_id().'.txt', 'w' );
+                    fwrite( $file, serialize($items_array));
+                    fclose( $file );
 
-                        $file = fopen( $this->get_id().'.txt', 'w' );
-                        fwrite( $file, serialize($file_info) );
-                        fclose( $file );
-                        return $this->set_file( $this->get_id().'.txt' );
-                    }
+                    return $this->set_file( $this->get_id().'.txt' );
                 }
             }
         }
@@ -83,13 +76,13 @@ class Old_Tainacan extends Importer
         $file = new \SplFileObject( $this->tmp_file, 'r' );
         $file_content = unserialize($file->fread($file->getSize()));
 
+        $item = $file_content->items[0];
 
-        foreach($file_content['meta'] as $tab)
+        $fields = array_keys((array)$item->item);
+
+        foreach ($item->metadata as $metadata)
         {
-            foreach($tab->{"tab-properties"} as $meta)
-            {
-                $fields[] = ['name' => $meta->name, 'type' => $meta->type];
-            }
+            $fields[] = ['name' => $metadata->name, 'type' => $metadata->type];
         }
 
         return $fields;
@@ -113,27 +106,52 @@ class Old_Tainacan extends Importer
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
         $file_content = unserialize($file->fread($file->getSize()));
 
-        /*to fix this*/
-        $values = $file_content['items']->items[$index]->item;
-
-        if( count( $headers ) !== count( $values ) ){
-            return false;
-        }
-
-        foreach ($headers as $header) {
-            $processedItem[ $header['name'] ] = $values[ $header['name'] ];
+        $values = $file_content->items[$index];
+        foreach ($headers as $header)
+        {
+            if(isset($header['name']))
+            {
+                $item_index = $this->search_obj_in_array($values->metadata, $header['name']);
+                if(isset($values->metadata[ $item_index ]->values))
+                    $processedItem[ $header['name'] ] = $values->metadata[ $item_index ]->values[0];
+                else $processedItem[ $header['name'] ] = '';
+            }
+            else
+            {
+                if($header === 'link')
+                {
+                    $processedItem[$header] = $values->item->link[0]->href;
+                }
+                else
+                {
+                    $processedItem[$header] = $values->item->{$header};
+                }
+            }
         }
 
         return $processedItem;
     }
 
-    function create_fields_and_mapping() {
+    public function search_obj_in_array($array, $name)
+    {
+        foreach ($array as $index => $obj)
+        {
+            if(strcmp($obj->name, $name) === 0)
+            {
+                return $index;
+            }
+        }
 
+        return false;
+    }
+
+    public function create_fields_and_mapping()
+    {
         $fields_repository = \Tainacan\Repositories\Fields::get_instance();
 
         $file_fields = $this->get_fields();
-        /*$avoid = [
-            'ID',
+        $avoid = [
+            /*'ID',
             'post_author',
             'post_date',
             'post_date_gmt',
@@ -152,31 +170,55 @@ class Old_Tainacan extends Importer
             'comment_count',
             'filter',
             'link',
-            'thumbnail'
-        ];*/
+            'thumbnail'*/
+        ];
 
         foreach($file_fields as $index => $meta_info)
         {
-            $newField = new \Tainacan\Entities\Field();
+            if(is_array($meta_info))
+            {
+                $meta_name = $meta_info['name'];
+                $type = $this->define_type($meta_info['type']);
+            }
+            else
+            {
+                $meta_name = $meta_info;
+                $type = 'Text';
+            }
 
-            $newField->set_name($meta_info['name']);
+            if(!in_array($meta_name, $avoid))
+            {
+                $newField = new \Tainacan\Entities\Field();
 
-            $type = 'Text';
+                $newField->set_name($meta_name);
 
-            $newField->set_field_type('Tainacan\Field_Types\\'.$type);
+                $newField->set_field_type('Tainacan\Field_Types\\'.$type);
 
-            $newField->set_collection($this->collection);
-            $newField->validate(); // there is no user input here, so we can be sure it will validate.
+                $newField->set_collection($this->collection);
+                $newField->validate(); // there is no user input here, so we can be sure it will validate.
 
-            $newField = $fields_repository->insert($newField);
+                $newField = $fields_repository->insert($newField);
 
-
-            $this->set_mapping([
-                $newField->get_id() => $file_fields[$index]
-            ]);
+                $mapping[$newField->get_id()] = $file_fields[$index];
+            }
         }
+
+        $this->set_mapping($mapping);
     }
 
+    public function define_type($type)
+    {
+        $type = strtolower($type);
+        $tainacan_types = ['text', 'textarea', 'numerica', 'date'];
+
+        $types_to_work = ['item', 'tree'];
+        if(in_array($type, $tainacan_types))
+        {
+            $type = ucfirst($type);
+        }else $type = 'Text';
+
+        return $type;
+    }
 
     /**
     * Method implemented by the child importer class to return the number of items to be imported
@@ -187,6 +229,6 @@ class Old_Tainacan extends Importer
         $file = new \SplFileObject( $this->tmp_file, 'r' );
         $file_content = unserialize($file->fread($file->getSize()));
 
-        return $this->total_items = $file_content['items']->found_items;
+        return $this->total_items = $file_content->found_items;
     }
 }

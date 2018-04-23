@@ -122,7 +122,9 @@ class Collections extends Repository {
 			'default_displayed_fields'           => [
 				'map'         => 'meta',
 				'title'       => __( 'Default Displayed Fields', 'tainacan' ),
-				'type'        => 'string',
+				'type'        => 'array/object/string',
+				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'default'     => [],
 				'description' => __( 'List of collections property that will be displayed in the table view.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
@@ -164,6 +166,15 @@ class Collections extends Repository {
                 'type'       => 'string',
                 'description'=> __('The page to be used as cover for this collection', 'tainacan'),
                 'on_error'   => __('Invalid page', 'tainacan'),
+                //'validation' => v::numeric(),
+                'default'    => ''
+            ],
+			'header_image_id' => [
+                'map'        => 'meta',
+                'title'      => __('Header Image', 'tainacan'),
+                'type'       => 'string',
+                'description'=> __('The image to be used in collection header', 'tainacan'),
+                'on_error'   => __('Invalid image', 'tainacan'),
                 //'validation' => v::numeric(),
                 'default'    => ''
             ],
@@ -262,10 +273,22 @@ class Collections extends Repository {
 	 */
 	public function delete( $args ) {
 		if ( ! empty( $args[1] ) && $args[1] === true ) {
-			return new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
+			$deleted = new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
+
+			if($deleted) {
+				do_action( 'tainacan-deleted', $deleted, $is_update = false, $is_delete_permanently = true );
+			}
+
+			return $deleted;
 		}
 
-		return new Entities\Collection( wp_trash_post( $args[0] ) );
+		$trashed = new Entities\Collection( wp_trash_post( $args[0] ) );
+
+		if($trashed) {
+			do_action( 'tainacan-trashed', $trashed, $is_update = false, $is_delete_permanently = false );
+		}
+
+		return $trashed;
 	}
 
 	/**
