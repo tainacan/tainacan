@@ -28,7 +28,7 @@ You wil also need:
 * `Node` to handle dependencies and vuild the JS application
 
 ```
-sudo apt-get install phpunit composer ruby nodejs npm
+sudo apt-get install phpunit composer ruby ruby-dev nodejs npm
 sudo gem install sass
 ```
 
@@ -53,9 +53,9 @@ When we want to build the plugin, we run `build.sh` that basically installs any 
 
 In order to use it, make a copy of `build-config-sample.sh` and name it only `build-config.sh`. Edit and fill in your environment details:
 
-* `wp_base_dir`: The base directory for you local WordPress installation, used for development and testing. e.g ~/develop/wordpress
-* `wp_url`: The base URL for your local WordPress installation/ e.g http://localhost/wp
-* `wp_plugin_dir`: The directory for your plugin build. Should be a directory inside `wp_base_dir`. e.g ~/develop/wordpress/wp-content/plugins/test-tainacan
+* `wp_base_dir`: The base directory for you local WordPress installation, used for development and testing. e.g `~/develop/wordpress`
+* `wp_url`: The base URL for your local WordPress installation/ e.g `http://localhost/wp`
+* `wp_plugin_dir`: The directory for your plugin build. Should be a directory inside `wp_base_dir`. e.g `~/develop/wordpress/wp-content/plugins/test-tainacan`
 
 Once you are ready, you can run:
 
@@ -72,6 +72,7 @@ Tainacan uses `phpunit` to run tests for the backend and the API, and `cypress` 
 To execute all the tests, simply execute the `run-tests` script. But first you need to configure PHPUnit.
 
 #### Preparing PHPUnit
+
 To run the unit tests it is necessary to create a new MySQL database for your unit tests. This database will be cleaned and restored every time you run PHPUnit.
 
 Install the WordPress test library by running the script provided in:
@@ -122,8 +123,8 @@ If you want to run front-end tests, opening the Cypress app and beeing able to r
 ./run-cypress.sh
 ```
 
-**Important note about the Cypress setup:** 
+**Important note about the Cypress setup:**
 
-Cypress will use the same local WordPress installation you configure in the build to run its tests. But before it does so, it will edit the `wp-config.php` file and change the `$db_prefix` variable, so, in reality, it will run all the tests in a brand new WordPress installation. After the tests are completed, it delete this installation from the database and restores the `wp-config.php` as it was before. So, make sure you allways let the script run till the end to restore you configuration. For instance, if you opened Cypress window and are running the tests, dont exit it by Ctrl+C in the terminal. Close the window gently and let the script finish its job.
+Cypress will use the same local WordPress installation you configure in the build to run its tests. But before it does so, it will edit the `wp-config.php` file and change the `$db_prefix` variable, so, in reality, it will run all the tests in a brand new WordPress installation. After the tests are completed, it deletes this installation from the database and restores the `wp-config.php` as it was before. So, make sure you allways let the script run till the end to restore you configuration. For instance, if you opened Cypress window and are running the tests, dont exit it by Ctrl+C in the terminal. Close the window gently and let the script finish its job.
 
-If, by any reason you interrupt the script, no worries, just manually edit you `wp-config.php` and delete the line added by the script.
+If, by any reason, you interrupt the script, no worries, just manually edit you `wp-config.php` and delete the line added by the script.
