@@ -10,10 +10,8 @@ class REST_Filter_Types_Controller extends REST_Controller {
 	 * REST_Filter_Types_Controller constructor.
 	 */
 	public function __construct() {
-		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'filter-types';
-
-		add_action('rest_api_init', array($this, 'register_routes'));
+		parent::__construct();
 	}
 
 	public function register_routes() {

@@ -15,10 +15,8 @@ class REST_Logs_Controller extends REST_Controller {
 	 * REST_Logs_Controller constructor.
 	 */
 	public function __construct() {
-		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'logs';
-
-		add_action('rest_api_init', array($this, 'register_routes'));
+		parent::__construct();
 		add_action('init', array($this, 'init_objects'));
 	}
 

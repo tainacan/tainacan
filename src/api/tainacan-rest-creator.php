@@ -1,6 +1,8 @@
 <?php
 
-$rest_controller               = new \Tainacan\API\REST_Controller();
+const TAINACAN_REST_NAMESPACE  = 'tainacan/v2';
+
+//$rest_controller               = new \Tainacan\API\REST_Controller();
 $rest_collections_controller   = new \Tainacan\API\EndPoints\REST_Collections_Controller();
 $rest_items_controller         = new \Tainacan\API\EndPoints\REST_Items_Controller();
 $rest_fields_controller        = new \Tainacan\API\EndPoints\REST_Fields_Controller();

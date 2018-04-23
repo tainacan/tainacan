@@ -16,10 +16,8 @@ class REST_Terms_Controller extends REST_Controller {
 	 * REST_Terms_Controller constructor.
 	 */
 	public function __construct() {
-		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'terms';
-
-		add_action('rest_api_init', array($this, 'register_routes'));
+		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
 	

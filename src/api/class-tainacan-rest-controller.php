@@ -9,15 +9,8 @@ class REST_Controller extends \WP_REST_Controller {
 	 * REST_Controller constructor.
 	 */
 	public function __construct() {
-		//add_action( 'rest_api_init', function () {
-		//	register_rest_field( 'user',
-		//		'meta',
-		//		array(
-		//			'update_callback' => array($this, 'up_user_meta'),
-		//			'get_callback'    => array($this, 'gt_user_meta'),
-		//		)
-		//	);
-		//} );
+		$this->namespace = TAINACAN_REST_NAMESPACE;
+		add_action('rest_api_init', array($this, 'register_routes'));
 	}
 
 	/**
