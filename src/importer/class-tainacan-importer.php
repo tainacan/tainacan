@@ -406,7 +406,13 @@ abstract class Importer {
             // inserted the id on processed item with its index as array index
             $this->processed_items[ $index ] = $item->get_id();
 
-            $Tainacan_Items->update( $item );
+            if($item->validate()) {
+	            $Tainacan_Items->update( $item );
+            } else {
+	            $this->add_log( 'error', 'Item ' . $index . ': ' ); // TODO add the  $item->get_errors() array
+	            return false;
+            }
+
             return $item;
         } else {
             $this->add_log( 'error', 'Collection not set');

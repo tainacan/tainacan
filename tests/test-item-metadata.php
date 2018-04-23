@@ -149,8 +149,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-        $test = $Tainacan_Fields->fetch($field->get_id());
-
 	    $i = $this->tainacan_entity_factory->create_entity(
 		    'item',
 		    array(
@@ -161,14 +159,23 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		    ),
 		    true
 	    );
+		
+		$i2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'other item',
+				'description' => 'adasdasdsa',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
         
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
-        $item = $Tainacan_Items->fetch($i->get_id());
-
         $value = 'teste_val';
         
-        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
+        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $field);
         $item_metadata->set_value($value);
 
         $this->assertTrue($item_metadata->validate());
@@ -176,10 +183,13 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $item_metadata->validate();
         $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 
-        $n_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
+        $n_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $field);
         $n_item_metadata->set_value($value);
+		$this->assertTrue($n_item_metadata->validate(), 'trying to validate the same item with same value should be ok');
 
-        $this->assertFalse($n_item_metadata->validate());
+		$n_item_metadata2 = new \Tainacan\Entities\Item_Metadata_Entity($i2, $field);
+		$n_item_metadata2->set_value($value);
+		$this->assertFalse($n_item_metadata2->validate(), 'Collection key should not validate another item metadatada with the same value');
     }
     
     function teste_fetch(){

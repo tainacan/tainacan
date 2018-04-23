@@ -388,6 +388,10 @@ class Item extends Entity {
 				}
 			}
 
+			if($is_valid){
+				$this->set_as_valid();
+			}
+
 			return $is_valid;
 		}
 

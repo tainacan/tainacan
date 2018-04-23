@@ -193,22 +193,26 @@ class Taxonomies extends Repository {
 			    return $unregistered;
 		    }
 
-    		$deleted = wp_delete_post($taxonomy_id, true);
+    		$deleted = new Entities\Taxonomy(wp_delete_post($taxonomy_id, true));
 
     		if(!$deleted){
     			return $deleted;
 		    }
 
-    		return new Entities\Taxonomy($deleted);
+		    do_action('tainacan-deleted', $deleted, $is_update = false, $is_delete_permanently = true);
+
+    		return $deleted;
 	    }
 
-	    $trashed = wp_trash_post($taxonomy_id);
+	    $trashed = new Entities\Taxonomy(wp_trash_post($taxonomy_id));
 
     	if(!$trashed){
     		return $trashed;
 	    }
 
-    	return new Entities\Taxonomy($trashed);
+	    do_action('tainacan-trashed', $trashed, $diffs = [], $is_update = false, $is_delete_permanently = false );
+
+    	return $trashed;
     }
 	
 	

@@ -26,6 +26,8 @@ class Entity_Factory {
 	 * @param array $args
 	 * @param bool $is_validated_and_in_db
 	 *
+	 * @param bool $publish
+	 *
 	 * @return mixed
 	 * @throws \ErrorException
 	 */

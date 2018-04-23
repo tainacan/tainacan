@@ -30,6 +30,7 @@ class Collection extends Entity {
         $filters_order,
         $enable_cover_page,
         $cover_page_id,
+        $header_image_id,
         $moderators_ids;
 
     /**
@@ -323,8 +324,8 @@ class Collection extends Entity {
 	 *
 	 * @return string
 	 */
-	function get_columns() {
-		return $this->get_mapped_property( 'columns' );
+	function get_default_displayed_fields() {
+		return $this->get_mapped_property( 'default_displayed_fields' );
 	}
 
 	/**
@@ -352,6 +353,15 @@ class Collection extends Entity {
 	 */
 	function get_enable_cover_page() {
 		return $this->get_mapped_property( 'enable_cover_page' );
+	}
+	
+	/**
+	 * Get Header Image ID attribute
+	 *
+	 * @return string
+	 */
+	function get_header_image_id() {
+		return $this->get_mapped_property( 'header_image_id' );
 	}
 	
 	/**
@@ -503,12 +513,12 @@ class Collection extends Entity {
 	/**
 	 * Set collection columns option
 	 *
-	 * @param [string] $value
+	 * @param array $value
 	 *
 	 * @return void
 	 */
-	function set_columns( $value ) {
-		$this->set_mapped_property( 'columns', $value );
+	function set_default_displayed_fields( $value ) {
+		$this->set_mapped_property( 'default_displayed_fields', $value );
 	}
 
 	/**
@@ -564,6 +574,17 @@ class Collection extends Entity {
 	 */
 	function set_cover_page_id( $value ) {
 		$this->set_mapped_property( 'cover_page_id', $value );
+	}
+	
+	/**
+	 * Set Header Image ID
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_header_image_id( $value ) {
+		$this->set_mapped_property( 'header_image_id', $value );
 	}
 
 	/**

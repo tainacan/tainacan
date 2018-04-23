@@ -13,18 +13,15 @@ class Items extends Repository {
 
     private static $instance = null;
 
-    public static function get_instance()
-    {
-        if(!isset(self::$instance))
-        {
+    public static function get_instance() {
+        if(!isset(self::$instance)) {
             self::$instance = new self();
         }
 
         return self::$instance;
     }
 
-    protected function __construct()
-    {
+    protected function __construct() {
         parent::__construct();
         add_filter( 'posts_where', array(&$this, 'title_in_posts_where'), 10, 2 );
         add_filter( 'posts_where', array(&$this, 'content_in_posts_where'), 10, 2 );
@@ -167,108 +164,7 @@ class Items extends Repository {
 	}
 
 	public function insert( $item ) {
-
-		$is_update = false;
-		$diffs = [];
-		if ( $item->get_id() ) {
-
-			$old   = $item->get_repository()->fetch( $item->get_id() );
-
-			if($old->get_status() === 'auto-draft') {
-				$is_update = false;
-			} else {
-				$is_update = true;
-			}
-
-			$diffs = $this->diff($old, $item);
-		}
-
-		$map = $this->get_map();
-
-		// get collection to determine post type
-		$collection = $item->get_collection();
-
-		if ( !$collection ) {
-			return false;
-		}
-
-		$cpt = $collection->get_db_identifier();
-
-		// iterate through the native post properties
-		foreach ( $map as $prop => $mapped ) {
-			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' && $mapped['map'] != 'terms' ) {
-				$item->WP_Post->{$mapped['map']} = $item->get_mapped_property( $prop );
-			}
-		}
-
-		// save post and get its ID
-		$item->WP_Post->post_type = $cpt;
-		//$item->WP_Post->post_status = 'publish';
-
-		$id            = wp_insert_post( $item->WP_Post );
-		$item->WP_Post = get_post( $id );
-
-		// Now run through properties stored as postmeta
-		foreach ( $map as $prop => $mapped ) {
-			if ( $mapped['map'] == 'meta' ) {
-				update_post_meta( $id, $prop, wp_slash( $item->get_mapped_property( $prop ) ) );
-			} elseif ( $mapped['map'] == 'meta_multi' ) {
-				$values = $item->get_mapped_property( $prop );
-
-				delete_post_meta( $id, $prop );
-
-				if ( is_array( $values ) ) {
-					foreach ( $values as $value ) {
-						add_post_meta( $id, $prop, wp_slash( $value ) );
-					}
-				}
-			}
-		}
-
-		if ( method_exists( $item, 'get_featured_img_id' ) ) {
-			if ( ! get_post_thumbnail_id( $item->WP_Post->ID ) ) {
-				// was added a thumbnail
-
-				$settled = set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
-
-				if ( $settled ) {
-
-					$thumbnail_url = get_the_post_thumbnail_url( $item->WP_Post->ID );
-
-					$diffs['featured_image'] = [
-						'new'             => $thumbnail_url,
-						'old'             => '',
-						'diff_with_index' => 0,
-					];
-
-				}
-
-			} else {
-
-				// was update a thumbnail
-
-				$old_thumbnail = get_the_post_thumbnail_url( $item->WP_Post->ID );
-
-				$settled = set_post_thumbnail( $item->WP_Post, $item->get_featured_img_id( $item->WP_Post->ID ) );
-
-				if ( $settled ) {
-
-					$thumbnail_url = get_the_post_thumbnail_url( $item->WP_Post->ID );
-
-					$diffs['featured_image'] = [
-						'new'             => $thumbnail_url,
-						'old'             => $old_thumbnail,
-						'diff_with_index' => 0,
-					];
-				}
-			}
-		}
-
-		do_action( 'tainacan-insert', $item, $diffs, $is_update );
-		do_action( 'tainacan-insert-Item', $item );
-
-		// return a brand new object
-		return new Entities\Item( $item->WP_Post );
+		return parent::insert($item);
 	}
 
 	/**
@@ -395,10 +291,23 @@ class Items extends Repository {
 	 */
 	public function delete( $args ) {
 		if ( ! empty( $args[1] ) && $args[1] === true ) {
-			return new Entities\Item( wp_delete_post( $args[0], $args[1] ) );
+
+			$deleted = new Entities\Item( wp_delete_post( $args[0], $args[1] ) );
+
+			if($deleted) {
+				do_action( 'tainacan-deleted', $deleted, $is_update = false, $is_delete_permanently = true );
+			}
+
+			return $deleted;
 		}
 
-		return new Entities\Item( wp_trash_post( $args[0] ) );
+		$trashed = new Entities\Item( wp_trash_post( $args[0] ) );
+
+		if($trashed) {
+			do_action( 'tainacan-trashed', $trashed, $is_update = false, $is_delete_permanently = false );
+		}
+
+		return $trashed;
 	}
 
     /**

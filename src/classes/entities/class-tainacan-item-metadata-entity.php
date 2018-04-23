@@ -370,7 +370,8 @@ class Item_Metadata_Entity extends Entity {
                             'key'   => $this->field->get_id(),
                             'value' => $value
                         ],
-                    ]
+                    ],
+					'post__not_in' => [$item->get_id()]
                 ], $item->get_collection());
 
                 if ($test->have_posts()) {
