@@ -8,6 +8,6 @@ class Value extends Mapper {
 	public $allow_extra_fields = true;
 	public $context_url = '';
 	public $header = '';
-	public $options = [];
+	public $metadata = false;
 	
 }

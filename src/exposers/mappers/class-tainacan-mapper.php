@@ -7,7 +7,7 @@ abstract class Mapper {
 	public $name = null;
 	public $allow_extra_fields = true;
 	public $context_url = null;
-	public $options = false;
+	public $metadata = false;
 	public $prefix = '';
 	public $sufix = '';
 	public $header = false;

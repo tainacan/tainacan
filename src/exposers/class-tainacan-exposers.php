@@ -118,7 +118,7 @@ class Exposers {
 		$ret = $item_arr;
 		$field_mapping = $item_arr['field']['exposer_mapping'];
 		if(array_key_exists($mapper->slug, $field_mapping)) {
-			if(is_array($mapper->options) && !array_key_exists( $field_mapping[$mapper->slug], $mapper->options) ) {
+			if(is_array($mapper->metadata) && !array_key_exists( $field_mapping[$mapper->slug], $mapper->metadata) ) {
 				throw new \Exception('Invalid Mapper Option');
 			}
 			$ret = [$mapper->prefix.$field_mapping[$mapper->slug].$mapper->sufix => $item_arr['value']]; //TODO Validate option
