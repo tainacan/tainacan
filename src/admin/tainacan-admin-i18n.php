@@ -90,6 +90,7 @@ return [
 	'label_button_edit'                        => __( 'Button Edit', 'tainacan' ),
 	'label_button_delete'                      => __( 'Button Delete', 'tainacan' ),
 	'label_button_edit_thumb'                  => __( 'Button Edit Thumbnail', 'tainacan' ),
+	'label_choose_thumb'                	   => __( 'Choose Thumbnail', 'tainacan' ),
 	'label_button_delete_thumb'                => __( 'Button Delete Thumbnail', 'tainacan' ),
 	'label_collections_per_page'               => __( 'Collections per Page:', 'tainacan' ),
 	'label_categories_per_page'                => __( 'Categories per Page:', 'tainacan' ),
