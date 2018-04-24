@@ -87,25 +87,21 @@ class Admin {
 			//'wp-admin'
 		];
 
-		wp_dequeue_style( $undesired_wp_styles );
+		//wp_dequeue_style( $undesired_wp_styles );
 		wp_deregister_style( $undesired_wp_styles );
-
-
 		
 	}
 	
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_media();
-		wp_enqueue_script('jcrop');
-
 		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [], null, true );
 		 
 		$settings = $this->get_admin_js_localization_params();
 
 		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
-		
+		wp_enqueue_media();
+		wp_enqueue_script('jcrop');
 		
 	}
 	
@@ -201,7 +197,6 @@ class Admin {
 
 		// TODO move it to a separate file and start the Vue project
 		echo "<div id='tainacan-admin-app'></div>";
-
 	}
 
 	function register_user_meta() {

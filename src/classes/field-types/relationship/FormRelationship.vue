@@ -67,7 +67,7 @@
                         :message="$i18n.getHelperMessage('tainacan-relationship', 'repeated')"/>
             </label>
             <div class="block">
-                <b-checkbox 
+                <b-checkbox
                         v-model="modelRepeated"
                         @input="emitValues()"
                         true-value="yes"
@@ -116,6 +116,7 @@
                     this.hasFields = false;
                     this.modelSearch = [];
                 }
+                this.emitValues();
             },
             modelSearch( value ){
                 this.modelSearch = value;
@@ -178,6 +179,7 @@
                         let fields = res.data;
 
                         if( fields.length > 0 ){
+                            this.fields = [];
 
                             for( let field of fields ){
                                if( field.field_type !== "Tainacan\\Field_Types\\Relationship"){
@@ -227,7 +229,7 @@
                     collection_id: this.collection,
                     search: this.modelSearch,
                     repeated:  this.modelRepeated
-                })
+                });
             }
         }
     }

@@ -113,7 +113,15 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
             cover_page_id: "" + cover_page_id,
             enable_cover_page: enable_cover_page
         }).then( res => {
-            commit('setCollection', { id: collection_id, name: name, description: description, slug: slug, status: status, enable_cover_page: enable_cover_page, cover_page_id: cover_page_id });
+            commit('setCollection', { 
+                id: collection_id, 
+                name: name, 
+                description: description, 
+                slug: slug, 
+                status: status, 
+                enable_cover_page: enable_cover_page, 
+                cover_page_id: cover_page_id
+            });
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -210,9 +218,9 @@ export const updateCover = ({ commit }, { collectionId, coverId }) => {
 };
 
 // Collection Cover Page
-export const fetchPages = () => {
+export const fetchPages = ({ commit }, search ) => {
     return new Promise((resolve, reject) => {
-        axios.wp.get('/pages/')
+        axios.wp.get('/pages?search=' + search)
         .then(res => {
             let pages = res.data;
             resolve( pages );

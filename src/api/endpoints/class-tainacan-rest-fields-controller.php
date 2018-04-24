@@ -13,10 +13,8 @@ class REST_Fields_Controller extends REST_Controller {
 	private $field_repository;
 
 	public function __construct() {
-		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'fields';
-
-		add_action('rest_api_init', array($this, 'register_routes'));
+		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
 

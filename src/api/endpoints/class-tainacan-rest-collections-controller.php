@@ -20,10 +20,8 @@ class REST_Collections_Controller extends REST_Controller {
 	 * Define the namespace, rest base and instantiate your attributes.
 	 */
 	public function __construct(){
-        $this->namespace = 'tainacan/v2';
         $this->rest_base = 'collections';
-
-        add_action('rest_api_init', array($this, 'register_routes'));
+		parent::__construct();
         add_action('init', array(&$this, 'init_objects'), 11);
     }
     

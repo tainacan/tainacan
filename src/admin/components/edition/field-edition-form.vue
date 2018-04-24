@@ -70,7 +70,46 @@
                 </b-radio>
             </div>
         </b-field>
-        <br>
+        
+        <b-field 
+            :addons="false"
+            :label="$i18n.get('label_display')">
+            <b-field
+                    :type="formErrors['required'] != undefined ? 'is-danger' : ''" 
+                    :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
+                <b-checkbox
+                        size="is-small"
+                        @input="clearErrors('required')"
+                        v-model="editForm.required"
+                        true-value="yes" 
+                        false-value="no"
+                        name="required">
+                    {{ $i18n.get('label_display_default') }}
+                </b-checkbox>
+                <help-button 
+                        :title="$i18n.getHelperTitle('fields', 'required')" 
+                        :message="$i18n.getHelperMessage('fields', 'required')"/>
+            </b-field>
+
+            <b-field
+                    :type="formErrors['multiple'] != undefined ? 'is-danger' : ''" 
+                    :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
+                <b-checkbox
+                        size="is-small" 
+                        @input="clearErrors('multiple')"
+                        v-model="editForm.multiple"
+                        true-value="yes" 
+                        false-value="no"
+                        name="multiple">
+                    {{ $i18n.get('label_display_never') }}
+                </b-checkbox>
+                <help-button 
+                        :title="$i18n.getHelperTitle('fields', 'multiple')" 
+                        :message="$i18n.getHelperMessage('fields', 'multiple')"/>
+            </b-field>
+
+        </b-field>
+        
         <b-field 
                 :addons="false"
                 :label="$i18n.get('label_options')">
@@ -78,6 +117,7 @@
                     :type="formErrors['required'] != undefined ? 'is-danger' : ''" 
                     :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
                 <b-checkbox
+                        size="is-small"
                         @input="clearErrors('required')"
                         v-model="editForm.required"
                         true-value="yes" 
@@ -94,6 +134,7 @@
                     :type="formErrors['multiple'] != undefined ? 'is-danger' : ''" 
                     :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                 <b-checkbox 
+                        size="is-small"
                         @input="clearErrors('multiple')"
                         v-model="editForm.multiple"
                         true-value="yes" 
@@ -109,7 +150,8 @@
             <b-field 
                     :type="formErrors['unique'] != undefined ? 'is-danger' : ''" 
                     :message="formErrors['unique'] != undefined ? formErrors['unique'] : ''">
-                <b-checkbox 
+                <b-checkbox
+                        size="is-small" 
                         @input="clearErrors('unique')"
                         v-model="editForm.unique"
                         true-value="yes" 

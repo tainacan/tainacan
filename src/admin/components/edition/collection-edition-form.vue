@@ -72,39 +72,6 @@
                     class="buttton"
                     @click="openFrameUploader($event)">Enviar</button>
 
-            
-            <!-- Your image container, which can be manipulated with js -->
-            <div class="custom-img-container">
-                <img 
-                    v-if="you_have_img"
-                    :src="your_img_src" 
-                    alt="" 
-                    style="max-width:100%;">
-            </div>
-
-            <!-- Your add & remove image links -->
-            <p class="hide-if-no-js">
-                <a 
-                        class="upload-custom-img" 
-                        :class="{ 'hidden': you_have_img, 'hidden' : !you_have_img}"
-                        :href="upload_link">
-                    Set custom image
-                </a>
-                <a 
-                        class="delete-custom-img" 
-                        :class="{'hidden' : !you_have_img, 'visible' : you_have_img }" 
-                        href="#">
-                    Remove this image
-                </a>
-            </p>
-
-            <!-- A hidden input to set and post the chosen image id -->
-            <input 
-                class="custom-img-id" 
-                name="custom-img-id" 
-                type="hidden" 
-                :value="your_img_id">
-
             <!-- Cover  Image-------------------------------- --> 
             <b-field 
                 :addons="false"
@@ -217,7 +184,7 @@
                         v-model="coverPageTitle"
                         @select="onSelectCoverPage($event)"
                         :loading="isFetchingPages"
-                        @input="fecthCoverPages()"
+                        @input="fecthCoverPages($event)"
                         @focus="clearErrors('cover_page_id')">
                     <template slot-scope="props">
                         {{ props.option.title.rendered }}
@@ -336,13 +303,7 @@ export default {
             formErrorMessage: '',
             isNewCollection: false,
             // Fream Uploader variables
-            frameUploader: undefined,
-            your_img_src: '',
-            your_img_id: '',
-            you_have_img: false,
-            upload_link: '',
-            custom_img_id: ''
-
+            frameUploader: undefined
         }
     },
     methods: {
@@ -356,8 +317,10 @@ export default {
             'fetchPages',
             'fetchPage'
         ]),
+        ...mapActions('fields', [
+            'fetchFields'
+        ]),
         onSubmit() {
-            // Puts loading on Draft Collection creation
             this.isLoading = true;
 
             let data = { 
@@ -365,7 +328,7 @@ export default {
                 name: this.form.name, 
                 description: this.form.description,
                 enable_cover_page: this.form.enable_cover_page, 
-                cover_page_id: this.form.cover_page_id, 
+                cover_page_id: this.form.cover_page_id,
                 slug: this.form.slug, 
                 status: this.form.status
             };
@@ -426,7 +389,6 @@ export default {
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
-                this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.slug = this.collection.slug;
                 
@@ -500,9 +462,9 @@ export default {
                 this.$console.error(error);
             });    
         },
-        fecthCoverPages() {
+        fecthCoverPages(search) {
             this.isFetchingPages = true;
-            this.fetchPages()
+            this.fetchPages(search)
                 .then((pages) => {
                     this.coverPages = pages;
                     this.isFetchingPages = false;
@@ -524,6 +486,7 @@ export default {
             this.form.cover_page_id = '';
         },
         openFrameUploader(event) {
+            'use strict';   
             event.preventDefault();
 
              // If the media frame already exists, reopen it.
@@ -541,25 +504,21 @@ export default {
                 multiple: false,
 
             });
-
+            
             wp.media.view.settings.post = {
                 id: this.collectionId,
                 featuredImageId: this.collection.featured_img_id
             }
 
-            //console.log(wp.wp_get_image_editor())
-
             this.frameUploader.on('select', () => {
                 
                 let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
-
-                console.log(media);
+                this.$console.log(media);
 
             });
 
             this.frameUploader.open();
         }
-        
     },
     created(){
 
@@ -584,7 +543,8 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
-                
+                 
+                // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
                     
                     this.isFetchingPages = true;
@@ -604,7 +564,7 @@ export default {
 
                 this.isLoading = false; 
             });
-        } 
+        }
     }
 
 }
@@ -623,7 +583,7 @@ export default {
             font-size: 0.8em;
         }
         img {
-            bottom: 0;
+            bottom: 0px;
             position: absolute;
         }
 

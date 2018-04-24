@@ -1,3 +1,6 @@
+// Overrides lodash by original WordPress Underscore Library
+window.lodash = _.noConflict();
+
 // Main imports
 import Vue from 'vue';
 import Buefy from 'buefy';

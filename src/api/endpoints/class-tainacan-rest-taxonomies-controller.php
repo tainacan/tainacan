@@ -14,10 +14,8 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * REST_Taxonomies_Controller constructor.
 	 */
 	public function __construct() {
-		$this->namespace = 'tainacan/v2';
 		$this->rest_base = 'taxonomies';
-
-		add_action('rest_api_init', array($this, 'register_routes'));
+		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
 	

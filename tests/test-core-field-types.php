@@ -92,5 +92,50 @@ class CoreFieldTypes extends TAINACAN_UnitTestCase {
        $this->assertEquals('changed description', $check_item_metadata->get_value());
        
     }
+
+    function test_validate_required_title() {
+
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'   => 'test',
+            ),
+            true
+        );
+
+        $i = $this->tainacan_entity_factory->create_entity(
+            'item',
+            array(
+                'description'   => 'adasdasdsa',
+                'collection'    => $collection,
+                'status'        => 'draft'
+            ),
+            true
+        );
+
+        $fields = $Tainacan_Fields->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+
+        foreach ( $fields as $index => $field ){
+            if ( $field->get_field_type_object()->get_core() && $field->get_field_type_object()->get_related_mapped_prop() == 'title') {
+                $core_title = $field;
+            }
+        }
+
+
+
+        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $core_title);
+        $item_metadata->set_value('title');
+        $item_metadata->validate();
+        $Tainacan_Item_Metadata->insert($item_metadata);
+
+        $i->set_status('publish' );
+
+        $this->assertTrue($i->validate(), 'Item with empy title should validate because core title field has value');
+
+    }
     
 }

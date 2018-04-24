@@ -220,10 +220,9 @@ class Items extends Repository {
 					$collections_objects[] = $col;
 				}
 			}
-
 		}
-		foreach ( $collections_objects as $collection ) {
 
+		foreach ( $collections_objects as $collection ) {
 			/**
 			 * If no specific status is defined in the query, WordPress will fetch
 			 * public items and private items for users withe the correct permission.
