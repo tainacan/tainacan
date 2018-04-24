@@ -73,17 +73,33 @@ class Old_Tainacan extends Importer
 
             if(!empty($link))
             {
-                $items = wp_remote_get( $link."/items/?includeMetadata=1" );
-                if(isset($items['body']))
+                $info = wp_remote_get( $link."/items/?includeMetadata=1" );
+                $info = json_decode($info['body']);
+                $count_total_pages = ceil($info->found_items / $info->items_per_page);
+
+                $items_json = wp_remote_get( $link."/items/?includeMetadata=1&filter[page]=1" );
+                if(isset($items_json['body']))
                 {
-                    $items_array = json_decode($items['body']);
-
-                    $file = fopen( $this->get_id().'.txt', 'w' );
-                    fwrite( $file, serialize($items_array));
-                    fclose( $file );
-
-                    return $this->set_file( $this->get_id().'.txt' );
+                    $items = json_decode($items_json['body']);
+                    for ($i = 2; $i <= $count_total_pages; $i++)
+                    {
+                        $part = wp_remote_get($link . "/items/?includeMetadata=1&filter[page]=".$i);
+                        if(isset($part['body']))
+                        {
+                            $part_array = json_decode($part['body'])->items;
+                            foreach ($part_array as $item)
+                            {
+                                $items->items[] =  $item;
+                            }
+                        }
+                    }
                 }
+
+                $file = fopen( $this->get_id().'.txt', 'w' );
+                fwrite( $file, serialize($items));
+                fclose( $file );
+
+                return $this->set_file( $this->get_id().'.txt' );
             }
         }
     }
