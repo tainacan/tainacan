@@ -103,7 +103,7 @@ export const deleteCollection = ({ commit }, id) => {
     });
 }
 
-export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id, default_displayed_fields }) => {
+export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
             name: name,
@@ -120,8 +120,7 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
                 slug: slug, 
                 status: status, 
                 enable_cover_page: enable_cover_page, 
-                cover_page_id: cover_page_id, 
-                default_displayed_fields: default_displayed_fields 
+                cover_page_id: cover_page_id
             });
             resolve( res.data );
         }).catch( error => { 

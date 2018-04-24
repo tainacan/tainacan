@@ -47,7 +47,6 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
-    import _ from 'lodash';
 
     export default {
         created(){
@@ -169,7 +168,7 @@
             },
 
             // emit the operation for listeners
-            emit: _.debounce(( vm ) => {
+            emit:( vm ) => {
                 let values = [];
                 let type = '';
 
@@ -197,7 +196,7 @@
                     collection_id: ( vm.collection_id ) ? vm.collection_id : vm.filter.collection_id,
                     value: values
                 });
-            }, 700)
+            }
         }
     }
 </script>
