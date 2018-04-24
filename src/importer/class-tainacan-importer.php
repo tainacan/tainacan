@@ -406,9 +406,9 @@ abstract class Importer {
             // inserted the id on processed item with its index as array index
             $this->processed_items[ $index ] = $insertedItem->get_id();
             if($insertedItem->validate()) {
-	            $Tainacan_Items->update( $insertedItem );
+	            $insertedItem = $Tainacan_Items->update( $insertedItem );
             } else {
-	            $this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0] ); // TODO add the  $item->get_errors() array
+	            $this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
 	            return false;
             }
 

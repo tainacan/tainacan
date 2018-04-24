@@ -29,7 +29,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $this->assertEquals( $collection->get_id(),  $_SESSION['tainacan_importer'][$id]->collection->get_id() );
     }
 
-   /* public function test_automapping_old_tainacan()
+    /*public function test_automapping_old_tainacan()
     {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();

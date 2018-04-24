@@ -11,7 +11,31 @@ namespace Tainacan\Importer;
 
 class Old_Tainacan extends Importer
 {
-    public function __construct($import_structure_and_mapping = false) {
+    public $avoid = [
+        'ID',
+        'post_author',
+        'post_date',
+        'post_date_gmt',
+        /*'post_content',
+        'post_title',*/
+        'post_excerpt',
+        'post_status',
+        'comment_status',
+        'ping_status',
+        'post_name',
+        'post_modified',
+        'post_modified_gmt',
+        'post_content_filtered',
+        'post_parent',
+        'guid',
+        'comment_count',
+        'filter',
+        'link',
+        'thumbnail'
+    ];
+
+    public function __construct($import_structure_and_mapping = false)
+    {
         parent::__construct();
 
         $this->remove_import_method('file');
@@ -50,7 +74,6 @@ class Old_Tainacan extends Importer
             if(!empty($link))
             {
                 $items = wp_remote_get( $link."/items/?includeMetadata=1" );
-
                 if(isset($items['body']))
                 {
                     $items_array = json_decode($items['body']);
@@ -78,8 +101,18 @@ class Old_Tainacan extends Importer
 
         $item = $file_content->items[0];
 
-        $fields = array_keys((array)$item->item);
+        $fields = [];
 
+        //Default meta
+        foreach ($item->item as $meta_name => $value)
+        {
+            if(!in_array($meta_name, $this->avoid))
+            {
+                $fields[] = $meta_name;
+            }
+        }
+
+        //Added meta
         foreach ($item->metadata as $metadata)
         {
             $fields[] = ['name' => $metadata->name, 'type' => $metadata->type];
@@ -105,7 +138,6 @@ class Old_Tainacan extends Importer
         // search the index in the file and get values
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
         $file_content = unserialize($file->fread($file->getSize()));
-
         $values = $file_content->items[$index];
         foreach ($headers as $header)
         {
@@ -147,31 +179,10 @@ class Old_Tainacan extends Importer
 
     public function create_fields_and_mapping()
     {
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
         $fields_repository = \Tainacan\Repositories\Fields::get_instance();
 
         $file_fields = $this->get_fields();
-        $avoid = [
-            /*'ID',
-            'post_author',
-            'post_date',
-            'post_date_gmt',
-            'post_content',
-            'post_title',
-            'post_excerpt',
-            'post_status',
-            'comment_status',
-            'ping_status',
-            'post_name',
-            'post_modified',
-            'post_modified_gmt',
-            'post_content_filtered',
-            'post_parent',
-            'guid',
-            'comment_count',
-            'filter',
-            'link',
-            'thumbnail'*/
-        ];
 
         foreach($file_fields as $index => $meta_info)
         {
@@ -186,7 +197,7 @@ class Old_Tainacan extends Importer
                 $type = 'Text';
             }
 
-            if(!in_array($meta_name, $avoid))
+            if(!in_array($meta_name, $this->avoid))
             {
                 $newField = new \Tainacan\Entities\Field();
 
@@ -200,6 +211,16 @@ class Old_Tainacan extends Importer
                 $newField = $fields_repository->insert($newField);
 
                 $mapping[$newField->get_id()] = $file_fields[$index];
+            }else
+            {
+                $fields = $Tainacan_Fields->fetch_by_collection( $this->collection, [], 'OBJECT' ) ;
+                foreach ($fields as $field)
+                {
+                    if($field->WP_Post->post_name === 'title' || $field->WP_Post->post_name === 'description')
+                    {
+                        $mapping[$field->get_id()] = $file_fields[$meta_name];
+                    }
+                }
             }
         }
 
@@ -209,7 +230,7 @@ class Old_Tainacan extends Importer
     public function define_type($type)
     {
         $type = strtolower($type);
-        $tainacan_types = ['text', 'textarea', 'numerica', 'date'];
+        $tainacan_types = ['text', 'textarea', 'numeric', 'date'];
 
         $types_to_work = ['item', 'tree'];
         if(in_array($type, $tainacan_types))
