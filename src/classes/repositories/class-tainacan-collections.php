@@ -267,7 +267,7 @@ class Collections extends Repository {
 			$deleted = new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
 
 			if($deleted) {
-				do_action( 'tainacan-deleted', $deleted, $is_update = false, $is_delete_permanently = true );
+				do_action( 'tainacan-deleted', $deleted, [], false, true );
 			}
 
 			return $deleted;
@@ -276,7 +276,7 @@ class Collections extends Repository {
 		$trashed = new Entities\Collection( wp_trash_post( $args[0] ) );
 
 		if($trashed) {
-			do_action( 'tainacan-trashed', $trashed, $is_update = false, $is_delete_permanently = false );
+			do_action( 'tainacan-trashed', $trashed, [], false, false, true );
 		}
 
 		return $trashed;

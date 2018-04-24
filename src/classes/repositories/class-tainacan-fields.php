@@ -454,7 +454,7 @@ class Fields extends Repository {
 		$deleted =  new Entities\Field( wp_trash_post( $field_id ) );
 
 		if($deleted) {
-			do_action( 'tainacan-deleted', $deleted, $is_update = false, $is_delete_permanently = true );
+			do_action( 'tainacan-deleted', $deleted, [], false, true );
 		}
 
 		return $deleted;

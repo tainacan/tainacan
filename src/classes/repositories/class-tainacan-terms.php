@@ -230,7 +230,7 @@ class Terms extends Repository {
     	if($deleted) {
     		$deleted_term_tainacan = new Entities\Term($args[0], $args[1]);
 
-		    do_action( 'tainacan-deleted', $deleted_term_tainacan, $is_update = false, $is_delete_permanently = true );
+		    do_action( 'tainacan-deleted', $deleted_term_tainacan, [], false, true );
 	    }
 
     	return $deleted;

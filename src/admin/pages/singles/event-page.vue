@@ -3,7 +3,9 @@
         <div class="is-fullheight">
             <div class="page-container primary-page">
                 <div class="title">{{ event.description }}</div>
-                <div class="level">
+                <div
+                        class="level"
+                        v-if="event.title !== undefined && event.title.includes('updated')">
                     <div class="level-left"/>
                     <div class="level-right">
                         <div class="level-item">
@@ -20,9 +22,16 @@
 
                 <hr class="divider">
 
-                <component
-                        :is="comp"
-                        :event="event"/>
+                <div v-if="event.title !== undefined && event.title.includes('updated')">
+                    <component
+                            :is="comp"
+                            :event="event"/>
+                </div>
+
+                <div v-else-if="event.title !== undefined">
+                    <no-diff :event="event" />
+                </div>
+
             </div>
         </div>
     </div>
@@ -31,8 +40,9 @@
 <script>
     import {mapActions, mapGetters} from 'vuex';
 
-    import Split from '../../components/other/event-diff/event-split.vue';
-    import Unified from '../../components/other/event-diff/event-unified.vue';
+    import Split from '../../components/other/event/diff-exhibition/event-split.vue';
+    import Unified from '../../components/other/event/diff-exhibition/event-unified.vue';
+    import NoDiff from '../../components/other/event/unique-exhibition/event-nodiff.vue';
 
     export default {
         name: 'EventPage',
@@ -57,7 +67,8 @@
         },
         components: {
             Split,
-            Unified
+            Unified,
+            NoDiff
         },
         created() {
             this.eventId = parseInt(this.$route.params.eventId);

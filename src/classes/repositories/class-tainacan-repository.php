@@ -681,7 +681,12 @@ abstract class Repository {
 				$old_entity  = new $entity_type; // there is no saved entity, let compare with a new empty one
 			}
 		} else {
-			$old_entity = $old;
+			if($old->get_status() === 'auto-draft'){
+				$entity_type = get_class( $new );
+				$old_entity  = new $entity_type;
+			} else {
+				$old_entity = $old;
+			}
 		}
 
 		$new_entity = $new;
@@ -691,6 +696,7 @@ abstract class Repository {
 		$diff = [];
 
 		foreach ( $map as $prop => $mapped ) {
+			// I can't verify differences on item, because it attributes are added when item is a auto-draft
 			if ( $old_entity->get_mapped_property( $prop ) != $new_entity->get_mapped_property( $prop ) ) {
 
 				if ( $mapped['map'] === 'meta_multi' || ( $mapped['map'] === 'meta' && is_array( $new_entity->get_mapped_property( $prop ) ) ) ) {
@@ -729,6 +735,7 @@ abstract class Repository {
 			}
 		}
 
+		unset($diff['id'], $diff['collection_id'], $diff['author_id'], $diff['creation_date']);
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $new, $old );
 
 		return $diff;

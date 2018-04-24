@@ -199,7 +199,7 @@ class Taxonomies extends Repository {
     			return $deleted;
 		    }
 
-		    do_action('tainacan-deleted', $deleted, $is_update = false, $is_delete_permanently = true);
+		    do_action('tainacan-deleted', $deleted, [], false, true);
 
     		return $deleted;
 	    }
@@ -210,7 +210,7 @@ class Taxonomies extends Repository {
     		return $trashed;
 	    }
 
-	    do_action('tainacan-trashed', $trashed, $diffs = [], $is_update = false, $is_delete_permanently = false );
+	    do_action('tainacan-trashed',  $trashed, [], false, false, true );
 
     	return $trashed;
     }

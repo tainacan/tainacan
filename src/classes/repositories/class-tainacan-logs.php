@@ -28,12 +28,11 @@ class Logs extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_action( 'tainacan-insert', array( $this, 'insert_log' ), 10, 4 );
-		add_action( 'tainacan-deleted', array( $this, 'insert_log'), 10, 4 );
-		add_action( 'tainacan-trashed', array( $this, 'insert_log'), 10, 4 );
+		add_action( 'tainacan-insert', array( $this, 'insert_log' ), 10, 5 );
+		add_action( 'tainacan-deleted', array( $this, 'insert_log'), 10, 5 );
+		add_action( 'tainacan-trashed', array( $this, 'insert_log'), 10, 5 );
 
 		add_action( 'add_attachment', array( $this, 'prepare_attachment_log_before_insert' ), 10 );
-		add_action( 'attachment_updated', array( $this, 'prepare_attachment_log_before_insert' ), 10, 3);
 	}
 
 	public function get_map() {
@@ -223,51 +222,46 @@ class Logs extends Repository {
 	}
 
 
-	public function prepare_attachment_log_before_insert( $post_ID, $post_after = null, $post_before = null ) {
+	public function prepare_attachment_log_before_insert( $post_ID ) {
+		$attachment = get_post( $post_ID );
+		$post       = $attachment->post_parent;
 
-		if ( ! $post_after && ! $post_before ) {
-			// is add attachment
-			$attachment = get_post( $post_ID );
-			$post       = $attachment->post_parent;
+		if ( $post ) {
+			// was added attachment on a tainacan object
 
-			if ( $post ) {
-				// was added attachment on a tainacan object
+			$tainacan_post = Repository::get_entity_by_post( $post );
 
-				$tainacan_post = Repository::get_entity_by_post( $post );
+			if($tainacan_post) {
+				// was added a normal attachment
 
-				if($tainacan_post) {
-					// was added a normal attachment
+				// get all attachments except the new
+				$old_attachments = $tainacan_post->get_attachments( $post_ID );
 
-					// get all attachments except the new
-					$old_attachments = $tainacan_post->get_attachments( $post_ID );
-
-					foreach ( $old_attachments as $attachment ) {
-						unset( $attachment['id'] );
-					}
-
-					$new_attachments[] = [
-						'title'       => $attachment->post_title,
-						'description' => $attachment->post_content,
-						'mime_type'   => $attachment->post_mime_type,
-						'url'         => $attachment->guid,
-					];
-
-					$array_diff_with_index = array_map( 'unserialize',
-						array_diff_assoc( array_map( 'serialize', $new_attachments ), array_map( 'serialize', $old_attachments ) ) );
-
-					$diff['attachments'] = [
-						'new'             => $new_attachments,
-						'old'             => $old_attachments,
-						'diff_with_index' => $array_diff_with_index
-					];
-
-					$this->insert_log( $tainacan_post, $diff, true );
-
+				foreach ( $old_attachments as $index => $a ) {
+					unset( $old_attachments[$index]['id'] );
 				}
+
+				$new_attachments[] = [
+					'title'       => $attachment->post_title,
+					'description' => $attachment->post_content,
+					'mime_type'   => $attachment->post_mime_type,
+					'url'         => $attachment->guid,
+				];
+
+				$array_diff_with_index = array_map( 'unserialize',
+					array_diff_assoc( array_map( 'serialize', $new_attachments ), array_map( 'serialize', $old_attachments ) ) );
+
+				$diff['attachments'] = [
+					'new'             => $new_attachments,
+					'old'             => $old_attachments,
+					'diff_with_index' => $array_diff_with_index
+				];
+
+				$this->insert_log( $tainacan_post, $diff, true );
+
 			}
-		} else {
-			// TODO: Save a log when a attachment is updated
 		}
+
 	}
 
 	/**
@@ -275,15 +269,17 @@ class Logs extends Repository {
 	 *
 	 * @param Entity $new_value
 	 * @param array $diffs
-	 * @param null $is_update
+	 * @param bool $is_update
+	 *
+	 * @param bool $is_delete
+	 * @param bool $is_trash
 	 *
 	 * @return Entities\Log new created log
 	 */
-	public function insert_log( $new_value, $diffs = [], $is_update = null, $is_delete_permanently = null ) {
-		$msn         = "";
-		$description = "";
+	public function insert_log( $new_value, $diffs = [], $is_update = false, $is_delete = false, $is_trash = false ) {
+		$msn         = null;
+		$description = null;
 
-		// TODO: Continue with is_delete_permanently
 		if ( is_object( $new_value ) ) {
 			// do not log a log
 			if ( ( method_exists( $new_value, 'get_post_type' ) && $new_value->get_post_type() === 'tainacan-log' ) || $new_value->get_status() === 'auto-draft' ) {
@@ -308,49 +304,78 @@ class Logs extends Repository {
 				$name = $new_value->get_status();
 			}
 
-			$articleA  = 'A';
-			$articleAn = 'An';
-			$vowels    = 'aeiou';
-
 			if ( $is_update ) {
-				if ( substr_count( $vowels, strtolower( substr( $class_name, 0, 1 ) ) ) > 0 ) {
-					$msn = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleAn, $class_name );
-				} else {
-					$msn = sprintf( __( '%s %s has been updated.', 'tainacan' ), $articleA, $class_name );
-				}
-				$description = sprintf( __( "The \"%s\" %s has been updated.", 'tainacan' ), $name, strtolower( $class_name ) );
-			} else {
-				if ( substr_count( $vowels, strtolower( substr( $class_name, 0, 1 ) ) ) > 0 ) {
-					$msn = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleAn, $class_name );
-				} else {
-					$msn = sprintf( __( '%s %s has been created.', 'tainacan' ), $articleA, $class_name );
-				}
+				$msn = $this->prepare_event_message($class_name, 'updated');
+				$description = $this->prepare_description_message($new_value, $name, $class_name, 'updated');
+			} elseif( $is_delete ){
+				// was deleted
+				$msn = $this->prepare_event_message($class_name, 'deleted');
+				$description = $this->prepare_description_message($new_value, $name, $class_name, 'deleted');
+			} elseif( !empty($diffs) ) {
+				// was created
+				$msn = $this->prepare_event_message($class_name, 'created');
+				$description = $this->prepare_description_message($new_value, $name, $class_name, 'created');
 
-				if ( $new_value instanceof Entities\Field ) {
-					$collection = $new_value->get_collection();
-					$parent     = $collection;
-
-					if ( $collection ) {
-						$parent = $collection->get_name();
-
-						if ( ! $parent ) {
-							$parent = $collection->get_status();
-						}
-					}
-
-					$description = sprintf( __( "The \"%s\" %s has been created on %s.", 'tainacan' ), $name, strtolower( $class_name ), $parent );
-				} else {
-					$description = sprintf( __( "The \"%s\" %s has been created.", 'tainacan' ), $name, strtolower( $class_name ) );
-				}
+			} elseif( $is_trash ) {
+				// was trashed
+				$msn = $this->prepare_event_message($class_name, 'trashed');
+				$description = $this->prepare_description_message($new_value, $name, $class_name, 'trashed');
 			}
+
+			$msn         = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
+			$description = apply_filters( 'tainacan-insert-log-description', $description, $type, $new_value );
 		}
 
-		$msn         = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
-		$description = apply_filters( 'tainacan-insert-log-description', $description, $type, $new_value );
 
-		if ( ! empty( $diffs ) ) {
+		if ( ! empty( $diffs ) || $is_delete || $is_trash ) {
 			return Entities\Log::create( $msn, $description, $new_value, $diffs );
 		}
+	}
+
+	private function prepare_event_message($class_name, $action_message){
+		$articleA  = 'A';
+		$articleAn = 'An';
+		$vowels    = 'aeiou';
+
+		if ( substr_count( $vowels, strtolower( substr( $class_name, 0, 1 ) ) ) > 0 ) {
+			$msn = sprintf( __( '%s %s has been %s.', 'tainacan' ), $articleAn, $class_name, $action_message );
+		} else {
+			$msn = sprintf( __( '%s %s has been %s.', 'tainacan' ), $articleA, $class_name, $action_message );
+		}
+
+		return $msn;
+	}
+
+	/**
+	 * This will prepare the event description for objects
+	 *
+	 * @param $object
+	 * @param $name
+	 * @param $class_name
+	 *
+	 * @param $action_message
+	 *
+	 * @return string
+	 */
+	private function prepare_description_message($object, $name, $class_name, $action_message){
+		if ( $object instanceof Entities\Field || $object instanceof Entities\Item || $object instanceof Entities\Filter) {
+			$collection = $object->get_collection();
+			$parent     = $collection;
+
+			if ( $collection ) {
+				$parent = $collection->get_name();
+
+				if ( ! $parent ) {
+					$parent = $collection->get_status();
+				}
+			}
+
+			$description = sprintf( __( "The \"%s\" %s has been %s (parent %s).", 'tainacan' ), $name, strtolower( $class_name ), $action_message, $parent );
+		} else {
+			$description = sprintf( __( "The \"%s\" %s has been %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message );
+		}
+
+		return $description;
 	}
 
 	/**
@@ -366,11 +391,13 @@ class Logs extends Repository {
 			/** @var Entity $value * */
 			$value = $log->get_value();
 
-			//$value->set_status('publish'); // TODO check if publish the entity on approve
+			$value->set_status('publish'); // TODO check if publish the entity on approve
 
 			$repository = self::get_repository( $value );
 
-			return $repository->insert( $value );
+			if($value->validate()) {
+				return $repository->insert( $value );
+			}
 		}
 
 		return false;

@@ -71,12 +71,6 @@ class REST_Logs_Controller extends REST_Controller {
 			if(!isset($request['fetch_only'])) {
 				$item_array = $item->__toArray();
 
-//				if ( $request['context'] === 'edit' ) {
-//					$log_diff = $item->diff();
-//
-//					$item_array['log_diff'] = $log_diff;
-//				}
-
 				unset($item_array['value']);
 				unset($item_array['old_value']);
 
