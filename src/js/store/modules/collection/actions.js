@@ -202,10 +202,10 @@ export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
     }); 
 };
 
-export const updateCover = ({ commit }, { collectionId, coverId }) => {
+export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId, {
-            cover_img_id: coverId 
+            header_img_id: headerImageId 
         }).then( res => {
             let collection = res.data
             commit('setCollection', collection);

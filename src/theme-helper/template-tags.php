@@ -42,6 +42,8 @@ function tainacan_the_metadata($field = null, $hide_empty = true) {
 function tainacan_get_collection_id() {
 	if ( is_post_type_archive() || is_single() ) {
 		return Repositories\Collections::get_instance()->get_id_by_db_identifier(get_post_type());
+	} elseif ( false !== \Tainacan\Theme_Helper::get_instance()->visiting_collection_cover ) {
+		return \Tainacan\Theme_Helper::get_instance()->visiting_collection_cover;
 	}
 	return false;
 }

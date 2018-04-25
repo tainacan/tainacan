@@ -10,229 +10,205 @@
                 v-if="collection != null && collection != undefined" 
                 class="tainacan-form" 
                 label-width="120px">
-            
-            <!-- Name -------------------------------- --> 
-            <b-field 
-                :addons="false"
-                :label="$i18n.get('label_name')"
-                :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
-                :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
-                <help-button 
-                    :title="$i18n.getHelperTitle('collections', 'name')" 
-                    :message="$i18n.getHelperMessage('collections', 'name')"/>
-                <b-input
-                    id="tainacan-text-name"
-                    v-model="form.name"
-                    @focus="clearErrors('name')"/>  
-            </b-field>
 
-            <!-- Thumbnail -------------------------------- --> 
-            <b-field 
-                :addons="false"
-                :label="$i18n.get('label_image')">
-                <div class="thumbnail-field">
-                    <b-upload 
-                        v-if="collection.featured_image == undefined || collection.featured_image == false"
-                        v-model="thumbnail"
-                        drag-drop
-                        @input="uploadThumbnail($event)">
-                        <div class="content has-text-centered">
-                            <p>
-                            <b-icon
-                                icon="upload"/>
-                            </p>
-                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
-                        </div>
-                    </b-upload>
-                    <div v-else> 
-                        <figure class="image is-128x128">
-                            <img 
-                                    :alt="$i18n.get('label_thumbnail')" 
-                                    :src="collection.featured_image">
-                        </figure>
-                        <div class="thumbnail-buttons-row">
-                            <b-upload 
-                                    v-model="thumbnail"
-                                    @input="uploadThumbnail($event)">
-                                <a 
-                                        id="button-edit" 
-                                        :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"/></a>
-                            </b-upload>
+            <div class="columns">
+                <div class="column is-narrow">
+
+                    <!-- Thumbnail -------------------------------- --> 
+                    <b-field 
+                        :addons="false"
+                        :label="$i18n.get('label_image')">
+                        <div class="thumbnail-field">
                             <a 
-                                    id="button-delete" 
-                                    :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                    @click="deleteThumbnail()"><b-icon icon="delete"/></a>
-                        </div>
-                    </div> 
-                </div>
-            </b-field>
-
-            <button 
-                    id="frame-uploader"
-                    class="buttton"
-                    @click="openFrameUploader($event)">Enviar</button>
-
-
-            <!-- Cover  Image-------------------------------- --> 
-            <b-field 
-                :addons="false"
-                :label="$i18n.get('label_cover_image')">
- 
-                <div class="thumbnail-field">
-                    <b-upload 
-                        v-if="collection.cover_image == undefined || collection.cover_image == false"
-                        v-model="cover"
-                        drag-drop
-                        @input="uploadCover($event)">
-                        <div class="content has-text-centered">
-                            <p>
-                            <b-icon
-                                icon="upload"/>
-                            </p>
-                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
-                        </div>
-                    </b-upload>
-                    <div v-else> 
-                        <figure class="image is-128x128">
-                            <img 
-                                    :alt="$i18n.get('label_cover_image')" 
-                                    :src="collection.cover_image">
-                        </figure>
-                        <div class="thumbnail-buttons-row">
-                            <b-upload 
-                                    v-model="cover"
-                                    @input="uploadCover($event)">
+                                    class="button is-rounred is-secondary"
+                                    id="button-edit-thumbnail" 
+                                    :aria-label="$i18n.get('label_button_edit_thumb')"
+                                    @click="editImage($event, true)">
+                                <b-icon icon="pencil" />
+                            </a>
+                            <figure class="image is-128x128">
+                                <span 
+                                        v-if="collection.featured_image == undefined || collection.featured_image == false"
+                                        class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                <img  
+                                        :alt="$i18n.get('label_thumbnail')" 
+                                        :src="(collection.featured_image == undefined || collection.featured_image == false) ? thumbPlaceholderPath : collection.featured_image">
+                            </figure>
+                            <div class="thumbnail-buttons-row">
                                 <a 
-                                        id="button-edit" 
-                                        :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"/></a>
-                            </b-upload>
-                            <a 
-                                    id="button-delete" 
-                                    :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                    @click="deleteThumbnail()"><b-icon icon="delete"/></a>
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                        @click="deleteThumbnail()">
+                                    <b-icon icon="delete" />
+                                </a>
+                            </div>
                         </div>
-                    </div> 
+                    </b-field>
+
+                    <!-- Header Page -------------------------------- --> 
+                    <b-field 
+                        :addons="false"
+                        :label="$i18n.get('label_header_image')">
+                        <div class="thumbnail-field">                    
+                            <a 
+                                    class="button is-rounred is-secondary"
+                                    id="button-edit-header-image" 
+                                    :aria-label="$i18n.get('label_button_edit_header_image')"
+                                    @click="editImage($event, false)">
+                                <b-icon icon="pencil" />
+                            </a>
+                            <figure class="image is-128x128">
+                                <span 
+                                        v-if="collection.header_image == undefined || collection.header_image == false"
+                                        class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
+                                <img  
+                                        :alt="$i18n.get('label_thumbnail')" 
+                                        :src="(collection.header_image == undefined || collection.header_image == false) ? thumbPlaceholderPath : collection.header_image">
+                            </figure>
+                            <div class="thumbnail-buttons-row">
+                                <a 
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                        @click="deleteHeaderImage()">
+                                    <b-icon icon="delete" />
+                                </a>
+                            </div>     
+                        </div>
+                    </b-field>
                 </div>
-            </b-field>  
-                  
-            <!-- Description -------------------------------- --> 
-            <b-field
-                    :addons="false" 
-                    :label="$i18n.get('label_description')"
-                    :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
-                    :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
-                <help-button 
-                        :title="$i18n.getHelperTitle('collections', 'description')" 
-                        :message="$i18n.getHelperMessage('collections', 'description')"/>
-                <b-input
-                        id="tainacan-text-description"
-                        type="textarea"
-                        v-model="form.description"
-                        @focus="clearErrors('description')"/>
-            </b-field>
+                <div class="column">            
+                    <!-- Name -------------------------------- --> 
+                    <b-field 
+                        :addons="false"
+                        :label="$i18n.get('label_name')"
+                        :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
+                        :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                        <help-button 
+                            :title="$i18n.getHelperTitle('collections', 'name')" 
+                            :message="$i18n.getHelperMessage('collections', 'name')"/>
+                        <b-input
+                            id="tainacan-text-name"
+                            v-model="form.name"
+                            @focus="clearErrors('name')"/>  
+                    </b-field>
+                        
+                    <!-- Description -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_description')"
+                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'description')" 
+                                :message="$i18n.getHelperMessage('collections', 'description')"/>
+                        <b-input
+                                id="tainacan-text-description"
+                                type="textarea"
+                                v-model="form.description"
+                                @focus="clearErrors('description')"/>
+                    </b-field>
 
-             <!-- Status -------------------------------- --> 
-            <b-field
-                    :addons="false" 
-                    :label="$i18n.get('label_status')"
-                    :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                    :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                <help-button 
-                        :title="$i18n.getHelperTitle('collections', 'status')" 
-                        :message="$i18n.getHelperMessage('collections', 'status')"/>
-                <b-select
-                        id="tainacan-select-status"
-                        v-model="form.status"
-                        @focus="clearErrors('status')"
-                        :placeholder="$i18n.get('instruction_select_a_status')">
-                    <option
-                            v-for="statusOption in statusOptions"
-                            :key="statusOption.value"
-                            :value="statusOption.value"
-                            :disabled="statusOption.disabled">{{ statusOption.label }}
-                    </option>
-                </b-select>
-            </b-field>
+                    <!-- Status -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_status')"
+                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'status')" 
+                                :message="$i18n.getHelperMessage('collections', 'status')"/>
+                        <b-select
+                                id="tainacan-select-status"
+                                v-model="form.status"
+                                @focus="clearErrors('status')"
+                                :placeholder="$i18n.get('instruction_select_a_status')">
+                            <option
+                                    v-for="statusOption in statusOptions"
+                                    :key="statusOption.value"
+                                    :value="statusOption.value"
+                                    :disabled="statusOption.disabled">{{ statusOption.label }}
+                            </option>
+                        </b-select>
+                    </b-field>
 
-            <!-- Enable Cover Page -------------------------------- -->
-            <div class="field">
-                <b-checkbox
-                        id="tainacan-checkbox-cover-page" 
-                        size="is-small"
-                        true-value="yes" 
-                        false-value="no"
-                        v-model="form.enable_cover_page">
-                    {{ $i18n.get('label_enable_cover_page') }}
-                </b-checkbox>
-                 <help-button 
-                        :title="$i18n.getHelperTitle('collections', 'enable_cover_page')" 
-                        :message="$i18n.getHelperMessage('collections', 'enable_cover_page')"/>
-            </div>
+                    <!-- Enable Cover Page -------------------------------- -->
+                    <div class="field">
+                        <b-checkbox
+                                id="tainacan-checkbox-cover-page" 
+                                size="is-small"
+                                true-value="yes" 
+                                false-value="no"
+                                v-model="form.enable_cover_page">
+                            {{ $i18n.get('label_enable_cover_page') }}
+                        </b-checkbox>
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'enable_cover_page')" 
+                                :message="$i18n.getHelperMessage('collections', 'enable_cover_page')"/>
+                    </div>
 
-            <!-- Cover Page -------------------------------- --> 
-            <b-field
-                    v-show="form.enable_cover_page == 'yes'"
-                    :addons="false" 
-                    :label="$i18n.get('label_cover_page')"
-                    :type="editFormErrors['cover_page_id'] != undefined ? 'is-danger' : ''" 
-                    :message="editFormErrors['cover_page_id'] != undefined ? editFormErrors['cover_page_id'] : ''">
-                <help-button 
-                        :title="$i18n.getHelperTitle('collections', 'cover_page_id')" 
-                        :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
-                <b-autocomplete
-                        id="tainacan-text-cover-page"
-                        :data="coverPages"
-                        v-model="coverPageTitle"
-                        @select="onSelectCoverPage($event)"
-                        :loading="isFetchingPages"
-                        @input="fecthCoverPages($event)"
-                        @focus="clearErrors('cover_page_id')">
-                    <template slot-scope="props">
-                        {{ props.option.title.rendered }}
-                    </template>
-                    <template slot="empty">No esults found</template>
-                </b-autocomplete>
-                <br>
-                <b-field 
-                        id="tainacan-cover-page" 
-                        v-if="coverPage != undefined && coverPage.title != undefined">    
-                    <div class="control">
-                        <b-taglist attached>
-                            <b-tag
-                                    size="is-medium" 
-                                    type="is-primary" 
-                                    v-html="coverPage.title.rendered" />
-                            <b-tag 
-                                    size="is-medium"
-                                    type="is-tertiary"
-                                    @close="removeCoverPage()"
-                                    closable>
+                    <!-- Cover Page -------------------------------- --> 
+                    <b-field
+                            v-show="form.enable_cover_page == 'yes'"
+                            :addons="false" 
+                            :label="$i18n.get('label_cover_page')"
+                            :type="editFormErrors['cover_page_id'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['cover_page_id'] != undefined ? editFormErrors['cover_page_id'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'cover_page_id')" 
+                                :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
+                        <b-autocomplete
+                                id="tainacan-text-cover-page"
+                                :data="coverPages"
+                                v-model="coverPageTitle"
+                                @select="onSelectCoverPage($event)"
+                                :loading="isFetchingPages"
+                                @input="fecthCoverPages($event)"
+                                @focus="clearErrors('cover_page_id')"
+                                v-if="coverPage == undefined || coverPage.title == undefined">
+                            <template slot-scope="props">
+                                {{ props.option.title.rendered }}
+                            </template>
+                            <template slot="empty">No results found</template>
+                        </b-autocomplete>
+  
+                        <div 
+                                v-if="coverPage != undefined && coverPage.title != undefined"
+                                class="control selected-cover-page">
+                            <span v-html="coverPage.title.rendered" />
+                            <span class="selected-cover-page-control">
                                 <a 
                                         target="blank" 
                                         :href="coverPageEditPath">Edit</a>
                                 &nbsp;&nbsp;
                                 <a 
                                         target="_blank" 
-                                        :href="coverPage.link">View</a></b-tag>
-                        </b-taglist>
-                    </div>
-                </b-field>
-            </b-field>
+                                        :href="coverPage.link">View</a>
+                                &nbsp;&nbsp;
+                                <button  
+                                        class="button is-secondary is-small"
+                                        @click.prevent="removeCoverPage()">Remove</button>
+                            </span>
+                        </div>
+                       
+                        
+                    </b-field>
 
-            <!-- Slug -------------------------------- --> 
-            <b-field
-                    :addons="false" 
-                    :label="$i18n.get('label_slug')"
-                    :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
-                    :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
-                <help-button 
-                        :title="$i18n.getHelperTitle('collections', 'slug')" 
-                        :message="$i18n.getHelperMessage('collections', 'slug')"/>
-                <b-input
-                        id="tainacan-text-slug"
-                        v-model="form.slug"
-                        @focus="clearErrors('slug')"/>
-            </b-field>
+                    <!-- Slug -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_slug')"
+                            :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'slug')" 
+                                :message="$i18n.getHelperMessage('collections', 'slug')"/>
+                        <b-input
+                                id="tainacan-text-slug"
+                                v-model="form.slug"
+                                @focus="clearErrors('slug')"/>
+                    </b-field>
+                </div>
+            </div>
 
             <!-- Form submit -------------------------------- --> 
             <div class="field is-grouped form-submit">
@@ -276,7 +252,7 @@ export default {
                 slug: '',
                 enable_cover_page: '',	
                 featured_image: '',
-                cover_image: '',
+                header_image: '',
                 files:[]
             },
             thumbnail: {},
@@ -304,7 +280,8 @@ export default {
             formErrorMessage: '',
             isNewCollection: false,
             // Fream Uploader variables
-            frameUploader: undefined
+            frameUploader: undefined,
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder.png'
         }
     },
     methods: {
@@ -314,7 +291,7 @@ export default {
             'fetchCollection',
             'sendAttachment',
             'updateThumbnail',
-            'updateCover',
+            'updateHeaderImage',
             'fetchPages',
             'fetchPage'
         ]),
@@ -407,62 +384,6 @@ export default {
         cancelBack(){
             this.$router.push(this.$routerHelper.getCollectionsPath());
         },
-        uploadThumbnail($event) {
-
-            this.sendAttachment({ collection_id: this.collectionId, file: $event[0] })
-            .then((res) => {
-
-                this.updateThumbnail({collectionId: this.collectionId, thumbnailId: res.id})
-                .then((res) => {
-                    this.collection.featured_image = res.featured_image;
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                });
-            })
-            .catch((error) => {
-                this.$console.error(error);
-            });
-            
-        },
-        deleteThumbnail() {
-
-            this.updateThumbnail({collectionId: this.collectionId, thumbnailId: 0})
-            .then(() => {
-                this.collection.featured_image = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
-            });    
-        },
-        uploadCover($event) {
-
-            this.sendAttachment({ collection_id: this.collectionId, file: $event[0] })
-            .then((res) => {
-
-                this.updateCover({collectionId: this.collectionId, coverId: res.id})
-                .then((res) => {
-                    this.collection.cover_image = res.cover_image;
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                });
-            })
-            .catch((error) => {
-                this.$console.error(error);
-            });
-            
-        },
-        deleteCover() {
-
-            this.updateCover({collectionId: this.collectionId, coverId: 0})
-            .then(() => {
-                this.collection.cover_image = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
-            });    
-        },
         fecthCoverPages(search) {
             this.isFetchingPages = true;
             this.fetchPages(search)
@@ -486,7 +407,7 @@ export default {
             this.coverPageTitle = '';
             this.form.cover_page_id = '';
         },
-        openFrameUploader(event) {
+        editImage(event, isThumbnail) {
             'use strict';   
             event.preventDefault();
 
@@ -511,22 +432,57 @@ export default {
                 uploader: true
 
             });
-            this.$console.log(this.frameUploader);
 
             wp.media.view.settings.post = {
-                id: this.collectionId,
-                featuredImageId: this.collection.featured_img_id
+                id: this.collectionId
             }
 
             this.frameUploader.on('select', () => {
                 
                 let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
-                this.$console.log(media);
+                
+                if (isThumbnail) {
+                    this.updateThumbnail({collectionId: this.collectionId, thumbnailId: media.id})
+                    .then((res) => {
+                        this.collection.featured_image = res.featured_image;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                    });
+                } else {
+                    this.updateHeaderImage({collectionId: this.collectionId, headerImageId: media.id})
+                    .then((res) => {
+                        this.collection.header_image = res.header_image;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                    });
+                }
 
             });
 
             this.frameUploader.open();
-        }
+        },
+        deleteThumbnail() {
+
+            this.updateThumbnail({collectionId: this.collectionId, thumbnailId: 0})
+            .then(() => {
+                this.collection.featured_image = false;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+            });    
+        },
+        deleteHeaderImage() {
+
+            this.updateHeaderImage({collectionId: this.collectionId, headerImageId: 0})
+            .then(() => {
+                this.collection.header_image = false;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+            });    
+        },
     },
     created(){
 
@@ -580,21 +536,45 @@ export default {
 
 <style lang="scss" scoped>
 
-    .thumbnail-field {
-        width: 128px;
-        height: 128px;
-        max-width: 128px;
+    @import "../../scss/_variables.scss";
+
+    .thumbnail-field {  
         max-height: 128px;
-        
+
         .content {
             padding: 10px;
             font-size: 0.8em;
         }
         img {
-            bottom: 0px;
             position: absolute;
         }
+        .image-placeholder {
+            position: absolute;
+            margin-left: 10px;
+            margin-right: 10px;
+            bottom: 50%;
+            font-size: 0.8rem;
+            z-index: 99;
+            text-align: center;
+            color: gray;
+        }
+        #button-edit-thumbnail, #button-edit-header-image {
 
+            border-radius: 100px !important;
+            height: 40px !important;
+            width: 40px !important;
+            bottom: -20px;
+            left: -20px;
+            z-index: 99;
+            
+            .icon {
+                display: inherit;
+                padding: 0;
+                margin: 0;
+                margin-left: -8px;
+                margin-top: 3px;
+            }
+        }
         .thumbnail-buttons-row {
             display: none;
         }
@@ -602,12 +582,24 @@ export default {
              .thumbnail-buttons-row {
                 display: inline-block;
                 position: relative;
-                bottom: 31px;
-                background-color: rgba(255,255,255,0.8);
+                top: -128px;
+                background-color: rgba(255, 255, 255, 0.9);
                 padding: 2px 8px;
-                border-radius: 0px 4px 0px 0px;
+                border-radius: 0px 0px 0px 4px;
+                left: 88px;
             }
         }
+    }
+    .selected-cover-page {
+        background-color: $tainacan-input-color;
+        padding: 6px;
+        font-size: .85rem;
+        .span { vertical-align: middle;}
+
+        .selected-cover-page-control {
+            float: right;
+        }
+
     }
 
 </style>

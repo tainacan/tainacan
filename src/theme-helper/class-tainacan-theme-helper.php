@@ -7,6 +7,8 @@ use Tainacan\Entities;
 class Theme_Helper {
 
 	private static $instance = null;
+	
+	public $visiting_collection_cover = false;
 
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
@@ -161,6 +163,8 @@ class Theme_Helper {
 					
 					global $wp_query;
 					$wp_query = new \WP_Query('page_id=' . $cover_page_id);
+					
+					$this->visiting_collection_cover = $collection->get_id();
 				}
 				
 			}
