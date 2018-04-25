@@ -21,6 +21,7 @@ return [
 	// Actions
 	'edit'                                     => __( 'Edit', 'tainacan' ),
 	'new'                                      => __( 'New', 'tainacan' ),
+	'add'                                      => __( 'Add', 'tainacan' ),
 	'import'                                   => __( 'Import', 'tainacan' ),
 	'export'                                   => __( 'Export', 'tainacan' ),
 	'cancel'                                   => __( 'Cancel', 'tainacan' ),
@@ -32,6 +33,7 @@ return [
 	'continue'                                 => __( 'Continue', 'tainacan' ),
 	'approve_item'                             => __( 'Approve', 'tainacan' ),
 	'not_approve_item'                         => __( 'Not approve', 'tainacan' ),
+	'add_one_item'                             => __( 'Add one item', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
