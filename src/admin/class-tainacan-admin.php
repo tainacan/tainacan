@@ -101,6 +101,7 @@ class Admin {
 
 		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
 		wp_enqueue_media();
+		wp_enqueue_script('undescore', includes_url('js') . '/underscore.min.js' );
 		wp_enqueue_script('jcrop');
 		
 	}
