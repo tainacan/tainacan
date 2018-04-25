@@ -138,7 +138,7 @@ abstract class Repository {
 			if ( ! get_post_thumbnail_id( $obj->WP_Post->ID ) ) {
 				// was added a thumbnail
 
-				$settled = set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+				$settled = set_post_thumbnail( $obj->WP_Post, (int) $obj->get_featured_img_id() );
 
 				if ( $settled ) {
 
@@ -158,7 +158,13 @@ abstract class Repository {
 
 				$old_thumbnail = get_the_post_thumbnail_url( $obj->WP_Post->ID );
 
-				$settled = set_post_thumbnail( $obj->WP_Post, $obj->get_featured_img_id( $obj->WP_Post->ID ) );
+				$fid = $obj->get_featured_img_id();
+
+				if(!$fid){
+					$settled = delete_post_thumbnail($obj->WP_Post);
+				} else {
+					$settled = set_post_thumbnail( $obj->WP_Post, (int) $fid );
+				}
 
 				if ( $settled ) {
 

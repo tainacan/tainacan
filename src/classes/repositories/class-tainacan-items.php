@@ -28,84 +28,88 @@ class Items extends Repository {
     }
 
     public function get_map() {
-		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
-			'title'             => [
-				'map'         => 'post_title',
-				'title'       => __( 'Title', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'Title of the item', 'tainacan' ),
-				'on_error'    => __( 'The title should be a text value and not empty', 'tainacan' ),
-				'validation'  => v::stringType()->notEmpty(),
-			],
-			'status'            => [
-				'map'         => 'post_status',
-				'title'       => __( 'Status', 'tainacan' ),
-				'type'        => 'string',
-				'default'     => 'draft',
-				'description' => __( 'The posts status', 'tainacan' )
-			],
-			'description'       => [
-				'map'         => 'post_content',
-				'title'       => __( 'Description', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The item description', 'tainacan' ),
-				'default'     => '',
-				'validation'  => ''
-			],
-			'collection_id'     => [
-				'map'         => 'meta',
-				'title'       => __( 'Collection', 'tainacan' ),
-				'type'        => 'integer',
-				'description' => __( 'The collection ID', 'tainacan' ),
-				'validation'  => ''
-			],
-			'author_id'         => [
-				'map'         => 'post_author',
-				'title'       => __( 'Author', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The item author\'s user ID (numeric string)', 'tainacan' )
-			],
-			'creation_date'     => [
-				'map'         => 'post_date',
-				'title'       => __( 'Creation Date', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The item creation date', 'tainacan' )
-			],
-			'modification_date' => [
-				'map'         => 'post_modified',
-				'title'       => __( 'Modification Date', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The item modification date', 'tainacan' )
-			],
-			'url'               => [
-				'map'         => 'guid',
-				'title'       => __( 'Item URL', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The item URL', 'tainacan' )
-			],
-			'terms'             => [
-				'map'         => 'terms',
-				'title'       => __( 'Term IDs', 'tainacan' ),
-				'type'        => 'array',
-				'description' => __( 'The item term IDs', 'tainacan' ),
-			],
-			'document_type'       => [
-                'map'        => 'meta',
-                'title'      => __('Document Type', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The document type, can be a local attachment, an external URL or a text', 'tainacan'),
-                'on_error'   => __('Invalid document type', 'tainacan'),
-                'validation' => v::stringType()->in(['attachment', 'url', 'text']),
-                'default'    => 'attachment'
-            ],
-			'document'       => [
-                'map'        => 'meta',
-                'title'      => __('Document', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The document itself. An ID in case of attachment, an URL in case of url or a text in the case of text', 'tainacan'),
-                'on_error'   => __('Invalid document', 'tainacan'),
-                'default'    => ''
-            ],
+	    return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
+		    'title'             => [
+			    'map'         => 'post_title',
+			    'title'       => __( 'Title', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'Title of the item', 'tainacan' ),
+			    'on_error'    => __( 'The title should be a text value and not empty', 'tainacan' ),
+			    'validation'  => v::stringType()->notEmpty(),
+		    ],
+		    'status'            => [
+			    'map'         => 'post_status',
+			    'title'       => __( 'Status', 'tainacan' ),
+			    'type'        => 'string',
+			    'default'     => 'draft',
+			    'description' => __( 'The posts status', 'tainacan' )
+		    ],
+		    'description'       => [
+			    'map'         => 'post_content',
+			    'title'       => __( 'Description', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The item description', 'tainacan' ),
+			    'default'     => '',
+			    'validation'  => ''
+		    ],
+		    'collection_id'     => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Collection', 'tainacan' ),
+			    'type'        => 'integer',
+			    'description' => __( 'The collection ID', 'tainacan' ),
+			    'validation'  => ''
+		    ],
+		    'author_id'         => [
+			    'map'         => 'post_author',
+			    'title'       => __( 'Author', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The item author\'s user ID (numeric string)', 'tainacan' )
+		    ],
+		    'creation_date'     => [
+			    'map'         => 'post_date',
+			    'title'       => __( 'Creation Date', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The item creation date', 'tainacan' )
+		    ],
+		    'modification_date' => [
+			    'map'         => 'post_modified',
+			    'title'       => __( 'Modification Date', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The item modification date', 'tainacan' )
+		    ],
+		    'url'               => [
+			    'map'         => 'guid',
+			    'title'       => __( 'Item URL', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The item URL', 'tainacan' )
+		    ],
+		    'terms'             => [
+			    'map'         => 'terms',
+			    'title'       => __( 'Term IDs', 'tainacan' ),
+			    'type'        => 'array',
+			    'description' => __( 'The item term IDs', 'tainacan' ),
+		    ],
+		    'document_type'     => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Document Type', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The document type, can be a local attachment, an external URL or a text', 'tainacan' ),
+			    'on_error'    => __( 'Invalid document type', 'tainacan' ),
+			    'validation'  => v::stringType()->in( [ 'attachment', 'url', 'text' ] ),
+			    'default'     => 'attachment'
+		    ],
+		    'document'          => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Document', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The document itself. An ID in case of attachment, an URL in case of url or a text in the case of text', 'tainacan' ),
+			    'on_error'    => __( 'Invalid document', 'tainacan' ),
+			    'default'     => ''
+		    ],
+		    'featured_img_id'   => [
+			    'map'   => 'meta',
+			    'title' => __( 'Featured image ID' )
+		    ]
 		] );
 	}
 

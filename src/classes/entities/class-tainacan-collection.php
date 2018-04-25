@@ -69,7 +69,6 @@ class Collection extends Entity {
 
 		$array_collection['featured_image']  = $this->get_featured_image();
 		$array_collection['featured_img_id'] = $this->get_featured_img_id();
-		$array_collection['attachments']     = $this->get_attachments();
 		$array_collection['author_name']     = $this->get_author_name();
 
 		return $array_collection;
