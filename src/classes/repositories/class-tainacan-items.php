@@ -107,8 +107,9 @@ class Items extends Repository {
 			    'default'     => ''
 		    ],
 		    'featured_img_id'   => [
-			    'map'   => 'meta',
-			    'title' => __( 'Featured image ID' )
+			    'map'         => 'meta',
+			    'title'       => __( 'Featured image ID', 'tainacan' ),
+			    'description' => __( 'Featured image ID', 'tainacan' )
 		    ]
 		] );
 	}

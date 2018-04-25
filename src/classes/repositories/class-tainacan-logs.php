@@ -109,8 +109,9 @@ class Logs extends Repository {
 				'validation'  => ''
 			],
 			'log_diffs'      => [
-				'map'   => 'meta',
-				'title' => __( 'Log differences', 'tainacan' ),
+				'map'         => 'meta',
+				'title'       => __( 'Log differences', 'tainacan' ),
+				'description' => __( 'Differences between old and new versions of object', 'tainacan' )
 			]
 		] );
 	}
