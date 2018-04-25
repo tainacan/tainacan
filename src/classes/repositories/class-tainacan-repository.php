@@ -117,7 +117,6 @@ abstract class Repository {
 			}
 
 			$post_t = $collection->get_db_identifier();
-
 			$obj->WP_Post->post_type = $post_t;
 		}
 
@@ -134,50 +133,9 @@ abstract class Repository {
 			}
 		}
 
-		if ( method_exists( $obj, 'get_featured_img_id' ) ) {
-			if ( ! get_post_thumbnail_id( $obj->WP_Post->ID ) ) {
-				// was added a thumbnail
+		$diffs = $this->insert_thumbnail( $obj, $diffs );
 
-				$settled = set_post_thumbnail( $obj->WP_Post, (int) $obj->get_featured_img_id() );
-
-				if ( $settled ) {
-
-					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
-
-					$diffs['featured_image'] = [
-						'new'             => $thumbnail_url,
-						'old'             => '',
-						'diff_with_index' => 0,
-					];
-
-				}
-
-			} else {
-
-				// was update a thumbnail
-
-				$old_thumbnail = get_the_post_thumbnail_url( $obj->WP_Post->ID );
-
-				$fid = $obj->get_featured_img_id();
-
-				if(!$fid){
-					$settled = delete_post_thumbnail($obj->WP_Post);
-				} else {
-					$settled = set_post_thumbnail( $obj->WP_Post, (int) $fid );
-				}
-
-				if ( $settled ) {
-
-					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
-
-					$diffs['featured_image'] = [
-						'new'             => $thumbnail_url,
-						'old'             => $old_thumbnail,
-						'diff_with_index' => 0,
-					];
-				}
-			}
-		}
+		// TODO: Logs for header image insert and update
 
 		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
 		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
@@ -741,12 +699,66 @@ abstract class Repository {
 			}
 		}
 
-		unset($diff['id'], $diff['collection_id'], $diff['author_id'], $diff['creation_date']);
+		unset($diff['id'], $diff['collection_id'], $diff['author_id'], $diff['creation_date'], $diff['featured_img_id']);
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $new, $old );
 
 		return $diff;
 	}
 
+	/**
+	 * @param $obj
+	 * @param $diffs
+	 *
+	 * @return mixed
+	 */
+	protected function insert_thumbnail( $obj, $diffs ) {
+		if ( method_exists( $obj, 'get_featured_img_id' ) ) {
+			if ( ! get_post_thumbnail_id( $obj->WP_Post->ID ) ) {
+				// was added a thumbnail
+
+				$settled = set_post_thumbnail( $obj->WP_Post, (int) $obj->get_featured_img_id() );
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => '',
+						'diff_with_index' => 0,
+					];
+
+				}
+
+			} else {
+
+				// was update a thumbnail
+
+				$old_thumbnail = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+				$fid = $obj->get_featured_img_id();
+
+				if ( ! $fid ) {
+					$settled = delete_post_thumbnail( $obj->WP_Post );
+				} else {
+					$settled = set_post_thumbnail( $obj->WP_Post, (int) $fid );
+				}
+
+				if ( $settled ) {
+
+					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+					$diffs['featured_image'] = [
+						'new'             => $thumbnail_url,
+						'old'             => $old_thumbnail,
+						'diff_with_index' => 0,
+					];
+				}
+			}
+		}
+
+		return $diffs;
+	}
 }
 
 ?>
