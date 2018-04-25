@@ -163,37 +163,34 @@
                                 @select="onSelectCoverPage($event)"
                                 :loading="isFetchingPages"
                                 @input="fecthCoverPages($event)"
-                                @focus="clearErrors('cover_page_id')">
+                                @focus="clearErrors('cover_page_id')"
+                                v-if="coverPage == undefined || coverPage.title == undefined">
                             <template slot-scope="props">
                                 {{ props.option.title.rendered }}
                             </template>
-                            <template slot="empty">No esults found</template>
+                            <template slot="empty">No results found</template>
                         </b-autocomplete>
-                        <br>
-                        <b-field 
-                                id="tainacan-cover-page" 
-                                v-if="coverPage != undefined && coverPage.title != undefined">    
-                            <div class="control">
-                                <b-taglist attached>
-                                    <b-tag
-                                            size="is-medium" 
-                                            type="is-primary" 
-                                            v-html="coverPage.title.rendered" />
-                                    <b-tag 
-                                            size="is-medium"
-                                            type="is-tertiary"
-                                            @close="removeCoverPage()"
-                                            closable>
-                                        <a 
-                                                target="blank" 
-                                                :href="coverPageEditPath">Edit</a>
-                                        &nbsp;&nbsp;
-                                        <a 
-                                                target="_blank" 
-                                                :href="coverPage.link">View</a></b-tag>
-                                </b-taglist>
-                            </div>
-                        </b-field>
+  
+                        <div 
+                                v-if="coverPage != undefined && coverPage.title != undefined"
+                                class="control selected-cover-page">
+                            <span v-html="coverPage.title.rendered" />
+                            <span class="selected-cover-page-control">
+                                <a 
+                                        target="blank" 
+                                        :href="coverPageEditPath">Edit</a>
+                                &nbsp;&nbsp;
+                                <a 
+                                        target="_blank" 
+                                        :href="coverPage.link">View</a>
+                                &nbsp;&nbsp;
+                                <button  
+                                        class="button is-secondary is-small"
+                                        @click.prevent="removeCoverPage()">Remove</button>
+                            </span>
+                        </div>
+                       
+                        
                     </b-field>
 
                     <!-- Slug -------------------------------- --> 
@@ -539,6 +536,8 @@ export default {
 
 <style lang="scss" scoped>
 
+    @import "../../scss/_variables.scss";
+
     .thumbnail-field {  
         max-height: 128px;
 
@@ -590,6 +589,17 @@ export default {
                 left: 88px;
             }
         }
+    }
+    .selected-cover-page {
+        background-color: $tainacan-input-color;
+        padding: 6px;
+        font-size: .85rem;
+        .span { vertical-align: middle;}
+
+        .selected-cover-page-control {
+            float: right;
+        }
+
     }
 
 </style>
