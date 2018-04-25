@@ -17,7 +17,7 @@
                     <!-- Thumbnail -------------------------------- --> 
                     <b-field 
                         :addons="false"
-                        :label="$i18n.get('label_image')">
+                        :label="$i18n.get('label_thumbnail')">
                         <div class="thumbnail-field">
                             <a 
                                     class="button is-rounred is-secondary"
@@ -205,7 +205,6 @@
                                 id="tainacan-text-moderators-input"
                                 :placeholder="$i18n.get('instruction_moderators')"
                                 :data="users"
-                                v-model="newModerator"
                                 @select="onAddModerator($event)"
                                 :loading="isFetchingModerators"
                                 @input="fecthModerators($event)"
@@ -230,7 +229,7 @@
                             </li>
                         </ul>
                         <div 
-                                class="moderators-list"
+                                class="moderators-empty-list"
                                 v-else>
                             {{ $i18n.get('info_no_moderator_on_collection') }}
                         </div>
@@ -250,6 +249,31 @@
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
                     </b-field>
+
+                    <!-- Parent Collection -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_parent_collection')"
+                            :type="editFormErrors['parent'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['parent'] != undefined ? editFormErrors['parent'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'parent')" 
+                                :message="$i18n.getHelperMessage('collections', 'parent')"/>
+                        <b-select
+                                id="tainacan-select-parent"
+                                v-model="form.parent"
+                                @focus="clearErrors('parent')"
+                                :loading="isFetchingCollections"
+                                :placeholder="$i18n.get('instruction_select_a_parent_collection')">
+                            <option value="0">{{ $i18n.get('label_no_parent_collection') }}</option>
+                            <option
+                                    v-for="collection of collections"
+                                    :key="collection.id"
+                                    :value="collection.id">{{ collection.name }}
+                            </option>
+                        </b-select>
+                    </b-field>
+
                 </div>
             </div>
 
@@ -329,8 +353,9 @@ export default {
             headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
             isFetchingModerators: false,
             users: [],
-            moderators: Array,
-            newModerator: ''
+            moderators: [],
+            collections: [],
+            isFetchingCollections: true
         }
     },
     methods: {
@@ -343,7 +368,8 @@ export default {
             'updateHeaderImage',
             'fetchPages',
             'fetchPage',
-            'fetchUsers'
+            'fetchUsers',
+            'fetchCollectionsForParent'
         ]),
         ...mapActions('fields', [
             'fetchFields'
@@ -363,7 +389,8 @@ export default {
                 cover_page_id: this.form.cover_page_id,
                 slug: this.form.slug, 
                 status: this.form.status,
-                moderators_ids: this.form.moderators_ids
+                moderators_ids: this.form.moderators_ids,
+                parent: this.form.parent
             };
             this.updateCollection(data).then(updatedCollection => {    
                 
@@ -424,10 +451,23 @@ export default {
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.slug = this.collection.slug;
+                this.form.parent = this.collection.parent;
                 this.moderators = [];
                 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
+
+                // Generates options for parent collection
+                this.isFetchingCollections = true;
+                this.fetchCollectionsForParent()
+                .then((collections) => {
+                    this.collections = collections;
+                    this.isFetchingCollections = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isFetchingCollections = false;
+                }); 
 
                 this.isLoading = false;
                 
@@ -587,6 +627,8 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
+                this.form.parent = this.collection.parent;
+
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
                  
                 // Generates CoverPage from current cover_page_id info
@@ -607,6 +649,18 @@ export default {
                     }); 
                 }
 
+                // Generates options for parent collection
+                this.isFetchingCollections = true;
+                this.fetchCollectionsForParent()
+                .then((collections) => {
+                    this.collections = collections;
+                    this.isFetchingCollections = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isFetchingCollections = false;
+                }); 
+
                 this.isLoading = false; 
             });
         }
@@ -621,7 +675,8 @@ export default {
 
     .thumbnail-field {  
         max-height: 128px;
-        margin-bottom: 40px;
+        margin-bottom: 96px;
+        margin-top: -20px;
 
         .content {
             padding: 10px;
@@ -692,6 +747,10 @@ export default {
             margin-right: 5px;
         }
     }
+    .moderators-empty-list { 
+        color: gray;
+        font-size: 0.85rem;
+     }
 
 </style>
 

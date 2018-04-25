@@ -91,6 +91,8 @@ return [
 	'label_thumbnail'                          => __( 'Thumbnail', 'tainacan' ),
 	'label_empty_thumbnail'                    => __( 'Empty Thumbnail', 'tainacan' ),
 	'label_moderators'                         => __( 'Moderators', 'tainacan' ),
+	'label_parent_collection'                  => __( 'Parent collection', 'tainacan' ),
+	'label_no_parent_collection'               => __( 'No parent collection', 'tainacan' ),
 	'label_button_view'                        => __( 'Button View', 'tainacan' ),
 	'label_button_edit'                        => __( 'Button Edit', 'tainacan' ),
 	'label_button_delete'                      => __( 'Button Delete', 'tainacan' ),
@@ -165,6 +167,7 @@ return [
 	'instruction_select_a_parent_term'         => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_cover_page'				   => __( 'Type to search a Page to choose.', 'tainacan'),
 	'instruction_moderators'				   => __( 'Type to search a User to add.', 'tainacan'), 	
+	'instruction_select_a_parent_collection'   => __( 'Select a parent colection.', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),

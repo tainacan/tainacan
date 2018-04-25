@@ -103,7 +103,7 @@ export const deleteCollection = ({ commit }, id) => {
     });
 }
 
-export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id, moderators_ids }) => {
+export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id, moderators_ids, parent }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
             name: name,
@@ -112,7 +112,8 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
             slug: slug,
             cover_page_id: "" + cover_page_id,
             enable_cover_page: enable_cover_page,
-            moderators_ids: moderators_ids
+            moderators_ids: moderators_ids,
+            parent: parent
         }).then( res => {
             commit('setCollection', { 
                 id: collection_id, 
@@ -122,7 +123,8 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
                 status: status, 
                 enable_cover_page: enable_cover_page, 
                 cover_page_id: cover_page_id,
-                moderators_ids: moderators_ids
+                moderators_ids: moderators_ids.name,
+                parent: parent
             });
             resolve( res.data );
         }).catch( error => { 
@@ -265,3 +267,17 @@ export const fetchUsers = ({ commit }, { search, exceptions }) => {
         });
     });
 };
+
+// Fetch Collections for choosing Parent Collection
+export const fetchCollectionsForParent = ({ commit }) => {
+    return new Promise((resolve, reject) =>{ 
+        axios.tainacan.get('/collections/')
+        .then(res => {
+            let collections = res.data;
+            resolve( collections );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+}
