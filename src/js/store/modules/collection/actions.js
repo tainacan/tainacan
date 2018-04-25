@@ -205,7 +205,7 @@ export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
 export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId, {
-            header_img_id: headerImageId 
+            header_image_id: headerImageId + ''
         }).then( res => {
             let collection = res.data
             commit('setCollection', collection);
@@ -245,7 +245,7 @@ export const fetchPage = ({ commit }, pageId ) => {
 };
 
 // Users for moderators configuration
-export const fetchUsers = ({ commit }, search ) => {
+export const fetchUsers = ({ commit }, search) => {
     return new Promise((resolve, reject) => {
         axios.wp.get('/users?search=' + search)
         .then(res => {

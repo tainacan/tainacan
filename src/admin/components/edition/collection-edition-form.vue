@@ -204,7 +204,7 @@
                                 id="tainacan-text-moderators-input"
                                 :data="users"
                                 v-model="newModerator"
-                                @select="onAddModerador($event)"
+                                @select="onAddModerator($event)"
                                 :loading="isFetchingModerators"
                                 @input="fecthModerators($event)"
                                 @focus="clearErrors('moderators')">
@@ -216,13 +216,20 @@
                         <ul
                                 class="moderators-list"
                                 v-if="form.moderators.length > 0">
-                            <li 
+                            <li
                                     :key="index"
                                     v-for="(moderator, index) of form.moderators">
-                                    {{ moderator.name }}
+                                <b-tag
+                                        attached
+                                        closable
+                                        @close="removeModerator(index)">
+                                   {{ moderator.name }}
+                                </b-tag>
                             </li>
                         </ul>
-                        <div v-else>
+                        <div 
+                                class="moderators-list"
+                                v-else>
                             {{ $i18n.get('info_no_moderator_on_collection') }}
                         </div>
                     </b-field>
@@ -457,6 +464,9 @@ export default {
         onAddModerator(user) { 
             this.form.moderators.push({'id': user.id, 'name': user.name}); 
         },
+        removeModerator(moderatorIndex) { 
+            this.form.moderators.splice(moderatorIndex, 1);
+        },
         removeCoverPage() {
             this.coverPage = {};
             this.coverPageTitle = '';
@@ -659,7 +669,13 @@ export default {
 
     }
     .moderators-list {
-        font-size: 0.85 rem;
+        padding: 10px;
+        font-size: 0.85rem;
+        display: flex;
+
+        .tags {
+            margin-right: 5px;
+        }
     }
 
 </style>
