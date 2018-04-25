@@ -542,14 +542,42 @@ export default {
                 frame: 'select',
                 title: 'Select or Upload and Image.',
                 button: {
-                    text: 'Use this media'
+                    text: 'Select and Crop',
+                    close: false
                 },
                 multiple: false,
                 library: {
                     type: 'image',
                     uploadedTo: this.collectionId
                 },
-                uploader: true
+                uploader: true,
+                states: [
+					new wp.media.controller.Library({
+						title:     'Corta aí',
+						library:   wp.media.query({ type: 'image' }),
+						multiple:  false,
+						date:      false,
+						priority:  20,
+						suggestedWidth: 1000,
+						suggestedHeight: 200
+					}),
+					new wp.media.controller.Cropper({
+						imgSelectOptions: {
+                            enable: true,
+                            handles: true,
+                            imageHeight: 200,
+                            imageWidth: 1000,
+                            instance: true,
+                            keys: true,
+                            maxWidth: 1000,
+                            persistent: true,
+                            x1: 0,
+                            x2: 250,
+                            y1: 0,
+                            y2: 50
+                        }
+					})
+				]
 
             });
 
@@ -558,7 +586,11 @@ export default {
             }
 
             this.frameUploader.on('select', () => {
-                
+                this.frameUploader.state('cropper').set( 'canSkipCrop', true );
+                this.frameUploader.setState('cropper');
+            });
+            
+            this.frameUploader.on('skippedcrop', () => {
                 let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
                 
                 if (isThumbnail) {
@@ -571,6 +603,30 @@ export default {
                     });
                 } else {
                     this.updateHeaderImage({collectionId: this.collectionId, headerImageId: media.id})
+                    .then((res) => {
+                        this.collection.header_image = res.header_image;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                    });
+                }
+
+            });
+
+            this.frameUploader.on('cropped', (croppedImage) => {
+                
+                // it is not cropping where we choose, but almost there
+                
+                if (isThumbnail) {
+                    this.updateThumbnail({collectionId: this.collectionId, thumbnailId: croppedImage.attachment_id})
+                    .then((res) => {
+                        this.collection.featured_image = res.featured_image;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                    });
+                } else {
+                    this.updateHeaderImage({collectionId: this.collectionId, headerImageId: croppedImage.attachment_id})
                     .then((res) => {
                         this.collection.header_image = res.header_image;
                     })
