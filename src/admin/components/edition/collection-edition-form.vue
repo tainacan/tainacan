@@ -72,6 +72,7 @@
                     class="buttton"
                     @click="openFrameUploader($event)">Enviar</button>
 
+
             <!-- Cover  Image-------------------------------- --> 
             <b-field 
                 :addons="false"
@@ -497,14 +498,21 @@ export default {
             
             // Create a new media frame
             this.frameUploader = wp.media.frames.frame_uploader = wp.media({
-                title: 'Select or Upload Media Of Your Chosen Persuasion',
+                frame: 'select',
+                title: 'Select or Upload and Image.',
                 button: {
                     text: 'Use this media'
                 },
                 multiple: false,
+                library: {
+                    type: 'image',
+                    uploadedTo: this.collectionId
+                },
+                uploader: true
 
             });
-            
+            this.$console.log(this.frameUploader);
+
             wp.media.view.settings.post = {
                 id: this.collectionId,
                 featuredImageId: this.collection.featured_img_id
