@@ -63,7 +63,7 @@
                                         class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
                                 <img  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(collection.header_image == undefined || collection.header_image == false) ? thumbPlaceholderPath : collection.header_image">
+                                        :src="(collection.header_image == undefined || collection.header_image == false) ? headerPlaceholderPath : collection.header_image">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -168,7 +168,7 @@
                             <template slot-scope="props">
                                 {{ props.option.title.rendered }}
                             </template>
-                            <template slot="empty">No results found</template>
+                            <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>
                         </b-autocomplete>
   
                         <div 
@@ -178,19 +178,53 @@
                             <span class="selected-cover-page-control">
                                 <a 
                                         target="blank" 
-                                        :href="coverPageEditPath">Edit</a>
+                                        :href="coverPageEditPath">{{ $i18n.get('edit') }}</a>
                                 &nbsp;&nbsp;
                                 <a 
                                         target="_blank" 
-                                        :href="coverPage.link">View</a>
+                                        :href="coverPage.link">{{ $i18n.get('see') }}</a>
                                 &nbsp;&nbsp;
                                 <button  
                                         class="button is-secondary is-small"
-                                        @click.prevent="removeCoverPage()">Remove</button>
+                                        @click.prevent="removeCoverPage()">{{ $i18n.get('remove') }}</button>
                             </span>
                         </div>
-                       
-                        
+                    </b-field>
+
+                     <!-- Moderators List -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_moderators')"
+                            :type="editFormErrors['moderators'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['moderators'] != undefined ? editFormErrors['moderators'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'moderators')" 
+                                :message="$i18n.getHelperMessage('collections', 'moderators')"/>
+                        <b-autocomplete
+                                id="tainacan-text-moderators-input"
+                                :data="users"
+                                v-model="newModerator"
+                                @select="onAddModerador($event)"
+                                :loading="isFetchingModerators"
+                                @input="fecthModerators($event)"
+                                @focus="clearErrors('moderators')">
+                            <template slot-scope="props">
+                                {{ props.option.name }}
+                            </template>
+                            <template slot="empty">{{ $i18n.get('info_no_user_found') }}</template>
+                        </b-autocomplete>
+                        <ul
+                                class="moderators-list"
+                                v-if="form.moderators.length > 0">
+                            <li 
+                                    :key="index"
+                                    v-for="(moderator, index) of form.moderators">
+                                    {{ moderator.name }}
+                            </li>
+                        </ul>
+                        <div v-else>
+                            {{ $i18n.get('info_no_moderator_on_collection') }}
+                        </div>
                     </b-field>
 
                     <!-- Slug -------------------------------- --> 
@@ -253,7 +287,8 @@ export default {
                 enable_cover_page: '',	
                 featured_image: '',
                 header_image: '',
-                files:[]
+                files:[],
+                moderators: []
             },
             thumbnail: {},
             cover: {},
@@ -281,7 +316,11 @@ export default {
             isNewCollection: false,
             // Fream Uploader variables
             frameUploader: undefined,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
+            isFetchingModerators: false,
+            users: [],
+            newModerator: ''
         }
     },
     methods: {
@@ -293,7 +332,8 @@ export default {
             'updateThumbnail',
             'updateHeaderImage',
             'fetchPages',
-            'fetchPage'
+            'fetchPage',
+            'fetchUsers'
         ]),
         ...mapActions('fields', [
             'fetchFields'
@@ -401,6 +441,21 @@ export default {
             this.coverPage = selectedPage;
             this.coverPageTitle = this.coverPage.title.rendered;
             this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + selectedPage.id + '&action=edit';
+        },
+        fecthModerators(search) {
+            this.isFetchingModerators = true;
+            this.fetchUsers(search)
+                .then((users) => {
+                    this.users = users;
+                    this.isFetchingModerators = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isFetchingPages = false;
+                });
+        },
+        onAddModerator(user) { 
+            this.form.moderators.push({'id': user.id, 'name': user.name}); 
         },
         removeCoverPage() {
             this.coverPage = {};
@@ -524,7 +579,7 @@ export default {
                         this.$console.error(error);
                         this.isFetchingPages = false;
                     }); 
-                } 
+                }
 
                 this.isLoading = false; 
             });
@@ -540,6 +595,7 @@ export default {
 
     .thumbnail-field {  
         max-height: 128px;
+        margin-bottom: 40px;
 
         .content {
             padding: 10px;
@@ -554,6 +610,7 @@ export default {
             margin-right: 10px;
             bottom: 50%;
             font-size: 0.8rem;
+            font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
@@ -600,6 +657,9 @@ export default {
             float: right;
         }
 
+    }
+    .moderators-list {
+        font-size: 0.85 rem;
     }
 
 </style>

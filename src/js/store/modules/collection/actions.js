@@ -243,3 +243,17 @@ export const fetchPage = ({ commit }, pageId ) => {
         });
     });
 };
+
+// Users for moderators configuration
+export const fetchUsers = ({ commit }, search ) => {
+    return new Promise((resolve, reject) => {
+        axios.wp.get('/users?search=' + search)
+        .then(res => {
+            let users = res.data;
+            resolve( users );
+        })
+        .catch(error => {
+            reject( error );
+        });
+    });
+};
