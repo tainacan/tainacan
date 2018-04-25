@@ -163,6 +163,8 @@ return [
 	'instruction_select_a_status'              => __( 'Select a status:', 'tainacan' ),
 	'instruction_select_a_filter_type'         => __( 'Select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'         => __( 'Select a parent term:', 'tainacan' ),
+	'instruction_cover_page'				   => __( 'Type to search a Page to choose.', 'tainacan'),
+	'instruction_moderators'				   => __( 'Type to search a User to add.', 'tainacan'), 	
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),

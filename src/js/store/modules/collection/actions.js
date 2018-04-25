@@ -62,7 +62,7 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage }) => {
 export const fetchCollection = ({ commit }, id) => {
     commit('cleanCollection');
     return new Promise((resolve, reject) =>{ 
-        axios.tainacan.get('/collections/' + id)
+        axios.tainacan.get('/collections/' + id + '?context=edit')
         .then(res => {
             let collection = res.data;
             commit('setCollection', collection);
@@ -103,7 +103,7 @@ export const deleteCollection = ({ commit }, id) => {
     });
 }
 
-export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id }) => {
+export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id, moderators_ids }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
             name: name,
@@ -111,7 +111,8 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
             status: status,
             slug: slug,
             cover_page_id: "" + cover_page_id,
-            enable_cover_page: enable_cover_page
+            enable_cover_page: enable_cover_page,
+            moderators_ids: moderators_ids
         }).then( res => {
             commit('setCollection', { 
                 id: collection_id, 
@@ -120,7 +121,8 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
                 slug: slug, 
                 status: status, 
                 enable_cover_page: enable_cover_page, 
-                cover_page_id: cover_page_id
+                cover_page_id: cover_page_id,
+                moderators_ids: moderators_ids
             });
             resolve( res.data );
         }).catch( error => { 
@@ -245,9 +247,15 @@ export const fetchPage = ({ commit }, pageId ) => {
 };
 
 // Users for moderators configuration
-export const fetchUsers = ({ commit }, search) => {
+export const fetchUsers = ({ commit }, { search, exceptions }) => {
+
+    let endpoint = '/users?search=' + search;
+
+    if (exceptions.length > 0) 
+        endpoint += '&exclude=' + exceptions.toString();
+
     return new Promise((resolve, reject) => {
-        axios.wp.get('/users?search=' + search)
+        axios.wp.get(endpoint)
         .then(res => {
             let users = res.data;
             resolve( users );

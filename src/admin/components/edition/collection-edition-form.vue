@@ -11,7 +11,7 @@
                 class="tainacan-form" 
                 label-width="120px">
 
-            <div class="columns">
+            <div class="columns is-variable is-8">
                 <div class="column is-narrow">
 
                     <!-- Thumbnail -------------------------------- --> 
@@ -158,6 +158,7 @@
                                 :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
                         <b-autocomplete
                                 id="tainacan-text-cover-page"
+                                :placeholder="$i18n.get('instruction_cover_page')"
                                 :data="coverPages"
                                 v-model="coverPageTitle"
                                 @select="onSelectCoverPage($event)"
@@ -198,10 +199,11 @@
                             :type="editFormErrors['moderators'] != undefined ? 'is-danger' : ''" 
                             :message="editFormErrors['moderators'] != undefined ? editFormErrors['moderators'] : ''">
                         <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'moderators')" 
-                                :message="$i18n.getHelperMessage('collections', 'moderators')"/>
+                                :title="$i18n.getHelperTitle('collections', 'moderators_ids')" 
+                                :message="$i18n.getHelperMessage('collections', 'moderators_ids')"/>
                         <b-autocomplete
                                 id="tainacan-text-moderators-input"
+                                :placeholder="$i18n.get('instruction_moderators')"
                                 :data="users"
                                 v-model="newModerator"
                                 @select="onAddModerator($event)"
@@ -215,10 +217,10 @@
                         </b-autocomplete>
                         <ul
                                 class="moderators-list"
-                                v-if="form.moderators.length > 0">
+                                v-if="moderators != undefined && moderators.length > 0">
                             <li
                                     :key="index"
-                                    v-for="(moderator, index) of form.moderators">
+                                    v-for="(moderator, index) of moderators">
                                 <b-tag
                                         attached
                                         closable
@@ -295,7 +297,7 @@ export default {
                 featured_image: '',
                 header_image: '',
                 files:[],
-                moderators: []
+                moderators_ids: []
             },
             thumbnail: {},
             cover: {},
@@ -327,6 +329,7 @@ export default {
             headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
             isFetchingModerators: false,
             users: [],
+            moderators: Array,
             newModerator: ''
         }
     },
@@ -348,6 +351,10 @@ export default {
         onSubmit() {
             this.isLoading = true;
 
+            this.form.moderators_ids = [];
+            for (let moderator of this.moderators)
+                this.form.moderators_ids.push(moderator.id);
+
             let data = { 
                 collection_id: this.collectionId, 
                 name: this.form.name, 
@@ -355,7 +362,8 @@ export default {
                 enable_cover_page: this.form.enable_cover_page, 
                 cover_page_id: this.form.cover_page_id,
                 slug: this.form.slug, 
-                status: this.form.status
+                status: this.form.status,
+                moderators_ids: this.form.moderators_ids
             };
             this.updateCollection(data).then(updatedCollection => {    
                 
@@ -416,6 +424,7 @@ export default {
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.slug = this.collection.slug;
+                this.moderators = [];
                 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -451,7 +460,13 @@ export default {
         },
         fecthModerators(search) {
             this.isFetchingModerators = true;
-            this.fetchUsers(search)
+
+            let exceptions = [];
+            for (let user of this.moderators)
+                exceptions.push(parseInt(user.id));
+            exceptions.push(this.collection.author_id);
+
+            this.fetchUsers({ search: search, exceptions: exceptions})
                 .then((users) => {
                     this.users = users;
                     this.isFetchingModerators = false;
@@ -462,10 +477,10 @@ export default {
                 });
         },
         onAddModerator(user) { 
-            this.form.moderators.push({'id': user.id, 'name': user.name}); 
+            this.moderators.push({'id': user.id, 'name': user.name}); 
         },
         removeModerator(moderatorIndex) { 
-            this.form.moderators.splice(moderatorIndex, 1);
+            this.moderators.splice(moderatorIndex, 1);
         },
         removeCoverPage() {
             this.coverPage = {};
@@ -572,6 +587,7 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
+                this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
                  
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
@@ -659,7 +675,7 @@ export default {
     }
     .selected-cover-page {
         background-color: $tainacan-input-color;
-        padding: 6px;
+        padding: 8px;
         font-size: .85rem;
         .span { vertical-align: middle;}
 
@@ -670,7 +686,6 @@ export default {
     }
     .moderators-list {
         padding: 10px;
-        font-size: 0.85rem;
         display: flex;
 
         .tags {
