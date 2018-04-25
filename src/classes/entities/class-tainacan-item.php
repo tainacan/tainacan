@@ -54,7 +54,6 @@ class Item extends Entity {
 
 		$array_item['featured_image']  = $this->get_featured_image();
 		$array_item['featured_img_id'] = $this->get_featured_img_id();
-		$array_item['attachments']     = $this->get_attachments();
 		$array_item['author_name']     = $this->get_author_name();
 
 		return $array_item;

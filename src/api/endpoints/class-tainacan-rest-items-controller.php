@@ -98,15 +98,15 @@ class REST_Items_Controller extends REST_Controller {
 		$item_metadata = $item_object->get_fields();
 
 		foreach($item_metadata as $index => $me){
-			$field = $me->get_field();
-			$slug = $field->get_slug();
+			$field               = $me->get_field();
+			$slug                = $field->get_slug();
 			$item_metadata_array = $me->__toArray();
 
-			$item_array['metadata'][$slug]['name']     = $field->get_name();
-			$item_array['metadata'][$slug]['value']    = $item_metadata_array['value'];
-			$item_array['metadata'][$slug]['value_as_html']    = $item_metadata_array['value_as_html'];
-			$item_array['metadata'][$slug]['value_as_string']    = $item_metadata_array['value_as_string'];
-			$item_array['metadata'][$slug]['multiple'] = $field->get_multiple();
+			$item_array['metadata'][ $slug ]['name']            = $field->get_name();
+			$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
+			$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
+			$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
+			$item_array['metadata'][ $slug ]['multiple']        = $field->get_multiple();
 		}
 
 		return $item_array;
@@ -158,6 +158,7 @@ class REST_Items_Controller extends REST_Controller {
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
 		$args = $this->prepare_filters($request);
