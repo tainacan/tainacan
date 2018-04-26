@@ -158,7 +158,8 @@ class Admin {
 			'user_caps'              => $user_caps,
 			'user_prefs'             => $prefs,
 			'base_url'               => $TAINACAN_BASE_URL,
-			'admin_url'              => admin_url()
+			'admin_url'              => admin_url(),
+			'custom_header_support'  => get_theme_support('custom-header'),
 		];
 
 		$maps = [
