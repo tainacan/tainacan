@@ -57,37 +57,37 @@ class Admin {
 		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css' );
 		
 		$undesired_wp_styles = [
-			//'admin-menu',
-			//'admin-bar',
-			//'code-editor',
-			//'color-picker',
-			//'customize-controls',
-			//'customize-nav-menus',
-			//'customize-widgets',
-			//'dashboard',
-			//'dashicons',
-			//'deprecated-media',
-			//'edit',
-			//'wp-pointer',
-			//'farbtastic',
-			//'forms',
-			//'common',
-			//'install',
-			//'wp-auth-check',
-			//'site-icon',
-			//'buttons',
-			//'l10n',
-			//'list-tables',
-			//'login',
-			//'media',
-			//'nav-menus',
-			//'revisions',
-			//'themes',
-			//'widgets',
-			//'wp-admin'
+			'admin-menu',
+			'admin-bar',
+			'code-editor',
+			'color-picker',
+			'customize-controls',
+			'customize-nav-menus',
+			'customize-widgets',
+			'dashboard',
+			'dashicons',
+			'deprecated-media',
+			'edit',
+			'wp-pointer',
+			'farbtastic',
+			'forms',
+			'common',
+			'install',
+			'wp-auth-check',
+			'site-icon',
+			'buttons',
+			'l10n',
+			'list-tables',
+			'login',
+			'media',
+			'nav-menus',
+			'revisions',
+			'themes',
+			'widgets',
+			'wp-admin'
 		];
 
-		//wp_dequeue_style( $undesired_wp_styles );
+		wp_dequeue_style( $undesired_wp_styles );
 		wp_deregister_style( $undesired_wp_styles );
 		
 	}

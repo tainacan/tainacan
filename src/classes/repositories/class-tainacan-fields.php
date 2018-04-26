@@ -41,138 +41,148 @@ class Fields extends Repository {
 	
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
-            'name'           => [
-                'map'        => 'post_title',
-                'title'      => __('Name', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Name of the field', 'tainacan'),
-                'on_error'   => __('The name should be a text value and not empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty(),
-            ],
-            'slug'           =>  [
-                'map'        => 'post_name',
-                'title'      => __('Slug', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('A unique and santized string representation of the field', 'tainacan'),
-                //'validation' => v::stringType(),
-            ],
-            'order'          => [
-                'map'        => 'menu_order',
-                'title'       => __('Order', 'tainacan'),
-                'type'       => 'string/integer',
-                'description'=> __('Field order. Field used if collections are manually ordered', 'tainacan'),
-                'on_error'   => __('The menu order should be a numeric value', 'tainacan'),
-                //'validation' => v::numeric(),
-            ],
-            'parent'         => [
-                'map'        => 'post_parent',
-                'title'      => __('Parent', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('Parent field', 'tainacan'),
-                'default'    => 0
-                //'on_error'   => __('The Parent should be numeric value', 'tainacan'),
-                //'validation' => v::numeric(),
-            ],
-            'description'    => [
-                'map'        => 'post_content',
-                'title'      => __('Description', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field description', 'tainacan'),
-            	'default'	 => '',
-                //'on_error'   => __('The description should be a text value', 'tainacan'),
-                //'validation' => v::stringType()->notEmpty(),
-            ],
-            'field_type'     => [
-                'map'        => 'meta',
-                'title'      => __('Type', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field type', 'tainacan'),
-                'on_error'   => __('Field type is empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty(),
-            ],
-            'required'       => [
-                'map'        => 'meta',
-                'title'      => __('Required', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The field is required', 'tainacan'),
-                'on_error'   => __('Field required field is invalid', 'tainacan'),
-                'validation' => v::stringType()->in(['yes', 'no']), // yes or no
-                'default'    => 'no'
-            ],
-            'collection_key' => [
-                'map'        => 'meta',
-                'title'      => __('Collection key', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Field value should not be repeated', 'tainacan'),
-                'on_error'   => __('Collection key is invalid', 'tainacan'),
-                'validation' => v::stringType()->in(['yes', 'no']), // yes or no
-                'default'    => 'no'
-            ],
-            'multiple'       => [
-                'map'        => 'meta',
-                'title'      => __('Multiple', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Allow multiple fields for the field', 'tainacan'),
-                'on_error'   => __('Multiple fields is invalid', 'tainacan'),
-                'validation' =>  v::stringType()->in(['yes', 'no']), // yes or no. It cant be multiple if its collection_key
-                'default'    => 'no'
-            ],
-            'cardinality'    => [
-                'map'        => 'meta',
-                'title'      => __('Cardinality', 'tainacan'),
-                'type'       => 'string/number',
-                'description'=> __('Number of multiples possible fields', 'tainacan'),
-                'on_error'   => __('The number of fields not allowed', 'tainacan'),
-                'validation' => v::numeric()->positive(),
-                'default'    => 1
-            ],
-            'mask'           => [
-                'map'        => 'meta',
-                'title'      => __('Mask', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The mask to be used in the field', 'tainacan'),
-                //'on_error'   => __('Mask is invalid', 'tainacan'),
-                //'validation' => ''
-            ],
-            'default_value'  => [
-                'map'        => 'meta',
-                'title'      => __('Default value', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The value default fot the field', 'tainacan'),
-            ],
-            'field_type_options' => [ // not showed in form
-                'map'        => 'meta',
-                'title'      => __('Field Type options', 'tainacan'),
-                'type'       => 'array/object/string',
-                'items'      => ['type' => 'array/string/integer/object'],
-                'description'=> __('Options specific for field type', 'tainacan'),
-               // 'validation' => ''
-            ],
-            'collection_id'  => [ // not showed in form
-                'map'        => 'meta',
-                'title'      => __('Collection', 'tainacan'),
-                'type'       => 'integer/string',
-                'description'=> __('The collection ID', 'tainacan'),
-                //'validation' => ''
-            ],
-            'accept_suggestion' => [
-                'map'		 => 'meta',
-                'title'		 => __('Field Value Accepts Suggestions', 'tainacan'),
-                'type'		 => 'bool',
-                'description'=> __('Allow the community suggest a different values for that field', 'tainacan'),
-                'default'	 => false,
-                'validation' => v::boolType()
-            ],
-            'exposer_mapping'        => [
-	    		'map'        => 'meta',
-	    		'title'      => __('exposer_mapping', 'tainacan'),
-	    		'type'       => 'array',
-	    		'description'=> __('The field mapping options', 'tainacan'),
-	    		'on_error'   => __('Invalid Field Mapping', 'tainacan'),
-	    		//'validation' =>  v::arrayType(),
-	    		'default'    => []
-    	    ],
-        ]);
+		    'name'               => [
+			    'map'         => 'post_title',
+			    'title'       => __( 'Name', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'Name of the field', 'tainacan' ),
+			    'on_error'    => __( 'The name should be a text value and not empty', 'tainacan' ),
+			    'validation'  => v::stringType()->notEmpty(),
+		    ],
+		    'slug'               => [
+			    'map'         => 'post_name',
+			    'title'       => __( 'Slug', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'A unique and santized string representation of the field', 'tainacan' ),
+			    //'validation' => v::stringType(),
+		    ],
+		    'order'              => [
+			    'map'         => 'menu_order',
+			    'title'       => __( 'Order', 'tainacan' ),
+			    'type'        => 'string/integer',
+			    'description' => __( 'Field order. Field used if collections are manually ordered', 'tainacan' ),
+			    'on_error'    => __( 'The menu order should be a numeric value', 'tainacan' ),
+			    //'validation' => v::numeric(),
+		    ],
+		    'parent'             => [
+			    'map'         => 'post_parent',
+			    'title'       => __( 'Parent', 'tainacan' ),
+			    'type'        => 'integer',
+			    'description' => __( 'Parent field', 'tainacan' ),
+			    'default'     => 0
+			    //'on_error'   => __('The Parent should be numeric value', 'tainacan'),
+			    //'validation' => v::numeric(),
+		    ],
+		    'description'        => [
+			    'map'         => 'post_content',
+			    'title'       => __( 'Description', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The field description', 'tainacan' ),
+			    'default'     => '',
+			    //'on_error'   => __('The description should be a text value', 'tainacan'),
+			    //'validation' => v::stringType()->notEmpty(),
+		    ],
+		    'field_type'         => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Type', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The field type', 'tainacan' ),
+			    'on_error'    => __( 'Field type is empty', 'tainacan' ),
+			    'validation'  => v::stringType()->notEmpty(),
+		    ],
+		    'required'           => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Required', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The field is required', 'tainacan' ),
+			    'on_error'    => __( 'Field required field is invalid', 'tainacan' ),
+			    'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			    'default'     => 'no'
+		    ],
+		    'collection_key'     => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Collection key', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'Field value should not be repeated', 'tainacan' ),
+			    'on_error'    => __( 'Collection key is invalid', 'tainacan' ),
+			    'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			    'default'     => 'no'
+		    ],
+		    'multiple'           => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Multiple', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'Allow multiple fields for the field', 'tainacan' ),
+			    'on_error'    => __( 'Multiple fields is invalid', 'tainacan' ),
+			    'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
+			    // yes or no. It cant be multiple if its collection_key
+			    'default'     => 'no'
+		    ],
+		    'cardinality'        => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Cardinality', 'tainacan' ),
+			    'type'        => 'string/number',
+			    'description' => __( 'Number of multiples possible fields', 'tainacan' ),
+			    'on_error'    => __( 'The number of fields not allowed', 'tainacan' ),
+			    'validation'  => v::numeric()->positive(),
+			    'default'     => 1
+		    ],
+		    'mask'               => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Mask', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The mask to be used in the field', 'tainacan' ),
+			    //'on_error'   => __('Mask is invalid', 'tainacan'),
+			    //'validation' => ''
+		    ],
+		    'default_value'      => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Default value', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The value default fot the field', 'tainacan' ),
+		    ],
+		    'field_type_options' => [ // not showed in form
+			    'map'         => 'meta',
+			    'title'       => __( 'Field Type options', 'tainacan' ),
+			    'type'        => 'array/object/string',
+			    'items'       => [ 'type' => 'array/string/integer/object' ],
+			    'description' => __( 'Options specific for field type', 'tainacan' ),
+			    // 'validation' => ''
+		    ],
+		    'collection_id'      => [ // not showed in form
+			    'map'         => 'meta',
+			    'title'       => __( 'Collection', 'tainacan' ),
+			    'type'        => 'integer/string',
+			    'description' => __( 'The collection ID', 'tainacan' ),
+			    //'validation' => ''
+		    ],
+		    'accept_suggestion'  => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Field Value Accepts Suggestions', 'tainacan' ),
+			    'type'        => 'bool',
+			    'description' => __( 'Allow the community suggest a different values for that field', 'tainacan' ),
+			    'default'     => false,
+			    'validation'  => v::boolType()
+		    ],
+		    'exposer_mapping'    => [
+			    'map'         => 'meta',
+			    'title'       => __( 'exposer_mapping', 'tainacan' ),
+			    'type'        => 'array/object/string',
+			    'items'       => [ 'type' => 'array/string/integer/object' ],
+			    'description' => __( 'The field mapping options', 'tainacan' ),
+			    'on_error'    => __( 'Invalid Field Mapping', 'tainacan' ),
+			    //'validation' =>  v::arrayType(),
+			    'default'     => []
+		    ],
+		    'display'            => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Display', 'tainacan' ),
+			    'type'        => __( 'string' ),
+			    'validation'  => v::stringType()->in( [ 'yes', 'no', 'never' ] ),
+			    'description' => __( 'Display by default on listing or not display or never display. yes = display, no = not diplay, never = never display', 'tainacan' ),
+			    'default'     => 'yes'
+		    ]
+	    ] );
     }
 	
 	/**
