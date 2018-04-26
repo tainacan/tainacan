@@ -103,6 +103,7 @@ class Admin {
 		wp_enqueue_media();
 		wp_enqueue_script('undescore', includes_url('js') . '/underscore.min.js' );
 		wp_enqueue_script('jcrop');
+		wp_enqueue_script( 'customize-controls' );
 		
 	}
 	

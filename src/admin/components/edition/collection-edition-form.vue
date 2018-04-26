@@ -23,14 +23,15 @@
                                     class="button is-rounred is-secondary"
                                     id="button-edit-thumbnail" 
                                     :aria-label="$i18n.get('label_button_edit_thumb')"
-                                    @click="editImage($event, true)">
+                                    @click.prevent="thumbnailMediaFrame.openFrame($event)">
                                 <b-icon icon="pencil" />
                             </a>
                             <figure class="image is-128x128">
                                 <span 
                                         v-if="collection.featured_image == undefined || collection.featured_image == false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                <img  
+                                <img
+                                        id="thumbail-image"  
                                         :alt="$i18n.get('label_thumbnail')" 
                                         :src="(collection.featured_image == undefined || collection.featured_image == false) ? thumbPlaceholderPath : collection.featured_image">
                             </figure>
@@ -44,7 +45,6 @@
                             </div>
                         </div>
                     </b-field>
-
                     <!-- Header Page -------------------------------- --> 
                     <b-field 
                         :addons="false"
@@ -54,7 +54,7 @@
                                     class="button is-rounred is-secondary"
                                     id="button-edit-header-image" 
                                     :aria-label="$i18n.get('label_button_edit_header_image')"
-                                    @click="editImage($event, false)">
+                                    @click="headerImageMediaFrame.openFrame($event)">
                                 <b-icon icon="pencil" />
                             </a>
                             <figure class="image is-128x128">
@@ -305,6 +305,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import wpMediaFrames from '../../js/wp-media-frames';
 
 export default {
     name: 'CollectionEditionForm',
@@ -348,15 +349,15 @@ export default {
             editFormErrors: {},
             formErrorMessage: '',
             isNewCollection: false,
-            // Fream Uploader variables
-            frameUploader: undefined,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
             isFetchingModerators: false,
             users: [],
             moderators: [],
             collections: [],
-            isFetchingCollections: true
+            isFetchingCollections: true,
+            thumbnailMediaFrame: undefined,
+            headerImageMediaFrame: undefined
         }
     },
     methods: {
@@ -446,6 +447,9 @@ export default {
                 this.collectionId = res.id;
                 this.collection = res;
 
+                // Initializes Media Frames now that collectonId exists
+                this.initializeMediaFrames();
+
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
@@ -528,118 +532,6 @@ export default {
             this.coverPageTitle = '';
             this.form.cover_page_id = '';
         },
-        editImage(event, isThumbnail) {
-            'use strict';   
-            event.preventDefault();
-
-             // If the media frame already exists, reopen it.
-            if ( this.frameUploader ) {
-                this.frameUploader.open();
-                return;
-            }
-            
-            // Create a new media frame
-            this.frameUploader = wp.media.frames.frame_uploader = wp.media({
-                frame: 'select',
-                title: 'Select or Upload and Image.',
-                button: {
-                    text: 'Select and Crop',
-                    close: false
-                },
-                multiple: false,
-                library: {
-                    type: 'image',
-                    uploadedTo: this.collectionId
-                },
-                uploader: true,
-                states: [
-					new wp.media.controller.Library({
-						title:     'Corta aí',
-						library:   wp.media.query({ type: 'image' }),
-						multiple:  false,
-						date:      false,
-						priority:  20,
-						suggestedWidth: 1000,
-						suggestedHeight: 200
-					}),
-					new wp.media.controller.Cropper({
-						imgSelectOptions: {
-                            enable: true,
-                            handles: true,
-                            imageHeight: 200,
-                            imageWidth: 1000,
-                            instance: true,
-                            keys: true,
-                            maxWidth: 1000,
-                            persistent: true,
-                            x1: 0,
-                            x2: 250,
-                            y1: 0,
-                            y2: 50
-                        }
-					})
-				]
-
-            });
-
-            wp.media.view.settings.post = {
-                id: this.collectionId
-            }
-
-            this.frameUploader.on('select', () => {
-                this.frameUploader.state('cropper').set( 'canSkipCrop', true );
-                this.frameUploader.setState('cropper');
-            });
-            
-            this.frameUploader.on('skippedcrop', () => {
-                let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
-                
-                if (isThumbnail) {
-                    this.updateThumbnail({collectionId: this.collectionId, thumbnailId: media.id})
-                    .then((res) => {
-                        this.collection.featured_image = res.featured_image;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                    });
-                } else {
-                    this.updateHeaderImage({collectionId: this.collectionId, headerImageId: media.id})
-                    .then((res) => {
-                        this.collection.header_image = res.header_image;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                    });
-                }
-
-            });
-
-            this.frameUploader.on('cropped', (croppedImage) => {
-                
-                // it is not cropping where we choose, but almost there
-                
-                if (isThumbnail) {
-                    this.updateThumbnail({collectionId: this.collectionId, thumbnailId: croppedImage.attachment_id})
-                    .then((res) => {
-                        this.collection.featured_image = res.featured_image;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                    });
-                } else {
-                    this.updateHeaderImage({collectionId: this.collectionId, headerImageId: croppedImage.attachment_id})
-                    .then((res) => {
-                        this.collection.header_image = res.header_image;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                    });
-                }
-
-            });
-
-            this.frameUploader.open();
-        },
         deleteThumbnail() {
 
             this.updateThumbnail({collectionId: this.collectionId, thumbnailId: 0})
@@ -660,6 +552,44 @@ export default {
                 this.$console.error(error);
             });    
         },
+        initializeMediaFrames() {
+
+            this.thumbnailMediaFrame = new wpMediaFrames.thumbnailControl(
+                'my-thumbnail-media-frame', {
+                    button_labels: {
+                        frame_title: 'Título do Frame do Thumbnail da Coleção',
+                    },
+                    relatedPostId: this.collectionId,
+                    onSave: (mediaId) => {
+                        this.updateThumbnail({collectionId: this.collectionId, thumbnailId: mediaId})
+                        .then((res) => {
+                            this.collection.featured_image = res.featured_image;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                        });
+                    }
+                }
+            );
+
+            this.headerImageMediaFrame = new wpMediaFrames.headerImageControl(
+                'my-header-image-media-frame', {
+                    button_labels: {
+                        frame_title: 'Título do Frame da Imagem de Header da Coleção',
+                    },
+                    relatedPostId: this.collectionId,
+                    onSave: (mediaId) => {
+                        this.updateHeaderImage({collectionId: this.collectionId, headerImageId: mediaId})
+                        .then((res) => {
+                            this.collection.header_image = res.header_image;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                        });
+                    }
+                }
+            );
+        }
     },
     created(){
 
@@ -676,6 +606,9 @@ export default {
 
             this.fetchCollection(this.collectionId).then(res => {
                 this.collection = res;
+
+                // Initializes Media Frames now that collectonId exists
+                this.initializeMediaFrames();
 
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
