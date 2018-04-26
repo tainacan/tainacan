@@ -179,7 +179,7 @@ class Fields extends Repository {
 			    'title'       => __( 'Display', 'tainacan' ),
 			    'type'        => __( 'string' ),
 			    'validation'  => v::stringType()->in( [ 'yes', 'no', 'never' ] ),
-			    'description' => __( 'Display by default on listing or not display or never display. yes = display, no = not diplay, never = never display', 'tainacan' ),
+			    'description' => __( 'Display by default on listing or not display or never display.', 'tainacan' ),
 			    'default'     => 'yes'
 		    ]
 	    ] );

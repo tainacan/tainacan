@@ -73,8 +73,15 @@
 
         <!-- Display on listing -->
         <b-field
-                :addons="false"
-                :label="$i18n.get('label_display')">
+                :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_display') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('fields', 'display')"
+                        :message="$i18n.getHelperMessage('fields', 'display')"/>
+
+            </label>
+
             <b-field
                     :type="formErrors['display'] != undefined ? 'is-danger' : ''"
                     :message="formErrors['display'] != undefined ? formErrors['display'] : ''">
@@ -86,9 +93,6 @@
                         name="display">
                     {{ $i18n.get('label_display_default') }}
                 </b-radio>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'display')"
-                        :message="$i18n.getHelperMessage('fields', 'display')"/>
             </b-field>
 
             <b-field>
@@ -100,9 +104,6 @@
                         name="display">
                     {{ $i18n.get('label_not_display') }}
                 </b-radio>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'display')"
-                        :message="$i18n.getHelperMessage('fields', 'display')"/>
             </b-field>
 
             <b-field
@@ -116,9 +117,6 @@
                         name="display">
                     {{ $i18n.get('label_display_never') }}
                 </b-radio>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'display')"
-                        :message="$i18n.getHelperMessage('fields', 'display')"/>
             </b-field>
 
         </b-field>
