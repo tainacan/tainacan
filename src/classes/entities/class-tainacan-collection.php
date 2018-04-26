@@ -31,6 +31,7 @@ class Collection extends Entity {
         $enable_cover_page,
         $cover_page_id,
         $header_image_id,
+	    $header_image,
         $moderators_ids;
 
     /**
@@ -68,8 +69,7 @@ class Collection extends Entity {
 		$array_collection = parent::__toArray();
 
 		$array_collection['featured_image']  = $this->get_featured_image();
-		$array_collection['featured_img_id'] = $this->get_featured_img_id();
-		$array_collection['attachments']     = $this->get_attachments();
+		$array_collection['header_image']    = $this->get_header_image();
 		$array_collection['author_name']     = $this->get_author_name();
 
 		return $array_collection;
@@ -206,6 +206,13 @@ class Collection extends Entity {
 	 */
 	function get_featured_image() {
 		return get_the_post_thumbnail_url( $this->get_id(), 'full' );
+	}
+
+	/**
+	 * @return false|string
+	 */
+	function get_header_image(){
+		return wp_get_attachment_url( $this->get_header_image_id() );
 	}
 
 	/**

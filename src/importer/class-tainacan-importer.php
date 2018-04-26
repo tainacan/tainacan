@@ -401,19 +401,18 @@ abstract class Importer {
                 }
             }
 
-            $item->set_status('publish' );
+            $insertedItem->set_status('publish' );
 
             // inserted the id on processed item with its index as array index
-            $this->processed_items[ $index ] = $item->get_id();
-
-            if($item->validate()) {
-	            $Tainacan_Items->update( $item );
+            $this->processed_items[ $index ] = $insertedItem->get_id();
+            if($insertedItem->validate()) {
+	            $insertedItem = $Tainacan_Items->update( $insertedItem );
             } else {
-	            $this->add_log( 'error', 'Item ' . $index . ': ' ); // TODO add the  $item->get_errors() array
+	            $this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
 	            return false;
             }
 
-            return $item;
+            return $insertedItem;
         } else {
             $this->add_log( 'error', 'Collection not set');
             return false;

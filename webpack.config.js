@@ -3,7 +3,7 @@ let webpack = require('webpack');
 
 module.exports = {
     entry:  {
-       dev_admin: './src/js/main.js',
+       //dev_admin: './src/js/main.js',
        user_search: './src/admin/js/theme-main.js',
        user_admin: './src/admin/js/main.js'
     },
@@ -25,10 +25,7 @@ module.exports = {
             },
             {
                 test: /\.vue$/,
-                loader: 'vue-loader',
-                options: {
-                    // vue-loader options go here
-                }
+                loader: 'vue-loader'
             },
             {
                 test: /\.js$/,

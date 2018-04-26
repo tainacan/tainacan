@@ -15,85 +15,84 @@ class Terms extends Repository {
 
     private static $instance = null;
 
-    public static function get_instance()
-    {
-        if(!isset(self::$instance))
-        {
-            self::$instance = new self();
-        }
+	public static function get_instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new self();
+		}
 
-        return self::$instance;
-    }
+		return self::$instance;
+	}
 
-    protected function __construct()
-    {
-        parent::__construct();
-    }
+	protected function __construct() {
+		parent::__construct();
+	}
 
     public function get_map() {
-    	return apply_filters('tainacan-get-map-'.$this->get_name(), [
-            'term_id'     => [
-                'map'        => 'term_id',
-                'title'      => __('ID', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('Unique identifier', 'tainacan'),
-                //'validation' => ''
-            ],
-            'name'        => [
-                'map'        => 'name',
-                'title'      => __('Name', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Name of the term', 'tainacan'),
-                'on_error'   => __('The name is empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty(),
-            ],
-            'parent'      => [
-                'map'        => 'parent',
-                'title'      => __('Parent', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('The parent of the term', 'tainacan'),
-				'default'	 => 0,
-                'validation' => ''
-            ],
-            'description' => [
-                'map'        => 'description',
-                'title'      => __('Description', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The term description', 'tainacan'),
-            	'default'	 => '',
-                'validation' => ''
-            ],
-            'taxonomy'    => [
-                'map'        => 'taxonomy',
-                'title'      => __('Taxonomy', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The term taxonomy', 'tainacan'),
-                'on_error'   => __('The taxonomy is empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty(),
-            ],
-            'user'        => [
-                'map'        => 'termmeta',
-                'title'      => __('User', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('The term creator', 'tainacan'),
-                'on_error'   => __('The user is empty or invalid', 'tainacan'),
-				'default'    => get_current_user_id(),
-                'validation' => v::numeric(),
-            ],
-			'header_image_id' => [
-                'map'        => 'termmeta',
-                'title'      => __('Header Image', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The image to be used in term header', 'tainacan'),
-                'on_error'   => __('Invalid image', 'tainacan'),
-                //'validation' => v::numeric(),
-                'default'    => ''
-            ],
-		    'hide_empty'  => [
-		    	'map'        => 'hide_empty',
-			    'type'       => 'bool'
+	    return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
+		    'term_id'         => [
+			    'map'         => 'term_id',
+			    'title'       => __( 'ID', 'tainacan' ),
+			    'type'        => 'integer',
+			    'description' => __( 'Unique identifier', 'tainacan' ),
+			    //'validation' => ''
+		    ],
+		    'name'            => [
+			    'map'         => 'name',
+			    'title'       => __( 'Name', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'Name of the term', 'tainacan' ),
+			    'on_error'    => __( 'The name is empty', 'tainacan' ),
+			    'validation'  => v::stringType()->notEmpty(),
+		    ],
+		    'parent'          => [
+			    'map'         => 'parent',
+			    'title'       => __( 'Parent', 'tainacan' ),
+			    'type'        => 'integer',
+			    'description' => __( 'The parent of the term', 'tainacan' ),
+			    'default'     => 0,
+			    'validation'  => ''
+		    ],
+		    'description'     => [
+			    'map'         => 'description',
+			    'title'       => __( 'Description', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The term description', 'tainacan' ),
+			    'default'     => '',
+			    'validation'  => ''
+		    ],
+		    'taxonomy'        => [
+			    'map'         => 'taxonomy',
+			    'title'       => __( 'Taxonomy', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The term taxonomy', 'tainacan' ),
+			    'on_error'    => __( 'The taxonomy is empty', 'tainacan' ),
+			    'validation'  => v::stringType()->notEmpty(),
+		    ],
+		    'user'            => [
+			    'map'         => 'termmeta',
+			    'title'       => __( 'User', 'tainacan' ),
+			    'type'        => 'integer',
+			    'description' => __( 'The term creator', 'tainacan' ),
+			    'on_error'    => __( 'The user is empty or invalid', 'tainacan' ),
+			    'default'     => get_current_user_id(),
+			    'validation'  => v::numeric(),
+		    ],
+		    'header_image_id' => [
+			    'map'         => 'termmeta',
+			    'title'       => __( 'Header Image', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The image to be used in term header', 'tainacan' ),
+			    'on_error'    => __( 'Invalid image', 'tainacan' ),
+			    //'validation' => v::numeric(),
+			    'default'     => ''
+		    ],
+		    'hide_empty'      => [
+			    'map'         => 'hide_empty',
+			    'title'       => __( 'Hide empty', 'tainacan' ),
+			    'type'        => 'bool',
+			    'description' => __( 'Hide empty terms', 'tainacan' )
 		    ]
-        ]);
+	    ] );
     }
     
     public function get_default_properties($map) {
@@ -239,7 +238,7 @@ class Terms extends Repository {
     	if($deleted) {
     		$deleted_term_tainacan = new Entities\Term($args[0], $args[1]);
 
-		    do_action( 'tainacan-deleted', $deleted_term_tainacan, $is_update = false, $is_delete_permanently = true );
+		    do_action( 'tainacan-deleted', $deleted_term_tainacan, [], false, true );
 	    }
 
     	return $deleted;

@@ -228,13 +228,11 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$this->assertEquals(2, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 2 items');
 		$this->assertEquals(4, $_SESSION['tainacan_importer'][$id]->run(), 'second step should import 2 items');
 		$this->assertEquals(5, $_SESSION['tainacan_importer'][$id]->run(), 'third step should import 3 items');
-		
 		$this->assertEquals(5, $_SESSION['tainacan_importer'][$id]->run(), 'if call run again after finish, do nothing');
 
         $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_total_items(), count( $items ) );
-
     }
 
     /**
@@ -243,7 +241,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
     public function test_fetch_file(){
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
-        //$_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wordpress-test/wp-json' );
-        //$this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
+        $_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wordpress-test/wp-json' );
+        $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
     }
 }

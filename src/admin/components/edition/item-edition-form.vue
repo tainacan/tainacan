@@ -14,19 +14,13 @@
                     <!-- Thumbnail -------------------------------- --> 
                     <b-field :label="$i18n.get('label_image')">
                         <div class="thumbnail-field">
-                            <b-upload 
+                            <button
                                     v-if="item.featured_image == undefined || item.featured_image == false"
-                                    v-model="thumbnail"
-                                    drag-drop
-                                    @input="uploadThumbnail($event)">
-                                <div class="content has-text-centered">
-                                    <p>
-                                    <b-icon
-                                        icon="upload"/>
-                                    </p>
-                                    <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
-                                </div>
-                            </b-upload>
+                                    @click="editThumbnail($event)"
+                                    class="button is-primary">
+                                <b-icon icon="upload" />
+                                <span>{{ $i18n.get('label_choose_thumb') }}</span>
+                            </button>
                             <div v-else> 
                                 <figure class="image is-128x128">
                                     <img 
@@ -34,17 +28,18 @@
                                             :src="item.featured_image">
                                 </figure>
                                 <div class="thumbnail-buttons-row">
-                                    <b-upload 
-                                            model="thumbnail"
-                                            @input="uploadThumbnail($event)">
-                                        <a 
-                                                id="button-edit" 
-                                                :aria-label="$i18n.get('label_button_edit_thumb')"><b-icon icon="pencil"/></a>
-                                    </b-upload>
+                                    <a 
+                                            @click="editThumbnail($event)"
+                                            id="button-edit" 
+                                            :aria-label="$i18n.get('label_button_edit_thumb')">
+                                        <b-icon icon="pencil"/>
+                                    </a>
                                     <a 
                                             id="button-delete" 
                                             :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                            @click="deleteThumbnail()"><b-icon icon="delete"/></a>
+                                            @click="deleteThumbnail()">
+                                        <b-icon icon="delete"/>
+                                    </a>
                                 </div>
                             </div> 
                         </div>
@@ -188,6 +183,8 @@ export default {
                 label: this.$i18n.get('trash')
             }],
             formErrorMessage: '',
+            // Frame Uploader variables
+            frameUploader: undefined
         }
     },
     methods: {
@@ -286,6 +283,52 @@ export default {
                     this.$console.error(error);
                 });
             }
+        },
+        editThumbnail(event) {
+            'use strict';   
+            event.preventDefault();
+
+             // If the media frame already exists, reopen it.
+            if ( this.frameUploader != undefined ) {
+                this.frameUploader.open();
+                return;
+            }    
+            
+            // Create a new media frame
+            this.frameUploader = wp.media({
+                frame: 'select',
+                title: 'Select or Upload Media Of Your Chosen Persuasion',
+                button: {
+                    text: 'Use this media'
+                },
+                multiple: false,
+                library: {
+                    type: 'image',
+                    uploadedTo: this.itemId
+                },
+                uploader: true
+            });
+            
+            wp.media.view.settings.post = {
+                id: this.itemId,
+                featuredImageId: this.item.featured_img_id
+            }
+
+            this.frameUploader.on('select', () => {
+
+                let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
+
+                this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
+                .then((res) => {
+                    this.item.featured_image = res.featured_image;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                });
+
+            });
+
+            this.frameUploader.open();
         },
         uploadThumbnail($event) {
 

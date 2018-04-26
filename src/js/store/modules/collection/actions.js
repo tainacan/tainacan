@@ -62,7 +62,7 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage }) => {
 export const fetchCollection = ({ commit }, id) => {
     commit('cleanCollection');
     return new Promise((resolve, reject) =>{ 
-        axios.tainacan.get('/collections/' + id)
+        axios.tainacan.get('/collections/' + id + '?context=edit')
         .then(res => {
             let collection = res.data;
             commit('setCollection', collection);
@@ -103,7 +103,7 @@ export const deleteCollection = ({ commit }, id) => {
     });
 }
 
-export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id }) => {
+export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id, moderators_ids, parent }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
             name: name,
@@ -111,9 +111,21 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
             status: status,
             slug: slug,
             cover_page_id: "" + cover_page_id,
-            enable_cover_page: enable_cover_page
+            enable_cover_page: enable_cover_page,
+            moderators_ids: moderators_ids,
+            parent: parent
         }).then( res => {
-            commit('setCollection', { id: collection_id, name: name, description: description, slug: slug, status: status, enable_cover_page: enable_cover_page, cover_page_id: cover_page_id });
+            commit('setCollection', { 
+                id: collection_id, 
+                name: name, 
+                description: description, 
+                slug: slug, 
+                status: status, 
+                enable_cover_page: enable_cover_page, 
+                cover_page_id: cover_page_id,
+                moderators_ids: moderators_ids.name,
+                parent: parent
+            });
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -194,10 +206,10 @@ export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
     }); 
 };
 
-export const updateCover = ({ commit }, { collectionId, coverId }) => {
+export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId, {
-            cover_img_id: coverId 
+            header_image_id: headerImageId + ''
         }).then( res => {
             let collection = res.data
             commit('setCollection', collection);
@@ -210,9 +222,9 @@ export const updateCover = ({ commit }, { collectionId, coverId }) => {
 };
 
 // Collection Cover Page
-export const fetchPages = () => {
+export const fetchPages = ({ commit }, search ) => {
     return new Promise((resolve, reject) => {
-        axios.wp.get('/pages/')
+        axios.wp.get('/pages?search=' + search)
         .then(res => {
             let pages = res.data;
             resolve( pages );
@@ -235,3 +247,37 @@ export const fetchPage = ({ commit }, pageId ) => {
         });
     });
 };
+
+// Users for moderators configuration
+export const fetchUsers = ({ commit }, { search, exceptions }) => {
+
+    let endpoint = '/users?search=' + search;
+
+    if (exceptions.length > 0) 
+        endpoint += '&exclude=' + exceptions.toString();
+
+    return new Promise((resolve, reject) => {
+        axios.wp.get(endpoint)
+        .then(res => {
+            let users = res.data;
+            resolve( users );
+        })
+        .catch(error => {
+            reject( error );
+        });
+    });
+};
+
+// Fetch Collections for choosing Parent Collection
+export const fetchCollectionsForParent = ({ commit }) => {
+    return new Promise((resolve, reject) =>{ 
+        axios.tainacan.get('/collections/?fetch_only[0]=name&fetch_only[1]=id')
+        .then(res => {
+            let collections = res.data;
+            resolve( collections );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+}
