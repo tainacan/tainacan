@@ -2,6 +2,10 @@
 
 namespace Tainacan\Exposers\Types;
 
+/**
+ * Generate a text formated response
+ *
+ */
 class Txt extends Type {
 	
 	public $mappers = ['Value'];

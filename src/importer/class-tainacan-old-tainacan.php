@@ -11,6 +11,7 @@ namespace Tainacan\Importer;
 
 class Old_Tainacan extends Importer
 {
+
     public $avoid = [
         'ID',
         'post_author',
@@ -32,16 +33,53 @@ class Old_Tainacan extends Importer
         'filter',
         'link',
         'thumbnail'
+    ],
+    $steps = [
+        'Creating all taxonomies' => 'create_taxonomies',
+        'Create empty collections' => 'create_collections',
+        'Create repository metadata' => 'create_repo_meta',
+        'Create collections metadata' => 'create_collection_metas',
+        'Create collections items' => 'create_collection_items',
+        'Setting relationships' => 'set_relationships'
     ];
 
-    public function __construct($import_structure_and_mapping = false)
+    public function __construct()
     {
         parent::__construct();
-
+        $this->set_repository();
+        $this->set_steps($this->steps);
         $this->remove_import_method('file');
         $this->add_import_method('url');
+    }
 
-        $this->import_structure_and_mapping = $import_structure_and_mapping;
+    public function create_taxonomies()
+    {
+        return false;
+    }
+
+    public function create_collections()
+    {
+        return false;
+    }
+
+    public function create_repo_meta()
+    {
+        return false;
+    }
+
+    public function create_collection_metas()
+    {
+        return false;
+    }
+
+    public function create_collection_items()
+    {
+        return false;
+    }
+
+    public function set_relationships()
+    {
+        return false;
     }
 
     public function fetch_from_remote( $url ){
@@ -69,7 +107,6 @@ class Old_Tainacan extends Importer
                     break;
                 }
             }
-
 
             if(!empty($link))
             {
@@ -116,7 +153,6 @@ class Old_Tainacan extends Importer
         $file_content = unserialize($file->fread($file->getSize()));
 
         $item = $file_content->items[0];
-
         $fields = [];
 
         //Default meta

@@ -78,6 +78,12 @@ abstract class Importer {
 		'url'  => false,
 	];
 
+	private $is_repository = false;
+
+	private $steps = [];
+
+	private $current_step = 0;
+
     public function __construct() {
         if (!session_id()) {
             @session_start();
@@ -294,7 +300,20 @@ abstract class Importer {
 		}
 		return false;
 	}
-	
+
+    /**
+     * Sets importer as repository importer
+     */
+	public function set_repository()
+    {
+        $this->is_repository = true;
+    }
+
+    public function set_steps($steps)
+    {
+        $this->steps =$steps;
+    }
+
 	/**
 	 * Removes method accepeted by the importer
 	 *
@@ -424,25 +443,40 @@ abstract class Importer {
      * run the process
      */
     public function run(){
-        
-		if ( ( !isset($this->collection) || ! $this->collection instanceof Entities\Collection ) && $this->import_structure_and_mapping ) {
-			$new_collection = new Entities\Collection();
-			$new_collection->set_name('New Imported Collection');
-			$new_collection->set_status('publish');
-            $new_collection->validate();
-			$new_collection = Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
-			
-			$this->set_collection($new_collection);
-			
-			if (!method_exists($this, 'create_fields_and_mapping')) {
-				throw new Exception('Importers with import_structure_and_mapping true must implement create_fields_and_mapping method');
-			}
+        if($this->is_repository && $this->current_step < count($this->steps))
+        {
+            $process_name = key($this->steps);
+            $function_name = current($this->steps);
+            $continue = $this->{$function_name}();//If true still there is stuff to process
 
-			$this->create_fields_and_mapping();
-			
-		}
-		
-		$this->process( $this->start );
-		return sizeof($this->get_processed_items());
+            if(!$continue)
+            {
+                //Move on to the next step
+                next($this->steps);
+                $this->current_step++;
+            }
+        }
+        else
+        {
+            if ( ( !isset($this->collection) || ! $this->collection instanceof Entities\Collection ) && $this->import_structure_and_mapping ) {
+                $new_collection = new Entities\Collection();
+                $new_collection->set_name('New Imported Collection');
+                $new_collection->set_status('publish');
+                $new_collection->validate();
+                $new_collection = Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
+
+                $this->set_collection($new_collection);
+
+                if (!method_exists($this, 'create_fields_and_mapping')) {
+                    throw new Exception('Importers with import_structure_and_mapping true must implement create_fields_and_mapping method');
+                }
+
+                $this->create_fields_and_mapping();
+
+            }
+
+            $this->process( $this->start );
+            return sizeof($this->get_processed_items());
+        }
     }
 }

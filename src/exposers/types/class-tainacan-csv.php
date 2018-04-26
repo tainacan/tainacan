@@ -2,8 +2,16 @@
 
 namespace Tainacan\Exposers\Types;
 
+/**
+ * Generate a Csv formated response
+ *
+ */
 class Csv extends Type {
 	
+	/**
+	 * List of supported mappers
+	 * @var array
+	 */
 	public $mappers = ['Value']; 
 	
 	/**

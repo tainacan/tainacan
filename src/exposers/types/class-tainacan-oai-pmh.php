@@ -2,6 +2,10 @@
 
 namespace Tainacan\Exposers\Types;
 
+/**
+ * Generate a OAI_PMH/oai_dc formated response
+ *
+ */
 class OAI_PMH extends Xml {
 	
 	public $mappers = ['Dublin Core'];
