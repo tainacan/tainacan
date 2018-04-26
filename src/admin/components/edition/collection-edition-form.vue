@@ -267,9 +267,10 @@
                                 :placeholder="$i18n.get('instruction_select_a_parent_collection')">
                             <option value="0">{{ $i18n.get('label_no_parent_collection') }}</option>
                             <option
-                                    v-for="collection of collections"
-                                    :key="collection.id"
-                                    :value="collection.id">{{ collection.name }}
+                                    v-if="collection.id != anotherCollection.id"
+                                    v-for="anotherCollection of collections"
+                                    :key="anotherCollection.id"
+                                    :value="anotherCollection.id">{{ anotherCollection.name }}
                             </option>
                         </b-select>
                     </b-field>

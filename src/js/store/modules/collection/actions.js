@@ -271,7 +271,7 @@ export const fetchUsers = ({ commit }, { search, exceptions }) => {
 // Fetch Collections for choosing Parent Collection
 export const fetchCollectionsForParent = ({ commit }) => {
     return new Promise((resolve, reject) =>{ 
-        axios.tainacan.get('/collections/')
+        axios.tainacan.get('/collections/?fetch_only[0]=name&fetch_only[1]=id')
         .then(res => {
             let collections = res.data;
             resolve( collections );
