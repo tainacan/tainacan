@@ -106,8 +106,8 @@ export default {
 			}
 			this.params.flex_width = 1;
 			this.params.flex_height = 1;
-			this.params.width = 900;
-			this.params.height = 200;
+			this.params.width = tainacan_plugin.custom_header_support[0].width;
+			this.params.height = tainacan_plugin.custom_header_support[0].height;
 
 			this.frame = wp.media({
 				frame: 'select',
