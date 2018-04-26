@@ -2,6 +2,10 @@
 
 namespace Tainacan\Exposers\Types;
 
+/**
+ * Generate a Html formated response
+ *
+ */
 class Html extends Type {
 	
 	public $mappers = ['Value']; 

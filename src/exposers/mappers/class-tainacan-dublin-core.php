@@ -2,6 +2,11 @@
 
 namespace Tainacan\Exposers\Mappers;
 
+/**
+ * Support Dublin Core Mapping 
+ * http://purl.org/dc/elements/1.1/
+ *
+ */
 class Dublin_Core extends Mapper {
 	public $slug = 'dublin-core';
 	public $name = 'Dublin Core';

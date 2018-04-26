@@ -2,6 +2,10 @@
 
 namespace Tainacan\Exposers\Types;
 
+/**
+ * Generate a Csv formated response
+ *
+ */
 class Xml extends Type {
 	/**
 	 * 
