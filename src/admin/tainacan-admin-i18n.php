@@ -58,7 +58,6 @@ return [
 	'title_field_page'                         => __( 'Field Page', 'tainacan' ),
 
 	/* translators: alkdjklasdj laksjd klsadj */
-	'title_collection_page'                    => __( 'Collection Page', 'tainacan' ),
 	'title_filter_page'                        => __( 'Filter Page', 'tainacan' ),
 	'title_category_page'                      => __( 'Category Page', 'tainacan' ),
 	'title_term_page'                          => __( 'Term Page', 'tainacan' ),
@@ -96,6 +95,7 @@ return [
 	'label_button_view'                        => __( 'Button View', 'tainacan' ),
 	'label_button_edit'                        => __( 'Button Edit', 'tainacan' ),
 	'label_button_delete'                      => __( 'Button Delete', 'tainacan' ),
+	'label_button_delete_header_image'         => __( 'Button Delete Header Image', 'tainacan' ),
 	'label_button_edit_thumb'                  => __( 'Button Edit Thumbnail', 'tainacan' ),
 	'label_button_edit_header_image'           => __( 'Button Edit Header Image', 'tainacan' ),
 	'label_choose_thumb'                       => __( 'Choose Thumbnail', 'tainacan' ),
@@ -207,7 +207,6 @@ return [
 	'info_warning_category_not_saved'          => __( 'Are you sure? The category is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_terms_not_saved'             => __( 'Are you sure? There are terms not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_orphan_terms'                => __( 'Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan' ),
-	'info_there_is_no_field'                   => __( 'There is no field here.', 'tainacan' ),
 	'info_no_events'                           => __( 'No events', 'tainacan' ),
 	'info_logs_before'                         => __( 'Before updating', 'tainacan' ),
 	'info_logs_after'                          => __( 'What was updated', 'tainacan' ),

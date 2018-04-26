@@ -64,6 +64,7 @@ class Term extends Entity {
 		unset($term_array['status']);
 
 		$term_array['id'] = $term_id;
+		$term_array['header_image'] = $this->get_header_image();
 
 		return $term_array;
 	}
@@ -136,6 +137,13 @@ class Term extends Entity {
 		return $this->get_mapped_property( 'header_image_id' );
 	}
 
+	/**
+	 * @return false|string
+	 */
+	function get_header_image(){
+		return wp_get_attachment_url( $this->get_header_image_id() );
+	}
+
     // Setters
 
 	/**
@@ -205,9 +213,9 @@ class Term extends Entity {
 		if (!parent::validate())
 			return false;
 		
-		$parent = $this->get_parent();
-		$name = $this->get_name();
-		$taxonomy = $this->get_taxonomy();
+//		$parent = $this->get_parent();
+//		$name = $this->get_name();
+//		$taxonomy = $this->get_taxonomy();
 
 		/**
 		 * Code from WordPress Core, taxonomy.php#2070
@@ -217,30 +225,30 @@ class Term extends Entity {
 		* Prevent the creation of terms with duplicate names at the same level of a taxonomy hierarchy,
 		* unless a unique slug has been explicitly provided.
 		*/
-		$name_matches = get_terms( $taxonomy, array(
-			'name' => $name,
-			'hide_empty' => false,
-			'parent' => $parent,
-		) );
+//		$name_matches = get_terms( $taxonomy, array(
+//			'name' => $name,
+//			'hide_empty' => false,
+//			'parent' => $parent,
+//		) );
 
 		/*
 		* The `name` match in `get_terms()` doesn't differentiate accented characters,
 		* so we do a stricter comparison here.
 		*/
-		$name_match = null;
-		if ( $name_matches ) {
-			foreach ( $name_matches as $_match ) {
-				if ( is_object($_match) && isset($_match) && strtolower( $name ) === strtolower( $_match->name ) ) {
-					$name_match = $_match;
-					break;
-				}
-			}
-		}
-
-		if ($name_match) {
-			$this->add_error( 'repeated', __('You can not have two terms with the same name at the same level', 'tainacan') );
-			return false; 
-		}
+//		$name_match = null;
+//		if ( $name_matches ) {
+//			foreach ( $name_matches as $_match ) {
+//				if ( is_object($_match) && isset($_match) && strtolower( $name ) === strtolower( $_match->name ) ) {
+//					$name_match = $_match;
+//					break;
+//				}
+//			}
+//		}
+//
+//		if ($name_match) {
+//			$this->add_error( 'repeated', __('You can not have two terms with the same name at the same level', 'tainacan') );
+//			return false;
+//		}
 
 		$this->set_as_valid();
 		return true;
