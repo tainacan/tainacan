@@ -41,8 +41,8 @@
             <div class="column">
                 <b-field
                         :addons="false"
-                        :type="(formErrors.name !== '' && formErrors.name !== undefined) ? 'is-danger' : ''"
-                        :message="formErrors.name">
+                        :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
+                        :message="formErrors.name ? formErrors : formErrors.repeated">
                     <label class="label">
                         {{ $i18n.get('label_name') }}
                         <span class="required-term-asterisk">*</span>
@@ -52,7 +52,8 @@
                     </label>
                     <b-input
                             v-model="editForm.name"
-                            name="name"/>
+                            name="name"
+                            @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
                 </b-field>
 
                 <b-field
@@ -68,7 +69,8 @@
                     <b-input
                             type="textarea"
                             name="description"
-                            v-model="editForm.description"/>
+                            v-model="editForm.description"
+                            @focus="clearErrors('description')"/>
                 </b-field>
             </div>
         </div>
@@ -113,7 +115,6 @@
             ...mapActions('category', [
                 'sendTerm',
                 'updateTerm',
-                'updateTermHeaderImage'
             ]),
             ...mapGetters('category', [
                 'getTerms'
@@ -125,7 +126,8 @@
                         categoryId: this.categoryId,
                         name: this.editForm.name,
                         description: this.editForm.description,
-                        parent: this.editForm.parent
+                        parent: this.editForm.parent,
+                        headerImageId: this.editForm.header_image_id,
                     })
                         .then(() => {
                             this.editForm = {};
@@ -147,7 +149,8 @@
                         termId: this.editForm.id,
                         name: this.editForm.name,
                         description: this.editForm.description,
-                        parent: this.editForm.parent
+                        parent: this.editForm.parent,
+                        headerImageId: this.editForm.header_image_id,
                     })
                         .then(() => {
                             this.editForm.saved = true;
@@ -168,27 +171,17 @@
                 this.$emit('onEditionCanceled', this.editForm);
             },
             deleteHeaderImage() {
-
-                this.updateHeaderImage({
-                    termId: this.editForm.id,
-                    headerImageId: 0
-                })
-                    .then(() => {
-                        this.editForm.header_image = false;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                    });
+                this.editForm = Object.assign({},
+                    this.editForm,
+                    {
+                        header_image_id: "0",
+                        header_image: false
+                    }
+                );
             },
             editImage(event) {
                 'use strict';
                 event.preventDefault();
-
-                // If the media frame already exists, reopen it.
-                if ( this.frameUploader ) {
-                    this.frameUploader.open();
-                    return;
-                }
 
                 // Create a new media frame
                 this.frameUploader = wp.media.frames.frame_uploader = wp.media({
@@ -205,11 +198,11 @@
                     uploader: true,
                     states: [
                         new wp.media.controller.Library({
-                            title:     'Corta pra mim! Põe exclusivo, dá trabalho pra fazer!',
-                            library:   wp.media.query({ type: 'image' }),
-                            multiple:  false,
-                            date:      false,
-                            priority:  20,
+                            title: 'Corta pra mim!',
+                            library: wp.media.query({type: 'image'}),
+                            multiple: false,
+                            date: false,
+                            priority: 20,
                             suggestedWidth: 1000,
                             suggestedHeight: 200
                         }),
@@ -234,45 +227,43 @@
                 });
 
                 this.frameUploader.on('select', () => {
-                    this.frameUploader.state('cropper').set( 'canSkipCrop', true );
+                    this.frameUploader.state('cropper').set('canSkipCrop', true);
                     this.frameUploader.setState('cropper');
                 });
 
                 this.frameUploader.on('skippedcrop', () => {
-                    let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
+                    let media = this.frameUploader.state().get('selection').first().toJSON();
 
-                    this.updateTermHeaderImage({
-                        categoryId: this.categoryId,
-                        termId: this.editForm.id,
-                        headerImageId: media.id
-                    })
-                        .then((res) => {
-                            this.editForm.header_image = res.header_image;
-                        })
-                        .catch((error) => {
-                            this.$console.error(error);
-                        });
+                    this.editForm = Object.assign({},
+                        this.editForm,
+                        {
+                            header_image_id: media.id.toString(),
+                            header_image: media.url
+                        }
+                    );
                 });
 
                 this.frameUploader.on('cropped', (croppedImage) => {
 
-                    // it is not cropping where we choose, but almost there
-
-                    this.updateTermHeaderImage({
-                        categoryId: this.categoryId,
-                        termId: this.editForm.id,
-                        headerImageId: croppedImage.attachment_id
-                    })
-                        .then((res) => {
-                            this.editForm.header_image = res.header_image;
-                        })
-                        .catch((error) => {
-                            this.$console.error(error);
-                        });
-
+                    this.editForm = Object.assign({},
+                        this.editForm,
+                        {
+                            header_image_id: croppedImage.attachment_id.toString(),
+                            header_image: croppedImage.url
+                        }
+                    );
                 });
 
                 this.frameUploader.open();
+            },
+            clearErrors(attributes) {
+                if(attributes instanceof Object){
+                    for(let attribute in attributes){
+                        this.formErrors[attribute] = undefined;
+                    }
+                } else {
+                    this.formErrors[attributes] = undefined;
+                }
             },
         }
     }

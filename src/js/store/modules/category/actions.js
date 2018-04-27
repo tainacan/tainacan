@@ -112,12 +112,13 @@ export const fetchCategoryName = ({ commit }, categoryId) => {
 };
 
 // CATEGORY TERMS
-export const sendTerm = ({commit}, { categoryId, name, description, parent }) => {
+export const sendTerm = ({commit}, { categoryId, name, description, parent, headerImageId }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post('/taxonomy/' + categoryId + '/terms/', {
             name: name,
             description: description,
-            parent: parent
+            parent: parent,
+            header_image_id: headerImageId,
         })
             .then( res => {
                 let term = res.data;
@@ -144,12 +145,13 @@ export const deleteTerm = ({ commit }, { categoryId, termId }) => {
     });
 };
 
-export const updateTerm = ({ commit }, { categoryId, termId, name, description, parent }) => {
+export const updateTerm = ({ commit }, { categoryId, termId, name, description, parent, headerImageId }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.patch(`/taxonomy/${categoryId}/terms/${termId}`, {
             name: name,
             description: description,
-            parent: parent
+            parent: parent,
+            header_image_id: headerImageId,
         })
             .then( res => {
                 let term = res.data;
@@ -159,21 +161,6 @@ export const updateTerm = ({ commit }, { categoryId, termId, name, description, 
             .catch(error => {
                 reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
-    });
-};
-
-export const updateTermHeaderImage = ({ commit }, { categoryId, termId, headerImageId }) => {
-    return new Promise((resolve, reject) => {
-        axios.tainacan.patch(`/taxonomy/${categoryId}/terms/${termId}`, {
-            header_image_id: headerImageId + ''
-        }).then( res => {
-            let term = res.data;
-            commit('setSingleTerm', term);
-            resolve( term );
-        }).catch( error => {
-            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
-        });
-
     });
 };
 
