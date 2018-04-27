@@ -16,18 +16,17 @@
                         <b-icon icon="menu-down"/>
                     </button>
 
-                    <b-dropdown-item class="tainacan-dropdown-item">
+                    <b-dropdown-item>
                         <router-link
                                 id="a-create-item"
                                 tag="div"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ `${$i18n.get('add_one_item')}` }}
+                            {{ $i18n.get('add_one_item') }}
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item>Adicionar itens em massa <br>
-                        <small class="is-small">Eu quero café</small>
+                    <b-dropdown-item>{{ $i18n.get('add_items_bulk') }}
                     </b-dropdown-item>
-                    <b-dropdown-item>Adicionar item de fonte externa</b-dropdown-item>
+                    <b-dropdown-item>{{ $i18n.get('add_items_external_source') }}<br><small class="is-small">{{ $i18n.get() }}</small></b-dropdown-item>
                 </b-dropdown>
 
             </div>
@@ -338,10 +337,6 @@
             margin-right: 0;
             padding: .85em 0em;
         }
-    }
-
-    .tainacan-dropdown-item:hover {
-        background-color: rgba(192, 218, 223, 1) !important;
     }
 
 </style>

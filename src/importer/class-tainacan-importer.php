@@ -84,6 +84,8 @@ abstract class Importer {
 
 	private $current_step = 0;
 
+	private $url = '';
+
     public function __construct() {
         if (!session_id()) {
             @session_start();
@@ -100,6 +102,34 @@ abstract class Importer {
         return $this->id;
     }
 
+    /**
+     * Set URL
+     * @param $url string
+     * @return bool
+     */
+    public function set_url($url)
+    {
+        if(!empty($url) && !is_array($url))
+        {
+            $this->url = rtrim(trim($url), "/");
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string  or bool
+     */
+    public function get_url()
+    {
+        if(!empty($this->url))
+        {
+            return $this->url;
+        }
+
+        return false;
+    }
 
     /**
      * @return array Mapping

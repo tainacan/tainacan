@@ -219,6 +219,9 @@ html {
             &:hover {
                 background-color: $primary-lighter;
             }
+            .is-small {
+                color: gray;
+            }
         }
     }
 }

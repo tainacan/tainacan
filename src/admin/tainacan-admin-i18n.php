@@ -35,6 +35,8 @@ return [
 	'approve_item'                             => __( 'Approve', 'tainacan' ),
 	'not_approve_item'                         => __( 'Not approve', 'tainacan' ),
 	'add_one_item'                             => __( 'Add one item', 'tainacan' ),
+	'add_items_bulk'                           => __( 'Add items in bulk', 'tainacan' ),
+	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
@@ -153,22 +155,27 @@ return [
 	'label_display_default'                    => __( 'Display by default', 'tainacan' ),
 	'label_display_never'                      => __( 'Never displayed', 'tainacan' ),
 	'label_not_display'                        => __( 'Not display by default', 'tainacan' ),
+	'label_attach_to_item' 					   => __( 'Attach to item', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
-	'instruction_dragndrop_fields_collection'  => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
-	'instruction_dragndrop_filters_collection' => __( 'Drag and drop Fields to create Filters on Collection.', 'tainacan' ),
-	'instruction_dragndrop_fields_repository'  => __( 'Drag and drop Fields here to Repository.', 'tainacan' ),
-	'instruction_dragndrop_filters_repository' => __( 'Drag and drop Fields to create Filters on Repository.', 'tainacan' ),
-	'instruction_delete_selected_collections'  => __( 'Delete selected collections', 'tainacan' ),
-	'instruction_delete_selected_items'        => __( 'Delete selected items', 'tainacan' ),
-	'instruction_delete_selected_categories'   => __( 'Delete selected categories', 'tainacan' ),
-	'instruction_image_upload_box'             => __( 'Drop an image here or click to upload.', 'tainacan' ),
-	'instruction_select_a_status'              => __( 'Select a status:', 'tainacan' ),
-	'instruction_select_a_filter_type'         => __( 'Select a filter type:', 'tainacan' ),
-	'instruction_select_a_parent_term'         => __( 'Select a parent term:', 'tainacan' ),
-	'instruction_cover_page'				   => __( 'Type to search a Page to choose.', 'tainacan'),
-	'instruction_moderators'				   => __( 'Type to search a User to add.', 'tainacan'), 	
-	'instruction_select_a_parent_collection'   => __( 'Select a parent colection.', 'tainacan' ),
+	'instruction_dragndrop_fields_collection'    => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
+	'instruction_dragndrop_filters_collection'   => __( 'Drag and drop Fields to create Filters on Collection.', 'tainacan' ),
+	'instruction_dragndrop_fields_repository'    => __( 'Drag and drop Fields here to Repository.', 'tainacan' ),
+	'instruction_dragndrop_filters_repository'   => __( 'Drag and drop Fields to create Filters on Repository.', 'tainacan' ),
+	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
+	'instruction_delete_selected_items'          => __( 'Delete selected items', 'tainacan' ),
+	'instruction_delete_selected_categories'     => __( 'Delete selected categories', 'tainacan' ),
+	'instruction_image_upload_box'               => __( 'Drop an image here or click to upload.', 'tainacan' ),
+	'instruction_select_a_status'                => __( 'Select a status:', 'tainacan' ),
+	'instruction_select_a_filter_type'           => __( 'Select a filter type:', 'tainacan' ),
+	'instruction_select_a_parent_term'           => __( 'Select a parent term:', 'tainacan' ),
+	'instruction_cover_page'				     => __( 'Type to search a Page to choose.', 'tainacan'),
+	'instruction_moderators'				     => __( 'Type to search a User to add.', 'tainacan'), 	
+	'instruction_select_a_parent_collection'     => __( 'Select a parent colection.', 'tainacan' ),
+	'instruction_select_collection_thumbnail'  	 => __( 'Select a thumbnail image for collection', 'tainacan' ),
+	'instruction_select_item_thumbnail'  	   	 => __( 'Select a thumbnail image for item', 'tainacan' ),
+	'instruction_select_collection_header_image' => __( 'Select a header image for collection', 'tainacan' ),
+	'instruction_select_files_to_attach_to_item' => __( 'Select files to attach to item', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
@@ -213,6 +220,7 @@ return [
 	'info_there_is_no_field'                   => __( 'There is no field here yet.', 'tainacan' ),
 	'info_there_is_no_filter'                  => __( 'There is no filter here yet.', 'tainacan' ),
 	'info_changes'                             => __( 'Changes', 'tainacan' ),
+	'info_possible_external_sources'           => __( 'Possible external sources: CSV, Instagram, Youtube, etc.', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

@@ -41,7 +41,7 @@ class Old_Tainacan extends Importer
         'Create collections metadata' => 'create_collection_metas',
         'Create collections items' => 'create_collection_items',
         'Setting relationships' => 'set_relationships'
-    ];
+    ], $tainacan_api_address, $wordpress_api_address;
 
     public function __construct()
     {
@@ -50,10 +50,38 @@ class Old_Tainacan extends Importer
         $this->set_steps($this->steps);
         $this->remove_import_method('file');
         $this->add_import_method('url');
+        $this->tainacan_api_address = "/wp-json/tainacan/v1";
+        $this->wordpress_api_address = "/wp-json/wp/v2";
     }
+
+    public function verify_process_result($result)
+    {
+        if(is_wp_error($result))
+        {
+            $this->add_log('error', $result->get_error_message());
+            return false;
+        }else if(isset($result['body']))
+        {
+            return json_decode($result['body']);
+        }
+
+        return false;
+    }
+
 
     public function create_taxonomies()
     {
+        $taxonomies_link = $this->get_url() . $this->wordpress_api_address . "/taxonomies";
+        $taxonomies_link = wp_nonce_url($taxonomies_link);
+
+        $taxonomies = wp_remote_get($taxonomies_link);
+
+        $taxonomies_array = $this->verify_process_result($taxonomies);
+        if($taxonomies_array)
+        {
+
+        }
+
         return false;
     }
 

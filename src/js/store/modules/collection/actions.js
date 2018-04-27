@@ -123,7 +123,7 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
                 status: status, 
                 enable_cover_page: enable_cover_page, 
                 cover_page_id: cover_page_id,
-                moderators_ids: moderators_ids.name,
+                moderators_ids: moderators_ids,
                 parent: parent
             });
             resolve( res.data );
