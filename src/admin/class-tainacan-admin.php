@@ -95,7 +95,7 @@ class Admin {
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', [], null, true );
+		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], null, true );
 		 
 		$settings = $this->get_admin_js_localization_params();
 
