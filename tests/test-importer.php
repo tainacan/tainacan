@@ -45,7 +45,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 //        }
 
         //$_SESSION['tainacan_importer'][$id]->set_file( './tests/attachment/json_old_tainacan.txt' );
-        $_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/colecao/colecao-to-import/' );
+        $url = 'http://localhost/';
+        $_SESSION['tainacan_importer'][$id]->set_url($url);
 
         $_SESSION['tainacan_importer'][$id]->run();
     }*/
