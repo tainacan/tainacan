@@ -118,9 +118,6 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
     return new Promise(( resolve, reject ) => {
         axios.wp.post('/media/?post=' + item_id, file, {
             headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
-            onUploadProgress: progressEvent => {
-                console.log(progressEvent.loaded + '/' + progressEvent.total);
-            }
         })
             .then( res => {
                 let attachment = res.data;

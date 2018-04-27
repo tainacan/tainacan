@@ -11,88 +11,59 @@
 
             <div class="columns">
                 <div class="column is-narrow">
+
                     <!-- Thumbnail -------------------------------- --> 
-                    <b-field :label="$i18n.get('label_image')">
+                    <b-field 
+                        :addons="false"
+                        :label="$i18n.get('label_thumbnail')">
                         <div class="thumbnail-field">
-                            <button
-                                    v-if="item.featured_image == undefined || item.featured_image == false"
-                                    @click="editThumbnail($event)"
-                                    class="button is-primary">
-                                <b-icon icon="upload" />
-                                <span>{{ $i18n.get('label_choose_thumb') }}</span>
-                            </button>
-                            <div v-else> 
-                                <figure class="image is-128x128">
-                                    <img 
-                                            :alt="$i18n.get('label_thumbnail')" 
-                                            :src="item.featured_image">
-                                </figure>
-                                <div class="thumbnail-buttons-row">
-                                    <a 
-                                            @click="editThumbnail($event)"
-                                            id="button-edit" 
-                                            :aria-label="$i18n.get('label_button_edit_thumb')">
-                                        <b-icon icon="pencil"/>
-                                    </a>
-                                    <a 
-                                            id="button-delete" 
-                                            :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                            @click="deleteThumbnail()">
-                                        <b-icon icon="delete"/>
-                                    </a>
-                                </div>
-                            </div> 
+                            <a 
+                                    class="button is-rounred is-secondary"
+                                    id="button-edit-thumbnail" 
+                                    :aria-label="$i18n.get('label_button_edit_thumb')"
+                                    @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                <b-icon icon="pencil" />
+                            </a>
+                            <figure class="image is-128x128">
+                                <span 
+                                        v-if="item.featured_image == undefined || item.featured_image == false"
+                                        class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                <img
+                                        id="thumbail-image"  
+                                        :alt="$i18n.get('label_thumbnail')" 
+                                        :src="(item.featured_image == undefined || item.featured_image == false) ? thumbPlaceholderPath : item.featured_image">
+                            </figure>
+                            <div class="thumbnail-buttons-row">
+                                <a 
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                        @click="deleteThumbnail()">
+                                    <b-icon icon="delete" />
+                                </a>
+                            </div>
                         </div>
                     </b-field>
 
                     <!-- Attachments ------------------------------------------ -->
-                    <b-field :label="$i18n.get('label_attachments')">
-                        <div class="columns is-multiline">
-                            <div class="column is-8"> 
-                                <b-upload 
-                                        v-model="form.files"
-                                        multiple
-                                        drag-drop
-                                        @input="uploadAttachment($event)">
-                                    <section class="section">
-                                        <div class="content has-text-centered">
-                                            <p>
-                                                <b-icon
-                                                        icon="upload"
-                                                        size="is-large"/>
-                                            </p>
-                                            <p>{{ $i18n.get('instruction_image_upload_box') }}</p>
-                                        </div>
-                                    </section>
-                                </b-upload>
-                                <div class="uploaded-files">
-                                    <div 
-                                            v-for="(file, index) in form.files"
-                                            :key="index">
-                                        <span class="tag is-primary">
-                                            {{ file.name }}
-                                            <button 
-                                                class="delete is-small"
-                                                type="button"
-                                                @click="deleteFile(index)"/>
-                                        </span>
-                                        <!-- <progress class="progress is-secondary" value="15" max="100">30%</progress> -->
-                                    </div>
-                                </div>   
-                            </div>    
+                    <b-field 
+                            :addons="false"
+                            :label="$i18n.get('label_attachments')">
+                        <button 
+                                class="button is-secondary"
+                                @click.prevent="attachmentMediaFrame.openFrame($event)">
+                            Attatchments (tests)
+                        </button>
+
+                        <div class="uploaded-files">
                             <div 
-                                    class="column is-narrow"
-                                    v-for="(attachment, index) of item.attachments" 
+                                    v-for="(file, index) in form.files"
                                     :key="index">
-                                <figure class="image is-128x128">
-                                    <img 
-                                            :alt="attachment.title"
-                                            :src="attachment.url">
-                                </figure>
+                                <span class="tag is-primary">
+                                    {{ file.title.rendered }}
+                                </span>
                             </div>
-                        </div>
-                    </b-field>
-                    
+                        </div>   
+                    </b-field>   
                 </div>
 
                 <div class="column">
@@ -152,6 +123,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { eventBus } from '../../../js/event-bus-web-components.js'
+import wpMediaFrames from '../../js/wp-media-frames';
 
 export default {
     name: 'ItemEditionForm',
@@ -183,8 +155,9 @@ export default {
                 label: this.$i18n.get('trash')
             }],
             formErrorMessage: '',
-            // Frame Uploader variables
-            frameUploader: undefined
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            thumbnailMediaFrame: undefined,
+            attachmentMediaFrame: undefined
         }
     },
     methods: {
@@ -196,7 +169,8 @@ export default {
             'fetchItem',
             'cleanFields',
             'sendAttachment',
-            'updateThumbnail'
+            'updateThumbnail',
+            'fetchAttachments'
         ]),
         ...mapGetters('item',[
             'getFields',
@@ -255,6 +229,9 @@ export default {
                 this.itemId = res.id;
                 this.item = res;
 
+                // Initializes Media Frames now that itemId exists
+                this.initializeMediaFrames();
+
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
 
@@ -284,70 +261,6 @@ export default {
                 });
             }
         },
-        editThumbnail(event) {
-            'use strict';   
-            event.preventDefault();
-
-             // If the media frame already exists, reopen it.
-            if ( this.frameUploader != undefined ) {
-                this.frameUploader.open();
-                return;
-            }    
-            
-            // Create a new media frame
-            this.frameUploader = wp.media({
-                frame: 'select',
-                title: 'Select or Upload Media Of Your Chosen Persuasion',
-                button: {
-                    text: 'Use this media'
-                },
-                multiple: false,
-                library: {
-                    type: 'image',
-                    uploadedTo: this.itemId
-                },
-                uploader: true
-            });
-            
-            wp.media.view.settings.post = {
-                id: this.itemId,
-                featuredImageId: this.item.featured_img_id
-            }
-
-            this.frameUploader.on('select', () => {
-
-                let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
-
-                this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
-                .then((res) => {
-                    this.item.featured_image = res.featured_image;
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                });
-
-            });
-
-            this.frameUploader.open();
-        },
-        uploadThumbnail($event) {
-
-            this.sendAttachment({ item_id: this.itemId, file: $event[0] })
-            .then((res) => {
-
-                this.updateThumbnail({itemId: this.itemId, thumbnailId: res.id})
-                .then((res) => {
-                    this.item.featured_image = res.featured_image;
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                });
-            })
-            .catch((error) => {
-                this.$console.error(error);
-            });
-            
-        },
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
             .then(() => {
@@ -359,23 +272,51 @@ export default {
         },
         deleteFile(index) {
             this.$console.log("Delete:" + index);
+        },
+        initializeMediaFrames() {
+
+            this.thumbnailMediaFrame = new wpMediaFrames.thumbnailControl(
+                'my-thumbnail-media-frame', {
+                    button_labels: {
+                        frame_title: this.$i18n.get('instruction_select_item_thumbnail'),
+                    },
+                    relatedPostId: this.itemId,
+                    onSave: (mediaId) => {
+                        this.updateThumbnail({itemId: this.itemId, thumbnailId: mediaId})
+                        .then((res) => {
+                            this.item.featured_image = res.featured_image;
+                        })
+                        .catch(error => this.$console.error(error));
+                    }
+                }
+            );
+
+            this.attachmentMediaFrame = new wpMediaFrames.attachmentControl(
+                'my-attachment-media-frame', {
+                    button_labels: {
+                        frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
+                        frame_button: this.$i18n.get('label_attach_to_item'),
+                    },
+                    relatedPostId: this.itemId,
+                    onSave: (files) => {
+                        for (let file of files) {                      
+                            let index = this.form.files.findIndex(newFile => newFile.id === file.id);
+                            if ( index >= 0){
+                                this.form.files[index] = file;
+                            } else {
+                                this.form.files.push( file );
+                            }
+                        }
+                    }
+                }
+            );
+
         }
     },
     computed: {
         fieldList(){
             return this.getFields();
-        },
-        formHasErrors(){
-            // for (let field of this.fieldList) {
-            //     if (field.field.required == 'yes' &&
-            //         (field.value == '' || field.value == undefined) && 
-            //         this.form.status == 'publish') {
-            //             return true;
-            //         }
-            // }
-
-            return false;
-        } 
+        }
     },
     created(){
         // Obtains collection ID
@@ -391,6 +332,9 @@ export default {
             // Obtains current Item ID from URL
             this.itemId = this.$route.params.itemId;
 
+            // Initializes Media Frames now that itemId exists
+            this.initializeMediaFrames();
+
             this.fetchItem(this.itemId).then(res => {
                 this.item = res;
                 
@@ -399,6 +343,13 @@ export default {
 
                 this.loadMetadata();
             });
+
+            // Fetch current existing attachments
+            this.fetchAttachments(this.itemId)
+            .then(res => {
+                this.form.files = res;
+            });
+
         }
         
         
@@ -410,20 +361,45 @@ export default {
 <style lang="scss" scoped>
 
     .thumbnail-field {
-        width: 128px;
-        height: 128px;
-        max-width: 128px;
         max-height: 128px;
+        margin-bottom: 96px;
+        margin-top: -20px;
         
         .content {
             padding: 10px;
             font-size: 0.8em;
         }
         img {
-            bottom: 0;
             position: absolute;
         }
+.image-placeholder {
+            position: absolute;
+            margin-left: 10px;
+            margin-right: 10px;
+            bottom: 50%;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 99;
+            text-align: center;
+            color: gray;
+        }
+        #button-edit-thumbnail {
 
+            border-radius: 100px !important;
+            height: 40px !important;
+            width: 40px !important;
+            bottom: -20px;
+            left: -20px;
+            z-index: 99;
+            
+            .icon {
+                display: inherit;
+                padding: 0;
+                margin: 0;
+                margin-left: -8px;
+                margin-top: 3px;
+            }
+        }
         .thumbnail-buttons-row {
             display: none;
         }
@@ -431,12 +407,14 @@ export default {
              .thumbnail-buttons-row {
                 display: inline-block;
                 position: relative;
-                bottom: 31px;
-                background-color: rgba(255,255,255,0.8);
+                top: -128px;
+                background-color: rgba(255, 255, 255, 0.9);
                 padding: 2px 8px;
-                border-radius: 0px 4px 0px 0px;
+                border-radius: 0px 0px 0px 4px;
+                left: 88px;
             }
         }
+    
     }
 
 

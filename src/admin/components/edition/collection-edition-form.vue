@@ -45,6 +45,7 @@
                             </div>
                         </div>
                     </b-field>
+                    
                     <!-- Header Page -------------------------------- --> 
                     <b-field 
                         :addons="false"
@@ -557,7 +558,7 @@ export default {
             this.thumbnailMediaFrame = new wpMediaFrames.thumbnailControl(
                 'my-thumbnail-media-frame', {
                     button_labels: {
-                        frame_title: 'Título do Frame do Thumbnail da Coleção',
+                        frame_title: this.$i18n.get('instruction_select_collection_thumbnail'),
                     },
                     relatedPostId: this.collectionId,
                     onSave: (mediaId) => {
@@ -565,9 +566,7 @@ export default {
                         .then((res) => {
                             this.collection.featured_image = res.featured_image;
                         })
-                        .catch((error) => {
-                            this.$console.error(error);
-                        });
+                        .catch(error => this.$console.error(error));
                     }
                 }
             );
@@ -575,7 +574,7 @@ export default {
             this.headerImageMediaFrame = new wpMediaFrames.headerImageControl(
                 'my-header-image-media-frame', {
                     button_labels: {
-                        frame_title: 'Título do Frame da Imagem de Header da Coleção',
+                        frame_title: this.$i18n.get('instruction_select_collection_header_image'),
                     },
                     relatedPostId: this.collectionId,
                     onSave: (mediaId) => {
@@ -583,9 +582,7 @@ export default {
                         .then((res) => {
                             this.collection.header_image = res.header_image;
                         })
-                        .catch((error) => {
-                            this.$console.error(error);
-                        });
+                        .catch(error => this.$console.error(error));
                     }
                 }
             );

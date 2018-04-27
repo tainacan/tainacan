@@ -1,10 +1,10 @@
 export default { 
-    mediaControl: wp.customize.MediaControl.extend({
+    attachmentControl: wp.customize.MediaControl.extend({
         /**
 		 * Create a media modal select frame, and store it so the instance can be reused when needed.
 		 */
 		initFrame: function() {
-			'use strict';
+
 			this.frame = wp.media({
 				button: {
 					text: this.params.button_labels.frame_button
@@ -13,7 +13,7 @@ export default {
 					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,
 						library:   wp.media.query({ type: this.params.mime_type }),
-						multiple:  false,
+						multiple:  true,
 						date:      false
 					})
 				]
@@ -21,13 +21,15 @@ export default {
 
 			// When a file is selected, run a callback.
 			this.frame.on( 'select', () => {
+				
                  // Get the attachment from the modal frame.
                 var node,
-                attachment = this.frame.state().get( 'selection' ).first().toJSON(),
-                mejsSettings = window._wpmejsSettings || {};
+                attachments,
+				mejsSettings = window._wpmejsSettings || {};
+				attachments = this.frame.state().get( 'selection' ).toJSON();
 
-                this.params.attachment = attachment;
-				this.params.onSave(attachment.id);
+                this.params.attachments = attachments;
+				this.params.onSave(attachments);
                 // Set the Customizer setting; the callback takes care of rendering.
                 //this.setting( attachment.id );
                 node = this.container.find( 'audio, video' ).get(0);
@@ -104,8 +106,8 @@ export default {
 			wp.media.view.settings.post = {
                 id: this.params.relatedPostId
 			}
-			this.params.flex_width = 1;
-			this.params.flex_height = 1;
+			this.params.flex_width = tainacan_plugin.custom_header_support[0].flex_width ? 1 : 0;
+			this.params.flex_height = tainacan_plugin.custom_header_support[0].flex_height ? 1 : 0;
 			this.params.width = tainacan_plugin.custom_header_support[0].width;
 			this.params.height = tainacan_plugin.custom_header_support[0].height;
 
