@@ -35,6 +35,8 @@ return [
 	'approve_item'                             => __( 'Approve', 'tainacan' ),
 	'not_approve_item'                         => __( 'Not approve', 'tainacan' ),
 	'add_one_item'                             => __( 'Add one item', 'tainacan' ),
+	'add_items_bulk'                           => __( 'Add items in bulk', 'tainacan' ),
+	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
@@ -218,6 +220,7 @@ return [
 	'info_there_is_no_field'                   => __( 'There is no field here yet.', 'tainacan' ),
 	'info_there_is_no_filter'                  => __( 'There is no filter here yet.', 'tainacan' ),
 	'info_changes'                             => __( 'Changes', 'tainacan' ),
+	'info_possible_external_sources'           => __( 'Possible external sources: CSV, Instagram, Youtube, etc.', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

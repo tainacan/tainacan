@@ -133,7 +133,7 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
 export const fetchAttachments = ({ commit }, item_id) => {
     commit('cleanAttachments');
     return new Promise((resolve, reject) => {
-        axios.wp.get('/media/?post=' + item_id)
+        axios.wp.get('/media/?parent=' + item_id + '&per_page=100&paged=1')
         .then(res => {
             let attachments = res.data;
             commit('setAttachments', attachments);

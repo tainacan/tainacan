@@ -5,16 +5,24 @@ export default {
 		 */
 		initFrame: function() {
 
+			wp.media.view.settings.post = {
+                id: this.params.relatedPostId
+			}
+
 			this.frame = wp.media({
 				button: {
 					text: this.params.button_labels.frame_button
+				},
+				library: {
+					uploadedTo: this.params.relatedPostId
 				},
 				states: [
 					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,
 						library:   wp.media.query({ type: this.params.mime_type }),
 						multiple:  true,
-						date:      false
+						date:      false,
+						uploadedTo: this.params.relatedPostId
 					})
 				]
 			});
@@ -50,8 +58,9 @@ export default {
 			var l10n = _wpMediaViewsL10n;
 
 			wp.media.view.settings.post = {
-                id: this.params.relatedPostId
+				id: this.params.relatedPostId
 			}
+			console.log(wp.media.view.settings.post);
 
 			this.params.flex_width = 0;
 			this.params.flex_height = 0;
@@ -62,11 +71,11 @@ export default {
 				frame: 'select',
 				button: {
 					text: l10n.select,
-					close: false,
-					library: {
-						type: 'image',
-						uploadedTo: this.params.relatedPostId
-					},
+					close: false
+				},
+				library: {
+					type: 'image',
+					uploadedTo: this.params.relatedPostId
 				},
 				uploader: true,
 				states: [
@@ -77,7 +86,8 @@ export default {
 						date: false,
 						priority: 20,
 						suggestedWidth: this.params.width,
-						suggestedHeight: this.params.height
+						suggestedHeight: this.params.height,
+						uploadedTo: this.params.relatedPostId
 					}),
 					new wp.media.controller.CustomizeImageCropper({
 						imgSelectOptions: this.calculateImageSelectOptions,
@@ -92,6 +102,9 @@ export default {
 		},
 		// Called on both skippedcrop and cropped states
 		setImageFromAttachment: function( attachment ) {
+			wp.media.view.settings.post = {
+				id: this.params.relatedPostId
+			}
 			this.params.attachment = attachment;
 			this.params.onSave(attachment.id);
 		}
@@ -115,11 +128,11 @@ export default {
 				frame: 'select',
 				button: {
 					text: l10n.select,
-					close: false,
-					library: {
-						type: 'image',
-						uploadedTo: this.params.relatedPostId
-					},
+					close: false
+				},
+				library: {
+					type: 'image',
+					uploadedTo: this.params.relatedPostId
 				},
 				uploader: true,
 				states: [
@@ -130,7 +143,8 @@ export default {
 						date: false,
 						priority: 20,
 						suggestedWidth: this.params.width,
-						suggestedHeight: this.params.height
+						suggestedHeight: this.params.height,
+						uploadedTo: this.params.relatedPostId
 					}),
 					new wp.media.controller.CustomizeImageCropper({
 						imgSelectOptions: this.calculateImageSelectOptions,

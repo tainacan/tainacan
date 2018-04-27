@@ -56,10 +56,10 @@
 
                         <div class="uploaded-files">
                             <div 
-                                    v-for="(file, index) in form.files"
+                                    v-for="(attachment, index) in attachmentsList"
                                     :key="index">
                                 <span class="tag is-primary">
-                                    {{ file.title.rendered }}
+                                    {{ attachment.title.rendered }}
                                 </span>
                             </div>
                         </div>   
@@ -136,8 +136,7 @@ export default {
             isLoading: false,
             form: {
                 collectionId: Number,
-                status: '',
-                files:[],
+                status: ''
             },
             thumbnail: {},
             // Can be obtained from api later
@@ -168,13 +167,14 @@ export default {
             'sendField',
             'fetchItem',
             'cleanFields',
-            'sendAttachment',
+            'sendAttachments',
             'updateThumbnail',
             'fetchAttachments'
         ]),
         ...mapGetters('item',[
             'getFields',
             'getItem',
+            'getAttachments'
         ]),
         onSubmit() {
             // Puts loading on Item edition
@@ -249,18 +249,6 @@ export default {
         cancelBack(){
             this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
         },
-        uploadAttachment($event) {
-            
-            for (let file of $event) {
-                this.sendAttachment({ item_id: this.itemId, file: file })
-                .then(() => {
-                    
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                });
-            }
-        },
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
             .then(() => {
@@ -269,9 +257,6 @@ export default {
             .catch((error) => {
                 this.$console.error(error);
             });    
-        },
-        deleteFile(index) {
-            this.$console.log("Delete:" + index);
         },
         initializeMediaFrames() {
 
@@ -299,14 +284,8 @@ export default {
                     },
                     relatedPostId: this.itemId,
                     onSave: (files) => {
-                        for (let file of files) {                      
-                            let index = this.form.files.findIndex(newFile => newFile.id === file.id);
-                            if ( index >= 0){
-                                this.form.files[index] = file;
-                            } else {
-                                this.form.files.push( file );
-                            }
-                        }
+                        // Fetch current existing attachments
+                        this.fetchAttachments(this.itemId);
                     }
                 }
             );
@@ -314,8 +293,11 @@ export default {
         }
     },
     computed: {
-        fieldList(){
+        fieldList() {
             return this.getFields();
+        },
+        attachmentsList(){
+            return this.getAttachments();
         }
     },
     created(){
@@ -345,11 +327,7 @@ export default {
             });
 
             // Fetch current existing attachments
-            this.fetchAttachments(this.itemId)
-            .then(res => {
-                this.form.files = res;
-            });
-
+            this.fetchAttachments(this.itemId);
         }
         
         
