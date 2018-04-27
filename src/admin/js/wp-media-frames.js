@@ -166,5 +166,59 @@ export default {
 			this.params.onSave(attachment.id);
 		}
 
-	})
+	}),
+	// DocumentFileControl: similar to attachment, but used for items where the documents is of type file
+	documentFileControl: wp.customize.MediaControl.extend({
+        /**
+		 * Create a media modal select frame, and store it so the instance can be reused when needed.
+		 */
+		initFrame: function() {
+
+			// We don't want document file to be listed as an attachment of item
+			wp.media.view.settings.post = {
+                id: null
+			}
+
+			this.frame = wp.media({
+				button: {
+					text: this.params.button_labels.frame_button
+				},
+				library: {
+					uploadedTo: this.params.relatedPostId
+				},
+				states: [
+					new wp.media.controller.Library({
+						title:     this.params.button_labels.frame_title,
+						library:   wp.media.query({ type: this.params.mime_type }),
+						multiple:  false,
+						date:      false,
+						uploadedTo: this.params.relatedPostId
+					})
+				]
+			});
+
+			// When a file is selected, run a callback.
+			this.frame.on( 'select', () => {
+				
+                 // Get the attachment from the modal frame.
+                var node,
+                attachment,
+				mejsSettings = window._wpmejsSettings || {};
+				attachment = this.frame.state().get( 'selection' ).first().toJSON();
+
+                this.params.attachment = attachment;
+				this.params.onSave(attachment);
+                // Set the Customizer setting; the callback takes care of rendering.
+                //this.setting( attachment.id );
+                node = this.container.find( 'audio, video' ).get(0);
+
+                // Initialize audio/video previews.
+                if ( node ) {
+                    this.player = new MediaElementPlayer( node, mejsSettings );
+                } else {
+                    this.cleanupPlayer();
+                }
+            });
+		}
+    }),
 }

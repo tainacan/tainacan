@@ -103,7 +103,22 @@ export const updateItem = ({ commit }, { item_id, status }) => {
         axios.tainacan.patch('/items/' + item_id, {
             status: status 
         }).then( res => {
-            commit('setItem', { id: item_id, status: status });
+            commit('setItem', res.data);
+            resolve( res.data );
+        }).catch( error => { 
+            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+        });
+
+    }); 
+};
+
+export const updateItemDocument = ({ commit }, { item_id, document, document_type }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.patch('/items/' + item_id, {
+            document: document,
+            document_type: document_type
+        }).then( res => {
+            commit('setItem', res.data);
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });

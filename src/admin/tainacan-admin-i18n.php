@@ -156,6 +156,12 @@ return [
 	'label_display_never'                      => __( 'Never displayed', 'tainacan' ),
 	'label_not_display'                        => __( 'Not display by default', 'tainacan' ),
 	'label_attach_to_item' 					   => __( 'Attach to item', 'tainacan' ),
+	'label_document'	 					   => __( 'Document', 'tainacan' ),
+	'label_document_empty' 					   => __( 'Empty document', 'tainacan' ),
+	'label_file'		 					   => __( 'File', 'tainacan' ),
+	'label_text'		 					   => __( 'Texto', 'tainacan' ),
+	'label_url'	 							   => __( 'URL', 'tainacan' ),
+	'label_select_file'		 				   => __( 'Select File', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'    => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
@@ -176,6 +182,9 @@ return [
 	'instruction_select_item_thumbnail'  	   	 => __( 'Select a thumbnail image for item', 'tainacan' ),
 	'instruction_select_collection_header_image' => __( 'Select a header image for collection', 'tainacan' ),
 	'instruction_select_files_to_attach_to_item' => __( 'Select files to attach to item', 'tainacan' ),
+	'instruction_select_document_file_for_item'  => __( 'Select a document file for item', 'tainacan' ),
+	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
+	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
