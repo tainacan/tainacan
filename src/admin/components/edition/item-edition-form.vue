@@ -1,9 +1,10 @@
 <template>
     <div class="page-container">
-        <b-tag 
-                v-if="!isLoading" 
-                :type="'is-' + getStatusColor(item.status)" 
-                v-text="item.status"/>
+        <div class="tainacan-page-title">
+            <h2>{{ $i18n.get('title_item_edition') }}</h2>
+            <a class="is-success">Voltar</a>
+            <hr>
+        </div>
         <form 
                 v-if="!isLoading" 
                 class="tainacan-form" 
@@ -202,8 +203,10 @@
                     </div>  
 
                 </div>
-                <div class="column is-2" />
-                <div class="column is-6">
+                <div class="column is-1" />
+                <div class="column is-7">
+                    <label class="section-label">{{ $i18n.get('fields') }}</label>
+
                     <!-- Status -------------------------------- --> 
                     <b-field 
                             :addons="false"
@@ -350,20 +353,6 @@ export default {
 
                 this.isLoading = false;
             });
-        },
-        getStatusColor(status) {
-            switch(status) {
-                case 'publish': 
-                    return 'success'
-                case 'draft':
-                    return 'info'
-                case 'private': 
-                    return 'warning'
-                case 'trash':
-                    return 'danger'
-                default:
-                    return 'info'
-            }
         },
         createNewItem() {
             // Puts loading on Draft Item creation
@@ -544,7 +533,11 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss';    
+    @import '../../scss/_variables.scss'; 
+    
+    form>.columns>.column{
+        padding: 0px;
+    }
 
     .section-label {
         font-size: 16px !important;
@@ -573,7 +566,7 @@ export default {
 
         ul { 
             display: flex;
-            justify-content: space-between;
+            justify-content: space-evenly;
             li {
                 text-align: center;
                 button {
