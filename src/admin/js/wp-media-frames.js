@@ -60,7 +60,6 @@ export default {
 			wp.media.view.settings.post = {
 				id: this.params.relatedPostId
 			}
-			console.log(wp.media.view.settings.post);
 
 			this.params.flex_width = 0;
 			this.params.flex_height = 0;
@@ -112,9 +111,10 @@ export default {
 	}),
 	// CroppedImageControl, with presets for thumbnail dimensions
 	headerImageControl: wp.customize.CroppedImageControl.extend({
-
+		
 		initFrame: function() {
-			var l10n = _wpMediaViewsL10n;
+
+			var l10n = _wpMediaViewsL10n;			
 
 			wp.media.view.settings.post = {
                 id: this.params.relatedPostId
@@ -153,7 +153,6 @@ export default {
 				]
 			});
 
-
 			//this.frame.state('cropper').set( 'canSkipCrop', true );
 
 			this.frame.on( 'select', this.onSelect, this );
@@ -163,7 +162,7 @@ export default {
 		// Called on both skippedcrop and cropped states
 		setImageFromAttachment: function( attachment ) {
 			this.params.attachment = attachment;
-			this.params.onSave(attachment.id);
+			this.params.onSave(attachment);
 		}
 
 	}),

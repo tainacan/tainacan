@@ -577,8 +577,8 @@ export default {
                         frame_title: this.$i18n.get('instruction_select_collection_header_image'),
                     },
                     relatedPostId: this.collectionId,
-                    onSave: (mediaId) => {
-                        this.updateHeaderImage({collectionId: this.collectionId, headerImageId: mediaId})
+                    onSave: (media) => {
+                        this.updateHeaderImage({collectionId: this.collectionId, headerImageId: media.id})
                         .then((res) => {
                             this.collection.header_image = res.header_image;
                         })

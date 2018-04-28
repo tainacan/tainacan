@@ -28,6 +28,7 @@ return [
 	'remove'                                   => __( 'Remove', 'tainacan' ),
 	'save'                                     => __( 'Save', 'tainacan' ),
 	'next'                                     => __( 'Next', 'tainacan' ),
+	'return'                                     => __( 'Return', 'tainacan' ),
 	'see'                                      => __( 'See', 'tainacan' ),
 	'search'                                   => __( 'Search', 'tainacan' ),
 	'advanced_search'                          => __( 'Advanced Search', 'tainacan' ),
@@ -162,6 +163,8 @@ return [
 	'label_text'		 					   => __( 'Texto', 'tainacan' ),
 	'label_url'	 							   => __( 'URL', 'tainacan' ),
 	'label_select_file'		 				   => __( 'Select File', 'tainacan' ),
+	'label_expand_all'	 					   => __( 'Expand all', 'tainacan' ),
+	'label_collapse_all'		 			   => __( 'Collapse all', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_dragndrop_fields_collection'    => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
@@ -181,6 +184,7 @@ return [
 	'instruction_select_collection_thumbnail'  	 => __( 'Select a thumbnail image for collection', 'tainacan' ),
 	'instruction_select_item_thumbnail'  	   	 => __( 'Select a thumbnail image for item', 'tainacan' ),
 	'instruction_select_collection_header_image' => __( 'Select a header image for collection', 'tainacan' ),
+	'instruction_select_term_header_image' 		 => __( 'Select a header image for term', 'tainacan' ),
 	'instruction_select_files_to_attach_to_item' => __( 'Select files to attach to item', 'tainacan' ),
 	'instruction_select_document_file_for_item'  => __( 'Select a document file for item', 'tainacan' ),
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),

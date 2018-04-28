@@ -2,7 +2,7 @@
     <div class="page-container">
         <div class="tainacan-page-title">
             <h2>{{ $i18n.get('title_item_edition') }}</h2>
-            <a class="is-success">Voltar</a>
+            <a class="is-secondary">{{ $i18n.get('return') }}</a>
             <hr>
         </div>
         <form 
@@ -93,9 +93,11 @@
                             :active.sync="isTextModalActive" 
                             :width="640" 
                             scroll="keep">
-                        <div class="modal-area">
-                            <h2>{{ $i18n.get('instruction_write_text') }}</h2>
-                            <br>
+                        <div class="tainacan-modal-content">
+                            <div class="tainacan-modal-title">
+                                <h2>{{ $i18n.get('instruction_write_text') }}</h2>
+                                <hr>
+                            </div>
                             <b-input 
                                     type="textarea"
                                     v-model="textContent"/>
@@ -126,9 +128,11 @@
                             :active.sync="isURLModalActive" 
                             :width="640" 
                             scroll="keep">
-                        <div class="modal-area">
-                            <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
-                            <br>
+                        <div class="tainacan-modal-content">   
+                            <div class="tainacan-modal-title">
+                                <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
+                                <hr>
+                            </div>
                             <b-input v-model="urlLink"/>
 
                             <div class="field is-grouped form-submit">
@@ -206,6 +210,15 @@
                 <div class="column is-1" />
                 <div class="column is-7">
                     <label class="section-label">{{ $i18n.get('fields') }}</label>
+                    <br>
+                    <a 
+                            class="collapse-all" 
+                            @click="toggleCollapseAll()">
+                        {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                         <b-icon 
+                                type="is-secondary"
+                                :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+                    </a>
 
                     <!-- Status -------------------------------- --> 
                     <b-field 
@@ -228,11 +241,13 @@
                         </b-select>
                     </b-field> 
                         
-                    <!-- Fields from Collection-------------------------------- -->   
-                    <tainacan-form-item                 
-                        v-for="(field, index) in fieldList"
-                        :key="index"
-                        :field="field"/>    
+                    <!-- Fields from Collection-------------------------------- -->
+                    <tainacan-form-item 
+                            v-for="(field, index) in fieldList"
+                            :key="index"
+                            :field="field"
+                            :is-collapsed="!fieldCollapses[index]" />   
+  
                 </div>
             </div>
 
@@ -274,6 +289,8 @@ export default {
             item: null,
             collectionId: Number,
             isLoading: false,
+            fieldCollapses: [],
+            collapseAll: false,        
             form: {
                 collectionId: Number,
                 status: '',
@@ -380,8 +397,11 @@ export default {
         },
         loadMetadata() { 
             // Obtains Item Field
-            this.fetchFields(this.itemId).then(() => {
+            this.fetchFields(this.itemId).then((fields) => {
                 this.isLoading = false;
+                for (let field of fields) {
+                    this.fieldCollapses.push(false);
+                }
             });
         }, 
         setFileDocument(event) {
@@ -478,7 +498,13 @@ export default {
                     }
                 }
             );
+        },
+        toggleCollapseAll() {
+            this.collapseAll = !this.collapseAll;
 
+            for (let i = 0; i < this.fieldCollapses.length; i++)
+                this.fieldCollapses[i] = this.collapseAll;
+            
         }
     },
     computed: {
@@ -543,25 +569,18 @@ export default {
         font-size: 16px !important;
         font-weight: 500 !important;
         color: $tertiary !important;
-        line-height: 2.0em;
+        line-height: 1.2em;
     }
 
-    .modal-area {
-        background-color: white;
-        padding: 20px;
-
-        h2 {
-            color: $tertiary;
-            font-size: 16px;
-        }
-        .form-submit {
-            padding: 1em 0em 0.4em 0em;
-        }
+    .collapse-all {
+        font-size: 12px;
+        .icon { vertical-align: bottom; }
     }
 
     .document-box {
         border: 1px solid $draggable-border-color;
         padding: 30px;
+        margin-top: 16px;
         margin-bottom: 38px;
 
         ul { 
@@ -603,7 +622,7 @@ export default {
             position: absolute;
             margin-left: 10px;
             margin-right: 10px;
-            bottom: 50%;
+            bottom: 45%;
             font-size: 0.8rem;
             font-weight: bold;
             z-index: 99;

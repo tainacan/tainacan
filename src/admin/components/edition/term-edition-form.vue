@@ -15,13 +15,13 @@
                                 class="button is-rounred is-secondary"
                                 id="button-edit-thumbnail"
                                 :aria-label="$i18n.get('label_button_edit_header_image')"
-                                @click="editImage($event, true)">
+                                @click="headerImageMediaFrame.openFrame($event)">
                             <b-icon icon="pencil"/>
                         </a>
                         <figure class="image is-128x128">
-                                <span
-                                        v-if="editForm.header_image === undefined || editForm.header_image === false"
-                                        class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
+                            <span
+                                    v-if="editForm.header_image === undefined || editForm.header_image === false"
+                                    class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
                             <img
                                     :alt="$i18n.get('label_header_image')"
                                     :src="(editForm.header_image === undefined || editForm.header_image === false) ? headerPlaceholderPath : editForm.header_image">
@@ -97,6 +97,7 @@
 
 <script>
     import {mapActions, mapGetters} from 'vuex';
+    import wpMediaFrames from '../../js/wp-media-frames';
 
     export default {
         name: 'TermEditionForm',
@@ -104,7 +105,7 @@
             return {
                 formErrors: {},
                 headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
-                frameUploader: undefined,
+                headerImageMediaFrame: undefined
             }
         },
         props: {
@@ -179,82 +180,25 @@
                     }
                 );
             },
-            editImage(event) {
-                'use strict';
-                event.preventDefault();
+            initializeMediaFrames() {
 
-                // Create a new media frame
-                this.frameUploader = wp.media.frames.frame_uploader = wp.media({
-                    frame: 'select',
-                    title: 'Select or Upload and Image.',
-                    button: {
-                        text: 'Select and Crop',
-                        close: false
-                    },
-                    multiple: false,
-                    library: {
-                        type: 'image',
-                    },
-                    uploader: true,
-                    states: [
-                        new wp.media.controller.Library({
-                            title: 'Corta pra mim!',
-                            library: wp.media.query({type: 'image'}),
-                            multiple: false,
-                            date: false,
-                            priority: 20,
-                            suggestedWidth: 1000,
-                            suggestedHeight: 200
-                        }),
-                        new wp.media.controller.Cropper({
-                            imgSelectOptions: {
-                                enable: true,
-                                handles: true,
-                                imageHeight: 200,
-                                imageWidth: 1000,
-                                instance: true,
-                                keys: true,
-                                maxWidth: 1000,
-                                persistent: true,
-                                x1: 0,
-                                x2: 250,
-                                y1: 0,
-                                y2: 50
-                            }
-                        })
-                    ]
-
-                });
-
-                this.frameUploader.on('select', () => {
-                    this.frameUploader.state('cropper').set('canSkipCrop', true);
-                    this.frameUploader.setState('cropper');
-                });
-
-                this.frameUploader.on('skippedcrop', () => {
-                    let media = this.frameUploader.state().get('selection').first().toJSON();
-
-                    this.editForm = Object.assign({},
-                        this.editForm,
-                        {
-                            header_image_id: media.id.toString(),
-                            header_image: media.url
+                this.headerImageMediaFrame = new wpMediaFrames.headerImageControl(
+                    'my-header-image-media-frame', {
+                        button_labels: {
+                            frame_title: this.$i18n.get('instruction_select_term_header_image'),
+                        },
+                        relatedPostId: this.editForm.id,
+                        onSave: (croppedImage) => {
+                           this.editForm = Object.assign({},
+                                this.editForm,
+                                {
+                                    header_image_id: croppedImage.id.toString(),
+                                    header_image: croppedImage.url
+                                }
+                            );
                         }
-                    );
-                });
-
-                this.frameUploader.on('cropped', (croppedImage) => {
-
-                    this.editForm = Object.assign({},
-                        this.editForm,
-                        {
-                            header_image_id: croppedImage.attachment_id.toString(),
-                            header_image: croppedImage.url
-                        }
-                    );
-                });
-
-                this.frameUploader.open();
+                    }
+                );
             },
             clearErrors(attributes) {
                 if(attributes instanceof Object){
@@ -265,6 +209,9 @@
                     this.formErrors[attributes] = undefined;
                 }
             },
+        },
+        created() {
+            this.initializeMediaFrames();
         }
     }
 </script>
