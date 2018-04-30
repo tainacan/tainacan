@@ -145,7 +145,7 @@ class Collections extends TAINACAN_UnitTestCase {
 			$autor1_id,
 		];
 		
-		$collection_test->set_moderators_ids($moderators_ids);
+		$collection_test->set('moderators_ids', $moderators_ids);
 		
 		$this->assertEquals(2, sizeof( $collection_test->get_moderators_ids() ));
 		
