@@ -6,7 +6,10 @@
             <button 
                     v-if="selectedCollections.length > 0" 
                     class="button field is-danger" 
-                    @click="deleteSelectedCollections()"><span>{{ $i18n.get('instruction_delete_selected_collections') }} </span><b-icon icon="delete"/></button>
+                    @click="deleteSelectedCollections()">
+                <span>{{ $i18n.get('instruction_delete_selected_collections') }} </span>
+                <b-icon icon="delete"/>
+            </button>
         </b-field>
         <b-table
                 v-if="totalCollections > 0"

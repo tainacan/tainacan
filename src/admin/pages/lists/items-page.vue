@@ -26,7 +26,9 @@
                     </b-dropdown-item>
                     <b-dropdown-item>{{ $i18n.get('add_items_bulk') }}
                     </b-dropdown-item>
-                    <b-dropdown-item>{{ $i18n.get('add_items_external_source') }}<br><small class="is-small">{{ $i18n.get() }}</small></b-dropdown-item>
+                    <b-dropdown-item>{{ $i18n.get('add_items_external_source') }}<br>
+                        <small class="is-small">{{ $i18n.get() }}</small>
+                    </b-dropdown-item>
                 </b-dropdown>
 
             </div>
@@ -42,29 +44,46 @@
                 <b-loading
                         :is-full-page="false"
                         :active.sync="isLoadingFilters"/>
-                <h3>{{ $i18n.get('filters') }}</h3>
-                <filters-items-list
-                        v-if="!isLoadingFilters && filters.length > 0"
-                        :filters="filters"/>
-                <section
-                        v-else
-                        class="is-grouped-centered section">
-                    <div class="content has-text-gray has-text-centered">
-                        <p>
-                            <b-icon
-                                    icon="filter-outline"
-                                    size="is-large"/>
-                        </p>
-                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                        <router-link
-                                id="button-create-filter"
-                                :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
-                                tag="button"
-                                class="button is-secondary is-centered">
-                            {{ $i18n.getFrom('filters', 'new_item') }}
-                        </router-link>
-                    </div>
-                </section>
+
+                <h3 class="has-text-weight-semibold">
+                    {{ $i18n.get('filters') }}
+                </h3>
+                <b-collapse :open="false">
+                    <p
+                            slot="trigger"
+                            class="is-small is-size-7 has-text-primary">
+                        {{ $i18n.get('expand_all') }}
+                        <b-icon
+                                icon="menu-down"
+                                size="is-small" />
+                    </p>
+
+                    <br>
+
+                    <filters-items-list
+                            v-if="!isLoadingFilters && filters.length > 0"
+                            :filters="filters"/>
+
+                    <section
+                            v-else
+                            class="is-grouped-centered section">
+                        <div class="content has-text-gray has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="filter-outline"
+                                        size="is-large"/>
+                            </p>
+                            <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
+                            <router-link
+                                    id="button-create-filter"
+                                    :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
+                                    tag="button"
+                                    class="button is-secondary is-centered">
+                                {{ $i18n.getFrom('filters', 'new_item') }}
+                            </router-link>
+                        </div>
+                    </section>
+                </b-collapse>
             </aside>
             <div class="column">
                 <div class="table-container above-subheader">
