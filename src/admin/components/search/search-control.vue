@@ -1,6 +1,30 @@
 <template>
     <span>
         <div class="header-item">
+
+            <b-dropdown id="item-creation-options-dropdown">
+                <button
+                        class="button is-secondary"
+                        slot="trigger">
+                    <span>{{ `${$i18n.get('add')} ${$i18n.get('item')}` }}</span>
+                    <b-icon icon="menu-down"/>
+                </button>
+
+                <b-dropdown-item>
+                    <router-link
+                            id="a-create-item"
+                            tag="div"
+                            :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
+                        {{ $i18n.get('add_one_item') }}
+                    </router-link>
+                </b-dropdown-item>
+                <b-dropdown-item>{{ $i18n.get('add_items_bulk') }}
+                </b-dropdown-item>
+                <b-dropdown-item>{{ $i18n.get('add_items_external_source') }}<br><small class="is-small">{{ $i18n.get() }}</small></b-dropdown-item>
+            </b-dropdown>
+
+        </div>
+        <div class="header-item">
             <b-dropdown>
                 <button
                         class="button"
@@ -92,7 +116,9 @@
 <style>
     .header-item {
         display: inline-block;
-        padding-right: 8em;
+    }
+    #item-creation-options-dropdown {
+        margin-right: 80px;
     }
 </style>
 

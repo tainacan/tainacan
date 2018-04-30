@@ -1,69 +1,19 @@
 <template>
-    <div
-            class="page-container-small"
-            :class="{'primary-page': isRepositoryLevel}">
-        <div class="sub-header">
-            <b-loading
-                    :is-full-page="false"
-                    :active.sync="isLoadingFields"/>
-            <div class="header-item">
-
-                <b-dropdown>
-                    <button
-                            class="button is-secondary"
-                            slot="trigger">
-                        <span>{{ `${$i18n.get('add')} ${$i18n.get('item')}` }}</span>
-                        <b-icon icon="menu-down"/>
-                    </button>
-
-                    <b-dropdown-item>
-                        <router-link
-                                id="a-create-item"
-                                tag="div"
-                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ $i18n.get('add_one_item') }}
-                        </router-link>
-                    </b-dropdown-item>
-                    <b-dropdown-item>{{ $i18n.get('add_items_bulk') }}
-                    </b-dropdown-item>
-                    <b-dropdown-item>{{ $i18n.get('add_items_external_source') }}<br>
-                        <small class="is-small">{{ $i18n.get() }}</small>
-                    </b-dropdown-item>
-                </b-dropdown>
-
-            </div>
-            <search-control
-                    v-if="fields.length > 0 && (items.length > 0 || isLoadingItems)"
-                    :is-repository-level="isRepositoryLevel"
-                    :collection-id="collectionId"
-                    :table-fields="tableFields"
-                    :pref-table-fields="prefTableFields"/>
-        </div>
+    <div :class="{'primary-page': isRepositoryLevel, 'page-container': isRepositoryLevel, 'page-container-small' :!isRepositoryLevel }">
+        <title-row v-if="isRepositoryLevel"/>
         <div class="columns">
-            <aside class="column filters-menu">
-                <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoadingFilters"/>
-
-                <h3 class="has-text-weight-semibold">
-                    {{ $i18n.get('filters') }}
-                </h3>
-                <b-collapse :open="false">
-                    <p
-                            slot="trigger"
-                            class="is-small is-size-7 has-text-primary">
-                        {{ $i18n.get('expand_all') }}
-                        <b-icon
-                                icon="menu-down"
-                                size="is-small" />
-                    </p>
-
-                    <br>
-
+            <!-- SEARCH AND FILTERS --------------------- -->
+            <div
+                    class="column"
+                    style="max-width: 200px">
+                <aside class="filters-menu">
+                    <b-loading
+                            :is-full-page="false"
+                            :active.sync="isLoadingFilters"/>
+                    <h3>{{ $i18n.get('filters') }}</h3>
                     <filters-items-list
                             v-if="!isLoadingFilters && filters.length > 0"
                             :filters="filters"/>
-
                     <section
                             v-else
                             class="is-grouped-centered section">
@@ -83,9 +33,23 @@
                             </router-link>
                         </div>
                     </section>
-                </b-collapse>
-            </aside>
+                </aside>
+            </div>
             <div class="column">
+                <!-- SEARCH CONTROL ------------------------- -->
+                <div class="sub-header">
+                    <b-loading
+                            :is-full-page="false"
+                            :active.sync="isLoadingFields"/>
+                    <search-control
+                            v-if="fields.length > 0 && (items.length > 0 || isLoadingItems)"
+                            :is-repository-level="isRepositoryLevel"
+                            :collection-id="collectionId"
+                            :table-fields="tableFields"
+                            :pref-table-fields="prefTableFields"/>
+                </div>
+
+                <!-- LISTING RESULTS ------------------------- -->
                 <div class="table-container above-subheader">
                     <b-loading
                             :is-full-page="false"

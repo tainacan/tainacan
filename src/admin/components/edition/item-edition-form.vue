@@ -1,15 +1,14 @@
 <template>
-    <div class="page-container">
+    <div class="page-container-small">
         <div class="tainacan-page-title">
             <h2>{{ $i18n.get('title_item_edition') }}</h2>
-            <a class="is-secondary">{{ $i18n.get('return') }}</a>
+            <a class="back-link is-secondary">{{ $i18n.get('return') }}</a>
             <hr>
         </div>
         <form 
                 v-if="!isLoading" 
                 class="tainacan-form" 
                 label-width="120px">
-
             <div class="columns">
                 <div class="column is-4">
                     <!-- Document -------------------------------- -->

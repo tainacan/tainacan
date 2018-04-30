@@ -75,6 +75,7 @@ return [
 	'title_category_edition_page'              => __( 'Category Edition Page', 'tainacan' ),
 	'title_filter_edition'                     => __( 'Filter Edition Page', 'tainacan' ),
 	'title_collection_fields_edition'          => __( 'Collection Fields Edition Page', 'tainacan' ),
+	'title_collection_filters_edition'          => __( 'Collection Filters Edition Page', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                              => __( 'Clear', 'tainacan' ),
@@ -190,6 +191,7 @@ return [
 	'instruction_select_document_file_for_item'  => __( 'Select a document file for item', 'tainacan' ),
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
+	'instruction_search_repository'				 => __( 'Search on repository', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),

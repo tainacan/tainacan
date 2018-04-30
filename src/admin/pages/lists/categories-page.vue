@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div class="primary-page page-container-small">
+        <div class="primary-page page-container">
+            <title-row/>
             <div 
                     class="sub-header" 
                     v-if="totalCategories > 0">
@@ -69,6 +70,7 @@
 
 <script>
     import CategoriesList from "../../components/lists/categories-list.vue";
+    import TitleRow from '../../components/navigation/title-row.vue';
     import { mapActions, mapGetters } from 'vuex';
     //import moment from 'moment'
 
@@ -83,7 +85,8 @@
             }
         },
         components: {
-            CategoriesList
+            CategoriesList,
+            TitleRow
         },
         methods: {
             ...mapActions('category', [

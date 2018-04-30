@@ -64,7 +64,7 @@ html {
     margin-top: $header-height; 
     height: $page-height !important;
 }
-.page-container{
+.page-container {
     padding: $page-top-padding $page-side-padding;
     height: 100%;
     overflow-y: auto;
@@ -76,7 +76,7 @@ html {
 }
 .page-container-small{
     padding: $page-small-top-padding $page-small-side-padding;
-    height: calc(100% - 78px);
+    height: calc(100% - 82px);
     overflow-y: auto;
 
     @media screen and (max-width: 769px) {
@@ -91,16 +91,16 @@ html {
         color: $tertiary;
         display: inline-block;
     }
-    a{
+    a.back-link{
         font-weight: 500;
         float: right;
     }
     hr{
-        margin-top: 2px;
-        margin-bottom: 60px;
+        margin: 3px 0px 4px 0px; 
         height: 1px;
         background-color: $secondary;
     }
+    margin-bottom: 60px;
 }
 
 .tainacan-modal-content {
