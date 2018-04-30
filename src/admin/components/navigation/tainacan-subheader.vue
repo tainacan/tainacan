@@ -1,13 +1,10 @@
 <template>
     <div
             id="tainacan-subheader" 
-            class="level" 
-            :class="{'secondary-page': onSecondaryPage}">
+            class="level secondary-page">
         <div class="level-left">
             <div class="level-item">
-                <h1 class="has-text-weight-bold is-uppercase has-text-tertiary"><b-icon 
-                        size="is-small" 
-                        :icon="currentIcon"/>{{ pageTitle }}</h1>
+                <h1>{{ getCollectionName() }}</h1>
                 <nav class="breadcrumbs">
                     <router-link 
                             tag="a" 
@@ -30,12 +27,12 @@
                     tag="a" 
                     :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
                     :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
-                    :aria-label="$i18n.get('label_collection_fields')">
+                    :aria-label="$i18n.get('label_collection_items')">
                 <b-icon 
                         size="is-small" 
-                        icon="file-multiple"/>
+                        icon="folder-outline"/>
                 <br>
-                <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
+                <span class="menu-text">{{ $i18n.getFrom('collections', 'singular_name') }}</span>
             </router-link></li>
             <li class="level-item"><router-link 
                     tag="a" 
@@ -70,6 +67,17 @@
                 <br>
                 <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
             </router-link></li>
+            <li class="level-item"><router-link 
+                    tag="a" 
+                    :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
+                    :class="activeRoute == 'EventsList' ? 'is-active':''" 
+                    :aria-label="$i18n.get('label_collection_events')">
+                <b-icon 
+                        size="is-small" 
+                        icon="calendar"/>
+                <br>
+                <span class="menu-text">{{ $i18n.get('events') }}</span>
+            </router-link></li>
           
         </ul>
     </div>
@@ -87,7 +95,6 @@ export default {
             arrayRealPath: [],
             arrayViewPath: [],
             activeRouteName: '',
-            currentIcon: ''
         }
     },
     props: {
@@ -97,9 +104,7 @@ export default {
         '$route' (to) {
             this.activeRoute = to.name;
 
-            this.onSecondaryPage = (to.params.collectionId != undefined);
             this.pageTitle = this.$route.meta.title;
-            this.currentIcon = this.$route.meta.icon;
 
             this.arrayRealPath = to.path.split("/");
             this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
@@ -170,9 +175,7 @@ export default {
     created() {
         this.activeRoute = this.$route.name;
 
-        this.onSecondaryPage = (this.$route.params.collectionId != undefined);
         this.pageTitle = this.$route.meta.title;
-        this.currentIcon = this.$route.meta.icon;
 
         this.arrayRealPath = this.$route.path.split("/");
         this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
@@ -192,7 +195,6 @@ export default {
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
-        border-bottom: 0.5px solid #ddd;
         padding: 1.0em;
         margin: 0px;
         vertical-align: middle; 
@@ -200,41 +202,65 @@ export default {
         right: 0;
         z-index: 9;
 
-        .icon {
-            padding-right: 1.3em;
-            margin-left: -1.3em;
+        h1 {
+            font-size: 18px;
+            font-weight: 500;
+            color: $tertiary;
+            line-height: 22px;
+            margin-bottom: 12px; 
+            max-width: 450px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;  
         }
 
         .breadcrumbs {
-            font-size: 0.85em;
+            font-size: 12px;
+            line-height: 12px;
         }
 
         .level-left {
+            margin-left: 5px;
             .level-item {
                 display: inline-block;
-                margin-left: 45px;
             }  
         }
 
         li{
+            margin-right: 0px;
             a {
-                color: $secondary;
+                color: $tertiary;
                 text-align: center;
                 white-space: nowrap;
                 overflow: hidden;
-                padding: 1.0em 1.8em;
+                padding: 1.0em 10px;
+                min-width: 75px;
                 line-height: 1.5em;
                 border-radius: 0px;
                 -webkit-transition: padding 0.3s linear; /* Safari */
                 transition: padding 0.3s linear; 
+                position: relative;
+                overflow: inherit;
             }
-            a:hover {
-                background-color: rgba(255,255,255,0.4);
-                color: $tertiary;
-            }
+            a:hover, 
             a.is-active {
-                background-color: rgba(255,255,255,0.6);
-                color: $tertiary;
+                background-color: #d1f1f2;
+            }
+            a:focus{
+                box-shadow: none;
+            }
+            a.is-active:after {
+                position: absolute;
+                content: '';
+                width: 0;
+                height: 0;
+                bottom: -1px;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-bottom: 11px solid white;
+                left: calc(50% - 10px);
+                -moz-transform: scale(0.999);
+                -webkit-backface-visibility: hidden;   
             }
             .icon {
                 margin: 0;

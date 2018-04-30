@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="primary-page page-container-small">
-
+        <div class="primary-page page-container">
+            <title-row/>
             <div class="columns above-subheader">
                 <div class="column table-container">
                     <events-list
@@ -56,6 +56,7 @@
 
 <script>
     import EventsList from "../../components/lists/events-list.vue";
+    import TitleRow from '../../components/navigation/title-row.vue';
     import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment'
 
@@ -70,7 +71,8 @@
             }
         },
         components: {
-            EventsList
+            EventsList,
+            TitleRow
         },
         methods: {
             ...mapActions('event', [

@@ -1,72 +1,55 @@
 <template>
-    <div
-            class="page-container-small"
-            :class="{'primary-page': isRepositoryLevel}">
-        <div class="sub-header">
-            <b-loading
-                    :is-full-page="false"
-                    :active.sync="isLoadingFields"/>
-            <div class="header-item">
-
-                <b-dropdown>
-                    <button
-                            class="button is-secondary"
-                            slot="trigger">
-                        <span>{{ `${$i18n.get('add')} ${$i18n.get('item')}` }}</span>
-                        <b-icon icon="menu-down"/>
-                    </button>
-
-                    <b-dropdown-item>
-                        <router-link
-                                id="a-create-item"
-                                tag="div"
-                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ $i18n.get('add_one_item') }}
-                        </router-link>
-                    </b-dropdown-item>
-                    <b-dropdown-item>{{ $i18n.get('add_items_bulk') }}
-                    </b-dropdown-item>
-                    <b-dropdown-item>{{ $i18n.get('add_items_external_source') }}<br><small class="is-small">{{ $i18n.get() }}</small></b-dropdown-item>
-                </b-dropdown>
-
-            </div>
-            <search-control
-                    v-if="fields.length > 0 && (items.length > 0 || isLoadingItems)"
-                    :is-repository-level="isRepositoryLevel"
-                    :collection-id="collectionId"
-                    :table-fields="tableFields"
-                    :pref-table-fields="prefTableFields"/>
-        </div>
+    <div :class="{'primary-page': isRepositoryLevel, 'page-container': isRepositoryLevel, 'page-container-small' :!isRepositoryLevel }">
+        <title-row v-if="isRepositoryLevel"/>
         <div class="columns">
-            <aside class="column filters-menu">
-                <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoadingFilters"/>
-                <h3>{{ $i18n.get('filters') }}</h3>
-                <filters-items-list
-                        v-if="!isLoadingFilters && filters.length > 0"
-                        :filters="filters"/>
-                <section
-                        v-else
-                        class="is-grouped-centered section">
-                    <div class="content has-text-gray has-text-centered">
-                        <p>
-                            <b-icon
-                                    icon="filter-outline"
-                                    size="is-large"/>
-                        </p>
-                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                        <router-link
-                                id="button-create-filter"
-                                :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
-                                tag="button"
-                                class="button is-secondary is-centered">
-                            {{ $i18n.getFrom('filters', 'new_item') }}
-                        </router-link>
-                    </div>
-                </section>
-            </aside>
+            <!-- SEARCH AND FILTERS --------------------- -->
+            <div 
+                    class="column" 
+                    style="max-width: 200px">
+                <aside class="filters-menu">
+                    <b-loading
+                            :is-full-page="false"
+                            :active.sync="isLoadingFilters"/>
+                    <h3>{{ $i18n.get('filters') }}</h3>
+                    <filters-items-list
+                            v-if="!isLoadingFilters && filters.length > 0"
+                            :filters="filters"/>
+                    <section
+                            v-else
+                            class="is-grouped-centered section">
+                        <div class="content has-text-gray has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="filter-outline"
+                                        size="is-large"/>
+                            </p>
+                            <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
+                            <router-link
+                                    id="button-create-filter"
+                                    :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
+                                    tag="button"
+                                    class="button is-secondary is-centered">
+                                {{ $i18n.getFrom('filters', 'new_item') }}
+                            </router-link>
+                        </div>
+                    </section>
+                </aside>
+            </div>
             <div class="column">
+                <!-- SEARCH CONTROL ------------------------- -->
+                <div class="sub-header">
+                    <b-loading
+                            :is-full-page="false"
+                            :active.sync="isLoadingFields"/>
+                    <search-control
+                            v-if="fields.length > 0 && (items.length > 0 || isLoadingItems)"
+                            :is-repository-level="isRepositoryLevel"
+                            :collection-id="collectionId"
+                            :table-fields="tableFields"
+                            :pref-table-fields="prefTableFields"/>
+                </div>
+
+                <!-- LISTING RESULTS ------------------------- -->
                 <div class="table-container above-subheader">
                     <b-loading
                             :is-full-page="false"
@@ -111,6 +94,7 @@
     import ItemsList from '../../components/lists/items-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
+    import TitleRow from '../../components/navigation/title-row.vue';
     import {mapActions, mapGetters} from 'vuex';
 
     export default {
@@ -133,7 +117,8 @@
             SearchControl,
             ItemsList,
             FiltersItemsList,
-            Pagination
+            Pagination,
+            TitleRow
         },
         methods: {
             ...mapGetters('collection', [
@@ -275,14 +260,16 @@
 
     .page-container-small > .columns {
         margin-top: 0;
-
+        &>.column {
+            padding: 0px;
+        }
     }
 
     .sub-header {
         min-height: $subheader-height;
         height: $subheader-height;
-        margin-left: -$page-small-side-padding;
-        margin-right: -$page-small-side-padding;
+        margin-left: -42px;
+        margin-right: -42px;
         margin-top: -$page-small-top-padding;
         padding-top: $page-small-top-padding;
         padding-left: $page-small-side-padding;
@@ -310,10 +297,12 @@
 
     .filters-menu {
         position: relative;
-        min-width: $side-menu-width;
+        width: $side-menu-width;
         max-width: $side-menu-width;
         background-color: $tainacan-input-color;
         margin-left: -$page-small-side-padding;
+        margin-right: -$page-small-side-padding;
+        margin-top: -$page-small-top-padding;
         padding: $page-small-side-padding;
 
         .label {
@@ -324,9 +313,11 @@
     }
 
     .table-container {
-        margin-right: -$page-small-side-padding;
-        padding: 3em 2.5em;
+        margin-right: -42px;
+        margin-left: -42px;
+        padding: 3em 55px;
         position: relative;
+        box-sizing: content-box;
     }
 
     @media screen and (max-width: 769px) {

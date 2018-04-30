@@ -1,5 +1,6 @@
 <template>
-    <div class="primary-page page-container-small">
+    <div class="primary-page page-container">
+        <title-row/>
         <div
                 class="sub-header"
                 v-if="totalCollections > 0">
@@ -66,6 +67,7 @@
 
 <script>
 import CollectionsList from '../../components/lists/collections-list.vue';
+import TitleRow from '../../components/navigation/title-row.vue';
 import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment'
 
@@ -80,7 +82,8 @@ export default {
         }
     },
     components: {
-        CollectionsList
+        CollectionsList,
+        TitleRow
     },
     methods: {
          ...mapActions('collection', [

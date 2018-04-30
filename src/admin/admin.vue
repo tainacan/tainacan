@@ -2,8 +2,15 @@
     <div 
             id="tainacan-admin-app" 
             class="columns is-fullheight">
-        <primary-menu/>
-        <tainacan-header/>
+        <primary-menu 
+                :active-route="activeRoute"
+                :is-menu-compressed="isMenuCompressed"/>
+        <button 
+                id="menu-compress-button"
+                @click="isMenuCompressed = !isMenuCompressed">
+            <b-icon :icon="isMenuCompressed ? 'menu-right' : 'menu-left'" />
+        </button>
+        <tainacan-header :is-menu-compressed="isMenuCompressed"/>
         <div class="column is-main-content">  
             <router-view/> 
         </div>
@@ -18,6 +25,8 @@
         name: "AdminPage",
         data(){
             return {
+                isMenuCompressed: false,
+                activeRoute: '/collections'
             }
         },
         components: {
@@ -25,7 +34,15 @@
             TainacanHeader
         },
         created() {
-            this.$userPrefs.init()
+            this.$userPrefs.init();
+            this.isMenuCompressed = (this.$route.params.collectionId != undefined);
+            this.activeRoute = this.$route.name;
+        },
+        watch: {
+            '$route' (to) {
+                this.isMenuCompressed = (to.params.collectionId != undefined);
+                this.activeRoute = to.name;
+            }
         }
     }
 </script>
@@ -63,7 +80,7 @@
         margin: $header-height auto 0 auto;
         position: relative;
         overflow-y: auto;
-        height: calc(100% - 58px);
+        height: calc(100% - 52px);
 
         @media screen and (max-width: 769px) {
             & {
@@ -74,6 +91,25 @@
         .columns {
             margin-left: 0px;
             margin-right: 0px;
+        }
+    }
+
+    #menu-compress-button {
+        position: absolute;
+        z-index: 99999;
+        top: 70px;
+        max-width: 23px;
+        height: 21px;
+        width: 23px;
+        border: none;
+        background-color: $primary-light;
+        color: $tertiary;
+        padding: 0px;
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+
+        .icon {
+            margin-top: -1px;
         }
     }
 
