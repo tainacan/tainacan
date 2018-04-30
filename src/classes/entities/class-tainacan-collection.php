@@ -601,7 +601,11 @@ class Collection extends Entity {
 	 *
 	 * @return void
 	 */
-	function set_moderators_ids( $value ) {
+	function set_moderators_ids( array $value ) {
+		
+		// make sure you never have duplicated moderators 
+		$value = array_unique($value);
+		
 		$this->set_mapped_property( 'moderators_ids', $value );
 	}
 

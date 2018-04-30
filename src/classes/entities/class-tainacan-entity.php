@@ -150,12 +150,32 @@ class Entity {
     
     /**
      * set the value of a mapped property
+     *
+     * This is a protected method. If you want to set an entity prop 
+     * using the prop name dynamically, use the set() method
+     * 
      * @param string $prop id of the property
      * @param mixed $value the value to be setted
      */
-    public function set_mapped_property($prop, $value) {
+    protected function set_mapped_property($prop, $value) {
         $this->set_validated(false);
         $this->$prop = $value;
+    }
+	
+	/**
+     * set the value property
+     *
+     * 
+     * @param string $prop id of the property
+     * @param mixed $value the value to be setted
+     * @return null|mixed Null on failure, the value that was set on success
+     */
+    public function set($prop, $value) {
+        $method = 'set_' . $prop;
+		if ( method_exists($this, $method) ) {
+			return $this->$method($value);
+		}
+        return null;
     }
 
     /**
