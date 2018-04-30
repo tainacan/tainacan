@@ -38,7 +38,6 @@ return [
 	'add_one_item'                             => __( 'Add one item', 'tainacan' ),
 	'add_items_bulk'                           => __( 'Add items in bulk', 'tainacan' ),
 	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
-	'expand_all'                               => __( 'Expand all', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
