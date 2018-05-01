@@ -1,6 +1,5 @@
 <template>
     <div :class="{'primary-page': isRepositoryLevel, 'page-container': isRepositoryLevel, 'page-container-small' :!isRepositoryLevel }">
-        <title-row v-if="isRepositoryLevel"/>
         
         <!-- SEARCH AND FILTERS --------------------- -->
         <aside class="filters-menu">
@@ -91,7 +90,6 @@
     import ItemsList from '../../components/lists/items-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
-    import TitleRow from '../../components/navigation/title-row.vue';
     import {mapActions, mapGetters} from 'vuex';
 
     export default {
@@ -114,8 +112,7 @@
             SearchControl,
             ItemsList,
             FiltersItemsList,
-            Pagination,
-            TitleRow
+            Pagination
         },
         methods: {
             ...mapGetters('collection', [
@@ -287,12 +284,15 @@
 
     .filters-menu {
         position: relative;
-        width: $side-menu-width;
-        max-width: $side-menu-width;
+        width: $filter-menu-width;
+        max-width: $filter-menu-width;
         min-height: 100%;
         background-color: $tainacan-input-color;
         padding: $page-small-side-padding;
         float: left;
+        height: 100%;
+        max-height: 100%;
+        overflow-y: auto;
 
         .label {
             font-size: 12px;
@@ -302,7 +302,7 @@
     }
 
     .to-right{
-        margin-left: $side-menu-width;
+        margin-left: $filter-menu-width;
     }
 
     .table-container {

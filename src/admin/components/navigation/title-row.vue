@@ -3,6 +3,11 @@
             class="tainacan-page-title"
             id="title-row">
         <h1>{{ pageTitle }}</h1>
+        <a 
+                @click="$router.go(-1)"
+                class="back-link is-secondary">
+            {{ $i18n.get('return') }}
+        </a>
         <hr>
         <nav class="breadcrumbs">
             <router-link 

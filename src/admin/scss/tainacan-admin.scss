@@ -31,17 +31,6 @@ html {
     font-family: $family-sans-serif;
 }
 
-.media-modal {
-    left: 130px;
-    top: 130px;
-    bottom: 130px;
-    right: 130px;
-    z-index: 99999999999 !important;
-}
-.media-modal-backdrop {
-    z-index: 9999999 !important;
-}
-
 .modal-background {
     background-color: rgba(0, 0, 0, 0.70);
 }
@@ -110,6 +99,26 @@ html {
     .form-submit {
         padding: 80px 0em 0.4em 0em !important;
     }
+}
+
+// Custom ScrollBar (will work only in Chrome, Opera, Safari, webkit browsers)
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    opacity: 0.5;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    opacity: 0.5;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }
 
 // Buefy notices (toast, snackbar...)
@@ -362,4 +371,135 @@ html {
     .pagination { 
         flex-grow: 1; 
     }
+}
+
+// WordPress Media Modal customization
+.wp-core-ui {
+    a:focus{ box-shadow: none; }
+}
+.media-modal {
+    left: 100px;
+    top: 100px;
+    bottom: 100px;
+    right: 100px;
+    background-color: white;
+    z-index: 99999999999 !important;
+    
+    .media-modal-content {
+        background-color: white;
+        margin: 42px 60px;
+        box-shadow: none;
+    }
+
+    .media-frame-title {
+        border-bottom: 1px solid #298596 !important;
+        margin-bottom: 60px !important;  
+        box-shadow: none !important;
+        
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $tertiary;
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+    }
+
+    .media-frame-router {
+        margin-top: 28px;
+        a.media-menu-item.active {
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 3px solid $primary;
+        }
+    }
+
+    .media-frame-content {
+        margin-top: 30px; 
+
+        .attachments-browser .attachments, .media-toolbar {
+            padding: 12px;
+            right: 270px;
+
+            .media-toolbar-primary {
+                max-width: 30%;
+            }
+            .media-toolbar-secondary {
+                max-width: 70%;
+            }
+            .attachment {
+                padding: 12px;
+            }
+            .attachment.details {
+                box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 14px $primary-light;
+            }
+            .attachment.details .check, .wp-core-ui .attachment.selected .check:focus, .wp-core-ui .media-frame.mode-grid .attachment.selected .check {
+                background-color: $primary-light;
+                box-shadow: 0 0 0 1px #fff,0 0 0 2px $primary-light;
+            }
+        }
+        .media-sidebar {
+            background-color: white;
+            width: 238px;
+        }
+
+        .crop-content{
+            .imgareaselect-outer {
+                background-color: white;
+                opacity: 0.6;
+            }
+        }
+    }
+
+    .media-frame-toolbar .media-toolbar {
+        bottom: initial;
+        margin-top: -1px;
+        padding: 28px 0px;
+    }
+
+    .media-button.button-primary {
+        background-color: $success;
+        border: none;
+        box-shadow: none;
+        color: #fff;
+        text-decoration: none;
+        text-shadow: none;
+    }
+    .media-button.button-primary[disabled] {
+        color: #66c6e4 !important;
+        background: $success !important;
+        border-color: none!important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+        cursor: default;
+    }
+    .media-button.button-secondary {
+        color: $tertiary;
+        border-color: #999;
+        background: white;
+        box-shadow: none;
+        vertical-align: middle;
+    }
+    .button-hero {
+        background-color: $secondary;
+        border: none;
+        box-shadow: none;
+        color: #fff;
+        text-decoration: none;
+        text-shadow: none;
+        font-size: 14px;
+        height: 46px;
+        line-height: 20px !important;
+        padding: 0 36px;
+
+        &:hover{
+            background-color: #339daf;
+            color: white;
+        }
+    }
+
+}
+.media-modal-backdrop {
+    z-index: 9999999 !important;
 }
