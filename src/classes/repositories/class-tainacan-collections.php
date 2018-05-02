@@ -181,7 +181,8 @@ class Collections extends Repository {
 			'moderators_ids'           => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Moderators', 'tainacan' ),
-				'type'        => 'array',
+				'type'        => 'array/object/string',
+				'items'       => [ 'type' => 'array/string/integer/object' ],
 				'description' => __( 'The IDs of users assigned as moderators of this collection', 'tainacan' ),
 				'validation'  => ''
 			],
@@ -320,7 +321,7 @@ class Collections extends Repository {
 
 		} elseif ( is_array( $args ) ) {
 			$args = array_merge( [
-				'posts_per_page' => - 1,
+				'posts_per_page' => -1,
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );

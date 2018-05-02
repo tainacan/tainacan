@@ -2,7 +2,7 @@
     <b-field
             :message="getErrorMessage"
             :type="filterTypeMessage">
-        <b-collapse :open="false">
+        <b-collapse :open="opened">
             <label slot="trigger">
                 <b-icon
                         icon="menu-down"
@@ -29,7 +29,8 @@
         name: 'TainacanFilterItem',
         props: {
             filter: Object,
-            query: Object
+            query: Object,
+            opened: false,
         },
         data(){
             return {
