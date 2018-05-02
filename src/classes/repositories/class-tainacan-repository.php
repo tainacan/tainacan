@@ -163,14 +163,25 @@ abstract class Repository {
 			update_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $obj->get_mapped_property( $prop ) ) );
 		} elseif ( $map[ $prop ]['map'] == 'meta_multi' ) {
 			$values = $obj->get_mapped_property( $prop );
-
-			delete_post_meta( $obj->get_id(), $prop );
-
-			if ( is_array( $values ) ) {
-				foreach ( $values as $value ) {
-					add_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $value ) );
-				}
+			$current_values = get_post_meta( $obj->get_id(), $prop );
+			
+			if (empty($values) || !is_array($values))
+				$values = [];
+			
+			if (empty($current_values) || !is_array($current_values))
+				$current_values = [];
+			
+			$deleted = array_diff( $current_values, $values );
+			$added   = array_diff( $values, $current_values );
+			
+			foreach ($deleted as $del) {
+				delete_post_meta( $obj->get_id(), $prop, $del );
 			}
+			
+			foreach ($added as $add) {
+				add_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $add ) );
+			}
+			
 		}
 	}
 
