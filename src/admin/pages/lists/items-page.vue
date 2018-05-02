@@ -14,14 +14,24 @@
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
+            <b-field>
+                <b-input
+                        placeholder="Search..."
+                        type="search"
+                        size="is-small"
+                        icon="magnify" />
+            </b-field>
+            <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a>
 
+            <br>
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
-                    class="collapse-all"
+                    class="collapse-all is-size-7"
                     @click="toggleCollapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <b-icon
                         type="is-secondary"
+                        size="is-small"
                         :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
             </a>
             <br>
@@ -126,7 +136,8 @@
                 isLoadingFilters: false,
                 isLoadingFields: false,
                 hasFiltered: false,
-                isFiltersMenuCompressed: false
+                isFiltersMenuCompressed: false,
+                collapseAll: false,
             }
         },
         props: {
@@ -153,7 +164,14 @@
             ]),
             ...mapGetters('filter', [
                 'getFilters'
-            ])
+            ]),
+            toggleCollapseAll() {
+                this.collapseAll = !this.collapseAll;
+
+                for (let i = 0; i < this.fieldCollapses.length; i++)
+                    this.fieldCollapses[i] = this.collapseAll;
+
+            },
         },
         computed: {
             items() {

@@ -5,7 +5,8 @@
                 :query="getQuery"
                 v-for="(filter, index) in filters"
                 :key="index"
-                :filter="filter"/>
+                :filter="filter"
+                :opened="collapsed"/>
 
     </div>
 </template>
@@ -14,7 +15,8 @@
 
     export default {
         props: {
-            filters: Array
+            filters: Array,
+            collapsed: Boolean,
         },
         methods: {
             ...mapGetters('search',[
