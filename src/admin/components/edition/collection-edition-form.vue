@@ -1,7 +1,5 @@
 <template>
-    <div 
-            class="page-container" 
-            :class="{'primary-page' : isNewCollection }">
+    <div :class="{'primary-page' : isNewCollection }">
         <b-tag 
                 v-if="collection != null && collection != undefined" 
                 :type="'is-' + getStatusColor(collection.status)" 

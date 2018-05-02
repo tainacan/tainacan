@@ -89,7 +89,7 @@ export const sendItem = ( { commit }, { collection_id, status }) => {
             status: status
         })
             .then( res => {
-                commit('setItem', { collection_id: collection_id, status: status });
+                commit('setItem', res.data);
                 resolve( res.data );
             })
             .catch(error => {

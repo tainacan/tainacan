@@ -1,5 +1,5 @@
 <template>
-    <div class="page-container">
+    <div>
         <div class="tainacan-page-title">
             <h2>{{ $i18n.get('title_item_edition') }}</h2>
             <a 
@@ -341,7 +341,6 @@ export default {
         ]),
         ...mapGetters('item',[
             'getFields',
-            'getItem',
             'getAttachments'
         ]),
         onSubmit() {
