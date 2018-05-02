@@ -16,14 +16,14 @@
                             size="is-small" 
                             icon="folder-multiple"/> <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                 </router-link></li>
-                <li><router-link 
+                <!-- <li><router-link 
                         tag="a" 
                         to="/items" 
                         :class="activeRoute == 'ItemsPage' ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
                             icon="file-multiple"/> <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
-                </router-link></li>
+                </router-link></li> -->
                 <li class="separator"/>
                 <li><router-link 
                         tag="a" 
@@ -89,7 +89,7 @@ export default {
             height: 2px;
             background-color: $separator-color;
             width: 100%;
-            margin: 1.75em 0;
+            margin: 24px 0;
         }
         li{
             a {
