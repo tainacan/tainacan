@@ -1,6 +1,7 @@
 <template>
     <div>
-        <tainacan-filter-item        
+        <tainacan-filter-item
+                v-show="!isMenuCompressed"        
                 :query="getQuery"
                 v-for="(filter, index) in filters"
                 :key="index"

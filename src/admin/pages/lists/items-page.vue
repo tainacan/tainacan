@@ -2,7 +2,14 @@
     <div :class="{'primary-page': isRepositoryLevel, 'page-container': isRepositoryLevel, 'page-container-small' :!isRepositoryLevel }">
         
         <!-- SEARCH AND FILTERS --------------------- -->
-        <aside class="filters-menu">
+        <button 
+                id="filter-menu-compress-button"
+                @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
+            <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
+        </button>
+        <aside 
+                v-show="!isFiltersMenuCompressed"
+                class="filters-menu">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
@@ -31,7 +38,9 @@
             </section>
         </aside>
         
-        <div class="to-right">
+        <div 
+                class="items-list-area"
+                :class="{ 'spaced-to-right': !isFiltersMenuCompressed }">
             <!-- SEARCH CONTROL ------------------------- -->
             <div class="sub-header">
                 <b-loading
@@ -102,7 +111,8 @@
                 isLoadingItems: false,
                 isLoadingFilters: false,
                 isLoadingFields: false,
-                hasFiltered: false
+                hasFiltered: false,
+                isFiltersMenuCompressed: false
             }
         },
         props: {
@@ -293,6 +303,9 @@
         height: 100%;
         max-height: 100%;
         overflow-y: auto;
+        visibility: visible;
+        display: block;
+        transition: visibility 0.5s ease, display 0.5s ease;
 
         .label {
             font-size: 12px;
@@ -301,7 +314,11 @@
 
     }
 
-    .to-right{
+    .items-list-area {
+        margin-left: 0;
+        transition: margin-left 0.5s ease;
+    }
+    .spaced-to-right {
         margin-left: $filter-menu-width;
     }
 
@@ -317,6 +334,26 @@
         .table-container {
             margin-right: 0;
             padding: .85em 0em;
+        }
+    }
+
+    #filter-menu-compress-button {
+        position: absolute;
+        z-index: 9;
+        top: 152px;
+        left: 0px;
+        max-width: 23px;
+        height: 21px;
+        width: 23px;
+        border: none;
+        background-color: $primary-light;
+        color: $tertiary;
+        padding: 0px;
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+
+        .icon {
+            margin-top: -1px;
         }
     }
 
