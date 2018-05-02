@@ -1,91 +1,87 @@
 <template>
     <div :class="{'primary-page': isRepositoryLevel, 'page-container': isRepositoryLevel, 'page-container-small' :!isRepositoryLevel }">
-        <title-row v-if="isRepositoryLevel"/>
-        <div class="columns">
-            <!-- SEARCH AND FILTERS --------------------- -->
-            <div
-                    class="column"
-                    style="max-width: 200px">
-                <aside class="filters-menu">
-                    <b-loading
-                            :is-full-page="false"
-                            :active.sync="isLoadingFilters"/>
-                    <h3>{{ $i18n.get('filters') }}</h3>
-                    <filters-items-list
-                            v-if="!isLoadingFilters && filters.length > 0"
-                            :filters="filters"/>
-                    <section
-                            v-else
-                            class="is-grouped-centered section">
-                        <div class="content has-text-gray has-text-centered">
-                            <p>
-                                <b-icon
-                                        icon="filter-outline"
-                                        size="is-large"/>
-                            </p>
-                            <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                            <router-link
-                                    id="button-create-filter"
-                                    :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
-                                    tag="button"
-                                    class="button is-secondary is-centered">
-                                {{ $i18n.getFrom('filters', 'new_item') }}
-                            </router-link>
-                        </div>
-                    </section>
-                </aside>
+        
+        <!-- SEARCH AND FILTERS --------------------- -->
+        <aside class="filters-menu">
+            <b-loading
+                    :is-full-page="false"
+                    :active.sync="isLoadingFilters"/>
+            <h3>{{ $i18n.get('filters') }}</h3>
+            <filters-items-list
+                    v-if="!isLoadingFilters && filters.length > 0"
+                    :filters="filters"/>
+            <section
+                    v-else
+                    class="is-grouped-centered section">
+                <div class="content has-text-gray has-text-centered">
+                    <p>
+                        <b-icon
+                                icon="filter-outline"
+                                size="is-large"/>
+                    </p>
+                    <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
+                    <router-link
+                            id="button-create-filter"
+                            :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
+                            tag="button"
+                            class="button is-secondary is-centered">
+                        {{ $i18n.getFrom('filters', 'new_item') }}
+                    </router-link>
+                </div>
+            </section>
+        </aside>
+        
+        <div class="to-right">
+            <!-- SEARCH CONTROL ------------------------- -->
+            <div class="sub-header">
+                <b-loading
+                        :is-full-page="false"
+                        :active.sync="isLoadingFields"/>
+                <search-control
+                        v-if="fields.length > 0 && (items.length > 0 || isLoadingItems)"
+                        :is-repository-level="isRepositoryLevel"
+                        :collection-id="collectionId"
+                        :table-fields="tableFields"
+                        :pref-table-fields="prefTableFields"/>
             </div>
-            <div class="column">
-                <!-- SEARCH CONTROL ------------------------- -->
-                <div class="sub-header">
-                    <b-loading
-                            :is-full-page="false"
-                            :active.sync="isLoadingFields"/>
-                    <search-control
-                            v-if="fields.length > 0 && (items.length > 0 || isLoadingItems)"
-                            :is-repository-level="isRepositoryLevel"
-                            :collection-id="collectionId"
-                            :table-fields="tableFields"
-                            :pref-table-fields="prefTableFields"/>
-                </div>
 
-                <!-- LISTING RESULTS ------------------------- -->
-                <div class="table-container above-subheader">
-                    <b-loading
-                            :is-full-page="false"
-                            :active.sync="isLoadingItems"/>
-                    <items-list
-                            v-if="!isLoadingItems && items.length > 0"
-                            :collection-id="collectionId"
-                            :table-fields="tableFields"
-                            :items="items"
-                            :is-loading="isLoading"/>
-                    <section
-                            v-if="!isLoadingItems && items.length <= 0"
-                            class="section">
-                        <div class="content has-text-grey has-text-centered">
-                            <p>
-                                <b-icon
-                                        icon="inbox"
-                                        size="is-large"/>
-                            </p>
-                            <p>{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')
-                                }}</p>
-                            <router-link
-                                    v-if="!hasFiltered"
-                                    id="button-create-item"
-                                    tag="button"
-                                    class="button is-primary"
-                                    :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                                {{ $i18n.getFrom('items', 'new_item') }}
-                            </router-link>
-                        </div>
-                    </section>
-                    <!-- Pagination Footer -->
-                    <pagination v-if="items.length > 0"/>
-                </div>
+            <!-- LISTING RESULTS ------------------------- -->
+            <div class="table-container above-subheader">
+                <b-loading
+                        :is-full-page="false"
+                        :active.sync="isLoadingItems"/>
+                <items-list
+                        v-if="!isLoadingItems && items.length > 0"
+                        :collection-id="collectionId"
+                        :table-fields="tableFields"
+                        :items="items"
+                        :is-loading="isLoading"/>
+                <section
+                        v-if="!isLoadingItems && items.length <= 0"
+                        class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <b-icon
+                                    icon="inbox"
+                                    size="is-large"/>
+                        </p>
+                        <p>{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')
+                            }}</p>
+                        <router-link
+                                v-if="!hasFiltered"
+                                id="button-create-item"
+                                tag="button"
+                                class="button is-primary"
+                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
+                            {{ $i18n.getFrom('items', 'new_item') }}
+                        </router-link>
+                    </div>
+                </section>
+                <!-- Pagination Footer -->
+                <pagination v-if="items.length > 0"/>
             </div>
         </div>
+        
     </div>
 </template>
 
@@ -147,7 +143,6 @@
             }
         },
         created() {
-
             this.isRepositoryLevel = (this.collectionId == undefined);
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
@@ -248,7 +243,6 @@
             this.$eventBusSearch.updateStoreFromURL();
             this.$eventBusSearch.loadItems();
         }
-
     }
 </script>
 
@@ -256,17 +250,14 @@
 
     @import '../../scss/_variables.scss';
 
-    .page-container-small > .columns {
-        margin-top: 0;
-
+    .page-container, .page-container-small {
+        padding: 0px;
+        
     }
 
     .sub-header {
         min-height: $subheader-height;
         height: $subheader-height;
-        margin-left: -$page-small-side-padding;
-        margin-right: -$page-small-side-padding;
-        margin-top: -$page-small-top-padding;
         padding-top: $page-small-top-padding;
         padding-left: $page-small-side-padding;
         padding-right: $page-small-side-padding;
@@ -293,11 +284,15 @@
 
     .filters-menu {
         position: relative;
-        min-width: $side-menu-width;
-        max-width: $side-menu-width;
+        width: $filter-menu-width;
+        max-width: $filter-menu-width;
+        min-height: 100%;
         background-color: $tainacan-input-color;
-        margin-left: -$page-small-side-padding;
         padding: $page-small-side-padding;
+        float: left;
+        height: 100%;
+        max-height: 100%;
+        overflow-y: auto;
 
         .label {
             font-size: 12px;
@@ -306,9 +301,12 @@
 
     }
 
+    .to-right{
+        margin-left: $filter-menu-width;
+    }
+
     .table-container {
-        margin-right: -$page-small-side-padding;
-        padding: 3em 2.5em;
+        padding: 3em 55px;
         position: relative;
     }
 

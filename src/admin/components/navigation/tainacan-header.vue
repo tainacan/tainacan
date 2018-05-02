@@ -129,7 +129,14 @@ export default {
         &.menu-compressed {
             .level-left .level-item {
                 margin-left: 44px;
+                width: 160px;
+
+                .tainacan-logo {
+                    max-height: 22px;
+                    padding: 0px 16px;   
+                }
             }
+            
         }
 
         @media screen and (max-width: 769px) {

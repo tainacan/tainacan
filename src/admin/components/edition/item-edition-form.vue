@@ -1,8 +1,12 @@
 <template>
-    <div class="page-container-small">
+    <div class="page-container">
         <div class="tainacan-page-title">
             <h2>{{ $i18n.get('title_item_edition') }}</h2>
-            <a class="back-link is-secondary">{{ $i18n.get('return') }}</a>
+            <a 
+                    @click="$router.go(-1)"
+                    class="back-link is-secondary">
+                {{ $i18n.get('return') }}
+            </a>
             <hr>
         </div>
         <form 
@@ -165,7 +169,7 @@
                                     @click.prevent="thumbnailMediaFrame.openFrame($event)">
                                 <b-icon icon="pencil" />
                             </a>
-                            <figure class="image is-128x128">
+                            <figure class="image">
                                 <span 
                                         v-if="item.featured_image == undefined || item.featured_image == false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
@@ -560,6 +564,10 @@ export default {
 
     @import '../../scss/_variables.scss'; 
     
+    .page-container{
+        height: calc(100% - 82px);
+    }
+
     form>.columns>.column{
         padding: 0px;
     }
@@ -616,17 +624,20 @@ export default {
         }
         img {
             position: absolute;
+            height: 105px;
+            width: 105px;
         }
         .image-placeholder {
             position: absolute;
             margin-left: 10px;
             margin-right: 10px;
-            bottom: 45%;
             font-size: 0.8rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
+            top: 38px;
+            max-width: 90px;
         }
         #button-edit-thumbnail {
 
@@ -652,11 +663,11 @@ export default {
              .thumbnail-buttons-row {
                 display: inline-block;
                 position: relative;
-                top: -128px;
+                top: 0px;
                 background-color: rgba(255, 255, 255, 0.9);
                 padding: 2px 8px;
                 border-radius: 0px 0px 0px 4px;
-                left: 88px;
+                left: 65px;
             }
         }
     
