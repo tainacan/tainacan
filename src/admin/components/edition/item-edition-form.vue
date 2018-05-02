@@ -18,6 +18,7 @@
 
                     <!-- Status -------------------------------- --> 
                     <label class="section-label">{{ $i18n.get('label_status') }}</label>
+                    <span class="required-field-asterisk">*</span>
                     <help-button 
                             :title="$i18n.getHelperTitle('items', 'status')" 
                             :message="$i18n.getHelperMessage('items', 'status')"/>
@@ -41,19 +42,13 @@
                             </p>
                         </div> 
                         <div class="field is-grouped">
-                            <!-- <div class="control">     
-                                <button
-                                        id="button-cancel-item-creation"
-                                        class="button is-outlined"
-                                        type="button"
-                                        @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-                            </div> -->
                             <div class="control">
                                 <button
                                         id="button-submit-item-creation"
                                         @click.prevent="onSubmit"
-                                        class="button is-success" 
-                                        >{{ $i18n.get('save') }}</button> 
+                                        class="button is-success">
+                                    {{ $i18n.get('save') }}
+                                </button> 
                             </div>
                         </div>
                         <p class="help is-danger">{{ formErrorMessage }}</p> 
@@ -275,7 +270,7 @@
 
                     <!-- Fields from Collection-------------------------------- -->
                     <tainacan-form-item 
-                            v-for="(field, index) in fieldList"
+                            v-for="(field, index) of fieldList"
                             :key="index"
                             :field="field"
                             :is-collapsed="!fieldCollapses[index]" />   
@@ -404,7 +399,7 @@ export default {
                 this.form.document_type = this.item.document_type;
 
                 this.loadMetadata();
-                
+                   
             })
             .catch(error => this.$console.error(error));
         },
@@ -453,9 +448,6 @@ export default {
             this.form.document = '';
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type });
         },
-        // cancelBack(){
-        //     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
-        // },
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
             .then(() => {
@@ -522,7 +514,7 @@ export default {
     },
     computed: {
         fieldList() {
-            return this.getFields();
+            return JSON.parse(JSON.stringify(this.getFields()));
         },
         attachmentsList(){
             return this.getAttachments();
