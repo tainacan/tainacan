@@ -80,7 +80,30 @@
                         </div>
                     </b-field>
                 </div>
-                <div class="column">            
+                <div class="column">
+                    <!-- Status -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_status')"
+                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'status')" 
+                                :message="$i18n.getHelperMessage('collections', 'status')"/>
+                        <b-select
+                                id="tainacan-select-status"
+                                v-model="form.status"
+                                @focus="clearErrors('status')"
+                                :placeholder="$i18n.get('instruction_select_a_status')">
+                            <option
+                                    v-for="statusOption in statusOptions"
+                                    :key="statusOption.value"
+                                    :value="statusOption.value"
+                                    :disabled="statusOption.disabled">{{ statusOption.label }}
+                            </option>
+                        </b-select>
+                    </b-field>
+            
                     <!-- Name -------------------------------- --> 
                     <b-field 
                         :addons="false"
@@ -110,29 +133,6 @@
                                 type="textarea"
                                 v-model="form.description"
                                 @focus="clearErrors('description')"/>
-                    </b-field>
-
-                    <!-- Status -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_status')"
-                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'status')" 
-                                :message="$i18n.getHelperMessage('collections', 'status')"/>
-                        <b-select
-                                id="tainacan-select-status"
-                                v-model="form.status"
-                                @focus="clearErrors('status')"
-                                :placeholder="$i18n.get('instruction_select_a_status')">
-                            <option
-                                    v-for="statusOption in statusOptions"
-                                    :key="statusOption.value"
-                                    :value="statusOption.value"
-                                    :disabled="statusOption.disabled">{{ statusOption.label }}
-                            </option>
-                        </b-select>
                     </b-field>
 
                     <!-- Enable Cover Page -------------------------------- -->
