@@ -37,7 +37,7 @@ import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
-import { router} from './router'
+import router from './router'
 import eventBusSearch from '../../js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
 

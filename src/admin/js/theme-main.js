@@ -33,7 +33,7 @@ import ItemsPage from '../pages/lists/items-page.vue';
 import HelpButton from '../components/other/help-button.vue';
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
-import { routerTheme } from './router.js'
+import routerTheme from './theme-router.js'
 import eventBusSearch from '../../js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
 
