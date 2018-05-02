@@ -83,7 +83,7 @@ export default {
             margin-left: -12px; 
 
             .level-item{
-                height: 52px;
+                height: $header-height;
                 width: 180px;
                 transition: margin 0.15s linear;
                 -webkit-transition: margin 0.15s linear;
@@ -91,7 +91,7 @@ export default {
                 cursor: pointer;
 
                 &:hover{
-                    background-color: #257887;
+                    background-color: #257787;
                 }
                 &:focus {
                     box-shadow: none;

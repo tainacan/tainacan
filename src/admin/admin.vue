@@ -80,7 +80,7 @@
         margin: $header-height auto 0 auto;
         position: relative;
         overflow-y: auto;
-        height: calc(100% - 52px);
+        height: calc(100% - 53px);
 
         @media screen and (max-width: 769px) {
             & {

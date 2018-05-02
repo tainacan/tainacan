@@ -65,7 +65,7 @@
                                         form.document_type != undefined && form.document_type != null &&
                                         form.document != '' && form.document_type != 'empty'">
                             <div v-if="form.document_type == 'attachment'">
-                                File ID: {{ form.document }}
+                                <div v-html="item.document_as_html" />
                                 <button                                            
                                         class="button is-primary" 
                                         size="is-small"
@@ -80,7 +80,7 @@
                                 </button>
                             </div>
                             <div v-if="form.document_type == 'text'">
-                                <p>{{ form.document }}</p>
+                                <div v-html="item.document_as_html" />
                                 <button                                            
                                         class="button is-primary" 
                                         size="is-small"
@@ -95,7 +95,7 @@
                                 </button>
                             </div>
                             <div v-if="form.document_type == 'url'">
-                                <p>{{ form.document }}</p>
+                                <div v-html="item.document_as_html" />
                                 <button     
                                         class="button is-primary" 
                                         size="is-small"
@@ -469,7 +469,11 @@ export default {
                     onSave: (file) => {
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
-                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type });
+                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+                        .then((item) => {
+                            this.item.document_as_html = item.document_as_html;
+                        })
+                        .catch(error => this.$console.error(error));
                     }
                 }
             );

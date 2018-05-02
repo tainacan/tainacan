@@ -14,6 +14,7 @@
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
             <h3>{{ $i18n.get('filters') }}</h3>
+            
             <filters-items-list
                     v-if="!isLoadingFilters && filters.length > 0"
                     :filters="filters"/>
