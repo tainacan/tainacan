@@ -62,7 +62,7 @@ class Embed {
 		//$viewer_url = $TAINACAN_BASE_URL . '/assets/pdfjs-dist/web/viewer.html?file=' . $url;
 		
 		$defaults = array(
-			'width' => 800,
+			'width' => '100%%',
 			'height' => 1000
 		);
 		
@@ -70,7 +70,7 @@ class Embed {
 		
 		$dimensions = '';
 		if ( ! empty( $args['width'] ) && ! empty( $args['height'] ) ) {
-			$dimensions .= sprintf( "width='%d' ", (int) $args['width'] );
+			$dimensions .= sprintf( "width='%s' ", $args['width'] );
 			$dimensions .= sprintf( "height='%d' ", (int) $args['height'] );
 		}
 		
