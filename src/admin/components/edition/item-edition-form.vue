@@ -15,8 +15,55 @@
                 label-width="120px">
             <div class="columns">
                 <div class="column is-4">
+
+                    <!-- Status -------------------------------- --> 
+                    <label class="section-label">{{ $i18n.get('label_status') }}</label>
+                    <help-button 
+                            :title="$i18n.getHelperTitle('items', 'status')" 
+                            :message="$i18n.getHelperMessage('items', 'status')"/>
+                    <div class="document-box">
+                        <div class="field">
+                            <b-select 
+                                    v-model="form.status"
+                                    :placeholder="$i18n.get('instruction_select_a_status')">
+                                <option
+                                        :id="`status-option-${statusOption.value}`"
+                                        v-for="statusOption in statusOptions"
+                                        :key="statusOption.value"
+                                        :value="statusOption.value"
+                                        :disabled="statusOption.disabled">{{ statusOption.label }}
+                                </option>
+                            </b-select>
+                            <p 
+                                    v-if="item.status == 'auto-draft'"
+                                    class="help is-danger">
+                                {{ $i18n.get('info_item_not_saved') }}
+                            </p>
+                        </div> 
+                        <div class="field is-grouped">
+                            <!-- <div class="control">     
+                                <button
+                                        id="button-cancel-item-creation"
+                                        class="button is-outlined"
+                                        type="button"
+                                        @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                            </div> -->
+                            <div class="control">
+                                <button
+                                        id="button-submit-item-creation"
+                                        @click.prevent="onSubmit"
+                                        class="button is-success" 
+                                        >{{ $i18n.get('save') }}</button> 
+                            </div>
+                        </div>
+                        <p class="help is-danger">{{ formErrorMessage }}</p> 
+                    </div>
+                        
                     <!-- Document -------------------------------- -->
                     <label class="section-label">{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                    <help-button 
+                            :title="$i18n.getHelperTitle('items', 'document')" 
+                            :message="$i18n.getHelperMessage('items', 'document')"/>
                     <div class="document-box">
                         <div 
                                 v-if="form.document != undefined && form.document != null &&
@@ -160,6 +207,9 @@
 
                     <!-- Thumbnail -------------------------------- --> 
                     <label class="section-label">{{ $i18n.get('label_thumbnail') }}</label>
+                    <help-button 
+                            :title="$i18n.getHelperTitle('items', 'featured_img_id')" 
+                            :message="$i18n.getHelperMessage('items', 'featured_img_id')"/>
                     <div class="document-box">
                         <div class="thumbnail-field">
                             <a 
@@ -223,27 +273,6 @@
                                 :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
 
-                    <!-- Status -------------------------------- --> 
-                    <b-field 
-                            :addons="false"
-                            :label="$i18n.get('label_status')">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('items', 'status')" 
-                                :message="$i18n.getHelperMessage('items', 'status')"/>
-                        <b-select 
-                                id="status-select"
-                                v-model="form.status"
-                                :placeholder="$i18n.get('instruction_select_a_status')">
-                            <option
-                                    :id="`status-option-${statusOption.value}`"
-                                    v-for="statusOption in statusOptions"
-                                    :key="statusOption.value"
-                                    :value="statusOption.value"
-                                    :disabled="statusOption.disabled">{{ statusOption.label }}
-                            </option>
-                        </b-select>
-                    </b-field> 
-                        
                     <!-- Fields from Collection-------------------------------- -->
                     <tainacan-form-item 
                             v-for="(field, index) in fieldList"
@@ -253,24 +282,6 @@
   
                 </div>
             </div>
-
-            <div class="field is-grouped form-submit">
-                <div class="control">     
-                    <button
-                            id="button-cancel-item-creation"
-                            class="button is-outlined"
-                            type="button"
-                            @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-                </div>
-                <div class="control">
-                    <button
-                            id="button-submit-item-creation"
-                            @click.prevent="onSubmit"
-                            class="button is-success" 
-                            >{{ $i18n.get('save') }}</button> 
-                </div>
-            </div>
-            <p class="help is-danger">{{ formErrorMessage }}</p> 
         </form>
 
         <b-loading 
@@ -442,9 +453,9 @@ export default {
             this.form.document = '';
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type });
         },
-        cancelBack(){
-            this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
-        },
+        // cancelBack(){
+        //     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+        // },
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
             .then(() => {

@@ -200,6 +200,7 @@ return [
 	'info_no_page_found'                       => __( 'No page was found with this name.', 'tainacan' ),
 	'info_no_user_found'                       => __( 'No user was found with this name.', 'tainacan' ),
 	'info_no_item_found'                       => __( 'No item was found here with these filters.', 'tainacan' ),
+	'info_item_not_saved'           		   => __( 'Warning: Item not saved.', 'tainacan' ),
 	'info_no_moderator_on_collection'          => __( "This collection doesn't have any moderator yet.", 'tainacan' ),
 	'info_error_deleting_collection'           => __( 'Error on deleting collection.', 'tainacan' ),
 	'info_error_deleting_category'             => __( 'Error on deleting category', 'tainacan' ),

@@ -143,6 +143,9 @@ html {
         .button.is-outlined {
             color: $tertiary;
         }
+        &.has-only-save {
+            justify-content: end !important;
+        }
     }
     .label { 
         font-weight: normal;

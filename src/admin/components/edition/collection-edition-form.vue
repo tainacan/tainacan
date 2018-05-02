@@ -1,9 +1,14 @@
 <template>
     <div :class="{'primary-page' : isNewCollection }">
-        <b-tag 
-                v-if="collection != null && collection != undefined" 
-                :type="'is-' + getStatusColor(collection.status)" 
-                v-text="collection.status"/>
+        <div class="tainacan-page-title">
+            <h2>{{ $i18n.get('title_collection_edition') }}</h2>
+            <a 
+                    @click="$router.go(-1)"
+                    class="back-link is-secondary">
+                {{ $i18n.get('return') }}
+            </a>
+            <hr>
+        </div>
         <form 
                 v-if="collection != null && collection != undefined" 
                 class="tainacan-form" 
@@ -420,20 +425,6 @@ export default {
 
                 this.isLoading = false;
             });
-        },
-        getStatusColor(status) {
-            switch(status) {
-                case 'publish': 
-                    return 'success'
-                case 'draft':
-                    return 'info'
-                case 'private': 
-                    return 'warning'
-                case 'trash':
-                    return 'danger'
-                default:
-                    return 'info'
-            }
         },
         createNewCollection() {
             // Puts loading on Draft Collection creation
