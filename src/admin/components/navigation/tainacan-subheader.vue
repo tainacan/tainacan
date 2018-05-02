@@ -12,11 +12,13 @@
                     <span 
                             v-for="(pathItem, index) in arrayRealPath" 
                             :key="index">
-                        <router-link 
+                        <router-link
+                                v-if="index < arrayRealPath.length - 1" 
                                 tag="a" 
                                 :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
                             {{ arrayViewPath[index] }}
                         </router-link>
+                        <span v-if="index == arrayRealPath.length - 1">{{ arrayViewPath[index] }}</span>
                         <span v-if="index != arrayRealPath.length - 1"> > </span>
                     </span>   
                 </nav>
@@ -52,7 +54,7 @@
                     :aria-label="$i18n.get('label_collection_fields')">
                 <b-icon 
                     size="is-small" 
-                    icon="format-list-checks"/>
+                    icon="format-list-bulleted-type"/>
                 <br>
                 <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
             </router-link></li>
@@ -74,7 +76,7 @@
                     :aria-label="$i18n.get('label_collection_events')">
                 <b-icon 
                         size="is-small" 
-                        icon="calendar"/>
+                        icon="calendar-range"/>
                 <br>
                 <span class="menu-text">{{ $i18n.get('events') }}</span>
             </router-link></li>
@@ -217,6 +219,7 @@ export default {
         .breadcrumbs {
             font-size: 12px;
             line-height: 12px;
+            color: #1d1d1d;
         }
 
         .level-left {
@@ -267,6 +270,7 @@ export default {
                 padding: 0;
             }
             .menu-text {
+                font-size: 14px;
                 opacity: 1;
                 visibility: visible;
                 transition: opacity 0.3s linear, visibility 0.3s linear;

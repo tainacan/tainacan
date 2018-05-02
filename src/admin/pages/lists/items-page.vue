@@ -337,7 +337,7 @@
         overflow-y: auto;
         visibility: visible;
         display: block;
-        transition: visibility 0.5s ease, display 0.5s ease;
+        transition: visibility ease 0.5s, display ease 0.5s;
 
         .label {
             font-size: 12px;
@@ -348,7 +348,7 @@
 
     .items-list-area {
         margin-left: 0;
-        transition: margin-left 0.5s ease;
+        transition: margin-left ease 0.5s ;
     }
     .spaced-to-right {
         margin-left: $filter-menu-width;

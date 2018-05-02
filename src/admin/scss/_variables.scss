@@ -3,7 +3,7 @@
 @import "../../../node_modules/bulma/sass/utilities/functions";
 
 // Tainacan custom colors
-$primary: #2cb4c1;// #25a189;
+$primary: #2cb4c1;
 $primary-invert: findColorInvert($primary);
 $secondary: #298596;
 $secondary-invert: findColorInvert($secondary);
@@ -69,9 +69,9 @@ $page-mobile-side-padding: 1em;
 $page-mobile-top-padding: 0.5em;
 
 // Links
-$link: $primary;
-$link-invert: $primary-invert;
-$link-focus-border: $primary; 
+$link: $secondary;
+$link-invert: $secondary-invert;
+$link-focus-border: $secondary; 
 
 // Table
 $table-head-cell-color: $gray-light;

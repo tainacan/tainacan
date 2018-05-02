@@ -31,7 +31,7 @@
                         :class="activeRoute == 'FieldsPage' ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
-                            icon="format-list-checks"/> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
+                            icon="format-list-bulleted-type"/> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
@@ -55,7 +55,7 @@
                         :class="activeRoute == 'EventsPage' ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
-                            icon="calendar"/> <span class="menu-text">{{ $i18n.get('events') }}</span>
+                            icon="calendar-range"/> <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link></li>
             </ul>
         </aside>
@@ -82,6 +82,7 @@ export default {
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear; 
         max-width: $side-menu-width;
+        box-shadow: -3px 0px 8px #111;
         z-index: 99;
         
         .separator {
@@ -118,8 +119,7 @@ export default {
         }
 
         &.is-compressed {
-            max-width: 44px;
-
+            max-width: 45px;
             a { 
                 padding-left: 0.8em;
                 padding-right: 0.8em;
@@ -128,8 +128,6 @@ export default {
                 visibility: hidden; 
                 opacity: 0;
             }
-            box-shadow: -3px 0px 10px #111;
-            z-index: 10;
         }
 
         @media screen and (max-width: 769px) {

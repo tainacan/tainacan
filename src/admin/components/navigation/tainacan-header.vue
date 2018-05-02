@@ -80,10 +80,9 @@ export default {
 
             .level-item{
                 height: $header-height;
-                width: 180px;
-                transition: margin 0.15s linear;
-                -webkit-transition: margin 0.15s linear;
-                margin-left: 0px;
+                width: 184px;
+                transition: width 0.15s;
+                -webkit-transition: width linear 0.15s;   
                 cursor: pointer;
 
                 &:hover{
@@ -94,7 +93,9 @@ export default {
                 }
                 .tainacan-logo {
                     max-height: 22px;
-                    padding: 0px 28px;   
+                    padding: 0px 28px;
+                    transition: padding 0.15s;
+                    -webkit-transition: padding linear 0.15s;   
                 }
             }   
         }
@@ -116,10 +117,17 @@ export default {
                         height: 27px;
                         font-size: 11px;
                         color: $gray-light;
+                        transition: width linear 0.15s;
+                        -webkit-transition: width linear 0.15s;
+                        width: 160px;
+                    }
+                    input:focus, input:active {
+                        width: 220px !important;
                     }
                     .icon {
                         color: $tertiary;
                         height: 27px;
+                        font-size: 18px;
                     }
                 }
                
@@ -131,12 +139,9 @@ export default {
         }
         &.menu-compressed {
             .level-left .level-item {
-                margin-left: 44px;
-                width: 160px;
-
+                width: 220px;
                 .tainacan-logo {
-                    max-height: 22px;
-                    padding: 0px 16px;   
+                    padding: 0px 42px;   
                 }
             }
             
