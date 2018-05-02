@@ -7,7 +7,7 @@ $primary: #2cb4c1;// #25a189;
 $primary-invert: findColorInvert($primary);
 $secondary: #298596;
 $secondary-invert: findColorInvert($secondary);
-$tertiary: #1f2f56;
+$tertiary: #01295c;
 $tertiary-invert: findColorInvert($tertiary);
 
 $primary-light:#A5CDD7;
@@ -53,11 +53,11 @@ $colors: map-merge($colors, $addColors);
 $size-small: 0.85em; // 0.75em on Bulma.
 
 // Tainacan Header and side menus
-$header-height: 52px;
+$header-height: 53px;
 $subheader-height: 82px;
 $side-menu-width: 180px;
 $filter-menu-width: 200px;
-$page-height: calc(100% - 52px);
+$page-height: calc(100% - 53px);
 
 // Overall Pages padding:
 $page-side-padding: 82px;

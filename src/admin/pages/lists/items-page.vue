@@ -126,8 +126,7 @@
                 isLoadingFilters: false,
                 isLoadingFields: false,
                 hasFiltered: false,
-                isFiltersMenuCompressed: false,
-                collapseAll: true,
+                isFiltersMenuCompressed: false
             }
         },
         props: {
@@ -154,14 +153,7 @@
             ]),
             ...mapGetters('filter', [
                 'getFilters'
-            ]),
-            toggleCollapseAll() {
-                this.collapseAll = !this.collapseAll;
-
-                for (let i = 0; i < this.fieldCollapses.length; i++)
-                    this.fieldCollapses[i] = this.collapseAll;
-
-            },
+            ])
         },
         computed: {
             items() {
@@ -281,11 +273,6 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
-
-    .collapse-all {
-        font-size: 12px;
-        .icon { vertical-align: bottom; }
-    }
 
     .page-container, .page-container-small {
         padding: 0px;

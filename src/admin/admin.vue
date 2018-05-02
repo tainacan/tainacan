@@ -80,7 +80,7 @@
         margin: $header-height auto 0 auto;
         position: relative;
         overflow-y: auto;
-        height: calc(100% - 52px);
+        height: calc(100% - 53px);
 
         @media screen and (max-width: 769px) {
             & {
@@ -103,7 +103,7 @@
         width: 23px;
         border: none;
         background-color: $primary-light;
-        color: $tertiary;
+        color: $secondary;
         padding: 0px;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;

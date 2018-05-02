@@ -16,16 +16,7 @@
             </div>
         </div>
         <div class="level-right">
-            <a      
-                    v-show="!showSearch"
-                    @click="showSearch = true;"
-                    class="level-item">
-                <b-icon icon="magnify"/>  
-            </a>
-            <span
-                    @mouseleave="searchTerm.length <= 0 ? showSearch = false : showSearch = true" 
-                    v-show="showSearch"
-                    class="search-area">
+            <span class="search-area">
                 <b-input 
                     :placeholder="$i18n.get('instruction_search_repository')"
                     type="search"
@@ -51,7 +42,6 @@ export default {
         return {
             logoHeader: tainacan_plugin.base_url + '/admin/images/tainacan_logo_header.png',
             wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
-            showSearch: false,
             searchTerm: ''
         }
     },
@@ -83,7 +73,7 @@ export default {
             margin-left: -12px; 
 
             .level-item{
-                height: 52px;
+                height: $header-height;
                 width: 180px;
                 transition: margin 0.15s linear;
                 -webkit-transition: margin 0.15s linear;
@@ -91,7 +81,7 @@ export default {
                 cursor: pointer;
 
                 &:hover{
-                    background-color: #257887;
+                    background-color: #257787;
                 }
                 &:focus {
                     box-shadow: none;
@@ -115,7 +105,10 @@ export default {
                 align-items: center;
 
                 input {
+                    height: 27px;
                     margin: 0px 12px;
+                    font-size: 11px;
+                    color: $gray-light;
                 }
                 .icon {
                     color: $tertiary;
