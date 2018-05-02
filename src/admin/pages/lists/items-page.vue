@@ -13,10 +13,24 @@
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
-            <h3>{{ $i18n.get('filters') }}</h3>
+
+
+            <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
+            <a
+                    class="collapse-all"
+                    @click="toggleCollapseAll">
+                {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                <b-icon
+                        type="is-secondary"
+                        :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+            </a>
+            <br>
+
             <filters-items-list
                     v-if="!isLoadingFilters && filters.length > 0"
-                    :filters="filters"/>
+                    :filters="filters"
+                    :collapsed="collapseAll"/>
+
             <section
                     v-else
                     class="is-grouped-centered section">
@@ -112,7 +126,8 @@
                 isLoadingFilters: false,
                 isLoadingFields: false,
                 hasFiltered: false,
-                isFiltersMenuCompressed: false
+                isFiltersMenuCompressed: false,
+                collapseAll: true,
             }
         },
         props: {
@@ -139,7 +154,14 @@
             ]),
             ...mapGetters('filter', [
                 'getFilters'
-            ])
+            ]),
+            toggleCollapseAll() {
+                this.collapseAll = !this.collapseAll;
+
+                for (let i = 0; i < this.fieldCollapses.length; i++)
+                    this.fieldCollapses[i] = this.collapseAll;
+
+            },
         },
         computed: {
             items() {
@@ -259,6 +281,11 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
+
+    .collapse-all {
+        font-size: 12px;
+        .icon { vertical-align: bottom; }
+    }
 
     .page-container, .page-container-small {
         padding: 0px;
