@@ -73,8 +73,9 @@ return [
 	'title_item_edition'                       => __( 'Item Edition Page', 'tainacan' ),
 	'title_category_edition_page'              => __( 'Category Edition Page', 'tainacan' ),
 	'title_filter_edition'                     => __( 'Filter Edition Page', 'tainacan' ),
+	'title_field_edition'                      => __( 'Field Edition Page', 'tainacan' ),
 	'title_collection_fields_edition'          => __( 'Collection Fields Edition Page', 'tainacan' ),
-	'title_collection_filters_edition'          => __( 'Collection Filters Edition Page', 'tainacan' ),
+	'title_collection_filters_edition'         => __( 'Collection Filters Edition Page', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                              => __( 'Clear', 'tainacan' ),
@@ -168,10 +169,6 @@ return [
 	'label_collapse_all'		 			   => __( 'Collapse all', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
-	'instruction_dragndrop_fields_collection'    => __( 'Drag and drop Fields here to Collection.', 'tainacan' ),
-	'instruction_dragndrop_filters_collection'   => __( 'Drag and drop Fields to create Filters on Collection.', 'tainacan' ),
-	'instruction_dragndrop_fields_repository'    => __( 'Drag and drop Fields here to Repository.', 'tainacan' ),
-	'instruction_dragndrop_filters_repository'   => __( 'Drag and drop Fields to create Filters on Repository.', 'tainacan' ),
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'          => __( 'Delete selected items', 'tainacan' ),
 	'instruction_delete_selected_categories'     => __( 'Delete selected categories', 'tainacan' ),

@@ -1,8 +1,16 @@
 <template>
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"/>
-        <div class="page-title">
-            <h2>{{ isRepositoryLevel ? $i18n.get('instruction_dragndrop_fields_repository') : $i18n.get('instruction_dragndrop_fields_collection') }}</h2>
+        <div 
+                v-if="!isRepositoryLevel"
+                class="tainacan-page-title">
+            <h2>{{ $i18n.get('title_field_edition') }}</h2>
+            <a
+                    @click="$router.go(-1)"
+                    class="back-link is-secondary">
+                {{ $i18n.get('return') }}
+            </a>
+            <hr>
         </div>
         <div class="columns">
             <div class="column">        
