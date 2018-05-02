@@ -150,8 +150,8 @@
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        max-height: $header-height;
-        height: $header-height;
+        max-height: $subheader-height;
+        height: $subheader-height;
         margin-left: -$page-small-side-padding;
         margin-right: -$page-small-side-padding;
         margin-top: -$page-small-top-padding;
@@ -181,14 +181,6 @@
         margin-top: 0;
         min-height: 100%;
         height: auto;
-
-        .filters-menu {
-            min-width: $side-menu-width;
-            max-width: $side-menu-width;
-            background-color: $primary-lighter;
-            margin-left: -$page-small-side-padding;
-            padding-left: $page-small-side-padding
-        }
 
         .table-container {
             margin-right: -$page-small-side-padding;
