@@ -23,15 +23,12 @@
                             :placeholder="$i18n.get('instruction_search_repository')" 
                             class="input is-small" 
                             type="search" 
-                            v-model="searchTerm"
-                            @click="alert('Not ready to use in Alpha version.')">
+                            v-model="searchTerm">
                     <span class="icon is-right">
                         <i class="mdi mdi-magnify" />
                     </span>
                 </div>
-                <a 
-                        @click.prevent="alert('Not ready to use in Alpha version.')"
-                        href="">{{ $i18n.get('advanced_search') }}</a>
+                <a href="">{{ $i18n.get('advanced_search') }}</a>
             </span>
             <a 
                     class="level-item" 
@@ -55,15 +52,6 @@ export default {
     },
     props: {
         isMenuCompressed: false
-    },
-    methods: {
-        alert(message) {
-            this.$toast.open({
-                duration: 3000,
-                message: message,
-                position: 'is-bottom'
-            });
-        }
     }
 }
 </script>
@@ -118,7 +106,7 @@ export default {
                 color: $tertiary;
             }
             .search-area {
-                display: flex;
+                display: none;//display: flex;
                 align-items: center;
                 margin-right: 36px;
 
