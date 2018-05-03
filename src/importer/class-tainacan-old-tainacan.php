@@ -206,6 +206,7 @@ class Old_Tainacan extends Importer
                 $special = [
                     'socialdb_property_fixed_type'
                 ];
+
                 if(!in_array($meta->slug, $avoid) && !in_array($meta->type, $avoid))
                 {
                     $newField = new \Tainacan\Entities\Field();
@@ -218,8 +219,7 @@ class Old_Tainacan extends Importer
                     $newField->set_collection_id('default');
                     $newField->validate(); // there is no user input here, so we can be sure it will validate.
 
-                    $newField = $Fields_Repository->insert($newField);
-                    print $meta->type;
+                    $Fields_Repository->insert($newField);
                 }
             }
         }
