@@ -1,14 +1,6 @@
 <template>
     <div>
-        <div class="tainacan-page-title">
-            <h2>{{ $i18n.get('title_item_edition') }}</h2>
-            <a 
-                    @click="$router.go(-1)"
-                    class="back-link is-secondary">
-                {{ $i18n.get('return') }}
-            </a>
-            <hr>
-        </div>
+        <tainacan-title />
         <form 
                 v-if="!isLoading" 
                 class="tainacan-form" 
@@ -281,7 +273,8 @@
 
         <b-loading 
                 :active.sync="isLoading" 
-                :can-cancel="false"/></div>
+                :can-cancel="false"/>
+    </div>
 </template>
 
 <script>

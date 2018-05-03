@@ -2,14 +2,16 @@
     <div 
             class="tainacan-page-title"
             id="title-row">
-        <h1>{{ pageTitle }}</h1>
+        <h1>{{ pageTitle }} <span class="has-text-weight-bold">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
         <a 
                 @click="$router.go(-1)"
                 class="back-link is-secondary">
             {{ $i18n.get('return') }}
         </a>
         <hr>
-        <nav class="breadcrumbs">
+        <nav 
+                v-show="isRepositoryLevel"
+                class="breadcrumbs">
             <router-link 
                     tag="a" 
                     :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
@@ -32,15 +34,16 @@
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-    name: 'TitleRow',
+    name: 'TainacanTitle',
     data(){
         return {
             wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
-            onSecondaryPage: false,
+            isRepositoryLevel: true,
             pageTitle: '',
             arrayRealPath: [],
             arrayViewPath: [],
-            activeRouteName: ''
+            activeRouteName: '',
+            entityName: ''
         }
     },
     methods: {
@@ -70,18 +73,18 @@ export default {
             for (let i = 0; i < this.arrayRealPath.length; i++) {
                 
                 this.arrayViewPath.push('');
-                
+
                 if (!isNaN(this.arrayRealPath[i]) && i > 0) {
                     
                     switch(this.arrayRealPath[i-1]) {
                         case 'collections':
                             this.fetchCollectionName(this.arrayRealPath[i])
-                                .then(collectionName => this.arrayViewPath.splice(i, 1, collectionName))
+                                .then(collectionName => { this.arrayViewPath.splice(i, 1, collectionName); this.entityName = collectionName; })
                                 .catch((error) => this.$console.error(error));
                             break;
                         case 'items':
                             this.fetchItemTitle(this.arrayRealPath[i])
-                                .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
+                                .then(itemName => { this.arrayViewPath.splice(i, 1, itemName); this.entityName = itemName; })
                                 .catch((error) => this.$console.error(error));
                             break;
                         case 'categories':
@@ -99,13 +102,12 @@ export default {
                 } else {
                     this.arrayViewPath.splice(i, 1, this.$i18n.get(this.arrayRealPath[i])); 
                 }
-                
             }
         }
     },
     watch: {
         '$route' (to) {
-            this.onSecondaryPage = (to.params.collectionId != undefined);
+            this.isRepositoryLevel = (to.params.collectionId == undefined);
             this.pageTitle = this.$route.meta.title;
 
             this.arrayRealPath = to.path.split("/");
@@ -115,7 +117,7 @@ export default {
         }
     },
     created() {
-        this.onSecondaryPage = (this.$route.params.collectionId != undefined);
+        this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
         this.pageTitle = this.$route.meta.title;
 
         this.arrayRealPath = this.$route.path.split("/");

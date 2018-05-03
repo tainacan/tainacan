@@ -1,13 +1,12 @@
 <template>
     <div class="primary-page page-container">
-        <title-row/>
+        <tainacan-title />
         <filters-list/>
     </div>
 </template>
 
 <script>
 import FiltersList from '../../components/lists/filters-list.vue';
-import TitleRow from '../../components/navigation/title-row.vue';
 
 export default {
     name: 'FiltersPage',
@@ -16,8 +15,7 @@ export default {
         }
     },
     components: {
-        FiltersList,
-        TitleRow
+        FiltersList
     }
 }
 </script>
