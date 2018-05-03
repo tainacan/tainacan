@@ -1,8 +1,14 @@
 <template>
     <div>
-        <div class="primary-page page-container">
-            <tainacan-title />
-            <div class="columns above-subheader">
+        <div
+                :class="{
+                    'primary-page': isRepositoryLevel,
+                    'page-container': isRepositoryLevel
+                }">
+            <tainacan-title v-if="!isRepositoryLevel" />
+            <div
+                    class="columns"
+                    :class="{ 'above-subheader': isRepositoryLevel }">
                 <div class="column table-container">
                     <events-list
                             :is-loading="isLoading"
@@ -76,6 +82,7 @@
         methods: {
             ...mapActions('event', [
                 'fetchEvents',
+                'fetchCollectionEvents',
             ]),
             ...mapGetters('event', [
                 'getEvents'
@@ -93,14 +100,25 @@
             loadEvents() {
                 this.isLoading = true;
 
-                this.fetchEvents({ 'page': this.page, 'eventsPerPage': this.eventsPerPage })
-                    .then((res) => {
-                        this.isLoading = false;
-                        this.totalEvents = res.total;
-                    })
-                    .catch(() => {
-                        this.isLoading = false;
-                    });
+                if(this.isRepositoryLevel) {
+                    this.fetchEvents({'page': this.page, 'eventsPerPage': this.eventsPerPage})
+                        .then((res) => {
+                            this.isLoading = false;
+                            this.totalEvents = res.total;
+                        })
+                        .catch(() => {
+                            this.isLoading = false;
+                        });
+                } else {
+                    this.fetchCollectionEvents({'page': this.page, 'eventsPerPage': this.eventsPerPage, 'collectionId': this.$route.params.collectionId})
+                        .then((res) => {
+                            this.isLoading = false;
+                            this.totalEvents = res.total;
+                        })
+                        .catch(() => {
+                            this.isLoading = false;
+                        });
+                }
             },
             getLastEventNumber() {
                 let last = (Number(this.eventsPerPage * (this.page - 1)) + Number(this.eventsPerPage));
@@ -120,7 +138,7 @@
             }
         },
         created() {
-            this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
+            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
             this.$userPrefs.get('events_per_page')
                 .then((value) => {
                     this.eventsPerPage = value;

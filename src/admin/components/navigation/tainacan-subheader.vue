@@ -72,7 +72,7 @@
             <li class="level-item"><router-link 
                     tag="a" 
                     :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
-                    :class="activeRoute == 'EventsList' ? 'is-active':''" 
+                    :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
                     :aria-label="$i18n.get('label_collection_events')">
                 <b-icon 
                         size="is-small" 

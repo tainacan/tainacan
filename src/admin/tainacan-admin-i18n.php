@@ -59,6 +59,7 @@ return [
 	'title_collection_page'                    => __( 'Collection Page', 'tainacan' ),
 	'title_item_page'                          => __( 'Item Page', 'tainacan' ),
 	'title_field_page'                         => __( 'Field Page', 'tainacan' ),
+	'title_collection_events'                  => __( 'Collection Events', 'tainacan' ),
 
 	/* translators: alkdjklasdj laksjd klsadj */
 	'title_filter_page'                        => __( 'Filter Page', 'tainacan' ),
