@@ -2,6 +2,11 @@
 
 namespace Tainacan\Exposers\Mappers;
 
+/**
+ * Support Dublin Core Mapping 
+ * http://purl.org/dc/elements/1.1/
+ *
+ */
 class Dublin_Core extends Mapper {
 	public $slug = 'dublin-core';
 	public $name = 'Dublin Core';
@@ -9,7 +14,7 @@ class Dublin_Core extends Mapper {
 	public $context_url = 'http://dublincore.org/documents/dcmi-terms/';
 	public $header = '<?xml version="1.0"?><!DOCTYPE rdf:RDF SYSTEM "http://dublincore.org/2000/12/01-dcmes-xml-dtd.dtd"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" ></rdf:RDF>';
 	public $prefix = 'dc:';
-	public $options = [
+	public $metadata = [
 		'contributor' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/contributor',
 			'label' => 'Contributor'

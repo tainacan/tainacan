@@ -10,8 +10,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */ 
 class Exposers {
 	
-	private $types = [];
-	private $mappers = [];
+	protected $types = [];
+	protected $mappers = [];
 	private static $instance = null;
 	const MAPPER_CLASS_PREFIX = 'Tainacan\Exposers\Mappers\\';
 	
@@ -118,7 +118,7 @@ class Exposers {
 		$ret = $item_arr;
 		$field_mapping = $item_arr['field']['exposer_mapping'];
 		if(array_key_exists($mapper->slug, $field_mapping)) {
-			if(is_array($mapper->options) && !array_key_exists( $field_mapping[$mapper->slug], $mapper->options) ) {
+			if(is_array($mapper->metadata) && !array_key_exists( $field_mapping[$mapper->slug], $mapper->metadata) ) {
 				throw new \Exception('Invalid Mapper Option');
 			}
 			$ret = [$mapper->prefix.$field_mapping[$mapper->slug].$mapper->sufix => $item_arr['value']]; //TODO Validate option
@@ -220,13 +220,13 @@ class Exposers {
 		) {
 			if(
 				$type === false || // do not have a exposer type
-				$type->mappers === true || // the type accept all mappers
-				( is_array($type->mappers) && in_array($body['exposer-map'], $type->mappers) ) ) { // the current mapper is accepted by type
+				$type->get_mappers() === true || // the type accept all mappers
+				( is_array($type->mappers) && in_array($body['exposer-map'], $type->get_mappers()) ) ) { // the current mapper is accepted by type
 				$mapper = $Tainacan_Exposers->check_class_name($body['exposer-map'], true, self::MAPPER_CLASS_PREFIX);
 				return new $mapper;
 			} 
-		} elseif( is_object($type) && is_array($type->mappers) && count($type->mappers) > 0 ) { //there are no defined mapper, let use the first one o list if has a list
-			$mapper = $Tainacan_Exposers->check_class_name($type->mappers[0], true, self::MAPPER_CLASS_PREFIX);
+		} elseif( is_object($type) && is_array($type->get_mappers()) && count($type->get_mappers()) > 0 ) { //there are no defined mapper, let use the first one o list if has a list
+			$mapper = $Tainacan_Exposers->check_class_name($type->get_mappers()[0], true, self::MAPPER_CLASS_PREFIX);
 			return new $mapper;
 		}
 		return false; // No mapper need, using Tainacan defautls

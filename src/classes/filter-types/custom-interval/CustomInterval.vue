@@ -5,6 +5,7 @@
                     size="is-small"
                     v-model="date_init"
                     @input="validate_values()"
+                    :readonly="false"
                     icon="calendar-today"/>
             <br>
             <b-datepicker
@@ -12,6 +13,7 @@
                     v-model="date_end"
                     @input="validate_values()"
                     @focus="isTouched = true"
+                    :readonly="false"
                     icon="calendar-today"/>
             <br>
         </div>

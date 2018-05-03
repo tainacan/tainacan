@@ -1,5 +1,6 @@
 <template>
-    <div class="primary-page page-container-small">
+    <div class="primary-page page-container">
+        <tainacan-title />
         <div
                 class="sub-header"
                 v-if="totalCollections > 0">
@@ -13,13 +14,8 @@
                 </router-link>
             </div>
         </div>
-        <div class="columns above-subheader">
-            <aside
-                    class="column filters-menu"
-                    v-if="totalCollections > 0">
-                <h3>{{ $i18n.getFrom('filters', 'name') }}</h3>
-            </aside>
-            <div class="column table-container">
+        <div class="above-subheader">
+            <div class="table-container">
                 <collections-list
                         :is-loading="isLoading"
                         :total-collections="totalCollections"
@@ -181,14 +177,6 @@ export default {
         margin-top: 0;
         min-height: 100%;
         height: auto;
-
-        .filters-menu {
-            min-width: $side-menu-width;
-            max-width: $side-menu-width;
-            background-color: $primary-lighter;
-            margin-left: -$page-small-side-padding;
-            padding-left: $page-small-side-padding
-        }
 
         .table-container {
             margin-right: -$page-small-side-padding;

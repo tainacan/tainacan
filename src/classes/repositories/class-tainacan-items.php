@@ -95,8 +95,8 @@ class Items extends Repository {
 			    'type'        => 'string',
 			    'description' => __( 'The document type, can be a local attachment, an external URL or a text', 'tainacan' ),
 			    'on_error'    => __( 'Invalid document type', 'tainacan' ),
-			    'validation'  => v::stringType()->in( [ 'attachment', 'url', 'text' ] ),
-			    'default'     => 'attachment'
+			    'validation'  => v::stringType()->in( [ 'attachment', 'url', 'text', 'empty'] ),
+			    'default'     => 'empty'
 		    ],
 		    'document'          => [
 			    'map'         => 'meta',

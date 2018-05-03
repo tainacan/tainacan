@@ -1,36 +1,32 @@
 <template>
-    <div 
-            class="page-container" 
-            :class="{'primary-page' : isNewCollection }">
-        <b-tag 
-                v-if="collection != null && collection != undefined" 
-                :type="'is-' + getStatusColor(collection.status)" 
-                v-text="collection.status"/>
+    <div :class="{'primary-page' : isNewCollection }">
+        <tainacan-title />
         <form 
                 v-if="collection != null && collection != undefined" 
                 class="tainacan-form" 
                 label-width="120px">
 
-            <div class="columns">
+            <div class="columns is-variable is-8">
                 <div class="column is-narrow">
 
                     <!-- Thumbnail -------------------------------- --> 
                     <b-field 
                         :addons="false"
-                        :label="$i18n.get('label_image')">
+                        :label="$i18n.get('label_thumbnail')">
                         <div class="thumbnail-field">
                             <a 
                                     class="button is-rounred is-secondary"
                                     id="button-edit-thumbnail" 
                                     :aria-label="$i18n.get('label_button_edit_thumb')"
-                                    @click="editImage($event, true)">
+                                    @click.prevent="thumbnailMediaFrame.openFrame($event)">
                                 <b-icon icon="pencil" />
                             </a>
                             <figure class="image is-128x128">
                                 <span 
                                         v-if="collection.featured_image == undefined || collection.featured_image == false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                <img  
+                                <img
+                                        id="thumbail-image"  
                                         :alt="$i18n.get('label_thumbnail')" 
                                         :src="(collection.featured_image == undefined || collection.featured_image == false) ? thumbPlaceholderPath : collection.featured_image">
                             </figure>
@@ -44,7 +40,7 @@
                             </div>
                         </div>
                     </b-field>
-
+                    
                     <!-- Header Page -------------------------------- --> 
                     <b-field 
                         :addons="false"
@@ -54,7 +50,7 @@
                                     class="button is-rounred is-secondary"
                                     id="button-edit-header-image" 
                                     :aria-label="$i18n.get('label_button_edit_header_image')"
-                                    @click="editImage($event, false)">
+                                    @click="headerImageMediaFrame.openFrame($event)">
                                 <b-icon icon="pencil" />
                             </a>
                             <figure class="image is-128x128">
@@ -63,7 +59,7 @@
                                         class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
                                 <img  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(collection.header_image == undefined || collection.header_image == false) ? thumbPlaceholderPath : collection.header_image">
+                                        :src="(collection.header_image == undefined || collection.header_image == false) ? headerPlaceholderPath : collection.header_image">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -76,7 +72,30 @@
                         </div>
                     </b-field>
                 </div>
-                <div class="column">            
+                <div class="column">
+                    <!-- Status -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_status')"
+                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'status')" 
+                                :message="$i18n.getHelperMessage('collections', 'status')"/>
+                        <b-select
+                                id="tainacan-select-status"
+                                v-model="form.status"
+                                @focus="clearErrors('status')"
+                                :placeholder="$i18n.get('instruction_select_a_status')">
+                            <option
+                                    v-for="statusOption in statusOptions"
+                                    :key="statusOption.value"
+                                    :value="statusOption.value"
+                                    :disabled="statusOption.disabled">{{ statusOption.label }}
+                            </option>
+                        </b-select>
+                    </b-field>
+            
                     <!-- Name -------------------------------- --> 
                     <b-field 
                         :addons="false"
@@ -108,29 +127,6 @@
                                 @focus="clearErrors('description')"/>
                     </b-field>
 
-                    <!-- Status -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_status')"
-                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'status')" 
-                                :message="$i18n.getHelperMessage('collections', 'status')"/>
-                        <b-select
-                                id="tainacan-select-status"
-                                v-model="form.status"
-                                @focus="clearErrors('status')"
-                                :placeholder="$i18n.get('instruction_select_a_status')">
-                            <option
-                                    v-for="statusOption in statusOptions"
-                                    :key="statusOption.value"
-                                    :value="statusOption.value"
-                                    :disabled="statusOption.disabled">{{ statusOption.label }}
-                            </option>
-                        </b-select>
-                    </b-field>
-
                     <!-- Enable Cover Page -------------------------------- -->
                     <div class="field">
                         <b-checkbox
@@ -158,6 +154,7 @@
                                 :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
                         <b-autocomplete
                                 id="tainacan-text-cover-page"
+                                :placeholder="$i18n.get('instruction_cover_page')"
                                 :data="coverPages"
                                 v-model="coverPageTitle"
                                 @select="onSelectCoverPage($event)"
@@ -168,7 +165,7 @@
                             <template slot-scope="props">
                                 {{ props.option.title.rendered }}
                             </template>
-                            <template slot="empty">No results found</template>
+                            <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>
                         </b-autocomplete>
   
                         <div 
@@ -178,19 +175,60 @@
                             <span class="selected-cover-page-control">
                                 <a 
                                         target="blank" 
-                                        :href="coverPageEditPath">Edit</a>
+                                        :href="coverPageEditPath">{{ $i18n.get('edit') }}</a>
                                 &nbsp;&nbsp;
                                 <a 
                                         target="_blank" 
-                                        :href="coverPage.link">View</a>
+                                        :href="coverPage.link">{{ $i18n.get('see') }}</a>
                                 &nbsp;&nbsp;
                                 <button  
                                         class="button is-secondary is-small"
-                                        @click.prevent="removeCoverPage()">Remove</button>
+                                        @click.prevent="removeCoverPage()">{{ $i18n.get('remove') }}</button>
                             </span>
                         </div>
-                       
-                        
+                    </b-field>
+
+                     <!-- Moderators List -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_moderators')"
+                            :type="editFormErrors['moderators'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['moderators'] != undefined ? editFormErrors['moderators'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'moderators_ids')" 
+                                :message="$i18n.getHelperMessage('collections', 'moderators_ids')"/>
+                        <b-autocomplete
+                                id="tainacan-text-moderators-input"
+                                :placeholder="$i18n.get('instruction_moderators')"
+                                :data="users"
+                                @select="onAddModerator($event)"
+                                :loading="isFetchingModerators"
+                                @input="fecthModerators($event)"
+                                @focus="clearErrors('moderators')">
+                            <template slot-scope="props">
+                                {{ props.option.name }}
+                            </template>
+                            <template slot="empty">{{ $i18n.get('info_no_user_found') }}</template>
+                        </b-autocomplete>
+                        <ul
+                                class="moderators-list"
+                                v-if="moderators != undefined && moderators.length > 0">
+                            <li
+                                    :key="index"
+                                    v-for="(moderator, index) of moderators">
+                                <b-tag
+                                        attached
+                                        closable
+                                        @close="removeModerator(index)">
+                                   {{ moderator.name }}
+                                </b-tag>
+                            </li>
+                        </ul>
+                        <div 
+                                class="moderators-empty-list"
+                                v-else>
+                            {{ $i18n.get('info_no_moderator_on_collection') }}
+                        </div>
                     </b-field>
 
                     <!-- Slug -------------------------------- --> 
@@ -207,6 +245,32 @@
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
                     </b-field>
+
+                    <!-- Parent Collection -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_parent_collection')"
+                            :type="editFormErrors['parent'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['parent'] != undefined ? editFormErrors['parent'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'parent')" 
+                                :message="$i18n.getHelperMessage('collections', 'parent')"/>
+                        <b-select
+                                id="tainacan-select-parent"
+                                v-model="form.parent"
+                                @focus="clearErrors('parent')"
+                                :loading="isFetchingCollections"
+                                :placeholder="$i18n.get('instruction_select_a_parent_collection')">
+                            <option value="0">{{ $i18n.get('label_no_parent_collection') }}</option>
+                            <option
+                                    v-if="collection.id != anotherCollection.id"
+                                    v-for="anotherCollection of collections"
+                                    :key="anotherCollection.id"
+                                    :value="anotherCollection.id">{{ anotherCollection.name }}
+                            </option>
+                        </b-select>
+                    </b-field>
+
                 </div>
             </div>
 
@@ -237,6 +301,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import wpMediaFrames from '../../js/wp-media-frames';
 
 export default {
     name: 'CollectionEditionForm',
@@ -253,7 +318,8 @@ export default {
                 enable_cover_page: '',	
                 featured_image: '',
                 header_image: '',
-                files:[]
+                files:[],
+                moderators_ids: []
             },
             thumbnail: {},
             cover: {},
@@ -279,9 +345,15 @@ export default {
             editFormErrors: {},
             formErrorMessage: '',
             isNewCollection: false,
-            // Fream Uploader variables
-            frameUploader: undefined,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
+            isFetchingModerators: false,
+            users: [],
+            moderators: [],
+            collections: [],
+            isFetchingCollections: true,
+            thumbnailMediaFrame: undefined,
+            headerImageMediaFrame: undefined
         }
     },
     methods: {
@@ -293,13 +365,19 @@ export default {
             'updateThumbnail',
             'updateHeaderImage',
             'fetchPages',
-            'fetchPage'
+            'fetchPage',
+            'fetchUsers',
+            'fetchCollectionsForParent'
         ]),
         ...mapActions('fields', [
             'fetchFields'
         ]),
         onSubmit() {
             this.isLoading = true;
+
+            this.form.moderators_ids = [];
+            for (let moderator of this.moderators)
+                this.form.moderators_ids.push(moderator.id);
 
             let data = { 
                 collection_id: this.collectionId, 
@@ -308,7 +386,9 @@ export default {
                 enable_cover_page: this.form.enable_cover_page, 
                 cover_page_id: this.form.cover_page_id,
                 slug: this.form.slug, 
-                status: this.form.status
+                status: this.form.status,
+                moderators_ids: this.form.moderators_ids,
+                parent: this.form.parent
             };
             this.updateCollection(data).then(updatedCollection => {    
                 
@@ -338,20 +418,6 @@ export default {
                 this.isLoading = false;
             });
         },
-        getStatusColor(status) {
-            switch(status) {
-                case 'publish': 
-                    return 'success'
-                case 'draft':
-                    return 'info'
-                case 'private': 
-                    return 'warning'
-                case 'trash':
-                    return 'danger'
-                default:
-                    return 'info'
-            }
-        },
         createNewCollection() {
             // Puts loading on Draft Collection creation
             this.isLoading = true;
@@ -363,15 +429,32 @@ export default {
                 this.collectionId = res.id;
                 this.collection = res;
 
+                // Initializes Media Frames now that collectonId exists
+                this.initializeMediaFrames();
+
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.slug = this.collection.slug;
+                this.form.parent = this.collection.parent;
+                this.moderators = [];
                 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
+
+                // Generates options for parent collection
+                this.isFetchingCollections = true;
+                this.fetchCollectionsForParent()
+                .then((collections) => {
+                    this.collections = collections;
+                    this.isFetchingCollections = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isFetchingCollections = false;
+                }); 
 
                 this.isLoading = false;
                 
@@ -402,66 +485,34 @@ export default {
             this.coverPageTitle = this.coverPage.title.rendered;
             this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + selectedPage.id + '&action=edit';
         },
+        fecthModerators(search) {
+            this.isFetchingModerators = true;
+
+            let exceptions = [];
+            for (let user of this.moderators)
+                exceptions.push(parseInt(user.id));
+            exceptions.push(this.collection.author_id);
+
+            this.fetchUsers({ search: search, exceptions: exceptions})
+                .then((users) => {
+                    this.users = users;
+                    this.isFetchingModerators = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isFetchingPages = false;
+                });
+        },
+        onAddModerator(user) { 
+            this.moderators.push({'id': user.id, 'name': user.name}); 
+        },
+        removeModerator(moderatorIndex) { 
+            this.moderators.splice(moderatorIndex, 1);
+        },
         removeCoverPage() {
             this.coverPage = {};
             this.coverPageTitle = '';
             this.form.cover_page_id = '';
-        },
-        editImage(event, isThumbnail) {
-            'use strict';   
-            event.preventDefault();
-
-             // If the media frame already exists, reopen it.
-            if ( this.frameUploader ) {
-                this.frameUploader.open();
-                return;
-            }
-            
-            // Create a new media frame
-            this.frameUploader = wp.media.frames.frame_uploader = wp.media({
-                frame: 'select',
-                title: 'Select or Upload and Image.',
-                button: {
-                    text: 'Use this media'
-                },
-                multiple: false,
-                library: {
-                    type: 'image',
-                    uploadedTo: this.collectionId
-                },
-                uploader: true
-
-            });
-
-            wp.media.view.settings.post = {
-                id: this.collectionId
-            }
-
-            this.frameUploader.on('select', () => {
-                
-                let media = this.frameUploader.state().get( 'selection' ).first().toJSON();
-                
-                if (isThumbnail) {
-                    this.updateThumbnail({collectionId: this.collectionId, thumbnailId: media.id})
-                    .then((res) => {
-                        this.collection.featured_image = res.featured_image;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                    });
-                } else {
-                    this.updateHeaderImage({collectionId: this.collectionId, headerImageId: media.id})
-                    .then((res) => {
-                        this.collection.header_image = res.header_image;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                    });
-                }
-
-            });
-
-            this.frameUploader.open();
         },
         deleteThumbnail() {
 
@@ -483,6 +534,40 @@ export default {
                 this.$console.error(error);
             });    
         },
+        initializeMediaFrames() {
+
+            this.thumbnailMediaFrame = new wpMediaFrames.thumbnailControl(
+                'my-thumbnail-media-frame', {
+                    button_labels: {
+                        frame_title: this.$i18n.get('instruction_select_collection_thumbnail'),
+                    },
+                    relatedPostId: this.collectionId,
+                    onSave: (mediaId) => {
+                        this.updateThumbnail({collectionId: this.collectionId, thumbnailId: mediaId})
+                        .then((res) => {
+                            this.collection.featured_image = res.featured_image;
+                        })
+                        .catch(error => this.$console.error(error));
+                    }
+                }
+            );
+
+            this.headerImageMediaFrame = new wpMediaFrames.headerImageControl(
+                'my-header-image-media-frame', {
+                    button_labels: {
+                        frame_title: this.$i18n.get('instruction_select_collection_header_image'),
+                    },
+                    relatedPostId: this.collectionId,
+                    onSave: (media) => {
+                        this.updateHeaderImage({collectionId: this.collectionId, headerImageId: media.id})
+                        .then((res) => {
+                            this.collection.header_image = res.header_image;
+                        })
+                        .catch(error => this.$console.error(error));
+                    }
+                }
+            );
+        }
     },
     created(){
 
@@ -500,6 +585,9 @@ export default {
             this.fetchCollection(this.collectionId).then(res => {
                 this.collection = res;
 
+                // Initializes Media Frames now that collectonId exists
+                this.initializeMediaFrames();
+
                 // Fill this.form data with current data.
                 this.form.name = this.collection.name;
                 this.form.description = this.collection.description;
@@ -507,6 +595,9 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
+                this.form.parent = this.collection.parent;
+
+                this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
                  
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
@@ -524,7 +615,19 @@ export default {
                         this.$console.error(error);
                         this.isFetchingPages = false;
                     }); 
-                } 
+                }
+
+                // Generates options for parent collection
+                this.isFetchingCollections = true;
+                this.fetchCollectionsForParent()
+                .then((collections) => {
+                    this.collections = collections;
+                    this.isFetchingCollections = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isFetchingCollections = false;
+                }); 
 
                 this.isLoading = false; 
             });
@@ -538,8 +641,13 @@ export default {
 
     @import "../../scss/_variables.scss";
 
+    .tainacan-form>.columns>.column {
+        overflow: auto;
+    }
     .thumbnail-field {  
         max-height: 128px;
+        margin-bottom: 96px;
+        margin-top: -20px;
 
         .content {
             padding: 10px;
@@ -554,6 +662,7 @@ export default {
             margin-right: 10px;
             bottom: 50%;
             font-size: 0.8rem;
+            font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
@@ -592,7 +701,7 @@ export default {
     }
     .selected-cover-page {
         background-color: $tainacan-input-color;
-        padding: 6px;
+        padding: 8px;
         font-size: .85rem;
         .span { vertical-align: middle;}
 
@@ -601,6 +710,18 @@ export default {
         }
 
     }
+    .moderators-list {
+        padding: 10px;
+        display: flex;
+
+        .tags {
+            margin-right: 5px;
+        }
+    }
+    .moderators-empty-list { 
+        color: gray;
+        font-size: 0.85rem;
+     }
 
 </style>
 

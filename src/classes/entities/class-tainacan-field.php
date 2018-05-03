@@ -16,6 +16,7 @@ class Field extends Entity {
         $description,
         $required,
         $multiple,
+		$display,
         $cardinality,
         $collection_key,
         $mask,
@@ -38,6 +39,21 @@ class Field extends Entity {
 	
 	public function  __toString(){
 		return 'Hello, my name is '. $this->get_name();
+	}
+
+
+	/**
+	 * @param $display
+	 */
+	function set_display( $display ){
+		$this->set_mapped_property('display', $display);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	function get_display(){
+		return $this->get_mapped_property('display');
 	}
 
     /**
@@ -315,7 +331,7 @@ class Field extends Entity {
      * @param bool $value
      */
     function set_accept_suggestion( $value ) {
-    	return $this->set_mapped_property('accept_suggestion', $value);
+    	$this->set_mapped_property('accept_suggestion', $value);
     }
     
     /**

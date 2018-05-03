@@ -157,7 +157,9 @@ class Terms extends Repository {
                 update_term_meta($term_saved['term_id'], $prop, wp_slash( $term->get_mapped_property($prop) ));
             }
         }
-        
+
+        // TODO: Log header image updates
+
         do_action('tainacan-insert', $term, $diffs, $is_update);
         do_action('tainacan-insert-Term', $term);
 

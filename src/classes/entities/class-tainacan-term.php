@@ -64,6 +64,7 @@ class Term extends Entity {
 		unset($term_array['status']);
 
 		$term_array['id'] = $term_id;
+		$term_array['header_image'] = $this->get_header_image();
 
 		return $term_array;
 	}
@@ -134,6 +135,13 @@ class Term extends Entity {
 	 */
 	function get_header_image_id() {
 		return $this->get_mapped_property( 'header_image_id' );
+	}
+
+	/**
+	 * @return false|string
+	 */
+	function get_header_image(){
+		return wp_get_attachment_url( $this->get_header_image_id() );
 	}
 
     // Setters
@@ -218,9 +226,10 @@ class Term extends Entity {
 		* unless a unique slug has been explicitly provided.
 		*/
 		$name_matches = get_terms( $taxonomy, array(
-			'name' => $name,
+			'name'       => $name,
 			'hide_empty' => false,
-			'parent' => $parent,
+			'parent'     => $parent,
+			'exclude'    => $this->get_id()
 		) );
 
 		/*
@@ -239,7 +248,7 @@ class Term extends Entity {
 
 		if ($name_match) {
 			$this->add_error( 'repeated', __('You can not have two terms with the same name at the same level', 'tainacan') );
-			return false; 
+			return false;
 		}
 
 		$this->set_as_valid();

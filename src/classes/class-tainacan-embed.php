@@ -62,18 +62,18 @@ class Embed {
 		//$viewer_url = $TAINACAN_BASE_URL . '/assets/pdfjs-dist/web/viewer.html?file=' . $url;
 		
 		$defaults = array(
-			'width' => 800,
-			'height' => 1000
+			'width' => '100%',
+			'height' => '640px'
 		);
 		
-		$args = array_merge($defaults, $attr);
-		
+		$args = array_merge($attr, $defaults);
+
 		$dimensions = '';
 		if ( ! empty( $args['width'] ) && ! empty( $args['height'] ) ) {
-			$dimensions .= sprintf( "width='%d' ", (int) $args['width'] );
-			$dimensions .= sprintf( "height='%d' ", (int) $args['height'] );
+			$dimensions .= sprintf( "width='%s' ", $args['width'] );
+			$dimensions .= sprintf( "height='%s' ", $args['height'] );
 		}
-		
+
 		$pdf = "<iframe id='iframePDF' name='iframePDF' src='$viewer_url' $dimensions allowfullscreen webkitallowfullscreen></iframe>";
 		return $pdf;
 	}

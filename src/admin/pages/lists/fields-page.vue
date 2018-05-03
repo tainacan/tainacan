@@ -1,5 +1,6 @@
 <template>
         <div class="primary-page page-container">
+            <tainacan-title />
             <fields-list/>    
         </div>
 </template>

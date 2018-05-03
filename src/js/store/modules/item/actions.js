@@ -89,7 +89,7 @@ export const sendItem = ( { commit }, { collection_id, status }) => {
             status: status
         })
             .then( res => {
-                commit('setItem', { collection_id: collection_id, status: status });
+                commit('setItem', res.data);
                 resolve( res.data );
             })
             .catch(error => {
@@ -103,7 +103,22 @@ export const updateItem = ({ commit }, { item_id, status }) => {
         axios.tainacan.patch('/items/' + item_id, {
             status: status 
         }).then( res => {
-            commit('setItem', { id: item_id, status: status });
+            commit('setItem', res.data);
+            resolve( res.data );
+        }).catch( error => { 
+            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+        });
+
+    }); 
+};
+
+export const updateItemDocument = ({ commit }, { item_id, document, document_type }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.patch('/items/' + item_id, {
+            document: document,
+            document_type: document_type
+        }).then( res => {
+            commit('setItem', res.data);
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -118,9 +133,6 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
     return new Promise(( resolve, reject ) => {
         axios.wp.post('/media/?post=' + item_id, file, {
             headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
-            onUploadProgress: progressEvent => {
-                console.log(progressEvent.loaded + '/' + progressEvent.total);
-            }
         })
             .then( res => {
                 let attachment = res.data;
@@ -136,7 +148,7 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
 export const fetchAttachments = ({ commit }, item_id) => {
     commit('cleanAttachments');
     return new Promise((resolve, reject) => {
-        axios.wp.get('/media/?post=' + item_id)
+        axios.wp.get('/media/?parent=' + item_id + '&per_page=100&paged=1')
         .then(res => {
             let attachments = res.data;
             commit('setAttachments', attachments);

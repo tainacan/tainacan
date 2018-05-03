@@ -1,52 +1,64 @@
 <template>
     <b-field
             :addons="false"
-            :label="field.field.name"
             :message="getErrorMessage"
             :type="fieldTypeMessage">
-             <span
-                    v-if="field.field.required == 'yes'" 
-                    class="required-field-asterisk" 
-                    :class="fieldTypeMessage">*</span> 
-        <help-button 
-                :title="field.field.name" 
-                :message="field.field.description"/>
-        <div v-if="isTextInputComponent( field.field.field_type_object.component )">
-            <component 
-                    :id="field.field.field_type_object.component + '-' + field.field.slug" 
-                    :is="field.field.field_type_object.component" 
-                    v-model="inputs[0]" 
-                    :field="field" 
-                    @blur="changeValue()"/>
-            <div v-if="field.field.multiple == 'yes'">
-                <div 
-                        v-if="index > 0" 
-                        v-for="(input, index) in inputsList " 
-                        :key="index" 
-                        class="multiple-inputs">
-                    <component 
-                            :id="field.field.field_type_object.component + '-' + field.field.slug" 
-                            :is="field.field.field_type_object.component" 
-                            v-model="inputs[index]" 
-                            :field="field" 
-                            @blur="changeValue()"/><a 
-                            class="button" 
+        <b-collapse >
+            <span @click="isCollapsed = !isCollapsed">
+                <b-icon 
+                        type="is-secondary"
+                        :icon="!isCollapsed ? 'menu-down' : 'menu-right'" />
+                <label class="label">{{ field.field.name }}</label>
+                <span
+                        v-if="field.field.required == 'yes'" 
+                        class="required-field-asterisk" 
+                        :class="fieldTypeMessage">*</span>
+                <span class="field-type">({{ $i18n.get(field.field.field_type_object.component) }})</span>      
+            </span>
+            <help-button 
+                    :title="field.field.name" 
+                    :message="field.field.description"/>
+            <div   
+                    v-show="!isCollapsed" 
+                    v-if="isTextInputComponent( field.field.field_type_object.component )">
+                <component 
+                        :id="field.field.field_type_object.component + '-' + field.field.slug" 
+                        :is="field.field.field_type_object.component" 
+                        v-model="inputs[0]" 
+                        :field="field" 
+                        @blur="changeValue()"/>
+                <div v-if="field.field.multiple == 'yes'">
+                    <div 
                             v-if="index > 0" 
-                            @click="removeInput(index)">-</a>
+                            v-for="(input, index) in inputsList " 
+                            :key="index" 
+                            class="multiple-inputs">
+                        <component 
+                                :id="field.field.field_type_object.component + '-' + field.field.slug" 
+                                :is="field.field.field_type_object.component" 
+                                v-model="inputs[index]" 
+                                :field="field" 
+                                @blur="changeValue()"/><a 
+                                class="button" 
+                                v-if="index > 0" 
+                                @click="removeInput(index)">-</a>
+                    </div>
+                    <a 
+                            class="button" 
+                            @click="addInput">+</a>
                 </div>
-                <a 
-                        class="button" 
-                        @click="addInput">+</a>
             </div>
-        </div>
-        <div v-else>
-            <component
-                    :id="field.field.field_type_object.component + '-' + field.field.slug"
-                    :is="field.field.field_type_object.component" 
-                    v-model="inputs"
-                    :field="field" 
-                    @blur="changeValue()"/>
-        </div>
+            <div 
+                    v-show="!isCollapsed"
+                    v-else>
+                <component
+                        :id="field.field.field_type_object.component + '-' + field.field.slug"
+                        :is="field.field.field_type_object.component" 
+                        v-model="inputs"
+                        :field="field" 
+                        @blur="changeValue()"/>
+            </div>
+        </b-collapse>
     </b-field>
 </template>
 
@@ -58,7 +70,8 @@
         props: {
             field: {
                 type: Object
-            }
+            },
+            isCollapsed: Boolean
         },
         data(){
             return {
@@ -125,8 +138,36 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    @import '../../admin/scss/_variables.scss'; 
+
     .multiple-inputs {
         display: flex;
+    }
+
+    .field {
+        border-bottom: 1px solid $draggable-border-color;
+        padding: 10px 25px;
+
+        .label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 18px;
+            margin-bottom: 0.5em;
+        }
+        .field-type {
+            font-size: 13px;
+            font-weight: 400;
+            color: $gray;
+            top: -0.2em;
+            position: relative;
+        }
+        .help-wrapper {
+            top: -0.2em;
+        }
+        .collapse .collapse-content>div {
+            margin-left: 45px;
+        }
     }
 </style>

@@ -1,9 +1,7 @@
 <template>
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"/>
-        <div class="page-title">
-            <h2>{{ isRepositoryLevel ? $i18n.get('instruction_dragndrop_filters_collection') : $i18n.get('instruction_dragndrop_filters_collection') }}</h2>
-        </div>
+        <tainacan-title v-if="!isRepositoryLevel"/>
         <div class="columns">
             <div class="column">         
                 <draggable 

@@ -148,9 +148,28 @@ class REST_Collections_Controller extends REST_Controller {
 		        $item_arr = $item->__toArray();
 
 		        if ( $request['context'] === 'edit' ) {
+		        	$moderators_ids = $item_arr['moderators_ids'];
+
+		        	$moderators = [];
+
+		        	foreach ($moderators_ids as $id){
+		        		$user_data = get_userdata($id);
+
+		        		if($user_data){
+		        			$user['name'] = $user_data->display_name;
+					        //$user['roles'] = $user_data->roles;
+					        $user['id'] = $user_data->ID;
+
+					        $moderators[] = $user;
+				        }
+			        }
+
+			        $item_arr['moderators'] = $moderators;
+
 			        $item_arr['current_user_can_edit'] = $item->can_edit();
 		        }
 
+		        #unset($item_arr['moderators_ids']);
 	        } else {
         		$attributes_to_filter = $request['fetch_only'];
 

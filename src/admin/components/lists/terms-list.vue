@@ -274,12 +274,12 @@ export default {
                 } 
                 
                 term.depth = termDepth;
-                if (this.orderedTermsList[term.id] == undefined ) {
+                if (this.orderedTermsList[term.id] === undefined ) {
                     term.opened = false;
                     term.saved = true ;
                 } else {
-                    term.opened = (this.orderedTermsList[term.id].opened == undefined ? false : this.orderedTermsList[term.id].opened);
-                    term.saved = (this.orderedTermsList[term.id].saved == undefined ? true : this.orderedTermsList[term.id].saved);
+                    term.opened = (this.orderedTermsList[term.id].opened === undefined ? false : this.orderedTermsList[term.id].opened);
+                    term.saved = (this.orderedTermsList[term.id].saved === undefined ? true : this.orderedTermsList[term.id].saved);
                 }
                 if (term.taxonomy != null)
                     this.orderedTermsList.push(JSON.parse(JSON.stringify(term)));

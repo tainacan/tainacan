@@ -119,6 +119,39 @@ class Collections extends TAINACAN_UnitTestCase {
         
 	}
 	
+	function test_avoid_duplicated_moderator () {
+		$collection_test = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'testeCaps',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC'
+			),
+			true
+		);
+		$new_user = $this->factory()->user->create(array( 'role' => 'subscriber' ));
+		wp_set_current_user($new_user);
+		$user_id = get_current_user_id();
+		$this->assertEquals($new_user, $user_id);
+		
+		$autor1 = $this->factory()->user->create(array( 'role' => 'author' ));
+		wp_set_current_user($autor1);
+		$autor1_id = get_current_user_id();
+		
+		$moderators_ids = [
+			$user_id,
+			$autor1_id,
+			$user_id,
+			$autor1_id,
+		];
+		
+		$collection_test->set('moderators_ids', $moderators_ids);
+		
+		$this->assertEquals(2, sizeof( $collection_test->get_moderators_ids() ));
+		
+		
+	}
+	
 	function debug_meta($user = false)
 	{
 		if($user !== false) wp_set_current_user($user);

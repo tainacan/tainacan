@@ -168,6 +168,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionFiltersPath(collectionId) {
             return '/collections/'+ collectionId + '/filters/';
         },
+        getCollectionEventsPath(collectionId) {
+            return '/collections/'+ collectionId + '/events/';
+        },
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
         },

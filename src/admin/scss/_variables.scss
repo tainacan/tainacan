@@ -3,22 +3,22 @@
 @import "../../../node_modules/bulma/sass/utilities/functions";
 
 // Tainacan custom colors
-$primary: #2cb4c1;// #25a189;
+$primary: #2cb4c1;
 $primary-invert: findColorInvert($primary);
 $secondary: #298596;
 $secondary-invert: findColorInvert($secondary);
-$tertiary: #1f2f56;
+$tertiary: #01295c;
 $tertiary-invert: findColorInvert($tertiary);
 
 $primary-light:#A5CDD7;
-$primary-lighter: lighten($primary-light, 15%);
+$primary-lighter: #e6f6f8;
 $primary-dark: #55A0AF;
 $primary-darker: darken($primary-dark, 5%);
 
 $success: #25a088;
 $success-invert: findColorInvert($success);
 
-$separator-color: #2a6e77;
+$separator-color: #2b98a4;
 $tainacan-input-color: #f0f0f0;
 $draggable-border-color: #d8d8d8;
 
@@ -53,24 +53,25 @@ $colors: map-merge($colors, $addColors);
 $size-small: 0.85em; // 0.75em on Bulma.
 
 // Tainacan Header and side menus
-$header-height: 58px;
-$subheader-height: 78px;
-$side-menu-width: 222px;
-$page-height: calc(100% - 58px);
+$header-height: 53px;
+$subheader-height: 82px;
+$side-menu-width: 180px;
+$filter-menu-width: 200px;
+$page-height: calc(100% - 53px);
 
 // Overall Pages padding:
-$page-side-padding: 4em;
-$page-top-padding: 1.5em;
-$page-small-side-padding: 2em;
-$page-small-top-padding: 1.5em;
+$page-side-padding: 82px;
+$page-top-padding: 27px;
+$page-small-side-padding: 22px;
+$page-small-top-padding: 22px;
 
 $page-mobile-side-padding: 1em;
 $page-mobile-top-padding: 0.5em;
 
 // Links
-$link: $primary;
-$link-invert: $primary-invert;
-$link-focus-border: $primary; 
+$link: $secondary;
+$link-invert: $secondary-invert;
+$link-focus-border: $secondary; 
 
 // Table
 $table-head-cell-color: $gray-light;

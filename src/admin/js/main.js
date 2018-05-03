@@ -35,9 +35,10 @@ import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.
 // Remaining imports
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
+import TainacanTitle from '../components/navigation/tainacan-title.vue';
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
-import { router} from './router'
+import router from './router'
 import eventBusSearch from '../../js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
 
@@ -76,6 +77,7 @@ Vue.component('tainacan-filter-category-selectbox', FilterCategorySelectbox);
 /* Others */
 Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
+Vue.component('tainacan-title', TainacanTitle);
 
 Vue.use(eventBusSearch, { store: store, router: router});
 

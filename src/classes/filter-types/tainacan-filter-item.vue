@@ -1,16 +1,24 @@
 <template>
-    <b-field 
-            :label="filter.name"
+    <b-field
             :message="getErrorMessage"
             :type="filterTypeMessage">
-        <div>
-            <component
-                    :id="filter.filter_type_object.component + '-' + filter.slug"
-                    :is="filter.filter_type_object.component"
-                    :filter="filter"
-                    :query="query"
-                    @input="listen( $event )"/>
-        </div>
+        <b-collapse :open="opened">
+            <label slot="trigger">
+                <b-icon
+                        icon="menu-down"
+                        size="is-small" />
+                {{ filter.name }}
+            </label>
+
+            <div>
+                <component
+                        :id="filter.filter_type_object.component + '-' + filter.slug"
+                        :is="filter.filter_type_object.component"
+                        :filter="filter"
+                        :query="query"
+                        @input="listen( $event )"/>
+            </div>
+        </b-collapse>
     </b-field>
 </template>
 
@@ -21,7 +29,8 @@
         name: 'TainacanFilterItem',
         props: {
             filter: Object,
-            query: Object
+            query: Object,
+            opened: false,
         },
         data(){
             return {

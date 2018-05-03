@@ -4,7 +4,7 @@
             <tainacan-subheader :id="collectionId"/>
             <router-view 
                     :collection-id="collectionId" 
-                    class="page-container"/>
+                    class="page-container page-container-small"/>
         </section>
     </div>
 </template>

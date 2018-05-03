@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="primary-page page-container-small">
-
+        <div class="primary-page page-container">
+            <tainacan-title />
             <div class="columns above-subheader">
                 <div class="column table-container">
                     <events-list
@@ -66,7 +66,8 @@
                 isLoading: false,
                 totalEvents: 0,
                 page: 1,
-                eventsPerPage: 12
+                eventsPerPage: 12,
+                isRepositoryLevel: false
             }
         },
         components: {
@@ -119,6 +120,7 @@
             }
         },
         created() {
+            this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
             this.$userPrefs.get('events_per_page')
                 .then((value) => {
                     this.eventsPerPage = value;

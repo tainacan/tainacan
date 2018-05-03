@@ -8,9 +8,9 @@
 
 namespace Tainacan\Importer;
 
-
 class Old_Tainacan extends Importer
 {
+
     public $avoid = [
         'ID',
         'post_author',
@@ -32,16 +32,146 @@ class Old_Tainacan extends Importer
         'filter',
         'link',
         'thumbnail'
-    ];
+    ],
+    $steps = [
+        'Creating all categories' => 'create_categories',
+        'Create empty collections' => 'create_collections',
+        'Create repository metadata' => 'create_repo_meta',
+        'Create collections metadata' => 'create_collection_metas',
+        'Create collections items' => 'create_collection_items',
+        'Setting relationships' => 'set_relationships'
+    ], $tainacan_api_address, $wordpress_api_address;
 
-    public function __construct($import_structure_and_mapping = false)
+    public function __construct()
     {
         parent::__construct();
-
+        $this->set_repository();
+        $this->set_steps($this->steps);
         $this->remove_import_method('file');
         $this->add_import_method('url');
+        $this->tainacan_api_address = "/wp-json/tainacan/v1";
+        $this->wordpress_api_address = "/wp-json/wp/v2";
+    }
 
-        $this->import_structure_and_mapping = $import_structure_and_mapping;
+    public function verify_process_result($result)
+    {
+        if(is_wp_error($result))
+        {
+            $this->add_log('error', $result->get_error_message());
+            return false;
+        }else if(isset($result['body']))
+        {
+            return json_decode($result['body']);
+        }
+
+        return false;
+    }
+
+
+    public function create_categories()
+    {
+        $categories_link = $this->get_url() . $this->tainacan_api_address . "/categories";
+
+        $categories = wp_remote_get($categories_link);
+
+        $categories_array = $this->verify_process_result($categories);
+        if($categories_array)
+        {
+            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+
+            $categories_array = $this->remove_same_name($categories_array);
+            foreach ($categories_array as $category)
+            {
+
+                $taxonomy = new \Tainacan\Entities\Taxonomy();
+
+                $taxonomy->set_name($category->name);
+                $taxonomy->set_description($category->description);
+                $taxonomy->set_allow_insert(true);
+
+                $Tainacan_Taxonomies->insert($taxonomy);
+
+                $inserted_taxonomy = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
+                if(isset($category->children) && $inserted_taxonomy)
+                {
+                    $this->add_all_terms($inserted_taxonomy, $category->children);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function add_all_terms($taxonomy_father, $children, $term_father = null)
+    {
+        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+
+        $children = $this->remove_same_name($children);
+        foreach ($children as $term)
+        {
+            $new_term = new \Tainacan\Entities\Term();
+
+            $new_term->set_taxonomy($taxonomy_father->get_db_identifier());
+            if($term_father)
+            {
+                $new_term->set_parent($term_father->get_id());
+            }
+
+            $new_term->set_name($term->name);
+            $new_term->set_description($term->description);
+
+            $inserted_term = $Tainacan_Terms->insert($new_term);
+
+            if(isset($term->children))
+            {
+                $this->add_all_terms($taxonomy_father, $term->children, $inserted_term);
+            }
+        }
+    }
+
+    public function remove_same_name($terms)
+    {
+        $unique = [];
+        $unique_terms = [];
+        foreach($terms as $term)
+        {
+            $unique[$term->name] = $term->term_id;
+        }
+
+        foreach($terms as $index => $term)
+        {
+            if(in_array($term->term_id, $unique))
+            {
+                array_push($unique_terms, $term);
+            }
+        }
+
+        return $unique_terms;
+    }
+
+    public function create_collections()
+    {
+        return false;
+    }
+
+    public function create_repo_meta()
+    {
+        return false;
+    }
+
+    public function create_collection_metas()
+    {
+        return false;
+    }
+
+    public function create_collection_items()
+    {
+        return false;
+    }
+
+    public function set_relationships()
+    {
+        return false;
     }
 
     public function fetch_from_remote( $url ){
@@ -69,7 +199,6 @@ class Old_Tainacan extends Importer
                     break;
                 }
             }
-
 
             if(!empty($link))
             {
@@ -116,7 +245,6 @@ class Old_Tainacan extends Importer
         $file_content = unserialize($file->fread($file->getSize()));
 
         $item = $file_content->items[0];
-
         $fields = [];
 
         //Default meta

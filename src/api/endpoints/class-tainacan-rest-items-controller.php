@@ -128,6 +128,14 @@ class REST_Items_Controller extends REST_Controller {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
 				}
 
+				$img_size = 'large';
+
+				if($request['doc_img_size']){
+					$img_size = $request['doc_img_size'];
+				}
+
+				$item_arr['document_as_html'] = $item->get_document_html($img_size);
+
 				return $this->add_metadata_to_item( $item, $item_arr );
 			}
 

@@ -131,8 +131,9 @@ class Theme_Helper {
 		
 		$term = get_queried_object();
 		
-		if ($this->is_term_a_tainacan_term($term)) {
-			// TODO: Why post_type = any does not work?
+		if ($term instanceof \WP_Term && $this->is_term_a_tainacan_term($term)) {
+			// TODO: Why post_type = any does not work? 
+			// ANSWER because post types are registered with exclude_from_search. Should we change it?
 			$wp_query->set( 'post_type', \Tainacan\Repositories\Repository::get_collections_db_identifiers() );
 		}
 		

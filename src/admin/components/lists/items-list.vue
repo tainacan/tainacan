@@ -27,7 +27,7 @@
                         :key="index"
                         :custom-key="column.slug"
                         :label="column.name"
-                        :visible="column.visible"
+                        :visible="column.display"
                         :class="column.field == 'row_creation' ? 'row-creation' : ''"
                         :width="column.field == 'row_actions' ? 78 : column.field == 'row_thumbnail' ? 55 : undefined ">
                         
