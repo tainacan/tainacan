@@ -81,7 +81,9 @@
                         :table-fields="tableFields"
                         :pref-table-fields="prefTableFields"/>
             </div>
-
+            <div 
+                    :items="items"
+                    id="theme-items-list" />
             <!-- LISTING RESULTS ------------------------- -->
             <div class="table-container above-subheader">
                 <b-loading
@@ -189,6 +191,16 @@
             }
         },
         created() {
+           /*  
+            document.addEventListener('tainacan-items-change', () => {
+                var themeList = document.getElementById('theme-items-list');
+                var items = themeList.attributes.items.value;
+
+                var e = document.createElement('p');
+                e.innerHTML = items;
+
+                themeList.appendChild(e);
+            }); */
             this.isRepositoryLevel = (this.collectionId == undefined);
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
@@ -337,7 +349,7 @@
         width: $filter-menu-width;
         max-width: $filter-menu-width;
         min-height: 100%;
-        background-color: $tainacan-input-color;
+        background-color: $tainacan-input-background;
         padding: $page-small-side-padding;
         float: left;
         height: 100%;

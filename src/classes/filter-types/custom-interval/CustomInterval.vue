@@ -2,6 +2,7 @@
     <div>
         <div v-if="type === 'date'">
             <b-datepicker
+                    :class="{'has-content': date_init != undefined && date_init != ''}"
                     size="is-small"
                     v-model="date_init"
                     @input="validate_values()"
@@ -9,6 +10,7 @@
                     icon="calendar-today"/>
             <br>
             <b-datepicker
+                    :class="{'has-content': date_end != undefined && date_end != ''}"
                     size="is-small"
                     v-model="date_end"
                     @input="validate_values()"
@@ -21,12 +23,14 @@
                 class="columns" 
                 v-else>
             <b-input
+                    :class="{'has-content': value_init != undefined && value_init != ''}"
                     size="is-small"
                     type="number"
                     @input="validate_values()"
                     class="column"
                     v-model="value_init"/>
             <b-input
+                    :class="{'has-content': value_end != undefined && value_end != ''}"
                     size="is-small"
                     type="number"
                     @input="validate_values()"

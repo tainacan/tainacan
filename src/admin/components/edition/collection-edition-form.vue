@@ -106,6 +106,7 @@
                             :title="$i18n.getHelperTitle('collections', 'name')" 
                             :message="$i18n.getHelperMessage('collections', 'name')"/>
                         <b-input
+                            :class="{'has-content': form.name != undefined && form.name != ''}"
                             id="tainacan-text-name"
                             v-model="form.name"
                             @focus="clearErrors('name')"/>  
@@ -121,6 +122,7 @@
                                 :title="$i18n.getHelperTitle('collections', 'description')" 
                                 :message="$i18n.getHelperMessage('collections', 'description')"/>
                         <b-input
+                                :class="{'has-content': form.description != undefined && form.description != ''}"
                                 id="tainacan-text-description"
                                 type="textarea"
                                 v-model="form.description"
@@ -241,6 +243,7 @@
                                 :title="$i18n.getHelperTitle('collections', 'slug')" 
                                 :message="$i18n.getHelperMessage('collections', 'slug')"/>
                         <b-input
+                                :class="{'has-content': form.slug != undefined && form.slug != ''}"
                                 id="tainacan-text-slug"
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
@@ -700,7 +703,7 @@ export default {
         }
     }
     .selected-cover-page {
-        background-color: $tainacan-input-color;
+        background-color: $tainacan-input-background;
         padding: 8px;
         font-size: .85rem;
         .span { vertical-align: middle;}

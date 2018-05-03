@@ -1,5 +1,6 @@
 <template>
     <b-input 
+            :class="{'has-content': inputValue != undefined && inputValue != ''}"
             :id="id"
             type="textarea"
             :value="inputValue"

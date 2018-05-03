@@ -12,6 +12,7 @@ export default {
                 collectionId: undefined
             },
             created(){
+                
                 this.$on('input', data => {
                     this.$store.dispatch('search/setPage', 1);
         
@@ -98,6 +99,8 @@ export default {
                     this.$store.dispatch('collection/fetchItems', this.collectionId).then((res) => {
                         this.$emit( 'isLoadingItems', false);
                         this.$emit( 'hasFiltered', res.hasFiltered);
+                        //var event = new Event('tainacan-items-change')
+                        //document.dispatchEvent(event);
                     })
                     .catch(() => {
                         this.$emit( 'isLoadingItems', false);

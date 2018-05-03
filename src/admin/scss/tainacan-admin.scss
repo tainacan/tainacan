@@ -162,12 +162,25 @@ html {
         font-size: 14px;
         border: none;
         border-radius: 1px !important;
-        background-color: $tainacan-input-color;
-        color: black;
+        background-color: $tainacan-input-background;
+        color: $tainacan-input-color;
         box-shadow: none;
+        transition: background-color 0.1s;
 
         &.is-danger {
-          background-color: #ece0e0;  
+          background-color: #e7dede;  
+        }
+
+        &:focus, &:active {
+            box-shadow: none;
+            background-color: white;
+            border: 1px solid $tainacan-input-background;
+        }
+    }
+    .control.has-content {
+        .input, .textarea {
+            background-color: white;
+            border: 1px solid $tainacan-input-background;
         }
     }
     .radio {
@@ -192,7 +205,7 @@ html {
             padding: 2px 25px 2px 15px!important;
             margin-top: 0px !important;
             margin-bottom: 0px !important;
-            background-color: $tainacan-input-color;
+            background-color: $tainacan-input-background;
             color: black;
             &:focus>option:checked, &:focus>option:hover {
                 background-color: $primary-lighter !important;
@@ -296,7 +309,7 @@ html {
         }
     }
     &:hover input[type="checkbox"] + .check {
-        background-color: $tainacan-input-color;
+        background-color: $tainacan-input-background;
     }
 
     &:focus input[type="checkbox"] + .check,

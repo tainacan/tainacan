@@ -19,7 +19,9 @@ $success: #25a088;
 $success-invert: findColorInvert($success);
 
 $separator-color: #2b98a4;
-$tainacan-input-color: #f0f0f0;
+$tainacan-input-color: #1d1d1d;
+$tainacan-input-background: #e5e5e5;
+$tainacan-placeholder-color: #898d8f;
 $draggable-border-color: #d8d8d8;
 
 $gray: #b1b1b1; 
@@ -72,6 +74,11 @@ $page-mobile-top-padding: 0.5em;
 $link: $secondary;
 $link-invert: $secondary-invert;
 $link-focus-border: $secondary; 
+
+// Placeholder
+$text-light: $tainacan-placeholder-color;
+
+// Bulma Inputs
 
 // Table
 $table-head-cell-color: $gray-light;

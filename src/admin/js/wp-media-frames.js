@@ -8,19 +8,25 @@ export default {
 			wp.media.view.settings.post = {
                 id: this.params.relatedPostId
 			}
-
+			
 			this.frame = wp.media({
 				button: {
 					text: this.params.button_labels.frame_button
 				},
+				content: 'upload', // First view that is opened
+				autoSelect: true,
 				states: [
-					new wp.media.controller.Library({
+					new wp.media.controller.MediaLibrary({
 						title:     this.params.button_labels.frame_title,
 						library:   wp.media.query({
-							uploadedTo: this.params.relatedPostId
+							status:  null,
+							type:    null,
+							uploadedTo: wp.media.view.settings.post.id
 						}),
+						uploader: true,
 						multiple:  true,
-						date:      false
+						date:      false,
+						uploadedTo: wp.media.view.settings.post.id
 					})
 				]
 			});
@@ -34,10 +40,13 @@ export default {
 				mejsSettings = window._wpmejsSettings || {};
 				attachments = this.frame.state().get( 'selection' ).toJSON();
 
+				wp.media.view.settings.post = {
+					id: this.params.relatedPostId
+				}
+																																																
                 this.params.attachments = attachments;
 				this.params.onSave(attachments);
                 // Set the Customizer setting; the callback takes care of rendering.
-                //this.setting( attachment.id );
                 node = this.container.find( 'audio, video' ).get(0);
 
                 // Initialize audio/video previews.
@@ -71,6 +80,8 @@ export default {
 					close: false
 				},
 				uploader: true,
+				content: 'upload', // First view that is opened
+				autoSelect: true,
 				states: [
 					new wp.media.controller.Library({
 						title: this.params.button_labels.frame_title,
@@ -80,7 +91,6 @@ export default {
 						}),
 						multiple: false,
 						date: false,
-						filterable: true,
 						priority: 20,
 						suggestedWidth: this.params.width,
 						suggestedHeight: this.params.height,
@@ -128,7 +138,12 @@ export default {
 					text: l10n.select,
 					close: false
 				},
+				library: wp.media.query({ 
+					type: 'image',
+					uploadedTo: this.params.relatedPostId 
+				}),
 				uploader: true,
+				content: 'upload', // First view that is opened
 				states: [
 					new wp.media.controller.Library({
 						title: this.params.button_labels.frame_title,
@@ -178,6 +193,7 @@ export default {
 				button: {
 					text: this.params.button_labels.frame_button
 				},
+				content: 'upload', // First view that is opened
 				states: [
 					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,

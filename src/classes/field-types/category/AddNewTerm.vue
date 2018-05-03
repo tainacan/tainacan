@@ -16,7 +16,9 @@
                         style="padding-left: 0px;">
 
                     <b-field :label="$i18n.get('label_name')">
-                        <b-input v-model="name"/>
+                        <b-input
+                                :class="{'has-content': name != undefined && name != ''}" 
+                                v-model="name"/>
                     </b-field>
 
                     <b-field :label="$i18n.get('label_parent_term')">

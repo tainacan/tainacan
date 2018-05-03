@@ -135,7 +135,8 @@
                                 <h2>{{ $i18n.get('instruction_write_text') }}</h2>
                                 <hr>
                             </div>
-                            <b-input 
+                            <b-input
+                                    :class="{'has-content': textContent != undefined && textContent != ''}" 
                                     type="textarea"
                                     v-model="textContent"/>
 
@@ -170,7 +171,9 @@
                                 <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
                                 <hr>
                             </div>
-                            <b-input v-model="urlLink"/>
+                            <b-input
+                                    :class="{'has-content': urlLink != undefined && urlLink != ''}" 
+                                    v-model="urlLink"/>
 
                             <div class="field is-grouped form-submit">
                                 <div class="control">     
@@ -500,6 +503,7 @@ export default {
                     }
                 }
             );
+
         },
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
@@ -599,7 +603,7 @@ export default {
                     height: 72px;
                     width: 72px;
                     border: none;
-                    background-color: $tainacan-input-color;
+                    background-color: $tainacan-input-background;
                     color: $secondary;
                     margin-bottom: 6px;
                     &:hover {

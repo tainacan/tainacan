@@ -16,7 +16,8 @@
                         :title="$i18n.getHelperTitle('filters', 'name')" 
                         :message="$i18n.getHelperMessage('filters', 'name')"/>
             </label>
-            <b-input 
+            <b-input
+                    :class="{'has-content': editForm.name != undefined && editForm.name != ''}" 
                     v-model="editForm.name" 
                     name="name" 
                     @focus="clearErrors('name')"/>
@@ -32,7 +33,8 @@
                         :title="$i18n.getHelperTitle('filters', 'description')" 
                         :message="$i18n.getHelperMessage('filters', 'description')"/>    
             </label>
-            <b-input 
+            <b-input
+                    :class="{'has-content': editForm.description != undefined && editForm.description != ''}" 
                     type="textarea" 
                     name="description" 
                     v-model="editForm.description" 

@@ -1,5 +1,6 @@
 <template>
     <b-input
+            :class="{'has-content': inputValue != undefined && inputValue != ''}"
             :id="id"
             :value="inputValue"
             @blur="onBlur"
