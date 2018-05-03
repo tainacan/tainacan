@@ -5,7 +5,14 @@
                 :can-cancel="false"/>
         <div class="card">
             <div class="card-content">
-                <div
+                
+				<router-link
+                        class="card-footer-item"
+                        :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
+                    {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
+                </router-link>
+				
+				<div
                         class="card-image"
                         v-if="item.document">
                     <figure
@@ -58,18 +65,6 @@
                 </div>
 
             </div>
-            <footer class="card-footer">
-                <router-link
-                        class="card-footer-item"
-                        :to="{ path: $routerHelper.getCollectionPath(collectionId)}">
-                    {{ $i18n.get('see') + ' ' + $i18n.get('collection') }}
-                </router-link>
-                <router-link
-                        class="card-footer-item"
-                        :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                    {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
-                </router-link>
-            </footer>
         </div>
     </div>
 </template>
