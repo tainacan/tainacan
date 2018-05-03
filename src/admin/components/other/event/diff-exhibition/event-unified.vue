@@ -49,7 +49,7 @@
                                         v-else-if="key === 'fields_order' || key === 'filters_order'"
                                         class="is-capitalized"
                                         :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
-                                    {{ `ID: ${d.id} Enabled: ${d.enabled}` }}
+                                    {{ `ID: ${o.id} Enabled: ${o.enabled ? o.enabled : 'false'}` }}
                                 </div>
 
                                 <div
@@ -110,7 +110,7 @@
                                         v-else-if="key === 'fields_order' || key === 'filters_order'"
                                         class="is-capitalized"
                                         :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
-                                    {{ `ID: ${d.id} Enabled: ${d.enabled}` }}
+                                    {{ `ID: ${d.id} Enabled: ${d.enabled ? d.enabled : 'false'}` }}
                                 </div>
 
                                 <div
