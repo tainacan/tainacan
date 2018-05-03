@@ -23,12 +23,15 @@
                             :placeholder="$i18n.get('instruction_search_repository')" 
                             class="input is-small" 
                             type="search" 
-                            v-model="searchTerm">
+                            v-model="searchTerm"
+                            @click="alert('Not ready to use in Alpha version.')">
                     <span class="icon is-right">
                         <i class="mdi mdi-magnify" />
                     </span>
                 </div>
-                <a href="">{{ $i18n.get('advanced_search') }}</a>
+                <a 
+                        @click.prevent="alert('Not ready to use in Alpha version.')"
+                        href="">{{ $i18n.get('advanced_search') }}</a>
             </span>
             <a 
                     class="level-item" 
@@ -52,6 +55,15 @@ export default {
     },
     props: {
         isMenuCompressed: false
+    },
+    methods: {
+        alert(message) {
+            this.$toast.open({
+                duration: 3000,
+                message: message,
+                position: 'is-bottom'
+            });
+        }
     }
 }
 </script>
@@ -80,20 +92,18 @@ export default {
 
             .level-item{
                 height: $header-height;
-                width: 184px;
-                transition: width 0.15s;
-                -webkit-transition: width linear 0.15s;   
+                width: 180px;
+                transition: width 0.15s, background-color 0.2s;
+                -webkit-transition: width 0.15s background-color 0.2s;   
                 cursor: pointer;
-
-                &:hover{
-                    background-color: #257787;
-                }
+                background-color: #257787;
+                
                 &:focus {
                     box-shadow: none;
                 }
                 .tainacan-logo {
                     max-height: 22px;
-                    padding: 0px 28px;
+                    padding: 0px 24px;
                     transition: padding 0.15s;
                     -webkit-transition: padding linear 0.15s;   
                 }
@@ -140,6 +150,7 @@ export default {
         &.menu-compressed {
             .level-left .level-item {
                 width: 220px;
+                background-color: $secondary;
                 .tainacan-logo {
                     padding: 0px 42px;   
                 }
