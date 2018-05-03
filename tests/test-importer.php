@@ -49,6 +49,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $_SESSION['tainacan_importer'][$id]->set_url($url);
 
         $_SESSION['tainacan_importer'][$id]->run();
+        $this->assertTrue(true);
     }*/
 
     /*public function test_file_old_tainacan () {
@@ -242,7 +243,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
     public function test_fetch_file(){
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
-        /*$_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wordpress-test/wp-json' );
-        $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );*/
+        $_SESSION['tainacan_importer'][$id]->fetch_from_remote( 'http://localhost/wordpress-test/wp-json' );
+        $this->assertTrue( isset( $_SESSION['tainacan_importer'][$id]->tmp_file ) );
     }
 }

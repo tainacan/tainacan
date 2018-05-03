@@ -92,6 +92,10 @@ class Old_Tainacan extends Importer
                 $Tainacan_Taxonomies->insert($taxonomy);
 
                 $inserted_taxonomy = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
+
+                /*Insert old tainacan id*/
+                add_post_meta($inserted_taxonomy->get_id(), 'old_tainacan_category_id', $category->term_id);
+
                 if(isset($category->children) && $inserted_taxonomy)
                 {
                     $this->add_all_terms($inserted_taxonomy, $category->children);
@@ -121,6 +125,9 @@ class Old_Tainacan extends Importer
             $new_term->set_description($term->description);
 
             $inserted_term = $Tainacan_Terms->insert($new_term);
+
+            /*Insert old tainacan id*/
+            add_term_meta($inserted_term->get_id(), 'old_tainacan_category_id', $term->term_id );
 
             if(isset($term->children))
             {
