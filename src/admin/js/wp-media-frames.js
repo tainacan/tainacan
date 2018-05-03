@@ -13,16 +13,14 @@ export default {
 				button: {
 					text: this.params.button_labels.frame_button
 				},
-				library: {
-					uploadedTo: this.params.relatedPostId
-				},
 				states: [
 					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,
-						library:   wp.media.query({ type: this.params.mime_type }),
+						library:   wp.media.query({
+							uploadedTo: this.params.relatedPostId
+						}),
 						multiple:  true,
-						date:      false,
-						uploadedTo: this.params.relatedPostId
+						date:      false
 					})
 				]
 			});
@@ -72,17 +70,17 @@ export default {
 					text: l10n.select,
 					close: false
 				},
-				library: {
-					type: 'image',
-					uploadedTo: this.params.relatedPostId
-				},
 				uploader: true,
 				states: [
 					new wp.media.controller.Library({
 						title: this.params.button_labels.frame_title,
-						library: wp.media.query({ type: 'image' }),
+						library: wp.media.query({ 
+							type: 'image', 
+							uploadedTo: this.params.relatedPostId
+						}),
 						multiple: false,
 						date: false,
+						filterable: true,
 						priority: 20,
 						suggestedWidth: this.params.width,
 						suggestedHeight: this.params.height,
@@ -130,21 +128,19 @@ export default {
 					text: l10n.select,
 					close: false
 				},
-				library: {
-					type: 'image',
-					uploadedTo: this.params.relatedPostId
-				},
 				uploader: true,
 				states: [
 					new wp.media.controller.Library({
 						title: this.params.button_labels.frame_title,
-						library: wp.media.query({ type: 'image' }),
+						library: wp.media.query({ 
+							type: 'image',
+							uploadedTo: this.params.relatedPostId 
+						}),
 						multiple: false,
 						date: false,
 						priority: 20,
 						suggestedWidth: this.params.width,
-						suggestedHeight: this.params.height,
-						uploadedTo: this.params.relatedPostId
+						suggestedHeight: this.params.height
 					}),
 					new wp.media.controller.CustomizeImageCropper({
 						imgSelectOptions: this.calculateImageSelectOptions,
@@ -182,13 +178,12 @@ export default {
 				button: {
 					text: this.params.button_labels.frame_button
 				},
-				library: {
-					uploadedTo: this.params.relatedPostId
-				},
 				states: [
 					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,
-						library:   wp.media.query({ type: this.params.mime_type }),
+						library:   wp.media.query({ 	
+							uploadedTo: this.params.relatedPostId
+						}),
 						multiple:  false,
 						date:      false,
 						uploadedTo: this.params.relatedPostId

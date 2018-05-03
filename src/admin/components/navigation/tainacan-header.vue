@@ -80,20 +80,18 @@ export default {
 
             .level-item{
                 height: $header-height;
-                width: 184px;
-                transition: width 0.15s;
-                -webkit-transition: width linear 0.15s;   
+                width: 180px;
+                transition: width 0.15s, background-color 0.2s;
+                -webkit-transition: width 0.15s background-color 0.2s;   
                 cursor: pointer;
-
-                &:hover{
-                    background-color: #257787;
-                }
+                background-color: #257787;
+                
                 &:focus {
                     box-shadow: none;
                 }
                 .tainacan-logo {
                     max-height: 22px;
-                    padding: 0px 28px;
+                    padding: 0px 24px;
                     transition: padding 0.15s;
                     -webkit-transition: padding linear 0.15s;   
                 }
@@ -108,7 +106,7 @@ export default {
                 color: $tertiary;
             }
             .search-area {
-                display: flex;
+                display: none;//display: flex;
                 align-items: center;
                 margin-right: 36px;
 
@@ -140,6 +138,7 @@ export default {
         &.menu-compressed {
             .level-left .level-item {
                 width: 220px;
+                background-color: $secondary;
                 .tainacan-logo {
                     padding: 0px 42px;   
                 }

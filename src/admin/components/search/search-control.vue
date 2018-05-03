@@ -18,9 +18,9 @@
                         {{ $i18n.get('add_one_item') }}
                     </router-link>
                 </b-dropdown-item>
-                <b-dropdown-item>{{ $i18n.get('add_items_bulk') }}
+                <b-dropdown-item disabled>{{ $i18n.get('add_items_bulk') + ' (Not ready)' }}
                 </b-dropdown-item>
-                <b-dropdown-item>{{ $i18n.get('add_items_external_source') }}<br><small class="is-small">{{ $i18n.get() }}</small></b-dropdown-item>
+                <b-dropdown-item disabled>{{ $i18n.get('add_items_external_source') + ' (Not ready)' }}<br><small class="is-small">{{ $i18n.get() }}</small></b-dropdown-item>
             </b-dropdown>
 
         </div>
