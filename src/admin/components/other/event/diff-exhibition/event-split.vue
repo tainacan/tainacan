@@ -22,7 +22,6 @@
                                     v-else
                                     v-for="(o, ind) in diff.old"
                                     :key="ind">
-
                                 <div v-if="o.hasOwnProperty('mime_type') && o.mime_type.includes('image') && key === 'attachments'">
 
 
@@ -55,7 +54,7 @@
                                         class="content is-inline is-capitalized"
                                         v-for="(o2, ind2) in o"
                                         :key="ind2">
-                                    <div class="is-inline is-capitalized">{{ `${ind2.replace('_', ' ')}: ${o2} ` }}</div>
+                                    <div class="is-inline is-capitalized">{{ `${ind2 ? ind2.replace('_', ' ')+':' : ''} ${o2} ` }}</div>
                                 </div>
                             </div>
                         </div>

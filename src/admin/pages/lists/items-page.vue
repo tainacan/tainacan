@@ -36,6 +36,8 @@
                         size="is-small"
                         :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
             </a>
+
+            <br>
             <br>
 
             <filters-items-list

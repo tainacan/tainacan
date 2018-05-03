@@ -112,7 +112,12 @@ class Logs extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Log differences', 'tainacan' ),
 				'description' => __( 'Differences between old and new versions of object', 'tainacan' )
-			]
+			],
+			'collection_id'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Log collection relationship', 'tainacan' ),
+				'description' => __( 'The id of collection that this log is related.', 'tainacan' )
+			],
 		] );
 	}
 
@@ -188,7 +193,7 @@ class Logs extends Repository {
 
 		} elseif ( is_array( $args ) ) {
 			$args = array_merge( [
-				'posts_per_page' => - 1,
+				'posts_per_page' => -1,
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );
