@@ -13,8 +13,13 @@
 
                             <p/>
                             <div class="has-text-weight-bold is-capitalized">{{ `${key.replace('_', ' ')}:` }}</div>
+                            <div v-if="key === 'featured_image'">
+                                <div class="image is-128x128">
+                                    <img :src="diff.old">
+                                </div>
+                            </div>
                             <div
-                                    v-if="!Array.isArray(diff.old)"
+                                    v-else-if="!Array.isArray(diff.old)"
                                     class="content is-inline">
                                 {{ diff.old }}
                             </div>
