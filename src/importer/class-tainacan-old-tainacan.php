@@ -196,18 +196,17 @@ class Old_Tainacan extends Importer
                     'socialdb_property_fixed_description',
                     'socialdb_property_fixed_content',
                     'socialdb_property_fixed_thumbnail',
-                    'socialdb_property_fixed_attachments',
-                    'stars',
-                    'item',
-                    'tree',
-                    'compound'
+                    'socialdb_property_fixed_attachments'
                 ];
 
                 $special = [
-                    'socialdb_property_fixed_type'
+                    'socialdb_property_fixed_type',
+                    'stars',
+                    'item',
+                    'compound'
                 ];
 
-                if(!in_array($meta->slug, $avoid) && !in_array($meta->type, $avoid))
+                if(!in_array($meta->slug, $avoid) && !in_array($meta->type, $special))
                 {
                     $newField = new \Tainacan\Entities\Field();
 
@@ -215,6 +214,10 @@ class Old_Tainacan extends Importer
                     $newField->set_name($meta->name);
 
                     $newField->set_field_type('Tainacan\Field_Types\\'.$type);
+                    if(strcmp($type, "Category") == 0)
+                    {
+                        //$newField->set_field_type_options()
+                    }
 
                     $newField->set_collection_id('default');
                     $newField->validate(); // there is no user input here, so we can be sure it will validate.
@@ -450,13 +453,13 @@ class Old_Tainacan extends Importer
         }else if(strcmp($type, 'autoincrement') === 0)
         {
             $type = "Numeric";
-        }else if(strcmp($type, 'item'))
+        }else if(strcmp($type, 'item') === 0)
         {
             $type = "Relationship";
-        }else if(strcmp($type, 'tree'))
+        }else if(strcmp($type, 'tree') === 0)
         {
             $type = "Category";
-        }else if(strcmp($type, 'compound'))
+        }else if(strcmp($type, 'compound') === 0)
         {
             $type = "Compound";
         }
