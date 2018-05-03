@@ -14,7 +14,7 @@
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <b-field>
+            <b-field class="margin-1">
                 <b-input
                         placeholder="Search..."
                         type="search"
@@ -24,6 +24,8 @@
             <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a>
 
             <br>
+            <br>
+
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
                     class="collapse-all is-size-7"
@@ -291,6 +293,10 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
+
+    .margin-1 {
+        margin-bottom: 0.1rem;
+    }
 
     .page-container, .page-container-small {
         padding: 0px;
