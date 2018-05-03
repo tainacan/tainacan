@@ -158,11 +158,71 @@ class Old_Tainacan extends Importer
 
     public function create_collections()
     {
+        $collections_link = $this->get_url() . $this->tainacan_api_address . "/collections";
+        $collections = wp_remote_get($collections_link);
+
+        $collections_array = $this->verify_process_result($collections);
+        if($collections_array)
+        {
+            foreach ($collections_array as $collection)
+            {
+                $new_collection = new \Tainacan\Entities\Collection();
+                $new_collection->set_name($collection->post_title);
+                $new_collection->set_status('publish');
+                $new_collection->validate();
+                $new_collection = \Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
+
+                /*Add old id*/
+                add_post_meta($new_collection->get_id(), "old_tainacan_collection_id", $collection->ID);
+            }
+        }
+
         return false;
     }
 
     public function create_repo_meta()
     {
+        $repository_meta_link = $this->get_url() . $this->tainacan_api_address . "/repository/metadata";
+        $repo_meta = wp_remote_get($repository_meta_link);
+
+        $repo_meta_array = $this->verify_process_result($repo_meta);
+        if($repo_meta_array)
+        {
+            $Fields_Repository = \Tainacan\Repositories\Fields::get_instance();
+            foreach ($repo_meta_array as $meta)
+            {
+                $avoid = [
+                    'socialdb_property_fixed_title',
+                    'socialdb_property_fixed_description',
+                    'socialdb_property_fixed_content',
+                    'socialdb_property_fixed_thumbnail',
+                    'socialdb_property_fixed_attachments',
+                    'stars',
+                    'item',
+                    'tree',
+                    'compound'
+                ];
+
+                $special = [
+                    'socialdb_property_fixed_type'
+                ];
+                if(!in_array($meta->slug, $avoid) && !in_array($meta->type, $avoid))
+                {
+                    $newField = new \Tainacan\Entities\Field();
+
+                    $type = $this->define_type($meta->type);
+                    $newField->set_name($meta->name);
+
+                    $newField->set_field_type('Tainacan\Field_Types\\'.$type);
+
+                    $newField->set_collection_id('default');
+                    $newField->validate(); // there is no user input here, so we can be sure it will validate.
+
+                    $newField = $Fields_Repository->insert($newField);
+                    print $meta->type;
+                }
+            }
+        }
         return false;
     }
 
@@ -173,6 +233,7 @@ class Old_Tainacan extends Importer
 
     public function create_collection_items()
     {
+        /*Use standard method*/
         return false;
     }
 
@@ -383,11 +444,23 @@ class Old_Tainacan extends Importer
         $type = strtolower($type);
         $tainacan_types = ['text', 'textarea', 'numeric', 'date'];
 
-        $types_to_work = ['item', 'tree'];
         if(in_array($type, $tainacan_types))
         {
             $type = ucfirst($type);
-        }else $type = 'Text';
+        }else if(strcmp($type, 'autoincrement') === 0)
+        {
+            $type = "Numeric";
+        }else if(strcmp($type, 'item'))
+        {
+            $type = "Relationship";
+        }else if(strcmp($type, 'tree'))
+        {
+            $type = "Category";
+        }else if(strcmp($type, 'compound'))
+        {
+            $type = "Compound";
+        }
+        else $type = 'Text';
 
         return $type;
     }

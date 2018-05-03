@@ -39,16 +39,25 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         $_SESSION['tainacan_importer'][$id]->set_items_per_step(50);
 
-//        if(!copy('./tests/attachment/json_old_tainacan_base.txt', './tests/attachment/json_old_tainacan.txt'))
-//        {
-//            return false;
-//        }
+        //if(!copy('./tests/attachment/json_old_tainacan_base.txt', './tests/attachment/json_old_tainacan.txt'))
+        //{
+            //return false;
+        //}
 
         //$_SESSION['tainacan_importer'][$id]->set_file( './tests/attachment/json_old_tainacan.txt' );
         $url = 'http://localhost/';
         $_SESSION['tainacan_importer'][$id]->set_url($url);
 
+        //          One run for each step
+        //Create categories
         $_SESSION['tainacan_importer'][$id]->run();
+
+        //Create empty collections
+        $_SESSION['tainacan_importer'][$id]->run();
+
+        //Create repository metadata
+        $_SESSION['tainacan_importer'][$id]->run();
+
         $this->assertTrue(true);
     }*/
 
