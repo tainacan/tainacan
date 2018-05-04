@@ -340,8 +340,7 @@
 
         @media screen and (max-width: 769px) {
             height: 60px;
-            margin-top: -0.5em;
-            padding-top: 0.90em;
+            margin-top: 0;
 
             .header-item {
                 padding-right: 0.5em;
@@ -392,12 +391,10 @@
     }
 
     @media screen and (max-width: 769px) {
-        .filters-menu {
-            display: none;
-        }
+
         .table-container {
             margin-right: 0;
-            padding: .85em 0em;
+            padding: 16px;
         }
     }
 

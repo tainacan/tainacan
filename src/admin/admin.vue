@@ -55,6 +55,11 @@
         height: 100%;
         margin-bottom: 0px;
         margin-top: 0px;
+
+
+        @media screen and (max-width: 769px) {
+            height: auto;
+        }
     }  
 
     .is-main-content {

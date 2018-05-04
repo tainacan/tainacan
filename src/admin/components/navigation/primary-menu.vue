@@ -11,7 +11,7 @@
                 <li><router-link 
                         tag="a" 
                         to="/collections" 
-                        :class="activeRoute == 'CollectionsPage' || isMenuCompressed ? 'is-active':''">
+                        :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
                             icon="folder-multiple"/> <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
