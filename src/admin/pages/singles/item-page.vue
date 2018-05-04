@@ -127,9 +127,7 @@ export default {
         });
 
         // Get attachments
-        this.fetchAttachments(this.itemId).then((result) => {
-            this.$console.log( result, 'attachments' );
-        });
+        this.fetchAttachments(this.itemId);
     }
 
 }
