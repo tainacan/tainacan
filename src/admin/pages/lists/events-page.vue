@@ -5,7 +5,7 @@
                     'primary-page': isRepositoryLevel,
                     'page-container': isRepositoryLevel
                 }">
-            <tainacan-title v-if="!isRepositoryLevel" />
+            <tainacan-title />
             <div
                     class="columns"
                     :class="{ 'above-subheader': isRepositoryLevel }">

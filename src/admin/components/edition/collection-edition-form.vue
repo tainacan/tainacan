@@ -23,12 +23,12 @@
                             </a>
                             <figure class="image is-128x128">
                                 <span 
-                                        v-if="collection.featured_image == undefined || collection.featured_image == false"
+                                        v-if="collection.thumbnail == undefined || collection.thumbnail == false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
                                         id="thumbail-image"  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(collection.featured_image == undefined || collection.featured_image == false) ? thumbPlaceholderPath : collection.featured_image">
+                                        :src="(collection.thumbnail == undefined || collection.thumbnail == false) ? thumbPlaceholderPath : collection.thumbnail">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -319,7 +319,7 @@ export default {
                 description: '',
                 slug: '',
                 enable_cover_page: '',	
-                featured_image: '',
+                thumbnail: '',
                 header_image: '',
                 files:[],
                 moderators_ids: []
@@ -521,7 +521,7 @@ export default {
 
             this.updateThumbnail({collectionId: this.collectionId, thumbnailId: 0})
             .then(() => {
-                this.collection.featured_image = false;
+                this.collection.thumbnail = false;
             })
             .catch((error) => {
                 this.$console.error(error);
@@ -548,7 +548,7 @@ export default {
                     onSave: (mediaId) => {
                         this.updateThumbnail({collectionId: this.collectionId, thumbnailId: mediaId})
                         .then((res) => {
-                            this.collection.featured_image = res.featured_image;
+                            this.collection.thumbnail = res.thumbnail;
                         })
                         .catch(error => this.$console.error(error));
                     }

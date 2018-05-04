@@ -312,20 +312,20 @@ class Logs extends Repository {
 
 			if ( $is_update ) {
 				$msn = $this->prepare_event_message($class_name, 'updated');
-				$description = $this->prepare_description_message($new_value, $name, $class_name, 'updated');
+				$description = $this->prepare_event_description_message($new_value, $name, $class_name, 'updated');
 			} elseif( $is_delete ){
 				// was deleted
 				$msn = $this->prepare_event_message($class_name, 'deleted');
-				$description = $this->prepare_description_message($new_value, $name, $class_name, 'deleted');
+				$description = $this->prepare_event_description_message($new_value, $name, $class_name, 'deleted');
 			} elseif( !empty($diffs) ) {
 				// was created
 				$msn = $this->prepare_event_message($class_name, 'created');
-				$description = $this->prepare_description_message($new_value, $name, $class_name, 'created');
+				$description = $this->prepare_event_description_message($new_value, $name, $class_name, 'created');
 
 			} elseif( $is_trash ) {
 				// was trashed
 				$msn = $this->prepare_event_message($class_name, 'trashed');
-				$description = $this->prepare_description_message($new_value, $name, $class_name, 'trashed');
+				$description = $this->prepare_event_description_message($new_value, $name, $class_name, 'trashed');
 			}
 
 			$msn         = apply_filters( 'tainacan-insert-log-message-title', $msn, $type, $new_value );
@@ -363,7 +363,7 @@ class Logs extends Repository {
 	 *
 	 * @return string
 	 */
-	private function prepare_description_message($object, $name, $class_name, $action_message){
+	private function prepare_event_description_message($object, $name, $class_name, $action_message){
 		if ( $object instanceof Entities\Field || $object instanceof Entities\Item || $object instanceof Entities\Filter) {
 			$collection = $object->get_collection();
 			$parent     = $collection;

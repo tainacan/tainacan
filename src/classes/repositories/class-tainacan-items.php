@@ -106,7 +106,7 @@ class Items extends Repository {
 			    'on_error'    => __( 'Invalid document', 'tainacan' ),
 			    'default'     => ''
 		    ],
-		    'featured_img_id'   => [
+		    '_thumbnail_id'   => [
 			    'map'         => 'meta',
 			    'title'       => __( 'Featured image ID', 'tainacan' ),
 			    'description' => __( 'Featured image ID', 'tainacan' )

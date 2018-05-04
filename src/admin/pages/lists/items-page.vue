@@ -28,6 +28,7 @@
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
+                    v-if="!isLoadingFilters && filters.length > 0"
                     class="collapse-all is-size-7"
                     @click="toggleCollapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -233,7 +234,7 @@
                         name: this.$i18n.get('label_thumbnail'),
                         field: 'row_thumbnail',
                         field_type: undefined,
-                        slug: 'featured_image',
+                        slug: 'thumbnail',
                         id: undefined,
                         display: true
                     });

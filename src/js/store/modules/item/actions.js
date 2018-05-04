@@ -164,7 +164,7 @@ export const fetchAttachments = ({ commit }, item_id) => {
 export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/items/' + itemId, {
-            featured_img_id: thumbnailId 
+            _thumbnail_id: thumbnailId
         }).then( res => {
             let item = res.data
             commit('setItem', item);

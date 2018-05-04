@@ -194,7 +194,7 @@ export const fetchAttachments = ({ commit }, collection_id) => {
 export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId, {
-            featured_img_id: thumbnailId 
+            _thumbnail_id: thumbnailId
         }).then( res => {
             let collection = res.data
             commit('setCollection', collection);

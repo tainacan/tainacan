@@ -28,16 +28,16 @@
                         tabindex="0" 
                         :label="$i18n.get('label_thumbnail')" 
                         :aria-label="$i18n.get('label_thumbnail')" 
-                        field="featured_image" 
+                        field="thumbnail"
                         width="55">
                     <template 
-                            v-if="props.row.featured_image" 
+                            v-if="props.row.thumbnail"
                             slot-scope="scope">
                         <router-link 
                                 tag="img" 
                                 :to="{path: $routerHelper.getCollectionPath(props.row.id)}" 
                                 class="table-thumb clickable-row" 
-                                :src="`${props.row.featured_image}`"/>
+                                :src="`${props.row.thumbnail}`"/>
                     </template>
                 </b-table-column>
 

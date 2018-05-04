@@ -16,7 +16,7 @@
                             <div class="has-text-weight-bold is-capitalized">
                                 {{ `${key.replace('_', ' ')}:` }}
                             </div>
-                            <div v-if="key === 'featured_image'">
+                            <div v-if="key === 'thumbnail'">
                                 <div class="image is-128x128">
                                     <img :src="diff.new">
                                 </div>

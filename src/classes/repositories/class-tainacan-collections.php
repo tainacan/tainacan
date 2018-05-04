@@ -186,7 +186,7 @@ class Collections extends Repository {
 				'description' => __( 'The IDs of users assigned as moderators of this collection', 'tainacan' ),
 				'validation'  => ''
 			],
-			'featured_img_id'          => [
+			'_thumbnail_id'          => [
 				'map'         => 'meta',
 				'title'       => __( 'Featured image ID', 'tainacan' ),
 				'description' => __( 'Featured image ID', 'tainacan' )

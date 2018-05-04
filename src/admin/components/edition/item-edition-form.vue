@@ -198,8 +198,8 @@
                     <!-- Thumbnail -------------------------------- --> 
                     <label class="section-label">{{ $i18n.get('label_thumbnail') }}</label>
                     <help-button 
-                            :title="$i18n.getHelperTitle('items', 'featured_img_id')" 
-                            :message="$i18n.getHelperMessage('items', 'featured_img_id')"/>
+                            :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
+                            :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
                     <div class="document-box">
                         <div class="thumbnail-field">
                             <a 
@@ -211,12 +211,12 @@
                             </a>
                             <figure class="image">
                                 <span 
-                                        v-if="item.featured_image == undefined || item.featured_image == false"
+                                        v-if="item.thumbnail == undefined || item.thumbnail == false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
                                         id="thumbail-image"  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(item.featured_image == undefined || item.featured_image == false) ? thumbPlaceholderPath : item.featured_image">
+                                        :src="(item.thumbnail == undefined || item.thumbnail == false) ? thumbPlaceholderPath : item.thumbnail">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -447,7 +447,7 @@ export default {
         deleteThumbnail() {
             this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
             .then(() => {
-                this.item.featured_image = false;
+                this.item.thumbnail = false;
             })
             .catch((error) => {
                 this.$console.error(error);
@@ -483,7 +483,7 @@ export default {
                     onSave: (mediaId) => {
                         this.updateThumbnail({itemId: this.itemId, thumbnailId: mediaId})
                         .then((res) => {
-                            this.item.featured_image = res.featured_image;
+                            this.item.thumbnail = res.thumbnail;
                         })
                         .catch(error => this.$console.error(error));
                     }

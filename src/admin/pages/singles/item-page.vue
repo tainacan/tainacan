@@ -22,12 +22,12 @@
                 <br>
 
                 <div
-                    v-if="item.featured_image"
+                    v-if="item.thumbnail"
                     class="media">
                    <figure
                         class="media-left" >
                       <p class="image is-128x128">
-                        <img :src="item.featured_image">
+                        <img :src="item.thumbnail">
                       </p>
                     </figure>
                     <div class="media-content">
