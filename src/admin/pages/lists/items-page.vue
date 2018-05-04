@@ -32,7 +32,7 @@
             <a
                     v-if="!isLoadingFilters && filters.length > 0"
                     class="collapse-all is-size-7"
-                    @click="toggleCollapseAll">
+                    @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <b-icon
                         type="is-secondary"
@@ -177,13 +177,6 @@
             ...mapGetters('search', [
                 'getSearchQuery'
             ]),
-            toggleCollapseAll() {
-                this.collapseAll = !this.collapseAll;
-
-                for (let i = 0; i < this.fieldCollapses.length; i++)
-                    this.fieldCollapses[i] = this.collapseAll;
-
-            },
             updateSearch(searchQuery) {
                 this.$eventBusSearch.setSearchQuery(searchQuery)
             }

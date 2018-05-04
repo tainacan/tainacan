@@ -53,12 +53,12 @@
                     <option
                             v-for="field in tableFields"
                             v-if="
-                            field.id == 'date' || (
-                                field.id != undefined &&
-                                field.field_type_object.related_mapped_prop != 'description' &&
-                                field.field_type_object.primitive_type != 'term' &&
-                                field.field_type_object.primitive_type != 'item' &&
-                                field.field_type_object.primitive_type != 'compound'
+                            field.id === 'date' || (
+                                field.id !== undefined &&
+                                field.field_type_object.related_mapped_prop !== 'description' &&
+                                field.field_type_object.primitive_type !== 'term' &&
+                                field.field_type_object.primitive_type !== 'item' &&
+                                field.field_type_object.primitive_type !== 'compound'
                             )"
                             :value="field"
                             :key="field.id">
@@ -68,7 +68,7 @@
                 <button
                         class="button is-white is-small"
                         @click="onChangeOrder()">
-                    <b-icon :icon="order == 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
+                    <b-icon :icon="order === 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
                 </button>
             </b-field>
         </div>

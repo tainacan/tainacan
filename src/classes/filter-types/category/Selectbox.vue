@@ -5,14 +5,14 @@
                 :laoding = "isLoading"
                 v-model = "selected"
                 @input = "onSelect()"
+                size="is-small"
                 expanded>
             <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
             <option
                     v-for=" (option, index) in options"
                     :key="index"
                     :label="option.name"
-                    :value="option.id"
-                    border>{{ option.name }}</option>
+                    :value="option.id">{{ option.name }}</option>
         </b-select>
     </div>
 </template>

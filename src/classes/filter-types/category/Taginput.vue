@@ -2,7 +2,6 @@
     <div class="block">
         <b-taginput
                 size="is-small"
-                rounded
                 icon="magnify"
                 v-model="selected"
                 :data="options"

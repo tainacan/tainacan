@@ -1,8 +1,8 @@
 <template>
     <div class="block">
         <b-autocomplete
-                rounded
                 icon="magnify"
+                size="is-small"
                 :id="id"
                 v-model="selected"
                 :data="options"

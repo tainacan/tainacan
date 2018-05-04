@@ -2,7 +2,6 @@
     <div class="block">
         <b-taginput
                 size="is-small"
-                rounded
                 icon="magnify"
                 :allow-new="allowNew"
                 @input="emitChange"

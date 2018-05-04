@@ -11,8 +11,7 @@
                     v-for="(option, index) in options"
                     :key="index"
                     :label="option.label"
-                    :value="option.value"
-                    border>{{ option.label }}</option>
+                    :value="option.value">{{ option.label }}</option>
         </b-select>
     </div>
 </template>

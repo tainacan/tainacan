@@ -3,21 +3,18 @@
         <div v-if="type === 'date'">
             <b-datepicker
                     :class="{'has-content': date_init != undefined && date_init != ''}"
-                    size="is-small"
                     v-model="date_init"
+                    size="is-small"
                     @input="validate_values()"
-                    :readonly="false"
                     icon="calendar-today"/>
             <br>
             <b-datepicker
                     :class="{'has-content': date_end != undefined && date_end != ''}"
-                    size="is-small"
                     v-model="date_end"
+                    size="is-small"
                     @input="validate_values()"
                     @focus="isTouched = true"
-                    :readonly="false"
                     icon="calendar-today"/>
-            <br>
         </div>
         <div 
                 class="columns" 
@@ -206,3 +203,11 @@
         }
     }
 </script>
+
+<style lang="scss">
+    .datepicker {
+        .dropdown-content {
+            position: fixed !important;
+        }
+    }
+</style>
