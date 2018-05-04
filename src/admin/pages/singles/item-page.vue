@@ -66,6 +66,7 @@
                             <a
                               target="blank"
                               :href="attachment.guid.rendered">{{ attachment.guid.rendered }}</a>
+                              <br>
                         </span>
                     </div>
                     <p v-else>--</p>
