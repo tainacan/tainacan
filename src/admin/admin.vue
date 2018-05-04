@@ -102,7 +102,7 @@
         height: 21px;
         width: 23px;
         border: none;
-        background-color: $primary-light;
+        background-color: #c1dae0;
         color: $secondary;
         padding: 0px;
         border-top-right-radius: 2px;
