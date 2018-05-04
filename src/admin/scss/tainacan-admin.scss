@@ -52,6 +52,10 @@ html {
 .primary-page {
     margin-top: $header-height; 
     height: $page-height !important;
+
+    @media screen and (max-width: 769px) {
+        margin-top: 0; 
+    }
 }
 .page-container {
     padding: $page-top-padding $page-side-padding;

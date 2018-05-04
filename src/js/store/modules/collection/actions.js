@@ -75,7 +75,7 @@ export const fetchCollection = ({ commit }, id) => {
 }
 
 export const fetchCollectionName = ({ commit }, id) => {
-    commit('cleanCollectionName');
+    //commit('cleanCollectionName');
     return new Promise((resolve, reject) =>{ 
         axios.tainacan.get('/collections/' + id + '?fetch_only=name')
         .then(res => {

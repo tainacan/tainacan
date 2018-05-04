@@ -117,6 +117,9 @@
     .header-item {
         display: inline-block;
     }
+    .header-item .field {
+        align-items: center;
+    }
     #item-creation-options-dropdown {
         margin-right: 80px;
     }

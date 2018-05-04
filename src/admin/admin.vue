@@ -55,6 +55,11 @@
         height: 100%;
         margin-bottom: 0px;
         margin-top: 0px;
+
+
+        @media screen and (max-width: 769px) {
+            height: auto;
+        }
     }  
 
     .is-main-content {
@@ -65,9 +70,7 @@
         height: 100%;
 
         @media screen and (max-width: 769px) {
-            & {
-                overflow-y: visible;
-            }
+            overflow-y: visible;
         } 
         .columns {
             margin-left: 0px;
@@ -83,9 +86,10 @@
         height: calc(100% - 53px);
 
         @media screen and (max-width: 769px) {
-            & {
-                overflow-y: visible;
-            }
+            
+            overflow-y: visible;
+            margin: 0 auto;
+            
         } 
 
         .columns {
