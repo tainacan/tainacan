@@ -390,6 +390,16 @@ class Items extends Repository {
 		if ( $item->get_document_type() == 'attachment' ) {
 			if ( wp_attachment_is_image( $item->get_document() ) ) {
 				return $item->get_document();
+			} else {
+				
+				$filepath = get_attached_file($item->get_document());
+				$TainacanMedia = \Tainacan\Media::get_instance();
+				$thumb_blob = $TainacanMedia->get_pdf_cover($filepath);
+				if ( $thumb_blob ) {
+					$thumb_id = $TainacanMedia->insert_attachment_from_blob($thumb_blob, basename($filepath) . '-cover.jpg', $item->get_id());
+					return $thumb_id;
+				}
+				
 			}
 		} elseif ( $item->get_document_type() == 'url' ) {
 			

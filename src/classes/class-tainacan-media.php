@@ -88,4 +88,27 @@ class Media {
 		return $attach_id;
 	}
 	
+	/**
+	 * Extract an image from the first page of a pdf file
+	 * 
+	 * @param  string $filepath The pdf filepath in the server
+	 * @return blob           bitstream of the image in jpg format
+	 */
+	public function get_pdf_cover($filepath) {
+		
+		$blob = apply_filters('tainacan-extract-pdf-cover', null, $filepath);
+        if ($blob) {
+            return $blob;
+        }
+		
+		if (!class_exists('\Imagick')) {
+			return null;
+		}
+		
+		$imagick = new \Imagick($filepath);
+        $imagick->setIteratorIndex(0);
+        $imagick->setImageFormat('jpg');
+        return $imagick->getImageBlob();
+	}
+	
 }
