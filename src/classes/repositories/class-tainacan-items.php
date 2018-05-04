@@ -390,7 +390,35 @@ class Items extends Repository {
 		if ( $item->get_document_type() == 'attachment' ) {
 			if ( wp_attachment_is_image( $item->get_document() ) ) {
 				return $item->get_document();
+			} else {
+				
+				$filepath = get_attached_file($item->get_document());
+				$TainacanMedia = \Tainacan\Media::get_instance();
+				$thumb_blob = $TainacanMedia->get_pdf_cover($filepath);
+				if ( $thumb_blob ) {
+					$thumb_id = $TainacanMedia->insert_attachment_from_blob($thumb_blob, basename($filepath) . '-cover.jpg', $item->get_id());
+					return $thumb_id;
+				}
+				
 			}
+		} elseif ( $item->get_document_type() == 'url' ) {
+			
+			$TainacanEmbed = \Tainacan\Embed::get_instance();
+			if ( $thumb_url = $TainacanEmbed->oembed_get_thumbnail( $item->get_document() ) ) {
+				$meta_key = '_' . $thumb_url . '__thumb';
+				
+				$existing_thumb = get_post_meta($item->get_id(), $meta_key, true);
+				
+				if ( is_numeric( $existing_thumb ) ) {
+					return $existing_thumb;
+				} else {
+					$TainacanMedia = \Tainacan\Media::get_instance();
+					$thumb_id = $TainacanMedia->insert_attachment_from_url($thumb_url, $item->get_id());
+					update_post_meta($item->get_id(), $meta_key, $thumb_id);
+					return $thumb_id;
+				}
+			}
+			
 		}
 		
 		return $thumb_id;
