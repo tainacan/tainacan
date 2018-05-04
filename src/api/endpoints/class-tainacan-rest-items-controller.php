@@ -371,7 +371,9 @@ class REST_Items_Controller extends REST_Controller {
 
 				if($prepared_item->validate()){
 					$updated_item = $this->items_repository->update($prepared_item);
-
+					
+					do_action('tainacan-api-item-updated', $updated_item, $attributes);
+					
 					return new \WP_REST_Response($this->prepare_item_for_response($updated_item, $request), 200);
 				}
 
