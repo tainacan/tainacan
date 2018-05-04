@@ -235,6 +235,8 @@ return [
 	'info_there_is_no_filter'                  => __( 'There is no filter here yet.', 'tainacan' ),
 	'info_changes'                             => __( 'Changes', 'tainacan' ),
 	'info_possible_external_sources'           => __( 'Possible external sources: CSV, Instagram, Youtube, etc.', 'tainacan' ),
+	'info_help_term_name'          		   	   => __( 'The name of the Term.', 'tainacan' ),
+	'info_help_term_description'          	   => __( 'The description of the Term.', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

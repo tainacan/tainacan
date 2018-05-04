@@ -1,13 +1,9 @@
 <template>
     <div>
         <div class="page-container primary-page">
-            <b-tabs v-model="activeTab">
-
+            <tainacan-title />
+            <b-tabs v-model="activeTab">    
                 <b-tab-item :label="$i18n.get('category')">
-                    <b-tag
-                            v-if="category != null && category != undefined" 
-                            :type="'is-' + getStatusColor(category.status)" 
-                            v-text="category.status"/>
                     <form 
                             v-if="category != null && category != undefined" 
                             class="tainacan-form" 
@@ -293,20 +289,6 @@
                         this.isUpdatingSlug = false;
                     });
 
-            },
-            getStatusColor(status) {
-                switch(status) {
-                    case 'publish':
-                        return 'success';
-                    case 'draft':
-                        return 'info';
-                    case 'private':
-                        return 'warning';
-                    case 'trash':
-                        return 'danger';
-                    default:
-                        return 'info';
-                }
             },
             createNewCategory() {
                 // Puts loading on Draft Category creation

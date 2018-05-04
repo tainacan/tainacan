@@ -47,8 +47,8 @@
                         {{ $i18n.get('label_name') }}
                         <span class="required-term-asterisk">*</span>
                         <help-button
-                                :title="$i18n.getHelperTitle('terms', 'name')"
-                                :message="$i18n.getHelperMessage('terms', 'name')"/>
+                                :title="$i18n.get('label_name')"
+                                :message="$i18n.get('info_help_term_name')"/>
                     </label>
                     <b-input
                             :class="{'has-content': editForm.name != undefined && editForm.name != ''}"
@@ -64,8 +64,8 @@
                     <label class="label">
                         {{ $i18n.get('label_description') }}
                         <help-button
-                                :title="$i18n.getHelperTitle('terms', 'description')"
-                                :message="$i18n.getHelperMessage('terms', 'description')"/>
+                                :title="$i18n.get('label_description')"
+                                :message="$i18n.get('info_help_term_description')"/>
                     </label>
                     <b-input
                             :class="{'has-content': editForm.description != undefined && editForm.description != ''}"

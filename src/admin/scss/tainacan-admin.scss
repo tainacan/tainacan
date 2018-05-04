@@ -130,7 +130,7 @@ html {
 
 // Input components used in forms are gray in Tainacan
 .tainacan-form {
-    color: black;
+    color: $tainacan-input-color;
     .form-submit {
         justify-content: space-between !important;
         padding: 1em 1.2em 0.4em 1.2em;
@@ -140,7 +140,7 @@ html {
             padding: 2px 30px !important;
         }
         .button.is-outlined {
-            color: $tertiary;
+            color: #150e38;
         }
         &.has-only-save {
             justify-content: end !important;
@@ -252,6 +252,7 @@ html {
 }
 .button.is-small {
     height: 26px !important;
+    line-height: 12px;
 }
 .button:not(.is-small):not(.is-medium):not(.is-large) {
     height: 30px !important;

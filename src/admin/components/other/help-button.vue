@@ -5,16 +5,20 @@
                 @click="isOpened = !isOpened"><b-icon 
                 size="is-small" 
                 icon="help-circle-outline"/></a>
+        <div
+                @click="isOpened = false" 
+                class="help-backdrop" 
+                :class="{ 'opened': isOpened }" />   
         <div 
-                class="help-tooltip" 
-                :class="{ 'opened': isOpened }">
+                :class="{ 'opened': isOpened }"
+                class="help-tooltip">
             <div class="help-tooltip-header">
                 <h5>{{ title }}</h5><a @click="isOpened = false"><b-icon icon="close"/></a>
             </div>
             <div class="help-tooltip-body">
                 <p>{{ (message != '' && message != undefined) ? message : $i18n.get('info_no_description_provided') }}</p>
             </div>
-        </div>   
+        </div> 
     </span>
 </template>
 
@@ -43,51 +47,61 @@ export default {
 
     a.help-button .icon {
         i, i::before { font-size: 0.9em !important; }
-        color: $gray;
-        &:hover {
-            color: $primary !important;
+    }
+
+    .help-backdrop {
+        background-color: transparent;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999999999999999999;
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+
+        &.opened {
+            visibility: visible;
+            display: block;
         }
+        
+        
     }
-
-    .help-tooltip.opened {
-        visibility: visible;
-        opacity: 1;
-        margin-bottom: 14px;
-    }
-
     .help-tooltip {
-        color: #000;
-        background-color: #e8f9f5;
-        border: 1px solid #338591;
-        border-radius: 10px;
+        z-index: 99999999999999999999;
+        color: $secondary;
+        background-color: $primary-light;
+        border: none;
+        border-radius: 5px;
         margin: 0px 0px 0px -37px;
         position: absolute;
-        z-index: 999999999999999;
-        bottom: 100%;
+        bottom: calc(100% - 6px);
         left: 0%;
         min-width: 250px;
         display: block;
+        transition: margin-bottom 0.3s ease, opacity 0.4s ease;
         visibility: hidden;
         opacity: 0;
-        transition: opacity 0.4s ease, margin-bottom 0.3s ease;
+
+        &.opened {
+            margin-bottom: 14px;
+            visibility: visible;
+            opacity: 1;    
+        }
 
         .help-tooltip-header {
-            padding: 0.8em 0.8em 0.6em 0.8em;
-            border-bottom: 1px solid #909293;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 0.8em 0.8em 0em 0.8em;
 
             h5 {
+                font-size: 16px;
+                font-weight: 700;
                 margin-right: 25px;
             }
             .icon {
-                color: #909293 !important;
-                right: 14px;
-                top: 14px;
+                right: 12px;
+                top: 12px;
                 position: absolute;
-                &:hover {
-                    color: black !important;
-                }
             }
         }
 
@@ -96,28 +110,21 @@ export default {
             font-size: 11px;
         }
 
-        &:after,
         &:before {
             content: "";
             display: block;
             position: absolute;
-            left: 24px;
+            left: 28px;
             width: 0;
             height: 0;
             border-style: solid;
         }
-        &:after {
-            border-color:  #e8f9f5 transparent transparent transparent;
-            border-right-width: 20px;
-            border-top-width: 16px;
-            border-left-width: 20px;
-        }
         &:before {
-            border-color: #338591 transparent transparent transparent;
-            border-right-width: 20px;
-            border-top-width: 16px;
-            border-left-width: 20px;
-            bottom: -20px;
+            border-color: $primary-light transparent transparent transparent;
+            border-right-width: 18px;
+            border-top-width: 12px;
+            border-left-width: 18px;
+            bottom: -15px;
         }
     }
 </style>
