@@ -5,13 +5,13 @@
                 :can-cancel="false"/>
         <div class="card">
             <div class="card-content">
-                
+
 				<router-link
                         class="card-footer-item"
                         :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                     {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
                 </router-link>
-				
+
 				<div
                         class="card-image"
                         v-if="item.document">
@@ -56,7 +56,20 @@
 
                 <div
                     class="box">
-                    <p>--</p>
+
+                    <div
+                        v-if="attachments && attachments.length > 0">
+                        <span
+                            v-for="(attachment, index) in attachments"
+                            :key="index"
+                            >
+                            <a
+                              target="blank"
+                              :href="attachment.guid.rendered">{{ attachment.guid.rendered }}</a>
+                        </span>
+                    </div>
+                    <p v-else>--</p>
+
                     <p>
                       <i>
                         {{ $i18n.get('label_attachments') }}
@@ -83,15 +96,20 @@ export default {
     },
     methods: {
         ...mapActions('item', [
-            'fetchItem'
+            'fetchItem',
+            'fetchAttachments'
         ]),
         ...mapGetters('item', [
-            'getItem'
+            'getItem',
+            'getAttachments'
         ]),
     },
     computed: {
         item(){
             return this.getItem();
+        },
+        attachments(){
+            return this.getAttachments();
         }
     },
     created(){
@@ -106,6 +124,11 @@ export default {
         // Obtains Item
         this.fetchItem(this.itemId).then(() => {
             loadingInstance.isLoading = false;
+        });
+
+        // Get attachments
+        this.fetchAttachments(this.itemId).then((result) => {
+            this.$console.log( result, 'attachments' );
         });
     }
 
