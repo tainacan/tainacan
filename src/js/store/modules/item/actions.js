@@ -118,7 +118,9 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
             document: document,
             document_type: document_type
         }).then( res => {
-            commit('setItem', res.data);
+            let item = res.data;
+
+            commit('setItem', item);
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });

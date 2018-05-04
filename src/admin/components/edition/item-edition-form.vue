@@ -468,6 +468,11 @@ export default {
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                         .then((item) => {
                             this.item.document_as_html = item.document_as_html;
+
+                            let oldThumbnail = this.item.thumbnail;
+                            if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail )
+                                this.item.thumbnail = item.thumbnail;
+            
                         })
                         .catch(error => this.$console.error(error));
                     }
