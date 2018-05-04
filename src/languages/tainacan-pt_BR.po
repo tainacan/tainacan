@@ -20,12 +20,12 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
 "_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.7\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-tainacan-admin.php:22 admin/class-tainacan-admin.php:23
 msgid "Tainacan"
-msgstr ""
+msgstr "Tainacan"
 
 #: admin/tainacan-admin-i18n.php:5
 msgid "Repository"
@@ -47,7 +47,7 @@ msgstr "Itens"
 #: classes/repositories/class-tainacan-fields.php:190
 #: classes/repositories/class-tainacan-fields.php:201
 msgid "Fields"
-msgstr "Campos"
+msgstr "Metadados"
 
 #: admin/tainacan-admin-i18n.php:9
 #: classes/repositories/class-tainacan-filters.php:83
@@ -83,7 +83,7 @@ msgstr "Item"
 #: dev-interface/class-tainacan-dev-interface.php:244
 #: dev-interface/class-tainacan-dev-interface.php:314
 msgid "Field"
-msgstr "Campo"
+msgstr "Metadado"
 
 #: admin/tainacan-admin-i18n.php:15
 #: classes/repositories/class-tainacan-filters.php:84
@@ -176,7 +176,7 @@ msgstr "Página de Itens"
 
 #: admin/tainacan-admin-i18n.php:43
 msgid "Fields Page"
-msgstr "Página de Campos"
+msgstr "Página de Metadados"
 
 #: admin/tainacan-admin-i18n.php:44
 msgid "Filters Page"
@@ -188,7 +188,7 @@ msgstr "Página de Categorias"
 
 #: admin/tainacan-admin-i18n.php:46
 msgid "Terms Page"
-msgstr "Página de Campos"
+msgstr "Página de Metadados"
 
 #: admin/tainacan-admin-i18n.php:47
 msgid "Events Page"
@@ -204,11 +204,11 @@ msgstr "Página do Item"
 
 #: admin/tainacan-admin-i18n.php:50
 msgid "Field Page"
-msgstr "Página do Campo"
+msgstr "Página do Metadado"
 
 #: admin/tainacan-admin-i18n.php:53
 msgid "Filter Page"
-msgstr "Págia do Filtro"
+msgstr "Página do Filtro"
 
 #: admin/tainacan-admin-i18n.php:54
 msgid "Category Page"
@@ -256,7 +256,7 @@ msgstr "Página de Edição do Filtro"
 
 #: admin/tainacan-admin-i18n.php:65
 msgid "Collection Fields Edition Page"
-msgstr "Página de Edição dos Campos da Coleção"
+msgstr "Página de Edição dos Metadados da Coleção"
 
 #: admin/tainacan-admin-i18n.php:68
 msgid "Menu"
@@ -362,7 +362,7 @@ msgstr "Campos Disponíveis"
 
 #: admin/tainacan-admin-i18n.php:88
 msgid "Available Field Types"
-msgstr "Tipos de Campos Disponíveis"
+msgstr "Tipos de Metadados Disponíveis"
 
 #: admin/tainacan-admin-i18n.php:89
 msgid "Active Filters"
@@ -386,7 +386,7 @@ msgstr "por Página"
 
 #: admin/tainacan-admin-i18n.php:94
 msgid "Fields on table"
-msgstr "Campos na tabela"
+msgstr "Metadados na tabela"
 
 #: admin/tainacan-admin-i18n.php:95
 #: classes/repositories/class-tainacan-fields.php:88
@@ -420,7 +420,7 @@ msgstr "Coleção Relacionada"
 
 #: admin/tainacan-admin-i18n.php:102
 msgid "Fields for search"
-msgstr "Campos para busca"
+msgstr "Metadados para busca"
 
 #: admin/tainacan-admin-i18n.php:103
 msgid "Allow repeated items"
@@ -468,7 +468,7 @@ msgstr "Itens da Coleção"
 
 #: admin/tainacan-admin-i18n.php:114
 msgid "Collection Fields"
-msgstr "Campos da Coleção"
+msgstr "Metadados da Coleção"
 
 #: admin/tainacan-admin-i18n.php:115
 msgid "Collection Filters"
@@ -484,19 +484,19 @@ msgstr "Adicionar Novo Termo"
 
 #: admin/tainacan-admin-i18n.php:120
 msgid "Drag and drop Fields here to Collection."
-msgstr "Arraste e solte Campos aqui para a Coleção."
+msgstr "Arraste e solte Metadados aqui para a Coleção."
 
 #: admin/tainacan-admin-i18n.php:121
 msgid "Drag and drop Fields to create Filters on Collection."
-msgstr "Arraste e solte Campos para criar Filtros na Coleção."
+msgstr "Arraste e solte Metadados para criar Filtros na Coleção."
 
 #: admin/tainacan-admin-i18n.php:122
 msgid "Drag and drop Fields here to Repository."
-msgstr "Araste e solte Campos aqui para o Repositório."
+msgstr "Araste e solte Metadados aqui para o Repositório."
 
 #: admin/tainacan-admin-i18n.php:123
 msgid "Drag and drop Fields to create Filters on Repository."
-msgstr "Arraste e solte Campos para criar Filtros no Repositósio."
+msgstr "Arraste e solte Metadados para criar Filtros no Repositório."
 
 #: admin/tainacan-admin-i18n.php:124
 msgid "Delete selected collections"
@@ -564,7 +564,7 @@ msgstr "O campo Coleção é requerido"
 
 #: admin/tainacan-admin-i18n.php:142
 msgid "No fields found in this collection"
-msgstr "Nenhum campo encontrado nesta coleção"
+msgstr "Nenhum metadado encontrado nesta coleção"
 
 #: admin/tainacan-admin-i18n.php:143
 msgid "Showing items "
@@ -596,7 +596,7 @@ msgstr "Data:"
 
 #: admin/tainacan-admin-i18n.php:150
 msgid "Not saved "
-msgstr "Não salvo"
+msgstr "Não salvo "
 
 #: admin/tainacan-admin-i18n.php:153
 msgid "Text"
@@ -665,12 +665,12 @@ msgstr "Ordenar ascendente ou descendente."
 #: api/class-tainacan-rest-controller.php:388
 #: api/class-tainacan-rest-controller.php:410
 msgid "Custom field key."
-msgstr "Chave de campo customizada."
+msgstr "Chave de Metadado customizado."
 
 #: api/class-tainacan-rest-controller.php:392
 #: api/class-tainacan-rest-controller.php:396
 msgid "Custom field value"
-msgstr "Valor de campo customizado."
+msgstr "Valor de metadado customizado"
 
 #: api/class-tainacan-rest-controller.php:400
 msgid ""
@@ -685,7 +685,7 @@ msgstr ""
 #: api/class-tainacan-rest-controller.php:404
 msgid "Limit result set to items that have specific custom fields"
 msgstr ""
-"Limitar conjunto de resultados para itens que possuem campos específicos"
+"Limitar conjunto de resultados para itens que possuem metadado específicos"
 
 #: api/class-tainacan-rest-controller.php:414
 msgid ""
@@ -1184,7 +1184,7 @@ msgstr ""
 
 #: classes/repositories/class-tainacan-fields.php:41
 msgid "Name of the field"
-msgstr "Nome do campo"
+msgstr "Nome do Metadado"
 
 #: classes/repositories/class-tainacan-fields.php:42
 msgid "The name should be a text value and not empty"
@@ -1192,7 +1192,7 @@ msgstr "O nome  deve ser um texto não vazio"
 
 #: classes/repositories/class-tainacan-fields.php:49
 msgid "A unique and santized string representation of the field"
-msgstr "Um texto único e sanitizado representando o campo"
+msgstr "Um texto único e sanitizado representando o metadado"
 
 #: classes/repositories/class-tainacan-fields.php:56
 msgid "Field order. Field used if collections are manually ordered"
@@ -1210,11 +1210,11 @@ msgstr "Pai"
 
 #: classes/repositories/class-tainacan-fields.php:64
 msgid "Parent field"
-msgstr "Campo pai"
+msgstr "Metadado pai"
 
 #: classes/repositories/class-tainacan-fields.php:73
 msgid "The field description"
-msgstr "Descrição do campo"
+msgstr "Descrição do Metadado"
 
 #: classes/repositories/class-tainacan-fields.php:80
 #: classes/repositories/class-tainacan-filters.php:48
@@ -1223,19 +1223,19 @@ msgstr "Tipo"
 
 #: classes/repositories/class-tainacan-fields.php:82
 msgid "The field type"
-msgstr "O tipo de campo"
+msgstr "O tipo de Metadado"
 
 #: classes/repositories/class-tainacan-fields.php:83
 msgid "Field type is empty"
-msgstr "Tipo de campo está vazio"
+msgstr "Tipo de metadado está vazio"
 
 #: classes/repositories/class-tainacan-fields.php:90
 msgid "The field is required"
-msgstr "O campo é requerido"
+msgstr "O metadado é requerido"
 
 #: classes/repositories/class-tainacan-fields.php:91
 msgid "Field required field is invalid"
-msgstr "Campo requerido é invalido"
+msgstr "Metadado requerido é invalido"
 
 #: classes/repositories/class-tainacan-fields.php:97
 msgid "Collection key"
@@ -1243,7 +1243,7 @@ msgstr "Chave da coleção"
 
 #: classes/repositories/class-tainacan-fields.php:99
 msgid "Field value should not be repeated"
-msgstr "Valores do campo não devem ser repetidos"
+msgstr "Valores do metadado não devem ser repetidos"
 
 #: classes/repositories/class-tainacan-fields.php:100
 msgid "Collection key is invalid"
@@ -1255,11 +1255,11 @@ msgstr "Multiplo"
 
 #: classes/repositories/class-tainacan-fields.php:108
 msgid "Allow multiple fields for the field"
-msgstr "Permitir campos múltiplos no campo"
+msgstr "Permitir metadados múltiplos no Metadado"
 
 #: classes/repositories/class-tainacan-fields.php:109
 msgid "Multiple fields is invalid"
-msgstr "Campos múltiplos é invalido"
+msgstr "Metadado múltiplos é invalido"
 
 #: classes/repositories/class-tainacan-fields.php:116
 msgid "Cardinality"
@@ -1361,7 +1361,7 @@ msgstr "Nenhum campo encontrado na lixeira"
 
 #: classes/repositories/class-tainacan-fields.php:200
 msgid "Parent Field:"
-msgstr "Campo Pai"
+msgstr "Metadado Pai"
 
 #: classes/repositories/class-tainacan-filters.php:19
 msgid "Name of the filter"
@@ -1377,7 +1377,7 @@ msgstr "Ordem do Filtro.  Campo utilizado se filtros são ordenados manualmente"
 
 #: classes/repositories/class-tainacan-filters.php:34
 msgid "The filter description"
-msgstr "A descrição do filtro."
+msgstr "A descrição do filtro"
 
 #: classes/repositories/class-tainacan-filters.php:40
 msgid "Filter type options"
