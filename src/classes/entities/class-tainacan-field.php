@@ -395,14 +395,15 @@ class Field extends Entity {
 	function is_required() {
         return $this->get_required() === 'yes';
     }
-    
-    /**
-     * {@inheritdoc }  
-     * 
-     * Also validates the field, calling the validate_options callback of the Field Type
-     * 
-     * @return bool valid or not
-     */
+
+	/**
+	 * {@inheritdoc }
+	 *
+	 * Also validates the field, calling the validate_options callback of the Field Type
+	 *
+	 * @return bool valid or not
+	 * @throws \Exception
+	 */
     public function validate() {
         
         $is_valid = parent::validate();

@@ -422,7 +422,7 @@ export default {
                 this.isLoadingFilterTypes = false;
             });        
 
-        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
+        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: 'yes' })
             .then(() => {
                 this.isLoadingFilters = false;
                 // Needs to be done after activeFilterList exists to compare and remove chosen fields.

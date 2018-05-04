@@ -285,6 +285,7 @@ class REST_Fields_Controller extends REST_Controller {
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
 		if(isset($request['collection_id'])) {

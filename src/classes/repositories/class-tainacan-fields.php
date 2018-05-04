@@ -387,13 +387,13 @@ class Fields extends Repository {
 
                     if( $index !== false ) {
 
-                        // skipping fields disabled if the arg is set
-                        if( !$include_disabled && isset( $order[$index]['enabled'] ) && !$order[$index]['enabled'] ) {
-						   continue;
-					   	}
+	                    // skipping fields disabled if the arg is set
+	                    if ( ! $include_disabled && isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] ) {
+		                    continue;
+	                    }
 
-					   $enable =  ( isset( $order[$index]['enabled'] )) ?  $order[$index]['enabled'] : true;
-					   $item->set_enabled_for_collection($enable);
+	                    $enable = ( isset( $order[ $index ]['enabled'] ) ) ? $order[ $index ]['enabled'] : true;
+	                    $item->set_enabled_for_collection( $enable );
 
                         $result_ordinate[$index] = $item;
                     } else {

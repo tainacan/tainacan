@@ -220,7 +220,8 @@
             this.fetchFilters({
                 collectionId: this.collectionId,
                 isRepositoryLevel: this.isRepositoryLevel,
-                isContextEdit: true
+                isContextEdit: true,
+                includeDisabled: 'no',
             })
                 .then(() => this.isLoadingFilters = false)
                 .catch(() => this.isLoadingFilters = false);
