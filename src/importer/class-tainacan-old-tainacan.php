@@ -44,10 +44,10 @@ class Old_Tainacan extends Importer
     $steps = [
         'Creating all categories' => 'create_categories',
         'Create empty collections' => 'create_collections',
+        'Creating relationships metadata' => 'create_relationships_meta',
         'Create repository metadata' => 'create_repo_meta',
         'Create collections metadata' => 'create_collection_metas',
         'Create collections items' => 'create_collection_items',
-        'Setting relationships' => 'set_relationships',
         "Finishing" => 'clear'
     ], $tainacan_api_address, $wordpress_api_address;
 
@@ -84,7 +84,7 @@ class Old_Tainacan extends Importer
                 $inserted_taxonomy = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
 
                 /*Insert old tainacan id*/
-                $created_categories[] = $category->term_id.",".$inserted_taxonomy->get_id();
+                $created_categories[] = $category->term_id.",".$inserted_taxonomy->get_id().",".$category->name;
 
                 if(isset($category->children) && $inserted_taxonomy)
                 {
@@ -122,7 +122,7 @@ class Old_Tainacan extends Importer
                 $new_collection = \Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
 
                 /*Add old id*/
-                $created_collections[] = $collection->ID.",".$new_collection->get_id();
+                $created_collections[] = $collection->ID.",".$new_collection->get_id().",".$collection->post_title;
 
                 $start++;
             }
@@ -130,6 +130,28 @@ class Old_Tainacan extends Importer
         }
 
         return $start;
+    }
+
+    public function create_relationships_meta()
+    {
+        $relationships = [];
+        $created_collection = $this->read_from_file("collections");
+        $created_categories = $this->read_from_file("categories");
+        foreach ($created_categories as $category_id => $category)
+        {
+            $category_name = $category['name'];
+            foreach ($created_collection as $collection_id => $collection)
+            {
+                $collection_name = $collection['name'];
+                if(strcmp($category_name, $collection_name) === 0)
+                {
+                    $relationships[] = $category_id.",".$collection['new_id'].",".$category['name'];
+                }
+            }
+        }
+
+        $this->save_in_file('relationships', $relationships);
+        return false;
     }
 
     public function create_repo_meta()
@@ -141,6 +163,9 @@ class Old_Tainacan extends Importer
         if($repo_meta_array)
         {
             $Fields_Repository = \Tainacan\Repositories\Fields::get_instance();
+            $created_categories = $this->read_from_file("categories");
+            $relationships = $this->read_from_file("relationships");
+
             foreach ($repo_meta_array as $meta)
             {
                 $avoid = [
@@ -154,7 +179,6 @@ class Old_Tainacan extends Importer
                 $special = [
                     'socialdb_property_fixed_type',
                     'stars',
-                    'item',
                     'compound'
                 ];
 
@@ -166,11 +190,18 @@ class Old_Tainacan extends Importer
                     $newField->set_name($meta->name);
 
                     $newField->set_field_type('Tainacan\Field_Types\\'.$type);
-                    if(strcmp($type, "Category") == 0)
+                    if(strcmp($type, "Category") === 0)
                     {
-                        /*$taxonomy_id = $meta->metadata->taxonomy;
-                        $new_category_id = $this->created_categories[$taxonomy_id];
-                        $newField->set_field_type_options(['taxonomy_id' => $new_category_id]);*/
+                        $taxonomy_id = $meta->metadata->taxonomy;
+
+                        $new_category_id = $created_categories[$taxonomy_id]['new_id'];
+                        $newField->set_field_type_options(['taxonomy_id' => $new_category_id]);
+                    }else if(strcmp($type, "Relationship") === 0)
+                    {
+                        $taxonomy_id = $meta->metadata->object_category_id;
+                        $new_collection_id = $relationships[$taxonomy_id]['new_id'];
+
+                        $newField->set_field_type_options(['collection_id' => $new_collection_id]);
                     }
 
                     $newField->set_collection_id('default');
@@ -203,12 +234,29 @@ class Old_Tainacan extends Importer
     {
         unlink($this->get_id()."_categories.txt");
         unlink($this->get_id()."_collections.txt");
+        unlink($this->get_id()."_relationships.txt");
         return false;
     }
 
     /*Aux functions*/
+    private function read_from_file($name)
+    {
+        $file_name = $this->get_id()."_".$name.".txt";
+        $fp = fopen($file_name, "r");
+        $content = explode("|", fread($fp, filesize($file_name)));
+        $result = [];
+        foreach ($content as $ids)
+        {
+            $old_new_name = explode(",", $ids);
+            $result[$old_new_name[0]] = ['new_id' => $old_new_name[1], 'name' => $old_new_name[2]];
+        }
+
+        return $result;
+    }
+
     private function save_in_file($name, $ids)
     {
+        /*Old ID, new ID*/
         $file_name = $this->get_id()."_".$name.".txt";
         $content = implode("|", $ids);
         if(file_exists($file_name))
