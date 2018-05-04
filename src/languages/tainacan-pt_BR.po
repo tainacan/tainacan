@@ -20,7 +20,7 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
 "_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-tainacan-admin.php:22 admin/class-tainacan-admin.php:23
@@ -140,7 +140,7 @@ msgstr "Busca Avançada"
 
 #: admin/tainacan-admin-i18n.php:32
 msgid "Publish"
-msgstr "Publicado"
+msgstr "Publicar"
 
 #: admin/tainacan-admin-i18n.php:33
 msgid "Draft"
@@ -164,7 +164,7 @@ msgstr "Visível para todos"
 
 #: admin/tainacan-admin-i18n.php:38
 msgid "Visible only for editors"
-msgstr "Visível apenas para editores"
+msgstr "Visível apenas para Editores"
 
 #: admin/tainacan-admin-i18n.php:41
 msgid "Collections Page"
@@ -186,9 +186,10 @@ msgstr "Página de Filtros"
 msgid "Categories Page"
 msgstr "Página de Categorias"
 
+# ESTÁ REPETIDO
 #: admin/tainacan-admin-i18n.php:46
 msgid "Terms Page"
-msgstr "Página de Metadados"
+msgstr "Página de Categorias"
 
 #: admin/tainacan-admin-i18n.php:47
 msgid "Events Page"
@@ -236,7 +237,7 @@ msgstr "Página de Criação do Item"
 
 #: admin/tainacan-admin-i18n.php:60
 msgid "Filter Creation Page"
-msgstr "Página de Criação do Item"
+msgstr "Página de Criação do Filtro"
 
 #: admin/tainacan-admin-i18n.php:61
 msgid "Collection Edition Page"
@@ -314,7 +315,7 @@ msgstr "Status"
 #: classes/repositories/class-tainacan-logs.php:56
 #: classes/repositories/class-tainacan-taxonomies.php:42
 msgid "Slug"
-msgstr ""
+msgstr "slug"
 
 #: admin/tainacan-admin-i18n.php:77
 msgid "Image"
@@ -354,15 +355,15 @@ msgstr "Items por Página:"
 
 #: admin/tainacan-admin-i18n.php:86
 msgid "Active Fields"
-msgstr "Campos Ativos"
+msgstr "Metadados ativos"
 
 #: admin/tainacan-admin-i18n.php:87
 msgid "Available Fields"
-msgstr "Campos Disponíveis"
+msgstr "Metadados disponíveis"
 
 #: admin/tainacan-admin-i18n.php:88
 msgid "Available Field Types"
-msgstr "Tipos de Metadados Disponíveis"
+msgstr "Tipos de Metadados disponíveis"
 
 #: admin/tainacan-admin-i18n.php:89
 msgid "Active Filters"
@@ -378,7 +379,7 @@ msgstr "Filtros Disponíveis"
 
 #: admin/tainacan-admin-i18n.php:92
 msgid "Available Filter Types"
-msgstr "Tipo de Filtros Disponíveis"
+msgstr "Tipos de Filtro disponíveis"
 
 #: admin/tainacan-admin-i18n.php:93
 msgid "per Page"
@@ -388,6 +389,7 @@ msgstr "por Página"
 msgid "Fields on table"
 msgstr "Metadados na tabela"
 
+# DESCOBRIR O CONTEXTO DESSA “REQUISIÇAO”
 #: admin/tainacan-admin-i18n.php:95
 #: classes/repositories/class-tainacan-fields.php:88
 msgid "Required"
@@ -412,11 +414,11 @@ msgstr "Sim"
 
 #: admin/tainacan-admin-i18n.php:100
 msgid "No"
-msgstr "No"
+msgstr "Não"
 
 #: admin/tainacan-admin-i18n.php:101
 msgid "Collection Related"
-msgstr "Coleção Relacionada"
+msgstr "Coleção relacionada"
 
 #: admin/tainacan-admin-i18n.php:102
 msgid "Fields for search"
@@ -492,7 +494,7 @@ msgstr "Arraste e solte Metadados para criar Filtros na Coleção."
 
 #: admin/tainacan-admin-i18n.php:122
 msgid "Drag and drop Fields here to Repository."
-msgstr "Araste e solte Metadados aqui para o Repositório."
+msgstr "Araste e solte Metadados aqui para adicionar ao Repositório."
 
 #: admin/tainacan-admin-i18n.php:123
 msgid "Drag and drop Fields to create Filters on Repository."
@@ -500,7 +502,7 @@ msgstr "Arraste e solte Metadados para criar Filtros no Repositório."
 
 #: admin/tainacan-admin-i18n.php:124
 msgid "Delete selected collections"
-msgstr "Deletar coleções selecionadas"
+msgstr "Deletar Coleções selecionadas"
 
 #: admin/tainacan-admin-i18n.php:125
 msgid "Delete selected items"
@@ -568,11 +570,11 @@ msgstr "Nenhum metadado encontrado nesta coleção"
 
 #: admin/tainacan-admin-i18n.php:143
 msgid "Showing items "
-msgstr "Exibindo itens"
+msgstr "Exibindo itens "
 
 #: admin/tainacan-admin-i18n.php:144
 msgid "Showing collections "
-msgstr "Exibindo coleções"
+msgstr "Exibindo coleções "
 
 #: admin/tainacan-admin-i18n.php:145
 msgid "Showing categories"
@@ -580,19 +582,19 @@ msgstr "Exibindo Categorias"
 
 #: admin/tainacan-admin-i18n.php:146
 msgid " to "
-msgstr "a"
+msgstr " a"
 
 #: admin/tainacan-admin-i18n.php:147
 msgid " of "
-msgstr "de"
+msgstr " de"
 
 #: admin/tainacan-admin-i18n.php:148
 msgid "Created by: "
-msgstr "Criado por:"
+msgstr "Criado por"
 
 #: admin/tainacan-admin-i18n.php:149
 msgid "Date: "
-msgstr "Data:"
+msgstr "Data"
 
 #: admin/tainacan-admin-i18n.php:150
 msgid "Not saved "
@@ -1194,9 +1196,11 @@ msgstr "O nome  deve ser um texto não vazio"
 msgid "A unique and santized string representation of the field"
 msgstr "Um texto único e sanitizado representando o metadado"
 
+# COMO ASSIM?
 #: classes/repositories/class-tainacan-fields.php:56
 msgid "Field order. Field used if collections are manually ordered"
-msgstr "Ordem do campo. Campo utilizado se coleções são ordenadas manualmente."
+msgstr ""
+"Ordem do Metadado. Metadado utilizado se coleções são ordenadas manualmente."
 
 #: classes/repositories/class-tainacan-fields.php:57
 msgid "The menu order should be a numeric value"
@@ -1353,7 +1357,7 @@ msgstr "Buscar Campo"
 
 #: classes/repositories/class-tainacan-fields.php:198
 msgid "No Field found "
-msgstr "Nenhum Campo encontrado"
+msgstr "Nenhum Metadado encontrado "
 
 #: classes/repositories/class-tainacan-fields.php:199
 msgid "No Field found in trash"
@@ -1361,7 +1365,7 @@ msgstr "Nenhum campo encontrado na lixeira"
 
 #: classes/repositories/class-tainacan-fields.php:200
 msgid "Parent Field:"
-msgstr "Metadado Pai"
+msgstr "Metadado Pai: "
 
 #: classes/repositories/class-tainacan-filters.php:19
 msgid "Name of the filter"
@@ -1425,7 +1429,7 @@ msgstr "Buscar Filtros"
 
 #: classes/repositories/class-tainacan-filters.php:91
 msgid "No Filters found "
-msgstr "Nenhum Filtro encontrado"
+msgstr "Nenhum Filtro encontrado "
 
 #: classes/repositories/class-tainacan-filters.php:92
 msgid "No Filters found in trash"
@@ -1601,7 +1605,7 @@ msgstr "Buscar Atividades"
 
 #: classes/repositories/class-tainacan-logs.php:114
 msgid "No Logs found "
-msgstr "Nenhuma atividade encontrada"
+msgstr "Nenhuma atividade encontrada "
 
 #: classes/repositories/class-tainacan-logs.php:115
 msgid "No Logs found in trash"
@@ -1687,7 +1691,7 @@ msgstr "Buscar Categorias"
 
 #: classes/repositories/class-tainacan-taxonomies.php:80
 msgid "No Taxonomies found "
-msgstr "Nenhuma Categoria encontrada"
+msgstr "Nenhuma Categoria encontrada "
 
 #: classes/repositories/class-tainacan-taxonomies.php:81
 msgid "No Taxonomies found in trash"
