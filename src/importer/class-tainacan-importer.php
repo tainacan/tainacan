@@ -354,6 +354,15 @@ abstract class Importer {
         $this->steps =$steps;
     }
 
+    public function is_finished()
+    {
+        if($this->current_step >= count($this->steps))
+        {
+            return true;
+        }
+
+        return false;
+    }
 	/**
 	 * Removes method accepeted by the importer
 	 *
