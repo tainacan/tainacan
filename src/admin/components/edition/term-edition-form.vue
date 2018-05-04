@@ -263,7 +263,7 @@
                 .icon {
                     display: inherit;
                     padding: 0;
-                    margin: 3px 0 0 -8px;
+                    margin-top: 1px;
                 }
             }
             .thumbnail-buttons-row {

@@ -655,8 +655,7 @@ export default {
                 display: inherit;
                 padding: 0;
                 margin: 0;
-                margin-left: -8px;
-                margin-top: 3px;
+                margin-top: 1px;
             }
         }
         .thumbnail-buttons-row {
