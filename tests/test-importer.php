@@ -48,15 +48,10 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $url = 'http://localhost/';
         $_SESSION['tainacan_importer'][$id]->set_url($url);
 
-        //          One run for each step
-        //Create categories
-        $_SESSION['tainacan_importer'][$id]->run();
-
-        //Create empty collections
-        $_SESSION['tainacan_importer'][$id]->run();
-
-        //Create repository metadata
-        $_SESSION['tainacan_importer'][$id]->run();
+        while (!$_SESSION['tainacan_importer'][$id]->is_finished())
+        {
+            $_SESSION['tainacan_importer'][$id]->run();
+        }
 
         $this->assertTrue(true);
     }
