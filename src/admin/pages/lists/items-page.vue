@@ -16,10 +16,12 @@
 
             <b-field class="margin-1">
                 <b-input
-                        placeholder="Search..."
+                        :placeholder=" $i18n.get('instruction_search_collection') "
                         type="search"
                         size="is-small"
-                        icon="magnify" />
+                        icon="magnify" 
+                        @input="updateSearch($event)"
+                        :value="searchQuery"/>
             </b-field>
             <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a>
 
@@ -172,6 +174,9 @@
             ...mapGetters('filter', [
                 'getFilters'
             ]),
+            ...mapGetters('search', [
+                'getSearchQuery'
+            ]),
             toggleCollapseAll() {
                 this.collapseAll = !this.collapseAll;
 
@@ -179,6 +184,9 @@
                     this.fieldCollapses[i] = this.collapseAll;
 
             },
+            updateSearch(searchQuery) {
+                this.$eventBusSearch.setSearchQuery(searchQuery)
+            }
         },
         computed: {
             items() {
@@ -189,6 +197,9 @@
             },
             fields() {
                 return this.getFields();
+            },
+            searchQuery() {
+                return this.getSearchQuery();
             }
         },
         created() {

@@ -86,6 +86,10 @@ export default {
                     this.$store.dispatch('search/setOrder', newOrder);
                     this.updateURLQueries();
                 },
+                setSearchQuery(searchQuery) {
+                    this.$store.dispatch('search/setSearchQuery', searchQuery);
+                    this.updateURLQueries();
+                },
                 updateURLQueries() {
                     this.$router.push({ query: {} });
                     this.$router.push({ query: this.$store.getters['search/getPostQuery'] });

@@ -189,6 +189,7 @@ return [
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 	'instruction_search_repository'				 => __( 'Search on repository', 'tainacan' ),
+	'instruction_search_collection'				 => __( 'Search on collection', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),

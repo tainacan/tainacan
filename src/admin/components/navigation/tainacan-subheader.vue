@@ -103,7 +103,8 @@ export default {
         id: Number
     },
     watch: {
-        '$route' (to) {
+        '$route.path' (to) {
+
             this.activeRoute = to.name;
 
             this.pageTitle = this.$route.meta.title;
