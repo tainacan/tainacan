@@ -301,7 +301,7 @@
             this.$eventBusSearch.setCollectionId(this.collectionId);
             this.$eventBusSearch.updateStoreFromURL();
             this.$eventBusSearch.loadItems();
-        }
+        } 
     }
 </script>
 

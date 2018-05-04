@@ -10,14 +10,22 @@ namespace Tainacan\Importer;
 
 class Old_Tainacan extends Importer
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->set_repository();
+        $this->set_steps($this->steps);
+        $this->remove_import_method('file');
+        $this->add_import_method('url');
+        $this->tainacan_api_address = "/wp-json/tainacan/v1";
+        $this->wordpress_api_address = "/wp-json/wp/v2";
+    }
 
     public $avoid = [
         'ID',
         'post_author',
         'post_date',
         'post_date_gmt',
-        /*'post_content',
-        'post_title',*/
         'post_excerpt',
         'post_status',
         'comment_status',
@@ -40,32 +48,7 @@ class Old_Tainacan extends Importer
         'Create collections metadata' => 'create_collection_metas',
         'Create collections items' => 'create_collection_items',
         'Setting relationships' => 'set_relationships'
-    ], $tainacan_api_address, $wordpress_api_address;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->set_repository();
-        $this->set_steps($this->steps);
-        $this->remove_import_method('file');
-        $this->add_import_method('url');
-        $this->tainacan_api_address = "/wp-json/tainacan/v1";
-        $this->wordpress_api_address = "/wp-json/wp/v2";
-    }
-
-    public function verify_process_result($result)
-    {
-        if(is_wp_error($result))
-        {
-            $this->add_log('error', $result->get_error_message());
-            return false;
-        }else if(isset($result['body']))
-        {
-            return json_decode($result['body']);
-        }
-
-        return false;
-    }
+    ], $tainacan_api_address, $wordpress_api_address, $created_categories;
 
 
     public function create_categories()
@@ -95,6 +78,7 @@ class Old_Tainacan extends Importer
 
                 /*Insert old tainacan id*/
                 add_post_meta($inserted_taxonomy->get_id(), 'old_tainacan_category_id', $category->term_id);
+                $this->created_categories[$category->term_id] = $inserted_taxonomy->get_id();
 
                 if(isset($category->children) && $inserted_taxonomy)
                 {
@@ -104,56 +88,6 @@ class Old_Tainacan extends Importer
         }
 
         return false;
-    }
-
-    private function add_all_terms($taxonomy_father, $children, $term_father = null)
-    {
-        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
-
-        $children = $this->remove_same_name($children);
-        foreach ($children as $term)
-        {
-            $new_term = new \Tainacan\Entities\Term();
-
-            $new_term->set_taxonomy($taxonomy_father->get_db_identifier());
-            if($term_father)
-            {
-                $new_term->set_parent($term_father->get_id());
-            }
-
-            $new_term->set_name($term->name);
-            $new_term->set_description($term->description);
-
-            $inserted_term = $Tainacan_Terms->insert($new_term);
-
-            /*Insert old tainacan id*/
-            add_term_meta($inserted_term->get_id(), 'old_tainacan_category_id', $term->term_id );
-
-            if(isset($term->children))
-            {
-                $this->add_all_terms($taxonomy_father, $term->children, $inserted_term);
-            }
-        }
-    }
-
-    public function remove_same_name($terms)
-    {
-        $unique = [];
-        $unique_terms = [];
-        foreach($terms as $term)
-        {
-            $unique[$term->name] = $term->term_id;
-        }
-
-        foreach($terms as $index => $term)
-        {
-            if(in_array($term->term_id, $unique))
-            {
-                array_push($unique_terms, $term);
-            }
-        }
-
-        return $unique_terms;
     }
 
     public function create_collections()
@@ -182,7 +116,7 @@ class Old_Tainacan extends Importer
 
     public function create_repo_meta()
     {
-        $repository_meta_link = $this->get_url() . $this->tainacan_api_address . "/repository/metadata";
+        $repository_meta_link = $this->get_url() . $this->tainacan_api_address . "/repository/metadata?includeMetadata=1";
         $repo_meta = wp_remote_get($repository_meta_link);
 
         $repo_meta_array = $this->verify_process_result($repo_meta);
@@ -216,7 +150,9 @@ class Old_Tainacan extends Importer
                     $newField->set_field_type('Tainacan\Field_Types\\'.$type);
                     if(strcmp($type, "Category") == 0)
                     {
-                        //$newField->set_field_type_options()
+                        $taxonomy_id = $meta->metadata->taxonomy;
+                        $new_category_id = $this->created_categories[$taxonomy_id];
+                        $newField->set_field_type_options(['taxonomy_id' => $new_category_id]);
                     }
 
                     $newField->set_collection_id('default');
@@ -244,6 +180,99 @@ class Old_Tainacan extends Importer
     {
         return false;
     }
+
+    /*Aux functions*/
+    private function add_all_terms($taxonomy_father, $children, $term_father = null)
+    {
+        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+
+        $children = $this->remove_same_name($children);
+        foreach ($children as $term)
+        {
+            $new_term = new \Tainacan\Entities\Term();
+
+            $new_term->set_taxonomy($taxonomy_father->get_db_identifier());
+            if($term_father)
+            {
+                $new_term->set_parent($term_father->get_id());
+            }
+
+            $new_term->set_name($term->name);
+            $new_term->set_description($term->description);
+
+            $inserted_term = $Tainacan_Terms->insert($new_term);
+
+            /*Insert old tainacan id*/
+            add_term_meta($inserted_term->get_id(), 'old_tainacan_category_id', $term->term_id );
+
+            if(isset($term->children))
+            {
+                $this->add_all_terms($taxonomy_father, $term->children, $inserted_term);
+            }
+        }
+    }
+
+    private function remove_same_name($terms)
+    {
+        $unique = [];
+        $unique_terms = [];
+        foreach($terms as $term)
+        {
+            $unique[$term->name] = $term->term_id;
+        }
+
+        foreach($terms as $index => $term)
+        {
+            if(in_array($term->term_id, $unique))
+            {
+                array_push($unique_terms, $term);
+            }
+        }
+
+        return $unique_terms;
+    }
+
+    private function verify_process_result($result)
+    {
+        if(is_wp_error($result))
+        {
+            $this->add_log('error', $result->get_error_message());
+            return false;
+        }else if(isset($result['body']))
+        {
+            return json_decode($result['body']);
+        }
+
+        return false;
+    }
+
+    public function define_type($type)
+    {
+        $type = strtolower($type);
+        $tainacan_types = ['text', 'textarea', 'numeric', 'date'];
+
+        if(in_array($type, $tainacan_types))
+        {
+            $type = ucfirst($type);
+        }else if(strcmp($type, 'autoincrement') === 0)
+        {
+            $type = "Numeric";
+        }else if(strcmp($type, 'item') === 0)
+        {
+            $type = "Relationship";
+        }else if(strcmp($type, 'tree') === 0)
+        {
+            $type = "Category";
+        }else if(strcmp($type, 'compound') === 0)
+        {
+            $type = "Compound";
+        }
+        else $type = 'Text';
+
+        return $type;
+    }
+
+    /*END aux functions*/
 
     public function fetch_from_remote( $url ){
         $url_json = explode('/colecao/', $url)[0] . "/wp-json/tainacan/v1/collections";
@@ -440,32 +469,6 @@ class Old_Tainacan extends Importer
         }
 
         $this->set_mapping($mapping);
-    }
-
-    public function define_type($type)
-    {
-        $type = strtolower($type);
-        $tainacan_types = ['text', 'textarea', 'numeric', 'date'];
-
-        if(in_array($type, $tainacan_types))
-        {
-            $type = ucfirst($type);
-        }else if(strcmp($type, 'autoincrement') === 0)
-        {
-            $type = "Numeric";
-        }else if(strcmp($type, 'item') === 0)
-        {
-            $type = "Relationship";
-        }else if(strcmp($type, 'tree') === 0)
-        {
-            $type = "Category";
-        }else if(strcmp($type, 'compound') === 0)
-        {
-            $type = "Compound";
-        }
-        else $type = 'Text';
-
-        return $type;
     }
 
     /**

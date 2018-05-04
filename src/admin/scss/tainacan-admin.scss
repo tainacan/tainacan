@@ -75,7 +75,6 @@ html {
     }
 }
 
-
 .tainacan-page-title, .tainacan-modal-title {
     h1, h2 {
         font-size: 20px;
@@ -225,18 +224,39 @@ html {
 
 // Some components have a different style in listing pages
 .button {
-    border-width: 0;
     border-radius: 6px !important;
     font-weight: normal;
     padding: 2px 15px !important;
     margin-top: 0px !important;
     margin-bottom: 0px !important;
+    height: inherit !important;
+    box-shadow: none !important;
+    display: inline-flex !important;
+
+    &.is-secondary:hover, &.is-secondary:focus {
+        background: $secondary !important;
+    }
+    &.is-primary:hover, &.is-primary:focus {
+        background: $primary !important;
+    }
+    &.is-success:hover, &.is-success:focus {
+        background: $success !important;
+    }
+    &.is-white:hover, &.is-white:focus {
+        background: $white !important;
+    }
+    &:active {
+        -webkit-transform: none !important;
+        transform: none !important;
+    }
 }
 .button.is-small {
     height: 26px !important;
 }
 .button:not(.is-small):not(.is-medium):not(.is-large) {
     height: 30px !important;
+    line-height: 20px !important;
+    font-size: 14px !important;
 }
 
 .select {
@@ -245,44 +265,60 @@ html {
         border: none;
         border-radius: 6px !important;
         font-weight: normal;
+        font-size: 14px !important;
         height: 30px !important;
         padding: 2px 25px 2px 15px!important;
         margin-top: 0px !important;
         margin-bottom: 0px !important;
-        &:focus>option:checked, &:focus>option:hover {
+        option:checked, option:hover {
             background-color: $primary-lighter !important;
+        }
+        &:focus, &:active {
+            box-shadow: none !important;
+            text-decoration: none !important;
         }
     }
     &:not(.is-multiple)::after {
         content: "\F35D" !important;
         font: normal normal normal 24px/1 "Material Design Icons" !important;
         border: none !important;
-        transform: none;
-        margin-top: -0.6em;
-        right: 0.95em;
+        transform: none !important;
+        margin-top: -15px !important;
+        right: 10px !important;
         color: $primary;
+        display: flex !important;
+        align-items: initial;
     }       
 }
 .dropdown {
     .dropdown-trigger{
         .button {
             border: none;
+            .icon {
+                color: $primary;
+                align-items: start;
+            }
         }
-        .icon {
-            color: $primary;
+        .button.is-primary, .button.is-secondary, .button.is-success {
+            .icon {
+                color: $white;
+            }
         }
     }
     .dropdown-menu {
         top: 26px;
-        .dropdown-item {
-            .b-checkbox { width: 100% };
-            &:hover {
-                background-color: $primary-lighter;
+        .dropdown-content {
+            border-radius: 0px;
+            .dropdown-item {
+                .b-checkbox { width: 100% };
+                &:hover {
+                    background-color: $primary-lighter;
+                }
+                .is-small {
+                    color: gray;
+                }
             }
-            .is-small {
-                color: gray;
-            }
-        }
+        } 
     }
 }
 .switch {
@@ -389,6 +425,12 @@ html {
 
     .pagination { 
         flex-grow: 1; 
+
+        .pagination-link, .pagination-previous, .pagination-next {
+            background-color: transparent;
+            color: $secondary;
+            border: none;
+        }
     }
 }
 

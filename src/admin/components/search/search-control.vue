@@ -27,7 +27,7 @@
         <div class="header-item">
             <b-dropdown>
                 <button
-                        class="button"
+                        class="button is-white"
                         slot="trigger">
                     <span>{{ $i18n.get('label_table_fields') }}</span>
                     <b-icon icon="menu-down"/>
@@ -66,7 +66,7 @@
                     </option>
                 </b-select>
                 <button
-                        class="button is-small"
+                        class="button is-white is-small"
                         @click="onChangeOrder()">
                     <b-icon :icon="order == 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
                 </button>
