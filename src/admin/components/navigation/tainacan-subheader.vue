@@ -103,7 +103,7 @@ export default {
         id: Number
     },
     watch: {
-        '$route.path' (to) {
+        '$route' (to, from) {
 
             this.activeRoute = to.name;
 
@@ -282,11 +282,16 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
+            height: 143px;
+            max-height: 143px;
+            
             ul { 
+                margin-top: 12px;
                 flex-flow: wrap;
                 display: flex;
-                align-items: stretch;
-                justify-content: space-evenly;
+                align-items: baseline;
+                justify-content: space-between;
+
                 a { 
                     padding: 0.5em 0.7em !important; 
                     text-align: center;
@@ -295,9 +300,7 @@ export default {
                     padding-left: 0.3em !important;
                 }
             }
-        }
-
-        @media screen and (max-width: 769px) {
+      
             .level-left {
                 margin-left: 0px !important;
                 .level-item {

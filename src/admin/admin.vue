@@ -65,9 +65,7 @@
         height: 100%;
 
         @media screen and (max-width: 769px) {
-            & {
-                overflow-y: visible;
-            }
+            overflow-y: visible;
         } 
         .columns {
             margin-left: 0px;
@@ -83,9 +81,10 @@
         height: calc(100% - 53px);
 
         @media screen and (max-width: 769px) {
-            & {
-                overflow-y: visible;
-            }
+            
+            overflow-y: visible;
+            margin: 0 auto;
+            
         } 
 
         .columns {

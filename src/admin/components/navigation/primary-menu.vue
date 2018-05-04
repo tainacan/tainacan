@@ -132,11 +132,10 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important; 
-            
-            .menu-header {
-                height: 60px;
+            padding-top: $header-height;
+            .menu{
+                padding-top: 0px;
             }
-
             ul { 
                 flex-flow: wrap;
                 display: flex;
@@ -146,6 +145,9 @@ export default {
                 a{ 
                     padding: 0.8em !important;
                     text-align: center;
+                }
+                .menu-text {
+                    display: none;
                 }
             }
         }

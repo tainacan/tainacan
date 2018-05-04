@@ -146,20 +146,21 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
+            padding: 0px;
+            display: flex;
             .level-left {
+                display: inline-block;
                 margin-left: 0px !important;
                 .level-item {
-                    margin-left: 30px;
+                    margin-left: 0px;
                 }
             }
             .level-right {
-                display: none;
+                margin-top: 0;
+                display: inline-block;
             }
 
-            top: 206px;
-            &.menu-compressed {
-                top: 237px !important;  
-            }
+            top: 0px;
             margin-bottom: 0px !important;
         }
 
