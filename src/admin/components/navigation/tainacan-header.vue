@@ -65,7 +65,6 @@ export default {
         background-color: $secondary;
         height: $header-height;
         max-height: $header-height;
-        box-shadow: 0px -2px 7px #000;
         width: 100%;
         padding: 12px;
         vertical-align: middle; 

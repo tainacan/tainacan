@@ -82,7 +82,6 @@ export default {
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear; 
         max-width: $side-menu-width;
-        box-shadow: -3px 0px 8px #111;
         z-index: 99;
         
         .separator {
