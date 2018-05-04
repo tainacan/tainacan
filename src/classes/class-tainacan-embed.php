@@ -78,4 +78,27 @@ class Embed {
 		return $pdf;
 	}
 	
+	/**
+	 * Retrieves the thumbnail URL, if provided, for a given URL
+	 * 
+	 * @param  $string $url the URL for the content
+	 * @return string|null  The thumbnail URL or null on failure
+	 */
+	public function oembed_get_thumbnail($url) {
+		
+		add_filter( 'oembed_dataparse', ['\Tainacan\Embed', 'oembed_get_thumbnail_filter'], 10, 3);
+		return wp_oembed_get($url);
+		remove_filter( 'oembed_dataparse', ['\Tainacan\Embed', 'oembed_get_thumbnail_filter']);
+		
+	}
+	public static function oembed_get_thumbnail_filter($return, $data, $url) {
+		
+		if ( isset($data->thumbnail_url) ) {
+			return $data->thumbnail_url;
+		}
+		
+		return null;
+		
+	}
+	
 }
