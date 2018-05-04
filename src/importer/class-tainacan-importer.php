@@ -475,7 +475,7 @@ abstract class Importer {
     public function run(){
         if($this->is_repository && $this->current_step < count($this->steps))
         {
-            $process_name = key($this->steps);
+            //$process_name = key($this->steps);
             $function_name = current($this->steps);
             $continue = $this->{$function_name}();//If true still there is stuff to process
 
