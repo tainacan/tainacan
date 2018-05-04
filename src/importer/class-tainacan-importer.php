@@ -331,6 +331,16 @@ abstract class Importer {
 		return false;
 	}
 
+	protected function get_start()
+    {
+        return $this->start;
+    }
+
+    protected function get_items_per_step()
+    {
+        return $this->items_per_step;
+    }
+
     /**
      * Sets importer as repository importer
      */
@@ -477,13 +487,17 @@ abstract class Importer {
         {
             //$process_name = key($this->steps);
             $function_name = current($this->steps);
-            $continue = $this->{$function_name}();//If true still there is stuff to process
+            $start = $this->{$function_name}();//If unlike numeric this means that still there is stuff to process
 
-            if(!$continue)
+            if($start === false || (!is_numeric($start) || $start < 0))
             {
                 //Move on to the next step
                 next($this->steps);
                 $this->current_step++;
+                $this->start = 0;
+            }else if(is_numeric($start) && $start > 0)
+            {
+                $this->start = $start;
             }
         }
         else

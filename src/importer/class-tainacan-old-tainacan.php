@@ -48,7 +48,7 @@ class Old_Tainacan extends Importer
         'Create collections metadata' => 'create_collection_metas',
         'Create collections items' => 'create_collection_items',
         'Setting relationships' => 'set_relationships'
-    ], $tainacan_api_address, $wordpress_api_address, $created_categories;
+    ], $tainacan_api_address, $wordpress_api_address;
 
 
     public function create_categories()
@@ -63,31 +63,49 @@ class Old_Tainacan extends Importer
             $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
             $categories_array = $this->remove_same_name($categories_array);
-            foreach ($categories_array as $category)
+            $start = $this->get_start();
+            $total_items = count($categories_array);
+
+            if($start >= $total_items)
             {
+                return false;
+            }
 
-                $taxonomy = new \Tainacan\Entities\Taxonomy();
-
-                $taxonomy->set_name($category->name);
-                $taxonomy->set_description($category->description);
-                $taxonomy->set_allow_insert(true);
-
-                $Tainacan_Taxonomies->insert($taxonomy);
-
-                $inserted_taxonomy = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
-
-                /*Insert old tainacan id*/
-                add_post_meta($inserted_taxonomy->get_id(), 'old_tainacan_category_id', $category->term_id);
-                $this->created_categories[$category->term_id] = $inserted_taxonomy->get_id();
-
-                if(isset($category->children) && $inserted_taxonomy)
+            $end = $this->get_start() + $this->get_items_per_step();
+            if($end > $total_items)
+            {
+                $end = $total_items;
+            }
+            $created_categories = [];
+            while($start < $end)
+            {
+                for($i = $start; $i < $end; $i++)
                 {
-                    $this->add_all_terms($inserted_taxonomy, $category->children);
+                    $category = $categories_array[$i];
+
+                    $taxonomy = new \Tainacan\Entities\Taxonomy();
+
+                    $taxonomy->set_name($category->name);
+                    $taxonomy->set_description($category->description);
+                    $taxonomy->set_allow_insert(true);
+
+                    $Tainacan_Taxonomies->insert($taxonomy);
+
+                    $inserted_taxonomy = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
+
+                    /*Insert old tainacan id*/
+                    $created_categories[] = $category->term_id.",".$inserted_taxonomy->get_id();
+
+                    if(isset($category->children) && $inserted_taxonomy)
+                    {
+                        $this->add_all_terms($inserted_taxonomy, $category->children);
+                    }
                 }
+                $start++;
             }
         }
-
-        return false;
+        $this->save_in_file("categories", $created_categories);
+        return $start;
     }
 
     public function create_collections()
@@ -182,6 +200,22 @@ class Old_Tainacan extends Importer
     }
 
     /*Aux functions*/
+    private function save_in_file($name, $ids)
+    {
+        $file_name = $this->get_id()."_".$name.".txt";
+        $content = implode("|", $ids);
+        if(file_exists($file_name))
+        {
+            $content = "|".$content;
+        }
+
+        $fp = fopen($file_name, "a+");
+
+        fwrite($fp, $content);
+
+        fclose($fp);
+    }
+
     private function add_all_terms($taxonomy_father, $children, $term_father = null)
     {
         $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
