@@ -92,7 +92,7 @@
                     this.setFieldTypeMessage('is-danger');
                     for (let error of errors) { 
                         for (let index of Object.keys(error)) {
-                            this.$console.log(index);
+                            //this.$console.log(index);
                             msg += error[index] + '\n';
                         }
                     }
@@ -133,6 +133,8 @@
             },
             setFieldTypeMessage( message ){
                 this.fieldTypeMessage = message;
+                //if (message != '')
+                    //this.isCollapsed = false;
             }
         }
     }

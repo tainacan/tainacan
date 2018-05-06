@@ -603,10 +603,22 @@ export default {
             // Fetch current existing attachments
             this.fetchAttachments(this.itemId);
         }
-
-
+    },
+    beforeRouteLeave ( to, from, next ) {
+        if (this.item.status == 'auto-draft') {
+            this.$dialog.confirm({
+                message: this.$i18n.get('info_warning_item_not_saved'),
+                    onConfirm: () => {
+                        next();
+                    },
+                    cancelText: this.$i18n.get('cancel'),
+                    confirmText: this.$i18n.get('continue'),
+                    type: 'is-secondary'
+                });  
+        } else {
+            next()
+        }  
     }
-
 }
 </script>
 

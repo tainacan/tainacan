@@ -223,6 +223,7 @@ return [
 	'info_by'                                  => __( 'By: ', 'tainacan' ),
 	'info_date'                                => __( 'Date: ', 'tainacan' ),
 	'info_not_saved'                           => __( 'Not saved ', 'tainacan' ),
+	'info_warning_item_not_saved'           		   => __( 'Are you sure? The item is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_fields_not_saved'            => __( 'Are you sure? There are fields not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_filters_not_saved'           => __( 'Are you sure? There are filters not saved, changes will be lost.', 'tainacan' ),
 	'info_no_description_provided'             => __( 'No description provided.', 'tainacan' ),
