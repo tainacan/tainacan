@@ -86,12 +86,13 @@ class Embed {
 	 */
 	public function oembed_get_thumbnail($url) {
 		
-		add_filter( 'oembed_dataparse', ['\Tainacan\Embed', 'oembed_get_thumbnail_filter'], 10, 3);
-		return wp_oembed_get($url);
-		remove_filter( 'oembed_dataparse', ['\Tainacan\Embed', 'oembed_get_thumbnail_filter']);
+		add_filter( 'oembed_dataparse', [$this, 'oembed_get_thumbnail_filter'], 10, 3);
+		$return = wp_oembed_get($url);
+		remove_filter( 'oembed_dataparse', [$this, 'oembed_get_thumbnail_filter']);
+		return $return;
 		
 	}
-	public static function oembed_get_thumbnail_filter($return, $data, $url) {
+	public function oembed_get_thumbnail_filter($return, $data, $url) {
 		
 		if ( isset($data->thumbnail_url) ) {
 			return $data->thumbnail_url;
