@@ -105,6 +105,10 @@ class Media {
 			return null;
 		}
 		
+		if ( mime_content_type($filepath) != 'application/pdf') {
+			return null;
+		}
+		
 		$imagick = new \Imagick($filepath);
         $imagick->setIteratorIndex(0);
         $imagick->setImageFormat('jpg');
