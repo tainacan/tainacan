@@ -451,6 +451,10 @@ export default {
             .then(item => {
                 this.item.document_as_html = item.document_as_html;
                 this.isLoading = false;
+
+                let oldThumbnail = this.item.thumbnail;
+                if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
+                    this.item.thumbnail = item.thumbnail;
             })
             .catch((errors) => {
                 for (let error of errors.errors) {

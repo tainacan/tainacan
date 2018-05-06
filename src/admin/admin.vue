@@ -111,6 +111,7 @@
         padding: 0px;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
+        cursor: pointer;
 
         .icon {
             margin-top: -1px;

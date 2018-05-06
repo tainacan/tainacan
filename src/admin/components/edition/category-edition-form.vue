@@ -276,7 +276,7 @@
 
                         promise.done((result) => {
                             this.form.slug = result.permalink;
-                            this.$console.info(this.form.slug);
+                            //this.$console.info(this.form.slug);
                         });
 
                         this.isUpdatingSlug = false;

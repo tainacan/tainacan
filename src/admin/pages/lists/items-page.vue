@@ -23,7 +23,7 @@
                         @input="updateSearch($event)"
                         :value="searchQuery"/>
             </b-field>
-            <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a>
+            <!-- <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a> -->
 
             <br>
             <br>
@@ -406,6 +406,7 @@
         padding: 0px;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
+        cursor: pointer;
 
         .icon {
             margin-top: -1px;
