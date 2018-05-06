@@ -103,7 +103,7 @@ export default {
         id: Number
     },
     watch: {
-        '$route' (to, from) {
+        '$route' (to) {
 
             this.activeRoute = to.name;
 

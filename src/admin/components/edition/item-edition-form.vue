@@ -415,10 +415,25 @@ export default {
             this.isTextModalActive = true;
         },
         confirmTextWriting() {
+            this.isLoading = true;
             this.isTextModalActive = false;
             this.form.document_type = 'text';
             this.form.document = this.textContent;
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type });
+            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+            .then(item => {
+                this.item.document_as_html = item.document_as_html;
+                this.isLoading = false;
+            })
+            .catch((errors) => {
+                for (let error of errors.errors) {
+                    for (let field of Object.keys(error)){
+                       eventBus.errors.push({ field_id: field, errors: error[field]});
+                    }
+                }
+                this.formErrorMessage = errors.error_message;
+
+                this.isLoading = false;
+            });
         },
         cancelTextWriting() {
             this.isTextModalActive = false;
@@ -428,10 +443,25 @@ export default {
             this.isURLModalActive = true;
         },
         confirmURLSelection() {
+            this.isLoading = true;
             this.isURLModalActive = false;
             this.form.document_type = 'url';
             this.form.document = this.urlLink;
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type });
+            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+            .then(item => {
+                this.item.document_as_html = item.document_as_html;
+                this.isLoading = false;
+            })
+            .catch((errors) => {
+                for (let error of errors.errors) {
+                    for (let field of Object.keys(error)){
+                       eventBus.errors.push({ field_id: field, errors: error[field]});
+                    }
+                }
+                this.formErrorMessage = errors.error_message;
+
+                this.isLoading = false;
+            });
         },
         cancelURLSelection() {
             this.isURLModalActive = false;
@@ -463,10 +493,12 @@ export default {
                     },
                     relatedPostId: this.itemId,
                     onSave: (file) => {
+                        this.isLoading = true;
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                         .then((item) => {
+                            this.isLoading = false;
                             this.item.document_as_html = item.document_as_html;
 
                             let oldThumbnail = this.item.thumbnail;
@@ -474,7 +506,15 @@ export default {
                                 this.item.thumbnail = item.thumbnail;
 
                         })
-                        .catch(error => this.$console.error(error));
+                        .catch((errors) => {
+                            for (let error of errors.errors) {
+                                for (let field of Object.keys(error)){
+                                eventBus.errors.push({ field_id: field, errors: error[field]});
+                                }
+                            }
+                            this.formErrorMessage = errors.error_message;
+                            this.isLoading = false;
+                        });
                     }
                 }
             );
