@@ -142,9 +142,9 @@ class REST_Items_Controller extends REST_Controller {
 			$attributes_to_filter = $request['fetch_only'];
 			$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
 
-			if(array_key_exists('metas', $attributes_to_filter)){
+			if(array_key_exists('meta', $attributes_to_filter)){
 
-				$args = array('post__in' => $attributes_to_filter['metas']);
+				$args = array('post__in' => $attributes_to_filter['meta']);
 
 				$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
 			}

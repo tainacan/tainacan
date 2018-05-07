@@ -42,7 +42,6 @@
                     size="is-small"
                     class="is-size-7"
                     attached
-                    rounded="false"
                     closable
                     @close="clearSearch()">
                 {{ showSearch() }}
