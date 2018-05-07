@@ -53,6 +53,7 @@
             </label>
             <div class="inline-block">
                 <b-radio 
+                        size="is-small"
                         @focus="clearErrors('label_status')"
                         id="tainacan-select-status-publish"
                         name="status" 
@@ -61,7 +62,8 @@
                     {{ $i18n.get('publish_visibility') }}
                 </b-radio>
                 <br>
-                <b-radio 
+                <b-radio
+                        size="is-small" 
                         @focus="clearErrors('label_status')"
                         id="tainacan-select-status-private"
                         name="status" 

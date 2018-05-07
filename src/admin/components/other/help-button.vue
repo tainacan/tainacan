@@ -45,7 +45,7 @@ export default {
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        color: $secondary;
+        color: $tertiary;
         background-color: $primary-light;
         border: none;
         display: block;
@@ -64,7 +64,7 @@ export default {
             padding: 0.8em 0.8em 0em 0.8em;
 
             h5 {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: 700;
                 margin-right: 25px;
             }
@@ -77,7 +77,7 @@ export default {
 
         .help-tooltip-body {
             padding: 1.2em;
-            font-size: 11px;
+            font-size: 14px;
         }
 
         &:before {

@@ -189,23 +189,12 @@
         min-height: 100%;
         height: auto;
 
-        .filters-menu {
-            min-width: $side-menu-width;
-            max-width: $side-menu-width;
-            background-color: $primary-lighter;
-            margin-left: -$page-small-side-padding;
-            padding-left: $page-small-side-padding
-        }
-
         .table-container {
             margin-right: -$page-small-side-padding;
             padding: 3em 2.5em;
         }
 
         @media screen and (max-width: 769px) {
-            .filters-menu {
-                display: none;
-            }
             .table-container {
                 margin-right: 0;
                 padding: .85em 0em;

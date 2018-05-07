@@ -45,7 +45,7 @@ class Old_Tainacan extends Importer
         'Creating all categories' => 'create_categories',
         'Create empty collections' => 'create_collections',
         'Creating relationships metadata' => 'create_relationships_meta',
-        'Create repository metadata' => 'create_repo_meta',
+        'Create repository metadata' => 'treat_repo_meta',
         'Create collections metadata' => 'create_collection_metas',
         'Create collections items' => 'create_collection_items',
         "Finishing" => 'clear'
@@ -154,18 +154,26 @@ class Old_Tainacan extends Importer
         return false;
     }
 
-    public function create_repo_meta()
+    public function treat_repo_meta()
     {
         $repository_meta_link = $this->get_url() . $this->tainacan_api_address . "/repository/metadata?includeMetadata=1";
         $repo_meta = wp_remote_get($repository_meta_link);
 
         $repo_meta_array = $this->verify_process_result($repo_meta);
+
+        $Fields_Repository = \Tainacan\Repositories\Fields::get_instance();
+        $created_categories = $this->read_from_file("categories");
+        $relationships = $this->read_from_file("relationships");
+
+        $this->create_meta_repo($repo_meta_array, $Fields_Repository, $created_categories, $relationships);
+
+        return false;
+    }
+
+    public function create_meta_repo($repo_meta_array, $Fields_Repository, $created_categories, $relationships, $compound_id = null)
+    {
         if($repo_meta_array)
         {
-            $Fields_Repository = \Tainacan\Repositories\Fields::get_instance();
-            $created_categories = $this->read_from_file("categories");
-            $relationships = $this->read_from_file("relationships");
-
             foreach ($repo_meta_array as $meta)
             {
                 $avoid = [
@@ -178,8 +186,7 @@ class Old_Tainacan extends Importer
 
                 $special = [
                     'socialdb_property_fixed_type',
-                    'stars',
-                    'compound'
+                    'stars'
                 ];
 
                 if(!in_array($meta->slug, $avoid) && !in_array($meta->type, $special))
@@ -193,25 +200,64 @@ class Old_Tainacan extends Importer
                     if(strcmp($type, "Category") === 0)
                     {
                         $taxonomy_id = $meta->metadata->taxonomy;
-
-                        $new_category_id = $created_categories[$taxonomy_id]['new_id'];
-                        $newField->set_field_type_options(['taxonomy_id' => $new_category_id]);
+                        if(isset($created_categories[$taxonomy_id]))
+                        {
+                            $new_category_id = $created_categories[$taxonomy_id]['new_id'];
+                            $newField->set_field_type_options(['taxonomy_id' => $new_category_id]);
+                        }
                     }else if(strcmp($type, "Relationship") === 0)
                     {
                         $taxonomy_id = $meta->metadata->object_category_id;
-                        $new_collection_id = $relationships[$taxonomy_id]['new_id'];
 
-                        $newField->set_field_type_options(['collection_id' => $new_collection_id]);
+                        if(isset($relationships[$taxonomy_id]))
+                        {
+                            $new_collection_id = $relationships[$taxonomy_id]['new_id'];
+                            $newField->set_field_type_options(['collection_id' => $new_collection_id]);
+                        }
+                    }else if(strcmp($type, "Compound") === 0)
+                    {
+                        $this->create_meta_repo($meta->metadata->children, $Fields_Repository, $created_categories, $relationships, $newField->get_id());
                     }
 
-                    $newField->set_collection_id('default');
+                    /*Compound treatement*/
+                    if($compound_id === null)
+                    {
+                        $newField->set_collection_id('default');
+                    }else //Set compound as field parent
+                    {
+                        $newField->set_parent($compound_id);
+                    }
+
+                    if(isset($meta->metadata))
+                    {
+                        /*Properties of field*/
+                        if($meta->metadata->required == 1)
+                        {
+                            $newField->set_required(true);
+                        }
+                        if(!empty($meta->metadata->default_value))
+                        {
+                            $newField->set_default_value($meta->metadata->default_value);
+                        }
+                        if(!empty($meta->metadata->text_help))
+                        {
+                            /**/
+                        }
+                        if(!empty($meta->metadata->cardinality))
+                        {
+                            if($meta->metadata->cardinality > 1)
+                            {
+                                $newField->set_multiple('yes');
+                            }
+                        }
+                    }
+
                     $newField->validate(); // there is no user input here, so we can be sure it will validate.
 
                     $Fields_Repository->insert($newField);
                 }
             }
         }
-        return false;
     }
 
     public function create_collection_metas()
@@ -222,11 +268,6 @@ class Old_Tainacan extends Importer
     public function create_collection_items()
     {
         /*Use standard method*/
-        return false;
-    }
-
-    public function set_relationships()
-    {
         return false;
     }
 

@@ -193,7 +193,7 @@ html {
         margin-bottom: 0.2em;       
     }
     .control-label { // The value part in checkbox, radio and switches
-        color: black;
+        color: $tainacan-input-color;
         padding-left: 0.8em;
         font-size: 12px;
     }
@@ -208,11 +208,15 @@ html {
             padding: 2px 25px 2px 15px!important;
             margin-top: 0px !important;
             margin-bottom: 0px !important;
-            background-color: $tainacan-input-background;
-            color: black;
+            color: $tainacan-input-color;
+            background-color: white !important;
+            border: 1px solid $tainacan-input-background;
             &:focus>option:checked, &:focus>option:hover {
                 background-color: $primary-lighter !important;
             }
+        }
+        &.is-empty select{
+            background-color: $tainacan-input-background !important;
         }
         &:not(.is-multiple)::after {
             content: "\F35D" !important;
@@ -395,7 +399,9 @@ html {
         box-shadow: none !important;
     }
 
-    &:focus input[type="checkbox"] + .check, &:active input[type="checkbox"] + .check, &:hover input[type="checkbox"] + .check {
+    &:focus input[type="checkbox"] + .check, 
+    &:active input[type="checkbox"] + .check, 
+    &:hover input[type="checkbox"] + .check {
         box-shadow: none !important;
         border-color: $gray-light !important;
     }
@@ -403,6 +409,31 @@ html {
         background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:%23000' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important;
         border-color: $gray-light !important;
     }
+}
+.b-radio.radio {
+
+    input[type="radio"] + .check {
+        width: 13px !important;
+        height: 13px !important;
+        border: 1px solid $gray-light !important;    
+    }
+    input[type="radio"] + .check::before {
+        background: black !important;
+        width: 7px !important;
+        height: 7px !important;
+    }
+    &:focus input[type="radio"] + .check,
+    &:active input[type="radio"] + .check,
+    &:hover input[type="radio"] + .check {
+        box-shadow: none !important;
+    }
+    input[type="radio"]:checked + .check {
+        border-color: $gray-light !important;
+    }
+    &:focus input[type="radio"]:checked + .check {
+        box-shadow: none !important;
+    }
+
 }
 
 // Tables
