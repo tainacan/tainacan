@@ -3,12 +3,12 @@
             id="filter-item-forms"
             :message="getErrorMessage"
             :type="filterTypeMessage">
-        <b-collapse :open="opened">
+        <b-collapse :open="open">
             <label
-                    @click="opened = !opened"
-                    slot="trigger">
+                    slot="trigger"
+                    slot-scope="props">
                 <b-icon
-                        :icon="opened ? 'menu-down' : 'menu-right'"
+                        :icon="props.open ? 'menu-down' : 'menu-right'"
                         size="is-small" />
                 {{ filter.name }}
             </label>
@@ -33,7 +33,7 @@
         props: {
             filter: Object,
             query: Object,
-            opened: false,
+            open: false,
         },
         data(){
             return {
@@ -135,27 +135,9 @@
             }
         }
 
-        .radio {
-            margin-bottom: 0.2em;
-        }
-
-        .checkbox  {
+        .b-checkbox.checkbox  {
             font-weight: normal;
-            font-size: 14px;
-            margin-bottom: 0.2em;
-            border: none !important;
-
-            .check{
-                width: 1rem !important;
-                height: 1rem !important;
-
-                &:focus, &:active, &:checked {
-                    box-shadow: none !important;
-                    border: 1px gray !important;
-                    border-radius: 2px !important;
-                }
-            }
-
+            font-size: 12px;
         }
 
     }

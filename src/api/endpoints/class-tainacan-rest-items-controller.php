@@ -94,8 +94,8 @@ class REST_Items_Controller extends REST_Controller {
 	 *
 	 * @return mixed
 	 */
-	private function add_metadata_to_item($item_object, $item_array){
-		$item_metadata = $item_object->get_fields();
+	private function add_metadata_to_item($item_object, $item_array, $args = []){
+		$item_metadata = $item_object->get_fields($args);
 
 		foreach($item_metadata as $index => $me){
 			$field               = $me->get_field();
@@ -140,8 +140,16 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			$attributes_to_filter = $request['fetch_only'];
+			$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
 
-			return $this->filter_object_by_attributes($item, $attributes_to_filter);
+			if(array_key_exists('metas', $attributes_to_filter)){
+
+				$args = array('post__in' => $attributes_to_filter['metas']);
+
+				$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
+			}
+
+			return $item_arr;
 		}
 
 		return $item;

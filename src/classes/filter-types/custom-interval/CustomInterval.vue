@@ -35,13 +35,16 @@
                     class="column"
                     v-model="value_end"/>
         </div>
-        <div class="field has-text-centered">
+        <div class="control has-text-centered">
             <b-tag 
                     v-if="isValid && !clear"
-                   type="is-primary"
-                   size="is-small"
-                   closable
-                   @close="clearSearch()">
+                    type="is-white"
+                    size="is-small"
+                    class="is-size-7"
+                    attached
+                    rounded="false"
+                    closable
+                    @close="clearSearch()">
                 {{ showSearch() }}
             </b-tag>
         </div>

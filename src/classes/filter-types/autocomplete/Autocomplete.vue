@@ -25,7 +25,6 @@
                 </div>
             </template>
         </b-autocomplete>
-        <br>
         <div class="field has-text-centered">
             <b-tag 
                     v-if="results !== ''"
