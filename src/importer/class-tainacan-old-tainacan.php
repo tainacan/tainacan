@@ -228,6 +228,30 @@ class Old_Tainacan extends Importer
                         $newField->set_parent($compound_id);
                     }
 
+                    if(isset($meta->metadata))
+                    {
+                        /*Properties of field*/
+                        if($meta->metadata->required == 1)
+                        {
+                            $newField->set_required(true);
+                        }
+                        if(!empty($meta->metadata->default_value))
+                        {
+                            $newField->set_default_value($meta->metadata->default_value);
+                        }
+                        if(!empty($meta->metadata->text_help))
+                        {
+                            /**/
+                        }
+                        if(!empty($meta->metadata->cardinality))
+                        {
+                            if($meta->metadata->cardinality > 1)
+                            {
+                                $newField->set_multiple('yes');
+                            }
+                        }
+                    }
+
                     $newField->validate(); // there is no user input here, so we can be sure it will validate.
 
                     $Fields_Repository->insert($newField);
