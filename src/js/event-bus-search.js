@@ -56,6 +56,9 @@ export default {
                         this.$store.dispatch('search/add_taxquery', data );
                     }
                 },
+                addFetchOnlyMeta( field ){
+                    this.$store.dispatch('search/add_fecthonly_meta', field );             
+                },
                 getErrors( filter_id ){
                     let error = this.errors.find( errorItem => errorItem.field_id === filter_id );
                     return ( error ) ? error.errors : false

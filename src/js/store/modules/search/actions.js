@@ -16,6 +16,23 @@ export const add_metaquery = ( { commit }, filter  ) => {
     }
 };
 
+// Fetch Only for item attributes limiting on results
+export const add_fetchonly = ( { commit }, field ) => {
+    if( field && field.length === 0 ){
+        commit('removeFetchOnly', field );
+    } else {
+        commit('addFetchOnly', field );
+    }
+};
+// Fetch Only for metadata limiting on results
+export const add_fetchonly_meta = ( { commit }, field ) => {
+    if( field && field.length === 0 ){
+        commit('removeFetchOnlyMeta', field );
+    } else {
+        commit('addFetchOnlyMeta', field );
+    }
+};
+
 // Tax Queries from filters
 export const add_taxquery = ( { commit }, filter  ) => {
     if( filter && filter.terms.length === 0 ){

@@ -10,6 +10,9 @@ const state = {
         perpage: 12,
         status: '',
         search: '',
+        fetchonly: [
+            {'meta': [] }
+        ],
         post_type: [],
         metaquery: [],
         taxquery: []
