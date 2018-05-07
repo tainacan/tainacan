@@ -5,10 +5,10 @@
             :type="fieldTypeMessage">
         <span   
                 class="collapse-handle"
-                @click="isCollapsed = !isCollapsed">
+                @click="$emit('changeCollapse', !isCollapsed)">
             <b-icon 
                     type="is-secondary"
-                    :icon="!isCollapsed ? 'menu-down' : 'menu-right'" />
+                    :icon="isCollapsed ? 'menu-down' : 'menu-right'" />
             <label class="label">{{ field.field.name }}</label>
             <span
                     v-if="field.field.required == 'yes'" 
@@ -20,7 +20,7 @@
                 :title="field.field.name" 
                 :message="field.field.description"/>
         <div   
-                v-show="!isCollapsed" 
+                v-show="isCollapsed" 
                 v-if="isTextInputComponent( field.field.field_type_object.component )">
             <component 
                     :id="field.field.field_type_object.component + '-' + field.field.slug" 
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div 
-                v-show="!isCollapsed"
+                v-show="isCollapsed"
                 v-else>
             <component
                     :id="field.field.field_type_object.component + '-' + field.field.slug"
@@ -71,7 +71,7 @@
             field: {
                 type: Object
             },
-            isCollapsed: true
+            isCollapsed: true // Field Collapses
         },
         data(){
             return {
@@ -133,8 +133,8 @@
             },
             setFieldTypeMessage( message ){
                 this.fieldTypeMessage = message;
-                //if (message != '')
-                    //this.isCollapsed = false;
+                if (message != '')
+                    this.$emit('changeCollapse', true);
             }
         }
     }

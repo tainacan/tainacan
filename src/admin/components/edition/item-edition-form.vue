@@ -268,7 +268,8 @@
                             v-for="(field, index) of fieldList"
                             :key="index"
                             :field="field"
-                            :is-collapsed="!fieldCollapses[index]" />
+                            :is-collapsed="fieldCollapses[index]" 
+                            @changeCollapse="onChangeCollapse($event, index)"/>
 
                 </div>
             </div>
@@ -404,7 +405,7 @@ export default {
             this.fetchFields(this.itemId).then((fields) => {
                 this.isLoading = false;
                 for (let field of fields) {
-                    this.fieldCollapses.push(false);
+                    this.fieldCollapses.push(field.field.required == 'yes');
                 }
             });
         },
@@ -560,6 +561,9 @@ export default {
             for (let i = 0; i < this.fieldCollapses.length; i++)
                 this.fieldCollapses[i] = this.collapseAll;
 
+        },
+        onChangeCollapse(event, index) {
+            this.fieldCollapses.splice(index, 1, event);
         }
     },
     computed: {
