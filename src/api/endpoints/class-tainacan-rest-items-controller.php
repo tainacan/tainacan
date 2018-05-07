@@ -140,11 +140,17 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			$attributes_to_filter = $request['fetch_only'];
+
 			# Always returns id
-			$attributes_to_filter[] = 'id';
+			if(is_array($attributes_to_filter)) {
+				$attributes_to_filter[] = 'id';
+			} else {
+				$attributes_to_filter = array($attributes_to_filter, 'id');
+			}
+
 			$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
 
-			if(array_key_exists('meta', $attributes_to_filter)){
+			if(is_array($attributes_to_filter) && array_key_exists('meta', $attributes_to_filter)){
 
 				$args = array('post__in' => $attributes_to_filter['meta']);
 
