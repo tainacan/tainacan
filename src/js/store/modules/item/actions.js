@@ -99,6 +99,7 @@ export const sendItem = ( { commit }, { collection_id, status }) => {
 };
  
 export const updateItem = ({ commit }, { item_id, status }) => {
+
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/items/' + item_id, {
             status: status 

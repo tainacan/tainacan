@@ -674,7 +674,7 @@ export default {
                     color: $secondary;
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: $primary-lighter;
+                        background-color: $primary-light;
                         cursor: pointer;
                     }
                 }

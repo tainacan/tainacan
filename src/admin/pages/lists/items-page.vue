@@ -401,7 +401,7 @@
         height: 21px;
         width: 23px;
         border: none;
-        background-color: $primary-light;
+        background-color: $primary-lighter;
         color: $tertiary;
         padding: 0px;
         border-top-right-radius: 2px;
