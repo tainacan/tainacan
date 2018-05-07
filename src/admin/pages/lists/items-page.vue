@@ -294,6 +294,7 @@
                             this.$eventBusSearch.addFetchOnlyMeta(field.id);                       
                         }
                     }
+                    this.$eventBusSearch.loadItems();
 
                     this.tableFields.push({
                         name: this.$i18n.get('label_creation'),

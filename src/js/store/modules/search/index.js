@@ -10,12 +10,12 @@ const state = {
         perpage: 12,
         status: '',
         search: '',
-        fetchonly: [
-            {'meta': [] }
-        ],
         post_type: [],
         metaquery: [],
-        taxquery: []
+        taxquery: [],
+        fetch_only: [
+            {'meta': [] }
+        ],
     },
     totalItems: 0
 };

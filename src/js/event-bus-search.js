@@ -57,11 +57,16 @@ export default {
                     }
                 },
                 addFetchOnlyMeta( field ){
-                    this.$store.dispatch('search/add_fetchonly_meta', field );             
+                    this.$store.dispatch('search/add_fetchonly_meta', field );
+                    this.updateURLQueries();             
+                },
+                removeFetchOnlyMeta( field ){
+                    this.$store.dispatch('search/remove_fetchonly_meta', field );
+                    this.updateURLQueries();             
                 },
                 getErrors( filter_id ){
                     let error = this.errors.find( errorItem => errorItem.field_id === filter_id );
-                    return ( error ) ? error.errors : false
+                    return ( error ) ? error.errors : false;
                 },
                 listener(){
                     const components = this.getAllComponents();
