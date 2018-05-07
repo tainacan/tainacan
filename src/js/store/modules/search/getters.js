@@ -34,11 +34,6 @@ export const getSearchQuery = state => {
     return state.postquery.search;
 }
 
-<<<<<<< HEAD
 export const getStatus = state => {
     return state.postquery.status;
-=======
-export const getFecthOnly = state => {
-    return state.postquery.fetchonly;
->>>>>>> Begins implementation of FetchOnly for displayed fields in item page.
 }

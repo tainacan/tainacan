@@ -79,25 +79,8 @@ export const removeTaxQuery = ( state, filter ) => {
     }
 };
 
-<<<<<<< HEAD
 export const removePostQueryAttribute = ( state, attribute) => {
     Vue.set( state.postquery, attribute , '');  
-=======
-export const removeFetchOnly = ( state, field ) => {
-    let index = state.postquery.fetchonly.findIndex( item => item === field);
-    if (index >= 0) {
-        state.postquery.metaquery.splice(index, 1);
-    }
-};
-
-export const removeFetchOnlyMeta = ( state, field ) => {
-    if(state.postquery.fetchonly['meta'] != undefined) {
-        let index = state.postquery.fetchonly['meta'].findIndex( item => item === field);
-        if (index >= 0) {
-            state.postquery.metaquery.splice(index, 1);
-        }
-    }
->>>>>>> Begins implementation of FetchOnly for displayed fields in item page.
 };
 
 export const setTotalItems = ( state, total ) => {
@@ -108,11 +91,6 @@ export const setSearchQuery = ( state, searchQuery ) => {
     state.postquery.search = searchQuery;
 };
 
-<<<<<<< HEAD
 export const setStatus = ( state, status ) => {
     state.status = status;
-=======
-export const setSearchQueryMeta = ( state, searchQueryMeta ) => {
-    state.postquery.search['meta'] = searchQueryMeta;
->>>>>>> Begins implementation of FetchOnly for displayed fields in item page.
 };

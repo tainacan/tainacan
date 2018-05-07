@@ -290,9 +290,8 @@
                                     id: field.id,
                                     display: display
                                 }
-                            );
-                            this.$eventBusSearch.addFetchOnlyMeta(field.id);
-                            
+                            );    
+                            this.$eventBusSearch.addFetchOnlyMeta(field.id);                       
                         }
                     }
 

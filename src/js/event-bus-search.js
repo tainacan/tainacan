@@ -57,7 +57,7 @@ export default {
                     }
                 },
                 addFetchOnlyMeta( field ){
-                    this.$store.dispatch('search/add_fecthonly_meta', field );             
+                    this.$store.dispatch('search/add_fetchonly_meta', field );             
                 },
                 getErrors( filter_id ){
                     let error = this.errors.find( errorItem => errorItem.field_id === filter_id );
