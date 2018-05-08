@@ -492,16 +492,12 @@ msgid "Collections per Page:"
 msgstr "Coleções por Página:"
 
 #: admin/tainacan-admin-i18n.php:110
-#, fuzzy
-#| msgid "Categories Page"
 msgid "Categories per Page:"
-msgstr "Página de Categorias"
+msgstr "Categorias por página"
 
 #: admin/tainacan-admin-i18n.php:111
-#, fuzzy
-#| msgid "Events Page"
 msgid "Events per Page:"
-msgstr "Página de Eventos"
+msgstr "Eventos por página"
 
 #: admin/tainacan-admin-i18n.php:112
 msgid "Items per Page:"
