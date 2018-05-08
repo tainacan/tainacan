@@ -12,8 +12,14 @@ export const filter_type_mixin = {
         query: {}
     },
     methods: {
-        getValuesPlainText(field_id) {
-            return axios.get('/collection/' + this.collection + '/fields/' + field_id + '?fetch=all_field_values')
+        getValuesPlainText(fieldId, search) {
+            let url = '/collection/' + this.collection + '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1'
+            
+            if( search ){
+                url += "&search=" + search;
+            }
+
+            return axios.get(url)
                 .then(res => {
                     if (res.data && res.data[0]) {
                         for (let metadata of res.data[0]) {

@@ -6,7 +6,7 @@
         <a 
                 @click="$router.go(-1)"
                 class="back-link is-secondary">
-            {{ $i18n.get('return') }}
+            {{ $i18n.get('back') }}
         </a>
         <hr>
         <nav 

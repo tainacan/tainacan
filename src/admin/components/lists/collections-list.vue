@@ -4,7 +4,7 @@
                 grouped 
                 group-multiline>
             <button 
-                    v-if="selectedCollections.length > 0" 
+                    v-if="selectedCollections.length > 0 && collections.length > 0 && collections[0].current_user_can_edit" 
                     class="button field is-danger" 
                     @click="deleteSelectedCollections()">
                 <span>{{ $i18n.get('instruction_delete_selected_collections') }} </span>
@@ -86,6 +86,7 @@
 
                 <b-table-column 
                         tabindex="0" 
+                        v-if="props.row.current_user_can_edit"
                         :label="$i18n.get('label_actions')" 
                         width="78" 
                         :aria-label="$i18n.get('label_actions')">
