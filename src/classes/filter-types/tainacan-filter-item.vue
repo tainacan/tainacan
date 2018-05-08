@@ -5,11 +5,12 @@
             :type="filterTypeMessage">
         <b-collapse :open="open">
             <label
+                    class="label"
                     slot="trigger"
                     slot-scope="props">
                 <b-icon
                         :icon="props.open ? 'menu-down' : 'menu-right'"
-                        size="is-small" />
+                        />
                 {{ filter.name }}
             </label>
 
@@ -109,7 +110,7 @@
         .label {
             font-weight: normal;
             font-size: 14px;
-            display: inline-block;
+            display: inline-flex;
         }
 
         .input, .textarea, .taginput-container {
@@ -127,6 +128,38 @@
                 box-shadow: none !important;
                 border: none !important;
             }
+        }
+
+        .taginput-container {
+            display: table-cell;
+        }
+
+        .input {
+            overflow: hidden;
+            display: unset;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .control:not(.taginput) {
+            .tags {
+                .tag:not(a.is-delete) {
+                    display: unset;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    border-radius: 0;
+                    width: 86%;
+                }
+
+                .is-delete {
+                    border-radius: 0;
+                }
+            }
+        }
+
+        .tag {
+            height: 2em !important;
         }
 
         .autocomplete {

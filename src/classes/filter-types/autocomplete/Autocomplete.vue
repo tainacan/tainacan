@@ -7,16 +7,16 @@
                 v-model="selected"
                 :data="options"
                 @input="search"
-                :loading="loading"
+                :loading="isLoading"
                 field="label"
                 @select="option => setResults(option) ">
             <template slot-scope="props">
                 <div class="media">
-                    <div 
-                            class="media-left" 
+                    <div
+                            class="media-left"
                             v-if="props.option.img">
-                        <img 
-                                width="32" 
+                        <img
+                                width="32"
                                 :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
@@ -25,11 +25,13 @@
                 </div>
             </template>
         </b-autocomplete>
-        <div class="field has-text-centered">
+        <div class="control has-text-centered">
             <b-tag 
                     v-if="results !== ''"
-                    type="is-primary"
+                    type="is-white"
                     size="is-small"
+                    class="is-size-7"
+                    attached
                     closable
                     @close="clearSearch()">
                 {{ label }}

@@ -2,7 +2,7 @@
     <div class="block">
         <b-select
                 :id = "id"
-                :laoding = "isLoading"
+                :loading = "isLoading"
                 v-model = "selected"
                 @input = "onSelect()"
                 size="is-small"

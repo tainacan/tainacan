@@ -4,7 +4,7 @@
                 v-for="(option,index) in getOptions(0)"
                 :key="index"
                 :value="index"
-                class="field">
+                class="control">
             <b-checkbox
                     :style="{ paddingLeft: (option.level * 30) + 'px' }"
                     v-model="selected"

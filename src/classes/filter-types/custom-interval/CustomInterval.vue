@@ -2,14 +2,14 @@
     <div>
         <div v-if="type === 'date'">
             <b-datepicker
-                    :class="{'has-content': date_init != undefined && date_init != ''}"
+                    :class="{'has-content': date_init !== undefined && date_init !== ''}"
                     v-model="date_init"
                     size="is-small"
                     @input="validate_values()"
                     icon="calendar-today"/>
             <br>
             <b-datepicker
-                    :class="{'has-content': date_end != undefined && date_end != ''}"
+                    :class="{'has-content': date_end !== undefined && date_end !== ''}"
                     v-model="date_end"
                     size="is-small"
                     @input="validate_values()"
@@ -20,14 +20,14 @@
                 class="columns" 
                 v-else>
             <b-input
-                    :class="{'has-content': value_init != undefined && value_init != ''}"
+                    :class="{'has-content': value_init !== undefined && value_init !== ''}"
                     size="is-small"
                     type="number"
                     @input="validate_values()"
                     class="column"
                     v-model="value_init"/>
             <b-input
-                    :class="{'has-content': value_end != undefined && value_end != ''}"
+                    :class="{'has-content': value_end !== undefined && value_end !== ''}"
                     size="is-small"
                     type="number"
                     @input="validate_values()"
@@ -210,6 +210,10 @@
     .datepicker {
         .dropdown-content {
             position: fixed !important;
+        }
+
+        .dropdown-item {
+            background-color: white !important;
         }
     }
 </style>
