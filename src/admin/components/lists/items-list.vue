@@ -15,16 +15,16 @@
                 :data="items"
                 @selection-change="handleSelectionChange"
                 :checked-rows.sync="selectedItems"
-                checkable
+                :checkable="!isOnTheme"
                 :loading="isLoading"
                 hoverable
                 striped
-                selectable
+                :selectable="!isOnTheme"
                 backend-sorting>
             <template slot-scope="props">
                 <b-table-column 
                         v-for="(column, index) in tableFields"
-                        v-if="column.field != 'row_actions' || (column.field == 'row_actions' && props.row.current_user_can_edit)"
+                        v-if="column.field != 'row_actions' || (column.field == 'row_actions' && props.row.current_user_can_edit && !isOnTheme)"
                         :key="index"
                         :custom-key="column.slug"
                         :label="column.name"
@@ -35,13 +35,17 @@
                     <template v-if="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation'">
                         <span
                                 class="clickable-row"
-                                v-if="props.row.metadata[column.slug].value_as_html == props.row.metadata[column.slug].value_as_string" 
+                                v-if="!isOnTheme && props.row.metadata[column.slug].value_as_html == props.row.metadata[column.slug].value_as_string" 
                                 @click.prevent="goToItemPage(props.row.id)"
                                 v-html="renderMetadata( props.row.metadata[column.slug] )" />
                         <span
                                 class="clickable-row"
-                                v-if="props.row.metadata[column.slug].value_as_html != props.row.metadata[column.slug].value_as_string"  
+                                v-if="!isOnTheme && props.row.metadata[column.slug].value_as_html != props.row.metadata[column.slug].value_as_string"  
                                 v-html="renderMetadata( props.row.metadata[column.slug] )" />
+                        <a 
+                            v-if="isOnTheme"
+                            :href="getDecodedURI(props.row.url)"
+                            v-html="renderMetadata( props.row.metadata[column.slug] )" />
        
                     </template>
                     
@@ -101,7 +105,8 @@ export default {
         collectionId: Number,
         tableFields: Array,
         items: Array,
-        isLoading: false
+        isLoading: false,
+        isOnTheme: false
     },
     methods: {
         ...mapActions('collection', [
@@ -184,6 +189,9 @@ export default {
         },
         getCreationHtml(item) {
             return this.$i18n.get('info_created_by') + item['author_name'] + '<br>' + this.$i18n.get('info_date') + moment( item['creation_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
+        },
+        getDecodedURI(url) {
+            return decodeURIComponent(url);
         }
     }
 }

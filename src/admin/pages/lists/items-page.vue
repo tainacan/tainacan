@@ -82,7 +82,8 @@
                         :is-repository-level="isRepositoryLevel"
                         :collection-id="collectionId"
                         :table-fields="tableFields"
-                        :pref-table-fields="prefTableFields"/>
+                        :pref-table-fields="prefTableFields"
+                        :is-on-theme="isOnTheme"/>
             </div>
             <div 
                     :items="items"
@@ -97,7 +98,8 @@
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :items="items"
-                        :is-loading="isLoading"/>
+                        :is-loading="isLoading"
+                        :is-on-theme="isOnTheme"/>
                 <section
                         v-if="!isLoadingItems && items.length <= 0"
                         class="section">
@@ -147,6 +149,7 @@
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
                 collapseAll: false,
+                isOnTheme: false
             }
         },
         props: {
@@ -206,6 +209,8 @@
 
                 themeList.appendChild(e);
             }); */
+
+            this.isOnTheme = (this.$route.name == null);
             this.isRepositoryLevel = (this.collectionId == undefined);
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {

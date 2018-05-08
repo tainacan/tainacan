@@ -2,7 +2,9 @@
     <span>
         <div class="header-item">
 
-            <b-dropdown id="item-creation-options-dropdown">
+            <b-dropdown 
+                    v-if="!isOnTheme"
+                    id="item-creation-options-dropdown">
                 <button
                         class="button is-secondary"
                         slot="trigger">
@@ -88,7 +90,8 @@
         props: {
             collectionId: Number,
             isRepositoryLevel: false,
-            tableFields: Array
+            tableFields: Array,
+            isOnTheme: false     
         },
         computed: {
             orderBy() {

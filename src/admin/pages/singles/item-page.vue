@@ -3,82 +3,81 @@
         <b-loading
                 :active.sync="isLoading"
                 :can-cancel="false"/>
-        <div class="card">
-            <div class="card-content">
+        <tainacan-title />
+        <div class="content">
 
-				<router-link
-                        class="card-footer-item"
-                        :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                    {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
-                </router-link>
+            <router-link
+                    class="button is-secondary"
+                    :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
+                {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
+            </router-link>
 
-				<div
-                        class="card-image"
-                        v-if="item.document">
-                    <figure
-                             class="image"
-                            v-html="item.document_as_html" />
-                </div>
-                <br>
-
-                <div
-                    v-if="item.thumbnail"
-                    class="media">
-                   <figure
-                        class="media-left" >
-                      <p class="image is-128x128">
-                        <img :src="item.thumbnail">
-                      </p>
-                    </figure>
-                    <div class="media-content">
-                        {{ $i18n.get('label_thumbnail') }}
-                    </div>
-                </div>
-
-                <div
-                    v-for="(metadata, index) in item.metadata"
-                    :key="index"
-                    class="box">
-
-                    <p
-                      v-if="metadata.value_as_html"
-                      class="is-size-3"
-                      v-html="metadata.value_as_html"/>
-                    <p
-                      v-else>--</p>
-
-                    <p>
-                      <i>
-                        {{ metadata.name }}
-                      </i>
-                    </p>
-                </div>
-
-                <div
-                    class="box">
-
-                    <div
-                        v-if="attachments && attachments.length > 0">
-                        <span
-                            v-for="(attachment, index) in attachments"
-                            :key="index"
-                            >
-                            <a
-                              target="blank"
-                              :href="attachment.guid.rendered">{{ attachment.guid.rendered }}</a>
-                              <br>
-                        </span>
-                    </div>
-                    <p v-else>--</p>
-
-                    <p>
-                      <i>
-                        {{ $i18n.get('label_attachments') }}
-                      </i>
-                    </p>
-                </div>
-
+            <div
+                    class="card-image"
+                    v-if="item.document">
+                <figure
+                            class="image"
+                        v-html="item.document_as_html" />
             </div>
+            <br>
+
+            <div
+                v-if="item.thumbnail"
+                class="media">
+                <figure
+                    class="media-left" >
+                    <p class="image is-128x128">
+                    <img :src="item.thumbnail">
+                    </p>
+                </figure>
+                <div class="media-content">
+                    {{ $i18n.get('label_thumbnail') }}
+                </div>
+            </div>
+
+            <div
+                v-for="(metadata, index) in item.metadata"
+                :key="index"
+                class="box">
+
+                <p
+                    v-if="metadata.value_as_html"
+                    class="is-size-3"
+                    v-html="metadata.value_as_html"/>
+                <p
+                    v-else>--</p>
+
+                <p>
+                    <i>
+                    {{ metadata.name }}
+                    </i>
+                </p>
+            </div>
+
+            <div
+                class="box">
+
+                <div
+                    v-if="attachments && attachments.length > 0">
+                    <span
+                        v-for="(attachment, index) in attachments"
+                        :key="index"
+                        >
+                        <a
+                            target="blank"
+                            :href="attachment.guid.rendered">{{ attachment.guid.rendered }}</a>
+                            <br>
+                    </span>
+                </div>
+                <p v-else>--</p>
+
+                <p>
+                    <i>
+                    {{ $i18n.get('label_attachments') }}
+                    </i>
+                </p>
+            </div>
+
         </div>
     </div>
 </template>
