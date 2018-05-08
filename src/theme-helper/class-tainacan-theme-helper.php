@@ -30,7 +30,7 @@ class Theme_Helper {
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array(&$this, 'collection_single_redirect'));
 		
-		add_action('wp_print_scripts', array(&$this, 'print_scripts'));
+		add_action('wp_print_scripts', array(&$this, 'enqueue_scripts'));
 		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array(&$this, 'tax_archive_pre_get_posts'));
@@ -39,12 +39,14 @@ class Theme_Helper {
 		add_action('single_template_hierarchy', array(&$this, 'items_template_hierachy'));
 		
 		add_filter('theme_mod_header_image', array(&$this, 'header_image'));
+
+		add_shortcode( 'tainacan-search', array(&$this, 'search_shortcode'));
 		
 	}
 	
-	public function print_scripts() {
+	public function enqueue_scripts($force = false) {
 		global $TAINACAN_BASE_URL;
-		if ( is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) ) {
+		if ( $force || is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) ) {
 			//\Tainacan\Admin::get_instance()->add_admin_js();
 			wp_enqueue_script('tainacan-search', $TAINACAN_BASE_URL . '/assets/user_search-components.js' , [] , null, true);
 			wp_localize_script('tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
@@ -225,6 +227,28 @@ class Theme_Helper {
 		}
 		
 		return $image;
+	}
+
+	public function search_shortcode($atts) {
+		
+		$atts = shortcode_atts(
+			array(
+				'collection-id' => '',
+				'term' => '',
+			),
+			$atts
+		);
+
+		$params = '';
+		if (isset($atts['collection-id'])) {
+			$params = "collection-id=" . $atts['collection-id'];
+		}
+		
+		$this->enqueue_scripts(true);
+
+		return "<div id='tainacan-items-page' $params ></div>";
+
+
 	}
 	
 }
