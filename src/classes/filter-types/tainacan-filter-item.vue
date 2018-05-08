@@ -3,7 +3,9 @@
             id="filter-item-forms"
             :message="getErrorMessage"
             :type="filterTypeMessage">
-        <b-collapse :open="open">
+        <b-collapse
+                class="show" 
+                :open="open">
             <label
                     class="label"
                     slot="trigger"

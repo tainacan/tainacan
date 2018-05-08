@@ -27,7 +27,7 @@
 
         </div>
         <div class="header-item">
-            <b-dropdown>
+            <b-dropdown class="show">
                 <button
                         class="button is-white"
                         slot="trigger">
@@ -125,6 +125,9 @@
     }
     #item-creation-options-dropdown {
         margin-right: 80px;
+    }
+    .dropdown-menu {
+        display: block;
     }
 </style>
 
