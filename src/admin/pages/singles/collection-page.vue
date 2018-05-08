@@ -11,7 +11,6 @@
 
 <script>
 import TainacanSubheader from '../../components/navigation/tainacan-subheader.vue';
-import {mapActions} from 'vuex';
 
 export default {
     name: 'CollectionPage',
