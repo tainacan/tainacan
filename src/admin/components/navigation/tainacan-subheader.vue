@@ -40,7 +40,6 @@
             </li>
             <li class="level-item">
                 <router-link
-                        v-if="currentUserCanEdit" 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
@@ -53,8 +52,7 @@
                 </router-link>
             </li>
             <li class="level-item">
-                <router-link
-                        v-if="currentUserCanEdit"  
+                <router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionFieldsPath(id) }" 
                         :class="activeRoute == 'FieldsList' ? 'is-active':''" 
@@ -68,7 +66,6 @@
             </li>
             <li class="level-item">
                 <router-link
-                        v-if="currentUserCanEdit"  
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
@@ -113,8 +110,7 @@ export default {
         }
     },
     props: {
-        id: Number,
-        currentUserCanEdit: false
+        id: Number
     },
     watch: {
         '$route' (to) {

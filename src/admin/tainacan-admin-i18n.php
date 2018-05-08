@@ -28,7 +28,7 @@ return [
 	'remove'                                   => __( 'Remove', 'tainacan' ),
 	'save'                                     => __( 'Save', 'tainacan' ),
 	'next'                                     => __( 'Next', 'tainacan' ),
-	'return'                                   => __( 'Return', 'tainacan' ),
+	'back'         	                           => __( 'Back', 'tainacan' ),
 	'see'                                      => __( 'See', 'tainacan' ),
 	'search'                                   => __( 'Search', 'tainacan' ),
 	'advanced_search'                          => __( 'Advanced Search', 'tainacan' ),
