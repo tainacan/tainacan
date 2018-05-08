@@ -20,7 +20,7 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
 "_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.7\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-tainacan-admin.php:22 admin/class-tainacan-admin.php:23
@@ -832,7 +832,7 @@ msgstr ""
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:327
 #: api/endpoints/class-tainacan-rest-terms-controller.php:221
 msgid "One or more values are invalid."
-msgstr ""
+msgstr "Um ou mais valores estão inválidos"
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:347
 msgid "Collection with that ID not found"
