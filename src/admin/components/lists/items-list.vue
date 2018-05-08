@@ -4,7 +4,7 @@
                 grouped 
                 group-multiline>
                     <button 
-                            v-if="selectedItems.length > 0" 
+                            v-if="selectedItems.length > 0 && items.length > 0 && items[0].current_user_can_edit" 
                             class="button field is-danger" 
                             @click="deleteSelectedItems()">
                         <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
@@ -24,6 +24,7 @@
             <template slot-scope="props">
                 <b-table-column 
                         v-for="(column, index) in tableFields"
+                        v-if="column.field != 'row_actions' || (column.field == 'row_actions' && props.row.current_user_can_edit)"
                         :key="index"
                         :custom-key="column.slug"
                         :label="column.name"
@@ -31,12 +32,17 @@
                         :class="column.field == 'row_creation' ? 'row-creation' : ''"
                         :width="column.field == 'row_actions' ? 78 : column.field == 'row_thumbnail' ? 55 : undefined ">
                         
-                    <template>
+                    <template v-if="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation'">
                         <span
-                                class="clickable-row" 
+                                class="clickable-row"
+                                v-if="props.row.metadata[column.slug].value_as_html == props.row.metadata[column.slug].value_as_string" 
                                 @click.prevent="goToItemPage(props.row.id)"
-                                v-if="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation'"
-                                v-html="renderMetadata( props.row.metadata[column.slug] )" />   
+                                v-html="renderMetadata( props.row.metadata[column.slug] )" />
+                        <span
+                                class="clickable-row"
+                                v-if="props.row.metadata[column.slug].value_as_html != props.row.metadata[column.slug].value_as_string"  
+                                v-html="renderMetadata( props.row.metadata[column.slug] )" />
+       
                     </template>
                     
                     <template v-if="column.field == 'row_thumbnail'">
