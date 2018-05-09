@@ -25,18 +25,18 @@
                 </div>
             </template>
         </b-autocomplete>
-        <div class="control has-text-centered">
-            <b-tag 
-                    v-if="results !== ''"
-                    type="is-white"
-                    size="is-small"
-                    class="is-size-7"
-                    attached
-                    closable
-                    @close="clearSearch()">
-                {{ label }}
-            </b-tag>
-        </div>
+        <!-- <ul 
+                class="selected-list-box"
+                v-if="selected !== '' && selected !== undefined">
+            <li>
+                <b-tag 
+                        attached
+                        closable
+                        @close="clearSearch()">
+                    {{ label }}
+                </b-tag>
+            </li>
+        </ul> -->
     </div>
 </template>
 
