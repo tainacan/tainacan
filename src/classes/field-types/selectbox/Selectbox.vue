@@ -4,6 +4,7 @@
             :id = "id"
             :placeholder="$i18n.get('label_selectbox_init')"
             v-model="selected" 
+            :class="{'is-empty': selected == undefined || selected == ''}"
             @input="onChecked()">
             <option
                     v-for="(option, index) in getOptions"

@@ -5,7 +5,8 @@
                 :loading = "isLoading"
                 v-model = "selected"
                 @input = "onSelect($event)"
-                expanded>
+                expanded
+                :class="{'is-empty': selected == undefined || selected == ''}">
             <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
             <option
                     v-for="(option, index) in options"

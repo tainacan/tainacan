@@ -136,7 +136,7 @@ export default {
     #title-row {
 
         .breadcrumbs {
-            font-size: 0.85em;
+            font-size: 12px;
         }
 
         .level-left {
