@@ -53,13 +53,13 @@ class Old_Tainacan extends Importer
 
             $categories_array = $this->remove_same_name($categories_array);
 
-            list($start, $end) = $this->get_begin_end($categories_array);
-            if($start === false) return false;
+            list($inside_step_pointer, $end) = $this->get_begin_end($categories_array);
+            if($inside_step_pointer === false) return false;
 
             $created_categories = [];
-            while($start < $end)
+            while($inside_step_pointer < $end)
             {
-                $category = $categories_array[$start];
+                $category = $categories_array[$inside_step_pointer];
 
                 $taxonomy = new \Tainacan\Entities\Taxonomy();
 
@@ -79,12 +79,12 @@ class Old_Tainacan extends Importer
                     $this->add_all_terms($inserted_taxonomy, $category->children);
                 }
 
-                $start++;
+                $inside_step_pointer++;
             }
 
             $this->save_in_file("categories", $created_categories);
         }
-        return $start;
+        return $inside_step_pointer;
     }
 
     public function create_collections()
@@ -96,12 +96,12 @@ class Old_Tainacan extends Importer
         $created_collections = [];
         if($collections_array)
         {
-            list($start, $end) = $this->get_begin_end($collections_array);
-            if($start === false) return false;
+            list($inside_step_pointer, $end) = $this->get_begin_end($collections_array);
+            if($inside_step_pointer === false) return false;
 
-            while($start < $end)
+            while($inside_step_pointer < $end)
             {
-                $collection = $collections_array[$start];
+                $collection = $collections_array[$inside_step_pointer];
 
                 $new_collection = new \Tainacan\Entities\Collection();
                 $new_collection->set_name($collection->post_title);
@@ -112,12 +112,12 @@ class Old_Tainacan extends Importer
                 /*Add old id*/
                 $created_collections[] = $collection->ID.",".$new_collection->get_id().",".$collection->post_title;
 
-                $start++;
+                $inside_step_pointer++;
             }
             $this->save_in_file("collections", $created_collections);
         }
 
-        return $start;
+        return $inside_step_pointer;
     }
 
     public function create_relationships_meta()
@@ -192,19 +192,19 @@ class Old_Tainacan extends Importer
         $created_categories = $this->read_from_file("categories");
         $relationships = $this->read_from_file("relationships");
 
-        list($start, $end) = $this->get_begin_end($created_collections);
-        if($start === false) return false;
+        list($inside_step_pointer, $end) = $this->get_begin_end($created_collections);
+        if($inside_step_pointer === false) return false;
 
         $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
         $Fields_Repository = \Tainacan\Repositories\Fields::get_instance();
         $Repository_Collections = \Tainacan\Repositories\Collections::get_instance();
 
-        for($i = 0; $i < $start; $i++)
+        for($i = 0; $i < $inside_step_pointer; $i++)
         {
             next($created_collections);
         }
 
-        while($start < $end)
+        while($inside_step_pointer < $end)
         {
             $collection_info = current($created_collections);
             $new_collection_id = $collection_info['new_id'];
@@ -218,10 +218,10 @@ class Old_Tainacan extends Importer
 
             $this->set_mapping($mapping, $old_collection_id);
             next($created_collections);
-            $start++;
+            $inside_step_pointer++;
         }
 
-        return $start;
+        return $inside_step_pointer;
     }
 
     private function create_collection_meta(
@@ -391,6 +391,11 @@ class Old_Tainacan extends Importer
 
     public function create_collection_items()
     {
+        $collections = $this->read_from_file('collections');
+        if(!empty($collections))
+        {
+
+        }
         /*Use standard method*/
         return false;
     }
@@ -466,21 +471,21 @@ class Old_Tainacan extends Importer
 
     private function get_begin_end($items)
     {
-        $start = $this->get_start();
+        $inside_step_pointer = $this->get_inside_step_pointer();
         $total_items = count($items);
 
-        if($start >= $total_items)
+        if($inside_step_pointer >= $total_items)
         {
             return [false, false];
         }
 
-        $end = $this->get_start() + $this->get_items_per_step();
+        $end = $this->get_inside_step_pointer() + $this->get_items_per_step();
         if($end > $total_items)
         {
             $end = $total_items;
         }
 
-        return [$start, $end];
+        return [$inside_step_pointer, $end];
     }
 
     private function add_all_terms($taxonomy_father, $children, $term_father = null)

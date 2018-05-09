@@ -62,6 +62,7 @@ abstract class Importer {
 	 * @var int
 	 */
 	private $start = 0;
+	private $inside_step_pointer = 0;
     
 	/**
 	 * The log with everything that happened during the import process. It generates a report afterwards
@@ -203,6 +204,21 @@ abstract class Importer {
         }
     }
 
+    public function set_inside_step_pointer($step_pointer)
+    {
+        if(is_numeric($step_pointer) && $step_pointer >= 0)
+        {
+            $this->inside_step_pointer = $step_pointer;
+        }else
+        {
+            $this->inside_step_pointer = 0;
+        }
+    }
+
+    public function get_inside_step_pointer()
+    {
+        return $this->inside_step_pointer;
+    }
     /**
      * log the actions from importer
      *
@@ -502,17 +518,17 @@ abstract class Importer {
         {
             //$process_name = key($this->steps);
             $function_name = current($this->steps);
-            $start = $this->{$function_name}();//If unlike numeric this means that still there is stuff to process
+            $inside_step_pointer = $this->{$function_name}();//If unlike numeric this means that still there is stuff to process
 
-            if($start === false || (!is_numeric($start) || $start < 0))
+            if($inside_step_pointer === false || (!is_numeric($inside_step_pointer) || $inside_step_pointer < 0))
             {
                 //Move on to the next step
                 next($this->steps);
                 $this->current_step++;
-                $this->start = 0;
-            }else if(is_numeric($start) && $start > 0)
+                $this->set_inside_step_pointer(0);
+            }else if(is_numeric($inside_step_pointer) && $inside_step_pointer > 0)
             {
-                $this->start = $start;
+                $this->set_inside_step_pointer($inside_step_pointer);
             }
         }
         else
