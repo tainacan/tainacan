@@ -126,7 +126,7 @@
     #item-creation-options-dropdown {
         margin-right: 80px;
     }
-    .dropdown-menu {
+    .header-item .dropdown-menu {
         display: block;
     }
 </style>
