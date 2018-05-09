@@ -648,6 +648,8 @@ class Fields extends Repository {
 	 * @param $collection_id
 	 * @param $field_id
 	 *
+	 * @param string $search
+	 *
 	 * @return array|null|object
 	 * @throws \Exception
 	 */
@@ -670,18 +672,23 @@ class Fields extends Repository {
                 if( strpos( $field->get_field_type(), 'Core_Title')  !== false  ){
                 	$title = $item->get_title();
 
-	                if(stristr($title, $search)) {
+	                if(!empty($search) && stristr($title, $search) !== false) {
+		                $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $title ];
+	                } elseif (empty($search)) {
 		                $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $title ];
 	                }
                 } else {
                 	$description = $item->get_description();
 
-                	if(stristr($description, $search)) {
+                	if(!empty($search) && stristr($description, $search) !== false) {
+		                $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $description ];
+	                } elseif (empty($search)) {
 		                $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $description ];
 	                }
                 }
             }
 
+            $results = [];
             if (!empty($return)) {
                 $results[] = $return;
             }
