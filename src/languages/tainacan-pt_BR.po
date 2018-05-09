@@ -20,7 +20,7 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
 "_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-tainacan-admin.php:30 admin/class-tainacan-admin.php:31
@@ -593,132 +593,116 @@ msgid "Parent Term"
 msgstr "Termo Pai"
 
 #: admin/tainacan-admin-i18n.php:144
-#, fuzzy
-#| msgid "Add New Term"
 msgid "New Term"
-msgstr "Adicionar Novo Termo"
+msgstr "Novo Termo"
 
 #: admin/tainacan-admin-i18n.php:145
-#, fuzzy
-#| msgid "New Field"
 msgid "New Child"
-msgstr "Novo campo"
+msgstr "Novo filho"
 
+# MUITO IMPRECISA!!!!!!!!!!!
 #: admin/tainacan-admin-i18n.php:146
-#, fuzzy
-#| msgid "Categories"
 msgid "Category Terms"
-msgstr "Categorias"
+msgstr "Termos de Categorias"
 
 #: admin/tainacan-admin-i18n.php:147
-#, fuzzy
-#| msgid "Parent Term"
 msgid "No parent term"
-msgstr "Termo Pai"
+msgstr "Nenhum termo pai"
 
 #: admin/tainacan-admin-i18n.php:148
 msgid "Term without name"
-msgstr ""
+msgstr "Termo sem nome"
 
 #: admin/tainacan-admin-i18n.php:149
 msgid "Inherited"
-msgstr ""
+msgstr "Herdado"
 
 #: admin/tainacan-admin-i18n.php:150
 msgid "Sorting"
-msgstr ""
+msgstr "Ordenação"
 
 #: admin/tainacan-admin-i18n.php:151
 msgid "Who and when"
-msgstr ""
+msgstr "Quem e quando"
 
+# imprecisa
 #: admin/tainacan-admin-i18n.php:153
 #: classes/repositories/class-tainacan-collections.php:174
 #: classes/repositories/class-tainacan-terms.php:82
 msgid "Header Image"
-msgstr ""
+msgstr "Imagem da Header"
 
+# IMPRECISA
 #: admin/tainacan-admin-i18n.php:154
 msgid "Empty Header Image"
-msgstr ""
+msgstr "Imagem da Header vazia"
 
 #: admin/tainacan-admin-i18n.php:155
 #: classes/repositories/class-tainacan-collections.php:156
-#, fuzzy
-#| msgid "Category Page"
 msgid "Enable Cover Page"
-msgstr "Página da Categoria"
+msgstr "Habilitar imagem de capa"
 
 #: admin/tainacan-admin-i18n.php:156
-#, fuzzy
 msgid "Cover Page"
 msgstr "Página de capa"
 
 #: admin/tainacan-admin-i18n.php:157
 #: classes/repositories/class-tainacan-collections.php:124
-#, fuzzy
-#| msgid "Available Fields"
 msgid "Default Displayed Fields"
-msgstr "Metadados disponíveis"
+msgstr "Metadados exibidos por padrão"
 
 #: admin/tainacan-admin-i18n.php:158
 msgid "Display on Listing"
-msgstr ""
+msgstr "Exibir na listagem"
 
 #: admin/tainacan-admin-i18n.php:159
 msgid "Display by default"
-msgstr ""
+msgstr "Exibir por padrão"
 
 #: admin/tainacan-admin-i18n.php:160
 msgid "Never displayed"
-msgstr ""
+msgstr "Nunca exibir"
 
 #: admin/tainacan-admin-i18n.php:161
 msgid "Not display by default"
-msgstr ""
+msgstr "Não exibir por padrão"
 
 #: admin/tainacan-admin-i18n.php:162
-#, fuzzy
-#| msgid "Search items"
 msgid "Attach to item"
-msgstr "Buscar Items"
+msgstr "Anexar ao item"
 
 #: admin/tainacan-admin-i18n.php:163
 #: classes/repositories/class-tainacan-items.php:104
 msgid "Document"
-msgstr ""
+msgstr "Documento"
 
 #: admin/tainacan-admin-i18n.php:164
 msgid "Empty document"
-msgstr ""
+msgstr "Documento vazio"
 
 #: admin/tainacan-admin-i18n.php:165
 msgid "File"
-msgstr ""
+msgstr "Arquivo"
 
 #: admin/tainacan-admin-i18n.php:166
-#, fuzzy
-#| msgid "Text"
 msgid "Texto"
 msgstr "Texto"
 
 #: admin/tainacan-admin-i18n.php:167
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: admin/tainacan-admin-i18n.php:168
-#, fuzzy
-#| msgid "Select"
 msgid "Select File"
-msgstr "Selecionar"
+msgstr "Selecionar arquivo"
 
 #: admin/tainacan-admin-i18n.php:169
 msgid "Expand all"
-msgstr ""
+msgstr "Expandir todos"
 
 #: admin/tainacan-admin-i18n.php:170
 msgid "Collapse all"
-msgstr ""
+msgstr "Recolher todos"
 
 #: admin/tainacan-admin-i18n.php:173
 msgid "Delete selected collections"
@@ -729,101 +713,91 @@ msgid "Delete selected items"
 msgstr "Deletar itens selecionados"
 
 #: admin/tainacan-admin-i18n.php:175
-#, fuzzy
-#| msgid "Delete selected items"
 msgid "Delete selected categories"
-msgstr "Deletar itens selecionados"
+msgstr "Deletar categorias selecionadas"
 
 #: admin/tainacan-admin-i18n.php:176
 msgid "Drop an image here or click to upload."
-msgstr "Solte uma imagem aqui para enviar."
+msgstr "Arraste e solte uma imagem aqui para enviar."
 
 #: admin/tainacan-admin-i18n.php:177
 msgid "Select a status:"
-msgstr "Selecione um status:"
+msgstr "Selecione um status."
 
 #: admin/tainacan-admin-i18n.php:178
 msgid "Select a filter type:"
-msgstr "Selecione um tipo de filtro:"
+msgstr "Selecione um tipo de filtro."
 
+# DÚVIDA SOBRE ESTA TRADUÇÃO
 #: admin/tainacan-admin-i18n.php:179
-#, fuzzy
-#| msgid "Select a filter type:"
 msgid "Select a parent term:"
-msgstr "Selecione um tipo de filtro:"
+msgstr "Selecione um tipo de relacionamento."
 
 #: admin/tainacan-admin-i18n.php:180
 msgid "Type to search a Page to choose."
-msgstr ""
+msgstr "Digite na busca para escolher uma Página."
 
 #: admin/tainacan-admin-i18n.php:181
 msgid "Type to search a User to add."
-msgstr ""
+msgstr "Digite na busca para selecionar um Usuário."
 
+# IMPRECISO
 #: admin/tainacan-admin-i18n.php:182
-#, fuzzy
 msgid "Select a parent colection."
-msgstr "Selecione uma coleção pai"
+msgstr "Selecione uma coleção pai."
 
 #: admin/tainacan-admin-i18n.php:183
 msgid "Select a thumbnail image for collection"
-msgstr ""
+msgstr "Selecione uma imagem de miniatura para a Coleção"
 
 #: admin/tainacan-admin-i18n.php:184
 msgid "Select a thumbnail image for item"
-msgstr ""
+msgstr "Selecione uma imagem de miniatura para o Item"
 
 #: admin/tainacan-admin-i18n.php:185
-#, fuzzy
-#| msgid "Delete selected collections"
 msgid "Select a header image for collection"
-msgstr "Deletar Coleções selecionadas"
+msgstr "Selecione uma imagem de capa para a coleção"
 
+# IMPRECISA
 #: admin/tainacan-admin-i18n.php:186
 msgid "Select a header image for term"
-msgstr ""
+msgstr "Selecione uma imagem de miniatura para o Termo"
 
 #: admin/tainacan-admin-i18n.php:187
 msgid "Select files to attach to item"
-msgstr ""
+msgstr "Selecione arquivos para anexar ao Item"
 
 #: admin/tainacan-admin-i18n.php:188
 msgid "Select a document file for item"
-msgstr "Selecione um arquivo de documento para o item"
+msgstr "Selecione um arquivo de documento para o Item"
 
 #: admin/tainacan-admin-i18n.php:189
-#, fuzzy
-#| msgid "Item URL"
 msgid "Insert URL"
-msgstr "URL do Item"
+msgstr "Insira  uma URL"
 
 #: admin/tainacan-admin-i18n.php:190
 msgid "Write Text"
-msgstr ""
+msgstr "Escreva aqui"
 
 #: admin/tainacan-admin-i18n.php:191
-#, fuzzy
-#| msgid "Repository"
 msgid "Search on repository"
-msgstr "Repositório"
+msgstr "Busca no Repositório"
 
 #: admin/tainacan-admin-i18n.php:192
 msgid "Search on collection"
-msgstr "Buscar na coleção"
+msgstr "Busca na coleção"
 
 #: admin/tainacan-admin-i18n.php:195
 msgid "Name is required."
-msgstr "Nome é requerido."
+msgstr "Um nome é requerido."
 
 #: admin/tainacan-admin-i18n.php:196
 msgid "No collection was created in this repository."
 msgstr "Nenhuma coleção foi criada neste repositório."
 
 #: admin/tainacan-admin-i18n.php:197
-#, fuzzy
-#| msgid "No collection was created in this repository."
 msgid "No category was created in this repository."
-msgstr "Nenhuma coleção foi criada neste repositório."
+msgstr "Nenhuma categoria foi criada neste repositório."
 
 #: admin/tainacan-admin-i18n.php:198
 msgid "No item was created in this collection."
@@ -831,23 +805,23 @@ msgstr "Nenhum item foi criado nesta coleção."
 
 #: admin/tainacan-admin-i18n.php:199
 msgid "No page was found with this name."
-msgstr ""
+msgstr "Nenhuma página foi encontrada com este nome."
 
 #: admin/tainacan-admin-i18n.php:200
 msgid "No user was found with this name."
-msgstr ""
+msgstr "Nenhum usuário foi encontrado com este nome."
 
 #: admin/tainacan-admin-i18n.php:201
 msgid "No item was found here with these filters."
-msgstr "Nenhum item foi encontrado com estes filtros"
+msgstr "Nenhum item foi encontrado com estes filtros."
 
 #: admin/tainacan-admin-i18n.php:202
 msgid "Warning: Item not saved."
-msgstr ""
+msgstr "Atenção: O item ainda não foi salvo."
 
 #: admin/tainacan-admin-i18n.php:203
 msgid "This collection doesn't have any moderator yet."
-msgstr ""
+msgstr "Esta coleção ainda não tem nenhum moderador."
 
 #: admin/tainacan-admin-i18n.php:204
 msgid "Error on deleting collection."
@@ -866,10 +840,8 @@ msgid "Item deleted."
 msgstr "Item deletado."
 
 #: admin/tainacan-admin-i18n.php:208
-#, fuzzy
-#| msgid "Category Select Box"
 msgid "Category deleted"
-msgstr "Lista de Seleção de Categoria"
+msgstr "Categoria deletada"
 
 #: admin/tainacan-admin-i18n.php:209
 msgid "Do you really want to delete this collection?"
@@ -880,10 +852,8 @@ msgid "Do you really want to delete this item?"
 msgstr "Você realmente deseja deletar este item?"
 
 #: admin/tainacan-admin-i18n.php:211
-#, fuzzy
-#| msgid "Do you really want to delete this item?"
 msgid "Do you really want to delete this category?"
-msgstr "Você realmente deseja deletar este item?"
+msgstr "Você realmente deseja deletar esta Categoria?"
 
 #: admin/tainacan-admin-i18n.php:212
 msgid "Do you really want to delete the selected collections?"
@@ -895,7 +865,7 @@ msgstr "Você realmente deseja deletar os itens selecionados?"
 
 #: admin/tainacan-admin-i18n.php:214
 msgid "The field Collection related is required"
-msgstr "O campo Coleção é requerido"
+msgstr "O metadado Coleção é requerido"
 
 #: admin/tainacan-admin-i18n.php:215
 msgid "No fields found in this collection"
@@ -911,7 +881,7 @@ msgstr "Exibindo coleções "
 
 #: admin/tainacan-admin-i18n.php:218
 msgid "Showing categories "
-msgstr "Exibindo categorias"
+msgstr "Exibindo categorias "
 
 #: admin/tainacan-admin-i18n.php:219
 #, fuzzy
