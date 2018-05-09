@@ -198,16 +198,9 @@ html {
         font-size: 12px;
     }
     .select {
-        padding-top: 0px !important;
+        
         select {
             font-size: 14px;
-            border: none;
-            border-radius: 1px !important;
-            font-weight: normal;
-            height: 30px !important;
-            padding: 2px 25px 2px 15px!important;
-            margin-top: 0px !important;
-            margin-bottom: 0px !important;
             color: $tainacan-input-color;
             background-color: white !important;
             border: 1px solid $tainacan-input-background;
@@ -219,10 +212,6 @@ html {
             background-color: $tainacan-input-background !important;
         }
         &:not(.is-multiple)::after {
-            content: "\F35D" !important;
-            font: normal normal normal 24px/1 "Material Design Icons" !important;
-            border: none !important;
-            transform: none;
             margin-top: -0.6em;
             right: 0.95em;
             color: $primary;
@@ -395,11 +384,13 @@ html {
 }
 .switch {
     input[type="checkbox"] + .check {
-        background-color: transparent;
-        border: 1.6px solid $gray;
+        background-color: $gray-light;
+        border: 2px solid $gray-light;
+        width: 2.7em;
+        height: 1.7em;
 
         &::before {
-            background-color: $gray;
+            background-color: white;
             box-shadow: none;
         }
     } 
@@ -408,16 +399,16 @@ html {
     }
 
     input[type="checkbox"]:checked + .check {
-        border: 1.6px solid $secondary;
+        border: 2px solid $secondary;
         background-color: transparent;
 
         &::before {
             background-color: $secondary;
-            transform: translate3d(83%, 0, 0);
+            transform: translate3d(78%, 0, 0);
         }
     }
     &:hover input[type="checkbox"] + .check {
-        background-color: $tainacan-input-background;
+        background-color: $gray-light;
     }
 
     &:focus input[type="checkbox"] + .check,
@@ -429,18 +420,20 @@ html {
         font-size: 9px;
 
         input[type="checkbox"] + .check {
-            border: 1.5px solid $gray;
+            border: 1.5px solid $gray-light;
+            width: 2.55em;
+            height: 1.7em;
 
             &::before {
-                width: 1.05em;
-                height: 1.05em;
+                width: 1.0em;
+                height: 1.0em;
             }
         }
         input[type="checkbox"]:checked + .check {
             border: 1.5px solid $secondary;
 
             &::before {
-                transform: translate3d(93%, 0, 0);
+                transform: translate3d(84%, 0, 0);
             }
         }
     }
