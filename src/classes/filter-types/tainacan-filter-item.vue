@@ -77,6 +77,69 @@
     @import "../../../src/admin/scss/_variables.scss";
 
     #filter-item-forms {
+
+        .datepicker {
+            .dropdown-item {
+                background-color: white !important;
+            }
+
+            @media screen and (min-width: 1088px) {
+
+                .datepicker-header {
+                    .pagination-list {
+                        .field.has-addons {
+                            display: table-cell !important;
+                            width: 78px !important;
+
+                            .control {
+                                height: 24px !important;
+                                width: 74px !important;
+                            }
+                        }
+                    }
+
+                    .pagination-previous {
+                        margin: 0;
+                        height: 24px;
+                        padding: 0;
+                    }
+
+                    .pagination-next {
+                        margin: 0;
+                        height: 24px;
+                        padding: 0;
+                    }
+                }
+
+                .dropdown-item {
+                    padding: 0.375rem 1rem 0.375rem 0.73rem;
+                }
+
+                .dropdown-menu {
+                    min-width: 100% !important;
+                    max-width: 165px !important;
+                }
+
+                .datepicker-cell {
+                    padding: 0.2rem 0.1rem !important;
+                }
+
+                .select {
+                    select {
+                        display: unset;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                }
+
+                .dropdown-content {
+                    max-width: 165px !important;
+                    border-radius: 2px !important;
+                }
+            }
+        }
+
         .collapse-trigger {
             margin-left: -5px;
             .icon {

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- Date -->
         <div v-if="type === 'date'">
             <b-datepicker
                     :class="{'has-content': date_init !== undefined && date_init !== ''}"
@@ -16,6 +17,8 @@
                     @focus="isTouched = true"
                     icon="calendar-today"/>
         </div>
+
+        <!-- Numeric -->
         <div 
                 class="columns" 
                 v-else>
@@ -84,7 +87,7 @@
                 type: 'numeric',
                 collection: '',
                 field: '',
-                field_object: {}
+                field_object: {},
             }
         },
         props: {
@@ -205,14 +208,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    aside.filters-menu{
-        overflow: visible !important;
-    }
-    .datepicker {
-        .dropdown-item {
-            background-color: white !important;
-        }
-    }
-</style>
