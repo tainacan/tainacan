@@ -147,7 +147,7 @@ msgstr "Ver"
 
 #: admin/tainacan-admin-i18n.php:33
 msgid "Search"
-msgstr "Buscar"
+msgstr "Busca"
 
 #: admin/tainacan-admin-i18n.php:34
 msgid "Advanced Search"
@@ -203,7 +203,7 @@ msgstr "Visível para todos"
 
 #: admin/tainacan-admin-i18n.php:49
 msgid "Visible only for editors"
-msgstr "Visível apenas para Editores"
+msgstr "Visível apenas para editores"
 
 #: admin/tainacan-admin-i18n.php:52
 msgid "Repository Collections Page"
@@ -280,7 +280,7 @@ msgstr "Criar item na coleção"
 
 #: admin/tainacan-admin-i18n.php:72
 msgid "Filter Creation Page"
-msgstr "Página de Criação do Filtro"
+msgstr "Página de criação de filtro"
 
 #: admin/tainacan-admin-i18n.php:73
 #: classes/repositories/class-tainacan-collections.php:209
@@ -290,19 +290,19 @@ msgstr "Editar coleção"
 #: admin/tainacan-admin-i18n.php:74
 #: classes/repositories/class-tainacan-items.php:131
 msgid "Edit Item"
-msgstr "Editar Item"
+msgstr "Editar item"
 
 #: admin/tainacan-admin-i18n.php:75
 msgid "Category Edition Page"
-msgstr "Página de Edição da Categoria"
+msgstr "Página de edição da categoria"
 
 #: admin/tainacan-admin-i18n.php:76
 msgid "Filter Edition Page"
-msgstr "Página de Edição do Filtro"
+msgstr "Página de edição de filtro"
 
 #: admin/tainacan-admin-i18n.php:77
 msgid "Field Edition Page"
-msgstr "Página de Edição de Metadado"
+msgstr "Página de edição de metadado"
 
 #: admin/tainacan-admin-i18n.php:78
 msgid "Edit Fields of"
@@ -384,7 +384,7 @@ msgstr "Status"
 #: classes/repositories/class-tainacan-logs.php:78
 #: classes/repositories/class-tainacan-taxonomies.php:54
 msgid "Slug"
-msgstr "slug"
+msgstr "Slug"
 
 #: admin/tainacan-admin-i18n.php:95
 msgid "Image"
@@ -395,21 +395,17 @@ msgid "Thumbnail"
 msgstr "Miniatura"
 
 #: admin/tainacan-admin-i18n.php:97
-#, fuzzy
-#| msgid "Thumbnail"
 msgid "Empty Thumbnail"
-msgstr "Miniatura"
+msgstr "Miniatura vazia"
 
 #: admin/tainacan-admin-i18n.php:98
 #: classes/repositories/class-tainacan-collections.php:183
 msgid "Moderators"
-msgstr ""
+msgstr "Moderadores"
 
 #: admin/tainacan-admin-i18n.php:99
-#, fuzzy
-#| msgid "The collection ID"
 msgid "Parent collection"
-msgstr "O ID da coleção"
+msgstr "Coleção pai"
 
 #: admin/tainacan-admin-i18n.php:100
 msgid "No parent collection"
@@ -428,26 +424,20 @@ msgid "Button Delete"
 msgstr "Botão Deletar"
 
 #: admin/tainacan-admin-i18n.php:104
-#, fuzzy
-#| msgid "Button Delete"
 msgid "Button Delete Header Image"
-msgstr "Botão Deletar"
+msgstr "Botão deletar cabeçalho de imagem"
 
 #: admin/tainacan-admin-i18n.php:105
 msgid "Button Edit Thumbnail"
 msgstr "Botão Editar Miniatura"
 
 #: admin/tainacan-admin-i18n.php:106
-#, fuzzy
-#| msgid "Button Edit"
 msgid "Button Edit Header Image"
-msgstr "Botão Editar"
+msgstr "Botão Editar Cabeçalho de Imagem"
 
 #: admin/tainacan-admin-i18n.php:107
-#, fuzzy
-#| msgid "Thumbnail"
 msgid "Choose Thumbnail"
-msgstr "Miniatura"
+msgstr "Fechar miniatura"
 
 #: admin/tainacan-admin-i18n.php:108
 msgid "Button Delete Thumbnail"
@@ -459,11 +449,11 @@ msgstr "Coleções por Página:"
 
 #: admin/tainacan-admin-i18n.php:110
 msgid "Categories per Page:"
-msgstr "Categorias por página"
+msgstr "Categorias por página:"
 
 #: admin/tainacan-admin-i18n.php:111
 msgid "Events per Page:"
-msgstr "Eventos por página"
+msgstr "Eventos por página:"
 
 #: admin/tainacan-admin-i18n.php:112
 msgid "Items per Page:"
