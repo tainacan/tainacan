@@ -15,10 +15,10 @@
                     class="required-field-asterisk" 
                     :class="fieldTypeMessage">*</span>
             <span class="field-type">({{ $i18n.get(field.field.field_type_object.component) }})</span>      
+            <help-button 
+                    :title="field.field.name" 
+                    :message="field.field.description"/>
         </span>
-        <help-button 
-                :title="field.field.name" 
-                :message="field.field.description"/>
         <div   
                 v-show="isCollapsed" 
                 v-if="isTextInputComponent( field.field.field_type_object.component )">
@@ -170,6 +170,7 @@
         }
         .collapse-handle {
             cursor: pointer;
+            position: relative;
         }
     }
 </style>

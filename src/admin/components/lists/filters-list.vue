@@ -563,7 +563,7 @@ export default {
                 cursor: default;
                
                 .field-name {
-                    color: $primary;
+                    color: $secondary;
                 }
                 .handle .label-details, .handle .icon {
                     color: $gray !important;
