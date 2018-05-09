@@ -5,7 +5,7 @@ return [
 	'repository'                               => __( 'Repository', 'tainacan' ),
 	'collections'                              => __( 'Collections', 'tainacan' ),
 	'items'                                    => __( 'Items', 'tainacan' ),
-	'fields'                                   => __( 'Fields', 'tainacan' ),
+	'fields'                                   => __( 'Metadata', 'tainacan' ),
 	'filters'                                  => __( 'Filters', 'tainacan' ),
 	'categories'                               => __( 'Categories', 'tainacan' ),
 	'events'                                   => __( 'Events', 'tainacan' ),
