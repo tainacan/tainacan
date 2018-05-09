@@ -78,7 +78,7 @@ msgstr "Item"
 
 #: admin/tainacan-admin-i18n.php:14
 msgid "Metadata"
-msgstr "Metada"
+msgstr "Metadado"
 
 #: admin/tainacan-admin-i18n.php:15
 #: classes/repositories/class-tainacan-filters.php:98
@@ -166,18 +166,16 @@ msgid "Not approve"
 msgstr "Não aprovar"
 
 #: admin/tainacan-admin-i18n.php:38
-#, fuzzy
-#| msgid "Add new Filter"
 msgid "Add one item"
-msgstr "Adicionar novo Filtro"
+msgstr "Adicionar um item"
 
 #: admin/tainacan-admin-i18n.php:39
 msgid "Add items in bulk"
-msgstr ""
+msgstr "Adicionar itens em lote"
 
 #: admin/tainacan-admin-i18n.php:40
 msgid "Add items from an external source"
-msgstr ""
+msgstr "Adicionar itens de uma fonte externa"
 
 #: admin/tainacan-admin-i18n.php:43
 msgid "Publish"
@@ -208,26 +206,20 @@ msgid "Visible only for editors"
 msgstr "Visível apenas para Editores"
 
 #: admin/tainacan-admin-i18n.php:52
-#, fuzzy
-#| msgid "Collections Page"
 msgid "Repository Collections Page"
-msgstr "Página de Coleções"
+msgstr "Página de Coleções do repositório"
 
 #: admin/tainacan-admin-i18n.php:53
 msgid "Items Page"
 msgstr "Página de Itens"
 
 #: admin/tainacan-admin-i18n.php:54
-#, fuzzy
-#| msgid "Fields Page"
 msgid "Repository Fields Page"
-msgstr "Página de Metadados"
+msgstr "Página de Metadados do repositório"
 
 #: admin/tainacan-admin-i18n.php:55
-#, fuzzy
-#| msgid "Filters Page"
 msgid "Repository Filters Page"
-msgstr "Página de Filtros"
+msgstr "Página de Filtros do repositório"
 
 #: admin/tainacan-admin-i18n.php:56
 msgid "Categories Page"
@@ -236,13 +228,11 @@ msgstr "Página de Categorias"
 # ESTÁ REPETIDO
 #: admin/tainacan-admin-i18n.php:57
 msgid "Terms Page"
-msgstr "Página de Categorias"
+msgstr "Página de Termos"
 
 #: admin/tainacan-admin-i18n.php:58
-#, fuzzy
-#| msgid "Events Page"
 msgid "Repository Events Page"
-msgstr "Página de Eventos"
+msgstr "Página de Eventos do repositório"
 
 #: admin/tainacan-admin-i18n.php:59
 msgid "Collection Page"
@@ -257,10 +247,8 @@ msgid "Field Page"
 msgstr "Página do Metadado"
 
 #: admin/tainacan-admin-i18n.php:62
-#, fuzzy
-#| msgid "Collection Menu"
 msgid "Collection Events"
-msgstr "Menu da Coleção"
+msgstr "Eventos da Coleção"
 
 #: admin/tainacan-admin-i18n.php:65
 msgid "Filter Page"
@@ -287,10 +275,8 @@ msgid "Category Creation Page"
 msgstr "Página de Criação da Categoria"
 
 #: admin/tainacan-admin-i18n.php:71
-#, fuzzy
-#| msgid "Delete selected collections"
 msgid "Create Item on Collection"
-msgstr "Deletar Coleções selecionadas"
+msgstr "Criar item na coleção"
 
 #: admin/tainacan-admin-i18n.php:72
 msgid "Filter Creation Page"
@@ -299,7 +285,7 @@ msgstr "Página de Criação do Filtro"
 #: admin/tainacan-admin-i18n.php:73
 #: classes/repositories/class-tainacan-collections.php:209
 msgid "Edit Collection"
-msgstr ""
+msgstr "Editar coleção"
 
 #: admin/tainacan-admin-i18n.php:74
 #: classes/repositories/class-tainacan-items.php:131
@@ -315,44 +301,32 @@ msgid "Filter Edition Page"
 msgstr "Página de Edição do Filtro"
 
 #: admin/tainacan-admin-i18n.php:77
-#, fuzzy
-#| msgid "Filter Edition Page"
 msgid "Field Edition Page"
-msgstr "Página de Edição do Filtro"
+msgstr "Página de Edição de Metadado"
 
 #: admin/tainacan-admin-i18n.php:78
-#, fuzzy
-#| msgid "Edit Field"
 msgid "Edit Fields of"
-msgstr "Editar Campo"
+msgstr "Editar metadados de"
 
 #: admin/tainacan-admin-i18n.php:79
-#, fuzzy
-#| msgid "Edit Filter"
 msgid "Edit Filters of"
-msgstr "Editar Filtro"
+msgstr "Editar filtros de"
 
 #: admin/tainacan-admin-i18n.php:82
 msgid "Clear"
-msgstr ""
+msgstr "Limpar"
 
 #: admin/tainacan-admin-i18n.php:83
-#, fuzzy
-#| msgid "Select"
 msgid "Selected"
-msgstr "Selecionar"
+msgstr "Selecionado"
 
 #: admin/tainacan-admin-i18n.php:84
-#, fuzzy
-#| msgid "Search"
 msgid "New Search"
-msgstr "Buscar"
+msgstr "Nova busca"
 
 #: admin/tainacan-admin-i18n.php:85
-#, fuzzy
-#| msgid "No items found"
 msgid "Items found"
-msgstr "Nenhum item encontrado"
+msgstr "Itens encontrados"
 
 #: admin/tainacan-admin-i18n.php:86
 msgid "Menu"
@@ -946,10 +920,8 @@ msgid "Showing collections "
 msgstr "Exibindo coleções "
 
 #: admin/tainacan-admin-i18n.php:218
-#, fuzzy
-#| msgid "Showing categories"
 msgid "Showing categories "
-msgstr "Exibindo Categorias"
+msgstr "Exibindo categorias"
 
 #: admin/tainacan-admin-i18n.php:219
 #, fuzzy
@@ -963,7 +935,7 @@ msgstr " a"
 
 #: admin/tainacan-admin-i18n.php:221
 msgid " of "
-msgstr " de"
+msgstr "de"
 
 #: admin/tainacan-admin-i18n.php:222
 msgid "Created by: "
@@ -994,10 +966,8 @@ msgid "Are you sure? There are filters not saved, changes will be lost."
 msgstr ""
 
 #: admin/tainacan-admin-i18n.php:229
-#, fuzzy
-#| msgid "The log description"
 msgid "No description provided."
-msgstr "A descrição da atividade"
+msgstr "Nenhuma descrição fornecida"
 
 #: admin/tainacan-admin-i18n.php:230
 msgid "Are you sure? The category is not saved, changes will be lost."
@@ -1032,10 +1002,8 @@ msgid "There is no field here yet."
 msgstr ""
 
 #: admin/tainacan-admin-i18n.php:237
-#, fuzzy
-#| msgid "The filter type"
 msgid "There is no filter here yet."
-msgstr "O tipo de filtro"
+msgstr "Ainda não há um filtro configurado."
 
 #: admin/tainacan-admin-i18n.php:238
 msgid "Changes"
@@ -1050,10 +1018,8 @@ msgid "The term name"
 msgstr "O nome do termo"
 
 #: admin/tainacan-admin-i18n.php:241
-#, fuzzy
-#| msgid "The parent of the term"
 msgid "The description of the Term."
-msgstr "O pai do termo"
+msgstr "Descrição do termo"
 
 #: admin/tainacan-admin-i18n.php:244
 msgid "Text"
@@ -1641,10 +1607,8 @@ msgid "Collection filters ordination"
 msgstr ""
 
 #: classes/repositories/class-tainacan-collections.php:158
-#, fuzzy
-#| msgid "No item was created in this collection."
 msgid "Use page as the home page of this collection"
-msgstr "Nenhum item foi criado nesta coleção."
+msgstr "Usar página como página principal desse repositório"
 
 #: classes/repositories/class-tainacan-collections.php:159
 msgid "Value should be yes or no"
@@ -2163,10 +2127,8 @@ msgid "Log collection relationship"
 msgstr "Página de Criação da Coleção"
 
 #: classes/repositories/class-tainacan-logs.php:119
-#, fuzzy
-#| msgid "The IDs of collection where the taxonomy is used"
 msgid "The id of collection that this log is related."
-msgstr "Os IDs da coleção onde a categoria é utilizada"
+msgstr "o ID da coleção relacionada a este registro."
 
 #: classes/repositories/class-tainacan-logs.php:131
 #: classes/repositories/class-tainacan-logs.php:142
@@ -2343,22 +2305,16 @@ msgid "The user is empty or invalid"
 msgstr "O usuário está vazio ou inválido"
 
 #: classes/repositories/class-tainacan-terms.php:84
-#, fuzzy
-#| msgid "The mask to be used in the field"
 msgid "The image to be used in term header"
-msgstr "A máscara deve ser utilizada no campo"
+msgstr "Imagem para ser usada no cabeçalho do termo"
 
 #: classes/repositories/class-tainacan-terms.php:91
-#, fuzzy
-#| msgid "Field type is empty"
 msgid "Hide empty"
-msgstr "Tipo de metadado está vazio"
+msgstr "Esconder vazios"
 
 #: classes/repositories/class-tainacan-terms.php:93
-#, fuzzy
-#| msgid "The item term IDs"
 msgid "Hide empty terms"
-msgstr "Os IDs de termos do item"
+msgstr "Esconder termos vazios"
 
 #: dev-interface/class-tainacan-dev-interface.php:78
 msgid "Properties"
@@ -2378,7 +2334,7 @@ msgstr "Valor"
 #: exposers/types/class-tainacan-txt.php:35
 #: exposers/types/class-tainacan-xml.php:48
 msgid "item"
-msgstr ""
+msgstr "item"
 
 #: helpers/class-tainacan-helpers-html.php:59
 msgid "Select an option"

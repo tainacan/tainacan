@@ -52,9 +52,10 @@ class Item extends Entity {
 	public function __toArray() {
 		$array_item = parent::__toArray();
 
-		$array_item['thumbnail']  = $this->get_thumbnail();
+		$array_item['thumbnail']     = $this->get_thumbnail();
 		$array_item['_thumbnail_id'] = $this->get__thumbnail_id();
-		$array_item['author_name']     = $this->get_author_name();
+		$array_item['author_name']   = $this->get_author_name();
+		$array_item['url']           = get_permalink( $this->get_id() );
 
 		return $array_item;
 	}

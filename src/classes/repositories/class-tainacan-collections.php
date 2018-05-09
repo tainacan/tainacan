@@ -68,12 +68,6 @@ class Collections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'The collection modification date', 'tainacan' )
 			],
-			'url'                      => [
-				'map'         => 'guid',
-				'title'       => __( 'Collection URL', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The collection URL', 'tainacan' )
-			],
 			'order'                    => [
 				'map'         => 'menu_order',
 				'title'       => __( 'Order', 'tainacan' ),
