@@ -30,7 +30,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     .help-wrapper {
-        position: relative;
+        position: absolute;
     }
 
     a.help-button .icon {

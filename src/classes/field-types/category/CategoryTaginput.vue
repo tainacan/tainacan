@@ -8,6 +8,8 @@
                 v-model="selected"
                 :data="labels"
                 field="label"
+                attached
+                :class="{'has-selected': selected != undefined && selected != []}"
                 autocomplete
                 @typing="search"/>
     </div>

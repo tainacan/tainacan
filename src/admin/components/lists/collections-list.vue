@@ -19,7 +19,6 @@
                 checkable
                 :loading="isLoading"
                 hoverable 
-                striped
                 selectable
                 backend-sorting>
             <template slot-scope="props">

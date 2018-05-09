@@ -207,11 +207,10 @@
 </script>
 
 <style lang="scss">
+    aside.filters-menu{
+        overflow: visible !important;
+    }
     .datepicker {
-        .dropdown-content {
-            position: fixed !important;
-        }
-
         .dropdown-item {
             background-color: white !important;
         }

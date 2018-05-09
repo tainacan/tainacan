@@ -29,6 +29,9 @@ $gray-invert: findColorInvert($gray);
 $gray-light: #898d8f; 
 $gray-light-invert: findColorInvert($gray-light);
 
+$danger: #a23939; 
+$danger-invert: findColorInvert($danger);
+
 @import "../../../node_modules/bulma/sass/utilities/derived-variables.sass";
 
 // Setup $colors to use as bulma classes
@@ -72,7 +75,7 @@ $page-mobile-top-padding: 1em;
 
 // Links
 $link: $secondary;
-$link-invert: $secondary-invert;
+$link-invert: $secondary;
 $link-focus-border: $secondary; 
 
 // Placeholder

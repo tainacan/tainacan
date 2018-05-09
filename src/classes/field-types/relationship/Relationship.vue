@@ -5,7 +5,9 @@
                 v-model="selected"
                 :data="options"
                 autocomplete
+                attached
                 :loading="loading"
+                :class="{'has-selected': selected != undefined && selected != []}"
                 field="label"
                 @typing="search"/>
 

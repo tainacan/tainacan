@@ -3,7 +3,9 @@
             id="filter-item-forms"
             :message="getErrorMessage"
             :type="filterTypeMessage">
-        <b-collapse :open="open">
+        <b-collapse
+                class="show" 
+                :open="open">
             <label
                     class="label"
                     slot="trigger"
@@ -75,6 +77,16 @@
     @import "../../../src/admin/scss/_variables.scss";
 
     #filter-item-forms {
+        .collapse-trigger {
+            margin-left: -5px;
+            .icon {
+                margin-right: 12px;
+            }
+        }
+        .collapse-content {
+            margin-top: 12px;
+        }
+
         .column {
             padding: 0.75rem 1px 0.75rem 0 !important;
         }
