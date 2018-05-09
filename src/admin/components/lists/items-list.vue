@@ -18,7 +18,6 @@
                 :checkable="!isOnTheme"
                 :loading="isLoading"
                 hoverable
-                striped
                 :selectable="!isOnTheme"
                 backend-sorting>
             <template slot-scope="props">

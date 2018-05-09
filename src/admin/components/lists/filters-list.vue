@@ -588,6 +588,7 @@ export default {
 
             .switch.is-small {
                 input[type="checkbox"] + .check {
+                    background-color: $secondary !important;
                     border: 1.5px solid white !important;
                     &::before { background-color: white !important; }
                 } 
