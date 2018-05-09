@@ -216,7 +216,7 @@ class Old_Tainacan extends Importer
 
             $mapping = $this->create_collection_meta($file_fields, $Fields_Repository, $Tainacan_Fields, $created_repository_fields, $created_categories, $relationships);
 
-            $this->set_mapping($mapping, $old_collection_id);
+            $this->set_repository_mapping($mapping, $old_collection_id);
             next($created_collections);
             $inside_step_pointer++;
         }
@@ -391,12 +391,22 @@ class Old_Tainacan extends Importer
 
     public function create_collection_items()
     {
-        $collections = $this->read_from_file('collections');
-        if(!empty($collections))
+        $created_collections = $this->read_from_file("collections");
+        if(!empty($created_collections))
         {
+            $Repository_Collections = \Tainacan\Repositories\Collections::get_instance();
+            $collection_info = current($created_collections);
+            $new_collection_id = $collection_info['new_id'];
+            $old_collection_id = key($created_collections);
+            $collection = $Repository_Collections->fetch($new_collection_id);
+            $this->set_collection($collection);
 
+            $mapping = $this->get_repository_mapping($old_collection_id);
+            $this->set_mapping($mapping);
+
+            $this->process($this->get_start());
         }
-        /*Use standard method*/
+
         return false;
     }
 

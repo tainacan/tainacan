@@ -36,6 +36,7 @@ abstract class Importer {
 	 * @var array
 	 */
 	public $mapping;
+	private $repository_mapping;
     
 	/**
 	 * The path to the temporary file created when user uploads a file
@@ -165,14 +166,26 @@ abstract class Importer {
      *
      * @param array $mapping Mapping importer-fields
      */
-    public function set_mapping( $mapping, $item_id = false ){
-        if($item_id ===  false)
+    public function set_mapping( $mapping){
+        if(!empty($mapping))
         {
             $this->mapping = $mapping;
-        }else
-        {
-            $this->mapping[$item_id] = $mapping;
         }
+    }
+
+    public function set_repository_mapping( $mapping, $item_id ){
+        if(!empty($mapping) && !empty($item_id))
+        {
+            $this->repository_mapping[$item_id] = $mapping;
+        }else return false;
+    }
+
+    public function get_repository_mapping($item_id)
+    {
+        if(!empty($item_id))
+        {
+            return $this->repository_mapping[$item_id];
+        }else return false;
     }
 
     /**
