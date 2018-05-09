@@ -156,7 +156,7 @@ a:hover {
         }
     }
     .label { 
-        font-weight: normal;
+        font-weight: bold;
         font-size: 14px; 
         display: inline-block;
     }
@@ -180,7 +180,7 @@ a:hover {
         }
 
         &:focus, &:active {
-            box-shadow: none;
+            box-shadow: none !important;
             background-color: white;
             border: 1px solid $tainacan-input-background;
         }
@@ -582,12 +582,13 @@ a:hover {
             color: $gray-light;
         }
         .mdi-chevron-left::before {
-            content: "\F4AE";
-            font-size: 20px;
+            content: "\F40A";
+            font-size: 17px;
+            transform: rotate(180deg);
         }
         .mdi-chevron-right::before {
-            content: "\F4AD";
-            font-size: 20px;
+            content: "\F40A";
+            font-size: 17px;
         }
     }
 }

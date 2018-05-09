@@ -9,12 +9,14 @@
                 <div class="column is-4">
 
                     <!-- Status -------------------------------- -->
-                    <label class="section-label">{{ $i18n.get('label_status') }}</label>
-                    <span class="required-field-asterisk">*</span>
-                    <help-button
-                            :title="$i18n.getHelperTitle('items', 'status')"
-                            :message="$i18n.getHelperMessage('items', 'status')"/>
-                    <div class="document-box">
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_status') }}</label>
+                        <span class="required-field-asterisk">*</span>
+                        <help-button
+                                :title="$i18n.getHelperTitle('items', 'status')"
+                                :message="$i18n.getHelperMessage('items', 'status')"/>
+                    </div>
+                    <div class="section-box">
                         <div class="field">
                             <b-select
                                     v-model="form.status"
@@ -47,11 +49,13 @@
                     </div>
 
                     <!-- Document -------------------------------- -->
-                    <label class="section-label">{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
-                    <help-button
-                            :title="$i18n.getHelperTitle('items', 'document')"
-                            :message="$i18n.getHelperMessage('items', 'document')"/>
-                    <div class="document-box">
+                    <div class="section-label">
+                        <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                        <help-button
+                                :title="$i18n.getHelperTitle('items', 'document')"
+                                :message="$i18n.getHelperMessage('items', 'document')"/>
+                    </div>
+                    <div class="section-box">
                         <div
                                 v-if="form.document != undefined && form.document != null &&
                                         form.document_type != undefined && form.document_type != null &&
@@ -196,11 +200,14 @@
                     </b-modal>
 
                     <!-- Thumbnail -------------------------------- -->
-                    <label class="section-label">{{ $i18n.get('label_thumbnail') }}</label>
-                    <help-button
-                            :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
-                            :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
-                    <div class="document-box">
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_thumbnail') }}</label>
+                        <help-button
+                                :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
+                                :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
+
+                    </div>                    
+                    <div class="section-box">
                         <div class="thumbnail-field">
                             <a
                                     class="button is-rounred is-secondary"
@@ -230,8 +237,10 @@
                     </div>
 
                     <!-- Attachments ------------------------------------------ -->
-                    <label class="section-label">{{ $i18n.get('label_attachments') }}</label>
-                    <div class="document-box">
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_attachments') }}</label>
+                    </div>
+                    <div class="section-box">
                         <button
                                 class="button is-secondary"
                                 @click.prevent="attachmentMediaFrame.openFrame($event)">
@@ -643,10 +652,13 @@ export default {
     }
 
     .section-label {
-        font-size: 16px !important;
-        font-weight: 500 !important;
-        color: $tertiary !important;
-        line-height: 1.2em;
+        position: relative;
+        label {
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            color: $tertiary !important;
+            line-height: 1.2em;
+        }
     }
 
     .collapse-all {
@@ -654,7 +666,7 @@ export default {
         .icon { vertical-align: bottom; }
     }
 
-    .document-box {
+    .section-box {
         border: 1px solid $draggable-border-color;
         padding: 30px;
         margin-top: 16px;

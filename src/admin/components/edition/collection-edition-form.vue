@@ -648,6 +648,9 @@ export default {
 
     .tainacan-form>.columns>.column {
         overflow: auto;
+        .field {
+            position: relative;
+        }
     }
     .thumbnail-field {  
         max-height: 128px;
