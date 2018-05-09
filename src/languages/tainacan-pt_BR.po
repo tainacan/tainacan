@@ -20,7 +20,7 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
 "_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.7\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-tainacan-admin.php:30 admin/class-tainacan-admin.php:31
@@ -884,14 +884,12 @@ msgid "Showing categories "
 msgstr "Exibindo categorias "
 
 #: admin/tainacan-admin-i18n.php:219
-#, fuzzy
-#| msgid "Showing items "
 msgid "Showing events "
-msgstr "Exibindo itens "
+msgstr "Mostrar eventos"
 
 #: admin/tainacan-admin-i18n.php:220
 msgid " to "
-msgstr " a"
+msgstr " para"
 
 #: admin/tainacan-admin-i18n.php:221
 msgid " of "
@@ -903,7 +901,7 @@ msgstr "Criado por"
 
 #: admin/tainacan-admin-i18n.php:223
 msgid "By: "
-msgstr ""
+msgstr "Por"
 
 #: admin/tainacan-admin-i18n.php:224
 msgid "Date: "
@@ -916,14 +914,20 @@ msgstr "Não salvo "
 #: admin/tainacan-admin-i18n.php:226
 msgid "Are you sure? The item is not saved, changes will be lost."
 msgstr ""
+"Opa, tem certeza? Como o Item não foi salvo, as alterações podem ser "
+"perdidas. "
 
 #: admin/tainacan-admin-i18n.php:227
 msgid "Are you sure? There are fields not saved, changes will be lost."
 msgstr ""
+"Opa, tem certeza? Como alguns Metadados não foram salvos, as alterações "
+"podem ser perdidas"
 
 #: admin/tainacan-admin-i18n.php:228
 msgid "Are you sure? There are filters not saved, changes will be lost."
 msgstr ""
+"Opa, tem certeza? Como alguns Filtros não foram salvos, as alterações podem "
+"ser perdidas"
 
 #: admin/tainacan-admin-i18n.php:229
 msgid "No description provided."
@@ -932,54 +936,58 @@ msgstr "Nenhuma descrição fornecida"
 #: admin/tainacan-admin-i18n.php:230
 msgid "Are you sure? The category is not saved, changes will be lost."
 msgstr ""
+"Opa, tem certeza? Como a Categoria não foi salva, as alterações podem ser "
+"perdidas"
 
 #: admin/tainacan-admin-i18n.php:231
 msgid "Are you sure? There are terms not saved, changes will be lost."
 msgstr ""
+" Opa, tem certeza? Como alguns Termos não foram salvos, as alterações podem "
+"ser perdidas"
 
 #: admin/tainacan-admin-i18n.php:232
 msgid ""
 "Are you sure? This term is parent of other terms. These will be converted to "
 "root terms."
 msgstr ""
+"Opa, tem certeza? É um Termo pai de outros termos. Será convertido em termo "
+"raiz."
 
 #: admin/tainacan-admin-i18n.php:233
-#, fuzzy
-#| msgid "Events"
 msgid "No events"
-msgstr "Eventos"
+msgstr "Sem eventos"
 
 #: admin/tainacan-admin-i18n.php:234
 msgid "Before updating"
-msgstr ""
+msgstr "Antes de atualizar"
 
 #: admin/tainacan-admin-i18n.php:235
 msgid "What was updated"
-msgstr ""
+msgstr "O que foi atualizado?"
 
 #: admin/tainacan-admin-i18n.php:236
 msgid "There is no field here yet."
-msgstr ""
+msgstr "Opa, você ainda não configurou nenhum Metadado"
 
 #: admin/tainacan-admin-i18n.php:237
 msgid "There is no filter here yet."
-msgstr "Ainda não há um filtro configurado."
+msgstr "Opa, você ainda não configurou nenhum Filtro"
 
 #: admin/tainacan-admin-i18n.php:238
 msgid "Changes"
-msgstr ""
+msgstr "Alterações"
 
 #: admin/tainacan-admin-i18n.php:239
 msgid "Possible external sources: CSV, Instagram, Youtube, etc."
-msgstr ""
+msgstr "Fontes externas de pesquisa: CSV, Instagram, Youtube, etc."
 
 #: admin/tainacan-admin-i18n.php:240
 msgid "The term name"
-msgstr "O nome do termo"
+msgstr "O nome do Termo"
 
 #: admin/tainacan-admin-i18n.php:241
 msgid "The description of the Term."
-msgstr "Descrição do termo"
+msgstr "Descrição do Termo"
 
 #: admin/tainacan-admin-i18n.php:244
 msgid "Text"
@@ -995,11 +1003,11 @@ msgstr "Data"
 
 #: admin/tainacan-admin-i18n.php:247
 msgid "Numeric"
-msgstr "Numérico"
+msgstr "Numérico."
 
 #: admin/tainacan-admin-i18n.php:248
 msgid "Select box"
-msgstr "Caixa de Seleção"
+msgstr "Caixa de seleção"
 
 #: admin/tainacan-admin-i18n.php:249
 msgid "Relationship"
@@ -1011,7 +1019,7 @@ msgstr "Intervalo customizado"
 
 #: admin/tainacan-admin-i18n.php:254
 msgid "Select Box"
-msgstr "Lista de Seleção"
+msgstr "Lista de seleção"
 
 #: admin/tainacan-admin-i18n.php:255
 msgid "Autocomplete"
@@ -1023,7 +1031,7 @@ msgstr "Entrada de Etiquetas"
 
 #: admin/tainacan-admin-i18n.php:257
 msgid "Check Box"
-msgstr "Caixa de  Seleção"
+msgstr "Caixa de verificação"
 
 #: admin/tainacan-admin-i18n.php:258
 msgid "Category Tag Input"
@@ -1031,15 +1039,15 @@ msgstr "Entrada de Etiquetas de Categorias"
 
 #: admin/tainacan-admin-i18n.php:259
 msgid "Category Check Box"
-msgstr "Caixa de Seleção de  Categorias"
+msgstr "Caixa de verificação de  Categorias"
 
 #: admin/tainacan-admin-i18n.php:260
 msgid "Category Select Box"
-msgstr "Lista de Seleção de Categoria"
+msgstr "Lista de seleção de Categoria"
 
 #: api/class-tainacan-rest-controller.php:331
 msgid "Limit results to those matching a string."
-msgstr "Limitar resultados os que coincidem com o texto."
+msgstr "Limitar resultados  que coincidem em série."
 
 #: api/class-tainacan-rest-controller.php:366
 msgid "Order sort attribute ascending or descending."
@@ -1053,7 +1061,7 @@ msgstr "Chave de Metadado customizado."
 #: api/class-tainacan-rest-controller.php:423
 #: api/class-tainacan-rest-controller.php:427
 msgid "Custom field value"
-msgstr "Valor de metadado customizado"
+msgstr "Valor de Metadado customizado."
 
 #: api/class-tainacan-rest-controller.php:431
 msgid ""
@@ -1068,7 +1076,7 @@ msgstr ""
 #: api/class-tainacan-rest-controller.php:435
 msgid "Limit result set to items that have specific custom fields"
 msgstr ""
-"Limitar conjunto de resultados para itens que possuem metadado específicos"
+"Limitar conjunto de resultados para itens que possuem metadado específicos."
 
 #: api/class-tainacan-rest-controller.php:445
 msgid ""
@@ -1107,35 +1115,35 @@ msgstr ""
 
 #: api/class-tainacan-rest-controller.php:467
 msgid "Limit result set to items that was created in specific date."
-msgstr ""
+msgstr "Limitar resultados para Itens criados em determinada data."
 
 #: api/class-tainacan-rest-controller.php:473
 msgid "4 digit year (e.g. 2018)."
-msgstr ""
+msgstr "Ano com 4 dígitos (ex. 2018)."
 
 #: api/class-tainacan-rest-controller.php:477
 msgid "Month number (from 1 to 12)."
-msgstr ""
+msgstr "Número do mês (de 1 até 12)."
 
 #: api/class-tainacan-rest-controller.php:481
 msgid "Day of the month (from 1 to 31)."
-msgstr ""
+msgstr "Dia do mês (de 1 até 31)."
 
 #: api/class-tainacan-rest-controller.php:485
 msgid "Week of the year (from 0 to 53)."
-msgstr ""
+msgstr "Semana do ano (de  0 até 53)."
 
 #: api/class-tainacan-rest-controller.php:489
 msgid "Hour (from 0 to 23)."
-msgstr ""
+msgstr "Hora (0 até 23)."
 
 #: api/class-tainacan-rest-controller.php:493
 msgid "Minute (from 0 to 59)."
-msgstr ""
+msgstr "Minuto (de 0 até 59)."
 
 #: api/class-tainacan-rest-controller.php:497
 msgid "Second (from 0 to 59)."
-msgstr ""
+msgstr "Segundo (0 até 59)."
 
 #: api/class-tainacan-rest-controller.php:507
 msgid "For after/before, whether exact value should be matched or not."
@@ -1167,6 +1175,7 @@ msgid ""
 "term_taxonomy_id. Default value is term_id."
 msgstr ""
 
+# Ver contexto
 #: api/class-tainacan-rest-controller.php:536
 msgid "Taxonomy term(s)."
 msgstr ""
@@ -1304,7 +1313,7 @@ msgstr ""
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:183
 msgid "Failure on deleted."
-msgstr ""
+msgstr "Erro ao deletar."
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:194
 msgid "Taxonomy with this id ("
@@ -1320,7 +1329,7 @@ msgstr ""
 
 #: api/endpoints/class-tainacan-rest-terms-controller.php:59
 msgid "Delete term permanently."
-msgstr ""
+msgstr "Deletar termo permanentemente."
 
 #: api/endpoints/class-tainacan-rest-terms-controller.php:229
 msgid "Term or Taxonomy with that IDs not found"
@@ -1347,7 +1356,7 @@ msgstr "Editor Tainacan"
 
 #: classes/entities/class-tainacan-entity.php:238
 msgid " is invalid"
-msgstr ""
+msgstr "Inválido"
 
 #: classes/entities/class-tainacan-field.php:417
 msgid ""
@@ -1363,7 +1372,7 @@ msgstr ""
 
 #: classes/entities/class-tainacan-taxonomy.php:62
 msgid "Parent term"
-msgstr ""
+msgstr "Termo Raiz"
 
 #: classes/entities/class-tainacan-taxonomy.php:63
 msgid "Parent term:"
