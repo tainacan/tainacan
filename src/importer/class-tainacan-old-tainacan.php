@@ -173,10 +173,10 @@ class Old_Tainacan extends Importer
                 {
                     $newField = $this->set_fields_properties($meta, $created_categories, $relationships, $Fields_Repository, $compound_id);
 
-                    if($newField)
+                    if ($newField)
                     {
-                        $Fields_Repository->insert($newField);
-                        $repository_fields[] = $meta->id.",".$newField->get_id().",".$meta->name;
+                        $newField = $Fields_Repository->insert($newField);
+                        $repository_fields[] = $meta->id . "," . $newField->get_id() . "," . $meta->name;
                     }
                 }
             }
@@ -214,7 +214,7 @@ class Old_Tainacan extends Importer
 
             $file_fields = $this->get_collection_fields($old_collection_id);
 
-            $this->create_collection_meta($file_fields, $Fields_Repository, $created_repository_fields, $created_categories, $relationships);
+            $mapping = $this->create_collection_meta($file_fields, $Fields_Repository, $Tainacan_Fields, $created_repository_fields, $created_categories, $relationships);
 
             //$this->set_mapping($mapping);
             next($created_collections);
@@ -224,55 +224,82 @@ class Old_Tainacan extends Importer
         return $start;
     }
 
-    private function create_collection_meta($file_fields, $Fields_Repository, $created_repository_fields,$created_categories, $relationships, $compound_id = null)
+    private function create_collection_meta(
+        $file_fields,
+        $Fields_Repository,
+        $Tainacan_Fields,
+        $created_repository_fields,
+        $created_categories,
+        $relationships,
+        $compound_id = null)
     {
         if($file_fields)
         {
-            foreach($file_fields as $index => $meta_info)
+            foreach($file_fields as $index => $meta)
             {
-                $meta_slug = $meta_info['slug'];
-                $old_field_id = $meta_info['id'];
+                $meta_slug = $meta->slug;
+                $old_field_id = $meta->id;
 
                 if(!in_array($meta_slug, $this->avoid) && !isset($created_repository_fields[$old_field_id]))
                 {
-                    $newField = $this->set_fields_properties($meta_info, $created_categories, $relationships, $Fields_Repository, $compound_id, false);
+                    $newField = $this->set_fields_properties(
+                        $meta,
+                        $created_categories,
+                        $relationships,
+                        $Fields_Repository,
+                        $compound_id,
+                        $created_repository_fields,
+                        false,
+                        $Tainacan_Fields);
 
-                    $newField->set_collection($this->collection);
                     if($newField->validate())
                     {
                         $newField = $Fields_Repository->insert($newField);
 
-                        $mapping[$newField->get_id()] = $file_fields[$index];
+                        $mapping[$newField->get_id()] = $file_fields[$index]->name;
                     }
                 }else /*Map to respository fields*/
                 {
-                    /*$fields = $Tainacan_Fields->fetch_by_collection( $this->collection, [], 'OBJECT' );
-                    print_r($fields);exit();
-                    foreach ($fields as $field)
+                    if(isset($created_repository_fields[$old_field_id]))
                     {
-                        if($field->WP_Post->post_name === 'title' || $field->WP_Post->post_name === 'description')
+                        $new_id = $created_repository_fields[$old_field_id]['new_id'];
+                        $mapping[$new_id] = $created_repository_fields[$old_field_id]['name'];
+                    }else
+                    {
+                        $fields = $Tainacan_Fields->fetch_by_collection( $this->collection, [], 'OBJECT' );
+
+                        foreach ($fields as $field)
                         {
-                            $mapping[$field->get_id()] = $file_fields[$meta_name];
+                            if(($field->WP_Post->post_name === 'title' || $field->WP_Post->post_name === 'description') &&
+                                ($meta_slug === 'socialdb_property_fixed_title' || $meta_slug === 'socialdb_property_fixed_description'))
+                            {
+                                $mapping[$field->get_id()] = $field->WP_Post->post_name;
+                            }
                         }
-                    }*/
+                    }
+
                 }
             }
         }
+
+        return $mapping;
     }
 
-    private function set_fields_properties($meta, $created_categories, $relationships, $Fields_Repository, $compound_id, $is_repository = true)
+    private function set_fields_properties(
+        $meta,
+        $created_categories,
+        $relationships,
+        $Fields_Repository,
+        $compound_id,
+        $created_repository_fields = null,
+        $is_repository = true,
+        $Tainacan_Fields = null)
     {
         $newField = new \Tainacan\Entities\Field();
 
-        if(!$is_repository) /*Is collections*/
-        {
-            $name = $meta->name;
-            $type = $meta->type;
-        }else /*Is repository*/
-        {
-            $name = $meta['name'];
-            $type = $this->define_type($meta['type']);
-        }
+
+        $name = $meta->name;
+        $type = $meta->type;
 
         $type = $this->define_type($type);
         $newField->set_name($name);
@@ -297,13 +324,37 @@ class Old_Tainacan extends Importer
             }
         }else if(strcmp($type, "Compound") === 0)
         {
-            $this->create_meta_repo($meta->metadata->children, $Fields_Repository, $created_categories, $relationships, $newField->get_id());
+            if($is_repository)
+            {
+                $this->create_meta_repo(
+                    $meta->metadata->children,
+                    $Fields_Repository,
+                    $created_categories,
+                    $relationships,
+                    $newField->get_id());
+            }else
+            {
+                $this->create_collection_meta(
+                    $meta->metadata->children,
+                    $Fields_Repository,
+                    $Tainacan_Fields,
+                    $created_repository_fields,
+                    $created_categories,
+                    $relationships,
+                    $newField->get_id());
+            }
         }
 
         /*Compound treatement*/
         if($compound_id === null)
         {
-            $newField->set_collection_id('default');
+            if($is_repository)
+            {
+                $newField->set_collection_id('default');
+            }else
+            {
+                $newField->set_collection($this->collection);
+            }
         }else //Set compound as field parent
         {
             $newField->set_parent($compound_id);
@@ -320,10 +371,10 @@ class Old_Tainacan extends Importer
             {
                 $newField->set_default_value($meta->metadata->default_value);
             }
-            if(!empty($meta->metadata->text_help))
+            /*if(!empty($meta->metadata->text_help))
             {
-                /**/
-            }
+
+            }*/
             if(!empty($meta->metadata->cardinality))
             {
                 if($meta->metadata->cardinality > 1)
@@ -365,7 +416,14 @@ class Old_Tainacan extends Importer
             $fields = [];
             foreach ($collection_metadata[0]->{'tab-properties'} as $metadata)
             {
-                $fields[] = ['name' => $metadata->name, 'type' => $metadata->type, 'slug' => $metadata->slug, 'id' => $metadata->id];
+                $field_details_link = $fields_link . "/". $metadata->id;
+                $field_details = wp_remote_get($field_details_link);
+                $field_details = $this->verify_process_result($field_details);
+
+                if($field_details)
+                {
+                    $fields[] = $field_details[0];
+                }
             }
 
             return $fields;
