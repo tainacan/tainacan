@@ -216,7 +216,7 @@ class Old_Tainacan extends Importer
 
             $mapping = $this->create_collection_meta($file_fields, $Fields_Repository, $Tainacan_Fields, $created_repository_fields, $created_categories, $relationships);
 
-            //$this->set_mapping($mapping);
+            $this->set_mapping($mapping, $old_collection_id);
             next($created_collections);
             $start++;
         }

@@ -164,8 +164,14 @@ abstract class Importer {
      *
      * @param array $mapping Mapping importer-fields
      */
-    public function set_mapping( $mapping ){
-        $this->mapping = $mapping;
+    public function set_mapping( $mapping, $item_id = false ){
+        if($item_id ===  false)
+        {
+            $this->mapping = $mapping;
+        }else
+        {
+            $this->mapping[$item_id] = $mapping;
+        }
     }
 
     /**
