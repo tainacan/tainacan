@@ -2305,22 +2305,16 @@ msgid "The user is empty or invalid"
 msgstr "O usuário está vazio ou inválido"
 
 #: classes/repositories/class-tainacan-terms.php:84
-#, fuzzy
-#| msgid "The mask to be used in the field"
 msgid "The image to be used in term header"
-msgstr "A máscara deve ser utilizada no campo"
+msgstr "Imagem para ser usada no cabeçalho do termo"
 
 #: classes/repositories/class-tainacan-terms.php:91
-#, fuzzy
-#| msgid "Field type is empty"
 msgid "Hide empty"
-msgstr "Tipo de metadado está vazio"
+msgstr "Esconder vazios"
 
 #: classes/repositories/class-tainacan-terms.php:93
-#, fuzzy
-#| msgid "The item term IDs"
 msgid "Hide empty terms"
-msgstr "Os IDs de termos do item"
+msgstr "Esconder termos vazios"
 
 #: dev-interface/class-tainacan-dev-interface.php:78
 msgid "Properties"
@@ -2340,7 +2334,7 @@ msgstr "Valor"
 #: exposers/types/class-tainacan-txt.php:35
 #: exposers/types/class-tainacan-xml.php:48
 msgid "item"
-msgstr ""
+msgstr "item"
 
 #: helpers/class-tainacan-helpers-html.php:59
 msgid "Select an option"
