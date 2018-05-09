@@ -13,7 +13,7 @@ export const filter_type_mixin = {
     },
     methods: {
         getValuesPlainText(fieldId, search) {
-            let url = '/collection/' + this.collection + '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1'
+            let url = '/collection/' + this.collection + '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1';
             
             if( search ){
                 url += "&search=" + search;
