@@ -78,7 +78,7 @@ msgstr "Item"
 
 #: admin/tainacan-admin-i18n.php:14
 msgid "Metadata"
-msgstr ""
+msgstr "Metada"
 
 #: admin/tainacan-admin-i18n.php:15
 #: classes/repositories/class-tainacan-filters.php:98
@@ -94,16 +94,12 @@ msgid "Event"
 msgstr "Evento"
 
 #: admin/tainacan-admin-i18n.php:18
-#, fuzzy
-#| msgid "Term IDs"
 msgid "Term"
-msgstr "IDs de Termos"
+msgstr "Termo"
 
 #: admin/tainacan-admin-i18n.php:19
-#, fuzzy
-#| msgid "Term IDs"
 msgid "Terms"
-msgstr "IDs de Termos"
+msgstr "Termos"
 
 #: admin/tainacan-admin-i18n.php:22
 msgid "Edit"
@@ -115,7 +111,7 @@ msgstr "Novo"
 
 #: admin/tainacan-admin-i18n.php:24
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: admin/tainacan-admin-i18n.php:25
 msgid "Import"
@@ -131,7 +127,7 @@ msgstr "Cancelar"
 
 #: admin/tainacan-admin-i18n.php:28
 msgid "Remove"
-msgstr ""
+msgstr "Remover"
 
 #: admin/tainacan-admin-i18n.php:29
 msgid "Save"
@@ -143,7 +139,7 @@ msgstr "Próximo"
 
 #: admin/tainacan-admin-i18n.php:31
 msgid "Back"
-msgstr ""
+msgstr "Voltar"
 
 #: admin/tainacan-admin-i18n.php:32
 msgid "See"
@@ -159,17 +155,15 @@ msgstr "Busca Avançada"
 
 #: admin/tainacan-admin-i18n.php:35
 msgid "Continue"
-msgstr ""
+msgstr "Continuar"
 
 #: admin/tainacan-admin-i18n.php:36
 msgid "Approve"
-msgstr ""
+msgstr "Aprovar"
 
 #: admin/tainacan-admin-i18n.php:37
-#, fuzzy
-#| msgid "Not saved "
 msgid "Not approve"
-msgstr "Não salvo "
+msgstr "Não aprovar"
 
 #: admin/tainacan-admin-i18n.php:38
 #, fuzzy
@@ -444,10 +438,8 @@ msgid "Parent collection"
 msgstr "O ID da coleção"
 
 #: admin/tainacan-admin-i18n.php:100
-#, fuzzy
-#| msgid "Showing collections "
 msgid "No parent collection"
-msgstr "Exibindo coleções "
+msgstr "Sem coleção acima"
 
 #: admin/tainacan-admin-i18n.php:101
 msgid "Button View"
@@ -695,9 +687,8 @@ msgstr "Página da Categoria"
 
 #: admin/tainacan-admin-i18n.php:156
 #, fuzzy
-#| msgid "per Page"
 msgid "Cover Page"
-msgstr "por Página"
+msgstr "Página de capa"
 
 #: admin/tainacan-admin-i18n.php:157
 #: classes/repositories/class-tainacan-collections.php:124
@@ -807,9 +798,8 @@ msgstr ""
 
 #: admin/tainacan-admin-i18n.php:182
 #, fuzzy
-#| msgid "Select an option"
 msgid "Select a parent colection."
-msgstr "Selecione uma opção"
+msgstr "Selecione uma coleção pai"
 
 #: admin/tainacan-admin-i18n.php:183
 msgid "Select a thumbnail image for collection"
@@ -834,10 +824,8 @@ msgid "Select files to attach to item"
 msgstr ""
 
 #: admin/tainacan-admin-i18n.php:188
-#, fuzzy
-#| msgid "Select a filter type:"
 msgid "Select a document file for item"
-msgstr "Selecione um tipo de filtro:"
+msgstr "Selecione um arquivo de documento para o item"
 
 #: admin/tainacan-admin-i18n.php:189
 #, fuzzy
@@ -856,10 +844,8 @@ msgid "Search on repository"
 msgstr "Repositório"
 
 #: admin/tainacan-admin-i18n.php:192
-#, fuzzy
-#| msgid "Showing collections "
 msgid "Search on collection"
-msgstr "Exibindo coleções "
+msgstr "Buscar na coleção"
 
 #: admin/tainacan-admin-i18n.php:195
 msgid "Name is required."
@@ -888,10 +874,8 @@ msgid "No user was found with this name."
 msgstr ""
 
 #: admin/tainacan-admin-i18n.php:201
-#, fuzzy
-#| msgid "No items found in trash"
 msgid "No item was found here with these filters."
-msgstr "Nenhum item encontrado na lixeira"
+msgstr "Nenhum item foi encontrado com estes filtros"
 
 #: admin/tainacan-admin-i18n.php:202
 msgid "Warning: Item not saved."
@@ -906,10 +890,8 @@ msgid "Error on deleting collection."
 msgstr "Erro ao deletar coleção."
 
 #: admin/tainacan-admin-i18n.php:205
-#, fuzzy
-#| msgid "Error on deleting collection."
 msgid "Error on deleting category"
-msgstr "Erro ao deletar coleção."
+msgstr "Erro ao deletar categoria"
 
 #: admin/tainacan-admin-i18n.php:206
 msgid "Collection deleted."
