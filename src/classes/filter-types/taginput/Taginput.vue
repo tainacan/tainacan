@@ -58,7 +58,6 @@
                         values.push( val.value );
                     }
                 }
-                console.log(this.selected());
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
