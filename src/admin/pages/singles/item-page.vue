@@ -11,6 +11,7 @@
                     :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                 {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
             </router-link>
+            <br>
 
             <div
                     class="card-image"
