@@ -76,7 +76,7 @@ Vue.component('items-page', ItemsPage);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 
-import ThemeItemsList from '../theme-items-list.vue'
+import ThemeItemsList from '../theme-items-list.vue';
 
 new Vue({
     el: '#tainacan-items-page',

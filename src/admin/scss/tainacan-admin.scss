@@ -267,6 +267,9 @@ a:hover {
         background-color: white;
         border-color: $gray-light !important;
     }
+    &:focus {
+        outline: 0px;
+    }
 }
 .button.is-small {
     height: 26px !important;

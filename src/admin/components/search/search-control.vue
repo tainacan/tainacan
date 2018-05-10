@@ -1,10 +1,9 @@
 <template>
     <span>
-        <div class="header-item">
-
-            <b-dropdown 
-                    v-if="!isOnTheme"
-                    id="item-creation-options-dropdown">
+        <div 
+                class="header-item"
+                v-if="!isOnTheme">
+            <b-dropdown id="item-creation-options-dropdown">
                 <button
                         class="button is-secondary"
                         slot="trigger">
