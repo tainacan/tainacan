@@ -380,7 +380,9 @@ a:hover {
 .selected-list-box {
     padding: 4px 0px;
     border: 1px solid $tainacan-input-background;
+    background-color: white;
     display: flex;
+    font-size: 12px;
 
     .tags {
         margin-right: 8px;

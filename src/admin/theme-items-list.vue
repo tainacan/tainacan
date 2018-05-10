@@ -18,6 +18,7 @@ export default {
     @import "../../node_modules/buefy/src/scss/utils/_functions.scss";
     @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
+    @import "../../node_modules/buefy/src/scss/components/_tag.scss";
 
     /* Rules for sizing the icon. */
     .material-icons.md-18 { font-size: 18px; }
@@ -69,6 +70,9 @@ export default {
         a:hover {
             cursor: pointer;
             color: $secondary !important;
+        }
+        ul {
+            list-style: none;
         }
 
         // Some components have a different style in listing pages
@@ -228,6 +232,7 @@ export default {
         .selected-list-box {
             padding: 4px 0px;
             border: 1px solid $tainacan-input-background;
+            background-color: white;
             display: flex;
 
             .tags {
@@ -430,7 +435,6 @@ export default {
                 flex-grow: 1; 
 
                 ul {
-                    list-style: none;
                     margin-bottom: 0px;
                     padding: 0px;
                 }
