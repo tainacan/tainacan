@@ -369,6 +369,10 @@
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;
 
+        h3 {
+            font-size: 100%;
+        }
+
         .label {
             font-size: 12px;
             font-weight: normal;
