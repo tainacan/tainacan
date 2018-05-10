@@ -103,8 +103,8 @@ class Items extends Repository {
 		    ],
 		    '_thumbnail_id'   => [
 			    'map'         => 'meta',
-			    'title'       => __( 'Featured image ID', 'tainacan' ),
-			    'description' => __( 'Featured image ID', 'tainacan' )
+			    'title'       => __( 'Thunbnail', 'tainacan' ),
+			    'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
 		    ]
 		] );
 	}
