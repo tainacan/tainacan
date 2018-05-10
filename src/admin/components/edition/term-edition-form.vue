@@ -7,6 +7,12 @@
         <div class="columns">
             <div class="column is-narrow">
                 <!-- Header Image -------------------------------- -->
+                    <a
+                            v-if="editForm.url != undefined && editForm.url!= ''"
+                            class="button is-success is-pulled-right"
+                            :href="editForm.url">
+                        {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
+                    </a>
                 <b-field
                         :addons="false"
                         :label="$i18n.get('label_header_image')">

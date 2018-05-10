@@ -235,7 +235,7 @@ export default {
             background-color: white;
             display: flex;
 
-            .tags {
+            .tags { 
                 margin-right: 8px;
             }
             .tag {

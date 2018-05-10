@@ -182,7 +182,7 @@ a:hover {
         &:focus, &:active {
             box-shadow: none !important;
             background-color: white;
-            border: 1px solid $tainacan-input-background;
+            border: 1px solid $tainacan-input-background !important;
         }
     }
     .control{
