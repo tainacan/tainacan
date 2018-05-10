@@ -3,13 +3,14 @@
         <!-- Date -->
         <div v-if="type === 'date'">
             <b-datepicker
+                    :placeholder="$i18n.get('label_selectbox_init')"
                     :class="{'has-content': date_init !== undefined && date_init !== ''}"
                     v-model="date_init"
                     size="is-small"
                     @input="validate_values()"
                     icon="calendar-today"/>
-            <br>
             <b-datepicker
+                    :placeholder="$i18n.get('label_selectbox_init')"
                     :class="{'has-content': date_end !== undefined && date_end !== ''}"
                     v-model="date_end"
                     size="is-small"
@@ -38,18 +39,18 @@
                     class="column"
                     v-model="value_end"/>
         </div>
-        <div class="control has-text-centered">
-            <b-tag 
-                    v-if="isValid && !clear"
-                    type="is-white"
-                    size="is-small"
-                    class="is-size-7"
-                    attached
-                    closable
-                    @close="clearSearch()">
-                {{ showSearch() }}
-            </b-tag>
-        </div>
+        <ul 
+                class="selected-list-box"
+                v-if="isValid && !clear">
+            <li>
+                <b-tag 
+                        attached
+                        closable
+                        @close="clearSearch()">
+                    {{ showSearch() }}
+                </b-tag>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -79,8 +80,8 @@
             return {
                 value_init: null,
                 value_end: null,
-                date_init: new Date,
-                date_end: new Date,
+                date_init: undefined,
+                date_end: undefined,
                 isTouched: false,
                 isValid: false,
                 clear: false,
@@ -103,12 +104,19 @@
             // only validate if the first value is higher than first
             validate_values(){
                 if( this.type === 'date' ){
+                    if (this.date_init ==  undefined)
+                        this.date_init = new Date();
+
+                    if (this.date_end == undefined)
+                        this.date_end =  new Date();
+
                     if ( this.date_init > this.date_end ) {
                         let result = this.date_init;
                         result.setDate(result.getDate() + 1);
                         this.date_end = result;
                         //this.error_message();
                     }
+                    
                 } else {
                     this.value_end = (this.value_end === null) ? 0 : this.value_end;
                     this.value_init = (this.value_init === null) ? 0 : this.value_init;
@@ -165,6 +173,7 @@
                 }
             },
             clearSearch(){
+
                 this.clear = true;
                 this.$emit('input', {
                     filter: 'range',
@@ -173,6 +182,11 @@
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: ''
                 });
+
+                // if( this.type === 'date' ){
+                //     this.date_init =  undefined;
+                //     this.date_end = undefined;
+                // }
             },
 
             // emit the operation for listeners

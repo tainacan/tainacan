@@ -13,6 +13,11 @@ export default {
 
 <style lang="scss">
     @import "./scss/theme-basics.sass";
+    @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
+    $speed-slow: 0.5s;
+    @import "../../node_modules/buefy/src/scss/utils/_functions.scss";
+    @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
+    @import "../../node_modules/buefy/src/scss/components/_radio.scss";
 
     /* Rules for sizing the icon. */
     .material-icons.md-18 { font-size: 18px; }
@@ -68,14 +73,19 @@ export default {
 
         // Some components have a different style in listing pages
         .button {
-            border-radius: 6px !important;
-            font-weight: normal;
-            padding: 2px 15px !important;
-            margin-top: 0px !important;
-            margin-bottom: 0px !important;
             height: inherit !important;
             box-shadow: none !important;
-            display: inline-flex !important;
+            border: none;
+            border-radius: 6px;
+            padding: 2px 15px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            display: inline-flex;
+            color: #1d1d1d;
+            font-size: 1.0em;
+            font-weight: normal;
+            cursor: pointer;
+            background-color: white;
 
             &.is-secondary:hover, &.is-secondary:focus {
                 background: $secondary !important;
@@ -144,6 +154,11 @@ export default {
                 align-items: initial;
             }       
         }
+        .dropdown {
+            display: inline-flex;
+            position: relative;
+            vertical-align: top;
+        }
         .dropdown, .autocomplete {
             .dropdown-trigger{
                 .button {
@@ -160,7 +175,9 @@ export default {
                 }
             }
             .dropdown-menu {
+                display: block;
                 .dropdown-content {
+                    font-size: 13px !important;
                     border-radius: 0px !important;
                     .dropdown-item {
                         .b-checkbox { width: 100% };
@@ -295,58 +312,58 @@ export default {
             }
 
         }
-        // .b-checkbox.checkbox {
+        .b-checkbox.checkbox {
 
-        //     input[type="checkbox"] {
-        //         box-shadow: none !important;
-        //     }
+            input[type="checkbox"] {
+                box-shadow: none !important;
+            }
 
-        //     input[type="checkbox"] + .check {
-        //         width: 1.0em;
-        //         height: 1.0em;
-        //         flex-shrink: 0;
-        //         border-radius: 0;
-        //         border: 1px solid $gray-light;
-        //         transition: background 150ms ease-out;
-        //         box-shadow: none !important;
-        //     }
+            input[type="checkbox"] + .check {
+                width: 1.0em;
+                height: 1.0em;
+                flex-shrink: 0;
+                border-radius: 0;
+                border: 1px solid $gray-light;
+                transition: background 150ms ease-out;
+                box-shadow: none !important;
+            }
 
-        //     &:focus input[type="checkbox"] + .check, 
-        //     &:active input[type="checkbox"] + .check, 
-        //     &:hover input[type="checkbox"] + .check {
-        //         box-shadow: none !important;
-        //         border-color: $gray-light !important;
-        //     }
-        //     input[type="checkbox"]:checked + .check {
-        //         background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:%23000' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important;
-        //         border-color: $gray-light !important;
-        //     }
-        // }
-        // .b-radio.radio {
+            &:focus input[type="checkbox"] + .check, 
+            &:active input[type="checkbox"] + .check, 
+            &:hover input[type="checkbox"] + .check {
+                box-shadow: none !important;
+                border-color: $gray-light !important;
+            }
+            input[type="checkbox"]:checked + .check {
+                background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:%23000' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important;
+                border-color: $gray-light !important;
+            }
+        }
+        .b-radio.radio {
 
-        //     input[type="radio"] + .check {
-        //         width: 13px !important;
-        //         height: 13px !important;
-        //         border: 1px solid $gray-light !important;    
-        //     }
-        //     input[type="radio"] + .check::before {
-        //         background: black !important;
-        //         width: 7px !important;
-        //         height: 7px !important;
-        //     }
-        //     &:focus input[type="radio"] + .check,
-        //     &:active input[type="radio"] + .check,
-        //     &:hover input[type="radio"] + .check {
-        //         box-shadow: none !important;
-        //     }
-        //     input[type="radio"]:checked + .check {
-        //         border-color: $gray-light !important;
-        //     }
-        //     &:focus input[type="radio"]:checked + .check {
-        //         box-shadow: none !important;
-        //     }
+            input[type="radio"] + .check {
+                width: 13px !important;
+                height: 13px !important;
+                border: 1px solid $gray-light !important;    
+            }
+            input[type="radio"] + .check::before {
+                background: black !important;
+                width: 7px !important;
+                height: 7px !important;
+            }
+            &:focus input[type="radio"] + .check,
+            &:active input[type="radio"] + .check,
+            &:hover input[type="radio"] + .check {
+                box-shadow: none !important;
+            }
+            input[type="radio"]:checked + .check {
+                border-color: $gray-light !important;
+            }
+            &:focus input[type="radio"]:checked + .check {
+                box-shadow: none !important;
+            }
 
-        // }
+        }
         .collapse-all {
             font-size: 0.75rem;
         }
@@ -464,20 +481,6 @@ export default {
             }
         }
 
-
-        .button {
-            border: none;
-            border-radius: 6px;
-            padding: 2px 15px;
-            margin-top: 0px;
-            margin-bottom: 0px;
-            display: inline-flex;
-            color: #1d1d1d;
-            font-size: 1.0em;
-            font-weight: normal;
-            cursor: pointer;
-            background-color: white;
-        }
         .select select{
             border: none;
             border-radius: 1;
@@ -487,11 +490,6 @@ export default {
             font-weight: normal;
             cursor: pointer;
             background-color: white;
-        }
-        .dropdown {
-            display: inline-flex;
-            position: relative;
-            vertical-align: top;
         }
 
     }

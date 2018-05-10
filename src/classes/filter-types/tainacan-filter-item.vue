@@ -79,13 +79,15 @@
     #filter-item-forms {
 
         .datepicker {
+
             .dropdown-item {
                 background-color: white !important;
             }
 
-            @media screen and (min-width: 1088px) {
+            @media screen and (min-width: 1024px) {
 
                 .datepicker-header {
+                
                     .pagination-list {
                         .field.has-addons {
                             display: table-cell !important;
@@ -94,6 +96,10 @@
                             .control {
                                 height: 24px !important;
                                 width: 74px !important;
+
+                                select {
+                                    padding-left: 1px !important;
+                                }
                             }
                         }
                     }
@@ -102,17 +108,19 @@
                         margin: 0;
                         height: 24px;
                         padding: 0;
+                        font-size: 12px; 
                     }
 
                     .pagination-next {
                         margin: 0;
                         height: 24px;
                         padding: 0;
+                        font-size: 12px;
                     }
                 }
 
                 .dropdown-item {
-                    padding: 0.375rem 1rem 0.375rem 0.73rem;
+                    padding: 0.8em;
                 }
 
                 .dropdown-menu {
@@ -120,8 +128,13 @@
                     max-width: 165px !important;
                 }
 
-                .datepicker-cell {
-                    padding: 0.2rem 0.1rem !important;
+
+                .datepicker-table {
+                    margin-bottom: 0px;
+                    
+                    .datepicker-cell {
+                        padding: 0.2rem 0.1rem !important;
+                    }
                 }
 
                 .select {
@@ -136,6 +149,7 @@
                 .dropdown-content {
                     max-width: 165px !important;
                     border-radius: 2px !important;
+                    padding: 0px;
                 }
             }
         }
@@ -246,6 +260,7 @@
         .b-checkbox.checkbox  {
             font-weight: normal;
             font-size: 12px;
+            margin-right: 2px;
         }
 
     }
