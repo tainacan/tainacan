@@ -38,6 +38,7 @@
                         <div class="field is-grouped">
                             <div class="control">
                                 <button
+                                        type="button"
                                         id="button-submit-item-creation"
                                         @click.prevent="onSubmit"
                                         class="button is-success">
@@ -63,12 +64,14 @@
                             <div v-if="form.document_type == 'attachment'">
                                 <div v-html="item.document_as_html" />
                                 <button
+                                        type="button"
                                         class="button is-primary"
                                         size="is-small"
                                         @click.prevent="setFileDocument($event)">
                                     {{ $i18n.get('edit') }}
                                 </button>
                                 <button
+                                        type="button"
                                         class="button is-primary"
                                         size="is-small"
                                         @click.prevent="removeDocument()">
@@ -78,12 +81,14 @@
                             <div v-if="form.document_type == 'text'">
                                 <div v-html="item.document_as_html" />
                                 <button
+                                        type="button"
                                         class="button is-primary"
                                         size="is-small"
                                         @click.prevent="setTextDocument()">
                                     {{ $i18n.get('edit') }}
                                 </button>
                                 <button
+                                        type="button"
                                         class="button is-primary"
                                         size="is-small"
                                         @click.prevent="removeDocument()">
@@ -93,12 +98,14 @@
                             <div v-if="form.document_type == 'url'">
                                 <div v-html="item.document_as_html" />
                                 <button
+                                        type="button"
                                         class="button is-primary"
                                         size="is-small"
                                         @click.prevent="setURLDocument()">
                                     {{ $i18n.get('edit') }}
                                 </button>
                                 <button
+                                        type="button"
                                         class="button is-primary"
                                         size="is-small"
                                         @click.prevent="removeDocument()">
@@ -108,19 +115,25 @@
                         </div>
                         <ul v-else>
                             <li>
-                                <button @click.prevent="setFileDocument($event)">
+                                <button 
+                                        type="button"
+                                        @click.prevent="setFileDocument($event)">
                                     <b-icon icon="upload"/>
                                 </button>
                                 <p>{{ $i18n.get('label_file') }}</p>
                             </li>
                             <li>
-                                <button @click.prevent="setTextDocument()">
+                                <button 
+                                        type="button"
+                                        @click.prevent="setTextDocument()">
                                     <b-icon icon="format-text"/>
                                 </button>
                                 <p>{{ $i18n.get('label_text') }}</p>
                             </li>
                             <li>
-                                <button @click.prevent="setURLDocument()">
+                                <button 
+                                        type="button"
+                                        @click.prevent="setURLDocument()">
                                     <b-icon icon="code-tags"/>
                                 </button>
                                 <p>{{ $i18n.get('label_url') }}</p>
@@ -242,6 +255,7 @@
                     </div>
                     <div class="section-box">
                         <button
+                                type="button"
                                 class="button is-secondary"
                                 @click.prevent="attachmentMediaFrame.openFrame($event)">
                             Attatchments (tests)

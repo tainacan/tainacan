@@ -172,7 +172,8 @@
                     label: this.$i18n.get('trash')
                 }],
                 editFormErrors: {},
-                formErrorMessage: ''
+                formErrorMessage: '',
+                // baseUrl: tainacan_plugin.base_url,
             }
         },
         components: {
