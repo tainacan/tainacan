@@ -142,7 +142,11 @@ class Exposers {
 		} else { // array of elements
 			$ret = [];
 			foreach ($item_arr as $item) {
-				$ret = array_merge($ret, $this->map($item, $mapper, $resquest) );
+				if(array_key_exists('field', $item)) {
+					$ret = array_merge($ret, $this->map($item, $mapper, $resquest) );
+				} else {
+					$ret[] = $this->map($item, $mapper, $resquest);
+				}
 			}
 		}
 		return $ret;

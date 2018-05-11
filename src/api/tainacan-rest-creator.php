@@ -13,6 +13,7 @@ $rest_item_metadata_controller = new \Tainacan\API\EndPoints\REST_Item_Metadata_
 $rest_logs_controller          = new \Tainacan\API\EndPoints\REST_Logs_Controller();
 $rest_field_types_controller   = new \Tainacan\API\EndPoints\REST_Field_Types_Controller();
 $rest_filter_types_controller  = new \Tainacan\API\EndPoints\REST_Filter_Types_Controller();
+new \Tainacan\API\EndPoints\REST_Export_Controller();
 // Add here other endpoints imports
 
 ?>
