@@ -85,6 +85,7 @@
                         :pref-table-fields="prefTableFields"
                         :is-on-theme="isOnTheme"/>
             </div>
+            
             <div 
                     :items="items"
                     id="theme-items-list" />

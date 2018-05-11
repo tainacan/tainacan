@@ -86,6 +86,7 @@
         <div class="field is-grouped form-submit">
             <div class="control">
                 <button
+                        type="button"
                         class="button is-outlined"
                         @click.prevent="cancelEdition()"
                         slot="trigger">

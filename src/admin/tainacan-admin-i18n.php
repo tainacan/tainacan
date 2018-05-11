@@ -168,6 +168,7 @@ return [
 	'label_select_file'		 				   => __( 'Select File', 'tainacan' ),
 	'label_expand_all'	 					   => __( 'Expand all', 'tainacan' ),
 	'label_collapse_all'		 			   => __( 'Collapse all', 'tainacan' ),
+	'label_view_term'			 			   => __( 'View Term', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
