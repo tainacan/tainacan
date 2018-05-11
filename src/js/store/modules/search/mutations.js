@@ -60,6 +60,9 @@ export const removeTaxQuery = ( state, filter ) => {
     }
 };
 
+export const removePostQueryAttribute = ( state, attribute) => {
+    Vue.set( state.postquery, attribute , '');  
+};
 
 export const setTotalItems = ( state, total ) => {
     state.totalItems = total;
@@ -67,4 +70,8 @@ export const setTotalItems = ( state, total ) => {
 
 export const setSearchQuery = ( state, searchQuery ) => {
     state.postquery.search = searchQuery;
+};
+
+export const setStatus = ( state, status ) => {
+    state.status = status;
 };

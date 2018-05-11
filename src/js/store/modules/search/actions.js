@@ -42,6 +42,13 @@ export const setItemsPerPage = ({ commit }, page ) => {
     commit('setPostQueryAttribute', {  attr: 'perpage', value: page } );
 };
 
+export const setStatus= ({ commit }, status ) => {
+    if (status == undefined || status == '')
+        commit('removePostQueryAttribute', 'status');
+    else
+        commit('setPostQueryAttribute', {  attr: 'status', value: status } );
+};
+
 // Sorting queries
 export const setOrderBy = ({ commit }, orderBy ) => {
 

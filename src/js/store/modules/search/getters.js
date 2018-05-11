@@ -33,3 +33,7 @@ export const getOrderBy = state => {
 export const getSearchQuery = state => {
     return state.postquery.search;
 }
+
+export const getStatus = state => {
+    return state.postquery.status;
+}

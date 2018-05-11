@@ -146,6 +146,7 @@
             </b-field>
 
             <b-field
+                    v-if="!originalField.field_type_object.core"
                     :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
                     :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                 <b-checkbox

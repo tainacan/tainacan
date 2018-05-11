@@ -169,6 +169,9 @@ return [
 	'label_expand_all'	 					   => __( 'Expand all', 'tainacan' ),
 	'label_collapse_all'		 			   => __( 'Collapse all', 'tainacan' ),
 	'label_view_term'			 			   => __( 'View Term', 'tainacan' ),
+	'label_all_items'			 			   => __( 'All items', 'tainacan' ),
+	'label_draft_items'			 			   => __( 'Draft', 'tainacan' ),
+	'label_trash_items'			 			   => __( 'Trash', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
