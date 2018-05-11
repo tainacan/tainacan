@@ -1362,15 +1362,15 @@ msgstr "Erro ao deletar."
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:194
 msgid "Taxonomy with this id ("
-msgstr ""
+msgstr "Taxonomia com este identificador("
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:343
 msgid "Taxonomy with that ID not found"
-msgstr ""
+msgstr "Taxonomia com esse identificador não encontrada"
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:419
 msgid "Limit result set to taxonomy with specific name."
-msgstr ""
+msgstr "Resultado limite configurado para taxonomia com nome específico."
 
 #: api/endpoints/class-tainacan-rest-terms-controller.php:59
 msgid "Delete term permanently."
@@ -1378,11 +1378,11 @@ msgstr "Deletar termo permanentemente."
 
 #: api/endpoints/class-tainacan-rest-terms-controller.php:229
 msgid "Term or Taxonomy with that IDs not found"
-msgstr ""
+msgstr "Termo ou Taxonomia com esses identificadores não encontrados"
 
 #: api/endpoints/class-tainacan-rest-terms-controller.php:403
 msgid "Limit result set to term with specific name."
-msgstr ""
+msgstr "Resultado limite configurado para termo com nome específico."
 
 #: classes/class-tainacan-capabilities.php:297
 msgctxt "User role"
@@ -1408,40 +1408,43 @@ msgid ""
 "Compound fields do not support fields with multiple values (except "
 "categories)"
 msgstr ""
+"Campos compostos não suportam metadados com múltiplos valores (exceto"
+" categorias)"
 
 #: classes/entities/class-tainacan-field.php:426
 #: classes/entities/class-tainacan-field.php:441
 msgid ""
 "Category fields can not be used inside Compound field with multiple values"
 msgstr ""
+"Campos de categorias não podem ser usados dentro do metadado composto com múltiplos valores"
 
 #: classes/entities/class-tainacan-taxonomy.php:62
 msgid "Parent term"
-msgstr "Termo Raiz"
+msgstr "Termo raiz"
 
 #: classes/entities/class-tainacan-taxonomy.php:63
 msgid "Parent term:"
-msgstr ""
+msgstr "Termo raiz:"
 
 #: classes/entities/class-tainacan-taxonomy.php:64
 msgid "Edit term"
-msgstr ""
+msgstr "Editar termo"
 
 #: classes/entities/class-tainacan-taxonomy.php:65
 msgid "Update term"
-msgstr ""
+msgstr "Atualizar termo"
 
 #: classes/entities/class-tainacan-taxonomy.php:66
 msgid "Add New term"
-msgstr ""
+msgstr "Adicionar novo termo"
 
 #: classes/entities/class-tainacan-taxonomy.php:67
 msgid "New Genre term"
-msgstr ""
+msgstr "Adicionar termo Gênero"
 
 #: classes/entities/class-tainacan-term.php:250
 msgid "You can not have two terms with the same name at the same level"
-msgstr ""
+msgstr "Você não pode ter dois termos com o mesmo nome no mesmo nível"
 
 #: classes/field-types/category/class-tainacan-category.php:36
 #: classes/field-types/relationship/class-tainacan-relationship.php:27
@@ -1464,24 +1467,24 @@ msgstr "Permitir termos novos"
 
 #: classes/field-types/category/class-tainacan-category.php:70
 msgid "Please select a category"
-msgstr ""
+msgstr "Por favor, selecione uma categoria"
 
 #: classes/field-types/category/class-tainacan-category.php:88
 msgid ""
 "You can not have 2 Category Fields using the same category in a collection"
-msgstr ""
+msgstr "Você não pode ter dois metadados de categoria usando a mesma categoria em uma coleção"
 
 #: classes/field-types/relationship/class-tainacan-relationship.php:31
 msgid "Select the fields to help the search"
-msgstr ""
+msgstr "Selecionar os metadados para ajudar na busca"
 
 #: classes/field-types/relationship/class-tainacan-relationship.php:35
 msgid "Allow different items with the same item selected"
-msgstr ""
+msgstr "Permitir diferentes itens com o mesmo item selecionado"
 
 #: classes/field-types/relationship/class-tainacan-relationship.php:60
 msgid "Collection ID invalid"
-msgstr ""
+msgstr "Identificador de coleção inválido"
 
 #: classes/field-types/relationship/class-tainacan-relationship.php:64
 msgid "Collection related is required"
@@ -1494,73 +1497,73 @@ msgid "Options"
 msgstr "Ações"
 
 #: classes/field-types/selectbox/class-tainacan-selectbox.php:27
-msgid "Create the options for the select, hit enter to add new one"
-msgstr ""
+msgid "Create the options for the select, hit ENTER to add new one"
+msgstr "Crie as opções para a seleção, aperte ENTER para adicionar uma nova"
 
 #: classes/field-types/selectbox/class-tainacan-selectbox.php:56
 msgid "Options is required"
-msgstr ""
+msgstr "Opções são obrigatórias"
 
 #: classes/filter-types/filter-type/class-tainacan-filter-type.php:92
 msgid "The field primitive type is not supported by this filter"
-msgstr ""
+msgstr "O tipo de metadado primitivo não é suportado por este filtro"
 
 #: classes/repositories/class-tainacan-collections.php:43
 msgid "Name of the collection"
-msgstr ""
+msgstr "Nome da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:51
 #: classes/repositories/class-tainacan-items.php:46
 msgid "The posts status"
-msgstr ""
+msgstr "O status da postagem"
 
 #: classes/repositories/class-tainacan-collections.php:55
 msgid "Author ID"
-msgstr ""
+msgstr "Identificador do autor"
 
 #: classes/repositories/class-tainacan-collections.php:57
 msgid "The collection author's user ID (numeric string)"
-msgstr ""
+msgstr "O identificador do autor da coleção (cadeia numérica de caracteres)"
 
 #: classes/repositories/class-tainacan-collections.php:61
 #: classes/repositories/class-tainacan-items.php:71
 msgid "Creation Date"
-msgstr ""
+msgstr "Data de criação"
 
 #: classes/repositories/class-tainacan-collections.php:63
 msgid "The collection creation date"
-msgstr ""
+msgstr "Data de criação da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:67
 #: classes/repositories/class-tainacan-items.php:77
 msgid "Modification Date"
-msgstr ""
+msgstr "Data de modificação"
 
 #: classes/repositories/class-tainacan-collections.php:69
 msgid "The collection modification date"
-msgstr ""
+msgstr "A data de modificação da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:73
 #: classes/repositories/class-tainacan-fields.php:61
 #: classes/repositories/class-tainacan-filters.php:39
 msgid "Order"
-msgstr ""
+msgstr "Ordem"
 
 #: classes/repositories/class-tainacan-collections.php:75
 msgid "Collection order. Field used if collections are manually ordered"
-msgstr ""
+msgstr "Ordem da coleção. Metadado usado se coleções são ordenadas manualmente"
 
 #: classes/repositories/class-tainacan-collections.php:80
 msgid "Parent Collection"
-msgstr ""
+msgstr "Coleção pai"
 
 #: classes/repositories/class-tainacan-collections.php:82
 msgid "Parent collection ID"
-msgstr ""
+msgstr "Identificador da coleção pai"
 
 #: classes/repositories/class-tainacan-collections.php:89
 msgid "Collection description"
-msgstr ""
+msgstr "Descrição da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:97
 msgid ""
