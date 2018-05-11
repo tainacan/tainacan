@@ -2,6 +2,8 @@
 
 namespace Tainacan\Field_Types;
 
+use Tainacan\Entities\Field;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
@@ -59,5 +61,18 @@ class Core_Description extends Field_Type {
         return $item->validate_prop('description');
         
     }
+
+    public function validate_options( Field $field ) {
+		
+		if ( !in_array($field->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+		
+        if ( $field->get_multiple() != 'no') {
+            return ['multiple' => __('Core Metadata can not accept multiple values', 'tainacan')];
+        }
+		
+		return true;
+		
+	}
     
 }
