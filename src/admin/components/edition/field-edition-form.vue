@@ -139,10 +139,10 @@
                         false-value="no"
                         name="required">
                     {{ $i18n.get('label_required') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('fields', 'required')"
+                            :message="$i18n.getHelperMessage('fields', 'required')"/>
                 </b-checkbox>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'required')"
-                        :message="$i18n.getHelperMessage('fields', 'required')"/>
             </b-field>
 
             <b-field
@@ -156,10 +156,10 @@
                         false-value="no"
                         name="multiple">
                     {{ $i18n.get('label_allow_multiple') }}
-                </b-checkbox>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'multiple')"
-                        :message="$i18n.getHelperMessage('fields', 'multiple')"/>
+                    <help-button
+                            :title="$i18n.getHelperTitle('fields', 'multiple')"
+                            :message="$i18n.getHelperMessage('fields', 'multiple')"/>
+                </b-checkbox>    
             </b-field>
 
             <b-field
@@ -173,10 +173,10 @@
                         false-value="no"
                         name="collecion_key">
                     {{ $i18n.get('label_unique_value') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('fields', 'unique')"
+                            :message="$i18n.getHelperMessage('fields', 'unique')"/>
                 </b-checkbox>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'unique')"
-                        :message="$i18n.getHelperMessage('fields', 'unique')"/>
             </b-field>
         </b-field>
 

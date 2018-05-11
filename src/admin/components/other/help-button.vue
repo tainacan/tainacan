@@ -30,7 +30,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     .help-wrapper {
-        position: relative;
+        position: absolute;
     }
 
     a.help-button .icon {
@@ -65,19 +65,14 @@ export default {
 
             h5 {
                 font-size: 14px;
-                font-weight: 700;
-                margin-right: 25px;
-            }
-            .icon {
-                right: 12px;
-                top: 12px;
-                position: absolute;
+                font-weight: bold;
             }
         }
 
         .help-tooltip-body {
-            padding: 1.2em;
-            font-size: 14px;
+            padding: 0.8em 1.0em 1.0em 1.0em;
+            font-size: 11px;
+            font-weight: normal;
         }
 
         &:before {

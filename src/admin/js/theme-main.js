@@ -76,16 +76,19 @@ Vue.component('items-page', ItemsPage);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 
+import ThemeItemsList from '../theme-items-list.vue';
+
 new Vue({
     el: '#tainacan-items-page',
     store,
-    router: routerTheme,
+    router: routerTheme, 
     data: {
-        collectionId: ''
-    },  
-    template: '<items-page :collection-id="collectionId"></items-page>',
+        collectionId: ''   
+    },
+    render: h => h(ThemeItemsList),
     beforeMount () {
         if (this.$el.attributes['collection-id'] != undefined)
             this.collectionId = this.$el.attributes['collection-id'].value;
     }
+    
 });

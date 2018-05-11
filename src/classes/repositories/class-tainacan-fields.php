@@ -648,10 +648,12 @@ class Fields extends Repository {
 	 * @param $collection_id
 	 * @param $field_id
 	 *
+	 * @param string $search
+	 *
 	 * @return array|null|object
 	 * @throws \Exception
 	 */
-	public function fetch_all_field_values($collection_id, $field_id){
+	public function fetch_all_field_values($collection_id, $field_id, $search = ''){
 		global $wpdb;
 
 		// Clear the result cache
@@ -663,17 +665,30 @@ class Fields extends Repository {
 		if( strpos( $field->get_field_type(), 'Core') !== false ){
 		    $collection = new Entities\Collection( $collection_id );
 		    $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-            $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT');
+            $items = $Tainacan_Items->fetch( ['s' => $search], $collection, 'OBJECT');
             $return = [];
 
             foreach ($items as $item) {
                 if( strpos( $field->get_field_type(), 'Core_Title')  !== false  ){
-                    $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $item->get_title()  ];
+                	$title = $item->get_title();
+
+	                if(!empty($search) && stristr($title, $search) !== false) {
+		                $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $title ];
+	                } elseif (empty($search)) {
+		                $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $title ];
+	                }
                 } else {
-                    $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $item->get_description()  ];
+                	$description = $item->get_description();
+
+                	if(!empty($search) && stristr($description, $search) !== false) {
+		                $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $description ];
+	                } elseif (empty($search)) {
+		                $return[] = [ 'item_id' => $item->get_id(), 'field_id' => $field_id, 'mvalue' => $description ];
+	                }
                 }
             }
 
+            $results = [];
             if (!empty($return)) {
                 $results[] = $return;
             }
@@ -688,6 +703,12 @@ class Fields extends Repository {
 
 		$results = [];
 
+		$search_query = '';
+		if ($search) {
+			$search_param = '%' . $search . '%';
+			$search_query = $wpdb->prepare( "WHERE meta_value LIKE %s", $search_param );
+		}
+
 		// If no has logged user or actual user can not read private posts
 		if(get_current_user_id() === 0 || !current_user_can( $capabilities->read_private_posts)) {
 			$args = [
@@ -700,6 +721,7 @@ class Fields extends Repository {
 			$post_statuses = get_post_stati( $args, 'names', 'and' );
 
 			foreach ($post_statuses as $post_status) {
+
 				$sql_string = $wpdb->prepare(
 					"SELECT item_id, field_id, mvalue 
 				  		FROM (
@@ -709,7 +731,7 @@ class Fields extends Repository {
   						) items
 						JOIN (
 						  	SELECT meta_key as field_id, meta_value as mvalue, post_id
-					  	  	FROM $wpdb->postmeta
+					  	  	FROM $wpdb->postmeta $search_query
 				  		) metas
 			  			ON items.item_id = metas.post_id AND metas.field_id = %d",
 					$item_post_type, $post_status, $field_id
@@ -737,7 +759,7 @@ class Fields extends Repository {
 					  	) items
 					  	JOIN (
 					    	SELECT meta_key as field_id, meta_value as mvalue, post_id
-							FROM $wpdb->postmeta
+							FROM $wpdb->postmeta $search_query
 					  	) metas
 					  	ON items.item_id = metas.post_id AND metas.field_id = %d",
 					$item_post_type, $post_status, $field_id

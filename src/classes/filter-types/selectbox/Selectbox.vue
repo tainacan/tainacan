@@ -5,6 +5,7 @@
                 :loading = "isLoading"
                 v-model = "selected"
                 @input = "onSelect($event)"
+                :placeholder="$i18n.get('label_selectbox_init')"
                 expanded
                 :class="{'is-empty': selected == undefined || selected == ''}">
             <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
@@ -59,7 +60,7 @@
                         return metadata.value;
                     }
                 }
-                return '';
+                return undefined;
             }
         },
         methods: {
@@ -82,7 +83,7 @@
                     filter: 'selectbox',
                     field_id: this.field,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                    value: value
+                    value: ( value ) ? value : ''
                 });
             },
             selectedValues(){

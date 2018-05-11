@@ -12,15 +12,17 @@
                                 :key="key">
 
                             <p/>
-                            <div class="has-text-weight-bold is-capitalized">{{ `${key.replace('_', ' ')}:` }}</div>
+                            <div class="has-text-weight-bold is-capitalized">
+                                {{ `${key.replace(/_/g, ' ')}:` }}
+                            </div>
                             <div v-if="key === 'thumbnail'">
                                 <div class="image is-128x128">
                                     <img :src="diff.old">
                                 </div>
                             </div>
                             <div
-                                    v-else-if="!Array.isArray(diff.old)"
-                                    class="content is-inline">
+                                    v-else-if="diff.old.constructor.name !== 'Array' && diff.old.constructor.name !== 'Object'"
+                                    class="is-inline">
                                 {{ diff.old }}
                             </div>
                             <div
@@ -28,7 +30,6 @@
                                     v-for="(o, ind) in diff.old"
                                     :key="ind">
                                 <div v-if="o.hasOwnProperty('mime_type') && o.mime_type.includes('image') && key === 'attachments'">
-
 
                                     <article class="media">
                                         <div class="media-left bottom-space-tainacan">
@@ -49,17 +50,18 @@
 
                                 <div
                                         v-else-if="key === 'fields_order' || key === 'filters_order'"
-                                        class="is-capitalized"
-                                        :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
+                                        class="is-capitalized">
                                     {{ `ID: ${o.id} Enabled: ${o.enabled ? o.enabled : 'false'}` }}
                                 </div>
 
                                 <div
                                         v-else
-                                        class="content is-inline is-capitalized"
-                                        v-for="(o2, ind2) in o"
-                                        :key="ind2">
-                                    <div class="is-inline is-capitalized">{{ `${ind2 ? ind2.replace('_', ' ')+':' : ''} ${o2} ` }}</div>
+                                        v-for="(e, i2) in o"
+                                        :key="i2"
+                                        class="is-inline">
+                                    <div class="is-capitalized">
+                                        {{ `${i2.replace(/_/g, ' ')}: ${e} ` }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +81,7 @@
                             <div
                                     class="has-text-weight-bold is-capitalized"
                                     :class="{ 'has-text-success': !diff.old, 'back-hlight': !diff.old }">
-                                {{ `${key.replace('_', ' ')}:` }}
+                                {{ `${key.replace(/_/g, ' ')}:` }}
                             </div>
                             <div v-if="key === 'thumbnail'">
                                 <div class="image is-128x128">
@@ -135,7 +137,7 @@
                                     <div
                                          class="is-capitalized"
                                          :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
-                                        {{ `${i2.replace('_', ' ')}: ${e} ` }}
+                                        {{ `${i2.replace(/_/g, ' ')}: ${e} ` }}
                                     </div>
                                 </div>
 

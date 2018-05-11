@@ -68,9 +68,10 @@ class Collection extends Entity {
 	public function __toArray() {
 		$array_collection = parent::__toArray();
 
-		$array_collection['thumbnail']  = $this->get_thumbnail();
-		$array_collection['header_image']    = $this->get_header_image();
-		$array_collection['author_name']     = $this->get_author_name();
+		$array_collection['thumbnail']    = $this->get_thumbnail();
+		$array_collection['header_image'] = $this->get_header_image();
+		$array_collection['author_name']  = $this->get_author_name();
+		$array_collection['url']          = get_permalink( $this->get_id() );
 
 		return $array_collection;
 	}

@@ -78,12 +78,6 @@ class Items extends Repository {
 			    'type'        => 'string',
 			    'description' => __( 'The item modification date', 'tainacan' )
 		    ],
-		    'url'               => [
-			    'map'         => 'guid',
-			    'title'       => __( 'Item URL', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'The item URL', 'tainacan' )
-		    ],
 		    'terms'             => [
 			    'map'         => 'terms',
 			    'title'       => __( 'Term IDs', 'tainacan' ),
@@ -109,8 +103,8 @@ class Items extends Repository {
 		    ],
 		    '_thumbnail_id'   => [
 			    'map'         => 'meta',
-			    'title'       => __( 'Featured image ID', 'tainacan' ),
-			    'description' => __( 'Featured image ID', 'tainacan' )
+			    'title'       => __( 'Thumbnail', 'tainacan' ),
+			    'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
 		    ]
 		] );
 	}

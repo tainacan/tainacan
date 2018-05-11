@@ -1,14 +1,17 @@
 <template>
     <div>
+        <!-- Date -->
         <div v-if="type === 'date'">
             <b-datepicker
+                    :placeholder="$i18n.get('label_selectbox_init')"
                     :class="{'has-content': date_init !== undefined && date_init !== ''}"
                     v-model="date_init"
                     size="is-small"
+                    @focus="isTouched = true"
                     @input="validate_values()"
                     icon="calendar-today"/>
-            <br>
             <b-datepicker
+                    :placeholder="$i18n.get('label_selectbox_init')"
                     :class="{'has-content': date_end !== undefined && date_end !== ''}"
                     v-model="date_end"
                     size="is-small"
@@ -16,8 +19,10 @@
                     @focus="isTouched = true"
                     icon="calendar-today"/>
         </div>
-        <div 
-                class="columns" 
+
+        <!-- Numeric -->
+        <div
+                class="columns"
                 v-else>
             <b-input
                     :class="{'has-content': value_init !== undefined && value_init !== ''}"
@@ -35,18 +40,18 @@
                     class="column"
                     v-model="value_end"/>
         </div>
-        <div class="control has-text-centered">
-            <b-tag 
-                    v-if="isValid && !clear"
-                    type="is-white"
-                    size="is-small"
-                    class="is-size-7"
-                    attached
-                    closable
-                    @close="clearSearch()">
-                {{ showSearch() }}
-            </b-tag>
-        </div>
+        <ul
+                class="selected-list-box"
+                v-if="isValid && !clear">
+            <li>
+                <b-tag
+                        attached
+                        closable
+                        @close="clearSearch()">
+                    {{ showSearch() }}
+                </b-tag>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -76,15 +81,15 @@
             return {
                 value_init: null,
                 value_end: null,
-                date_init: new Date,
-                date_end: new Date,
+                date_init: undefined,
+                date_end: undefined,
                 isTouched: false,
                 isValid: false,
                 clear: false,
                 type: 'numeric',
                 collection: '',
                 field: '',
-                field_object: {}
+                field_object: {},
             }
         },
         props: {
@@ -96,20 +101,38 @@
             id: '',
             query: Object
         },
+        watch: {
+            isTouched( val ){
+              if ( val && this.date_init === null)
+                  this.date_init = new Date();
+
+              if ( val && this.date_end === null)
+                  this.date_end =  new Date();
+
+              this.isTouched = val;
+            }
+        },
         methods: {
             // only validate if the first value is higher than first
             validate_values(){
                 if( this.type === 'date' ){
+                    if (this.date_init ===  undefined)
+                        this.date_init = new Date();
+
+                    if (this.date_end === undefined)
+                        this.date_end =  new Date();
+
                     if ( this.date_init > this.date_end ) {
                         let result = this.date_init;
                         result.setDate(result.getDate() + 1);
                         this.date_end = result;
+
+                        result.setDate(result.getDate() - 1);
+                        this.date_init = result;
                         //this.error_message();
                     }
-                } else {
-                    this.value_end = (this.value_end === null) ? 0 : this.value_end;
-                    this.value_init = (this.value_init === null) ? 0 : this.value_init;
 
+                } else {
                     if ( parseFloat( this.value_init ) > parseFloat( this.value_end )) {
                         this.value_end = parseFloat( this.value_init ) + 1;
                         //this.error_message();
@@ -152,16 +175,19 @@
             },
             showSearch(){
                 if( this.type === 'date' ){
-                    let date_init = ('00' + this.date_init.getUTCDate()).slice(-2) + '/' + ('00' + (this.date_init.getUTCMonth() + 1)).slice(-2)
-                         + '/' + this.date_init.getUTCFullYear();
-                    let date_end = ('00' + this.date_end.getUTCDate()).slice(-2) + '/' + ('00' + (this.date_end.getUTCMonth() + 1)).slice(-2)
-                        + '/' + this.date_end.getUTCFullYear();
-                    return date_init + ' - ' + date_end;
+
+                    if( this.date_init === null || this.date_end === null ){
+                        this.clear = true;
+                        return '';
+                    }
+
+                    return this.date_init.toLocaleString().split(' ')[0] + ' - ' + this.date_end.toLocaleString().split(' ')[0];
                 } else {
                     return this.value_init + ' - ' +this.value_end;
                 }
             },
             clearSearch(){
+
                 this.clear = true;
                 this.$emit('input', {
                     filter: 'range',
@@ -170,6 +196,16 @@
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: ''
                 });
+
+                if( this.type === 'date' ){
+                    this.date_init =  null;
+                    this.date_end = null;
+                    this.isTouched = false;
+                 } else {
+                    this.value_end = null;
+                    this.value_init = null;
+                    this.isTouched = false;
+                 }
             },
 
             // emit the operation for listeners
@@ -178,21 +214,41 @@
                 let type = '';
 
                 if( vm.type === 'date' ){
-                    let date_init = vm.date_init.getUTCFullYear() + '-' +
-                        ('00' + (vm.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
-                        ('00' + vm.date_init.getUTCDate()).slice(-2);
-                    let date_end = vm.date_end.getUTCFullYear() + '-' +
-                        ('00' + (vm.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
-                        ('00' + vm.date_end.getUTCDate()).slice(-2);
-                    values = [ date_init, date_end ];
-                    type = 'DATE';
+
+                    if( vm.date_init === null && vm.date_end === null ){
+                      values = [];
+                      type = 'DATE';
+                      vm.isValid = false;
+                      vm.clear = true;
+                    } else {
+                      let date_init = vm.date_init.getUTCFullYear() + '-' +
+                          ('00' + (vm.date_init.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + vm.date_init.getUTCDate()).slice(-2);
+                      let date_end = vm.date_end.getUTCFullYear() + '-' +
+                          ('00' + (vm.date_end.getUTCMonth() + 1)).slice(-2) + '-' +
+                          ('00' + vm.date_end.getUTCDate()).slice(-2);
+                      values = [ date_init, date_end ];
+                      type = 'DATE';
+                      vm.isValid = true;
+                      vm.clear = false;
+                    }
                 } else {
-                    values =  [ vm.value_init, vm.value_end ];
-                    type = 'DECIMAL';
+                    if( vm.value_init === null || vm.value_end === null
+                      || vm.value_init === '' || vm.value_end === ''){
+                        values = [];
+                        type = 'DECIMAL';
+                        vm.isValid = false;
+                        vm.clear = true;
+                        return;
+                    } else {
+                        values =  [ vm.value_init, vm.value_end ];
+                        type = 'DECIMAL';
+                        vm.isValid = true;
+                        vm.clear = false;
+                    }
                 }
 
-                vm.isValid = true;
-                vm.clear = false;
+
                 vm.$emit('input', {
                     filter: 'range',
                     type: type,
@@ -205,15 +261,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    .datepicker {
-        .dropdown-content {
-            position: fixed !important;
-        }
-
-        .dropdown-item {
-            background-color: white !important;
-        }
-    }
-</style>
