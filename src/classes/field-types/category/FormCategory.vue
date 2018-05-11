@@ -6,7 +6,7 @@
                 :addons="false"
                 :type="taxonomyType"
                 :message="taxonomyMessage">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_select_category') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-category', 'taxonomy_id')"

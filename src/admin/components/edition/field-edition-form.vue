@@ -8,7 +8,7 @@
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''"
                 :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_name') }}
                 <span
                         class="required-field-asterisk"
