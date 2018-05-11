@@ -65,7 +65,7 @@ export default {
 			var l10n = _wpMediaViewsL10n;
 
 			wp.media.view.settings.post = {
-				id: this.params.relatedPostId
+				id: null
 			}
 
 			this.params.flex_width = 0;
@@ -87,7 +87,7 @@ export default {
 						title: this.params.button_labels.frame_title,
 						library: wp.media.query({ 
 							type: 'image', 
-							uploadedTo: this.params.relatedPostId
+							uploadedTo: null
 						}),
 						multiple: false,
 						date: false,
@@ -125,7 +125,7 @@ export default {
 			var l10n = _wpMediaViewsL10n;			
 
 			wp.media.view.settings.post = {
-                id: this.params.relatedPostId
+                id: null
 			}
 			this.params.flex_width = tainacan_plugin.custom_header_support[0].flex_width ? 1 : 0;
 			this.params.flex_height = tainacan_plugin.custom_header_support[0].flex_height ? 1 : 0;
@@ -140,7 +140,7 @@ export default {
 				},
 				library: wp.media.query({ 
 					type: 'image',
-					uploadedTo: this.params.relatedPostId 
+					uploadedTo: null
 				}),
 				uploader: true,
 				content: 'upload', // First view that is opened
@@ -149,7 +149,7 @@ export default {
 						title: this.params.button_labels.frame_title,
 						library: wp.media.query({ 
 							type: 'image',
-							uploadedTo: this.params.relatedPostId 
+							uploadedTo: null
 						}),
 						multiple: false,
 						date: false,
@@ -198,7 +198,7 @@ export default {
 					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,
 						library:   wp.media.query({ 	
-							uploadedTo: this.params.relatedPostId
+							uploadedTo: null
 						}),
 						multiple:  false,
 						date:      false,
