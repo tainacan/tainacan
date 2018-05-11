@@ -7,7 +7,7 @@
                 <button
                         class="button is-secondary"
                         slot="trigger">
-                    <span>{{ `${$i18n.get('add')} ${$i18n.get('item')}` }}</span>
+                    <span>{{ $i18n.getFrom('items','add_new') }}</span>
                     <b-icon icon="menu-down"/>
                 </button>
 

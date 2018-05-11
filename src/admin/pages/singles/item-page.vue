@@ -9,12 +9,12 @@
             <router-link
                     class="button is-secondary"
                     :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                {{ $i18n.get('edit') + ' ' + $i18n.get('item') }}
+                {{ $i18n.getFrom('items','edit_item') }}
             </router-link>
             <a
                     class="button is-success is-pulled-right"
                     :href="item.url">
-                {{ $i18n.get('see') + ' ' + $i18n.get('item') }}
+                {{ $i18n.getFrom('items', 'view_item') }}
             </a>
             <br>
 
