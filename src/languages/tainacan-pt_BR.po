@@ -1098,7 +1098,7 @@ msgid ""
 "will do the trick and will NOT show up in your SQL when using NOT EXISTS. "
 "Need inspiration? How about 'bug #23268'.)"
 msgstr ""
-"Valor de campo personalizado. Pode ser um vetor apenas quando comparação é IN, NOT IN."
+"Valor de campo personalizado. Pode ser um arranjo apenas quando comparação é IN, NOT IN."
 "BETWEEN ou NOT BETWEEN. Você não precisa especificar uma valor quando usando "
 "comparações EXISTS ou NOT EXISTS no WordPress 3.9 e acima.\n"
 "\t(Nota: Devido ao bug #23268, um valor é obrigatṕrio para comparações NOT EXISTS "
@@ -1118,7 +1118,7 @@ msgstr ""
 
 #: api/class-tainacan-rest-controller.php:455
 msgid "OR or AND, how the sub-arrays should be compared."
-msgstr "OR ou AND, como os sub-arrays deveriam ser comparados."
+msgstr "OR ou AND, como os subarranjos devem ser comparados."
 
 # Datetime?
 #: api/class-tainacan-rest-controller.php:460
@@ -1131,7 +1131,7 @@ msgid ""
 "the compare value BETWEEN only if the date is stored at the format YYYY-MM-"
 "DD and tested with this format."
 msgstr ""
-"Customizar tipo de Metadado. Valores possíveis: Numérico, Binário, "
+"Personalizar tipo de Metadado. Valores possíveis: Numérico, Binário, "
 "Caractere, Data, Decimal, Assinado, Hora, Sem assinatura. Caractere "
 "inválido. Você também pode especificar precisão e escala para tipos Decimal "
 "e Numérico (por exemplo, são válidos decimal (10,5) ou numérico (10). O tipo "
@@ -1173,7 +1173,7 @@ msgstr "Segundo (0 até 59)."
 # entender o contexto
 #: api/class-tainacan-rest-controller.php:507
 msgid "For after/before, whether exact value should be matched or not."
-msgstr " "
+msgstr ""
 
 # rever rótulo original
 #: api/class-tainacan-rest-controller.php:511
@@ -1181,6 +1181,8 @@ msgid ""
 "Date to retrieve posts before. Accepts strtotime()-compatible string, or "
 "array of year, month, day "
 msgstr ""
+"Data de referência para recuperar postagens anteriores. Aceita cadeia de caracteres compatível com strotime(), ou "
+"arranjo de ano, mês, dia "
 
 # rever rótulo original
 #: api/class-tainacan-rest-controller.php:515
@@ -1188,14 +1190,16 @@ msgid ""
 "Date to retrieve posts after. Accepts strtotime()-compatible string, or "
 "array of year, month, day "
 msgstr ""
+"Data de referência para recuperar postagens posteriores. Aceita cadeia de caracteres compatível com strotime(), ou "
+"arranjo de ano, mês, dia "
 
 #: api/class-tainacan-rest-controller.php:522
 msgid "Show items associated with certain taxonomy."
-msgstr "Mostrar Itens associados a determinada taxonomia"
+msgstr "Mostrar itens associados a determinada taxonomia."
 
 #: api/class-tainacan-rest-controller.php:528
 msgid "The taxonomy data base identifier."
-msgstr "Taxonomia da base de dados identificada."
+msgstr "Identificador da base de dados da taxonomia."
 
 # Entender contexto
 #: api/class-tainacan-rest-controller.php:532
@@ -1203,19 +1207,20 @@ msgstr "Taxonomia da base de dados identificada."
 msgid ""
 "Select taxonomy term by. Possible values are term_id, name, slug or "
 "term_taxonomy_id. Default value is term_id."
-msgstr "Selecionar Termo pela taxonomia. "
+msgstr ""
+"Selecionar termo da taxonomia por. Possíveis valores são term_id, nome, slug ou "
+"term_taxonomy_id. Valor padrão é term_id."
 
 # Ver contexto
 #: api/class-tainacan-rest-controller.php:536
 msgid "Taxonomy term(s)."
-msgstr "Termos da Taxonomia "
+msgstr "Termos da taxonomia "
 
 #: api/class-tainacan-rest-controller.php:540
 msgid ""
 "Operator to test. Possible values are IN, NOT IN, AND, EXISTS and NOT EXISTS"
 msgstr ""
-"Operador (ou instância) para teste. Valores possíveis: dentro, fora, e, "
-"existe e não existe. "
+"Operador para teste. Os valores possíveis são IN, NOT IN, AND, EXISTS e NOT EXISTS"
 
 #: api/class-tainacan-rest-controller.php:545
 msgid ""
@@ -1223,6 +1228,9 @@ msgid ""
 "more than one. Possible values are AND, OR. Do not use with a single inner "
 "taxonomy array."
 msgstr ""
+"A relação lógica entre cada arranjo de taxonomia interna quando há "
+"mais de um. Os possíveis valores são AND, OR. Não use com apenas um arranjo de "
+"taxonomia interna."
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:73
 #: api/endpoints/class-tainacan-rest-filters-controller.php:83
@@ -1232,13 +1240,15 @@ msgid ""
 "To delete permanently, you can pass 'permanently' as true. By default this "
 "will only trash collection"
 msgstr ""
+"Para excluir permanentemente, você pode colocar 'permanentemente' como verdadeiro. Por padrão isso "
+"apenas insere a coleção na lixeira"
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:235
 #: api/endpoints/class-tainacan-rest-fields-controller.php:241
 #: api/endpoints/class-tainacan-rest-items-controller.php:291
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:286
 msgid "Body can not be empty."
-msgstr ""
+msgstr "O corpo não pode ser vazio."
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:255
 #: api/endpoints/class-tainacan-rest-collections-controller.php:361
@@ -1257,7 +1267,7 @@ msgstr "Um ou mais valores estão inválidos"
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:368
 msgid "Collection with that ID not found"
-msgstr ""
+msgstr "Coleção com este identificador não encontrada"
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:374
 #: api/endpoints/class-tainacan-rest-fields-controller.php:441
@@ -1267,7 +1277,7 @@ msgstr ""
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:349
 #: api/endpoints/class-tainacan-rest-terms-controller.php:236
 msgid "The body could not be empty"
-msgstr ""
+msgstr "O corpo não pode ser vazio"
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:408
 #: api/endpoints/class-tainacan-rest-items-controller.php:443
@@ -1276,72 +1286,75 @@ msgid ""
 "Fetch only specific attribute. The specifics attributes are the same in "
 "schema."
 msgstr ""
+"Capturar apenas um atributo específico. Os atributos específicos são os mesmos no "
+"esquema."
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:448
 msgid "Limit result set to collection with specific name."
-msgstr ""
+msgstr "Resultado limite configurado para coleção com nome específico."
 
 #: api/endpoints/class-tainacan-rest-field-types-controller.php:26
 #: api/endpoints/class-tainacan-rest-filter-types-controller.php:26
 msgid "The structure of objects returned."
-msgstr ""
+msgstr "A estrutura de objetos retornou."
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:396
 msgid "Field with that ID not found"
-msgstr ""
+msgstr "Metadado com esse identificador não encontrado"
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:402
 msgid "That field is not a default field"
-msgstr ""
+msgstr "Esse metadado não é um metadado padrão"
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:409
 msgid "That field is not a collection field"
-msgstr ""
+msgstr "Esse metadado não é um metadado de coleção"
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:476
 msgid "Limit result set to field with specific name."
-msgstr ""
+msgstr "Resultado limite configurado para metadado com nome específico."
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:496
 msgid ""
-"Fetch all values of a field from a collection in all it collection items"
+"Fetch all values of a field from a collection in all its collection items"
 msgstr ""
+"Recuperar todos os valores de um metadado de uma coleção em todos os seus items."
 
 #: api/endpoints/class-tainacan-rest-filters-controller.php:177
 msgid "One or more attributes are invalid"
-msgstr ""
+msgstr "Um ou mais atributos são inválidos"
 
 #: api/endpoints/class-tainacan-rest-filters-controller.php:282
 msgid "Filter with that ID not found"
-msgstr ""
+msgstr "Metadado com esse identificador não encontrado"
 
 #: api/endpoints/class-tainacan-rest-filters-controller.php:467
 msgid "Limit result set to filter with specific name."
-msgstr ""
+msgstr "Resultado limite configurado para metadado com nome específico."
 
 #: api/endpoints/class-tainacan-rest-item-metadata-controller.php:216
 msgid "Field do not accept suggestion."
-msgstr ""
+msgstr "Metadado não aceita sugestões."
 
 #: api/endpoints/class-tainacan-rest-item-metadata-controller.php:276
 msgid "The value(s) of item metadata"
-msgstr ""
+msgstr "Os valores do metadado do item"
 
 #: api/endpoints/class-tainacan-rest-items-controller.php:404
 msgid "Item with that ID not found"
-msgstr ""
+msgstr "Item com esse identificador não encontrado"
 
 #: api/endpoints/class-tainacan-rest-items-controller.php:480
 msgid "Limit result set to items with specific title."
-msgstr ""
+msgstr "Resultado limite configurado para itens com título específico."
 
 #: api/endpoints/class-tainacan-rest-logs-controller.php:115
 msgid "A collection with that ID not exists."
-msgstr ""
+msgstr "Uma coleção com esse identificador não existe."
 
 #: api/endpoints/class-tainacan-rest-logs-controller.php:294
 msgid "Limit result set to log with specific title."
-msgstr ""
+msgstr "Resultado limite configurado para registro com título específico."
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:183
 msgid "Failure on deleted."
