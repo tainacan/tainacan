@@ -207,7 +207,7 @@ msgstr "Visível apenas para editores"
 
 #: admin/tainacan-admin-i18n.php:52
 msgid "Repository Collections Page"
-msgstr "Página de Coleções do repositório"
+msgstr "Página de Coleções do Repositório"
 
 #: admin/tainacan-admin-i18n.php:53
 msgid "Items Page"
@@ -215,11 +215,11 @@ msgstr "Página de Itens"
 
 #: admin/tainacan-admin-i18n.php:54
 msgid "Repository Fields Page"
-msgstr "Página de Metadados do repositório"
+msgstr "Página de Metadados do Repositório"
 
 #: admin/tainacan-admin-i18n.php:55
 msgid "Repository Filters Page"
-msgstr "Página de Filtros do repositório"
+msgstr "Página de Filtros do Repositório"
 
 #: admin/tainacan-admin-i18n.php:56
 msgid "Categories Page"
@@ -232,7 +232,7 @@ msgstr "Página de Termos"
 
 #: admin/tainacan-admin-i18n.php:58
 msgid "Repository Events Page"
-msgstr "Página de Eventos do repositório"
+msgstr "Página de Eventos do Repositório"
 
 #: admin/tainacan-admin-i18n.php:59
 msgid "Collection Page"
@@ -280,7 +280,7 @@ msgstr "Criar item na coleção"
 
 #: admin/tainacan-admin-i18n.php:72
 msgid "Filter Creation Page"
-msgstr "Página de criação de filtro"
+msgstr "Página de Criação de Filtro"
 
 #: admin/tainacan-admin-i18n.php:73
 #: classes/repositories/class-tainacan-collections.php:203
@@ -499,11 +499,11 @@ msgstr "Metadados na tabela"
 #: admin/tainacan-admin-i18n.php:122
 #: classes/repositories/class-tainacan-fields.php:95
 msgid "Required"
-msgstr "Requerido"
+msgstr "Obrigatório"
 
 #: admin/tainacan-admin-i18n.php:123
 msgid "Allow multiple values"
-msgstr "Permitir valores múltiplos"
+msgstr "Permitir múltiplos valores"
 
 #: admin/tainacan-admin-i18n.php:124
 #: classes/repositories/class-tainacan-fields.php:140
@@ -566,11 +566,11 @@ msgstr "Anexos"
 
 #: admin/tainacan-admin-i18n.php:137
 msgid "Enabled"
-msgstr "Habilitado"
+msgstr "Ativado"
 
 #: admin/tainacan-admin-i18n.php:138
 msgid "Disabled"
-msgstr "Desabilitado"
+msgstr "Desativado"
 
 #: admin/tainacan-admin-i18n.php:139
 msgid "Creation"
@@ -630,12 +630,12 @@ msgstr "Quem e quando"
 #: classes/repositories/class-tainacan-collections.php:168
 #: classes/repositories/class-tainacan-terms.php:82
 msgid "Header Image"
-msgstr "Imagem da Header"
+msgstr "Imagem do cabeçalho"
 
 # IMPRECISA
 #: admin/tainacan-admin-i18n.php:154
 msgid "Empty Header Image"
-msgstr "Imagem da Header vazia"
+msgstr "Imagem do cabeçalho vazia"
 
 #: admin/tainacan-admin-i18n.php:155
 #: classes/repositories/class-tainacan-collections.php:150
@@ -706,7 +706,7 @@ msgstr "Recolher todos"
 
 #: admin/tainacan-admin-i18n.php:173
 msgid "Delete selected collections"
-msgstr "Deletar Coleções selecionadas"
+msgstr "Deletar coleções selecionadas"
 
 #: admin/tainacan-admin-i18n.php:174
 msgid "Delete selected items"
@@ -748,11 +748,11 @@ msgstr "Selecione uma coleção pai."
 
 #: admin/tainacan-admin-i18n.php:183
 msgid "Select a thumbnail image for collection"
-msgstr "Selecione uma imagem de miniatura para a Coleção"
+msgstr "Selecione uma imagem de miniatura para a coleção"
 
 #: admin/tainacan-admin-i18n.php:184
 msgid "Select a thumbnail image for item"
-msgstr "Selecione uma imagem de miniatura para o Item"
+msgstr "Selecione uma imagem de miniatura para o item"
 
 #: admin/tainacan-admin-i18n.php:185
 msgid "Select a header image for collection"
@@ -761,19 +761,19 @@ msgstr "Selecione uma imagem de capa para a coleção"
 # IMPRECISA
 #: admin/tainacan-admin-i18n.php:186
 msgid "Select a header image for term"
-msgstr "Selecione uma imagem de miniatura para o Termo"
+msgstr "Selecione uma imagem de miniatura para o termo"
 
 #: admin/tainacan-admin-i18n.php:187
 msgid "Select files to attach to item"
-msgstr "Selecione arquivos para anexar ao Item"
+msgstr "Selecione arquivos para anexar ao item"
 
 #: admin/tainacan-admin-i18n.php:188
 msgid "Select a document file for item"
-msgstr "Selecione um arquivo de documento para o Item"
+msgstr "Selecione um arquivo de documento para o item"
 
 #: admin/tainacan-admin-i18n.php:189
 msgid "Insert URL"
-msgstr "Insira  uma URL"
+msgstr "Insira uma URL"
 
 #: admin/tainacan-admin-i18n.php:190
 msgid "Write Text"
@@ -789,7 +789,7 @@ msgstr "Busca na coleção"
 
 #: admin/tainacan-admin-i18n.php:195
 msgid "Name is required."
-msgstr "Um nome é requerido."
+msgstr "Um nome é obrigatório."
 
 #: admin/tainacan-admin-i18n.php:196
 msgid "No collection was created in this repository."
@@ -853,7 +853,7 @@ msgstr "Você realmente deseja deletar este item?"
 
 #: admin/tainacan-admin-i18n.php:211
 msgid "Do you really want to delete this category?"
-msgstr "Você realmente deseja deletar esta Categoria?"
+msgstr "Você realmente deseja deletar esta categoria?"
 
 #: admin/tainacan-admin-i18n.php:212
 msgid "Do you really want to delete the selected collections?"
@@ -865,7 +865,7 @@ msgstr "Você realmente deseja deletar os itens selecionados?"
 
 #: admin/tainacan-admin-i18n.php:214
 msgid "The field Collection related is required"
-msgstr "O metadado Coleção é requerido"
+msgstr "O metadado Coleção é obrigatório"
 
 #: admin/tainacan-admin-i18n.php:215
 msgid "No fields found in this collection"
@@ -885,73 +885,82 @@ msgstr "Exibindo categorias "
 
 #: admin/tainacan-admin-i18n.php:219
 msgid "Showing events "
-msgstr "Mostrar eventos"
+msgstr "Mostrar eventos "
 
 #: admin/tainacan-admin-i18n.php:220
 msgid " to "
-msgstr " para"
+msgstr " para "
 
 #: admin/tainacan-admin-i18n.php:221
 msgid " of "
-msgstr "de"
+msgstr " de "
 
 #: admin/tainacan-admin-i18n.php:222
-msgid "Created by: "
-msgstr "Criado por"
+msgid "Created by "
+msgstr "Criado por "
 
 #: admin/tainacan-admin-i18n.php:223
-msgid "By: "
-msgstr "Por"
+msgid "By "
+msgstr "Por "
 
 #: admin/tainacan-admin-i18n.php:224
 msgid "Date: "
-msgstr "Data"
+msgstr "Data: "
 
 #: admin/tainacan-admin-i18n.php:225
 msgid "Not saved "
 msgstr "Não salvo "
 
 #: admin/tainacan-admin-i18n.php:226
-msgid "Are you sure? The item is not saved, changes will be lost."
+msgid ""
+"Are you sure? The item is not saved, "
+"changes will be lost."
 msgstr ""
-"Opa, tem certeza? Como o Item não foi salvo, as alterações podem ser "
-"perdidas. "
+"Você tem certeza? Como o item não foi salvo, "
+"as alterações podem ser perdidas."
 
 #: admin/tainacan-admin-i18n.php:227
-msgid "Are you sure? There are fields not saved, changes will be lost."
+msgid ""
+"Are you sure? There are fields not saved, "
+"changes will be lost."
 msgstr ""
-"Opa, tem certeza? Como alguns Metadados não foram salvos, as alterações "
-"podem ser perdidas"
+"Você tem certeza? Como alguns metadados não foram salvos, "
+"as alterações podem ser perdidas."
 
 #: admin/tainacan-admin-i18n.php:228
-msgid "Are you sure? There are filters not saved, changes will be lost."
+msgid ""
+"Are you sure? There are filters not saved, "
+"changes will be lost."
 msgstr ""
-"Opa, tem certeza? Como alguns Filtros não foram salvos, as alterações podem "
-"ser perdidas"
+"Você tem certeza? Como alguns filtros não foram salvos, "
+"as alterações podem ser perdidas."
 
 #: admin/tainacan-admin-i18n.php:229
 msgid "No description provided."
-msgstr "Nenhuma descrição fornecida"
+msgstr "Nenhuma descrição fornecida."
 
 #: admin/tainacan-admin-i18n.php:230
-msgid "Are you sure? The category is not saved, changes will be lost."
+msgid ""
+"Are you sure? The category is not saved, "
+"changes will be lost."
 msgstr ""
-"Opa, tem certeza? Como a Categoria não foi salva, as alterações podem ser "
-"perdidas"
+"Você tem certeza? Como a categoria não foi salva, "
+"as alterações podem ser perdidas."
 
 #: admin/tainacan-admin-i18n.php:231
-msgid "Are you sure? There are terms not saved, changes will be lost."
+msgid ""
+"Are you sure? There are terms not saved, "
+"changes will be lost."
 msgstr ""
-" Opa, tem certeza? Como alguns Termos não foram salvos, as alterações podem "
-"ser perdidas"
+"Você tem certeza? Como alguns termos não foram salvos, "
+"as alterações podem ser perdidas."
 
 #: admin/tainacan-admin-i18n.php:232
 msgid ""
-"Are you sure? This term is parent of other terms. These will be converted to "
-"root terms."
+"Are you sure? This term is parent of other terms." 
+"These will be converted to root terms."
 msgstr ""
-"Opa, tem certeza? É um Termo pai de outros termos. Será convertido em termo "
-"raiz."
+"Você tem certeza? Este termo é pai de outros termos." "Eles serão convertidos em termos raiz."
 
 #: admin/tainacan-admin-i18n.php:233
 msgid "No events"
@@ -967,23 +976,23 @@ msgstr "O que foi atualizado?"
 
 #: admin/tainacan-admin-i18n.php:236
 msgid "There is no field here yet."
-msgstr "Opa, você ainda não configurou nenhum Metadado"
+msgstr "Você ainda não configurou nenhum metadado."
 
 #: admin/tainacan-admin-i18n.php:237
 msgid "There is no filter here yet."
-msgstr "Opa, você ainda não configurou nenhum Filtro"
+msgstr "Você ainda não configurou nenhum filtro."
 
 #: admin/tainacan-admin-i18n.php:238
 msgid "Changes"
 msgstr "Alterações"
 
 #: admin/tainacan-admin-i18n.php:239
-msgid "Possible external sources: CSV, Instagram, Youtube, etc."
-msgstr "Fontes externas de pesquisa: CSV, Instagram, Youtube, etc."
+msgid "Possible external sources: CSV files, Instagram, YouTube, etc."
+msgstr "Possíveis fontes externas: arquivos CSV, Instagram, YouTube, etc."
 
 #: admin/tainacan-admin-i18n.php:240
 msgid "The term name"
-msgstr "O nome do Termo"
+msgstr "O nome do termo"
 
 #: admin/tainacan-admin-i18n.php:241
 msgid "The description of the Term."
@@ -1003,7 +1012,7 @@ msgstr "Data"
 
 #: admin/tainacan-admin-i18n.php:247
 msgid "Numeric"
-msgstr "Numérico."
+msgstr "Numérico"
 
 #: admin/tainacan-admin-i18n.php:248
 msgid "Select box"
@@ -1015,7 +1024,7 @@ msgstr "Relacionamento"
 
 #: admin/tainacan-admin-i18n.php:253
 msgid "Custom Interval"
-msgstr "Intervalo customizado"
+msgstr "Intervalo personalizado"
 
 #: admin/tainacan-admin-i18n.php:254
 msgid "Select Box"
@@ -1031,7 +1040,7 @@ msgstr "Entrada de Etiquetas"
 
 #: admin/tainacan-admin-i18n.php:257
 msgid "Check Box"
-msgstr "Caixa de verificação"
+msgstr "Caixa de Verificação"
 
 #: admin/tainacan-admin-i18n.php:258
 msgid "Category Tag Input"
@@ -1039,7 +1048,7 @@ msgstr "Entrada de Etiquetas de Categorias"
 
 #: admin/tainacan-admin-i18n.php:259
 msgid "Category Check Box"
-msgstr "Caixa de verificação de  Categorias"
+msgstr "Caixa de verificação de Categorias"
 
 #: admin/tainacan-admin-i18n.php:260
 msgid "Category Select Box"
@@ -1047,7 +1056,7 @@ msgstr "Lista de seleção de Categoria"
 
 #: api/class-tainacan-rest-controller.php:331
 msgid "Limit results to those matching a string."
-msgstr "Limitar resultados  que coincidem em série."
+msgstr "Limitar resultados aos que coincidem com uma  cadeia de caracteres."
 
 #: api/class-tainacan-rest-controller.php:366
 msgid "Order sort attribute ascending or descending."
@@ -1056,12 +1065,12 @@ msgstr "Ordenar ascendente ou descendente."
 #: api/class-tainacan-rest-controller.php:419
 #: api/class-tainacan-rest-controller.php:441
 msgid "Custom field key."
-msgstr "Chave de Metadado customizado."
+msgstr "Chave de Metadado personalizado."
 
 #: api/class-tainacan-rest-controller.php:423
 #: api/class-tainacan-rest-controller.php:427
 msgid "Custom field value"
-msgstr "Valor de Metadado customizado."
+msgstr "Valor de Metadado personalizado."
 
 #: api/class-tainacan-rest-controller.php:431
 msgid ""
@@ -1081,7 +1090,7 @@ msgstr ""
 #: api/class-tainacan-rest-controller.php:445
 msgid ""
 "Custom field value. It can be an array only when compare is IN, NOT IN, "
-"BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the "
+"BETWEEN, or NOT BETWEEN. You don't have to specify a value when using the "
 "EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.\n"
 "\t(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to "
 "work correctly prior to 3.9. You must supply some string for the value "
@@ -1089,6 +1098,14 @@ msgid ""
 "will do the trick and will NOT show up in your SQL when using NOT EXISTS. "
 "Need inspiration? How about 'bug #23268'.)"
 msgstr ""
+"Valor de campo personalizado. Pode ser um vetor apenas quando comparação é IN, NOT IN."
+"BETWEEN ou NOT BETWEEN. Você não precisa especificar uma valor quando usando "
+"comparações EXISTS ou NOT EXISTS no WordPress 3.9 e acima.\n"
+"\t(Nota: Devido ao bug #23268, um valor é obrigatṕrio para comparações NOT EXISTS "
+"funcionarem corretamente em versões anteriores à 3.9. Você deve fornecer uma cadeia de caracteres para o valor "
+" parâmetro. Uma cadeia de caracteres vazia ou NULL não funcionará. Entretanto, qualquer outra cadeia de caracteres "
+" será efetiva e não será exibida em seu SQL quando usando NOT EXISTS. "
+"Precisa de inspiração? Que tal 'bug #23268'.)"
 
 #: api/class-tainacan-rest-controller.php:450
 #: api/class-tainacan-rest-controller.php:501
