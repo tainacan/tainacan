@@ -1573,47 +1573,47 @@ msgstr ""
 
 #: classes/repositories/class-tainacan-collections.php:102
 msgid "Default Order field"
-msgstr ""
+msgstr "Ordem padrão do metadado"
 
 #: classes/repositories/class-tainacan-collections.php:104
 msgid "Default property items in this collections will be ordered by"
-msgstr ""
+msgstr "Propriedade pela qual itens desta coleção serão ordenados"
 
 #: classes/repositories/class-tainacan-collections.php:110
 msgid "Default order"
-msgstr ""
+msgstr "Ordem padrão"
 
 #: classes/repositories/class-tainacan-collections.php:111
 msgid "Default order for items in this collection. ASC or DESC"
-msgstr ""
+msgstr "Ordem padrão para itens nesta coleção. Crescente ou decrescente."
 
 #: classes/repositories/class-tainacan-collections.php:122
 msgid "List of collections property that will be displayed in the table view."
-msgstr ""
+msgstr "Lista de propriedades da coleção que serão exibidas na exibição por tabela."
 
 #: classes/repositories/class-tainacan-collections.php:127
 msgid "Default view mode"
-msgstr ""
+msgstr "Modo de visualização padrão"
 
 #: classes/repositories/class-tainacan-collections.php:129
 msgid "Collection default visualization mode"
-msgstr ""
+msgstr "Modo de visualização padrão da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:134
 msgid "Ordination fields"
-msgstr ""
+msgstr "Ordenação dos metadados"
 
 #: classes/repositories/class-tainacan-collections.php:137
 msgid "Collection fields ordination"
-msgstr ""
+msgstr "Ordenação dos metadados da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:142
 msgid "Ordination filters"
-msgstr ""
+msgstr "Ordenação dos filtros"
 
 #: classes/repositories/class-tainacan-collections.php:145
 msgid "Collection filters ordination"
-msgstr ""
+msgstr "Ordenação dos filtros da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:152
 msgid "Use page as the home page of this collection"
@@ -1621,7 +1621,7 @@ msgstr "Usar página como página principal desse repositório"
 
 #: classes/repositories/class-tainacan-collections.php:153
 msgid "Value should be yes or no"
-msgstr ""
+msgstr "Valor deve ser sim ou não"
 
 #: classes/repositories/class-tainacan-collections.php:159
 #, fuzzy
@@ -1631,11 +1631,11 @@ msgstr "por Página"
 
 #: classes/repositories/class-tainacan-collections.php:161
 msgid "The page to be used as cover for this collection"
-msgstr ""
+msgstr "A página para ser usada como capa para esta coleção"
 
 #: classes/repositories/class-tainacan-collections.php:162
 msgid "Invalid page"
-msgstr ""
+msgstr "Página inválida"
 
 #: classes/repositories/class-tainacan-collections.php:170
 #, fuzzy
@@ -1646,18 +1646,18 @@ msgstr "A máscara deve ser utilizada no campo"
 #: classes/repositories/class-tainacan-collections.php:171
 #: classes/repositories/class-tainacan-terms.php:85
 msgid "Invalid image"
-msgstr ""
+msgstr "Imagem inválida"
 
 #: classes/repositories/class-tainacan-collections.php:180
 msgid "The IDs of users assigned as moderators of this collection"
-msgstr ""
+msgstr "Os identificadores dos usuários designados como moderadores desta coleção"
 
 #: classes/repositories/class-tainacan-collections.php:185
 #: classes/repositories/class-tainacan-collections.php:186
 #: classes/repositories/class-tainacan-items.php:106
 #: classes/repositories/class-tainacan-items.php:107
 msgid "Featured image ID"
-msgstr ""
+msgstr "Identificador da imagem em destaque"
 
 #: classes/repositories/class-tainacan-collections.php:201
 #: classes/repositories/class-tainacan-fields.php:196
@@ -1667,35 +1667,35 @@ msgstr ""
 #: classes/repositories/class-tainacan-logs.php:133
 #: classes/repositories/class-tainacan-taxonomies.php:86
 msgid "Add new"
-msgstr ""
+msgstr "Adicionar novo"
 
 #: classes/repositories/class-tainacan-collections.php:202
 msgid "Add new Collection"
-msgstr ""
+msgstr "Adicionar nova coleção"
 
 #: classes/repositories/class-tainacan-collections.php:204
 msgid "New Collection"
-msgstr ""
+msgstr "Nova coleção"
 
 #: classes/repositories/class-tainacan-collections.php:205
 msgid "View Collection"
-msgstr ""
+msgstr "Ver coleção"
 
 #: classes/repositories/class-tainacan-collections.php:206
 msgid "Search Collections"
-msgstr ""
+msgstr "Buscar coleções"
 
 #: classes/repositories/class-tainacan-collections.php:207
 msgid "No Collections found "
-msgstr ""
+msgstr "Nenhuma coleção encontrada"
 
 #: classes/repositories/class-tainacan-collections.php:208
 msgid "No Collections found in trash"
-msgstr ""
+msgstr "Nenhuma coleção encontrada na lixeira"
 
 #: classes/repositories/class-tainacan-collections.php:209
 msgid "Parent Collection:"
-msgstr ""
+msgstr "Coleção pai:"
 
 #: classes/repositories/class-tainacan-fields.php:48
 msgid "Name of the field"
