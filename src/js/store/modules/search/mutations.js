@@ -64,3 +64,7 @@ export const removeTaxQuery = ( state, filter ) => {
 export const setTotalItems = ( state, total ) => {
     state.totalItems = total;
 };
+
+export const setSearchQuery = ( state, searchQuery ) => {
+    state.postquery.search = searchQuery;
+};

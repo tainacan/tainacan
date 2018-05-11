@@ -339,7 +339,7 @@ class Filters extends Repository {
      * @param array $args WP_Query args plus disabled_fields
      * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
      *
-     * @return Array Entities\Field
+     * @return array Entities\Field
      * @throws \Exception
      */
     public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
@@ -369,7 +369,7 @@ class Filters extends Repository {
         return $this->order_result(
             $this->fetch( $args, $output ),
             $collection,
-            isset( $args['disabled_fields'] ) ? $args['disabled_fields'] : false
+            isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
         );
     }
 
@@ -382,7 +382,7 @@ class Filters extends Repository {
      * @param Entities\Collection $collection
      * @return array or WP_Query ordinate
      */
-    public function order_result( $result, Entities\Collection $collection ){
+    public function order_result( $result, Entities\Collection $collection, $include_disabled = false ){
         $order = $collection->get_filters_order();
         if($order) {
             $order = ( is_array($order) ) ? $order : unserialize($order);
@@ -396,6 +396,15 @@ class Filters extends Repository {
                     $index = array_search ( $id , array_column( $order , 'id') );
 
                     if( $index !== false ) {
+
+	                    // skipping fields disabled if the arg is set
+	                    if ( ! $include_disabled && isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] ) {
+		                    continue;
+	                    }
+
+	                    $enable = ( isset( $order[ $index ]['enabled'] ) ) ? $order[ $index ]['enabled'] : true;
+	                    $item->set_enabled_for_collection( $enable );
+
                         $result_ordinate[$index] = $item;
                     } else {
                         $not_ordinate[] = $item;

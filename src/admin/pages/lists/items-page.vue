@@ -1,6 +1,6 @@
 <template>
     <div :class="{'primary-page': isRepositoryLevel, 'page-container': isRepositoryLevel, 'page-container-small' :!isRepositoryLevel }">
-        
+
         <!-- SEARCH AND FILTERS --------------------- -->
         <button 
                 id="filter-menu-compress-button"
@@ -14,26 +14,33 @@
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <b-field>
+            <b-field class="margin-1">
                 <b-input
-                        placeholder="Search..."
+                        :placeholder=" $i18n.get('instruction_search_collection') "
                         type="search"
                         size="is-small"
-                        icon="magnify" />
+                        icon="magnify" 
+                        @input="updateSearch($event)"
+                        :value="searchQuery"/>
             </b-field>
-            <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a>
+            <!-- <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a> -->
 
             <br>
+            <br>
+
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
+                    v-if="!isLoadingFilters && filters.length > 0"
                     class="collapse-all is-size-7"
-                    @click="toggleCollapseAll">
+                    @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <b-icon
                         type="is-secondary"
                         size="is-small"
                         :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
             </a>
+
+            <br>
             <br>
 
             <filters-items-list
@@ -75,9 +82,12 @@
                         :is-repository-level="isRepositoryLevel"
                         :collection-id="collectionId"
                         :table-fields="tableFields"
-                        :pref-table-fields="prefTableFields"/>
+                        :pref-table-fields="prefTableFields"
+                        :is-on-theme="isOnTheme"/>
             </div>
-
+            <div 
+                    :items="items"
+                    id="theme-items-list" />
             <!-- LISTING RESULTS ------------------------- -->
             <div class="table-container above-subheader">
                 <b-loading
@@ -88,7 +98,8 @@
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :items="items"
-                        :is-loading="isLoading"/>
+                        :is-loading="isLoading"
+                        :is-on-theme="isOnTheme"/>
                 <section
                         v-if="!isLoadingItems && items.length <= 0"
                         class="section">
@@ -106,7 +117,7 @@
                                 tag="button"
                                 class="button is-primary"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ $i18n.getFrom('items', 'new_item') }}
+                            {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link>
                     </div>
                 </section>
@@ -138,6 +149,7 @@
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
                 collapseAll: false,
+                isOnTheme: false
             }
         },
         props: {
@@ -165,13 +177,12 @@
             ...mapGetters('filter', [
                 'getFilters'
             ]),
-            toggleCollapseAll() {
-                this.collapseAll = !this.collapseAll;
-
-                for (let i = 0; i < this.fieldCollapses.length; i++)
-                    this.fieldCollapses[i] = this.collapseAll;
-
-            },
+            ...mapGetters('search', [
+                'getSearchQuery'
+            ]),
+            updateSearch(searchQuery) {
+                this.$eventBusSearch.setSearchQuery(searchQuery)
+            }
         },
         computed: {
             items() {
@@ -182,9 +193,24 @@
             },
             fields() {
                 return this.getFields();
+            },
+            searchQuery() {
+                return this.getSearchQuery();
             }
         },
         created() {
+           /*  
+            document.addEventListener('tainacan-items-change', () => {
+                var themeList = document.getElementById('theme-items-list');
+                var items = themeList.attributes.items.value;
+
+                var e = document.createElement('p');
+                e.innerHTML = items;
+
+                themeList.appendChild(e);
+            }); */
+
+            this.isOnTheme = (this.$route.name == null);
             this.isRepositoryLevel = (this.collectionId == undefined);
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
@@ -199,7 +225,8 @@
             this.fetchFilters({
                 collectionId: this.collectionId,
                 isRepositoryLevel: this.isRepositoryLevel,
-                isContextEdit: true
+                isContextEdit: true,
+                includeDisabled: 'no',
             })
                 .then(() => this.isLoadingFilters = false)
                 .catch(() => this.isLoadingFilters = false);
@@ -217,7 +244,7 @@
                         name: this.$i18n.get('label_thumbnail'),
                         field: 'row_thumbnail',
                         field_type: undefined,
-                        slug: 'featured_image',
+                        slug: 'thumbnail',
                         id: undefined,
                         display: true
                     });
@@ -284,13 +311,17 @@
             this.$eventBusSearch.setCollectionId(this.collectionId);
             this.$eventBusSearch.updateStoreFromURL();
             this.$eventBusSearch.loadItems();
-        }
+        } 
     }
 </script>
 
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
+
+    .margin-1 {
+        margin-bottom: 0.1rem;
+    }
 
     .page-container, .page-container-small {
         padding: 0px;
@@ -308,8 +339,7 @@
 
         @media screen and (max-width: 769px) {
             height: 60px;
-            margin-top: -0.5em;
-            padding-top: 0.90em;
+            margin-top: 0;
 
             .header-item {
                 padding-right: 0.5em;
@@ -329,7 +359,7 @@
         width: $filter-menu-width;
         max-width: $filter-menu-width;
         min-height: 100%;
-        background-color: $tainacan-input-color;
+        background-color: $tainacan-input-background;
         padding: $page-small-side-padding;
         float: left;
         height: 100%;
@@ -337,7 +367,11 @@
         overflow-y: auto;
         visibility: visible;
         display: block;
-        transition: visibility 0.5s ease, display 0.5s ease;
+        transition: visibility ease 0.5s, display ease 0.5s;
+
+        h3 {
+            font-size: 100%;
+        }
 
         .label {
             font-size: 12px;
@@ -348,7 +382,7 @@
 
     .items-list-area {
         margin-left: 0;
-        transition: margin-left 0.5s ease;
+        transition: margin-left ease 0.5s ;
     }
     .spaced-to-right {
         margin-left: $filter-menu-width;
@@ -360,12 +394,10 @@
     }
 
     @media screen and (max-width: 769px) {
-        .filters-menu {
-            display: none;
-        }
+
         .table-container {
             margin-right: 0;
-            padding: .85em 0em;
+            padding: 16px;
         }
     }
 
@@ -378,11 +410,12 @@
         height: 21px;
         width: 23px;
         border: none;
-        background-color: $primary-light;
+        background-color: $primary-lighter;
         color: $tertiary;
         padding: 0px;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
+        cursor: pointer;
 
         .icon {
             margin-top: -1px;

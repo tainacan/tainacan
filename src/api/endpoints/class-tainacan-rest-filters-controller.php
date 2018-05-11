@@ -320,6 +320,7 @@ class REST_Filters_Controller extends REST_Controller {
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 				$item_arr['filter_type_object'] = $item->get_filter_type_object()->__toArray();
+				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
 			return $item_arr;
@@ -332,9 +333,14 @@ class REST_Filters_Controller extends REST_Controller {
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
 		$args = $this->prepare_filters( $request );
+
+		if ($request['include_disabled'] === 'yes') {
+			$args['include_disabled'] = true;
+		}
 
 		if(!isset($request['collection_id'])) {
 			$args['meta_query'][] = [

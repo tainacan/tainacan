@@ -29,12 +29,13 @@ import FilterCategoryCheckbox from '../../classes/filter-types/category/Checkbox
 import FilterCategoryTaginput from '../../classes/filter-types/category/Taginput.vue';
 import FilterCategorySelectbox from '../../classes/filter-types/category/Selectbox.vue';
 
-import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
-import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
+import TainacanFormItem from '../../classes/field-types/tainacan-form-item.vue';
+import TainacanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
+import TainacanTitle from '../components/navigation/tainacan-title.vue';
 import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
@@ -60,8 +61,8 @@ Vue.component('tainacan-category', Category);
 Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-category', FormCategory);
 Vue.component('tainacan-form-selectbox', FormSelectbox);
-Vue.component('tainacan-form-item', TaincanFormItem);
-Vue.component('tainacan-filter-item', TaincanFiltersList);
+Vue.component('tainacan-form-item', TainacanFormItem);
+Vue.component('tainacan-filter-item', TainacanFiltersList);
 
 /* Filters */
 Vue.component('tainacan-filter-custom-interval', FilterCustomInterval);
@@ -76,6 +77,7 @@ Vue.component('tainacan-filter-category-selectbox', FilterCategorySelectbox);
 /* Others */
 Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
+Vue.component('tainacan-title', TainacanTitle);
 
 Vue.use(eventBusSearch, { store: store, router: router});
 

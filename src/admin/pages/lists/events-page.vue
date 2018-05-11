@@ -1,8 +1,14 @@
 <template>
     <div>
-        <div class="primary-page page-container">
-            <title-row/>
-            <div class="columns above-subheader">
+        <div
+                :class="{
+                    'primary-page': isRepositoryLevel,
+                    'page-container': isRepositoryLevel
+                }">
+            <tainacan-title />
+            <div
+                    class="columns"
+                    :class="{ 'above-subheader': isRepositoryLevel }">
                 <div class="column table-container">
                     <events-list
                             :is-loading="isLoading"
@@ -56,7 +62,6 @@
 
 <script>
     import EventsList from "../../components/lists/events-list.vue";
-    import TitleRow from '../../components/navigation/title-row.vue';
     import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment'
 
@@ -67,16 +72,17 @@
                 isLoading: false,
                 totalEvents: 0,
                 page: 1,
-                eventsPerPage: 12
+                eventsPerPage: 12,
+                isRepositoryLevel: false
             }
         },
         components: {
-            EventsList,
-            TitleRow
+            EventsList
         },
         methods: {
             ...mapActions('event', [
                 'fetchEvents',
+                'fetchCollectionEvents',
             ]),
             ...mapGetters('event', [
                 'getEvents'
@@ -94,14 +100,25 @@
             loadEvents() {
                 this.isLoading = true;
 
-                this.fetchEvents({ 'page': this.page, 'eventsPerPage': this.eventsPerPage })
-                    .then((res) => {
-                        this.isLoading = false;
-                        this.totalEvents = res.total;
-                    })
-                    .catch(() => {
-                        this.isLoading = false;
-                    });
+                if(this.isRepositoryLevel) {
+                    this.fetchEvents({'page': this.page, 'eventsPerPage': this.eventsPerPage})
+                        .then((res) => {
+                            this.isLoading = false;
+                            this.totalEvents = res.total;
+                        })
+                        .catch(() => {
+                            this.isLoading = false;
+                        });
+                } else {
+                    this.fetchCollectionEvents({'page': this.page, 'eventsPerPage': this.eventsPerPage, 'collectionId': this.$route.params.collectionId})
+                        .then((res) => {
+                            this.isLoading = false;
+                            this.totalEvents = res.total;
+                        })
+                        .catch(() => {
+                            this.isLoading = false;
+                        });
+                }
             },
             getLastEventNumber() {
                 let last = (Number(this.eventsPerPage * (this.page - 1)) + Number(this.eventsPerPage));
@@ -121,6 +138,7 @@
             }
         },
         created() {
+            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
             this.$userPrefs.get('events_per_page')
                 .then((value) => {
                     this.eventsPerPage = value;
@@ -171,23 +189,12 @@
         min-height: 100%;
         height: auto;
 
-        .filters-menu {
-            min-width: $side-menu-width;
-            max-width: $side-menu-width;
-            background-color: $primary-lighter;
-            margin-left: -$page-small-side-padding;
-            padding-left: $page-small-side-padding
-        }
-
         .table-container {
             margin-right: -$page-small-side-padding;
             padding: 3em 2.5em;
         }
 
         @media screen and (max-width: 769px) {
-            .filters-menu {
-                display: none;
-            }
             .table-container {
                 margin-right: 0;
                 padding: .85em 0em;

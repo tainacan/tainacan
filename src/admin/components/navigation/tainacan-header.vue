@@ -17,12 +17,17 @@
         </div>
         <div class="level-right">
             <span class="search-area">
-                <b-input 
-                    :placeholder="$i18n.get('instruction_search_repository')"
-                    type="search"
-                    size="is-small"
-                    v-model="searchTerm"
-                    icon="magnify" />
+                <div class="control has-icons-right is-small is-clearfix">
+                    <input 
+                            autocomplete="on" 
+                            :placeholder="$i18n.get('instruction_search_repository')" 
+                            class="input is-small" 
+                            type="search" 
+                            v-model="searchTerm">
+                    <span class="icon is-right">
+                        <i class="mdi mdi-magnify" />
+                    </span>
+                </div>
                 <a href="">{{ $i18n.get('advanced_search') }}</a>
             </span>
             <a 
@@ -75,20 +80,19 @@ export default {
             .level-item{
                 height: $header-height;
                 width: 180px;
-                transition: margin 0.15s linear;
-                -webkit-transition: margin 0.15s linear;
-                margin-left: 0px;
+                transition: width 0.15s, background-color 0.2s;
+                -webkit-transition: width 0.15s background-color 0.2s;   
                 cursor: pointer;
-
-                &:hover{
-                    background-color: #257787;
-                }
+                background-color: #257787;
+                
                 &:focus {
                     box-shadow: none;
                 }
                 .tainacan-logo {
                     max-height: 22px;
-                    padding: 0px 28px;   
+                    padding: 0px 24px;
+                    transition: padding 0.15s;
+                    -webkit-transition: padding linear 0.15s;   
                 }
             }   
         }
@@ -101,18 +105,29 @@ export default {
                 color: $tertiary;
             }
             .search-area {
-                display: flex;
+                display: none;//display: flex;
                 align-items: center;
+                margin-right: 36px;
 
-                input {
-                    height: 27px;
-                    margin: 0px 12px;
-                    font-size: 11px;
-                    color: $gray-light;
+                .control {
+                    input {
+                        height: 27px;
+                        font-size: 11px;
+                        color: $gray-light;
+                        transition: width linear 0.15s;
+                        -webkit-transition: width linear 0.15s;
+                        width: 160px;
+                    }
+                    input:focus, input:active {
+                        width: 220px !important;
+                    }
+                    .icon {
+                        color: $tertiary;
+                        height: 27px;
+                        font-size: 18px;
+                    }
                 }
-                .icon {
-                    color: $tertiary;
-                }
+               
                 a {
                     margin: 0px 12px;
                     font-size: 12px;
@@ -121,32 +136,31 @@ export default {
         }
         &.menu-compressed {
             .level-left .level-item {
-                margin-left: 44px;
-                width: 160px;
-
+                width: 220px;
+                background-color: $secondary;
                 .tainacan-logo {
-                    max-height: 22px;
-                    padding: 0px 16px;   
+                    padding: 0px 42px;   
                 }
             }
             
         }
 
         @media screen and (max-width: 769px) {
+            padding: 0px;
+            display: flex;
             .level-left {
+                display: inline-block;
                 margin-left: 0px !important;
                 .level-item {
-                    margin-left: 30px;
+                    margin-left: 0px;
                 }
             }
             .level-right {
-                display: none;
+                margin-top: 0;
+                display: inline-block;
             }
 
-            top: 206px;
-            &.menu-compressed {
-                top: 237px !important;  
-            }
+            top: 0px;
             margin-bottom: 0px !important;
         }
 

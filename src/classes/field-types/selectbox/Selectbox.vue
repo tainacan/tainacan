@@ -2,7 +2,9 @@
     <div>
         <b-select 
             :id = "id"
+            :placeholder="$i18n.get('label_selectbox_init')"
             v-model="selected" 
+            :class="{'is-empty': selected == undefined || selected == ''}"
             @input="onChecked()">
             <option
                     v-for="(option, index) in getOptions"
@@ -24,7 +26,7 @@
         },
         data(){
             return {
-                selected:''
+                selected: undefined
             }
         },
         props: {
@@ -52,7 +54,8 @@
         methods: {
             onChecked() {
                 this.$emit('blur');
-                this.onInput(this.selected)
+                if (this.selected != undefined)
+                    this.onInput(this.selected)
             },
             onInput($event) {
                 this.$emit('input', $event);

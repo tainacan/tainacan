@@ -2,6 +2,7 @@
     <div>
         <div class="is-fullheight">
             <div class="page-container primary-page">
+                <tainacan-title />
                 <div class="title">{{ event.description }}</div>
                 <div
                         class="level"
@@ -43,6 +44,8 @@
     import Split from '../../components/other/event/diff-exhibition/event-split.vue';
     import Unified from '../../components/other/event/diff-exhibition/event-unified.vue';
     import NoDiff from '../../components/other/event/unique-exhibition/event-nodiff.vue';
+    import TainacanTitle from '../../components/navigation/tainacan-title.vue';
+
 
     export default {
         name: 'EventPage',
@@ -68,7 +71,8 @@
         components: {
             Split,
             Unified,
-            NoDiff
+            NoDiff,
+            TainacanTitle,
         },
         created() {
             this.eventId = parseInt(this.$route.params.eventId);

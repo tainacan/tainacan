@@ -12,72 +12,84 @@
                     <span 
                             v-for="(pathItem, index) in arrayRealPath" 
                             :key="index">
-                        <router-link 
+                        <router-link
+                                v-if="index < arrayRealPath.length - 1" 
                                 tag="a" 
                                 :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
                             {{ arrayViewPath[index] }}
                         </router-link>
+                        <span v-if="index == arrayRealPath.length - 1">{{ arrayViewPath[index] }}</span>
                         <span v-if="index != arrayRealPath.length - 1"> > </span>
                     </span>   
                 </nav>
             </div>
         </div>
         <ul class="menu-list level-right">
-            <li class="level-item"><router-link  
-                    tag="a" 
-                    :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
-                    :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
-                    :aria-label="$i18n.get('label_collection_items')">
-                <b-icon 
+            <li class="level-item">
+                <router-link  
+                        tag="a" 
+                        :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
+                        :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
+                        :aria-label="$i18n.get('label_collection_items')">
+                    <b-icon 
+                            size="is-small" 
+                            icon="folder-outline"/>
+                    <br>
+                    <span class="menu-text">{{ $i18n.getFrom('collections', 'singular_name') }}</span>
+                </router-link>
+            </li>
+            <li class="level-item">
+                <router-link
+                        tag="a" 
+                        :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
+                        :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
+                        :aria-label="$i18n.getFrom('collections','edit_item')">
+                    <b-icon 
+                            size="is-small" 
+                            icon="pencil"/>
+                    <br>
+                    <span class="menu-text">{{ $i18n.get('edit') }}</span>
+                </router-link>
+            </li>
+            <li class="level-item">
+                <router-link 
+                        tag="a" 
+                        :to="{ path: $routerHelper.getCollectionFieldsPath(id) }" 
+                        :class="activeRoute == 'FieldsList' ? 'is-active':''" 
+                        :aria-label="$i18n.get('label_collection_fields')">
+                    <b-icon 
                         size="is-small" 
-                        icon="folder-outline"/>
-                <br>
-                <span class="menu-text">{{ $i18n.getFrom('collections', 'singular_name') }}</span>
-            </router-link></li>
-            <li class="level-item"><router-link 
-                    tag="a" 
-                    :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
-                    :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
-                    :aria-label="$i18n.getFrom('collections','edit_item')">
-                <b-icon 
-                        size="is-small" 
-                        icon="pencil"/>
-                <br>
-                <span class="menu-text">{{ $i18n.get('edit') }}</span>
-            </router-link></li>
-            <li class="level-item"><router-link 
-                    tag="a" 
-                    :to="{ path: $routerHelper.getCollectionFieldsPath(id) }" 
-                    :class="activeRoute == 'FieldsList' ? 'is-active':''" 
-                    :aria-label="$i18n.get('label_collection_fields')">
-                <b-icon 
-                    size="is-small" 
-                    icon="format-list-checks"/>
-                <br>
-                <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
-            </router-link></li>
-            <li class="level-item"><router-link 
-                    tag="a" 
-                    :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
-                    :class="activeRoute == 'FiltersList' ? 'is-active':''" 
-                    :aria-label="$i18n.get('label_collection_filters')">
-                <b-icon 
-                        size="is-small" 
-                        icon="filter"/>
-                <br>
-                <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
-            </router-link></li>
-            <li class="level-item"><router-link 
-                    tag="a" 
-                    :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
-                    :class="activeRoute == 'EventsList' ? 'is-active':''" 
-                    :aria-label="$i18n.get('label_collection_events')">
-                <b-icon 
-                        size="is-small" 
-                        icon="calendar"/>
-                <br>
-                <span class="menu-text">{{ $i18n.get('events') }}</span>
-            </router-link></li>
+                        icon="format-list-bulleted-type"/>
+                    <br>
+                    <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
+                </router-link>
+            </li>
+            <li class="level-item">
+                <router-link
+                        tag="a" 
+                        :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
+                        :class="activeRoute == 'FiltersList' ? 'is-active':''" 
+                        :aria-label="$i18n.get('label_collection_filters')">
+                    <b-icon 
+                            size="is-small" 
+                            icon="filter"/>
+                    <br>
+                    <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+                </router-link>
+            </li>
+            <li class="level-item">
+                <router-link 
+                        tag="a" 
+                        :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
+                        :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
+                        :aria-label="$i18n.get('label_collection_events')">
+                    <b-icon 
+                            size="is-small" 
+                            icon="calendar-range"/>
+                    <br>
+                    <span class="menu-text">{{ $i18n.get('events') }}</span>
+                </router-link>
+            </li>
           
         </ul>
     </div>
@@ -102,6 +114,7 @@ export default {
     },
     watch: {
         '$route' (to) {
+
             this.activeRoute = to.name;
 
             this.pageTitle = this.$route.meta.title;
@@ -217,6 +230,7 @@ export default {
         .breadcrumbs {
             font-size: 12px;
             line-height: 12px;
+            color: #1d1d1d;
         }
 
         .level-left {
@@ -267,6 +281,7 @@ export default {
                 padding: 0;
             }
             .menu-text {
+                font-size: 14px;
                 opacity: 1;
                 visibility: visible;
                 transition: opacity 0.3s linear, visibility 0.3s linear;
@@ -277,11 +292,16 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
+            height: 143px;
+            max-height: 143px;
+            
             ul { 
+                margin-top: 12px;
                 flex-flow: wrap;
                 display: flex;
-                align-items: stretch;
-                justify-content: space-evenly;
+                align-items: baseline;
+                justify-content: space-between;
+
                 a { 
                     padding: 0.5em 0.7em !important; 
                     text-align: center;
@@ -290,9 +310,7 @@ export default {
                     padding-left: 0.3em !important;
                 }
             }
-        }
-
-        @media screen and (max-width: 769px) {
+      
             .level-left {
                 margin-left: 0px !important;
                 .level-item {

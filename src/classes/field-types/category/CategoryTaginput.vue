@@ -2,13 +2,14 @@
     <div class="block">
         <b-taginput
                 size="is-small"
-                rounded
                 icon="magnify"
                 :allow-new="allowNew"
                 @input="emitChange"
                 v-model="selected"
                 :data="labels"
                 field="label"
+                attached
+                :class="{'has-selected': selected != undefined && selected != []}"
                 autocomplete
                 @typing="search"/>
     </div>

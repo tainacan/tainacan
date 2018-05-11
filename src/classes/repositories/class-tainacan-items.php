@@ -25,6 +25,7 @@ class Items extends Repository {
         parent::__construct();
         add_filter( 'posts_where', array(&$this, 'title_in_posts_where'), 10, 2 );
         add_filter( 'posts_where', array(&$this, 'content_in_posts_where'), 10, 2 );
+		add_action( 'tainacan-api-item-updated', array(&$this, 'hook_api_updated_item'), 10, 2 );
     }
 
     public function get_map() {
@@ -77,12 +78,6 @@ class Items extends Repository {
 			    'type'        => 'string',
 			    'description' => __( 'The item modification date', 'tainacan' )
 		    ],
-		    'url'               => [
-			    'map'         => 'guid',
-			    'title'       => __( 'Item URL', 'tainacan' ),
-			    'type'        => 'string',
-			    'description' => __( 'The item URL', 'tainacan' )
-		    ],
 		    'terms'             => [
 			    'map'         => 'terms',
 			    'title'       => __( 'Term IDs', 'tainacan' ),
@@ -106,10 +101,10 @@ class Items extends Repository {
 			    'on_error'    => __( 'Invalid document', 'tainacan' ),
 			    'default'     => ''
 		    ],
-		    'featured_img_id'   => [
+		    '_thumbnail_id'   => [
 			    'map'         => 'meta',
-			    'title'       => __( 'Featured image ID', 'tainacan' ),
-			    'description' => __( 'Featured image ID', 'tainacan' )
+			    'title'       => __( 'Thumbnail', 'tainacan' ),
+			    'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
 		    ]
 		] );
 	}
@@ -365,4 +360,86 @@ class Items extends Repository {
         }
         return $where;
     }
+	
+	/**
+	 * Get a default thumbnail ID from the item document.
+	 * 
+	 * @param  EntitiesItem $item The item
+	 * @return int|null           The thumbnail ID or null if it was not possible to find a thumbnail
+	 */
+	public function get_thumbnail_id_from_document(Entities\Item $item) {
+		/**
+		 * Hook to get thumbnail from document
+		 */
+		$thumb_id = apply_filters('tainacan-get-thumbnail-id-from-document', null, $item);
+		
+		if (!is_null($thumb_id)) {
+			return $thumb_id;
+		}
+		
+		if ( empty($item->get_document()) ) {
+			return null;
+		}
+		
+		if ( $item->get_document_type() == 'attachment' ) {
+			if ( wp_attachment_is_image( $item->get_document() ) ) {
+				return $item->get_document();
+			} else {
+				
+				$filepath = get_attached_file($item->get_document());
+				$TainacanMedia = \Tainacan\Media::get_instance();
+				$thumb_blob = $TainacanMedia->get_pdf_cover($filepath);
+				if ( $thumb_blob ) {
+					$thumb_id = $TainacanMedia->insert_attachment_from_blob($thumb_blob, basename($filepath) . '-cover.jpg', $item->get_id());
+					return $thumb_id;
+				}
+				
+			}
+		} elseif ( $item->get_document_type() == 'url' ) {
+			
+			$TainacanEmbed = \Tainacan\Embed::get_instance();
+			if ( $thumb_url = $TainacanEmbed->oembed_get_thumbnail( $item->get_document() ) ) {
+				$meta_key = '_' . $thumb_url . '__thumb';
+				
+				$existing_thumb = get_post_meta($item->get_id(), $meta_key, true);
+				
+				if ( is_numeric( $existing_thumb ) ) {
+					return $existing_thumb;
+				} else {
+					$TainacanMedia = \Tainacan\Media::get_instance();
+					$thumb_id = $TainacanMedia->insert_attachment_from_url($thumb_url, $item->get_id());
+					update_post_meta($item->get_id(), $meta_key, $thumb_id);
+					return $thumb_id;
+				}
+			}
+			
+		}
+		
+		return $thumb_id;
+	}
+	
+	/**
+	 * When updating an item document, set a default thumbnail to the item if it does not have one yet
+	 * 
+	 * @param  Entities\Item $updated_item 
+	 * @param  array $attributes   The paramaters sent to the API 
+	 * @return void
+	 */
+	public function hook_api_updated_item(Entities\Item $updated_item, $attributes) {
+		if ( array_key_exists('document', $attributes)
+			&& empty($updated_item->get__thumbnail_id())
+			&& !empty($updated_item->get_document()) 
+		 ) {
+			
+			$thumb_id = $this->get_thumbnail_id_from_document($updated_item);
+			
+			if (!is_null($thumb_id)) {
+				set_post_thumbnail( $updated_item->get_id(), (int) $thumb_id );
+			}
+			
+		}
+		
+	}
+	
+	
 }

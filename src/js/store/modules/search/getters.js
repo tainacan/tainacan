@@ -29,3 +29,7 @@ export const getOrder = state => {
 export const getOrderBy = state => {
     return state.postquery.orderby;
 };
+
+export const getSearchQuery = state => {
+    return state.postquery.search;
+}

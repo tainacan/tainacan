@@ -123,7 +123,11 @@ class REST_Fields_Controller extends REST_Controller {
 		$collection_id = $request['collection_id'];
 		$field_id = $request['field_id'];
 
-		if($request['fetch'] === 'all_field_values'){
+		if($request['fetch'] === 'all_field_values' && $request['search']){
+			$results = $this->field_repository->fetch_all_field_values($collection_id, $field_id, $request['search']);
+
+			return new \WP_REST_Response($results, 200);
+		} elseif($request['fetch'] === 'all_field_values') {
 			$results = $this->field_repository->fetch_all_field_values($collection_id, $field_id);
 
 			return new \WP_REST_Response($results, 200);
@@ -285,6 +289,7 @@ class REST_Fields_Controller extends REST_Controller {
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
 		if(isset($request['collection_id'])) {

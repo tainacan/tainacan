@@ -1,9 +1,7 @@
 <template>
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"/>
-        <div class="page-title">
-            <h2>{{ isRepositoryLevel ? $i18n.get('instruction_dragndrop_fields_repository') : $i18n.get('instruction_dragndrop_fields_collection') }}</h2>
-        </div>
+        <tainacan-title v-if="!isRepositoryLevel"/>
         <div class="columns">
             <div class="column">        
                 <draggable 
@@ -377,6 +375,7 @@ export default {
             display: block; 
             position: relative;
             cursor: grab;
+            opacity: 1 !important;
             
             .handle {
                 padding-right: 6em;
@@ -434,7 +433,7 @@ export default {
                 cursor: default;
                
                 .field-name {
-                    color: $primary;
+                    color: $secondary;
                 }
                 .handle .label-details, .handle .icon {
                     color: $gray !important;
@@ -459,6 +458,7 @@ export default {
 
             .switch.is-small {
                 input[type="checkbox"] + .check {
+                    background-color: $secondary !important;
                     border: 1.5px solid white !important;
                     &::before { background-color: white !important; }
                 } 

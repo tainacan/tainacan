@@ -20,8 +20,9 @@ class Filter extends Entity {
         $filter_type_options;
 
     static $post_type = 'tainacan-filter';
-    
-    /**
+	public $enabled_for_collection = true;
+
+	/**
      * {@inheritDoc}
      * @see \Tainacan\Entities\Entity::repository
      * @var string
@@ -188,13 +189,29 @@ class Filter extends Entity {
         $this->set_mapped_property('filter_type', ( is_object( $value ) ) ? get_class( $value ) : $value );
     }
 
-    /**
-     * {@inheritdoc }
-     *
-     * Also validates the field, calling the validate_options callback of the Field Type
-     *
-     * @return bool valid or not
-     */
+
+	/**
+	 * Transient property used to store the status of the filter for a particular collection
+	 *
+	 * Used by the API to tell front end when a field is disabled
+	 *
+	 */
+	public function get_enabled_for_collection() {
+		return $this->enabled_for_collection;
+	}
+	public function set_enabled_for_collection($value) {
+		$this->enabled_for_collection = $value;
+	}
+
+
+	/**
+	 * {@inheritdoc }
+	 *
+	 * Also validates the field, calling the validate_options callback of the Field Type
+	 *
+	 * @return bool valid or not
+	 * @throws \Exception
+	 */
     public function validate() {
         $is_valid = parent::validate();
         if (false === $is_valid)

@@ -12,7 +12,7 @@ class Collection extends Entity {
     protected
         $diplay_name,
         $full,
-        $featured_img_id,
+        $_thumbnail_id,
         $modification_date,
         $creation_date,
         $author_id,
@@ -68,9 +68,10 @@ class Collection extends Entity {
 	public function __toArray() {
 		$array_collection = parent::__toArray();
 
-		$array_collection['featured_image']  = $this->get_featured_image();
-		$array_collection['header_image']    = $this->get_header_image();
-		$array_collection['author_name']     = $this->get_author_name();
+		$array_collection['thumbnail']    = $this->get_thumbnail();
+		$array_collection['header_image'] = $this->get_header_image();
+		$array_collection['author_name']  = $this->get_author_name();
+		$array_collection['url']          = get_permalink( $this->get_id() );
 
 		return $array_collection;
 	}
@@ -99,6 +100,7 @@ class Collection extends Entity {
 		$args = array(
 			'labels'              => $cpt_labels,
 			'hierarchical'        => true,
+			'description'		  => $this->get_description(),
 			//'supports'          => array('title'),
 			//'taxonomies'        => array(self::TAXONOMY),
 			'public'              => true,
@@ -204,7 +206,7 @@ class Collection extends Entity {
 	/**
 	 * @return false|string
 	 */
-	function get_featured_image() {
+	function get_thumbnail() {
 		return get_the_post_thumbnail_url( $this->get_id(), 'full' );
 	}
 
@@ -218,18 +220,18 @@ class Collection extends Entity {
 	/**
 	 * @param $id
 	 */
-	function set_featured_img_id( $id ) {
-		$this->set_mapped_property( 'featured_img_id', $id );
+	function set__thumbnail_id( $id ) {
+		$this->set_mapped_property( '_thumbnail_id', $id );
 	}
 
 	/**
 	 * @return int|string
 	 */
 
-	function get_featured_img_id() {
-        $featured_img_id = $this->get_mapped_property("featured_img_id");
-        if ( isset( $featured_img_id ) ) {
-            return $featured_img_id;
+	function get__thumbnail_id() {
+        $_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
+        if ( isset( $_thumbnail_id ) ) {
+            return $_thumbnail_id;
         }
 
 		return get_post_thumbnail_id( $this->get_id() );

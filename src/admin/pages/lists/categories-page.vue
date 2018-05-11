@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="primary-page page-container">
-            <title-row/>
+            <tainacan-title />
             <div 
                     class="sub-header" 
                     v-if="totalCategories > 0">
@@ -70,7 +70,6 @@
 
 <script>
     import CategoriesList from "../../components/lists/categories-list.vue";
-    import TitleRow from '../../components/navigation/title-row.vue';
     import { mapActions, mapGetters } from 'vuex';
     //import moment from 'moment'
 
@@ -85,8 +84,7 @@
             }
         },
         components: {
-            CategoriesList,
-            TitleRow
+            CategoriesList
         },
         methods: {
             ...mapActions('category', [
@@ -150,8 +148,8 @@
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        max-height: $header-height;
-        height: $header-height;
+        max-height: $subheader-height;
+        height: $subheader-height;
         margin-left: -$page-small-side-padding;
         margin-right: -$page-small-side-padding;
         margin-top: -$page-small-top-padding;
@@ -181,14 +179,6 @@
         margin-top: 0;
         min-height: 100%;
         height: auto;
-
-        .filters-menu {
-            min-width: $side-menu-width;
-            max-width: $side-menu-width;
-            background-color: $primary-lighter;
-            margin-left: -$page-small-side-padding;
-            padding-left: $page-small-side-padding
-        }
 
         .table-container {
             margin-right: -$page-small-side-padding;

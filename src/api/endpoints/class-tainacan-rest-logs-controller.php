@@ -55,6 +55,16 @@ class REST_Logs_Controller extends REST_Controller {
 				)
 			)
 		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+				)
+			)
+		);
 	}
 
 	/**
@@ -90,7 +100,49 @@ class REST_Logs_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
-		$args = $this->prepare_filters($request);
+
+		$args = $this->prepare_filters( $request );
+
+		if($request['collection_id']){
+			$collection_id = $request['collection_id'];
+
+			$collection_repository = Repositories\Collections::get_instance();
+
+			$collection = $collection_repository->fetch($collection_id);
+
+			if(!$collection){
+				return new \WP_REST_Response([
+					'error_message' => __('A collection with that ID not exists.', 'tainacan'),
+					'collection_id' => $collection_id
+				], 400);
+			}
+
+			if($args &&
+			   array_key_exists('meta_query', $args) &&
+			   array_key_exists('relation', $args['meta_query'])){
+
+				$metaq = $args['meta_query'];
+
+				unset($args['meta_query']);
+
+				$args['meta_query'][] = $metaq;
+				$args['meta_query']['relation'] = 'AND';
+
+			} elseif($args &&
+			         array_key_exists('meta_query', $args)){
+				$args['meta_query']['relation'] = 'AND';
+			}
+
+			$args = array_merge_recursive(array(
+				'meta_query' => array(
+					'collection_clause' => array(
+						'key'     => 'collection_id',
+						'value'   => $collection_id,
+						'compare' => '='
+					)
+				)
+			), $args);
+		}
 
 		$logs = $this->logs_repository->fetch($args);
 

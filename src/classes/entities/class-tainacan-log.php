@@ -17,7 +17,8 @@ class Log extends Entity {
 		$blog_id,
 		$user_id,
 		$log_date,
-		$user_name;
+		$user_name,
+		$collection_id;
 
 	static $post_type = 'tainacan-log';
 	/**
@@ -49,6 +50,21 @@ class Log extends Entity {
 		$array_log['user_name']     = $this->get_user_name();
 
 		return $array_log;
+	}
+
+
+	/**
+	 * @param $collection_id
+	 */
+	function set_collection_id($collection_id){
+		$this->set_mapped_property('collection_id', $collection_id);
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	function get_collection_id(){
+		return $this->get_mapped_property('collection_id');
 	}
 
 	/**
@@ -269,6 +285,12 @@ class Log extends Entity {
 		$log->set_description( $desc );
 		$log->set_status( $status );
 		$log->set_log_diffs( $diffs );
+
+		if(array_search( 'Tainacan\Traits\Entity_Collection_Relation', class_uses($new_value))) {
+			$log->set_collection_id( $new_value->get_collection_id() );
+		} elseif($new_value instanceof Collection){
+			$log->set_collection_id( $new_value->get_id());
+		}
 
 		if ( ! is_null( $new_value ) ) {
 			$log->set_value( $new_value );

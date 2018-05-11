@@ -129,11 +129,9 @@ abstract class Repository {
 		// Now run through properties stored as postmeta
 		foreach ( $map as $prop => $mapped ) {
 			if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
-				$this->insert_metadata( $obj, $prop );
+				$diffs = $this->insert_metadata( $obj, $prop, $diffs );
 			}
 		}
-
-		$diffs = $this->insert_thumbnail( $obj, $diffs );
 
 		// TODO: Logs for header image insert and update
 
@@ -150,9 +148,11 @@ abstract class Repository {
 	 * @param  \Tainacan\Entities $obj The entity object
 	 * @param  string $prop the property name, as declared in the map of the repository
 	 *
+	 * @param $diffs
+	 *
 	 * @return null|false on error
 	 */
-	public function insert_metadata( $obj, $prop ) {
+	public function insert_metadata( $obj, $prop, $diffs ) {
 		$map = $this->get_map();
 
 		if ( ! array_key_exists( $prop, $map ) ) {
@@ -160,16 +160,26 @@ abstract class Repository {
 		}
 
 		if ( $map[ $prop ]['map'] == 'meta' ) {
-			update_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $obj->get_mapped_property( $prop ) ) );
+
+			if($prop === '_thumbnail_id'){
+				$diffs = $this->insert_thumbnail($obj, $diffs);
+
+				return $diffs;
+			} else {
+				update_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $obj->get_mapped_property( $prop ) ) );
+			}
+
 		} elseif ( $map[ $prop ]['map'] == 'meta_multi' ) {
 			$values = $obj->get_mapped_property( $prop );
 			$current_values = get_post_meta( $obj->get_id(), $prop );
 			
-			if (empty($values) || !is_array($values))
+			if (empty($values) || !is_array($values)) {
 				$values = [];
-			
-			if (empty($current_values) || !is_array($current_values))
+			}
+
+			if (empty($current_values) || !is_array($current_values)) {
 				$current_values = [];
+			}
 			
 			$deleted = array_diff( $current_values, $values );
 			$added   = array_diff( $values, $current_values );
@@ -183,6 +193,8 @@ abstract class Repository {
 			}
 			
 		}
+
+		return $diffs;
 	}
 
 	function maybe_add_slashes( $value ) {
@@ -710,61 +722,62 @@ abstract class Repository {
 			}
 		}
 
-		unset($diff['id'], $diff['collection_id'], $diff['author_id'], $diff['creation_date'], $diff['featured_img_id']);
+		unset($diff['id'], $diff['collection_id'], $diff['author_id'], $diff['creation_date'], $diff['_thumbnail_id']);
 		$diff = apply_filters( 'tainacan-entity-diff', $diff, $new, $old );
 
 		return $diff;
 	}
 
 	/**
+	 * Inserts or update thumbnail for items and collections and return an array
+	 * with old thumbnail and new thumbnail
+	 *
 	 * @param $obj
 	 * @param $diffs
 	 *
 	 * @return mixed
 	 */
-	protected function insert_thumbnail( $obj, $diffs ) {
-		if ( method_exists( $obj, 'get_featured_img_id' ) ) {
-			if ( ! get_post_thumbnail_id( $obj->WP_Post->ID ) ) {
-				// was added a thumbnail
+	private function insert_thumbnail( $obj, $diffs ) {
+		if ( ! get_post_thumbnail_id( $obj->WP_Post->ID ) ) {
+			// was added a thumbnail
 
-				$settled = set_post_thumbnail( $obj->WP_Post, (int) $obj->get_featured_img_id() );
+			$settled = set_post_thumbnail( $obj->WP_Post, (int) $obj->get__thumbnail_id() );
 
-				if ( $settled ) {
+			if ( $settled ) {
 
-					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+				$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
 
-					$diffs['featured_image'] = [
-						'new'             => $thumbnail_url,
-						'old'             => '',
-						'diff_with_index' => 0,
-					];
+				$diffs['thumbnail'] = [
+					'new'             => $thumbnail_url,
+					'old'             => '',
+					'diff_with_index' => 0,
+				];
 
-				}
+			}
 
+		} else {
+
+			// was updated a thumbnail
+
+			$old_thumbnail = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+
+			$fid = $obj->get__thumbnail_id();
+
+			if ( ! $fid ) {
+				$settled = delete_post_thumbnail( $obj->WP_Post );
 			} else {
+				$settled = set_post_thumbnail( $obj->WP_Post, (int) $fid );
+			}
 
-				// was update a thumbnail
+			if ( $settled ) {
 
-				$old_thumbnail = get_the_post_thumbnail_url( $obj->WP_Post->ID );
+				$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
 
-				$fid = $obj->get_featured_img_id();
-
-				if ( ! $fid ) {
-					$settled = delete_post_thumbnail( $obj->WP_Post );
-				} else {
-					$settled = set_post_thumbnail( $obj->WP_Post, (int) $fid );
-				}
-
-				if ( $settled ) {
-
-					$thumbnail_url = get_the_post_thumbnail_url( $obj->WP_Post->ID );
-
-					$diffs['featured_image'] = [
-						'new'             => $thumbnail_url,
-						'old'             => $old_thumbnail,
-						'diff_with_index' => 0,
-					];
-				}
+				$diffs['thumbnail'] = [
+					'new'             => $thumbnail_url,
+					'old'             => $old_thumbnail,
+					'diff_with_index' => 0,
+				];
 			}
 		}
 

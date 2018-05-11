@@ -25,8 +25,10 @@ class REST_Controller extends \WP_REST_Controller {
 		if (is_array($attributes)) {
 			foreach ( $attributes as $attribute ) {
 				try {
-					$get_              = 'get_' . $attribute;
-					$object_filtered[$attribute] = $object->$get_();
+					if(!is_array($attribute)) {
+						$get_                          = 'get_' . $attribute;
+						$object_filtered[ $attribute ] = $object->$get_();
+					}
 				} catch ( \Error $error ) {
 					// Do nothing
 				}

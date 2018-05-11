@@ -23,13 +23,13 @@ export const eventBus = new Vue({
             const components = this.getAllComponents();
             for (let eventElement of components){
                 eventElement.addEventListener('input', (event) => {
-					
+
                     if (event.detail && event.detail[0] ){
-                        this.updateValue({ 
-                            item_id: $(eventElement).attr("item_id"), 
-                            field_id: $(eventElement).attr("field_id"), 
+                        this.updateValue({
+                            item_id: $(eventElement).attr("item_id"),
+                            field_id: $(eventElement).attr("field_id"),
                             values: event.detail
-                        })                    
+                        })
                     }
                 });
             }
@@ -39,7 +39,7 @@ export const eventBus = new Vue({
                 let values = ( Array.isArray( data.values[0] ) ) ? data.values[0] : data.values ;
                 const promisse = this.$store.dispatch('item/updateMetadata',
                     { item_id: data.item_id, field_id: data.field_id, values: values });
-                
+
                     promisse.then( () => {
                     let index = this.errors.findIndex( errorItem => errorItem.field_id == data.field_id );
                     if ( index >= 0){
@@ -65,6 +65,9 @@ export const eventBus = new Vue({
         getErrors(field_id){
             let error = this.errors.find( errorItem => errorItem.field_id == field_id );
             return ( error ) ? error.errors : false
+        },
+        clearAllErrors(){
+           this.errors = [];
         },
         setValues(){
             const field = this.$store.getters['item/getMetadata'];

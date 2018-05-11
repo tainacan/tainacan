@@ -11,19 +11,19 @@
                 <li><router-link 
                         tag="a" 
                         to="/collections" 
-                        :class="activeRoute == 'CollectionsPage' || isMenuCompressed ? 'is-active':''">
+                        :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
                             icon="folder-multiple"/> <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                 </router-link></li>
-                <li><router-link 
+                <!-- <li><router-link 
                         tag="a" 
                         to="/items" 
                         :class="activeRoute == 'ItemsPage' ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
                             icon="file-multiple"/> <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
-                </router-link></li>
+                </router-link></li> -->
                 <li class="separator"/>
                 <li><router-link 
                         tag="a" 
@@ -31,7 +31,7 @@
                         :class="activeRoute == 'FieldsPage' ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
-                            icon="format-list-checks"/> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
+                            icon="format-list-bulleted-type"/> <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
@@ -55,7 +55,7 @@
                         :class="activeRoute == 'EventsPage' ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
-                            icon="calendar"/> <span class="menu-text">{{ $i18n.get('events') }}</span>
+                            icon="calendar-range"/> <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link></li>
             </ul>
         </aside>
@@ -88,7 +88,7 @@ export default {
             height: 2px;
             background-color: $separator-color;
             width: 100%;
-            margin: 1.75em 0;
+            margin: 24px 0;
         }
         li{
             a {
@@ -118,8 +118,7 @@ export default {
         }
 
         &.is-compressed {
-            max-width: 44px;
-
+            max-width: 45px;
             a { 
                 padding-left: 0.8em;
                 padding-right: 0.8em;
@@ -128,18 +127,15 @@ export default {
                 visibility: hidden; 
                 opacity: 0;
             }
-            box-shadow: -3px 0px 10px #111;
-            z-index: 10;
         }
 
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important; 
-            
-            .menu-header {
-                height: 60px;
+            padding-top: $header-height;
+            .menu{
+                padding-top: 0px;
             }
-
             ul { 
                 flex-flow: wrap;
                 display: flex;
@@ -149,6 +145,9 @@ export default {
                 a{ 
                     padding: 0.8em !important;
                     text-align: center;
+                }
+                .menu-text {
+                    display: none;
                 }
             }
         }

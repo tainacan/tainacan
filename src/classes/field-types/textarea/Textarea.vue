@@ -1,6 +1,8 @@
 <template>
     <b-input 
+            :class="{'has-content': inputValue !== undefined && inputValue !== ''}"
             :id="id"
+            size="is-small"
             type="textarea"
             :value="inputValue"
             @blur="onBlur"

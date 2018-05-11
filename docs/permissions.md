@@ -28,8 +28,8 @@ These are the capabilities related to collection management.
 
 |                              | Admin | Editor | Author | Collaborator |
 |------------------------------|-------|--------|--------|--------------|
-| Edit Collections             | y     | y      | y      | y            |
-| Delete Collections           | y     | y      | y      | y            |
+| Edit Collections             | y     | y      | y      |              |
+| Delete Collections           | y     | y      | y      |              |
 | Publish Collections          | y     | y      | y      |              |
 | Edit Published Collections   | y     | y      | y      |              |
 | Delete Published Collections | y     | y      | y      |              |
@@ -42,7 +42,7 @@ These are the capabilities related to collection management.
 #### Edit Collections
 
 > Capability name: edit_tainacan-collections
-Who's got it: Everyone but subscribers
+Who's got it: Everyone but subscribers and colaborators
 
 Allows to create and edit one's own collections details. Does not allow to publish them.
 
@@ -77,7 +77,7 @@ Allows to publish one's own collections.
 #### Delete Collections
 
 > Capability name: delete_tainacan-collections
-Who's got it: Everyone but subscribers
+Who's got it: Everyone but subscribers and colaborators
 
 Allows to delete one's own collections.
 
