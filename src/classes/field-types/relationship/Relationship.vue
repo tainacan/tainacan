@@ -4,6 +4,7 @@
                 :id="id"
                 v-model="selected"
                 :data="options"
+                :maxtags="field.field.multiple === 'yes' ? 100 : 1"
                 autocomplete
                 attached
                 :loading="loading"

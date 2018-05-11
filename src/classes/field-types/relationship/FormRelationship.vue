@@ -5,7 +5,7 @@
                 :listen="setError"
                 :type="collectionType"
                 :message="collectionMessage">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
