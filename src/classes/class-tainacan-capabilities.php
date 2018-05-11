@@ -41,8 +41,6 @@ class Capabilities {
 				"read"
 			],
 			"contributor"=> [
-				"delete_posts",
-				"edit_posts",
 				"read"
 			],
 			"subscriber"=> [

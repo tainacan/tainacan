@@ -493,7 +493,7 @@ class REST_Fields_Controller extends REST_Controller {
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args['fetch'] = [
 				'type'        => 'string',
-				'description' => __('Fetch all values of a field from a collection in all it collection items'),
+				'description' => __('Fetch all values of a metadata within a collection'),
 				'enum'        => ['all_field_values']
 			];
 			$endpoint_args['context'] = array(
