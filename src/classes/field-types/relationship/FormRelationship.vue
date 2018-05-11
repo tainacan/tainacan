@@ -115,8 +115,9 @@
                     this.fields = [];
                     this.hasFields = false;
                     this.modelSearch = [];
+
+                    this.emitValues();
                 }
-                this.emitValues();
             },
             modelSearch( value ){
                 this.modelSearch = value;
@@ -199,9 +200,12 @@
                                 type: 'is-danger'
                             })
                         }
+
+                        this.emitValues();
                     })
                     .catch(() => {
                         this.hasFields = false;
+                        this.emitValues();
                     });
 
             },
