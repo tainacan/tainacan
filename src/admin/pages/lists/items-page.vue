@@ -117,7 +117,7 @@
                                 tag="button"
                                 class="button is-primary"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ $i18n.getFrom('items', 'new_item') }}
+                            {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link>
                     </div>
                 </section>
