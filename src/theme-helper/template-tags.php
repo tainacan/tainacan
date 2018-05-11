@@ -49,6 +49,70 @@ function tainacan_get_collection_id() {
 }
 
 /**
+ * When visiting a collection archive or single, returns the current collection object
+ *
+ * @uses tainacan_get_collection_id() 
+ * @return \Tainacan\Entities\Collection | false 
+ */
+function tainacan_get_collection() {
+	$collection_id = tainacan_get_collection_id();
+	if ( $collection_id ) {
+		$TainacanCollections = Repositories\Collections::get_instance();
+		$collection = $TainacanCollections->fetch($collection_id);
+		if ( $collection instanceof Entities\Collection ) {
+			return $collection;
+		}
+		return false;
+	}
+}
+
+/**
+ * When visiting a collection archive or single, returns the collection name
+ *
+ * @return string
+ */
+function tainacan_get_the_collection_name() {
+	$collection = tainacan_get_collection();
+	$name = '';
+	if ( $collection ) {
+		$name = $collection->get_name();
+	}
+	return $name;
+}
+
+/**
+ * When visiting a collection archive or single, prints the collection name
+ *
+ * @return void
+ */
+function tainacan_the_collection_name() {
+	echo tainacan_get_the_collection_name();
+}
+
+/**
+ * When visiting a collection archive or single, returns the collection description
+ *
+ * @return string
+ */
+function tainacan_get_the_collection_description() {
+	$collection = tainacan_get_collection();
+	$description = '';
+	if ( $collection ) {
+		$description = $collection->get_description();
+	}
+	return $description;
+}
+
+/**
+ * When visiting a collection archive or single, prints the collection description
+ *
+ * @return void
+ */
+function tainacan_the_collection_description() {
+	echo tainacan_get_the_collection_description();
+}
+
+/**
  * When visiting a term archive, returns the current term object
  *
  * @return false|\WP_Term 
