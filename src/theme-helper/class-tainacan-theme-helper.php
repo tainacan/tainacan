@@ -40,6 +40,8 @@ class Theme_Helper {
 		
 		add_filter('theme_mod_header_image', array(&$this, 'header_image'));
 
+		add_filter('get_the_archive_title', array(&$this, 'filter_archive_title'));
+
 		add_shortcode( 'tainacan-search', array(&$this, 'search_shortcode'));
 		
 	}
@@ -68,6 +70,19 @@ class Theme_Helper {
 		return $this->is_taxonomy_a_tainacan_tax($term->taxonomy);
 	}
 	
+	public function filter_archive_title($title) {
+		if (is_post_type_archive()) {
+			
+			$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
+			$current_post_type = get_post_type();
+			
+			if (in_array($current_post_type, $collections_post_types)) {
+				$title = sprintf( __( 'Collection: %s' ), post_type_archive_title( '', false ) );
+			}
+		}
+		return $title;
+	}
+
 	public function the_content_filter($content) {
 		global $post;
 		

@@ -507,7 +507,8 @@ class Item extends Entity {
 		$output = '';
 		
 		if ( $type == 'url' ) {
-			$output .= apply_filters('the_content', $this->get_document());
+			global $wp_embed;
+			$output .= $wp_embed->autoembed($this->get_document());
 		} elseif ( $type == 'text' ) {
 			$output .= $this->get_document();
 		} elseif ( $type == 'attachment' ) {

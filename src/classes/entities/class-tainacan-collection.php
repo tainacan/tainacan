@@ -100,6 +100,7 @@ class Collection extends Entity {
 		$args = array(
 			'labels'              => $cpt_labels,
 			'hierarchical'        => true,
+			'description'		  => $this->get_description(),
 			//'supports'          => array('title'),
 			//'taxonomies'        => array(self::TAXONOMY),
 			'public'              => true,
