@@ -29,7 +29,7 @@ return [
 	'save'                                     => __( 'Save', 'tainacan' ),
 	'next'                                     => __( 'Next', 'tainacan' ),
 	'back'         	                           => __( 'Back', 'tainacan' ),
-	'see'                                      => __( 'See', 'tainacan' ),
+	'see'                                      => __( 'View', 'tainacan' ),
 	'search'                                   => __( 'Search', 'tainacan' ),
 	'advanced_search'                          => __( 'Advanced Search', 'tainacan' ),
 	'continue'                                 => __( 'Continue', 'tainacan' ),
