@@ -142,3 +142,9 @@
         }
     }
 </script>
+
+<style>
+    .help.counter {
+        display: none;
+    }
+</style>
