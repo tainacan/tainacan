@@ -15,13 +15,28 @@
                     :active.sync="isLoadingFilters"/>
 
             <b-field class="margin-1">
-                <b-input
+                <div class="control is-small is-clearfix">
+                    <input
+                        class="input is-small"
                         :placeholder=" $i18n.get('instruction_search_collection') "
                         type="search"
-                        size="is-small"
-                        icon="magnify" 
-                        @input="updateSearch($event)"
-                        :value="searchQuery"/>
+                        autocomplete="on"
+                        :value="searchQuery"
+                        @input="futureSearchQuery = $event.target.value"
+                        @keyup.enter="updateSearch()">
+                </div>
+
+                <p class="control">
+                    <button                             
+                            id="collection-search-button"
+                            type="submit"
+                            class="button"
+                            @click="updateSearch()">
+                        <b-icon 
+                                icon="magnify" 
+                                size="is-small"/>
+                    </button>
+                </p>
             </b-field>
             <!-- <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a> -->
 
@@ -85,7 +100,9 @@
                         :pref-table-fields="prefTableFields"
                         :is-on-theme="isOnTheme"/>
             </div>
-            <div class="tabs">
+            <div 
+                    v-if="!isOnTheme"
+                    class="tabs">
                 <ul>
                     <li 
                             @click="onChangeTab('')"
@@ -164,6 +181,7 @@
                 isFiltersMenuCompressed: false,
                 collapseAll: false,
                 isOnTheme: false,
+                futureSearchQuery: ''
             }
         },
         props: {
@@ -195,9 +213,9 @@
                 'getSearchQuery',
                 'getStatus'
             ]),
-            updateSearch(searchQuery) {
-                this.$eventBusSearch.setSearchQuery(searchQuery)
-            },
+            updateSearch() {
+                this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+            },  
             onChangeTab(status) {
                 this.$eventBusSearch.setStatus(status);
             }
@@ -380,6 +398,14 @@
         margin-top: 0;
         min-height: 100%;
         height: auto;
+    }
+
+    #collection-search-button {
+        border-radius: 0px !important;
+        padding: 0px 8px !important;
+        &:focus, &:active {
+            border-color: none !important;
+        }
     }
 
     .filters-menu {

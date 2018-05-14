@@ -18,7 +18,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
 
         if (collectionId == undefined)
             endpoint = '/items?context=edit&'
-        
+
         axios.tainacan.get(endpoint + qs.stringify(postQueries) )
         .then(res => {
             let items = res.data;
