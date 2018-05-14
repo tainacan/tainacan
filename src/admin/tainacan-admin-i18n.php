@@ -17,6 +17,7 @@ return [
 	'event'                                    => __( 'Event', 'tainacan' ),
 	'term'                                     => __( 'Term', 'tainacan' ),
 	'terms'                                    => __( 'Terms', 'tainacan' ),
+	'exposer'                                  => __( 'Exposer', 'tainacan' ),
 
 	// Actions
 	'edit'                                     => __( 'Edit', 'tainacan' ),
