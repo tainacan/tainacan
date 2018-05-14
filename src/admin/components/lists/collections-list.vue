@@ -4,107 +4,114 @@
                 grouped 
                 group-multiline>
             <button 
-                    v-if="selectedCollections.length > 0 && collections.length > 0 && collections[0].current_user_can_edit" 
+                    v-if="isSelectingCollections && collections.length > 0 && collections[0].current_user_can_edit" 
                     class="button field is-danger" 
                     @click="deleteSelectedCollections()">
                 <span>{{ $i18n.get('instruction_delete_selected_collections') }} </span>
                 <b-icon icon="delete"/>
             </button>
         </b-field>
-        <b-table
-                v-if="totalCollections > 0"
-                ref="collectionTable"
-                :data="collections"
-                :checked-rows.sync="selectedCollections"
-                checkable
-                :loading="isLoading"
-                hoverable 
-                selectable
-                backend-sorting>
-            <template slot-scope="props">
-                
-                <b-table-column 
-                        tabindex="0" 
-                        :label="$i18n.get('label_thumbnail')" 
-                        :aria-label="$i18n.get('label_thumbnail')" 
-                        field="thumbnail"
-                        width="55">
-                    <template 
-                            v-if="props.row.thumbnail"
-                            slot-scope="scope">
-                        <router-link 
-                                tag="img" 
-                                :to="{path: $routerHelper.getCollectionPath(props.row.id)}" 
-                                class="table-thumb clickable-row" 
-                                :src="`${props.row.thumbnail}`"/>
-                    </template>
-                </b-table-column>
-
-                <b-table-column 
-                        tabindex="0" 
-                        :label="$i18n.get('label_name')" 
-                        :aria-label="$i18n.get('label_name')" 
-                        field="props.row.name">
-                    <router-link 
-                            class="clickable-row" 
-                            tag="span" 
-                            :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
-                    {{ props.row.name }}
-                    </router-link>
-                </b-table-column>
-
-                <b-table-column 
-                        tabindex="0" 
-                        :aria-label="$i18n.get('label_description')" 
-                        :label="$i18n.get('label_description')" 
-                        property="description" 
-                        show-overflow-tooltip 
-                        field="props.row.description">
-                    <router-link 
-                            class="clickable-row" 
-                            tag="span" 
-                            :to="{path: $routerHelper.getCollectionPath(props.row.id)}">
-                    {{ props.row.description }}
-                    </router-link>
-                </b-table-column>
-
-                <b-table-column 
-                        class="row-creation" 
-                        tabindex="0" 
-                        :aria-label="$i18n.get('label_creation') + ': ' + props.row.creation" 
-                        :label="$i18n.get('label_creation')" 
-                        property="creation" 
-                        show-overflow-tooltip 
-                        field="props.row.creation">
-                    <router-link 
-                            class="clickable-row" 
-                            v-html="props.row.creation" 
-                            tag="span" 
-                            :to="{path: $routerHelper.getCollectionPath(props.row.id)}"/>
-                </b-table-column>
-
-                <b-table-column 
-                        tabindex="0" 
-                        v-if="props.row.current_user_can_edit"
-                        :label="$i18n.get('label_actions')" 
-                        width="78" 
-                        :aria-label="$i18n.get('label_actions')">
-                    <!-- <a id="button-view" :aria-label="$i18n.get('label_button_view')" @click.prevent.stop="goToCollectionPage(props.row.id)"><b-icon icon="eye"></a> -->
-                    <a 
-                            id="button-edit" 
-                            :aria-label="$i18n.getFrom('collections','edit_item')" 
-                            @click.prevent.stop="goToCollectionEditPage(props.row.id)"><b-icon 
-                            type="is-gray" 
-                            icon="pencil"/></a>
-                    <a 
-                            id="button-delete" 
-                            :aria-label="$i18n.get('label_button_delete')" 
-                            @click.prevent.stop="deleteOneCollection(props.row.id)"><b-icon 
-                            type="is-gray" 
-                            icon="delete"/></a>
-                </b-table-column>
-            </template>
-        </b-table>
+        <div class="field select-all">
+            <b-checkbox
+                    :value="allCollectionsOnPageSelected"
+                    @input="selectAllCollectionsOnPage($event)"
+                    size="is-small">Selecionar todas as coleções desta página.</b-checkbox>
+        </div>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <!-- Checking list -->
+                        <th class="checkbox-cell">
+                            <!-- nothing to show on header -->
+                        </th>
+                        <!-- Thumbnail -->
+                        <th class="table-thumbnail-column">
+                            <div class="th-wrap">{{ $i18n.get('label_thumbnail') }}</div>
+                        </th>
+                        <!-- Name -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
+                        </th>
+                        <!-- Description -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
+                        </th>
+                        <!-- Creation -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_creation') }}</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr     
+                            :class="{ 'selected-row': selectedCollections[index] }"
+                            :key="index"
+                            v-for="(collection, index) of collections">
+                        <!-- Checking list -->
+                        <td 
+                                :class="{ 'is-selecting': isSelectingCollections }"
+                                class="checkbox-cell">
+                            <b-checkbox v-model="selectedCollections[index]"/> 
+                        </td>
+                        <!-- Thumbnail -->
+                        <td 
+                                class="column-default-width"
+                                @click="goToCollectionPage(collection.id)"
+                                :label="$i18n.get('label_thumbnail')" 
+                                :aria-label="$i18n.get('label_thumbnail')">
+                            <span>
+                                <img 
+                                        class="table-thumb" 
+                                        :src="collection.thumbnail">
+                            </span>
+                        </td>
+                        <!-- Name -->
+                        <td 
+                                class="column-default-width"
+                                @click="goToCollectionPage(collection.id)"
+                                :label="$i18n.get('label_name')" 
+                                :aria-label="$i18n.get('label_name') + ': ' + collection.name">
+                            <p>{{ collection.name }}</p>
+                        </td>
+                        <!-- Description -->
+                        <td
+                                class="column-default-width" 
+                                @click="goToCollectionPage(collection.id)"
+                                :label="$i18n.get('label_description')" 
+                                :aria-label="$i18n.get('label_description') + ': ' + collection.description">
+                            <p>{{ collection.description }}</p>
+                        </td>
+                        <!-- Creation -->
+                        <td
+                                @click="goToCollectionPage(collection.id)"
+                                class="table-creation column-default-width" 
+                                :label="$i18n.get('label_creation')" 
+                                :aria-label="$i18n.get('label_creation') + ': ' + collection.creation">
+                            <p v-html="collection.creation" />
+                        </td>
+                        <!-- Actions -->
+                        <td 
+                                @click="goToCollectionPage(collection.id)"
+                                class="actions-cell column-default-width" 
+                                :label="$i18n.get('label_actions')">
+                            <a 
+                                    id="button-edit" 
+                                    :aria-label="$i18n.getFrom('collections','edit_item')" 
+                                    @click.prevent.stop="goToCollectionEditPage(collection.id)"><b-icon 
+                                    type="is-secondary" 
+                                    icon="pencil"/></a>
+                            <a 
+                                    id="button-delete" 
+                                    :aria-label="$i18n.get('label_button_delete')" 
+                                    @click.prevent.stop="deleteOneCollection(collection.id)"><b-icon 
+                                    type="is-secondary" 
+                                    icon="delete"/></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Empty state image -->
         <div v-if="!totalCollections || totalCollections <= 0">
@@ -137,7 +144,9 @@ export default {
     name: 'CollectionsList',
     data(){
         return {
-            selectedCollections: []
+            selectedCollections: [],
+            allCollectionsOnPageSelected: false,
+            isSelectingCollections: false
         }
     },
     props: {
@@ -147,35 +156,58 @@ export default {
         collectionsPerPage: 12,
         collections: Array
     },
+    watch: {
+        collections() {
+            for (let i = 0; i < this.collections.length; i++)
+                this.selectedCollections.push(false);    
+        },
+        selectedCollections() {
+            let allSelected = true;
+            let isSelecting = false;
+            for (let i = 0; i < this.selectedCollections.length; i++) {
+                if (this.selectedCollections[i] == false) {
+                    allSelected = false;
+                } else {
+                    isSelecting = true;
+                }
+            }
+            this.allCollectionsOnPageSelected = allSelected;
+            this.isSelectingCollections = isSelecting;
+        }
+    },
     methods: {
         ...mapActions('collection', [
             'deleteCollection'
         ]),
+        selectAllCollectionsOnPage(event) {
+            for (let i = 0; i < this.selectedCollections.length; i++) 
+                this.selectedCollections.splice(i, 1, event);
+        },
         deleteOneCollection(collectionId) {
             this.$dialog.confirm({
                 message: this.$i18n.get('info_warning_collection_delete'),
                 onConfirm: () => {
-                    this.deleteCollection(collectionId).then(() => {
-                        this.$toast.open({
-                            duration: 3000,
-                            message: this.$i18n.get('info_collection_deleted'),
-                            position: 'is-bottom',
-                            type: 'is-secondary',
-                            queue: true
-                        });
-                        for (let i = 0; i < this.selectedCollections.length; i++) {
-                            if (this.selectedCollections[i].id == this.collectionId)
-                                this.selectedCollections.splice(i, 1);
-                        }
-                    }).catch(() =>
-                        this.$toast.open({
-                            duration: 3000,
-                            message: this.$i18n.get('info_error_deleting_collection'),
-                            position: 'is-bottom',
-                            type: 'is-danger',
-                            queue: true
-                        })
-                    );
+                    // this.deleteCollection(collectionId).then(() => {
+                    //     this.$toast.open({
+                    //         duration: 3000,
+                    //         message: this.$i18n.get('info_collection_deleted'),
+                    //         position: 'is-bottom',
+                    //         type: 'is-secondary',
+                    //         queue: true
+                    //     });
+                    //     for (let i = 0; i < this.selectedCollections.length; i++) {
+                    //         if (this.selectedCollections[i].id == this.collectionId)
+                    //             this.selectedCollections.splice(i, 1);
+                    //     }
+                    // }).catch(() =>
+                    //     this.$toast.open({
+                    //         duration: 3000,
+                    //         message: this.$i18n.get('info_error_deleting_collection'),
+                    //         position: 'is-bottom',
+                    //         type: 'is-danger',
+                    //         queue: true
+                    //     })
+                    // );
                 }
             });
         },
@@ -184,28 +216,29 @@ export default {
                 message: this.$i18n.get('info_warning_selected_collections_delete'),
                 onConfirm: () => {
 
-                    for (let collection of this.selectedCollections) {
-                        this.deleteCollection(collection.id)
-                        .then(() => {
-                            this.loadCollections();
-                            this.$toast.open({
-                                duration: 3000,
-                                message: this.$i18n.get('info_collection_deleted'),
-                                position: 'is-bottom',
-                                type: 'is-secondary',
-                                queue: false
-                            })                            
-                        }).catch(() => { 
-                            this.$toast.open({
-                                duration: 3000,
-                                message: this.$i18n.get('info_error_deleting_collection'),
-                                position: 'is-bottom',
-                                type: 'is-danger',
-                                queue: false
-                            });
-                        });
+                    for (let i = 0; i < this.collections.length; i++) {
+                        if (this.selectedCollections[i])
+                        this.deleteCollection(this.collections[i].id)
+                        // .then(() => {
+                        //     this.loadCollections();
+                        //     this.$toast.open({
+                        //         duration: 3000,
+                        //         message: this.$i18n.get('info_collection_deleted'),
+                        //         position: 'is-bottom',
+                        //         type: 'is-secondary',
+                        //         queue: false
+                        //     })                            
+                        // }).catch(() => { 
+                        //     this.$toast.open({
+                        //         duration: 3000,
+                        //         message: this.$i18n.get('info_error_deleting_collection'),
+                        //         position: 'is-bottom',
+                        //         type: 'is-danger',
+                        //         queue: false
+                        //     });
+                        // });
                     }
-                    this.selectedCollections =  [];
+                    this.allCollectionsOnPageSelected = false;
                 }
             });
         },
@@ -223,19 +256,97 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .table-thumb {
-        max-height: 55px !important;
-        vertical-align: middle !important;
-    }
-
-    .row-creation span {
+    .select-all {
         color: $gray-light;
-        font-size: 0.75em;
-        line-height: 1.5
+        font-size: 14px;
+        &:hover {
+            color: $gray-light;
+        }
     }
 
-    .clickable-row{ cursor: pointer !important; }
+    .table {
+        width: 100%;
+        position: relative;
 
+        .table-thumbnail-column {
+            width: 58px;
+        }
+        .checkbox-cell {
+            width: 44px;
+            .checkbox { 
+                visibility: hidden;
+                .control-label {
+                    padding-left: 0;
+                }  
+            }
+            &.is-selecting .checkbox {
+                visibility: visible; 
+            }
+        }
+        tbody {
+            tr {
+                background-color: transparent;
+                &.selected-row { background-color: $primary-lighter;}
+                td {
+                    height: 56px;
+                    max-height: 56px;
+                    padding: 10px;
+                    vertical-align: middle;
+                    line-height: 12px;
+                    p { font-size: 14px; }
+                }
+                td.column-default-width{
+                    max-width: 250px;
+                    p {
+                        text-overflow: ellipsis;
+                        overflow-x: hidden;
+                        white-space: nowrap;
+                    }
+                }
+                img.table-thumb {
+                    max-height: 38px !important;
+                    border-radius: 3px;
+                }
+
+                td.table-creation p {
+                    color: $gray-light;
+                    font-size: 11px;
+                    line-height: 1.5;
+                }
+
+                td.actions-cell {
+                    padding: 10px;
+                    visibility: hidden;
+                    position: absolute;
+                    right: 0px;
+                    display: none;
+                    background-color: $tainacan-input-background;
+
+                    a .icon {
+                        margin: 8px;
+                    }
+                }
+
+                &:hover {
+                    background-color: $tainacan-input-background;
+                    cursor: pointer;
+
+                    .checkbox-cell .checkbox {
+                        visibility: visible; 
+                    }
+                    .actions-cell {
+                        visibility: visible;
+                        display: block;
+                        box-shadow: -2px 0px 5px -4px #555;
+                    }
+                }
+            }
+        }
+
+        .clickable-row{ cursor: pointer !important; }
+
+    }
+    
 </style>
 
 

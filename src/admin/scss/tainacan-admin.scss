@@ -525,15 +525,10 @@ a:hover {
 
 // Tables
 .table-wrapper {
+    width: 100%;
     .table {
         tbody {
             td { border-bottom: 0px solid $gray-light !important; }
-        }
-        .b-checkbox.checkbox input[type="checkbox"] + .check {
-            width: 0.85em !important;
-            height: 0.85em !important;
-            border-radius: 2px !important;
-            border: 1px solid #7a7a7a !important;
         }
         .th-wrap {
             font-size: 12px !important;
