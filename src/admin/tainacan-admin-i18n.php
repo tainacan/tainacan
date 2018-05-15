@@ -173,6 +173,9 @@ return [
 	'label_all_items'			 			   => __( 'All items', 'tainacan' ),
 	'label_draft_items'			 			   => __( 'Draft', 'tainacan' ),
 	'label_trash_items'			 			   => __( 'Trash', 'tainacan' ),
+	'label_mass_actions'		 			   => __( 'Mass actions', 'tainacan' ),
+	'label_delete_selected_collections'  	   => __( 'Delete selected collections', 'tainacan' ),
+	'label_edit_selected_collections'	  	   => __( 'Edit selected collections', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

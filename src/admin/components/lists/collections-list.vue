@@ -1,22 +1,38 @@
 <template>
-    <div>     
-        <b-field 
-                grouped 
-                group-multiline>
-            <button 
-                    v-if="isSelectingCollections && collections.length > 0 && collections[0].current_user_can_edit" 
-                    class="button field is-danger" 
-                    @click="deleteSelectedCollections()">
-                <span>{{ $i18n.get('instruction_delete_selected_collections') }} </span>
-                <b-icon icon="delete"/>
-            </button>
-        </b-field>
-        <div class="field select-all">
-            <b-checkbox
-                    :value="allCollectionsOnPageSelected"
-                    @input="selectAllCollectionsOnPage($event)"
-                    size="is-small">Selecionar todas as coleções desta página.</b-checkbox>
-        </div>
+    <div>
+
+            <div class="field select-all is-pulled-left">
+                <!-- Checkbox click is binded outside as we don't want reactive behaviour on input -->
+                <span @click="selectAllCollectionsOnPage()">
+                    <b-checkbox
+                            :value="allCollectionsOnPageSelected"
+                            size="is-small">Selecionar todas as coleções desta página.</b-checkbox>
+                </span>
+            </div>
+            <div class="field is-pulled-right">
+                <b-dropdown
+                        v-if="collections.length > 0 && collections[0].current_user_can_edit"
+                        :disabled="!isSelectingCollections"
+                        id="mass-actions-dropdown">
+                    <button
+                            class="button is-white"
+                            slot="trigger">
+                        <span>{{ $i18n.get('label_mass_actions') }}</span>
+                        <b-icon icon="menu-down"/>
+                    </button> 
+
+                    <b-dropdown-item>
+                        <a
+                                id="item-delete-selected-items"
+                                @click="deleteSelectedCollections()">
+                            {{ $i18n.get('label_delete_selected_collections') }}
+                        </a>
+                    </b-dropdown-item>
+                    <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_collections') + ' (Not ready)' }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
+      
         <div class="table-wrapper">
             <table class="table">
                 <thead>
@@ -179,9 +195,10 @@ export default {
         ...mapActions('collection', [
             'deleteCollection'
         ]),
-        selectAllCollectionsOnPage(event) {
+        selectAllCollectionsOnPage() {
+            console.log("CLICK!")
             for (let i = 0; i < this.selectedCollections.length; i++) 
-                this.selectedCollections.splice(i, 1, event);
+                this.selectedCollections.splice(i, 1, !this.allCollectionsOnPageSelected);
         },
         deleteOneCollection(collectionId) {
             this.$dialog.confirm({
@@ -286,7 +303,7 @@ export default {
         tbody {
             tr {
                 background-color: transparent;
-                &.selected-row { background-color: $primary-lighter;}
+                &.selected-row { background-color: $primary-lighter !important; }
                 td {
                     height: 56px;
                     max-height: 56px;
