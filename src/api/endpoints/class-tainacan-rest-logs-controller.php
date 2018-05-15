@@ -112,7 +112,7 @@ class REST_Logs_Controller extends REST_Controller {
 
 			if(!$collection){
 				return new \WP_REST_Response([
-					'error_message' => __('A collection with that ID not exists.', 'tainacan'),
+					'error_message' => __('A collection with that ID does not exist.', 'tainacan'),
 					'collection_id' => $collection_id
 				], 400);
 			}
@@ -291,7 +291,7 @@ class REST_Logs_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_collection_params('log'));
 
 		$query_params['title'] = array(
-			'description' => __('Limit result set to log with specific title.'),
+			'description' => __('Limits the result set to a log with a specific title'),
 			'type'        => 'string',
 		);
 

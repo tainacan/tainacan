@@ -1074,7 +1074,8 @@ msgstr ""
 #: api/class-tainacan-rest-controller.php:435
 msgid "Limit result set to items that have specific custom fields"
 msgstr ""
-"Limitar conjunto de resultados para itens que possuem metadado específicos."
+"Limita o conjunto de resultados a ítens que possuem determinados metadados "
+"customizados"
 
 #: api/class-tainacan-rest-controller.php:445
 msgid ""
@@ -1103,7 +1104,6 @@ msgstr "OR ou AND, como os sub-arrays deveriam ser comparados."
 
 # Datetime?
 #: api/class-tainacan-rest-controller.php:460
-#, fuzzy
 msgid ""
 "Custom field type. Possible values are NUMERIC, BINARY, CHAR, DATE, "
 "DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can "
@@ -1112,7 +1112,7 @@ msgid ""
 "the compare value BETWEEN only if the date is stored at the format YYYY-MM-"
 "DD and tested with this format."
 msgstr ""
-"Customizar tipo de Metadado. Valores possíveis: Numérico, Binário, "
+"Metadado do tipo customizado. Valores possíveis: Numérico, Binário, "
 "Caractere, Data, Decimal, Assinado, Hora, Sem assinatura. Caractere "
 "inválido. Você também pode especificar precisão e escala para tipos Decimal "
 "e Numérico (por exemplo, são válidos decimal (10,5) ou numérico (10). O tipo "
@@ -1180,16 +1180,16 @@ msgid "Show items associated with certain taxonomy."
 msgstr "Mostrar Itens associados a determinada taxonomia"
 
 #: api/class-tainacan-rest-controller.php:528
+#, fuzzy
 msgid "The taxonomy data base identifier."
-msgstr "Taxonomia da base de dados identificada."
+msgstr "Identificador da base de dados da taxonomia."
 
 # Entender contexto
 #: api/class-tainacan-rest-controller.php:532
-#, fuzzy
 msgid ""
 "Select taxonomy term by. Possible values are term_id, name, slug or "
 "term_taxonomy_id. Default value is term_id."
-msgstr "Selecionar Termo pela taxonomia. "
+msgstr "Selecionar termo pela taxonomia. "
 
 # Ver contexto
 #: api/class-tainacan-rest-controller.php:536
@@ -1272,9 +1272,8 @@ msgstr ""
 "do 'schema'."
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:448
-#, fuzzy
 msgid "Limit result set to collection with specific name."
-msgstr "Resultado limitado definido como coleção com nome específico."
+msgstr "Limita o conjunto de resultados a coleções com um nome específico"
 
 #: api/endpoints/class-tainacan-rest-field-types-controller.php:26
 #: api/endpoints/class-tainacan-rest-filter-types-controller.php:26
@@ -1284,73 +1283,76 @@ msgstr "Retorna a estrutura dos objetos"
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:396
 msgid "Field with that ID not found"
-msgstr "Campo cuja ID não foi localizada"
+msgstr "O metadado com esta ID não foi localizado"
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:402
 msgid "That field is not a default field"
-msgstr "Este campo não é o campo padrão"
+msgstr "Este metadado não é um metadado padrão"
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:409
 msgid "That field is not a collection field"
-msgstr "Este campo não é um campo de coleção"
+msgstr "Este metadado não é um metadado de coleção"
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:476
-#, fuzzy
 msgid "Limit result set to field with specific name."
-msgstr "Resultado limitado definido como coleção com nome específico."
+msgstr "Limita o conjunto de resultados a metadados com um nome específico"
 
 #: api/endpoints/class-tainacan-rest-fields-controller.php:496
 msgid ""
 "Fetch all values of a field from a collection in all it collection items"
-msgstr "Buscar todos os valores de um metadado dentro de uma coleção"
+msgstr ""
+"Busca todos os conteúdos do metadado de uma coleção em todos os itens da "
+"coleção"
 
 #: api/endpoints/class-tainacan-rest-filters-controller.php:177
 msgid "One or more attributes are invalid"
-msgstr ""
+msgstr "Verifique, atributo(s) inválido(s)"
 
 #: api/endpoints/class-tainacan-rest-filters-controller.php:282
 msgid "Filter with that ID not found"
-msgstr ""
+msgstr "Não foi encontrado um filtro com essa ID"
 
 #: api/endpoints/class-tainacan-rest-filters-controller.php:467
 msgid "Limit result set to filter with specific name."
-msgstr ""
+msgstr "Limita o conjunto de resultados a filtros com um nome específico"
 
 #: api/endpoints/class-tainacan-rest-item-metadata-controller.php:216
 msgid "Field do not accept suggestion."
-msgstr ""
+msgstr "Esse metadado não aceita sugestões"
 
 #: api/endpoints/class-tainacan-rest-item-metadata-controller.php:276
 msgid "The value(s) of item metadata"
-msgstr ""
+msgstr "Conteúdo do metadado do ítem"
 
 #: api/endpoints/class-tainacan-rest-items-controller.php:404
 msgid "Item with that ID not found"
-msgstr ""
+msgstr "Não foi encontrado um ítem com esta ID"
 
 #: api/endpoints/class-tainacan-rest-items-controller.php:480
 msgid "Limit result set to items with specific title."
-msgstr ""
+msgstr "Limita o conjunto de resultados a ítens com um título específico"
 
 #: api/endpoints/class-tainacan-rest-logs-controller.php:115
 msgid "A collection with that ID not exists."
-msgstr ""
+msgstr "Não existe uma coleção com esta ID"
 
 #: api/endpoints/class-tainacan-rest-logs-controller.php:294
 msgid "Limit result set to log with specific title."
 msgstr ""
+"Limita o conjunto de resultados em uma coleção específica através do "
+"atributo de título"
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:183
 msgid "Failure on deleted."
-msgstr "Erro ao deletar."
+msgstr "Falha ao deletar"
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:194
 msgid "Taxonomy with this id ("
-msgstr ""
+msgstr "A taxonomia com esta ID"
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:343
 msgid "Taxonomy with that ID not found"
-msgstr ""
+msgstr "A taxonomia com esta ID não foi encontrada"
 
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:419
 msgid "Limit result set to taxonomy with specific name."
@@ -1385,7 +1387,7 @@ msgstr "Editor Tainacan"
 
 #: classes/entities/class-tainacan-entity.php:238
 msgid " is invalid"
-msgstr "Inválido"
+msgstr "é inválida"
 
 #: classes/entities/class-tainacan-field.php:417
 msgid ""
@@ -1435,10 +1437,8 @@ msgid "Select the collection to fetch items"
 msgstr "Deletar Coleções selecionadas"
 
 #: classes/field-types/category/class-tainacan-category.php:40
-#, fuzzy
-#| msgid "The parent of the term"
 msgid "The html type of the terms list "
-msgstr "O pai do termo"
+msgstr "O tipo de html utilizado na lista de termos"
 
 #: classes/field-types/category/class-tainacan-category.php:44
 #, fuzzy
@@ -1609,10 +1609,8 @@ msgid "Value should be yes or no"
 msgstr ""
 
 #: classes/repositories/class-tainacan-collections.php:159
-#, fuzzy
-#| msgid "per Page"
 msgid "Cover Page ID"
-msgstr "por Página"
+msgstr "ID da Cover Page"
 
 #: classes/repositories/class-tainacan-collections.php:161
 msgid "The page to be used as cover for this collection"
@@ -1698,7 +1696,8 @@ msgstr "Um texto único e sanitizado representando o metadado"
 #: classes/repositories/class-tainacan-fields.php:63
 msgid "Field order. Field used if collections are manually ordered"
 msgstr ""
-"Ordem do Metadado. Metadado utilizado se coleções são ordenadas manualmente."
+"Ordem do Metadado. Esse metadado será utilizado se as coleções forem "
+"ordenadas manualmente."
 
 #: classes/repositories/class-tainacan-fields.php:64
 msgid "The menu order should be a numeric value"
@@ -1878,7 +1877,7 @@ msgstr "Nenhum campo encontrado na lixeira"
 
 #: classes/repositories/class-tainacan-fields.php:204
 msgid "Parent Field:"
-msgstr "Metadado Pai: "
+msgstr "Metadado Pai:"
 
 #: classes/repositories/class-tainacan-filters.php:33
 msgid "Name of the filter"
@@ -2123,7 +2122,7 @@ msgstr "Página de Criação da Coleção"
 
 #: classes/repositories/class-tainacan-logs.php:119
 msgid "The id of collection that this log is related."
-msgstr "o ID da coleção relacionada a este registro."
+msgstr "ID da coleção relacionada a este registro"
 
 #: classes/repositories/class-tainacan-logs.php:131
 #: classes/repositories/class-tainacan-logs.php:142
