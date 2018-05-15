@@ -16,7 +16,8 @@
                         :title="$i18n.getHelperTitle('filters', 'name')" 
                         :message="$i18n.getHelperMessage('filters', 'name')"/>
             </label>
-            <b-input 
+            <b-input
+                    :class="{'has-content': editForm.name != undefined && editForm.name != ''}" 
                     v-model="editForm.name" 
                     name="name" 
                     @focus="clearErrors('name')"/>
@@ -32,7 +33,8 @@
                         :title="$i18n.getHelperTitle('filters', 'description')" 
                         :message="$i18n.getHelperMessage('filters', 'description')"/>    
             </label>
-            <b-input 
+            <b-input
+                    :class="{'has-content': editForm.description != undefined && editForm.description != ''}" 
                     type="textarea" 
                     name="description" 
                     v-model="editForm.description" 
@@ -51,6 +53,7 @@
             </label>
             <div class="inline-block">
                 <b-radio 
+                        size="is-small"
                         @focus="clearErrors('label_status')"
                         id="tainacan-select-status-publish"
                         name="status" 
@@ -59,7 +62,8 @@
                     {{ $i18n.get('publish_visibility') }}
                 </b-radio>
                 <br>
-                <b-radio 
+                <b-radio
+                        size="is-small" 
                         @focus="clearErrors('label_status')"
                         id="tainacan-select-status-private"
                         name="status" 

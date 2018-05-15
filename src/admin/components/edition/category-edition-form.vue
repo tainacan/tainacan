@@ -1,13 +1,9 @@
 <template>
     <div>
         <div class="page-container primary-page">
-            <b-tabs v-model="activeTab">
-
+            <tainacan-title />
+            <b-tabs v-model="activeTab">    
                 <b-tab-item :label="$i18n.get('category')">
-                    <b-tag
-                            v-if="category != null && category != undefined" 
-                            :type="'is-' + getStatusColor(category.status)" 
-                            v-text="category.status"/>
                     <form 
                             v-if="category != null && category != undefined" 
                             class="tainacan-form" 
@@ -23,6 +19,7 @@
                                     :title="$i18n.getHelperTitle('categories', 'name')" 
                                     :message="$i18n.getHelperMessage('categories', 'name')"/>
                             <b-input
+                                    :class="{'has-content': form.name != undefined && form.name != ''}"
                                     id="tainacan-text-name"
                                     v-model="form.name"
                                     @focus="clearErrors('name')"
@@ -39,6 +36,7 @@
                                     :title="$i18n.getHelperTitle('categories', 'description')" 
                                     :message="$i18n.getHelperMessage('categories', 'description')"/>
                             <b-input
+                                    :class="{'has-content': form.description != undefined && form.description != ''}"
                                     id="tainacan-text-description"
                                     type="textarea"
                                     v-model="form.description"
@@ -79,6 +77,7 @@
                                     :message="$i18n.getHelperMessage('categories', 'slug')"/>
                             <b-icon :class="{'is-loading': isUpdatingSlug}"/>
                             <b-input
+                                    :class="{'has-content': form.slug != undefined && form.slug != ''}"
                                     @input="updateSlug()"
                                     id="tainacan-text-slug"
                                     v-model="form.slug"
@@ -277,7 +276,7 @@
 
                         promise.done((result) => {
                             this.form.slug = result.permalink;
-                            this.$console.info(this.form.slug);
+                            //this.$console.info(this.form.slug);
                         });
 
                         this.isUpdatingSlug = false;
@@ -290,20 +289,6 @@
                         this.isUpdatingSlug = false;
                     });
 
-            },
-            getStatusColor(status) {
-                switch(status) {
-                    case 'publish':
-                        return 'success';
-                    case 'draft':
-                        return 'info';
-                    case 'private':
-                        return 'warning';
-                    case 'trash':
-                        return 'danger';
-                    default:
-                        return 'info';
-                }
             },
             createNewCategory() {
                 // Puts loading on Draft Category creation

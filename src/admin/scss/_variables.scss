@@ -10,22 +10,27 @@ $secondary-invert: findColorInvert($secondary);
 $tertiary: #01295c;
 $tertiary-invert: findColorInvert($tertiary);
 
-$primary-light:#A5CDD7;
+$primary-light:#c1dae0;
 $primary-lighter: #e6f6f8;
 $primary-dark: #55A0AF;
 $primary-darker: darken($primary-dark, 5%);
 
-$success: #25a088;
+$success: #25a189;
 $success-invert: findColorInvert($success);
 
 $separator-color: #2b98a4;
-$tainacan-input-color: #f0f0f0;
+$tainacan-input-color: #1d1d1d;
+$tainacan-input-background: #e5e5e5;
+$tainacan-placeholder-color: #898d8f;
 $draggable-border-color: #d8d8d8;
 
 $gray: #b1b1b1; 
 $gray-invert: findColorInvert($gray);
 $gray-light: #898d8f; 
 $gray-light-invert: findColorInvert($gray-light);
+
+$danger: #a23939; 
+$danger-invert: findColorInvert($danger);
 
 @import "../../../node_modules/bulma/sass/utilities/derived-variables.sass";
 
@@ -66,12 +71,15 @@ $page-small-side-padding: 22px;
 $page-small-top-padding: 22px;
 
 $page-mobile-side-padding: 1em;
-$page-mobile-top-padding: 0.5em;
+$page-mobile-top-padding: 1em;
 
 // Links
 $link: $secondary;
-$link-invert: $secondary-invert;
+$link-invert: $secondary;
 $link-focus-border: $secondary; 
+
+// Placeholder
+$text-light: $tainacan-placeholder-color;
 
 // Table
 $table-head-cell-color: $gray-light;

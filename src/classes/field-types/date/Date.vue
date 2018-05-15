@@ -1,5 +1,6 @@
 <template>
     <b-datepicker
+            :class="{'has-content': dateValue != undefined && dateValue != ''}"
             :id="id"
             v-model="dateValue"
             @blur="onBlur"

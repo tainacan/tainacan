@@ -185,7 +185,7 @@ class Item_Metadata extends Repository {
 	 * @return array
 	 * @throws \Exception
 	 */
-    public function fetch($object, $output = null ){
+    public function fetch($object, $output = null, $args = [] ){
         if($object instanceof Entities\Item){
             $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
             
@@ -195,7 +195,7 @@ class Item_Metadata extends Repository {
                 return [];
             }
             
-            $meta_list = $Tainacan_Fields->fetch_by_collection($collection, [], 'OBJECT' );
+            $meta_list = $Tainacan_Fields->fetch_by_collection($collection, $args, 'OBJECT' );
             
             $return = [];
             

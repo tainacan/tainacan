@@ -2,12 +2,13 @@
     <div class="block">
         <b-taginput
                 size="is-small"
-                rounded
-                icon="magnify"
                 v-model="selected"
                 :data="options"
+                :loading="isLoading"
                 autocomplete
                 field="label"
+                attached
+                :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search" />
     </div>
 </template>
@@ -75,12 +76,12 @@
                 let promise = null;
                 this.options = [];
                 const q = query;
-
+                
                 axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
                     .then( res => {
                         let field = res.data;
                         promise = this.getValuesCategory( field.field_type_options.taxonomy_id, q );
-
+                        this.isLoading = true;
                         promise.then( () => {
                             this.isLoading = false;
                         })

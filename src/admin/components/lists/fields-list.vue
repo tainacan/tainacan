@@ -375,6 +375,7 @@ export default {
             display: block; 
             position: relative;
             cursor: grab;
+            opacity: 1 !important;
             
             .handle {
                 padding-right: 6em;
@@ -432,7 +433,7 @@ export default {
                 cursor: default;
                
                 .field-name {
-                    color: $primary;
+                    color: $secondary;
                 }
                 .handle .label-details, .handle .icon {
                     color: $gray !important;
@@ -457,6 +458,7 @@ export default {
 
             .switch.is-small {
                 input[type="checkbox"] + .check {
+                    background-color: $secondary !important;
                     border: 1.5px solid white !important;
                     &::before { background-color: white !important; }
                 } 

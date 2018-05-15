@@ -99,6 +99,7 @@ export const sendItem = ( { commit }, { collection_id, status }) => {
 };
  
 export const updateItem = ({ commit }, { item_id, status }) => {
+
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/items/' + item_id, {
             status: status 
@@ -118,7 +119,9 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
             document: document,
             document_type: document_type
         }).then( res => {
-            commit('setItem', res.data);
+            let item = res.data;
+
+            commit('setItem', item);
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -164,7 +167,7 @@ export const fetchAttachments = ({ commit }, item_id) => {
 export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/items/' + itemId, {
-            featured_img_id: thumbnailId 
+            _thumbnail_id: thumbnailId
         }).then( res => {
             let item = res.data
             commit('setItem', item);

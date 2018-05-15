@@ -93,7 +93,7 @@
                             tag="button" 
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getNewCategoryPath() }">
-                        {{ $i18n.get('new') + ' ' + $i18n.get('category') }}
+                        {{ $i18n.getFrom('taxonomies', 'new') }}
                     </router-link>
                 </div>
             </section>

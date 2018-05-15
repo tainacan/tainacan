@@ -18,6 +18,23 @@ export const fetchEvents = ({ commit }, { page, eventsPerPage } ) => {
     });
 };
 
+export const fetchCollectionEvents = ({ commit }, { page, eventsPerPage, collectionId }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(`/collection/${collectionId}/logs?paged=${page}&perpage=${eventsPerPage}&context=edit`)
+            .then(res => {
+                let events = res.data;
+
+                commit('setEvents', events);
+
+                resolve({
+                    events: events,
+                    total: res.headers['x-wp-total']
+                });
+            })
+            .catch(error => reject(error));
+    });
+};
+
 export const fetchEvent = ({ commit }, eventId) => {
     return new Promise((resolve, reject) => {
        axios.tainacan.get(`/logs/${eventId}?context=edit`)

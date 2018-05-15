@@ -22,7 +22,6 @@ import CategoryEditionForm from '../components/edition/category-edition-form.vue
 // Listing components
 import FiltersList from '../components/lists/filters-list.vue'
 import FieldsList from '../components/lists/fields-list.vue'
-import EventsList from '../components/lists/events-list.vue'
 
 Vue.use(VueRouter);
 
@@ -47,8 +46,8 @@ const routes = [
         { path: 'edit', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_edit_collection'), icon: 'folder-multiple'} },
         { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: i18nGet('title_collection_fields_edition'), icon: 'folder-multiple'} }, 
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition'), icon: 'folder-multiple'} },
-        { path: 'events', component: EventsList, name: 'EventsList', meta: {title: i18nGet('title_collection_events'), icon: 'calendar'} }
-    ]
+        { path: 'events', component: EventsPage, name: 'CollectionEventsPage', meta: {title: i18nGet('title_collection_events'), icon: 'calendar'} }
+      ]
     },
 
 //    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page'), icon: 'file-multiple'} },

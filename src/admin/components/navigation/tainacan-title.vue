@@ -2,11 +2,11 @@
     <div 
             class="tainacan-page-title"
             id="title-row">
-        <h1>{{ pageTitle }} <span class="has-text-weight-bold">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
+        <h1>{{ pageTitle }} <span class="is-italic">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
         <a 
                 @click="$router.go(-1)"
                 class="back-link is-secondary">
-            {{ $i18n.get('return') }}
+            {{ $i18n.get('back') }}
         </a>
         <hr>
         <nav 
@@ -118,7 +118,8 @@ export default {
     },
     created() {
         this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
-        this.pageTitle = this.$route.meta.title;
+        document.title = this.$route.meta.title;
+        this.pageTitle = document.title;
 
         this.arrayRealPath = this.$route.path.split("/");
         this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
@@ -136,7 +137,7 @@ export default {
     #title-row {
 
         .breadcrumbs {
-            font-size: 0.85em;
+            font-size: 12px;
         }
 
         .level-left {

@@ -1,4 +1,4 @@
-# Setting up yout local enviroment
+# Setting up your local enviroment
 
 This document will run you through setting up your local enviroment and running the tests. If you haven't done it yet, please have a look at [key concepts](key-concepts.md) so you can have a better Understanding of the project.
 

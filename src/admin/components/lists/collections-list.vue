@@ -4,7 +4,7 @@
                 grouped 
                 group-multiline>
             <button 
-                    v-if="selectedCollections.length > 0" 
+                    v-if="selectedCollections.length > 0 && collections.length > 0 && collections[0].current_user_can_edit" 
                     class="button field is-danger" 
                     @click="deleteSelectedCollections()">
                 <span>{{ $i18n.get('instruction_delete_selected_collections') }} </span>
@@ -19,7 +19,6 @@
                 checkable
                 :loading="isLoading"
                 hoverable 
-                striped
                 selectable
                 backend-sorting>
             <template slot-scope="props">
@@ -28,16 +27,16 @@
                         tabindex="0" 
                         :label="$i18n.get('label_thumbnail')" 
                         :aria-label="$i18n.get('label_thumbnail')" 
-                        field="featured_image" 
+                        field="thumbnail"
                         width="55">
                     <template 
-                            v-if="props.row.featured_image" 
+                            v-if="props.row.thumbnail"
                             slot-scope="scope">
                         <router-link 
                                 tag="img" 
                                 :to="{path: $routerHelper.getCollectionPath(props.row.id)}" 
                                 class="table-thumb clickable-row" 
-                                :src="`${props.row.featured_image}`"/>
+                                :src="`${props.row.thumbnail}`"/>
                     </template>
                 </b-table-column>
 
@@ -86,6 +85,7 @@
 
                 <b-table-column 
                         tabindex="0" 
+                        v-if="props.row.current_user_can_edit"
                         :label="$i18n.get('label_actions')" 
                         width="78" 
                         :aria-label="$i18n.get('label_actions')">

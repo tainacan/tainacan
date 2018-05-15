@@ -14,10 +14,10 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
             hasFiltered = true;
 
         // Differentiates between repository level and collection level queries
-        let endpoint = '/collection/'+collectionId+'/items?'
+        let endpoint = '/collection/'+collectionId+'/items?context=edit&'
 
         if (collectionId == undefined)
-            endpoint = '/items?'
+            endpoint = '/items?context=edit&'
         
         axios.tainacan.get(endpoint + qs.stringify(postQueries) )
         .then(res => {
@@ -46,7 +46,7 @@ export const deleteItem = ({ commit }, item_id ) => {
 export const fetchCollections = ({commit} , { page, collectionsPerPage }) => {
     commit('cleanCollections');
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/collections?paged='+page+'&perpage='+collectionsPerPage)
+        axios.tainacan.get('/collections?paged='+page+'&perpage='+collectionsPerPage+'&context=edit')
         .then(res => {
             let collections = res.data;
             commit('setCollections', collections);
@@ -75,7 +75,7 @@ export const fetchCollection = ({ commit }, id) => {
 }
 
 export const fetchCollectionName = ({ commit }, id) => {
-    commit('cleanCollectionName');
+    //commit('cleanCollectionName');
     return new Promise((resolve, reject) =>{ 
         axios.tainacan.get('/collections/' + id + '?fetch_only=name')
         .then(res => {
@@ -194,7 +194,7 @@ export const fetchAttachments = ({ commit }, collection_id) => {
 export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId, {
-            featured_img_id: thumbnailId 
+            _thumbnail_id: thumbnailId
         }).then( res => {
             let collection = res.data
             commit('setCollection', collection);

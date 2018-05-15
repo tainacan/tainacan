@@ -7,6 +7,12 @@
         <div class="columns">
             <div class="column is-narrow">
                 <!-- Header Image -------------------------------- -->
+                    <a
+                            v-if="editForm.url != undefined && editForm.url!= ''"
+                            class="button is-success is-pulled-right"
+                            :href="editForm.url">
+                        {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
+                    </a>
                 <b-field
                         :addons="false"
                         :label="$i18n.get('label_header_image')">
@@ -47,10 +53,11 @@
                         {{ $i18n.get('label_name') }}
                         <span class="required-term-asterisk">*</span>
                         <help-button
-                                :title="$i18n.getHelperTitle('terms', 'name')"
-                                :message="$i18n.getHelperMessage('terms', 'name')"/>
+                                :title="$i18n.get('label_name')"
+                                :message="$i18n.get('info_help_term_name')"/>
                     </label>
                     <b-input
+                            :class="{'has-content': editForm.name != undefined && editForm.name != ''}"
                             v-model="editForm.name"
                             name="name"
                             @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
@@ -63,10 +70,11 @@
                     <label class="label">
                         {{ $i18n.get('label_description') }}
                         <help-button
-                                :title="$i18n.getHelperTitle('terms', 'description')"
-                                :message="$i18n.getHelperMessage('terms', 'description')"/>
+                                :title="$i18n.get('label_description')"
+                                :message="$i18n.get('info_help_term_description')"/>
                     </label>
                     <b-input
+                            :class="{'has-content': editForm.description != undefined && editForm.description != ''}"
                             type="textarea"
                             name="description"
                             v-model="editForm.description"
@@ -261,7 +269,7 @@
                 .icon {
                     display: inherit;
                     padding: 0;
-                    margin: 3px 0 0 -8px;
+                    margin-top: 1px;
                 }
             }
             .thumbnail-buttons-row {

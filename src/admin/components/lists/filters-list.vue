@@ -422,7 +422,7 @@ export default {
                 this.isLoadingFilterTypes = false;
             });        
 
-        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
+        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: 'yes' })
             .then(() => {
                 this.isLoadingFilters = false;
                 // Needs to be done after activeFilterList exists to compare and remove chosen fields.
@@ -563,7 +563,7 @@ export default {
                 cursor: default;
                
                 .field-name {
-                    color: $primary;
+                    color: $secondary;
                 }
                 .handle .label-details, .handle .icon {
                     color: $gray !important;
@@ -588,6 +588,7 @@ export default {
 
             .switch.is-small {
                 input[type="checkbox"] + .check {
+                    background-color: $secondary !important;
                     border: 1.5px solid white !important;
                     &::before { background-color: white !important; }
                 } 

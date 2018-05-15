@@ -1,5 +1,7 @@
 <template>
-    <div :class="{'primary-page' : isNewCollection }">
+    <div 
+            class="page-container"
+            :class="{'primary-page' : isNewCollection }">
         <tainacan-title />
         <form 
                 v-if="collection != null && collection != undefined" 
@@ -23,12 +25,12 @@
                             </a>
                             <figure class="image is-128x128">
                                 <span 
-                                        v-if="collection.featured_image == undefined || collection.featured_image == false"
+                                        v-if="collection.thumbnail == undefined || collection.thumbnail == false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
                                         id="thumbail-image"  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(collection.featured_image == undefined || collection.featured_image == false) ? thumbPlaceholderPath : collection.featured_image">
+                                        :src="(collection.thumbnail == undefined || collection.thumbnail == false) ? thumbPlaceholderPath : collection.thumbnail">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -106,6 +108,7 @@
                             :title="$i18n.getHelperTitle('collections', 'name')" 
                             :message="$i18n.getHelperMessage('collections', 'name')"/>
                         <b-input
+                            :class="{'has-content': form.name != undefined && form.name != ''}"
                             id="tainacan-text-name"
                             v-model="form.name"
                             @focus="clearErrors('name')"/>  
@@ -121,6 +124,7 @@
                                 :title="$i18n.getHelperTitle('collections', 'description')" 
                                 :message="$i18n.getHelperMessage('collections', 'description')"/>
                         <b-input
+                                :class="{'has-content': form.description != undefined && form.description != ''}"
                                 id="tainacan-text-description"
                                 type="textarea"
                                 v-model="form.description"
@@ -211,7 +215,7 @@
                             <template slot="empty">{{ $i18n.get('info_no_user_found') }}</template>
                         </b-autocomplete>
                         <ul
-                                class="moderators-list"
+                                class="selected-list-box"
                                 v-if="moderators != undefined && moderators.length > 0">
                             <li
                                     :key="index"
@@ -241,6 +245,7 @@
                                 :title="$i18n.getHelperTitle('collections', 'slug')" 
                                 :message="$i18n.getHelperMessage('collections', 'slug')"/>
                         <b-input
+                                :class="{'has-content': form.slug != undefined && form.slug != ''}"
                                 id="tainacan-text-slug"
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
@@ -316,7 +321,7 @@ export default {
                 description: '',
                 slug: '',
                 enable_cover_page: '',	
-                featured_image: '',
+                thumbnail: '',
                 header_image: '',
                 files:[],
                 moderators_ids: []
@@ -518,7 +523,7 @@ export default {
 
             this.updateThumbnail({collectionId: this.collectionId, thumbnailId: 0})
             .then(() => {
-                this.collection.featured_image = false;
+                this.collection.thumbnail = false;
             })
             .catch((error) => {
                 this.$console.error(error);
@@ -545,7 +550,7 @@ export default {
                     onSave: (mediaId) => {
                         this.updateThumbnail({collectionId: this.collectionId, thumbnailId: mediaId})
                         .then((res) => {
-                            this.collection.featured_image = res.featured_image;
+                            this.collection.thumbnail = res.thumbnail;
                         })
                         .catch(error => this.$console.error(error));
                     }
@@ -643,6 +648,9 @@ export default {
 
     .tainacan-form>.columns>.column {
         overflow: auto;
+        .field {
+            position: relative;
+        }
     }
     .thumbnail-field {  
         max-height: 128px;
@@ -680,8 +688,7 @@ export default {
                 display: inherit;
                 padding: 0;
                 margin: 0;
-                margin-left: -8px;
-                margin-top: 3px;
+                margin-top: 1px;
             }
         }
         .thumbnail-buttons-row {
@@ -700,7 +707,7 @@ export default {
         }
     }
     .selected-cover-page {
-        background-color: $tainacan-input-color;
+        background-color: $tainacan-input-background;
         padding: 8px;
         font-size: .85rem;
         .span { vertical-align: middle;}
@@ -709,14 +716,6 @@ export default {
             float: right;
         }
 
-    }
-    .moderators-list {
-        padding: 10px;
-        display: flex;
-
-        .tags {
-            margin-right: 5px;
-        }
     }
     .moderators-empty-list { 
         color: gray;

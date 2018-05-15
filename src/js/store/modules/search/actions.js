@@ -66,3 +66,8 @@ export const setOrderBy = ({ commit }, orderBy ) => {
 export const setOrder = ({ commit }, order ) => {
     commit('setPostQueryAttribute', {  attr: 'order', value: order } );
 };
+
+// Set search query
+export const setSearchQuery = ({ commit }, searchQuery ) => {
+    commit('setSearchQuery', searchQuery );
+};

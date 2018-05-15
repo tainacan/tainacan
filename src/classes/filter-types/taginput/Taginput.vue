@@ -2,13 +2,13 @@
     <div class="block">
         <b-taginput
                 size="is-small"
-                rounded
-                icon="magnify"
                 v-model="selected"
                 :data="options"
                 autocomplete
-                :loading="loading"
+                :loading="isLoading"
                 field="label"
+                attached
+                :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"/>
     </div>
 </template>
@@ -79,7 +79,7 @@
                 } else {
                     promise = this.getValuesPlainText( this.field, query );
                 }
-
+                this.isLoading = true;
                 promise.then(() => {
                     this.isLoading = false;
                 }).catch( error => {

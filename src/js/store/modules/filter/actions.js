@@ -1,7 +1,7 @@
 import axios from '../../../axios/axios';
 
 // FILTERS --------------------------------------------------------
-export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit}) => {
+export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
@@ -10,8 +10,14 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isCon
             endpoint = '/filters/';
 
         endpoint += '?nopaging=1'
-        if (isContextEdit)
+
+        if (isContextEdit) {
             endpoint += '&context=edit';
+        }
+
+        if (includeDisabled === 'yes'){
+            endpoint += '&include_disabled=yes'
+        }
 
         axios.tainacan.get(endpoint)
         .then((res) => {
@@ -24,7 +30,7 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isCon
             reject(error);
         });
     });
-}
+};
 
 export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterType, status, isRepositoryLevel, newIndex }) => {
     return new Promise(( resolve, reject ) => {
@@ -108,7 +114,7 @@ export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filters
         });
 
     });
-}
+};
 
 export const fetchFilterTypes = ({ commit} ) => {
     return new Promise((resolve, reject) => {
@@ -123,7 +129,7 @@ export const fetchFilterTypes = ({ commit} ) => {
             reject(error);
         });
     });
-}  
+};
 
 export const updateFilteTypes = ( { commit }, filterTypes) => {
     commit('setFilterTypes', filterTypes);

@@ -4,8 +4,11 @@
                 :id="id"
                 v-model="selected"
                 :data="options"
+                :maxtags="field.field.multiple === 'yes' ? 100 : 1"
                 autocomplete
+                attached
                 :loading="loading"
+                :class="{'has-selected': selected != undefined && selected != []}"
                 field="label"
                 @typing="search"/>
 
@@ -139,3 +142,9 @@
         }
     }
 </script>
+
+<style>
+    .help.counter {
+        display: none;
+    }
+</style>

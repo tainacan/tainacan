@@ -1,12 +1,13 @@
 <template>
     <span>
-        <div class="header-item">
-
+        <div 
+                class="header-item"
+                v-if="!isOnTheme">
             <b-dropdown id="item-creation-options-dropdown">
                 <button
                         class="button is-secondary"
                         slot="trigger">
-                    <span>{{ `${$i18n.get('add')} ${$i18n.get('item')}` }}</span>
+                    <span>{{ $i18n.getFrom('items','add_new') }}</span>
                     <b-icon icon="menu-down"/>
                 </button>
 
@@ -25,9 +26,9 @@
 
         </div>
         <div class="header-item">
-            <b-dropdown>
+            <b-dropdown class="show">
                 <button
-                        class="button"
+                        class="button is-white"
                         slot="trigger">
                     <span>{{ $i18n.get('label_table_fields') }}</span>
                     <b-icon icon="menu-down"/>
@@ -53,12 +54,12 @@
                     <option
                             v-for="field in tableFields"
                             v-if="
-                            field.id == 'date' || (
-                                field.id != undefined &&
-                                field.field_type_object.related_mapped_prop != 'description' &&
-                                field.field_type_object.primitive_type != 'term' &&
-                                field.field_type_object.primitive_type != 'item' &&
-                                field.field_type_object.primitive_type != 'compound'
+                            field.id === 'date' || (
+                                field.id !== undefined &&
+                                field.field_type_object.related_mapped_prop !== 'description' &&
+                                field.field_type_object.primitive_type !== 'term' &&
+                                field.field_type_object.primitive_type !== 'item' &&
+                                field.field_type_object.primitive_type !== 'compound'
                             )"
                             :value="field"
                             :key="field.id">
@@ -66,9 +67,9 @@
                     </option>
                 </b-select>
                 <button
-                        class="button is-small"
+                        class="button is-white is-small"
                         @click="onChangeOrder()">
-                    <b-icon :icon="order == 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
+                    <b-icon :icon="order === 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
                 </button>
             </b-field>
         </div>
@@ -88,7 +89,8 @@
         props: {
             collectionId: Number,
             isRepositoryLevel: false,
-            tableFields: Array
+            tableFields: Array,
+            isOnTheme: false     
         },
         computed: {
             orderBy() {
@@ -117,8 +119,14 @@
     .header-item {
         display: inline-block;
     }
+    .header-item .field {
+        align-items: center;
+    }
     #item-creation-options-dropdown {
         margin-right: 80px;
+    }
+    .header-item .dropdown-menu {
+        display: block;
     }
 </style>
 

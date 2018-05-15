@@ -5,7 +5,7 @@
                 :addons="false"
                 :type="optionType"
                 :message="optionMessage">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-selectbox', 'options')"
@@ -16,6 +16,8 @@
                     @input="emitValues()"
                     @focus="clear()"
                     icon="label"
+                    attached
+                    :class="{'has-selected': options != undefined && options != []}"
                     :placeholder="$i18n.get('new')"/>
         </b-field>
     </section>

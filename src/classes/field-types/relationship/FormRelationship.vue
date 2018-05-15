@@ -5,7 +5,7 @@
                 :listen="setError"
                 :type="collectionType"
                 :message="collectionMessage">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
@@ -115,8 +115,9 @@
                     this.fields = [];
                     this.hasFields = false;
                     this.modelSearch = [];
+
+                    this.emitValues();
                 }
-                this.emitValues();
             },
             modelSearch( value ){
                 this.modelSearch = value;
@@ -199,9 +200,12 @@
                                 type: 'is-danger'
                             })
                         }
+
+                        this.emitValues();
                     })
                     .catch(() => {
                         this.hasFields = false;
+                        this.emitValues();
                     });
 
             },

@@ -6,7 +6,7 @@
                 v-for="(filter, index) in filters"
                 :key="index"
                 :filter="filter"
-                :opened="collapsed"/>
+                :open="collapsed"/>
 
     </div>
 </template>

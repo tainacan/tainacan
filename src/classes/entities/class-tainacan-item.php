@@ -13,7 +13,7 @@ class Item extends Entity {
         $terms,
         $diplay_name,
         $full,
-        $featured_img_id,
+        $_thumbnail_id,
         $modification_date,
         $creation_date,
         $author_id,
@@ -52,9 +52,10 @@ class Item extends Entity {
 	public function __toArray() {
 		$array_item = parent::__toArray();
 
-		$array_item['featured_image']  = $this->get_featured_image();
-		$array_item['featured_img_id'] = $this->get_featured_img_id();
-		$array_item['author_name']     = $this->get_author_name();
+		$array_item['thumbnail']     = $this->get_thumbnail();
+		$array_item['_thumbnail_id'] = $this->get__thumbnail_id();
+		$array_item['author_name']   = $this->get_author_name();
+		$array_item['url']           = get_permalink( $this->get_id() );
 
 		return $array_item;
 	}
@@ -125,24 +126,24 @@ class Item extends Entity {
 	/**
 	 * @return false|string
 	 */
-	function get_featured_image() {
+	function get_thumbnail() {
 		return get_the_post_thumbnail_url( $this->get_id(), 'full' );
 	}
 
 	/**
 	 * @param $id
 	 */
-	function set_featured_img_id( $id ) {
-		$this->set_mapped_property( 'featured_img_id', $id );
+	function set__thumbnail_id( $id ) {
+		$this->set_mapped_property( '_thumbnail_id', $id );
 	}
 
 	/**
 	 * @return int|string
 	 */
-	function get_featured_img_id() {
-        $featured_img_id = $this->get_mapped_property("featured_img_id");
-        if ( isset( $featured_img_id ) ) {
-            return $featured_img_id;
+	function get__thumbnail_id() {
+        $_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
+        if ( isset( $_thumbnail_id ) ) {
+            return $_thumbnail_id;
         }
 
 		return get_post_thumbnail_id( $this->get_id() );
@@ -333,10 +334,10 @@ class Item extends Entity {
 	 *
 	 * @return array Array of ItemMetadata objects
 	 */
-	function get_fields() {
+	function get_fields($args = []) {
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
-		return $Tainacan_Item_Metadata->fetch( $this, 'OBJECT' );
+		return $Tainacan_Item_Metadata->fetch( $this, 'OBJECT', $args );
 
 	}
 
@@ -506,7 +507,8 @@ class Item extends Entity {
 		$output = '';
 		
 		if ( $type == 'url' ) {
-			$output .= apply_filters('the_content', $this->get_document());
+			global $wp_embed;
+			$output .= $wp_embed->autoembed($this->get_document());
 		} elseif ( $type == 'text' ) {
 			$output .= $this->get_document();
 		} elseif ( $type == 'attachment' ) {

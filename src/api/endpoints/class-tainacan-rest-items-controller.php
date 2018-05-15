@@ -94,8 +94,8 @@ class REST_Items_Controller extends REST_Controller {
 	 *
 	 * @return mixed
 	 */
-	private function add_metadata_to_item($item_object, $item_array){
-		$item_metadata = $item_object->get_fields();
+	private function add_metadata_to_item($item_object, $item_array, $args = []){
+		$item_metadata = $item_object->get_fields($args);
 
 		foreach($item_metadata as $index => $me){
 			$field               = $me->get_field();
@@ -141,7 +141,23 @@ class REST_Items_Controller extends REST_Controller {
 
 			$attributes_to_filter = $request['fetch_only'];
 
-			return $this->filter_object_by_attributes($item, $attributes_to_filter);
+			# Always returns id
+			if(is_array($attributes_to_filter)) {
+				$attributes_to_filter[] = 'id';
+			} else {
+				$attributes_to_filter = array($attributes_to_filter, 'id');
+			}
+
+			$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+
+			if(is_array($attributes_to_filter) && array_key_exists('meta', $attributes_to_filter)){
+
+				$args = array('post__in' => $attributes_to_filter['meta']);
+
+				$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
+			}
+
+			return $item_arr;
 		}
 
 		return $item;
@@ -371,7 +387,9 @@ class REST_Items_Controller extends REST_Controller {
 
 				if($prepared_item->validate()){
 					$updated_item = $this->items_repository->update($prepared_item);
-
+					
+					do_action('tainacan-api-item-updated', $updated_item, $attributes);
+					
 					return new \WP_REST_Response($this->prepare_item_for_response($updated_item, $request), 200);
 				}
 

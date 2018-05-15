@@ -1,22 +1,22 @@
 <template>
     <div class="block">
         <b-autocomplete
-                rounded
                 icon="magnify"
+                size="is-small"
                 :id="id"
                 v-model="selected"
                 :data="options"
                 @input="search"
-                :loading="loading"
+                :loading="isLoading"
                 field="label"
                 @select="option => setResults(option) ">
             <template slot-scope="props">
                 <div class="media">
-                    <div 
-                            class="media-left" 
+                    <div
+                            class="media-left"
                             v-if="props.option.img">
-                        <img 
-                                width="32" 
+                        <img
+                                width="32"
                                 :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
@@ -25,17 +25,18 @@
                 </div>
             </template>
         </b-autocomplete>
-        <br>
-        <div class="field has-text-centered">
-            <b-tag 
-                    v-if="results !== ''"
-                    type="is-primary"
-                    size="is-small"
-                    closable
-                    @close="clearSearch()">
-                {{ label }}
-            </b-tag>
-        </div>
+        <!-- <ul 
+                class="selected-list-box"
+                v-if="selected !== '' && selected !== undefined">
+            <li>
+                <b-tag 
+                        attached
+                        closable
+                        @close="clearSearch()">
+                    {{ label }}
+                </b-tag>
+            </li>
+        </ul> -->
     </div>
 </template>
 

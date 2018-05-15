@@ -5,13 +5,13 @@ return [
 	'repository'                               => __( 'Repository', 'tainacan' ),
 	'collections'                              => __( 'Collections', 'tainacan' ),
 	'items'                                    => __( 'Items', 'tainacan' ),
-	'fields'                                   => __( 'Fields', 'tainacan' ),
+	'fields'                                   => __( 'Metadata', 'tainacan' ),
 	'filters'                                  => __( 'Filters', 'tainacan' ),
 	'categories'                               => __( 'Categories', 'tainacan' ),
 	'events'                                   => __( 'Events', 'tainacan' ),
 	'collection'                               => __( 'Collection', 'tainacan' ),
 	'item'                                     => __( 'Item', 'tainacan' ),
-	'field'                                    => __( 'Field', 'tainacan' ),
+	'field'                                    => __( 'Metadata', 'tainacan' ),
 	'filter'                                   => __( 'Filter', 'tainacan' ),
 	'category'                                 => __( 'Category', 'tainacan' ),
 	'event'                                    => __( 'Event', 'tainacan' ),
@@ -28,8 +28,8 @@ return [
 	'remove'                                   => __( 'Remove', 'tainacan' ),
 	'save'                                     => __( 'Save', 'tainacan' ),
 	'next'                                     => __( 'Next', 'tainacan' ),
-	'return'                                     => __( 'Return', 'tainacan' ),
-	'see'                                      => __( 'See', 'tainacan' ),
+	'back'         	                           => __( 'Back', 'tainacan' ),
+	'see'                                      => __( 'View', 'tainacan' ),
 	'search'                                   => __( 'Search', 'tainacan' ),
 	'advanced_search'                          => __( 'Advanced Search', 'tainacan' ),
 	'continue'                                 => __( 'Continue', 'tainacan' ),
@@ -59,6 +59,7 @@ return [
 	'title_collection_page'                    => __( 'Collection Page', 'tainacan' ),
 	'title_item_page'                          => __( 'Item Page', 'tainacan' ),
 	'title_field_page'                         => __( 'Field Page', 'tainacan' ),
+	'title_collection_events'                  => __( 'Collection Events', 'tainacan' ),
 
 	/* translators: alkdjklasdj laksjd klsadj */
 	'title_filter_page'                        => __( 'Filter Page', 'tainacan' ),
@@ -177,7 +178,7 @@ return [
 	'instruction_select_a_filter_type'           => __( 'Select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'           => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_cover_page'				     => __( 'Type to search a Page to choose.', 'tainacan'),
-	'instruction_moderators'				     => __( 'Type to search a User to add.', 'tainacan'), 	
+	'instruction_moderators'				     => __( 'Type to search a User to add.', 'tainacan'),
 	'instruction_select_a_parent_collection'     => __( 'Select a parent colection.', 'tainacan' ),
 	'instruction_select_collection_thumbnail'  	 => __( 'Select a thumbnail image for collection', 'tainacan' ),
 	'instruction_select_item_thumbnail'  	   	 => __( 'Select a thumbnail image for item', 'tainacan' ),
@@ -188,6 +189,7 @@ return [
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 	'instruction_search_repository'				 => __( 'Search on repository', 'tainacan' ),
+	'instruction_search_collection'				 => __( 'Search on collection', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
@@ -221,6 +223,7 @@ return [
 	'info_by'                                  => __( 'By: ', 'tainacan' ),
 	'info_date'                                => __( 'Date: ', 'tainacan' ),
 	'info_not_saved'                           => __( 'Not saved ', 'tainacan' ),
+	'info_warning_item_not_saved'           		   => __( 'Are you sure? The item is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_fields_not_saved'            => __( 'Are you sure? There are fields not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_filters_not_saved'           => __( 'Are you sure? There are filters not saved, changes will be lost.', 'tainacan' ),
 	'info_no_description_provided'             => __( 'No description provided.', 'tainacan' ),
@@ -234,6 +237,8 @@ return [
 	'info_there_is_no_filter'                  => __( 'There is no filter here yet.', 'tainacan' ),
 	'info_changes'                             => __( 'Changes', 'tainacan' ),
 	'info_possible_external_sources'           => __( 'Possible external sources: CSV, Instagram, Youtube, etc.', 'tainacan' ),
+	'info_help_term_name'          		   	   => __( 'The term name', 'tainacan' ),
+	'info_help_term_description'          	   => __( 'The description of the Term.', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

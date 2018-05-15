@@ -11,7 +11,7 @@
                 <li><router-link 
                         tag="a" 
                         to="/collections" 
-                        :class="activeRoute == 'CollectionsPage' || isMenuCompressed ? 'is-active':''">
+                        :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
                             icon="folder-multiple"/> <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
@@ -82,7 +82,6 @@ export default {
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear; 
         max-width: $side-menu-width;
-        box-shadow: -3px 0px 8px #111;
         z-index: 99;
         
         .separator {
@@ -133,11 +132,10 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important; 
-            
-            .menu-header {
-                height: 60px;
+            padding-top: $header-height;
+            .menu{
+                padding-top: 0px;
             }
-
             ul { 
                 flex-flow: wrap;
                 display: flex;
@@ -147,6 +145,9 @@ export default {
                 a{ 
                     padding: 0.8em !important;
                     text-align: center;
+                }
+                .menu-text {
+                    display: none;
                 }
             }
         }

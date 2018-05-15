@@ -13,20 +13,25 @@
                                 :key="key">
 
                             <p/>
-                            <div class="has-text-weight-bold is-capitalized">{{ `${key.replace('_', ' ')}:` }}</div>
+                            <div class="has-text-weight-bold is-capitalized">
+                                {{ `${key.replace(/_/g, ' ')}:` }}
+                            </div>
+                            <div v-if="key === 'thumbnail'">
+                                <div class="image is-128x128">
+                                    <img :src="diff.old">
+                                </div>
+                            </div>
                             <div
-                                    v-if="!Array.isArray(diff.old)"
-                                    class="content is-inline">
+                                    v-else-if="diff.old.constructor.name !== 'Array' && diff.old.constructor.name !== 'Object'"
+                                    class="is-inline">
                                 {{ diff.old }}
                             </div>
-
                             <div
                                     v-else
                                     v-for="(o, ind) in diff.old"
                                     :key="ind">
 
                                 <div v-if="o.hasOwnProperty('mime_type') && o.mime_type.includes('image') && key === 'attachments'">
-
 
                                     <article class="media">
                                         <div class="media-left bottom-space-tainacan">
@@ -47,17 +52,34 @@
 
                                 <div
                                         v-else-if="key === 'fields_order' || key === 'filters_order'"
-                                        class="is-capitalized"
-                                        :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
-                                    {{ `ID: ${d.id} Enabled: ${d.enabled}` }}
+                                        class="is-capitalized">
+                                    {{ `ID: ${o.id} Enabled: ${o.enabled ? o.enabled : 'false'}` }}
                                 </div>
-
+                                <div
+                                        v-else-if="!(o instanceof Object)"
+                                        class="is-inline">
+                                    <div
+                                            v-if="ind.constructor.name === 'String'"
+                                            class="is-capitalized">
+                                        {{ `${ind.replace(/_/g, ' ')}: ${o} ` }}
+                                    </div>
+                                    <div v-else>
+                                        {{ `${ind}: ${o} ` }}
+                                    </div>
+                                </div>
                                 <div
                                         v-else
-                                        class="content is-inline is-capitalized"
-                                        v-for="(o2, ind2) in o"
-                                        :key="ind2">
-                                    <div class="is-inline is-capitalized">{{ `${ind2.replace('_', ' ')}: ${o2} ` }}</div>
+                                        v-for="(e, i2) in o"
+                                        :key="i2"
+                                        class="is-inline">
+                                    <div
+                                            v-if="i2.constructor.name === 'String'"
+                                            class="is-capitalized">
+                                        {{ `${i2.replace(/_/g, ' ')}: ${e} ` }}
+                                    </div>
+                                    <div v-else>
+                                        {{ `${i2}: ${e} ` }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -72,9 +94,9 @@
                             <div
                                     class="has-text-weight-bold is-capitalized"
                                     :class="{ 'has-text-success': !diff.old, 'back-hlight': !diff.old }">
-                                {{ `${key.replace('_', ' ')}:` }}
+                                {{ `${key.replace(/_/g, ' ')}:` }}
                             </div>
-                            <div v-if="key === 'featured_image'">
+                            <div v-if="key === 'thumbnail'">
                                 <div class="image is-128x128">
                                     <img :src="diff.new">
                                 </div>
@@ -110,28 +132,31 @@
                                         v-else-if="key === 'fields_order' || key === 'filters_order'"
                                         class="is-capitalized"
                                         :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
-                                    {{ `ID: ${d.id} Enabled: ${d.enabled}` }}
+                                    {{ `ID: ${d.id} Enabled: ${d.enabled ? d.enabled : 'false'}` }}
                                 </div>
 
                                 <div
                                         class="is-inline"
                                         :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }"
-                                        v-else-if="!Array.isArray(d) && d.constructor.name !== 'Object' ">{{ d }}
+                                        v-else-if="!(d instanceof Object)">{{ d }}
                                 </div>
-
 
                                 <div
                                         v-else
                                         v-for="(e, i2) in d"
                                         :key="i2"
                                         class="is-inline">
-
                                     <div
+                                            v-if="i2.constructor.name === 'String'"
                                             class="is-capitalized"
                                             :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
-                                        {{ `${i2.replace('_', ' ')}: ${e} ` }}
+                                        {{ `${i2.replace(/_/g, ' ')}: ${e} ` }}
                                     </div>
-
+                                    <div
+                                            v-else
+                                            :class="{ 'back-hlight': diff.diff_with_index.hasOwnProperty(i) }">
+                                        {{ `${i2}: ${e} ` }}
+                                    </div>
                                 </div>
 
                             </div>
@@ -156,5 +181,7 @@
 </script>
 
 <style scoped>
-
+    .content {
+        overflow: auto;
+    }
 </style>

@@ -8,7 +8,7 @@
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''"
                 :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_name') }}
                 <span
                         class="required-field-asterisk"
@@ -18,6 +18,7 @@
                         :message="$i18n.getHelperMessage('fields', 'name')"/>
             </label>
             <b-input
+                    :class="{'has-content': editForm.name != undefined && editForm.name != ''}"
                     v-model="editForm.name"
                     name="name"
                     @focus="clearErrors('name')"/>
@@ -34,6 +35,7 @@
                         :message="$i18n.getHelperMessage('fields', 'description')"/>
             </label>
             <b-input
+                    :class="{'has-content': editForm.description != undefined && editForm.description != ''}"
                     type="textarea"
                     name="description"
                     v-model="editForm.description"
@@ -52,6 +54,7 @@
             </label>
             <div class="inline-block">
                 <b-radio
+                        size="is-small"
                         @focus="clearErrors('label_status')"
                         id="tainacan-select-status-publish"
                         name="status"
@@ -61,6 +64,7 @@
                 </b-radio>
                 <br>
                 <b-radio
+                        size="is-small"
                         @focus="clearErrors('label_status')"
                         id="tainacan-select-status-private"
                         name="status"
@@ -135,10 +139,10 @@
                         false-value="no"
                         name="required">
                     {{ $i18n.get('label_required') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('fields', 'required')"
+                            :message="$i18n.getHelperMessage('fields', 'required')"/>
                 </b-checkbox>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'required')"
-                        :message="$i18n.getHelperMessage('fields', 'required')"/>
             </b-field>
 
             <b-field
@@ -152,10 +156,10 @@
                         false-value="no"
                         name="multiple">
                     {{ $i18n.get('label_allow_multiple') }}
-                </b-checkbox>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'multiple')"
-                        :message="$i18n.getHelperMessage('fields', 'multiple')"/>
+                    <help-button
+                            :title="$i18n.getHelperTitle('fields', 'multiple')"
+                            :message="$i18n.getHelperMessage('fields', 'multiple')"/>
+                </b-checkbox>    
             </b-field>
 
             <b-field
@@ -169,10 +173,10 @@
                         false-value="no"
                         name="collecion_key">
                     {{ $i18n.get('label_unique_value') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('fields', 'unique')"
+                            :message="$i18n.getHelperMessage('fields', 'unique')"/>
                 </b-checkbox>
-                <help-button
-                        :title="$i18n.getHelperTitle('fields', 'unique')"
-                        :message="$i18n.getHelperMessage('fields', 'unique')"/>
             </b-field>
         </b-field>
 

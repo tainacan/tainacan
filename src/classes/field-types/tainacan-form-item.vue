@@ -3,62 +3,62 @@
             :addons="false"
             :message="getErrorMessage"
             :type="fieldTypeMessage">
-        <b-collapse >
-            <span @click="isCollapsed = !isCollapsed">
-                <b-icon 
-                        type="is-secondary"
-                        :icon="!isCollapsed ? 'menu-down' : 'menu-right'" />
-                <label class="label">{{ field.field.name }}</label>
-                <span
-                        v-if="field.field.required == 'yes'" 
-                        class="required-field-asterisk" 
-                        :class="fieldTypeMessage">*</span>
-                <span class="field-type">({{ $i18n.get(field.field.field_type_object.component) }})</span>      
-            </span>
+        <span   
+                class="collapse-handle"
+                @click="$emit('changeCollapse', !isCollapsed)">
+            <b-icon 
+                    type="is-secondary"
+                    :icon="isCollapsed ? 'menu-down' : 'menu-right'" />
+            <label class="label">{{ field.field.name }}</label>
+            <span
+                    v-if="field.field.required == 'yes'" 
+                    class="required-field-asterisk" 
+                    :class="fieldTypeMessage">*</span>
+            <span class="field-type">({{ $i18n.get(field.field.field_type_object.component) }})</span>      
             <help-button 
                     :title="field.field.name" 
                     :message="field.field.description"/>
-            <div   
-                    v-show="!isCollapsed" 
-                    v-if="isTextInputComponent( field.field.field_type_object.component )">
-                <component 
-                        :id="field.field.field_type_object.component + '-' + field.field.slug" 
-                        :is="field.field.field_type_object.component" 
-                        v-model="inputs[0]" 
-                        :field="field" 
-                        @blur="changeValue()"/>
-                <div v-if="field.field.multiple == 'yes'">
-                    <div 
-                            v-if="index > 0" 
-                            v-for="(input, index) in inputsList " 
-                            :key="index" 
-                            class="multiple-inputs">
-                        <component 
-                                :id="field.field.field_type_object.component + '-' + field.field.slug" 
-                                :is="field.field.field_type_object.component" 
-                                v-model="inputs[index]" 
-                                :field="field" 
-                                @blur="changeValue()"/><a 
-                                class="button" 
-                                v-if="index > 0" 
-                                @click="removeInput(index)">-</a>
-                    </div>
-                    <a 
+        </span>
+        <div   
+                v-show="isCollapsed" 
+                v-if="isTextInputComponent( field.field.field_type_object.component )">
+            <component 
+                    :id="field.field.field_type_object.component + '-' + field.field.slug" 
+                    :is="field.field.field_type_object.component" 
+                    v-model="inputs[0]" 
+                    :field="field" 
+                    @blur="changeValue()"/>
+            <div v-if="field.field.multiple == 'yes'">
+                <div 
+                        v-if="index > 0" 
+                        v-for="(input, index) in inputsList " 
+                        :key="index" 
+                        class="multiple-inputs">
+                    <component 
+                            :id="field.field.field_type_object.component + '-' + field.field.slug" 
+                            :is="field.field.field_type_object.component" 
+                            v-model="inputs[index]" 
+                            :field="field" 
+                            @blur="changeValue()"/><a 
                             class="button" 
-                            @click="addInput">+</a>
+                            v-if="index > 0" 
+                            @click="removeInput(index)">-</a>
                 </div>
+                <a 
+                        class="button" 
+                        @click="addInput">+</a>
             </div>
-            <div 
-                    v-show="!isCollapsed"
-                    v-else>
-                <component
-                        :id="field.field.field_type_object.component + '-' + field.field.slug"
-                        :is="field.field.field_type_object.component" 
-                        v-model="inputs"
-                        :field="field" 
-                        @blur="changeValue()"/>
-            </div>
-        </b-collapse>
+        </div>
+        <div 
+                v-show="isCollapsed"
+                v-else>
+            <component
+                    :id="field.field.field_type_object.component + '-' + field.field.slug"
+                    :is="field.field.field_type_object.component" 
+                    v-model="inputs"
+                    :field="field" 
+                    @blur="changeValue()"/>
+        </div>
     </b-field>
 </template>
 
@@ -71,7 +71,7 @@
             field: {
                 type: Object
             },
-            isCollapsed: Boolean
+            isCollapsed: true // Field Collapses
         },
         data(){
             return {
@@ -92,7 +92,7 @@
                     this.setFieldTypeMessage('is-danger');
                     for (let error of errors) { 
                         for (let index of Object.keys(error)) {
-                            this.$console.log(index);
+                            //this.$console.log(index);
                             msg += error[index] + '\n';
                         }
                     }
@@ -133,6 +133,8 @@
             },
             setFieldTypeMessage( message ){
                 this.fieldTypeMessage = message;
+                if (message != '')
+                    this.$emit('changeCollapse', true);
             }
         }
     }
@@ -166,8 +168,9 @@
         .help-wrapper {
             top: -0.2em;
         }
-        .collapse .collapse-content>div {
-            margin-left: 45px;
+        .collapse-handle {
+            cursor: pointer;
+            position: relative;
         }
     }
 </style>
