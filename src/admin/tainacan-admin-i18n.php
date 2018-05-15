@@ -177,6 +177,10 @@ return [
 	'label_mass_actions'		 			   => __( 'Mass actions', 'tainacan' ),
 	'label_delete_selected_collections'  	   => __( 'Delete selected collections', 'tainacan' ),
 	'label_edit_selected_collections'	  	   => __( 'Edit selected collections', 'tainacan' ),
+	'label_delete_selected_items'		  	   => __( 'Delete selected items', 'tainacan' ),
+	'label_edit_selected_items'			  	   => __( 'Edit selected items', 'tainacan' ),
+	'label_select_all_collections_page'	  	   => __( 'Select all collections on page', 'tainacan' ),
+	'label_select_all_items_page'	 	 	   => __( 'Select all items on page', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

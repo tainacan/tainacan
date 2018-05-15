@@ -6,7 +6,7 @@
                 <span @click="selectAllCollectionsOnPage()">
                     <b-checkbox
                             :value="allCollectionsOnPageSelected"
-                            size="is-small">Selecionar todas as coleções desta página.</b-checkbox>
+                            size="is-small">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
@@ -119,15 +119,19 @@
                                 <a 
                                         id="button-edit" 
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
-                                        @click.prevent.stop="goToCollectionEditPage(collection.id)"><b-icon 
-                                        type="is-secondary" 
-                                        icon="pencil"/></a>
+                                        @click.prevent.stop="goToCollectionEditPage(collection.id)">
+                                    <b-icon 
+                                            type="is-secondary" 
+                                            icon="pencil"/>
+                                </a>
                                 <a 
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneCollection(collection.id)"><b-icon 
-                                        type="is-secondary" 
-                                        icon="delete"/></a>
+                                        @click.prevent.stop="deleteOneCollection(collection.id)">
+                                    <b-icon 
+                                            type="is-secondary" 
+                                            icon="delete"/>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -209,7 +213,8 @@ export default {
             this.$dialog.confirm({
                 message: this.$i18n.get('info_warning_collection_delete'),
                 onConfirm: () => {
-                    // this.deleteCollection(collectionId).then(() => {
+                    this.deleteCollection(collectionId)
+                    .then(() => {
                     //     this.$toast.open({
                     //         duration: 3000,
                     //         message: this.$i18n.get('info_collection_deleted'),
@@ -217,11 +222,11 @@ export default {
                     //         type: 'is-secondary',
                     //         queue: true
                     //     });
-                    //     for (let i = 0; i < this.selectedCollections.length; i++) {
-                    //         if (this.selectedCollections[i].id == this.collectionId)
-                    //             this.selectedCollections.splice(i, 1);
-                    //     }
-                    // }).catch(() =>
+                        for (let i = 0; i < this.selectedCollections.length; i++) {
+                            if (this.selectedCollections[i].id == this.collectionId)
+                                this.selectedCollections.splice(i, 1);
+                        }
+                    }).catch(() => {
                     //     this.$toast.open({
                     //         duration: 3000,
                     //         message: this.$i18n.get('info_error_deleting_collection'),
@@ -229,7 +234,7 @@ export default {
                     //         type: 'is-danger',
                     //         queue: true
                     //     })
-                    // );
+                    });
                 }
             });
         },
@@ -241,7 +246,7 @@ export default {
                     for (let i = 0; i < this.collections.length; i++) {
                         if (this.selectedCollections[i])
                         this.deleteCollection(this.collections[i].id)
-                        // .then(() => {
+                        .then(() => {
                         //     this.loadCollections();
                         //     this.$toast.open({
                         //         duration: 3000,
@@ -250,7 +255,7 @@ export default {
                         //         type: 'is-secondary',
                         //         queue: false
                         //     })                            
-                        // }).catch(() => { 
+                        }).catch(() => { 
                         //     this.$toast.open({
                         //         duration: 3000,
                         //         message: this.$i18n.get('info_error_deleting_collection'),
@@ -258,7 +263,7 @@ export default {
                         //         type: 'is-danger',
                         //         queue: false
                         //     });
-                        // });
+                        });
                     }
                     this.allCollectionsOnPageSelected = false;
                 }

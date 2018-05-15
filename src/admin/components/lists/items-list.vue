@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-field 
+        <!-- <b-field 
                 grouped 
                 group-multiline>
                     <button 
@@ -9,7 +9,153 @@
                             @click="deleteSelectedItems()">
                         <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
                     </button>
-        </b-field>
+        </b-field> -->
+        <div class="selection-control is-clearfix">
+            <div class="field select-all is-pulled-left">
+                <!-- Checkbox click is binded outside as we don't want reactive behaviour on input -->
+                <span @click="selectAllItemsOnPage()">
+                    <b-checkbox
+                            :value="allItemsOnPageSelected"
+                            size="is-small">{{ $i18n.get('label_select_all_items_page') }}</b-checkbox>
+                </span>
+            </div>
+            <div class="field is-pulled-right">
+                <b-dropdown
+                        position="is-bottom-left"
+                        v-if="items.length > 0 && items[0].current_user_can_edit"
+                        :disabled="!isSelectingItems"
+                        id="mass-actions-dropdown">
+                    <button
+                            class="button is-white"
+                            slot="trigger">
+                        <span>{{ $i18n.get('label_mass_actions') }}</span>
+                        <b-icon icon="menu-down"/>
+                    </button> 
+
+                    <b-dropdown-item>
+                        <a
+                                id="item-delete-selected-items"
+                                @click="deleteSelectedItemsCollections()">
+                            {{ $i18n.get('label_delete_selected_items') }}
+                        </a>
+                    </b-dropdown-item>
+                    <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_items') + ' (Not ready)' }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <!-- Checking list -->
+                        <th 
+                                v-if="!isOnTheme"
+                                class="checkbox-cell">
+                            &nbsp;
+                            <!-- nothing to show on header -->
+                        </th>
+                        <!-- Displayed Fields -->
+                        <th 
+                                v-for="(column, index) in tableFields"
+                                :key="index"
+                                v-if="column.field != 'row_actions'"
+                                :class="{'thumbnail-cell': column.field == 'row_thumbnail'}"
+                                :custom-key="column.slug">
+                            <div class="th-wrap">{{ column.name }}</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr     
+                            :class="{ 'selected-row': selectedItems[index] }"
+                            :key="index"
+                            v-for="(item, index) of items">
+                        <!-- Checking list -->
+                        <td 
+                                v-if="!isOnTheme"
+                                :class="{ 'is-selecting': isSelectingItems }"
+                                class="checkbox-cell">
+                            <b-checkbox 
+                                    size="is-small"
+                                    v-model="selectedItems[index]"/> 
+                        </td>
+
+                        <!-- Item Displayed Metadata -->
+                        <td 
+                                :key="index"    
+                                v-for="(column, index) in tableFields"
+                                :label="column.name" 
+                                :aria-label="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation' ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
+                                class="column-default-width"
+                                :class="{
+                                        'thumbnail-cell': column.field == 'row_thumbnail', 
+                                        'table-creation': column.field == 'row_creation',
+                                        'actions-cell': column.field == 'row_actions'}"
+                                @click="goToItemPage(item.id)">
+                            <p 
+                                    v-if="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation'"
+                                    v-html="renderMetadata( item.metadata[column.slug] )" />
+                            <span v-if="column.field == 'row_thumbnail'">
+                                <img 
+                                        class="table-thumb" 
+                                        :src="item[column.slug]">
+                            </span> 
+                            <p 
+                                    v-if="column.field == 'row_creation'"
+                                    v-html="getCreationHtml(item)" />
+                            <div 
+                                    v-if="column.field == 'row_actions' && item.current_user_can_edit && !isOnTheme"
+                                    class="actions-container">
+                                <a 
+                                        id="button-edit"   
+                                        :aria-label="$i18n.getFrom('items','edit_item')" 
+                                        @click.prevent.stop="goToItemEditPage(item.id)">
+                                    <b-icon 
+                                            type="is-secondary" 
+                                            icon="pencil"/>
+                                </a>
+                                <a 
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete')" 
+                                        @click.prevent.stop="deleteOneItem(item.id)">
+                                    <b-icon 
+                                            type="is-secondary" 
+                                            icon="delete"/>
+                                </a>
+                            </div>
+                        </td>
+
+                        <!-- Actions -->
+                        <td 
+                                v-if="tableFields['row_actions'] && item.current_user_can_edit && !isOnTheme"
+                                class="actions-cell column-default-width" 
+                                :label="$i18n.get('label_actions')">
+                            <div class="actions-container">
+                                <a 
+                                        id="button-edit"   
+                                        :aria-label="$i18n.getFrom('items','edit_item')" 
+                                        @click.prevent.stop="goToItemEditPage(item.id)">
+                                    <b-icon 
+                                            type="is-secondary" 
+                                            icon="pencil"/>
+                                </a>
+                                <a 
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete')" 
+                                        @click.prevent.stop="deleteOneItem(item.id)">
+                                    <b-icon 
+                                            type="is-secondary" 
+                                            icon="delete"/>
+                                </a>
+                            </div>
+                        </td>
+    
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+<!--        
         <b-table 
                 ref="itemsTable"
                 :data="items"
@@ -67,7 +213,7 @@
                     </template>
                          
                     <template v-if="column.field == 'row_actions'">
-                        <!-- <a id="button-view" @click.prevent.stop="goToItemPage(props.row.id)"><b-icon icon="eye"></a> -->
+                    
                         <a 
                                 id="button-edit" 
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
@@ -86,6 +232,7 @@
                 </b-table-column>
             </template>
         </b-table> 
+-->
     </div>
 </template>
 
@@ -97,7 +244,9 @@ export default {
     name: 'ItemsList',
     data(){
         return {
-            selectedItems: []
+            selectedItems: [],
+            allItemsOnPageSelected: false,
+            isSelectingItems: false
         }
     },
     props: {
@@ -107,35 +256,59 @@ export default {
         isLoading: false,
         isOnTheme: false
     },
+    watch: {
+        items() {
+            for (let i = 0; i < this.items.length; i++)
+                this.selectedItems.push(false);    
+        },
+        selectedItems() {
+            let allSelected = true;
+            let isSelecting = false;
+            for (let i = 0; i < this.selectedItems.length; i++) {
+                if (this.selectedItems[i] == false) {
+                    allSelected = false;
+                } else {
+                    isSelecting = true;
+                }
+            }
+            this.allItemsOnPageSelected = allSelected;
+            this.isSelectingItems = isSelecting;
+        }
+    },
     methods: {
         ...mapActions('collection', [
             'deleteItem',
         ]),
+        selectAllItemsOnPage() {
+            for (let i = 0; i < this.selectedItems.length; i++) 
+                this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
+        },
         deleteOneItem(itemId) {
             this.$dialog.confirm({
                 message: this.$i18n.get('info_warning_item_delete'),
                 onConfirm: () => {
-                    this.deleteItem(itemId).then(() => {
-                        this.$toast.open({
-                            duration: 3000,
-                            message: this.$i18n.get('info_item_deleted'),
-                            position: 'is-bottom',
-                            type: 'is-secondary',
-                            queue: true
-                        });
+                    this.deleteItem(itemId)
+                    .then(() => {
+                    //     this.$toast.open({
+                    //         duration: 3000,
+                    //         message: this.$i18n.get('info_item_deleted'),
+                    //         position: 'is-bottom',
+                    //         type: 'is-secondary',
+                    //         queue: true
+                    //     });
                         for (let i = 0; i < this.selectedItems.length; i++) {
                             if (this.selectedItems[i].id == this.itemId)
                                 this.selectedItems.splice(i, 1);
                         }
                     }).catch(() => {
 
-                        this.$toast.open({ 
-                            duration: 3000,
-                            message: this.$i18n.get('info_error_deleting_item'),
-                            position: 'is-bottom',
-                            type: 'is-danger',
-                            queue: true
-                        })
+                    //     this.$toast.open({ 
+                    //         duration: 3000,
+                    //         message: this.$i18n.get('info_error_deleting_item'),
+                    //         position: 'is-bottom',
+                    //         type: 'is-danger',
+                    //         queue: true
+                    //     })
                     });
                 }
             });
@@ -147,27 +320,27 @@ export default {
 
                     for (let item of this.selectedItems) {
                         this.deleteItem(item.id)
-                        .then(() => {
-                            this.$toast.open({
-                                duration: 3000,
-                                message: this.$i18n.get('info_item_deleted'),
-                                position: 'is-bottom',
-                                type: 'is-secondary',
-                                queue: false
-                            });
+                        // .then(() => {
+                        //     this.$toast.open({
+                        //         duration: 3000,
+                        //         message: this.$i18n.get('info_item_deleted'),
+                        //         position: 'is-bottom',
+                        //         type: 'is-secondary',
+                        //         queue: false
+                        //     });
                                                       
-                        }).catch(() => { 
-                            this.$toast.open({
-                                duration: 3000,
-                                message: this.$i18n.get('info_error_deleting_item'),
-                                position: 'is-bottom',
-                                type: 'is-danger',
-                                queue: false
-                            });
-                        });
+                        // }).catch(() => { 
+                        //     this.$toast.open({
+                        //         duration: 3000,
+                        //         message: this.$i18n.get('info_error_deleting_item'),
+                        //         position: 'is-bottom',
+                        //         type: 'is-danger',
+                        //         queue: false
+                        //     });
+                        // });
                     }
 
-                    this.selectedItems =  [];
+                    this.allItemsOnPageSelected = false;
                 }
             });
         },
@@ -200,20 +373,152 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .table-thumb {
-        max-height: 55px !important;
-    }
-    td {
-        vertical-align: middle !important;
+    .selection-control {
+        
+        padding-left: $page-small-side-padding;
+        padding-right: $page-small-side-padding;
+        padding-top: $page-small-top-padding;
+        padding-bottom: 0px;
+
+        .select-all {
+            color: $gray-light;
+            font-size: 14px;
+            &:hover {
+                color: $gray-light;
+            }
+        }
+
     }
 
-    .row-creation span {
-        color: $gray-light;
-        font-size: 0.75em;
-        line-height: 1.5
-    }
+    .table {
+        width: 100%;
+        
+        .checkbox-cell {
+            width: 44px;
+            height: 58px;
+            padding: 0;
+            position: absolute !important;
+            left: 55px;
+            visibility: hidden;
+            display: flex;
+            justify-content: space-around;
+            z-index: 9;
 
-    .clickable-row{ cursor: pointer !important }
+            &::before {
+                box-shadow: inset 53px 0 10px -12px #222;
+                content: " ";
+                width: 64px;
+                height: 100%;
+                position: absolute;
+                left: 0;
+            }
+
+            .checkbox {  
+                border-radius: 0px;
+                background-color: white;
+                padding: 10px 10px 10px 14px;
+                width: 100%;
+                height: 100%; 
+            }
+            &.is-selecting {
+                visibility: visible; 
+            }
+        }
+        // Only to be used in case we can implement Column resizing
+        // th:not(:last-child) {
+        //     border-right: 1px solid $tainacan-input-background !important;
+        // }
+
+        .thumbnail-cell {
+            width: 58px;
+            padding-left: 54px;
+        }
+  
+        tbody {
+            tr {
+                cursor: pointer;
+                background-color: transparent;
+
+                &.selected-row { 
+                    background-color: $primary-lighter !important; 
+                    .checkbox-cell .checkbox, .actions-cell .actions-container {
+                        background-color: $primary-lighter !important;
+                    }
+                }
+                td {
+                    height: 58px;
+                    max-height: 58px;
+                    padding: 10px;
+                    vertical-align: middle;
+                    line-height: 12px;
+                    p { font-size: 14px; }
+                    
+                }
+                td.column-default-width{
+                    max-width: 350px;
+                    p, {
+                        text-overflow: ellipsis;
+                        overflow-x: hidden;
+                        white-space: nowrap;
+                    }
+                }
+                img.table-thumb {
+                    max-height: 38px !important;
+                    border-radius: 3px;
+                }
+
+                td.table-creation p {
+                    color: $gray-light;
+                    font-size: 11px;
+                    line-height: 1.5;
+                }
+
+                td.actions-cell {
+                    padding: 0px;
+                    visibility: hidden;
+                    position: absolute;
+                    right: 55px;
+                    display: none;
+                    
+                    .actions-container {
+                        position: relative;
+                        padding: 10px;
+                        height: 100%;
+                        z-index: 9;
+                        background-color: $tainacan-input-background; 
+                     }
+
+                    a .icon {
+                        margin: 8px;
+                    }
+
+                     &::before {
+                        box-shadow: inset -113px 0 17px -17px #222;
+                        content: " ";
+                        width: 125px;
+                        height: 100%;
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                    }
+                }
+
+                &:hover {
+                    background-color: $tainacan-input-background;
+                    cursor: pointer;
+
+                    .checkbox-cell {
+                        visibility: visible; 
+                        .checkbox { background-color: $tainacan-input-background; }
+                    }
+                    .actions-cell {
+                        visibility: visible;
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
 
 </style>
 
