@@ -206,7 +206,7 @@ class Logs extends Repository {
 	}
 
 	public function update( $object, $new_values = null ) {
-
+		return $this->insert($object);
 	}
 
 	public function fetch_last() {

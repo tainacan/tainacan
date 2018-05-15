@@ -257,18 +257,20 @@ class Log extends Entity {
 	 * @param string $desc
 	 * @param mixed $new_value
 	 * @param array $diffs
-	 * @param string $status 'publish', 'private' or 'pending'
+	 * @param string $status 'publish', 'private', 'pending', 'processing' or 'error'
+	 * @param int $parent
 	 *
 	 * @return \Tainacan\Entities\Log
 	 * @throws \Exception
 	 */
-	public static function create( $msn = false, $desc = '', $new_value = null, $diffs = [], $status = 'publish' ) {
+	public static function create( $msn = false, $desc = '', $new_value = null, $diffs = [], $status = 'publish', $parent = 0 ) {
 
 		$log = new Log();
 		$log->set_title( $msn );
 		$log->set_description( $desc );
 		$log->set_status( $status );
 		$log->set_log_diffs( $diffs );
+		if($parent > 0) $log->set_parent($parent);
 
 		if ( ! is_null( $new_value ) ) {
 			$log->set_value( $new_value );
