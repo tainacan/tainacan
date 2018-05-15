@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="is-clearfix">
+        <div class="selection-control is-clearfix">
             <div class="field select-all is-pulled-left">
                 <!-- Checkbox click is binded outside as we don't want reactive behaviour on input -->
                 <span @click="selectAllCollectionsOnPage()">
@@ -115,18 +115,20 @@
                                 @click="goToCollectionPage(collection.id)"
                                 class="actions-cell column-default-width" 
                                 :label="$i18n.get('label_actions')">
-                            <a 
-                                    id="button-edit" 
-                                    :aria-label="$i18n.getFrom('collections','edit_item')" 
-                                    @click.prevent.stop="goToCollectionEditPage(collection.id)"><b-icon 
-                                    type="is-secondary" 
-                                    icon="pencil"/></a>
-                            <a 
-                                    id="button-delete" 
-                                    :aria-label="$i18n.get('label_button_delete')" 
-                                    @click.prevent.stop="deleteOneCollection(collection.id)"><b-icon 
-                                    type="is-secondary" 
-                                    icon="delete"/></a>
+                            <div class="actions-container">
+                                <a 
+                                        id="button-edit" 
+                                        :aria-label="$i18n.getFrom('collections','edit_item')" 
+                                        @click.prevent.stop="goToCollectionEditPage(collection.id)"><b-icon 
+                                        type="is-secondary" 
+                                        icon="pencil"/></a>
+                                <a 
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete')" 
+                                        @click.prevent.stop="deleteOneCollection(collection.id)"><b-icon 
+                                        type="is-secondary" 
+                                        icon="delete"/></a>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -270,44 +272,48 @@ export default {
         }
     },
     mounted() {
+        // COLUMN RESIZE
+        // This feature is not implemented as it would require whitespace 
+        // on table cells to be 'wrap' instead of 'no-wrap'. Once the table
+        // needs a scroll, the minimum size for the columns would be reached
+        // text would start to ellipsis, but the column is not resizible anymore.
+        // (function () {
+        //     var thElm;
+        //     var startOffset;
 
-            (function () {
-                var thElm;
-                var startOffset;
+        //     Array.prototype.forEach.call(
+        //     document.querySelectorAll("table th"),
+        //     function (th) {
+        //         th.style.position = 'relative';
 
-                Array.prototype.forEach.call(
-                document.querySelectorAll("table th"),
-                function (th) {
-                    th.style.position = 'relative';
+        //         var grip = document.createElement('div');
+        //         grip.innerHTML = "&nbsp;";
+        //         grip.style.top = 0;
+        //         grip.style.right = 0;
+        //         grip.style.bottom = 0;
+        //         grip.style.width = '5px';
+        //         grip.style.position = 'absolute';
+        //         grip.style.cursor = 'col-resize';
+        //         grip.addEventListener('mousedown', function (e) {
+        //             thElm = th;
+        //             startOffset = th.offsetWidth - e.pageX;
+        //         });
 
-                    var grip = document.createElement('div');
-                    grip.innerHTML = "&nbsp;";
-                    grip.style.top = 0;
-                    grip.style.right = 0;
-                    grip.style.bottom = 0;
-                    grip.style.width = '5px';
-                    grip.style.position = 'absolute';
-                    grip.style.cursor = 'col-resize';
-                    grip.addEventListener('mousedown', function (e) {
-                        thElm = th;
-                        startOffset = th.offsetWidth - e.pageX;
-                    });
+        //         th.appendChild(grip);
+        //     });
 
-                    th.appendChild(grip);
-                });
+        //     document.addEventListener('mousemove', function (e) {
+        //     if (thElm) {
+        //         thElm.style.width = startOffset + e.pageX + 'px';
+        //     }
+        //     });
 
-                document.addEventListener('mousemove', function (e) {
-                if (thElm) {
-                    thElm.style.width = startOffset + e.pageX + 'px';
-                }
-                });
-
-                document.addEventListener('mouseup', function () {
-                    thElm = undefined;
-                });
-            })();
-            
-        }
+        //     document.addEventListener('mouseup', function () {
+        //         thElm = undefined;
+        //     });
+        // })();
+        
+    }
 }
 </script>
 
@@ -315,12 +321,21 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .select-all {
-        color: $gray-light;
-        font-size: 14px;
-        &:hover {
+    .selection-control {
+        
+        padding-left: $page-small-side-padding;
+        padding-right: $page-small-side-padding;
+        padding-top: $page-small-top-padding;
+        padding-bottom: 0px;
+
+        .select-all {
             color: $gray-light;
+            font-size: 14px;
+            &:hover {
+                color: $gray-light;
+            }
         }
+
     }
 
     .table {
@@ -332,13 +347,23 @@ export default {
             padding: 0;
             position: absolute !important;
             left: 82px;
-            background-color: white;
-            box-shadow: 2px 0px 5px -4px #555;
             visibility: hidden;
             display: flex;
             justify-content: space-around;
+            z-index: 9;
+
+            &::before {
+                box-shadow: inset 53px 0 10px -12px #222;
+                content: " ";
+                width: 64px;
+                height: 100%;
+                position: absolute;
+                left: 0;
+            }
 
             .checkbox {  
+                border-radius: 0px;
+                background-color: white;
                 padding: 10px 10px 10px 14px;
                 width: 100%;
                 height: 100%; 
@@ -347,10 +372,10 @@ export default {
                 visibility: visible; 
             }
         }
-
-        th:not(:last-child) {
-            border-right: 1px solid $tainacan-input-background !important;
-        }
+        // Only to be used in case we can implement Column resizing
+        // th:not(:last-child) {
+        //     border-right: 1px solid $tainacan-input-background !important;
+        // }
 
         .thumbnail-cell {
             width: 58px;
@@ -359,10 +384,12 @@ export default {
   
         tbody {
             tr {
+                cursor: pointer;
                 background-color: transparent;
+
                 &.selected-row { 
                     background-color: $primary-lighter !important; 
-                    .checkbox-cell, .actions-cell {
+                    .checkbox-cell .checkbox, .actions-cell .actions-container {
                         background-color: $primary-lighter !important;
                     }
                 }
@@ -377,7 +404,7 @@ export default {
                 }
                 td.column-default-width{
                     max-width: 350px;
-                    p {
+                    p, {
                         text-overflow: ellipsis;
                         overflow-x: hidden;
                         white-space: nowrap;
@@ -395,15 +422,32 @@ export default {
                 }
 
                 td.actions-cell {
-                    padding: 10px;
+                    padding: 0px;
                     visibility: hidden;
                     position: absolute;
                     right: 82px;
                     display: none;
-                    background-color: $tainacan-input-background;
+                    
+                    .actions-container {
+                        position: relative;
+                        padding: 10px;
+                        height: 100%;
+                        z-index: 9;
+                        background-color: $tainacan-input-background; 
+                     }
 
                     a .icon {
                         margin: 8px;
+                    }
+
+                     &::before {
+                        box-shadow: inset -113px 0 17px -17px #222;
+                        content: " ";
+                        width: 125px;
+                        height: 100%;
+                        position: absolute;
+                        right: 0;
+                        top: 0;
                     }
                 }
 
@@ -413,19 +457,15 @@ export default {
 
                     .checkbox-cell {
                         visibility: visible; 
-                        background-color: $tainacan-input-background;
+                        .checkbox { background-color: $tainacan-input-background; }
                     }
                     .actions-cell {
                         visibility: visible;
                         display: block;
-                        box-shadow: -2px 0px 5px -4px #555;
                     }
                 }
             }
         }
-
-        .clickable-row{ cursor: pointer !important; }
-
     }
     
 </style>

@@ -14,7 +14,7 @@
                 </router-link>
             </div>
         </div>
-        <div>
+        <div class="above-subheader">
             <div>
                 <collections-list
                         :is-loading="isLoading"
@@ -148,10 +148,8 @@ export default {
     .sub-header {
         min-height: $subheader-height;
         height: $subheader-height;
-        margin-left: -$page-small-side-padding;
-        margin-right: -$page-small-side-padding;
-        margin-top: -$page-small-top-padding;
-        padding-top: $page-small-top-padding;
+        margin-top: -$page-top-padding;
+        padding-top: $page-top-padding;
         padding-left: $page-small-side-padding;
         padding-right: $page-small-side-padding;
         border-bottom: 0.5px solid #ddd;
