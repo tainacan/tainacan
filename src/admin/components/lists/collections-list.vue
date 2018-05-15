@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <div class="is-clearfix">
             <div class="field select-all is-pulled-left">
                 <!-- Checkbox click is binded outside as we don't want reactive behaviour on input -->
                 <span @click="selectAllCollectionsOnPage()">
@@ -33,7 +33,7 @@
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
-      
+        </div>
         <div class="table-wrapper">
             <table class="table">
                 <thead>
