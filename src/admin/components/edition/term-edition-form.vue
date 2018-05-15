@@ -49,7 +49,7 @@
                         :addons="false"
                         :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
                         :message="formErrors.name ? formErrors : formErrors.repeated">
-                    <label class="label">
+                    <label class="label is-inline">
                         {{ $i18n.get('label_name') }}
                         <span class="required-term-asterisk">*</span>
                         <help-button
