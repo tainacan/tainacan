@@ -40,10 +40,11 @@
                     <tr>
                         <!-- Checking list -->
                         <th class="checkbox-cell">
+                            &nbsp;
                             <!-- nothing to show on header -->
                         </th>
                         <!-- Thumbnail -->
-                        <th class="table-thumbnail-column">
+                        <th class="thumbnail-cell">
                             <div class="th-wrap">{{ $i18n.get('label_thumbnail') }}</div>
                         </th>
                         <!-- Name -->
@@ -69,11 +70,13 @@
                         <td 
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
-                            <b-checkbox v-model="selectedCollections[index]"/> 
+                            <b-checkbox 
+                                    size="is-small"
+                                    v-model="selectedCollections[index]"/> 
                         </td>
                         <!-- Thumbnail -->
                         <td 
-                                class="column-default-width"
+                                class="thumbnail-cell column-default-width"
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_thumbnail')" 
                                 :aria-label="$i18n.get('label_thumbnail')">
@@ -197,7 +200,6 @@ export default {
             'deleteCollection'
         ]),
         selectAllCollectionsOnPage() {
-            console.log("CLICK!")
             for (let i = 0; i < this.selectedCollections.length; i++) 
                 this.selectedCollections.splice(i, 1, !this.allCollectionsOnPageSelected);
         },
@@ -266,7 +268,46 @@ export default {
         goToCollectionEditPage(collectionId) {
             this.$router.push(this.$routerHelper.getCollectionEditPath(collectionId));
         }
-    }
+    },
+    mounted() {
+
+            (function () {
+                var thElm;
+                var startOffset;
+
+                Array.prototype.forEach.call(
+                document.querySelectorAll("table th"),
+                function (th) {
+                    th.style.position = 'relative';
+
+                    var grip = document.createElement('div');
+                    grip.innerHTML = "&nbsp;";
+                    grip.style.top = 0;
+                    grip.style.right = 0;
+                    grip.style.bottom = 0;
+                    grip.style.width = '5px';
+                    grip.style.position = 'absolute';
+                    grip.style.cursor = 'col-resize';
+                    grip.addEventListener('mousedown', function (e) {
+                        thElm = th;
+                        startOffset = th.offsetWidth - e.pageX;
+                    });
+
+                    th.appendChild(grip);
+                });
+
+                document.addEventListener('mousemove', function (e) {
+                if (thElm) {
+                    thElm.style.width = startOffset + e.pageX + 'px';
+                }
+                });
+
+                document.addEventListener('mouseup', function () {
+                    thElm = undefined;
+                });
+            })();
+            
+        }
 }
 </script>
 
@@ -284,37 +325,58 @@ export default {
 
     .table {
         width: 100%;
-        position: relative;
-
-        .table-thumbnail-column {
-            width: 58px;
-        }
+        
         .checkbox-cell {
             width: 44px;
-            .checkbox { 
-                visibility: hidden;
-                .control-label {
-                    padding-left: 0;
-                }  
+            height: 58px;
+            padding: 0;
+            position: absolute !important;
+            left: 82px;
+            background-color: white;
+            box-shadow: 2px 0px 5px -4px #555;
+            visibility: hidden;
+            display: flex;
+            justify-content: space-around;
+
+            .checkbox {  
+                padding: 10px 10px 10px 14px;
+                width: 100%;
+                height: 100%; 
             }
-            &.is-selecting .checkbox {
+            &.is-selecting {
                 visibility: visible; 
             }
         }
+
+        th:not(:last-child) {
+            border-right: 1px solid $tainacan-input-background !important;
+        }
+
+        .thumbnail-cell {
+            width: 58px;
+            padding-left: 54px;
+        }
+  
         tbody {
             tr {
                 background-color: transparent;
-                &.selected-row { background-color: $primary-lighter !important; }
+                &.selected-row { 
+                    background-color: $primary-lighter !important; 
+                    .checkbox-cell, .actions-cell {
+                        background-color: $primary-lighter !important;
+                    }
+                }
                 td {
-                    height: 56px;
-                    max-height: 56px;
+                    height: 58px;
+                    max-height: 58px;
                     padding: 10px;
                     vertical-align: middle;
                     line-height: 12px;
                     p { font-size: 14px; }
+                    
                 }
                 td.column-default-width{
-                    max-width: 250px;
+                    max-width: 350px;
                     p {
                         text-overflow: ellipsis;
                         overflow-x: hidden;
@@ -336,7 +398,7 @@ export default {
                     padding: 10px;
                     visibility: hidden;
                     position: absolute;
-                    right: 0px;
+                    right: 82px;
                     display: none;
                     background-color: $tainacan-input-background;
 
@@ -349,8 +411,9 @@ export default {
                     background-color: $tainacan-input-background;
                     cursor: pointer;
 
-                    .checkbox-cell .checkbox {
+                    .checkbox-cell {
                         visibility: visible; 
+                        background-color: $tainacan-input-background;
                     }
                     .actions-cell {
                         visibility: visible;

@@ -14,8 +14,8 @@
                 </router-link>
             </div>
         </div>
-        <div class="above-subheader">
-            <div class="table-container">
+        <div>
+            <div>
                 <collections-list
                         :is-loading="isLoading"
                         :total-collections="totalCollections"
@@ -177,11 +177,6 @@ export default {
         margin-top: 0;
         min-height: 100%;
         height: auto;
-
-        .table-container {
-            margin-right: -$page-small-side-padding;
-            padding: 3em 2.5em;
-        }
 
         @media screen and (max-width: 769px) {
              .filters-menu {
