@@ -288,10 +288,12 @@ class Log extends Entity {
 		$log->set_log_diffs( $diffs );
 		if($parent > 0) $log->set_parent($parent);
 
-		if(array_search( 'Tainacan\Traits\Entity_Collection_Relation', class_uses($new_value))) {
-			$log->set_collection_id( $new_value->get_collection_id() );
-		} elseif($new_value instanceof Collection){
-			$log->set_collection_id( $new_value->get_id());
+		if(is_object($new_value) || is_string($new_value)) {
+			if(array_search( 'Tainacan\Traits\Entity_Collection_Relation', class_uses($new_value))) {
+				$log->set_collection_id( $new_value->get_collection_id() );
+			} elseif($new_value instanceof Collection){
+				$log->set_collection_id( $new_value->get_id());
+			}
 		}
 
 		if ( ! is_null( $new_value ) ) {
