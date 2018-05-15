@@ -126,6 +126,7 @@ return [
 	'label_unique_value'                       => __( 'Unique value', 'tainacan' ),
 	'label_yes'                                => __( 'Yes', 'tainacan' ),
 	'label_no'                                 => __( 'No', 'tainacan' ),
+	'label_approved'                                 => __( 'Approved', 'tainacan' ),
 	'label_collection_related'                 => __( 'Collection Related', 'tainacan' ),
 	'label_fields_for_search'                  => __( 'Fields for search', 'tainacan' ),
 	'label_allow_repeated_items'               => __( 'Allow repeated items', 'tainacan' ),
