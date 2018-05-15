@@ -8,10 +8,14 @@ const state = {
         order: 'DESC',
         paged: 1,
         perpage: 12,
+        status: '',
         search: '',
         post_type: [],
         metaquery: [],
-        taxquery: []
+        taxquery: [],
+        fetch_only: [
+            {'meta': [] }
+        ],
     },
     totalItems: 0
 };

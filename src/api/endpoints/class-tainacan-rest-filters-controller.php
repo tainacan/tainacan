@@ -174,7 +174,7 @@ class REST_Filters_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('One or more attributes are invalid', 'tainacan'),
+				'error_message' => __('Please verify, invalid attribute(s)', 'tainacan'),
 				'error'         => $filter_obj->get_errors()
 			], 400);
 		}
@@ -272,14 +272,14 @@ class REST_Filters_Controller extends REST_Controller {
 				}
 
 				return new \WP_REST_Response([
-					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'error_message' => __('Please verify, invalid value(s).', 'tainacan'),
 					'errors'        => $prepared_filter->get_errors(),
 					'filters'       => $this->prepare_item_for_response($prepared_filter, $request)
 				], 400);
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Filter with that ID not found', 'tainacan' ),
+				'error_message' => __('A filter with that ID was not found', 'tainacan' ),
 				'filter_id'     => $filter_id
 			], 400);
 
@@ -464,7 +464,7 @@ class REST_Filters_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_collection_params('filter'));
 
 		$query_params['name'] = array(
-			'description' => __('Limit result set to filter with specific name.'),
+			'description' => __('Limits the result set to filters with a specific name'),
 			'type'        => 'string',
 		);
 

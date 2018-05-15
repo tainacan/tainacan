@@ -37,7 +37,14 @@
             </span>
           
             <span class="controls" >
-
+            <!--
+                <button
+                        class="button is-success is-small"
+                        type="button"
+                        :href="categoryPath + '/' + term.slug">
+                    {{ $i18n.get('label_view_term') }}
+                </button>
+            -->
                 <button
                         class="button is-secondary is-small"
                         type="button"
@@ -87,7 +94,8 @@ export default {
         }
     },
     props: {
-        categoryId: String
+        categoryId: String,
+        //categoryPath: ''
     },
     computed: {
         termsList() {

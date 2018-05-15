@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="above-subheader">
-            <div class="table-container">
+            <div>
                 <collections-list
                         :is-loading="isLoading"
                         :total-collections="totalCollections"
@@ -148,10 +148,8 @@ export default {
     .sub-header {
         min-height: $subheader-height;
         height: $subheader-height;
-        margin-left: -$page-small-side-padding;
-        margin-right: -$page-small-side-padding;
-        margin-top: -$page-small-top-padding;
-        padding-top: $page-small-top-padding;
+        margin-top: -$page-top-padding;
+        padding-top: $page-top-padding;
         padding-left: $page-small-side-padding;
         padding-right: $page-small-side-padding;
         border-bottom: 0.5px solid #ddd;
@@ -177,11 +175,6 @@ export default {
         margin-top: 0;
         min-height: 100%;
         height: auto;
-
-        .table-container {
-            margin-right: -$page-small-side-padding;
-            padding: 3em 2.5em;
-        }
 
         @media screen and (max-width: 769px) {
              .filters-menu {

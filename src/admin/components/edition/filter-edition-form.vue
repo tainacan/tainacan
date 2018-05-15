@@ -7,7 +7,7 @@
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
                 :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_name') }} 
                 <span 
                         class="required-field-asterisk" 
@@ -87,6 +87,7 @@
         <div class="field is-grouped form-submit">
             <div class="control">
                 <button 
+                        type="button"
                         class="button is-outlined" 
                         @click.prevent="cancelEdition()" 
                         slot="trigger">{{ $i18n.get('cancel') }}</button>

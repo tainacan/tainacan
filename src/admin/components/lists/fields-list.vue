@@ -2,122 +2,130 @@
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"/>
         <tainacan-title v-if="!isRepositoryLevel"/>
-        <div class="columns">
-            <div class="column">        
-                <draggable 
-                        v-model="activeFieldList"
-                        class="active-fields-area"
-                        @change="handleChange"
-                        :class="{'fields-area-receive': isDraggingFromAvailable}" 
-                        :options="{ 
-                                group: { name:'fields', pull: false, put: true }, 
-                                sort: openedFieldId == '' || openedFieldId == undefined, 
-                                disabled: openedFieldId != '' && openedFieldId != undefined,
-                                handle: '.handle', 
-                                ghostClass: 'sortable-ghost',
-                                filter: 'not-sortable-item', 
-                                animation: '250'}">
-                    <div  
-                            class="active-field-item"
-                            :class="{
-                                'not-sortable-item': field.id == undefined || openedFieldId != '' , 
-                                'not-focusable-item': openedFieldId == field.id, 
-                                'disabled-field': field.enabled == false
-                            }" 
-                            v-for="(field, index) in activeFieldList" 
-                            :key="index">
-                        <div class="handle">
-                            <grip-icon/>
-                            <span 
-                                    class="field-name" 
-                                    :class="{'is-danger': formWithErrors == field.id }">
-                                    {{ field.name }}
-                            </span>
-                            <span   
-                                    v-if="field.id != undefined"
-                                    class="label-details">  
-                                 ({{ $i18n.get(field.field_type_object.component) }}) <em>{{ (field.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>   
+        <b-tabs v-model="activeTab">    
+            <b-tab-item :label="$i18n.get('category')">
+                <div class="columns">
+                    <div class="column">        
+                        <draggable 
+                                v-model="activeFieldList"
+                                class="active-fields-area"
+                                @change="handleChange"
+                                :class="{'fields-area-receive': isDraggingFromAvailable}" 
+                                :options="{ 
+                                        group: { name:'fields', pull: false, put: true }, 
+                                        sort: openedFieldId == '' || openedFieldId == undefined, 
+                                        disabled: openedFieldId != '' && openedFieldId != undefined,
+                                        handle: '.handle', 
+                                        ghostClass: 'sortable-ghost',
+                                        filter: 'not-sortable-item', 
+                                        animation: '250'}">
+                            <div  
+                                    class="active-field-item"
+                                    :class="{
+                                        'not-sortable-item': field.id == undefined || openedFieldId != '' , 
+                                        'not-focusable-item': openedFieldId == field.id, 
+                                        'disabled-field': field.enabled == false
+                                    }" 
+                                    v-for="(field, index) in activeFieldList" 
+                                    :key="index">
+                                <div class="handle">
+                                    <grip-icon/>
                                     <span 
-                                        class="not-saved" 
-                                        v-if="(editForms[field.id] != undefined && editForms[field.id].saved != true) || field.status == 'auto-draft'"> 
-                                      {{ $i18n.get('info_not_saved') }}
+                                            class="field-name" 
+                                            :class="{'is-danger': formWithErrors == field.id }">
+                                            {{ field.name }}
                                     </span>
-                            </span>
-                            <span 
-                                    class="loading-spinner" 
-                                    v-if="field.id == undefined"/>
-                            <span 
-                                    class="controls" 
-                                    v-if="field.id !== undefined">
-                                <b-switch 
-                                        size="is-small" 
-                                        v-model="field.enabled" 
-                                        @input="onChangeEnable($event, index)"/>
-                                <a 
-                                        :style="{ visibility: 
-                                                field.collection_id != collectionId 
-                                                ? 'hidden' : 'visible'
-                                            }" 
-                                        @click.prevent="editField(field)">
-                                    <b-icon 
-                                            type="is-gray" 
-                                            icon="pencil"/>
-                                </a>
-                                <a 
-                                        :style="{ visibility: 
-                                                field.collection_id != collectionId || 
-                                                field.field_type == 'Tainacan\\Field_Types\\Core_Title' || 
-                                                field.field_type == 'Tainacan\\Field_Types\\Core_Description' 
-                                                ? 'hidden' : 'visible'
-                                            }" 
-                                        @click.prevent="removeField(field)">
-                                    <b-icon 
-                                            type="is-gray" 
-                                            icon="delete"/>
-                                </a>
-                            </span>
-                        </div>
-                        <div v-if="openedFieldId == field.id">
-                            <field-edition-form   
-                                    :collection-id="collectionId"
-                                    :is-repository-level="isRepositoryLevel"
-                                    @onEditionFinished="onEditionFinished()"
-                                    @onEditionCanceled="onEditionCanceled()"
-                                    @onErrorFound="formWithErrors = field.id"
-                                    :index="index"
-                                    :original-field="field"
-                                    :edited-field="editForms[field.id]"/>
-                        </div>
+                                    <span   
+                                            v-if="field.id != undefined"
+                                            class="label-details">  
+                                        ({{ $i18n.get(field.field_type_object.component) }}) <em>{{ (field.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>   
+                                            <span 
+                                                class="not-saved" 
+                                                v-if="(editForms[field.id] != undefined && editForms[field.id].saved != true) || field.status == 'auto-draft'"> 
+                                            {{ $i18n.get('info_not_saved') }}
+                                            </span>
+                                    </span>
+                                    <span 
+                                            class="loading-spinner" 
+                                            v-if="field.id == undefined"/>
+                                    <span 
+                                            class="controls" 
+                                            v-if="field.id !== undefined">
+                                        <b-switch 
+                                                size="is-small" 
+                                                v-model="field.enabled" 
+                                                @input="onChangeEnable($event, index)"/>
+                                        <a 
+                                                :style="{ visibility: 
+                                                        field.collection_id != collectionId 
+                                                        ? 'hidden' : 'visible'
+                                                    }" 
+                                                @click.prevent="editField(field)">
+                                            <b-icon 
+                                                    type="is-gray" 
+                                                    icon="pencil"/>
+                                        </a>
+                                        <a 
+                                                :style="{ visibility: 
+                                                        field.collection_id != collectionId || 
+                                                        field.field_type == 'Tainacan\\Field_Types\\Core_Title' || 
+                                                        field.field_type == 'Tainacan\\Field_Types\\Core_Description' 
+                                                        ? 'hidden' : 'visible'
+                                                    }" 
+                                                @click.prevent="removeField(field)">
+                                            <b-icon 
+                                                    type="is-gray" 
+                                                    icon="delete"/>
+                                        </a>
+                                    </span>
+                                </div>
+                                <div v-if="openedFieldId == field.id">
+                                    <field-edition-form   
+                                            :collection-id="collectionId"
+                                            :is-repository-level="isRepositoryLevel"
+                                            @onEditionFinished="onEditionFinished()"
+                                            @onEditionCanceled="onEditionCanceled()"
+                                            @onErrorFound="formWithErrors = field.id"
+                                            :index="index"
+                                            :original-field="field"
+                                            :edited-field="editForms[field.id]"/>
+                                </div>
+                            </div>
+                        </draggable> 
                     </div>
-                </draggable> 
-            </div>
-          
-            <div class="column available-fields-area" >
-                <div class="field">
-                    <h3 class="label">{{ $i18n.get('label_available_field_types') }}</h3>
-                    <draggable 
-                            v-model="availableFieldList" 
-                            :options="{ 
-                                sort: false, 
-                                group: { name:'fields', pull: 'clone', put: false, revertClone: true },
-                                dragClass: 'sortable-drag'
-                            }">
-                        <div 
-                                @click.prevent="addFieldViaButton(field)" 
-                                class="available-field-item"
-                                :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
-                                v-for="(field, index) in availableFieldList" 
-                                :key="index">
-                           <grip-icon/>  
-                             <span class="field-name">{{ field.name }}</span> 
-                             <span 
-                                    class="loading-spinner" 
-                                    v-if="hightlightedField == field.name"/>   
+                
+                    <div class="column available-fields-area" >
+                        <div class="field">
+                            <h3 class="label">{{ $i18n.get('label_available_field_types') }}</h3>
+                            <draggable 
+                                    v-model="availableFieldList" 
+                                    :options="{ 
+                                        sort: false, 
+                                        group: { name:'fields', pull: 'clone', put: false, revertClone: true },
+                                        dragClass: 'sortable-drag'
+                                    }">
+                                <div 
+                                        @click.prevent="addFieldViaButton(field)" 
+                                        class="available-field-item"
+                                        :class="{ 'hightlighted-field' : hightlightedField == field.name }" 
+                                        v-for="(field, index) in availableFieldList" 
+                                        :key="index">
+                                <grip-icon/>  
+                                    <span class="field-name">{{ field.name }}</span> 
+                                    <span 
+                                            class="loading-spinner" 
+                                            v-if="hightlightedField == field.name"/>   
+                                </div>
+                            </draggable>
                         </div>
-                    </draggable>
+                    </div> 
                 </div>
-            </div> 
-        </div>
+            </b-tab-item>
+            <!-- Exposer -->
+            <b-tab-item :label="$i18n.get('exposer')">
+                <p>Exposer Logic goes in here.</p>
+            </b-tab-item>
+        </b-tabs>
     </div> 
 </template>
 

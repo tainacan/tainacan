@@ -116,7 +116,7 @@ class Logs extends Repository {
 			'collection_id'  => [
 				'map'         => 'meta',
 				'title'       => __( 'Log collection relationship', 'tainacan' ),
-				'description' => __( 'The id of collection that this log is related.', 'tainacan' )
+				'description' => __( 'The ID of the collection that this log is related to', 'tainacan' )
 			],
 		] );
 	}

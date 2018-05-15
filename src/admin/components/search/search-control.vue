@@ -39,8 +39,8 @@
                         class="control"
                         custom>
                     <b-checkbox
-                            v-model="column.display"
-                            :native-value="column.field">
+                            @input="onChangeDisplayedField($event, column)"
+                            :native-value="column.display">
                         {{ column.name }}
                     </b-checkbox>
                 </b-dropdown-item>
@@ -103,13 +103,21 @@
         methods: {
             ...mapGetters('search', [
                 'getOrderBy',
-                'getOrder'
+                'getOrder',
+                'getFetchOnlyMeta'
             ]),
             onChangeOrderBy(field) {
                 this.$eventBusSearch.setOrderBy(field);
             },
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
+            },
+            onChangeDisplayedField(event, fieldId) {
+                column.display = event;
+                if (event)
+                    this.$eventBusSearch.addFetchOnlyMeta(field.id);
+                else 
+                    this.$eventBusSearch.removeFetchOnlyMeta(field.id);
             }
         }
     }

@@ -416,15 +416,15 @@ class REST_Controller extends \WP_REST_Controller {
 		return array(
 			'metakey'      => array(
 				'type'        => 'integer/string',
-				'description' => __('Custom field key.'),
+				'description' => __('Custom metadata key.'),
 			),
 			'metavalue'    => array(
 				'type'        => 'string/array',
-				'description' => __('Custom field value'),
+				'description' => __('Custom metadata value'),
 			),
 			'metavaluenum' => array(
 				'type'        => 'number',
-				'description' => __('Custom field value'),
+				'description' => __('Custom metadata value'),
 			),
 			'metacompare'  => array(
 				'type'        => 'string',
@@ -432,17 +432,17 @@ class REST_Controller extends \WP_REST_Controller {
 				'default'     => '=',
 			),
 			'metaquery'    => array(
-				'description' => __('Limit result set to items that have specific custom fields'),
+				'description' => __('Limits result set to items that have specific custom metadata'),
 				'type'        => 'array/object',
 				'items'       => array(
 					'keys' => array(
 						'key'      => array(
 							'type'        => 'string',
-							'description' => __('Custom field key.'),
+							'description' => __('Custom metadata key.'),
 						),
 						'value'    => array(
 							'type'        => 'string/array',
-							'description' => __('Custom field value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.
+							'description' => __('Custom metadata value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.
 	(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.)'),
 						),
 						'compare'  => array(
@@ -457,14 +457,14 @@ class REST_Controller extends \WP_REST_Controller {
 						),
 						'fieldtype' => array(
 							'type'        => 'string',
-							'description' => __('Custom field type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
+							'description' => __('Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
 						),
 					),
 					'type'            => 'array'
 				),
 			),
 			'datequery'    => array(
-				'description' => __('Limit result set to items that was created in specific date.'),
+				'description' => __('Limits the result set to items that were created in some specific date'),
 				'type'        => 'array/object',
 				'items'       => array(
 					'keys' => array(

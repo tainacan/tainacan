@@ -15,13 +15,28 @@
                     :active.sync="isLoadingFilters"/>
 
             <b-field class="margin-1">
-                <b-input
+                <div class="control is-small is-clearfix">
+                    <input
+                        class="input is-small"
                         :placeholder=" $i18n.get('instruction_search_collection') "
                         type="search"
-                        size="is-small"
-                        icon="magnify" 
-                        @input="updateSearch($event)"
-                        :value="searchQuery"/>
+                        autocomplete="on"
+                        :value="searchQuery"
+                        @input="futureSearchQuery = $event.target.value"
+                        @keyup.enter="updateSearch()">
+                </div>
+
+                <p class="control">
+                    <button                             
+                            id="collection-search-button"
+                            type="submit"
+                            class="button"
+                            @click="updateSearch()">
+                        <b-icon 
+                                icon="magnify" 
+                                size="is-small"/>
+                    </button>
+                </p>
             </b-field>
             <!-- <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a> -->
 
@@ -86,6 +101,22 @@
                         :is-on-theme="isOnTheme"/>
             </div>
             <div 
+                    v-if="!isOnTheme"
+                    class="tabs">
+                <ul>
+                    <li 
+                            @click="onChangeTab('')"
+                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
+                    <li 
+                            @click="onChangeTab('draft')"
+                            :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
+                    <li 
+                            @click="onChangeTab('trash')"
+                            :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
+                </ul>
+            </div>
+            
+            <div 
                     :items="items"
                     id="theme-items-list" />
             <!-- LISTING RESULTS ------------------------- -->
@@ -149,7 +180,8 @@
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
                 collapseAll: false,
-                isOnTheme: false
+                isOnTheme: false,
+                futureSearchQuery: ''
             }
         },
         props: {
@@ -178,10 +210,14 @@
                 'getFilters'
             ]),
             ...mapGetters('search', [
-                'getSearchQuery'
+                'getSearchQuery',
+                'getStatus'
             ]),
-            updateSearch(searchQuery) {
-                this.$eventBusSearch.setSearchQuery(searchQuery)
+            updateSearch() {
+                this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+            },  
+            onChangeTab(status) {
+                this.$eventBusSearch.setStatus(status);
             }
         },
         computed: {
@@ -196,6 +232,9 @@
             },
             searchQuery() {
                 return this.getSearchQuery();
+            },
+            status() {
+                return this.getStatus();
             }
         },
         created() {
@@ -269,9 +308,11 @@
                                     id: field.id,
                                     display: display
                                 }
-                            );
+                            );    
+                            //this.$eventBusSearch.addFetchOnlyMeta(field.id);                       
                         }
                     }
+                    this.$eventBusSearch.loadItems();
 
                     this.tableFields.push({
                         name: this.$i18n.get('label_creation'),
@@ -347,11 +388,24 @@
         }
     }
 
+    .tabs {
+        padding-top: $page-small-top-padding;
+        padding-left: $page-small-side-padding;
+        padding-right: $page-small-side-padding;
+    }
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
         min-height: 100%;
         height: auto;
+    }
+
+    #collection-search-button {
+        border-radius: 0px !important;
+        padding: 0px 8px !important;
+        &:focus, &:active {
+            border-color: none !important;
+        }
     }
 
     .filters-menu {

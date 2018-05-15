@@ -477,7 +477,7 @@ class REST_Items_Controller extends REST_Controller {
 		array_merge($query_params, parent::get_collection_params('item'));
 
 		$query_params['title'] = array(
-			'description' => __('Limit result set to items with specific title.'),
+			'description' => __('Limits the result set to items with a specific title'),
 			'type'        => 'string',
 		);
 

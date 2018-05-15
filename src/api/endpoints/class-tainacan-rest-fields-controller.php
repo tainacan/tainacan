@@ -393,20 +393,20 @@ class REST_Fields_Controller extends REST_Controller {
 
 			$field = $this->field_repository->fetch($field_id);
 
-			$error_message = __('Field with that ID not found', 'tainacan');
+			$error_message = __('Metadata with that ID was not found', 'tainacan');
 
 			if($field){
 
 				// These conditions are for verify if endpoints are used correctly
 				if(!$collection_id && $field->get_collection_id() !== 'default') {
-					$error_message = __('That field is not a default field', 'tainacan');
+					$error_message = __('That metadata is not a default metadata', 'tainacan');
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
 						'field_id'      => $field_id
 					] );
 				} elseif ($collection_id && $field->get_collection_id() === 'default'){
-					$error_message = __('That field is not a collection field', 'tainacan');
+					$error_message = __('That metadata is not a collection metadata', 'tainacan');
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
@@ -473,7 +473,7 @@ class REST_Fields_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_collection_params('field'));
 
 		$query_params['name'] = array(
-			'description' => __('Limit result set to field with specific name.'),
+			'description' => __('Limits the result set to metadata with a specific name'),
 			'type'        => 'string',
 		);
 
@@ -493,7 +493,7 @@ class REST_Fields_Controller extends REST_Controller {
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args['fetch'] = [
 				'type'        => 'string',
-				'description' => __('Fetch all values of a field from a collection in all it collection items'),
+				'description' => __('Fetch all content of a metadata within a collection'),
 				'enum'        => ['all_field_values']
 			];
 			$endpoint_args['context'] = array(

@@ -63,8 +63,9 @@ class Term extends Entity {
 		unset($term_array['term_id']);
 		unset($term_array['status']);
 
-		$term_array['id'] = $term_id;
+		$term_array['id']           = $term_id;
 		$term_array['header_image'] = $this->get_header_image();
+		$term_array['url']          = get_term_link( $this->get_id() );
 
 		return $term_array;
 	}

@@ -18,7 +18,7 @@ html {
 }
 
 #tainacan-admin-app {
-    background: #ffffff;
+    background: #ffffffff;
     position: fixed;
     top: 0;
     left: 0;
@@ -167,23 +167,15 @@ a:hover {
         }
     }
     .input, .textarea {
-        font-size: 14px;
-        border: none;
-        border-radius: 1px !important;
+
         background-color: $tainacan-input-background;
         color: $tainacan-input-color;
-        box-shadow: none;
         transition: background-color 0.1s;
 
         &.is-danger {
           background-color: #e7dede;  
         }
 
-        &:focus, &:active {
-            box-shadow: none !important;
-            background-color: white;
-            border: 1px solid $tainacan-input-background !important;
-        }
     }
     .control{
         &.has-content {
@@ -279,6 +271,18 @@ a:hover {
     height: 30px !important;
     line-height: 20px !important;
     font-size: 14px !important;
+}
+.input, .textarea {
+    font-size: 14px;
+    border: none;
+    border-radius: 1px !important;
+    box-shadow: none !important;
+
+    &:focus, &:active {
+        box-shadow: none !important;
+        background-color: white;
+        border: 1px solid $tainacan-input-background !important;
+    }    
 }
 
 .select {
@@ -521,15 +525,10 @@ a:hover {
 
 // Tables
 .table-wrapper {
+    width: 100%;
     .table {
         tbody {
             td { border-bottom: 0px solid $gray-light !important; }
-        }
-        .b-checkbox.checkbox input[type="checkbox"] + .check {
-            width: 0.85em !important;
-            height: 0.85em !important;
-            border-radius: 2px !important;
-            border: 1px solid #7a7a7a !important;
         }
         .th-wrap {
             font-size: 12px !important;

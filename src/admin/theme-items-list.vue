@@ -125,7 +125,9 @@ export default {
             line-height: 20px !important;
             font-size: 14px !important;
         }
-
+        #collection-search-button {
+            height: 25px !important;
+        }
         .select {
             padding-top: 0px !important;
             select {

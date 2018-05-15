@@ -137,5 +137,38 @@ class CoreFieldTypes extends TAINACAN_UnitTestCase {
         $this->assertTrue($i->validate(), 'Item with empy title should validate because core title field has value');
 
     }
+
+    function test_dont_allow_multiple() {
+
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'   => 'test',
+            ),
+            true
+        );
+
+        $fields = $Tainacan_Fields->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+
+        foreach ( $fields as $index => $field ){
+            if ( $field->get_field_type_object()->get_core() && $field->get_field_type_object()->get_related_mapped_prop() == 'title') {
+                $core_title = $field;
+            }
+            if ( $field->get_field_type_object()->get_core() && $field->get_field_type_object()->get_related_mapped_prop() == 'description') {
+                $core_description = $field;
+            }
+        }
+
+        $core_title->set_multiple('yes');
+        $core_description->set_multiple('yes');
+
+        $this->assertFalse($core_title->validate(), 'Core metadata should not validate because it can not allow it to have multiple');
+        $this->assertFalse($core_description->validate(), 'Core metadata should not validate because it can not allow it to have multiple');
+
+    }
     
 }

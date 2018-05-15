@@ -16,6 +16,22 @@ export const add_metaquery = ( { commit }, filter  ) => {
     }
 };
 
+// Fetch Only for item attributes limiting on results
+export const add_fetchonly = ( { commit }, field ) => {
+        commit('addFetchOnly', field );   
+};
+export const remove_fetchonly = ( { commit }, field ) => {
+    commit('removeFetchOnly', field );
+};
+
+// Fetch Only for metadata limiting on results
+export const add_fetchonly_meta = ( { commit }, field ) => {
+    commit('addFetchOnlyMeta', field );
+};
+export const remove_fetchonly_meta = ( { commit }, field ) => {
+    commit('removeFetchOnlyMeta', field );
+};
+
 // Tax Queries from filters
 export const add_taxquery = ( { commit }, filter  ) => {
     if( filter && filter.terms.length === 0 ){
@@ -40,6 +56,13 @@ export const setPage = ({ commit },  page ) => {
 
 export const setItemsPerPage = ({ commit }, page ) => {
     commit('setPostQueryAttribute', {  attr: 'perpage', value: page } );
+};
+
+export const setStatus= ({ commit }, status ) => {
+    if (status == undefined || status == '')
+        commit('removePostQueryAttribute', 'status');
+    else
+        commit('setPostQueryAttribute', {  attr: 'status', value: status } );
 };
 
 // Sorting queries

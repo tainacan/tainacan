@@ -29,7 +29,7 @@ export default {
                 '$route' () {
                     if (this.$route.params.collectionId) 
                         this.collectionId = parseInt(this.$route.params.collectionId);
-                    
+
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
                         if (this.$route.query.perpage == undefined)
                             this.$route.query.perpage = 12;
@@ -39,10 +39,11 @@ export default {
                             this.$route.query.order = 'DESC';
                         if (this.$route.query.orderby == undefined)
                             this.$route.query.orderby = 'date';
-
+                        
                         this.$store.dispatch('search/set_postquery', this.$route.query); 
                         this.loadItems();
                     }
+                    
                 }
             },
             methods: {
@@ -56,9 +57,17 @@ export default {
                         this.$store.dispatch('search/add_taxquery', data );
                     }
                 },
+                addFetchOnlyMeta( field ){
+                    this.$store.dispatch('search/add_fetchonly_meta', field );
+                    this.updateURLQueries();             
+                },
+                removeFetchOnlyMeta( field ){
+                    this.$store.dispatch('search/remove_fetchonly_meta', field );
+                    this.updateURLQueries();             
+                },
                 getErrors( filter_id ){
                     let error = this.errors.find( errorItem => errorItem.field_id === filter_id );
-                    return ( error ) ? error.errors : false
+                    return ( error ) ? error.errors : false;
                 },
                 listener(){
                     const components = this.getAllComponents();
@@ -86,19 +95,23 @@ export default {
                     this.$store.dispatch('search/setOrder', newOrder);
                     this.updateURLQueries();
                 },
+                setStatus(status) {
+                    this.$store.dispatch('search/setStatus', status);
+                    this.updateURLQueries();
+                },
                 setSearchQuery(searchQuery) {
                     this.$store.dispatch('search/setSearchQuery', searchQuery);
                     this.updateURLQueries();
                 },
                 updateURLQueries() {
-                    this.$router.push({ query: {} });
+                    this.$router.push({ query: {}});
                     this.$router.push({ query: this.$store.getters['search/getPostQuery'] });
                 },
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
                 loadItems() {
-
+       
                     this.$emit( 'isLoadingItems', true);
                     this.$store.dispatch('collection/fetchItems', this.collectionId).then((res) => {
                         this.$emit( 'isLoadingItems', false);

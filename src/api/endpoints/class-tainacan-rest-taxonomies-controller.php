@@ -180,7 +180,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 				return new \WP_REST_Response( $deleted->get_error_message(), 400 );
 			} elseif(!$deleted){
 				return new \WP_REST_Response( [
-					'error_message' => __('Failure on deleted.', 'tainacan'),
+					'error_message' => __('Failed to delete', 'tainacan'),
 					'deleted'       => $deleted
 				], 400 );
 			} elseif (!$deleted){
@@ -191,7 +191,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		}
 
 		return new \WP_REST_Response([
-			'error_message' => __('Taxonomy with this id ('. $taxonomy_id .') not found.', 'tainacan'),
+			'error_message' => __('A taxonomy with the ID "'. $taxonomy_id .'" was not found.', 'tainacan'),
 			'taxonomy'      => $this->prepare_item_for_response($taxonomy, $request)
 		], 400);
 	}
@@ -340,7 +340,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Taxonomy with that ID not found', 'tainacan' ),
+				'error_message' => __('A taxonomy with this ID was not found', 'tainacan' ),
 				'taxonomy_id'   => $taxonomy_id
 			], 400);
 		}

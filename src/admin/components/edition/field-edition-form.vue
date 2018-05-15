@@ -146,6 +146,7 @@
             </b-field>
 
             <b-field
+                    v-if="!originalField.field_type_object.core"
                     :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
                     :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                 <b-checkbox
@@ -193,6 +194,7 @@
         <div class="field is-grouped form-submit">
             <div class="control">
                 <button
+                        type="button"
                         class="button is-outlined"
                         @click.prevent="cancelEdition()"
                         slot="trigger">{{ $i18n.get('cancel') }}

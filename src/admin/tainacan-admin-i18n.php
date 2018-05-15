@@ -17,6 +17,7 @@ return [
 	'event'                                    => __( 'Event', 'tainacan' ),
 	'term'                                     => __( 'Term', 'tainacan' ),
 	'terms'                                    => __( 'Terms', 'tainacan' ),
+	'exposer'                                  => __( 'Exposer', 'tainacan' ),
 
 	// Actions
 	'edit'                                     => __( 'Edit', 'tainacan' ),
@@ -125,6 +126,7 @@ return [
 	'label_unique_value'                       => __( 'Unique value', 'tainacan' ),
 	'label_yes'                                => __( 'Yes', 'tainacan' ),
 	'label_no'                                 => __( 'No', 'tainacan' ),
+	'label_approved'                                 => __( 'Approved', 'tainacan' ),
 	'label_collection_related'                 => __( 'Collection Related', 'tainacan' ),
 	'label_fields_for_search'                  => __( 'Fields for search', 'tainacan' ),
 	'label_allow_repeated_items'               => __( 'Allow repeated items', 'tainacan' ),
@@ -168,6 +170,17 @@ return [
 	'label_select_file'		 				   => __( 'Select File', 'tainacan' ),
 	'label_expand_all'	 					   => __( 'Expand all', 'tainacan' ),
 	'label_collapse_all'		 			   => __( 'Collapse all', 'tainacan' ),
+	'label_view_term'			 			   => __( 'View Term', 'tainacan' ),
+	'label_all_items'			 			   => __( 'All items', 'tainacan' ),
+	'label_draft_items'			 			   => __( 'Draft', 'tainacan' ),
+	'label_trash_items'			 			   => __( 'Trash', 'tainacan' ),
+	'label_mass_actions'		 			   => __( 'Mass actions', 'tainacan' ),
+	'label_delete_selected_collections'  	   => __( 'Delete selected collections', 'tainacan' ),
+	'label_edit_selected_collections'	  	   => __( 'Edit selected collections', 'tainacan' ),
+	'label_delete_selected_items'		  	   => __( 'Delete selected items', 'tainacan' ),
+	'label_edit_selected_items'			  	   => __( 'Edit selected items', 'tainacan' ),
+	'label_select_all_collections_page'	  	   => __( 'Select all collections on page', 'tainacan' ),
+	'label_select_all_items_page'	 	 	   => __( 'Select all items on page', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

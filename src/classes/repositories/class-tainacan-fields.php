@@ -60,7 +60,7 @@ class Fields extends Repository {
 			    'map'         => 'menu_order',
 			    'title'       => __( 'Order', 'tainacan' ),
 			    'type'        => 'string/integer',
-			    'description' => __( 'Field order. Field used if collections are manually ordered', 'tainacan' ),
+			    'description' => __( 'Metadata order. This metadata will be used if collections were manually ordered', 'tainacan' ),
 			    'on_error'    => __( 'The menu order should be a numeric value', 'tainacan' ),
 			    //'validation' => v::numeric(),
 		    ],
@@ -191,18 +191,18 @@ class Fields extends Repository {
 	 */
 	public function get_cpt_labels() {
 		return array(
-			'name'               => __('Fields', 'tainacan'),
-            'singular_name'      => __('Field', 'tainacan'),
+			'name'               => __('Metadatas', 'tainacan'),
+            'singular_name'      => __('Metadata', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
-            'add_new_item'       => __('Add new Field', 'tainacan'),
-            'edit_item'          => __('Edit Field', 'tainacan'),
-            'new_item'           => __('New Field', 'tainacan'),
-            'view_item'          => __('View Field', 'tainacan'),
-            'search_items'       => __('Search Field', 'tainacan'),
-            'not_found'          => __('No Field found ', 'tainacan'),
-            'not_found_in_trash' => __('No Field found in trash', 'tainacan'),
-            'parent_item_colon'  => __('Parent Field:', 'tainacan'),
-            'menu_name'          => __('Fields', 'tainacan')
+            'add_new_item'       => __('Add new Metadata', 'tainacan'),
+            'edit_item'          => __('Edit Metadata', 'tainacan'),
+            'new_item'           => __('New Metadata', 'tainacan'),
+            'view_item'          => __('View Metadata', 'tainacan'),
+            'search_items'       => __('Search Metadata', 'tainacan'),
+            'not_found'          => __('No Metadata found ', 'tainacan'),
+            'not_found_in_trash' => __('No Metadata found in trash', 'tainacan'),
+            'parent_item_colon'  => __('Parent Metadata:', 'tainacan'),
+            'menu_name'          => __('Metadatas', 'tainacan')
         );
 	}
 

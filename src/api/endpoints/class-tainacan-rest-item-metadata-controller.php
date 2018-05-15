@@ -213,14 +213,14 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				}
 				else {
 					return new \WP_REST_Response( [
-						'error_message' => __( 'Field do not accept suggestion.', 'tainacan' ),
+						'error_message' => __( 'The metadata does not accept suggestions', 'tainacan' ),
 					], 400 );
 				}
 
 				return new \WP_REST_Response( $prepared_item, 200 );
 			} else {
 				return new \WP_REST_Response( [
-					'error_message' => __( 'One or more values are invalid.', 'tainacan' ),
+					'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
 					'errors'        => $item_metadata->get_errors(),
 					'item_metadata' => $this->prepare_item_for_response($item_metadata, $request),
 				], 400 );
