@@ -11,6 +11,7 @@
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
+                        position="is-bottom-left"
                         v-if="collections.length > 0 && collections[0].current_user_can_edit"
                         :disabled="!isSelectingCollections"
                         id="mass-actions-dropdown">
