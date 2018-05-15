@@ -178,7 +178,7 @@ class Exposers {
 		return in_array($this->check_class_name($type), $this->types);
 	}
 	/**
-	 * Return Type with request has type, false otherwise
+	 * Return Type if request has type, false otherwise
 	 * @param \WP_REST_Request $request
 	 * @return Types\Type|boolean false
 	 */
