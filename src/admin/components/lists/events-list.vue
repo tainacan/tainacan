@@ -260,7 +260,10 @@
                     padding: 10px;
                     vertical-align: middle;
                     line-height: 12px;
-                    p { font-size: 14px; }
+                    p { 
+                        font-size: 14px; 
+                        margin: 0px;
+                    }
                     
                 }
                 td.column-default-width{

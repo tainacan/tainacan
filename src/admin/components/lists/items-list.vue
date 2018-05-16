@@ -44,7 +44,9 @@
             </div>
         </div>
         <div class="table-wrapper">
-            <table class="table">
+            <table 
+                    :class="{'selectable-table': !isOnTheme }"
+                    class="table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
@@ -372,13 +374,12 @@ export default {
                 color: $gray-light;
             }
         }
-
     }
 
     .table {
         width: 100%;
 
-        th:nth-child(2), td:nth-child(2) {
+        &.selectable-table th:nth-child(2), &.selectable-table td:nth-child(2) {
             padding-left: 54px;
         }
         
@@ -440,12 +441,15 @@ export default {
                     vertical-align: middle;
                     line-height: 12px;
                     border: none;
-                    p { font-size: 14px; }
+                    p { 
+                        font-size: 14px;
+                        margin: 0px; 
+                    }
                     
                 }
                 td.column-default-width{
                     max-width: 350px;
-                    p, {
+                    p {
                         text-overflow: ellipsis;
                         overflow-x: hidden;
                         white-space: nowrap;

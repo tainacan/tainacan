@@ -401,12 +401,15 @@ export default {
                     vertical-align: middle;
                     line-height: 12px;
                     border: none;
-                    p { font-size: 14px; }
+                    p { 
+                        font-size: 14px; 
+                        margin: 0px;
+                    }
                     
                 }
                 td.column-default-width{
                     max-width: 350px;
-                    p, {
+                    p {
                         text-overflow: ellipsis;
                         overflow-x: hidden;
                         white-space: nowrap;

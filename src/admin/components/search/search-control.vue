@@ -120,9 +120,6 @@
             //     else 
             //         this.$eventBusSearch.removeFetchOnlyMeta(field.id);
             // }
-        },
-        mounted() {
-            console.log(this.tableFields);
         }
     }
 </script>
