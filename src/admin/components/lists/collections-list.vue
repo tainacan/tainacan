@@ -21,12 +21,10 @@
                         <b-icon icon="menu-down"/>
                     </button> 
 
-                    <b-dropdown-item>
-                        <a
-                                id="item-delete-selected-items"
-                                @click="deleteSelectedCollections()">
-                            {{ $i18n.get('label_delete_selected_collections') }}
-                        </a>
+                    <b-dropdown-item
+                            id="item-delete-selected-items"
+                            @click="deleteSelectedCollections()">
+                        {{ $i18n.get('label_delete_selected_collections') }}
                     </b-dropdown-item>
                     <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_collections') + ' (Not ready)' }}
                     </b-dropdown-item>

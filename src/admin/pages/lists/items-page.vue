@@ -323,15 +323,6 @@
                         display: true
                     });
 
-                    this.tableFields.push({
-                        name: this.$i18n.get('label_actions'),
-                        field: 'row_actions',
-                        field_type: undefined,
-                        slug: 'actions',
-                        id: undefined,
-                        display: true
-                    });
-
                     // this.prefTableFields = this.tableFields;
                     // this.$userPrefs.get('table_columns_' + this.collectionId)
                     //     .then((value) => {

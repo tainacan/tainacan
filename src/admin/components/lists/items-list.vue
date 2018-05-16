@@ -10,7 +10,9 @@
                         <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
                     </button>
         </b-field> -->
-        <div class="selection-control">
+        <div 
+                v-if="!isOnTheme"
+                class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
@@ -31,12 +33,10 @@
                         <b-icon icon="menu-down"/>
                     </button> 
 
-                    <b-dropdown-item>
-                        <a
-                                id="item-delete-selected-items"
-                                @click="deleteSelectedItems()">
-                            {{ $i18n.get('label_delete_selected_items') }}
-                        </a>
+                    <b-dropdown-item 
+                            @click="deleteSelectedItems()"
+                            id="item-delete-selected-items">
+                        {{ $i18n.get('label_delete_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_items') + ' (Not ready)' }}
                     </b-dropdown-item>
@@ -58,7 +58,7 @@
                         <th 
                                 v-for="(column, index) in tableFields"
                                 :key="index"
-                                v-if="column.field != 'row_actions'"
+                                v-if="column.field != 'row_actions' && column.display"
                                 :class="{'thumbnail-cell': column.field == 'row_thumbnail'}"
                                 :custom-key="column.slug">
                             <div class="th-wrap">{{ column.name }}</div>
@@ -84,15 +84,14 @@
                         <td 
                                 :key="index"    
                                 v-for="(column, index) in tableFields"
-                                v-if="!(column.field == 'row_actions') || (column.field == 'row_actions' && item.current_user_can_edit && !isOnTheme)"
+                                v-if="column.display"
                                 :label="column.name" 
                                 :aria-label="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation' ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.field == 'row_thumbnail', 
-                                        'table-creation': column.field == 'row_creation',
-                                        'actions-cell': column.field == 'row_actions'}"
-                                @click="goToItemPage(item.id)">
+                                        'table-creation': column.field == 'row_creation'}"
+                                @click="goToItemPage(item)">
                             <p 
                                     v-if="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation'"
                                     v-html="renderMetadata( item.metadata[column.slug] )" />
@@ -104,9 +103,13 @@
                             <p 
                                     v-if="column.field == 'row_creation'"
                                     v-html="getCreationHtml(item)" />
-                            <div 
-                                    v-if="column.field == 'row_actions' && item.current_user_can_edit && !isOnTheme"
-                                    class="actions-container">
+                        </td>
+
+                        <!-- Actions -->
+                        <td 
+                                v-if="item.current_user_can_edit && !isOnTheme"
+                                class="column-default-width actions-cell">
+                            <div class="actions-container">
                                 <a 
                                         id="button-edit"   
                                         :aria-label="$i18n.getFrom('items','edit_item')" 
@@ -125,6 +128,7 @@
                                 </a>
                             </div>
                         </td>
+
     
                     </tr>
                 </tbody>
@@ -327,8 +331,11 @@ export default {
                 }
             });
         },
-        goToItemPage(itemId) {
-            this.$router.push(this.$routerHelper.getItemPath(this.collectionId, itemId));
+        goToItemPage(item) {
+            if (this.isOnTheme)
+                window.location.href = item.url;   
+            else
+                this.$router.push(this.$routerHelper.getItemPath(this.collectionId, item.id));
         },
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
@@ -370,6 +377,10 @@ export default {
 
     .table {
         width: 100%;
+
+        th:nth-child(2), td:nth-child(2) {
+            padding-left: 54px;
+        }
         
         .checkbox-cell {
             width: 44px;
@@ -409,7 +420,6 @@ export default {
 
         .thumbnail-cell {
             width: 58px;
-            padding-left: 54px;
         }
   
         tbody {
