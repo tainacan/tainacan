@@ -10,7 +10,7 @@
                         <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
                     </button>
         </b-field> -->
-        <div class="selection-control is-clearfix">
+        <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
@@ -84,6 +84,7 @@
                         <td 
                                 :key="index"    
                                 v-for="(column, index) in tableFields"
+                                v-if="!(column.field == 'row_actions') || (column.field == 'row_actions' && item.current_user_can_edit && !isOnTheme)"
                                 :label="column.name" 
                                 :aria-label="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation' ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
                                 class="column-default-width"
@@ -106,31 +107,6 @@
                             <div 
                                     v-if="column.field == 'row_actions' && item.current_user_can_edit && !isOnTheme"
                                     class="actions-container">
-                                <a 
-                                        id="button-edit"   
-                                        :aria-label="$i18n.getFrom('items','edit_item')" 
-                                        @click.prevent.stop="goToItemEditPage(item.id)">
-                                    <b-icon 
-                                            type="is-secondary" 
-                                            icon="pencil"/>
-                                </a>
-                                <a 
-                                        id="button-delete" 
-                                        :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneItem(item.id)">
-                                    <b-icon 
-                                            type="is-secondary" 
-                                            icon="delete"/>
-                                </a>
-                            </div>
-                        </td>
-
-                        <!-- Actions -->
-                        <td 
-                                v-if="tableFields['row_actions'] && item.current_user_can_edit && !isOnTheme"
-                                class="actions-cell column-default-width" 
-                                :label="$i18n.get('label_actions')">
-                            <div class="actions-container">
                                 <a 
                                         id="button-edit"   
                                         :aria-label="$i18n.getFrom('items','edit_item')" 
@@ -453,6 +429,7 @@ export default {
                     padding: 10px;
                     vertical-align: middle;
                     line-height: 12px;
+                    border: none;
                     p { font-size: 14px; }
                     
                 }
@@ -488,21 +465,12 @@ export default {
                         height: 100%;
                         z-index: 9;
                         background-color: $tainacan-input-background; 
-                     }
+                    }
 
                     a .icon {
                         margin: 8px;
                     }
 
-                     &::before {
-                        box-shadow: inset -113px 0 17px -17px #222;
-                        content: " ";
-                        width: 125px;
-                        height: 100%;
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                    }
                 }
 
                 &:hover {
@@ -516,7 +484,18 @@ export default {
                     .actions-cell {
                         visibility: visible;
                         display: block;
+
+                        &::after {
+                            box-shadow: inset -113px 0 17px -17px #222;
+                            content: " ";
+                            width: 125px;
+                            height: 100%;
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                        }
                     }
+
                 }
             }
         }

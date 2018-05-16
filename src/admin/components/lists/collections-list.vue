@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="selection-control is-clearfix">
+        <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
@@ -402,6 +402,7 @@ export default {
                     padding: 10px;
                     vertical-align: middle;
                     line-height: 12px;
+                    border: none;
                     p { font-size: 14px; }
                     
                 }
