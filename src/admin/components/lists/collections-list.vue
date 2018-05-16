@@ -2,11 +2,10 @@
     <div>
         <div class="selection-control is-clearfix">
             <div class="field select-all is-pulled-left">
-                <!-- Checkbox click is binded outside as we don't want reactive behaviour on input -->
-                <span @click="selectAllCollectionsOnPage()">
-                    <b-checkbox
-                            :value="allCollectionsOnPageSelected"
-                            size="is-small">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
+                <span>
+                    <b-checkbox 
+                            @click.native="selectAllCollectionsOnPage()" 
+                            :value="allCollectionsOnPageSelected">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
@@ -184,6 +183,7 @@ export default {
     },
     watch: {
         collections() {
+            this.selectedCollections = [];
             for (let i = 0; i < this.collections.length; i++)
                 this.selectedCollections.push(false);    
         },
@@ -244,26 +244,27 @@ export default {
                 onConfirm: () => {
 
                     for (let i = 0; i < this.collections.length; i++) {
-                        if (this.selectedCollections[i])
-                        this.deleteCollection(this.collections[i].id)
-                        .then(() => {
-                        //     this.loadCollections();
-                        //     this.$toast.open({
-                        //         duration: 3000,
-                        //         message: this.$i18n.get('info_collection_deleted'),
-                        //         position: 'is-bottom',
-                        //         type: 'is-secondary',
-                        //         queue: false
-                        //     })                            
-                        }).catch(() => { 
-                        //     this.$toast.open({
-                        //         duration: 3000,
-                        //         message: this.$i18n.get('info_error_deleting_collection'),
-                        //         position: 'is-bottom',
-                        //         type: 'is-danger',
-                        //         queue: false
-                        //     });
-                        });
+                        if (this.selectedCollections[i]) {
+                            this.deleteCollection(this.collections[i].id)
+                            .then(() => {
+                            //     this.loadCollections();
+                            //     this.$toast.open({
+                            //         duration: 3000,
+                            //         message: this.$i18n.get('info_collection_deleted'),
+                            //         position: 'is-bottom',
+                            //         type: 'is-secondary',
+                            //         queue: false
+                            //     })                            
+                            }).catch(() => { 
+                            //     this.$toast.open({
+                            //         duration: 3000,
+                            //         message: this.$i18n.get('info_error_deleting_collection'),
+                            //         position: 'is-bottom',
+                            //         type: 'is-danger',
+                            //         queue: false
+                            //     });
+                            });
+                        }
                     }
                     this.allCollectionsOnPageSelected = false;
                 }
@@ -328,10 +329,7 @@ export default {
 
     .selection-control {
         
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
-        padding-top: $page-small-top-padding;
-        padding-bottom: 0px;
+        padding: 20px 14px 0px 14px;
 
         .select-all {
             color: $gray-light;

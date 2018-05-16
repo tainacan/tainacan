@@ -173,7 +173,6 @@ export default {
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
-        min-height: 100%;
         height: auto;
 
         @media screen and (max-width: 769px) {

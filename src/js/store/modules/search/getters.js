@@ -15,7 +15,7 @@ export const getTotalItems = state => {
 }
 
 export const getPage = state => {
-    return state.postquery.paged;
+    return Number(state.postquery.paged);
 }
 
 export const getItemsPerPage = state => {
