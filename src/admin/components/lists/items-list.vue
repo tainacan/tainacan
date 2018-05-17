@@ -1,15 +1,6 @@
 <template>
     <div class="table-container">
-        <!-- <b-field 
-                grouped 
-                group-multiline>
-                    <button 
-                            v-if="selectedItems.length > 0 && items.length > 0 && items[0].current_user_can_edit" 
-                            class="button field is-danger" 
-                            @click="deleteSelectedItems()">
-                        <span>{{ $i18n.get('instruction_delete_selected_items') }} </span><b-icon icon="delete"/>
-                    </button>
-        </b-field> -->
+
         <div 
                 v-if="!isOnTheme"
                 class="selection-control">
@@ -50,9 +41,7 @@
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th 
-                                v-if="!isOnTheme"
-                                class="checkbox-cell">
+                        <th v-if="!isOnTheme">
                             &nbsp;
                             <!-- nothing to show on header -->
                         </th>
@@ -142,7 +131,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div> 
 <!--        
         <b-table 
                 ref="itemsTable"
@@ -371,7 +360,42 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    .table-test{
 
+        height: 240px;
+        
+        th {
+            position: -webkit-sticky; // for safari
+            position: sticky;
+            top: 0; left: 0;
+            background: #ddd !important;
+            color: black;
+            white-space: nowrap;
+ 
+            &:first-child {
+                z-index: 3 !important;
+            }
+        }
+
+        tr:hover td:first-child{
+            visibility: visible;
+        }
+
+        th, td {
+            padding: 10px 100px;
+            text-transform: capitalize;
+
+            &:first-child {
+                visibility: hidden;
+                position: -webkit-sticky; // for safari
+                position: sticky;
+                background-color: #eee;
+                left: 0px;
+                z-index: 2;
+                width: 200px;
+            }
+        }
+    }
     .selection-control {
         
         padding: 6px 14px 0px 14px;
@@ -399,21 +423,22 @@ export default {
             background-color: white;
             border-bottom: 1px solid $tainacan-input-background;
             top: 0px;
+            z-index: 99999
         }
 
-        &.selectable-table th:nth-child(2), &.selectable-table td:nth-child(2) {
-            padding-left: 54px;
-        }
+        // &.selectable-table th:nth-child(2), &.selectable-table td:nth-child(2) {
+        //     padding-left: 54px;
+        // }
         
         .checkbox-cell {
             width: 44px;
             height: 58px;
             padding: 0;
-            position: absolute !important;
-            left: 8.333333%;
+            position: sticky !important;
+            position: -webkit-sticky !important;
+            left: 0;
+            top: auto;
             visibility: hidden;
-            display: flex;
-            justify-content: space-around;
             z-index: 9;
 
             &::before {
@@ -493,6 +518,7 @@ export default {
                     visibility: hidden;
                     position: absolute;
                     right: 8.333333%;
+                    top: auto;
                     display: none;
                     
                     .actions-container {

@@ -409,15 +409,14 @@
     }
 
     .filters-menu {
-        position: relative;
+        position: absolute;
         width: $filter-menu-width;
         max-width: $filter-menu-width;
-        min-height: 100%;
+        min-height: calc(100% - 82px);
+        height: calc(100% - 82px);
         background-color: $tainacan-input-background;
         padding: $page-small-side-padding;
         float: left;
-        height: 100%;
-        max-height: 100%;
         overflow-y: auto;
         visibility: visible;
         display: block;
