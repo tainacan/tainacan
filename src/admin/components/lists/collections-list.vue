@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="table-container">
         <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>

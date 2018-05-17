@@ -116,11 +116,11 @@
                 </ul>
             </div>
             
-            <div 
+            <!-- <div 
                     :items="items"
-                    id="theme-items-list" />
+                    id="theme-items-list" /> -->
             <!-- LISTING RESULTS ------------------------- -->
-            <div class="table-container above-subheader">
+            <div class="above-subheader">
                 <b-loading
                         :is-full-page="false"
                         :active.sync="isLoadingItems"/>
@@ -387,8 +387,17 @@
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
-        min-height: 100%;
-        height: auto;
+        height: calc(100% - 184px);
+    }
+    .pagination-area {
+        margin-left: $page-side-padding;
+        margin-right: $page-side-padding;
+    }
+
+    .table-container {
+        padding-left: 8.333333%;
+        padding-right: 8.333333%;
+        height: calc(100% - 82px);
     }
 
     #collection-search-button {
@@ -427,23 +436,11 @@
 
     .items-list-area {
         margin-left: 0;
-        transition: margin-left ease 0.5s ;
+        transition: margin-left ease 0.5s;
+        height: 100%;
     }
     .spaced-to-right {
         margin-left: $filter-menu-width;
-    }
-
-    .table-container {
-        padding: 3em 55px;
-        position: relative;
-    }
-
-    @media screen and (max-width: 769px) {
-
-        .table-container {
-            margin-right: 0;
-            padding: 16px;
-        }
     }
 
     #filter-menu-compress-button {

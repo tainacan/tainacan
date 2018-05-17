@@ -148,10 +148,11 @@ export default {
     .sub-header {
         min-height: $subheader-height;
         height: $subheader-height;
-        margin-top: -$page-top-padding;
-        padding-top: $page-top-padding;
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
+        margin-left: -$page-side-padding;
+        margin-right: -$page-side-padding;
+        padding-top: $page-small-top-padding;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         border-bottom: 0.5px solid #ddd;
 
         .header-item {
@@ -174,17 +175,6 @@ export default {
         margin-bottom: 0;
         margin-top: 0;
         height: auto;
-
-        @media screen and (max-width: 769px) {
-             .filters-menu {
-                display: none;
-            }
-            .table-container {
-                margin-right: 0;
-                padding: .85em 0em;
-            }
-        }
-
     }
 
 </style>

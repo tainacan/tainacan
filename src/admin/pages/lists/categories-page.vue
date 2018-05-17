@@ -16,51 +16,51 @@
                 </div>
             </div>
 
-            <div class="columns above-subheader">
-                <div class="column table-container">
-                    <categories-list
-                            :is-loading="isLoading"
-                            :total-categories="totalCategories"
-                            :page="page"
-                            :categories-per-page="categoriesPerPage"
-                            :categories="categories"/>
-                    <!-- Footer -->
-                    <div 
-                            class="pagination-area" 
-                            v-if="totalCategories > 0">
-                        <div class="shown-items">
-                            {{
-                                $i18n.get('info_showing_categories') +
-                                (categoriesPerPage * (page - 1) + 1) +
-                                $i18n.get('info_to') +
-                                getLastCategoryNumber() +
-                                $i18n.get('info_of') + totalCategories + '.'
-                            }}
-                        </div>
-                        <div class="items-per-page">
-                            <b-field 
-                                    horizontal 
-                                    :label="$i18n.get('label_categories_per_page')">
-                                <b-select
-                                        :value="categoriesPerPage"
-                                        @input="onChangeCategoriesPerPage"
-                                        :disabled="categories.length <= 0">
-                                    <option value="12">12</option>
-                                    <option value="24">24</option>
-                                    <option value="48">48</option>
-                                    <option value="96">96</option>
-                                </b-select>
-                            </b-field>
-                        </div>
-                        <div class="pagination">
-                            <b-pagination
-                                    @change="onPageChange"
-                                    :total="totalCategories"
-                                    :current.sync="page"
-                                    order="is-centered"
-                                    size="is-small"
-                                    :per-page="categoriesPerPage"/>
-                        </div>
+            <div class="above-subheader">
+
+                <categories-list
+                        :is-loading="isLoading"
+                        :total-categories="totalCategories"
+                        :page="page"
+                        :categories-per-page="categoriesPerPage"
+                        :categories="categories"/>
+
+                <!-- Footer -->
+                <div 
+                        class="pagination-area" 
+                        v-if="totalCategories > 0">
+                    <div class="shown-items">
+                        {{
+                            $i18n.get('info_showing_categories') +
+                            (categoriesPerPage * (page - 1) + 1) +
+                            $i18n.get('info_to') +
+                            getLastCategoryNumber() +
+                            $i18n.get('info_of') + totalCategories + '.'
+                        }}
+                    </div>
+                    <div class="items-per-page">
+                        <b-field 
+                                horizontal 
+                                :label="$i18n.get('label_categories_per_page')">
+                            <b-select
+                                    :value="categoriesPerPage"
+                                    @input="onChangeCategoriesPerPage"
+                                    :disabled="categories.length <= 0">
+                                <option value="12">12</option>
+                                <option value="24">24</option>
+                                <option value="48">48</option>
+                                <option value="96">96</option>
+                            </b-select>
+                        </b-field>
+                    </div>
+                    <div class="pagination">
+                        <b-pagination
+                                @change="onPageChange"
+                                :total="totalCategories"
+                                :current.sync="page"
+                                order="is-centered"
+                                size="is-small"
+                                :per-page="categoriesPerPage"/>
                     </div>
                 </div>
             </div>
@@ -150,12 +150,11 @@
     .sub-header {
         max-height: $subheader-height;
         height: $subheader-height;
-        margin-left: -$page-small-side-padding;
-        margin-right: -$page-small-side-padding;
-        margin-top: -$page-small-top-padding;
+        margin-left: -$page-side-padding;
+        margin-right: -$page-side-padding;
         padding-top: $page-small-top-padding;
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         border-bottom: 0.5px solid #ddd;
 
         .header-item {
@@ -179,21 +178,6 @@
         margin-top: 0;
         min-height: 100%;
         height: auto;
-
-        .table-container {
-            margin-right: -$page-small-side-padding;
-            padding: 3em 2.5em;
-        }
-
-        @media screen and (max-width: 769px) {
-            .filters-menu {
-                display: none;
-            }
-            .table-container {
-                margin-right: 0;
-                padding: .85em 0em;
-            }
-        }
     }
 </style>
 

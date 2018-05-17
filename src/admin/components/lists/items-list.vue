@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="table-container">
         <!-- <b-field 
                 grouped 
                 group-multiline>
@@ -365,7 +365,11 @@ export default {
 
     .selection-control {
         
-        padding: 20px 14px 0px 14px;
+        padding: 6px 14px 0px 14px;
+        z-index: 9999;
+        position: relative;
+        background: white;
+        height: 40px;
 
         .select-all {
             color: $gray-light;
@@ -388,7 +392,7 @@ export default {
             height: 58px;
             padding: 0;
             position: absolute !important;
-            left: $page-side-padding;
+            left: 8.333333%;
             visibility: hidden;
             display: flex;
             justify-content: space-around;
@@ -470,7 +474,7 @@ export default {
                     padding: 0px;
                     visibility: hidden;
                     position: absolute;
-                    right: $page-side-padding;
+                    right: 8.333333%;
                     display: none;
                     
                     .actions-container {
