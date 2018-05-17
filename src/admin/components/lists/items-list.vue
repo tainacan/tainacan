@@ -226,12 +226,9 @@
 
 <script>
 import { mapActions } from 'vuex';
-import moment from 'moment';
-import { wpAjax } from "../../js/mixins";
 
 export default {
     name: 'ItemsList',
-    mixins: [ wpAjax ],
     data(){
         return {
             allItemsOnPageSelected: false,

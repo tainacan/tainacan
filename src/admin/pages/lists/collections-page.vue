@@ -68,7 +68,6 @@
 <script>
 import CollectionsList from '../../components/lists/collections-list.vue';
 import { mapActions, mapGetters } from 'vuex';
-import moment from 'moment'
 
 export default {
     name: 'CollectionsPage',
