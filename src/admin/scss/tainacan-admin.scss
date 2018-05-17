@@ -481,6 +481,7 @@ a:hover {
         height: 12px;
         flex-shrink: 0;
         border-radius: 0;
+        display: inline-block;
         border: 1px solid $gray-light;
         transition: background 150ms ease-out;
         box-shadow: none !important;

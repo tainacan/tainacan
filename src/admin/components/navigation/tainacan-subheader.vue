@@ -208,7 +208,10 @@ export default {
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
-        padding: 1.0em;
+        padding-top: 18px;
+        padding-bottom: 18px;
+        padding-right: $page-side-padding;
+        padding-left: $page-side-padding;
         margin: 0px;
         vertical-align: middle; 
         left: 0;

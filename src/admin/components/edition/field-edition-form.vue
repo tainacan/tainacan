@@ -28,7 +28,7 @@
                 :addons="false"
                 :type="formErrors['description'] != undefined ? 'is-danger' : ''"
                 :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_description') }}
                 <help-button
                         :title="$i18n.getHelperTitle('fields', 'description')"
@@ -46,13 +46,13 @@
                 :addons="false"
                 :type="formErrors['status'] != undefined ? 'is-danger' : ''"
                 :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_status') }}
                 <help-button
                         :title="$i18n.getHelperTitle('fields', 'status')"
                         :message="$i18n.getHelperMessage('fields', 'status')"/>
             </label>
-            <div class="inline-block">
+            <b-field>
                 <b-radio
                         size="is-small"
                         @focus="clearErrors('label_status')"
@@ -62,7 +62,8 @@
                         native-value="publish">
                     {{ $i18n.get('publish_visibility') }}
                 </b-radio>
-                <br>
+            </b-field>
+            <b-field>
                 <b-radio
                         size="is-small"
                         @focus="clearErrors('label_status')"
@@ -72,13 +73,15 @@
                         native-value="private">
                     {{ $i18n.get('private_visibility') }}
                 </b-radio>
-            </div>
+            </b-field>
         </b-field>
 
         <!-- Display on listing -->
         <b-field
+                :type="formErrors['display'] != undefined ? 'is-danger' : ''"
+                :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
                 :addons="false">
-            <label class="label">
+            <label class="label is-inline">
                 {{ $i18n.get('label_display') }}
                 <help-button
                         :title="$i18n.getHelperTitle('fields', 'display')"
@@ -86,9 +89,7 @@
 
             </label>
 
-            <b-field
-                    :type="formErrors['display'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['display'] != undefined ? formErrors['display'] : ''">
+            <b-field>
                 <b-radio
                         size="is-small"
                         @input="clearErrors('display')"
@@ -110,9 +111,7 @@
                 </b-radio>
             </b-field>
 
-            <b-field
-                    :type="formErrors['display'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['display'] != undefined ? formErrors['display'] : ''">
+            <b-field>
                 <b-radio
                         size="is-small"
                         v-model="editForm.display"
@@ -125,9 +124,8 @@
 
         </b-field>
 
-        <b-field
-                :addons="false"
-                :label="$i18n.get('label_options')">
+        <b-field :addons="false">
+            <label class="label is-inline">{{ $i18n.get('label_options') }}</label>
             <b-field
                     :type="formErrors['required'] != undefined ? 'is-danger' : ''"
                     :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
@@ -137,6 +135,7 @@
                         v-model="editForm.required"
                         true-value="yes"
                         false-value="no"
+                        class="is-inline"
                         name="required">
                     {{ $i18n.get('label_required') }}
                     <help-button
@@ -155,6 +154,7 @@
                         v-model="editForm.multiple"
                         true-value="yes"
                         false-value="no"
+                        class="is-inline"
                         name="multiple">
                     {{ $i18n.get('label_allow_multiple') }}
                     <help-button
@@ -172,6 +172,7 @@
                         v-model="editForm.unique"
                         true-value="yes"
                         false-value="no"
+                        class="is-inline"
                         name="collecion_key">
                     {{ $i18n.get('label_unique_value') }}
                     <help-button

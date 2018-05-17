@@ -364,8 +364,8 @@
         min-height: $subheader-height;
         height: $subheader-height;
         padding-top: $page-small-top-padding;
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         border-bottom: 0.5px solid #ddd;
         position: relative;
 
@@ -381,8 +381,8 @@
 
     .tabs {
         padding-top: $page-small-top-padding;
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
     }
     .above-subheader {
         margin-bottom: 0;

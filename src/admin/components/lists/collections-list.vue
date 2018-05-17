@@ -347,7 +347,7 @@ export default {
             height: 58px;
             padding: 0;
             position: absolute !important;
-            left: 82px;
+            left: $page-side-padding;
             visibility: hidden;
             display: flex;
             justify-content: space-around;
@@ -430,7 +430,7 @@ export default {
                     padding: 0px;
                     visibility: hidden;
                     position: absolute;
-                    right: 82px;
+                    right: $page-side-padding;
                     display: none;
                     
                     .actions-container {
