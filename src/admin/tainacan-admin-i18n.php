@@ -1,6 +1,6 @@
 <?php
 
-return [
+return apply_filters('tainacan-js-i18n', [
 	// Tainacan common terms
 	'repository'                               => __( 'Repository', 'tainacan' ),
 	'collections'                              => __( 'Collections', 'tainacan' ),
@@ -39,6 +39,7 @@ return [
 	'add_one_item'                             => __( 'Add one item', 'tainacan' ),
 	'add_items_bulk'                           => __( 'Add items in bulk', 'tainacan' ),
 	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
+	'new_mapped_item'                          => __( 'New mapped collection', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
@@ -271,5 +272,5 @@ return [
 	'tainacan-filter-category-taginput'        => __( 'Category Tag Input', 'tainacan' ),
 	'tainacan-filter-category-checkbox'        => __( 'Category Check Box', 'tainacan' ),
 	'tainacan-filter-category-selectbox'       => __( 'Category Select Box', 'tainacan' )
-]
+]);
 ?>

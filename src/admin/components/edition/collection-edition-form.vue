@@ -350,6 +350,7 @@ export default {
             editFormErrors: {},
             formErrorMessage: '',
             isNewCollection: false,
+            isMapped: false,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
             isFetchingModerators: false,
@@ -636,6 +637,14 @@ export default {
 
                 this.isLoading = false; 
             });
+        } else {
+            var tmppath = this.$route.fullPath.split("/");
+            var mapper = tmppath.pop();
+            if(tmppath.pop() == 'new') {
+                this.isNewCollection = true;
+                this.isMapped = mapper;
+                this.createNewCollection();
+            }
         }
     }
 
