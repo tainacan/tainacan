@@ -382,6 +382,15 @@ export default {
 
     .table {
         width: 100%;
+        border-collapse: separate;
+
+        th {
+            position: sticky;
+            position: -webkit-sticky;
+            background-color: white;
+            border-bottom: 1px solid $tainacan-input-background;
+            top: 0px;
+        }
 
         &.selectable-table th:nth-child(2), &.selectable-table td:nth-child(2) {
             padding-left: 54px;
