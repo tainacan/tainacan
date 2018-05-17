@@ -88,15 +88,22 @@
                                 v-for="(column, index) in tableFields"
                                 v-if="column.display"
                                 :label="column.name" 
-                                :aria-label="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation' ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
+                                :aria-label="column.field != 'row_thumbnail' &&
+                                 column.field != 'row_actions' &&
+                                  column.field != 'row_creation' ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.field == 'row_thumbnail', 
                                         'table-creation': column.field == 'row_creation'}"
                                 @click="goToItemPage(item)">
-                            <p 
-                                    v-if="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation'"
-                                    v-html="renderMetadata( item.metadata[column.slug] )" />
+
+                            <p
+                                    v-if="column.field !== 'row_thumbnail' &&
+                                     column.field !== 'row_actions' &&
+                                      column.field !== 'row_creation'"
+
+                                    v-html="renderMetadata( item.metadata[column.slug] )"/>
+
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
@@ -220,14 +227,16 @@
 <script>
 import { mapActions } from 'vuex';
 import moment from 'moment';
+import { wpAjax } from "../../js/mixins";
 
 export default {
     name: 'ItemsList',
+    mixins: [ wpAjax ],
     data(){
         return {
             allItemsOnPageSelected: false,
             isSelectingItems: false,
-            selectedItems: []
+            selectedItems: [],
         }
     },
     props: {
@@ -342,15 +351,18 @@ export default {
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
-        renderMetadata( metadata ){
+        renderMetadata(metadata) {
 
-            if( !metadata )
+            if (!metadata) {
                 return '';
-            else
+            } else if (metadata.date_i18n) {
+                return metadata.date_i18n;
+            } else {
                 return metadata.value_as_html;
+            }
         },
         getCreationHtml(item) {
-            return this.$i18n.get('info_created_by') + item['author_name'] + '<br>' + this.$i18n.get('info_date') + moment( item['creation_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
+            return this.$i18n.get('info_created_by') + item['author_name'] + '<br>' + this.$i18n.get('info_date') + item['creation_date'];
         },
         getDecodedURI(url) {
             return decodeURIComponent(url);

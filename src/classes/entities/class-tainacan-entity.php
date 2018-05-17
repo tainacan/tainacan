@@ -132,6 +132,18 @@ class Entity {
         return $repository;
     }
 
+	/**
+	 * @param $date
+	 *
+	 * @return string
+	 */
+	public function get_date_i18n($date){
+
+		$unix_time_stamp = strtotime($date);
+
+		return date_i18n(get_option('date_format'), $unix_time_stamp);
+	}
+
     /**
      * return the value for a mapped property
      * @param string $prop id of property

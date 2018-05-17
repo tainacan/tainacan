@@ -122,7 +122,7 @@ export default {
         collections(){
             let collectionsList = this.getCollections(); 
             for (let collection of collectionsList) 
-                collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + moment(collection['creation_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
+                collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + collection['creation_date'];
             return collectionsList;
         }
     },

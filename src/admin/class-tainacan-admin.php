@@ -18,6 +18,7 @@ class Admin {
 
 	private function __construct() {
 
+		add_action( 'wp_ajax_tainacan_date_i18n', array( &$this, 'ajax_date_i18n') );
 		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
 		add_filter( 'admin_body_class', array( &$this, 'admin_body_class' ) );
 
@@ -224,6 +225,15 @@ class Admin {
 			'show_in_rest' => true,
 		);
 		register_meta( 'user', 'tainacan_prefs', $args );
+	}
+
+	function ajax_date_i18n(){
+
+		$unix_time_stamp = strtotime($_POST['date_string']);
+
+		echo date_i18n(get_option('date_format'), $unix_time_stamp);
+
+		wp_die();
 	}
 
 }

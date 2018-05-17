@@ -3,7 +3,7 @@
         <b-loading
                 :active.sync="isLoading"
                 :can-cancel="false"/>
-        <tainacan-title />
+        <tainacan-title/>
         <div class="content">
 
             <router-link
@@ -22,18 +22,18 @@
                     class="card-image"
                     v-if="item.document">
                 <figure
-                            class="image"
-                        v-html="item.document_as_html" />
+                        class="image"
+                        v-html="item.document_as_html"/>
             </div>
             <br>
 
             <div
-                v-if="item.thumbnail"
-                class="media">
+                    v-if="item.thumbnail"
+                    class="media">
                 <figure
-                    class="media-left" >
+                        class="media-left">
                     <p class="image is-128x128">
-                    <img :src="item.thumbnail">
+                        <img :src="item.thumbnail">
                     </p>
                 </figure>
                 <div class="media-content">
@@ -42,36 +42,40 @@
             </div>
 
             <div
-                v-for="(metadata, index) in item.metadata"
-                :key="index"
-                class="box">
+                    v-for="(metadata, index) in item.metadata"
+                    :key="index"
+                    class="box">
 
                 <p
-                    v-if="metadata.value_as_html"
-                    class="is-size-3"
-                    v-html="metadata.value_as_html"/>
+                        v-if="metadata.date_i18n"
+                        class="is-size-3"
+                        v-html="metadata.date_i18n"/>
                 <p
-                    v-else>--</p>
+                        v-else-if="metadata.value_as_html"
+                        class="is-size-3"
+                        v-html="metadata.value_as_html"/>
+                <p
+                        v-else>--</p>
 
                 <p>
                     <i>
-                    {{ metadata.name }}
+                        {{ metadata.name }}
                     </i>
                 </p>
             </div>
 
             <div
-                class="box">
+                    class="box">
 
                 <div
-                    v-if="attachments && attachments.length > 0">
+                        v-if="attachments && attachments.length > 0">
                     <span
-                        v-for="(attachment, index) in attachments"
-                        :key="index"
-                        >
+                            v-for="(attachment, index) in attachments"
+                            :key="index"
+                    >
                         <a
-                            target="blank"
-                            :href="attachment.guid.rendered">{{ attachment.guid.rendered }}</a>
+                                target="blank"
+                                :href="attachment.guid.rendered">{{ attachment.guid.rendered }}</a>
                             <br>
                     </span>
                 </div>
@@ -79,7 +83,7 @@
 
                 <p>
                     <i>
-                    {{ $i18n.get('label_attachments') }}
+                        {{ $i18n.get('label_attachments') }}
                     </i>
                 </p>
             </div>
@@ -89,52 +93,52 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+    import {mapActions, mapGetters} from 'vuex'
 
-export default {
-    name: 'ItemPage',
-    data(){
-        return {
-            collectionId: Number,
-            itemId: Number,
-            isLoading: false
-        }
-    },
-    methods: {
-        ...mapActions('item', [
-            'fetchItem',
-            'fetchAttachments'
-        ]),
-        ...mapGetters('item', [
-            'getItem',
-            'getAttachments'
-        ]),
-    },
-    computed: {
-        item(){
-            return this.getItem();
+    export default {
+        name: 'ItemPage',
+        data() {
+            return {
+                collectionId: Number,
+                itemId: Number,
+                isLoading: false
+            }
         },
-        attachments(){
-            return this.getAttachments();
+        methods: {
+            ...mapActions('item', [
+                'fetchItem',
+                'fetchAttachments'
+            ]),
+            ...mapGetters('item', [
+                'getItem',
+                'getAttachments'
+            ]),
+        },
+        computed: {
+            item() {
+                return this.getItem();
+            },
+            attachments() {
+                return this.getAttachments();
+            }
+        },
+        created() {
+            // Obtains item and collection ID
+            this.collectionId = this.$route.params.collectionId;
+            this.itemId = this.$route.params.itemId;
+
+            // Puts loading on Item Loading
+            this.isLoading = true;
+            let loadingInstance = this;
+
+            // Obtains Item
+            this.fetchItem(this.itemId).then(() => {
+                loadingInstance.isLoading = false;
+            });
+
+            // Get attachments
+            this.fetchAttachments(this.itemId);
         }
-    },
-    created(){
-        // Obtains item and collection ID
-        this.collectionId = this.$route.params.collectionId;
-        this.itemId = this.$route.params.itemId;
 
-        // Puts loading on Item Loading
-        this.isLoading = true;
-        let loadingInstance = this;
-
-        // Obtains Item
-        this.fetchItem(this.itemId).then(() => {
-            loadingInstance.isLoading = false;
-        });
-
-        // Get attachments
-        this.fetchAttachments(this.itemId);
     }
-
-}
 </script>

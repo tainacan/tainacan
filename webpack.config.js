@@ -2,10 +2,10 @@ let path = require('path');
 let webpack = require('webpack');
 
 module.exports = {
-    entry:  {
-       //dev_admin: './src/js/main.js',
-       user_search: './src/admin/js/theme-main.js',
-       user_admin: './src/admin/js/main.js'
+    entry: {
+        //dev_admin: './src/js/main.js',\
+        user_search: './src/admin/js/theme-main.js',
+        user_admin: './src/admin/js/main.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/'),

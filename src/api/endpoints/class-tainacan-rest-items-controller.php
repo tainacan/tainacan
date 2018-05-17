@@ -106,6 +106,9 @@ class REST_Items_Controller extends REST_Controller {
 			$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
 			$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
 			$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
+			if($field->get_field_type_object()->get_primitive_type() === 'date') {
+				$item_array['metadata'][ $slug ]['date_i18n'] = $item_metadata_array['date_i18n'];
+			}
 			$item_array['metadata'][ $slug ]['multiple']        = $field->get_multiple();
 		}
 

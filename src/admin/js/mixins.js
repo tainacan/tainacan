@@ -29,6 +29,26 @@ export const wpAjax = {
                        reject(error)
                    })
             });
+        },
+        getDatei18n(dateString){
+            this.axiosWPAjax.post('', qs.stringify({
+                action: 'tainacan_date_i18n',
+                date_string: dateString,
+                nonce: tainacan_plugin.nonce,
+            })).then(res => {
+                return res.data
+            });
+        },
+    }
+};
+
+export const dateInter = {
+    methods: {
+        getDateLocaleFormat() {
+
+            let now = new Date();
+
+            return now.toLocaleDateString().replace(/[\d]/g, '#');
         }
     }
 };
