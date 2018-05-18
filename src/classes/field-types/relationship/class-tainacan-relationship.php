@@ -27,12 +27,12 @@ class Relationship extends Field_Type {
                'description' => __( 'Select the collection to fetch items', 'tainacan' ),
            ],
            'search' => [
-               'title' => __( 'Fields for search', 'tainacan' ),
-               'description' => __( 'Select the fields to help the search', 'tainacan' ),
+               'title' => __( 'Metadata for search', 'tainacan' ),
+               'description' => __( 'Select the metadata to help the search', 'tainacan' ),
            ],
            'repeated' => [
                'title' =>__( 'Allow repeated items', 'tainacan' ),
-               'description' => __( 'Allow different items with the same item selected', 'tainacan' ),
+               'description' => __( 'Allows different items to be related to the same item selected in another collection.', 'tainacan' ),
            ]
        ];
     }
@@ -57,11 +57,11 @@ class Relationship extends Field_Type {
 
         if (!empty($this->get_option('collection_id')) && !is_numeric($this->get_option('collection_id'))) {
             return [
-                'collection_id' => __('Collection ID invalid','tainacan')
+                'collection_id' => __('Invalid collection ID','tainacan')
             ];
         } else if( empty($this->get_option('collection_id'))) {
             return [
-                'collection_id' => __('Collection related is required','tainacan')
+                'collection_id' => __('The related collection is required','tainacan')
             ];
         }
         return true;

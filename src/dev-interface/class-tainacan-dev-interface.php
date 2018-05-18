@@ -90,7 +90,7 @@ class DevInterface {
         foreach ($collections as $col) {
             add_meta_box(
                 $col->get_db_identifier() . '_field',
-                __('Field', 'tainacan'),
+                __('Metadata', 'tainacan'),
                 array(&$this, 'metadata_metabox'),
                 $col->get_db_identifier(), //post type
                 'normal' 
@@ -233,7 +233,7 @@ class DevInterface {
                 
                 <thead>
                     <tr>
-                        <th class="left"><?php _e('Field', 'tainacan'); ?></th>
+                        <th class="left"><?php _e('Metadata', 'tainacan'); ?></th>
                         <th><?php _e('Value', 'tainacan'); ?></th>
                     </tr>
                 </thead>
@@ -305,7 +305,7 @@ class DevInterface {
                 
                 <thead>
                     <tr>
-                        <th class="left"><?php _e('Field', 'tainacan'); ?></th>
+                        <th class="left"><?php _e('Metadata', 'tainacan'); ?></th>
                         <th><?php _e('Value', 'tainacan'); ?></th>
                     </tr>
                 </thead>

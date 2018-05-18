@@ -404,7 +404,7 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Item with that ID not found', 'tainacan' ),
+				'error_message' => __('An item with this ID was not found', 'tainacan' ),
 				'item_id'       => $item_id
 			], 400);
 		}

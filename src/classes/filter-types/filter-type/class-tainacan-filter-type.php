@@ -89,7 +89,7 @@ abstract class Filter_Type {
         if(in_array( $class->get_primitive_type(), $this->supported_types  )){
             return true;
         } else {
-            return ['unsupported_type' => __('The field primitive type is not supported by this filter', 'tainacan')];
+            return ['unsupported_type' => __('The metadata primitive type is not supported by this filter', 'tainacan')];
         }
     }
 

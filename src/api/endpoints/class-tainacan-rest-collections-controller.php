@@ -365,7 +365,7 @@ class REST_Collections_Controller extends REST_Controller {
 		    }
 
 		    return new \WP_REST_Response([
-		    	'error_message' => __('Collection with that ID not found', 'tainacan' ),
+		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
 			    'collection_id' => $collection_id
 		    ], 400);
 	    }

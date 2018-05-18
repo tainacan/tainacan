@@ -226,7 +226,7 @@ class REST_Terms_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Term or Taxonomy with that IDs not found', 'tainacan' ),
+				'error_message' => __('Term or Taxonomy with this ID was not found', 'tainacan' ),
 				'term_id'       => $term_id,
 				'taxonomy_id'   => $taxonomy_id
 			], 400);
@@ -400,7 +400,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_collection_params('term'));
 
 		$query_params['name'] = array(
-			'description' => __('Limit result set to term with specific name.'),
+			'description' => __('Limits the result set to terms with a specific name'),
 			'type'        => 'string',
 		);
 

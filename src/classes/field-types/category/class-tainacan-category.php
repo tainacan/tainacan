@@ -41,7 +41,7 @@ class Category extends Field_Type {
             ],
             'allow_new_terms' => [
                 'title' => __( 'Allow new terms', 'tainacan' ),
-                'description' => __( 'Allow create new terms', 'tainacan' ),
+                'description' => __( 'Allows to create new terms', 'tainacan' ),
             ]
         ];
     }
@@ -67,7 +67,7 @@ class Category extends Field_Type {
             return true;
 		
 		if (empty($this->get_option('taxonomy_id')))
-			return ['taxonomy_id' => __('Please select a category', 'tainacan')];
+			return ['taxonomy_id' => __('Please select a taxonomy', 'tainacan')];
 		
 		$Tainacan_Fields = Fields::get_instance();
 		
@@ -85,7 +85,7 @@ class Category extends Field_Type {
             foreach ($category_fields as $field_id => $category_field) {
                 if ( is_array( $category_field ) && key($category_field) != $field->get_id()
                     && in_array($this->get_option('taxonomy_id'), $category_field)) {
-                    return ['taxonomy_id' => __('You can not have 2 Category Fields using the same category in a collection', 'tainacan')];
+                    return ['taxonomy_id' => __('You can not have 2 taxonomy metadata using the same taxonomy in a collection.', 'tainacan')];
                 }
 		    }
         }

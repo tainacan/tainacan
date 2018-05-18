@@ -38,7 +38,7 @@ class Taxonomies extends Repository {
                 'title'       => __('Name', 'tainacan'),
                 'type'        => 'string',
                 'description' => __('Name of the taxonomy', 'tainacan'),
-                'on_error'    => __('The taxonomy name should be a text value and not empty', 'tainacan'),
+                'on_error'    => __('The taxonomy name should be a text value and should not be empty.', 'tainacan'),
                 'validation'  => v::stringType()->notEmpty(),
             ],
             'description'     =>  [
@@ -61,7 +61,7 @@ class Taxonomies extends Repository {
                 'title'       => __('Allow insert', 'tainacan'),
                 'type'        => 'string',
                 'description' => __('Allow/Deny the creation of new terms in the taxonomy', 'tainacan'),
-                'on_error'    => __('Allow insert is invalid, allowed values ( yes/no )', 'tainacan'),
+                'on_error'    => __('Invalid insertion, allowed values are ( yes/no )', 'tainacan'),
                 'validation'  => v::stringType()->in(['yes', 'no']), // yes or no
                 'default'     => 'yes'
             ],

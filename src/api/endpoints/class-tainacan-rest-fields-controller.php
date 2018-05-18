@@ -393,20 +393,20 @@ class REST_Fields_Controller extends REST_Controller {
 
 			$field = $this->field_repository->fetch($field_id);
 
-			$error_message = __('Metadata with that ID was not found', 'tainacan');
+			$error_message = __('Metadata with this ID was not found', 'tainacan');
 
 			if($field){
 
 				// These conditions are for verify if endpoints are used correctly
 				if(!$collection_id && $field->get_collection_id() !== 'default') {
-					$error_message = __('That metadata is not a default metadata', 'tainacan');
+					$error_message = __('This metadata is not a default metadata', 'tainacan');
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
 						'field_id'      => $field_id
 					] );
 				} elseif ($collection_id && $field->get_collection_id() === 'default'){
-					$error_message = __('That metadata is not a collection metadata', 'tainacan');
+					$error_message = __('This metadata is not a collection metadata', 'tainacan');
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,

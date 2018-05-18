@@ -416,7 +416,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_collection_params('tax'));
 
 		$query_params['name'] = array(
-			'description' => __('Limit result set to taxonomy with specific name.'),
+			'description' => __('Limits the result set to a taxonomy with a specific name.'),
 			'type'        => 'string',
 		);
 
