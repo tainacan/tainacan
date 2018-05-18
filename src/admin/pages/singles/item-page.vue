@@ -113,12 +113,12 @@
                             <div
                                     v-if="field.date_i18n"
                                     class="content">
-                                <div v-html="field.date_i18n"/>
+                                <p v-html="field.date_i18n"/>
                             </div>
                             <div
                                     v-else
                                     class="content">
-                                <div v-html="field.value_as_html"/>
+                                <p v-html="field.value_as_html"/>
                             </div>
                         </b-collapse>
                     </div>
