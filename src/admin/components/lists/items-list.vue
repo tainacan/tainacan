@@ -34,6 +34,7 @@
                 </b-dropdown>
             </div>
         </div>
+
         <div class="table-wrapper">
             <table 
                     :class="{'selectable-table': !isOnTheme }"
@@ -164,7 +165,6 @@ export default {
         this.selectedItems = [];
         for (let i = 0; i < this.items.length; i++)
             this.selectedItems.push(false);  
-
     },
     watch: {
         selectedItems() {
@@ -291,7 +291,6 @@ export default {
     .selection-control {
         
         padding: 6px 14px 0px 14px;
-        z-index: 9999;
         position: relative;
         background: white;
         height: 40px;
@@ -315,7 +314,7 @@ export default {
             background-color: white;
             border-bottom: 1px solid $tainacan-input-background;
             top: 0px;
-            z-index: 99999;
+            z-index: 9;
 
             &.actions-header {
                 min-width: 8.333333333%;
@@ -335,7 +334,6 @@ export default {
             left: 0;
             top: auto;
             visibility: hidden;
-            z-index: 9;
 
             &::before {
                 box-shadow: inset 53px 0 10px -12px #222;
@@ -417,7 +415,6 @@ export default {
                     right: 0px;
                     top: auto;
                     width: 8.333333333%;
-                    display: none;
                     background-color: $tainacan-input-background;
                     
                     .actions-container {
@@ -447,15 +444,14 @@ export default {
                     }
                     .actions-cell {
                         visibility: visible;
-                        display: table-cell;
 
                         &::after {
-                            box-shadow: inset -79px 0 17px -19px #222;
+                            box-shadow: inset -112px 0 17px -19px #222;
                             content: " ";
-                            width: 100%;
+                            width: 120%;
                             height: 100%;
                             position: absolute;
-                            right: 35px;
+                            right: 0px;
                             top: 0;
                         }
                     }
