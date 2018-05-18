@@ -326,8 +326,7 @@ export default {
         // }
         
         .checkbox-cell {
-            width: 44px;
-            height: 58px;
+            min-width: 44px;
             padding: 0;
             position: sticky !important;
             position: -webkit-sticky !important;
@@ -336,20 +335,24 @@ export default {
             visibility: hidden;
 
             &::before {
-                box-shadow: inset 53px 0 10px -12px #222;
+                box-shadow: inset 51px 0 10px -12px #222;
                 content: " ";
-                width: 64px;
+                width: 54px;
                 height: 100%;
                 position: absolute;
                 left: 0;
+                top: 0;
             }
 
-            .checkbox {  
+            label.checkbox {  
                 border-radius: 0px;
                 background-color: white;
-                padding: 10px 10px 10px 14px;
+                padding: 0;
                 width: 100%;
                 height: 100%; 
+                display: flex;
+                justify-content: center;
+
             }
             &.is-selecting {
                 visibility: visible; 
@@ -389,7 +392,7 @@ export default {
                     
                 }
                 td.column-default-width{
-                    max-width: 350px;
+                    max-width: 300px;
                     p {
                         text-overflow: ellipsis;
                         overflow-x: hidden;
@@ -416,19 +419,19 @@ export default {
                     top: auto;
                     width: 8.333333333%;
                     background-color: $tainacan-input-background;
-                    
+
                     .actions-container {
                         display: flex;
                         position: relative;
-                        padding: 10px;
+                        padding: 0;
                         height: 100%;
-                        width: 100%;
+                        min-width: 120px;
                         z-index: 9;
                         background-color: $tainacan-input-background; 
                     }
 
                     a {
-                        margin: 8px;
+                        margin: auto;
                         .mdi {font-size: 18px !important; }  
                     }
 
@@ -446,9 +449,9 @@ export default {
                         visibility: visible;
 
                         &::after {
-                            box-shadow: inset -112px 0 17px -19px #222;
+                            box-shadow: inset -132px 0 17px -21px #222;
                             content: " ";
-                            width: 120%;
+                            width: 140px;
                             height: 100%;
                             position: absolute;
                             right: 0px;
