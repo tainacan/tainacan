@@ -40,11 +40,7 @@
         mixins: [ dateInter ],
         created(){
             if( this.value ){
-                let prep = new Date(this.value.replace(/-/g, '/')).toLocaleDateString();
-
-                console.log(prep);
-
-                this.dateValue = prep;
+                this.dateValue = new Date(this.value.replace(/-/g, '/')).toLocaleDateString();
             }
         },
         data() {
