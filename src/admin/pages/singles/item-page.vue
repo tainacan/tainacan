@@ -7,7 +7,7 @@
         <tainacan-title/>
 
         <div class="columns">
-            <div class="column is-4">
+            <div class="column is-5">
                 <div class="column is-12">
                     <router-link
                             class="button is-secondary"
@@ -81,7 +81,7 @@
 
             </div>
             <div class="column is-1" />
-            <div class="column is-7">
+            <div class="column is-6">
                 <label class="section-label">{{ $i18n.get('fields') }}</label>
                 <br>
                 <a
@@ -112,12 +112,12 @@
                             </label>
                             <div
                                     v-if="field.date_i18n"
-                                    class="notification">
+                                    class="content">
                                 <div v-html="field.date_i18n"/>
                             </div>
                             <div
                                     v-else
-                                    class="notification">
+                                    class="content">
                                 <div v-html="field.value_as_html"/>
                             </div>
                         </b-collapse>

@@ -6,7 +6,7 @@
                 class="tainacan-form"
                 label-width="120px">
             <div class="columns">
-                <div class="column is-4">
+                <div class="column is-5">
 
                     <!-- Status -------------------------------- -->
                     <div class="section-label">
@@ -274,7 +274,7 @@
 
                 </div>
                 <div class="column is-1" />
-                <div class="column is-7">
+                <div class="column is-6">
                     <label class="section-label">{{ $i18n.get('fields') }}</label>
                     <br>
                     <a
