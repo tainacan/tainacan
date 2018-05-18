@@ -971,7 +971,7 @@ msgstr "Mostrar eventos"
 
 #: admin/tainacan-admin-i18n.php:233
 msgid " to "
-msgstr "a "
+msgstr " a "
 
 #: admin/tainacan-admin-i18n.php:234
 msgid " of "
