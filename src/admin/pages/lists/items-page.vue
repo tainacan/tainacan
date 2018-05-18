@@ -380,7 +380,8 @@
     }
 
     .tabs {
-        padding-top: $page-small-top-padding;
+        padding-top: 20px;
+        margin-bottom: 20px;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
     }

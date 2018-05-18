@@ -110,7 +110,7 @@ export default {
         }
     },
     props: {
-        id: Number
+        id: Number,
     },
     watch: {
         '$route' (to) {
@@ -217,6 +217,26 @@ export default {
         left: 0;
         right: 0;
         z-index: 9;
+        transition: padding 0.3s, height 0.3s;
+
+        &.is-shrink {
+            height: $header-height;
+            max-height: $header-height;
+            padding-top: 12px;
+            padding-bottom: 12px;
+
+            h1 { margin-bottom: 4px;  }
+            li a {
+                line-height: 20px;
+                br { display: none; }
+                .menu-text { 
+                    visibility: 
+                    hidden; opacity: 0; 
+                    font-size: 0;
+                    line-height: 0;
+                }
+            }
+        }
 
         h1 {
             font-size: 18px;
@@ -228,6 +248,8 @@ export default {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;  
+            -webkit-transition: margin-bottom 0.2s linear; /* Safari */
+            transition: margin-bottom 0.2s linear; 
         }
 
         .breadcrumbs {
@@ -254,8 +276,6 @@ export default {
                 min-width: 75px;
                 line-height: 1.5em;
                 border-radius: 0px;
-                -webkit-transition: padding 0.3s linear; /* Safari */
-                transition: padding 0.3s linear; 
                 position: relative;
                 overflow: inherit;
             }
@@ -287,8 +307,8 @@ export default {
                 font-size: 14px;
                 opacity: 1;
                 visibility: visible;
-                transition: opacity 0.3s linear, visibility 0.3s linear;
-                -webkit-transition: opacity 0.3s linear, visibility 0.3s linear;
+                transition: opacity 0.5s linear, visibility 0.5s linear;
+                -webkit-transition: opacity 0.5s linear, visibility 0.5s linear;
             }
         }
 

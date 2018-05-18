@@ -386,6 +386,7 @@ export default {
         // Tables
         .table-wrapper {
             .table {
+                border-collapse: collapse;
                 tbody {
                     td { border-bottom: 0px solid $gray-light !important; }
                 }

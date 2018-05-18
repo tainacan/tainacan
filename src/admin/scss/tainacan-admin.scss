@@ -537,6 +537,7 @@ a:hover {
 .table-container {
     padding: 0 $table-side-padding;
     position: relative;
+    margin-bottom: 40px;
 
     .table-wrapper {
         width: 100%;
@@ -561,7 +562,10 @@ a:hover {
     font-size: 0.85em !important;
     font-weight: normal !important;
     border-top: 1px solid $gray;
-    padding: 0em 1.0em;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: $page-side-padding;
+    padding-right: $page-side-padding;
     color: $gray-light;
 
     .shown-items { 
@@ -569,7 +573,7 @@ a:hover {
     }
 
     .items-per-page { 
-        flex-grow: 3;
+        flex-grow: 5;
         margin-top: 0.35em;
         .field-label {
             flex-grow: 5;

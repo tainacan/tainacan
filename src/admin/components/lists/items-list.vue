@@ -290,8 +290,7 @@ export default {
 
     .selection-control {
         
-        padding: 6px 14px 0px 14px;
-        position: relative;
+        padding: 6px 0px 0px 18px;
         background: white;
         height: 40px;
 
