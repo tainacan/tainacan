@@ -116,11 +116,11 @@
                 </ul>
             </div>
             
-            <div 
+            <!-- <div 
                     :items="items"
-                    id="theme-items-list" />
+                    id="theme-items-list" /> -->
             <!-- LISTING RESULTS ------------------------- -->
-            <div class="table-container above-subheader">
+            <div class="above-subheader">
                 <b-loading
                         :is-full-page="false"
                         :active.sync="isLoadingItems"/>
@@ -323,15 +323,6 @@
                         display: true
                     });
 
-                    this.tableFields.push({
-                        name: this.$i18n.get('label_actions'),
-                        field: 'row_actions',
-                        field_type: undefined,
-                        slug: 'actions',
-                        id: undefined,
-                        display: true
-                    });
-
                     // this.prefTableFields = this.tableFields;
                     // this.$userPrefs.get('table_columns_' + this.collectionId)
                     //     .then((value) => {
@@ -373,8 +364,8 @@
         min-height: $subheader-height;
         height: $subheader-height;
         padding-top: $page-small-top-padding;
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         border-bottom: 0.5px solid #ddd;
         position: relative;
 
@@ -390,14 +381,23 @@
 
     .tabs {
         padding-top: $page-small-top-padding;
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
     }
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
-        min-height: 100%;
-        height: auto;
+        height: calc(100% - 184px);
+    }
+    .pagination-area {
+        margin-left: $page-side-padding;
+        margin-right: $page-side-padding;
+    }
+
+    .table-container {
+        padding-left: 8.333333%;
+        padding-right: 8.333333%;
+        height: calc(100% - 82px);
     }
 
     #collection-search-button {
@@ -409,15 +409,14 @@
     }
 
     .filters-menu {
-        position: relative;
+        position: absolute;
         width: $filter-menu-width;
         max-width: $filter-menu-width;
-        min-height: 100%;
+        min-height: calc(100% - 82px);
+        height: calc(100% - 82px);
         background-color: $tainacan-input-background;
         padding: $page-small-side-padding;
         float: left;
-        height: 100%;
-        max-height: 100%;
         overflow-y: auto;
         visibility: visible;
         display: block;
@@ -436,23 +435,11 @@
 
     .items-list-area {
         margin-left: 0;
-        transition: margin-left ease 0.5s ;
+        transition: margin-left ease 0.5s;
+        height: 100%;
     }
     .spaced-to-right {
         margin-left: $filter-menu-width;
-    }
-
-    .table-container {
-        padding: 3em 55px;
-        position: relative;
-    }
-
-    @media screen and (max-width: 769px) {
-
-        .table-container {
-            margin-right: 0;
-            padding: 16px;
-        }
     }
 
     #filter-menu-compress-button {

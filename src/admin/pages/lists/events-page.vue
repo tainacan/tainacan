@@ -6,53 +6,49 @@
                     'page-container': isRepositoryLevel
                 }">
             <tainacan-title />
-            <div
-                    class="columns"
-                    :class="{ 'above-subheader': isRepositoryLevel }">
-                <div class="column table-container">
-                    <events-list
-                            :is-loading="isLoading"
-                            :total-events="totalEvents"
-                            :page="page"
-                            :events-per-page="eventsPerPage"
-                            :events="events"/>
-                    <!-- Footer -->
-                    <div
-                            class="pagination-area"
-                            v-if="totalEvents > 0">
-                        <div class="shown-items">
-                            {{
-                                $i18n.get('info_showing_events') +
-                                (eventsPerPage * (page - 1) + 1) +
-                                $i18n.get('info_to') +
-                                getLastEventNumber() +
-                                $i18n.get('info_of') + totalEvents + '.'
-                            }}
-                        </div>
-                        <div class="items-per-page">
-                            <b-field
-                                    horizontal
-                                    :label="$i18n.get('label_events_per_page')">
-                                <b-select
-                                        :value="eventsPerPage"
-                                        @input="onChangeEventsPerPage"
-                                        :disabled="events.length <= 0">
-                                    <option value="12">12</option>
-                                    <option value="24">24</option>
-                                    <option value="48">48</option>
-                                    <option value="96">96</option>
-                                </b-select>
-                            </b-field>
-                        </div>
-                        <div class="pagination">
-                            <b-pagination
-                                    @change="onPageChange"
-                                    :total="totalEvents"
-                                    :current.sync="page"
-                                    order="is-centered"
-                                    size="is-small"
-                                    :per-page="eventsPerPage"/>
-                        </div>
+            <div :class="{ 'above-subheader': isRepositoryLevel }">
+                <events-list
+                        :is-loading="isLoading"
+                        :total-events="totalEvents"
+                        :page="page"
+                        :events-per-page="eventsPerPage"
+                        :events="events"/>
+                <!-- Footer -->
+                <div
+                        class="pagination-area"
+                        v-if="totalEvents > 0">
+                    <div class="shown-items">
+                        {{
+                            $i18n.get('info_showing_events') +
+                            (eventsPerPage * (page - 1) + 1) +
+                            $i18n.get('info_to') +
+                            getLastEventNumber() +
+                            $i18n.get('info_of') + totalEvents + '.'
+                        }}
+                    </div>
+                    <div class="items-per-page">
+                        <b-field
+                                horizontal
+                                :label="$i18n.get('label_events_per_page')">
+                            <b-select
+                                    :value="eventsPerPage"
+                                    @input="onChangeEventsPerPage"
+                                    :disabled="events.length <= 0">
+                                <option value="12">12</option>
+                                <option value="24">24</option>
+                                <option value="48">48</option>
+                                <option value="96">96</option>
+                            </b-select>
+                        </b-field>
+                    </div>
+                    <div class="pagination">
+                        <b-pagination
+                                @change="onPageChange"
+                                :total="totalEvents"
+                                :current.sync="page"
+                                order="is-centered"
+                                size="is-small"
+                                :per-page="eventsPerPage"/>
                     </div>
                 </div>
             </div>
@@ -188,17 +184,5 @@
         margin-top: 0;
         min-height: 100%;
         height: auto;
-
-        .table-container {
-            margin-right: -$page-small-side-padding;
-            padding: 3em 2.5em;
-        }
-
-        @media screen and (max-width: 769px) {
-            .table-container {
-                margin-right: 0;
-                padding: .85em 0em;
-            }
-        }
     }
 </style>

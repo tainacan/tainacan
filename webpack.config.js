@@ -1,11 +1,12 @@
 let path = require('path');
 let webpack = require('webpack');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
-    entry:  {
-       //dev_admin: './src/js/main.js',
-       user_search: './src/admin/js/theme-main.js',
-       user_admin: './src/admin/js/main.js'
+    entry: {
+        //dev_admin: './src/js/main.js',\
+        user_search: './src/admin/js/theme-main.js',
+        user_admin: './src/admin/js/main.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/'),
@@ -38,14 +39,28 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    'postcss-loader',
+                ],
             },
             {
-                test: /\.scss$/,
-                loader: 'sass-resources-loader',
-                options: {
-                    resources: path.resolve(__dirname, './src/admin/scss/_variables.scss')
-                }
+                test: /\.s[ac]ss$/,
+                use: [
+                    {
+                        loader: 'style-loader',
+                    },
+                    {
+                        loader: 'css-loader'
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            includePaths: [path.resolve(__dirname, './src/admin/scss/_variables.scss')]
+                        }
+                    },
+                ],
             }
 
         ]
@@ -84,7 +99,8 @@ if (production === true) {
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true
-        })
+        }),
+        new VueLoaderPlugin(),
     ]);
 
     module.exports.resolve = {
@@ -103,6 +119,7 @@ if (production === true) {
                 NODE_ENV: JSON.stringify('development')
             },
         }),
+        new VueLoaderPlugin(),
     ];
 
     module.exports.resolve = {

@@ -92,6 +92,7 @@ a:hover {
     a.back-link{
         font-weight: 500;
         float: right;
+        margin-top: 5px;
     }
     hr{
         margin: 3px 0px 4px 0px; 
@@ -477,10 +478,11 @@ a:hover {
     }
 
     input[type="checkbox"] + .check {
-        width: 1.0em;
-        height: 1.0em;
+        width: 12px;
+        height: 12px;
         flex-shrink: 0;
         border-radius: 0;
+        display: inline-block;
         border: 1px solid $gray-light;
         transition: background 150ms ease-out;
         box-shadow: none !important;
@@ -524,18 +526,25 @@ a:hover {
 }
 
 // Tables
-.table-wrapper {
-    width: 100%;
-    .table {
-        tbody {
-            td { border-bottom: 0px solid $gray-light !important; }
+.table-container {
+    padding: 0 $table-side-padding;
+    position: relative;
+
+    .table-wrapper {
+        width: 100%;
+        height: calc(100% - 40px);
+        overflow: auto;
+        .table {
+            tbody {
+                td { border-bottom: 0px solid $gray-light !important; }
+            }
+            .th-wrap {
+                font-size: 12px !important;
+                font-weight: normal !important;
+            }
         }
-        .th-wrap {
-            font-size: 12px !important;
-            font-weight: normal !important;
-        }
+        margin-bottom: 0px !important;
     }
-    margin-bottom: 0px !important;
 }
 .pagination-area {
     display: flex;

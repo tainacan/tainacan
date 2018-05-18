@@ -57,8 +57,10 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
+    import { wpAjax } from "../../../admin/js/mixins";
 
     export default {
+        mixins: [ wpAjax ],
         created(){
             const vm = this;
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;

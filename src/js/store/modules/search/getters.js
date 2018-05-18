@@ -15,11 +15,17 @@ export const getTotalItems = state => {
 }
 
 export const getPage = state => {
-    return state.postquery.paged;
+    if (state.postquery.paged == undefined)
+        return 1;
+    else
+        return Number(state.postquery.paged);
 }
 
 export const getItemsPerPage = state => {
-    return state.postquery.perpage;
+    if (state.postquery.paged == undefined)
+        return 12;
+    else
+        return Number(state.postquery.perpage);
 };
 
 export const getOrder = state => {

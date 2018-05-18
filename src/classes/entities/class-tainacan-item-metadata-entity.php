@@ -89,7 +89,7 @@ class Item_Metadata_Entity extends Entity {
 		
 		
 	}
-	
+
 	/**
 	 * Get the value as a plain text string
 	 * @return string
@@ -142,6 +142,11 @@ class Item_Metadata_Entity extends Entity {
 		$as_array['value'] = $this->get_value_as_array();
 		$as_array['value_as_html'] = $this->get_value_as_html();
 		$as_array['value_as_string'] = $this->get_value_as_string();
+
+		if($this->get_field()->get_field_type_object()->get_primitive_type() === 'date'){
+			$as_array['date_i18n'] = $this->get_date_i18n($this->get_value_as_string());
+		}
+
 	    $as_array['item']  = $this->get_item()->__toArray();
 	    $as_array['field'] = $this->get_field()->__toArray();
 

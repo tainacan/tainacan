@@ -65,10 +65,11 @@ $filter-menu-width: 200px;
 $page-height: calc(100% - 53px);
 
 // Overall Pages padding:
-$page-side-padding: 82px;
-$page-top-padding: 27px;
-$page-small-side-padding: 22px;
-$page-small-top-padding: 22px;
+$page-side-padding: 4.166666667%;//82px;
+$table-side-padding: 4.166666667%;
+$page-top-padding: 25px;
+$page-small-side-padding: 25px;
+$page-small-top-padding: 25px;
 
 $page-mobile-side-padding: 1em;
 $page-mobile-top-padding: 1em;

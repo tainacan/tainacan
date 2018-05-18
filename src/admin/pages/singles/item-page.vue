@@ -3,138 +3,266 @@
         <b-loading
                 :active.sync="isLoading"
                 :can-cancel="false"/>
-        <tainacan-title />
-        <div class="content">
 
-            <router-link
-                    class="button is-secondary"
-                    :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                {{ $i18n.getFrom('items','edit_item') }}
-            </router-link>
-            <a
-                    class="button is-success is-pulled-right"
-                    :href="item.url">
-                {{ $i18n.getFrom('items', 'view_item') }}
-            </a>
-            <br>
+        <tainacan-title/>
 
-            <div
-                    class="card-image"
-                    v-if="item.document">
-                <figure
-                            class="image"
-                        v-html="item.document_as_html" />
+        <div class="columns">
+            <div class="column is-4">
+                <div class="column is-12">
+                    <router-link
+                            class="button is-secondary"
+                            :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
+                        {{ $i18n.getFrom('items','edit_item') }}
+                    </router-link>
+                    <a
+                            class="button is-success is-pulled-right"
+                            :href="item.url">
+                        {{ $i18n.getFrom('items', 'view_item') }}
+                    </a>
+
+                    <br>
+                    <br>
+
+                    <!-- Status -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_status') }}</label>
+                    </div>
+                    <div>
+                        <p>{{ item.status }}</p>
+                    </div>
+                </div>
+
+                <div class="column is-12">
+
+                    <!-- Document -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ item.document !== undefined && item.document !== null && item.document !== '' ?
+                            $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                    </div>
+                    <div class="section-box">
+                        <div
+                                v-if="item.document !== undefined && item.document !== null &&
+                                        item.document_type !== undefined && item.document_type !== null &&
+                                        item.document !== '' && item.document_type !== 'empty'">
+
+                            <div v-if="item.document_type === 'attachment'">
+                                <div v-html="item.document_as_html"/>
+                            </div>
+
+                            <div v-else-if="item.document_type === 'text'">
+                                <div v-html="item.document_as_html"/>
+                            </div>
+
+                            <div v-else-if="item.document_type === 'url'">
+                                <div v-html="item.document_as_html"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-12">
+
+                    <!-- Attachments ----------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_attachments') }}</label>
+                    </div>
+                    <div class="section-box">
+                        <div class="uploaded-files">
+                            <div
+                                    v-for="(attachment, index) in attachmentsList"
+                                    :key="index">
+                                <span class="tag is-primary">
+                                    {{ attachment.title.rendered }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <br>
+            <div class="column is-1" />
+            <div class="column is-7">
+                <label class="section-label">{{ $i18n.get('fields') }}</label>
+                <br>
+                <a
+                        class="collapse-all"
+                        @click="open = !open">
+                    {{ open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                    <b-icon
+                            type="is-secondary"
+                            :icon=" open ? 'menu-down' : 'menu-right'"/>
+                </a>
 
-            <div
-                v-if="item.thumbnail"
-                class="media">
-                <figure
-                    class="media-left" >
-                    <p class="image is-128x128">
-                    <img :src="item.thumbnail">
-                    </p>
-                </figure>
-                <div class="media-content">
-                    {{ $i18n.get('label_thumbnail') }}
+                <!-- Fields -------------------------------- -->
+                <div>
+                    <div
+                            v-for="(field, index) of fieldList"
+                            :key="index"
+                            class="field">
+                        <b-collapse :open="open">
+                            <label
+                                    class="label"
+                                    slot="trigger"
+                                    slot-scope="props">
+                                <b-icon
+                                        type="is-secondary"
+                                        :icon="props.open ? 'menu-down' : 'menu-right'"
+                                />
+                                {{ field.field.name }}
+                            </label>
+                            <div
+                                    v-if="field.date_i18n"
+                                    class="notification">
+                                <div v-html="field.date_i18n"/>
+                            </div>
+                            <div
+                                    v-else
+                                    class="notification">
+                                <div v-html="field.value_as_html"/>
+                            </div>
+                        </b-collapse>
+                    </div>
                 </div>
             </div>
-
-            <div
-                v-for="(metadata, index) in item.metadata"
-                :key="index"
-                class="box">
-
-                <p
-                    v-if="metadata.value_as_html"
-                    class="is-size-3"
-                    v-html="metadata.value_as_html"/>
-                <p
-                    v-else>--</p>
-
-                <p>
-                    <i>
-                    {{ metadata.name }}
-                    </i>
-                </p>
-            </div>
-
-            <div
-                class="box">
-
-                <div
-                    v-if="attachments && attachments.length > 0">
-                    <span
-                        v-for="(attachment, index) in attachments"
-                        :key="index"
-                        >
-                        <a
-                            target="blank"
-                            :href="attachment.guid.rendered">{{ attachment.guid.rendered }}</a>
-                            <br>
-                    </span>
-                </div>
-                <p v-else>--</p>
-
-                <p>
-                    <i>
-                    {{ $i18n.get('label_attachments') }}
-                    </i>
-                </p>
-            </div>
-
         </div>
     </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+    import {mapActions, mapGetters} from 'vuex'
 
-export default {
-    name: 'ItemPage',
-    data(){
-        return {
-            collectionId: Number,
-            itemId: Number,
-            isLoading: false
-        }
-    },
-    methods: {
-        ...mapActions('item', [
-            'fetchItem',
-            'fetchAttachments'
-        ]),
-        ...mapGetters('item', [
-            'getItem',
-            'getAttachments'
-        ]),
-    },
-    computed: {
-        item(){
-            return this.getItem();
+    export default {
+        name: 'ItemPage',
+        data() {
+            return {
+                collectionId: Number,
+                itemId: Number,
+                isLoading: false,
+                open: false,
+            }
         },
-        attachments(){
-            return this.getAttachments();
+        methods: {
+            ...mapActions('item', [
+                'fetchItem',
+                'fetchAttachments',
+                'fetchFields',
+            ]),
+            ...mapGetters('item', [
+                'getItem',
+                'getFields',
+                'getAttachments'
+            ]),
+            loadMetadata() {
+                // Obtains Item Field
+                this.fetchFields(this.itemId).then(() => {
+                    this.isLoading = false;
+                });
+            },
+        },
+        computed: {
+            item() {
+                return this.getItem();
+            },
+            fieldList() {
+                return JSON.parse(JSON.stringify(this.getFields()));
+            },
+            attachmentsList() {
+                return this.getAttachments();
+            }
+        },
+        created() {
+            // Obtains item and collection ID
+            this.collectionId = this.$route.params.collectionId;
+            this.itemId = this.$route.params.itemId;
+
+            // Puts loading on Item Loading
+            this.isLoading = true;
+
+            // Obtains Item
+            this.fetchItem(this.itemId).then(() => {
+                this.loadMetadata();
+            });
+
+            // Get attachments
+            this.fetchAttachments(this.itemId);
         }
-    },
-    created(){
-        // Obtains item and collection ID
-        this.collectionId = this.$route.params.collectionId;
-        this.itemId = this.$route.params.itemId;
 
-        // Puts loading on Item Loading
-        this.isLoading = true;
-        let loadingInstance = this;
+    }
+</script>
 
-        // Obtains Item
-        this.fetchItem(this.itemId).then(() => {
-            loadingInstance.isLoading = false;
-        });
+<style lang="scss" scoped>
 
-        // Get attachments
-        this.fetchAttachments(this.itemId);
+    @import '../../scss/_variables.scss';
+
+    .page-container {
+        height: calc(100% - 82px);
     }
 
-}
-</script>
+    .columns > .column {
+        padding: 0;
+    }
+
+    .field {
+        border-bottom: 1px solid $draggable-border-color;
+        padding: 10px 25px;
+
+        .label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 0.5em;
+
+            span {
+                margin-right: 18px;
+            }
+        }
+    }
+
+    .section-label {
+        position: relative;
+        label {
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            color: $tertiary !important;
+            line-height: 1.2em;
+        }
+    }
+
+    .collapse-all {
+        font-size: 12px;
+        .icon {
+            vertical-align: bottom;
+        }
+    }
+
+    .section-box {
+        border: 1px solid $draggable-border-color;
+        padding: 30px;
+        margin-top: 16px;
+        margin-bottom: 38px;
+
+        ul {
+            display: flex;
+            justify-content: space-evenly;
+            li {
+                text-align: center;
+                button {
+                    border-radius: 50px;
+                    height: 72px;
+                    width: 72px;
+                    border: none;
+                    background-color: $tainacan-input-background;
+                    color: $secondary;
+                    margin-bottom: 6px;
+                    &:hover {
+                        background-color: $primary-light;
+                        cursor: pointer;
+                    }
+                }
+                p {
+                    color: $secondary;
+                }
+            }
+        }
+    }
+</style>
+

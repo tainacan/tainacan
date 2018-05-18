@@ -90,7 +90,6 @@
 <script>
 import CollectionsList from '../../components/lists/collections-list.vue';
 import { mapActions, mapGetters } from 'vuex';
-import moment from 'moment'
 
 export default {
     name: 'CollectionsPage',
@@ -144,7 +143,7 @@ export default {
         collections(){
             let collectionsList = this.getCollections(); 
             for (let collection of collectionsList) 
-                collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + moment(collection['creation_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
+                collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + collection['creation_date'];
             return collectionsList;
         }
     },
@@ -170,10 +169,11 @@ export default {
     .sub-header {
         min-height: $subheader-height;
         height: $subheader-height;
-        margin-top: -$page-top-padding;
-        padding-top: $page-top-padding;
-        padding-left: $page-small-side-padding;
-        padding-right: $page-small-side-padding;
+        margin-left: -$page-side-padding;
+        margin-right: -$page-side-padding;
+        padding-top: $page-small-top-padding;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
         border-bottom: 0.5px solid #ddd;
 
         .header-item {
@@ -195,19 +195,7 @@ export default {
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
-        min-height: 100%;
         height: auto;
-
-        @media screen and (max-width: 769px) {
-             .filters-menu {
-                display: none;
-            }
-            .table-container {
-                margin-right: 0;
-                padding: .85em 0em;
-            }
-        }
-
     }
 
 </style>

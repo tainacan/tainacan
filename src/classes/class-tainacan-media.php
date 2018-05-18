@@ -109,8 +109,10 @@ class Media {
 			return null;
 		}
 		
-		$imagick = new \Imagick($filepath);
-        $imagick->setIteratorIndex(0);
+		$imagick = new \Imagick();
+		$imagick->setResolution(72,72);
+		$imagick->readImage($filepath . '[0]');  
+        //$imagick->setIteratorIndex(0);
         $imagick->setImageFormat('jpg');
         return $imagick->getImageBlob();
 	}
