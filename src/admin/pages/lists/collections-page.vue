@@ -5,36 +5,31 @@
                 class="sub-header"
                 v-if="totalCollections > 0">
             <div class="header-item">
-                <router-link 
-                        id="button-create-collection"
-                        tag="button" 
-                        class="button is-secondary"
-                        :to="{ path: $routerHelper.getNewCollectionPath() }">
-                    {{ $i18n.getFrom('collections', 'new_item') }}
-                </router-link>
-				<b-dropdown
-					position="is-bottom-left"
-					id="create-actions-dropdown"
-					hoverable>
-					<button
-						class="button is-info"
-						slot="trigger">
-						<span>{{ $i18n.getFrom('collections', 'new_item') }}</span>
-						<b-icon icon="menu-down"/>
-					</button>
-                    <b-dropdown-item has-link>
-						<router-link
-							id="dropdown-button-create-collection"
-							class="button is-secondary"
-							:to="{ path: $routerHelper.getNewCollectionPath() }">
+                <b-dropdown
+                        position="is-bottom-right"
+                        id="create-actions-dropdown"
+                        hoverable>
+                    <button
+                            class="button is-secondary"
+                            slot="trigger">
+                        <span>{{ $i18n.getFrom('collections', 'new_item') }}</span>
+                        <b-icon icon="menu-down"/>
+                    </button>
+                    <b-dropdown-item>
+                        <router-link
+                                id="dropdown-button-create-collection"
+                                class="is-white"
+                                tag="div"
+                                :to="{ path: $routerHelper.getNewCollectionPath() }">
                             {{ $i18n.getFrom('collections', 'new_item') }}
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item has-link>
-						<router-link
-							id="dropdown-button-create-mapped-collection"
-							class="button is-secondary"
-							:to="{ path: $routerHelper.getNewMappedCollectionPath('dublin-core') }">
+                    <b-dropdown-item>
+                        <router-link
+                                id="dropdown-button-create-mapped-collection"
+                                class="is-white"
+                                tag="div"
+                                :to="{ path: $routerHelper.getNewMappedCollectionPath('dublin-core') }">
                             {{ $i18n.get('new_mapped_item') }}
                         </router-link>
                     </b-dropdown-item>
