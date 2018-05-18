@@ -327,6 +327,7 @@ export default {
         
         .checkbox-cell {
             min-width: 44px;
+            width: 44px;
             padding: 0;
             position: sticky !important;
             position: -webkit-sticky !important;
@@ -335,7 +336,7 @@ export default {
             visibility: hidden;
 
             &::before {
-                box-shadow: inset 51px 0 10px -12px #222;
+                box-shadow: inset 54px 0 10px -12px #222;
                 content: " ";
                 width: 54px;
                 height: 100%;
@@ -412,22 +413,22 @@ export default {
 
                 td.actions-cell {
                     padding: 0px;
-                    visibility: hidden;
+                    
                     position: sticky !important;
                     position: -webkit-sticky !important;
                     right: 0px;
                     top: auto;
                     width: 8.333333333%;
-                    background-color: $tainacan-input-background;
 
                     .actions-container {
+                        visibility: hidden;
                         display: flex;
                         position: relative;
                         padding: 0;
                         height: 100%;
                         min-width: 120px;
                         z-index: 9;
-                        background-color: $tainacan-input-background; 
+                        background-color: transparent; 
                     }
 
                     a {
@@ -446,10 +447,13 @@ export default {
                         .checkbox { background-color: $tainacan-input-background; }
                     }
                     .actions-cell {
-                        visibility: visible;
+                        .actions-container {
+                            visibility: visible;
+                            background: $tainacan-input-background;
+                        }
 
                         &::after {
-                            box-shadow: inset -132px 0 17px -21px #222;
+                            box-shadow: inset -134px 0 17px -21px #222;
                             content: " ";
                             width: 140px;
                             height: 100%;
