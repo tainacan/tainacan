@@ -20,7 +20,7 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
 "_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.0.7\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-tainacan-admin.php:32 admin/class-tainacan-admin.php:33
@@ -971,11 +971,11 @@ msgstr "Mostrar eventos"
 
 #: admin/tainacan-admin-i18n.php:233
 msgid " to "
-msgstr " para"
+msgstr "a "
 
 #: admin/tainacan-admin-i18n.php:234
 msgid " of "
-msgstr "de"
+msgstr " de "
 
 #: admin/tainacan-admin-i18n.php:235
 msgid "Created by: "
