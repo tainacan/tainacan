@@ -967,7 +967,7 @@ msgstr "Exibindo categorias "
 
 #: admin/tainacan-admin-i18n.php:232
 msgid "Showing events "
-msgstr "Mostrar eventos "
+msgstr "Exibindo eventos "
 
 #: admin/tainacan-admin-i18n.php:233
 msgid " to "
