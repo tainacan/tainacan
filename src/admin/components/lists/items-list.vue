@@ -43,7 +43,7 @@
                         <!-- Checking list -->
                         <th v-if="!isOnTheme">
                             &nbsp;
-                            <!-- nothing to show on header -->
+                            <!-- nothing to show on header for checkboxes -->
                         </th>
                         <!-- Displayed Fields -->
                         <th 
@@ -53,6 +53,12 @@
                                 :class="{'thumbnail-cell': column.field == 'row_thumbnail'}"
                                 :custom-key="column.slug">
                             <div class="th-wrap">{{ column.name }}</div>
+                        </th>
+                        <th     
+                                class="actions-header"
+                                v-if="!isOnTheme">
+                            &nbsp;
+                            <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
@@ -132,84 +138,6 @@
                 </tbody>
             </table>
         </div> 
-<!--        
-        <b-table 
-                ref="itemsTable"
-                :data="items"
-                @selection-change="handleSelectionChange"
-                :checked-rows.sync="selectedItems"
-                :checkable="!isOnTheme"
-                :loading="isLoading"
-                hoverable
-                :selectable="!isOnTheme"
-                backend-sorting>
-            <template slot-scope="props">
-                <b-table-column 
-                        v-for="(column, index) in tableFields"
-                        v-if="column.field != 'row_actions' || (column.field == 'row_actions' && props.row.current_user_can_edit && !isOnTheme)"
-                        :key="index"
-                        :custom-key="column.slug"
-                        :label="column.name"
-                        :visible="column.display"
-                        :class="column.field == 'row_creation' ? 'row-creation' : ''"
-                        :width="column.field == 'row_actions' ? 78 : column.field == 'row_thumbnail' ? 55 : undefined ">
-                        
-                    <template v-if="column.field != 'row_thumbnail' && column.field != 'row_actions' && column.field != 'row_creation'">
-                        <span
-                                class="clickable-row"
-                                v-if="!isOnTheme && props.row.metadata[column.slug].value_as_html == props.row.metadata[column.slug].value_as_string" 
-                                @click.prevent="goToItemPage(props.row.id)"
-                                v-html="renderMetadata( props.row.metadata[column.slug] )" />
-                        <span
-                                class="clickable-row"
-                                v-if="!isOnTheme && props.row.metadata[column.slug].value_as_html != props.row.metadata[column.slug].value_as_string"  
-                                v-html="renderMetadata( props.row.metadata[column.slug] )" />
-                        <a 
-                            v-if="isOnTheme"
-                            :href="getDecodedURI(props.row.url)"
-                            v-html="renderMetadata( props.row.metadata[column.slug] )" />
-       
-                    </template>
-                    
-                    <template v-if="column.field == 'row_thumbnail'">
-                        <router-link 
-                                tag="img" 
-                                class="table-thumb clickable-row" 
-                                :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}" 
-                                :src="props.row[column.slug]"/>
-                    </template>
-
-                    <template 
-                            class="row-creation" 
-                            v-if="column.field == 'row_creation'">
-                        <router-link 
-                                class="clickable-row" 
-                                v-html="getCreationHtml(props.row)"
-                                tag="span" 
-                                :to="{path: $routerHelper.getItemPath(collectionId, props.row.id)}"/>
-                    </template>
-                         
-                    <template v-if="column.field == 'row_actions'">
-                    
-                        <a 
-                                id="button-edit" 
-                                :aria-label="$i18n.getFrom('items','edit_item')" 
-                                @click="goToItemEditPage(props.row.id)">
-                            <b-icon 
-                                    type="is-gray" 
-                                    icon="pencil"/></a>
-                        <a 
-                                id="button-delete" 
-                                :aria-label="$i18n.get('label_button_delete')" 
-                                @click="deleteOneItem(props.row.id)">
-                            <b-icon 
-                                    type="is-gray" 
-                                    icon="delete"/></a>
-                    </template>
-                </b-table-column>
-            </template>
-        </b-table> 
--->
     </div>
 </template>
 
@@ -360,42 +288,7 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
-    .table-test{
 
-        height: 240px;
-        
-        th {
-            position: -webkit-sticky; // for safari
-            position: sticky;
-            top: 0; left: 0;
-            background: #ddd !important;
-            color: black;
-            white-space: nowrap;
- 
-            &:first-child {
-                z-index: 3 !important;
-            }
-        }
-
-        tr:hover td:first-child{
-            visibility: visible;
-        }
-
-        th, td {
-            padding: 10px 100px;
-            text-transform: capitalize;
-
-            &:first-child {
-                visibility: hidden;
-                position: -webkit-sticky; // for safari
-                position: sticky;
-                background-color: #eee;
-                left: 0px;
-                z-index: 2;
-                width: 200px;
-            }
-        }
-    }
     .selection-control {
         
         padding: 6px 14px 0px 14px;
@@ -423,7 +316,11 @@ export default {
             background-color: white;
             border-bottom: 1px solid $tainacan-input-background;
             top: 0px;
-            z-index: 99999
+            z-index: 99999;
+
+            &.actions-header {
+                min-width: 8.333333333%;
+            }
         }
 
         // &.selectable-table th:nth-child(2), &.selectable-table td:nth-child(2) {
@@ -516,21 +413,27 @@ export default {
                 td.actions-cell {
                     padding: 0px;
                     visibility: hidden;
-                    position: absolute;
-                    right: 8.333333%;
+                    position: sticky !important;
+                    position: -webkit-sticky !important;
+                    right: 0px;
                     top: auto;
+                    width: 8.333333333%;
                     display: none;
+                    background-color: $tainacan-input-background;
                     
                     .actions-container {
+                        display: flex;
                         position: relative;
                         padding: 10px;
                         height: 100%;
+                        width: 100%;
                         z-index: 9;
                         background-color: $tainacan-input-background; 
                     }
 
-                    a .icon {
+                    a {
                         margin: 8px;
+                        .mdi {font-size: 18px !important; }  
                     }
 
                 }
@@ -545,15 +448,15 @@ export default {
                     }
                     .actions-cell {
                         visibility: visible;
-                        display: block;
+                        display: table-cell;
 
                         &::after {
-                            box-shadow: inset -113px 0 17px -17px #222;
+                            box-shadow: inset -79px 0 17px -19px #222;
                             content: " ";
-                            width: 125px;
+                            width: 100%;
                             height: 100%;
                             position: absolute;
-                            right: 0;
+                            right: 35px;
                             top: 0;
                         }
                     }
