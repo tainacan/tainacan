@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WordPress Blank Pot v1.0.0\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2018-05-18 16:24-0300\n"
+"POT-Creation-Date: 2018-05-18 18:36-0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: MediaLab\n"
@@ -20,7 +20,7 @@ msgstr ""
 "esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
 "_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 2.0.3\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-tainacan-admin.php:32 admin/class-tainacan-admin.php:33
@@ -61,8 +61,10 @@ msgid "Filters"
 msgstr "Filtros"
 
 #: admin/tainacan-admin-i18n.php:10
-msgid "Categories"
-msgstr "Categorias"
+#: classes/repositories/class-tainacan-taxonomies.php:84
+#: classes/repositories/class-tainacan-taxonomies.php:95
+msgid "Taxonomies"
+msgstr "Taxonomias"
 
 #: admin/tainacan-admin-i18n.php:11
 msgid "Events"
@@ -86,9 +88,9 @@ msgstr "Item"
 msgid "Filter"
 msgstr "Filtro"
 
-#: admin/tainacan-admin-i18n.php:16 admin/tainacan-admin-i18n.php:263
-msgid "Category"
-msgstr "Categoria"
+#: admin/tainacan-admin-i18n.php:16
+msgid "Taxonomia"
+msgstr "Taxonomia"
 
 #: admin/tainacan-admin-i18n.php:17 admin/tainacan-admin-i18n.php:154
 msgid "Event"
@@ -266,8 +268,10 @@ msgid "Filter Page"
 msgstr "Página do Filtro"
 
 #: admin/tainacan-admin-i18n.php:67
-msgid "Category Page"
-msgstr "Página da Categoria"
+#, fuzzy
+#| msgid "Taxonomy"
+msgid "Taxonomy Page"
+msgstr "Taxonomia"
 
 #: admin/tainacan-admin-i18n.php:68
 msgid "Term Page"
@@ -282,8 +286,10 @@ msgid "Collection Creation Page"
 msgstr "Página de Criação da Coleção"
 
 #: admin/tainacan-admin-i18n.php:71
-msgid "Category Creation Page"
-msgstr "Página de Criação da Categoria"
+#, fuzzy
+#| msgid "Category Creation Page"
+msgid "Taxonomy Creation Page"
+msgstr "Página de Criação da Taxonomia"
 
 #: admin/tainacan-admin-i18n.php:72
 msgid "Create Item on Collection"
@@ -304,8 +310,10 @@ msgid "Edit Item"
 msgstr "Editar item"
 
 #: admin/tainacan-admin-i18n.php:76
-msgid "Category Edition Page"
-msgstr "Página de edição da categoria"
+#, fuzzy
+#| msgid "Category Creation Page"
+msgid "Taxonomy Edition Page"
+msgstr "Página de Criação da Taxonomia"
 
 #: admin/tainacan-admin-i18n.php:77
 msgid "Filter Edition Page"
@@ -571,8 +579,10 @@ msgid "Allow repeated items"
 msgstr "Permitir itens repetidos"
 
 #: admin/tainacan-admin-i18n.php:133
-msgid "Select category"
-msgstr "Selecionar categoria"
+#, fuzzy
+#| msgid "Parent taxonomy"
+msgid "Select taxonomy"
+msgstr "Categoria pai"
 
 #: admin/tainacan-admin-i18n.php:134
 #: classes/field-types/category/class-tainacan-category.php:39
@@ -634,10 +644,12 @@ msgstr "Novo Termo"
 msgid "New Child"
 msgstr "Novo filho"
 
-# MUITO IMPRECISA!!!!!!!!!!!
+# Ver contexto
 #: admin/tainacan-admin-i18n.php:148
-msgid "Category Terms"
-msgstr "Termos de Categorias"
+#, fuzzy
+#| msgid "Taxonomy term(s)."
+msgid "Taxonomy Terms"
+msgstr "Termos da Taxonomia "
 
 #: admin/tainacan-admin-i18n.php:149
 msgid "No parent term"
@@ -874,8 +886,10 @@ msgid "No collection was created in this repository."
 msgstr "Nenhuma coleção foi criada neste repositório."
 
 #: admin/tainacan-admin-i18n.php:210
-msgid "No category was created in this repository."
-msgstr "Nenhuma categoria foi criada neste repositório."
+#, fuzzy
+#| msgid "No category was created in this repository."
+msgid "No taxonomy was created in this repository."
+msgstr "Nenhuma taxonomia foi criada neste repositório."
 
 #: admin/tainacan-admin-i18n.php:211
 msgid "No item was created in this collection."
@@ -906,8 +920,10 @@ msgid "Error on deleting collection."
 msgstr "Erro ao deletar coleção."
 
 #: admin/tainacan-admin-i18n.php:218
-msgid "Error on deleting category"
-msgstr "Erro ao deletar categoria"
+#, fuzzy
+#| msgid "Error on deleting category"
+msgid "Error on deleting taxonomy"
+msgstr "Erro ao deletar taxonomia"
 
 #: admin/tainacan-admin-i18n.php:219
 msgid "Collection deleted."
@@ -918,8 +934,10 @@ msgid "Item deleted."
 msgstr "Item deletado."
 
 #: admin/tainacan-admin-i18n.php:221
-msgid "Category deleted"
-msgstr "Categoria deletada"
+#, fuzzy
+#| msgid "Can delete"
+msgid "Taxonomy deleted"
+msgstr "Pode deletar"
 
 #: admin/tainacan-admin-i18n.php:222
 msgid "Do you really want to delete this collection?"
@@ -930,8 +948,10 @@ msgid "Do you really want to delete this item?"
 msgstr "Você realmente deseja deletar este item?"
 
 #: admin/tainacan-admin-i18n.php:224
-msgid "Do you really want to delete this category?"
-msgstr "Você realmente deseja deletar esta Categoria?"
+#, fuzzy
+#| msgid "Do you really want to delete this item?"
+msgid "Do you really want to delete this taxonomy?"
+msgstr "Você realmente deseja deletar este item?"
 
 #: admin/tainacan-admin-i18n.php:225
 msgid "Do you really want to delete the selected collections?"
@@ -1018,10 +1038,12 @@ msgid "No description provided."
 msgstr "Nenhuma descrição fornecida."
 
 #: admin/tainacan-admin-i18n.php:243
-msgid "Are you sure? The category is not saved, changes will be lost."
+#, fuzzy
+#| msgid "Are you sure? There are fields not saved, changes will be lost."
+msgid "Are you sure? The metadata is not saved, changes will be lost."
 msgstr ""
-"Opa, tem certeza? Como a Categoria não foi salva, as alterações podem ser "
-"perdidas"
+"Opa, tem certeza? Como alguns Metadados não foram salvos, as alterações "
+"podem ser perdidas"
 
 #: admin/tainacan-admin-i18n.php:244
 msgid "Are you sure? There are terms not saved, changes will be lost."
@@ -1099,6 +1121,12 @@ msgstr "Caixa de seleção"
 msgid "Relationship"
 msgstr "Relacionamento"
 
+#: admin/tainacan-admin-i18n.php:263
+#: classes/repositories/class-tainacan-taxonomies.php:85
+#: classes/repositories/class-tainacan-terms.php:65
+msgid "Taxonomy"
+msgstr "Taxonomia"
+
 #: admin/tainacan-admin-i18n.php:266
 msgid "Custom Interval"
 msgstr "Intervalo customizado"
@@ -1120,16 +1148,22 @@ msgid "Check Box"
 msgstr "Caixa de verificação"
 
 #: admin/tainacan-admin-i18n.php:271
-msgid "Category Tag Input"
-msgstr "Entrada de Etiquetas de Categorias"
+#, fuzzy
+#| msgid "Category Tag Input"
+msgid "Taxonomy Tag Input"
+msgstr "Entrada de etiquetas de taxonomia"
 
 #: admin/tainacan-admin-i18n.php:272
-msgid "Category Check Box"
-msgstr "Caixa de verificação de  Categorias"
+#, fuzzy
+#| msgid "Category Check Box"
+msgid "Taxonomy Check Box"
+msgstr "Caixa de verificação de taxonomias"
 
 #: admin/tainacan-admin-i18n.php:273
-msgid "Category Select Box"
-msgstr "Lista de seleção de Categoria"
+#, fuzzy
+#| msgid "Can delete"
+msgid "Taxonomy Select Box"
+msgstr "Pode deletar"
 
 #: api/class-tainacan-rest-controller.php:331
 msgid "Limit results to those matching a string."
@@ -1570,13 +1604,13 @@ msgstr ""
 #: classes/entities/class-tainacan-field.php:441
 #, fuzzy
 #| msgid ""
-#| "Compound fields do not support fields with multiple values (except "
-#| "categories)"
+#| "Category metadata can not be used inside Compound metadata with multiple "
+#| "values"
 msgid ""
-"Category metadata can not be used inside Compound metadata with multiple "
+"Taxonomy metadata can not be used inside Compound metadata with multiple "
 "values"
 msgstr ""
-"Metadados compostos não suportam metadados com vários valores (exceto "
+"Metadados de taxonomia não suportam metadados com múltiplos valores (exceto "
 "categorias)"
 
 #: classes/entities/class-tainacan-taxonomy.php:62
@@ -1590,19 +1624,25 @@ msgstr "Termo raiz:"
 #: classes/entities/class-tainacan-taxonomy.php:64
 #, fuzzy
 #| msgid "Edit term"
-msgid "Edits term"
+msgid "Edit term"
 msgstr "Edita o termo"
 
 #: classes/entities/class-tainacan-taxonomy.php:65
-msgid "Updates term"
+#, fuzzy
+#| msgid "Updates term"
+msgid "Update term"
 msgstr "Atualiza o termo"
 
 #: classes/entities/class-tainacan-taxonomy.php:66
-msgid "Adds new term"
+#, fuzzy
+#| msgid "Adds new term"
+msgid "Add New term"
 msgstr "Adiciona no termo"
 
 #: classes/entities/class-tainacan-taxonomy.php:67
-msgid "New genre term"
+#, fuzzy
+#| msgid "New genre term"
+msgid "New Genre term"
 msgstr "Novo termo de gênero"
 
 #: classes/entities/class-tainacan-term.php:251
@@ -1623,8 +1663,10 @@ msgid "Allows to create new terms"
 msgstr "Permite a criação de novos termos"
 
 #: classes/field-types/category/class-tainacan-category.php:70
-msgid "Please select a category"
-msgstr "Por favor, selecione uma categoria."
+#, fuzzy
+#| msgid "Please select a category"
+msgid "Please select a taxonomy"
+msgstr "Por favor, selecione uma taxonomia."
 
 #: classes/field-types/category/class-tainacan-category.php:88
 #, fuzzy
@@ -2031,19 +2073,19 @@ msgstr "A máscara que deve ser utilizada no metadado"
 #: classes/repositories/class-tainacan-fields.php:142
 #, fuzzy
 #| msgid "The value default fot the field"
-msgid "The value default fot the metadata"
+msgid "The default value for the metadata"
 msgstr "O conteúdo padrão para o campo"
 
 #: classes/repositories/class-tainacan-fields.php:146
 #, fuzzy
 #| msgid "Field Type options"
-msgid "Metadata Type options"
+msgid "Metadata type options"
 msgstr "Opções de tipo de metadado"
 
 #: classes/repositories/class-tainacan-fields.php:149
 #, fuzzy
 #| msgid "Options specific for field type"
-msgid "Options specific for metadata type"
+msgid "Specific options for metadata type"
 msgstr "Opções específicas do tipo de metadado"
 
 #: classes/repositories/class-tainacan-fields.php:156
@@ -2271,8 +2313,8 @@ msgstr "Tipo de documento inválido"
 #: classes/repositories/class-tainacan-items.php:100
 #, fuzzy
 msgid ""
-"The document itself. An ID in case of attachment, an URL in case of url or a "
-"text in the case of text"
+"The document itself. An ID in case of attachment, an URL in case of link or "
+"a text in the case of text."
 msgstr ""
 "O documento em si. Um ID se for um anexo, uma URL se for um link ou um texto "
 "no caso de texto."
@@ -2480,22 +2522,14 @@ msgid "Allow/Deny the creation of new terms in the taxonomy"
 msgstr "Permitir/negar a criação de novos termos na taxonomia"
 
 #: classes/repositories/class-tainacan-taxonomies.php:64
-msgid "Allow insert is invalid, allowed values ( yes/no )"
+#, fuzzy
+#| msgid "Allow insert is invalid, allowed values ( yes/no )"
+msgid "Invalid insertion, allowed values are ( yes/no )"
 msgstr "Inserção inválida, os valores permitidos são (sim / não)"
 
 #: classes/repositories/class-tainacan-taxonomies.php:72
 msgid "The IDs of collection where the taxonomy is used"
 msgstr "Os IDs da coleção onde a taxonomia é utilizada"
-
-#: classes/repositories/class-tainacan-taxonomies.php:84
-#: classes/repositories/class-tainacan-taxonomies.php:95
-msgid "Taxonomies"
-msgstr "Taxonomias"
-
-#: classes/repositories/class-tainacan-taxonomies.php:85
-#: classes/repositories/class-tainacan-terms.php:65
-msgid "Taxonomy"
-msgstr "Taxonomia"
 
 #: classes/repositories/class-tainacan-taxonomies.php:87
 msgid "Add new Taxonomy"
@@ -2605,6 +2639,39 @@ msgstr "Selecione uma opção"
 #, php-format
 msgid "Collection: %s"
 msgstr "Coleções: %s"
+
+#~ msgid "Category Select Box"
+#~ msgstr "Lista de seleção de taxonomias"
+
+#~ msgid "Category"
+#~ msgstr "Taxonomia"
+
+# MUITO IMPRECISA!!!!!!!!!!!
+#~ msgid "Category Terms"
+#~ msgstr "Termos de Categorias"
+
+#~ msgid "Category deleted"
+#~ msgstr "Taxonomia deletada"
+
+#~ msgid "Do you really want to delete this category?"
+#~ msgstr "Você realmente deseja deletar esta taxonomia?"
+
+#~ msgid "Category Edition Page"
+#~ msgstr "Página de edição da taxonomia"
+
+#~ msgid "Select category"
+#~ msgstr "Selecionar taxonomia"
+
+#~ msgid "Are you sure? The category is not saved, changes will be lost."
+#~ msgstr ""
+#~ "Opa, tem certeza? Como a taxonomia não foi salva, as alterações podem ser "
+#~ "perdidas"
+
+#~ msgid "Category Page"
+#~ msgstr "Página da Taxonomia"
+
+#~ msgid "Categories"
+#~ msgstr "Taxonomies"
 
 #~ msgid "exposer_mapping"
 #~ msgstr "Mapeamento de metadados de relacionamento"
@@ -2733,9 +2800,6 @@ msgstr "Coleções: %s"
 #~ msgid "Privacy is invalid"
 #~ msgstr "Privacidade invalida"
 
-#~ msgid "Can delete"
-#~ msgstr "Pode deletar"
-
 #~ msgid "The field can be deleted"
 #~ msgstr "O campo pode ser deletado"
 
@@ -2753,9 +2817,6 @@ msgstr "Coleções: %s"
 
 #~ msgid "All taxonomies"
 #~ msgstr "Todas as Categorias"
-
-#~ msgid "Parent taxonomy"
-#~ msgstr "Categoria pai"
 
 #~ msgid "Parent taxonomy:"
 #~ msgstr "Categoria pai:"

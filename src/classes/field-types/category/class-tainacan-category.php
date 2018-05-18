@@ -67,7 +67,7 @@ class Category extends Field_Type {
             return true;
 		
 		if (empty($this->get_option('taxonomy_id')))
-			return ['taxonomy_id' => __('Please select a category', 'tainacan')];
+			return ['taxonomy_id' => __('Please select a taxonomy', 'tainacan')];
 		
 		$Tainacan_Fields = Fields::get_instance();
 		

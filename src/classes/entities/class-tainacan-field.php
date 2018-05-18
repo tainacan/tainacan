@@ -423,7 +423,7 @@ class Field extends Entity {
 		if ( $this->get_parent() > 0 && $this->get_field_type_object()->get_primitive_type() == 'term' ) {
 			$parent_field = new \Tainacan\Entities\Field($this->get_parent());
 			if ( $parent_field->is_multiple() ) {
-				$this->add_error($this->get_id(), __('Category metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
+				$this->add_error($this->get_id(), __('Taxonomy metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
 				return false;
 			}
 		}
@@ -438,7 +438,7 @@ class Field extends Entity {
 				, 'OBJECT');
 			
 			if ( sizeof($children) > 0 ) {
-				$this->add_error($this->get_id(), __('Category metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
+				$this->add_error($this->get_id(), __('Taxonomy metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
 				return false;
 			}
 		}
