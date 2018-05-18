@@ -45,7 +45,7 @@ class Fields extends Repository {
 			    'map'         => 'post_title',
 			    'title'       => __( 'Name', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'Name of the field', 'tainacan' ),
+			    'description' => __( 'Name of the metadata', 'tainacan' ),
 			    'on_error'    => __( 'The name should be a text value and not empty', 'tainacan' ),
 			    'validation'  => v::stringType()->notEmpty(),
 		    ],
@@ -53,14 +53,14 @@ class Fields extends Repository {
 			    'map'         => 'post_name',
 			    'title'       => __( 'Slug', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'A unique and santized string representation of the field', 'tainacan' ),
+			    'description' => __( 'A unique and santized string representation of the metadata', 'tainacan' ),
 			    //'validation' => v::stringType(),
 		    ],
 		    'order'              => [
 			    'map'         => 'menu_order',
 			    'title'       => __( 'Order', 'tainacan' ),
 			    'type'        => 'string/integer',
-			    'description' => __( 'Metadata order. This metadata will be used if collections were manually ordered', 'tainacan' ),
+			    'description' => __( 'Metadata order. This metadata will be used if collections were manually ordered.', 'tainacan' ),
 			    'on_error'    => __( 'The menu order should be a numeric value', 'tainacan' ),
 			    //'validation' => v::numeric(),
 		    ],
@@ -68,7 +68,7 @@ class Fields extends Repository {
 			    'map'         => 'post_parent',
 			    'title'       => __( 'Parent', 'tainacan' ),
 			    'type'        => 'integer',
-			    'description' => __( 'Parent field', 'tainacan' ),
+			    'description' => __( 'Parent metadata', 'tainacan' ),
 			    'default'     => 0
 			    //'on_error'   => __('The Parent should be numeric value', 'tainacan'),
 			    //'validation' => v::numeric(),
@@ -77,7 +77,7 @@ class Fields extends Repository {
 			    'map'         => 'post_content',
 			    'title'       => __( 'Description', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'The field description', 'tainacan' ),
+			    'description' => __( 'The metadata description', 'tainacan' ),
 			    'default'     => '',
 			    //'on_error'   => __('The description should be a text value', 'tainacan'),
 			    //'validation' => v::stringType()->notEmpty(),
@@ -86,16 +86,16 @@ class Fields extends Repository {
 			    'map'         => 'meta',
 			    'title'       => __( 'Type', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'The field type', 'tainacan' ),
-			    'on_error'    => __( 'Field type is empty', 'tainacan' ),
+			    'description' => __( 'The metadata type', 'tainacan' ),
+			    'on_error'    => __( 'Metadata type is empty', 'tainacan' ),
 			    'validation'  => v::stringType()->notEmpty(),
 		    ],
 		    'required'           => [
 			    'map'         => 'meta',
 			    'title'       => __( 'Required', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'The field is required', 'tainacan' ),
-			    'on_error'    => __( 'Field required field is invalid', 'tainacan' ),
+			    'description' => __( 'The metadata is required', 'tainacan' ),
+			    'on_error'    => __( 'The metadata content is invalid', 'tainacan' ),
 			    'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			    'default'     => 'no'
 		    ],
@@ -103,7 +103,7 @@ class Fields extends Repository {
 			    'map'         => 'meta',
 			    'title'       => __( 'Collection key', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'Field value should not be repeated', 'tainacan' ),
+			    'description' => __( 'Metadata value should not be repeated', 'tainacan' ),
 			    'on_error'    => __( 'Collection key is invalid', 'tainacan' ),
 			    'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			    'default'     => 'no'
@@ -112,8 +112,8 @@ class Fields extends Repository {
 			    'map'         => 'meta',
 			    'title'       => __( 'Multiple', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'Allow multiple fields for the field', 'tainacan' ),
-			    'on_error'    => __( 'Multiple fields is invalid', 'tainacan' ),
+			    'description' => __( 'Allow multiple values for the metadata', 'tainacan' ),
+			    'on_error'    => __( 'Invalid multiple metadata', 'tainacan' ),
 			    'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
 			    // yes or no. It cant be multiple if its collection_key
 			    'default'     => 'no'
@@ -122,8 +122,8 @@ class Fields extends Repository {
 			    'map'         => 'meta',
 			    'title'       => __( 'Cardinality', 'tainacan' ),
 			    'type'        => 'string/number',
-			    'description' => __( 'Number of multiples possible fields', 'tainacan' ),
-			    'on_error'    => __( 'The number of fields not allowed', 'tainacan' ),
+			    'description' => __( 'Number of multiples possible metadata', 'tainacan' ),
+			    'on_error'    => __( 'This number of multiples metadata is not allowed', 'tainacan' ),
 			    'validation'  => v::numeric()->positive(),
 			    'default'     => 1
 		    ],
@@ -131,7 +131,7 @@ class Fields extends Repository {
 			    'map'         => 'meta',
 			    'title'       => __( 'Mask', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'The mask to be used in the field', 'tainacan' ),
+			    'description' => __( 'The mask to be used in the metadata', 'tainacan' ),
 			    //'on_error'   => __('Mask is invalid', 'tainacan'),
 			    //'validation' => ''
 		    ],
@@ -139,14 +139,14 @@ class Fields extends Repository {
 			    'map'         => 'meta',
 			    'title'       => __( 'Default value', 'tainacan' ),
 			    'type'        => 'string',
-			    'description' => __( 'The value default fot the field', 'tainacan' ),
+			    'description' => __( 'The default value for the metadata', 'tainacan' ),
 		    ],
 		    'field_type_options' => [ // not showed in form
 			    'map'         => 'meta',
-			    'title'       => __( 'Field Type options', 'tainacan' ),
+			    'title'       => __( 'Metadata type options', 'tainacan' ),
 			    'type'        => 'array/object/string',
 			    'items'       => [ 'type' => 'array/string/integer/object' ],
-			    'description' => __( 'Options specific for field type', 'tainacan' ),
+			    'description' => __( 'Specific options for metadata type', 'tainacan' ),
 			    // 'validation' => ''
 		    ],
 		    'collection_id'      => [ // not showed in form
@@ -158,19 +158,19 @@ class Fields extends Repository {
 		    ],
 		    'accept_suggestion'  => [
 			    'map'         => 'meta',
-			    'title'       => __( 'Field Value Accepts Suggestions', 'tainacan' ),
+			    'title'       => __( 'Metadata Value Accepts Suggestions', 'tainacan' ),
 			    'type'        => 'bool',
-			    'description' => __( 'Allow the community suggest a different values for that field', 'tainacan' ),
+			    'description' => __( 'Allow community to suggest different values for the metadata', 'tainacan' ),
 			    'default'     => false,
 			    'validation'  => v::boolType()
 		    ],
 		    'exposer_mapping'    => [
 			    'map'         => 'meta',
-			    'title'       => __( 'exposer_mapping', 'tainacan' ),
+			    'title'       => __( 'Relationship metadata mapping', 'tainacan' ),
 			    'type'        => 'array/object/string',
 			    'items'       => [ 'type' => 'array/string/integer/object' ],
-			    'description' => __( 'The field mapping options', 'tainacan' ),
-			    'on_error'    => __( 'Invalid Field Mapping', 'tainacan' ),
+			    'description' => __( 'The metadata mapping options. Metadata can be configured to match another type of data distribution.', 'tainacan' ),
+			    'on_error'    => __( 'Invalid Metadata Mapping', 'tainacan' ),
 			    //'validation' =>  v::arrayType(),
 			    'default'     => []
 		    ],
@@ -179,7 +179,7 @@ class Fields extends Repository {
 			    'title'       => __( 'Display', 'tainacan' ),
 			    'type'        => __( 'string' ),
 			    'validation'  => v::stringType()->in( [ 'yes', 'no', 'never' ] ),
-			    'description' => __( 'Display by default on listing or not display or never display.', 'tainacan' ),
+			    'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 			    'default'     => 'yes'
 		    ]
 	    ] );
@@ -191,7 +191,7 @@ class Fields extends Repository {
 	 */
 	public function get_cpt_labels() {
 		return array(
-			'name'               => __('Metadatas', 'tainacan'),
+			'name'               => __('Metadata', 'tainacan'),
             'singular_name'      => __('Metadata', 'tainacan'),
             'add_new'            => __('Add new', 'tainacan'),
             'add_new_item'       => __('Add new Metadata', 'tainacan'),
@@ -202,7 +202,7 @@ class Fields extends Repository {
             'not_found'          => __('No Metadata found ', 'tainacan'),
             'not_found_in_trash' => __('No Metadata found in trash', 'tainacan'),
             'parent_item_colon'  => __('Parent Metadata:', 'tainacan'),
-            'menu_name'          => __('Metadatas', 'tainacan')
+            'menu_name'          => __('Metadata', 'tainacan')
         );
 	}
 

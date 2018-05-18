@@ -72,7 +72,7 @@ class Collections extends Repository {
 				'map'         => 'menu_order',
 				'title'       => __( 'Order', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'Collection order. Field used if collections are manually ordered.', 'tainacan' ),
+				'description' => __( 'Collection order. This metadata is used if collections are manually ordered.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'parent'                   => [
@@ -99,7 +99,7 @@ class Collections extends Repository {
 			],
 			'default_orderby'          => [
 				'map'         => 'meta',
-				'title'       => __( 'Default Order field', 'tainacan' ),
+				'title'       => __( 'Default Order metadata', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Default property items in this collections will be ordered by', 'tainacan' ),
 				'default'     => 'name',
@@ -115,11 +115,11 @@ class Collections extends Repository {
 			],
 			'default_displayed_fields' => [
 				'map'         => 'meta',
-				'title'       => __( 'Default Displayed Fields', 'tainacan' ),
+				'title'       => __( 'Default Displayed Metadata', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
 				'default'     => [],
-				'description' => __( 'List of collections property that will be displayed in the table view.', 'tainacan' ),
+				'description' => __( 'List of collection properties that will be displayed in the table view', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'default_view_mode'        => [
@@ -131,10 +131,10 @@ class Collections extends Repository {
 			],
 			'fields_order'             => [
 				'map'         => 'meta',
-				'title'       => __( 'Ordination fields', 'tainacan' ),
+				'title'       => __( 'Ordination metadata', 'tainacan' ),
 				'type'        => 'array/object/string',
 				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'Collection fields ordination', 'tainacan' ),
+				'description' => __( 'Collection metadata ordination', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'filters_order'            => [

@@ -112,7 +112,7 @@ class REST_Logs_Controller extends REST_Controller {
 
 			if(!$collection){
 				return new \WP_REST_Response([
-					'error_message' => __('A collection with that ID does not exist.', 'tainacan'),
+					'error_message' => __('A collection with this ID does not exist', 'tainacan'),
 					'collection_id' => $collection_id
 				], 400);
 			}

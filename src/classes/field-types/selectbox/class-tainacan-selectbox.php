@@ -24,7 +24,7 @@ class Selectbox extends Field_Type {
         return [
             'options' => [
                 'title' => __( 'Options', 'tainacan' ),
-                'description' => __( 'Create the options for the select, hit enter to add new one', 'tainacan' ),
+                'description' => __( 'Creates options for what is selected. Hit <enter> to add a new one.', 'tainacan' ),
             ]
         ];
     }
@@ -53,7 +53,7 @@ class Selectbox extends Field_Type {
 
         if ( empty($this->get_option('options')) ) {
             return [
-                'options' => __('Options is required','tainacan')
+                'options' => __('Required options','tainacan')
             ];
         }
 
