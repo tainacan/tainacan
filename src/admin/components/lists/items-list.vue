@@ -220,7 +220,6 @@ export default {
             });
         },
         deleteSelectedItems() {
-            console.log("OI")
             this.$dialog.confirm({
                 message: this.$i18n.get('info_warning_selected_items_delete'),
                 onConfirm: () => {
