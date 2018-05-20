@@ -334,6 +334,7 @@ export default {
             left: 0;
             top: auto;
             visibility: hidden;
+            display: table-cell;
 
             &::before {
                 box-shadow: inset 54px 0 10px -12px #222;
@@ -401,7 +402,7 @@ export default {
                     }
                 }
                 img.table-thumb {
-                    max-height: 38px !important;
+                    max-height: 37px !important;
                     border-radius: 3px;
                 }
 
