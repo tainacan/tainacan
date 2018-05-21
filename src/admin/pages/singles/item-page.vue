@@ -194,12 +194,12 @@
 
     @import '../../scss/_variables.scss';
 
-    .page-container {
-        height: calc(100% - 82px);
-    }
-
     .columns > .column {
         padding: 0;
+    }
+
+    .page-container{
+        height: calc(100% - 82px);
     }
 
     .field {

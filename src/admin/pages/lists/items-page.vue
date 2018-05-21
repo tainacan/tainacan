@@ -1,5 +1,6 @@
 <template>
-    <div :class="{'primary-page': isRepositoryLevel, 'page-container': isRepositoryLevel, 'page-container-small' :!isRepositoryLevel }">
+    <div 
+            :class="{'primary-page': isRepositoryLevel}">
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <button 
@@ -14,7 +15,7 @@
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <b-field class="margin-1">
+            <b-field class="margin-1"> 
                 <div class="control is-small is-clearfix">
                     <input
                         class="input is-small"
@@ -343,7 +344,8 @@
             this.$eventBusSearch.setCollectionId(this.collectionId);
             this.$eventBusSearch.updateStoreFromURL();
             this.$eventBusSearch.loadItems();
-        } 
+        }
+
     }
 </script>
 

@@ -637,6 +637,11 @@ export default {
             this.fetchAttachments(this.itemId);
         }
     },
+    mounted() {
+        document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
+            this.$shouldShrink = ($event.originalTarget.scrollTop > 5); 
+        });
+    },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$dialog.confirm({

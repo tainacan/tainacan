@@ -208,6 +208,7 @@ export default {
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
+        overflow-y: hidden;
         padding-top: 18px;
         padding-bottom: 18px;
         padding-right: $page-side-padding;
@@ -228,12 +229,14 @@ export default {
             h1 { margin-bottom: 4px;  }
             li a {
                 line-height: 20px;
-                br { display: none; }
                 .menu-text { 
-                    visibility: 
-                    hidden; opacity: 0; 
+                    visibility: hidden; 
+                    opacity: 0; 
                     font-size: 0;
                     line-height: 0;
+                    display: block;
+                    width: 0;
+                    height: 0;
                 }
             }
         }
@@ -267,6 +270,9 @@ export default {
 
         li{
             margin-right: 0px;
+            transition: height 0.5s linear, padding 0.5s linear;
+            -webkit-transition: height 0.5s linear, padding 0.5s linear;
+
             a {
                 color: $tertiary;
                 text-align: center;
@@ -307,8 +313,8 @@ export default {
                 font-size: 14px;
                 opacity: 1;
                 visibility: visible;
-                transition: opacity 0.5s linear, visibility 0.5s linear;
-                -webkit-transition: opacity 0.5s linear, visibility 0.5s linear;
+                transition: opacity 0.5s linear, visibility 0.5s linear, height 0.5s linear;
+                -webkit-transition: opacity 0.5s linear, visibility 0.5s linear, height 0.5s linear;
             }
         }
 

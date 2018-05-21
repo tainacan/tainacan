@@ -259,3 +259,24 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
     }
 
 }
+
+// USER PREFERENCES - Used to save key-value information for user settings of plugin
+export const SubheaderShrinkPlugin = {};
+SubheaderShrinkPlugin.install = function (Vue, options = {}) {
+
+    Vue.ShouldShrink = false;
+
+    Object.defineProperties(Vue.prototype, {
+        "$shouldShrink": {
+            "get": function () {
+                return vm.ShouldShrink;
+            },
+
+            "set": function (value) {
+                vm.ShouldShrink = value
+
+                return this;
+            }
+        }
+    })
+}
