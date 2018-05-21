@@ -16,7 +16,7 @@
                                 :title="$i18n.getHelperTitle('items', 'status')"
                                 :message="$i18n.getHelperMessage('items', 'status')"/>
                     </div>
-                    <div class="section-box">
+                    <div class="section-box section-status">
                         <div class="field">
                             <b-select
                                     v-model="form.status"
@@ -220,7 +220,7 @@
                                 :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
 
                     </div>                    
-                    <div class="section-box">
+                    <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
                             <a
                                     class="button is-rounred is-secondary"
@@ -246,7 +246,7 @@
                                    <b-icon 
                                         type="is-gray"
                                         icon="delete" />
-                                   {{ $i18n.get('remove') }} 
+                                   <span class="text">{{ $i18n.get('remove') }} </span>
                                 </a>
                             </div>
                         </div>
@@ -666,7 +666,7 @@ export default {
 
     @import '../../scss/_variables.scss';
 
-    .page-container{
+    .page-container {
         padding: 25px 0px;
 
         .tainacan-page-title {
@@ -735,10 +735,18 @@ export default {
             }
         }
     }
+    .section-status{
+        width: 168px;        
+    }
+    .section-thumbnail {
+        width: 168px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
     .section-attachments {
         height: 400px;
         max-width: 100%;
-        resize: both;
+        resize: vertical;
         overflow: auto;
     }
 
@@ -748,16 +756,15 @@ export default {
     }
 
     .thumbnail-field {
-        // margin-bottom: 96px;
-        // margin-top: -20px;
+        margin-top: -8px;
 
         .content {
             padding: 10px;
             font-size: 0.8em;
         }
         img {
-            height: 105px;
-            width: 105px;
+            height: 112px;
+            width: 112px;
         }
         .image-placeholder {
             position: absolute;
@@ -794,6 +801,10 @@ export default {
             border-radius: 0px 0px 0px 4px;
             font-size: 14px;
             a { color: $tainacan-input-color; }
+            .text {
+                top: -3px;
+                position: relative;
+            }
         }
     }
 
