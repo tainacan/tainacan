@@ -75,15 +75,15 @@ Terms can have hierarchy, which means that when you browse for items that have a
 
 Terms also have a description, may have an icon or image that represents it and may also be linked to a existing concept of an ontology. They can have their own URL in your site, with a page listing all items that are related to them, despite their collection. In that way, they behave as if they were a collection themselves.
 
-## Item types
+## Under discussion
+
+### Item types
 
 Item types gives you the abiity to specialize the desription of an item based on its nature. So, inside the same collection you may have items that vary in its nature and, therefore, have a different set of metadata.
 
 For each item type you can choose a group of Metadata, in the same way you do for a collection. When you create an item inside a collection, it will have all the metadata chosen for that collection plus the metadata related to its type.
 
 An item type can be anything. For example, LPs, Books and paintings are õbvious distinct item types that may have specific metadata. But it could also more abstract concepts, such as "financial transactions".
-
-## Under discussion
 
 ### Desktop
 
