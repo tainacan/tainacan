@@ -136,6 +136,7 @@ return [
 	'label_selectbox_init'                     => __( 'Select', 'tainacan' ),
 	'label_options'                            => __( 'Insert options', 'tainacan' ),
 	'label_attachments'                        => __( 'Attachments', 'tainacan' ),
+	'label_attachment'                         => __( 'Attachment', 'tainacan' ),
 	'label_enabled'                            => __( 'Enabled', 'tainacan' ),
 	'label_disabled'                           => __( 'Disabled', 'tainacan' ),
 	'label_creation'                           => __( 'Creation', 'tainacan' ),
@@ -181,6 +182,7 @@ return [
 	'label_edit_selected_items'			  	   => __( 'Edit selected items', 'tainacan' ),
 	'label_select_all_collections_page'	  	   => __( 'Select all collections on page', 'tainacan' ),
 	'label_select_all_items_page'	 	 	   => __( 'Select all items on page', 'tainacan' ),
+	'label_add_attachment'					   => __( 'Add attachment', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

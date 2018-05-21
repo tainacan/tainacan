@@ -258,17 +258,15 @@
                                 type="button"
                                 class="button is-secondary"
                                 @click.prevent="attachmentMediaFrame.openFrame($event)">
-                            Attatchments (tests)
+                            {{ $i18n.get("label_add_attachment") }}
                         </button>
 
                         <div class="uploaded-files">
-                            <div
+                            <file-item 
                                     v-for="(attachment, index) in attachmentsList"
-                                    :key="index">
-                                <span class="tag is-primary">
-                                    {{ attachment.title.rendered }}
-                                </span>
-                            </div>
+                                    :key="index"
+                                    :show-name="true"
+                                    :file="attachment"/>
                         </div>
                     </div>
 
@@ -308,6 +306,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import { eventBus } from '../../../js/event-bus-web-components.js'
 import wpMediaFrames from '../../js/wp-media-frames';
+import FileItem from '../other/file-item.vue';
 
 export default {
     name: 'ItemEditionForm',
@@ -351,6 +350,9 @@ export default {
             isTextModalActive: false,
             textLink: ''
         }
+    },
+    components: {
+        FileItem
     },
     methods: {
         ...mapActions('item', [
@@ -570,7 +572,7 @@ export default {
                         frame_button: this.$i18n.get('label_attach_to_item'),
                     },
                     relatedPostId: this.itemId,
-                    onSave: (files) => {
+                    onSave: () => {
                         // Fetch current existing attachments
                         this.fetchAttachments(this.itemId);
                     }
@@ -707,6 +709,11 @@ export default {
                 p { color: $secondary; }
             }
         }
+    }
+
+    .uploaded-files {
+        display: flex;
+        flex-flow: wrap;
     }
 
     .thumbnail-field {

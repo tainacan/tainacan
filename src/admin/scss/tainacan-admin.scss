@@ -106,6 +106,14 @@ a:hover {
     background-color: white;
     padding: 52px 80px;
 
+    figure {
+        margin: 0;
+        text-align: center;
+    }
+    .attachment {
+        width: 100%;
+    }
+
     .form-submit {
         padding: 80px 0em 0.4em 0em !important;
     }
