@@ -111,7 +111,7 @@ class Item_Metadata_Entity extends Entity {
 			
 			foreach ($value as $v) {
 				if ( $v instanceof Term || $v instanceof ItemMetadataEntity ) {
-					$return[] = $v->__toArray();
+					$return[] = $v->_toArray();
 				} else {
 					$return[] = $v;
 				}
@@ -122,7 +122,7 @@ class Item_Metadata_Entity extends Entity {
 			$return = '';
 			
 			if ( $value instanceof Term || $value instanceof ItemMetadataEntity ) {
-				$return = $value->__toArray();
+				$return = $value->_toArray();
 			} else {
 				$return = $value;
 			}
@@ -136,7 +136,7 @@ class Item_Metadata_Entity extends Entity {
 	 * Convert the object to an Array
 	 * @return array the representation of this object as an array
 	 */
-    public function  __toArray(){
+    public function  _toArray(){
 		$as_array = [];
 		
 		$as_array['value'] = $this->get_value_as_array();
@@ -147,8 +147,8 @@ class Item_Metadata_Entity extends Entity {
 			$as_array['date_i18n'] = $this->get_date_i18n($this->get_value_as_string());
 		}
 
-	    $as_array['item']  = $this->get_item()->__toArray();
-	    $as_array['field'] = $this->get_field()->__toArray();
+	    $as_array['item']  = $this->get_item()->_toArray();
+	    $as_array['field'] = $this->get_field()->_toArray();
 
 	    return $as_array;
     }

@@ -197,7 +197,7 @@ class REST_Fields_Controller extends REST_Controller {
 
 			try {
 				$prepared = $this->prepare_item_for_database( $request->get_body(), $collection_id );
-			} catch (\Error $exception){
+			} catch (\Exception $exception){
 				return new \WP_REST_Response($exception->getMessage(), 400);
 			}
 
@@ -217,7 +217,7 @@ class REST_Fields_Controller extends REST_Controller {
 		} elseif (!empty($request->get_body())) {
 			try {
 				$prepared = $this->prepare_item_for_database( $request->get_body() );
-			} catch ( \Error $exception ) {
+			} catch ( \Exception $exception ) {
 				return new \WP_REST_Response( $exception->getMessage(), 400 );
 			}
 
@@ -266,9 +266,9 @@ class REST_Fields_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
-			$item_arr = $item->__toArray();
+			$item_arr = $item->_toArray();
 			
-			$item_arr['field_type_object'] = $item->get_field_type_object()->__toArray();
+			$item_arr['field_type_object'] = $item->get_field_type_object()->_toArray();
 			
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();

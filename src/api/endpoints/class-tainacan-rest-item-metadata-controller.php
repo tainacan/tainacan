@@ -96,7 +96,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	 * @return array|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$item_arr = $item->__toArray();
+		$item_arr = $item->_toArray();
 
 		if($request['context'] === 'edit'){
 			$item_arr['current_user_can_edit'] = $item->can_edit();
@@ -209,7 +209,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				}
 				elseif($field->get_accept_suggestion()) {
 					$log = $this->item_metadata_repository->suggest( $item_metadata );
-					$prepared_item = $log->__toArray();  
+					$prepared_item = $log->_toArray();
 				}
 				else {
 					return new \WP_REST_Response( [

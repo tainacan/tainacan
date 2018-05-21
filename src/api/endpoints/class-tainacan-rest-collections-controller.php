@@ -145,7 +145,7 @@ class REST_Collections_Controller extends REST_Controller {
 
         	if(!isset($request['fetch_only'])) {
 
-		        $item_arr = $item->__toArray();
+		        $item_arr = $item->_toArray();
 
 		        if ( $request['context'] === 'edit' ) {
 		        	$moderators_ids = $item_arr['moderators_ids'];
@@ -239,7 +239,7 @@ class REST_Collections_Controller extends REST_Controller {
 
 		try {
 			$prepared_post = $this->prepare_item_for_database( $body );
-		} catch (\Error $exception){
+		} catch (\Exception $exception){
 			return new \WP_REST_Response($exception->getMessage(), 400);
 		}
 

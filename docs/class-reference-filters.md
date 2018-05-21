@@ -108,7 +108,7 @@ Represents the entity Filter
 ### `protected $repository = 'Filters'`
 
 {@inheritDoc} 
-### `public function __toArray()`
+### `public function _toArray()`
 
 
 **Returns:** array

@@ -29,7 +29,7 @@ class REST_Controller extends \WP_REST_Controller {
 						$get_                          = 'get_' . $attribute;
 						$object_filtered[ $attribute ] = $object->$get_();
 					}
-				} catch ( \Error $error ) {
+				} catch ( \Exception $error ) {
 					// Do nothing
 				}
 			}
@@ -37,7 +37,7 @@ class REST_Controller extends \WP_REST_Controller {
 			try{
 				$get_ = 'get_' . $attributes;
 				$object_filtered[$attributes] = $object->$get_();
-			} catch (\Error $error){
+			} catch (\Exception $error){
 				// Do nothing
 			}
 		}
@@ -57,7 +57,7 @@ class REST_Controller extends \WP_REST_Controller {
 			try {
 				$set_ = 'set_' . $key;
 				$object->$set_( $value );
-			} catch (\Error $error){
+			} catch (\Exception $error){
 				// Do nothing
 			}
 		}

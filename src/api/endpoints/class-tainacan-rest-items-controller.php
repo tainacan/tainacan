@@ -92,6 +92,8 @@ class REST_Items_Controller extends REST_Controller {
 	 * @param $item_object
 	 * @param $item_array
 	 *
+	 * @param array $args
+	 *
 	 * @return mixed
 	 */
 	private function add_metadata_to_item($item_object, $item_array, $args = []){
@@ -100,7 +102,7 @@ class REST_Items_Controller extends REST_Controller {
 		foreach($item_metadata as $index => $me){
 			$field               = $me->get_field();
 			$slug                = $field->get_slug();
-			$item_metadata_array = $me->__toArray();
+			$item_metadata_array = $me->_toArray();
 
 			$item_array['metadata'][ $slug ]['name']            = $field->get_name();
 			$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
@@ -125,7 +127,7 @@ class REST_Items_Controller extends REST_Controller {
 		if(!empty($item)){
 
 			if(!isset($request['fetch_only'])) {
-				$item_arr = $item->__toArray();
+				$item_arr = $item->_toArray();
 
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
@@ -298,7 +300,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		try {
 			$this->prepare_item_for_database( [ $item, $collection_id ] );
-		} catch (\Error $exception){
+		} catch (\Exception $exception){
 			return new \WP_REST_Response($exception->getMessage(), 400);
 		}
 

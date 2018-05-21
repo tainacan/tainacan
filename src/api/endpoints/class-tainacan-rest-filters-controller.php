@@ -131,7 +131,7 @@ class REST_Filters_Controller extends REST_Controller {
 			try {
 				$set_ = 'set_'. $attribute;
 				$filter_obj->$set_($value);
-			} catch (\Error $error){
+			} catch (\Exception $error){
 				//
 			}
 		}
@@ -315,11 +315,11 @@ class REST_Filters_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)) {
-			$item_arr = $item->__toArray();
+			$item_arr = $item->_toArray();
 
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
-				$item_arr['filter_type_object'] = $item->get_filter_type_object()->__toArray();
+				$item_arr['filter_type_object'] = $item->get_filter_type_object()->_toArray();
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 

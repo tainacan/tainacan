@@ -55,7 +55,7 @@ class REST_Filter_Types_Controller extends REST_Controller {
 		$name = "\Tainacan\Filter_Types\\$item";
 		$filter_type = new $name();
 
-		$filter_arr = $filter_type->__toArray();
+		$filter_arr = $filter_type->_toArray();
 		$filter_arr['name'] = $item;
 
 		return $filter_arr;

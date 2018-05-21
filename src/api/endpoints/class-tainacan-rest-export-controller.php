@@ -137,7 +137,7 @@ class REST_Export_Controller extends REST_Controller {
 		$prepared_item = [];
 		
 		foreach ($items_metadata as $item_metadata){
-			$prepared_item[] =  $item_metadata->__toArray();
+			$prepared_item[] =  $item_metadata->_toArray();
 		}
 
 		return $prepared_item;

@@ -333,7 +333,7 @@ class Entity {
         return true;
     }
 
-    public function __toArray(){
+    public function _toArray(){
         $repository = $this->get_repository();
 	    $map = $repository->get_map();
 
@@ -345,8 +345,8 @@ class Entity {
 	    return $attributes;
     }
 
-	public function  __toJSON(){
-		return json_encode($this->__toArray(), JSON_NUMERIC_CHECK);
+	public function  _toJson(){
+		return json_encode($this->_toArray(), JSON_NUMERIC_CHECK);
 	}
 	
 	/**

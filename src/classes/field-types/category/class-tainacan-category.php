@@ -154,7 +154,7 @@ class Category extends Field_Type {
 			
 			foreach ( $value as $term ) {
 				if ( $term instanceof \Tainacan\Entities\Term ) {
-					$return .= $term->__toHtml();
+					$return .= $term->_toHtml();
 				}
 				
 				$count ++;
@@ -168,7 +168,7 @@ class Category extends Field_Type {
 		} else {
 			
 			if ( $value instanceof \Tainacan\Entities\Term ) {
-				$return .= $value->__toHtml();
+				$return .= $value->_toHtml();
 			}
 			
 		}

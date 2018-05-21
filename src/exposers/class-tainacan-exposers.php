@@ -98,7 +98,7 @@ class Exposers {
 					$items_metadata = $item->get_fields();
 					$prepared_item = [];
 					foreach ($items_metadata as $item_metadata){
-						array_push($prepared_item, $item_metadata->__toArray());
+						array_push($prepared_item, $item_metadata->_toArray());
 					}
 					$item_arr = $prepared_item;
 				}
@@ -221,7 +221,7 @@ class Exposers {
 			if(
 				$type === false || // do not have a exposer type
 				$type->get_mappers() === true || // the type accept all mappers
-				( is_array($type->mappers) && in_array($body['exposer-map'], $type->get_mappers()) ) ) { // the current mapper is accepted by type
+				( is_array($type->get_mappers()) && in_array($body['exposer-map'], $type->get_mappers()) ) ) { // the current mapper is accepted by type
 				$mapper = $Tainacan_Exposers->check_class_name($body['exposer-map'], true, self::MAPPER_CLASS_PREFIX);
 				return new $mapper;
 			} 

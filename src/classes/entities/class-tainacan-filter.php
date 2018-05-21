@@ -37,8 +37,8 @@ class Filter extends Entity {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function __toArray(){
-		$filter_array = parent::__toArray();
+	public function _toArray(){
+		$filter_array = parent::_toArray();
 		$field_id = $filter_array['field'];
 
 		$filter_array['field'] = [];

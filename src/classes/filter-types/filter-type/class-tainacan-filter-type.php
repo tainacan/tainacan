@@ -50,7 +50,7 @@ abstract class Filter_Type {
     /**
      * @return array
      */
-    public function __toArray(){
+    public function _toArray(){
         $attributes = [];
 
         $attributes['className'] = get_class($this);

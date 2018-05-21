@@ -90,7 +90,7 @@ class Relationship extends Field_Type {
 					$item = new \Tainacan\Entities\Item($item_id);
 					
 					if ( $item instanceof \Tainacan\Entities\Item ) {
-						$return .= $item->__toHtml();
+						$return .= $item->_toHtml();
 					}
 					
 					$count ++;
@@ -112,7 +112,7 @@ class Relationship extends Field_Type {
 				$item = new \Tainacan\Entities\Item($value);
 				
 				if ( $item instanceof \Tainacan\Entities\Item ) {
-					$return .= $item->__toHtml();
+					$return .= $item->_toHtml();
 				}
 				
 			} catch (Exception $e) {

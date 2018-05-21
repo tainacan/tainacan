@@ -135,13 +135,13 @@ class Filters extends TAINACAN_UnitTestCase {
 
         $filter = $this->tainacan_entity_factory->create_entity(
             'filter',
-            array(
-                'name'               => 'filtro',
-                'collection'         => $collection,
-                'description' => 'descricao',
-                'field'           => $field2,
-                'filter_type' => $autocomplete
-            ),
+	        array(
+		        'name'        => 'filtro',
+		        'collection'  => $collection,
+		        'description' => 'descricao',
+		        'field'       => $field2,
+		        'filter_type' => $autocomplete
+	        ),
             true
         );
 
@@ -155,11 +155,11 @@ class Filters extends TAINACAN_UnitTestCase {
         $filter2 = $this->tainacan_entity_factory->create_entity(
             'filter',
             array(
-                'name'               => 'filtro 2',
-                'collection'         => $collection,
-                'description' => 'descricao',
-                'field'           => $field2,
-                'filter_type' => $custom_interval
+	            'name'        => 'filtro 2',
+	            'collection'  => $collection,
+	            'description' => 'descricao',
+	            'field'       => $field2,
+	            'filter_type' => $custom_interval
             ),
             true
         );

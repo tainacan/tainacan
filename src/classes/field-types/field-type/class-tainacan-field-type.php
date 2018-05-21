@@ -160,7 +160,7 @@ abstract class Field_Type  {
 
     }
     
-    public function __toArray(){
+    public function _toArray(){
 	    $attributes = [];
 
 	    $attributes['errors']              = $this->get_errors();

@@ -49,8 +49,8 @@ class Item extends Entity {
 		return 'Hello, my name is ' . $this->get_title();
 	}
 
-	public function __toArray() {
-		$array_item = parent::__toArray();
+	public function _toArray() {
+		$array_item = parent::_toArray();
 
 		$array_item['thumbnail']         = $this->get_thumbnail();
 		$array_item['_thumbnail_id']     = $this->get__thumbnail_id();
@@ -417,7 +417,7 @@ class Item extends Entity {
 	}
 	
 	
-	public function __toHtml() {
+	public function _toHtml() {
 		
 		$return = '';
 		$id = $this->get_id();

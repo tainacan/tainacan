@@ -65,8 +65,8 @@ class Collection extends Entity {
 		return 'Hello, my name is ' . $this->get_name();
 	}
 
-	public function __toArray() {
-		$array_collection = parent::__toArray();
+	public function _toArray() {
+		$array_collection = parent::_toArray();
 
 		$array_collection['thumbnail']         = $this->get_thumbnail();
 		$array_collection['header_image']      = $this->get_header_image();

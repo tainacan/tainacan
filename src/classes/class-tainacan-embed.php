@@ -18,14 +18,14 @@ class Embed {
 		/**
 		 * Replace default WordPress embedders with HTML 5 tags instead of shortcodes
 		 */
-		add_filter('wp_embed_handler_video', [&$this, 'filter_video_embed'], 10, 4);
-		add_filter('wp_embed_handler_audio', [&$this, 'filter_audio_embed'], 10, 4);
+		add_filter('wp_embed_handler_video', [$this, 'filter_video_embed'], 10, 4);
+		add_filter('wp_embed_handler_audio', [$this, 'filter_audio_embed'], 10, 4);
 		
 		/**
 		 * ADD PDF Embed handler using PDF.js
 		 * @var [type]
 		 */
-		wp_embed_register_handler( 'pdf', '#^https?://.+?\.(pdf)$#i', [&$this, 'pdf_embed_handler'] );
+		wp_embed_register_handler( 'pdf', '#^https?://.+?\.(pdf)$#i', [$this, 'pdf_embed_handler'] );
 		
 	}
 	
