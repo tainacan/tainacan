@@ -343,7 +343,7 @@ export default {
         width: 100%;
         
         .checkbox-cell {
-            width: 44px;
+            width: 40px;
             height: 58px;
             padding: 0;
             position: absolute !important;
@@ -354,9 +354,9 @@ export default {
             z-index: 9;
 
             &::before {
-                box-shadow: inset 53px 0 10px -12px #222;
+                box-shadow: inset 50px 0 10px -12px #222;
                 content: " ";
-                width: 64px;
+                width: 60px;
                 height: 100%;
                 position: absolute;
                 left: 0;

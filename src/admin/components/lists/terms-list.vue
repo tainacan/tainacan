@@ -45,12 +45,15 @@
                     {{ $i18n.get('label_view_term') }}
                 </button>
             -->
-                <button
-                        class="button is-secondary is-small"
+                <a
+                        class="is-small"
                         type="button"
                         @click="addNewChildTerm(term, index)">
+                    <b-icon 
+                            size="is-small"
+                            icon="plus-circle"/>
                     {{ $i18n.get('label_new_child') }}
-                </button>
+                </a>
 
                 <a @click.prevent="editTerm(term, index)">
                     <b-icon 
@@ -380,6 +383,12 @@ export default {
                 bottom: 1px;   
                 position: relative;
                 i, i:before { font-size: 20px; }
+                .mdi-plus-circle, .mdi-plus-circle:before{
+                    font-size: 18px;
+                }
+                a {
+                    margin-right: 8px;
+                }
             }
             .button {
                 margin-right: 1em;

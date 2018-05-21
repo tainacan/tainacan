@@ -93,12 +93,11 @@
                                         'table-creation': column.field == 'row_creation'}"
                                 @click="goToItemPage(item)">
 
-                            <p
+                            <data-and-tooltip
                                     v-if="column.field !== 'row_thumbnail' &&
-                                     column.field !== 'row_actions' &&
-                                      column.field !== 'row_creation'"
-
-                                    v-html="renderMetadata( item.metadata[column.slug] )"/>
+                                            column.field !== 'row_actions' &&
+                                            column.field !== 'row_creation'"
+                                    :data="renderMetadata( item.metadata[column.slug] )"/>
 
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
@@ -119,7 +118,7 @@
                                         id="button-edit"   
                                         :aria-label="$i18n.getFrom('items','edit_item')" 
                                         @click.prevent.stop="goToItemEditPage(item.id)">
-                                    <b-icon 
+                                    <b-icon
                                             type="is-secondary" 
                                             icon="pencil"/>
                                 </a>
@@ -144,6 +143,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import DataAndTooltip from '../other/data-and-tooltip.vue'
 
 export default {
     name: 'ItemsList',
@@ -160,6 +160,9 @@ export default {
         items: Array,
         isLoading: false,
         isOnTheme: false
+    },
+    components: {
+        DataAndTooltip
     },
     mounted() {
         this.selectedItems = [];
@@ -325,8 +328,8 @@ export default {
         // }
         
         .checkbox-cell {
-            min-width: 44px;
-            width: 44px;
+            min-width: 40px;
+            width: 40px;
             padding: 0;
             position: sticky !important;
             position: -webkit-sticky !important;
@@ -336,9 +339,9 @@ export default {
             display: table-cell;
 
             &::before {
-                box-shadow: inset 54px 0 10px -12px #222;
+                box-shadow: inset 50px 0 10px -12px #222;
                 content: " ";
-                width: 54px;
+                width: 50px;
                 height: 100%;
                 position: absolute;
                 left: 0;
@@ -354,6 +357,9 @@ export default {
                 display: flex;
                 justify-content: center;
 
+            }
+            label.control-label {
+                display: none;
             }
             &.is-selecting {
                 visibility: visible; 
@@ -392,7 +398,7 @@ export default {
                     }
                     
                 }
-                td.column-default-width{
+                td.column-default-width {
                     max-width: 300px;
                     p {
                         text-overflow: ellipsis;
@@ -418,7 +424,7 @@ export default {
                     position: -webkit-sticky !important;
                     right: 0px;
                     top: auto;
-                    width: 8.333333333%;
+                    width: 80px;
 
                     .actions-container {
                         visibility: hidden;
@@ -426,14 +432,15 @@ export default {
                         position: relative;
                         padding: 0;
                         height: 100%;
-                        min-width: 120px;
+                        width: 80px;
                         z-index: 9;
                         background-color: transparent; 
+                        float: right;
                     }
 
                     a {
                         margin: auto;
-                        .mdi {font-size: 18px !important; }  
+                        font-size: 18px !important;
                     }
 
                 }
@@ -453,9 +460,9 @@ export default {
                         }
 
                         &::after {
-                            box-shadow: inset -134px 0 17px -21px #222;
+                            box-shadow: inset -97px 0 17px -21px #222;
                             content: " ";
-                            width: 140px;
+                            width: 100px;
                             height: 100%;
                             position: absolute;
                             right: 0px;
