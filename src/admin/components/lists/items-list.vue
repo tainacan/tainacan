@@ -102,7 +102,7 @@
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
-                                        :src="item[column.slug]">
+                                        :src="item[column.slug].thumb">
                             </span> 
                             <p 
                                     v-if="column.field == 'row_creation'"

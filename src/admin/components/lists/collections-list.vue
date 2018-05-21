@@ -80,7 +80,7 @@
                             <span>
                                 <img 
                                         class="table-thumb" 
-                                        :src="collection.thumbnail">
+                                        :src="collection.thumbnail.thumb">
                             </span>
                         </td>
                         <!-- Name -->

@@ -236,15 +236,17 @@
                                 <img
                                         id="thumbail-image"
                                         :alt="$i18n.get('label_thumbnail')"
-                                        :src="(item.thumbnail == undefined || item.thumbnail == false) ? thumbPlaceholderPath : item.thumbnail">
+                                        :src="(item.thumbnail == undefined || item.thumbnail == false) ? thumbPlaceholderPath : item.thumbnail.thumb">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a
                                         id="button-delete"
                                         :aria-label="$i18n.get('label_button_delete_thumb')"
                                         @click="deleteThumbnail()">
-                                    {{ $i18n.get('remove') }}
-                                    <b-icon icon="delete" />
+                                   <b-icon 
+                                        type="is-gray"
+                                        icon="delete" />
+                                   {{ $i18n.get('remove') }} 
                                 </a>
                             </div>
                         </div>
@@ -746,9 +748,8 @@ export default {
     }
 
     .thumbnail-field {
-        max-height: 128px;
-        margin-bottom: 96px;
-        margin-top: -20px;
+        // margin-bottom: 96px;
+        // margin-top: -20px;
 
         .content {
             padding: 10px;
@@ -789,8 +790,9 @@ export default {
     
         .thumbnail-buttons-row {
             display: inline-block;
-            padding: 2px 8px;
+            padding: 8px 0px;
             border-radius: 0px 0px 0px 4px;
+            font-size: 14px;
             a { color: $tainacan-input-color; }
         }
     }
