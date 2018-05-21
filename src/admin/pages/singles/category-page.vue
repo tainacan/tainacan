@@ -14,7 +14,7 @@
                     <router-link
                             class="card-footer-item"
                             :to="{ path: $routerHelper.getCategoryEditPath(categoryId)}">
-                        {{ $i18n.getFrom('taxonomies','edit') }}
+                        {{ $i18n.getFrom('taxonomies','edit_item') }}
                     </router-link>
                     <a class="card-footer-item">
                         Edit terms

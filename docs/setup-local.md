@@ -51,7 +51,7 @@ Set up a WordPress installation. This could be a dedicated installation to devel
 
 When we want to build the plugin, we run `build.sh` that basically installs any dependencies, compiles all the assets (sass and js) and moves the files to the plugin directory. This compiled version of the plugin is the one added to the official WordPress Plugin repository.
 
-In order to use it, make a copy of `build-config-sample.sh` and name it only `build-config.sh`. Edit and fill in your environment details:
+In order to use it, make a copy of `build-config-sample.cfg` and name it only `build-config.cfg`. Edit and fill in your environment details:
 
 * `wp_base_dir`: The base directory for you local WordPress installation, used for development and testing. e.g `~/develop/wordpress`
 * `wp_url`: The base URL for your local WordPress installation/ e.g `http://localhost/wp`
