@@ -86,6 +86,7 @@
         </aside>
         
         <div 
+                id="items-list-area"
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed }">
             <!-- SEARCH CONTROL ------------------------- -->
@@ -344,8 +345,13 @@
             this.$eventBusSearch.setCollectionId(this.collectionId);
             this.$eventBusSearch.updateStoreFromURL();
             this.$eventBusSearch.loadItems();
-        }
 
+            if (!this.isRepositoryLevel && !this.isOnTheme) {
+                document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
+                    this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+                });
+            }
+        }
     }
 </script>
 
@@ -357,7 +363,7 @@
         margin-bottom: 0.1rem;
     }
 
-    .page-container, .page-container-small {
+    .page-container {
         padding: 0px;
         
     }
@@ -400,7 +406,7 @@
     .table-container {
         padding-left: 8.333333%;
         padding-right: 8.333333%;
-        height: calc(100% - 82px);
+        //height: calc(100% - 82px);
     }
 
     #collection-search-button {
@@ -412,11 +418,11 @@
     }
 
     .filters-menu {
-        position: absolute;
+        position: relative;
         width: $filter-menu-width;
         max-width: $filter-menu-width;
-        min-height: calc(100% - 82px);
-        height: calc(100% - 82px);
+        min-height: 100%;
+        height: 100%;
         background-color: $tainacan-input-background;
         padding: $page-small-side-padding;
         float: left;
@@ -440,6 +446,7 @@
         margin-left: 0;
         transition: margin-left ease 0.5s;
         height: 100%;
+        overflow: auto;
     }
     .spaced-to-right {
         margin-left: $filter-menu-width;

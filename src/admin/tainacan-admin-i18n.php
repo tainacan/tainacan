@@ -182,7 +182,7 @@ return [
 	'label_edit_selected_items'			  	   => __( 'Edit selected items', 'tainacan' ),
 	'label_select_all_collections_page'	  	   => __( 'Select all collections on page', 'tainacan' ),
 	'label_select_all_items_page'	 	 	   => __( 'Select all items on page', 'tainacan' ),
-	'label_add_attachment'					   => __( 'Add attachment', 'tainacan' ),
+	'label_edit_attachments'				   => __( 'Edit attachments', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

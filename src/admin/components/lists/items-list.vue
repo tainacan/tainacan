@@ -374,9 +374,9 @@ export default {
                 background-color: transparent;
 
                 &.selected-row { 
-                    background-color: $primary-lighter !important; 
+                    background-color: $primary-lighter; 
                     .checkbox-cell .checkbox, .actions-cell .actions-container {
-                        background-color: $primary-lighter !important;
+                        background-color: $primary-lighter;
                     }
                 }
                 td {
@@ -439,17 +439,17 @@ export default {
                 }
 
                 &:hover {
-                    background-color: $tainacan-input-background;
+                    background-color: $tainacan-input-background !important;
                     cursor: pointer;
 
                     .checkbox-cell {
                         visibility: visible; 
-                        .checkbox { background-color: $tainacan-input-background; }
+                        .checkbox { background-color: $tainacan-input-background !important; }
                     }
                     .actions-cell {
                         .actions-container {
                             visibility: visible;
-                            background: $tainacan-input-background;
+                            background: $tainacan-input-background !important;
                         }
 
                         &::after {

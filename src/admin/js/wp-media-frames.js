@@ -16,7 +16,7 @@ export default {
 				content: 'upload', // First view that is opened
 				autoSelect: true,
 				states: [
-					new wp.media.controller.MediaLibrary({
+					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,
 						library:   wp.media.query({
 							status:  null,

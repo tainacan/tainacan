@@ -3,7 +3,7 @@
         <b-loading :active.sync="isLoadingFieldTypes"/>
         <tainacan-title v-if="!isRepositoryLevel"/>
         <b-tabs v-model="activeTab">    
-            <b-tab-item :label="$i18n.get('category')">
+            <b-tab-item :label="$i18n.get('taxonomy')">
                 <div class="columns">
                     <div class="column">        
                         <draggable 
@@ -322,6 +322,13 @@ export default {
             .catch(() => {
                 this.isLoadingFields = false;
             });
+    },
+    mounted() {
+        if (!this.isRepositoryLevel) {
+            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
+                this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+            });
+        }
     }
 }
 </script>

@@ -40,7 +40,7 @@ import draggable from 'vuedraggable'
 import store from '../../js/store/store'
 import router from './router'
 import eventBusSearch from '../../js/event-bus-search';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, SubheaderShrinkPlugin } from './utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from './utilities';
 import VueMask from 'v-mask';
 
 // Configure and Register Plugins
@@ -48,7 +48,6 @@ Vue.use(Buefy);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
-Vue.use(SubheaderShrinkPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueMask);
 

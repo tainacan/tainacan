@@ -637,6 +637,11 @@ export default {
                 this.isLoading = false; 
             });
         }
+    },
+    mounted() {
+        document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
+            this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+        });
     }
 
 }

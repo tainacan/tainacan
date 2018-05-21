@@ -6,7 +6,7 @@
                 class="tainacan-form"
                 label-width="120px">
             <div class="columns">
-                <div class="column is-5">
+                <div class="column is-5-5">
 
                     <!-- Status -------------------------------- -->
                     <div class="section-label">
@@ -56,7 +56,7 @@
                                 :title="$i18n.getHelperTitle('items', 'document')"
                                 :message="$i18n.getHelperMessage('items', 'document')"/>
                     </div>
-                    <div class="section-box">
+                    <div class="section-box ">
                         <div
                                 v-if="form.document != undefined && form.document != null &&
                                         form.document_type != undefined && form.document_type != null &&
@@ -253,12 +253,12 @@
                     <div class="section-label">
                         <label>{{ $i18n.get('label_attachments') }}</label>
                     </div>
-                    <div class="section-box">
+                    <div class="section-box section-attachments">
                         <button
                                 type="button"
                                 class="button is-secondary"
                                 @click.prevent="attachmentMediaFrame.openFrame($event)">
-                            {{ $i18n.get("label_add_attachment") }}
+                            {{ $i18n.get("label_edit_attachments") }}
                         </button>
 
                         <div class="uploaded-files">
@@ -271,8 +271,7 @@
                     </div>
 
                 </div>
-                <div class="column is-1" />
-                <div class="column is-6">
+                <div class="column is-4-5">
                     <label class="section-label">{{ $i18n.get('fields') }}</label>
                     <br>
                     <a
@@ -639,7 +638,7 @@ export default {
     },
     mounted() {
         document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-            this.$shouldShrink = ($event.originalTarget.scrollTop > 5); 
+            this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
         });
     },
     beforeRouteLeave ( to, from, next ) {
@@ -665,11 +664,28 @@ export default {
     @import '../../scss/_variables.scss';
 
     .page-container{
-        height: calc(100% - 82px);
-    }
+        padding: 25px 0px;
 
-    form>.columns>.column{
-        padding: 0px;
+        .tainacan-page-title {
+            padding-left: $page-side-padding;
+            padding-right: $page-side-padding;
+        }
+
+        .column {
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+        .column.is-5-5 {
+            width: 45.833333333%;
+            padding-left: $page-side-padding;
+            padding-right: $page-side-padding;
+        }
+        .column.is-4-5 {
+            width: 37.5%;
+            padding-left: $page-side-padding;
+            padding-right: $page-side-padding;
+        }
+
     }
 
     .section-label {
@@ -689,6 +705,7 @@ export default {
 
     .section-box {
         border: 1px solid $draggable-border-color;
+        background-color: white;
         padding: 30px;
         margin-top: 16px;
         margin-bottom: 38px;
@@ -714,6 +731,12 @@ export default {
                 p { color: $secondary; }
             }
         }
+    }
+    .section-attachments {
+        height: 400px;
+        max-width: 100%;
+        resize: both;
+        overflow: auto;
     }
 
     .uploaded-files {
