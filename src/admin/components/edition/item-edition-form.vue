@@ -243,6 +243,7 @@
                                         id="button-delete"
                                         :aria-label="$i18n.get('label_button_delete_thumb')"
                                         @click="deleteThumbnail()">
+                                    {{ $i18n.get('remove') }}
                                     <b-icon icon="delete" />
                                 </a>
                             </div>
@@ -279,7 +280,7 @@
                             @click="toggleCollapseAll()">
                         {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                          <b-icon
-                                type="is-secondary"
+                                type="is-gray"
                                 :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
 
@@ -754,7 +755,6 @@ export default {
             font-size: 0.8em;
         }
         img {
-            position: absolute;
             height: 105px;
             width: 105px;
         }
@@ -786,21 +786,13 @@ export default {
                 margin-top: 1px;
             }
         }
+    
         .thumbnail-buttons-row {
-            display: none;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 0px 0px 0px 4px;
+            a { color: $tainacan-input-color; }
         }
-        &:hover {
-             .thumbnail-buttons-row {
-                display: inline-block;
-                position: relative;
-                top: 0px;
-                background-color: rgba(255, 255, 255, 0.9);
-                padding: 2px 8px;
-                border-radius: 0px 0px 0px 4px;
-                left: 65px;
-            }
-        }
-
     }
 
 

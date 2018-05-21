@@ -32,6 +32,7 @@ export default {
         text-overflow: ellipsis;
         overflow-x: hidden;
         white-space: nowrap;
+        margin-bottom: 0;
     }
 
     .data-wrapper:hover .data-tooltip {
