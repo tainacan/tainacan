@@ -130,7 +130,7 @@ class Item extends Entity {
 	 */
 	function get_thumbnail() {
 		return array(
-			'thumb'        => get_the_post_thumbnail_url( $this->get_id(), 'post-thumbnail' ),
+			'thumb'        => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
 			'full'         => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
 			'medium'       => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
 			'medium_large' => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
