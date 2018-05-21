@@ -31,7 +31,33 @@ function tainacan_get_the_metadata($field = null, $hide_empty = true) {
 }
 
 function tainacan_the_metadata($field = null, $hide_empty = true) {
-	echo get_tainacan_the_metadata($field, $hide_empty);
+	echo tainacan_get_the_metadata($field, $hide_empty);
+}
+
+/**
+ * To be used inside The Loop
+ * 
+ * Return the item document as a HTML string to be used as output.
+ *
+ * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
+ * @param bool $hide_empty Wether to hide or not fields the item has no value to
+ * @return string        The HTML output
+ */
+function tainacan_get_the_document() {
+	$post = get_post();
+	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+	
+	if (!$theme_helper->is_post_an_item($post));
+		return;
+	
+	$item = new Entities\Item($post);
+	
+	return $item->get_document_html($field, $hide_empty);
+	
+}
+
+function tainacan_the_document() {
+	echo tainacan_get_the_document();
 }
 
 /**
