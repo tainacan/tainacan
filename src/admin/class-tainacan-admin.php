@@ -28,10 +28,14 @@ class Admin {
 	}
 
 	function add_admin_menu() {
+		$dummyEntity = new \Tainacan\Entities\Taxonomy();
+		// a capability everybody bu subscriber have.
+		// Maybe we will create a specific cap to view_admin later
+		$entity_cap = $dummyEntity->get_capabilities()->edit_posts;
 		$page_suffix = add_menu_page(
 			__( 'Tainacan', 'tainacan' ),
 			__( 'Tainacan', 'tainacan' ),
-			'edit_posts',
+			$entity_cap,
 			$this->menu_slug,
 			array( &$this, 'admin_page' ),
 			plugin_dir_url( __FILE__ ) . 'images/tainacan_logo_symbol.svg'
