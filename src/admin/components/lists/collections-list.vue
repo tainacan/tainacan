@@ -1,5 +1,7 @@
 <template>
-    <div class="table-container">
+    <div 
+            v-if="totalCollections > 0 && !isLoading"
+            class="table-container">
         <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
@@ -11,7 +13,7 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="collections.length > 0 && collections[0].current_user_can_edit"
+                        v-if="collections[0].current_user_can_edit"
                         :disabled="!isSelectingCollections"
                         id="bulk-actions-dropdown">
                     <button
@@ -139,28 +141,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Empty state image -->
-        <div v-if="!totalCollections || totalCollections <= 0">
-            <section class="section">
-                <div class="content has-text-grey has-text-centered">
-                    <p>
-                        <b-icon
-                                icon="inbox"
-                                size="is-large"/>
-                    </p>
-                    <p>{{ $i18n.get('info_no_collection_created') }}</p>
-                    <router-link
-                            id="button-create-collection"
-                            tag="button"
-                            class="button is-primary"
-                            :to="{ path: $routerHelper.getNewCollectionPath() }">
-                        {{ $i18n.getFrom('collections', 'new_item') }}
-                    </router-link>
-                </div>
-            </section>
-        </div>
-
     </div>
 </template>
 
@@ -319,8 +299,7 @@ export default {
         //     document.addEventListener('mouseup', function () {
         //         thElm = undefined;
         //     });
-        // })();
-        
+        // })();  
     }
 }
 </script>
@@ -331,7 +310,7 @@ export default {
 
     .selection-control {
         
-        padding: 6px 0px 0px 18px;
+        padding: 6px 0px 0px 13px;
         background: white;
         height: 40px;
 
@@ -371,7 +350,6 @@ export default {
             position: -webkit-sticky !important;
             left: 0;
             top: auto;
-            visibility: hidden;
             display: table-cell;
             
             &::before {
@@ -382,6 +360,7 @@ export default {
                 position: absolute;
                 left: 0;
                 top: 0;
+                visibility: hidden;
             }
 
             label.checkbox {  
@@ -392,13 +371,14 @@ export default {
                 height: 100%; 
                 display: flex;
                 justify-content: center;
-
+                visibility: hidden;
             }
-            label.control-label {
+            label span.control-label {
                 display: none;
             }
             &.is-selecting {
-                visibility: visible; 
+                .checkbox { visibility: visible; }
+                &::before { visibility: visible !important; }
             }
         }
         // Only to be used in case we can implement Column resizing
@@ -485,8 +465,11 @@ export default {
                     cursor: pointer;
 
                     .checkbox-cell {
-                        visibility: visible; 
-                        .checkbox { background-color: $tainacan-input-background !important; }
+                        &::before { visibility: visible; }
+                        .checkbox { 
+                            visibility: visible; 
+                            background-color: $tainacan-input-background !important; 
+                        }
                     }
                     .actions-cell {
                         .actions-container {

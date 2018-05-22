@@ -235,7 +235,7 @@
                                 <b-icon icon="pencil" />
                             </a>
                             <file-item
-                                    v-if="item.thumbnail != undefined && item.thumbnail != false"
+                                    v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
                                     :show-name="false"
                                     :file="{ 
                                         media_type: 'image', 
@@ -243,7 +243,7 @@
                                         title: { rendered: $i18n.get('label_thumbnail')},
                                         description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
                             <figure 
-                                    v-if="item.thumbnail == undefined || item.thumbnail == false"
+                                    v-if="item.thumbnail.thumb == undefined || item.thumbnail.thumb == false"
                                     class="image">
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img

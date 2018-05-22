@@ -294,7 +294,7 @@ export default {
 
     .selection-control {
         
-        padding: 6px 0px 0px 18px;
+        padding: 6px 0px 0px 13px;
         background: white;
         height: 40px;
 
@@ -334,7 +334,6 @@ export default {
             position: -webkit-sticky !important;
             left: 0;
             top: auto;
-            visibility: hidden;
             display: table-cell;
 
             &::before {
@@ -345,6 +344,7 @@ export default {
                 position: absolute;
                 left: 0;
                 top: 0;
+                visibility: hidden;
             }
 
             label.checkbox {  
@@ -355,13 +355,14 @@ export default {
                 height: 100%; 
                 display: flex;
                 justify-content: center;
-
+                visibility: hidden;
             }
             label.control-label {
                 display: none;
             }
             &.is-selecting {
-                visibility: visible; 
+                .checkbox { visibility: visible; } 
+                &::before { visibility: visible !important; }
             }
         }
         // Only to be used in case we can implement Column resizing
@@ -448,8 +449,11 @@ export default {
                     cursor: pointer;
 
                     .checkbox-cell {
-                        visibility: visible; 
-                        .checkbox { background-color: $tainacan-input-background !important; }
+                        &::before { visibility: visible; }
+                        .checkbox { 
+                            visibility: visible; 
+                            background-color: $tainacan-input-background !important; 
+                        }
                     }
                     .actions-cell {
                         .actions-container {

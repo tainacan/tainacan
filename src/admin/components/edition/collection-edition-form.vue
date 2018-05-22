@@ -25,12 +25,12 @@
                             </a>
                             <figure class="image is-128x128">
                                 <span 
-                                        v-if="collection.thumbnail == undefined || collection.thumbnail == false"
+                                        v-if="collection.thumbnail.thumb == undefined || collection.thumbnail.thumb == false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
                                         id="thumbail-image"  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(collection.thumbnail == undefined || collection.thumbnail == false) ? thumbPlaceholderPath : collection.thumbnail.thumb">
+                                        :src="(collection.thumbnail.thumb == undefined || collection.thumbnail.thumb == false) ? thumbPlaceholderPath : collection.thumbnail.thumb">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 

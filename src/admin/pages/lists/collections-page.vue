@@ -3,7 +3,7 @@
         <tainacan-title />
         <div
                 class="sub-header"
-                v-if="totalCollections > 0">
+                v-if="checkIfUserCanEdit()">
             <div class="header-item">
                 <b-dropdown id="collection-creation-options-dropdown">
                     <button
@@ -30,13 +30,50 @@
             </div>
         </div>
         <div class="above-subheader">
+            <div class="tabs">
+                <ul>
+                    <li 
+                            @click="onChangeTab('')"
+                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
+                    <li 
+                            @click="onChangeTab('draft')"
+                            :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
+                    <li 
+                            @click="onChangeTab('trash')"
+                            :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
+                </ul>
+            </div>
             <div>
                 <collections-list
                         :is-loading="isLoading"
                         :total-collections="totalCollections"
                         :page="page"
                         :collections-per-page="collectionsPerPage"
-                        :collections="collections"/>  
+                        :collections="collections"/> 
+
+                 <!-- Empty state image -->
+                <div v-if="totalCollections <= 0 && !isLoading">
+                    <section class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="inbox"
+                                        size="is-large"/>
+                            </p>
+                            <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
+                            <p v-if="status == 'draft'">{{ $i18n.get('info_no_collection_draft') }}</p>
+                            <p v-if="status == 'trash'">{{ $i18n.get('info_no_collection_trash') }}</p>
+                            <router-link
+                                    v-if="status == undefined || status == ''"
+                                    id="button-create-collection"
+                                    tag="button"
+                                    class="button is-primary"
+                                    :to="{ path: $routerHelper.getNewCollectionPath() }">
+                                {{ $i18n.getFrom('collections', 'new_item') }}
+                            </router-link>
+                        </div>
+                    </section>
+                </div> 
                 <!-- Footer -->
                 <div
                         class="pagination-area"
@@ -91,7 +128,8 @@ export default {
             isLoading: false,
             totalCollections: 0,
             page: 1,
-            collectionsPerPage: 12
+            collectionsPerPage: 12,
+            status: ''
         }
     },
     components: {
@@ -104,6 +142,17 @@ export default {
         ...mapGetters('collection', [
             'getCollections'
         ]),
+        onChangeTab(status) {
+            this.status = status;
+            this.loadCollections();
+        },
+        checkIfUserCanEdit() {
+            for (let capability of tainacan_plugin.user_caps) {
+                if (capability == 'edit_tainacan-collections')
+                    return true;
+            }
+            return false;
+        },
         onChangeCollectionsPerPage(value) {
             let prevValue = this.collectionsPerPage;
             this.collectionsPerPage = value;
@@ -116,8 +165,7 @@ export default {
         },
         loadCollections() {    
             this.isLoading = true;
-            
-            this.fetchCollections({ 'page': this.page, 'collectionsPerPage': this.collectionsPerPage })
+            this.fetchCollections({ 'page': this.page, 'collectionsPerPage': this.collectionsPerPage, 'status': this.status })
             .then((res) => {
                 this.isLoading = false;
                 this.totalCollections = res.total;
@@ -137,6 +185,7 @@ export default {
             let collectionsList = this.getCollections(); 
             for (let collection of collectionsList) 
                 collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + collection['creation_date'];
+            
             return collectionsList;
         }
     },
@@ -185,7 +234,12 @@ export default {
             }
         }
     }
-
+    .tabs {
+        padding-top: 20px;
+        margin-bottom: 20px;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
+    }
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;

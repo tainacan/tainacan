@@ -212,6 +212,8 @@ return [
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
 	'info_no_collection_created'               => __( 'No collection was created in this repository.', 'tainacan' ),
+	'info_no_collection_draft'               => __( 'No draft collection found.', 'tainacan' ),
+	'info_no_collection_trash'               => __( 'No collection on trash.', 'tainacan' ),
 	'info_no_category_created'                 => __( 'No taxonomy was created in this repository.', 'tainacan' ),
 	'info_no_item_created'                     => __( 'No item was created in this collection.', 'tainacan' ),
 	'info_no_page_found'                       => __( 'No page was found with this name.', 'tainacan' ),

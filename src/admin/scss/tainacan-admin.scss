@@ -549,7 +549,12 @@ a:hover {
         overflow: auto;
         .table {
             tbody {
-                td { border-bottom: 0px solid $gray-light !important; }
+                td { 
+                    border-bottom: 0px solid $gray-light !important; 
+                }
+                .b-checkbox.checkbox .control-label {
+                    display: none;
+                }
             }
             .th-wrap {
                 font-size: 12px !important;

@@ -43,10 +43,15 @@ export const deleteItem = ({ commit }, item_id ) => {
     });
 };
 
-export const fetchCollections = ({commit} , { page, collectionsPerPage }) => {
+export const fetchCollections = ({commit} , { page, collectionsPerPage, status }) => {
     commit('cleanCollections');
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/collections?paged='+page+'&perpage='+collectionsPerPage+'&context=edit')
+        let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage+'&context=edit';
+
+        if (status != '' && status != undefined)
+            endpoint = endpoint + '&status=' + status;
+            
+        axios.tainacan.get(endpoint)
         .then(res => {
             let collections = res.data;
             commit('setCollections', collections);
