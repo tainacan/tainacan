@@ -36,6 +36,7 @@
 
 <script>
     import { dateInter } from "../../../admin/js/mixins";
+    import moment from 'moment';
 
     export default {
         mixins: [ dateInter ],
@@ -65,10 +66,13 @@
             onInput($event) {
                 let dateISO = '';
 
+                let localeData = moment.localeData();
+                let format = localeData.longDateFormat('L');
+
                 if($event && $event instanceof Date) {
-                    dateISO = this.dateValue.toISOString().split('T')[0]
+                    dateISO = moment(this.dateValue, format).toISOString().split('T')[0];
                 } else if($event.target.value && $event.target.value.length === this.dateMask.length) {
-                    dateISO = new Date($event.target.value).toISOString().split('T')[0];
+                    dateISO = moment($event.target.value, format).toISOString().split('T')[0];
                 }
 
                 this.$emit('input', dateISO);

@@ -139,9 +139,13 @@ class Entity {
 	 */
 	public function get_date_i18n($date){
 
-		$unix_time_stamp = strtotime($date);
+		if($date) {
+			$unix_time_stamp = strtotime( $date );
 
-		return date_i18n(get_option('date_format'), $unix_time_stamp);
+			return date_i18n( get_option( 'date_format' ), $unix_time_stamp );
+		}
+
+		return '';
 	}
 
     /**
