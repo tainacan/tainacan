@@ -5,7 +5,7 @@
                 class="control is-inline">
             <input
                     class="input"
-                    type="date"
+                    type="text"
                     v-mask="dateMask"
                     v-model="dateValue"
                     @blur="onBlur"
