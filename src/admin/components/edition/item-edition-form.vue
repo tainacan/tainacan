@@ -1,11 +1,11 @@
 <template>
     <div>
-        <tainacan-title />
         <button 
                 id="metadata-column-compress-button"
                 @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
             <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
         </button>
+        <tainacan-title />
         <form
                 v-if="!isLoading"
                 class="tainacan-form"
@@ -278,7 +278,7 @@
 
                         <div class="uploaded-files">
                             <file-item
-                                    :style="{ margin: 12 + 'px'}"
+                                    :style="{ margin: 15 + 'px'}"
                                     v-if="attachmentsList.length > 0" 
                                     v-for="(attachment, index) in attachmentsList"
                                     :key="index"
@@ -688,6 +688,7 @@ export default {
         position: relative;
         z-index: 99;
         float: right;
+        top: 70px;
         max-width: 36px;
         height: 36px;
         width: 36px;
@@ -789,11 +790,15 @@ export default {
         max-width: 100%;
         resize: vertical;
         overflow: auto;
+
+        p { margin: 4px 15px }
     }
 
     .uploaded-files {
         display: flex;
         flex-flow: wrap;
+        margin-left: -15px;
+        margin-right: -15px;
     }
 
     .thumbnail-field {

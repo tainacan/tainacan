@@ -3,9 +3,12 @@
         <b-loading
                 :active.sync="isLoading"
                 :can-cancel="false"/>
-
+        <button 
+                id="metadata-column-compress-button"
+                @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
+            <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
+        </button>
         <tainacan-title/>
-
         <div class="columns">
             <div class="column is-5-5">
                 <div class="column is-12">
@@ -68,16 +71,9 @@
                         <label>{{ $i18n.get('label_attachments') }}</label>
                     </div>
                     <div class="section-box section-attachments">
-                        <button
-                                type="button"
-                                class="button is-secondary"
-                                @click.prevent="attachmentMediaFrame.openFrame($event)">
-                            {{ $i18n.get("label_edit_attachments") }}
-                        </button>
-
                         <div class="uploaded-files">
                             <file-item
-                                    :style="{ margin: 12 + 'px'}"
+                                    :style="{ margin: 15 + 'px'}"
                                     v-if="attachmentsList.length > 0" 
                                     v-for="(attachment, index) in attachmentsList"
                                     :key="index"
@@ -90,7 +86,9 @@
                 </div>
 
             </div>
-            <div class="column is-4-5">
+            <div 
+                    v-show="!isMetadataColumnCompressed"
+                    class="column is-4-5">
                 <label class="section-label">{{ $i18n.get('fields') }}</label>
                 <br>
                 <a
@@ -148,6 +146,7 @@
                 collectionId: Number,
                 itemId: Number,
                 isLoading: false,
+                isMetadataColumnCompressed: false,
                 open: false,
             }
         },
@@ -206,6 +205,28 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
+
+    #metadata-column-compress-button {
+        position: relative;
+        z-index: 99;
+        float: right;
+        top: 70px;
+        max-width: 36px;
+        height: 36px;
+        width: 36px;
+        border: none;
+        background-color: $tainacan-input-background;
+        color: $secondary;
+        padding: 0px;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+        cursor: pointer;
+
+        .icon {
+            margin-top: 2px;
+            margin-right: 8px;
+        }
+    }
 
     .page-container {
         padding: 25px 0px;
@@ -309,11 +330,16 @@
         max-width: 100%;
         resize: vertical;
         overflow: auto;
+        padding: 15px;
+
+        p { margin: 4px 15px }
     }
 
     .uploaded-files {
         display: flex;
         flex-flow: wrap;
+        margin-left: -15px;
+        margin-right: -15px;
     }
 </style>
 
