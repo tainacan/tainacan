@@ -80,7 +80,7 @@
 
         </b-table>
 
-        <div v-if="!totalCategories || totalCategories <= 0">
+        <div v-if="(!totalCategories || totalCategories <= 0) && !isLoading">
             <section class="section">
                 <div class="content has-text-grey has-text-centered">
                     <p>
@@ -93,7 +93,7 @@
                             tag="button" 
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getNewCategoryPath() }">
-                        {{ $i18n.getFrom('taxonomies', 'new') }}
+                        {{ $i18n.getFrom('taxonomies', 'new_item') }}
                     </router-link>
                 </div>
             </section>

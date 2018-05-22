@@ -412,6 +412,7 @@
     #collection-search-button {
         border-radius: 0px !important;
         padding: 0px 8px !important;
+        border-color: $tainacan-input-background;
         &:focus, &:active {
             border-color: none !important;
         }

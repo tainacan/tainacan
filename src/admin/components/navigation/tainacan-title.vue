@@ -87,7 +87,7 @@ export default {
                                 .then(itemName => { this.arrayViewPath.splice(i, 1, itemName); this.entityName = itemName; })
                                 .catch((error) => this.$console.error(error));
                             break;
-                        case 'categories':
+                        case 'taxonomies':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
                                 .catch((error) => this.$console.error(error));

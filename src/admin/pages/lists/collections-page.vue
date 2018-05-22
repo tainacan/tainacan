@@ -5,13 +5,28 @@
                 class="sub-header"
                 v-if="totalCollections > 0">
             <div class="header-item">
-                <router-link 
-                        id="button-create-collection"
-                        tag="button" 
-                        class="button is-secondary"
-                        :to="{ path: $routerHelper.getNewCollectionPath() }">
-                    {{ $i18n.getFrom('collections', 'new_item') }}
-                </router-link>
+                <b-dropdown id="collection-creation-options-dropdown">
+                    <button
+                            class="button is-secondary"
+                            slot="trigger">
+                        <span>{{ $i18n.getFrom('collections','new_item') }}</span>
+                        <b-icon icon="menu-down"/>
+                    </button>
+
+                    <b-dropdown-item>
+                        <router-link
+                                id="a-create-collection"
+                                tag="div"
+                                :to="{ path: $routerHelper.getNewCollectionPath() }">
+                            {{ $i18n.get('label_blank_collection') }}
+                            <br>
+                            <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                        </router-link>
+                    </b-dropdown-item>
+                    <b-dropdown-item disabled>
+                        {{ $i18n.get('label_dublin_core') + ' (Not ready)' }}
+                    </b-dropdown-item>
+                </b-dropdown>
             </div>
         </div>
         <div class="above-subheader">
@@ -149,6 +164,7 @@ export default {
         height: $subheader-height;
         margin-left: -$page-side-padding;
         margin-right: -$page-side-padding;
+        margin-top: -$page-top-padding;
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;

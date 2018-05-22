@@ -43,7 +43,7 @@
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
-                        to="/categories" 
+                        to="/taxonomies" 
                         :class="activeRoute == 'CategoriesPage' ? 'is-active':''">
                     <b-icon 
                         size="is-small" 
