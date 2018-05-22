@@ -5,6 +5,7 @@
         <!-- SEARCH AND FILTERS --------------------- -->
         <button 
                 id="filter-menu-compress-button"
+                :style="{ top: isHeaderShrinked ? '125px' : '152px'}"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
@@ -183,7 +184,8 @@
                 isFiltersMenuCompressed: false,
                 collapseAll: false,
                 isOnTheme: false,
-                futureSearchQuery: ''
+                futureSearchQuery: '',
+                isHeaderShrinked: false
             }
         },
         props: {
@@ -348,7 +350,8 @@
 
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
-                    this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+                    this.isHeaderShrinked = ($event.originalTarget.scrollTop > 53);
+                    this.$emit('onShrinkHeader', this.isHeaderShrinked); 
                 });
             }
         }
@@ -468,6 +471,7 @@
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
         cursor: pointer;
+        transition: top 0.3s;
 
         .icon {
             margin-top: -1px;

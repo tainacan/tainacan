@@ -123,7 +123,7 @@
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="pencil"/>
+                                            icon="settings"/>
                                 </a>
                                 <a 
                                         id="button-delete" 
