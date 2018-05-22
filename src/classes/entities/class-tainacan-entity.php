@@ -191,8 +191,22 @@ class Entity {
 		if ( method_exists($this, $method) ) {
 			return $this->$method($value);
 		}
-        return null;
     }
+
+	/**
+	 * get the value property
+	 *
+	 *
+	 * @param string $prop id of the property
+	 * @param mixed $value the value to be setted
+	 * @return null|mixed Null on failure, the value that was set on success
+	 */
+	public function get($prop) {
+		$method = 'get_' . $prop;
+		if ( method_exists($this, $method) ) {
+			return $this->$method();
+		}
+	}
 
     /**
      * set the status of the entity

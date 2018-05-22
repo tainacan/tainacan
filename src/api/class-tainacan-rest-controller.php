@@ -24,22 +24,12 @@ class REST_Controller extends \WP_REST_Controller {
 
 		if (is_array($attributes)) {
 			foreach ( $attributes as $attribute ) {
-				try {
-					if(!is_array($attribute)) {
-						$get_                          = 'get_' . $attribute;
-						$object_filtered[ $attribute ] = $object->$get_();
-					}
-				} catch ( \Exception $error ) {
-					// Do nothing
+				if ( ! is_array( $attribute ) ) {
+					$object_filtered[ $attribute ] = $object->get( $attribute );
 				}
 			}
 		} else {
-			try{
-				$get_ = 'get_' . $attributes;
-				$object_filtered[$attributes] = $object->$get_();
-			} catch (\Exception $error){
-				// Do nothing
-			}
+			$object_filtered[ $attributes ] = $object->get( $attributes );
 		}
 
 		return $object_filtered;
@@ -54,12 +44,7 @@ class REST_Controller extends \WP_REST_Controller {
 	protected function prepare_item_for_updating($object, $new_values){
 
 		foreach ($new_values as $key => $value) {
-			try {
-				$set_ = 'set_' . $key;
-				$object->$set_( $value );
-			} catch (\Exception $error){
-				// Do nothing
-			}
+			$object->set($key, $value);
 		}
 
 		return $object;
