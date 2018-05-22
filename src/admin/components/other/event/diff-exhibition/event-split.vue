@@ -5,7 +5,7 @@
             <div class="tile is-parent">
                 <article class="tile box is-child">
                     <div class="content">
-                        <div class="title">{{ this.$i18n.get('info_logs_before') }}</div>
+                        <h1 class="event-titles">{{ this.$i18n.get('info_logs_before') }}</h1>
                         <div
                                 v-for="(diff, key) in event.log_diffs"
                                 v-if="diff.old"
@@ -88,7 +88,7 @@
             <div class="tile is-parent">
                 <article class="tile box is-child">
                     <div class="content">
-                        <div class="title">{{ this.$i18n.get('info_logs_after') }}</div>
+                        <h1 class="event-titles">{{ this.$i18n.get('info_logs_after') }}</h1>
                         <div
                                 v-for="(diff, key) in event.log_diffs"
                                 :key="key">
@@ -185,5 +185,12 @@
 <style scoped>
     .content {
         overflow: auto;
+    }
+
+    .event-titles {
+        font-size: 20px;
+        font-weight: 500;
+        color: #01295c;
+        display: inline-block;
     }
 </style>

@@ -6,7 +6,7 @@
                 <article class="tile box is-child">
 
                     <div class="content">
-                        <div class="title">{{ this.$i18n.get('info_changes') }}</div>
+                        <h1 class="event-titles">{{ this.$i18n.get('info_changes') }}</h1>
                         <div
                                 v-for="(diff, key) in event.log_diffs"
                                 v-if="diff.old"
@@ -183,5 +183,12 @@
 <style scoped>
     .content {
         overflow: auto;
+    }
+
+    .event-titles {
+        font-size: 20px;
+        font-weight: 500;
+        color: #01295c;
+        display: inline-block;
     }
 </style>

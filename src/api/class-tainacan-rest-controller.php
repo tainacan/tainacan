@@ -354,7 +354,6 @@ class REST_Controller extends \WP_REST_Controller {
 				'enum'    => array_merge(array_keys(get_post_stati()), array('any')),
 				'type'    => 'string',
 			),
-			'sanitize_callback' => array($this, 'sanitize_post_statuses'),
 		);
 
 		$query_params['offset'] = array(
