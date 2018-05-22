@@ -331,7 +331,7 @@ export default {
 
     .selection-control {
         
-        padding: 6px 0px 0px 18px;
+        padding: 6px 0px 0px 12px;
         background: white;
         height: 40px;
 
@@ -394,7 +394,7 @@ export default {
                 justify-content: center;
 
             }
-            label.control-label {
+            label span.control-label {
                 display: none;
             }
             &.is-selecting {
