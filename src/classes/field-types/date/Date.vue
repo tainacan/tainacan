@@ -9,7 +9,8 @@
                     v-mask="dateMask"
                     v-model="dateValue"
                     @blur="onBlur"
-                    @input="onInput">
+                    @input="onInput"
+                    :placeholder="datePlaceHolder">
             <!--<b-collapse-->
                     <!--position="is-bottom-right">-->
                 <!--<b-icon-->
