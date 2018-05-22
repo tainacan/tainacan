@@ -30,7 +30,7 @@
                                 <img
                                         id="thumbail-image"  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(collection.thumbnail == undefined || collection.thumbnail == false) ? thumbPlaceholderPath : collection.thumbnail">
+                                        :src="(collection.thumbnail == undefined || collection.thumbnail == false) ? thumbPlaceholderPath : collection.thumbnail.thumb">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -639,9 +639,11 @@ export default {
         }
     },
     mounted() {
-        document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-            this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
-        });
+        if (this.$route.fullPath.split("/").pop() != "new") {
+            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
+                this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+            });
+        }
     }
 
 }

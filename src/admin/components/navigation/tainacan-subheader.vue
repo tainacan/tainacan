@@ -166,7 +166,7 @@ export default {
                                 .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
                                 .catch((error) => this.$console.error(error));
                             break;
-                        case 'categories':
+                        case 'taxonomies':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
                                 .catch((error) => this.$console.error(error));

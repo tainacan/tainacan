@@ -16,11 +16,11 @@
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
                         :disabled="!isSelectingItems"
-                        id="mass-actions-dropdown">
+                        id="bulk-actions-dropdown">
                     <button
                             class="button is-white"
                             slot="trigger">
-                        <span>{{ $i18n.get('label_mass_actions') }}</span>
+                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <b-icon icon="menu-down"/>
                     </button> 
 
@@ -112,7 +112,8 @@
                         <!-- Actions -->
                         <td 
                                 v-if="item.current_user_can_edit && !isOnTheme"
-                                class="column-default-width actions-cell">
+                                class="column-default-width actions-cell"
+                                :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a 
                                         id="button-edit"   
@@ -317,16 +318,14 @@ export default {
             border-bottom: 1px solid $tainacan-input-background;
             top: 0px;
             z-index: 9;
+            padding: 10px;
+            vertical-align: bottom;
 
             &.actions-header {
                 min-width: 8.333333333%;
             }
         }
 
-        // &.selectable-table th:nth-child(2), &.selectable-table td:nth-child(2) {
-        //     padding-left: 54px;
-        // }
-        
         .checkbox-cell {
             min-width: 40px;
             width: 40px;
@@ -371,7 +370,7 @@ export default {
         // }
 
         .thumbnail-cell {
-            width: 58px;
+            width: 60px;
         }
   
         tbody {
@@ -386,8 +385,8 @@ export default {
                     }
                 }
                 td {
-                    height: 58px;
-                    max-height: 58px;
+                    height: 60px;
+                    max-height: 60px;
                     padding: 10px;
                     vertical-align: middle;
                     line-height: 12px;
@@ -419,7 +418,6 @@ export default {
 
                 td.actions-cell {
                     padding: 0px;
-                    
                     position: sticky !important;
                     position: -webkit-sticky !important;
                     right: 0px;
