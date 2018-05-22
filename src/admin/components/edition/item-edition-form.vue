@@ -1,6 +1,11 @@
 <template>
     <div>
         <tainacan-title />
+        <button 
+                id="metadata-column-compress-button"
+                @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
+            <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
+        </button>
         <form
                 v-if="!isLoading"
                 class="tainacan-form"
@@ -99,14 +104,14 @@
                                 <div v-html="item.document_as_html" />
                                 <button
                                         type="button"
-                                        class="button is-primary"
+                                        class="button is-secondary"
                                         size="is-small"
                                         @click.prevent="setURLDocument()">
                                     {{ $i18n.get('edit') }}
                                 </button>
                                 <button
                                         type="button"
-                                        class="button is-primary"
+                                        class="button is-secondary"
                                         size="is-small"
                                         @click.prevent="removeDocument()">
                                     {{ $i18n.get('remove') }}
@@ -229,14 +234,21 @@
                                     @click.prevent="thumbnailMediaFrame.openFrame($event)">
                                 <b-icon icon="pencil" />
                             </a>
-                            <figure class="image">
-                                <span
-                                        v-if="item.thumbnail == undefined || item.thumbnail == false"
-                                        class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                            <file-item
+                                    v-if="item.thumbnail != undefined && item.thumbnail != false"
+                                    :show-name="false"
+                                    :file="{ 
+                                        media_type: 'image', 
+                                        guid: { rendered: item.thumbnail.thumb },
+                                        title: { rendered: $i18n.get('label_thumbnail')},
+                                        description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
+                            <figure 
+                                    v-if="item.thumbnail == undefined || item.thumbnail == false"
+                                    class="image">
+                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img
-                                        id="thumbail-image"
                                         :alt="$i18n.get('label_thumbnail')"
-                                        :src="(item.thumbnail == undefined || item.thumbnail == false) ? thumbPlaceholderPath : item.thumbnail.thumb">
+                                        :src="thumbPlaceholderPath">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a
@@ -265,16 +277,21 @@
                         </button>
 
                         <div class="uploaded-files">
-                            <file-item 
+                            <file-item
+                                    :style="{ margin: 12 + 'px'}"
+                                    v-if="attachmentsList.length > 0" 
                                     v-for="(attachment, index) in attachmentsList"
                                     :key="index"
                                     :show-name="true"
                                     :file="attachment"/>
+                            <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                         </div>
                     </div>
 
                 </div>
-                <div class="column is-4-5">
+                <div 
+                        class="column is-4-5"
+                        v-show="!isMetadataColumnCompressed">
                     <label class="section-label">{{ $i18n.get('fields') }}</label>
                     <br>
                     <a
@@ -319,6 +336,7 @@ export default {
             item: null,
             collectionId: Number,
             isLoading: false,
+            isMetadataColumnCompressed: false,
             fieldCollapses: [],
             collapseAll: false,
             form: {
@@ -351,6 +369,14 @@ export default {
             urlLink: '',
             isTextModalActive: false,
             textLink: ''
+        }
+    },
+    computed: {
+        fieldList() {
+            return JSON.parse(JSON.stringify(this.getFields()));
+        },
+        attachmentsList(){
+            return this.getAttachments();
         }
     },
     components: {
@@ -593,14 +619,6 @@ export default {
             this.fieldCollapses.splice(index, 1, event);
         }
     },
-    computed: {
-        fieldList() {
-            return JSON.parse(JSON.stringify(this.getFields()));
-        },
-        attachmentsList(){
-            return this.getAttachments();
-        }
-    },
     created(){
         // Obtains collection ID
         this.cleanFields();
@@ -666,6 +684,27 @@ export default {
 
     @import '../../scss/_variables.scss';
 
+    #metadata-column-compress-button {
+        position: relative;
+        z-index: 99;
+        float: right;
+        max-width: 36px;
+        height: 36px;
+        width: 36px;
+        border: none;
+        background-color: $tainacan-input-background;
+        color: $secondary;
+        padding: 0px;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+        cursor: pointer;
+
+        .icon {
+            margin-top: 2px;
+            margin-right: 8px;
+        }
+    }
+
     .page-container {
         padding: 25px 0px;
 
@@ -682,11 +721,13 @@ export default {
             width: 45.833333333%;
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
+            transition: width 0.6s;
         }
         .column.is-4-5 {
             width: 37.5%;
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
+            transition: all 0.6s;
         }
 
     }
@@ -709,7 +750,7 @@ export default {
     .section-box {
         border: 1px solid $draggable-border-color;
         background-color: white;
-        padding: 30px;
+        padding: 26px;
         margin-top: 16px;
         margin-bottom: 38px;
 
@@ -736,15 +777,15 @@ export default {
         }
     }
     .section-status{
-        width: 168px;        
+        width: 174px;        
     }
     .section-thumbnail {
-        width: 168px;
+        width: 174px;
         padding-top: 0;
         padding-bottom: 0;
     }
     .section-attachments {
-        height: 400px;
+        height: 250px;
         max-width: 100%;
         resize: vertical;
         overflow: auto;
@@ -804,6 +845,9 @@ export default {
             .text {
                 top: -3px;
                 position: relative;
+            }
+            i.mdi-24px.mdi-set, i.mdi-24px.mdi::before {
+                font-size: 20px;
             }
         }
     }

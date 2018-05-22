@@ -28,7 +28,7 @@
                 scroll="keep">
             <div class="tainacan-modal-content">
                 <div class="tainacan-modal-title">
-                    <h2>{{ $i18n.get('label_attachment') + ': ' + file.title.rendered }}</h2>
+                    <h2>{{ file.title.rendered }}</h2>
                     <hr>
                 </div>
                 <div    
@@ -79,8 +79,6 @@ export default {
     @import "../../scss/_variables.scss";
 
     .file-item {
-
-        margin: 12px;
         
         &:hover {
             cursor: pointer;
@@ -136,6 +134,9 @@ export default {
             white-space: nowrap;
             text-align: center;
         }
+    }
+    .is-flex {
+        justify-content: center;
     }
     
 </style>

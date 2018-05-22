@@ -254,6 +254,7 @@ return [
 	'info_possible_external_sources'           => __( 'Possible external sources: CSV, Instagram, Youtube, etc.', 'tainacan' ),
 	'info_help_term_name'          		   	   => __( 'The term name', 'tainacan' ),
 	'info_help_term_description'          	   => __( 'The description of the Term.', 'tainacan' ),
+	'info_no_attachments_on_item_yet'		   => __( 'The are no attachments on this item so far.', 'tainacan' ),
 
 	// Tainacan Field Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),
