@@ -3,7 +3,7 @@
         <tainacan-title />
         <div
                 class="sub-header"
-                v-if="totalCollections > 0">
+                v-if="checkIfUserCanEdit()">
             <div class="header-item">
                 <b-dropdown id="collection-creation-options-dropdown">
                     <button
@@ -49,7 +49,31 @@
                         :total-collections="totalCollections"
                         :page="page"
                         :collections-per-page="collectionsPerPage"
-                        :collections="collections"/>  
+                        :collections="collections"/> 
+
+                 <!-- Empty state image -->
+                <div v-if="totalCollections <= 0 && !isLoading">
+                    <section class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="inbox"
+                                        size="is-large"/>
+                            </p>
+                            <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
+                            <p v-if="status == 'draft'">{{ $i18n.get('info_no_collection_draft') }}</p>
+                            <p v-if="status == 'trash'">{{ $i18n.get('info_no_collection_trash') }}</p>
+                            <router-link
+                                    v-if="status == undefined || status == ''"
+                                    id="button-create-collection"
+                                    tag="button"
+                                    class="button is-primary"
+                                    :to="{ path: $routerHelper.getNewCollectionPath() }">
+                                {{ $i18n.getFrom('collections', 'new_item') }}
+                            </router-link>
+                        </div>
+                    </section>
+                </div> 
                 <!-- Footer -->
                 <div
                         class="pagination-area"
@@ -122,6 +146,13 @@ export default {
             this.status = status;
             this.loadCollections();
         },
+        checkIfUserCanEdit() {
+            for (let capability of tainacan_plugin.user_caps) {
+                if (capability == 'edit_tainacan-collections')
+                    return true;
+            }
+            return false;
+        },
         onChangeCollectionsPerPage(value) {
             let prevValue = this.collectionsPerPage;
             this.collectionsPerPage = value;
@@ -151,7 +182,6 @@ export default {
     },
     computed: {
         collections(){
-            
             let collectionsList = this.getCollections(); 
             for (let collection of collectionsList) 
                 collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + collection['creation_date'];
