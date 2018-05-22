@@ -93,12 +93,17 @@
                                         'table-creation': column.field == 'row_creation'}"
                                 @click="goToItemPage(item)">
 
-                            <data-and-tooltip
+                            <!-- <data-and-tooltip
                                     v-if="column.field !== 'row_thumbnail' &&
                                             column.field !== 'row_actions' &&
                                             column.field !== 'row_creation'"
-                                    :data="renderMetadata( item.metadata[column.slug] )"/>
-
+                                    :data="renderMetadata( item.metadata[column.slug] )"/> -->
+                            <p
+                                    v-if="column.field !== 'row_thumbnail' &&
+                                            column.field !== 'row_actions' &&
+                                            column.field !== 'row_creation'"
+                                    v-html="renderMetadata( item.metadata[column.slug] )"/>
+  
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
