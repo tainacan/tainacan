@@ -10,7 +10,7 @@
                     v-model="dateValue"
                     @blur="onBlur"
                     @input="onInput"
-                    :placeholder="datePlaceHolder">
+                    :placeholder="dateFormat">
             <!--<b-collapse-->
                     <!--position="is-bottom-right">-->
                 <!--<b-icon-->
@@ -41,15 +41,22 @@
     export default {
         mixins: [ dateInter ],
         created(){
+            let locale = navigator.language;
+
+            moment.locale(locale);
+
+            let localeData = moment.localeData();
+            this.dateFormat = localeData.longDateFormat('L');
+
             if( this.value ){
-                this.dateValue = new Date(this.value.replace(/-/g, '/')).toLocaleDateString();
+                this.dateValue = this.parseDateToNavigatorLanguage(new Date(this.value.replace(/-/g, '/')));
             }
         },
         data() {
             return {
                 dateValue: '',
-                datePlaceHolder: new Date().toLocaleDateString(),
-                dateMask: this.getDateLocaleFormat(),
+                dateMask: this.getDateLocaleMask(),
+                dateFormat: ''
             }
         },
         props: {
@@ -66,17 +73,17 @@
             onInput($event) {
                 let dateISO = '';
 
-                let localeData = moment.localeData();
-                let format = localeData.longDateFormat('L');
-
                 if($event && $event instanceof Date) {
-                    dateISO = moment(this.dateValue, format).toISOString().split('T')[0];
+                    dateISO = moment(this.dateValue, this.dateFormat).toISOString().split('T')[0];
                 } else if($event.target.value && $event.target.value.length === this.dateMask.length) {
-                    dateISO = moment($event.target.value, format).toISOString().split('T')[0];
+                    dateISO = moment($event.target.value,  this.dateFormat).toISOString().split('T')[0];
                 }
 
                 this.$emit('input', dateISO);
                 this.$emit('blur');
+            },
+            parseDateToNavigatorLanguage(date){
+                return moment(date, moment.ISO_8601).format(this.dateFormat);
             }
         }
     }
