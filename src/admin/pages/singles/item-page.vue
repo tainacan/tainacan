@@ -7,7 +7,7 @@
         <tainacan-title/>
 
         <div class="columns">
-            <div class="column is-5">
+            <div class="column is-5-5">
                 <div class="column is-12">
                     <router-link
                             class="button is-secondary"
@@ -30,6 +30,7 @@
                     <div>
                         <p>{{ item.status }}</p>
                     </div>
+                    <br>
                 </div>
 
                 <div class="column is-12">
@@ -62,26 +63,34 @@
 
                 <div class="column is-12">
 
-                    <!-- Attachments ----------------------------- -->
+                    <!-- Attachments ------------------------------------------ -->
                     <div class="section-label">
                         <label>{{ $i18n.get('label_attachments') }}</label>
                     </div>
-                    <div class="section-box">
+                    <div class="section-box section-attachments">
+                        <button
+                                type="button"
+                                class="button is-secondary"
+                                @click.prevent="attachmentMediaFrame.openFrame($event)">
+                            {{ $i18n.get("label_edit_attachments") }}
+                        </button>
+
                         <div class="uploaded-files">
-                            <div
+                            <file-item
+                                    :style="{ margin: 12 + 'px'}"
+                                    v-if="attachmentsList.length > 0" 
                                     v-for="(attachment, index) in attachmentsList"
-                                    :key="index">
-                                <span class="tag is-primary">
-                                    {{ attachment.title.rendered }}
-                                </span>
-                            </div>
+                                    :key="index"
+                                    :show-name="true"
+                                    :file="attachment"/>
+                            <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                         </div>
                     </div>
+
                 </div>
 
             </div>
-            <div class="column is-1" />
-            <div class="column is-6">
+            <div class="column is-4-5">
                 <label class="section-label">{{ $i18n.get('fields') }}</label>
                 <br>
                 <a
@@ -130,6 +139,7 @@
 
 <script>
     import {mapActions, mapGetters} from 'vuex'
+    import FileItem from '../../components/other/file-item.vue';
 
     export default {
         name: 'ItemPage',
@@ -140,6 +150,9 @@
                 isLoading: false,
                 open: false,
             }
+        },
+        components: {
+            FileItem
         },
         methods: {
             ...mapActions('item', [
@@ -194,12 +207,31 @@
 
     @import '../../scss/_variables.scss';
 
-    .columns > .column {
-        padding: 0;
-    }
+    .page-container {
+        padding: 25px 0px;
 
-    .page-container{
-        height: calc(100% - 82px);
+        .tainacan-page-title {
+            padding-left: $page-side-padding;
+            padding-right: $page-side-padding;
+        }
+
+        .column {
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+        .column.is-5-5 {
+            width: 45.833333333%;
+            padding-left: $page-side-padding;
+            padding-right: $page-side-padding;
+            transition: width 0.6s;
+        }
+        .column.is-4-5 {
+            width: 37.5%;
+            padding-left: $page-side-padding;
+            padding-right: $page-side-padding;
+            transition: all 0.6s;
+        }
+
     }
 
     .field {
@@ -263,6 +295,25 @@
                 }
             }
         }
+    }
+    .section-status{
+        width: 174px;        
+    }
+    .section-thumbnail {
+        width: 174px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    .section-attachments {
+        height: 250px;
+        max-width: 100%;
+        resize: vertical;
+        overflow: auto;
+    }
+
+    .uploaded-files {
+        display: flex;
+        flex-flow: wrap;
     }
 </style>
 
