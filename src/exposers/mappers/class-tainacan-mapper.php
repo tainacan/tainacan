@@ -11,4 +11,17 @@ abstract class Mapper {
 	public $prefix = ''; // Tag prefix like "dc:"
 	public $sufix = ''; // Tag sufix
 	public $header = false; // API response header or file header to be used with
+	
+	public function _toArray() {
+		return [
+			'slug' => $this->slug,
+			'name' => $this->name,
+			'allow_extra_fields' => $this->allow_extra_fields,
+			'context_url' => $this->context_url,
+			'metadata' => $this->metadata,
+			'prefix' => $this->prefix,
+			'sufix' => $this->sufix,
+			'header' => $this->header
+		];
+	}
 }

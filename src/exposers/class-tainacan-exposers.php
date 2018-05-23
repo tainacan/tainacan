@@ -240,4 +240,24 @@ class Exposers {
 		}
 		return $i18n_strings;
 	}
+	
+	/**
+	 * Return list of registered mappers 
+	 * @param string $output output format, ARRAY_N or OBJECT
+	 */
+	public function get_mappers($output = ARRAY_N) {
+		$ret = [];
+		switch ($output) {
+			case OBJECT:
+				foreach ($this->mappers as $mapper) {
+					$ret[] = new $mapper;
+				}
+			break;
+			case ARRAY_N:
+			default:
+				return $this->mappers;
+			break;
+		}
+		return $ret;
+	}
 }
