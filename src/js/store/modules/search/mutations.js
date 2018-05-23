@@ -84,6 +84,7 @@ export const removeFetchOnlyMeta = ( state, field ) => {
 };
 
 export const removeMetaQuery = ( state, filter ) => {
+    state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
     if (index >= 0) {
         state.postquery.metaquery.splice(index, 1);

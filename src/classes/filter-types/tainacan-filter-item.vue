@@ -36,7 +36,7 @@
         props: {
             filter: Object,
             query: Object,
-            open: false,
+            open: true,
         },
         data(){
             return {

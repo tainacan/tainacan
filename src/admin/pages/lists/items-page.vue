@@ -184,7 +184,7 @@
                 isLoadingFields: false,
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
-                collapseAll: false,
+                collapseAll: true,
                 isOnTheme: false,
                 futureSearchQuery: '',
                 isHeaderShrinked: false
@@ -224,6 +224,103 @@
             },  
             onChangeTab(status) {
                 this.$eventBusSearch.setStatus(status);
+            },
+            prepareFieldsAndFilters() {
+
+                this.isLoadingFilters = true;
+
+                this.fetchFilters({
+                    collectionId: this.collectionId,
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    isContextEdit: true,
+                    includeDisabled: 'no',
+                })
+                    .then(() => this.isLoadingFilters = false)
+                    .catch(() => this.isLoadingFilters = false);
+
+                this.isLoadingFields = true;
+                this.tableFields = [];
+
+                this.fetchFields({
+                    collectionId: this.collectionId,
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    isContextEdit: false
+                })
+                    .then(() => {
+
+                        this.tableFields.push({
+                            name: this.$i18n.get('label_thumbnail'),
+                            field: 'row_thumbnail',
+                            field_type: undefined,
+                            slug: 'thumbnail',
+                            id: undefined,
+                            display: true
+                        })
+                        ;
+                        let fetchOnlyFieldIds = [];
+
+                        for (let field of this.fields) {
+                            if (field.display !== 'never') {
+                                // Will be pushed on array
+
+                                let display = true;
+
+                                if (field.display === 'no') {
+                                    display = false;
+                                }
+
+                                this.tableFields.push(
+                                    {
+                                        name: field.name,
+                                        field: field.description,
+                                        slug: field.slug,
+                                        field_type: field.field_type,
+                                        field_type_object: field.field_type_object,
+                                        id: field.id,
+                                        display: display
+                                    }
+                                );    
+                                fetchOnlyFieldIds.push(field.id);                      
+                            }
+                        }
+
+                        this.tableFields.push({
+                            name: this.$i18n.get('label_creation_date'),
+                            field: 'row_creation',
+                            field_type: undefined,
+                            slug: 'creation_date',
+                            id: 'creation_date',
+                            display: true
+                        });
+                        this.tableFields.push({
+                            name: this.$i18n.get('label_created_by'),
+                            field: 'row_author',
+                            field_type: undefined,
+                            slug: 'author_name',
+                            id: 'author_name',
+                            display: true
+                        });
+
+                        // this.prefTableFields = this.tableFields;
+                        // this.$userPrefs.get('table_columns_' + this.collectionId)
+                        //     .then((value) => {
+                        //         this.prefTableFields = value;
+                        //     })
+                        //     .catch((error) => {
+                        //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
+                        //     });
+                        this.$eventBusSearch.addFetchOnly({
+                            '0': 'thumbnail',
+                            'meta': fetchOnlyFieldIds,
+                            '1': 'creation_date',
+                            '2': 'author_name'
+                        });
+                        this.isLoadingFields = false;
+
+                    })
+                    .catch(() => {
+                        this.isLoadingFields = false;
+                    });
             }
         },
         computed: {
@@ -258,6 +355,8 @@
             this.isOnTheme = (this.$route.name == null);
             this.isRepositoryLevel = (this.collectionId == undefined);
 
+            this.$eventBusSearch.setCollectionId(this.collectionId);
+
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
                 this.isLoadingItems = isLoadingItems;
             });
@@ -266,102 +365,16 @@
                 this.hasFiltered = hasFiltered;
             });
 
-            this.isLoadingFilters = true;
-            this.fetchFilters({
-                collectionId: this.collectionId,
-                isRepositoryLevel: this.isRepositoryLevel,
-                isContextEdit: true,
-                includeDisabled: 'no',
-            })
-                .then(() => this.isLoadingFilters = false)
-                .catch(() => this.isLoadingFilters = false);
+            this.$eventBusSearch.$on('hasToPrepareFieldsAndFilters', () => {
+                this.prepareFieldsAndFilters();
+            });
 
-            this.isLoadingFields = true;
-
-            this.fetchFields({
-                collectionId: this.collectionId,
-                isRepositoryLevel: this.isRepositoryLevel,
-                isContextEdit: false
-            })
-                .then(() => {
-
-                    this.tableFields.push({
-                        name: this.$i18n.get('label_thumbnail'),
-                        field: 'row_thumbnail',
-                        field_type: undefined,
-                        slug: 'thumbnail',
-                        id: undefined,
-                        display: true
-                    });
-                    let fetchOnlyFieldIds = [];
-                    for (let field of this.fields) {
-                        if (field.display !== 'never') {
-                            // Will be pushed on array
-
-                            let display = true;
-
-                            if (field.display === 'no') {
-                                display = false;
-                            }
-
-                            this.tableFields.push(
-                                {
-                                    name: field.name,
-                                    field: field.description,
-                                    slug: field.slug,
-                                    field_type: field.field_type,
-                                    field_type_object: field.field_type_object,
-                                    id: field.id,
-                                    display: display
-                                }
-                            );    
-                            fetchOnlyFieldIds.push(field.id);                      
-                        }
-                    }
-                    //this.$eventBusSearch.loadItems();
-
-                    this.tableFields.push({
-                        name: this.$i18n.get('label_creation_date'),
-                        field: 'row_creation',
-                        field_type: undefined,
-                        slug: 'creation_date',
-                        id: 'creation_date',
-                        display: true
-                    });
-                    this.tableFields.push({
-                        name: this.$i18n.get('label_created_by'),
-                        field: 'row_author',
-                        field_type: undefined,
-                        slug: 'author_name',
-                        id: 'author_name',
-                        display: true
-                    });
-
-                    // this.prefTableFields = this.tableFields;
-                    // this.$userPrefs.get('table_columns_' + this.collectionId)
-                    //     .then((value) => {
-                    //         this.prefTableFields = value;
-                    //     })
-                    //     .catch((error) => {
-                    //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
-                    //     });
-                    this.$eventBusSearch.addFetchOnly({
-                        '0': 'thumbnail',
-                        'meta': fetchOnlyFieldIds,
-                        '1': 'creation_date',
-                        '2': 'author_name'
-                    });
-                    this.isLoadingFields = false;
-
-                })
-                .catch(() => {
-                    this.isLoadingFields = false;
-                });
         },
         mounted() {
-            this.$eventBusSearch.setCollectionId(this.collectionId);
             //this.$eventBusSearch.updateStoreFromURL();
             //this.$eventBusSearch.loadItems();
+
+            this.prepareFieldsAndFilters();
 
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
