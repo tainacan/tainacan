@@ -50,11 +50,10 @@
                         <th 
                                 v-for="(column, index) in tableFields"
                                 :key="index"
-                                v-if="column.field != 'row_actions' && column.display"
+                                v-if="column.display"
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.field == 'row_thumbnail', 
-                                        'column-needed-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
                                         'column-small-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Date' || column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
                                         'column-medium-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Selectbox' || column.field_type_object.className == 'Tainacan\\Field_Types\\Category' || column.field_type_object.className == 'Tainacan\\Field_Types\\Compound') : false,
                                         'column-large-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Textarea') : false,
@@ -91,13 +90,11 @@
                                 v-for="(column, index) in tableFields"
                                 v-if="column.display"
                                 :label="column.name" 
-                                :aria-label="column.field != 'row_thumbnail' &&
-                                column.field != 'row_actions' &&
-                                column.field != 'row_creation' ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
+                                :aria-label="(column.field != 'row_thumbnail' && column.field != 'row_creation' && column.field != 'row_author')
+                                             ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
                                 class="column-default-width"
                                 :class="{
-                                        'thumbnail-cell': column.field == 'row_thumbnail', 
-                                        'table-creation': column.field == 'row_creation',
+                                        'thumbnail-cell': column.field == 'row_thumbnail',
                                         'column-main-content' : column.field_type_object != undefined ? (column.field_type_object.related_mapped_prop == 'title') : false,
                                         'column-needed-width column-align-right' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
                                         'column-small-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Date' || column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
@@ -113,8 +110,9 @@
                                     :data="renderMetadata( item.metadata[column.slug] )"/> -->
                             <p
                                     v-if="column.field !== 'row_thumbnail' &&
-                                            column.field !== 'row_actions' &&
-                                            column.field !== 'row_creation'"
+                                          column.field !== 'row_actions' &&
+                                          column.field !== 'row_creation' &&
+                                          column.field !== 'row_author'"
                                     v-html="renderMetadata( item.metadata[column.slug] )"/>
 
                             <span v-if="column.field == 'row_thumbnail'">
@@ -123,13 +121,17 @@
                                         :src="item[column.slug].thumb">
                             </span> 
                             <p 
+                                    v-if="column.field == 'row_author'"
+                                    v-html="getAuthorHtml(item)" />
+                            <p 
                                     v-if="column.field == 'row_creation'"
                                     v-html="getCreationHtml(item)" />
+
                         </td>
 
                         <!-- Actions -->
                         <td 
-                                v-if="item.current_user_can_edit && !isOnTheme"
+                                v-if="!isOnTheme && item.current_user_can_edit"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -297,7 +299,10 @@ export default {
             }
         },
         getCreationHtml(item) {
-            return this.$i18n.get('info_created_by') + item['author_name'] + '<br>' + this.$i18n.get('info_date') + item['creation_date'];
+            return this.$i18n.get('info_date') + item['creation_date'];
+        },
+        getAuthorHtml(item) {
+            return this.$i18n.get('info_created_by') + item['author_name'];
         },
         getDecodedURI(url) {
             return decodeURIComponent(url);
@@ -345,8 +350,8 @@ export default {
         }
 
         .checkbox-cell {
-            min-width: 40px;
-            width: 40px;
+            min-width: 38px;
+            width: 38px;
             padding: 0;
             position: sticky !important;
             position: -webkit-sticky !important;
@@ -471,16 +476,9 @@ export default {
                     }
                 }
                 img.table-thumb {
-                    max-height: 40px !important;
+                    max-height: 38px !important;
                     border-radius: 3px;
                 }
-
-                td.table-creation p {
-                    color: $gray-light;
-                    font-size: 11px;
-                    line-height: 1.5;
-                }
-
                 td.actions-cell {
                     padding: 0px;
                     position: sticky !important;

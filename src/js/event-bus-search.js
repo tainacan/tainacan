@@ -61,6 +61,10 @@ export default {
                     this.$store.dispatch('search/add_fetchonly_meta', field );
                     this.updateURLQueries();             
                 },
+                addFetchOnly( field ){
+                    this.$store.dispatch('search/add_fetchonly', field );
+                    this.updateURLQueries();             
+                },
                 removeFetchOnlyMeta( field ){
                     this.$store.dispatch('search/remove_fetchonly_meta', field );
                     this.updateURLQueries();             

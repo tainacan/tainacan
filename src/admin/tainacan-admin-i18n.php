@@ -140,7 +140,7 @@ return [
 	'label_attachment'                         => __( 'Attachment', 'tainacan' ),
 	'label_enabled'                            => __( 'Enabled', 'tainacan' ),
 	'label_disabled'                           => __( 'Disabled', 'tainacan' ),
-	'label_creation'                           => __( 'Creation', 'tainacan' ),
+	'label_creation_date'                      => __( 'Creation date', 'tainacan' ),
 	'label_collection_items'                   => __( 'Collection Items', 'tainacan' ),
 	'label_collection_fields'                  => __( 'Collection Metadata', 'tainacan' ),
 	'label_collection_filters'                 => __( 'Collection Filters', 'tainacan' ),
@@ -186,6 +186,7 @@ return [
 	'label_edit_attachments'				   => __( 'Edit attachments', 'tainacan' ),
 	'label_blank_collection'				   => __( 'Blank collection', 'tainacan' ),
 	'label_dublin_core'						   => __( 'Dublin Core', 'tainacan' ),
+	'label_created_by'						   => __( 'Created by', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

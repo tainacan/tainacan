@@ -293,7 +293,7 @@
                         id: undefined,
                         display: true
                     });
-
+                    let fetchOnlyFieldIds = [];
                     for (let field of this.fields) {
                         if (field.display !== 'never') {
                             // Will be pushed on array
@@ -315,17 +315,25 @@
                                     display: display
                                 }
                             );    
-                            //this.$eventBusSearch.addFetchOnlyMeta(field.id);                       
+                            fetchOnlyFieldIds.push(field.id);                      
                         }
                     }
-                    this.$eventBusSearch.loadItems();
+                    //this.$eventBusSearch.loadItems();
 
                     this.tableFields.push({
-                        name: this.$i18n.get('label_creation'),
+                        name: this.$i18n.get('label_creation_date'),
                         field: 'row_creation',
                         field_type: undefined,
-                        slug: 'creation',
-                        id: 'date',
+                        slug: 'creation_date',
+                        id: 'creation_date',
+                        display: true
+                    });
+                    this.tableFields.push({
+                        name: this.$i18n.get('label_created_by'),
+                        field: 'row_author',
+                        field_type: undefined,
+                        slug: 'author_name',
+                        id: 'author_name',
                         display: true
                     });
 
@@ -337,7 +345,12 @@
                     //     .catch((error) => {
                     //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
                     //     });
-
+                    this.$eventBusSearch.addFetchOnly({
+                        '0': 'thumbnail',
+                        'meta': fetchOnlyFieldIds,
+                        '1': 'creation_date',
+                        '2': 'author_name'
+                    });
                     this.isLoadingFields = false;
 
                 })
@@ -347,8 +360,8 @@
         },
         mounted() {
             this.$eventBusSearch.setCollectionId(this.collectionId);
-            this.$eventBusSearch.updateStoreFromURL();
-            this.$eventBusSearch.loadItems();
+            //this.$eventBusSearch.updateStoreFromURL();
+            //this.$eventBusSearch.loadItems();
 
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
