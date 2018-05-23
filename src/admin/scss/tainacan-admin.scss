@@ -537,6 +537,97 @@ a:hover {
 
 }
 
+// Tooltips:
+.tooltip {
+    z-index: 999999999;
+    display: block !important;
+
+    &::after {
+        box-shadow: none;
+    }
+
+    .tooltip-inner {
+        background: $primary-lighter;
+        color: $gray-light;
+        font-size: 11px;
+        border-radius: 5px;
+        padding: 20px;
+        max-width: 280px;
+        max-height: 200px;
+        overflow: auto;
+    }
+    .tooltip-arrow {
+        width: 0;
+        height: 0;
+        border-style: solid;
+        position: absolute;
+        margin: 5px;
+        border-color: $primary-lighter;
+        z-index: 1;
+    }
+    &[x-placement^="top"] {
+        margin-bottom: 5px;
+        .tooltip-arrow {
+            border-width: 5px 8px 0 8px;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            bottom: -5px;
+            left: calc(50% - 5px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+    &[x-placement^="bottom"] {
+        margin-top: 5px;
+        .tooltip-arrow {
+            border-width: 0 8px 5px 8px;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-top-color: transparent !important;
+            top: -5px;
+            left: calc(50% - 5px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+    &[x-placement^="right"] {
+        margin-left: 5px;
+        .tooltip-arrow {
+            border-width: 8px 5px 8px 0;
+            border-left-color: transparent !important;
+            border-top-color: transparent !important;
+            border-bottom-color: transparent !important;
+            left: -5px;
+            top: calc(50% - 5px);
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+    &[x-placement^="left"] {
+        margin-right: 5px;
+        .tooltip-arrow {
+            border-width: 8px 0 8px 5px;
+            border-top-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            right: -5px;
+            top: calc(50% - 5px);
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+    &[aria-hidden='true'] {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity .15s, visibility .15s;
+    }
+    &[aria-hidden='false'] {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity .15s;
+    }
+}
 // Tables
 .table-container {
     padding: 0 $table-side-padding;

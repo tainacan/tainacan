@@ -109,6 +109,11 @@
                                             column.field !== 'row_creation'"
                                     :data="renderMetadata( item.metadata[column.slug] )"/> -->
                             <p
+                                    v-tooltip="{
+                                        content: renderMetadata( item.metadata[column.slug] ),
+                                        html: true,
+                                        autoHide: false
+                                    }"
                                     v-if="item.metadata != undefined &&
                                           column.field !== 'row_thumbnail' &&
                                           column.field !== 'row_actions' &&
