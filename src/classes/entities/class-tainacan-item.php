@@ -455,18 +455,40 @@ class Item extends Entity {
 	 * it returns all metadata
 	 *
 	 * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
-	 * @param bool $hide_empty Wether to hide or not fields the item has no value to
+	* @param array|string $args {
+	*     Optional. Array or string of arguments.
+	*
+	*     @type bool        $hide_empty                Wether to hide or not fields the item has no value to
+	*                                                  Default: true
+	*     @type string      $before_title              String to be added before each metadata title
+	*                                                  Default '<h3>'
+	*     @type string      $after_title               String to be added after each metadata title
+	*                                                  Default '</h3>'
+	*     @type string      $before_value              String to be added before each metadata value
+	*                                                  Default '<p>'
+	*     @type string      $after_value               String to be added after each metadata value
+	*                                                  Default '</p>'
+	* }
 	 *
 	 * @return string        The HTML output
 	 * @throws \Exception
 	 */
-	public function get_metadata_as_html($field = null, $hide_empty = true) {
+	public function get_metadata_as_html($field = null, $args = array()) {
 		
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 		
 		$return = '';
 		
+		$defaults = array(
+			'hide_empty' => true,
+			'before_title' => '<h3>',
+			'after_title' => '</h3>',
+			'before_value' => '<p>',
+			'after_value' => '</p>',
+		);
+		$args = wp_parse_args($args, $defaults);
+
 		if (!is_null($field)) {
 			
 			$field_object = null;
@@ -484,9 +506,9 @@ class Item extends Entity {
 			
 			if ( $field_object instanceof \Tainacan\Entities\Field ) {
 				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $field_object);
-				if ($item_meta->has_value() || !$hide_empty) {
-					$return .= '<h3>' . $field_object->get_name() . '</h3>';
-					$return .= $item_meta->get_value_as_html();
+				if ($item_meta->has_value() || !$args['hide_empty']) {
+					$return .= $args['before_title'] . $field_object->get_name() . $args['after_title'];
+					$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
 				}
 				
 			}
@@ -498,9 +520,9 @@ class Item extends Entity {
 		$fields = $this->get_fields();
 		
 		foreach ( $fields as $item_meta ) {
-			if ($item_meta->has_value() || !$hide_empty) {
-				$return .= '<h3>' . $item_meta->get_field()->get_name() . '</h3>';
-				$return .= $item_meta->get_value_as_html();
+			if ($item_meta->has_value() || !$args['hide_empty']) {
+				$return .= $args['before_title'] . $item_meta->get_field()->get_name() . $args['after_title'];
+				$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
 			}
 		}
 		
