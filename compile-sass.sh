@@ -10,10 +10,10 @@ command -v sass >/dev/null 2>&1 || {
 echo "Compilando Sass..."
 cd src/scss
  
-sass -E 'UTF-8' style.scss:../style.css
+sass -E 'UTF-8' --cache-location ../../.tmp/sass-cache-1 style.scss:../style.css
 
 cd ../admin/scss
-sass -E 'UTF-8' tainacan-admin.scss:../../assets/css/tainacan-admin.css
+sass -E 'UTF-8' --cache-location ../../../.tmp/sass-cache-2 tainacan-admin.scss:../../assets/css/tainacan-admin.css
 
 
 echo "Compilação do Sass Concluído!"

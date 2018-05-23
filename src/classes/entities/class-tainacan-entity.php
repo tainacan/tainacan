@@ -198,7 +198,6 @@ class Entity {
 	 *
 	 *
 	 * @param string $prop id of the property
-	 * @param mixed $value the value to be setted
 	 * @return null|mixed Null on failure, the value that was set on success
 	 */
 	public function get($prop) {
