@@ -71,7 +71,7 @@
                             :class="activeRoute == 'EventsPage' ? 'is-active':''">
                         <b-icon
                                 size="is-small"
-                                icon="calendar-range"/>
+                                icon="flash"/>
                         <span class="menu-text">{{ $i18n.get('events') }}</span>
                     </router-link>
                 </li>
