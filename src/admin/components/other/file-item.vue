@@ -60,14 +60,27 @@ export default {
     },
     methods: {
         getIconForMimeType(mimeType) {
-            switch (mimeType) {
 
-                case 'application/pdf':
-                    return 'file-pdf';
-                case 'text':
-                    return 'format-align-left';
-                default:
-                    return '';
+            let type = mimeType.split('/');
+
+            if (type[0] == 'application' && type[1] != undefined){
+                switch (type[1]) {
+                    case 'pdf':
+                        return 'file-pdf';
+                    default:
+                        return '';
+                }
+            } else {
+                switch (type[0]) {
+                    case 'video':
+                        return 'video';
+                    case 'audio':
+                        return 'volume-high';
+                    case 'text':
+                        return 'format-align-left';
+                    default:
+                        return '';
+                }
             }
         }
     }

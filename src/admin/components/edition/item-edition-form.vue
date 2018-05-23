@@ -1,11 +1,11 @@
 <template>
     <div>
-        <tainacan-title />
         <button 
                 id="metadata-column-compress-button"
                 @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
             <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
         </button>
+        <tainacan-title />
         <form
                 v-if="!isLoading"
                 class="tainacan-form"
@@ -23,6 +23,16 @@
                     </div>
                     <div class="section-box section-status">
                         <div class="field">
+                            <!-- <div class="block">
+                                <b-radio 
+                                        :id="`status-option-${statusOption.value}`"
+                                        v-for="statusOption in statusOptions"
+                                        :key="statusOption.value"
+                                        :value="statusOption.value"
+                                        :disabled="statusOption.disabled">
+                                    {{ statusOption.label }}
+                                </b-radio>
+                            </div> -->
                             <b-select
                                     v-model="form.status"
                                     :placeholder="$i18n.get('instruction_select_a_status')">
@@ -278,7 +288,7 @@
 
                         <div class="uploaded-files">
                             <file-item
-                                    :style="{ margin: 12 + 'px'}"
+                                    :style="{ margin: 15 + 'px'}"
                                     v-if="attachmentsList.length > 0" 
                                     v-for="(attachment, index) in attachmentsList"
                                     :key="index"
@@ -688,6 +698,7 @@ export default {
         position: relative;
         z-index: 99;
         float: right;
+        top: 70px;
         max-width: 36px;
         height: 36px;
         width: 36px;
@@ -728,6 +739,11 @@ export default {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: all 0.6s;
+
+            .field {
+                    padding: 10px 0px 10px 25px;
+            }
+
         }
 
     }
@@ -789,11 +805,15 @@ export default {
         max-width: 100%;
         resize: vertical;
         overflow: auto;
+
+        p { margin: 4px 15px }
     }
 
     .uploaded-files {
         display: flex;
         flex-flow: wrap;
+        margin-left: -15px;
+        margin-right: -15px;
     }
 
     .thumbnail-field {

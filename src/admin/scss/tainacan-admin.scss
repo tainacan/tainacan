@@ -559,6 +559,9 @@ a:hover {
             .th-wrap {
                 font-size: 12px !important;
                 font-weight: normal !important;
+                text-overflow: ellipsis;
+                overflow-x: hidden;
+                white-space: nowrap;
             }
         }
         margin-bottom: 0px !important;
