@@ -1,5 +1,7 @@
 <template>
-    <div class="table-container">
+    <div 
+            v-if="totalCollections > 0 && !isLoading"
+            class="table-container">
         <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
@@ -11,13 +13,13 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="collections.length > 0 && collections[0].current_user_can_edit"
+                        v-if="collections[0].current_user_can_edit"
                         :disabled="!isSelectingCollections"
-                        id="mass-actions-dropdown">
+                        id="bulk-actions-dropdown">
                     <button
                             class="button is-white"
                             slot="trigger">
-                        <span>{{ $i18n.get('label_mass_actions') }}</span>
+                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <b-icon icon="menu-down"/>
                     </button> 
 
@@ -36,7 +38,7 @@
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th class="checkbox-cell">
+                        <th>
                             &nbsp;
                             <!-- nothing to show on header -->
                         </th>
@@ -55,6 +57,10 @@
                         <!-- Creation -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_creation') }}</div>
+                        </th>
+                        <th class="actions-header">
+                            &nbsp;
+                            <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
@@ -119,7 +125,7 @@
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="pencil"/>
+                                            icon="settings"/>
                                 </a>
                                 <a 
                                         id="button-delete" 
@@ -135,28 +141,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Empty state image -->
-        <div v-if="!totalCollections || totalCollections <= 0">
-            <section class="section">
-                <div class="content has-text-grey has-text-centered">
-                    <p>
-                        <b-icon
-                                icon="inbox"
-                                size="is-large"/>
-                    </p>
-                    <p>{{ $i18n.get('info_no_collection_created') }}</p>
-                    <router-link
-                            id="button-create-collection"
-                            tag="button"
-                            class="button is-primary"
-                            :to="{ path: $routerHelper.getNewCollectionPath() }">
-                        {{ $i18n.getFrom('collections', 'new_item') }}
-                    </router-link>
-                </div>
-            </section>
-        </div>
-
     </div>
 </template>
 
@@ -315,8 +299,7 @@ export default {
         //     document.addEventListener('mouseup', function () {
         //         thElm = undefined;
         //     });
-        // })();
-        
+        // })();  
     }
 }
 </script>
@@ -327,7 +310,9 @@ export default {
 
     .selection-control {
         
-        padding: 20px 14px 0px 14px;
+        padding: 6px 0px 0px 13px;
+        background: white;
+        height: 40px;
 
         .select-all {
             color: $gray-light;
@@ -336,41 +321,64 @@ export default {
                 color: $gray-light;
             }
         }
-
     }
 
     .table {
         width: 100%;
+        border-collapse: separate;
         
-        .checkbox-cell {
-            width: 40px;
-            height: 58px;
-            padding: 0;
-            position: absolute !important;
-            left: $page-side-padding;
-            visibility: hidden;
-            display: flex;
-            justify-content: space-around;
+        th {
+            position: sticky;
+            position: -webkit-sticky;
+            background-color: white;
+            border-bottom: 1px solid $tainacan-input-background;
+            top: 0px;
             z-index: 9;
+            padding: 10px;
+            vertical-align: bottom;
 
+            &.actions-header {
+                min-width: 8.333333333%;
+            }
+        }
+
+        .checkbox-cell {
+            min-width: 40px;
+            width: 40px;
+            padding: 0;
+            position: sticky !important;
+            position: -webkit-sticky !important;
+            left: 0;
+            top: auto;
+            display: table-cell;
+            
             &::before {
                 box-shadow: inset 50px 0 10px -12px #222;
                 content: " ";
-                width: 60px;
+                width: 50px;
                 height: 100%;
                 position: absolute;
                 left: 0;
+                top: 0;
+                visibility: hidden;
             }
 
-            .checkbox {  
+            label.checkbox {  
                 border-radius: 0px;
                 background-color: white;
-                padding: 10px 10px 10px 14px;
+                padding: 0;
                 width: 100%;
                 height: 100%; 
+                display: flex;
+                justify-content: center;
+                visibility: hidden;
+            }
+            label span.control-label {
+                display: none;
             }
             &.is-selecting {
-                visibility: visible; 
+                .checkbox { visibility: visible; }
+                &::before { visibility: visible !important; }
             }
         }
         // Only to be used in case we can implement Column resizing
@@ -379,8 +387,7 @@ export default {
         // }
 
         .thumbnail-cell {
-            width: 58px;
-            padding-left: 54px;
+            width: 60px;
         }
   
         tbody {
@@ -389,14 +396,14 @@ export default {
                 background-color: transparent;
 
                 &.selected-row { 
-                    background-color: $primary-lighter !important; 
+                    background-color: $primary-lighter; 
                     .checkbox-cell .checkbox, .actions-cell .actions-container {
-                        background-color: $primary-lighter !important;
+                        background-color: $primary-lighter;
                     }
                 }
                 td {
-                    height: 58px;
-                    max-height: 58px;
+                    height: 60px;
+                    max-height: 60px;
                     padding: 10px;
                     vertical-align: middle;
                     line-height: 12px;
@@ -408,7 +415,7 @@ export default {
                     
                 }
                 td.column-default-width{
-                    max-width: 350px;
+                    max-width: 300px;
                     p {
                         text-overflow: ellipsis;
                         overflow-x: hidden;
@@ -416,7 +423,7 @@ export default {
                     }
                 }
                 img.table-thumb {
-                    max-height: 38px !important;
+                    max-height: 37px !important;
                     border-radius: 3px;
                 }
 
@@ -428,46 +435,59 @@ export default {
 
                 td.actions-cell {
                     padding: 0px;
-                    visibility: hidden;
-                    position: absolute;
-                    right: $page-side-padding;
-                    display: none;
-                    
+                    position: sticky !important;
+                    position: -webkit-sticky !important;
+                    right: 0px;
+                    top: auto;
+                    width: 80px;
+
                     .actions-container {
+                        visibility: hidden;
+                        display: flex;
                         position: relative;
-                        padding: 10px;
+                        padding: 0;
                         height: 100%;
+                        width: 80px;
                         z-index: 9;
-                        background-color: $tainacan-input-background; 
-                     }
-
-                    a .icon {
-                        margin: 8px;
+                        background-color: transparent; 
+                        float: right;
                     }
 
-                     &::before {
-                        box-shadow: inset -113px 0 17px -17px #222;
-                        content: " ";
-                        width: 125px;
-                        height: 100%;
-                        position: absolute;
-                        right: 0;
-                        top: 0;
+                    a {
+                        margin: auto;
+                        font-size: 18px !important;
                     }
+
                 }
 
                 &:hover {
-                    background-color: $tainacan-input-background;
+                    background-color: $tainacan-input-background !important;
                     cursor: pointer;
 
                     .checkbox-cell {
-                        visibility: visible; 
-                        .checkbox { background-color: $tainacan-input-background; }
+                        &::before { visibility: visible; }
+                        .checkbox { 
+                            visibility: visible; 
+                            background-color: $tainacan-input-background !important; 
+                        }
                     }
                     .actions-cell {
-                        visibility: visible;
-                        display: block;
+                        .actions-container {
+                            visibility: visible;
+                            background: $tainacan-input-background !important;
+                        }
+
+                        &::after {
+                            box-shadow: inset -97px 0 17px -21px #222;
+                            content: " ";
+                            width: 100px;
+                            height: 100%;
+                            position: absolute;
+                            right: 0px;
+                            top: 0;
+                        }
                     }
+
                 }
             }
         }

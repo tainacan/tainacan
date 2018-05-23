@@ -152,6 +152,7 @@
         height: $subheader-height;
         margin-left: -$page-side-padding;
         margin-right: -$page-side-padding;
+        margin-top: -$page-top-padding;
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;

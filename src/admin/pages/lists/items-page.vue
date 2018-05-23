@@ -5,6 +5,7 @@
         <!-- SEARCH AND FILTERS --------------------- -->
         <button 
                 id="filter-menu-compress-button"
+                :style="{ top: isHeaderShrinked ? '125px' : '152px'}"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
@@ -142,10 +143,12 @@
                                     icon="inbox"
                                     size="is-large"/>
                         </p>
-                        <p>{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')
-                            }}</p>
+                        <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created') }}</p>
+                        <p v-if="status == 'draft'">{{ $i18n.get('info_no_item_draft') }}</p>
+                        <p v-if="status == 'trash'">{{ $i18n.get('info_no_item_trash') }}</p>
+
                         <router-link
-                                v-if="!hasFiltered"
+                                v-if="!hasFiltered && (status == undefined || status == '')"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-primary"
@@ -183,7 +186,8 @@
                 isFiltersMenuCompressed: false,
                 collapseAll: false,
                 isOnTheme: false,
-                futureSearchQuery: ''
+                futureSearchQuery: '',
+                isHeaderShrinked: false
             }
         },
         props: {
@@ -348,7 +352,8 @@
 
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
-                    this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+                    this.isHeaderShrinked = ($event.originalTarget.scrollTop > 53);
+                    this.$emit('onShrinkHeader', this.isHeaderShrinked); 
                 });
             }
         }
@@ -412,6 +417,7 @@
     #collection-search-button {
         border-radius: 0px !important;
         padding: 0px 8px !important;
+        border-color: $tainacan-input-background;
         &:focus, &:active {
             border-color: none !important;
         }
@@ -467,6 +473,7 @@
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
         cursor: pointer;
+        transition: top 0.3s;
 
         .icon {
             margin-top: -1px;

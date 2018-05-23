@@ -1,34 +1,34 @@
 <?php
 
-const ENTITIES_DIR 	   = __DIR__ . '/entities/';
-const FIELD_TYPES_DIR  = __DIR__ . '/field-types/';
-const FILTER_TYPES_DIR = __DIR__ . '/filter-types/';
-const REPOSITORIES_DIR = __DIR__ . '/repositories/';
-const TRAITS_DIR 	   = __DIR__ . '/traits/';
-const VENDOR_DIR 	   = __DIR__ . '/../vendor/';
-const TAPI_DIR          = __DIR__ . '/../api/';
-const ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
-const HELPERS_DIR      = __DIR__ . '/../helpers/';
-const IMPORTER_DIR      = __DIR__ . '/../importer/';
-const EXPOSERS_DIR		= __DIR__ . '/../exposers/';
+const TAINACAN_ENTITIES_DIR 	   = __DIR__ . '/entities/';
+const TAINACAN_FIELD_TYPES_DIR  = __DIR__ . '/field-types/';
+const TAINACAN_FILTER_TYPES_DIR = __DIR__ . '/filter-types/';
+const TAINACAN_REPOSITORIES_DIR = __DIR__ . '/repositories/';
+const TAINACAN_TRAITS_DIR 	   = __DIR__ . '/traits/';
+const TAINACAN_VENDOR_DIR 	   = __DIR__ . '/../vendor/';
+const TAINACAN_TAPI_DIR          = __DIR__ . '/../api/';
+const TAINACAN_ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
+const TAINACAN_HELPERS_DIR      = __DIR__ . '/../helpers/';
+const TAINACAN_IMPORTER_DIR      = __DIR__ . '/../importer/';
+const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 
 const DIRS = [
-    CLASSES_DIR,
-    ENTITIES_DIR,
-    FIELD_TYPES_DIR,
-    FILTER_TYPES_DIR,
-    REPOSITORIES_DIR,
-    TRAITS_DIR,
-	TAPI_DIR,
-	ENDPOINTS_DIR,
-    IMPORTER_DIR,
-	EXPOSERS_DIR
+    TAINACAN_CLASSES_DIR,
+    TAINACAN_ENTITIES_DIR,
+    TAINACAN_FIELD_TYPES_DIR,
+    TAINACAN_FILTER_TYPES_DIR,
+    TAINACAN_REPOSITORIES_DIR,
+    TAINACAN_TRAITS_DIR,
+	TAINACAN_TAPI_DIR,
+	TAINACAN_ENDPOINTS_DIR,
+    TAINACAN_IMPORTER_DIR,
+	TAINACAN_EXPOSERS_DIR
 ];
 
-require_once(VENDOR_DIR . 'autoload.php');
-require_once(HELPERS_DIR . 'class-tainacan-helpers-html.php');
-require_once(IMPORTER_DIR . 'class-tainacan-importer.php');
-require_once(EXPOSERS_DIR . 'class-tainacan-exposers.php');
+require_once(TAINACAN_VENDOR_DIR . 'autoload.php');
+require_once(TAINACAN_HELPERS_DIR . 'class-tainacan-helpers-html.php');
+require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer.php');
+require_once(TAINACAN_EXPOSERS_DIR . 'class-tainacan-exposers.php');
 
 spl_autoload_register('tainacan_autoload');
 
@@ -49,21 +49,21 @@ function tainacan_autoload($class_name){
     	$sliced = array_slice($class_path, 1, count($class_path) -2);
 
     	if( isset( $class_path[1] ) && $class_path[1] === 'Importer' ){
-            $dir = IMPORTER_DIR;
+            $dir = TAINACAN_IMPORTER_DIR;
     	} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
-    		$dir = EXPOSERS_DIR;
+    		$dir = TAINACAN_EXPOSERS_DIR;
     		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
     	} else if( isset( $class_path[1] ) && $class_path[1] === 'API' ){
-    		$dir = TAPI_DIR;
+    		$dir = TAINACAN_TAPI_DIR;
     		if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
     	} else if($sliced) {
 		    $lower     = $sliced[0];
 		    $sliced[0] = strtolower( $lower );
 
 		    $dir = implode( DIRECTORY_SEPARATOR, $sliced ) . DIRECTORY_SEPARATOR;
-		    $dir = CLASSES_DIR . str_replace( '_', '-', $dir );
+		    $dir = TAINACAN_CLASSES_DIR . str_replace( '_', '-', $dir );
 	    } else {
-		    $dir = CLASSES_DIR;
+		    $dir = TAINACAN_CLASSES_DIR;
 	    }
 
         if( in_array('Field_Types', $class_path) || in_array('Filter_Types', $class_path) ){

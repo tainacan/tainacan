@@ -46,7 +46,7 @@ const routes = [
         { path: 'edit', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_edit_collection'), icon: 'folder-multiple'} },
         { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: i18nGet('title_collection_fields_edition'), icon: 'folder-multiple'} }, 
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition'), icon: 'folder-multiple'} },
-        { path: 'events', component: EventsPage, name: 'CollectionEventsPage', meta: {title: i18nGet('title_collection_events'), icon: 'calendar'} }
+        { path: 'events', component: EventsPage, name: 'CollectionEventsPage', meta: {title: i18nGet('title_collection_events'), icon: 'flash'} }
       ]
     },
 
@@ -57,13 +57,13 @@ const routes = [
 
     { path: '/fields', name: 'FieldsPage', component: FieldsPage, meta: {title: i18nGet('title_repository_fields_page'), icon: 'format-list-checks'} },
 
-    { path: '/categories', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_categories_page'), icon: 'shape'} },
-    { path: '/categories/new', name: 'CategoryCreationForm', component: CategoryEditionForm, meta: {title: i18nGet('title_create_category_page'), icon: 'shape'} },
-    { path: '/categories/:categoryId/edit', name: 'CategoryEditionForm', component: CategoryEditionForm, meta: {title: i18nGet('title_category_edition_page'), icon: 'shape'} },
-    { path: '/categories/:categoryId', name: 'CategoryPage', component: CategoryPage, meta: {title: i18nGet('title_category_page'), icon: 'shape'} },
+    { path: '/taxonomies', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_categories_page'), icon: 'shape'} },
+    { path: '/taxonomies/new', name: 'CategoryCreationForm', component: CategoryEditionForm, meta: {title: i18nGet('title_create_category_page'), icon: 'shape'} },
+    { path: '/taxonomies/:categoryId/edit', name: 'CategoryEditionForm', component: CategoryEditionForm, meta: {title: i18nGet('title_category_edition_page'), icon: 'shape'} },
+    { path: '/taxonomies/:categoryId', name: 'CategoryPage', component: CategoryPage, meta: {title: i18nGet('title_category_page'), icon: 'shape'} },
 
-    { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_repository_events_page'), icon: 'calendar'} },
-    { path: '/events/:eventId', name: 'EventPage', component: EventPage, meta: {title: i18nGet('title_event_page'), icon: 'calendar'} },
+    { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_repository_events_page'), icon: 'flash'} },
+    { path: '/events/:eventId', name: 'EventPage', component: EventPage, meta: {title: i18nGet('title_event_page'), icon: 'flash'} },
 
     { path: '*', redirect: '/'}
 ];

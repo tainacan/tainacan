@@ -1,5 +1,6 @@
 import axios from 'axios';
 import qs from  'qs';
+import moment from 'moment';
 
 export const wpAjax = {
     data(){
@@ -44,11 +45,15 @@ export const wpAjax = {
 
 export const dateInter = {
     methods: {
-        getDateLocaleFormat() {
+        getDateLocaleMask() {
+            let locale = navigator.language;
 
-            let now = new Date();
+            moment.locale(locale);
 
-            return now.toLocaleDateString().replace(/[\d]/g, '#');
+            let localeData = moment.localeData();
+            let format = localeData.longDateFormat('L');
+
+            return format.replace(/[\w]/g, '#');
         }
     }
 };

@@ -24,3 +24,4 @@ cypress/screenshots
 .vscode
 src/pdf-viewer/pdfjs-dist
 report.txt
+.tmp

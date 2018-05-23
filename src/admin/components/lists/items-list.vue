@@ -16,11 +16,11 @@
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
                         :disabled="!isSelectingItems"
-                        id="mass-actions-dropdown">
+                        id="bulk-actions-dropdown">
                     <button
                             class="button is-white"
                             slot="trigger">
-                        <span>{{ $i18n.get('label_mass_actions') }}</span>
+                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <b-icon icon="menu-down"/>
                     </button> 
 
@@ -51,7 +51,14 @@
                                 v-for="(column, index) in tableFields"
                                 :key="index"
                                 v-if="column.field != 'row_actions' && column.display"
-                                :class="{'thumbnail-cell': column.field == 'row_thumbnail'}"
+                                class="column-default-width"
+                                :class="{
+                                        'thumbnail-cell': column.field == 'row_thumbnail', 
+                                        'column-needed-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
+                                        'column-small-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Date' || column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
+                                        'column-medium-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Selectbox' || column.field_type_object.className == 'Tainacan\\Field_Types\\Category' || column.field_type_object.className == 'Tainacan\\Field_Types\\Compound') : false,
+                                        'column-large-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Textarea') : false,
+                                }"
                                 :custom-key="column.slug">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
@@ -85,19 +92,30 @@
                                 v-if="column.display"
                                 :label="column.name" 
                                 :aria-label="column.field != 'row_thumbnail' &&
-                                 column.field != 'row_actions' &&
-                                  column.field != 'row_creation' ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
+                                column.field != 'row_actions' &&
+                                column.field != 'row_creation' ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.field == 'row_thumbnail', 
-                                        'table-creation': column.field == 'row_creation'}"
+                                        'table-creation': column.field == 'row_creation',
+                                        'column-main-content' : column.field_type_object != undefined ? (column.field_type_object.related_mapped_prop == 'title') : false,
+                                        'column-needed-width column-align-right' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
+                                        'column-small-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Date' || column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
+                                        'column-medium-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Selectbox' || column.field_type_object.className == 'Tainacan\\Field_Types\\Category' || column.field_type_object.className == 'Tainacan\\Field_Types\\Compound') : false,
+                                        'column-large-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Textarea') : false,
+                                }"
                                 @click="goToItemPage(item)">
 
-                            <data-and-tooltip
+                            <!-- <data-and-tooltip
                                     v-if="column.field !== 'row_thumbnail' &&
                                             column.field !== 'row_actions' &&
                                             column.field !== 'row_creation'"
-                                    :data="renderMetadata( item.metadata[column.slug] )"/>
+                                    :data="renderMetadata( item.metadata[column.slug] )"/> -->
+                            <p
+                                    v-if="column.field !== 'row_thumbnail' &&
+                                            column.field !== 'row_actions' &&
+                                            column.field !== 'row_creation'"
+                                    v-html="renderMetadata( item.metadata[column.slug] )"/>
 
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
@@ -112,7 +130,8 @@
                         <!-- Actions -->
                         <td 
                                 v-if="item.current_user_can_edit && !isOnTheme"
-                                class="column-default-width actions-cell">
+                                class="actions-cell"
+                                :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a 
                                         id="button-edit"   
@@ -293,7 +312,7 @@ export default {
 
     .selection-control {
         
-        padding: 6px 0px 0px 18px;
+        padding: 6px 0px 0px 13px;
         background: white;
         height: 40px;
 
@@ -317,16 +336,14 @@ export default {
             border-bottom: 1px solid $tainacan-input-background;
             top: 0px;
             z-index: 9;
+            padding: 10px;
+            vertical-align: bottom;
 
             &.actions-header {
                 min-width: 8.333333333%;
             }
         }
 
-        // &.selectable-table th:nth-child(2), &.selectable-table td:nth-child(2) {
-        //     padding-left: 54px;
-        // }
-        
         .checkbox-cell {
             min-width: 40px;
             width: 40px;
@@ -335,7 +352,6 @@ export default {
             position: -webkit-sticky !important;
             left: 0;
             top: auto;
-            visibility: hidden;
             display: table-cell;
 
             &::before {
@@ -346,6 +362,7 @@ export default {
                 position: absolute;
                 left: 0;
                 top: 0;
+                visibility: hidden;
             }
 
             label.checkbox {  
@@ -356,13 +373,14 @@ export default {
                 height: 100%; 
                 display: flex;
                 justify-content: center;
-
+                visibility: hidden;
             }
             label.control-label {
                 display: none;
             }
             &.is-selecting {
-                visibility: visible; 
+                .checkbox { visibility: visible; } 
+                &::before { visibility: visible !important; }
             }
         }
         // Only to be used in case we can implement Column resizing
@@ -371,9 +389,61 @@ export default {
         // }
 
         .thumbnail-cell {
-            width: 58px;
+            width: 60px;
+            text-align: center;
         }
   
+        .column-small-width {
+            min-width: 80px;
+            max-width: 80px;
+            p {
+                color: $gray-light;
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+        .column-default-width {
+            min-width: 80px;
+            max-width: 160px;
+            p {
+                color: $gray-light;
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+        .column-medium-width {
+            min-width: 120px;
+            max-width: 200px;
+            p {
+                color: $gray-light;
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+        .column-large-width {
+            min-width: 120px;
+            max-width: 240px;
+            p {
+                color: $gray-light;
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+        .column-main-content {
+            min-width: 120px !important;
+            max-width: 240px !important;
+            p { 
+                font-size: 14px !important;
+                color: $tainacan-input-color !important;
+                margin: 0px !important; 
+            }
+        }
+        .column-needed-width {
+            max-width: unset !important;
+        }
+        .column-align-right {
+            text-align: right !important;
+        }
         tbody {
             tr {
                 cursor: pointer;
@@ -386,8 +456,8 @@ export default {
                     }
                 }
                 td {
-                    height: 58px;
-                    max-height: 58px;
+                    height: 60px;
+                    max-height: 60px;
                     padding: 10px;
                     vertical-align: middle;
                     line-height: 12px;
@@ -395,19 +465,13 @@ export default {
                     p { 
                         font-size: 14px;
                         margin: 0px; 
-                    }
-                    
-                }
-                td.column-default-width {
-                    max-width: 300px;
-                    p {
                         text-overflow: ellipsis;
                         overflow-x: hidden;
                         white-space: nowrap;
                     }
                 }
                 img.table-thumb {
-                    max-height: 37px !important;
+                    max-height: 40px !important;
                     border-radius: 3px;
                 }
 
@@ -419,7 +483,6 @@ export default {
 
                 td.actions-cell {
                     padding: 0px;
-                    
                     position: sticky !important;
                     position: -webkit-sticky !important;
                     right: 0px;
@@ -450,8 +513,11 @@ export default {
                     cursor: pointer;
 
                     .checkbox-cell {
-                        visibility: visible; 
-                        .checkbox { background-color: $tainacan-input-background !important; }
+                        &::before { visibility: visible; }
+                        .checkbox { 
+                            visibility: visible; 
+                            background-color: $tainacan-input-background !important; 
+                        }
                     }
                     .actions-cell {
                         .actions-container {

@@ -151,18 +151,14 @@ class Filters extends TAINACAN_UnitTestCase {
 
         $custom_interval = $this->tainacan_filter_factory->create_filter('custom_interval');
 
-        $this->expectException('ErrorException');
-        $filter2 = $this->tainacan_entity_factory->create_entity(
-            'filter',
-            array(
-	            'name'        => 'filtro 2',
-	            'collection'  => $collection,
-	            'description' => 'descricao',
-	            'field'       => $field2,
-	            'filter_type' => $custom_interval
-            ),
-            true
-        );
+        $filter2 = new \Tainacan\Entities\Filter();
+        $filter2->set_name('filter 2');
+        $filter2->set_collection($collection);
+        $filter2->set_description('description');
+        $filter2->set_field($field2);
+        $filter2->set_filter_type($custom_interval);
+
+        $this->assertFalse($filter2->validate(), 'filter with a field with unsupported primitive type should not validate');
 
     }
 }

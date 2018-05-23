@@ -86,13 +86,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $to_prepare[1];
 
 		foreach ($attributes as $attribute => $value){
-			$set_ = 'set_'. $attribute;
-
-			try {
-				$this->term->$set_( $value );
-			} catch (\Exception $error){
-				// Do nothing
-			}
+			$this->term->set($attribute, $value);
 		}
 
 		$this->term->set_taxonomy($taxonomy);

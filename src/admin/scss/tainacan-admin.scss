@@ -103,7 +103,7 @@ a:hover {
         height: 1px;
         background-color: $secondary;
     }
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 }
 
 .tainacan-modal-content {
@@ -549,11 +549,19 @@ a:hover {
         overflow: auto;
         .table {
             tbody {
-                td { border-bottom: 0px solid $gray-light !important; }
+                td { 
+                    border-bottom: 0px solid $gray-light !important; 
+                }
+                .b-checkbox.checkbox .control-label {
+                    display: none;
+                }
             }
             .th-wrap {
                 font-size: 12px !important;
                 font-weight: normal !important;
+                text-overflow: ellipsis;
+                overflow-x: hidden;
+                white-space: nowrap;
             }
         }
         margin-bottom: 0px !important;

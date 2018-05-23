@@ -175,7 +175,7 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/items/?' + qs.stringify(query);
         },
         getCategoriesPath(query) {
-            return '/categories/?' + qs.stringify(query);
+            return '/taxonomies/?' + qs.stringify(query);
         },
         getCategoryTermsPath(categoryId, query) {
             return '/categoryId/' + categoryId + 'terms/?' + qs.stringify(query);
@@ -200,10 +200,10 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/filters/' + id;
         },
         getCategoryPath(id) {
-            return '/categories/' + id;
+            return '/taxonomies/' + id;
         },
         getTermPath(categoryId, termId) {
-            return '/categories/' + categoryId + '/terms/' + termId;
+            return '/taxonomies/' + categoryId + '/terms/' + termId;
         },
         getEventPath(id) {
             return '/events/' + id;
@@ -228,10 +228,10 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/filters/new';
         },
         getNewCategoryPath() {
-            return '/categories/new';
+            return '/taxonomies/new';
         },
         getNewTermPath() {
-            return '/categories/' + categoryId + '/terms/new';
+            return '/taxonomies/' + categoryId + '/terms/new';
         },
         getNewEventPath() {
             return '/events/new';
@@ -247,10 +247,10 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
             return '/filters/' + id + '/edit';
         },
         getCategoryEditPath(id) {
-            return '/categories/' + id + '/edit';
+            return '/taxonomies/' + id + '/edit';
         },
         getTermEditPath(categoryId, termId) {
-            return '/categories/' + categoryId + '/terms/' + termId + '/edit';
+            return '/taxonomies/' + categoryId + '/terms/' + termId + '/edit';
         },
         getEventEditPath(id) {
             return '/events/' + id + '/edit';

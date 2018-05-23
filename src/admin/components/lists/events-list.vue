@@ -12,7 +12,7 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_who_when') }}</div>
                         </th>
-                        <!--&lt;!&ndash; Status &ndash;&gt;-->
+                        <!-- Status -->
                         <!--<th>-->
                             <!--<div class="th-wrap">{{ $i18n.get('label_status') }}</div>-->
                         <!--</th>-->
@@ -157,7 +157,7 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex'
+    // import { mapActions } from 'vuex'
 
     export default {
         name: 'EventsList',
@@ -174,10 +174,10 @@
             events: Array
         },
         methods: {
-            ...mapActions('event', [
-                'approve',
-                'notApprove'
-            ]),
+            // ...mapActions('event', [
+            //     'approve',
+            //     'notApprove'
+            // ]),
             // approveEvent(eventId){
             //    this.approve(eventId);
             // },

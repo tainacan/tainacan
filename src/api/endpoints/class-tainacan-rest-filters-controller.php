@@ -128,12 +128,7 @@ class REST_Filters_Controller extends REST_Controller {
 		$filter_type = new $type();
 
 		foreach ($filter as $attribute => $value){
-			try {
-				$set_ = 'set_'. $attribute;
-				$filter_obj->$set_($value);
-			} catch (\Exception $error){
-				//
-			}
+			$filter_obj->set($attribute, $value);
 		}
 
 		if(isset($request['collection_id']) && isset($request['field_id'])) {

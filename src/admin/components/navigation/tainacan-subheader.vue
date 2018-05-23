@@ -33,9 +33,9 @@
                         :aria-label="$i18n.get('label_collection_items')">
                     <b-icon 
                             size="is-small" 
-                            icon="folder-outline"/>
+                            icon="file-multiple"/>
                     <br>
-                    <span class="menu-text">{{ $i18n.getFrom('collections', 'singular_name') }}</span>
+                    <span class="menu-text">{{ $i18n.get('items') }}</span>
                 </router-link>
             </li>
             <li class="level-item">
@@ -43,12 +43,12 @@
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
-                        :aria-label="$i18n.getFrom('collections','edit_item')">
+                        :aria-label="$i18n.get('label_settings')">
                     <b-icon 
                             size="is-small" 
-                            icon="pencil"/>
+                            icon="settings"/>
                     <br>
-                    <span class="menu-text">{{ $i18n.get('edit') }}</span>
+                    <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
                 </router-link>
             </li>
             <li class="level-item">
@@ -85,7 +85,7 @@
                         :aria-label="$i18n.get('label_collection_events')">
                     <b-icon 
                             size="is-small" 
-                            icon="calendar-range"/>
+                            icon="flash"/>
                     <br>
                     <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link>
@@ -166,7 +166,7 @@ export default {
                                 .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
                                 .catch((error) => this.$console.error(error));
                             break;
-                        case 'categories':
+                        case 'taxonomies':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
                                 .catch((error) => this.$console.error(error));

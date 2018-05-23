@@ -3,7 +3,7 @@
         <div class="page-container primary-page">
             <tainacan-title />
             <b-tabs v-model="activeTab">    
-                <b-tab-item :label="$i18n.get('category')">
+                <b-tab-item :label="$i18n.get('taxonomy')">
                     <form 
                             v-if="category != null && category != undefined" 
                             class="tainacan-form" 
