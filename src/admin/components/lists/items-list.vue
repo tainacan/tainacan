@@ -120,12 +120,9 @@
                                         class="table-thumb" 
                                         :src="item[column.slug].thumb">
                             </span> 
-                            <p 
-                                    v-if="column.field == 'row_author'"
-                                    v-html="getAuthorHtml(item)" />
-                            <p 
-                                    v-if="column.field == 'row_creation'"
-                                    v-html="getCreationHtml(item)" />
+                            <p v-if="column.field == 'row_author' || column.field == 'row_creation'">
+                                    {{ item[column.slug] }}
+                            </p>
 
                         </td>
 
@@ -302,7 +299,7 @@ export default {
             return this.$i18n.get('info_date') + item['creation_date'];
         },
         getAuthorHtml(item) {
-            return this.$i18n.get('info_created_by') + item['author_name'];
+            return item['author_name'];
         },
         getDecodedURI(url) {
             return decodeURIComponent(url);

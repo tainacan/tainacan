@@ -140,6 +140,7 @@ return [
 	'label_attachment'                         => __( 'Attachment', 'tainacan' ),
 	'label_enabled'                            => __( 'Enabled', 'tainacan' ),
 	'label_disabled'                           => __( 'Disabled', 'tainacan' ),
+	'label_creation'                      => __( 'Creation', 'tainacan' ),
 	'label_creation_date'                      => __( 'Creation date', 'tainacan' ),
 	'label_collection_items'                   => __( 'Collection Items', 'tainacan' ),
 	'label_collection_fields'                  => __( 'Collection Metadata', 'tainacan' ),
