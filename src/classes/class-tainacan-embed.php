@@ -22,6 +22,13 @@ class Embed {
 		add_filter('wp_embed_handler_audio', [$this, 'filter_audio_embed'], 10, 4);
 		
 		/**
+		 * Add responsiveness to embeds
+		 */
+		add_filter('embed_oembed_html', [$this, 'responsive_embed'], 10, 3);
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_css' ) );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'add_css' ) );
+
+		/**
 		 * ADD PDF Embed handler using PDF.js
 		 * @var [type]
 		 */
@@ -101,5 +108,24 @@ class Embed {
 		return null;
 		
 	}
-	
+
+
+	/**
+	 * Responsiveness
+	 */
+	public function add_css() {
+		global $TAINACAN_BASE_URL;
+		wp_enqueue_style( 'tainacan-embeds', $TAINACAN_BASE_URL . '/assets/css/tainacan-embeds.css' );
+	}
+	/**
+	 * Adds a responsive embed wrapper around oEmbed content
+	 * @param  string $html The oEmbed markup
+	 * @param  string $url  The URL being embedded
+	 * @param  array  $attr An array of attributes
+	 * @return string       Updated embed markup
+	 */
+	function responsive_embed($html, $url, $attr) {
+		return $html !== '' ? '<div class="tainacan-embed-container">'.$html.'</div>' : '';
+	}
+	 
 }
