@@ -163,6 +163,10 @@ class REST_Items_Controller extends REST_Controller {
 				$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
 			}
 
+			if ( $request['context'] === 'edit' ) {
+				$item_arr['current_user_can_edit'] = $item->can_edit();
+			}
+
 			return $item_arr;
 		}
 
