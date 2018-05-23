@@ -143,10 +143,12 @@
                                     icon="inbox"
                                     size="is-large"/>
                         </p>
-                        <p>{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')
-                            }}</p>
+                        <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created') }}</p>
+                        <p v-if="status == 'draft'">{{ $i18n.get('info_no_item_draft') }}</p>
+                        <p v-if="status == 'trash'">{{ $i18n.get('info_no_item_trash') }}</p>
+
                         <router-link
-                                v-if="!hasFiltered"
+                                v-if="!hasFiltered && (status == undefined || status == '')"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-primary"
