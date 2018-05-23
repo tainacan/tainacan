@@ -108,8 +108,7 @@
         methods: {
             ...mapGetters('search', [
                 'getOrderBy',
-                'getOrder',
-                //'getFetchOnlyMeta'
+                'getOrder'
             ]),
             onChangeOrderBy(field) {
                 this.$eventBusSearch.setOrderBy(field);

@@ -91,7 +91,7 @@
                                 v-if="column.display"
                                 :label="column.name" 
                                 :aria-label="(column.field != 'row_thumbnail' && column.field != 'row_creation' && column.field != 'row_author')
-                                             ? column.name + '' + item.metadata[column.slug].value_as_string : ''"
+                                             ? column.name + '' + (item.metadata ? item.metadata[column.slug].value_as_string : '') : ''"
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.field == 'row_thumbnail',
@@ -109,7 +109,8 @@
                                             column.field !== 'row_creation'"
                                     :data="renderMetadata( item.metadata[column.slug] )"/> -->
                             <p
-                                    v-if="column.field !== 'row_thumbnail' &&
+                                    v-if="item.metadata != undefined &&
+                                          column.field !== 'row_thumbnail' &&
                                           column.field !== 'row_actions' &&
                                           column.field !== 'row_creation' &&
                                           column.field !== 'row_author'"
