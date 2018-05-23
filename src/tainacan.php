@@ -1,28 +1,26 @@
 <?php
-
 /*
 Plugin Name: Tainacan
-Plugin URI: https://github.com/tainacan/tainacan
-Description: Transforme seu site Wordpress em um repositório digital
+Plugin URI: https://tainacan.org/new
+Description: powerfull and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional respository platform.
 Author: Media Lab / UFG
-Author URI: https://www.medialab.ufg.br
-Version: 1.0
+Version: 0.1
 */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-const API_DIR     = __DIR__ . '/api/';
-const CLASSES_DIR = __DIR__ . '/classes/';
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
 
-require_once(CLASSES_DIR . 'tainacan-creator.php');
-require_once(API_DIR     . 'tainacan-rest-creator.php');
+const TAINACAN_API_DIR     = __DIR__ . '/api/';
+const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
+
+require_once(TAINACAN_CLASSES_DIR . 'tainacan-creator.php');
+require_once(TAINACAN_API_DIR     . 'tainacan-rest-creator.php');
 
 require_once('dev-interface/class-tainacan-dev-interface.php');
 if ( tnc_enable_dev_wp_interface() ) {
 	$Tainacan_Dev_interface = \Tainacan\DevInterface\DevInterface::get_instance();
 }
-
 
 function tnc_enable_dev_wp_interface() {
     return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;

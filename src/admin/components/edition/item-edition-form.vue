@@ -23,6 +23,16 @@
                     </div>
                     <div class="section-box section-status">
                         <div class="field">
+                            <!-- <div class="block">
+                                <b-radio 
+                                        :id="`status-option-${statusOption.value}`"
+                                        v-for="statusOption in statusOptions"
+                                        :key="statusOption.value"
+                                        :value="statusOption.value"
+                                        :disabled="statusOption.disabled">
+                                    {{ statusOption.label }}
+                                </b-radio>
+                            </div> -->
                             <b-select
                                     v-model="form.status"
                                     :placeholder="$i18n.get('instruction_select_a_status')">
@@ -729,6 +739,11 @@ export default {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: all 0.6s;
+
+            .field {
+                    padding: 10px 0px 10px 25px;
+            }
+
         }
 
     }
