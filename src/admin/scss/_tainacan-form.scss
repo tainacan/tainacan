@@ -1,0 +1,87 @@
+// Input components used in forms are gray in Tainacan
+.tainacan-form {
+    color: $tainacan-input-color;
+
+    .form-submit {
+        justify-content: space-between !important;
+        padding: 1em 1.2em 0.4em 1.2em;
+        margin-bottom: 0px;
+        .button {
+            border-width: 1px;
+            padding: 2px 30px !important;
+        }
+        &.has-only-save {
+            justify-content: end !important;
+        }
+    }
+    .label { 
+        font-weight: bold;
+        font-size: 14px; 
+        display: inline-block;
+    }
+    .required-field-asterisk {
+        color: $gray;
+        &.is-danger {
+            color: $danger;
+        }
+    }
+    .input, .textarea {
+
+        background-color: $tainacan-input-background;
+        color: $tainacan-input-color;
+        transition: background-color 0.1s;
+
+        &.is-danger {
+          background-color: #e7dede;  
+        }
+
+    }
+    .control{
+        &.has-content {
+            .input, .textarea {
+                background-color: white;
+                border: 1px solid $tainacan-input-background;
+            }
+        }
+        &.has-icons-right {
+            .icon {
+                height: 2.0em;
+                .mdi-alert-circle::before {
+                    content: "\F156" !important;
+                    font-size: 16px !important;
+                }
+            }
+        }
+    }
+    .radio, .checkbox {
+        margin-bottom: 0.2em;
+        &.is-danger {
+            border-color: $danger;
+        }   
+    }
+    .control-label { // The value part in checkbox, radio and switches
+        color: $tainacan-input-color;
+        padding-left: 0.8em;
+        font-size: 12px;
+    }
+    .select {
+        
+        select {
+            font-size: 14px;
+            color: $tainacan-input-color;
+            background-color: white !important;
+            border: 1px solid $tainacan-input-background;
+            &:focus>option:checked, &:focus>option:hover {
+                background-color: $primary-lighter !important;
+            }
+        }
+        &.is-empty select{
+            background-color: $tainacan-input-background !important;
+        }
+        &:not(.is-multiple)::after {
+            margin-top: -0.6em;
+            right: 0.95em;
+            color: $primary;
+        }       
+    }
+}

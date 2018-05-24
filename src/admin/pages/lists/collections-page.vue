@@ -74,7 +74,8 @@
                             </router-link>
                         </div>
                     </section>
-                </div> 
+                </div>  
+                
                 <!-- Footer -->
                 <div
                         class="pagination-area"

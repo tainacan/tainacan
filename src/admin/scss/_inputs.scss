@@ -1,0 +1,12 @@
+.input, .textarea {
+    font-size: 14px;
+    border: none;
+    border-radius: 1px !important;
+    box-shadow: none !important;
+
+    &:focus, &:active {
+        box-shadow: none !important;
+        background-color: white;
+        border: 1px solid $tainacan-input-background !important;
+    }    
+}
