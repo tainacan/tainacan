@@ -29,6 +29,7 @@
                 </b-dropdown>
             </div>
         </div>
+
         <div class="above-subheader">
             <div class="tabs">
                 <ul>
@@ -51,7 +52,7 @@
                         :collections-per-page="collectionsPerPage"
                         :collections="collections"/> 
 
-                 <!-- Empty state image -->
+                <!-- Empty state image -->
                 <div v-if="totalCollections <= 0 && !isLoading">
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">

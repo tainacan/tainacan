@@ -91,7 +91,7 @@
                         </td>
                         <!-- Name -->
                         <td 
-                                class="column-default-width"
+                                class="column-default-width column-main-content"
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + collection.name">
@@ -99,7 +99,7 @@
                         </td>
                         <!-- Description -->
                         <td
-                                class="column-default-width" 
+                                class="column-large-width" 
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + collection.description">
@@ -346,8 +346,6 @@ export default {
             min-width: 40px;
             width: 40px;
             padding: 0;
-            position: sticky !important;
-            position: -webkit-sticky !important;
             left: 0;
             top: auto;
             display: table-cell;
@@ -371,13 +369,13 @@ export default {
                 height: 100%; 
                 display: flex;
                 justify-content: center;
-                visibility: hidden;
             }
             label span.control-label {
                 display: none;
             }
             &.is-selecting {
-                .checkbox { visibility: visible; }
+                position: sticky !important;
+                position: -webkit-sticky !important;
                 &::before { visibility: visible !important; }
             }
         }
@@ -388,6 +386,59 @@ export default {
 
         .thumbnail-cell {
             width: 60px;
+            text-align: center;
+        }
+  
+        .column-small-width {
+            min-width: 80px;
+            max-width: 80px;
+            p {
+                color: $gray-light;
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+        .column-default-width {
+            min-width: 80px;
+            max-width: 160px;
+            p {
+                color: $gray-light;
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+        .column-medium-width {
+            min-width: 120px;
+            max-width: 200px;
+            p {
+                color: $gray-light;
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+        .column-large-width {
+            min-width: 120px;
+            max-width: 240px;
+            p {
+                color: $gray-light;
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+        .column-main-content {
+            min-width: 120px !important;
+            max-width: 240px !important;
+            p { 
+                font-size: 14px !important;
+                color: $tainacan-input-color !important;
+                margin: 0px !important; 
+            }
+        }
+        .column-needed-width {
+            max-width: unset !important;
+        }
+        .column-align-right {
+            text-align: right !important;
         }
   
         tbody {
@@ -409,21 +460,15 @@ export default {
                     line-height: 12px;
                     border: none;
                     p { 
-                        font-size: 14px; 
-                        margin: 0px;
-                    }
-                    
-                }
-                td.column-default-width{
-                    max-width: 300px;
-                    p {
+                        font-size: 14px;
+                        margin: 0px; 
                         text-overflow: ellipsis;
                         overflow-x: hidden;
                         white-space: nowrap;
                     }
                 }
                 img.table-thumb {
-                    max-height: 37px !important;
+                    max-height: 38px !important;
                     border-radius: 3px;
                 }
 
@@ -465,9 +510,12 @@ export default {
                     cursor: pointer;
 
                     .checkbox-cell {
+                        position: sticky !important;
+                        position: -webkit-sticky !important;
+                        
                         &::before { visibility: visible; }
-                        .checkbox { 
-                            visibility: visible; 
+                        
+                        .checkbox {  
                             background-color: $tainacan-input-background !important; 
                         }
                     }

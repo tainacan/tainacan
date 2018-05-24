@@ -356,8 +356,6 @@ export default {
             min-width: 38px;
             width: 38px;
             padding: 0;
-            position: sticky !important;
-            position: -webkit-sticky !important;
             left: 0;
             top: auto;
             display: table-cell;
@@ -381,13 +379,13 @@ export default {
                 height: 100%; 
                 display: flex;
                 justify-content: center;
-                visibility: hidden;
             }
             label.control-label {
                 display: none;
             }
             &.is-selecting {
-                .checkbox { visibility: visible; } 
+                position: sticky !important;
+                position: -webkit-sticky !important;
                 &::before { visibility: visible !important; }
             }
         }
@@ -514,9 +512,12 @@ export default {
                     cursor: pointer;
 
                     .checkbox-cell {
+                        position: sticky !important;
+                        position: -webkit-sticky !important;
+
                         &::before { visibility: visible; }
+                        
                         .checkbox { 
-                            visibility: visible; 
                             background-color: $tainacan-input-background !important; 
                         }
                     }
