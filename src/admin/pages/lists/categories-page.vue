@@ -4,7 +4,7 @@
             <tainacan-title />
             <div 
                     class="sub-header" 
-                    v-if="totalCategories > 0">
+                    v-if="checkIfUserCanEdit()">
                 <div class="header-item">
                     <router-link
                             id="button-create-category" 
@@ -17,53 +17,90 @@
             </div>
 
             <div class="above-subheader">
-
-                <categories-list
-                        :is-loading="isLoading"
-                        :total-categories="totalCategories"
-                        :page="page"
-                        :categories-per-page="categoriesPerPage"
-                        :categories="categories"/>
-
-                <!-- Footer -->
-                <div 
-                        class="pagination-area" 
-                        v-if="totalCategories > 0">
-                    <div class="shown-items">
-                        {{
-                            $i18n.get('info_showing_categories') +
-                            (categoriesPerPage * (page - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastCategoryNumber() +
-                            $i18n.get('info_of') + totalCategories + '.'
-                        }}
+                <div class="tabs">
+                    <ul>
+                        <li 
+                                @click="onChangeTab('')"
+                                :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
+                        <li 
+                                @click="onChangeTab('draft')"
+                                :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
+                        <li 
+                                @click="onChangeTab('trash')"
+                                :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <categories-list
+                            :is-loading="isLoading"
+                            :total-categories="totalCategories"
+                            :page="page"
+                            :categories-per-page="categoriesPerPage"
+                            :categories="categories"/>
+                    
+                    <!-- Empty state image -->
+                    <div v-if="totalCategories <= 0 && !isLoading">
+                        <section class="section">
+                            <div class="content has-text-grey has-text-centered">
+                                <p>
+                                    <b-icon
+                                            icon="inbox"
+                                            size="is-large"/>
+                                </p>
+                                <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_category_created') }}</p>
+                                <p v-if="status == 'draft'">{{ $i18n.get('info_no_category_draft') }}</p>
+                                <p v-if="status == 'trash'">{{ $i18n.get('info_no_category_trash') }}</p>
+                                <router-link
+                                        v-if="status == undefined || status == ''"
+                                        id="button-create-category"
+                                        tag="button"
+                                        class="button is-primary"
+                                        :to="{ path: $routerHelper.getNewCategoryPath() }">
+                                    {{ $i18n.getFrom('categories', 'new_item') }}
+                                </router-link>
+                            </div>
+                        </section>
                     </div>
-                    <div class="items-per-page">
-                        <b-field 
-                                horizontal 
-                                :label="$i18n.get('label_categories_per_page')">
-                            <b-select
-                                    :value="categoriesPerPage"
-                                    @input="onChangeCategoriesPerPage"
-                                    :disabled="categories.length <= 0">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="48">48</option>
-                                <option value="96">96</option>
-                            </b-select>
-                        </b-field>
-                    </div>
-                    <div class="pagination">
-                        <b-pagination
-                                @change="onPageChange"
-                                :total="totalCategories"
-                                :current.sync="page"
-                                order="is-centered"
-                                size="is-small"
-                                :per-page="categoriesPerPage"/>
+                    <!-- Footer -->
+                    <div 
+                            class="pagination-area" 
+                            v-if="totalCategories > 0">
+                        <div class="shown-items">
+                            {{
+                                $i18n.get('info_showing_categories') +
+                                (categoriesPerPage * (page - 1) + 1) +
+                                $i18n.get('info_to') +
+                                getLastCategoryNumber() +
+                                $i18n.get('info_of') + totalCategories + '.'
+                            }}
+                        </div>
+                        <div class="items-per-page">
+                            <b-field 
+                                    horizontal 
+                                    :label="$i18n.get('label_categories_per_page')">
+                                <b-select
+                                        :value="categoriesPerPage"
+                                        @input="onChangeCategoriesPerPage"
+                                        :disabled="categories.length <= 0">
+                                    <option value="12">12</option>
+                                    <option value="24">24</option>
+                                    <option value="48">48</option>
+                                    <option value="96">96</option>
+                                </b-select>
+                            </b-field>
+                        </div>
+                        <div class="pagination">
+                            <b-pagination
+                                    @change="onPageChange"
+                                    :total="totalCategories"
+                                    :current.sync="page"
+                                    order="is-centered"
+                                    size="is-small"
+                                    :per-page="categoriesPerPage"/>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div>    
         </div>
     </div>
 </template>
@@ -80,7 +117,8 @@
                 isLoading: false,
                 totalCategories: 0,
                 page: 1,
-                categoriesPerPage: 12
+                categoriesPerPage: 12,
+                status: ''
             }
         },
         components: {
@@ -93,6 +131,17 @@
             ...mapGetters('category', [
                 'getCategories'
             ]),
+            onChangeTab(status) {
+                this.status = status;
+                this.loadCategories();
+            },
+            checkIfUserCanEdit() {
+                for (let capability of tainacan_plugin.user_caps) {
+                    if (capability == 'edit_tainacan-taxonomies')
+                        return true;
+                }
+                return false;
+            },
             onChangeCategoriesPerPage(value) {
                 let prevValue = this.categoriesPerPage;
                 this.categoriesPerPage = value;
@@ -106,7 +155,7 @@
             loadCategories() {
                 this.isLoading = true;
 
-                this.fetchCategories({ 'page': this.page, 'categoriesPerPage': this.categoriesPerPage })
+                this.fetchCategories({ 'page': this.page, 'categoriesPerPage': this.categoriesPerPage, 'status': this.status })
                     .then((res) => {
                         this.isLoading = false;
                         this.totalCategories = res.total;
@@ -152,6 +201,7 @@
         height: $subheader-height;
         margin-left: -$page-side-padding;
         margin-right: -$page-side-padding;
+        margin-top: -$page-top-padding;
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
@@ -172,11 +222,15 @@
             }
         }
     }
-
+    .tabs {
+        padding-top: 20px;
+        margin-bottom: 20px;
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
+    }
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
-        min-height: 100%;
         height: auto;
     }
 </style>

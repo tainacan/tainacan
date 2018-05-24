@@ -86,13 +86,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $to_prepare[1];
 
 		foreach ($attributes as $attribute => $value){
-			$set_ = 'set_'. $attribute;
-
-			try {
-				$this->term->$set_( $value );
-			} catch (\Error $error){
-				// Do nothing
-			}
+			$this->term->set($attribute, $value);
 		}
 
 		$this->term->set_taxonomy($taxonomy);
@@ -226,7 +220,7 @@ class REST_Terms_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Term or Taxonomy with that IDs not found', 'tainacan' ),
+				'error_message' => __('Term or Taxonomy with this ID was not found', 'tainacan' ),
 				'term_id'       => $term_id,
 				'taxonomy_id'   => $taxonomy_id
 			], 400);
@@ -262,7 +256,7 @@ class REST_Terms_Controller extends REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
 			if(!isset($request['fetch_only'])) {
-				$item_arr = $item->__toArray();
+				$item_arr = $item->_toArray();
 
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
@@ -400,7 +394,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_collection_params('term'));
 
 		$query_params['name'] = array(
-			'description' => __('Limit result set to term with specific name.'),
+			'description' => __('Limits the result set to terms with a specific name'),
 			'type'        => 'string',
 		);
 

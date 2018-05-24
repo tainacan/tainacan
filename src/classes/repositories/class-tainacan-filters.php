@@ -38,7 +38,7 @@ class Filters extends Repository {
                 'map'        => 'menu_order',
                 'title'       => __('Order', 'tainacan'),
                 'type'       => 'string',
-                'description'=> __('Filter order. Field used if filters are manually ordered', 'tainacan'),
+                'description'=> __('Filter order. This metadata is used if filters were manually ordered.', 'tainacan'),
                 'validation' => ''
             ],
             'description'         => [
@@ -80,9 +80,9 @@ class Filters extends Repository {
             ],
             'field'               => [
                 'map'        => 'meta',
-                'title'      => __('Field', 'tainacan'),
+                'title'      => __('Metadata', 'tainacan'),
                 'type'       => 'integer',
-                'description'=> __('Filter field', 'tainacan'),
+                'description'=> __('Filter metadata', 'tainacan'),
                 'validation' => ''
             ],
         ]);

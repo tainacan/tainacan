@@ -24,22 +24,12 @@ class REST_Controller extends \WP_REST_Controller {
 
 		if (is_array($attributes)) {
 			foreach ( $attributes as $attribute ) {
-				try {
-					if(!is_array($attribute)) {
-						$get_                          = 'get_' . $attribute;
-						$object_filtered[ $attribute ] = $object->$get_();
-					}
-				} catch ( \Error $error ) {
-					// Do nothing
+				if ( ! is_array( $attribute ) ) {
+					$object_filtered[ $attribute ] = $object->get( $attribute );
 				}
 			}
 		} else {
-			try{
-				$get_ = 'get_' . $attributes;
-				$object_filtered[$attributes] = $object->$get_();
-			} catch (\Error $error){
-				// Do nothing
-			}
+			$object_filtered[ $attributes ] = $object->get( $attributes );
 		}
 
 		return $object_filtered;
@@ -54,12 +44,7 @@ class REST_Controller extends \WP_REST_Controller {
 	protected function prepare_item_for_updating($object, $new_values){
 
 		foreach ($new_values as $key => $value) {
-			try {
-				$set_ = 'set_' . $key;
-				$object->$set_( $value );
-			} catch (\Error $error){
-				// Do nothing
-			}
+			$object->set($key, $value);
 		}
 
 		return $object;
@@ -354,7 +339,6 @@ class REST_Controller extends \WP_REST_Controller {
 				'enum'    => array_merge(array_keys(get_post_stati()), array('any')),
 				'type'    => 'string',
 			),
-			'sanitize_callback' => array($this, 'sanitize_post_statuses'),
 		);
 
 		$query_params['offset'] = array(
@@ -443,7 +427,7 @@ class REST_Controller extends \WP_REST_Controller {
 						'value'    => array(
 							'type'        => 'string/array',
 							'description' => __('Custom metadata value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.
-	(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.)'),
+	(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.'),
 						),
 						'compare'  => array(
 							'type'        => 'string',

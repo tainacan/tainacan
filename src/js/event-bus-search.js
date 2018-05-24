@@ -41,6 +41,7 @@ export default {
                             this.$route.query.orderby = 'date';
                         
                         this.$store.dispatch('search/set_postquery', this.$route.query); 
+                        
                         this.loadItems();
                     }
                     
@@ -59,6 +60,10 @@ export default {
                 },
                 addFetchOnlyMeta( field ){
                     this.$store.dispatch('search/add_fetchonly_meta', field );
+                    this.updateURLQueries();             
+                },
+                addFetchOnly( field ){
+                    this.$store.dispatch('search/add_fetchonly', field );
                     this.updateURLQueries();             
                 },
                 removeFetchOnlyMeta( field ){
@@ -111,17 +116,22 @@ export default {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
                 loadItems() {
-       
-                    this.$emit( 'isLoadingItems', true);
-                    this.$store.dispatch('collection/fetchItems', this.collectionId).then((res) => {
-                        this.$emit( 'isLoadingItems', false);
-                        this.$emit( 'hasFiltered', res.hasFiltered);
-                        //var event = new Event('tainacan-items-change')
-                        //document.dispatchEvent(event);
-                    })
-                    .catch(() => {
-                        this.$emit( 'isLoadingItems', false);
-                    });
+
+                    // Foreces fetch_only to be filled before any search happens
+                    if (this.$store.getters['search/getFetchOnly'] == undefined)
+                        this.$emit( 'hasToPrepareFieldsAndFilters');
+                    else {
+                        this.$emit( 'isLoadingItems', true);
+                        this.$store.dispatch('collection/fetchItems', this.collectionId).then((res) => {
+                            this.$emit( 'isLoadingItems', false);
+                            this.$emit( 'hasFiltered', res.hasFiltered);
+                            //var event = new Event('tainacan-items-change')
+                            //document.dispatchEvent(event);
+                        })
+                        .catch(() => {
+                            this.$emit( 'isLoadingItems', false);
+                        });
+                    }
                 },
                 setCollectionId(collectionId) {
                     this.collectionId = collectionId;

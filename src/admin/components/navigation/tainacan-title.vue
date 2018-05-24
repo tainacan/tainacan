@@ -1,7 +1,6 @@
 <template>
     <div 
-            class="tainacan-page-title"
-            id="title-row">
+            class="tainacan-page-title">
         <h1>{{ pageTitle }} <span class="is-italic">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
         <a 
                 @click="$router.go(-1)"
@@ -87,7 +86,7 @@ export default {
                                 .then(itemName => { this.arrayViewPath.splice(i, 1, itemName); this.entityName = itemName; })
                                 .catch((error) => this.$console.error(error));
                             break;
-                        case 'categories':
+                        case 'taxonomies':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
                                 .catch((error) => this.$console.error(error));
@@ -133,20 +132,34 @@ export default {
 
     @import "../../scss/_variables.scss";
     
-    // Tainacan Header
-    #title-row {
+    .tainacan-page-title {
+        margin-bottom: 40px;
 
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $tertiary;
+            display: inline-block;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
+            height: 1px;
+            background-color: $secondary;
+        }
         .breadcrumbs {
             font-size: 12px;
         }
-
         .level-left {
             .level-item {
                 display: inline-block;
                 margin-left: 268px;
             }  
         }
-
         @media screen and (max-width: 769px) {
             .level-left {
                 margin-left: 0px !important;
@@ -161,7 +174,6 @@ export default {
             top: 206px;
             margin-bottom: 0px !important;
         }
-
     }
 </style>
 

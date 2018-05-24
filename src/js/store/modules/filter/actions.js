@@ -60,6 +60,7 @@ export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterTyp
 export const updateFilter = ( { commit }, { filterId, index, options }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '/filters/' + filterId;
+        options['context'] = 'edit';
 
         axios.tainacan.put(endpoint, options)
             .then( res => {

@@ -128,12 +128,7 @@ class REST_Filters_Controller extends REST_Controller {
 		$filter_type = new $type();
 
 		foreach ($filter as $attribute => $value){
-			try {
-				$set_ = 'set_'. $attribute;
-				$filter_obj->$set_($value);
-			} catch (\Error $error){
-				//
-			}
+			$filter_obj->set($attribute, $value);
 		}
 
 		if(isset($request['collection_id']) && isset($request['field_id'])) {
@@ -174,7 +169,7 @@ class REST_Filters_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Please verify, invalid attribute(s)', 'tainacan'),
+				'error_message' => __('Please verify, invalid attribute(s).', 'tainacan'),
 				'error'         => $filter_obj->get_errors()
 			], 400);
 		}
@@ -279,7 +274,7 @@ class REST_Filters_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('A filter with that ID was not found', 'tainacan' ),
+				'error_message' => __('A filter with this ID was not found', 'tainacan' ),
 				'filter_id'     => $filter_id
 			], 400);
 
@@ -315,11 +310,11 @@ class REST_Filters_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)) {
-			$item_arr = $item->__toArray();
+			$item_arr = $item->_toArray();
 
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
-				$item_arr['filter_type_object'] = $item->get_filter_type_object()->__toArray();
+				$item_arr['filter_type_object'] = $item->get_filter_type_object()->_toArray();
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 

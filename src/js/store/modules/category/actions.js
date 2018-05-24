@@ -58,9 +58,14 @@ export const updateCategory = ({ commit }, category) => {
     });
 };
 
-export const fetchCategories = ({ commit }, { page, categoriesPerPage } ) => {
+export const fetchCategories = ({ commit }, { page, categoriesPerPage, status } ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/taxonomies?paged=${page}&perpage=${categoriesPerPage}`)
+        let endpoint = `/taxonomies?paged=${page}&perpage=${categoriesPerPage}&context=edit`;
+
+        if (status != undefined && status != '')
+            endpoint = endpoint + '&status=' + status;
+
+        axios.tainacan.get(endpoint)
             .then(res => {
                 let categories = res.data;
 

@@ -43,7 +43,7 @@
                 </router-link></li>
                 <li><router-link 
                         tag="a" 
-                        to="/categories" 
+                        to="/taxonomies" 
                         :class="activeRoute == 'CategoriesPage' ? 'is-active':''">
                     <b-icon 
                         size="is-small" 
@@ -55,7 +55,7 @@
                         :class="activeRoute == 'EventsPage' ? 'is-active':''">
                     <b-icon 
                             size="is-small" 
-                            icon="calendar-range"/> <span class="menu-text">{{ $i18n.get('events') }}</span>
+                            icon="flash"/> <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link></li>
             </ul>
         </aside>

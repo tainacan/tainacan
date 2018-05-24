@@ -92,6 +92,8 @@ class REST_Items_Controller extends REST_Controller {
 	 * @param $item_object
 	 * @param $item_array
 	 *
+	 * @param array $args
+	 *
 	 * @return mixed
 	 */
 	private function add_metadata_to_item($item_object, $item_array, $args = []){
@@ -100,14 +102,15 @@ class REST_Items_Controller extends REST_Controller {
 		foreach($item_metadata as $index => $me){
 			$field               = $me->get_field();
 			$slug                = $field->get_slug();
-			$item_metadata_array = $me->__toArray();
+			$item_metadata_array = $me->_toArray();
 
 			$item_array['metadata'][ $slug ]['name']            = $field->get_name();
-			$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
-			$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
-			$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
 			if($field->get_field_type_object()->get_primitive_type() === 'date') {
 				$item_array['metadata'][ $slug ]['date_i18n'] = $item_metadata_array['date_i18n'];
+			} else {
+				$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
+				$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
+				$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
 			}
 			$item_array['metadata'][ $slug ]['multiple']        = $field->get_multiple();
 		}
@@ -125,7 +128,7 @@ class REST_Items_Controller extends REST_Controller {
 		if(!empty($item)){
 
 			if(!isset($request['fetch_only'])) {
-				$item_arr = $item->__toArray();
+				$item_arr = $item->_toArray();
 
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
@@ -160,6 +163,12 @@ class REST_Items_Controller extends REST_Controller {
 				$item_arr = $this->add_metadata_to_item($item, $item_arr, $args);
 			}
 
+			if ( $request['context'] === 'edit' ) {
+				$item_arr['current_user_can_edit'] = $item->can_edit();
+			}
+
+			$item_arr['url'] = get_permalink( $item_arr['id'] );
+			
 			return $item_arr;
 		}
 
@@ -298,7 +307,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		try {
 			$this->prepare_item_for_database( [ $item, $collection_id ] );
-		} catch (\Error $exception){
+		} catch (\Exception $exception){
 			return new \WP_REST_Response($exception->getMessage(), 400);
 		}
 
@@ -404,7 +413,7 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			return new \WP_REST_Response([
-				'error_message' => __('Item with that ID not found', 'tainacan' ),
+				'error_message' => __('An item with this ID was not found', 'tainacan' ),
 				'item_id'       => $item_id
 			], 400);
 		}

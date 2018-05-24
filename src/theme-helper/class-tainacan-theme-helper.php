@@ -20,29 +20,29 @@ class Theme_Helper {
 
 	private function __construct() {
 
-		add_filter( 'the_content', [&$this, 'the_content_filter'] );
+		add_filter( 'the_content', [$this, 'the_content_filter'] );
 		
 		
 		// Replace collections permalink to post type archive if cover not enabled
-		add_filter('post_type_link', array(&$this, 'permalink_filter'), 10, 3);
+		add_filter('post_type_link', array($this, 'permalink_filter'), 10, 3);
 
 		// Replace single query to the page content set as cover for the colllection
 		// Redirect to post type archive if no cover page is set
-		add_action('wp', array(&$this, 'collection_single_redirect'));
+		add_action('wp', array($this, 'collection_single_redirect'));
 		
-		add_action('wp_print_scripts', array(&$this, 'enqueue_scripts'));
+		add_action('wp_print_scripts', array($this, 'enqueue_scripts'));
 		
 		// make archive for terms work with items
-		add_action('pre_get_posts', array(&$this, 'tax_archive_pre_get_posts'));
+		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
 		
-		add_action('archive_template_hierarchy', array(&$this, 'items_template_hierachy'));
-		add_action('single_template_hierarchy', array(&$this, 'items_template_hierachy'));
+		add_action('archive_template_hierarchy', array($this, 'items_template_hierachy'));
+		add_action('single_template_hierarchy', array($this, 'items_template_hierachy'));
 		
-		add_filter('theme_mod_header_image', array(&$this, 'header_image'));
+		add_filter('theme_mod_header_image', array($this, 'header_image'));
 
-		add_filter('get_the_archive_title', array(&$this, 'filter_archive_title'));
+		add_filter('get_the_archive_title', array($this, 'filter_archive_title'));
 
-		add_shortcode( 'tainacan-search', array(&$this, 'search_shortcode'));
+		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
 		
 	}
 	

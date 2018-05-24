@@ -1,10 +1,15 @@
 <template>
     <div class="columns is-fullheight">
         <section class="column is-secondary-content">
-            <tainacan-subheader :id="collectionId"/>
-            <router-view 
+            <tainacan-subheader 
+                    :class="{ 'is-shrink': shouldShrinkHeader }"
+                    :id="collectionId"/>
+            <router-view
+                    @onShrinkHeader="shouldShrinkHeader = $event"
+                    id="collection-page-container"
                     :collection-id="collectionId" 
-                    class="page-container page-container-small"/>
+                    class="page-container page-container-small"
+                    :class="{'page-container-shrinked': shouldShrinkHeader }"/>
         </section>
     </div>
 </template>
@@ -16,7 +21,8 @@ export default {
     name: 'CollectionPage',
     data(){
         return {
-            collectionId: Number
+            collectionId: Number,
+            shouldShrinkHeader: false
         }
     },
     components: {
@@ -25,6 +31,8 @@ export default {
     created(){
         this.collectionId = parseInt(this.$route.params.collectionId);
         this.$eventBusSearch.setCollectionId(this.collectionId);
+    },
+    mounted() {
     }
 
 }

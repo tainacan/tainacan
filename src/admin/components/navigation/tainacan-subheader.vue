@@ -33,9 +33,9 @@
                         :aria-label="$i18n.get('label_collection_items')">
                     <b-icon 
                             size="is-small" 
-                            icon="folder-outline"/>
+                            icon="file-multiple"/>
                     <br>
-                    <span class="menu-text">{{ $i18n.getFrom('collections', 'singular_name') }}</span>
+                    <span class="menu-text">{{ $i18n.get('items') }}</span>
                 </router-link>
             </li>
             <li class="level-item">
@@ -43,12 +43,12 @@
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
-                        :aria-label="$i18n.getFrom('collections','edit_item')">
+                        :aria-label="$i18n.get('label_settings')">
                     <b-icon 
                             size="is-small" 
-                            icon="pencil"/>
+                            icon="settings"/>
                     <br>
-                    <span class="menu-text">{{ $i18n.get('edit') }}</span>
+                    <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
                 </router-link>
             </li>
             <li class="level-item">
@@ -85,7 +85,7 @@
                         :aria-label="$i18n.get('label_collection_events')">
                     <b-icon 
                             size="is-small" 
-                            icon="calendar-range"/>
+                            icon="flash"/>
                     <br>
                     <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link>
@@ -110,7 +110,7 @@ export default {
         }
     },
     props: {
-        id: Number
+        id: Number,
     },
     watch: {
         '$route' (to) {
@@ -166,7 +166,7 @@ export default {
                                 .then(itemTitle => this.arrayViewPath.splice(i, 1, itemTitle))
                                 .catch((error) => this.$console.error(error));
                             break;
-                        case 'categories':
+                        case 'taxonomies':
                             this.fetchCategoryName(this.arrayRealPath[i])
                                 .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
                                 .catch((error) => this.$console.error(error));
@@ -208,6 +208,7 @@ export default {
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
+        overflow-y: hidden;
         padding-top: 18px;
         padding-bottom: 18px;
         padding-right: $page-side-padding;
@@ -217,6 +218,28 @@ export default {
         left: 0;
         right: 0;
         z-index: 9;
+        transition: padding 0.3s, height 0.3s;
+
+        &.is-shrink {
+            height: $header-height;
+            max-height: $header-height;
+            padding-top: 12px;
+            padding-bottom: 12px;
+
+            h1 { margin-bottom: 4px;  }
+            li a {
+                line-height: 20px;
+                .menu-text { 
+                    visibility: hidden; 
+                    opacity: 0; 
+                    font-size: 0;
+                    line-height: 0;
+                    display: block;
+                    width: 0;
+                    height: 0;
+                }
+            }
+        }
 
         h1 {
             font-size: 18px;
@@ -228,6 +251,8 @@ export default {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;  
+            -webkit-transition: margin-bottom 0.2s linear; /* Safari */
+            transition: margin-bottom 0.2s linear; 
         }
 
         .breadcrumbs {
@@ -245,6 +270,9 @@ export default {
 
         li{
             margin-right: 0px;
+            transition: height 0.5s linear, padding 0.5s linear;
+            -webkit-transition: height 0.5s linear, padding 0.5s linear;
+
             a {
                 color: $tertiary;
                 text-align: center;
@@ -254,8 +282,6 @@ export default {
                 min-width: 75px;
                 line-height: 1.5em;
                 border-radius: 0px;
-                -webkit-transition: padding 0.3s linear; /* Safari */
-                transition: padding 0.3s linear; 
                 position: relative;
                 overflow: inherit;
             }
@@ -287,8 +313,8 @@ export default {
                 font-size: 14px;
                 opacity: 1;
                 visibility: visible;
-                transition: opacity 0.3s linear, visibility 0.3s linear;
-                -webkit-transition: opacity 0.3s linear, visibility 0.3s linear;
+                transition: opacity 0.5s linear, visibility 0.5s linear, height 0.5s linear;
+                -webkit-transition: opacity 0.5s linear, visibility 0.5s linear, height 0.5s linear;
             }
         }
 

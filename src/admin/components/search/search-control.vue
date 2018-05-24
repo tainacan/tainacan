@@ -19,9 +19,12 @@
                         {{ $i18n.get('add_one_item') }}
                     </router-link>
                 </b-dropdown-item>
-                <b-dropdown-item disabled>{{ $i18n.get('add_items_bulk') + ' (Not ready)' }}
+                <b-dropdown-item disabled>
+                    {{ $i18n.get('add_items_bulk') + ' (Not ready)' }}
                 </b-dropdown-item>
-                <b-dropdown-item disabled>{{ $i18n.get('add_items_external_source') + ' (Not ready)' }}<br><small class="is-small">{{ $i18n.get() }}</small></b-dropdown-item>
+                <b-dropdown-item disabled>
+                    {{ $i18n.get('add_items_external_source') + ' (Not ready)' }}
+                </b-dropdown-item>
             </b-dropdown>
 
         </div>
@@ -39,9 +42,9 @@
                         class="control"
                         custom>
                     <b-checkbox
-
-                            v-model="column.display"
-                            :native-value="column.field">
+                            @input="onChangeDisplayedField($event, index)"
+                            :value="column.display"
+                            :native-value="column.display">
                         {{ column.name }}
                     </b-checkbox>
                 </b-dropdown-item>
@@ -55,12 +58,13 @@
                     <option
                             v-for="field in tableFields"
                             v-if="
-                            field.id === 'date' || (
-                                field.id !== undefined &&
-                                field.field_type_object.related_mapped_prop !== 'description' &&
-                                field.field_type_object.primitive_type !== 'term' &&
-                                field.field_type_object.primitive_type !== 'item' &&
-                                field.field_type_object.primitive_type !== 'compound'
+                                field.id === 'creation_date' || 
+                                field.id === 'author_name' || (
+                                    field.id !== undefined &&
+                                    field.field_type_object.related_mapped_prop !== 'description' &&
+                                    field.field_type_object.primitive_type !== 'term' &&
+                                    field.field_type_object.primitive_type !== 'item' &&
+                                    field.field_type_object.primitive_type !== 'compound'
                             )"
                             :value="field"
                             :key="field.id">
@@ -104,8 +108,7 @@
         methods: {
             ...mapGetters('search', [
                 'getOrderBy',
-                'getOrder',
-                //'getFetchOnlyMeta'
+                'getOrder'
             ]),
             onChangeOrderBy(field) {
                 this.$eventBusSearch.setOrderBy(field);
@@ -113,13 +116,15 @@
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
             },
-            // onChangeDisplayedField(event, fieldId) {
-            //     column.display = event;
-            //     if (event)
-            //         this.$eventBusSearch.addFetchOnlyMeta(field.id);
-            //     else 
-            //         this.$eventBusSearch.removeFetchOnlyMeta(field.id);
-            // }
+            onChangeDisplayedField(event, index) {
+                if (this.tableFields[index] != undefined) {
+                    this.tableFields[index].display = event;
+                    if (event)
+                        this.$eventBusSearch.addFetchOnlyMeta(this.tableFields[index].id);
+                    else 
+                        this.$eventBusSearch.removeFetchOnlyMeta(this.tableFields[index].id);
+                }
+            }
         }
     }
 </script>

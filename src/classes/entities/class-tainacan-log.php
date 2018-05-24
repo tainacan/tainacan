@@ -44,8 +44,8 @@ class Log extends Entity {
 	/**
 	 * @return array
 	 */
-	public function __toArray() {
-		$array_log = parent::__toArray();
+	public function _toArray() {
+		$array_log = parent::_toArray();
 
 		$array_log['user_name']     = $this->get_user_name();
 

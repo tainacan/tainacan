@@ -1,0 +1,14 @@
+// Tabs 
+.tabs {
+    a {
+        font-size: 13px;
+        margin-bottom: -3px;
+        &:hover{
+            border-bottom-color: transparent;
+        }
+    }
+    li.is-active a {
+        border-bottom: 5px solid $primary;
+        color: $primary; 
+    }
+}

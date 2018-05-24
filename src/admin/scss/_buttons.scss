@@ -1,0 +1,44 @@
+.button {
+    border-radius: 6px !important;
+    font-weight: normal;
+    padding: 2px 15px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    height: inherit !important;
+    box-shadow: none !important;
+    display: inline-flex !important;
+
+    &.is-secondary:hover, &.is-secondary:focus {
+        background: $secondary !important;
+    }
+    &.is-primary:hover, &.is-primary:focus {
+        background: $primary !important;
+    }
+    &.is-success:hover, &.is-success:focus {
+        background: $success !important;
+    }
+    &.is-white:hover, &.is-white:focus, &.is-outlined:hover, &.is-outlined:focus {
+        background: $white !important;
+    }
+    &:active {
+        -webkit-transform: none !important;
+        transform: none !important;
+    }
+    &.is-outlined {
+        color: #150e38 !important;
+        background-color: white;
+        border-color: $gray-light !important;
+    }
+    &:focus {
+        outline: 0px;
+    }
+}
+.button.is-small {
+    height: 26px !important;
+    line-height: 12px;
+}
+.button:not(.is-small):not(.is-medium):not(.is-large) {
+    height: 30px !important;
+    line-height: 20px !important;
+    font-size: 14px !important;
+}

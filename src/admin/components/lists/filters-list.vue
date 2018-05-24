@@ -2,8 +2,23 @@
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"/>
         <tainacan-title v-if="!isRepositoryLevel"/>
+        <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
+        <br>
         <div class="columns">
-            <div class="column">         
+            <div class="column">
+                <section 
+                        v-if="activeFilterList.length <= 0 && !isLoadingFilters"
+                        class="field is-grouped-centered section">
+                    <div class="content has-text-gray has-text-centered">
+                        <p>
+                            <b-icon
+                                    icon="filter"
+                                    size="is-large"/>
+                        </p>
+                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
+                        <p>{{ $i18n.get('info_create_filters' ) }}</p>
+                    </div>
+                </section>         
                 <draggable 
                         class="active-filters-area"
                         @change="handleChange"
@@ -115,7 +130,7 @@
             </div>
             <div class="column available-fields-area">
                 <div class="field" >
-                    <h3 class="label"> {{ $i18n.get('label_available_field_types') }}</h3>
+                    <h3 class="label"> {{ $i18n.get('label_available_fields') }}</h3>
                     <draggable
                             v-if="availableFieldList.length > 0" 
                             v-model="availableFieldList" 
@@ -438,6 +453,13 @@ export default {
             .catch(() => {
                 this.isLoadingFilters = false;
             });
+    },
+    mounted() {
+        if (!this.isRepositoryLevel) {
+            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
+                this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+            });
+        }
     }
 }
 </script>

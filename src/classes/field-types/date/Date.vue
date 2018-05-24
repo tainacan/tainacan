@@ -5,11 +5,12 @@
                 class="control is-inline">
             <input
                     class="input"
-                    type="date"
+                    type="text"
                     v-mask="dateMask"
                     v-model="dateValue"
                     @blur="onBlur"
-                    @input="onInput">
+                    @input="onInput"
+                    :placeholder="dateFormat">
             <!--<b-collapse-->
                     <!--position="is-bottom-right">-->
                 <!--<b-icon-->
@@ -35,19 +36,27 @@
 
 <script>
     import { dateInter } from "../../../admin/js/mixins";
+    import moment from 'moment';
 
     export default {
         mixins: [ dateInter ],
         created(){
+            let locale = navigator.language;
+
+            moment.locale(locale);
+
+            let localeData = moment.localeData();
+            this.dateFormat = localeData.longDateFormat('L');
+
             if( this.value ){
-                this.dateValue = new Date(this.value.replace(/-/g, '/')).toLocaleDateString();
+                this.dateValue = this.parseDateToNavigatorLanguage(new Date(this.value.replace(/-/g, '/')));
             }
         },
         data() {
             return {
                 dateValue: '',
-                datePlaceHolder: new Date().toLocaleDateString(),
-                dateMask: this.getDateLocaleFormat(),
+                dateMask: this.getDateLocaleMask(),
+                dateFormat: ''
             }
         },
         props: {
@@ -65,13 +74,16 @@
                 let dateISO = '';
 
                 if($event && $event instanceof Date) {
-                    dateISO = this.dateValue.toISOString().split('T')[0]
+                    dateISO = moment(this.dateValue, this.dateFormat).toISOString().split('T')[0];
                 } else if($event.target.value && $event.target.value.length === this.dateMask.length) {
-                    dateISO = new Date($event.target.value).toISOString().split('T')[0];
+                    dateISO = moment($event.target.value,  this.dateFormat).toISOString().split('T')[0];
                 }
 
                 this.$emit('input', dateISO);
                 this.$emit('blur');
+            },
+            parseDateToNavigatorLanguage(date){
+                return moment(date, moment.ISO_8601).format(this.dateFormat);
             }
         }
     }

@@ -77,7 +77,7 @@ class REST_Logs_Controller extends REST_Controller {
 		if(!empty($item)){
 
 			if(!isset($request['fetch_only'])) {
-				$item_array = $item->__toArray();
+				$item_array = $item->_toArray();
 
 				unset($item_array['value']);
 				unset($item_array['old_value']);
@@ -112,7 +112,7 @@ class REST_Logs_Controller extends REST_Controller {
 
 			if(!$collection){
 				return new \WP_REST_Response([
-					'error_message' => __('A collection with that ID does not exist.', 'tainacan'),
+					'error_message' => __('A collection with this ID does not exist', 'tainacan'),
 					'collection_id' => $collection_id
 				], 400);
 			}

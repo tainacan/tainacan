@@ -62,9 +62,13 @@ fi
 
 
 echo "Updating files in $wp_plugin_dir"
+
 rm -rf $wp_plugin_dir
+
 mkdir $wp_plugin_dir
-cp -R src/* $wp_plugin_dir/
+
+rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='vendor/wimg' src/* $wp_plugin_dir/
+
 rm -rf $wp_plugin_dir/scss
 
 echo "Build complete!"

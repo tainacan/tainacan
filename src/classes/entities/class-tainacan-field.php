@@ -414,7 +414,7 @@ class Field extends Entity {
 		// You cant have a multiple field inside a compound field (except category)
 		if ($this->get_parent() > 0) {
 			if ( $this->is_multiple() && $this->get_field_type_object()->get_primitive_type() != 'term') {
-				$this->add_error($this->get_id(), __('Compound fields do not support fields with multiple values (except categories)', 'tainacan'));
+				$this->add_error($this->get_id(), __('Compound metadata do not support metadata with multiple values (except categories)', 'tainacan'));
 				return false;
 			}
 		}
@@ -423,7 +423,7 @@ class Field extends Entity {
 		if ( $this->get_parent() > 0 && $this->get_field_type_object()->get_primitive_type() == 'term' ) {
 			$parent_field = new \Tainacan\Entities\Field($this->get_parent());
 			if ( $parent_field->is_multiple() ) {
-				$this->add_error($this->get_id(), __('Category fields can not be used inside Compound field with multiple values', 'tainacan'));
+				$this->add_error($this->get_id(), __('Taxonomy metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
 				return false;
 			}
 		}
@@ -438,7 +438,7 @@ class Field extends Entity {
 				, 'OBJECT');
 			
 			if ( sizeof($children) > 0 ) {
-				$this->add_error($this->get_id(), __('Category fields can not be used inside Compound field with multiple values', 'tainacan'));
+				$this->add_error($this->get_id(), __('Taxonomy metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
 				return false;
 			}
 		}

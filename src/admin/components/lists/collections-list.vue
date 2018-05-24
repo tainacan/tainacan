@@ -1,5 +1,7 @@
 <template>
-    <div class="table-container">
+    <div 
+            v-if="totalCollections > 0 && !isLoading"
+            class="table-container">
         <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
@@ -11,13 +13,13 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="collections.length > 0 && collections[0].current_user_can_edit"
+                        v-if="collections[0].current_user_can_edit"
                         :disabled="!isSelectingCollections"
-                        id="mass-actions-dropdown">
+                        id="bulk-actions-dropdown">
                     <button
                             class="button is-white"
                             slot="trigger">
-                        <span>{{ $i18n.get('label_mass_actions') }}</span>
+                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <b-icon icon="menu-down"/>
                     </button> 
 
@@ -36,7 +38,7 @@
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th class="checkbox-cell">
+                        <th>
                             &nbsp;
                             <!-- nothing to show on header -->
                         </th>
@@ -55,6 +57,10 @@
                         <!-- Creation -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_creation') }}</div>
+                        </th>
+                        <th class="actions-header">
+                            &nbsp;
+                            <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
@@ -80,12 +86,12 @@
                             <span>
                                 <img 
                                         class="table-thumb" 
-                                        :src="collection.thumbnail">
+                                        :src="collection.thumbnail.thumb">
                             </span>
                         </td>
                         <!-- Name -->
                         <td 
-                                class="column-default-width"
+                                class="column-default-width column-main-content"
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + collection.name">
@@ -93,7 +99,7 @@
                         </td>
                         <!-- Description -->
                         <td
-                                class="column-default-width" 
+                                class="column-large-width" 
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + collection.description">
@@ -119,7 +125,7 @@
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="pencil"/>
+                                            icon="settings"/>
                                 </a>
                                 <a 
                                         id="button-delete" 
@@ -135,28 +141,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Empty state image -->
-        <div v-if="!totalCollections || totalCollections <= 0">
-            <section class="section">
-                <div class="content has-text-grey has-text-centered">
-                    <p>
-                        <b-icon
-                                icon="inbox"
-                                size="is-large"/>
-                    </p>
-                    <p>{{ $i18n.get('info_no_collection_created') }}</p>
-                    <router-link
-                            id="button-create-collection"
-                            tag="button"
-                            class="button is-primary"
-                            :to="{ path: $routerHelper.getNewCollectionPath() }">
-                        {{ $i18n.getFrom('collections', 'new_item') }}
-                    </router-link>
-                </div>
-            </section>
-        </div>
-
     </div>
 </template>
 
@@ -315,8 +299,7 @@ export default {
         //     document.addEventListener('mouseup', function () {
         //         thElm = undefined;
         //     });
-        // })();
-        
+        // })();  
     }
 }
 </script>
@@ -327,148 +310,15 @@ export default {
 
     .selection-control {
         
-        padding: 20px 14px 0px 14px;
+        padding: 6px 0px 0px 13px;
+        background: white;
+        height: 40px;
 
         .select-all {
             color: $gray-light;
             font-size: 14px;
             &:hover {
                 color: $gray-light;
-            }
-        }
-
-    }
-
-    .table {
-        width: 100%;
-        
-        .checkbox-cell {
-            width: 44px;
-            height: 58px;
-            padding: 0;
-            position: absolute !important;
-            left: $page-side-padding;
-            visibility: hidden;
-            display: flex;
-            justify-content: space-around;
-            z-index: 9;
-
-            &::before {
-                box-shadow: inset 53px 0 10px -12px #222;
-                content: " ";
-                width: 64px;
-                height: 100%;
-                position: absolute;
-                left: 0;
-            }
-
-            .checkbox {  
-                border-radius: 0px;
-                background-color: white;
-                padding: 10px 10px 10px 14px;
-                width: 100%;
-                height: 100%; 
-            }
-            &.is-selecting {
-                visibility: visible; 
-            }
-        }
-        // Only to be used in case we can implement Column resizing
-        // th:not(:last-child) {
-        //     border-right: 1px solid $tainacan-input-background !important;
-        // }
-
-        .thumbnail-cell {
-            width: 58px;
-            padding-left: 54px;
-        }
-  
-        tbody {
-            tr {
-                cursor: pointer;
-                background-color: transparent;
-
-                &.selected-row { 
-                    background-color: $primary-lighter !important; 
-                    .checkbox-cell .checkbox, .actions-cell .actions-container {
-                        background-color: $primary-lighter !important;
-                    }
-                }
-                td {
-                    height: 58px;
-                    max-height: 58px;
-                    padding: 10px;
-                    vertical-align: middle;
-                    line-height: 12px;
-                    border: none;
-                    p { 
-                        font-size: 14px; 
-                        margin: 0px;
-                    }
-                    
-                }
-                td.column-default-width{
-                    max-width: 350px;
-                    p {
-                        text-overflow: ellipsis;
-                        overflow-x: hidden;
-                        white-space: nowrap;
-                    }
-                }
-                img.table-thumb {
-                    max-height: 38px !important;
-                    border-radius: 3px;
-                }
-
-                td.table-creation p {
-                    color: $gray-light;
-                    font-size: 11px;
-                    line-height: 1.5;
-                }
-
-                td.actions-cell {
-                    padding: 0px;
-                    visibility: hidden;
-                    position: absolute;
-                    right: $page-side-padding;
-                    display: none;
-                    
-                    .actions-container {
-                        position: relative;
-                        padding: 10px;
-                        height: 100%;
-                        z-index: 9;
-                        background-color: $tainacan-input-background; 
-                     }
-
-                    a .icon {
-                        margin: 8px;
-                    }
-
-                     &::before {
-                        box-shadow: inset -113px 0 17px -17px #222;
-                        content: " ";
-                        width: 125px;
-                        height: 100%;
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                    }
-                }
-
-                &:hover {
-                    background-color: $tainacan-input-background;
-                    cursor: pointer;
-
-                    .checkbox-cell {
-                        visibility: visible; 
-                        .checkbox { background-color: $tainacan-input-background; }
-                    }
-                    .actions-cell {
-                        visibility: visible;
-                        display: block;
-                    }
-                }
             }
         }
     }

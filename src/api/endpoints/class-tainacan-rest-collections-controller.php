@@ -145,7 +145,7 @@ class REST_Collections_Controller extends REST_Controller {
 
         	if(!isset($request['fetch_only'])) {
 
-		        $item_arr = $item->__toArray();
+		        $item_arr = $item->_toArray();
 
 		        if ( $request['context'] === 'edit' ) {
 		        	$moderators_ids = $item_arr['moderators_ids'];
@@ -171,9 +171,22 @@ class REST_Collections_Controller extends REST_Controller {
 
 		        unset($item_arr['moderators_ids']);
 	        } else {
-        		$attributes_to_filter = $request['fetch_only'];
+		        $attributes_to_filter = $request['fetch_only'];
 
-        		$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+		        # Always returns id
+		        if(is_array($attributes_to_filter)) {
+					$attributes_to_filter[] = 'id';
+		        } else {
+			        $attributes_to_filter = array($attributes_to_filter, 'id');
+		        }
+
+		        $item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+
+		        if ( $request['context'] === 'edit' ) {
+			        $item_arr['current_user_can_edit'] = $item->can_edit();
+				}
+				
+				$item_arr['url'] = get_permalink( $item_arr['id'] );
 	        }
 
             return $item_arr;
@@ -239,7 +252,7 @@ class REST_Collections_Controller extends REST_Controller {
 
 		try {
 			$prepared_post = $this->prepare_item_for_database( $body );
-		} catch (\Error $exception){
+		} catch (\Exception $exception){
 			return new \WP_REST_Response($exception->getMessage(), 400);
 		}
 
@@ -365,7 +378,7 @@ class REST_Collections_Controller extends REST_Controller {
 		    }
 
 		    return new \WP_REST_Response([
-		    	'error_message' => __('Collection with that ID not found', 'tainacan' ),
+		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
 			    'collection_id' => $collection_id
 		    ], 400);
 	    }

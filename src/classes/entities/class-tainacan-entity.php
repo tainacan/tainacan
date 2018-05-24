@@ -139,9 +139,13 @@ class Entity {
 	 */
 	public function get_date_i18n($date){
 
-		$unix_time_stamp = strtotime($date);
+		if($date) {
+			$unix_time_stamp = strtotime( $date );
 
-		return date_i18n(get_option('date_format'), $unix_time_stamp);
+			return date_i18n( get_option( 'date_format' ), $unix_time_stamp );
+		}
+
+		return '';
 	}
 
     /**
@@ -187,8 +191,21 @@ class Entity {
 		if ( method_exists($this, $method) ) {
 			return $this->$method($value);
 		}
-        return null;
     }
+
+	/**
+	 * get the value property
+	 *
+	 *
+	 * @param string $prop id of the property
+	 * @return null|mixed Null on failure, the value that was set on success
+	 */
+	public function get($prop) {
+		$method = 'get_' . $prop;
+		if ( method_exists($this, $method) ) {
+			return $this->$method();
+		}
+	}
 
     /**
      * set the status of the entity
@@ -333,7 +350,7 @@ class Entity {
         return true;
     }
 
-    public function __toArray(){
+    public function _toArray(){
         $repository = $this->get_repository();
 	    $map = $repository->get_map();
 
@@ -345,8 +362,8 @@ class Entity {
 	    return $attributes;
     }
 
-	public function  __toJSON(){
-		return json_encode($this->__toArray(), JSON_NUMERIC_CHECK);
+	public function  _toJson(){
+		return json_encode($this->_toArray(), JSON_NUMERIC_CHECK);
 	}
 	
 	/**

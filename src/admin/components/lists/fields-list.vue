@@ -2,10 +2,25 @@
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"/>
         <tainacan-title v-if="!isRepositoryLevel"/>
+        <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
+        <br>
         <b-tabs v-model="activeTab">    
-            <b-tab-item :label="$i18n.get('category')">
+            <b-tab-item :label="$i18n.get('fields')">
                 <div class="columns">
-                    <div class="column">        
+                    <div class="column"> 
+                        <section 
+                                v-if="activeFieldList.length <= 0 && !isLoadingFields"
+                                class="field is-grouped-centered section">
+                            <div class="content has-text-gray has-text-centered">
+                                <p>
+                                    <b-icon
+                                            icon="format-list-bulleted-type"
+                                            size="is-large"/>
+                                </p>
+                                <p>{{ $i18n.get('info_there_is_no_field' ) }}</p>  
+                                <p>{{ $i18n.get('info_create_metadata' ) }}</p>
+                            </div>
+                        </section>             
                         <draggable 
                                 v-model="activeFieldList"
                                 class="active-fields-area"
@@ -122,8 +137,8 @@
                 </div>
             </b-tab-item>
             <!-- Exposer -->
-            <b-tab-item :label="$i18n.get('exposer')">
-                <p>Exposer Logic goes in here.</p>
+            <b-tab-item :label="$i18n.get('mapping')">
+                <p>Under construction. You will be able to map your metadata to other metadata standards in this page.</p>
             </b-tab-item>
         </b-tabs>
     </div> 
@@ -322,6 +337,13 @@ export default {
             .catch(() => {
                 this.isLoadingFields = false;
             });
+    },
+    mounted() {
+        if (!this.isRepositoryLevel) {
+            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
+                this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+            });
+        }
     }
 }
 </script>

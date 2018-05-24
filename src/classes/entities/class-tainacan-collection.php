@@ -65,8 +65,8 @@ class Collection extends Entity {
 		return 'Hello, my name is ' . $this->get_name();
 	}
 
-	public function __toArray() {
-		$array_collection = parent::__toArray();
+	public function _toArray() {
+		$array_collection = parent::_toArray();
 
 		$array_collection['thumbnail']         = $this->get_thumbnail();
 		$array_collection['header_image']      = $this->get_header_image();
@@ -206,10 +206,16 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * @return false|string
+	 * @return array
 	 */
 	function get_thumbnail() {
-		return get_the_post_thumbnail_url( $this->get_id(), 'full' );
+		return array(
+			'thumb'        => get_the_post_thumbnail_url( $this->get_id(), 'thumbnail' ),
+			'full'         => get_the_post_thumbnail_url( $this->get_id(), 'full' ),
+			'medium'       => get_the_post_thumbnail_url( $this->get_id(), 'medium' ),
+			'medium_large' => get_the_post_thumbnail_url( $this->get_id(), 'medium_large' ),
+			'large'        => get_the_post_thumbnail_url( $this->get_id(), 'large' ),
+		);
 	}
 
 	/**

@@ -70,7 +70,7 @@ class REST_Field_Types_Controller extends REST_Controller {
 		$name = "\Tainacan\Field_Types\\$item";
 		$field_type = new $name();
 
-		$field_arr = $field_type->__toArray();
+		$field_arr = $field_type->_toArray();
 		$field_arr['name'] = $item;
 
 		return $field_arr;
