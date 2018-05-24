@@ -37,7 +37,7 @@ class Exposers {
 		
 		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer mapping
 		add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 ); // exposer types
-		add_filter( 'tainacan-js-i18n', [$this, 'mappers_i18n']);
+		add_filter( 'tainacan-admin-i18n', [$this, 'mappers_i18n']);
 	}
 	
 	/**
@@ -233,10 +233,16 @@ class Exposers {
 		return false; // No mapper need, using Tainacan defautls
 	}
 	
+	/**
+	 * Add mappers data to translations
+	 * @param array $i18n_strings
+	 * @return array
+	 */
 	public function mappers_i18n($i18n_strings) {
 		foreach ($this->mappers as $mapper) {
 			$obj = new $mapper;
-			$i18n_strings[$obj->slug] = $obj->slug;
+			$i18n_strings[$obj->slug] = $obj->slug; // For url breadcrumb translations
+			$i18n_strings[$obj->name] = $obj->name;
 		}
 		return $i18n_strings;
 	}
