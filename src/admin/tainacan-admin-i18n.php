@@ -1,6 +1,6 @@
 <?php
 
-return apply_filters('tainacan-js-i18n', [
+return apply_filters('tainacan-admin-i18n', [
 	// Tainacan common terms
 	'repository'                               => __( 'Repository', 'tainacan' ),
 	'collections'                              => __( 'Collections', 'tainacan' ),
@@ -40,6 +40,7 @@ return apply_filters('tainacan-js-i18n', [
 	'add_items_bulk'                           => __( 'Add items in bulk', 'tainacan' ),
 	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
 	'new_mapped_item'                          => __( 'New mapped collection', 'tainacan' ),
+    'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
