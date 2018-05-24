@@ -6,3 +6,7 @@ export const getFields = state => {
 export const getFieldTypes = state => {
     return state.fieldTypes;
 }
+
+export const getFieldMappers = state => {
+    return state.fieldMappers;
+}
