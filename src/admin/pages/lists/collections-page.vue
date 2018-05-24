@@ -1,5 +1,6 @@
 <template>
     <div class="primary-page page-container">
+        <b-loading :active.sync="isLoadingFieldMappers"/>
         <tainacan-title />
         <div
                 class="sub-header"
@@ -12,8 +13,7 @@
                     <button
                             class="button is-secondary"
                             slot="trigger">
-                        <span>{{ $i18n.getFrom('collections', 'new_item') }}</span>
-                        <b-icon icon="menu-down"/>
+                        <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
                     </button>
                     <b-dropdown-item>
                         <router-link
@@ -21,16 +21,18 @@
                                 class="is-white"
                                 tag="div"
                                 :to="{ path: $routerHelper.getNewCollectionPath() }">
-                            {{ $i18n.getFrom('collections', 'new_item') }}
+                            {{ $i18n.get('new_blank_collection') }}
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item>
+                    <b-dropdown-item
+                            :key="field_mapper.slug"
+                            v-for="field_mapper in field_mappers">
                         <router-link
-                                id="dropdown-button-create-mapped-collection"
+                                :id="'dropdown-button-create-collection-' + field_mapper.slug"
                                 class="is-white"
                                 tag="div"
-                                :to="{ path: $routerHelper.getNewMappedCollectionPath('dublin-core') }">
-                            {{ $i18n.get('new_mapped_item') }}
+                                :to="{ path: $routerHelper.getNewMappedCollectionPath(field_mapper.slug) }">
+                            {{ $i18n.get(field_mapper.name) }}
                         </router-link>
                     </b-dropdown-item>
                 </b-dropdown>
@@ -98,7 +100,8 @@ export default {
             isLoading: false,
             totalCollections: 0,
             page: 1,
-            collectionsPerPage: 12
+            collectionsPerPage: 12,
+            isLoadingFieldMappers: true
         }
     },
     components: {
@@ -108,8 +111,14 @@ export default {
          ...mapActions('collection', [
             'fetchCollections',
         ]),
+        ...mapActions('fields', [
+            'fetchFieldMappers'
+        ]),
         ...mapGetters('collection', [
             'getCollections'
+        ]),
+        ...mapGetters('fields', [
+            'getFieldMappers'
         ]),
         onChangeCollectionsPerPage(value) {
             let prevValue = this.collectionsPerPage;
@@ -145,15 +154,29 @@ export default {
             for (let collection of collectionsList) 
                 collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + collection['creation_date'];
             return collectionsList;
+        },
+        field_mappers: {
+            get() {
+                var data = this.getFieldMappers()
+                return data;
+            }
         }
     },
     created() {
+        this.isLoadingFieldTypes = true;
         this.$userPrefs.get('collections_per_page')
             .then((value) => {
                 this.collectionsPerPage = value;
             })
             .catch(() => {
                 this.$userPrefs.set('collections_per_page', 12, null);
+            });
+        this.fetchFieldMappers()
+            .then(() => {
+                this.isLoadingFieldMappers = false;
+            })
+            .catch(() => {
+                this.isLoadingFieldMappers = false;
             });
     },
     mounted(){
