@@ -43,7 +43,7 @@ const routes = [
         { path: 'items/:itemId/edit', name: 'ItemEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item'), icon: 'folder-multiple'} },
         { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection'), icon: 'folder-multiple'} },
         { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page'), icon: 'folder-multiple'} },   
-        { path: 'edit', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_edit_collection'), icon: 'folder-multiple'} },
+        { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_collection_settings'), icon: 'folder-multiple'} },
         { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: i18nGet('title_collection_fields_edition'), icon: 'folder-multiple'} }, 
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition'), icon: 'folder-multiple'} },
         { path: 'events', component: EventsPage, name: 'CollectionEventsPage', meta: {title: i18nGet('title_collection_events'), icon: 'flash'} }

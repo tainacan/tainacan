@@ -21,6 +21,7 @@ return [
 
 	// Actions
 	'edit'                                     => __( 'Edit', 'tainacan' ),
+	'settings'                                 => __( 'Settings', 'tainacan' ),
 	'new'                                      => __( 'New', 'tainacan' ),
 	'add'                                      => __( 'Add', 'tainacan' ),
 	'import'                                   => __( 'Import', 'tainacan' ),
@@ -71,7 +72,7 @@ return [
 	'title_create_category_page'               => __( 'Taxonomy Creation', 'tainacan' ),
 	'title_create_item_collection'             => __( 'Create Item on Collection', 'tainacan' ),
 	'title_create_filter'                      => __( 'Filter Creation', 'tainacan' ),
-	'title_edit_collection'                    => __( 'Settings of Collection', 'tainacan' ),
+	'title_collection_settings'                => __( 'Settings of Collection', 'tainacan' ),
 	'title_edit_item'     	                   => __( 'Edit Item', 'tainacan' ),
 	'title_category_edition_page'              => __( 'Taxonomy Edition', 'tainacan' ),
 	'title_filter_edition'                     => __( 'Filter Edition', 'tainacan' ),

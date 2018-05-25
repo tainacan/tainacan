@@ -579,7 +579,7 @@ export default {
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewCollection();
             this.isNewCollection = true;
-        } else if (this.$route.fullPath.split("/").pop() == "edit") {
+        } else if (this.$route.fullPath.split("/").pop() == "settings") {
 
             this.isLoading = true;
 
