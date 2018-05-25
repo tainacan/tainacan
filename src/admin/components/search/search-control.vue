@@ -36,18 +36,24 @@
                     <span>{{ $i18n.get('label_table_fields') }}</span>
                     <b-icon icon="menu-down"/>
                 </button>
+                <b-dropdown-item>
+                    <button 
+                            @click="onChangeDisplayedFields()"
+                            class="button is-secondary">
+                        {{ $i18n.get('label_apply') }}
+                    </button>
+                </b-dropdown-item> 
                 <b-dropdown-item
-                        v-for="(column, index) in tableFields"
+                        v-for="(column, index) in localTableFields"
                         :key="index"
                         class="control"
                         custom>
                     <b-checkbox
-                            @input="onChangeDisplayedField($event, index)"
-                            :value="column.display"
+                            v-model="column.display"
                             :native-value="column.display">
                         {{ column.name }}
                     </b-checkbox>
-                </b-dropdown-item>
+                </b-dropdown-item>    
             </b-dropdown>
         </div>
         <div class="header-item">
@@ -88,7 +94,8 @@
         name: 'SearchControl',
         data() {
             return {
-                prefTableFields: []
+                prefTableFields: [],
+                localTableFields: []
             }
         },
         props: {
@@ -97,6 +104,11 @@
             tableFields: Array,
             isOnTheme: false     
         },
+        watch: {
+            tableFields() {
+                this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));
+            }
+        },
         computed: {
             orderBy() {
                 return this.getOrderBy();
@@ -104,6 +116,12 @@
             order() {
                 return this.getOrder();
             }
+        },
+        mounted() {
+            this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));
+        },
+        created() {
+            this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));
         },
         methods: {
             ...mapGetters('search', [
@@ -116,13 +134,15 @@
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
             },
-            onChangeDisplayedField(event, index) {
-                if (this.tableFields[index] != undefined) {
-                    this.tableFields[index].display = event;
-                    if (event)
-                        this.$eventBusSearch.addFetchOnlyMeta(this.tableFields[index].id);
-                    else 
-                        this.$eventBusSearch.removeFetchOnlyMeta(this.tableFields[index].id);
+            onChangeDisplayedFields() {
+                for (let i = 0; i < this.tableFields.length; i++) {
+                    if (this.tableFields[i] != undefined) {
+                        this.tableFields[i] = this.localTableFields[i];
+                        if (this.tableFields[i])
+                            this.$eventBusSearch.addFetchOnlyMeta(this.tableFields[i].id);
+                        else 
+                            this.$eventBusSearch.removeFetchOnlyMeta(this.tableFields[i].id);
+                    }
                 }
             }
         }
