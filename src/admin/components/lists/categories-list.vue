@@ -78,7 +78,13 @@
                                 @click="goToCategoryEditPage(category.id)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + category.name">
-                            <p>{{ category.name }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: category.name,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ category.name }}</p>
                         </td>
                         <!-- Description -->
                         <td
@@ -86,7 +92,13 @@
                                 @click="goToCategoryEditPage(category.id)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + category.description">
-                            <p>{{ category.description }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: category.description,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ category.description }}</p>
                         </td>
                         <!-- Actions -->
                         <td 

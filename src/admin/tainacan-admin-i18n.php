@@ -153,7 +153,7 @@ return [
 	'label_term_without_name'                  => __( 'Term without name', 'tainacan' ),
 	'label_inherited'                          => __( 'Inherited', 'tainacan' ),
 	'label_sorting'                            => __( 'Sorting', 'tainacan' ),
-	'label_who_when'                           => __( 'Who and when', 'tainacan' ),
+	'label_event_date'                         => __( 'Event date', 'tainacan' ),
 	'label_event_title'                        => __( 'Event', 'tainacan' ),
 	'label_header_image'                       => __( 'Header Image', 'tainacan' ),
 	'label_empty_header_image'                 => __( 'Empty Header Image', 'tainacan' ),

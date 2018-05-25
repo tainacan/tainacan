@@ -46,7 +46,7 @@ export const filter_type_mixin = {
                 .then(res => {
                     if (res.data.length > 0) {
                         for (let item of res.data) {
-                            this.options.push({label: item.title, value: item.id, img: item.thumbnail });
+                            this.options.push({label: item.title, value: item.id, img: item.thumbnail.thumb });
                         }
                     }
                 })

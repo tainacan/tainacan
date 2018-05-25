@@ -112,7 +112,8 @@
                                     v-tooltip="{
                                         content: renderMetadata( item.metadata[column.slug] ),
                                         html: true,
-                                        autoHide: false
+                                        autoHide: false,
+                                        placement: 'auto-start'
                                     }"
                                     v-if="item.metadata != undefined &&
                                           column.field !== 'row_thumbnail' &&
@@ -126,7 +127,14 @@
                                         class="table-thumb" 
                                         :src="item[column.slug].thumb">
                             </span> 
-                            <p v-if="column.field == 'row_author' || column.field == 'row_creation'">
+                            <p 
+                                    v-tooltip="{
+                                        content: item[column.slug],
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="column.field == 'row_author' || column.field == 'row_creation'">
                                     {{ item[column.slug] }}
                             </p>
 

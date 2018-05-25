@@ -183,12 +183,8 @@ export default {
         }
     },
     computed: {
-        collections(){
-            let collectionsList = this.getCollections(); 
-            for (let collection of collectionsList) 
-                collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + collection['creation_date'];
-            
-            return collectionsList;
+        collections() {
+            return this.getCollections(); 
         }
     },
     created() {

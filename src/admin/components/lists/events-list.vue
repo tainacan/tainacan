@@ -8,9 +8,13 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_event_title') }}</div>
                         </th>
-                        <!-- Who and When -->
+                        <!-- Created by -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_who_when') }}</div>
+                            <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
+                        </th>
+                        <!-- Event date -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_event_date') }}</div>
                         </th>
                         <!-- Status -->
                         <!--<th>-->
@@ -28,15 +32,40 @@
                                 @click="goToEventPage(event.id)"
                                 :label="$i18n.get('label_event_title')" 
                                 :aria-label="$i18n.get('label_event_title') + ': ' + event.title">
-                            <p>{{ event.title }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: event.title,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">{{ event.title }}</p>
                         </td>
-                        <!-- Who and When -->
+                        <!-- User -->
                         <td
                                 class="table-creation column-small-width" 
                                 @click="goToEventPage(event.id)"
-                                :label="$i18n.get('label_who_when')" 
-                                :aria-label="$i18n.get('label_who_when') + ': ' + event.by">
-                            <p v-html="event.by" />
+                                :label="$i18n.get('label_created_by')" 
+                                :aria-label="$i18n.get('label_created_by') + ': ' + event.user_name">
+                            <p 
+                                    v-tooltip="{
+                                        content: event.user_name,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="event.user_name" />
+                        </td>
+                        <!-- Event Date -->
+                        <td
+                                class="table-creation column-small-width" 
+                                @click="goToEventPage(event.id)"
+                                :label="$i18n.get('label_event_date')" 
+                                :aria-label="$i18n.get('label_event_date') + ': ' + event.log_date">
+                            <p 
+                                    v-tooltip="{
+                                        content: event.log_date,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="event.log_date" />
                         </td>
                         <!-- Status -->
                         <!--<td-->

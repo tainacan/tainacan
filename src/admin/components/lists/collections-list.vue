@@ -54,9 +54,13 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
                         </th>
-                        <!-- Creation -->
+                        <!-- Creation Date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_creation') }}</div>
+                            <div class="th-wrap">{{ $i18n.get('label_creation_date') }}</div>
+                        </th>
+                        <!-- Created By -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
                         </th>
                         <th class="actions-header">
                             &nbsp;
@@ -95,7 +99,13 @@
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + collection.name">
-                            <p>{{ collection.name }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: collection.name,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ collection.name }}</p>
                         </td>
                         <!-- Description -->
                         <td
@@ -103,15 +113,41 @@
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + collection.description">
-                            <p>{{ collection.description }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: collection.description,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ collection.description }}</p>
                         </td>
-                        <!-- Creation -->
+                        <!-- Creation Date -->
                         <td
                                 @click="goToCollectionPage(collection.id)"
                                 class="table-creation column-default-width" 
-                                :label="$i18n.get('label_creation')" 
-                                :aria-label="$i18n.get('label_creation') + ': ' + collection.creation">
-                            <p v-html="collection.creation" />
+                                :label="$i18n.get('label_creation_date')" 
+                                :aria-label="$i18n.get('label_creation_date') + ': ' + collection.creation_date">
+                            <p
+                                    v-tooltip="{
+                                        content: collection.creation_date,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="collection.creation_date" />
+                        </td>
+                        <!-- Created by -->
+                        <td
+                                @click="goToCollectionPage(collection.id)"
+                                class="table-creation column-default-width" 
+                                :label="$i18n.get('label_created_by')" 
+                                :aria-label="$i18n.get('label_created_by') + ': ' + collection.author_name">
+                            <p
+                                    v-tooltip="{
+                                        content: collection.author_name,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="collection.author_name" />
                         </td>
                         <!-- Actions -->
                         <td 
