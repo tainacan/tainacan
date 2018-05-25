@@ -29,20 +29,16 @@
 
         </div>
         <div class="header-item">
-            <b-dropdown class="show">
+            <b-dropdown
+                    ref="displayedFieldsDropdown"
+                    class="show">
                 <button
                         class="button is-white"
                         slot="trigger">
                     <span>{{ $i18n.get('label_table_fields') }}</span>
                     <b-icon icon="menu-down"/>
                 </button>
-                <b-dropdown-item>
-                    <button 
-                            @click="onChangeDisplayedFields()"
-                            class="button is-secondary">
-                        {{ $i18n.get('label_apply') }}
-                    </button>
-                </b-dropdown-item> 
+                <div class="metadata-options-container">
                 <b-dropdown-item
                         v-for="(column, index) in localTableFields"
                         :key="index"
@@ -53,7 +49,15 @@
                             :native-value="column.display">
                         {{ column.name }}
                     </b-checkbox>
-                </b-dropdown-item>    
+                </b-dropdown-item>   
+                </div>
+                <div class="dropdown-item-apply">
+                    <button 
+                            @click="onChangeDisplayedFields()"
+                            class="button is-success">
+                        {{ $i18n.get('label_apply_changes') }}
+                    </button>
+                </div>  
             </b-dropdown>
         </div>
         <div class="header-item">
@@ -120,9 +124,6 @@
         mounted() {
             this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));
         },
-        created() {
-            this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));
-        },
         methods: {
             ...mapGetters('search', [
                 'getOrderBy',
@@ -135,15 +136,24 @@
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
             },
             onChangeDisplayedFields() {
-                for (let i = 0; i < this.tableFields.length; i++) {
-                    if (this.tableFields[i] != undefined) {
-                        this.tableFields[i] = this.localTableFields[i];
-                        if (this.tableFields[i])
-                            this.$eventBusSearch.addFetchOnlyMeta(this.tableFields[i].id);
-                        else 
-                            this.$eventBusSearch.removeFetchOnlyMeta(this.tableFields[i].id);
+                let fetchOnlyFieldIds = [];
+
+                for (let i = 0; i < this.localTableFields.length; i++) {
+
+                    this.tableFields[i].display = this.localTableFields[i].display;
+                    if (this.tableFields[i].id != undefined) {
+                        if (this.tableFields[i].display) {
+                            fetchOnlyFieldIds.push(this.tableFields[i].id);                      
+                        }
                     }
                 }
+                this.$eventBusSearch.addFetchOnly({
+                    '0': 'thumbnail',
+                    'meta': fetchOnlyFieldIds,
+                    '1': 'creation_date',
+                    '2': 'author_name'
+                });
+                this.$refs.displayedFieldsDropdown.toggle();
             }
         }
     }
@@ -161,6 +171,22 @@
     }
     .header-item .dropdown-menu {
         display: block;
+    }
+    .metadata-options-container {
+        max-height: 240px;
+        overflow: auto;
+    }
+    .dropdown-content {
+        padding: 0;
+    }
+    .dropdown-item-apply {
+        width: 100%;
+        border-top: 1px solid #efefef;
+        padding: 8px 12px;
+        text-align: right;
+    }
+    .dropdown-item-apply .button {
+        width: 100%;
     }
 </style>
 

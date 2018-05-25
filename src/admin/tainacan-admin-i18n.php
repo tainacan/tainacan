@@ -191,7 +191,7 @@ return [
 	'label_blank_collection'				   => __( 'Blank collection', 'tainacan' ),
 	'label_dublin_core'						   => __( 'Dublin Core', 'tainacan' ),
 	'label_created_by'						   => __( 'Created by', 'tainacan' ),
-	'label_apply'							   => __( 'Apply', 'tainacan' ),
+	'label_apply_changes'					   => __( 'Apply changes', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

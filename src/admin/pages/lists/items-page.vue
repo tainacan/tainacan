@@ -289,7 +289,7 @@
                             field: 'row_creation',
                             field_type: undefined,
                             slug: 'creation_date',
-                            id: 'creation_date',
+                            id: undefined,
                             display: true
                         });
                         this.tableFields.push({
@@ -297,7 +297,7 @@
                             field: 'row_author',
                             field_type: undefined,
                             slug: 'author_name',
-                            id: 'author_name',
+                            id: undefined,
                             display: true
                         });
 
