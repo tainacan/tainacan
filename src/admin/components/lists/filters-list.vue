@@ -69,14 +69,14 @@
                                         v-model="filter.enabled" 
                                         @input="onChangeEnable($event, index)"/>
                                 <a 
-                                        :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
+                                        :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
                                         @click.prevent="editFilter(filter)">
                                     <b-icon 
                                             type="is-gray" 
                                             icon="pencil"/>
                                 </a>
                                 <a 
-                                        :style="{ visibility: filter.collection_id != collectionId ? 'hidden' : 'visible' }" 
+                                        :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel ? 'hidden' : 'visible' }"
                                         @click.prevent="removeFilter(filter)">
                                     <b-icon 
                                             type="is-gray" 

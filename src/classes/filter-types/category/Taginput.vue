@@ -22,7 +22,13 @@
             this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
 
-            axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+            let in_route = '/collection/' + this.collection + '/fields/' +  this.field +'?context=edit';
+
+            if(this.repository){
+                in_route = '/fields?context=edit';
+            }
+
+            axios.get(in_route)
                 .then( res => {
                     let field = res.data;
                     this.selectedValues( field.field_type_options.taxonomy_id );
@@ -50,7 +56,8 @@
             id: '',
             query: {
                 type: Object // concentrate all attributes field id and type
-            }
+            },
+            repository: Boolean,
         },
         watch: {
             selected( value ){

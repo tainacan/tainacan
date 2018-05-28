@@ -67,7 +67,9 @@ rm -rf $wp_plugin_dir
 
 mkdir $wp_plugin_dir
 
-rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='vendor/wimg' src/* $wp_plugin_dir/
+rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='vendor/wimg' \
+ --exclude='vendor/respect/validation/.git' --exclude='pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
+  src/* $wp_plugin_dir/
 
 rm -rf $wp_plugin_dir/scss
 

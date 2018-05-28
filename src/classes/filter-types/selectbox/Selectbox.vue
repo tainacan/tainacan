@@ -27,7 +27,14 @@
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
             const vm = this;
-            axios.get('/collection/' + this.collection + '/fields/' +  this.field )
+
+            let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
+
+            if(this.repository){
+                in_route = '/fields/'+ this.field;
+            }
+
+            axios.get(in_route)
                 .then( res => {
                     let result = res.data;
                     if( result && result.field_type ){
@@ -39,6 +46,9 @@
                 .catch(error => {
                     this.$console.error(error);
                 });
+        },
+        props: {
+            repository: Boolean,
         },
         data(){
             return {
