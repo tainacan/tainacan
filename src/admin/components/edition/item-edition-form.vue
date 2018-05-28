@@ -459,6 +459,7 @@ export default {
                 this.form.document_type = this.item.document_type;
 
                 this.loadMetadata();
+                this.fetchAttachments(this.itemId);
 
             })
             .catch(error => this.$console.error(error));
