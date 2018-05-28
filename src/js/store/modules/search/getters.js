@@ -44,6 +44,10 @@ export const getStatus = state => {
     return state.postquery.status;
 }
 
+export const getViewMode = state => {
+    return state.postquery.format;
+}
+
 export const getFetchOnly = state => {
     return state.postquery.fetch_only;
 }

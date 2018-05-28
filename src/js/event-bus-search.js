@@ -108,6 +108,10 @@ export default {
                     this.$store.dispatch('search/setSearchQuery', searchQuery);
                     this.updateURLQueries();
                 },
+                setViewMode(viewMode) {
+                    this.$store.dispatch('search/setViewMode', viewMode);
+                    this.updateURLQueries();
+                },
                 updateURLQueries() {
                     this.$router.push({ query: {}});
                     this.$router.push({ query: this.$store.getters['search/getPostQuery'] });
