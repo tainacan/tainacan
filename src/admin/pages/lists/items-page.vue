@@ -6,6 +6,7 @@
         <!-- Filter menu compress button -->
         <button 
                 id="filter-menu-compress-button"
+                :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
                 :style="{ top: isHeaderShrinked ? '125px' : '152px'}"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
@@ -22,7 +23,7 @@
                 <div class="control is-small is-clearfix">
                     <input
                         class="input is-small"
-                        :placeholder=" $i18n.get('instruction_search_collection') "
+                        :placeholder="$i18n.get('instruction_search')"
                         type="search"
                         autocomplete="on"
                         :value="searchQuery"
@@ -46,7 +47,9 @@
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
-                    v-if="!isLoadingFilters && filters.length > 0"
+                    v-if="!isLoadingFilters &&
+                    ((filters.length >= 0 &&
+                     isRepositoryLevel) || filters.length > 0)"
                     class="collapse-all is-size-7"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -60,9 +63,12 @@
             <br>
 
             <filters-items-list
-                    v-if="!isLoadingFilters && filters.length > 0"
+                    v-if="!isLoadingFilters &&
+                    ((filters.length >= 0 &&
+                     isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
-                    :collapsed="collapseAll"/>
+                    :collapsed="collapseAll"
+                    :repository="isRepositoryLevel"/>
 
             <section
                     v-else
@@ -528,7 +534,8 @@
         created() {
 
             this.isOnTheme = (this.$route.name == null);
-            this.isRepositoryLevel = (this.collectionId == undefined);
+
+            this.isRepositoryLevel = this.collectionId === undefined;
 
             this.$eventBusSearch.setCollectionId(this.collectionId);
 
@@ -610,14 +617,14 @@
         position: absolute;
         z-index: 9;
         top: 152px;
-        left: 0px;
+        left: 0;
         max-width: 23px;
         height: 21px;
         width: 23px;
         border: none;
         background-color: $primary-lighter;
         color: $tertiary;
-        padding: 0px;
+        padding: 0;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
         cursor: pointer;

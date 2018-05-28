@@ -1,6 +1,6 @@
 <template>
     <b-field
-            id="filter-item-forms"
+            class="filter-item-forms"
             :message="getErrorMessage"
             :type="filterTypeMessage">
         <b-collapse
@@ -22,6 +22,7 @@
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
+                        :repository="repository"
                         @input="listen( $event )"/>
             </div>
         </b-collapse>
@@ -36,7 +37,8 @@
         props: {
             filter: Object,
             query: Object,
-            open: true,
+            open: false,
+            repository: Boolean,
         },
         data(){
             return {
@@ -76,7 +78,7 @@
 <style lang="scss">
     @import "../../../src/admin/scss/_variables.scss";
 
-    #filter-item-forms {
+    .filter-item-forms {
 
         .datepicker {
 

@@ -375,12 +375,8 @@ class REST_Controller extends \WP_REST_Controller {
 
 		$query_params['perpage'] = array(
 			'description'        => __( "Maximum number of $object_name to be returned in result set." ),
-			'type'               => 'integer',
+			'type'               => 'numeric',
 			'default'            => 10,
-			'minimum'            => 1,
-			'maximum'            => 100,
-			'sanitize_callback'  => 'absint',
-			'validate_callback'  => 'rest_validate_request_arg',
 		);
 
 		$query_params['paged'] = array(
