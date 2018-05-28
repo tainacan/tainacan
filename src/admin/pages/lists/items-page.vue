@@ -101,8 +101,7 @@
                     :is-on-theme="isOnTheme"
                     :status="status"
                     :has-results="items.length > 0"
-                    :view-mode="viewMode"
-                    @onChangeViewMode="viewMode = $event"/>
+                    :view-mode="viewMode"/>
             
             <!-- <div 
                     :items="items"
@@ -113,13 +112,13 @@
                         :is-full-page="false"
                         :active.sync="isLoadingItems"/>
                 <items-list
-                        v-if="viewMode == 'table' && !isLoadingItems && items.length > 0"
+                        v-if="(viewMode == 'table' || viewMode == undefined || viewMode == '') && !isLoadingItems && items.length > 0"
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoading"
                         :is-on-theme="isOnTheme"/>
-
+        
                 <tainacan-cards-list
                         v-if="viewMode == 'cards' && !isLoadingItems && items.length > 0"
                         :table-fields="tableFields"
@@ -189,7 +188,6 @@
                 isOnTheme: false,
                 futureSearchQuery: '',
                 isHeaderShrinked: false,
-                viewMode: 'table'
             }
         },
         props: {
@@ -221,7 +219,8 @@
             ]),
             ...mapGetters('search', [
                 'getSearchQuery',
-                'getStatus'
+                'getStatus',
+                'getViewMode'
             ]),
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
@@ -339,6 +338,9 @@
             },
             status() {
                 return this.getStatus();
+            },
+            viewMode() {
+                return this.getViewMode();
             }
         },
         created() {

@@ -70,7 +70,7 @@
                     class="header-item">
                 <b-field>
                    <b-dropdown 
-                            @change="$emit('onChangeViewMode', $event)"
+                            @change="onChangeViewMode($event)"
                             :value="viewMode">
                         <button 
                                 class="button is-white" 
@@ -191,6 +191,9 @@
             },
             onChangeTab(status) {
                 this.$eventBusSearch.setStatus(status);
+            },
+            onChangeViewMode(event) {
+                this.$eventBusSearch.setViewMode(event);
             },
             onChangeDisplayedFields() {
                 let fetchOnlyFieldIds = [];

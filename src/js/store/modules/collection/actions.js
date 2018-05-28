@@ -25,9 +25,11 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         axios.tainacan.get(endpoint + qs.stringify(postQueries) )
         .then(res => {
             let items = res.data;
+
             commit('setItems', items );
             dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
-            resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
+            resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered} );
+
         })
         .catch(error => reject(error));
     });

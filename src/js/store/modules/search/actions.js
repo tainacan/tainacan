@@ -96,3 +96,8 @@ export const setOrder = ({ commit }, order ) => {
 export const setSearchQuery = ({ commit }, searchQuery ) => {
     commit('setSearchQuery', searchQuery );
 };
+
+// Set ViewMode (format)
+export const setViewMode = ({ commit }, viewMode ) => {
+    commit('setViewMode', viewMode );
+};

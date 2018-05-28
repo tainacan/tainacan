@@ -51,3 +51,7 @@ export const getFetchOnly = state => {
 export const getFetchOnlyMeta = state => {
     return ( ! state.postquery.fetch_only['meta'] ) ? [] : state.postquery.fetch_only['meta'];
 }
+
+export const getViewMode = state => {
+    return state.postquery.format;
+}
