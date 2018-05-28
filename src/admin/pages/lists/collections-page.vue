@@ -29,6 +29,7 @@
                 </b-dropdown>
             </div>
         </div>
+
         <div class="above-subheader">
             <div class="tabs">
                 <ul>
@@ -51,7 +52,7 @@
                         :collections-per-page="collectionsPerPage"
                         :collections="collections"/> 
 
-                 <!-- Empty state image -->
+                <!-- Empty state image -->
                 <div v-if="totalCollections <= 0 && !isLoading">
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
@@ -73,7 +74,8 @@
                             </router-link>
                         </div>
                     </section>
-                </div> 
+                </div>  
+                
                 <!-- Footer -->
                 <div
                         class="pagination-area"
@@ -181,12 +183,8 @@ export default {
         }
     },
     computed: {
-        collections(){
-            let collectionsList = this.getCollections(); 
-            for (let collection of collectionsList) 
-                collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + collection['creation_date'];
-            
-            return collectionsList;
+        collections() {
+            return this.getCollections(); 
         }
     },
     created() {

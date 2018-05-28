@@ -1,0 +1,96 @@
+.dropdown, .autocomplete {
+    .dropdown-trigger{
+        .button {
+            border: none;
+            .icon {
+                color: $secondary;
+                align-items: start;
+            }
+        }
+        .button.is-primary, .button.is-secondary, .button.is-success {
+            .icon {
+                color: $white;
+            }
+        }
+    }
+    .dropdown-menu {
+        .dropdown-content {
+            border-radius: 0px !important;
+            .dropdown-item {
+                .b-checkbox { width: 100% };
+                &:hover {
+                    background-color: $primary-lighter;
+                }
+                .is-small {
+                    color: gray;
+                }
+            }
+        } 
+    }
+}
+.taginput-container {
+    padding: 0 !important;
+    background-color: white !important;
+
+    &:focus, &:active {
+        border: none !important;
+    }
+    .input { margin-bottom: 0px !important; }
+    .input.has-selected, .input:focus, .input:active {
+        background-color: white;
+        border: 1px solid $tainacan-input-background !important;
+    }
+    .tag {
+        background: white;
+        padding-right: 0;
+        padding-left: 0.5em;
+
+        &.is-delete {
+            color: $gray-light;
+            &::after {
+                height: 30% !important;
+                width: 1px !important;
+            } 
+            &::before {
+                width: 30% !important;
+                height: 1px !important;
+            } 
+            &:hover, &:focus {
+                background-color: white;
+                color: black;
+            }
+        }
+    }
+}
+.selected-list-box {
+    padding: 4px 0px;
+    border: 1px solid $tainacan-input-background;
+    background-color: white;
+    display: flex;
+    font-size: 12px;
+
+    .tags {
+        margin-right: 8px;
+    }
+    .tag {
+        background: white;
+        padding-right: 0;
+        padding-left: 0.5em;
+
+        &.is-delete {
+            color: $gray-light;
+            &::after {
+                height: 30% !important;
+                width: 1px !important;
+            } 
+            &::before {
+                width: 30% !important;
+                height: 1px !important;
+            } 
+            &:hover, &:focus {
+                background-color: white;
+                color: black;
+            }
+        }
+    }
+}

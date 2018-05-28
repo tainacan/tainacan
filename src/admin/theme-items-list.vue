@@ -20,20 +20,6 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../node_modules/buefy/src/scss/components/_tag.scss";
 
-    /* Rules for sizing the icon. */
-    .material-icons.md-18 { font-size: 18px; }
-    .material-icons.md-24 { font-size: 24px; }
-    .material-icons.md-36 { font-size: 36px; }
-    .material-icons.md-48 { font-size: 48px; }
-
-    /* Rules for using icons as black on a light background. */
-    .material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-    .material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
-
-    /* Rules for using icons as white on a dark background. */
-    .material-icons.md-light { color: rgba(255, 255, 255, 1); }
-    .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
-
     // Tainacan custom colors
     $primary: #2cb4c1;
     $primary-invert: findColorInvert($primary);
@@ -63,6 +49,11 @@ export default {
 
     $danger: #a23939; 
     $danger-invert: findColorInvert($danger);
+
+    $table-side-padding: 4.166666667%;
+
+    @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_tooltips.scss";
     
     .theme-items-list {
 
@@ -383,26 +374,6 @@ export default {
             }
         }
 
-        // Tables
-        .table-wrapper {
-            .table {
-                border-collapse: collapse;
-                tbody {
-                    td { border-bottom: 0px solid $gray-light !important; }
-                }
-                .b-checkbox.checkbox input[type="checkbox"] + .check {
-                    width: 0.85em !important;
-                    height: 0.85em !important;
-                    border-radius: 2px !important;
-                    border: 1px solid #7a7a7a !important;
-                }
-                .th-wrap {
-                    font-size: 12px !important;
-                    font-weight: normal !important;
-                }
-            }
-            margin-bottom: 0px !important;
-        }
         .pagination-area {
             display: flex;
             justify-content: space-between;

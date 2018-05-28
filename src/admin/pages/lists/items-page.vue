@@ -97,33 +97,18 @@
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed }">
             <!-- SEARCH CONTROL ------------------------- -->
-            <div class="sub-header">
-                <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoadingFields"/>
-                <search-control
-                        v-if="fields.length > 0 && (items.length > 0 || isLoadingItems)"
-                        :is-repository-level="isRepositoryLevel"
-                        :collection-id="collectionId"
-                        :table-fields="tableFields"
-                        :pref-table-fields="prefTableFields"
-                        :is-on-theme="isOnTheme"/>
-            </div>
-            <div 
-                    v-if="!isOnTheme"
-                    class="tabs">
-                <ul>
-                    <li 
-                            @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
-                    <li 
-                            @click="onChangeTab('draft')"
-                            :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
-                    <li 
-                            @click="onChangeTab('trash')"
-                            :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
-                </ul>
-            </div>
+            <b-loading
+                    :is-full-page="false"
+                    :active.sync="isLoadingFields"/>
+            <search-control
+                    :collection-id="collectionId"
+                    :table-fields="tableFields"
+                    :pref-table-fields="prefTableFields"
+                    :is-on-theme="isOnTheme"
+                    :status="status"
+                    :has-results="items.length > 0"
+                    :view-mode="viewMode"
+                    @onChangeViewMode="viewMode = $event"/>
             
             <!-- <div 
                     :items="items"
@@ -134,12 +119,25 @@
                         :is-full-page="false"
                         :active.sync="isLoadingItems"/>
                 <items-list
-                        v-if="!isLoadingItems && items.length > 0"
+                        v-if="viewMode == 'table' && !isLoadingItems && items.length > 0"
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoading"
                         :is-on-theme="isOnTheme"/>
+
+                <tainacan-cards-list
+                        v-if="viewMode == 'cards' && !isLoadingItems && items.length > 0"
+                        :table-fields="tableFields"
+                        :items="items"
+                        :is-loading="isLoading"/>
+
+                <tainacan-list-list
+                        v-if="viewMode == 'list' && !isLoadingItems && items.length > 0"
+                        :table-fields="tableFields"
+                        :items="items"
+                        :is-loading="isLoading"/>
+
                 <section
                         v-if="!isLoadingItems && items.length <= 0"
                         class="section">
@@ -178,6 +176,9 @@
     import Pagination from '../../components/search/pagination.vue'
     import {mapActions, mapGetters} from 'vuex';
 
+    import TainacanCardsList from '../../components/item-view-modes/tainacan-cards-list.vue';
+    import TainacanListList from '../../components/item-view-modes/tainacan-list-list.vue';
+
     export default {
         name: 'ItemsPage',
         data() {
@@ -190,10 +191,11 @@
                 isLoadingFields: false,
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
-                collapseAll: false,
+                collapseAll: true,
                 isOnTheme: false,
                 futureSearchQuery: '',
-                isHeaderShrinked: false
+                isHeaderShrinked: false,
+                viewMode: 'table'
             }
         },
         props: {
@@ -203,7 +205,9 @@
             SearchControl,
             ItemsList,
             FiltersItemsList,
-            Pagination
+            Pagination,
+            TainacanCardsList,
+            TainacanListList
         },
         methods: {
             ...mapGetters('collection', [
@@ -228,8 +232,102 @@
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
-            onChangeTab(status) {
-                this.$eventBusSearch.setStatus(status);
+            prepareFieldsAndFilters() {
+
+                this.isLoadingFilters = true;
+
+                this.fetchFilters({
+                    collectionId: this.collectionId,
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    isContextEdit: true,
+                    includeDisabled: 'no',
+                })
+                    .then(() => this.isLoadingFilters = false)
+                    .catch(() => this.isLoadingFilters = false);
+
+                this.isLoadingFields = true;
+                this.tableFields = [];
+
+                this.fetchFields({
+                    collectionId: this.collectionId,
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    isContextEdit: false
+                })
+                    .then(() => {
+
+                        this.tableFields.push({
+                            name: this.$i18n.get('label_thumbnail'),
+                            field: 'row_thumbnail',
+                            field_type: undefined,
+                            slug: 'thumbnail',
+                            id: undefined,
+                            display: true
+                        })
+                        ;
+                        let fetchOnlyFieldIds = [];
+
+                        for (let field of this.fields) {
+                            if (field.display !== 'never') {
+                                // Will be pushed on array
+
+                                let display = true;
+
+                                if (field.display === 'no') {
+                                    display = false;
+                                }
+
+                                this.tableFields.push(
+                                    {
+                                        name: field.name,
+                                        field: field.description,
+                                        slug: field.slug,
+                                        field_type: field.field_type,
+                                        field_type_object: field.field_type_object,
+                                        id: field.id,
+                                        display: display
+                                    }
+                                );    
+                                fetchOnlyFieldIds.push(field.id);                      
+                            }
+                        }
+
+                        this.tableFields.push({
+                            name: this.$i18n.get('label_creation_date'),
+                            field: 'row_creation',
+                            field_type: undefined,
+                            slug: 'creation_date',
+                            id: undefined,
+                            display: true
+                        });
+                        this.tableFields.push({
+                            name: this.$i18n.get('label_created_by'),
+                            field: 'row_author',
+                            field_type: undefined,
+                            slug: 'author_name',
+                            id: undefined,
+                            display: true
+                        });
+
+                        // this.prefTableFields = this.tableFields;
+                        // this.$userPrefs.get('table_columns_' + this.collectionId)
+                        //     .then((value) => {
+                        //         this.prefTableFields = value;
+                        //     })
+                        //     .catch((error) => {
+                        //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
+                        //     });
+                        this.$eventBusSearch.addFetchOnly({
+                            '0': 'thumbnail',
+                            'meta': fetchOnlyFieldIds,
+                            '1': 'creation_date',
+                            '2': 'author_name'
+                        });
+                        this.isLoadingFields = false;
+
+                    })
+                    .catch(() => {
+                        this.isLoadingFields = false;
+                    });
             }
         },
         computed: {
@@ -265,6 +363,8 @@
 
             this.isRepositoryLevel = this.collectionId === undefined;
 
+            this.$eventBusSearch.setCollectionId(this.collectionId);
+
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
                 this.isLoadingItems = isLoadingItems;
             });
@@ -273,89 +373,16 @@
                 this.hasFiltered = hasFiltered;
             });
 
-            this.isLoadingFilters = true;
-            this.fetchFilters({
-                collectionId: this.collectionId,
-                isRepositoryLevel: this.isRepositoryLevel,
-                isContextEdit: true,
-                includeDisabled: 'no',
-            })
-                .then(() => this.isLoadingFilters = false)
-                .catch(() => this.isLoadingFilters = false);
+            this.$eventBusSearch.$on('hasToPrepareFieldsAndFilters', () => {
+                this.prepareFieldsAndFilters();
+            });
 
-            this.isLoadingFields = true;
-
-            this.fetchFields({
-                collectionId: this.collectionId,
-                isRepositoryLevel: this.isRepositoryLevel,
-                isContextEdit: false
-            })
-                .then(() => {
-
-                    this.tableFields.push({
-                        name: this.$i18n.get('label_thumbnail'),
-                        field: 'row_thumbnail',
-                        field_type: undefined,
-                        slug: 'thumbnail',
-                        id: undefined,
-                        display: true
-                    });
-
-                    for (let field of this.fields) {
-                        if (field.display !== 'never') {
-                            // Will be pushed on array
-
-                            let display = true;
-
-                            if (field.display === 'no') {
-                                display = false;
-                            }
-
-                            this.tableFields.push(
-                                {
-                                    name: field.name,
-                                    field: field.description,
-                                    slug: field.slug,
-                                    field_type: field.field_type,
-                                    field_type_object: field.field_type_object,
-                                    id: field.id,
-                                    display: display
-                                }
-                            );    
-                            //this.$eventBusSearch.addFetchOnlyMeta(field.id);                       
-                        }
-                    }
-                    this.$eventBusSearch.loadItems();
-
-                    this.tableFields.push({
-                        name: this.$i18n.get('label_creation'),
-                        field: 'row_creation',
-                        field_type: undefined,
-                        slug: 'creation',
-                        id: 'date',
-                        display: true
-                    });
-
-                    // this.prefTableFields = this.tableFields;
-                    // this.$userPrefs.get('table_columns_' + this.collectionId)
-                    //     .then((value) => {
-                    //         this.prefTableFields = value;
-                    //     })
-                    //     .catch((error) => {
-                    //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
-                    //     });
-
-                    this.isLoadingFields = false;
-
-                })
-                .catch(() => {
-                    this.isLoadingFields = false;
-                });
         },
         mounted() {
-            this.$eventBusSearch.setCollectionId(this.collectionId);
-            this.$eventBusSearch.updateStoreFromURL();
-            this.$eventBusSearch.loadItems();
+            //this.$eventBusSearch.updateStoreFromURL();
+            //this.$eventBusSearch.loadItems();
+
+            this.prepareFieldsAndFilters();
 
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
@@ -376,35 +403,9 @@
     }
 
     .page-container {
-        padding: 0px;
-        
+        padding: 0px;   
     }
 
-    .sub-header {
-        min-height: $subheader-height;
-        height: $subheader-height;
-        padding-top: $page-small-top-padding;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
-        border-bottom: 0.5px solid #ddd;
-        position: relative;
-
-        @media screen and (max-width: 769px) {
-            height: 60px;
-            margin-top: 0;
-
-            .header-item {
-                padding-right: 0.5em;
-            }
-        }
-    }
-
-    .tabs {
-        padding-top: 20px;
-        margin-bottom: 20px;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
-    }
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;

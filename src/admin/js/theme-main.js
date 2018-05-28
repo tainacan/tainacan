@@ -1,6 +1,7 @@
 // Main imports
 import Vue from 'vue';
 import Buefy from 'buefy';
+import VTooltip from 'v-tooltip'
 
 // Custom elements
 import Text from '../../classes/field-types/text/Text.vue';
@@ -39,6 +40,7 @@ import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from '
 
 // Configure and Register Plugins
 Vue.use(Buefy);
+Vue.use(VTooltip)
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);

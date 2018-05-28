@@ -179,6 +179,8 @@ class REST_Items_Controller extends REST_Controller {
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 			}
 
+			$item_arr['url'] = get_permalink( $item_arr['id'] );
+			
 			return $item_arr;
 		}
 

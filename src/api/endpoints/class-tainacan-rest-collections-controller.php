@@ -175,7 +175,7 @@ class REST_Collections_Controller extends REST_Controller {
 
 		        # Always returns id
 		        if(is_array($attributes_to_filter)) {
-			        $attributes_to_filter[] = 'id';
+					$attributes_to_filter[] = 'id';
 		        } else {
 			        $attributes_to_filter = array($attributes_to_filter, 'id');
 		        }
@@ -184,7 +184,9 @@ class REST_Collections_Controller extends REST_Controller {
 
 		        if ( $request['context'] === 'edit' ) {
 			        $item_arr['current_user_can_edit'] = $item->can_edit();
-		        }
+				}
+				
+				$item_arr['url'] = get_permalink( $item_arr['id'] );
 	        }
 
             return $item_arr;

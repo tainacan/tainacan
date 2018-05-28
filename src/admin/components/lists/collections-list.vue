@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="table-wrapper">
-            <table class="table">
+            <table class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
@@ -54,9 +54,13 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
                         </th>
-                        <!-- Creation -->
+                        <!-- Creation Date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_creation') }}</div>
+                            <div class="th-wrap">{{ $i18n.get('label_creation_date') }}</div>
+                        </th>
+                        <!-- Created By -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
                         </th>
                         <th class="actions-header">
                             &nbsp;
@@ -91,27 +95,59 @@
                         </td>
                         <!-- Name -->
                         <td 
-                                class="column-default-width"
+                                class="column-default-width column-main-content"
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + collection.name">
-                            <p>{{ collection.name }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: collection.name,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ collection.name }}</p>
                         </td>
                         <!-- Description -->
                         <td
-                                class="column-default-width" 
+                                class="column-large-width" 
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + collection.description">
-                            <p>{{ collection.description }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: collection.description,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ collection.description }}</p>
                         </td>
-                        <!-- Creation -->
+                        <!-- Creation Date -->
                         <td
                                 @click="goToCollectionPage(collection.id)"
                                 class="table-creation column-default-width" 
-                                :label="$i18n.get('label_creation')" 
-                                :aria-label="$i18n.get('label_creation') + ': ' + collection.creation">
-                            <p v-html="collection.creation" />
+                                :label="$i18n.get('label_creation_date')" 
+                                :aria-label="$i18n.get('label_creation_date') + ': ' + collection.creation_date">
+                            <p
+                                    v-tooltip="{
+                                        content: collection.creation_date,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="collection.creation_date" />
+                        </td>
+                        <!-- Created by -->
+                        <td
+                                @click="goToCollectionPage(collection.id)"
+                                class="table-creation column-default-width" 
+                                :label="$i18n.get('label_created_by')" 
+                                :aria-label="$i18n.get('label_created_by') + ': ' + collection.author_name">
+                            <p
+                                    v-tooltip="{
+                                        content: collection.author_name,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="collection.author_name" />
                         </td>
                         <!-- Actions -->
                         <td 
@@ -319,176 +355,6 @@ export default {
             font-size: 14px;
             &:hover {
                 color: $gray-light;
-            }
-        }
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: separate;
-        
-        th {
-            position: sticky;
-            position: -webkit-sticky;
-            background-color: white;
-            border-bottom: 1px solid $tainacan-input-background;
-            top: 0px;
-            z-index: 9;
-            padding: 10px;
-            vertical-align: bottom;
-
-            &.actions-header {
-                min-width: 8.333333333%;
-            }
-        }
-
-        .checkbox-cell {
-            min-width: 40px;
-            width: 40px;
-            padding: 0;
-            position: sticky !important;
-            position: -webkit-sticky !important;
-            left: 0;
-            top: auto;
-            display: table-cell;
-            
-            &::before {
-                box-shadow: inset 50px 0 10px -12px #222;
-                content: " ";
-                width: 50px;
-                height: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
-                visibility: hidden;
-            }
-
-            label.checkbox {  
-                border-radius: 0px;
-                background-color: white;
-                padding: 0;
-                width: 100%;
-                height: 100%; 
-                display: flex;
-                justify-content: center;
-                visibility: hidden;
-            }
-            label span.control-label {
-                display: none;
-            }
-            &.is-selecting {
-                .checkbox { visibility: visible; }
-                &::before { visibility: visible !important; }
-            }
-        }
-        // Only to be used in case we can implement Column resizing
-        // th:not(:last-child) {
-        //     border-right: 1px solid $tainacan-input-background !important;
-        // }
-
-        .thumbnail-cell {
-            width: 60px;
-        }
-  
-        tbody {
-            tr {
-                cursor: pointer;
-                background-color: transparent;
-
-                &.selected-row { 
-                    background-color: $primary-lighter; 
-                    .checkbox-cell .checkbox, .actions-cell .actions-container {
-                        background-color: $primary-lighter;
-                    }
-                }
-                td {
-                    height: 60px;
-                    max-height: 60px;
-                    padding: 10px;
-                    vertical-align: middle;
-                    line-height: 12px;
-                    border: none;
-                    p { 
-                        font-size: 14px; 
-                        margin: 0px;
-                    }
-                    
-                }
-                td.column-default-width{
-                    max-width: 300px;
-                    p {
-                        text-overflow: ellipsis;
-                        overflow-x: hidden;
-                        white-space: nowrap;
-                    }
-                }
-                img.table-thumb {
-                    max-height: 37px !important;
-                    border-radius: 3px;
-                }
-
-                td.table-creation p {
-                    color: $gray-light;
-                    font-size: 11px;
-                    line-height: 1.5;
-                }
-
-                td.actions-cell {
-                    padding: 0px;
-                    position: sticky !important;
-                    position: -webkit-sticky !important;
-                    right: 0px;
-                    top: auto;
-                    width: 80px;
-
-                    .actions-container {
-                        visibility: hidden;
-                        display: flex;
-                        position: relative;
-                        padding: 0;
-                        height: 100%;
-                        width: 80px;
-                        z-index: 9;
-                        background-color: transparent; 
-                        float: right;
-                    }
-
-                    a {
-                        margin: auto;
-                        font-size: 18px !important;
-                    }
-
-                }
-
-                &:hover {
-                    background-color: $tainacan-input-background !important;
-                    cursor: pointer;
-
-                    .checkbox-cell {
-                        &::before { visibility: visible; }
-                        .checkbox { 
-                            visibility: visible; 
-                            background-color: $tainacan-input-background !important; 
-                        }
-                    }
-                    .actions-cell {
-                        .actions-container {
-                            visibility: visible;
-                            background: $tainacan-input-background !important;
-                        }
-
-                        &::after {
-                            box-shadow: inset -97px 0 17px -21px #222;
-                            content: " ";
-                            width: 100px;
-                            height: 100%;
-                            position: absolute;
-                            right: 0px;
-                            top: 0;
-                        }
-                    }
-
-                }
             }
         }
     }

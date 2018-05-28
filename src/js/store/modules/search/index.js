@@ -13,9 +13,12 @@ const state = {
         post_type: [],
         metaquery: [],
         taxquery: [],
-        fetch_only: [
-            {'meta': [] }
-        ],
+        fetch_only: {
+            '0': 'thumbnail',
+            'meta': [],
+            '1': 'creation_date',
+            '2': 'author_name' 
+        },
     },
     totalItems: 0
 };
