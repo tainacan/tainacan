@@ -35,11 +35,15 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
     });
 }
 
-export const deleteItem = ({ commit }, item_id ) => {
+export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.delete('/items/' + item_id)
+        let endpoint = '/items/' + itemId;
+        if (isPermanently)
+            endpoint = endpoint + '?permanently=1'
+
+        axios.tainacan.delete(endpoint)
         .then( res => {
-            commit('deleteItem', { id: item_id });
+            commit('deleteItem', { id: itemId });
             resolve( res );
         }).catch((error) => { 
             reject( error );
@@ -99,9 +103,13 @@ export const fetchCollectionName = ({ commit }, id) => {
     });
 }
 
-export const deleteCollection = ({ commit }, id) => {
-    return new Promise((resolve, reject) =>{ 
-        axios.tainacan.delete('/collections/' + id)
+export const deleteCollection = ({ commit }, { collectionId, isPermanently }) => {
+    return new Promise((resolve, reject) => { 
+        let endpoint = '/collections/' + collectionId;
+        if (isPermanently)
+            endpoint = endpoint + '?permanently=true'
+
+        axios.tainacan.delete(endpoint)
         .then(res => {
             let collection = res.data;
             commit('deleteCollection', collection);

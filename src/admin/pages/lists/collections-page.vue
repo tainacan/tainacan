@@ -50,7 +50,8 @@
                         :total-collections="totalCollections"
                         :page="page"
                         :collections-per-page="collectionsPerPage"
-                        :collections="collections"/> 
+                        :collections="collections"
+                        :is-on-trash="status == 'trash'"/> 
 
                 <!-- Empty state image -->
                 <div v-if="totalCollections <= 0 && !isLoading">

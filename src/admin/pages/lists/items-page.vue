@@ -117,7 +117,8 @@
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoading"
-                        :is-on-theme="isOnTheme"/>
+                        :is-on-theme="isOnTheme"
+                        :is-on-trash="status == 'trash'"/>
         
                 <tainacan-cards-list
                         v-if="viewMode == 'cards' && !isLoadingItems && items.length > 0"
