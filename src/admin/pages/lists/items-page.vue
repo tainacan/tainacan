@@ -91,33 +91,18 @@
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed }">
             <!-- SEARCH CONTROL ------------------------- -->
-            <div class="sub-header">
-                <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoadingFields"/>
-                <search-control
-                        v-if="fields.length > 0 && (items.length > 0 || isLoadingItems)"
-                        :is-repository-level="isRepositoryLevel"
-                        :collection-id="collectionId"
-                        :table-fields="tableFields"
-                        :pref-table-fields="prefTableFields"
-                        :is-on-theme="isOnTheme"/>
-            </div>
-            <div 
-                    v-if="!isOnTheme"
-                    class="tabs">
-                <ul>
-                    <li 
-                            @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}"><a>{{ $i18n.get('label_all_items') }}</a></li>
-                    <li 
-                            @click="onChangeTab('draft')"
-                            :class="{ 'is-active': status == 'draft'}"><a>{{ $i18n.get('label_draft_items') }}</a></li>
-                    <li 
-                            @click="onChangeTab('trash')"
-                            :class="{ 'is-active': status == 'trash'}"><a>{{ $i18n.get('label_trash_items') }}</a></li>
-                </ul>
-            </div>
+            <b-loading
+                    :is-full-page="false"
+                    :active.sync="isLoadingFields"/>
+            <search-control
+                    :collection-id="collectionId"
+                    :table-fields="tableFields"
+                    :pref-table-fields="prefTableFields"
+                    :is-on-theme="isOnTheme"
+                    :status="status"
+                    :has-results="items.length > 0"
+                    :view-mode="viewMode"
+                    @onChangeViewMode="viewMode = $event"/>
             
             <!-- <div 
                     :items="items"
@@ -128,12 +113,25 @@
                         :is-full-page="false"
                         :active.sync="isLoadingItems"/>
                 <items-list
-                        v-if="!isLoadingItems && items.length > 0"
+                        v-if="viewMode == 'table' && !isLoadingItems && items.length > 0"
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoading"
                         :is-on-theme="isOnTheme"/>
+
+                <tainacan-cards-list
+                        v-if="viewMode == 'cards' && !isLoadingItems && items.length > 0"
+                        :table-fields="tableFields"
+                        :items="items"
+                        :is-loading="isLoading"/>
+
+                <tainacan-list-list
+                        v-if="viewMode == 'list' && !isLoadingItems && items.length > 0"
+                        :table-fields="tableFields"
+                        :items="items"
+                        :is-loading="isLoading"/>
+
                 <section
                         v-if="!isLoadingItems && items.length <= 0"
                         class="section">
@@ -172,6 +170,9 @@
     import Pagination from '../../components/search/pagination.vue'
     import {mapActions, mapGetters} from 'vuex';
 
+    import TainacanCardsList from '../../components/item-view-modes/tainacan-cards-list.vue';
+    import TainacanListList from '../../components/item-view-modes/tainacan-list-list.vue';
+
     export default {
         name: 'ItemsPage',
         data() {
@@ -187,7 +188,8 @@
                 collapseAll: true,
                 isOnTheme: false,
                 futureSearchQuery: '',
-                isHeaderShrinked: false
+                isHeaderShrinked: false,
+                viewMode: 'table'
             }
         },
         props: {
@@ -197,7 +199,9 @@
             SearchControl,
             ItemsList,
             FiltersItemsList,
-            Pagination
+            Pagination,
+            TainacanCardsList,
+            TainacanListList
         },
         methods: {
             ...mapGetters('collection', [
@@ -222,9 +226,6 @@
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
-            onChangeTab(status) {
-                this.$eventBusSearch.setStatus(status);
-            },
             prepareFieldsAndFilters() {
 
                 this.isLoadingFilters = true;
@@ -395,35 +396,9 @@
     }
 
     .page-container {
-        padding: 0px;
-        
+        padding: 0px;   
     }
 
-    .sub-header {
-        min-height: $subheader-height;
-        height: $subheader-height;
-        padding-top: $page-small-top-padding;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
-        border-bottom: 0.5px solid #ddd;
-        position: relative;
-
-        @media screen and (max-width: 769px) {
-            height: 60px;
-            margin-top: 0;
-
-            .header-item {
-                padding-right: 0.5em;
-            }
-        }
-    }
-
-    .tabs {
-        padding-top: 20px;
-        margin-bottom: 20px;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
-    }
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;

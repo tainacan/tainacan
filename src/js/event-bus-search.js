@@ -122,7 +122,7 @@ export default {
                         this.$emit( 'hasToPrepareFieldsAndFilters');
                     else {
                         this.$emit( 'isLoadingItems', true);
-                        this.$store.dispatch('collection/fetchItems', this.collectionId).then((res) => {
+                        this.$store.dispatch('collection/fetchItems', { 'collectionId': this.collectionId, 'isOnTheme': (this.$route.name == null) }).then((res) => {
                             this.$emit( 'isLoadingItems', false);
                             this.$emit( 'hasFiltered', res.hasFiltered);
                             //var event = new Event('tainacan-items-change')

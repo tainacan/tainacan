@@ -13,6 +13,7 @@
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
+                        :mobile-modal="false"
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
                         :disabled="!isSelectingItems"
@@ -38,7 +39,7 @@
         <div class="table-wrapper">
             <table 
                     :class="{'selectable-table': !isOnTheme }"
-                    class="table">
+                    class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
@@ -164,8 +165,6 @@
                                 </a>
                             </div>
                         </td>
-
-    
                     </tr>
                 </tbody>
             </table>
@@ -175,7 +174,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import DataAndTooltip from '../other/data-and-tooltip.vue'
 
 export default {
     name: 'ItemsList',
@@ -192,9 +190,6 @@ export default {
         items: Array,
         isLoading: false,
         isOnTheme: false
-    },
-    components: {
-        DataAndTooltip
     },
     mounted() {
         this.selectedItems = [];
@@ -308,15 +303,6 @@ export default {
             } else {
                 return metadata.value_as_html;
             }
-        },
-        getCreationHtml(item) {
-            return this.$i18n.get('info_date') + item['creation_date'];
-        },
-        getAuthorHtml(item) {
-            return item['author_name'];
-        },
-        getDecodedURI(url) {
-            return decodeURIComponent(url);
         }
     }
 }

@@ -1,7 +1,7 @@
 import axios from '../../../axios/axios';
 import qs from 'qs';
 
-export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
+export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, isOnTheme }) => {
     commit('cleanItems');
     return new Promise ((resolve, reject) => {
         
@@ -14,10 +14,13 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, collectionId) => {
             hasFiltered = true;
 
         // Differentiates between repository level and collection level queries
-        let endpoint = '/collection/'+collectionId+'/items?context=edit&'
+        let endpoint = '/collection/'+collectionId+'/items?'
 
         if (collectionId == undefined)
-            endpoint = '/items?context=edit&'
+            endpoint = '/items?'
+
+        if (!isOnTheme)
+            endpoint = endpoint + 'context=edit&'
 
         axios.tainacan.get(endpoint + qs.stringify(postQueries) )
         .then(res => {

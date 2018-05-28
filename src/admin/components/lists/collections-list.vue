@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="table-wrapper">
-            <table class="table">
+            <table class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
