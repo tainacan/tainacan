@@ -100,7 +100,7 @@
                     :pref-table-fields="prefTableFields"
                     :is-on-theme="isOnTheme"
                     :status="status"
-                    :has-results="items.length > 0"
+                    :has-results="totalItems || items.length > 0"
                     :view-mode="viewMode"/>
             
             <!-- <div 
@@ -111,15 +111,19 @@
                 <b-loading
                         :is-full-page="false"
                         :active.sync="isLoadingItems"/>
+
                 <items-list
-                        v-if="(viewMode == 'table' || viewMode == 'undefined' || viewMode == '') && !isLoadingItems && items.length > 0"
+                        v-if="(viewMode == 'table' || viewMode == undefined || viewMode == '') && !isLoadingItems && items.length > 0"
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoading"
                         :is-on-theme="isOnTheme"/>
-                <div v-html="itemsListTemplate"/>
-
+                
+                <div 
+                        v-if="viewMode != 'table' && viewMode != undefined && viewMode != ''"
+                        v-html="itemsListTemplate"/>
+<!--
                 <tainacan-cards-list
                         v-if="viewMode == 'cards' && !isLoadingItems && items.length > 0"
                         :table-fields="tableFields"
@@ -131,9 +135,10 @@
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoading"/>
+-->
 
                 <section
-                        v-if="!isLoadingItems && items.length <= 0"
+                        v-if="(viewMode == 'table' || viewMode == undefined || viewMode == '') && !isLoadingItems && items.length <= 0"
                         class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -170,8 +175,8 @@
     import Pagination from '../../components/search/pagination.vue'
     import {mapActions, mapGetters} from 'vuex';
 
-    import TainacanCardsList from '../../components/item-view-modes/tainacan-cards-list.vue';
-    import TainacanListList from '../../components/item-view-modes/tainacan-list-list.vue';
+    // import TainacanCardsList from '../../components/item-view-modes/tainacan-cards-list.vue';
+    // import TainacanListList from '../../components/item-view-modes/tainacan-list-list.vue';
 
     export default {
         name: 'ItemsPage',
@@ -199,8 +204,8 @@
             ItemsList,
             FiltersItemsList,
             Pagination,
-            TainacanCardsList,
-            TainacanListList
+            // TainacanCardsList,
+            // TainacanListList
         },
         methods: {
             ...mapGetters('collection', [
@@ -222,7 +227,8 @@
             ...mapGetters('search', [
                 'getSearchQuery',
                 'getStatus',
-                'getViewMode'
+                'getViewMode',
+                'getTotalItems'
             ]),
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
@@ -331,6 +337,9 @@
             },
             itemsListTemplate() {
                 return this.getItemsListTemplate();
+            },
+            totalItems() {
+                return this.getTotalItems();
             },
             filters() {
                 return this.getFilters();
