@@ -13,6 +13,7 @@ class Exposers {
 	protected $types = [];
 	protected $mappers = [];
 	private static $instance = null;
+	private static $request = null;
 	const MAPPER_CLASS_PREFIX = 'Tainacan\Exposers\Mappers\\';
 	
 	public static function get_instance() {
@@ -35,8 +36,8 @@ class Exposers {
 		do_action('tainacan-register-exposer-mappers');
 		
 		
-		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer mapping
-		add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 ); // exposer types
+		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer types
+		add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 ); // exposer mapper
 		add_filter( 'tainacan-admin-i18n', [$this, 'mappers_i18n']);
 	}
 	
@@ -91,7 +92,7 @@ class Exposers {
 	 * @return array
 	 */
 	public function rest_response($item_arr, $request) {
-		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
+		if($request->get_method() == 'GET' && $this->is_tainacan_request($request)) {
 			if($exposer = $this->request_has_mapper($request)) {
 				if(substr($request->get_route(), 0, strlen('/tainacan/v2/items')) == '/tainacan/v2/items') { //TODO do it at rest not here
 					$repos_items = \Tainacan\Repositories\Items::get_instance();
@@ -154,6 +155,15 @@ class Exposers {
 	}
 	
 	/**
+	 * check if is a tainacan request
+	 * @param \WP_REST_Request $request
+	 * @return boolean
+	 */
+	public function is_tainacan_request($request) {
+	    return substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2';
+	}
+	
+	/**
 	 * adapt request response to exposer type 
 	 * @param \WP_REST_Response $response
 	 * @param \WP_REST_Server $handler
@@ -161,11 +171,17 @@ class Exposers {
 	 * @return \WP_REST_Response
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
-		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
-			if($exposer = $this->request_has_type($request)) {
-				return $exposer->rest_request_after_callbacks($response, $handler, $request);
-			}
-		}
+	    if($this->is_tainacan_request($request) && $response instanceof \WP_REST_Response ) {
+    		if($request->get_method() == 'GET') {
+    			if($exposer = $this->request_has_type($request)) {
+    				return $exposer->rest_request_after_callbacks($response, $handler, $request);
+    			}
+    		} elseif($request->get_method() == 'POST') {
+    		    if($mapper = $this->request_has_mapper($request)) {
+    		        return $this->create_mapped_fields( $response, $handler, $request, $mapper );
+    		    }
+    		}
+	    }
 		// default JSON response
 		return $response;
 	}
@@ -265,5 +281,53 @@ class Exposers {
 			break;
 		}
 		return $ret;
+	}
+	
+	/**
+	 * 
+	 * @param \WP_REST_Response $response
+	 * @param \WP_REST_Server $handler
+	 * @param \WP_REST_Request $request
+	 * @param Mapper $mapper
+	 */
+	public function create_mapped_fields( $response, $handler, $request, $mapper ) {
+	    if($response instanceof \WP_REST_Response && $response->get_status() == 201) {
+	       $collection_array = $response->get_data();
+	       $id = $collection_array['id'];
+	       $mapper_fields = $mapper->metadata;
+	       if(is_array($mapper_fields) ) {
+	           $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+	           foreach ($mapper_fields as $slug => $mapper_field) {
+	               if(array_key_exists('core_field', $mapper_field) && $mapper_field['core_field'] != false) continue;
+	               
+	               $field = new \Tainacan\Entities\Field();
+	               if(
+	                       array_key_exists('field_type', $mapper_field) &&
+	                       $mapper_field['field_type'] != false &&
+	                       class_exists($mapper_field['field_type'])
+	                   ) {
+	                   $field->set_field_type($mapper_field['field_type']);
+	               } else {
+	                   $field->set_field_type('Tainacan\Field_Types\Text');
+	               }
+	               $field->set_name($mapper_field['label']);
+	               $field->set_description($mapper_field['URI']);
+	               $field->set_exposer_mapping([
+	                   $mapper->slug => $slug
+	               ]);
+	               $field->set_status('publish');
+	               $field->set_collection_id($id);
+	               $field->set_slug($slug);
+	               if($field->validate()) $Tainacan_Fields->insert($field);
+	           }
+	       }
+	    }
+	    else {
+	        var_dump($response);
+	        var_dump($request);
+	        var_dump(wp_get_current_user());
+	        throw new \Exception();
+	    }
+	    return $response;
 	}
 }
