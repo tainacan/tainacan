@@ -220,23 +220,30 @@ class REST_Items_Controller extends REST_Controller {
 
 		$response = [];
 
-		if ( isset($request['view_mode_template']) ) {
+		$return_template = false;
+
+		if ( isset($request['view_mode']) ) {
 			
 			// TODO: Check if requested view mode is really enabled for current collection
-			$view_mode = \Tainacan\Theme_Helper::get_instance()->get_view_mode($request['view_mode_template']);
-
-			if ( $view_mode && isset($view_mode['template']) && file_exists($view_mode['template']) ) {
-				
-				ob_start();
-
-				global $wp_query;
-				$wp_query = $items;
-				$displayed_metadata = array_map(function($el) { return (int) $el; }, $request['fetch_only']['meta']);
-				include $view_mode['template'];
-
-				$response = ob_get_clean();
-			}
+			$view_mode = \Tainacan\Theme_Helper::get_instance()->get_view_mode($request['view_mode']);
 			
+			if ($view_mode && $view_mode['type'] == 'template' && isset($view_mode['template']) && file_exists($view_mode['template'])) {
+				$return_template = true;
+			}
+
+		}
+		
+		if ( $return_template ) {
+			
+			ob_start();
+
+			global $wp_query;
+			$wp_query = $items;
+			$displayed_metadata = array_map(function($el) { return (int) $el; }, $request['fetch_only']['meta']);
+			include $view_mode['template'];
+
+			$response = ob_get_clean();
+
 		} else {
 
 			if ($items->have_posts()) {

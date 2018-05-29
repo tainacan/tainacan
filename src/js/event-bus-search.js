@@ -126,7 +126,10 @@ export default {
                         this.$emit( 'hasToPrepareFieldsAndFilters', to);
                     else {
                         this.$emit( 'isLoadingItems', true);
-                        this.$store.dispatch('collection/fetchItems', { 'collectionId': this.collectionId, 'isOnTheme': (this.$route.name == null) })
+                        this.$store.dispatch('collection/fetchItems', 
+                            {   'collectionId': this.collectionId, 
+                                'isOnTheme': (this.$route.name == null) 
+                        })
                         .then((res) => {
                             this.$emit( 'isLoadingItems', false);
                             this.$emit( 'hasFiltered', res.hasFiltered);

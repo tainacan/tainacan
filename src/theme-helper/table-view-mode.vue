@@ -1,8 +1,7 @@
 <template>
     <div class="table-container">
         <div class="table-wrapper">
-            <table 
-                    class="tainacan-table">
+            <table class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Displayed Fields -->
@@ -82,7 +81,6 @@
                             </p>
 
                         </td>
-
                     </tr>
                 </tbody>
             </table>
@@ -91,14 +89,14 @@
 </template>
 
 <script>
+
 export default {
-    name: 'ItemsList',
+    name: 'TableViewMode',
     props: {
         collectionId: Number,
         tableFields: Array,
         items: Array,
-        isLoading: false,
-        isOnTrash: false
+        isLoading: false
     },
     methods: {
         goToItemPage(item) {

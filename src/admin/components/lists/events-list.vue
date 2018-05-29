@@ -53,7 +53,6 @@
                                     }" 
                                     v-html="event.user_name" />
                         </td>
-<<<<<<< HEAD
                         <!-- Event Date -->
                         <td
                                 class="table-creation column-small-width" 
@@ -68,8 +67,6 @@
                                     }" 
                                     v-html="event.log_date" />
                         </td>
-=======
->>>>>>> Initiated items page in repository
                         <!-- Status -->
                         <!--<td-->
                                 <!--@click="goToEventPage(event.id)"-->
@@ -135,17 +132,10 @@
             events: Array
         },
         methods: {
-<<<<<<< HEAD
             // ...mapActions('event', [
             //     'approve',
             //     'notApprove'
             // ]),
-=======
-            ...mapActions('event', [
-                'approve',
-                'notApprove'
-            ]),
->>>>>>> Initiated items page in repository
             // approveEvent(eventId){
             //    this.approve(eventId);
             // },

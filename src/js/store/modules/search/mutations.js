@@ -115,5 +115,5 @@ export const setStatus = ( state, status ) => {
 };
 
 export const setViewMode = ( state, viewMode ) => {
-    state.postquery.format = viewMode;
+    state.postquery.view_mode = viewMode;
 };

@@ -188,5 +188,5 @@ function tainacan_get_term() {
  * @see \Tainacan\Theme_Helper->register_view_mode()
  */
 function tainacan_register_view_mode($slug, $args = []) {
-	\Tainacan\Theme_Helper::get_instance()->register_view_mode($slug, $args = []);
+	\Tainacan\Theme_Helper::get_instance()->register_view_mode($slug, $args);
 }

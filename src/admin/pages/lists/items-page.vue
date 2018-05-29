@@ -255,23 +255,37 @@
 
                 <!-- Admin Table -->
                 <items-list
-                        v-if="(viewMode == 'table' || viewMode == undefined || viewMode == '') && !isLoadingItems && totalItems > 0"
+                        v-if="!isOnTheme && 
+                              !isLoadingItems && 
+                              totalItems > 0"
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :items="items"
-                        :is-loading="isLoading"
-                        :is-on-theme="isOnTheme"/>
-
-                        
+                        :is-loading="isLoadingItems"
+                        :is-on-theme="isOnTheme"
+                        :is-on-trash="status == 'trash'"/>     
                 
                 <!-- Theme View Modes -->
                 <div 
-                        v-if="viewMode != 'table' && viewMode != undefined && viewMode != ''"
+                        v-if="isOnTheme &&
+                              !isLoadingItems &&
+                              registeredViewModes[viewMode] != undefined &&
+                              registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
+                <component
+                        v-if="isOnTheme && 
+                              !isLoadingItems && 
+                              registeredViewModes[viewMode] != undefined &&
+                              registeredViewModes[viewMode].type == 'component'"
+                        :collection-id="collectionId"
+                        :table-fields="tableFields"
+                        :items="items"
+                        :is-loading="isLoadingItems"
+                        :is="'table-view-mode'"/>     
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
-                        v-if="(viewMode == 'table' || viewMode == undefined || viewMode == '') && !isLoadingItems && totalItems <= 0"
+                        v-if="!isOnTheme && !isLoadingItems && totalItems <= 0"
                         class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -308,9 +322,6 @@
     import Pagination from '../../components/search/pagination.vue'
     import { mapActions, mapGetters } from 'vuex';
 
-    // import TainacanCardsList from '../../components/item-view-modes/tainacan-cards-list.vue';
-    // import TainacanListList from '../../components/item-view-modes/tainacan-list-list.vue';
-
     export default {
         name: 'ItemsPage',
         data() {
@@ -327,7 +338,8 @@
                 isOnTheme: false,
                 futureSearchQuery: '',
                 isHeaderShrinked: false,
-                localTableFields: []
+                localTableFields: [],
+                registeredViewModes: tainacan_plugin.registered_view_modes
             }
         },
         props: {

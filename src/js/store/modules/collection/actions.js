@@ -24,17 +24,18 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
         axios.tainacan.get(endpoint + qs.stringify(postQueries) )
         .then(res => {
+            
             let items = res.data;
-
-            if (postQueries['format'] != 'table' && postQueries['format'] != undefined && postQueries['format'] != '') {
+            let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
+                        
+            if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
                 commit('setItemsListTemplate', items );
-                dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                 resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
             } else {
                 commit('setItems', items );
-                dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                 resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
             }
+            dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
          })
         .catch(error => reject(error));
     });

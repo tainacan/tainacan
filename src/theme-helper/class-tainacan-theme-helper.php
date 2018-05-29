@@ -48,6 +48,13 @@ class Theme_Helper {
 		add_filter('get_the_archive_title', array($this, 'filter_archive_title'));
 
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
+
+		$this->register_view_mode('table', [
+			'label' => __('Table', 'tainacan'),
+			'dynamic_metadata' => true,
+			'icon' => '<span class="icon"><i class="mdi mdi-table mdi-24px"></i></span>',
+			'type' => 'component',
+		]);
 		
 	}
 	

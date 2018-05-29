@@ -29,6 +29,7 @@ import FilterCategorySelectbox from '../../classes/filter-types/category/Selectb
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
 import ItemsPage from '../pages/lists/items-page.vue';
+import TableViewMode from '../../theme-helper/table-view-mode.vue';
 
 // Remaining imports
 import HelpButton from '../components/other/help-button.vue';
@@ -75,6 +76,8 @@ Vue.component('tainacan-filter-category-selectbox', FilterCategorySelectbox);
 Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
 Vue.component('items-page', ItemsPage);
+
+Vue.component('table-view-mode', TableViewMode);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 
