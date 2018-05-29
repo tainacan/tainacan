@@ -22,9 +22,9 @@
             this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
 
-            let in_route = '/collection/' + this.collection + '/fields/' +  this.field +'?context=edit';
+            let in_route = '/collection/' + this.isRepositoryLevel + '/fields/' +  this.field +'?context=edit';
 
-            if(this.repository){
+            if(this.isRepositoryLevel){
                 in_route = '/fields?context=edit';
             }
 
@@ -57,7 +57,7 @@
             query: {
                 type: Object // concentrate all attributes field id and type
             },
-            repository: Boolean,
+            isRepositoryLevel: Boolean,
         },
         watch: {
             selected( value ){

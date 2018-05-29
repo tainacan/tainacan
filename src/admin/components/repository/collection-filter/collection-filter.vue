@@ -46,8 +46,12 @@
         mounted(){
             let routeQueries = this.$route.query;
 
-            if(routeQueries.metaquery && Array.isArray(routeQueries.metaquery[0].value)){
+            if(routeQueries.metaquery &&
+                routeQueries.metaquery[0] &&
+                Array.isArray(routeQueries.metaquery[0].value)){
                 this.collectionsIdsToFilter = routeQueries.metaquery[0].value;
+
+                this.apply_filter();
             }
         },
         data(){

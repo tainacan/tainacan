@@ -642,6 +642,9 @@ class Fields extends Repository {
         }
     }
 
+
+    # TODO: Fetch all field value for repository level
+
 	/**
 	 * Fetch all values of a field from a collection in all it collection items
 	 *
