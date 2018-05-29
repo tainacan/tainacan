@@ -19,6 +19,7 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../node_modules/buefy/src/scss/components/_tag.scss";
+    @import "../../node_modules/buefy/src/scss/components/_loading.scss";
 
     // Tainacan custom colors
     $primary: #2cb4c1;

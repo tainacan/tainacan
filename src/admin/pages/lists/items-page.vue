@@ -96,12 +96,15 @@
                 id="items-list-area"
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed }">
-            <!-- SEARCH CONTROL ------------------------- -->
             <b-loading
                     :is-full-page="false"
-                    :active.sync="isLoadingFields"/>
-            
+                    :active.sync="isLoadingItems"/>
+
+            <!-- SEARCH CONTROL ------------------------- -->
             <div class="search-control">
+                <b-loading
+                        :is-full-page="false"
+                        :active.sync="isLoadingFields"/>
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
@@ -249,9 +252,6 @@
 
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div class="above-search-control">
-                <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoadingItems"/>
 
                 <!-- Admin Table -->
                 <items-list
@@ -261,6 +261,8 @@
                         :items="items"
                         :is-loading="isLoading"
                         :is-on-theme="isOnTheme"/>
+
+                        
                 
                 <!-- Theme View Modes -->
                 <div 
@@ -469,7 +471,6 @@
 
                         for (let field of this.fields) {
                             if (field.display !== 'never') {
-                                // Will be pushed on array
 
                                 let display = true;
 
@@ -602,8 +603,8 @@
         }
 
         #collection-search-button {
-            border-radius: 0px !important;
-            padding: 0px 8px !important;
+            border-radius: 0 !important;
+            padding: 0 8px !important;
             border-color: $tainacan-input-background;
             &:focus, &:active {
                 border-color: none !important;
@@ -616,7 +617,9 @@
         }
 
     }
-
+    .filter-menu-compress-button-top-repo {
+         top: 123px !important;
+    }
     #filter-menu-compress-button {
         position: absolute;
         z-index: 9;
@@ -715,6 +718,7 @@
         transition: margin-left ease 0.5s;
         height: 100%;
         overflow: auto;
+        position: relative;
     }
 
     .table-container {

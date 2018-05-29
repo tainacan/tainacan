@@ -130,8 +130,6 @@ export default {
                         .then((res) => {
                             this.$emit( 'isLoadingItems', false);
                             this.$emit( 'hasFiltered', res.hasFiltered);
-                            //var event = new Event('tainacan-items-change')
-                            //document.dispatchEvent(event);
                         })
                         .catch(() => {
                             this.$emit( 'isLoadingItems', false);
