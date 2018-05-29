@@ -19,7 +19,7 @@ apt:
 before_install:
 #- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
 #  -in deploy_rsa.enc -out deploy_rsa -d
-- sudo apt-get install sshpass
+- sudo apt-get install sshpass 
 install:
 - echo -e "Install"
 - mkdir /home/travis/wordpress
