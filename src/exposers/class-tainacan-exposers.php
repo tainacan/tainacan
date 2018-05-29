@@ -322,12 +322,6 @@ class Exposers {
 	           }
 	       }
 	    }
-	    else {
-	        var_dump($response);
-	        var_dump($request);
-	        var_dump(wp_get_current_user());
-	        throw new \Exception();
-	    }
 	    return $response;
 	}
 }
