@@ -1,6 +1,8 @@
 <template>
     <items-page
-            class="theme-items-list" 
+            class="theme-items-list"
+            :enabled-view-modes="$root.enabledViewModes" 
+            :default-view-mode="$root.defaultViewMode"
             :collection-id="$root.collectionId" />
 </template>
 

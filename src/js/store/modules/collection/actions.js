@@ -127,7 +127,18 @@ export const deleteCollection = ({ commit }, { collectionId, isPermanently }) =>
     });
 }
 
-export const updateCollection = ({ commit }, { collection_id, name, description, slug, status, enable_cover_page, cover_page_id, moderators_ids, parent }) => {
+export const updateCollection = ({ commit }, { 
+        collection_id, 
+        name, 
+        description, 
+        slug, 
+        status, 
+        enable_cover_page, 
+        cover_page_id,
+        moderators_ids, 
+        parent,
+        enabled_view_modes
+    }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
             name: name,
@@ -137,7 +148,8 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
             cover_page_id: "" + cover_page_id,
             enable_cover_page: enable_cover_page,
             moderators_ids: moderators_ids,
-            parent: parent
+            parent: parent,
+            enabled_view_modes: enabled_view_modes
         }).then( res => {
             commit('setCollection', { 
                 id: collection_id, 
@@ -148,7 +160,8 @@ export const updateCollection = ({ commit }, { collection_id, name, description,
                 enable_cover_page: enable_cover_page, 
                 cover_page_id: cover_page_id,
                 moderators_ids: moderators_ids,
-                parent: parent
+                parent: parent,
+                enabled_view_modes: enabled_view_modes
             });
             resolve( res.data );
         }).catch( error => { 

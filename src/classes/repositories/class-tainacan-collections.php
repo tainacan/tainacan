@@ -133,7 +133,7 @@ class Collections extends Repository {
 			'enabled_view_modes'        => [
 				'map'         => 'meta',
 				'title'       => __( 'Enabled view modes', 'tainacan' ),
-				'type'        => 'string',
+				'type'        => 'array',
 				'description' => __( 'Which visualization modes will be available for the public to choose from', 'tainacan' ),
 				'default'     => [],
 				//'validation' => v::stringType(),

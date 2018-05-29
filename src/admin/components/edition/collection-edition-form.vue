@@ -276,6 +276,38 @@
                         </b-select>
                     </b-field>
 
+                    <!-- Enabled View Modes ------------------------------- --> 
+                    <div class="field">
+
+                        <b-dropdown
+                                ref="enabledViewModesDropdown"
+                                :mobile-modal="false"
+                                :disabled="Object.keys(registeredViewModes).length < 0">
+                            <button
+                                    class="button is-white"
+                                    slot="trigger"
+                                    position="is-top-right"
+                                    type="button">
+                                <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
+                                <b-icon icon="menu-down"/>
+                            </button>
+                            <b-dropdown-item
+                                    v-for="(viewMode, index) in Object.keys(registeredViewModes)"
+                                    :key="index"
+                                    class="control"
+                                    custom>
+                                <b-checkbox
+                                        @input="updateViewModeslist(viewMode)"
+                                        :value="checkIfViewModeEnabled(viewMode)">
+                                    {{ registeredViewModes[viewMode].label }}
+                                </b-checkbox>
+                            </b-dropdown-item>   
+                        </b-dropdown>
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
+                                :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
+                    </div>
+
                 </div>
             </div>
 
@@ -358,7 +390,9 @@ export default {
             collections: [],
             isFetchingCollections: true,
             thumbnailMediaFrame: undefined,
-            headerImageMediaFrame: undefined
+            headerImageMediaFrame: undefined,
+            registeredViewModes: tainacan_plugin.registered_view_modes,
+            viewModesList: []
         }
     },
     methods: {
@@ -393,7 +427,8 @@ export default {
                 slug: this.form.slug, 
                 status: this.form.status,
                 moderators_ids: this.form.moderators_ids,
-                parent: this.form.parent
+                parent: this.form.parent,
+                enabled_view_modes: this.form.enabled_view_modes
             };
             this.updateCollection(data).then(updatedCollection => {    
                 
@@ -406,6 +441,7 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
+                this.form.enabled_view_modes = this.collection.enabled_view_modes;
 
                 this.isLoading = false;
                 this.formErrorMessage = '';
@@ -444,8 +480,21 @@ export default {
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.slug = this.collection.slug;
                 this.form.parent = this.collection.parent;
+                this.form.enabled_view_modes = [];
                 this.moderators = [];
-                
+
+                // Fills or update enabled view modes 
+                // for (let viewMode of Object.keys(this.registeredViewModes)) {
+                //     let indexOfViewMode = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode.viewMode == viewMode);
+                //     if (indexOfViewMode < 0) {                     
+                //         this.form.enabled_view_modes.push({ 
+                //             viewMode: viewMode, 
+                //             label: this.registeredViewModes[viewMode].label,
+                //             enabled: false 
+                //         });
+                //     }
+                // }
+
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
 
@@ -471,6 +520,18 @@ export default {
         },
         cancelBack(){
             this.$router.push(this.$routerHelper.getCollectionsPath());
+        },
+        updateViewModeslist(viewMode) {
+        
+            let index = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode == viewMode);
+            if (index > -1)
+                this.form.enabled_view_modes.splice(index, 1);
+            else    
+                this.form.enabled_view_modes.push(viewMode);
+        },
+        checkIfViewModeEnabled(viewMode) {
+            let index = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode == viewMode);
+            return index > -1;
         },
         fecthCoverPages(search) {
             this.isFetchingPages = true;
@@ -601,8 +662,20 @@ export default {
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.parent = this.collection.parent;
-
+                this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes));
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
+
+                // Fills or update enabled view modes 
+                // for (let viewMode of Object.keys(this.registeredViewModes)) {
+                //     let indexOfViewMode = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode.viewMode == viewMode);
+                //     if (indexOfViewMode < 0) {                     
+                //         this.form.enabled_view_modes.push({ 
+                //             viewMode: viewMode, 
+                //             label: this.registeredViewModes[viewMode].label,
+                //             enabled: false 
+                //         });
+                //     }
+                // }
                  
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
@@ -639,6 +712,7 @@ export default {
         }
     },
     mounted() {
+
         if (this.$route.fullPath.split("/").pop() != "new") {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
                 this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 

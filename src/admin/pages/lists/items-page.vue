@@ -137,7 +137,9 @@
 
                 </div>
                 <!-- Displayed Fields Dropdown -->
-                <div class="search-control-item">
+                <div    
+                        v-if="!isOnTheme || registeredViewModes[viewMode].dynamic_metadata"
+                        class="search-control-item">
                     <b-dropdown
                             ref="displayedFieldsDropdown"
                             :mobile-modal="false"
@@ -178,24 +180,19 @@
                     <b-field>
                     <b-dropdown 
                                 @change="onChangeViewMode($event)"
-                                :value="viewMode">
+                                :mobile-modal="false">
                             <button 
                                     class="button is-white" 
                                     slot="trigger">
                                 <span>{{ $i18n.get('label_view_mode') }}</span>
                                 <b-icon icon="menu-down" />
                             </button>
-                            <b-dropdown-item :value="'table'">
-                                <b-icon icon="table"/>
-                                Table
-                            </b-dropdown-item>
-                            <b-dropdown-item :value="'cards'">
-                                <b-icon icon="view-list"/>
-                                Cards
-                            </b-dropdown-item>
-                            <b-dropdown-item :value="'grid'">
-                                <b-icon icon="view-grid"/>
-                                Grid
+                            <b-dropdown-item 
+                                    v-for="(viewMode, index) of enabledViewModes"
+                                    :key="index"
+                                    :value="viewMode">
+                                <span v-html="registeredViewModes[viewMode].icon" />
+                                {{ registeredViewModes[viewMode].label }}
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
@@ -309,7 +306,7 @@
                 </section>
 
                 <!-- Pagination -->
-                <pagination v-if="totalItems > 0"/>
+                <pagination v-if="totalItems > 0 && (!isOnTheme || registeredViewModes[viewMode].show_pagination)"/>
             </div>
         </div>
         
@@ -343,7 +340,9 @@
             }
         },
         props: {
-            collectionId: Number
+            collectionId: Number,
+            defaultViewMode: String, // Used only on theme
+            enabledViewModes: Object // Used only on theme
         },
         computed: {
             items() {
@@ -571,8 +570,8 @@
 
         },
         mounted() {
+            
             this.prepareFieldsAndFilters();
-
             this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));
 
             // Watch Scroll for shrinking header, only on Admin at collection level

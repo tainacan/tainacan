@@ -88,12 +88,20 @@ new Vue({
     store,
     router: routerTheme, 
     data: {
-        collectionId: ''   
+        collectionId: '',
+        defaultViewMode: '',
+        enabledViewModes: {}   
     },
     render: h => h(ThemeItemsList),
     beforeMount () {
+
         if (this.$el.attributes['collection-id'] != undefined)
             this.collectionId = this.$el.attributes['collection-id'].value;
+        if (this.$el.attributes['default-view-mode'] != undefined)
+            this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
+        if (this.$el.attributes['enabled-view-modes'] != undefined)
+            this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
+
     }
     
 });
