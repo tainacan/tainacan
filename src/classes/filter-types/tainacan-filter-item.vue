@@ -250,13 +250,7 @@
         .tag {
             height: 2em !important;
         }
-
-        .autocomplete {
-            .dropdown-content {
-                position: fixed !important;
-            }
-        }
-
+        
         .b-checkbox.checkbox  {
             font-weight: normal;
             font-size: 12px;

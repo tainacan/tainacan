@@ -51,11 +51,14 @@ export default {
     $danger-invert: findColorInvert($danger);
 
     $table-side-padding: 4.166666667%;
+    $filter-menu-width: 200px;
 
     @import "../admin/scss/_tables.scss";
     @import "../admin/scss/_tooltips.scss";
     
     .theme-items-list {
+        position: relative;
+        display: flex;
 
         a{ color: $secondary !important }
         a:hover {
@@ -468,6 +471,19 @@ export default {
             font-weight: normal;
             cursor: pointer;
             background-color: white;
+        }
+
+        #filter-menu-compress-button {
+            top: 70px !important;
+        }
+
+        .filters-menu {
+            height: auto;
+            min-width: $filter-menu-width;
+        }
+
+        #items-list-area {
+            width: 100%;
         }
 
     }
