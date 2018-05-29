@@ -22,7 +22,7 @@ before_install:
 - sudo apt-get install sshpass
 install:
 - echo -e "Install"
-script: phpunit #--version
+script:   run-tests.sh   #phpunit --version
 #after_success:
 #- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
  # -in deploy_rsa.enc -out /tmp/deploy_rsa -d
@@ -47,7 +47,7 @@ before_deploy:
 #- ssh    $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
 deploy:
 - provider: script
-  script: ssh   $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
+  script: echo "Faz Deploy!"#ssh   $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
   skip_cleanup: true
   on: 
    branch: continuousintegration
