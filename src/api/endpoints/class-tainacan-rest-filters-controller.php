@@ -142,7 +142,7 @@ class REST_Filters_Controller extends REST_Controller {
 
 			$filter_obj->set_collection_id( $collection_id );
 
-			if(!$body['field']){
+			if(!isset($body['field'])){
 				throw new \InvalidArgumentException('You need provide a field id');
 			}
 
@@ -150,7 +150,7 @@ class REST_Filters_Controller extends REST_Controller {
 		} else {
 			$filter_obj->set_collection_id( 'filter_in_repository' );
 
-			if(!$body['field']){
+			if(!isset($body['field'])){
 				throw new \InvalidArgumentException('You need provide a field id');
 			}
 
