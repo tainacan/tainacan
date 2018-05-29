@@ -23,7 +23,7 @@ before_install:
 install:
 - echo -e "Install"
 - mkdir /tmp/wordpress
-- sh tests/bin/install-wp-tests.sh wordpress_test root root /tmp/wordpress localhost latest
+#- sh tests/bin/install-wp-tests.sh wordpress_test root root /tmp/wordpress localhost latest
 script:  sh run-tests.sh   #phpunit --version
 #after_success:
 #- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
