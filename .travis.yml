@@ -22,7 +22,7 @@ before_install:
 - sudo apt-get install sshpass
 install:
 - echo -e "Install"
-script: phpunit --version
+script: phpunit #--version
 #after_success:
 #- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
  # -in deploy_rsa.enc -out /tmp/deploy_rsa -d
