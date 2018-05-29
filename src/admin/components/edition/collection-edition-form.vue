@@ -351,6 +351,7 @@ export default {
             formErrorMessage: '',
             isNewCollection: false,
             isMapped: false,
+            mapper: false,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
             isFetchingModerators: false,
@@ -429,7 +430,7 @@ export default {
             this.isLoading = true;
 
             // Creates draft Collection
-            let data = { name: '', description: '', status: 'auto-draft'};
+            let data = { name: '', description: '', status: 'auto-draft', mapper: (this.isMapped && this.mapper != false ? this.mapper : false ) };
             this.sendCollection(data).then(res => {
 
                 this.collectionId = res.id;
@@ -642,7 +643,8 @@ export default {
             var mapper = tmppath.pop();
             if(tmppath.pop() == 'new') {
                 this.isNewCollection = true;
-                this.isMapped = mapper;
+                this.isMapped = true;
+                this.mapper = mapper;
                 this.createNewCollection();
             }
         }
