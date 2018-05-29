@@ -1,7 +1,7 @@
 <?php 
 
 return [
-    'tests_dir' => '/home/travis/wordpress/wodpress-tests-lib',
+    'tests_dir' => '/home/travis/build/wordpress/wodpress-tests-lib',
 ];
 
 
