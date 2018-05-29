@@ -29,15 +29,17 @@ class Dublin_Core extends Mapper {
 		],
 		'date' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/date',
-			'label' => 'Date'
+			'label' => 'Date',
+            'field_type' => 'date'
 		],
 		'description' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/description',
-			'label' => 'Description'
+			'label' => 'Description',
+		    'core_field' => 'description'
 		],
 		'format' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/format',
-			'label' => 'Format'
+			'label' => 'Format',
 		],
 		'identifier' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/identifier',
@@ -69,7 +71,8 @@ class Dublin_Core extends Mapper {
 		],
 		'title' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/title',
-			'label' => 'Title'
+			'label' => 'Title',
+		    'core_field' => 'title'
 		],
 		'type' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/type',
