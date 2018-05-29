@@ -153,6 +153,26 @@ function tainacan_the_collection_description() {
 }
 
 /**
+ * Outputs the div used by Vue to render the faceted search
+ */
+function tainacan_the_faceted_search() {
+
+	$props = ' ';
+	
+	// if in a collection page
+	$collection_id = tainacan_get_collection_id();
+	if ($collection_id) {
+		$props .= 'collection-id="' . $collection_id . '" ';
+		$collection = new  \Tainacan\Entities\Collection($collection_id);
+		$props .= 'default-view-mode="' . $collection->get_default_view_mode() . '" ';
+		$props .= 'enabled-view-modes="' . implode(',', $collection->get_enabled_view_modes()) . '" ';
+	}
+
+	echo '<div id="tainacan-items-page" ', $props, '></div>';
+
+}
+
+/**
  * When visiting a term archive, returns the current term object
  *
  * @return false|\WP_Term 
