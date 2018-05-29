@@ -161,7 +161,7 @@
                                         @click.prevent.stop="deleteOneItem(item.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="delete"/>
+                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
                                 </a>
                             </div>
                         </td>
@@ -189,7 +189,8 @@ export default {
         tableFields: Array,
         items: Array,
         isLoading: false,
-        isOnTheme: false
+        isOnTheme: false,
+        isOnTrash: false
     },
     mounted() {
         this.selectedItems = [];
@@ -221,9 +222,9 @@ export default {
         },
         deleteOneItem(itemId) {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_item_delete'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                 onConfirm: () => {
-                    this.deleteItem(itemId)
+                    this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
                     .then(() => {
                     //     this.$toast.open({
                     //         duration: 3000,
@@ -233,7 +234,7 @@ export default {
                     //         queue: true
                     //     });
                         for (let i = 0; i < this.selectedItems.length; i++) {
-                            if (this.selectedItems[i].id == this.itemId)
+                            if (this.selectedItems[i].id == itemId)
                                 this.selectedItems.splice(i, 1);
                         }
                     }).catch(() => {
@@ -251,12 +252,12 @@ export default {
         },
         deleteSelectedItems() {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_selected_items_delete'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
                 onConfirm: () => {
 
                     for (let i = 0; i < this.selectedItems.length; i++) {
                         if (this.selectedItems[i]) {
-                            this.deleteItem(this.items[i].id)
+                            this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
                             .then(() => {
                             //     this.$toast.open({
                             //         duration: 3000,

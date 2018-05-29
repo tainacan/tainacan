@@ -110,7 +110,7 @@ export default {
                 },
                 setViewMode(viewMode) {
                     this.$store.dispatch('search/setViewMode', viewMode);
-                    this.updateURLQueries();
+                    this.updateURLQueries();  
                 },
                 updateURLQueries() {
                     this.$router.push({ query: {}});
