@@ -25,7 +25,8 @@ class Collection extends Entity {
         $default_order,
         $default_orderby,
         $columns,
-        $default_view_mode,
+		$default_view_mode,
+		$enabled_view_modes,
         $fields_order,
         $filters_order,
         $enable_cover_page,
@@ -355,6 +356,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get collection enabled_view_modes option
+	 *
+	 * @return string
+	 */
+	function get_enabled_view_modes() {
+		return $this->get_mapped_property( 'enabled_view_modes' );
+	}
+
+	/**
 	 * Get collection fields ordination
 	 *
 	 * @return string
@@ -547,6 +557,17 @@ class Collection extends Entity {
 	 */
 	function set_default_view_mode( $value ) {
 		$this->set_mapped_property( 'default_view_mode', $value );
+	}
+
+	/**
+	 * Set collection enabled_view_modes option
+	 *
+	 * @param [array] $value
+	 *
+	 * @return void
+	 */
+	function set_enabled_view_modes( $value ) {
+		$this->set_mapped_property( 'enabled_view_modes', $value );
 	}
 
 	/**
