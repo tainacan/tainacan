@@ -3,7 +3,7 @@
         <collections-filter
                 :open="collapsed"
                 :query="getQuery"
-                v-if="repository"/>
+                v-if="isRepositoryLevel"/>
         <tainacan-filter-item
                 v-show="!isMenuCompressed"        
                 :query="getQuery"
@@ -11,7 +11,7 @@
                 :key="index"
                 :filter="filter"
                 :open="collapsed"
-                :repository="repository"/>
+                :is-repository-level="isRepositoryLevel"/>
 
     </div>
 </template>
@@ -23,7 +23,7 @@
         props: {
             filters: Array,
             collapsed: Boolean,
-            repository: Boolean,
+            isRepositoryLevel: Boolean,
         },
         methods: {
             ...mapGetters('search',[

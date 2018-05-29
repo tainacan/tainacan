@@ -24,7 +24,7 @@
 
             let in_route = '/collection/' + this.collection + '/fields/' +  this.field +'?nopaging=1';
 
-            if(this.repository){
+            if(this.isRepositoryLevel){
                 in_route = '/fields?nopaging=1';
             }
 
@@ -42,7 +42,7 @@
                 });
         },
         props: {
-            repository: Boolean,
+            isRepositoryLevel: Boolean,
         },
         data(){
             return {
@@ -73,7 +73,7 @@
                     promise = this.getValuesRelationship( collectionTarget );
 
                 } else {
-                    promise = this.getValuesPlainText( this.field );
+                    promise = this.getValuesPlainText( this.field, null, this.isRepositoryLevel );
                 }
 
                 promise.then(() => {

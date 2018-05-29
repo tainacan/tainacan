@@ -68,7 +68,7 @@
                      isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
                     :collapsed="collapseAll"
-                    :repository="isRepositoryLevel"/>
+                    :is-repository-level="isRepositoryLevel"/>
 
             <section
                     v-else
@@ -463,8 +463,8 @@
                             slug: 'thumbnail',
                             id: undefined,
                             display: true
-                        })
-                        ;
+                        });
+
                         let fetchOnlyFieldIds = [];
 
                         for (let field of this.fields) {
@@ -533,9 +533,9 @@
         },
         created() {
 
-            this.isOnTheme = (this.$route.name == null);
+            this.isOnTheme = (this.$route.name === null);
 
-            this.isRepositoryLevel = this.collectionId === undefined;
+            this.isRepositoryLevel = (this.collectionId === undefined);
 
             this.$eventBusSearch.setCollectionId(this.collectionId);
 
@@ -547,13 +547,17 @@
                 this.hasFiltered = hasFiltered;
             });
 
-            this.$eventBusSearch.$on('hasToPrepareFieldsAndFilters', () => {
-                this.prepareFieldsAndFilters();
+            this.$eventBusSearch.$on('hasToPrepareFieldsAndFilters', (to) => {
+                /* This condition is to prevent a incorrect fetch by filter or fields when we come from items
+                 * at collection level to items page at repository level
+                 */
+                if(this.collectionId === to.params.collectionId) {
+                    this.prepareFieldsAndFilters();
+                }
             });
 
         },
         mounted() {
-
             this.prepareFieldsAndFilters();
 
             this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));

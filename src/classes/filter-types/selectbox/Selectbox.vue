@@ -30,7 +30,7 @@
 
             let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
 
-            if(this.repository){
+            if(this.isRepositoryLevel){
                 in_route = '/fields/'+ this.field;
             }
 
@@ -48,7 +48,7 @@
                 });
         },
         props: {
-            repository: Boolean,
+            isRepositoryLevel: Boolean,
         },
         data(){
             return {
@@ -78,7 +78,7 @@
                 this.isLoading = true;
 
                 let promise = null;
-                promise = this.getValuesPlainText( this.field );
+                promise = this.getValuesPlainText( this.field, null, this.isRepositoryLevel );
 
                 promise.then(() => {
                     this.isLoading = false;

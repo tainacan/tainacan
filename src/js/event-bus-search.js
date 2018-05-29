@@ -26,8 +26,8 @@ export default {
                 });
             },
             watch: {
-                '$route' () {
-                    if (this.$route.params.collectionId) 
+                '$route' (to, from) {
+                    if (this.$route.params.collectionId)
                         this.collectionId = parseInt(this.$route.params.collectionId);
 
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
@@ -40,9 +40,9 @@ export default {
                         if (this.$route.query.orderby == undefined)
                             this.$route.query.orderby = 'date';
                         
-                        this.$store.dispatch('search/set_postquery', this.$route.query); 
+                        this.$store.dispatch('search/set_postquery', this.$route.query);
                         
-                        this.loadItems();
+                        this.loadItems(to);
                     }
                     
                 }
@@ -119,11 +119,11 @@ export default {
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
-                loadItems() {
+                loadItems(to) {
 
-                    // Foreces fetch_only to be filled before any search happens
+                    // Forces fetch_only to be filled before any search happens
                     if (this.$store.getters['search/getFetchOnly'] == undefined)
-                        this.$emit( 'hasToPrepareFieldsAndFilters');
+                        this.$emit( 'hasToPrepareFieldsAndFilters', to);
                     else {
                         this.$emit( 'isLoadingItems', true);
                         this.$store.dispatch('collection/fetchItems', { 'collectionId': this.collectionId, 'isOnTheme': (this.$route.name == null) })

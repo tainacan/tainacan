@@ -289,7 +289,7 @@ class Items extends Repository {
 	 * @return mixed|Entities\Item
 	 */
 	public function delete( $args ) {
-		if ( ! empty( $args[1] ) && $args[1] === true ) {
+		if ( ! empty( $args[1] ) && $args[1] == true ) {
 
 			$deleted = new Entities\Item( wp_delete_post( $args[0], $args[1] ) );
 

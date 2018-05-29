@@ -68,7 +68,7 @@
 
             let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
 
-            if(this.repository){
+            if(this.isRepositoryLevel){
                 in_route = '/fields/'+ this.field;
             }
 
@@ -108,7 +108,7 @@
             collection_id: [Number], // not required, but overrides the filter field id if is set
             id: '',
             query: Object,
-            repository: Boolean,
+            isRepositoryLevel: Boolean,
         },
         watch: {
             isTouched( val ){

@@ -22,7 +22,7 @@
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
-                        :repository="repository"
+                        :is-repository-level="isRepositoryLevel"
                         @input="listen( $event )"/>
             </div>
         </b-collapse>
@@ -37,8 +37,8 @@
         props: {
             filter: Object,
             query: Object,
-            open: false,
-            repository: Boolean,
+            isRepositoryLevel: Boolean,
+            open: true,
         },
         data(){
             return {

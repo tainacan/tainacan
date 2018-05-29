@@ -26,7 +26,7 @@
 
             let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
 
-            if(this.repository){
+            if(this.isRepositoryLevel){
                 in_route = '/fields?nopaging=1';
             }
 
@@ -54,6 +54,9 @@
                 field: '',
                 field_object: {}
             }
+        },
+        props: {
+            isRepositoryLevel: Boolean
         },
         mixins: [filter_type_mixin],
         watch: {
@@ -84,7 +87,7 @@
                     promise = this.getValuesRelationship( collectionTarget, query );
 
                 } else {
-                    promise = this.getValuesPlainText( this.field, query );
+                    promise = this.getValuesPlainText( this.field, query, this.isRepositoryLevel );
                 }
                 this.isLoading = true;
                 promise.then(() => {
