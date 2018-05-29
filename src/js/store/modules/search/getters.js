@@ -44,14 +44,14 @@ export const getStatus = state => {
     return state.postquery.status;
 }
 
+export const getViewMode = state => {
+    return state.postquery.view_mode;
+}
+
 export const getFetchOnly = state => {
     return state.postquery.fetch_only;
 }
 
 export const getFetchOnlyMeta = state => {
     return ( ! state.postquery.fetch_only['meta'] ) ? [] : state.postquery.fetch_only['meta'];
-}
-
-export const getViewMode = state => {
-    return state.postquery.format;
 }

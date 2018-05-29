@@ -29,6 +29,7 @@ import FilterCategorySelectbox from '../../classes/filter-types/category/Selectb
 import TaincanFormItem from '../../classes/field-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
 import ItemsPage from '../pages/lists/items-page.vue';
+import TableViewMode from '../../theme-helper/table-view-mode.vue';
 
 // Remaining imports
 import HelpButton from '../components/other/help-button.vue';
@@ -76,6 +77,8 @@ Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
 Vue.component('items-page', ItemsPage);
 
+Vue.component('table-view-mode', TableViewMode);
+
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 
 import ThemeItemsList from '../theme-items-list.vue';
@@ -85,12 +88,20 @@ new Vue({
     store,
     router: routerTheme, 
     data: {
-        collectionId: ''   
+        collectionId: '',
+        defaultViewMode: '',
+        enabledViewModes: {}   
     },
     render: h => h(ThemeItemsList),
     beforeMount () {
+
         if (this.$el.attributes['collection-id'] != undefined)
             this.collectionId = this.$el.attributes['collection-id'].value;
+        if (this.$el.attributes['default-view-mode'] != undefined)
+            this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
+        if (this.$el.attributes['enabled-view-modes'] != undefined)
+            this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
+
     }
     
 });

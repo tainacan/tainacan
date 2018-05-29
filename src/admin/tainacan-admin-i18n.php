@@ -193,6 +193,9 @@ return [
 	'label_dublin_core'						   => __( 'Dublin Core', 'tainacan' ),
 	'label_created_by'						   => __( 'Created by', 'tainacan' ),
 	'label_apply_changes'					   => __( 'Apply changes', 'tainacan' ),
+	'label_view_mode'					   	   => __( 'View mode', 'tainacan' ),
+	'label_default_view_mode'			   	   => __( 'Default view mode', 'tainacan' ),
+	'label_enabled_view_modes'			   	   => __( 'Enabled view modes', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

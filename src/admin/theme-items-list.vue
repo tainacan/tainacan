@@ -1,6 +1,8 @@
 <template>
     <items-page
-            class="theme-items-list" 
+            class="theme-items-list"
+            :enabled-view-modes="$root.enabledViewModes" 
+            :default-view-mode="$root.defaultViewMode"
             :collection-id="$root.collectionId" />
 </template>
 
@@ -19,6 +21,7 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../node_modules/buefy/src/scss/components/_tag.scss";
+    @import "../../node_modules/buefy/src/scss/components/_loading.scss";
 
     // Tainacan custom colors
     $primary: #2cb4c1;
@@ -51,11 +54,14 @@ export default {
     $danger-invert: findColorInvert($danger);
 
     $table-side-padding: 4.166666667%;
+    $filter-menu-width: 200px;
 
     @import "../admin/scss/_tables.scss";
     @import "../admin/scss/_tooltips.scss";
     
     .theme-items-list {
+        position: relative;
+        display: flex;
 
         a{ color: $secondary !important }
         a:hover {
@@ -468,6 +474,19 @@ export default {
             font-weight: normal;
             cursor: pointer;
             background-color: white;
+        }
+
+        #filter-menu-compress-button {
+            top: 70px !important;
+        }
+
+        .filters-menu {
+            height: auto;
+            min-width: $filter-menu-width;
+        }
+
+        #items-list-area {
+            width: 100%;
         }
 
     }

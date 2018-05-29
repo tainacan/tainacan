@@ -219,20 +219,49 @@ class REST_Items_Controller extends REST_Controller {
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 
 		$response = [];
-		if ($items->have_posts()) {
-			while ( $items->have_posts() ) {
-				$items->the_post();
 
-				$item = new Entities\Item($items->post);
+		$return_template = false;
 
-				$prepared_item = $this->prepare_item_for_response($item, $request);
-
-				array_push($response, $prepared_item);
+		if ( isset($request['view_mode']) ) {
+			
+			// TODO: Check if requested view mode is really enabled for current collection
+			$view_mode = \Tainacan\Theme_Helper::get_instance()->get_view_mode($request['view_mode']);
+			
+			if ($view_mode && $view_mode['type'] == 'template' && isset($view_mode['template']) && file_exists($view_mode['template'])) {
+				$return_template = true;
 			}
 
-			wp_reset_postdata();
 		}
+		
+		if ( $return_template ) {
+			
+			ob_start();
 
+			global $wp_query;
+			$wp_query = $items;
+			$displayed_metadata = array_map(function($el) { return (int) $el; }, $request['fetch_only']['meta']);
+			include $view_mode['template'];
+
+			$response = ob_get_clean();
+
+		} else {
+
+			if ($items->have_posts()) {
+				while ( $items->have_posts() ) {
+					$items->the_post();
+	
+					$item = new Entities\Item($items->post);
+	
+					$prepared_item = $this->prepare_item_for_response($item, $request);
+	
+					array_push($response, $prepared_item);
+				}
+	
+				wp_reset_postdata();
+			}
+			
+		}
+		
 		$total_items  = $items->found_posts;
 		$max_pages = ceil($total_items / (int) $items->query_vars['posts_per_page']);
 

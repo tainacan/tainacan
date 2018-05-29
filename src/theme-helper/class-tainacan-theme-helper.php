@@ -10,6 +10,11 @@ class Theme_Helper {
 	
 	public $visiting_collection_cover = false;
 
+	/**
+	 * Stores view modes available to be used by the theme
+	 */
+	private $registered_view_modes = [];
+
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self();
@@ -43,6 +48,13 @@ class Theme_Helper {
 		add_filter('get_the_archive_title', array($this, 'filter_archive_title'));
 
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
+
+		$this->register_view_mode('table', [
+			'label' => __('Table', 'tainacan'),
+			'dynamic_metadata' => true,
+			'icon' => '<span class="icon"><i class="mdi mdi-table mdi-24px"></i></span>',
+			'type' => 'component',
+		]);
 		
 	}
 	
@@ -264,6 +276,78 @@ class Theme_Helper {
 		return "<div id='tainacan-items-page' $params ></div>";
 
 
+	}
+
+	/**
+	 * Register a new View Mode
+	 * 
+	 * View Modes are used to display items in the faceted search when browsing a collection using 
+	 * the current active theme. It can be a php/html template or a web component.
+	 * 
+	 * Collection managers can choose from registered view modes which will be the default mode and what others modes will be available 
+	 * for the visitors to choose from for each collection
+	 * 
+	 * @param string $slug a unique slug for the view mode
+	 * @param array|string $args {
+	 * 		Optional. Array of arguments
+	 * 
+	 * 		@type string 		$label				Label, visible to users. Default to $slug
+	 * 		@type string		$description		Description, visible only to editors in the admin. Default none.
+	 * 		@type string		$type 				Type. Accepted values are 'template' or 'component'. Defautl 'template'
+	 * 		@type string		$template			Full path  to the template file to be used. Required if $type is set to template.
+	 * 												Default: theme-path/tainacan/view-mode-{$slug}.php
+	 * 		@type string		$component			Component tag name. The web component js must be included and must accept two props:
+	 * 													* items - the list of items to be rendered
+	 * 													* displayed_metadata - list of metadata to be displayed
+	 * 												Default view-mode-{$slug}
+	 * 		@type string		$thumbnail			Full URL to an thumbnail that represents the view mode. Displayed in admin.
+	 * 		@type string		$icon 				HTML that outputs an icon that represents the view mode. Displayed in front end.
+	 * 		@type bool			$show_pagination	Wether to display or not pagination controls. Default true.
+	 * 		@type bool			$dynamic_metadata	Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
+	 * 		
+	 * 
+	 * }
+	 * 
+	 * @return void
+	 */
+	public function register_view_mode($slug, $args = []) {
+
+		$defaults = array(
+			'label' => $slug,
+			'description' => '',
+			'type' => 'template',
+			'template' => get_stylesheet_directory() . '/tainacan/view-mode-' . $slug . '.php',
+			'component' => 'view-mode-' . $slug,
+			'thumbnail' => '', // get_stylesheet_directory() . '/tainacan/view-mode-' . $slug . '.png',
+			'icon' => '', //
+			'show_pagination' => true,
+			'dynamic_metadata' => false,
+			
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		$this->registered_view_modes[$slug] = $args;
+
+	}
+
+	/**
+	 * Get a list of all registered view modes
+	 * 
+	 * @return array The list of registered view modes
+	 */
+	public function get_registered_view_modes() {
+		return $this->registered_view_modes;
+	}
+
+	/**
+	 * Get one specific view mode by its slug
+	 * 
+	 * @param string $slug The view mode slug
+	 * 
+	 * @return array|false The view mode definition or false if it is not found
+	 */
+	public function get_view_mode($slug) {
+		return isset($this->registered_view_modes[$slug]) ? $this->registered_view_modes[$slug] : false;
 	}
 	
 }
