@@ -25,7 +25,8 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             :key="field_mapper.slug"
-                            v-for="field_mapper in field_mappers">
+                            v-for="field_mapper in field_mappers"
+                            v-if="field_mapper.metadata != false">
                         <router-link
                                 :id="'a-create-collection-' + field_mapper.slug"
                                 tag="div"
@@ -200,7 +201,7 @@ export default {
     computed: {
         field_mappers: {
             get() {
-                return this.getFieldMappers()
+                return this.getFieldMappers();
             }
         },
         collections() {
