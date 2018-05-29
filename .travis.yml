@@ -22,8 +22,8 @@ before_install:
 - sudo apt-get install sshpass
 install:
 - echo -e "Install"
-- mkdir ~/wordpress
-- sudo ./tests/bin/install-wp-tests.sh c1_phpunit c1_phpunit_test 6NrE59YsZpHoRHIi ~/wordpress medialab.ufg.br latest true
+- mkdir /home/travis/wordpress
+- sudo ./tests/bin/install-wp-tests.sh c1_phpunit c1_phpunit_test 6NrE59YsZpHoRHIi /home/travis/wordpress medialab.ufg.br latest true
 script:  phpunit #--version
 #after_success:
 #- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
