@@ -5,6 +5,7 @@ namespace Tainacan\API\EndPoints;
 use \Tainacan\API\REST_Controller;
 use Tainacan\Repositories;
 use Tainacan\Entities;
+use Tainacan\Entities\Collection;
 
 /**
  * Represents the Collections REST Controller
@@ -249,6 +250,8 @@ class REST_Collections_Controller extends REST_Controller {
 				'collection'    => $body
 			], 400);
 		}
+		
+		$this->collection = new Collection();
 
 		try {
 			$prepared_post = $this->prepare_item_for_database( $body );
@@ -280,7 +283,8 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-        return $this->collection->can_edit();
+	    $dummy = new Entities\Collection();
+	    return  current_user_can($dummy->get_capabilities()->edit_posts);
     }
 
 	/**
@@ -294,7 +298,7 @@ class REST_Collections_Controller extends REST_Controller {
 
 		foreach ($request as $key => $value){
 			$set_ = 'set_' . $key;
-			$this->collection->$set_($value);
+			if(method_exists($this->collection, $set_)) $this->collection->$set_($value);
 		}
 
         return $this->collection;
