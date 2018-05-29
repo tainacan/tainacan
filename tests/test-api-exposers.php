@@ -345,6 +345,42 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('TestValues_exposers', $data['teste_Expose']);
 	}
 	
+	/**
+	 * @group mapped_new_collection
+	 */
+	public function test_mapped_new_collection() {
+	    $collection_JSON = json_encode([
+	        'exposer-map'  => 'Dublin Core',
+	        'name'         => 'TesteJsonAddDublin_Core',
+	        'description'  => 'Teste JSON Dublin Core mapped',
+	        'status'       => 'publish'
+	    ]);
+	    
+	    $mapper = new \Tainacan\Exposers\Mappers\Dublin_Core();
+	    
+	    $request = new \WP_REST_Request('POST', $this->namespace . '/collections');
+	    $request->set_body($collection_JSON);
+	    $response = $this->server->dispatch($request);
+	    $this->assertEquals(201, $response->get_status(), sprintf('response: %s', print_r($response, true)));
+	    $collection_array = $response->get_data();
+	    $id = $collection_array['id'];
+	    $Tainacan_collections = \Tainacan\Repositories\Collections::get_instance();
+	    $collection = $Tainacan_collections->fetch($id);
+	    
+	    $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+	    $fields = $Tainacan_Fields->fetch_by_collection( $collection, [ 'order' => 'id' ], 'OBJECT' );
+	    
+	    $this->assertEquals(count($mapper->metadata), count($fields));
+	    foreach ($fields as $field) {
+	        $this->assertTrue(array_key_exists($field->get_slug(), $mapper->metadata));
+	        if(! array_key_exists('core_field', $mapper->metadata[$field->get_slug()]) || $mapper->metadata[$field->get_slug()]['core_field'] == false) {
+	           $this->assertEquals($mapper->metadata[$field->get_slug()]['URI'], $field->get_description());
+	        }
+	        $this->assertEquals($mapper->metadata[$field->get_slug()]['label'], $field->get_name());
+	    }
+	    
+	}
+	
 }
 
 ?>
