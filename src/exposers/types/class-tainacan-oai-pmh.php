@@ -9,6 +9,7 @@ namespace Tainacan\Exposers\Types;
 class OAI_PMH extends Xml {
 	
 	public $mappers = ['Dublin Core'];
+	public $slug = 'oai-pmh'; // type slug for url safe
 	
 	const XML_OAI_DC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/";
 	/**

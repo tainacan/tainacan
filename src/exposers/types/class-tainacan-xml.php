@@ -13,6 +13,7 @@ class Xml extends Type {
 	 * @var string
 	 */
 	protected $extension = 'xml';
+	public $slug = 'xml'; // type slug for url safe
 	
 	/**
 	 * 

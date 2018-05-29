@@ -10,6 +10,7 @@ abstract class Type {
 	
 	protected $mappers = true; // List of supported mapper, leave true for all
 	protected $extension = 'tnc'; // extension sufix for multi operation system compatibility
+	public $slug = ''; // type slug for url safe
 	
 	/**
 	 * Change response after api callbacks

@@ -167,6 +167,58 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	}
 	
 	/**
+	 * @group exposers-slug
+	 */
+	public function test_exposer_map_by_slug() {
+	    global $Tainacan_Fields, $Tainacan_Item_Metadata;
+	    extract($this->create_meta_requirements());
+	    
+	    $item__metadata_json = json_encode([
+	        'values'       => 'TestValues_exposers_slug',
+	    ]);
+	    
+	    $request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->field->get_id() );
+	    $request->set_body($item__metadata_json);
+	    
+	    $response = $this->server->dispatch($request);
+	    
+	    $this->assertEquals(200, $response->get_status());
+	    
+	    $data = $response->get_data();
+	    
+	    $this->assertEquals($this->item->get_id(), $data['item']['id']);
+	    $this->assertEquals('TestValues_exposers_slug', $data['value']);
+	    
+	    $item_exposer_json = json_encode([
+	        'exposer-map'       => 'dublin-core',
+	    ]);
+	    $request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->field->get_id() );
+	    $request->set_body($item_exposer_json);
+	    $response = $this->server->dispatch($request);
+	    $this->assertEquals(200, $response->get_status());
+	    $data = $response->get_data();
+	    $this->assertEquals('TestValues_exposers_slug', $data['dc:language']);
+	    
+	    $item_exposer_json = json_encode([
+	        'exposer-type'       => 'xml',
+	        'exposer-map'       => 'dublin-core',
+	    ]);
+	    $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata' );
+	    $request->set_body($item_exposer_json);
+	    $response = $this->server->dispatch($request);
+	    $this->assertEquals(200, $response->get_status());
+	    $data = $response->get_data();
+	    
+	    $xml = new \SimpleXMLElement($data);
+	    $rdf = $xml->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_RDF_NAMESPACE);
+	    $dc = $rdf->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE);
+	    
+	    $this->assertEquals('adasdasdsa', $dc->description);
+	    $this->assertEquals('item_teste_Expose', $dc->title);
+	    $this->assertEquals('TestValues_exposers_slug', $dc->language);
+	}
+	
+	/**
 	 * @group oai-pmh
 	 */
 	public function test_oai_pmh() {

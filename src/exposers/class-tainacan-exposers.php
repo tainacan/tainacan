@@ -47,12 +47,15 @@ class Exposers {
 	 * @param $class_name string | object The class name or the instance
 	 */
 	public function register_exposer_type( $class_name ){
+	    $obj = $class_name;
 		if( is_object( $class_name ) ){
 			$class_name = get_class( $class_name );
+		} else {
+		    $obj = new $class_name;
 		}
 		
 		if(!in_array( $class_name, $this->types)){
-			$this->types[] = $class_name;
+		    $this->types[$obj->slug] = $class_name;
 		}
 	}
 	
@@ -62,12 +65,15 @@ class Exposers {
 	 * @param $class_name string | object The class name or the object instance
 	 */
 	public function register_exposer_mapper( $class_name ){
+	    $obj = $class_name;
 		if( is_object( $class_name ) ){
 			$class_name = get_class( $class_name );
+		} else {
+		    $obj = new $class_name;
 		}
 		
 		if(!in_array( $class_name, $this->mappers)){
-			$this->mappers[] = $class_name;
+			$this->mappers[$obj->slug] = $class_name;
 		}
 	}
 	
@@ -79,6 +85,13 @@ class Exposers {
 	 * @return string
 	 */
 	public function check_class_name($class_name, $root = false, $prefix = 'Tainacan\Exposers\Types\\') {
+	    if(array_key_exists($class_name, $this->types)) {
+            $class_name = $this->types[$class_name];
+            $prefix = '';
+	    } elseif( array_key_exists($class_name, $this->mappers)) {
+	        $class_name = $this->mappers[$class_name];
+	        $prefix = '';
+	    }
 		$class = $prefix.sanitize_text_field($class_name);
 		$class = str_replace(['-', ' '], ['_', '_'], $class);
 		
@@ -218,6 +231,8 @@ class Exposers {
 	 * @return boolean
 	 */
 	public function has_mapper($mapper) {
+	    if(array_key_exists($mapper, $this->mappers)) return true;
+	    
 		return in_array($this->check_class_name($mapper, false, self::MAPPER_CLASS_PREFIX), $this->mappers);
 	}
 	
