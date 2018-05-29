@@ -185,7 +185,7 @@ class Filters extends Repository {
      *
      */
     public function delete($args){
-	    if(!empty($args[1]) && $args[1] === true){
+	    if(!empty($args[1]) && $args[1] == true){
 
 	    	$deleted = new Entities\Filter(wp_delete_post($args[0], $args[1]));
 

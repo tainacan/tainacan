@@ -272,7 +272,7 @@ class Collections extends Repository {
 	 * @return mixed|Collection
 	 */
 	public function delete( $args ) {
-		if ( ! empty( $args[1] ) && $args[1] === true ) {
+		if ( ! empty( $args[1] ) && $args[1] == true ) {
 			$deleted = new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
 
 			if($deleted) {
