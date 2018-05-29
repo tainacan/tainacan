@@ -85,12 +85,14 @@ class Exposers {
 	 * @return string
 	 */
 	public function check_class_name($class_name, $root = false, $prefix = 'Tainacan\Exposers\Types\\') {
-	    if(array_key_exists($class_name, $this->types)) {
-            $class_name = $this->types[$class_name];
-            $prefix = '';
-	    } elseif( array_key_exists($class_name, $this->mappers)) {
-	        $class_name = $this->mappers[$class_name];
-	        $prefix = '';
+	    if(is_string($class_name)) {
+    	    if(array_key_exists($class_name, $this->types)) {
+                $class_name = $this->types[$class_name];
+                $prefix = '';
+    	    } elseif( array_key_exists($class_name, $this->mappers)) {
+    	        $class_name = $this->mappers[$class_name];
+    	        $prefix = '';
+    	    }
 	    }
 		$class = $prefix.sanitize_text_field($class_name);
 		$class = str_replace(['-', ' '], ['_', '_'], $class);
@@ -231,8 +233,6 @@ class Exposers {
 	 * @return boolean
 	 */
 	public function has_mapper($mapper) {
-	    if(array_key_exists($mapper, $this->mappers)) return true;
-	    
 		return in_array($this->check_class_name($mapper, false, self::MAPPER_CLASS_PREFIX), $this->mappers);
 	}
 	
