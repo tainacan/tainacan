@@ -3,7 +3,7 @@
     color: $tainacan-input-color;
 
     .form-submit {
-        justify-content: start !important;
+        justify-content: space-between !important;
         padding: 1em 1.2em 0.4em 1.2em;
         margin-bottom: 0px;
         .button {
@@ -83,5 +83,11 @@
             right: 0.95em;
             color: $primary;
         }       
+    }
+    .dropdown {
+        .button {
+            border: 1px solid $tainacan-input-background !important;
+            border-radius: 0 !important;
+        }
     }
 }

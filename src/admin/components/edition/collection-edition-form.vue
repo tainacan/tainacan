@@ -727,12 +727,11 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .tainacan-form>.columns>.column {
-        overflow: auto;
-        .field {
-            position: relative;
-        }
+
+    .field {
+        position: relative;
     }
+    
     .thumbnail-field {  
         max-height: 128px;
         margin-bottom: 96px;
