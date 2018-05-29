@@ -5,6 +5,7 @@ namespace Tainacan\API\EndPoints;
 use \Tainacan\API\REST_Controller;
 use Tainacan\Repositories;
 use Tainacan\Entities;
+use Tainacan\Tests\Collections;
 
 /**
  * Represents the Items REST Controller
@@ -83,6 +84,17 @@ class REST_Items_Controller extends REST_Controller {
 							'default'     => 'false'
 						),
 					)
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace, '/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_collection_params(),
 				),
 			)
 		);
@@ -199,7 +211,11 @@ class REST_Items_Controller extends REST_Controller {
 	public function get_items( $request ) {
 		$args = $this->prepare_filters($request);
 
-		$collection_id = $request['collection_id'];
+		$collection_id = [];
+		if($request['collection_id']) {
+			$collection_id = $request['collection_id'];
+		}
+
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 
 		$response = [];
@@ -261,9 +277,13 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			return true;
-		}
+		} else {
+			if('edit' === $request['context'] && !$this->collections_repository->can_read(new Entities\Collection())) {
+				return false;
+			}
 
-		return false;
+			return true;
+		}
 	}
 
 	/**

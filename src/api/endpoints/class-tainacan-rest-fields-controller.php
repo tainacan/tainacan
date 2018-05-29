@@ -110,6 +110,12 @@ class REST_Fields_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 				),
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission'          => array($this, 'get_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
+				)
 			)
 		);
 	}
@@ -120,15 +126,24 @@ class REST_Fields_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_item( $request ) {
-		$collection_id = $request['collection_id'];
+		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : false;
 		$field_id = $request['field_id'];
 
 		if($request['fetch'] === 'all_field_values' && $request['search']){
-			$results = $this->field_repository->fetch_all_field_values($collection_id, $field_id, $request['search']);
+			if($collection_id) {
+				$results = $this->field_repository->fetch_all_field_values( $collection_id, $field_id, $request['search'] );
+			} else {
+				$results = $this->field_repository->fetch_all_field_values( null, $field_id, $request['search']);
+			}
 
 			return new \WP_REST_Response($results, 200);
+
 		} elseif($request['fetch'] === 'all_field_values') {
-			$results = $this->field_repository->fetch_all_field_values($collection_id, $field_id);
+			if($collection_id) {
+				$results = $this->field_repository->fetch_all_field_values( $collection_id, $field_id );
+			} else {
+				$results = $this->field_repository->fetch_all_field_values( null, $field_id);
+			}
 
 			return new \WP_REST_Response($results, 200);
 		}
@@ -145,14 +160,28 @@ class REST_Fields_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_item_permissions_check( $request ) {
-		$collection = $this->collection_repository->fetch($request['collection_id']);
+		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : false;
 
-		if($collection instanceof Entities\Collection) {
-			if ($request['context'] === 'edit' && ! $collection->can_read()) {
-				return false;
+		if($collection_id) {
+			$collection = $this->collection_repository->fetch( $collection_id );
+
+			if ( $collection instanceof Entities\Collection ) {
+				if ( $request['context'] === 'edit' && ! $collection->can_read() ) {
+					return false;
+				}
+
+				return true;
 			}
+		} elseif($request['field_id']) {
+			$field = $this->field_repository->fetch($request['field_id']);
 
-			return true;
+			if ( $field instanceof Entities\Field ) {
+				if ( $request['context'] === 'edit' && ! $field->can_read() ) {
+					return false;
+				}
+
+				return true;
+			}
 		}
 
 		return false;

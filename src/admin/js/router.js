@@ -27,7 +27,7 @@ Vue.use(VueRouter);
 
 const i18nGet = function (key) {
   let string = tainacan_plugin.i18n[key];
-  return (string != undefined && string != null && string != '' ) ? string : "ERROR: Invalid i18n key!";
+  return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
 };
 
 const routes = [                
@@ -50,8 +50,8 @@ const routes = [
       ]
     },
 
-//    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page'), icon: 'file-multiple'} },
-//    { path: '/items/new', name: 'ItemCreationForm', component: ItemEditionForm, meta: {title: i18nGet('title_create_item'), icon: 'file-multiple'} },
+    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page'), icon: 'file-multiple'} },
+    { path: '/items/new', name: 'ItemCreationForm', component: ItemEditionForm, meta: {title: i18nGet('title_create_item'), icon: 'file-multiple'} },
 
     { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('title_repository_filters_page'), icon: 'filter'} },
 
