@@ -19,6 +19,7 @@ const state = {
             '1': 'creation_date',
             '2': 'author_name' 
         },
+        format: 'table'
     },
     totalItems: 0
 };
