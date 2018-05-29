@@ -377,7 +377,7 @@ class Entity {
 	}
 	
 	/**
-	 * Return if user can read this entity
+	 * Return if user can edit this entity
 	 * @param int|\WP_User|null $user the user for capability check, null for the current user
 	 * @return bool
 	 */
@@ -387,7 +387,7 @@ class Entity {
 	}
 	
 	/**
-	 * Return if user can read this entity
+	 * Return if user can delete this entity
 	 * @param int|\WP_User|null $user the user for capability check, null for the current user
 	 * @return bool
 	 */
@@ -397,7 +397,7 @@ class Entity {
 	}
 	
 	/**
-	 * Return if user can read this entity
+	 * Return if user can publish this entity
 	 * @param int|\WP_User|null $user the user for capability check, null for the current user
 	 * @return bool
 	 */
