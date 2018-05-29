@@ -17,6 +17,9 @@
             box-shadow: none !important;
             text-decoration: none !important;
         }
+        &[disabled] {
+            background-color: white !important;
+        }
     }
     &:not(.is-multiple)::after {
         content: "\F35D" !important;

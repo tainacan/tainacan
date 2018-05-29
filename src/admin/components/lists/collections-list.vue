@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="table-wrapper">
-            <table class="table">
+            <table class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
@@ -54,9 +54,13 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
                         </th>
-                        <!-- Creation -->
+                        <!-- Creation Date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_creation') }}</div>
+                            <div class="th-wrap">{{ $i18n.get('label_creation_date') }}</div>
+                        </th>
+                        <!-- Created By -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
                         </th>
                         <th class="actions-header">
                             &nbsp;
@@ -95,7 +99,13 @@
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_name')" 
                                 :aria-label="$i18n.get('label_name') + ': ' + collection.name">
-                            <p>{{ collection.name }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: collection.name,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ collection.name }}</p>
                         </td>
                         <!-- Description -->
                         <td
@@ -103,15 +113,41 @@
                                 @click="goToCollectionPage(collection.id)"
                                 :label="$i18n.get('label_description')" 
                                 :aria-label="$i18n.get('label_description') + ': ' + collection.description">
-                            <p>{{ collection.description }}</p>
+                            <p
+                                    v-tooltip="{
+                                        content: collection.description,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ collection.description }}</p>
                         </td>
-                        <!-- Creation -->
+                        <!-- Creation Date -->
                         <td
                                 @click="goToCollectionPage(collection.id)"
                                 class="table-creation column-default-width" 
-                                :label="$i18n.get('label_creation')" 
-                                :aria-label="$i18n.get('label_creation') + ': ' + collection.creation">
-                            <p v-html="collection.creation" />
+                                :label="$i18n.get('label_creation_date')" 
+                                :aria-label="$i18n.get('label_creation_date') + ': ' + collection.creation_date">
+                            <p
+                                    v-tooltip="{
+                                        content: collection.creation_date,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="collection.creation_date" />
+                        </td>
+                        <!-- Created by -->
+                        <td
+                                @click="goToCollectionPage(collection.id)"
+                                class="table-creation column-default-width" 
+                                :label="$i18n.get('label_created_by')" 
+                                :aria-label="$i18n.get('label_created_by') + ': ' + collection.author_name">
+                            <p
+                                    v-tooltip="{
+                                        content: collection.author_name,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="collection.author_name" />
                         </td>
                         <!-- Actions -->
                         <td 
@@ -133,7 +169,7 @@
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="delete"/>
+                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
                                 </a>
                             </div>
                         </td>
@@ -161,7 +197,8 @@ export default {
         totalCollections: 0,
         page: 1,
         collectionsPerPage: 12,
-        collections: Array
+        collections: Array,
+        isOnTrash: false
     },
     watch: {
         collections() {
@@ -193,9 +230,9 @@ export default {
         },
         deleteOneCollection(collectionId) {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_collection_delete'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_collection_delete') : this.$i18n.get('info_warning_collection_trash'),
                 onConfirm: () => {
-                    this.deleteCollection(collectionId)
+                    this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
                     .then(() => {
                     //     this.$toast.open({
                     //         duration: 3000,
@@ -205,7 +242,7 @@ export default {
                     //         queue: true
                     //     });
                         for (let i = 0; i < this.selectedCollections.length; i++) {
-                            if (this.selectedCollections[i].id == this.collectionId)
+                            if (this.selectedCollections[i].id == collectionId)
                                 this.selectedCollections.splice(i, 1);
                         }
                     }).catch(() => {
@@ -222,12 +259,12 @@ export default {
         },
         deleteSelectedCollections() {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_selected_collections_delete'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_collections_delete') : this.$i18n.get('info_warning_selected_collections_trash'),
                 onConfirm: () => {
 
                     for (let i = 0; i < this.collections.length; i++) {
                         if (this.selectedCollections[i]) {
-                            this.deleteCollection(this.collections[i].id)
+                            this.deleteCollection({ collectionId: this.collections[i].id, isPermanently: this.isOnTrash })
                             .then(() => {
                             //     this.loadCollections();
                             //     this.$toast.open({

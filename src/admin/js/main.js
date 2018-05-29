@@ -7,7 +7,6 @@ import Vue from 'vue';
 import Buefy from 'buefy';
 import VTooltip from 'v-tooltip'
 
-
 // Custom elements
 import Text from '../../classes/field-types/text/Text.vue';
 import Textarea from '../../classes/field-types/textarea/Textarea.vue';

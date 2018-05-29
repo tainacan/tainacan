@@ -57,7 +57,8 @@
                         :total-collections="totalCollections"
                         :page="page"
                         :collections-per-page="collectionsPerPage"
-                        :collections="collections"/> 
+                        :collections="collections"
+                        :is-on-trash="status == 'trash'"/> 
 
                 <!-- Empty state image -->
                 <div v-if="totalCollections <= 0 && !isLoading">
@@ -197,18 +198,13 @@ export default {
         }
     },
     computed: {
-        collections(){
-            let collectionsList = this.getCollections(); 
-            for (let collection of collectionsList) 
-                collection['creation'] = this.$i18n.get('info_created_by') + collection['author_name'] + '<br>' + this.$i18n.get('info_date') + collection['creation_date'];
-            
-            return collectionsList;
-        },
         field_mappers: {
             get() {
-                var data = this.getFieldMappers()
-                return data;
+                return this.getFieldMappers()
             }
+        },
+        collections() {
+            return this.getCollections(); 
         }
     },
     created() {

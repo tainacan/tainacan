@@ -13,6 +13,7 @@
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
+                        :mobile-modal="false"
                         position="is-bottom-left"
                         v-if="items.length > 0 && items[0].current_user_can_edit"
                         :disabled="!isSelectingItems"
@@ -38,7 +39,7 @@
         <div class="table-wrapper">
             <table 
                     :class="{'selectable-table': !isOnTheme }"
-                    class="table">
+                    class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
@@ -112,7 +113,8 @@
                                     v-tooltip="{
                                         content: renderMetadata( item.metadata[column.slug] ),
                                         html: true,
-                                        autoHide: false
+                                        autoHide: false,
+                                        placement: 'auto-start'
                                     }"
                                     v-if="item.metadata != undefined &&
                                           column.field !== 'row_thumbnail' &&
@@ -126,7 +128,14 @@
                                         class="table-thumb" 
                                         :src="item[column.slug].thumb">
                             </span> 
-                            <p v-if="column.field == 'row_author' || column.field == 'row_creation'">
+                            <p 
+                                    v-tooltip="{
+                                        content: item[column.slug],
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="column.field == 'row_author' || column.field == 'row_creation'">
                                     {{ item[column.slug] }}
                             </p>
 
@@ -152,12 +161,10 @@
                                         @click.prevent.stop="deleteOneItem(item.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="delete"/>
+                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
                                 </a>
                             </div>
                         </td>
-
-    
                     </tr>
                 </tbody>
             </table>
@@ -167,7 +174,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import DataAndTooltip from '../other/data-and-tooltip.vue'
 
 export default {
     name: 'ItemsList',
@@ -183,10 +189,8 @@ export default {
         tableFields: Array,
         items: Array,
         isLoading: false,
-        isOnTheme: false
-    },
-    components: {
-        DataAndTooltip
+        isOnTheme: false,
+        isOnTrash: false
     },
     mounted() {
         this.selectedItems = [];
@@ -218,9 +222,9 @@ export default {
         },
         deleteOneItem(itemId) {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_item_delete'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                 onConfirm: () => {
-                    this.deleteItem(itemId)
+                    this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
                     .then(() => {
                     //     this.$toast.open({
                     //         duration: 3000,
@@ -230,7 +234,7 @@ export default {
                     //         queue: true
                     //     });
                         for (let i = 0; i < this.selectedItems.length; i++) {
-                            if (this.selectedItems[i].id == this.itemId)
+                            if (this.selectedItems[i].id == itemId)
                                 this.selectedItems.splice(i, 1);
                         }
                     }).catch(() => {
@@ -248,12 +252,12 @@ export default {
         },
         deleteSelectedItems() {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_selected_items_delete'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
                 onConfirm: () => {
 
                     for (let i = 0; i < this.selectedItems.length; i++) {
                         if (this.selectedItems[i]) {
-                            this.deleteItem(this.items[i].id)
+                            this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
                             .then(() => {
                             //     this.$toast.open({
                             //         duration: 3000,
@@ -300,15 +304,6 @@ export default {
             } else {
                 return metadata.value_as_html;
             }
-        },
-        getCreationHtml(item) {
-            return this.$i18n.get('info_date') + item['creation_date'];
-        },
-        getAuthorHtml(item) {
-            return item['author_name'];
-        },
-        getDecodedURI(url) {
-            return decodeURIComponent(url);
         }
     }
 }

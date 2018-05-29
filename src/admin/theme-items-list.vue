@@ -1,6 +1,8 @@
 <template>
     <items-page
-            class="theme-items-list" 
+            class="theme-items-list"
+            :enabled-view-modes="$root.enabledViewModes" 
+            :default-view-mode="$root.defaultViewMode"
             :collection-id="$root.collectionId" />
 </template>
 
@@ -19,20 +21,7 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../node_modules/buefy/src/scss/components/_tag.scss";
-
-    /* Rules for sizing the icon. */
-    .material-icons.md-18 { font-size: 18px; }
-    .material-icons.md-24 { font-size: 24px; }
-    .material-icons.md-36 { font-size: 36px; }
-    .material-icons.md-48 { font-size: 48px; }
-
-    /* Rules for using icons as black on a light background. */
-    .material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-    .material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
-
-    /* Rules for using icons as white on a dark background. */
-    .material-icons.md-light { color: rgba(255, 255, 255, 1); }
-    .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+    @import "../../node_modules/buefy/src/scss/components/_loading.scss";
 
     // Tainacan custom colors
     $primary: #2cb4c1;
@@ -65,8 +54,14 @@ export default {
     $danger-invert: findColorInvert($danger);
 
     $table-side-padding: 4.166666667%;
+    $filter-menu-width: 200px;
+
+    @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_tooltips.scss";
     
     .theme-items-list {
+        position: relative;
+        display: flex;
 
         a{ color: $secondary !important }
         a:hover {
@@ -385,234 +380,6 @@ export default {
             }
         }
 
-        // Tables
-        // Tables
-        .table-container {
-            padding: 0 $table-side-padding;
-            position: relative;
-            margin-bottom: 40px;
-
-            .table-wrapper {
-                width: 100%;
-                height: calc(100% - 40px);
-                border-collapse: separate;
-                overflow: auto;
-                margin-bottom: 0px !important;
-
-                table.table {
-                    width: 100%;
-
-                    .checkbox-cell {
-                        min-width: 38px;
-                        width: 38px;
-                        padding: 0;
-                        left: 0;
-                        top: auto;
-                        display: table-cell;
-            
-                        &::before {
-                            box-shadow: inset 50px 0 10px -12px #222;
-                            content: " ";
-                            width: 50px;
-                            height: 100%;
-                            position: absolute;
-                            left: 0;
-                            top: 0;
-                            visibility: hidden;
-                        }
-            
-                        label.checkbox {  
-                            border-radius: 0px;
-                            background-color: white;
-                            padding: 0;
-                            width: 100%;
-                            height: 100%; 
-                            display: flex;
-                            justify-content: center;
-                        }
-                        .b-checkbox.checkbox .control-label {
-                            display: none;
-                        }
-                        &.is-selecting {
-                            position: sticky !important;
-                            position: -webkit-sticky !important;
-                            &::before { visibility: visible !important; }
-                        }
-                    }
-                    // Only to be used in case we can implement Column resizing
-                    // th:not(:last-child) {
-                    //     border-right: 1px solid $tainacan-input-background !important;
-                    // }
-            
-                    .thumbnail-cell {
-                        width: 60px;
-                        text-align: center;
-                    }
-            
-                    .column-small-width {
-                        min-width: 80px;
-                        max-width: 80px;
-                        p {
-                            color: $gray-light;
-                            font-size: 11px;
-                            line-height: 1.5;
-                        }
-                    }
-                    .column-default-width {
-                        min-width: 80px;
-                        max-width: 160px;
-                        p {
-                            color: $gray-light;
-                            font-size: 11px;
-                            line-height: 1.5;
-                        }
-                    }
-                    .column-medium-width {
-                        min-width: 120px;
-                        max-width: 200px;
-                        p {
-                            color: $gray-light;
-                            font-size: 11px;
-                            line-height: 1.5;
-                        }
-                    }
-                    .column-large-width {
-                        min-width: 120px;
-                        max-width: 240px;
-                        p {
-                            color: $gray-light;
-                            font-size: 11px;
-                            line-height: 1.5;
-                        }
-                    }
-                    .column-main-content {
-                        min-width: 120px !important;
-                        max-width: 240px !important;
-                        p { 
-                            font-size: 14px !important;
-                            color: $tainacan-input-color !important;
-                            margin: 0px !important; 
-                        }
-                    }
-                    .column-needed-width {
-                        max-width: unset !important;
-                    }
-                    .column-align-right {
-                        text-align: right !important;
-                    }
-
-                    th {
-                        position: sticky;
-                        position: -webkit-sticky;
-                        background-color: white;
-                        border-bottom: 1px solid $tainacan-input-background;
-                        top: 0px;
-                        z-index: 9;
-                        padding: 10px;
-                        vertical-align: bottom;
-            
-                        .th-wrap {
-                            font-size: 12px !important;
-                            font-weight: normal !important;
-                            text-overflow: ellipsis;
-                            overflow-x: hidden;
-                            white-space: nowrap;
-                        }
-                    }
-                    tbody {
-                        tr {
-                            cursor: pointer;
-                            background-color: transparent;
-            
-                            &.selected-row { 
-                                background-color: $primary-lighter; 
-                                .checkbox-cell .checkbox, .actions-cell .actions-container {
-                                    background-color: $primary-lighter;
-                                }
-                            }
-                            td {
-                                height: 60px;
-                                max-height: 60px;
-                                padding: 10px;
-                                vertical-align: middle;
-                                line-height: 12px;
-                                border: none !important;
-                                p { 
-                                    font-size: 14px;
-                                    margin: 0px; 
-                                    text-overflow: ellipsis;
-                                    overflow-x: hidden;
-                                    white-space: nowrap;
-                                }
-                            }
-                            img.table-thumb {
-                                max-height: 38px !important;
-                                border-radius: 3px;
-                            }
-                            td.actions-cell {
-                                padding: 0px;
-                                position: sticky !important;
-                                position: -webkit-sticky !important;
-                                right: 0px;
-                                top: auto;
-                                width: 80px;
-            
-                                .actions-container {
-                                    visibility: hidden;
-                                    display: flex;
-                                    position: relative;
-                                    padding: 0;
-                                    height: 100%;
-                                    width: 80px;
-                                    z-index: 9;
-                                    background-color: transparent; 
-                                    float: right;
-                                }
-            
-                                a {
-                                    margin: auto;
-                                    font-size: 18px !important;
-                                }
-            
-                            }
-            
-                            &:hover {
-                                background-color: $tainacan-input-background !important;
-                                cursor: pointer;
-            
-                                .checkbox-cell {
-                                    position: sticky !important;
-                                    position: -webkit-sticky !important;
-            
-                                    &::before { visibility: visible; }
-                                    
-                                    .checkbox { 
-                                        background-color: $tainacan-input-background !important; 
-                                    }
-                                }
-                                .actions-cell {
-                                    .actions-container {
-                                        visibility: visible;
-                                        background: $tainacan-input-background !important;
-                                    }
-            
-                                    &::after {
-                                        box-shadow: inset -97px 0 17px -21px #222;
-                                        content: " ";
-                                        width: 100px;
-                                        height: 100%;
-                                        position: absolute;
-                                        right: 0px;
-                                        top: 0;
-                                    }
-                                }
-            
-                            }
-                        }
-                    }
-                }
-            }
-        }
         .pagination-area {
             display: flex;
             justify-content: space-between;
@@ -707,6 +474,19 @@ export default {
             font-weight: normal;
             cursor: pointer;
             background-color: white;
+        }
+
+        #filter-menu-compress-button {
+            top: 70px !important;
+        }
+
+        .filters-menu {
+            height: auto;
+            min-width: $filter-menu-width;
+        }
+
+        #items-list-area {
+            width: 100%;
         }
 
     }

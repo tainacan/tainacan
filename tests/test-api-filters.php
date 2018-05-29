@@ -257,13 +257,46 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_create_and_fetch_filter_in_repository(){
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Collection filtered',
+				'description' => 'Is filtered',
+			),
+			true
+		);
+
+		$field = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'          => 'Field filtered',
+				'description'   => 'Is filtered',
+				'collection_id' => $collection->get_id(),
+				'field_type'    => 'Tainacan\Field_Types\Text'
+			),
+			true
+		);
+
+		$field2 = $this->tainacan_entity_factory->create_entity(
+			'field',
+			array(
+				'name'          => 'Field filtered',
+				'description'   => 'Is filtered',
+				'collection_id' => 'default',
+				'field_type'    => 'Tainacan\Field_Types\Text'
+			),
+			true
+		);
+
 		$filter_attr = json_encode([
 			'filter_type' => 'autocomplete',
 			'filter'      => [
 				'name'        => '2x Filter',
 				'description' => 'Description of 2x Filter',
 				'status'      => 'publish'
-			]
+			],
+			'field'       => $field2->get_id()
 		]);
 
 		$filter_attr2 = json_encode([
@@ -272,7 +305,8 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'        => '4x Filter',
 				'description' => 'Description of 4x Filter',
 				'status'      => 'publish'
-			]
+			],
+			'field'       => $field->get_id()
 		]);
 
 		#### CREATE A FILTER IN REPOSITORY ####

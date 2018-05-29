@@ -66,7 +66,13 @@
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
 
-            axios.get('/collection/' + this.collection + '/fields/' +  this.field )
+            let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
+
+            if(this.isRepositoryLevel){
+                in_route = '/fields/'+ this.field;
+            }
+
+            axios.get(in_route)
                 .then( res => {
                     let result = res.data;
                     if( result && result.field_type ){
@@ -101,7 +107,8 @@
             field_id: [Number], // not required, but overrides the filter field id if is set
             collection_id: [Number], // not required, but overrides the filter field id if is set
             id: '',
-            query: Object
+            query: Object,
+            isRepositoryLevel: Boolean,
         },
         watch: {
             isTouched( val ){

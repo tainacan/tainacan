@@ -2,6 +2,10 @@ export const getItems = state => {
     return state.items;
 }
 
+export const getItemsListTemplate = state => {
+    return state.itemsListTemplate;
+}
+
 export const getCollections = state => {
     return state.collections;
 }

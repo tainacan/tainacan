@@ -32,6 +32,12 @@
     &:focus {
         outline: 0px;
     }
+    &[disabled] {
+        border: none;
+    }
+    &.is-white[disabled] {
+        background-color: white !important;
+    }
 }
 .button.is-small {
     height: 26px !important;

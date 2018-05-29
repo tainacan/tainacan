@@ -12,7 +12,7 @@
         overflow: auto;
         margin-bottom: 0px !important;
 
-        table.table {
+        table.tainacan-table {
             width: 100%;
 
             .checkbox-cell {
@@ -126,6 +126,7 @@
     
                 .th-wrap {
                     font-size: 12px !important;
+                    color: $gray-light;
                     font-weight: normal !important;
                     text-overflow: ellipsis;
                     overflow-x: hidden;

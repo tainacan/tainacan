@@ -84,4 +84,10 @@
             color: $primary;
         }       
     }
+    .dropdown {
+        .button {
+            border: 1px solid $tainacan-input-background !important;
+            border-radius: 0 !important;
+        }
+    }
 }

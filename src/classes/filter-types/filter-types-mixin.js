@@ -12,9 +12,14 @@ export const filter_type_mixin = {
         query: {}
     },
     methods: {
-        getValuesPlainText(fieldId, search) {
+        getValuesPlainText(fieldId, search, isRepositoryLevel) {
+
             let url = '/collection/' + this.collection + '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1';
-            
+
+            if(isRepositoryLevel){
+                url = '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1';
+            }
+
             if( search ){
                 url += "&search=" + search;
             }
@@ -46,7 +51,7 @@ export const filter_type_mixin = {
                 .then(res => {
                     if (res.data.length > 0) {
                         for (let item of res.data) {
-                            this.options.push({label: item.title, value: item.id, img: item.thumbnail });
+                            this.options.push({label: item.title, value: item.id, img: item.thumbnail.thumb });
                         }
                     }
                 })
