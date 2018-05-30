@@ -14,7 +14,10 @@ export default {
 
 
 <style lang="scss">
+    // Bulma imports
     @import "./scss/theme-basics.sass";
+
+    // Buefy imports
     @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
     $speed-slow: 0.5s;
     @import "../../node_modules/buefy/src/scss/utils/_functions.scss";
@@ -24,39 +27,8 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_loading.scss";
     @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
 
-    // Tainacan custom colors
-    $primary: #2cb4c1;
-    $primary-invert: findColorInvert($primary);
-    $secondary: #298596;
-    $secondary-invert: findColorInvert($secondary);
-    $tertiary: #01295c;
-    $tertiary-invert: findColorInvert($tertiary);
-
-    $primary-light:#c1dae0;
-    $primary-lighter: #e6f6f8;
-    $primary-dark: #55A0AF;
-    $primary-darker: darken($primary-dark, 5%);
-
-    $success: #25a189;
-    $success-invert: findColorInvert($success);
-
-    $separator-color: #2b98a4;
-    $tainacan-input-color: #1d1d1d;
-    $tainacan-input-background: #e5e5e5;
-    $tainacan-placeholder-color: #898d8f;
-    $draggable-border-color: #d8d8d8;
-
-    $gray: #b1b1b1; 
-    $gray-invert: findColorInvert($gray);
-    $gray-light: #898d8f; 
-    $gray-light-invert: findColorInvert($gray-light);
-
-    $danger: #a23939; 
-    $danger-invert: findColorInvert($danger);
-
-    $table-side-padding: 4.166666667%;
-    $filter-menu-width: 200px;
-
+    // Tainacan imports
+    @import "../admin/scss/_variables.scss";
     @import "../admin/scss/_tables.scss";
     @import "../admin/scss/_tooltips.scss";
     

@@ -7,6 +7,8 @@
     height: inherit !important;
     box-shadow: none !important;
     display: inline-flex !important;
+    cursor: pointer;
+    background-color: white;
 
     &.is-secondary:hover, &.is-secondary:focus {
         background: $secondary !important;
