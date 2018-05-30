@@ -14,7 +14,7 @@ addons:
 - ssh_know_hosts:
   - "$ssh_host"
 apt:
-  packages:
+  packages: 
   - sshpass
  services:
 - mysql
