@@ -13,25 +13,35 @@ use \Tainacan\Repositories;
  * If an ID, a slug or a Tainacan\Entities\Field object is passed, it returns only one metadata, otherwise
  * it returns all metadata
  * 
- * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
- * @param array|string $args 
  * @param array|string $args {
- *     Optional. Array or string of arguments.
- *
- *     @type bool        $hide_empty                Wether to hide or not fields the item has no value to
- *                                                  Default: true
- *     @type string      $before_title              String to be added before each metadata title
- *                                                  Default '<h3>'
- *     @type string      $after_title               String to be added after each metadata title
- *                                                  Default '</h3>'
- *     @type string      $before_value              String to be added before each metadata value
- *                                                  Default '<p>'
- *     @type string      $after_value               String to be added after each metadata value
- *                                                  Default '</p>'
- * }
+	 *     Optional. Array or string of arguments.
+	 * 
+	 * 	   @type mixed		 $metadata					Field object, ID or slug to retrieve only one field. empty returns all metadata
+	 * 
+	 *     @type array		 $metadata__in				Array of metadata IDs or Slugs to be retrieved. Default none
+	 * 
+	 *     @type array		 $metadata__not_in			Array of metadata IDs (slugs not accepted) to excluded. Default none
+	 * 
+	 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
+	 * 
+	 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
+	 * 
+	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
+	 * 
+	 *     @type bool        $hide_empty                Wether to hide or not fields the item has no value to
+	 *                                                  Default: true
+	 *     @type string      $before_title              String to be added before each metadata title
+	 *                                                  Default '<h3>'
+	 *     @type string      $after_title               String to be added after each metadata title
+	 *                                                  Default '</h3>'
+	 *     @type string      $before_value              String to be added before each metadata value
+	 *                                                  Default '<p>'
+	 *     @type string      $after_value               String to be added after each metadata value
+	 *                                                  Default '</p>'
+	 * }
  * @return string        The HTML output
  */
-function tainacan_get_the_metadata($field = null, $args = array()) {
+function tainacan_get_the_metadata($args = array()) {
 	$post = get_post();
 	$theme_helper = \Tainacan\Theme_Helper::get_instance();
 	
@@ -40,7 +50,7 @@ function tainacan_get_the_metadata($field = null, $args = array()) {
 	
 	$item = new Entities\Item($post);
 	
-	return $item->get_metadata_as_html($field, $args);
+	return $item->get_metadata_as_html($args);
 	
 }
 
