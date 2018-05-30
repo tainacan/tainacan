@@ -237,11 +237,14 @@ class REST_Items_Controller extends REST_Controller {
 			
 			ob_start();
 
-			global $wp_query;
+			global $wp_query, $view_mode_displayed_fields;
 			$wp_query = $items;
 			$displayed_metadata = array_map(function($el) { return (int) $el; }, $request['fetch_only']['meta']);
+			$view_mode_displayed_fields = $request['fetch_only'];
+			$view_mode_displayed_fields['meta'] = $displayed_metadata;
+			
 			include $view_mode['template'];
-
+			
 			$response = ob_get_clean();
 
 		} else {

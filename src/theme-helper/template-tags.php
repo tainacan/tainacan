@@ -42,15 +42,14 @@ use \Tainacan\Repositories;
  * @return string        The HTML output
  */
 function tainacan_get_the_metadata($args = array()) {
-	$post = get_post();
-	$theme_helper = \Tainacan\Theme_Helper::get_instance();
 	
-	if (!$theme_helper->is_post_an_item($post))
-		return;
-	
-	$item = new Entities\Item($post);
-	
-	return $item->get_metadata_as_html($args);
+	$item = tainacan_get_item();
+
+	if ($item instanceof \Tainacan\Entities\Item) {
+		return $item->get_metadata_as_html($args);
+	}
+
+	return '';
 	
 }
 
@@ -199,4 +198,53 @@ function tainacan_get_term() {
  */
 function tainacan_register_view_mode($slug, $args = []) {
 	\Tainacan\Theme_Helper::get_instance()->register_view_mode($slug, $args);
+}
+
+/**
+ * Gets the Tainacan Item Entity object
+ * 
+ * If used inside the Loop of items, will get the Item object for the current post
+ */
+function tainacan_get_item($post_id = 0) {
+	$post = get_post( $post_id );
+
+	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+	
+	if (!$theme_helper->is_post_an_item($post))
+		return null;
+	
+	$item = new Entities\Item($post);
+
+	return $item;
+
+}
+
+/**
+ * To be used inside The Loop of a faceted serach view mode template.
+ * 
+ * Returns true or false indicating wether a certain property or metadata is
+ * selected to be displayed
+ * 
+ * @param string|integer The property to be checked. If a string is passed, it will check against
+ * 	one of the native property of the item, such as title, description and creation_date. 
+ *  If an integer is passed, it will check against the IDs of the metadata.
+ * 
+ * @return bool
+ */
+function tainacan_current_view_displays($property) {
+	global $view_mode_displayed_fields;
+
+	// Core fields appear in fetch_only as metadata
+	if ($property == 'title' || $property == 'description') {
+		$item = tainacan_get_item();
+		$core_getter_method = "get_core_{$property}_field";
+        $property = $item->get_collection()->$core_getter_method()->get_id();
+	}
+
+	if (is_string($property)) {
+		return in_array($property, $view_mode_displayed_fields);
+	} elseif (is_integer($property)) {
+		return in_array($property, $view_mode_displayed_fields['meta']);
+	}
+	return false;
 }
