@@ -451,7 +451,7 @@ class Item extends Entity {
 	 *
 	 * Each metadata is a label with the field name and the value.
 	 *
-	 * If an ID, a slug or a Tainacan\Entities\Field object is passed, it returns only one metadata, otherwise
+	 * If an ID, a slug or a Tainacan\Entities\Field object is passed in the 'metadata' argument, it returns only one metadata, otherwise
 	 * it returns all metadata
 	 *
 	 * @param array|string $args {
