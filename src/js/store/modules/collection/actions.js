@@ -21,24 +21,28 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
         if (!isOnTheme)
             endpoint = endpoint + 'context=edit&'
-
-        axios.tainacan.get(endpoint + qs.stringify(postQueries) )
-        .then(res => {
-            
-            let items = res.data;
-            let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
-                        
-            if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
-                commit('setItemsListTemplate', items );
-                resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
-            } else {
-                commit('setItems', items );
-                resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
-            }
-            dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
-         })
-        .catch(error => reject(error));
+        if (qs.stringify(postQueries.fetch_only['meta']) != '') {
+            axios.tainacan.get(endpoint + qs.stringify(postQueries))
+            .then(res => {
+                
+                let items = res.data;
+                let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
+                            
+                if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
+                    commit('setItemsListTemplate', items );
+                    resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
+                } else {
+                    commit('setItems', items );
+                    resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
+                }
+                dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
+            })
+            .catch(error => reject(error));
+        } else {
+            reject("No fecth_only meta was found.");   
+        }
     });
+    
 }
 
 export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
