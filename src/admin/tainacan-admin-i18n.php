@@ -198,6 +198,7 @@ return apply_filters('tainacan-admin-i18n', [
 	'label_view_mode'					   	   => __( 'View mode', 'tainacan' ),
 	'label_default_view_mode'			   	   => __( 'Default view mode', 'tainacan' ),
 	'label_enabled_view_modes'			   	   => __( 'Enabled view modes', 'tainacan' ),
+	'label_view_modes_available'			   => __( 'View modes available on theme', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

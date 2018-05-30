@@ -278,35 +278,59 @@
 
                     <!-- Enabled View Modes ------------------------------- --> 
                     <div class="field">
-
-                        <b-dropdown
-                                ref="enabledViewModesDropdown"
-                                :mobile-modal="false"
-                                :disabled="Object.keys(registeredViewModes).length < 0">
-                            <button
-                                    class="button is-white"
-                                    slot="trigger"
-                                    position="is-top-right"
-                                    type="button">
-                                <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
-                                <b-icon icon="menu-down"/>
-                            </button>
-                            <b-dropdown-item
-                                    v-for="(viewMode, index) in Object.keys(registeredViewModes)"
-                                    :key="index"
-                                    class="control"
-                                    custom>
-                                <b-checkbox
-                                        @input="updateViewModeslist(viewMode)"
-                                        :value="checkIfViewModeEnabled(viewMode)">
-                                    {{ registeredViewModes[viewMode].label }}
-                                </b-checkbox>
-                            </b-dropdown-item>   
-                        </b-dropdown>
+                        <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
                         <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
-                                :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
+                                    :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
+                                    :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
+                        <div class="control">
+                            <b-dropdown
+                                    ref="enabledViewModesDropdown"
+                                    :mobile-modal="false"
+                                    :disabled="Object.keys(registeredViewModes).length < 0">
+                                <button
+                                        class="button is-white"
+                                        slot="trigger"
+                                        position="is-top-right"
+                                        type="button">
+                                    <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
+                                    <b-icon icon="menu-down"/>
+                                </button>
+                                <b-dropdown-item
+                                        v-for="(viewMode, index) in Object.keys(registeredViewModes)"
+                                        :key="index"
+                                        class="control"
+                                        custom>
+                                    <b-checkbox
+                                            @input="updateViewModeslist(viewMode)"
+                                            :value="checkIfViewModeEnabled(viewMode)">
+                                        {{ registeredViewModes[viewMode].label }}
+                                    </b-checkbox>
+                                </b-dropdown-item>   
+                            </b-dropdown>
+                        </div>
                     </div>
+
+                    <!-- Default View Mode -------------------------------- --> 
+                    <b-field
+                            v-if="form.enabled_view_modes.length > 0"
+                            :addons="false" 
+                            :label="$i18n.get('label_default_view_mode')"
+                            :type="editFormErrors['default_view_mode'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['default_view_mode'] != undefined ? editFormErrors['default_view_mode'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
+                                :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
+                        <b-select
+                                id="tainacan-select-default_view_mode"
+                                v-model="form.default_view_mode"
+                                @focus="clearErrors('default_view_mode')">
+                            <option
+                                    v-for="(viewMode, index) of form.enabled_view_modes"
+                                    :key="index"
+                                    :value="viewMode">{{ registeredViewModes[viewMode].label }}
+                            </option>
+                        </b-select>
+                    </b-field>
 
                 </div>
             </div>
@@ -356,7 +380,9 @@ export default {
                 thumbnail: '',
                 header_image: '',
                 files:[],
-                moderators_ids: []
+                moderators_ids: [],
+                enabled_view_modes: [],
+                default_view_mode: []
             },
             thumbnail: {},
             cover: {},
@@ -430,7 +456,8 @@ export default {
                 status: this.form.status,
                 moderators_ids: this.form.moderators_ids,
                 parent: this.form.parent,
-                enabled_view_modes: this.form.enabled_view_modes
+                enabled_view_modes: this.form.enabled_view_modes,
+                default_view_mode: this.form.default_view_mode
             };
             this.updateCollection(data).then(updatedCollection => {    
                 
@@ -444,6 +471,7 @@ export default {
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.enabled_view_modes = this.collection.enabled_view_modes;
+                this.form.default_view_mode = this.collection.default_view_mode;
 
                 this.isLoading = false;
                 this.formErrorMessage = '';
@@ -482,20 +510,9 @@ export default {
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.slug = this.collection.slug;
                 this.form.parent = this.collection.parent;
+                this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = [];
                 this.moderators = [];
-
-                // Fills or update enabled view modes 
-                // for (let viewMode of Object.keys(this.registeredViewModes)) {
-                //     let indexOfViewMode = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode.viewMode == viewMode);
-                //     if (indexOfViewMode < 0) {                     
-                //         this.form.enabled_view_modes.push({ 
-                //             viewMode: viewMode, 
-                //             label: this.registeredViewModes[viewMode].label,
-                //             enabled: false 
-                //         });
-                //     }
-                // }
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -664,20 +681,9 @@ export default {
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.parent = this.collection.parent;
+                this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes));
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
-
-                // Fills or update enabled view modes 
-                // for (let viewMode of Object.keys(this.registeredViewModes)) {
-                //     let indexOfViewMode = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode.viewMode == viewMode);
-                //     if (indexOfViewMode < 0) {                     
-                //         this.form.enabled_view_modes.push({ 
-                //             viewMode: viewMode, 
-                //             label: this.registeredViewModes[viewMode].label,
-                //             enabled: false 
-                //         });
-                //     }
-                // }
                  
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {

@@ -1,9 +1,7 @@
 <template>
     <div class="table-container">
 
-        <div 
-                v-if="!isOnTheme"
-                class="selection-control">
+        <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
@@ -37,13 +35,11 @@
         </div>
 
         <div class="table-wrapper">
-            <table 
-                    :class="{'selectable-table': !isOnTheme }"
-                    class="tainacan-table">
+            <table class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th v-if="!isOnTheme">
+                        <th>
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -62,9 +58,7 @@
                                 :custom-key="column.slug">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
-                        <th     
-                                class="actions-header"
-                                v-if="!isOnTheme">
+                        <th class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
                         </th>
@@ -77,7 +71,6 @@
                             v-for="(item, index) of items">
                         <!-- Checking list -->
                         <td 
-                                v-if="!isOnTheme"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox 
@@ -143,7 +136,7 @@
 
                         <!-- Actions -->
                         <td 
-                                v-if="!isOnTheme && item.current_user_can_edit"
+                                v-if="item.current_user_can_edit"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -189,7 +182,6 @@ export default {
         tableFields: Array,
         items: Array,
         isLoading: false,
-        isOnTheme: false,
         isOnTrash: false
     },
     mounted() {
@@ -287,10 +279,7 @@ export default {
             });
         },
         goToItemPage(item) {
-            if (this.isOnTheme)
-                window.location.href = item.url;   
-            else
-                this.$router.push(this.$routerHelper.getItemPath(this.collectionId, item.id));
+            this.$router.push(this.$routerHelper.getItemPath(this.collectionId, item.id));
         },
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
