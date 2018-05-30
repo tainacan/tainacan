@@ -23,7 +23,7 @@ before_install:
 install:
 - echo -e "Install"
 - mkdir /home/travis/build/wordpress/
-- sudo ./tests/bin/install-wp-tests.sh c1_phpunit c1_phpunit_test 6NrE59YsZpHoRHIi /home/travis/build/wordpress/ medialab.ufg.br latest true
+- sudo ./tests/bin/install-wp-tests.sh c1_phpunit c1_phpunit_test 6NrE59YsZpHoRHIi /home/travis/build/wordpress medialab.ufg.br latest true
 script:  phpunit #--version
 #after_success:
 #- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
