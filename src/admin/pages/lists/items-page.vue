@@ -267,7 +267,6 @@
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is-on-theme="isOnTheme"
                         :is-on-trash="status == 'trash'"/>     
                 
                 <!-- Theme View Modes -->
