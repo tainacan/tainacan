@@ -23,14 +23,10 @@ before_install:
 #  -in deploy_rsa.enc -out deploy_rsa -d
 #Instalando Mysql
 - sudo apt-get install sshpass
-- mysql
-#- sudo apt-get -y install zsh htop
-#- echo "mysql-server-5.6 mysql-server/root_password password root" | sudo debconf-set-selections
-#- echo "mysql-server-5.6 mysql-server/root_password_again password root" | sudo debconf-set-selections
-#- sudo apt-get -y install mysql-server-5.6
-#- mysql_secure_installation
-#- sed -i 's/127\.0\.0\.1/0\.0\.0\.0/g' /etc/mysql/my.cnf
-#- mysql -uroot -p -e 'USE mysql; UPDATE `user` SET `Host`="%" WHERE `User`="root" AND `Host`="localhost"; DELETE FROM `user` WHERE `Host` != "%" AND `User`="root"; FLUSH PRIVILEGES;'
+- sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('root') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+- sudo mysql_upgrade
+- sudo service mysql restart
+- sudo mysql -u root -p 'root'
 install:
 - echo -e "Install"
 - mkdir /home/travis/build/wordpress/
