@@ -173,30 +173,7 @@
                         </div>  
                     </b-dropdown>
                 </div>
-                <!-- View Modes Dropdown -->
-                <div 
-                        v-if="isOnTheme"
-                        class="search-control-item">
-                    <b-field>
-                    <b-dropdown 
-                                @change="onChangeViewMode($event)"
-                                :mobile-modal="false">
-                            <button 
-                                    class="button is-white" 
-                                    slot="trigger">
-                                <span>{{ $i18n.get('label_view_mode') }}</span>
-                                <b-icon icon="menu-down" />
-                            </button>
-                            <b-dropdown-item 
-                                    v-for="(viewMode, index) of enabledViewModes"
-                                    :key="index"
-                                    :value="viewMode">
-                                <span v-html="registeredViewModes[viewMode].icon" />
-                                {{ registeredViewModes[viewMode].label }}
-                            </b-dropdown-item>
-                        </b-dropdown>
-                    </b-field>
-                </div>
+
                 <!-- Change OrderBy Select and Order Button-->
                 <div class="search-control-item">
                     <b-field>
@@ -228,6 +205,37 @@
                         </button>
                     </b-field>
                 </div>
+
+                <!-- View Modes Dropdown -->
+                <div 
+                        v-if="isOnTheme"
+                        class="search-control-item">
+                    <b-field>
+                    <b-dropdown 
+                                @change="onChangeViewMode($event)"
+                                :mobile-modal="false"
+                                position="is-bottom-left"
+                                :aria-label="$i18n.get('label_view_mode')">
+                            <button 
+                                    class="button is-white" 
+                                    slot="trigger">
+                                <span 
+                                        v-if="registeredViewModes[viewMode] != undefined"
+                                        v-html="registeredViewModes[viewMode].icon"/>
+                                <b-icon icon="menu-down" />
+                            </button>
+                            <b-dropdown-item 
+                                    v-for="(viewModeOption, index) of enabledViewModes"
+                                    :key="index"
+                                    :value="viewModeOption"
+                                    v-if="registeredViewModes[viewModeOption] != undefined">
+                                <span v-html="registeredViewModes[viewModeOption].icon"/>
+                                {{ registeredViewModes[viewModeOption].label }}
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </b-field>
+                </div>
+
             </div>
 
             <!-- STATUS TABS, only on Admin -------- -->
@@ -567,6 +575,8 @@
                     this.prepareFieldsAndFilters();
                 }
             });
+
+            this.$eventBusSearch.setViewMode(this.defaultViewMode);
 
         },
         mounted() {

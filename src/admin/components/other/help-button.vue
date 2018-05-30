@@ -31,6 +31,7 @@ export default {
 
     .help-wrapper {
         position: absolute;
+        margin-top: -2px;
     }
 
     a.help-button .icon {

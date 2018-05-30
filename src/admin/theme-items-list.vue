@@ -22,6 +22,7 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../node_modules/buefy/src/scss/components/_tag.scss";
     @import "../../node_modules/buefy/src/scss/components/_loading.scss";
+    @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
 
     // Tainacan custom colors
     $primary: #2cb4c1;
@@ -183,6 +184,9 @@ export default {
                     font-size: 13px !important;
                     border-radius: 0px !important;
                     .dropdown-item {
+                        a {
+                            color: $tainacan-input-color !important;
+                        }
                         .b-checkbox { width: 100% };
                         &:hover {
                             background-color: $primary-lighter;

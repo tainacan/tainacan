@@ -137,7 +137,8 @@ export const updateCollection = ({ commit }, {
         cover_page_id,
         moderators_ids, 
         parent,
-        enabled_view_modes
+        enabled_view_modes,
+        default_view_mode
     }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collection_id, {
@@ -149,7 +150,8 @@ export const updateCollection = ({ commit }, {
             enable_cover_page: enable_cover_page,
             moderators_ids: moderators_ids,
             parent: parent,
-            enabled_view_modes: enabled_view_modes
+            enabled_view_modes: enabled_view_modes,
+            default_view_mode: default_view_mode
         }).then( res => {
             commit('setCollection', { 
                 id: collection_id, 
@@ -161,7 +163,8 @@ export const updateCollection = ({ commit }, {
                 cover_page_id: cover_page_id,
                 moderators_ids: moderators_ids,
                 parent: parent,
-                enabled_view_modes: enabled_view_modes
+                enabled_view_modes: enabled_view_modes,
+                default_view_mode: default_view_mode
             });
             resolve( res.data );
         }).catch( error => { 
