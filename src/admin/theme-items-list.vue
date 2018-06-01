@@ -463,6 +463,7 @@ export default {
 
         #items-list-area {
             width: 100%;
+            overflow-y: unset;
         }
 
     }

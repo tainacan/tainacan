@@ -491,11 +491,12 @@
                         for (let field of this.fields) {
                             if (field.display !== 'never') {
 
-                                let display = true;
+                                let display;
 
-                                if (field.display === 'no') {
+                                if (field.display == 'no')
                                     display = false;
-                                }
+                                else if (field.display == 'yes')
+                                    display = true;
 
                                 this.tableFields.push(
                                     {
@@ -508,7 +509,8 @@
                                         display: display
                                     }
                                 );    
-                                fetchOnlyFieldIds.push(field.id);                      
+                                if (display)
+                                    fetchOnlyFieldIds.push(field.id);                      
                             }
                         }
 
@@ -745,6 +747,7 @@
     .table-container {
         padding-left: 8.333333%;
         padding-right: 8.333333%;
+        min-height: 200px;
         //height: calc(100% - 82px);
     }
 
