@@ -5,6 +5,7 @@ use Tainacan\Importer;
 /**
 * Class Importer
 *
+* @group importer
 * @package Test_Tainacan
 */
 
@@ -45,8 +46,9 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         //}
 
         //$_SESSION['tainacan_importer'][$id]->set_file( './tests/attachment/json_old_tainacan.txt' );
-        $url = 'http://localhost/';
+        $url = 'http://localhost/wordpress_tainacan/';
         $_SESSION['tainacan_importer'][$id]->set_url($url);
+        $_SESSION['tainacan_importer'][$id]->set_repository();
 
         while (!$_SESSION['tainacan_importer'][$id]->is_finished())
         {
@@ -161,9 +163,9 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $file_name = 'demosaved.csv';
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
-		
+
 		$_SESSION['tainacan_importer'][$id]->set_items_per_step(2);
-		
+
         // open the file "demosaved.csv" for writing
         $file = fopen($file_name, 'w');
 
@@ -230,7 +232,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_mapping(), $map );
 
         //execute the process
-        
+
 		$this->assertEquals(2, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 2 items');
 		$this->assertEquals(4, $_SESSION['tainacan_importer'][$id]->run(), 'second step should import 2 items');
 		$this->assertEquals(5, $_SESSION['tainacan_importer'][$id]->run(), 'third step should import 3 items');
