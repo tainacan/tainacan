@@ -76,11 +76,12 @@
                 <div class="content has-text-gray has-text-centered">
                     <p>
                         <b-icon
-                                icon="filter-outline"
+                                icon="filter"
                                 size="is-large"/>
                     </p>
                     <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                     <router-link
+                            v-if="!isOnTheme"
                             id="button-create-filter"
                             :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                             tag="button"
@@ -460,7 +461,7 @@
                 this.fetchFilters({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: true,
+                    isContextEdit: !this.isOnTheme,
                     includeDisabled: 'no',
                 })
                     .then(() => this.isLoadingFilters = false)
@@ -472,7 +473,7 @@
                 this.fetchFields({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: false
+                    isContextEdit: !this.isOnTheme
                 })
                     .then(() => {
 
