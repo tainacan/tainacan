@@ -14,7 +14,8 @@
         <!-- Side bar with search and filters -->
         <aside 
                 v-show="!isFiltersMenuCompressed"
-                class="filters-menu">
+                class="filters-menu"
+                :class="{ 'tainacan-form': isOnTheme }">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
@@ -615,6 +616,7 @@
         padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;
+        overflow-x: hidden;
         visibility: visible;
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;

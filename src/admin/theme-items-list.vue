@@ -31,6 +31,7 @@ export default {
     @import "../admin/scss/_variables.scss";
     @import "../admin/scss/_tables.scss";
     @import "../admin/scss/_tooltips.scss";
+    @import "../admin/scss/_tainacan-form.scss";
     
     .theme-items-list {
         position: relative;
@@ -96,7 +97,22 @@ export default {
             font-size: 14px !important;
         }
         #collection-search-button {
-            height: 25px !important;
+            border: 1px solid $secondary !important;
+            height: 32px !important;
+            background-color: $secondary;
+            color: white;
+        }
+        .input, .textarea {
+            font-size: 14px;
+            border: none;
+            border-radius: 1px !important;
+            box-shadow: none !important;
+
+            &:focus, &:active {
+                box-shadow: none !important;
+                background-color: white;
+                border: 1px solid $tainacan-input-background !important;
+            }    
         }
         .select {
             padding-top: 0px !important;
@@ -459,6 +475,8 @@ export default {
         .filters-menu {
             height: auto;
             min-width: $filter-menu-width;
+            background-color: unset;
+            border-right: 1px solid $tainacan-input-background;
         }
 
         #items-list-area {
