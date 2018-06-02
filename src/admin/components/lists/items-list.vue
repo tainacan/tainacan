@@ -101,10 +101,10 @@
                                     v-if="column.field !== 'row_thumbnail' &&
                                             column.field !== 'row_actions' &&
                                             column.field !== 'row_creation'"
-                                    :data="renderMetadata( item.metadata[column.slug] )"/> -->
+                                    :data="renderMetadata(item.metadata, column)"/> -->
                             <p
                                     v-tooltip="{
-                                        content: renderMetadata( item.metadata[column.slug] ),
+                                        content: renderMetadata(item.metadata, column),
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -114,7 +114,7 @@
                                           column.field !== 'row_actions' &&
                                           column.field !== 'row_creation' &&
                                           column.field !== 'row_author'"
-                                    v-html="renderMetadata( item.metadata[column.slug] )"/>
+                                    v-html="renderMetadata(item.metadata, column)"/>
 
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
@@ -284,7 +284,9 @@ export default {
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
-        renderMetadata(metadata) {
+        renderMetadata(itemMetadata, column) {
+
+            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
 
             if (!metadata) {
                 return '';

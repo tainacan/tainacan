@@ -14,6 +14,8 @@ export default {
 
 
 <style lang="scss">
+   @import "../admin/scss/_variables.scss";
+
     // Bulma imports
     @import "./scss/theme-basics.sass";
 
@@ -28,8 +30,8 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
 
     // Tainacan imports
-    @import "../admin/scss/_variables.scss";
     @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
     @import "../admin/scss/_tainacan-form.scss";
     
@@ -56,11 +58,8 @@ export default {
             margin-top: 0px;
             margin-bottom: 0px;
             display: inline-flex;
-            color: #1d1d1d;
-            font-size: 1.0em;
             font-weight: normal;
             cursor: pointer;
-            background-color: white;
 
             &.is-secondary:hover, &.is-secondary:focus {
                 background: $secondary !important;
@@ -151,162 +150,8 @@ export default {
             position: relative;
             vertical-align: top;
         }
-        .dropdown, .autocomplete {
-            .dropdown-trigger{
-                .button {
-                    border: none;
-                    .icon {
-                        color: $secondary;
-                        align-items: start;
-                    }
-                }
-                .button.is-primary, .button.is-secondary, .button.is-success {
-                    .icon {
-                        color: $white;
-                    }
-                }
-            }
-            .dropdown-menu {
-                display: block;
-                .dropdown-content {
-                    font-size: 13px !important;
-                    border-radius: 0px !important;
-                    .dropdown-item {
-                        a {
-                            color: $tainacan-input-color !important;
-                        }
-                        .b-checkbox { width: 100% };
-                        &:hover {
-                            background-color: $primary-lighter;
-                        }
-                        .is-small {
-                            color: gray;
-                        }
-                    }
-                } 
-            }
-        }
-        .taginput-container {
-            padding: 0 !important;
-            background-color: white !important;
-
-            &:focus, &:active {
-                border: none !important;
-            }
-            .input { margin-bottom: 0px !important; }
-            .input.has-selected, .input:focus, .input:active {
-                background-color: white;
-                border: 1px solid $tainacan-input-background !important;
-            }
-            .tag {
-                background: white;
-                padding-right: 0;
-                padding-left: 0.5em;
-
-                &.is-delete {
-                    color: $gray-light;
-                    &::after {
-                        height: 30% !important;
-                        width: 1px !important;
-                    } 
-                    &::before {
-                        width: 30% !important;
-                        height: 1px !important;
-                    } 
-                    &:hover, &:focus {
-                        background-color: white;
-                        color: black;
-                    }
-                }
-            }
-        }
-        .selected-list-box {
-            padding: 4px 0px;
-            border: 1px solid $tainacan-input-background;
-            background-color: white;
-            display: flex;
-
-            .tags { 
-                margin-right: 8px;
-            }
-            .tag {
-                background: white;
-                padding-right: 0;
-                padding-left: 0.5em;
-
-                &.is-delete {
-                    color: $gray-light;
-                    &::after {
-                        height: 30% !important;
-                        width: 1px !important;
-                    } 
-                    &::before {
-                        width: 30% !important;
-                        height: 1px !important;
-                    } 
-                    &:hover, &:focus {
-                        background-color: white;
-                        color: black;
-                    }
-                }
-            }
-        }
-        .switch {
-            input[type="checkbox"] + .check {
-                background-color: $gray-light;
-                border: 2px solid $gray-light;
-                width: 2.7em;
-                height: 1.7em;
-
-                &::before {
-                    background-color: white;
-                    box-shadow: none;
-                }
-            } 
-            &:hover input[type="checkbox"]:checked + .check {
-                background-color: $primary-light;
-            }
-
-            input[type="checkbox"]:checked + .check {
-                border: 2px solid $secondary;
-                background-color: transparent;
-
-                &::before {
-                    background-color: $secondary;
-                    transform: translate3d(78%, 0, 0);
-                }
-            }
-            &:hover input[type="checkbox"] + .check {
-                background-color: $gray-light;
-            }
-
-            &:focus input[type="checkbox"] + .check,
-            &:focus input[type="checkbox"]:checked + .check {
-                box-shadow: none;
-            }
-
-            &.is-small {
-                font-size: 9px;
-
-                input[type="checkbox"] + .check {
-                    border: 1.5px solid $gray-light;
-                    width: 2.55em;
-                    height: 1.7em;
-
-                    &::before {
-                        width: 1.0em;
-                        height: 1.0em;
-                    }
-                }
-                input[type="checkbox"]:checked + .check {
-                    border: 1.5px solid $secondary;
-
-                    &::before {
-                        transform: translate3d(84%, 0, 0);
-                    }
-                }
-            }
-
+        .dropdown-menu {
+            display: block;
         }
         .b-checkbox.checkbox {
 
