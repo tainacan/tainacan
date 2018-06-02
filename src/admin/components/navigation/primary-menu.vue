@@ -102,6 +102,9 @@
         max-width: $side-menu-width;
         z-index: 99;
 
+        .menu {
+            padding-top: 10px;
+        }
         .separator {
             height: 2px;
             background-color: $separator-color;

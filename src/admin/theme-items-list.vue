@@ -31,6 +31,7 @@ export default {
 
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_selects.scss";
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
     @import "../admin/scss/_tainacan-form.scss";
@@ -112,38 +113,6 @@ export default {
                 background-color: white;
                 border: 1px solid $tainacan-input-background !important;
             }    
-        }
-        .select {
-            padding-top: 0px !important;
-            select {
-                border: none;
-                border-radius: 1px !important;
-                font-weight: normal;
-                font-size: 14px !important;
-                height: 30px !important;
-                padding: 2px 25px 2px 15px!important;
-                margin-top: 0px !important;
-                margin-bottom: 0px !important;
-                color: $tainacan-input-color;
-                option:checked, option:hover {
-                    background-color: $primary-lighter !important;
-                }
-                &:focus, &:active {
-                    box-shadow: none !important;
-                    text-decoration: none !important;
-                }
-            }
-            &:not(.is-multiple)::after {
-                content: "\F35D" !important;
-                font: normal normal normal 24px/1 "Material Design Icons" !important;
-                border: none !important;
-                transform: none !important;
-                margin-top: -15px !important;
-                right: 10px !important;
-                color: $primary;
-                display: flex !important;
-                align-items: initial;
-            }       
         }
         .dropdown {
             display: inline-flex;

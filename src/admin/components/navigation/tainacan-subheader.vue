@@ -262,7 +262,6 @@ export default {
         }
 
         .level-left {
-            margin-left: 5px;
             .level-item {
                 display: inline-block;
             }  
@@ -342,9 +341,6 @@ export default {
       
             .level-left {
                 margin-left: 0px !important;
-                .level-item {
-                    margin-left: 30px;
-                }
             }
             top: 206px;
             margin-bottom: 0px !important;
