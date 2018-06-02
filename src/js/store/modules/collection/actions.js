@@ -21,7 +21,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
         if (!isOnTheme)
             endpoint = endpoint + 'context=edit&'
-            console.log(postQueries.fetch_only);
+            
         if (qs.stringify(postQueries.fetch_only['meta']) != '') {
             axios.tainacan.get(endpoint + qs.stringify(postQueries))
             .then(res => {
