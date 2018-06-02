@@ -673,22 +673,14 @@
 
     .search-control {
         min-height: $subheader-height;
-        height: $subheader-height;
+        height: auto;
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
         border-bottom: 0.5px solid #ddd;
         display: flex;
         justify-content: space-between;
-
-        @media screen and (max-width: 769px) {
-            height: 60px;
-            margin-top: 0;
-
-            .search-control-item {
-                padding-right: 0.5em;
-            }
-        }
+        flex-wrap: wrap;
     }
 
     .search-control-item {
