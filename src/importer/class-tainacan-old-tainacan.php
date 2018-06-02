@@ -765,6 +765,10 @@ class Old_Tainacan extends Importer
     */
     public function get_total_items_from_source()
     {
+        if(!isset($this->tmp_file)){
+           return 0;
+        }
+
         $file = new \SplFileObject( $this->tmp_file, 'r' );
         $file_content = unserialize($file->fread($file->getSize()));
 
