@@ -5,10 +5,10 @@
             :type="fieldTypeMessage">
         <span   
                 class="collapse-handle"
-                @click="$emit('changeCollapse', !isCollapsed)">
+                @click="$emit('changeCollapse', fieldTypeMessage != 'is-danger' ? !isCollapsed : true)">
             <b-icon 
                     type="is-secondary"
-                    :icon="isCollapsed ? 'menu-down' : 'menu-right'" />
+                    :icon="isCollapsed || fieldTypeMessage == 'is-danger' ? 'menu-down' : 'menu-right'" />
             <label class="label">{{ field.field.name }}</label>
             <span
                     v-if="field.field.required == 'yes'" 
@@ -20,7 +20,7 @@
                     :message="field.field.description"/>
         </span>
         <div   
-                v-show="isCollapsed" 
+                v-show="isCollapsed || fieldTypeMessage == 'is-danger'" 
                 v-if="isTextInputComponent( field.field.field_type_object.component )">
             <component 
                     :id="field.field.field_type_object.component + '-' + field.field.slug" 
@@ -87,19 +87,19 @@
                 
                 let msg = '';
                 let errors = eventBus.getErrors(this.field.field.id);
-                
+
                 if ( errors) {
                     this.setFieldTypeMessage('is-danger');
                     for (let error of errors) { 
                         for (let index of Object.keys(error)) {
-                            //this.$console.log(index);
+                            // this.$console.log(index);
                             msg += error[index] + '\n';
                         }
                     }
                 } else {
                     this.setFieldTypeMessage('');
                 }
-                
+
                 return msg;
             }
         },
@@ -133,8 +133,6 @@
             },
             setFieldTypeMessage( message ){
                 this.fieldTypeMessage = message;
-                if (message != '')
-                    this.$emit('changeCollapse', true);
             }
         }
     }
