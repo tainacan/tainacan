@@ -19,7 +19,7 @@
                             {{ arrayViewPath[index] }}
                         </router-link>
                         <span v-if="index == arrayRealPath.length - 1">{{ arrayViewPath[index] }}</span>
-                        <span v-if="index != arrayRealPath.length - 1"> > </span>
+                        <span v-if="index != arrayRealPath.length - 1 && arrayViewPath[index]"> > </span>
                     </span>   
                 </nav>
             </div>
@@ -130,7 +130,8 @@ export default {
             'fetchCollectionName'
         ]),
         ...mapGetters('collection', [
-            'getCollectionName'
+            'getCollectionName',
+            'getCollection'
         ]),
         ...mapActions('item', [
             'fetchItemTitle'
@@ -160,6 +161,7 @@ export default {
                             this.fetchCollectionName(this.arrayRealPath[i])
                                 .then(collectionName => this.arrayViewPath.splice(i, 1, collectionName))
                                 .catch((error) => this.$console.error(error));
+
                             break;
                         case 'items':
                             this.fetchItemTitle(this.arrayRealPath[i])
@@ -179,7 +181,11 @@ export default {
                     }
                     
                 } else {
-                    this.arrayViewPath.splice(i, 1, this.$i18n.get(this.arrayRealPath[i])); 
+                    if(this.arrayRealPath[i] == 'undefined'){
+                        this.arrayViewPath.splice(i, 1, '');
+                    } else {
+                        this.arrayViewPath.splice(i, 1, this.$i18n.get(this.arrayRealPath[i]));
+                    }
                 }
                 
             }
@@ -192,7 +198,7 @@ export default {
 
         this.arrayRealPath = this.$route.path.split("/");
         this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
-        
+
         this.generateViewPath();
     }
 }
