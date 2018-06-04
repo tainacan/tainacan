@@ -34,7 +34,7 @@ before_install:
 install:
 - echo -e "Install"
 - mkdir /home/travis/build/wordpress/
-- sudo ./tests/bin/install-wp-tests.sh test root root /home/travis/build/wordpress localhost latest 
+- sudo ./tests/bin/install-wp-tests.sh test root root /home/travis/build/wordpress localhost latest true
 #- service mysql restart  
 script:  phpunit #--version 
 #after_success:
