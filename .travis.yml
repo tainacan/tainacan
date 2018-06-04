@@ -33,10 +33,10 @@ before_install:
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 install:
 - echo -e "Install"
-- mkdir ~/wordpress/
+- mkdir /tmp/wordpress
 - mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
-- sed 's/~//home/travis/build/wordpress/g' ./tests/bootstrap-config.php
-- sudo ./tests/bin/install-wp-tests.sh test root root /home/travis/build/wordpress localhost latest true
+#- sed 's/~//home/travis/build/wordpress/g' ./tests/bootstrap-config.php
+- sudo ./tests/bin/install-wp-tests.sh test root root /tmp/wordpress localhost latest true
 - pwd
 - ls
 #- service mysql restart  
