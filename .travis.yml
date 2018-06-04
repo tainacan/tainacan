@@ -33,7 +33,8 @@ before_install:
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 install:
 - echo -e "Install"
-- mkdir /home/travis/build/wordpress/
+- mkdir ~/wordpress/
+- mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 - sudo ./tests/bin/install-wp-tests.sh test root root /home/travis/build/wordpress localhost latest true
 #- service mysql restart  
 script:  phpunit #--version 
