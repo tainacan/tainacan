@@ -241,8 +241,8 @@
             </div>
 
 
-            <!-- ADVANCED SEARCH -->
-            <advanced-search />
+            <!-- ADVANCED SEARCH 
+            <advanced-search /> -->
 
             <!-- --------------- -->
 
@@ -332,7 +332,7 @@
     import ItemsList from '../../components/lists/items-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
-    import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
+    // import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -396,7 +396,7 @@
             ItemsList,
             FiltersItemsList,
             Pagination,
-            AdvancedSearch,
+            // AdvancedSearch,
         },
         watch: {
             tableFields() {
