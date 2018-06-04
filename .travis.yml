@@ -28,7 +28,7 @@ before_install:
 #Instalando Mysql
 - sudo apt-get install sshpass
 #- mysql -u travis 
-- sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('travis') where User='travis'; update user set plugin='mysql_native_password'; FLUSH PRIVILEGES;"
+#- sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('travis') where User='travis'; update user set plugin='mysql_native_password'; FLUSH PRIVILEGES;"
 #- sudo mysql_upgrade
 - sudo service mysql restart
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
@@ -38,7 +38,7 @@ install:
 - mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 - cat ./tests/bootstrap-config.php
 #- sed 's/~//home/travis/build/wordpress/g' ./tests/bootstrap-config.php
-- sudo ./tests/bin/install-wp-tests.sh test travis travis /tmp/wordpress localhost latest true
+- sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest true
 - cat /tmp/wordpress/wordpress-tests-lib/wp-tests-config.php 
 #- service mysql restart  
 script:  phpunit #--version 
