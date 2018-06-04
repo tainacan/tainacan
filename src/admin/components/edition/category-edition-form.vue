@@ -195,14 +195,17 @@
 
             if (formNotSaved) {
                 this.$dialog.confirm({
+                    title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_category_not_saved'),
-                        onConfirm: () => {
-                            next();
-                        },
-                        cancelText: this.$i18n.get('cancel'),
-                        confirmText: this.$i18n.get('continue'),
-                        type: 'is-secondary'
-                    });  
+                    onConfirm: () => {
+                        next();
+                    },
+                    icon: 'alert-circle',
+                    hasIcon: true,
+                    cancelText: this.$i18n.get('cancel'),
+                    confirmText: this.$i18n.get('continue'),
+                    type: 'is-success'
+                });  
             } else {
                 next()
             }  

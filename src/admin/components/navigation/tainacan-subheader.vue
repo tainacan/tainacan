@@ -83,9 +83,7 @@
                         :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
                         :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
                         :aria-label="$i18n.get('label_collection_events')">
-                    <b-icon 
-                            size="is-small" 
-                            icon="flash"/>
+                    <activities-icon />
                     <br>
                     <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link>
@@ -97,6 +95,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import ActivitiesIcon from '../other/activities-icon.vue';
 
 export default {
     name: 'TainacanSubheader',
@@ -108,6 +107,9 @@ export default {
             arrayViewPath: [],
             activeRouteName: '',
         }
+    },
+    components: {
+        ActivitiesIcon
     },
     props: {
         id: Number,

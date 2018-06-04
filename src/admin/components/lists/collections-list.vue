@@ -230,6 +230,7 @@ export default {
         },
         deleteOneCollection(collectionId) {
             this.$dialog.confirm({
+                title: this.$i18n.get('label_warning'),
                 message: this.isOnTrash ? this.$i18n.get('info_warning_collection_delete') : this.$i18n.get('info_warning_collection_trash'),
                 onConfirm: () => {
                     this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
@@ -254,11 +255,15 @@ export default {
                     //         queue: true
                     //     })
                     });
-                }
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                type: 'is-success'
             });
         },
         deleteSelectedCollections() {
             this.$dialog.confirm({
+                title: this.$i18n.get('label_warning'),
                 message: this.isOnTrash ? this.$i18n.get('info_warning_selected_collections_delete') : this.$i18n.get('info_warning_selected_collections_trash'),
                 onConfirm: () => {
 
@@ -286,7 +291,10 @@ export default {
                         }
                     }
                     this.allCollectionsOnPageSelected = false;
-                }
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                type: 'is-success'
             });
         },
         goToCollectionPage(collectionId) {
