@@ -38,9 +38,9 @@ install:
 - sudo mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 #- cat ./tests/bootstrap-config.php
 #- sed 's/~//home/travis/build/wordpress/g' ./tests/bootstrap-config.php
--  ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest true
+- sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest true
 - composer install
-- ls /tmp/wordpress/wordpress-tests-lib/wp-content
+- sudo ls /tmp/wordpress/wordpress-tests-lib/wp-content
 #- cat /tmp/wordpress/wordpress-tests-lib/wp-tests-config.php 
 #- service mysql restart  
 script:  phpunit #--version 
