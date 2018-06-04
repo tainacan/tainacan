@@ -57,7 +57,7 @@ before_deploy:
 #- ssh    $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
 deploy:
 - provider: script
-  script: echo "Faz Deploy!"#ssh   $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
+  script: echo "Faz Deploy!"#ssh   $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh" 
   skip_cleanup: true
   on: 
    branch: continuousintegration
