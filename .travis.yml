@@ -27,7 +27,7 @@ before_install:
 #  -in deploy_rsa.enc -out deploy_rsa -d
 #Instalando Mysql
 - sudo apt-get install sshpass
-- sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('root') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+- sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('root') where User='root'; update user set plugin='mysql_native_password'; GRANT ALL PRIVILEGES ON * . * TO 'root'@'localhost'; FLUSH PRIVILEGES;"
 #- sudo mysql_upgrade
 - sudo service mysql restart
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
