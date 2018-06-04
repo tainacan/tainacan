@@ -44,7 +44,9 @@
                     </button>
                 </p>
             </b-field>
-            <!-- <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a> -->
+            <a
+                    @click.prevent="openAdvancedSearchComponent"
+                    class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -242,7 +244,9 @@
 
 
             <!-- ADVANCED SEARCH -->
-            <advanced-search />
+            <advanced-search
+                    v-if="openAdvancedSearch"
+                    :metadata-list="fields" />
 
             <!-- --------------- -->
 
@@ -361,6 +365,10 @@
             enabledViewModes: Object // Used only on theme
         },
         computed: {
+            openAdvancedSearch(){
+                console.log('Called here', this.$route.meta);
+                return this.$route.meta.openAdvancedSearch;
+            },
             items() {
                 return this.getItems();
             },
@@ -428,6 +436,11 @@
                 'getViewMode',
                 'getTotalItems'
             ]),
+            openAdvancedSearchComponent(){
+                console.log('Called here', this.$route.meta);
+                this.$set(this.$route.meta, 'openAdvancedSearch', !this.$route.meta.openAdvancedSearch);
+                console.log('Called here', this.$route.meta);
+            },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
