@@ -26,12 +26,12 @@ before_install:
 - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('root') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
 - sudo mysql_upgrade
 - sudo service mysql restart
-- sudo mysql -u root -p 'root' 
+#- sudo mysql -u root -p 'root' 
 install:
 - echo -e "Install"
 - mkdir /home/travis/build/wordpress/
 - sudo ./tests/bin/install-wp-tests.sh c1_phpunit c1_phpunit_test 6NrE59YsZpHoRHIi /home/travis/build/wordpress medialab.ufg.br latest true
-- service mysql restart  
+#- service mysql restart  
 script:  phpunit #--version
 #after_success:
 #- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
