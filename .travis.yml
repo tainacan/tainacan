@@ -14,10 +14,12 @@ addons:
 - ssh_know_hosts:
   - "$ssh_host" 
 apt:
+  sources:
+   - mysql-5.7-trusty
   packages: 
-  - sshpass
-  - mysql-server
-  - mysql-client
+   - sshpass
+   - mysql-server
+   - mysql-client
 services:
   - mysql
 before_install:
