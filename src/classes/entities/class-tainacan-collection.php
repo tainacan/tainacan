@@ -637,7 +637,7 @@ class Collection extends Entity {
 	        if(empty($value)) {
                 $value = [];
 	        } else {
-                throw new \Exception('moderators_ids have to be a array of users ids');
+                throw new \Exception('moderators_ids must be a array of users ids');
 	        }
 	    }
 		// make sure you never have duplicated moderators 
