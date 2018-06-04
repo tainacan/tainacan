@@ -14,7 +14,8 @@
         <!-- Side bar with search and filters -->
         <aside 
                 v-show="!isFiltersMenuCompressed"
-                class="filters-menu">
+                class="filters-menu"
+                :class="{ 'tainacan-form': isOnTheme }">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
@@ -76,11 +77,12 @@
                 <div class="content has-text-gray has-text-centered">
                     <p>
                         <b-icon
-                                icon="filter-outline"
+                                icon="filter"
                                 size="is-large"/>
                     </p>
                     <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                     <router-link
+                            v-if="!isOnTheme"
                             id="button-create-filter"
                             :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                             tag="button"
@@ -468,7 +470,7 @@
                 this.fetchFilters({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: true,
+                    isContextEdit: !this.isOnTheme,
                     includeDisabled: 'no',
                 })
                     .then(() => this.isLoadingFilters = false)
@@ -480,7 +482,7 @@
                 this.fetchFields({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: false
+                    isContextEdit: !this.isOnTheme
                 })
                     .then(() => {
 
@@ -498,11 +500,12 @@
                         for (let field of this.fields) {
                             if (field.display !== 'never') {
 
-                                let display = true;
+                                let display;
 
-                                if (field.display === 'no') {
+                                if (field.display == 'no')
                                     display = false;
-                                }
+                                else if (field.display == 'yes')
+                                    display = true;
 
                                 this.tableFields.push(
                                     {
@@ -515,7 +518,8 @@
                                         display: display
                                     }
                                 );    
-                                fetchOnlyFieldIds.push(field.id);                      
+                                if (display)
+                                    fetchOnlyFieldIds.push(field.id);                      
                             }
                         }
 
@@ -620,6 +624,7 @@
         padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;
+        overflow-x: hidden;
         visibility: visible;
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;
@@ -676,22 +681,14 @@
 
     .search-control {
         min-height: $subheader-height;
-        height: $subheader-height;
+        height: auto;
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
         border-bottom: 0.5px solid #ddd;
         display: flex;
         justify-content: space-between;
-
-        @media screen and (max-width: 769px) {
-            height: 60px;
-            margin-top: 0;
-
-            .search-control-item {
-                padding-right: 0.5em;
-            }
-        }
+        flex-wrap: wrap;
     }
 
     .search-control-item {
@@ -752,6 +749,7 @@
     .table-container {
         padding-left: 8.333333%;
         padding-right: 8.333333%;
+        min-height: 200px;
         //height: calc(100% - 82px);
     }
 

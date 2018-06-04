@@ -36,7 +36,7 @@ class Items extends Repository {
 			    'type'        => 'string',
 			    'description' => __( 'Title of the item', 'tainacan' ),
 			    'on_error'    => __( 'The title should be a text value and not empty', 'tainacan' ),
-			    'validation'  => v::stringType()->notEmpty(),
+			    //'validation'  => v::stringType()->notEmpty(),
 		    ],
 		    'status'            => [
 			    'map'         => 'post_status',

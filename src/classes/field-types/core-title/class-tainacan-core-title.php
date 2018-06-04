@@ -49,7 +49,10 @@ class Core_Title extends Field_Type {
      *
      * @param  TainacanEntitiesItem_Metadata_Entity $item_metadata
      * @return bool Valid or not
-     */
+     *
+     * Quarantine - Core metadata should be validated as any other metadata
+     * and item title is no longer mandatory
+    
     public function validate(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
         
         $item = $item_metadata->get_item();
@@ -62,6 +65,7 @@ class Core_Title extends Field_Type {
         return $item->validate_prop('title');
         
     }
+	 */
 
     public function validate_options( Field $field ) {
 		

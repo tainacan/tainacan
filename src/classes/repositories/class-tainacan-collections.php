@@ -266,6 +266,7 @@ class Collections extends Repository {
 
 		$Tainacan_Fields->register_core_fields( $new_collection );
 		$collection->register_collection_item_post_type();
+		flush_rewrite_rules(false); // needed to activate items post type archive url
 		$this->update_moderators( $new_collection );
 
 		return $new_collection;
