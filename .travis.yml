@@ -34,15 +34,15 @@ before_install:
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 install:
 - echo -e "Install"
-- mkdir /tmp/wordpress-tests-lib
-- mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
+#- sudo mkdir /tmp/wordpress-tests-lib
+- sudo mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 #- cat ./tests/bootstrap-config.php
 #- sed 's/~//home/travis/build/wordpress/g' ./tests/bootstrap-config.php
 - sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest true
 - composer install
 #- cat /tmp/wordpress/wordpress-tests-lib/wp-tests-config.php 
 #- service mysql restart  
-script:  phpunit #--version 
+script:  sudo phpunit #--version 
 #after_success:
 #- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
  # -in deploy_rsa.enc -out /tmp/deploy_rsa -d
