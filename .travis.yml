@@ -12,7 +12,7 @@ matrix:
   fast_finish: true
 addons:
 - ssh_know_hosts:
-  - "$ssh_host"
+  - "$ssh_host" 
 apt:
   packages: 
   - sshpass
