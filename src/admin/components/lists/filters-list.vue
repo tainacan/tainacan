@@ -222,15 +222,18 @@ export default {
         }
         if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
             this.$dialog.confirm({
+                title: this.$i18n.get('label_warning'),
                 message: this.$i18n.get('info_warning_filters_not_saved'),
-                    onConfirm: () => {
-                        this.onEditionCanceled();
-                        next();
-                    },
-                    cancelText: this.$i18n.get('cancel'),
-                    confirmText: this.$i18n.get('continue'),
-                    type: 'is-secondary'
-                });  
+                onConfirm: () => {
+                    this.onEditionCanceled();
+                    next();
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                cancelText: this.$i18n.get('cancel'),
+                confirmText: this.$i18n.get('continue'),
+                type: 'is-success'
+            });  
         } else {
             next()
         }  

@@ -1,4 +1,3 @@
-
 // Tainacan modals
 .tainacan-modal-title {
     h1, h2 {
@@ -35,9 +34,64 @@
         padding: 80px 0em 0.4em 0em !important;
     }
 }
+// Bulma modals customized for Tainacan
+.dialog{
+    .modal-background {
+        background-color: rgba(0, 0, 0, 0.70);
+    }
+    .modal-card {
+        background-color: $modal-backgound-color;
+        color: $secondary;
+        border-radius: 10px;
 
-.modal-background {
-    background-color: rgba(0, 0, 0, 0.70);
+        .modal-card-head, .modal-card-body, .modal-card-foot {
+            background-color: $modal-backgound-color;
+            color: $secondary;
+            border: none;
+        } 
+        .modal-card-head {
+            p { color: $secondary; }
+            font-weight: normal;
+            padding: 30px 35px 0px 35px;
+        }
+        .modal-card-body {
+            padding: 16px 35px;
+
+            i {
+                color: white !important;
+                &::before {
+                    background-color: $danger;
+                    border-radius: 55px;
+                    display: initial;
+                }
+            }
+        }
+        .modal-card-foot {
+            justify-content: space-between;
+            padding: 0px 35px 30px 35px;
+
+            .button {
+                border-radius: 6px !important;
+                font-weight: normal;
+                padding: 2px 15px !important;
+                margin-top: 0px !important;
+                margin-bottom: 0px !important;
+                height: inherit !important;
+                box-shadow: none !important;
+                display: inline-flex !important;
+                cursor: pointer;
+                font-size: 13px !important;
+            }
+            .button.is-success {
+                border: none;
+            }
+            .button:not(.is-success) {
+                background-color: white;
+                color: $tertiary;
+                border: 1px solid $gray-light;
+            }
+        }
+    }
 }
 
 // WordPress Media Modal customization

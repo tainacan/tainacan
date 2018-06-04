@@ -214,6 +214,7 @@ export default {
         },
         deleteOneItem(itemId) {
             this.$dialog.confirm({
+                title: this.$i18n.get('label_warning'),
                 message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                 onConfirm: () => {
                     this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
@@ -239,11 +240,15 @@ export default {
                     //         queue: true
                     //     })
                     });
-                }
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                type: 'is-success'
             });
         },
         deleteSelectedItems() {
             this.$dialog.confirm({
+                title: this.$i18n.get('label_warning'),
                 message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
                 onConfirm: () => {
 
@@ -275,7 +280,10 @@ export default {
                         }
                     }
                     this.allItemsOnPageSelected = false;
-                }
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                type: 'is-success'
             });
         },
         goToItemPage(item) {
