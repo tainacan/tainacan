@@ -9,7 +9,7 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isCon
         else
             endpoint = '/filters/';
 
-        endpoint += '?nopaging=1'
+        endpoint += '?nopaging=1';
 
         if (isContextEdit) {
             endpoint += '&context=edit';
@@ -39,12 +39,14 @@ export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterTyp
             endpoint = '/collection/' + collectionId + '/field/' + fieldId +'/filters/'; 
         else
             endpoint = '/filters/';
+
         axios.tainacan.post(endpoint + '?context=edit', {
             filter_type: filterType, 
             filter: {
                 name: name,
                 status: status
-            }
+            },
+            field: fieldId,
         })
             .then( res => {
                 let filter = res.data;

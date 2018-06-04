@@ -131,5 +131,46 @@ class Objects extends TAINACAN_UnitTestCase {
         $this->assertEquals('', $newCol->get_name());
         
         
-    }
+	}
+	
+	function test_fetch_one() {
+
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'teste',
+				'status' => 'publish'
+			),
+			true
+			);
+
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'teste2',
+				'status' => 'publish'
+			),
+			true
+			);
+
+		$collection3 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'teste3',
+				'status' => 'publish'
+			),
+			true
+			);
+
+
+		
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+
+		$one = $Tainacan_Collections->fetch_one(['name' => 'teste2']);
+
+		$this->assertTrue( $one instanceof \Tainacan\Entities\Collection );
+		$this->assertEquals( 'teste2', $one->get_name() );
+
+	}
 }

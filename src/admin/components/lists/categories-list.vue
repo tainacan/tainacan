@@ -180,6 +180,7 @@
             },
             deleteOneCategory(categoryId) {
                 this.$dialog.confirm({
+                    title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_category_delete'),
                     onConfirm: () => {
                         this.deleteCategory(categoryId)
@@ -205,11 +206,15 @@
                                 //     queue: true
                                 // });
                             });
-                    }
+                    },
+                    icon: 'alert-circle',
+                    hasIcon: true,
+                    type: 'is-success'
                 });
             },
             deleteSelectedCategories() {
                 this.$dialog.confirm({
+                    title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_selected_categories_delete'),
                     onConfirm: () => {
 
@@ -237,7 +242,10 @@
                             }
                         }
                         this.allCategoriesOnPageSelected = false;
-                    }
+                    },
+                    icon: 'alert-circle',
+                    hasIcon: true,
+                    type: 'is-success'
                 });
             },
             goToCategoryPage(categoryId) {

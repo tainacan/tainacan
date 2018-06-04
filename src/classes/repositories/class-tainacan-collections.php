@@ -127,6 +127,15 @@ class Collections extends Repository {
 				'title'       => __( 'Default view mode', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Collection default visualization mode', 'tainacan' ),
+				'default'     => 'table',
+				//'validation' => v::stringType(),
+			],
+			'enabled_view_modes'        => [
+				'map'         => 'meta',
+				'title'       => __( 'Enabled view modes', 'tainacan' ),
+				'type'        => 'array',
+				'description' => __( 'Which visualization modes will be available for the public to choose from', 'tainacan' ),
+				'default'     => [],
 				//'validation' => v::stringType(),
 			],
 			'fields_order'             => [
@@ -257,6 +266,7 @@ class Collections extends Repository {
 
 		$Tainacan_Fields->register_core_fields( $new_collection );
 		$collection->register_collection_item_post_type();
+		flush_rewrite_rules(false); // needed to activate items post type archive url
 		$this->update_moderators( $new_collection );
 
 		return $new_collection;
@@ -272,7 +282,7 @@ class Collections extends Repository {
 	 * @return mixed|Collection
 	 */
 	public function delete( $args ) {
-		if ( ! empty( $args[1] ) && $args[1] === true ) {
+		if ( ! empty( $args[1] ) && $args[1] == true ) {
 			$deleted = new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
 
 			if($deleted) {

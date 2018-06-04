@@ -111,5 +111,9 @@ export const setSearchQuery = ( state, searchQuery ) => {
 };
 
 export const setStatus = ( state, status ) => {
-    state.status = status;
+    state.postquery.status = status;
+};
+
+export const setViewMode = ( state, viewMode ) => {
+    state.postquery.view_mode = viewMode;
 };

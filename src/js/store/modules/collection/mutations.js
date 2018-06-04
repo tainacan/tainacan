@@ -3,6 +3,9 @@ import Vue from 'vue';
 export const setItems = ( state, items ) => {
     state.items = items;
 }
+export const setItemsListTemplate = ( state, items ) => {
+    state.itemsListTemplate = items;
+}
 
 export const cleanItems = (state) => {
     state.items = [];

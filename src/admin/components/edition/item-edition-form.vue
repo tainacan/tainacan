@@ -459,6 +459,7 @@ export default {
                 this.form.document_type = this.item.document_type;
 
                 this.loadMetadata();
+                this.fetchAttachments(this.itemId);
 
             })
             .catch(error => this.$console.error(error));
@@ -675,14 +676,17 @@ export default {
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$dialog.confirm({
+                title: this.$i18n.get('label_warning'),
                 message: this.$i18n.get('info_warning_item_not_saved'),
-                    onConfirm: () => {
-                        next();
-                    },
-                    cancelText: this.$i18n.get('cancel'),
-                    confirmText: this.$i18n.get('continue'),
-                    type: 'is-secondary'
-                });  
+                onConfirm: () => {
+                    next();
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                cancelText: this.$i18n.get('cancel'),
+                confirmText: this.$i18n.get('continue'),
+                type: 'is-success'
+            });  
         } else {
             next()
         }  

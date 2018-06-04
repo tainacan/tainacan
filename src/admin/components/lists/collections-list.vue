@@ -169,7 +169,7 @@
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="delete"/>
+                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
                                 </a>
                             </div>
                         </td>
@@ -197,7 +197,8 @@ export default {
         totalCollections: 0,
         page: 1,
         collectionsPerPage: 12,
-        collections: Array
+        collections: Array,
+        isOnTrash: false
     },
     watch: {
         collections() {
@@ -229,9 +230,10 @@ export default {
         },
         deleteOneCollection(collectionId) {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_collection_delete'),
+                title: this.$i18n.get('label_warning'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_collection_delete') : this.$i18n.get('info_warning_collection_trash'),
                 onConfirm: () => {
-                    this.deleteCollection(collectionId)
+                    this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
                     .then(() => {
                     //     this.$toast.open({
                     //         duration: 3000,
@@ -241,7 +243,7 @@ export default {
                     //         queue: true
                     //     });
                         for (let i = 0; i < this.selectedCollections.length; i++) {
-                            if (this.selectedCollections[i].id == this.collectionId)
+                            if (this.selectedCollections[i].id == collectionId)
                                 this.selectedCollections.splice(i, 1);
                         }
                     }).catch(() => {
@@ -253,17 +255,21 @@ export default {
                     //         queue: true
                     //     })
                     });
-                }
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                type: 'is-success'
             });
         },
         deleteSelectedCollections() {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_selected_collections_delete'),
+                title: this.$i18n.get('label_warning'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_collections_delete') : this.$i18n.get('info_warning_selected_collections_trash'),
                 onConfirm: () => {
 
                     for (let i = 0; i < this.collections.length; i++) {
                         if (this.selectedCollections[i]) {
-                            this.deleteCollection(this.collections[i].id)
+                            this.deleteCollection({ collectionId: this.collections[i].id, isPermanently: this.isOnTrash })
                             .then(() => {
                             //     this.loadCollections();
                             //     this.$toast.open({
@@ -285,7 +291,10 @@ export default {
                         }
                     }
                     this.allCollectionsOnPageSelected = false;
-                }
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                type: 'is-success'
             });
         },
         goToCollectionPage(collectionId) {

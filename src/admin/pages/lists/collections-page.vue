@@ -3,7 +3,7 @@
         <tainacan-title />
         <div
                 class="sub-header"
-                v-if="checkIfUserCanEdit()">
+                v-if="$userCaps.hasCapability('edit_tainacan-collections')">
             <div class="header-item">
                 <b-dropdown id="collection-creation-options-dropdown">
                     <button
@@ -50,7 +50,8 @@
                         :total-collections="totalCollections"
                         :page="page"
                         :collections-per-page="collectionsPerPage"
-                        :collections="collections"/> 
+                        :collections="collections"
+                        :is-on-trash="status == 'trash'"/> 
 
                 <!-- Empty state image -->
                 <div v-if="totalCollections <= 0 && !isLoading">
@@ -148,13 +149,6 @@ export default {
             this.status = status;
             this.loadCollections();
         },
-        checkIfUserCanEdit() {
-            for (let capability of tainacan_plugin.user_caps) {
-                if (capability == 'edit_tainacan-collections')
-                    return true;
-            }
-            return false;
-        },
         onChangeCollectionsPerPage(value) {
             let prevValue = this.collectionsPerPage;
             this.collectionsPerPage = value;
@@ -215,7 +209,7 @@ export default {
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
-        border-bottom: 0.5px solid #ddd;
+        border-bottom: 1px solid #ddd;
 
         .header-item {
             display: inline-block;

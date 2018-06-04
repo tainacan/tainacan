@@ -23,7 +23,14 @@
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
             const vm = this;
-            axios.get('/collection/' + this.collection + '/fields/' +  this.field )
+
+            let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
+
+            if(this.isRepositoryLevel){
+                in_route = '/fields?nopaging=1';
+            }
+
+            axios.get(in_route)
                 .then( res => {
                     let result = res.data;
                     if( result && result.field_type ){
@@ -47,6 +54,9 @@
                 field: '',
                 field_object: {}
             }
+        },
+        props: {
+            isRepositoryLevel: Boolean
         },
         mixins: [filter_type_mixin],
         watch: {
@@ -77,7 +87,7 @@
                     promise = this.getValuesRelationship( collectionTarget, query );
 
                 } else {
-                    promise = this.getValuesPlainText( this.field, query );
+                    promise = this.getValuesPlainText( this.field, query, this.isRepositoryLevel );
                 }
                 this.isLoading = true;
                 promise.then(() => {

@@ -12,9 +12,14 @@ export const filter_type_mixin = {
         query: {}
     },
     methods: {
-        getValuesPlainText(fieldId, search) {
+        getValuesPlainText(fieldId, search, isRepositoryLevel) {
+
             let url = '/collection/' + this.collection + '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1';
-            
+
+            if(isRepositoryLevel){
+                url = '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1';
+            }
+
             if( search ){
                 url += "&search=" + search;
             }

@@ -276,6 +276,64 @@
                         </b-select>
                     </b-field>
 
+                    <!-- Enabled View Modes ------------------------------- --> 
+                    <div class="field">
+                        <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
+                        <help-button 
+                                    :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
+                                    :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
+                        <div class="control">
+                            <b-dropdown
+                                    ref="enabledViewModesDropdown"
+                                    :mobile-modal="false"
+                                    :disabled="Object.keys(registeredViewModes).length < 0">
+                                <button
+                                        class="button is-white"
+                                        slot="trigger"
+                                        position="is-top-right"
+                                        type="button">
+                                    <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
+                                    <b-icon icon="menu-down"/>
+                                </button>
+                                <b-dropdown-item
+                                        v-for="(viewMode, index) in Object.keys(registeredViewModes)"
+                                        :key="index"
+                                        class="control"
+                                        custom>
+                                    <b-checkbox
+                                            v-if="registeredViewModes[viewMode] != undefined"
+                                            @input="updateViewModeslist(viewMode)"
+                                            :value="checkIfViewModeEnabled(viewMode)">
+                                        {{ registeredViewModes[viewMode].label }}
+                                    </b-checkbox>
+                                </b-dropdown-item>   
+                            </b-dropdown>
+                        </div>
+                    </div>
+
+                    <!-- Default View Mode -------------------------------- --> 
+                    <b-field
+                            v-if="form.enabled_view_modes.length > 0"
+                            :addons="false" 
+                            :label="$i18n.get('label_default_view_mode')"
+                            :type="editFormErrors['default_view_mode'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['default_view_mode'] != undefined ? editFormErrors['default_view_mode'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
+                                :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
+                        <b-select
+                                id="tainacan-select-default_view_mode"
+                                v-model="form.default_view_mode"
+                                @focus="clearErrors('default_view_mode')">
+                            <option
+                                    v-for="(viewMode, index) of form.enabled_view_modes"
+                                    v-if="registeredViewModes[viewMode] != undefined"
+                                    :key="index"
+                                    :value="viewMode">{{ registeredViewModes[viewMode].label }}
+                            </option>
+                        </b-select>
+                    </b-field>
+
                 </div>
             </div>
 
@@ -324,7 +382,9 @@ export default {
                 thumbnail: '',
                 header_image: '',
                 files:[],
-                moderators_ids: []
+                moderators_ids: [],
+                enabled_view_modes: [],
+                default_view_mode: []
             },
             thumbnail: {},
             cover: {},
@@ -358,7 +418,9 @@ export default {
             collections: [],
             isFetchingCollections: true,
             thumbnailMediaFrame: undefined,
-            headerImageMediaFrame: undefined
+            headerImageMediaFrame: undefined,
+            registeredViewModes: tainacan_plugin.registered_view_modes,
+            viewModesList: []
         }
     },
     methods: {
@@ -393,7 +455,9 @@ export default {
                 slug: this.form.slug, 
                 status: this.form.status,
                 moderators_ids: this.form.moderators_ids,
-                parent: this.form.parent
+                parent: this.form.parent,
+                enabled_view_modes: this.form.enabled_view_modes,
+                default_view_mode: this.form.default_view_mode
             };
             this.updateCollection(data).then(updatedCollection => {    
                 
@@ -406,6 +470,8 @@ export default {
                 this.form.status = this.collection.status;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.enable_cover_page = this.collection.enable_cover_page;
+                this.form.enabled_view_modes = this.collection.enabled_view_modes;
+                this.form.default_view_mode = this.collection.default_view_mode;
 
                 this.isLoading = false;
                 this.formErrorMessage = '';
@@ -444,8 +510,10 @@ export default {
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.slug = this.collection.slug;
                 this.form.parent = this.collection.parent;
+                this.form.default_view_mode = this.collection.default_view_mode;
+                this.form.enabled_view_modes = [];
                 this.moderators = [];
-                
+
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
 
@@ -471,6 +539,18 @@ export default {
         },
         cancelBack(){
             this.$router.push(this.$routerHelper.getCollectionsPath());
+        },
+        updateViewModeslist(viewMode) {
+        
+            let index = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode == viewMode);
+            if (index > -1)
+                this.form.enabled_view_modes.splice(index, 1);
+            else    
+                this.form.enabled_view_modes.push(viewMode);
+        },
+        checkIfViewModeEnabled(viewMode) {
+            let index = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode == viewMode);
+            return index > -1;
         },
         fecthCoverPages(search) {
             this.isFetchingPages = true;
@@ -601,7 +681,8 @@ export default {
                 this.form.enable_cover_page = this.collection.enable_cover_page;
                 this.form.cover_page_id = this.collection.cover_page_id;
                 this.form.parent = this.collection.parent;
-
+                this.form.default_view_mode = this.collection.default_view_mode;
+                this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes));
                 this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
                  
                 // Generates CoverPage from current cover_page_id info
@@ -639,6 +720,7 @@ export default {
         }
     },
     mounted() {
+
         if (this.$route.fullPath.split("/").pop() != "new") {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
                 this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
@@ -653,12 +735,11 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .tainacan-form>.columns>.column {
-        overflow: auto;
-        .field {
-            position: relative;
-        }
+
+    .field {
+        position: relative;
     }
+    
     .thumbnail-field {  
         max-height: 128px;
         margin-bottom: 96px;

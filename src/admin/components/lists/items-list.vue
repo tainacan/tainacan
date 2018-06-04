@@ -1,9 +1,7 @@
 <template>
     <div class="table-container">
 
-        <div 
-                v-if="!isOnTheme"
-                class="selection-control">
+        <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
@@ -37,13 +35,11 @@
         </div>
 
         <div class="table-wrapper">
-            <table 
-                    :class="{'selectable-table': !isOnTheme }"
-                    class="tainacan-table">
+            <table class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th v-if="!isOnTheme">
+                        <th>
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -62,9 +58,7 @@
                                 :custom-key="column.slug">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
-                        <th     
-                                class="actions-header"
-                                v-if="!isOnTheme">
+                        <th class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
                         </th>
@@ -77,7 +71,6 @@
                             v-for="(item, index) of items">
                         <!-- Checking list -->
                         <td 
-                                v-if="!isOnTheme"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox 
@@ -108,10 +101,10 @@
                                     v-if="column.field !== 'row_thumbnail' &&
                                             column.field !== 'row_actions' &&
                                             column.field !== 'row_creation'"
-                                    :data="renderMetadata( item.metadata[column.slug] )"/> -->
+                                    :data="renderMetadata(item.metadata, column)"/> -->
                             <p
                                     v-tooltip="{
-                                        content: renderMetadata( item.metadata[column.slug] ),
+                                        content: renderMetadata(item.metadata, column),
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -121,7 +114,7 @@
                                           column.field !== 'row_actions' &&
                                           column.field !== 'row_creation' &&
                                           column.field !== 'row_author'"
-                                    v-html="renderMetadata( item.metadata[column.slug] )"/>
+                                    v-html="renderMetadata(item.metadata, column)"/>
 
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
@@ -143,7 +136,7 @@
 
                         <!-- Actions -->
                         <td 
-                                v-if="!isOnTheme && item.current_user_can_edit"
+                                v-if="item.current_user_can_edit"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -161,7 +154,7 @@
                                         @click.prevent.stop="deleteOneItem(item.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="delete"/>
+                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
                                 </a>
                             </div>
                         </td>
@@ -189,7 +182,7 @@ export default {
         tableFields: Array,
         items: Array,
         isLoading: false,
-        isOnTheme: false
+        isOnTrash: false
     },
     mounted() {
         this.selectedItems = [];
@@ -221,9 +214,10 @@ export default {
         },
         deleteOneItem(itemId) {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_item_delete'),
+                title: this.$i18n.get('label_warning'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                 onConfirm: () => {
-                    this.deleteItem(itemId)
+                    this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
                     .then(() => {
                     //     this.$toast.open({
                     //         duration: 3000,
@@ -233,7 +227,7 @@ export default {
                     //         queue: true
                     //     });
                         for (let i = 0; i < this.selectedItems.length; i++) {
-                            if (this.selectedItems[i].id == this.itemId)
+                            if (this.selectedItems[i].id == itemId)
                                 this.selectedItems.splice(i, 1);
                         }
                     }).catch(() => {
@@ -246,17 +240,21 @@ export default {
                     //         queue: true
                     //     })
                     });
-                }
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                type: 'is-success'
             });
         },
         deleteSelectedItems() {
             this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_selected_items_delete'),
+                title: this.$i18n.get('label_warning'),
+                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
                 onConfirm: () => {
 
                     for (let i = 0; i < this.selectedItems.length; i++) {
                         if (this.selectedItems[i]) {
-                            this.deleteItem(this.items[i].id)
+                            this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
                             .then(() => {
                             //     this.$toast.open({
                             //         duration: 3000,
@@ -282,19 +280,21 @@ export default {
                         }
                     }
                     this.allItemsOnPageSelected = false;
-                }
+                },
+                icon: 'alert-circle',
+                hasIcon: true,
+                type: 'is-success'
             });
         },
         goToItemPage(item) {
-            if (this.isOnTheme)
-                window.location.href = item.url;   
-            else
-                this.$router.push(this.$routerHelper.getItemPath(this.collectionId, item.id));
+            this.$router.push(this.$routerHelper.getItemPath(this.collectionId, item.id));
         },
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
-        renderMetadata(metadata) {
+        renderMetadata(itemMetadata, column) {
+
+            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
 
             if (!metadata) {
                 return '';

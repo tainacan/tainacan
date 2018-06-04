@@ -318,8 +318,8 @@ class Fields extends Repository {
     }
 
 	/**
-	 * fetch field by collection, searches all field available
-	 *
+	 * fetch field by collection, considering inheritance
+	 * 
 	 * @param Entities\Collection $collection
 	 * @param array $args WP_Query args plus disabled_fields
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
@@ -642,8 +642,11 @@ class Fields extends Repository {
         }
     }
 
+
+    # TODO: Fetch all field value for repository level
+
 	/**
-	 * Fetch all values of a field from a collection in all it collection items
+	 * Fetch all values of a field from a collection or repository
 	 *
 	 * @param $collection_id
 	 * @param $field_id
@@ -722,8 +725,9 @@ class Fields extends Repository {
 
 			foreach ($post_statuses as $post_status) {
 
-				$sql_string = $wpdb->prepare(
-					"SELECT item_id, field_id, mvalue 
+				if($collection_id) {
+					$sql_string = $wpdb->prepare(
+						"SELECT item_id, field_id, mvalue 
 				  		FROM (
 			  				SELECT ID as item_id
 		  					FROM $wpdb->posts
@@ -734,8 +738,24 @@ class Fields extends Repository {
 					  	  	FROM $wpdb->postmeta $search_query
 				  		) metas
 			  			ON items.item_id = metas.post_id AND metas.field_id = %d",
-					$item_post_type, $post_status, $field_id
-				);
+						$item_post_type, $post_status, $field_id
+					);
+				} else {
+					$sql_string = $wpdb->prepare(
+						"SELECT item_id, field_id, mvalue 
+				  		FROM (
+			  				SELECT ID as item_id
+		  					FROM $wpdb->posts
+	  						WHERE post_status = %s
+  						) items
+						JOIN (
+						  	SELECT meta_key as field_id, meta_value as mvalue, post_id
+					  	  	FROM $wpdb->postmeta $search_query
+				  		) metas
+			  			ON items.item_id = metas.post_id AND metas.field_id = %d",
+						$post_status, $field_id
+					);
+				}
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
 				if (!empty($pre_result)) {
@@ -750,8 +770,10 @@ class Fields extends Repository {
 			$post_statuses = get_post_stati( $args, 'names', 'and' );
 
 			foreach ($post_statuses as $post_status) {
-				$sql_string = $wpdb->prepare(
-					"SELECT item_id, field_id, mvalue 
+
+				if($collection_id) {
+					$sql_string = $wpdb->prepare(
+						"SELECT item_id, field_id, mvalue 
 		  	        	FROM (
 	  	  		        	SELECT ID as item_id
   	  			        	FROM $wpdb->posts
@@ -762,8 +784,24 @@ class Fields extends Repository {
 							FROM $wpdb->postmeta $search_query
 					  	) metas
 					  	ON items.item_id = metas.post_id AND metas.field_id = %d",
-					$item_post_type, $post_status, $field_id
-				);
+						$item_post_type, $post_status, $field_id
+					);
+				} else {
+					$sql_string = $wpdb->prepare(
+						"SELECT item_id, field_id, mvalue 
+		  	        	FROM (
+	  	  		        	SELECT ID as item_id
+  	  			        	FROM $wpdb->posts
+  				        	WHERE post_status = %s
+					  	) items
+					  	JOIN (
+					    	SELECT meta_key as field_id, meta_value as mvalue, post_id
+							FROM $wpdb->postmeta $search_query
+					  	) metas
+					  	ON items.item_id = metas.post_id AND metas.field_id = %d",
+						$post_status, $field_id
+					);
+				}
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
 

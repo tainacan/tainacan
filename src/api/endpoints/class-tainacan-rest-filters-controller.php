@@ -116,7 +116,7 @@ class REST_Filters_Controller extends REST_Controller {
 		$received_type = $body['filter_type'];
 
 		if(empty($received_type)){
-			throw new \InvalidArgument\Exception('The type can\'t be empty');
+			throw new \InvalidArgumentException('The type can\'t be empty');
 		} elseif(!strrchr($received_type, '_')){
 			$received_type = ucfirst(strtolower($received_type));
 		} else {
@@ -141,10 +141,20 @@ class REST_Filters_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 
 			$filter_obj->set_collection_id( $collection_id );
-			$filter_obj->set_field('');
+
+			if(!isset($body['field'])){
+				throw new \InvalidArgumentException('You need provide a field id');
+			}
+
+			$filter_obj->set_field($body['field']);
 		} else {
 			$filter_obj->set_collection_id( 'filter_in_repository' );
-			$filter_obj->set_field('');
+
+			if(!isset($body['field'])){
+				throw new \InvalidArgumentException('You need provide a field id');
+			}
+
+			$filter_obj->set_field($body['field']);
 		}
 
 		$filter_obj->set_filter_type($filter_type);
@@ -314,9 +324,10 @@ class REST_Filters_Controller extends REST_Controller {
 
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
-				$item_arr['filter_type_object'] = $item->get_filter_type_object()->_toArray();
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
+
+			$item_arr['filter_type_object'] = $item->get_filter_type_object()->_toArray();
 
 			return $item_arr;
 		}

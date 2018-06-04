@@ -36,7 +36,7 @@ class Items extends Repository {
 			    'type'        => 'string',
 			    'description' => __( 'Title of the item', 'tainacan' ),
 			    'on_error'    => __( 'The title should be a text value and not empty', 'tainacan' ),
-			    'validation'  => v::stringType()->notEmpty(),
+			    //'validation'  => v::stringType()->notEmpty(),
 		    ],
 		    'status'            => [
 			    'map'         => 'post_status',
@@ -289,7 +289,7 @@ class Items extends Repository {
 	 * @return mixed|Entities\Item
 	 */
 	public function delete( $args ) {
-		if ( ! empty( $args[1] ) && $args[1] === true ) {
+		if ( ! empty( $args[1] ) && $args[1] == true ) {
 
 			$deleted = new Entities\Item( wp_delete_post( $args[0], $args[1] ) );
 

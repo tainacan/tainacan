@@ -511,6 +511,31 @@ abstract class Repository {
 	}
 
 	/**
+	 * Fetch one Entity based on query args.
+	 * 
+	 * Note: Does not work with Item_Metadata Repository
+	 * 
+	 * @param array $args Query Args as expected by fetch
+	 * 
+	 * @return false|\Tainacan\Entities The entity or false if none was found
+	 */
+	public function fetch_one($args) {
+		if ($this->get_name() == 'Item_Metadata') {
+			return false;
+		}
+
+		$args['posts_per_page'] = 1;
+
+		$results = $this->fetch($args, 'OBJECT');
+		
+		if (is_array($results) && sizeof($results) > 0 && $results[0] instanceof \Tainacan\Entities\Entity) {
+			return $results[0];
+		}
+
+		return false;
+	}
+
+	/**
 	 * @param $object
 	 *
 	 * @return mixed

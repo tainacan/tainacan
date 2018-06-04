@@ -5,6 +5,7 @@ namespace Tainacan\API\EndPoints;
 use \Tainacan\API\REST_Controller;
 use Tainacan\Repositories;
 use Tainacan\Entities;
+use Tainacan\Tests\Collections;
 
 /**
  * Represents the Items REST Controller
@@ -83,6 +84,17 @@ class REST_Items_Controller extends REST_Controller {
 							'default'     => 'false'
 						),
 					)
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace, '/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => $this->get_collection_params(),
 				),
 			)
 		);
@@ -199,24 +211,60 @@ class REST_Items_Controller extends REST_Controller {
 	public function get_items( $request ) {
 		$args = $this->prepare_filters($request);
 
-		$collection_id = $request['collection_id'];
+		$collection_id = [];
+		if($request['collection_id']) {
+			$collection_id = $request['collection_id'];
+		}
+
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 
 		$response = [];
-		if ($items->have_posts()) {
-			while ( $items->have_posts() ) {
-				$items->the_post();
 
-				$item = new Entities\Item($items->post);
+		$return_template = false;
 
-				$prepared_item = $this->prepare_item_for_response($item, $request);
-
-				array_push($response, $prepared_item);
+		if ( isset($request['view_mode']) ) {
+			
+			// TODO: Check if requested view mode is really enabled for current collection
+			$view_mode = \Tainacan\Theme_Helper::get_instance()->get_view_mode($request['view_mode']);
+			
+			if ($view_mode && $view_mode['type'] == 'template' && isset($view_mode['template']) && file_exists($view_mode['template'])) {
+				$return_template = true;
 			}
 
-			wp_reset_postdata();
 		}
+		
+		if ( $return_template ) {
+			
+			ob_start();
 
+			global $wp_query, $view_mode_displayed_fields;
+			$wp_query = $items;
+			$displayed_metadata = array_map(function($el) { return (int) $el; }, $request['fetch_only']['meta']);
+			$view_mode_displayed_fields = $request['fetch_only'];
+			$view_mode_displayed_fields['meta'] = $displayed_metadata;
+			
+			include $view_mode['template'];
+			
+			$response = ob_get_clean();
+
+		} else {
+
+			if ($items->have_posts()) {
+				while ( $items->have_posts() ) {
+					$items->the_post();
+	
+					$item = new Entities\Item($items->post);
+	
+					$prepared_item = $this->prepare_item_for_response($item, $request);
+	
+					array_push($response, $prepared_item);
+				}
+	
+				wp_reset_postdata();
+			}
+			
+		}
+		
 		$total_items  = $items->found_posts;
 		$max_pages = ceil($total_items / (int) $items->query_vars['posts_per_page']);
 
@@ -261,9 +309,13 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			return true;
-		}
+		} else {
+			if('edit' === $request['context'] && !$this->collections_repository->can_read(new Entities\Collection())) {
+				return false;
+			}
 
-		return false;
+			return true;
+		}
 	}
 
 	/**

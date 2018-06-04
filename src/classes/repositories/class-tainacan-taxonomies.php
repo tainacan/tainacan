@@ -186,7 +186,7 @@ class Taxonomies extends Repository {
 	    $taxonomy_name  = $args[1];
 	    $permanently    = $args[2];
 
-	    if($permanently === true){
+	    if($permanently == true){
 		    $unregistered = unregister_taxonomy($taxonomy_name);
 
 		    if($unregistered instanceof \WP_Error){

@@ -25,7 +25,8 @@ class Collection extends Entity {
         $default_order,
         $default_orderby,
         $columns,
-        $default_view_mode,
+		$default_view_mode,
+		$enabled_view_modes,
         $fields_order,
         $filters_order,
         $enable_cover_page,
@@ -355,6 +356,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get collection enabled_view_modes option
+	 *
+	 * @return string
+	 */
+	function get_enabled_view_modes() {
+		return $this->get_mapped_property( 'enabled_view_modes' );
+	}
+
+	/**
 	 * Get collection fields ordination
 	 *
 	 * @return string
@@ -442,6 +452,73 @@ class Collection extends Entity {
 		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
 
 		return $Tainacan_Fields->fetch_by_collection( $this, [], 'OBJECT' );
+	}
+
+	/**
+	 * Get the two core fields of the collection (title and description)
+	 * 
+	 * @return array[\Tainacan\Entities\Field]
+	 */
+	function get_core_fields() {
+		$repo = \Tainacan\Repositories\Fields::get_instance();
+
+		return $repo->fetch_by_collection($this, [
+			'meta_query' => [
+				[
+					'key' => 'field_type',
+					'value' => ['Tainacan\Field_Types\Core_Title', 'Tainacan\Field_Types\Core_Description'],
+					'compare' => 'IN'
+				]
+			]
+		], 'OBJECT');
+	}
+
+	/**
+	 * Get the Core Title Field for this collection
+	 * 
+	 * @return \Tainacan\Entities\Field The Core Title Field
+	 */
+	function get_core_title_field() {
+		$repo = \Tainacan\Repositories\Fields::get_instance();
+
+		$results = $repo->fetch_by_collection($this, [
+			'meta_query' => [
+				[
+					'key' => 'field_type',
+					'value' => 'Tainacan\Field_Types\Core_Title',
+				]
+			],
+			'posts_per_page' => 1
+		], 'OBJECT');
+
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Field) {
+			return $results[0];
+		}
+		return false;
+	}
+
+	/**
+	 * Get the Core Description Field for this collection
+	 * 
+	 * @return \Tainacan\Entities\Field The Core Description Field
+	 */
+	function get_core_description_field() {
+		$repo = \Tainacan\Repositories\Fields::get_instance();
+
+		$results = $repo->fetch_by_collection($this, [
+			'meta_query' => [
+				[
+					'key' => 'field_type',
+					'value' => 'Tainacan\Field_Types\Core_Description',
+				]
+			],
+			'posts_per_page' => 1
+		], 'OBJECT');
+
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Field) {
+			return $results[0];
+		}
+		return false;
 	}
 
 	/**
@@ -547,6 +624,17 @@ class Collection extends Entity {
 	 */
 	function set_default_view_mode( $value ) {
 		$this->set_mapped_property( 'default_view_mode', $value );
+	}
+
+	/**
+	 * Set collection enabled_view_modes option
+	 *
+	 * @param [array] $value
+	 *
+	 * @return void
+	 */
+	function set_enabled_view_modes( $value ) {
+		$this->set_mapped_property( 'enabled_view_modes', $value );
 	}
 
 	/**
