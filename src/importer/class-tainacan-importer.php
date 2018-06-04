@@ -264,7 +264,7 @@ abstract class Importer {
      */
     public function fetch_from_remote( $url ){
         $tmp = wp_remote_get( $url );
-        if( isset( $tmp['body'] ) ){
+        if( !is_wp_error($tmp) && isset( $tmp['body'] ) ){
             $file = fopen( $this->get_id().'.txt', 'w' );
             fwrite( $file, $tmp['body'] );
             fclose( $file );

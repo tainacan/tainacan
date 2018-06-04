@@ -44,7 +44,9 @@
                     </button>
                 </p>
             </b-field>
-            <!-- <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a> -->
+            <a
+                    @click.prevent="openAdvancedSearchComponent"
+                    class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -241,8 +243,10 @@
             </div>
 
 
-            <!-- ADVANCED SEARCH 
-            <advanced-search /> -->
+            <!-- ADVANCED SEARCH -->
+            <advanced-search
+                    v-if="openAdvancedSearch"
+                    :metadata-list="fields" />
 
             <!-- --------------- -->
 
@@ -332,7 +336,7 @@
     import ItemsList from '../../components/lists/items-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
-    // import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
+    import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -361,6 +365,10 @@
             enabledViewModes: Object // Used only on theme
         },
         computed: {
+            openAdvancedSearch(){
+                console.log('Called here', this.$route.meta);
+                return this.$route.meta.openAdvancedSearch;
+            },
             items() {
                 return this.getItems();
             },
@@ -396,7 +404,7 @@
             ItemsList,
             FiltersItemsList,
             Pagination,
-            // AdvancedSearch,
+            AdvancedSearch,
         },
         watch: {
             tableFields() {
@@ -428,6 +436,11 @@
                 'getViewMode',
                 'getTotalItems'
             ]),
+            openAdvancedSearchComponent(){
+                console.log('Called here', this.$route.meta);
+                this.$set(this.$route.meta, 'openAdvancedSearch', !this.$route.meta.openAdvancedSearch);
+                console.log('Called here', this.$route.meta);
+            },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
