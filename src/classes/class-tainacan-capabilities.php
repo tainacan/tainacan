@@ -374,7 +374,11 @@ class Capabilities {
 	            if(! is_array($append_caps)) $append_caps = [];
 	            if( 
 	                (! array_key_exists(self::$dependencies[$post_type][$cap], $append_caps) && $added ) || // we never added and need to add
-	                ( $append_caps[self::$dependencies[$post_type][$cap]] === false && $added ) // we added but before is not need to add
+	                (
+	                    array_key_exists(self::$dependencies[$post_type][$cap], $append_caps) &&
+	                    $append_caps[self::$dependencies[$post_type][$cap]] === false &&
+	                    $added
+	                ) // we added but before is not need to add
 	            ) {
 	                $append_caps[self::$dependencies[$post_type][$cap]] = 0;
 	            }
