@@ -79,6 +79,7 @@ cache:
   - vendor
   - composer
 notifications:
+  slack: l3pol:wG8WvtgdhXIR6sN4NfSNoela
   email:
     on_success: never
     on_failure: always
