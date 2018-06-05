@@ -80,9 +80,8 @@ cache:
   - composer
 notifications:
   slack: 
-    l3pol:
-      secure: wG8WvtgdhXIR6sN4NfSNoela
-    enabled: true
+    rooms:
+      - l3pol:wG8WvtgdhXIR6sN4NfSNoela
     on_sucess: always
     on_failure: always
   email:
