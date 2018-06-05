@@ -465,11 +465,15 @@
                         }
                     }
                 }
+                let thumbnailField = this.localTableFields.find(field => field.slug == 'thumbnail');
+                let creationDateField = this.localTableFields.find(field => field.slug == 'creation_date');
+                let authorNameField = this.localTableFields.find(field => field.slug == 'author_name');
+       
                 this.$eventBusSearch.addFetchOnly({
-                    '0': 'thumbnail',
+                    '0': thumbnailField.display ? 'thumbnail' : null,
                     'meta': fetchOnlyFieldIds,
-                    '1': 'creation_date',
-                    '2': 'author_name'
+                    '1': creationDateField.display ? 'creation_date' : null,
+                    '2': authorNameField.display ? 'author_name': null
                 });
                 this.$refs.displayedFieldsDropdown.toggle();
             },
