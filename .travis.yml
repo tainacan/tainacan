@@ -81,6 +81,7 @@ cache:
 notifications:
   slack: l3pol:wG8WvtgdhXIR6sN4NfSNoela
     on_sucess: always
+    on_failure: always
   email:
     on_success: never
     on_failure: always
