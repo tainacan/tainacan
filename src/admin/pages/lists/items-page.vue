@@ -20,30 +20,23 @@
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <b-field> 
-                <div class="control is-small is-clearfix">
+            <div class="search-area"> 
+                <div class="control has-icons-right  is-small is-clearfix">
                     <input
-                        class="input is-small"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        autocomplete="on"
-                        :value="searchQuery"
-                        @input="futureSearchQuery = $event.target.value"
-                        @keyup.enter="updateSearch()">
-                </div>
-
-                <p class="control">
-                    <button                             
-                            id="collection-search-button"
-                            type="submit"
-                            class="button"
-                            @click="updateSearch()">
-                        <b-icon 
-                                icon="magnify" 
-                                size="is-small"/>
-                    </button>
-                </p>
-            </b-field>
+                            class="input is-small"
+                            :placeholder="$i18n.get('instruction_search')"
+                            type="search"
+                            autocomplete="on"
+                            :value="searchQuery"
+                            @input="futureSearchQuery = $event.target.value"
+                            @keyup.enter="updateSearch()">
+                        <span   
+                                @click="updateSearch()"
+                                class="icon is-right">
+                            <i class="mdi mdi-magnify" />
+                        </span>
+                </div>             
+            </div>
             <a
                     @click.prevent="openAdvancedSearchComponent"
                     class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
@@ -649,12 +642,26 @@
             margin-top: 48px;
         }
 
-        #collection-search-button {
-            border-radius: 0 !important;
-            padding: 0 8px !important;
-            border-color: $tainacan-input-background;
-            &:focus, &:active {
-                border-color: none !important;
+        .search-area {
+            display: flex;
+            align-items: center;
+            margin-right: 36px;
+
+            .control {
+                input {
+                    height: 27px;
+                    font-size: 11px;
+                    color: $gray-light;
+                    width: 160px;
+                }
+                .icon {
+                    pointer-events: all;
+                    cursor: pointer;
+                    color: $tertiary;
+                    height: 27px;
+                    font-size: 18px;
+                }
+                margin-bottom: 5px;
             }
         }
 

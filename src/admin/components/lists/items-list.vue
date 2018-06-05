@@ -84,8 +84,6 @@
                                 v-for="(column, index) in tableFields"
                                 v-if="column.display"
                                 :label="column.name" 
-                                :aria-label="(column.field != 'row_thumbnail' && column.field != 'row_creation' && column.field != 'row_author')
-                                             ? column.name + '' + (item.metadata ? item.metadata[column.slug].value_as_string : '') : ''"
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.field == 'row_thumbnail',

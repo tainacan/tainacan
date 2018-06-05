@@ -96,12 +96,6 @@ export default {
             line-height: 20px !important;
             font-size: 14px !important;
         }
-        #collection-search-button {
-            border: 1px solid $secondary !important;
-            height: 32px !important;
-            background-color: $secondary;
-            color: white;
-        }
         .input, .textarea {
             font-size: 14px;
             border: none;
