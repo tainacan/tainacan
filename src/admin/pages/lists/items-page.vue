@@ -366,7 +366,6 @@
         },
         computed: {
             openAdvancedSearch(){
-                console.log('Called here', this.$route.meta);
                 return this.$route.meta.openAdvancedSearch;
             },
             items() {
@@ -437,9 +436,7 @@
                 'getTotalItems'
             ]),
             openAdvancedSearchComponent(){
-                console.log('Called here', this.$route.meta);
                 this.$set(this.$route.meta, 'openAdvancedSearch', !this.$route.meta.openAdvancedSearch);
-                console.log('Called here', this.$route.meta);
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);

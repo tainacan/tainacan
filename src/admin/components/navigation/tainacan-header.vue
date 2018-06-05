@@ -52,9 +52,7 @@ export default {
     },
     methods: {
         openAdvancedSearchComponent(){
-            console.log('Called here', this.$route.meta);
             this.$set(this.$route.meta, 'openAdvancedSearch', !this.$route.meta.openAdvancedSearch);
-            console.log('Called here', this.$route.meta);
         }
     },
     props: {
