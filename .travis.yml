@@ -41,7 +41,7 @@ before_deploy:
 - ssh-add -l
 deploy:
 - provider: script
-  script: ssh   $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
+  script: sudo ssh   $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
   skip_cleanup: true
   on:
     branch: continuousintegration
