@@ -301,6 +301,7 @@
                                         class="control"
                                         custom>
                                     <b-checkbox
+                                            v-if="registeredViewModes[viewMode] != undefined"
                                             @input="updateViewModeslist(viewMode)"
                                             :value="checkIfViewModeEnabled(viewMode)">
                                         {{ registeredViewModes[viewMode].label }}
@@ -326,6 +327,7 @@
                                 @focus="clearErrors('default_view_mode')">
                             <option
                                     v-for="(viewMode, index) of form.enabled_view_modes"
+                                    v-if="registeredViewModes[viewMode] != undefined"
                                     :key="index"
                                     :value="viewMode">{{ registeredViewModes[viewMode].label }}
                             </option>
