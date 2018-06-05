@@ -3,14 +3,14 @@ language: php
 php:
 - 7.1
 - 5.6
-- hhvm
-- nightly
+#- hhvm
+#- nightly
 matrix: 
   allow_failures:
   - php: 7.1
   - php: 5.6
-  - php: hhvm
-  - php: nightly
+ # - php: hhvm
+  #- php: nightly
   fast_finish: true
 addons:
 - ssh_know_hosts:
@@ -80,6 +80,7 @@ cache:
   - composer
 notifications:
   slack: l3pol:wG8WvtgdhXIR6sN4NfSNoela
+    on_sucess: always
   email:
     on_success: never
     on_failure: always
