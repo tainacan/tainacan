@@ -3,61 +3,33 @@ language: php
 php:
 - 7.1
 - 5.6
-#- hhvm
-#- nightly
-matrix: 
-  allow_failures:
-  # - php: 7.1
-  #- php: 5.6
- # - php: hhvm
-  #- php: nightly
+matrix:
+  allow_failures: 
   fast_finish: true
 addons:
 - ssh_know_hosts:
-  - "$ssh_host" 
+  - "$ssh_host"
 apt:
   sources:
-   - mysql-5.7-trusty
-  packages: 
-   - sshpass
-   - mysql-server
-   - mysql-client
+  - mysql-5.7-trusty
+  packages:
+  - sshpass
+  - mysql-server
+  - mysql-client
 services:
-  - mysql
+- mysql
 before_install:
-#- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
-#  -in deploy_rsa.enc -out deploy_rsa -d
-#Instalando Mysql
 - sudo apt-get install sshpass
-#- mysql -u travis 
-#- sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('travis') where User='travis'; update user set plugin='mysql_native_password'; FLUSH PRIVILEGES;"
-#- sudo mysql_upgrade
 - sudo service mysql restart
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 install:
 - echo -e "Install"
-#- sudo mkdir /tmp/wordpress-tests-lib
 - sudo mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
-#- cat ./tests/bootstrap-config.php
-#- sed 's/~//home/travis/build/wordpress/g' ./tests/bootstrap-config.php
-- sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest true
+- sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest
+  true
 - composer install
 - sudo mkdir /tmp/wordpress/wordpress-test/wp-content/uploads
-#- cat /tmp/wordpress/wordpress-tests-lib/wp-tests-config.php 
-#- service mysql restart  
-script: phpunit #--version 
-#after_success:
-#- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
- # -in deploy_rsa.enc -out /tmp/deploy_rsa -d
-#- openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
-#  -in deploy_rsa.enc -out deploy_rsa -d
-#- echo -e "After success!"
-#- eval "$(ssh-agent -s)"
-#- chmod 600 /tmp/deploy_rsa
-#- ssh-add /tmp/deploy_rsa
-#- echo -e "Host  $ssh_host\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-#- ssh-add -l
-#- ssh    $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
+script: phpunit
 before_deploy:
 - echo "Seção executada antes do deploy!"
 - openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
@@ -67,21 +39,20 @@ before_deploy:
 - ssh-add /tmp/deploy_rsa
 - echo -e "Host  $ssh_host\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - ssh-add -l
-#- ssh    $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
 deploy:
 - provider: script
-  script: echo "Faz Deploy!"#ssh   $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh" 
+  script: echo "Faz Deploy!"#ssh   $ssh_user@$ssh_host "sh /home/l3p/atualiza_git/atualiza_novo_tainacan.sh"
   skip_cleanup: true
-  on: 
-   branch: continuousintegration
+  on:
+    branch: continuousintegration
 cache:
   directories:
   - vendor
   - composer
 notifications:
-  slack: 
+  slack:
     rooms:
-      - l3pol:wG8WvtgdhXIR6sN4NfSNoela
+      secure: WjgA4OIad0/Ai+x1TUd7KShXpaJco9E/MfI6DWJFnBUF5JLKOxymTGbR82wspmnEwzXGWn++co1wNJh20pWobaIToL/2OpBd7xo5MHglNobH4cidmSIDPOQM8ItqBneRjayhXtfShRqQDNCk1D3d5KDUacXXeCX+GLdRuwdc/YuG7Zh3y1KrF6l10cwD/5JOJECwwMbqeLOezvzGi8ITL6pqnEEeNTb0Zr+K2Ru91RBOars4TLK3f5CmX4XxA4oQSMsrHKzTO2OZLua5CRwcBwKmtSqr0Z/W+RrXu2TLxvHYJ39t9uwssI3HmGoB/uNcahBTcE0Vk/phi3nfFO8KUGNqp3xLgUsF/xlb+WiIip2xOf9jq+XNGWwIVB2vWqiQppm58h57LgDNTF21XJOtfVPEyf9Em+VSfNgACq47u4kktgqgZ47xNEBZuv1s3as8BcgdQH78hF+qguhhHJH6RgyHt+GYAq2uRLF8z3IM8hfKpb5mA9jD3UfW3pXEtKF9K+XqtNycX8KxJ2ldEJrMguaqW3sUHSLBo+r71OqldHeuwIfyIGIROTym11GWH56rIXxd51nJuVDWMvTg7bwcjN/d61LdfsaOAgqAYSUPlJjjp67GHZP/vson3uPr//NgnAJ/4gtjwReB7IX8oBLhB5s8lU6dnfnsLbY3Rt+THNA=
     on_sucess: always
     on_failure: always
     on_start: never
