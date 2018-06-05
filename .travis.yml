@@ -82,8 +82,9 @@ notifications:
   slack: 
     rooms:
       - l3pol:wG8WvtgdhXIR6sN4NfSNoela
-    on_sucess: change
-    on_failure: change
+    on_sucess: always
+    on_failure: always
+    on_start: never
   email:
     on_success: never
     on_failure: always
