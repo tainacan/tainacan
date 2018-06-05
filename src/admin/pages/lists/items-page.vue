@@ -208,7 +208,7 @@
                         v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
-                    <b-dropdown 
+                        <b-dropdown 
                                 @change="onChangeViewMode($event)"
                                 :mobile-modal="false"
                                 position="is-bottom-left"
@@ -232,7 +232,41 @@
                         </b-dropdown>
                     </b-field>
                 </div>
-
+                <div 
+                        v-if="!isOnTheme"
+                        class="search-control-item">
+                    <b-field>
+                        <b-dropdown 
+                                v-model="adminViewMode"
+                                :mobile-modal="false"
+                                position="is-bottom-left"
+                                :aria-label="$i18n.get('label_view_mode')">
+                            <button 
+                                    class="button is-white" 
+                                    slot="trigger">
+                                <span>
+                                    <b-icon 
+                                            :icon="(adminViewMode == 'table' || adminViewMode == undefined) ? 
+                                                        'table' : (adminViewMode == 'cards' ? 
+                                                        'view-list' : 'view-grid')"/>
+                                </span>
+                                <b-icon icon="menu-down" />
+                            </button> 
+                            <b-dropdown-item :value="'table'">
+                                <b-icon icon="table"/>
+                                {{ $i18n.get('label_table') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item :value="'cards'">
+                                <b-icon icon="view-list"/>
+                                {{ $i18n.get('label_cards') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item :value="'grid'">
+                                <b-icon icon="view-grid"/>
+                                {{ $i18n.get('label_grid') }}
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </b-field>
+                </div>
             </div>
 
 
@@ -272,7 +306,8 @@
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is-on-trash="status == 'trash'"/>     
+                        :is-on-trash="status == 'trash'"
+                        :view-mode="adminViewMode"/>     
                 
                 <!-- Theme View Modes -->
                 <div 
@@ -349,7 +384,8 @@
                 futureSearchQuery: '',
                 isHeaderShrinked: false,
                 localTableFields: [],
-                registeredViewModes: tainacan_plugin.registered_view_modes
+                registeredViewModes: tainacan_plugin.registered_view_modes,
+                adminViewMode: 'table'
             }
         },
         props: {
