@@ -55,6 +55,10 @@ class ImporterTests extends TAINACAN_UnitTestCase {
             $_SESSION['tainacan_importer'][$id]->run();
         }
 
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        $collections = $Tainacan_Collections->fetch([], 'OBJECT');
+        $this->assertEquals(3, $collections, 'total collection in this url does not match');
+
         $this->assertTrue(true);
     }*/
 
