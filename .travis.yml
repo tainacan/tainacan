@@ -13,6 +13,7 @@ addons:
 apt:
   sources:
   - mysql-5.7-trusty
+  - phpunit-6.5.7
   packages:
   - sshpass
   - mysql-server
