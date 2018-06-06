@@ -29,7 +29,6 @@ install:
   true
 - composer install
 - sudo mkdir /tmp/wordpress/wordpress-test/wp-content/uploads
-- sudo chmod -R 777 /home/travis/build/tainacan/tainacan/tests/
 script: phpunit
 before_deploy:
 - echo "Seção executada antes do deploy!"
