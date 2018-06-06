@@ -274,10 +274,24 @@
 
 
             <!-- ADVANCED SEARCH -->
-            <advanced-search
-                    v-if="openAdvancedSearch"
-                    :is-repository-level="isRepositoryLevel"
-                    :metadata-list="fields" />
+            <div
+                    v-if="openAdvancedSearch">
+                <div class="columns tnc-advanced-search-close">
+                    <div class="column">
+                        <button
+                                @click="openAdvancedSearch = false"
+                                class="button is-white is-pulled-right">
+                            <b-icon
+                                    size="is-small"
+                                    icon="close"/>
+                        </button>
+                    </div>
+                </div>
+                <advanced-search
+                        :is-repository-level="isRepositoryLevel"
+                        :metadata-list="fields" />
+            </div>
+
 
             <!-- --------------- -->
 
@@ -654,6 +668,16 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
+
+    .tnc-advanced-search-close {
+        padding-top: 47px;
+        padding-right: $page-side-padding;
+        padding-left: $page-side-padding;
+
+        .column {
+            padding: 0 0.3rem 0.3rem !important;
+        }
+    }
 
     .page-container {
         padding: 0px;   
