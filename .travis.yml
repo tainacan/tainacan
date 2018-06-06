@@ -45,7 +45,7 @@ deploy:
   script: ssh   $ssh_user@$ssh_host $script_deploy_tainacan
   skip_cleanup: true
   on:
-    branch: continuousintegration
+    branch: develop
 cache:
   directories:
   - vendor
