@@ -92,7 +92,7 @@
                                             :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
                                 </a>
                             </div>
-
+                            <div class="card-line"></div>
                             <!-- Remaining metadata -->  
                             <div class="media">
                                 <a
