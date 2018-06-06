@@ -10,26 +10,26 @@
                 <b-field
                         class="columns"
                         grouped>
-                    <b-field class="column is-one-fifth">
+                    <b-field class="column">
                         <b-select
-                                @input="addToAdvancedSearchQuery">
+                                @input.native="addToAdvancedSearchQuery($event)">
                             <option
-                                    v-for="(metadata, key) in metadataList"
+                                    v-for="metadata in metadataList"
                                     v-if="metadata.enabled"
                                     :value="metadata.id"
-                                    :key="key"
+                                    :key="metadata.id"
                             >{{ metadata.name }}</option>
                         </b-select>
                     </b-field>
 
                     <b-field class="column is-two-thirds">
                         <b-input
-                                @input="addToAdvancedSearchQuery"/>
+                                @input.native="addValueToAdvancedSearchQuery($event)"/>
                     </b-field>
 
-                    <b-field class="column is-one-fifth">
+                    <b-field class="column">
                         <b-select
-                                @input="addToAdvancedSearchQuery">
+                                @input.native="addToAdvancedSearchQuery($event)">
                             <option
                                     v-for="(opt, key) in compare"
                                     :value="key"
@@ -52,7 +52,7 @@
                     <a
                             @click="addSearchMetadata"
                             class="is-info is-small">
-                        Adicionar mais um campo de busca</a>
+                        {{ $i18n.get('add_more_one_search_field') }}</a>
                 </div>
 
             </div>
@@ -61,16 +61,15 @@
                     <p class="control">
                         <button
                                 @click="clearSearch"
-                                class="button is-outlined">Limpar busca</button>
+                                class="button is-outlined">{{ $i18n.get('clear_search') }}</button>
                     </p>
                     <p class="control">
                         <button
                                 @click="searchAdvanced"
-                                class="button is-secondary">Buscar</button>
+                                class="button is-secondary">{{ $i18n.get('search') }}</button>
                     </p>
                 </div>
             </div>
-            <pre>{{ metadataIds }} {{ toCompare }}</pre>
         </div>
     </div>
 </template>
@@ -80,6 +79,7 @@
         name: "AdvancedSearch",
         props: {
             metadataList: Array,
+            isRepositoryLevel: false,
         },
         data(){
             return {
@@ -95,11 +95,14 @@
             clearSearch(){
                 this.totalSearchMetadata = 1;
             },
+            addValueToAdvancedSearchQuery: _.debounce(($event) => {
+                console.log($event);
+            }, 900),
             searchAdvanced(){
 
             },
-            addToAdvancedSearchQuery(optionValue){
-                console.log(optionValue);
+            addToAdvancedSearchQuery($event){
+                console.log($event);
             },
         }
     }
@@ -113,10 +116,19 @@
         padding-top: 47px;
         padding-right: $page-side-padding;
         padding-left: $page-side-padding;
-        padding-top: 47px;
+        padding-bottom: 47px;
 
         .column {
             padding: 0 0.3rem 0.3rem !important;
+        }
+
+        .control {
+            .select{
+                width: 100% !important;
+                select{
+                    width: 100% !important;
+                }
+            }
         }
     }
 

@@ -122,9 +122,9 @@ export default {
                 loadItems(to) {
 
                     // Forces fetch_only to be filled before any search happens
-                    if (this.$store.getters['search/getFetchOnly'] == undefined)
+                    if (this.$store.getters['search/getFetchOnly'] == undefined) {
                         this.$emit( 'hasToPrepareFieldsAndFilters', to);
-                    else {
+                    } else {
                         this.$emit( 'isLoadingItems', true);
                         this.$store.dispatch('collection/fetchItems', 
                             {   'collectionId': this.collectionId, 

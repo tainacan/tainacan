@@ -35,7 +35,93 @@
         </div>
 
         <div class="table-wrapper">
-            <table class="tainacan-table">
+            
+            <!-- CARDS VIEW MODE -->
+            <div
+                    class="tainacan-cards-container"
+                    v-if="viewMode == 'cards'">
+
+                <div class="columns is-multiline is-gapless no-gutters">
+                    <div 
+                            :key="index"
+                            v-for="(item, index) of items"
+                            class="column is-12-tablet is-half-desktop is-half-widescreen is-one-third-fullhd">
+                        <div 
+                                :class="{ 'selected-card': selectedItems[index] }"
+                                class="tainacan-card">
+                            
+                            <!-- Checkbox -->
+                            <div 
+                                    :class="{ 'is-selecting': isSelectingItems }"
+                                    class="card-checkbox">
+                                <b-checkbox 
+                                        size="is-small"
+                                        v-model="selectedItems[index]"/> 
+                            </div>
+                            
+                            <!-- Title -->
+                            <p 
+                                    v-for="(column, index) in tableFields"
+                                    :key="index"
+                                    v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
+                                    class="metadata-title">
+                                <a 
+                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
+                                        @click="goToItemPage(item)"/>                             
+                            </p>  
+
+                            <!-- Actions -->
+                            <div 
+                                    v-if="item.current_user_can_edit"
+                                    class="actions-area"
+                                    :label="$i18n.get('label_actions')">
+                                <a 
+                                        id="button-edit"   
+                                        :aria-label="$i18n.getFrom('items','edit_item')" 
+                                        @click.prevent.stop="goToItemEditPage(item.id)">
+                                    <b-icon
+                                            type="is-secondary" 
+                                            icon="pencil"/>
+                                </a>
+                                <a 
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete')" 
+                                        @click.prevent.stop="deleteOneItem(item.id)">
+                                    <b-icon 
+                                            type="is-secondary" 
+                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                                </a>
+                            </div>
+
+                            <!-- Remaining metadata -->  
+                            <div class="media">
+                                <a
+                                    v-if="item.thumbnail != undefined"
+                                    @click="goToItemPage(item)">
+                                   <img :src="item['thumbnail'].thumb"> 
+                                </a>
+
+                                <div class="list-metadata media-body">
+                                    <span 
+                                            v-for="(column, index) in tableFields"
+                                            :key="index"
+                                            v-if="column.display && column.slug != 'thumbnail' && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop != 'title')">
+                                        <h3 class="metadata-label">{{ column.name }}</h3>
+                                        <p 
+                                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
+                                                class="metadata-value"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                 
+                </div>
+            </div>
+            
+            <!-- TABLE VIEW MODE -->
+            <table 
+                    v-if="viewMode == 'table'"
+                    class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
@@ -84,8 +170,6 @@
                                 v-for="(column, index) in tableFields"
                                 v-if="column.display"
                                 :label="column.name" 
-                                :aria-label="(column.field != 'row_thumbnail' && column.field != 'row_creation' && column.field != 'row_author')
-                                             ? column.name + '' + (item.metadata ? item.metadata[column.slug].value_as_string : '') : ''"
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.field == 'row_thumbnail',
@@ -182,7 +266,8 @@ export default {
         tableFields: Array,
         items: Array,
         isLoading: false,
-        isOnTrash: false
+        isOnTrash: false,
+        viewMode: 'table'
     },
     mounted() {
         this.selectedItems = [];
@@ -311,6 +396,7 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_view-mode-cards.scss";
 
     .selection-control {
         

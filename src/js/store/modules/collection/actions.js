@@ -14,11 +14,11 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             hasFiltered = true;
 
         // Garanttees at least empty fetch_only are passed in case none is found
-        if (qs.stringify(postQueries.fetch_only) == '') 
-            postQueries.fetch_only = {};
-
-        if (qs.stringify(postQueries.fetch_only['meta']) == '') 
-            postQueries.fetch_only['meta'] = [0];
+        if (qs.stringify(postQueries.fetch_only) == '')
+            dispatch('search/add_fetchonly', {} , { root: true });
+                
+        if (qs.stringify(postQueries.fetch_only['meta']) == '')
+            dispatch('search/add_fetchonly_meta', 0 , { root: true });
 
         // Differentiates between repository level and collection level queries
         let endpoint = '/collection/'+collectionId+'/items?'

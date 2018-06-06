@@ -42,6 +42,8 @@ return [
 	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
+	'add_more_one_search_field'                => __( 'Add more one search field', 'tainacan' ),
+	'clear_search'                             => __( 'Clear search', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
@@ -199,6 +201,9 @@ return [
 	'label_view_modes_available'			   => __( 'View modes available on theme', 'tainacan' ),
 	'label_warning'							   => __( 'Warning', 'tainacan' ),
 	'label_error'							   => __( 'Erro', 'tainacan' ),
+	'label_grid'							   => __( 'Grid', 'tainacan' ),
+	'label_table'							   => __( 'Table', 'tainacan' ),
+	'label_cards'							   => __( 'Cards', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -220,6 +225,7 @@ return [
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 	'instruction_search'				         => __( 'Search', 'tainacan' ),
+	'instruction_search_on_repository'           => __( 'Search on repository', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),

@@ -20,7 +20,7 @@
                 <div class="control has-icons-right is-small is-clearfix">
                     <input 
                             autocomplete="on" 
-                            :placeholder="$i18n.get('instruction_search')"
+                            :placeholder="$i18n.get('instruction_search_on_repository')"
                             class="input is-small" 
                             type="search" 
                             v-model="searchTerm">
@@ -28,7 +28,7 @@
                         <i class="mdi mdi-magnify" />
                     </span>
                 </div>
-                <a @click.prevent="openAdvancedSearchComponent">{{ $i18n.get('advanced_search') }}</a>
+                <a @click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>
             </span>
             <a 
                     class="level-item" 
@@ -51,8 +51,13 @@ export default {
         }
     },
     methods: {
-        openAdvancedSearchComponent(){
-            this.$set(this.$route.meta, 'openAdvancedSearch', !this.$route.meta.openAdvancedSearch);
+        toItemsPage(){
+          this.$router.push({
+              path: '/items',
+              query: {
+                  openAdvancedSearch: true
+              }
+          });
         }
     },
     props: {
