@@ -428,7 +428,8 @@ abstract class Repository {
 	 */
 	public static function get_entity_by_post_type( $post_type, $post = 0 ) {
 		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
-		$item_metadata_post_type = Repositories\Item_Metadata::get_instance()->entities_type::get_post_type();
+		$item_metadata = Repositories\Item_Metadata::get_instance();
+		$item_metadata_post_type = $item_metadata->entities_type;
 
 		// Is it a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
