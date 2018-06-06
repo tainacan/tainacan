@@ -23,7 +23,7 @@ class Admin {
 		add_filter( 'admin_body_class', array( &$this, 'admin_body_class' ) );
 
 		add_action( 'init', array( &$this, 'register_user_meta' ) );
-		add_action( 'after_setup_theme', array( &$this, 'load_icon_font'));
+		add_action( 'after_setup_theme', array( &$this, 'load_theme_files'));
 
 	}
 
@@ -58,14 +58,15 @@ class Admin {
 		return $style;
 	}
 
-	function load_icon_font() {
-		add_action( 'wp_enqueue_scripts', array(&$this, 'add_material_design_icon_css') );
+	function load_theme_files() {
+		add_action( 'wp_enqueue_scripts', array(&$this, 'add_theme_files') );
 	}
 
-	function add_material_design_icon_css() {
+	function add_theme_files() {
 		global $TAINACAN_BASE_URL;
 		
 		wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
+		wp_enqueue_script('underscore', includes_url('js') . '/underscore.min.js' );
 	}
 	
 	function add_admin_css() {
