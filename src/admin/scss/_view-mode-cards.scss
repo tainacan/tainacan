@@ -26,11 +26,19 @@
             opacity: 0;
             transition: visibility 0.2s, opacity 0.2s;
         }
-        &:hover .actions-area {
+        &:hover .actions-area, &:hover .card-line, &.selected-card .card-line {
             visibility: visible;
             opacity: 1.0;
         }
 
+        .card-line {
+            height: 1px;
+            background-color: $tainacan-input-background;
+            margin-left: -44px;
+            margin-right: -44px;
+            opacity: 0;
+            visibility: hidden;
+        }
         img {
             width: 130px;
             height: auto;
@@ -47,7 +55,8 @@
             overflow: hidden;
         }
         .media {
-            .media-body {
+            .list-metadata {
+                padding-top: 12px;
                 flex: 1;
                 font-size: 0.6875rem;
                 color: gray;
