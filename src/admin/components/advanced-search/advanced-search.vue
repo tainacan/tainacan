@@ -48,10 +48,10 @@
                     <b-icon
                             icon="plus-circle"
                             size="is-small"
-                            type="is-info"/>
+                            type="is-secondary"/>
                     <a
                             @click="addSearchMetadata"
-                            class="is-info is-small">
+                            class="is-secondary is-small">
                         {{ $i18n.get('add_more_one_search_field') }}</a>
                 </div>
 
