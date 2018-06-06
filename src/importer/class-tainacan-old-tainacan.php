@@ -13,8 +13,6 @@ class Old_Tainacan extends Importer
     public function __construct()
     {
         parent::__construct();
-        $this->set_repository();
-        $this->set_steps($this->steps);
         $this->remove_import_method('file');
         $this->add_import_method('url');
         $this->tainacan_api_address = "/wp-json/tainacan/v1";
@@ -28,16 +26,38 @@ class Old_Tainacan extends Importer
         'socialdb_property_fixed_content',
         'socialdb_property_fixed_thumbnail',
         'socialdb_property_fixed_attachments'
-    ],
-    $steps = [
-        'Creating all categories' => 'create_categories',
-        'Create empty collections' => 'create_collections',
-        'Creating relationships metadata' => 'create_relationships_meta',
-        'Create repository metadata' => 'treat_repo_meta',
-        'Create collections metadata' => 'treat_collection_metas',
-        'Create collections items' => 'create_collection_items',
-        "Finishing" => 'clear'
     ], $tainacan_api_address, $wordpress_api_address;
+    
+	protected $steps = [
+        [
+			'name' => 'Creating all categories',
+			'callback' => 'create_categories'
+		],
+		[
+			'name' => 'Create empty collections' ,
+			'callback' => 'create_collections'
+		],
+		[
+			'name' => 'Creating relationships metadata' ,
+			'callback' => 'create_relationships_meta'
+		],
+		[
+			'name' => 'Create repository metadata' ,
+			'callback' => 'treat_repo_meta'
+		],
+		[
+			'name' => 'Create collections metadata' ,
+			'callback' => 'treat_collection_metas'
+		],
+		[
+			'name' => 'Create collections items' ,
+			'callback' => 'create_collection_items'
+		],
+		[
+			'name' => "Finishing" ,
+			'callback' => 'clear'
+		]
+    ], 
 
 
     public function create_categories()
@@ -481,7 +501,7 @@ class Old_Tainacan extends Importer
 
     private function get_begin_end($items)
     {
-        $inside_step_pointer = $this->get_inside_step_pointer();
+        $inside_step_pointer = $this->get_in_step_count();
         $total_items = count($items);
 
         if($inside_step_pointer >= $total_items)
@@ -489,7 +509,7 @@ class Old_Tainacan extends Importer
             return [false, false];
         }
 
-        $end = $this->get_inside_step_pointer() + $this->get_items_per_step();
+        $end = $this->get_in_step_count() + $this->get_items_per_step();
         if($end > $total_items)
         {
             $end = $total_items;
