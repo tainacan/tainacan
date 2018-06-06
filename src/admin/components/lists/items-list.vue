@@ -36,6 +36,69 @@
 
         <div class="table-wrapper">
             
+            <!-- GRID VIEW MODE -->
+            <div
+                    class="tainacan-grid-container"
+                    v-if="viewMode == 'grid'">
+                <div 
+                        :key="index"
+                        v-for="(item, index) of items"
+                        :class="{ 'selected-grid-item': selectedItems[index] }"
+                        class="tainacan-grid-item">
+                    
+                    <!-- Checkbox -->
+                    <div 
+                            :class="{ 'is-selecting': isSelectingItems }"
+                            class="grid-item-checkbox">
+                        <b-checkbox 
+                                size="is-small"
+                                v-model="selectedItems[index]"/> 
+                    </div>
+
+                    <!-- Actions -->
+                    <div 
+                            v-if="item.current_user_can_edit"
+                            class="actions-area"
+                            :label="$i18n.get('label_actions')">
+                        <a 
+                                id="button-edit"   
+                                :aria-label="$i18n.getFrom('items','edit_item')" 
+                                @click.prevent.stop="goToItemEditPage(item.id)">
+                            <b-icon
+                                    type="is-secondary" 
+                                    icon="pencil"/>
+                        </a>
+                        <a 
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click.prevent.stop="deleteOneItem(item.id)">
+                            <b-icon 
+                                    type="is-secondary" 
+                                    :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                        </a>
+                    </div>
+                    
+                    <!-- Thumbnail -->
+                    <a
+                        v-if="item.thumbnail != undefined"
+                        @click="goToItemPage(item)">
+                        <img :src="item['thumbnail'].medium"> 
+                    </a>
+                
+                    <!-- Title -->
+                    <p 
+                            v-for="(column, index) in tableFields"
+                            :key="index"
+                            v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
+                            class="metadata-title">
+                        <a 
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
+                                @click="goToItemPage(item)"/>                             
+                    </p>  
+            
+                </div>
+            </div>
+
             <!-- CARDS VIEW MODE -->
             <div
                     class="tainacan-cards-container"
@@ -397,6 +460,7 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-cards.scss";
 
     .selection-control {
