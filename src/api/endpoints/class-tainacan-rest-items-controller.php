@@ -225,7 +225,8 @@ class REST_Items_Controller extends REST_Controller {
 		if ( isset($request['view_mode']) ) {
 			
 			// TODO: Check if requested view mode is really enabled for current collection
-			$view_mode = \Tainacan\Theme_Helper::get_instance()->get_view_mode($request['view_mode']);
+			$view_mode = \Tainacan\Theme_Helper::get_instance();
+			$view_mode = $view_mode->get_view_mode($request['view_mode']);
 			
 			if ($view_mode && $view_mode['type'] == 'template' && isset($view_mode['template']) && file_exists($view_mode['template'])) {
 				$return_template = true;
