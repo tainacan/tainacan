@@ -19,23 +19,32 @@
 
         .grid-item-checkbox {
             position: absolute;
-            margin-top: 6px;
+            margin-top: 9px;
             margin-left: 12px;
         }
         .actions-area {
             position: relative;
             float: right;
-            width: 80px;
+            width: 100%;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             visibility: hidden;
             opacity: 0;
-            padding: 6px;
+            padding: 8px;
             transition: visibility 0.2s, opacity 0.2s;
+            margin-top: -43px;
+            background-color: $tainacan-input-background;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
         }
         &:hover .actions-area { 
             visibility: visible;
             opacity: 1.0;
+        }
+        &.selected-grid-item {
+            .actions-area {
+                background-color: $primary-lighter;
+            }
         }
 
         img {
@@ -43,12 +52,16 @@
             max-width: 258px;
             height: auto;
             border-radius: 2px;
+            margin-bottom: -5px;
         }
 
         p.metadata-title {
             flex-shrink: 0;
             font-size: 0.875rem;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            margin-top: 6px;
+            margin-right: 6px;
+            margin-left: 24px;
             text-overflow: ellipsis;
             white-space: nowrap; 
             overflow: hidden;

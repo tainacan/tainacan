@@ -143,7 +143,7 @@
                     <b-dropdown
                             ref="displayedFieldsDropdown"
                             :mobile-modal="false"
-                            :disabled="totalItems <= 0"
+                            :disabled="totalItems <= 0 || adminViewMode == 'grid'"
                             class="show">
                         <button
                                 class="button is-white"
