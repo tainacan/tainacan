@@ -21,31 +21,23 @@
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <b-field :style="{'margin-bottom': '0.25rem !important'}">
-                <div class="control is-small is-clearfix">
+            <div class="search-area">
+                <div class="control has-icons-right  is-small is-clearfix">
                     <input
-                        class="input is-small"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        autocomplete="on"
-                        :value="searchQuery"
-                        @input="futureSearchQuery = $event.target.value"
-                        @keyup.enter="updateSearch()">
+                            class="input is-small"
+                            :placeholder="$i18n.get('instruction_search')"
+                            type="search"
+                            autocomplete="on"
+                            :value="searchQuery"
+                            @input="futureSearchQuery = $event.target.value"
+                            @keyup.enter="updateSearch()">
+                        <span
+                                @click="updateSearch()"
+                                class="icon is-right">
+                            <i class="mdi mdi-magnify" />
+                        </span>
                 </div>
-
-                <p class="control">
-                    <button                             
-                            id="collection-search-button"
-                            type="submit"
-                            class="button"
-                            @click="updateSearch()">
-                        <b-icon 
-                                icon="magnify" 
-                                size="is-small"/>
-                    </button>
-                </p>
-            </b-field>
-            <!-- Advanced search button -->
+            </div>
             <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
                     class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
@@ -219,7 +211,7 @@
                         v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
-                    <b-dropdown 
+                        <b-dropdown
                                 @change="onChangeViewMode($event)"
                                 :mobile-modal="false"
                                 position="is-bottom-left"
@@ -243,7 +235,41 @@
                         </b-dropdown>
                     </b-field>
                 </div>
-
+                <div
+                        v-if="!isOnTheme"
+                        class="search-control-item">
+                    <b-field>
+                        <b-dropdown
+                                v-model="adminViewMode"
+                                :mobile-modal="false"
+                                position="is-bottom-left"
+                                :aria-label="$i18n.get('label_view_mode')">
+                            <button
+                                    class="button is-white"
+                                    slot="trigger">
+                                <span>
+                                    <b-icon
+                                            :icon="(adminViewMode == 'table' || adminViewMode == undefined) ?
+                                                        'table' : (adminViewMode == 'cards' ?
+                                                        'view-list' : 'view-grid')"/>
+                                </span>
+                                <b-icon icon="menu-down" />
+                            </button>
+                            <b-dropdown-item :value="'table'">
+                                <b-icon icon="table"/>
+                                {{ $i18n.get('label_table') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item :value="'cards'">
+                                <b-icon icon="view-list"/>
+                                {{ $i18n.get('label_cards') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item :value="'grid'">
+                                <b-icon icon="view-grid"/>
+                                {{ $i18n.get('label_grid') }}
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </b-field>
+                </div>
             </div>
 
 
@@ -284,7 +310,8 @@
                         :table-fields="tableFields"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is-on-trash="status == 'trash'"/>     
+                        :is-on-trash="status == 'trash'"
+                        :view-mode="adminViewMode"/>
                 
                 <!-- Theme View Modes -->
                 <div 
@@ -362,6 +389,7 @@
                 isHeaderShrinked: false,
                 localTableFields: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
+                adminViewMode: 'table',
                 openAdvancedSearch: false,
             }
         },
@@ -465,11 +493,15 @@
                         }
                     }
                 }
+                let thumbnailField = this.localTableFields.find(field => field.slug == 'thumbnail');
+                let creationDateField = this.localTableFields.find(field => field.slug == 'creation_date');
+                let authorNameField = this.localTableFields.find(field => field.slug == 'author_name');
+
                 this.$eventBusSearch.addFetchOnly({
-                    '0': 'thumbnail',
+                    '0': thumbnailField.display ? 'thumbnail' : null,
                     'meta': fetchOnlyFieldIds,
-                    '1': 'creation_date',
-                    '2': 'author_name'
+                    '1': creationDateField.display ? 'creation_date' : null,
+                    '2': authorNameField.display ? 'author_name': null
                 });
                 this.$refs.displayedFieldsDropdown.toggle();
             },
@@ -487,8 +519,8 @@
                     .catch(() => this.isLoadingFilters = false);
 
                 this.isLoadingFields = true;
-                this.tableFields = [];
-
+                // Processing is done inside a local variable
+                let fields = [];
                 this.fetchFields({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
@@ -496,7 +528,7 @@
                 })
                     .then(() => {
 
-                        this.tableFields.push({
+                        fields.push({
                             name: this.$i18n.get('label_thumbnail'),
                             field: 'row_thumbnail',
                             field_type: undefined,
@@ -517,7 +549,7 @@
                                 else if (field.display == 'yes')
                                     display = true;
 
-                                this.tableFields.push(
+                                fields.push(
                                     {
                                         name: field.name,
                                         field: field.description,
@@ -533,7 +565,7 @@
                             }
                         }
 
-                        this.tableFields.push({
+                        fields.push({
                             name: this.$i18n.get('label_creation_date'),
                             field: 'row_creation',
                             field_type: undefined,
@@ -541,7 +573,7 @@
                             id: undefined,
                             display: true
                         });
-                        this.tableFields.push({
+                        fields.push({
                             name: this.$i18n.get('label_created_by'),
                             field: 'row_author',
                             field_type: undefined,
@@ -565,7 +597,7 @@
                             '2': 'author_name'
                         });
                         this.isLoadingFields = false;
-
+                        this.tableFields = fields;
                     })
                     .catch(() => {
                         this.isLoadingFields = false;
@@ -592,7 +624,7 @@
                 /* This condition is to prevent a incorrect fetch by filter or fields when we come from items
                  * at collection level to items page at repository level
                  */
-                if(this.collectionId === to.params.collectionId) {
+                if (this.collectionId === to.params.collectionId) {
                     this.prepareFieldsAndFilters();
                 }
             });
@@ -648,12 +680,26 @@
             margin-top: 48px;
         }
 
-        #collection-search-button {
-            border-radius: 0 !important;
-            padding: 0 8px !important;
-            border-color: $tainacan-input-background;
-            &:focus, &:active {
-                border-color: none !important;
+        .search-area {
+            display: flex;
+            align-items: center;
+            margin-right: 36px;
+
+            .control {
+                input {
+                    height: 27px;
+                    font-size: 11px;
+                    color: $gray-light;
+                    width: 148px;
+                }
+                .icon {
+                    pointer-events: all;
+                    cursor: pointer;
+                    color: $tertiary;
+                    height: 27px;
+                    font-size: 18px;
+                }
+                margin-bottom: 5px;
             }
         }
 

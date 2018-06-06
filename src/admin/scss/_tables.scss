@@ -172,14 +172,13 @@
                         width: 80px;
     
                         .actions-container {
-                            visibility: hidden;
                             display: flex;
                             position: relative;
                             padding: 0;
                             height: 100%;
                             width: 80px;
                             z-index: 9;
-                            background-color: transparent; 
+                            background-color: white; 
                             float: right;
                         }
     
@@ -206,7 +205,6 @@
                         }
                         .actions-cell {
                             .actions-container {
-                                visibility: visible;
                                 background: $tainacan-input-background !important;
                             }
     
