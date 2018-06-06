@@ -4,7 +4,8 @@
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
-        <button 
+        <button
+                v-if="!openAdvancedSearch"
                 id="filter-menu-compress-button"
                 :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
                 :style="{ top: isHeaderShrinked ? '125px' : '152px'}"
@@ -12,15 +13,15 @@
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
         <!-- Side bar with search and filters -->
-        <aside 
-                v-show="!isFiltersMenuCompressed"
+        <aside
+                v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
                 class="filters-menu"
                 :class="{ 'tainacan-form': isOnTheme }">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <b-field> 
+            <b-field :style="{'margin-bottom': '0.25rem !important'}">
                 <div class="control is-small is-clearfix">
                     <input
                         class="input is-small"
@@ -44,8 +45,9 @@
                     </button>
                 </p>
             </b-field>
+            <!-- Advanced search button -->
             <a
-                    @click.prevent="openAdvancedSearchComponent"
+                    @click="openAdvancedSearch = !openAdvancedSearch"
                     class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
@@ -105,7 +107,9 @@
                     :active.sync="isLoadingItems"/>
 
             <!-- SEARCH CONTROL ------------------------- -->
-            <div class="search-control">
+            <div
+                    v-if="!openAdvancedSearch"
+                    class="search-control">
                 <b-loading
                         :is-full-page="false"
                         :active.sync="isLoadingFields"/>
@@ -246,13 +250,14 @@
             <!-- ADVANCED SEARCH -->
             <advanced-search
                     v-if="openAdvancedSearch"
+                    :is-repository-level="isRepositoryLevel"
                     :metadata-list="fields" />
 
             <!-- --------------- -->
 
             <!-- STATUS TABS, only on Admin -------- -->
             <div 
-                    v-if="!isOnTheme"
+                    v-if="!isOnTheme && !openAdvancedSearch"
                     class="tabs">
                 <ul>
                     <li 
@@ -356,7 +361,8 @@
                 futureSearchQuery: '',
                 isHeaderShrinked: false,
                 localTableFields: [],
-                registeredViewModes: tainacan_plugin.registered_view_modes
+                registeredViewModes: tainacan_plugin.registered_view_modes,
+                openAdvancedSearch: false,
             }
         },
         props: {
@@ -365,10 +371,6 @@
             enabledViewModes: Object // Used only on theme
         },
         computed: {
-            openAdvancedSearch(){
-                console.log('Called here', this.$route.meta);
-                return this.$route.meta.openAdvancedSearch;
-            },
             items() {
                 return this.getItems();
             },
@@ -436,11 +438,6 @@
                 'getViewMode',
                 'getTotalItems'
             ]),
-            openAdvancedSearchComponent(){
-                console.log('Called here', this.$route.meta);
-                this.$set(this.$route.meta, 'openAdvancedSearch', !this.$route.meta.openAdvancedSearch);
-                console.log('Called here', this.$route.meta);
-            },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
@@ -602,6 +599,9 @@
 
             this.$eventBusSearch.setViewMode(this.defaultViewMode);
 
+            if(this.$route.query.openAdvancedSearch) {
+                this.openAdvancedSearch = this.$route.query.openAdvancedSearch;
+            }
         },
         mounted() {
             

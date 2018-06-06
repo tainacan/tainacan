@@ -42,6 +42,8 @@ return [
 	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
+	'add_more_one_search_field'                => __( 'Add more one search field', 'tainacan' ),
+	'clear_search'                             => __( 'Clear search', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
@@ -220,6 +222,7 @@ return [
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 	'instruction_search'				         => __( 'Search', 'tainacan' ),
+	'instruction_search_on_repository'           => __( 'Search on repository', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
