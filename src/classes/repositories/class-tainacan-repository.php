@@ -506,7 +506,9 @@ abstract class Repository {
 				$Tainacan_Logs
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
-				$entity_post_type = $tnc_repository->entities_type::get_post_type();
+				$tnc_entity = new $tnc_repository->entities_type();
+				$entity_post_type = $tnc_entity::get_post_type();
+
 				if ( $entity_post_type == $post_type ) {
 					return $tnc_repository;
 				}
