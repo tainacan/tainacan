@@ -55,6 +55,24 @@
                                 v-model="selectedItems[index]"/> 
                     </div>
 
+                    <!-- Title -->
+                    <p 
+                            v-for="(column, index) in tableFields"
+                            :key="index"
+                            v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
+                            class="metadata-title">
+                        <a 
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
+                                @click="goToItemPage(item)"/>                             
+                    </p>  
+                    
+                    <!-- Thumbnail -->
+                    <a
+                        v-if="item.thumbnail != undefined"
+                        @click="goToItemPage(item)">
+                        <img :src="item['thumbnail'].medium"> 
+                    </a>
+
                     <!-- Actions -->
                     <div 
                             v-if="item.current_user_can_edit"
@@ -77,24 +95,6 @@
                                     :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
                         </a>
                     </div>
-                    
-                    <!-- Thumbnail -->
-                    <a
-                        v-if="item.thumbnail != undefined"
-                        @click="goToItemPage(item)">
-                        <img :src="item['thumbnail'].medium"> 
-                    </a>
-                
-                    <!-- Title -->
-                    <p 
-                            v-for="(column, index) in tableFields"
-                            :key="index"
-                            v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
-                            class="metadata-title">
-                        <a 
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
-                                @click="goToItemPage(item)"/>                             
-                    </p>  
             
                 </div>
             </div>

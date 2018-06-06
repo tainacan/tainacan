@@ -27,7 +27,7 @@
                         :options="{
                             group: { name:'filters', pull: false, put: true }, 
                             sort: openedFilterId == '' || openedFilterId == undefined, 
-                            disabled: openedFilterId != '' && openedFilterId != undefined,
+                            //disabled: openedFilterId != '' && openedFilterId != undefined,
                             handle: '.handle', 
                             ghostClass: 'sortable-ghost',
                             filter: 'not-sortable-item', 

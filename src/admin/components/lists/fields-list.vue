@@ -29,9 +29,10 @@
                                 :options="{ 
                                         group: { name:'fields', pull: false, put: true }, 
                                         sort: openedFieldId == '' || openedFieldId == undefined, 
-                                        disabled: openedFieldId != '' && openedFieldId != undefined,
+                                        //disabled: openedFieldId != '' && openedFieldId != undefined,
                                         handle: '.handle', 
                                         ghostClass: 'sortable-ghost',
+                                        chosenClass: 'sortable-chosen',
                                         filter: 'not-sortable-item', 
                                         animation: '250'}">
                             <div  
