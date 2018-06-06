@@ -1,0 +1,62 @@
+.tainacan-grid-container {
+    min-height: 200px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: center;
+
+    .selected-grid-item {
+        background-color: $primary-lighter;
+    }
+
+    .tainacan-grid-item {
+        max-width: 258px;
+        flex-basis: 0;
+        margin: 16px 24px 24px 24px;
+        text-align: center;
+
+        .grid-item-checkbox {
+            position: absolute;
+            margin-top: 6px;
+            margin-left: 12px;
+        }
+        .actions-area {
+            position: relative;
+            float: right;
+            width: 80px;
+            display: flex;
+            justify-content: space-between;
+            visibility: hidden;
+            opacity: 0;
+            padding: 6px;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+        &:hover .actions-area { 
+            visibility: visible;
+            opacity: 1.0;
+        }
+
+        img {
+            min-width: 258px;
+            max-width: 258px;
+            height: auto;
+            border-radius: 2px;
+        }
+
+        p.metadata-title {
+            flex-shrink: 0;
+            font-size: 0.875rem;
+            margin-bottom: 5px;
+            text-overflow: ellipsis;
+            white-space: nowrap; 
+            overflow: hidden;
+            text-align: left;
+            padding: 6px 12px;
+        } 
+    
+    }
+}
+
+
