@@ -429,7 +429,8 @@ abstract class Repository {
 	public static function get_entity_by_post_type( $post_type, $post = 0 ) {
 		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
 		$item_metadata = Repositories\Item_Metadata::get_instance();
-		$item_metadata_post_type = $item_metadata->entities_type;
+		$item_metadata_entity = new $item_metadata->entities_type(null, null);
+		$item_metadata_post_type = $item_metadata_entity::get_post_type();
 
 		// Is it a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
@@ -458,7 +459,9 @@ abstract class Repository {
 				$Tainacan_Logs
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
-				$entity_post_type = $tnc_repository->entities_type::get_post_type();
+				$tnc_entity = new $tnc_repository->entities_type();
+				$entity_post_type = $tnc_entity::get_post_type();
+
 				if ( $entity_post_type == $post_type ) {
 					return new $tnc_repository->entities_type( $post );
 				}
