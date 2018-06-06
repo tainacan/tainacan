@@ -520,8 +520,8 @@
                     .catch(() => this.isLoadingFilters = false);
 
                 this.isLoadingFields = true;
-                this.tableFields = [];
-
+                // Processing is done inside a local variable 
+                let fields = [];
                 this.fetchFields({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
@@ -529,7 +529,7 @@
                 })
                     .then(() => {
 
-                        this.tableFields.push({
+                        fields.push({
                             name: this.$i18n.get('label_thumbnail'),
                             field: 'row_thumbnail',
                             field_type: undefined,
@@ -550,7 +550,7 @@
                                 else if (field.display == 'yes')
                                     display = true;
 
-                                this.tableFields.push(
+                                fields.push(
                                     {
                                         name: field.name,
                                         field: field.description,
@@ -566,7 +566,7 @@
                             }
                         }
 
-                        this.tableFields.push({
+                        fields.push({
                             name: this.$i18n.get('label_creation_date'),
                             field: 'row_creation',
                             field_type: undefined,
@@ -574,7 +574,7 @@
                             id: undefined,
                             display: true
                         });
-                        this.tableFields.push({
+                        fields.push({
                             name: this.$i18n.get('label_created_by'),
                             field: 'row_author',
                             field_type: undefined,
@@ -598,7 +598,7 @@
                             '2': 'author_name'
                         });
                         this.isLoadingFields = false;
-
+                        this.tableFields = fields;
                     })
                     .catch(() => {
                         this.isLoadingFields = false;
@@ -625,7 +625,8 @@
                 /* This condition is to prevent a incorrect fetch by filter or fields when we come from items
                  * at collection level to items page at repository level
                  */
-                if(this.collectionId === to.params.collectionId) {
+                if (this.collectionId === to.params.collectionId) {
+                    console.log("tôaquió");
                     this.prepareFieldsAndFilters();
                 }
             });
@@ -688,7 +689,7 @@
                     height: 27px;
                     font-size: 11px;
                     color: $gray-light;
-                    width: 160px;
+                    width: 148px;
                 }
                 .icon {
                     pointer-events: all;
