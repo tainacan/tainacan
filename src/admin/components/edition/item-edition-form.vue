@@ -21,7 +21,7 @@
                                 :title="$i18n.getHelperTitle('items', 'status')"
                                 :message="$i18n.getHelperMessage('items', 'status')"/>
                     </div>
-                    <div class="section-box section-status">
+                    <div class="section-status">
                         <div class="field">
                             <!-- <div class="block">
                                 <b-radio 
@@ -798,7 +798,7 @@ export default {
         }
     }
     .section-status{
-        width: 174px;        
+        padding: 16px 0;     
     }
     .section-thumbnail {
         width: 174px;

@@ -373,6 +373,10 @@ export default {
             }
         }
     }
+
+    img.table-thumb {
+        border-radius: 50px !important;
+    }
     
 </style>
 

@@ -69,7 +69,7 @@
                 let promise = null;
                 this.isLoading = true;
 
-                axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                axios.get('/collection/'+ this.collection +'/fields/' + this.field)
                     .then( res => {
                         let field = res.data;
                         promise = this.getValuesCategory( field.field_type_options.taxonomy_id );

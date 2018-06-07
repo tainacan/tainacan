@@ -121,6 +121,7 @@ export default {
 
                 .control {
                     input {
+                        border-width: 0 !important;
                         height: 27px;
                         font-size: 11px;
                         color: $gray-light;
