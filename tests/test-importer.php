@@ -28,7 +28,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $id = $old_tainacan_importer->get_id();
         $_SESSION['tainacan_importer'][$id]->set_collection( $collection );
         this->assertEquals( $collection->get_id(),  $_SESSION['tainacan_importer'][$id]->collection->get_id() );
-    }
+    }*/
 
     public function test_automapping_old_tainacan()
     {
@@ -38,29 +38,31 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $old_tainacan = new Importer\Old_Tainacan();
         $id = $old_tainacan->get_id();
 
-        $_SESSION['tainacan_importer'][$id]->set_items_per_step(50);
-
         //if(!copy('./tests/attachment/json_old_tainacan_base.txt', './tests/attachment/json_old_tainacan.txt'))
         //{
             //return false;
         //}
 
         //$_SESSION['tainacan_importer'][$id]->set_file( './tests/attachment/json_old_tainacan.txt' );
-        $url = 'http://localhost/wordpress_tainacan/';
-        $_SESSION['tainacan_importer'][$id]->set_url($url);
-        $_SESSION['tainacan_importer'][$id]->set_repository();
+        $url_repository = 'http://localhost/wordpress_tainacan/';
+        $url_repository = '';
+        if( $url_repository !== '' ){
+            $_SESSION['tainacan_importer'][$id]->set_url($url);
+            $_SESSION['tainacan_importer'][$id]->set_repository();
 
-        while (!$_SESSION['tainacan_importer'][$id]->is_finished())
-        {
-            $_SESSION['tainacan_importer'][$id]->run();
+            while (!$_SESSION['tainacan_importer'][$id]->is_finished())
+            {
+                $_SESSION['tainacan_importer'][$id]->run();
+            }
+
+            $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+            $collections = $Tainacan_Collections->fetch([], 'OBJECT');
+            $this->assertEquals(3, $collections, 'total collection in this url does not match');
+
+            $this->assertTrue(true);    
         }
-
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-        $collections = $Tainacan_Collections->fetch([], 'OBJECT');
-        $this->assertEquals(3, $collections, 'total collection in this url does not match');
-
-        $this->assertTrue(true);
-    }*/
+        
+    }
 
     /*public function test_file_old_tainacan () {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
