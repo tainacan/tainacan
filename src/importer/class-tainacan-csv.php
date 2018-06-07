@@ -31,7 +31,7 @@ class CSV extends Importer {
     /**
      * @inheritdoc
      */
-    public function process_item( $index, $collection_index ){
+    public function process_item( $index, $collection_definition ){
         $processedItem = [];
         $headers = $this->get_source_fields();
         

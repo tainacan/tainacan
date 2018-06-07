@@ -16,13 +16,15 @@ const TAINACAN_API_DIR     = __DIR__ . '/api/';
 const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 require_once(TAINACAN_CLASSES_DIR . 'tainacan-creator.php');
 require_once(TAINACAN_API_DIR     . 'tainacan-rest-creator.php');
+require_once('setup-db.php');
 
 // DEV Interface, used for debugging
-require_once('dev-interface/class-tainacan-dev-interface.php');
 function tnc_enable_dev_wp_interface() {
     return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }
 if ( tnc_enable_dev_wp_interface() ) {
+	require_once('dev-interface/class-tainacan-dev-interface.php');
+	require_once('dev-interface/class-tainacan-helpers-html.php');
 	$Tainacan_Dev_interface = \Tainacan\DevInterface\DevInterface::get_instance();
 }
 
@@ -34,3 +36,4 @@ add_action( 'plugins_loaded', 'tainacan_load_plugin_textdomain' );
 
 $Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 register_activation_hook( __FILE__, array( $Tainacan_Capabilities, 'init' ) );
+register_activation_hook( __FILE__, 'tainacan_create_bd_process_db' );
