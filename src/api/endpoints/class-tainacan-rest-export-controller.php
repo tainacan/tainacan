@@ -80,21 +80,7 @@ class REST_Export_Controller extends REST_Controller {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
-	public function get_item( $request ) {
-		/*$collection_id = $request['collection_id'];
-		$field_id = $request['field_id'];
-
-		if($request['fetch'] === 'all_field_values'){
-			$results = $this->field_repository->fetch_all_field_values($collection_id, $field_id);
-
-			return new \WP_REST_Response($results, 200);
-		}
-
-		$result = $this->field_repository->fetch($field_id, 'OBJECT');
-
-		$prepared_item = $this->prepare_item_for_response($result, $request);
-		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $prepared_item, $request), 200);*/
-	}
+	public function get_item( $request ) { }
 
 	/**
 	 * @param \WP_REST_Request $request
@@ -212,7 +198,6 @@ class REST_Export_Controller extends REST_Controller {
 							$prepared_item = $this->prepare_item_for_response($item, $request);
 							
 							array_push($response, $prepared_item);
-							file_put_contents('/tmp/2', print_r($prepared_item, true), FILE_APPEND);
 						}
 						wp_reset_postdata();
 					}
@@ -229,8 +214,7 @@ class REST_Export_Controller extends REST_Controller {
 				}
 				
 				$rest_response = new \WP_REST_Response(apply_filters('tainacan-rest-response', $response, $request));
-				//file_put_contents($filename, $rest_response->get_data());
-				file_put_contents('/tmp/1', print_r($rest_response->get_data(), true));
+				file_put_contents($filename, $rest_response->get_data());
 				
 				if($background) {
 					$log->set_status('publish');
