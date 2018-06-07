@@ -132,7 +132,8 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex'
+    import { mapActions } from 'vuex';
+    import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
         name: 'CategoriesList',
@@ -179,73 +180,77 @@
                     this.selectedCategories.splice(i, 1, !this.allCategoriesOnPageSelected);
             },
             deleteOneCategory(categoryId) {
-                this.$dialog.confirm({
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_category_delete'),
-                    onConfirm: () => {
-                        this.deleteCategory(categoryId)
-                            .then(() => {
-                                // this.$toast.open({
-                                //     duration: 3000,
-                                //     message: this.$i18n.get('info_category_deleted'),
-                                //     position: 'is-bottom',
-                                //     type: 'is-secondary',
-                                //     queue: true
-                                // });
-                                for (let i = 0; i < this.selectedCategories.length; i++) {
-                                    if (this.selectedCategories[i].id === this.categoryId)
-                                        this.selectedCategories.splice(i, 1);
-                                }
-                            })
-                            .catch(() => {
-                                // this.$toast.open({
-                                //     duration: 3000,
-                                //     message: this.$i18n.get('info_error_deleting_category'),
-                                //     position: 'is-bottom',
-                                //     type: 'is-danger',
-                                //     queue: true
-                                // });
-                            });
-                    },
-                    icon: 'alert-circle',
-                    hasIcon: true,
-                    type: 'is-success'
-                });
-            },
-            deleteSelectedCategories() {
-                this.$dialog.confirm({
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_selected_categories_delete'),
-                    onConfirm: () => {
-
-                        for (let i = 0; i < this.categories.length;  i++) {
-                            if (this.selectedCategories[i]) {
-                                this.deleteCategory(this.categories[i].id)
-                                    .then(() => {
-                                        // this.loadCategories();
-                                        // this.$toast.open({
-                                        //     duration: 3000,
-                                        //     message: this.$i18n.get('info_category_deleted'),
-                                        //     position: 'is-bottom',
-                                        //     type: 'is-secondary',
-                                        //     queue: false
-                                        // })
-                                    }).catch(() => {
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_category_delete'),
+                        onConfirm: () => {
+                            this.deleteCategory(categoryId)
+                                .then(() => {
+                                    // this.$toast.open({
+                                    //     duration: 3000,
+                                    //     message: this.$i18n.get('info_category_deleted'),
+                                    //     position: 'is-bottom',
+                                    //     type: 'is-secondary',
+                                    //     queue: true
+                                    // });
+                                    for (let i = 0; i < this.selectedCategories.length; i++) {
+                                        if (this.selectedCategories[i].id === this.categoryId)
+                                            this.selectedCategories.splice(i, 1);
+                                    }
+                                })
+                                .catch(() => {
                                     // this.$toast.open({
                                     //     duration: 3000,
                                     //     message: this.$i18n.get('info_error_deleting_category'),
                                     //     position: 'is-bottom',
                                     //     type: 'is-danger',
-                                    //     queue: false
+                                    //     queue: true
                                     // });
                                 });
-                            }
                         }
-                        this.allCategoriesOnPageSelected = false;
-                    },
-                    icon: 'alert-circle',
-                    hasIcon: true,
-                    type: 'is-success'
+                    }
+                });
+            },
+            deleteSelectedCategories() {
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_selected_categories_delete'),
+                        onConfirm: () => {
+
+                            for (let i = 0; i < this.categories.length;  i++) {
+                                if (this.selectedCategories[i]) {
+                                    this.deleteCategory(this.categories[i].id)
+                                        .then(() => {
+                                            // this.loadCategories();
+                                            // this.$toast.open({
+                                            //     duration: 3000,
+                                            //     message: this.$i18n.get('info_category_deleted'),
+                                            //     position: 'is-bottom',
+                                            //     type: 'is-secondary',
+                                            //     queue: false
+                                            // })
+                                        }).catch(() => {
+                                        // this.$toast.open({
+                                        //     duration: 3000,
+                                        //     message: this.$i18n.get('info_error_deleting_category'),
+                                        //     position: 'is-bottom',
+                                        //     type: 'is-danger',
+                                        //     queue: false
+                                        // });
+                                    });
+                                }
+                            }
+                            this.allCategoriesOnPageSelected = false;
+                        }
+                    }
                 });
             },
             goToCategoryPage(categoryId) {

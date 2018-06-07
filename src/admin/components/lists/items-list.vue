@@ -315,6 +315,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemsList',
@@ -362,77 +363,81 @@ export default {
                 this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
         },
         deleteOneItem(itemId) {
-            this.$dialog.confirm({
-                title: this.$i18n.get('label_warning'),
-                message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
-                onConfirm: () => {
-                    this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
-                    .then(() => {
-                    //     this.$toast.open({
-                    //         duration: 3000,
-                    //         message: this.$i18n.get('info_item_deleted'),
-                    //         position: 'is-bottom',
-                    //         type: 'is-secondary',
-                    //         queue: true
-                    //     });
-                        for (let i = 0; i < this.selectedItems.length; i++) {
-                            if (this.selectedItems[i].id == itemId)
-                                this.selectedItems.splice(i, 1);
-                        }
-                    }).catch(() => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
+                    onConfirm: () => {
+                        this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
+            //         .then(() => {
+            //         //     this.$toast.open({
+            //         //         duration: 3000,
+            //         //         message: this.$i18n.get('info_item_deleted'),
+            //         //         position: 'is-bottom',
+            //         //         type: 'is-secondary',
+            //         //         queue: true
+            //         //     });
+            //             for (let i = 0; i < this.selectedItems.length; i++) {
+            //                 if (this.selectedItems[i].id == itemId)
+            //                     this.selectedItems.splice(i, 1);
+            //             }
+            //         }).catch(() => {
 
-                    //     this.$toast.open({ 
-                    //         duration: 3000,
-                    //         message: this.$i18n.get('info_error_deleting_item'),
-                    //         position: 'is-bottom',
-                    //         type: 'is-danger',
-                    //         queue: true
-                    //     })
-                    });
-                },
-                icon: 'alert-circle',
-                hasIcon: true,
-                type: 'is-success'
+            //         //     this.$toast.open({ 
+            //         //         duration: 3000,
+            //         //         message: this.$i18n.get('info_error_deleting_item'),
+            //         //         position: 'is-bottom',
+            //         //         type: 'is-danger',
+            //         //         queue: true
+            //         //     })
+            //         });
+                    }
+                }
             });
         },
         deleteSelectedItems() {
-            this.$dialog.confirm({
-                title: this.$i18n.get('label_warning'),
-                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
-                onConfirm: () => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
+                    onConfirm: () => {
 
-                    for (let i = 0; i < this.selectedItems.length; i++) {
-                        if (this.selectedItems[i]) {
-                            this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
-                            .then(() => {
-                            //     this.$toast.open({
-                            //         duration: 3000,
-                            //         message: this.$i18n.get('info_item_deleted'),
-                            //         position: 'is-bottom',
-                            //         type: 'is-secondary',
-                            //         queue: false
-                            //     });
-                                for (let i = 0; i < this.selectedItems.length; i++) {
-                                    if (this.selectedItems[i].id == this.itemId)
-                                        this.selectedItems.splice(i, 1);
-                                }
-                                                        
-                            }).catch(() => { 
-                            //     this.$toast.open({
-                            //         duration: 3000,
-                            //         message: this.$i18n.get('info_error_deleting_item'),
-                            //         position: 'is-bottom',
-                            //         type: 'is-danger',
-                            //         queue: false
-                            //     });
-                            });
+                        for (let i = 0; i < this.selectedItems.length; i++) {
+                            if (this.selectedItems[i]) {
+                                this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
+                                .then(() => {
+                                //     this.$toast.open({
+                                //         duration: 3000,
+                                //         message: this.$i18n.get('info_item_deleted'),
+                                //         position: 'is-bottom',
+                                //         type: 'is-secondary',
+                                //         queue: false
+                                //     });
+                                    for (let i = 0; i < this.selectedItems.length; i++) {
+                                        if (this.selectedItems[i].id == this.itemId)
+                                            this.selectedItems.splice(i, 1);
+                                    }
+                                                            
+                                }).catch(() => { 
+                                //     this.$toast.open({
+                                //         duration: 3000,
+                                //         message: this.$i18n.get('info_error_deleting_item'),
+                                //         position: 'is-bottom',
+                                //         type: 'is-danger',
+                                //         queue: false
+                                //     });
+                                });
+                            }
                         }
+                        this.allItemsOnPageSelected = false;
                     }
-                    this.allItemsOnPageSelected = false;
-                },
-                icon: 'alert-circle',
-                hasIcon: true,
-                type: 'is-success'
+                }
             });
         },
         goToItemPage(item) {

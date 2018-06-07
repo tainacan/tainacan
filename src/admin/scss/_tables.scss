@@ -185,6 +185,10 @@
                         a {
                             margin: auto;
                             font-size: 18px !important;
+
+                            .mdi-settings, .mdi-settings::before {
+                                font-size: 23px;
+                            }
                         }
     
                     }
