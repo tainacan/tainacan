@@ -336,6 +336,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { eventBus } from '../../../js/event-bus-web-components.js'
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemEditionForm',
@@ -675,17 +676,17 @@ export default {
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
-            this.$dialog.confirm({
-                title: this.$i18n.get('label_warning'),
-                message: this.$i18n.get('info_warning_item_not_saved'),
-                onConfirm: () => {
-                    next();
-                },
-                icon: 'alert-circle',
-                hasIcon: true,
-                cancelText: this.$i18n.get('cancel'),
-                confirmText: this.$i18n.get('continue'),
-                type: 'is-success'
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_item_not_saved'),
+                    onConfirm: () => {
+                        next();
+                    },
+                }
             });  
         } else {
             next()

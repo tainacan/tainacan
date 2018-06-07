@@ -43,32 +43,42 @@
         background-color: $modal-backgound-color;
         color: $secondary;
         border-radius: 10px;
+        flex-wrap: wrap;
+        flex-direction: row;
+        padding: 35px;
+        margin: 0 auto !important;
 
         .modal-card-head, .modal-card-body, .modal-card-foot {
             background-color: $modal-backgound-color;
             color: $secondary;
             border: none;
+            padding-bottom: 12px;
         } 
+        .modal-custom-icon {
+            background-color: white;
+            border-radius: 50px;
+            height: 80px;
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .modal-card-head {
-            p { color: $secondary; }
+            h1 { 
+                color: $secondary; 
+            }
             font-weight: normal;
-            padding: 30px 35px 0px 35px;
+            padding: 0;
+            margin-bottom: 12px;
         }
         .modal-card-body {
-            padding: 16px 35px;
-
-            i {
-                color: white !important;
-                &::before {
-                    background-color: $danger;
-                    border-radius: 55px;
-                    display: initial;
-                }
-            }
+            padding: 0px 0px 0px 16px;
+            width: 50%;
         }
         .modal-card-foot {
             justify-content: space-between;
-            padding: 0px 35px 30px 35px;
+            padding: 24px 0px 0px 0px;
+            width: 100%;
 
             .button {
                 border-radius: 6px !important;

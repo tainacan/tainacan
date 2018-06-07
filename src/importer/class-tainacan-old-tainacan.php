@@ -8,8 +8,12 @@
 
 namespace Tainacan\Importer;
 
-class Old_Tainacan extends Importer
-{
+class Old_Tainacan extends Importer{
+
+    protected $manual_mapping = true;
+	
+	protected $manual_collection = true;
+
     public function __construct()
     {
         parent::__construct();
@@ -26,39 +30,27 @@ class Old_Tainacan extends Importer
         'socialdb_property_fixed_content',
         'socialdb_property_fixed_thumbnail',
         'socialdb_property_fixed_attachments'
+    ],
+    $steps = [
+        //'Creating all categories' => 'create_categories',
+        //'Create empty collections' => 'create_collections',
+        //'Creating relationships metadata' => 'create_relationships_meta',
+        //'Create repository metadata' => 'treat_repo_meta',
+        //'Create collections metadata' => 'treat_collection_metas',
+        [
+            'name' => 'Create categories, collections and metadata',
+            'callback' => 'process_collections'
+        ],
+        [
+            'name' => 'Import Items',
+            'callback' => 'process_collections'
+        ],
+        [
+            'name' => 'Finishing',
+            'callback' => 'clear'
+        ]
     ], $tainacan_api_address, $wordpress_api_address;
     
-	protected $steps = [
-        [
-			'name' => 'Creating all categories',
-			'callback' => 'create_categories'
-		],
-		[
-			'name' => 'Create empty collections' ,
-			'callback' => 'create_collections'
-		],
-		[
-			'name' => 'Creating relationships metadata' ,
-			'callback' => 'create_relationships_meta'
-		],
-		[
-			'name' => 'Create repository metadata' ,
-			'callback' => 'treat_repo_meta'
-		],
-		[
-			'name' => 'Create collections metadata' ,
-			'callback' => 'treat_collection_metas'
-		],
-		[
-			'name' => 'Create collections items' ,
-			'callback' => 'create_collection_items'
-		],
-		[
-			'name' => "Finishing" ,
-			'callback' => 'clear'
-		]
-    ], 
-
 
     public function create_categories()
     {
@@ -673,12 +665,13 @@ class Old_Tainacan extends Importer
      * get values for a single item
      *
      * @param  $index
+     * @param  $collection_id 
      * @return array with field_source's as the index and values for the
      * item
      *
      * Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
      */
-    public function process_item($index)
+    public function process_item( $index, $collection_id )
     {
         $processedItem = [];
         $headers = $this->get_fields();
@@ -779,6 +772,7 @@ class Old_Tainacan extends Importer
     {
 
     }
+    
     /**
     * Method implemented by the child importer class to return the number of items to be imported
     * @return int
@@ -794,4 +788,19 @@ class Old_Tainacan extends Importer
 
         return $this->total_items = $file_content->found_items;
     }
+
+    /**
+    * Method implemented by the child importer class to return the number of items to be imported
+    * @return int
+    */
+    public function get_progress_total_from_source(){
+    }
+
+    /**
+    * Method implemented by the child importer class to return the number of items to be imported
+    * @return int
+    */
+    public function get_source_fields(){
+    }
+    
 }
