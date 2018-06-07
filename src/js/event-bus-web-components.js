@@ -36,6 +36,7 @@ export const eventBus = new Vue({
         },
         updateValue(data){
             if ( data.item_id ){
+                
                 let values = ( Array.isArray( data.values[0] ) ) ? data.values[0] : data.values ;
                 const promisse = this.$store.dispatch('item/updateMetadata',
                     { item_id: data.item_id, field_id: data.field_id, values: values });
@@ -62,7 +63,7 @@ export const eventBus = new Vue({
                 });
             }
         },
-        getErrors(field_id){
+        getErrors(field_id) {
             let error = this.errors.find( errorItem => errorItem.field_id == field_id );
             return ( error ) ? error.errors : false
         },

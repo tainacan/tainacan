@@ -8,12 +8,16 @@
 
 namespace Tainacan\Importer;
 
-class Old_Tainacan extends Importer
-{
+class Old_Tainacan extends Importer{
+
+    protected $manual_mapping = true;
+	
+	protected $manual_collection = true;
+
     public function __construct()
     {
         parent::__construct();
-        $this->set_repository();
+       // $this->set_repository();
         $this->set_steps($this->steps);
         $this->remove_import_method('file');
         $this->add_import_method('url');
@@ -30,13 +34,23 @@ class Old_Tainacan extends Importer
         'socialdb_property_fixed_attachments'
     ],
     $steps = [
-        'Creating all categories' => 'create_categories',
-        'Create empty collections' => 'create_collections',
-        'Creating relationships metadata' => 'create_relationships_meta',
-        'Create repository metadata' => 'treat_repo_meta',
-        'Create collections metadata' => 'treat_collection_metas',
-        'Create collections items' => 'create_collection_items',
-        "Finishing" => 'clear'
+        //'Creating all categories' => 'create_categories',
+        //'Create empty collections' => 'create_collections',
+        //'Creating relationships metadata' => 'create_relationships_meta',
+        //'Create repository metadata' => 'treat_repo_meta',
+        //'Create collections metadata' => 'treat_collection_metas',
+        [
+            'name' => 'Create categories, collections and metadata',
+            'callback' => 'process_collections'
+        ],
+        [
+            'name' => 'Import Items',
+            'callback' => 'process_collections'
+        ],
+        [
+            'name' => 'Finishing',
+            'callback' => 'clear'
+        ]
     ], $tainacan_api_address, $wordpress_api_address;
 
 
@@ -653,12 +667,13 @@ class Old_Tainacan extends Importer
      * get values for a single item
      *
      * @param  $index
+     * @param  $collection_id 
      * @return array with field_source's as the index and values for the
      * item
      *
      * Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
      */
-    public function process_item($index)
+    public function process_item( $index, $collection_id )
     {
         $processedItem = [];
         $headers = $this->get_fields();
@@ -759,15 +774,35 @@ class Old_Tainacan extends Importer
     {
 
     }
+    
     /**
     * Method implemented by the child importer class to return the number of items to be imported
     * @return int
     */
     public function get_total_items_from_source()
     {
+        if(!isset($this->tmp_file)){
+           return 0;
+        }
+
         $file = new \SplFileObject( $this->tmp_file, 'r' );
         $file_content = unserialize($file->fread($file->getSize()));
 
         return $this->total_items = $file_content->found_items;
     }
+
+    /**
+    * Method implemented by the child importer class to return the number of items to be imported
+    * @return int
+    */
+    public function get_progress_total_from_source(){
+    }
+
+    /**
+    * Method implemented by the child importer class to return the number of items to be imported
+    * @return int
+    */
+    public function get_source_fields(){
+    }
+    
 }

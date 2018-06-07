@@ -14,7 +14,12 @@ export default {
 
 
 <style lang="scss">
+   @import "../admin/scss/_variables.scss";
+
+    // Bulma imports
     @import "./scss/theme-basics.sass";
+
+    // Buefy imports
     @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
     $speed-slow: 0.5s;
     @import "../../node_modules/buefy/src/scss/utils/_functions.scss";
@@ -24,41 +29,12 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_loading.scss";
     @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
 
-    // Tainacan custom colors
-    $primary: #2cb4c1;
-    $primary-invert: findColorInvert($primary);
-    $secondary: #298596;
-    $secondary-invert: findColorInvert($secondary);
-    $tertiary: #01295c;
-    $tertiary-invert: findColorInvert($tertiary);
-
-    $primary-light:#c1dae0;
-    $primary-lighter: #e6f6f8;
-    $primary-dark: #55A0AF;
-    $primary-darker: darken($primary-dark, 5%);
-
-    $success: #25a189;
-    $success-invert: findColorInvert($success);
-
-    $separator-color: #2b98a4;
-    $tainacan-input-color: #1d1d1d;
-    $tainacan-input-background: #e5e5e5;
-    $tainacan-placeholder-color: #898d8f;
-    $draggable-border-color: #d8d8d8;
-
-    $gray: #b1b1b1; 
-    $gray-invert: findColorInvert($gray);
-    $gray-light: #898d8f; 
-    $gray-light-invert: findColorInvert($gray-light);
-
-    $danger: #a23939; 
-    $danger-invert: findColorInvert($danger);
-
-    $table-side-padding: 4.166666667%;
-    $filter-menu-width: 200px;
-
+    // Tainacan imports
     @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_selects.scss";
+    @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
+    @import "../admin/scss/_tainacan-form.scss";
     
     .theme-items-list {
         position: relative;
@@ -83,11 +59,8 @@ export default {
             margin-top: 0px;
             margin-bottom: 0px;
             display: inline-flex;
-            color: #1d1d1d;
-            font-size: 1.0em;
             font-weight: normal;
             cursor: pointer;
-            background-color: white;
 
             &.is-secondary:hover, &.is-secondary:focus {
                 background: $secondary !important;
@@ -123,202 +96,25 @@ export default {
             line-height: 20px !important;
             font-size: 14px !important;
         }
-        #collection-search-button {
-            height: 25px !important;
-        }
-        .select {
-            padding-top: 0px !important;
-            select {
-                border: none;
-                border-radius: 1px !important;
-                font-weight: normal;
-                font-size: 14px !important;
-                height: 30px !important;
-                padding: 2px 25px 2px 15px!important;
-                margin-top: 0px !important;
-                margin-bottom: 0px !important;
-                color: $tainacan-input-color;
-                option:checked, option:hover {
-                    background-color: $primary-lighter !important;
-                }
-                &:focus, &:active {
-                    box-shadow: none !important;
-                    text-decoration: none !important;
-                }
-            }
-            &:not(.is-multiple)::after {
-                content: "\F35D" !important;
-                font: normal normal normal 24px/1 "Material Design Icons" !important;
-                border: none !important;
-                transform: none !important;
-                margin-top: -15px !important;
-                right: 10px !important;
-                color: $primary;
-                display: flex !important;
-                align-items: initial;
-            }       
+        .input, .textarea {
+            font-size: 14px;
+            border: none;
+            border-radius: 1px !important;
+            box-shadow: none !important;
+
+            &:focus, &:active {
+                box-shadow: none !important;
+                background-color: white;
+                border: 1px solid $tainacan-input-background !important;
+            }    
         }
         .dropdown {
             display: inline-flex;
             position: relative;
             vertical-align: top;
         }
-        .dropdown, .autocomplete {
-            .dropdown-trigger{
-                .button {
-                    border: none;
-                    .icon {
-                        color: $secondary;
-                        align-items: start;
-                    }
-                }
-                .button.is-primary, .button.is-secondary, .button.is-success {
-                    .icon {
-                        color: $white;
-                    }
-                }
-            }
-            .dropdown-menu {
-                display: block;
-                .dropdown-content {
-                    font-size: 13px !important;
-                    border-radius: 0px !important;
-                    .dropdown-item {
-                        a {
-                            color: $tainacan-input-color !important;
-                        }
-                        .b-checkbox { width: 100% };
-                        &:hover {
-                            background-color: $primary-lighter;
-                        }
-                        .is-small {
-                            color: gray;
-                        }
-                    }
-                } 
-            }
-        }
-        .taginput-container {
-            padding: 0 !important;
-            background-color: white !important;
-
-            &:focus, &:active {
-                border: none !important;
-            }
-            .input { margin-bottom: 0px !important; }
-            .input.has-selected, .input:focus, .input:active {
-                background-color: white;
-                border: 1px solid $tainacan-input-background !important;
-            }
-            .tag {
-                background: white;
-                padding-right: 0;
-                padding-left: 0.5em;
-
-                &.is-delete {
-                    color: $gray-light;
-                    &::after {
-                        height: 30% !important;
-                        width: 1px !important;
-                    } 
-                    &::before {
-                        width: 30% !important;
-                        height: 1px !important;
-                    } 
-                    &:hover, &:focus {
-                        background-color: white;
-                        color: black;
-                    }
-                }
-            }
-        }
-        .selected-list-box {
-            padding: 4px 0px;
-            border: 1px solid $tainacan-input-background;
-            background-color: white;
-            display: flex;
-
-            .tags { 
-                margin-right: 8px;
-            }
-            .tag {
-                background: white;
-                padding-right: 0;
-                padding-left: 0.5em;
-
-                &.is-delete {
-                    color: $gray-light;
-                    &::after {
-                        height: 30% !important;
-                        width: 1px !important;
-                    } 
-                    &::before {
-                        width: 30% !important;
-                        height: 1px !important;
-                    } 
-                    &:hover, &:focus {
-                        background-color: white;
-                        color: black;
-                    }
-                }
-            }
-        }
-        .switch {
-            input[type="checkbox"] + .check {
-                background-color: $gray-light;
-                border: 2px solid $gray-light;
-                width: 2.7em;
-                height: 1.7em;
-
-                &::before {
-                    background-color: white;
-                    box-shadow: none;
-                }
-            } 
-            &:hover input[type="checkbox"]:checked + .check {
-                background-color: $primary-light;
-            }
-
-            input[type="checkbox"]:checked + .check {
-                border: 2px solid $secondary;
-                background-color: transparent;
-
-                &::before {
-                    background-color: $secondary;
-                    transform: translate3d(78%, 0, 0);
-                }
-            }
-            &:hover input[type="checkbox"] + .check {
-                background-color: $gray-light;
-            }
-
-            &:focus input[type="checkbox"] + .check,
-            &:focus input[type="checkbox"]:checked + .check {
-                box-shadow: none;
-            }
-
-            &.is-small {
-                font-size: 9px;
-
-                input[type="checkbox"] + .check {
-                    border: 1.5px solid $gray-light;
-                    width: 2.55em;
-                    height: 1.7em;
-
-                    &::before {
-                        width: 1.0em;
-                        height: 1.0em;
-                    }
-                }
-                input[type="checkbox"]:checked + .check {
-                    border: 1.5px solid $secondary;
-
-                    &::before {
-                        transform: translate3d(84%, 0, 0);
-                    }
-                }
-            }
-
+        .dropdown-menu {
+            display: block;
         }
         .b-checkbox.checkbox {
 
@@ -487,10 +283,13 @@ export default {
         .filters-menu {
             height: auto;
             min-width: $filter-menu-width;
+            background-color: unset;
+            border-right: 1px solid $tainacan-input-background;
         }
 
         #items-list-area {
             width: 100%;
+            overflow-y: unset;
         }
 
     }

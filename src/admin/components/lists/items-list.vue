@@ -35,7 +35,149 @@
         </div>
 
         <div class="table-wrapper">
-            <table class="tainacan-table">
+            
+            <!-- GRID VIEW MODE -->
+            <div
+                    class="tainacan-grid-container"
+                    v-if="viewMode == 'grid'">
+                <div 
+                        :key="index"
+                        v-for="(item, index) of items"
+                        :class="{ 'selected-grid-item': selectedItems[index] }"
+                        class="tainacan-grid-item">
+                    
+                    <!-- Checkbox -->
+                    <div 
+                            :class="{ 'is-selecting': isSelectingItems }"
+                            class="grid-item-checkbox">
+                        <b-checkbox 
+                                size="is-small"
+                                v-model="selectedItems[index]"/> 
+                    </div>
+
+                    <!-- Title -->
+                    <p 
+                            v-for="(column, index) in tableFields"
+                            :key="index"
+                            v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
+                            class="metadata-title"
+                            @click="goToItemPage(item)"
+                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>                             
+                    
+                    <!-- Thumbnail -->
+                    <a
+                            v-if="item.thumbnail != undefined"
+                            @click="goToItemPage(item)">
+                        <img :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">
+                    </a>
+
+                    <!-- Actions -->
+                    <div 
+                            v-if="item.current_user_can_edit"
+                            class="actions-area"
+                            :label="$i18n.get('label_actions')">
+                        <a 
+                                id="button-edit"   
+                                :aria-label="$i18n.getFrom('items','edit_item')" 
+                                @click.prevent.stop="goToItemEditPage(item.id)">
+                            <b-icon
+                                    type="is-secondary" 
+                                    icon="pencil"/>
+                        </a>
+                        <a 
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click.prevent.stop="deleteOneItem(item.id)">
+                            <b-icon 
+                                    type="is-secondary" 
+                                    :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                        </a>
+                    </div>
+            
+                </div>
+            </div>
+
+            <!-- CARDS VIEW MODE -->
+            <div
+                    class="tainacan-cards-container"
+                    v-if="viewMode == 'cards'">
+                <div 
+                        :key="index"
+                        v-for="(item, index) of items"
+                        :class="{ 'selected-card': selectedItems[index] }"
+                        class="tainacan-card">
+                    
+                    <!-- Checkbox -->
+                    <div 
+                            :class="{ 'is-selecting': isSelectingItems }"
+                            class="card-checkbox">
+                        <b-checkbox 
+                                size="is-small"
+                                v-model="selectedItems[index]"/> 
+                    </div>
+                    
+                    <!-- Title -->
+                    <p 
+                            v-for="(column, index) in tableFields"
+                            :key="index"
+                            v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
+                            class="metadata-title"
+                            @click="goToItemPage(item)"
+                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
+                    
+                    <!-- Actions -->
+                    <div 
+                            v-if="item.current_user_can_edit"
+                            class="actions-area"
+                            :label="$i18n.get('label_actions')">
+                        <a 
+                                id="button-edit"   
+                                :aria-label="$i18n.getFrom('items','edit_item')" 
+                                @click.prevent.stop="goToItemEditPage(item.id)">
+                            <b-icon
+                                    type="is-secondary" 
+                                    icon="pencil"/>
+                        </a>
+                        <a 
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click.prevent.stop="deleteOneItem(item.id)">
+                            <b-icon 
+                                    type="is-secondary" 
+                                    :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                        </a>
+                    </div>
+                    
+                    <!-- Remaining metadata -->  
+                    <div    
+                            class="media"
+                            @click="goToItemPage(item)">
+                        <a 
+                                v-if="item.thumbnail != undefined"
+                                @click="goToItemPage(item)">
+                            <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                        </a>
+
+                        <div class="list-metadata media-body">
+                            <span 
+                                    v-for="(column, index) in tableFields"
+                                    :key="index"
+                                    v-if="column.display && column.slug != 'thumbnail' && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop != 'title')">
+                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                <p 
+                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
+                                        class="metadata-value"/>
+                            </span>
+                        </div>
+                    </div>
+               
+                </div>
+            </div>
+            
+            <!-- TABLE VIEW MODE -->
+            <table 
+                    v-if="viewMode == 'table'"
+                    class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
@@ -84,8 +226,6 @@
                                 v-for="(column, index) in tableFields"
                                 v-if="column.display"
                                 :label="column.name" 
-                                :aria-label="(column.field != 'row_thumbnail' && column.field != 'row_creation' && column.field != 'row_author')
-                                             ? column.name + '' + (item.metadata ? item.metadata[column.slug].value_as_string : '') : ''"
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.field == 'row_thumbnail',
@@ -101,10 +241,10 @@
                                     v-if="column.field !== 'row_thumbnail' &&
                                             column.field !== 'row_actions' &&
                                             column.field !== 'row_creation'"
-                                    :data="renderMetadata( item.metadata[column.slug] )"/> -->
+                                    :data="renderMetadata(item.metadata, column)"/> -->
                             <p
                                     v-tooltip="{
-                                        content: renderMetadata( item.metadata[column.slug] ),
+                                        content: renderMetadata(item.metadata, column),
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -114,12 +254,12 @@
                                           column.field !== 'row_actions' &&
                                           column.field !== 'row_creation' &&
                                           column.field !== 'row_author'"
-                                    v-html="renderMetadata( item.metadata[column.slug] )"/>
+                                    v-html="renderMetadata(item.metadata, column)"/>
 
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
-                                        :src="item[column.slug].thumb">
+                                        :src="item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath">
                             </span> 
                             <p 
                                     v-tooltip="{
@@ -167,6 +307,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemsList',
@@ -175,6 +316,7 @@ export default {
             allItemsOnPageSelected: false,
             isSelectingItems: false,
             selectedItems: [],
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
         }
     },
     props: {
@@ -182,12 +324,13 @@ export default {
         tableFields: Array,
         items: Array,
         isLoading: false,
-        isOnTrash: false
+        isOnTrash: false,
+        viewMode: 'table'
     },
     mounted() {
         this.selectedItems = [];
         for (let i = 0; i < this.items.length; i++)
-            this.selectedItems.push(false);  
+            this.selectedItems.push(false);
     },
     watch: {
         selectedItems() {
@@ -213,68 +356,80 @@ export default {
                 this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
         },
         deleteOneItem(itemId) {
-            this.$dialog.confirm({
-                message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
-                onConfirm: () => {
-                    this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
-                    .then(() => {
-                    //     this.$toast.open({
-                    //         duration: 3000,
-                    //         message: this.$i18n.get('info_item_deleted'),
-                    //         position: 'is-bottom',
-                    //         type: 'is-secondary',
-                    //         queue: true
-                    //     });
-                        for (let i = 0; i < this.selectedItems.length; i++) {
-                            if (this.selectedItems[i].id == itemId)
-                                this.selectedItems.splice(i, 1);
-                        }
-                    }).catch(() => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
+                    onConfirm: () => {
+                        this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
+            //         .then(() => {
+            //         //     this.$toast.open({
+            //         //         duration: 3000,
+            //         //         message: this.$i18n.get('info_item_deleted'),
+            //         //         position: 'is-bottom',
+            //         //         type: 'is-secondary',
+            //         //         queue: true
+            //         //     });
+            //             for (let i = 0; i < this.selectedItems.length; i++) {
+            //                 if (this.selectedItems[i].id == itemId)
+            //                     this.selectedItems.splice(i, 1);
+            //             }
+            //         }).catch(() => {
 
-                    //     this.$toast.open({ 
-                    //         duration: 3000,
-                    //         message: this.$i18n.get('info_error_deleting_item'),
-                    //         position: 'is-bottom',
-                    //         type: 'is-danger',
-                    //         queue: true
-                    //     })
-                    });
+            //         //     this.$toast.open({ 
+            //         //         duration: 3000,
+            //         //         message: this.$i18n.get('info_error_deleting_item'),
+            //         //         position: 'is-bottom',
+            //         //         type: 'is-danger',
+            //         //         queue: true
+            //         //     })
+            //         });
+                    }
                 }
             });
         },
         deleteSelectedItems() {
-            this.$dialog.confirm({
-                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
-                onConfirm: () => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
+                    onConfirm: () => {
 
-                    for (let i = 0; i < this.selectedItems.length; i++) {
-                        if (this.selectedItems[i]) {
-                            this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
-                            .then(() => {
-                            //     this.$toast.open({
-                            //         duration: 3000,
-                            //         message: this.$i18n.get('info_item_deleted'),
-                            //         position: 'is-bottom',
-                            //         type: 'is-secondary',
-                            //         queue: false
-                            //     });
-                                for (let i = 0; i < this.selectedItems.length; i++) {
-                                    if (this.selectedItems[i].id == this.itemId)
-                                        this.selectedItems.splice(i, 1);
-                                }
-                                                        
-                            }).catch(() => { 
-                            //     this.$toast.open({
-                            //         duration: 3000,
-                            //         message: this.$i18n.get('info_error_deleting_item'),
-                            //         position: 'is-bottom',
-                            //         type: 'is-danger',
-                            //         queue: false
-                            //     });
-                            });
+                        for (let i = 0; i < this.selectedItems.length; i++) {
+                            if (this.selectedItems[i]) {
+                                this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
+                                .then(() => {
+                                //     this.$toast.open({
+                                //         duration: 3000,
+                                //         message: this.$i18n.get('info_item_deleted'),
+                                //         position: 'is-bottom',
+                                //         type: 'is-secondary',
+                                //         queue: false
+                                //     });
+                                    for (let i = 0; i < this.selectedItems.length; i++) {
+                                        if (this.selectedItems[i].id == this.itemId)
+                                            this.selectedItems.splice(i, 1);
+                                    }
+                                                            
+                                }).catch(() => { 
+                                //     this.$toast.open({
+                                //         duration: 3000,
+                                //         message: this.$i18n.get('info_error_deleting_item'),
+                                //         position: 'is-bottom',
+                                //         type: 'is-danger',
+                                //         queue: false
+                                //     });
+                                });
+                            }
                         }
+                        this.allItemsOnPageSelected = false;
                     }
-                    this.allItemsOnPageSelected = false;
                 }
             });
         },
@@ -284,7 +439,9 @@ export default {
         goToItemEditPage(itemId) {
             this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
         },
-        renderMetadata(metadata) {
+        renderMetadata(itemMetadata, column) {
+
+            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
 
             if (!metadata) {
                 return '';
@@ -301,6 +458,8 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_view-mode-grid.scss";
+    @import "../../scss/_view-mode-cards.scss";
 
     .selection-control {
         

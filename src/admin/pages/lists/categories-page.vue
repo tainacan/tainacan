@@ -4,7 +4,7 @@
             <tainacan-title />
             <div 
                     class="sub-header" 
-                    v-if="checkIfUserCanEdit()">
+                    v-if="$userCaps.hasCapability('edit_tainacan-taxonomies')">
                 <div class="header-item">
                     <router-link
                             id="button-create-category" 
@@ -135,13 +135,6 @@
                 this.status = status;
                 this.loadCategories();
             },
-            checkIfUserCanEdit() {
-                for (let capability of tainacan_plugin.user_caps) {
-                    if (capability == 'edit_tainacan-taxonomies')
-                        return true;
-                }
-                return false;
-            },
             onChangeCategoriesPerPage(value) {
                 let prevValue = this.categoriesPerPage;
                 this.categoriesPerPage = value;
@@ -205,7 +198,7 @@
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
-        border-bottom: 0.5px solid #ddd;
+        border-bottom: 1px solid #ddd;
 
         .header-item {
             display: inline-block;

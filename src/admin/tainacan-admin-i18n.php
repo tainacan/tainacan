@@ -44,6 +44,8 @@ return apply_filters('tainacan-admin-i18n', [
         'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
+	'add_more_one_search_field'                => __( 'Add more one search field', 'tainacan' ),
+	'clear_search'                             => __( 'Clear search', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
@@ -199,6 +201,11 @@ return apply_filters('tainacan-admin-i18n', [
 	'label_default_view_mode'			   	   => __( 'Default view mode', 'tainacan' ),
 	'label_enabled_view_modes'			   	   => __( 'Enabled view modes', 'tainacan' ),
 	'label_view_modes_available'			   => __( 'View modes available on theme', 'tainacan' ),
+	'label_warning'							   => __( 'Warning', 'tainacan' ),
+	'label_error'							   => __( 'Erro', 'tainacan' ),
+	'label_grid'							   => __( 'Grid', 'tainacan' ),
+	'label_table'							   => __( 'Table', 'tainacan' ),
+	'label_cards'							   => __( 'Cards', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -220,6 +227,7 @@ return apply_filters('tainacan-admin-i18n', [
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 	'instruction_search'				         => __( 'Search', 'tainacan' ),
+	'instruction_search_on_repository'           => __( 'Search on repository', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),

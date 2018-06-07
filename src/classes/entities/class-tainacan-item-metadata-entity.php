@@ -30,7 +30,7 @@ class Item_Metadata_Entity extends Entity {
 	 * @param Field  $field   Field Entity
 	 * @param int $meta_id ID for a specific meta row 
 	 */
-    function __construct(Item $item, Field $field, $meta_id = null, $parent_meta_id = null) {
+    function __construct(Item $item = null, Field $field = null, $meta_id = null, $parent_meta_id = null) {
         
         $this->set_item($item);
         $this->set_field($field);

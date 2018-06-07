@@ -257,8 +257,20 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getEventEditPath(id) {
             return '/events/' + id + '/edit';
-        }
-        
+        }   
     }
+}
 
+// USER CAPABILITIES PLUGIN - Allows easy checking of user capabilities.
+export const UserCapabilitiesPlugin = {};
+UserCapabilitiesPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$userCaps = {
+        hasCapability(key) {
+            for (let i = 0; i < tainacan_plugin.user_caps.length; i++)
+                if (tainacan_plugin.user_caps[i] == key)
+                    return true;
+            return false;
+        }
+    }
 }

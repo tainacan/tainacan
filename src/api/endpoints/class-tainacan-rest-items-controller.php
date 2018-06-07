@@ -225,7 +225,8 @@ class REST_Items_Controller extends REST_Controller {
 		if ( isset($request['view_mode']) ) {
 			
 			// TODO: Check if requested view mode is really enabled for current collection
-			$view_mode = \Tainacan\Theme_Helper::get_instance()->get_view_mode($request['view_mode']);
+			$view_mode = \Tainacan\Theme_Helper::get_instance();
+			$view_mode = $view_mode->get_view_mode($request['view_mode']);
 			
 			if ($view_mode && $view_mode['type'] == 'template' && isset($view_mode['template']) && file_exists($view_mode['template'])) {
 				$return_template = true;
@@ -237,11 +238,14 @@ class REST_Items_Controller extends REST_Controller {
 			
 			ob_start();
 
-			global $wp_query;
+			global $wp_query, $view_mode_displayed_fields;
 			$wp_query = $items;
 			$displayed_metadata = array_map(function($el) { return (int) $el; }, $request['fetch_only']['meta']);
+			$view_mode_displayed_fields = $request['fetch_only'];
+			$view_mode_displayed_fields['meta'] = $displayed_metadata;
+			
 			include $view_mode['template'];
-
+			
 			$response = ob_get_clean();
 
 		} else {

@@ -170,5 +170,46 @@ class CoreFieldTypes extends TAINACAN_UnitTestCase {
         $this->assertFalse($core_description->validate(), 'Core metadata should not validate because it can not allow it to have multiple');
 
     }
+
+    function test_collection_getters() {
+
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        
+        $collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+			),
+			true
+        );
+
+        $fieldDescription = $this->tainacan_entity_factory->create_entity(
+        	'field',
+	        array(
+	        	'name' => 'just to confuse',
+		        'description' => 'description',
+		        'collection' => $collection,
+		        'field_type' => 'Tainacan\Field_Types\Text'
+	        ),
+	        true
+        );
+        
+        $core_fields = $collection->get_core_fields();
+
+        $this->assertEquals(2, sizeof($core_fields));
+
+        $this->assertNotEquals('Tainacan\Field_Types\Text', $core_fields[0]->get_field_type());
+        $this->assertNotEquals('Tainacan\Field_Types\Text', $core_fields[1]->get_field_type());
+
+        $title = $collection->get_core_title_field();
+
+        $this->assertEquals('Tainacan\Field_Types\Core_Title', $title->get_field_type());
+
+        $description = $collection->get_core_description_field();
+
+        $this->assertEquals('Tainacan\Field_Types\Core_Description', $description->get_field_type());
+
+
+    }
     
 }

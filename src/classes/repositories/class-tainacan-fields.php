@@ -318,8 +318,8 @@ class Fields extends Repository {
     }
 
 	/**
-	 * fetch field by collection, searches all field available
-	 *
+	 * fetch field by collection, considering inheritance
+	 * 
 	 * @param Entities\Collection $collection
 	 * @param array $args WP_Query args plus disabled_fields
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)

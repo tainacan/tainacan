@@ -34,7 +34,8 @@ class DevInterface {
         $repositories = [$Tainacan_Collections, $Tainacan_Filters, $Tainacan_Logs, $Tainacan_Fields, $Tainacan_Taxonomies];
         
         foreach ($repositories as $repo) {
-            $cpt = $repo->entities_type::get_post_type();
+	        $tnc_entity = new $repo->entities_type();
+	        $cpt = $tnc_entity::get_post_type();
             $this->repositories[$cpt] = $repo;
         }
         

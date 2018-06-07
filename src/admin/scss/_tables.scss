@@ -23,17 +23,6 @@
                 top: auto;
                 display: table-cell;
     
-                &::before {
-                    box-shadow: inset 50px 0 10px -12px #222;
-                    content: " ";
-                    width: 50px;
-                    height: 100%;
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    visibility: hidden;
-                }
-    
                 label.checkbox {  
                     border-radius: 0px;
                     background-color: white;
@@ -141,7 +130,7 @@
                     &.selected-row { 
                         background-color: $primary-lighter; 
                         .checkbox-cell .checkbox, .actions-cell .actions-container {
-                            background-color: $primary-lighter;
+                            background-color: $primary-lighter-hover;
                         }
                     }
                     td {
@@ -172,20 +161,23 @@
                         width: 80px;
     
                         .actions-container {
-                            visibility: hidden;
                             display: flex;
                             position: relative;
                             padding: 0;
                             height: 100%;
                             width: 80px;
                             z-index: 9;
-                            background-color: transparent; 
+                            background-color: white; 
                             float: right;
                         }
     
                         a {
                             margin: auto;
                             font-size: 18px !important;
+
+                            .mdi-settings, .mdi-settings::before {
+                                font-size: 23px;
+                            }
                         }
     
                     }
@@ -197,27 +189,15 @@
                         .checkbox-cell {
                             position: sticky !important;
                             position: -webkit-sticky !important;
-    
-                            &::before { visibility: visible; }
+                            background-color: $gray-hover;
                             
                             .checkbox { 
-                                background-color: $tainacan-input-background !important; 
+                                background-color: $gray-hover !important; 
                             }
                         }
                         .actions-cell {
                             .actions-container {
-                                visibility: visible;
-                                background: $tainacan-input-background !important;
-                            }
-    
-                            &::after {
-                                box-shadow: inset -97px 0 17px -21px #222;
-                                content: " ";
-                                width: 100px;
-                                height: 100%;
-                                position: absolute;
-                                right: 0px;
-                                top: 0;
+                                background: $gray-hover !important;
                             }
                         }
     

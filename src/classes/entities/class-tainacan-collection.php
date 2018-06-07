@@ -455,6 +455,73 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get the two core fields of the collection (title and description)
+	 * 
+	 * @return array[\Tainacan\Entities\Field]
+	 */
+	function get_core_fields() {
+		$repo = \Tainacan\Repositories\Fields::get_instance();
+
+		return $repo->fetch_by_collection($this, [
+			'meta_query' => [
+				[
+					'key' => 'field_type',
+					'value' => ['Tainacan\Field_Types\Core_Title', 'Tainacan\Field_Types\Core_Description'],
+					'compare' => 'IN'
+				]
+			]
+		], 'OBJECT');
+	}
+
+	/**
+	 * Get the Core Title Field for this collection
+	 * 
+	 * @return \Tainacan\Entities\Field The Core Title Field
+	 */
+	function get_core_title_field() {
+		$repo = \Tainacan\Repositories\Fields::get_instance();
+
+		$results = $repo->fetch_by_collection($this, [
+			'meta_query' => [
+				[
+					'key' => 'field_type',
+					'value' => 'Tainacan\Field_Types\Core_Title',
+				]
+			],
+			'posts_per_page' => 1
+		], 'OBJECT');
+
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Field) {
+			return $results[0];
+		}
+		return false;
+	}
+
+	/**
+	 * Get the Core Description Field for this collection
+	 * 
+	 * @return \Tainacan\Entities\Field The Core Description Field
+	 */
+	function get_core_description_field() {
+		$repo = \Tainacan\Repositories\Fields::get_instance();
+
+		$results = $repo->fetch_by_collection($this, [
+			'meta_query' => [
+				[
+					'key' => 'field_type',
+					'value' => 'Tainacan\Field_Types\Core_Description',
+				]
+			],
+			'posts_per_page' => 1
+		], 'OBJECT');
+
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Field) {
+			return $results[0];
+		}
+		return false;
+	}
+
+	/**
 	 * Set the collection name
 	 *
 	 * @param [string] $value

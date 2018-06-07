@@ -69,9 +69,7 @@
                             tag="a"
                             to="/events"
                             :class="activeRoute == 'EventsPage' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="flash"/>
+                        <activities-icon />
                         <span class="menu-text">{{ $i18n.get('events') }}</span>
                     </router-link>
                 </li>
@@ -81,13 +79,17 @@
 </template>
 
 <script>
-    export default {
-        name: 'PrimaryMenu',
-        props: {
-            isMenuCompressed: false,
-            activeRoute: '/collections'
-        }
-    }
+import ActivitiesIcon from '../other/activities-icon.vue';
+export default {
+    name: 'PrimaryMenu',
+    props: {
+        isMenuCompressed: false,
+        activeRoute: '/collections'
+    },
+    components: {
+        ActivitiesIcon
+    },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -102,6 +104,9 @@
         max-width: $side-menu-width;
         z-index: 99;
 
+        .menu {
+            padding-top: 10px;
+        }
         .separator {
             height: 2px;
             background-color: $separator-color;
@@ -118,10 +123,19 @@
                 border-radius: 0px;
                 -webkit-transition: padding 0.2s linear; /* Safari */
                 transition: padding 0.2s linear;
+
+                .activities-icon {
+                    fill: white;
+                }
             }
+
             a:hover, a.is-active {
                 background-color: $primary;
                 color: $tertiary;
+
+                .activities-icon {
+                    fill: $tertiary;
+                }
             }
             a:focus {
                 box-shadow: none;

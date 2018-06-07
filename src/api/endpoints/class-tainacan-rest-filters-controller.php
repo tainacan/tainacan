@@ -324,9 +324,10 @@ class REST_Filters_Controller extends REST_Controller {
 
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
-				$item_arr['filter_type_object'] = $item->get_filter_type_object()->_toArray();
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
+
+			$item_arr['filter_type_object'] = $item->get_filter_type_object() ? $item->get_filter_type_object()->_toArray() : $item->get_filter_type_object();
 
 			return $item_arr;
 		}

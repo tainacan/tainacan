@@ -57,7 +57,8 @@ class Entity_Factory {
 			}
 
 			$this->entity     = new $this->entity_type();
-			$this->repository = $this->repository_type::get_instance();
+			$repo = $this->repository_type;
+			$this->repository = $repo::get_instance();
 			
 			if($publish) {
 				$this->entity->set_status('publish');
