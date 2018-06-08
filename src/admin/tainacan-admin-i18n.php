@@ -125,7 +125,7 @@ return apply_filters('tainacan-admin-i18n', [
 	'label_available_filters'                  => __( 'Available Filters', 'tainacan' ),
 	'label_available_filter_types'             => __( 'Available Filter Types', 'tainacan' ),
 	'label_per_page'                           => __( 'per Page', 'tainacan' ),
-	'label_table_fields'                       => __( 'Metadata on table', 'tainacan' ),
+	'label_displayed_metadata'                   => __( 'Displayed metadata', 'tainacan' ),
 	'label_required'                           => __( 'Required', 'tainacan' ),
 	'label_allow_multiple'                     => __( 'Allow multiple values', 'tainacan' ),
 	'label_default_value'                      => __( 'Default value', 'tainacan' ),
@@ -206,6 +206,7 @@ return apply_filters('tainacan-admin-i18n', [
 	'label_grid'							   => __( 'Grid', 'tainacan' ),
 	'label_table'							   => __( 'Table', 'tainacan' ),
 	'label_cards'							   => __( 'Cards', 'tainacan' ),
+	'label_visualization'					   => __( 'Visualization', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
