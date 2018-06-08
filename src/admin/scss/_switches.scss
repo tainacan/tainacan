@@ -5,6 +5,7 @@
         border: 2px solid $gray-light;
         width: 2.7em;
         height: 1.7em;
+        transition: none;
 
         &::before {
             background-color: white;

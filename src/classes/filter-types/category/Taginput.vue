@@ -22,10 +22,10 @@
             this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
 
-            let in_route = '/collection/' + this.isRepositoryLevel + '/fields/' +  this.field +'?context=edit';
+            let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
 
             if(this.isRepositoryLevel){
-                in_route = '/fields?context=edit';
+                in_route = '/fields';
             }
 
             axios.get(in_route)
@@ -84,7 +84,7 @@
                 this.options = [];
                 const q = query;
                 
-                axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                axios.get('/collection/'+ this.collection +'/fields/' + this.field)
                     .then( res => {
                         let field = res.data;
                         promise = this.getValuesCategory( field.field_type_options.taxonomy_id, q );
