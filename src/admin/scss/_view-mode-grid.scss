@@ -14,13 +14,17 @@
     .tainacan-grid-item {
         max-width: 258px;
         flex-basis: 0;
-        margin: 16px 24px 24px 24px;
+        margin: 1rem 1.5rem 1.5rem 1.5rem;
         text-align: center;
+
+        &:hover {
+            background-color: $tainacan-input-background;
+        }
 
         .grid-item-checkbox {
             position: absolute;
             margin-top: 9px;
-            margin-left: 12px;
+            margin-left: 1rem;
         }
         .actions-area {
             position: relative;
@@ -36,6 +40,10 @@
             background-color: $tainacan-input-background;
             border-bottom-left-radius: 2px;
             border-bottom-right-radius: 2px;
+
+            a {
+                margin-left: 12px;
+            }
         }
         &:hover .actions-area { 
             visibility: visible;
@@ -66,7 +74,8 @@
             white-space: nowrap; 
             overflow: hidden;
             text-align: left;
-            padding: 6px 12px;
+            padding: 6px 1rem;
+            cursor: pointer;
         } 
     
     }

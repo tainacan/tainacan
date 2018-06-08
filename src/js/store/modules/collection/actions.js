@@ -183,15 +183,16 @@ export const updateCollection = ({ commit }, {
     });
 }
 
-export const sendCollection = ( { commit }, { name, description, status }) => {
+export const sendCollection = ( { commit }, { name, description, status, mapper }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post('/collections/', {
             name: name,
             description: description,
-            status: status
+            status: status,
+            'exposer-map': mapper
         })
             .then( res => {
-                commit('setCollection', { name: name, description: description, status: status });
+                commit('setCollection', { name: name, description: description, status: status, mapper: mapper });
                 resolve( res.data );
             })
             .catch(error => {

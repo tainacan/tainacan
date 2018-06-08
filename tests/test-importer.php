@@ -47,8 +47,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $url_repository = 'http://localhost/wordpress_tainacan/';
         $url_repository = '';
         if( $url_repository !== '' ){
-            $_SESSION['tainacan_importer'][$id]->set_url($url);
-            $_SESSION['tainacan_importer'][$id]->set_repository();
+            $_SESSION['tainacan_importer'][$id]->set_url($url_repository);
 
             while (!$_SESSION['tainacan_importer'][$id]->is_finished())
             {

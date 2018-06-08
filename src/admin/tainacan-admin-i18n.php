@@ -1,6 +1,6 @@
 <?php
 
-return [
+return apply_filters('tainacan-admin-i18n', [
 	// Tainacan common terms
 	'repository'                               => __( 'Repository', 'tainacan' ),
 	'collections'                              => __( 'Collections', 'tainacan' ),
@@ -40,6 +40,8 @@ return [
 	'add_one_item'                             => __( 'Add one item', 'tainacan' ),
 	'add_items_bulk'                           => __( 'Add items in bulk', 'tainacan' ),
 	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
+	'new_mapped_item'                          => __( 'New mapped collection', 'tainacan' ),
+        'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
 	'add_more_one_search_field'                => __( 'Add more one search field', 'tainacan' ),
@@ -311,5 +313,5 @@ return [
 	'tainacan-filter-category-taginput'        => __( 'Taxonomy Tag Input', 'tainacan' ),
 	'tainacan-filter-category-checkbox'        => __( 'Taxonomy Check Box', 'tainacan' ),
 	'tainacan-filter-category-selectbox'       => __( 'Taxonomy Select Box', 'tainacan' )
-]
+]);
 ?>

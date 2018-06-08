@@ -12,6 +12,7 @@ $tertiary-invert: findColorInvert($tertiary);
 
 $primary-light:#c1dae0;
 $primary-lighter: #e6f6f8;
+$primary-lighter-hover: #d1e6e6;
 $primary-dark: #55A0AF;
 $primary-darker: darken($primary-dark, 5%);
 
@@ -24,6 +25,7 @@ $tainacan-input-color: #1d1d1d;
 $tainacan-input-background: #e5e5e5;
 $tainacan-placeholder-color: #898d8f;
 $draggable-border-color: #d8d8d8;
+$gray-hover: #dcdcdc;
 
 $gray: #b1b1b1; 
 $gray-invert: findColorInvert($gray);

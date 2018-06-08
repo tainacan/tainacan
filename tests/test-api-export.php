@@ -57,15 +57,15 @@ class TAINACAN_REST_Export_Controller extends TAINACAN_UnitApiTestCase {
 		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 		
 		$item2 = $this->tainacan_entity_factory->create_entity(
-				'item',
-				array(
-					'title'       => 'item_teste_Export2',
-					'description' => 'adasdasdsa2',
-					'collection'  => $collection
-				),
-				true,
-				true
-				);
+			'item',
+			array(
+				'title'       => 'item_teste_Export2',
+				'description' => 'adasdasdsa2',
+				'collection'  => $collection
+			),
+			true,
+			true
+		);
 		
 		$item_metadata2 = new \Tainacan\Entities\Item_Metadata_Entity($item2, $field);
 		
@@ -76,15 +76,15 @@ class TAINACAN_REST_Export_Controller extends TAINACAN_UnitApiTestCase {
 		$item_metadata2 = $Tainacan_Item_Metadata->insert($item_metadata2);
 		
 		$item3 = $this->tainacan_entity_factory->create_entity(
-				'item',
-				array(
-					'title'       => 'item_teste_Export3',
-					'description' => 'adasdasdsa3',
-					'collection'  => $collection
-				),
-				true,
-				true
-				);
+			'item',
+			array(
+				'title'       => 'item_teste_Export3',
+				'description' => 'adasdasdsa3',
+				'collection'  => $collection
+			),
+			true,
+			true
+		);
 		
 		$item_metadata3 = new \Tainacan\Entities\Item_Metadata_Entity($item3, $field);
 		
@@ -103,15 +103,34 @@ class TAINACAN_REST_Export_Controller extends TAINACAN_UnitApiTestCase {
 		$item_exposer_json = json_encode([
 			'exposer-type'       => 'Xml',
 			'exposer-map'     => 'Value',
+			'export-background' => false
 		]);
 		
+		$query = [
+			'orderby' => 'id',
+			'order'	  => 'asc',
+		];
+		
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/export/collection/' . $collection->get_id() );
+		$request->set_query_params($query);
 		$request->set_body($item_exposer_json);
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
 		
-		$this->assertInstanceOf('SimpleXMLElement', @simplexml_load_string($data));
+		$this->assertInstanceOf('SimpleXMLElement', $xml = @simplexml_load_string($data));
+		
+		$this->assertEquals(3, $xml->count());
+		$i = 0;
+		foreach ($xml->children() as $xml_item ) {
+			$fields = $items[$i]->get_fields();
+			foreach ($fields as $field_meta) {
+				$field = $field_meta->get_field();
+				$this->assertEquals($field_meta->get_value(), $xml_item->{$field->get_name()});
+				//echo "{$field->get_name()}:{$field_meta->get_value()}"; // uncomment if need debug
+			}
+			$i++;
+		}
 	}
 }
 

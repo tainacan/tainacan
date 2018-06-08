@@ -5,6 +5,7 @@ import * as mutations from './mutations';
 const state = {
     fields: [],
     fieldTypes: [],
+    fieldMappers: [],
 };
 
 export default {

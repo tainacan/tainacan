@@ -9,6 +9,8 @@ namespace Tainacan\Exposers\Types;
 abstract class Type {
 	
 	protected $mappers = true; // List of supported mapper, leave true for all
+	protected $extension = 'tnc'; // extension sufix for multi operation system compatibility
+	public $slug = ''; // type slug for url safe
 	
 	/**
 	 * Change response after api callbacks
@@ -19,7 +21,14 @@ abstract class Type {
 	 */
 	public abstract function rest_request_after_callbacks( $response, $handler, $request );
 	
+	/**
+	 * Return list of supported mappers for this type 
+	 */
 	public function get_mappers() {
 		return apply_filters('tainacan-exporser-type-mappers', $this->mappers, $this);
+	}
+	
+	public function get_extension() {
+		return $this->extension;
 	}
 }
