@@ -103,7 +103,7 @@
                     });
             },
             getValuesCategory( taxonomy, query ){
-                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
+                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
                     for (let term of res.data) {
                         if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
                             this.taxonomy = term.taxonomy;
@@ -130,7 +130,7 @@
                 }
             },
             getTerm( taxonomy, id ){
-              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id ).then( res => {
+              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' ).then( res => {
                   this.$console.log(res);
               })
               .catch(error => {

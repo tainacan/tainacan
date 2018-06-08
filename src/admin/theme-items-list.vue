@@ -117,6 +117,8 @@ export default {
             display: block;
         }
         .b-checkbox.checkbox {
+            align-items: baseline;
+            margin-bottom: 5px;
 
             input[type="checkbox"] {
                 box-shadow: none !important;
