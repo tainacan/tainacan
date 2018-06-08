@@ -25,7 +25,7 @@
             let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
 
             if(this.isRepositoryLevel){
-                in_route = '/fields';
+                in_route = '/fields/' + this.field;
             }
 
             axios.get(in_route)
@@ -83,8 +83,9 @@
                 let promise = null;
                 this.options = [];
                 const q = query;
-                
-                axios.get('/collection/'+ this.collection +'/fields/' + this.field)
+                const endpoint = this.isRepositoryLevel ? '/fields/' + this.field : '/collection/'+ this.collection +'/fields/' + this.field;                 
+
+                axios.get(endpoint)
                     .then( res => {
                         let field = res.data;
                         promise = this.getValuesCategory( field.field_type_options.taxonomy_id, q );
