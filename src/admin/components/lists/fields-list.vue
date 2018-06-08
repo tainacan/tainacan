@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-loading :active.sync="isLoadingFieldTypes"/>
+        <b-loading :active.sync="isLoadingFieldMappers"/>
         <tainacan-title v-if="!isRepositoryLevel"/>
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
         <br>
@@ -138,7 +139,68 @@
             </b-tab-item>
             <!-- Exposer -->
             <b-tab-item :label="$i18n.get('mapping')">
-                <p>Under construction. You will be able to map your metadata to other metadata standards in this page.</p>
+                <div >
+                    <b-dropdown id="mappers-options-dropdown">
+                        <button
+                                class="button is-secondary"
+                                slot="trigger">
+                            <div>{{ $i18n.get('mappers') }}</div>
+                            <b-icon icon="menu-down"/>
+                        </button>
+                        <b-dropdown-item
+                                :key="field_mapper.slug"
+                                v-for="field_mapper in field_mappers"
+                                @click="onSelectFieldsMapper(field_mapper)">
+                            {{ $i18n.get(field_mapper.name) }}
+                        </b-dropdown-item>
+                    </b-dropdown>
+                    <section 
+                            v-if="activeFieldList.length <= 0 && !isLoadingFields"
+                            class="field is-grouped-centered section">
+                        <div class="content has-text-gray has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="format-list-bulleted-type"
+                                        size="is-large"/>
+                            </p>
+                            <p>{{ $i18n.get('info_there_is_no_field' ) }}</p>  
+                            <p>{{ $i18n.get('info_create_metadata' ) }}</p>
+                        </div>
+                    </section>             
+                    <template>
+                        <section>
+                            <b-table
+                                :data="mapperMetadata"
+                                :loading="isMapperMetadataLoading">
+    
+                                <template slot-scope="props">
+                                    <b-table-column
+                                            field="label"
+                                            :label="$i18n.get('label_mapper_metadata')">
+                                        {{ props.row.label }}
+                                    </b-table-column>
+    
+                                    <b-table-column
+                                            field="slug"
+                                            :label="$i18n.get('field')">
+                                        <b-dropdown id="mappers-field-dropdown">
+                                            <button
+                                                    class="button is-primary"
+                                                    slot="trigger">
+                                                <div>{{ $i18n.get('field') }}</div>
+                                            </button>
+                                            <b-dropdown-item
+                                                    :key="index"
+                                                    v-for="(field, index) in activeFieldList">
+                                                {{ field.name }}
+                                            </b-dropdown-item>
+                                        </b-dropdown>
+                                    </b-table-column>
+                                </template>
+                            </b-table>
+                        </section>
+                    </template>
+                </div>
             </b-tab-item>
         </b-tabs>
     </div> 
@@ -157,12 +219,15 @@ export default {
             isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingFieldTypes: true,
+            isLoadingFieldMappers: true,
             isLoadingFields: false,
             isLoadingField: false,
             openedFieldId: '',
             formWithErrors: '',
             hightlightedField: '',
-            editForms: {}
+            editForms: {},
+            mapperMetadata: [],
+            isMapperMetadataLoading: false
         }
     },
     components: {
@@ -185,7 +250,12 @@ export default {
             set(value) {
                 this.updateFields(value);
             }
-        }
+        },
+        field_mappers: {
+            get() {
+                return this.getFieldMappers();
+            }
+        },
     },
     beforeRouteLeave ( to, from, next ) {
         let hasUnsavedForms = false;
@@ -216,11 +286,13 @@ export default {
             'sendField',
             'deleteField',
             'updateFields',
-            'updateCollectionFieldsOrder'
+            'updateCollectionFieldsOrder',
+            'fetchFieldMappers'
         ]),
         ...mapGetters('fields',[
             'getFieldTypes',
-            'getFields'
+            'getFields',
+            'getFieldMappers'
         ]),
         handleChange(event) {     
             if (event.added) {
@@ -309,6 +381,17 @@ export default {
             this.formWithErrors = '';
             delete this.editForms[this.openedFieldId];
             this.openedFieldId = '';
+        },
+        onSelectFieldsMapper(field_mapper) {
+            this.isMapperMetadataLoading = true;
+            //this.mapperMetadata = Object.values(field_mapper.metadata);
+            for (var k in field_mapper.metadata) {
+                var item = field_mapper.metadata[k];
+                item.slug = k;
+                this.mapperMetadata.push(item);
+            }
+            console.log(JSON.stringify(this.mapperMetadata));
+            this.isMapperMetadataLoading = false;
         }
     },
     created() {
@@ -336,6 +419,13 @@ export default {
             })
             .catch(() => {
                 this.isLoadingFields = false;
+            });
+        this.fetchFieldMappers()
+            .then(() => {
+                this.isLoadingFieldMappers = false;
+            })
+            .catch(() => {
+                this.isLoadingFieldMappers = false;
             });
     },
     mounted() {

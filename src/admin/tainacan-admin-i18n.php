@@ -18,6 +18,8 @@ return apply_filters('tainacan-admin-i18n', [
 	'term'                                     => __( 'Term', 'tainacan' ),
 	'terms'                                    => __( 'Terms', 'tainacan' ),
 	'mapping'                                  => __( 'Mapping', 'tainacan' ),
+    'mappers'                                  => __( 'Mappers', 'tainacan' ),
+    'metadata'                                 => __( 'metadata', 'tainacan' ),
 
 	// Actions
 	'edit'                                     => __( 'Edit', 'tainacan' ),
@@ -199,6 +201,7 @@ return apply_filters('tainacan-admin-i18n', [
 	'label_default_view_mode'			   	   => __( 'Default view mode', 'tainacan' ),
 	'label_enabled_view_modes'			   	   => __( 'Enabled view modes', 'tainacan' ),
 	'label_view_modes_available'			   => __( 'View modes available on theme', 'tainacan' ),
+    'label_mapper_metadata'                    => __( 'Mapper Metadata', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
