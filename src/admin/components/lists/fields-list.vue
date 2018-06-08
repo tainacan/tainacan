@@ -183,18 +183,22 @@
                                     <b-table-column
                                             field="slug"
                                             :label="$i18n.get('field')">
-                                        <b-dropdown id="mappers-field-dropdown">
-                                            <button
-                                                    class="button is-primary"
-                                                    slot="trigger">
-                                                <div>{{ $i18n.get('field') }}</div>
-                                            </button>
-                                            <b-dropdown-item
-                                                    :key="index"
-                                                    v-for="(field, index) in activeFieldList">
+                                        <b-select
+                                                :name="'mappers-field-select-' + props.row.slug"
+                                                v-model="props.row.selected"
+                                                @input="onSelectFieldForMapperMetadata">
+                                            <option
+                                                    value="">
+                                                {{ $i18n.get('instruction_select_a_field') }}
+                                            </option>
+                                            <option
+                                                v-for="(field, index) in activeFieldList"
+                                                :key="index"
+                                                :value="field.id"
+                                                :disabled="isFieldSelected(field.id)">
                                                 {{ field.name }}
-                                            </b-dropdown-item>
-                                        </b-dropdown>
+                                            </option>
+                                        </b-select>
                                     </b-table-column>
                                 </template>
                             </b-table>
@@ -227,7 +231,8 @@ export default {
             hightlightedField: '',
             editForms: {},
             mapperMetadata: [],
-            isMapperMetadataLoading: false
+            isMapperMetadataLoading: false,
+            mappedFields: []
         }
     },
     components: {
@@ -384,14 +389,34 @@ export default {
         },
         onSelectFieldsMapper(field_mapper) {
             this.isMapperMetadataLoading = true;
-            //this.mapperMetadata = Object.values(field_mapper.metadata);
+            
             for (var k in field_mapper.metadata) {
                 var item = field_mapper.metadata[k];
                 item.slug = k;
+                item.selected = '';
+                var self = this;
+                this.activeFieldList.forEach(function(field) {
+                    if(
+                            field.exposer_mapping.hasOwnProperty(field_mapper.slug) &&
+                            field.exposer_mapping[field_mapper.slug] == item.slug ) {
+                        item.selected = field.id;
+                        self.mappedFields.push(field.id);
+                    }
+                });
                 this.mapperMetadata.push(item);
             }
-            console.log(JSON.stringify(this.mapperMetadata));
             this.isMapperMetadataLoading = false;
+            //console.log(JSON.stringify(this.mapperMetadata));
+        },
+        isFieldSelected(id) {
+            return this.mappedFields.indexOf(id) > -1;
+        },
+        onSelectFieldForMapperMetadata() {
+            var self = this;
+            this.mappedFields = [];
+            this.mapperMetadata.forEach(function(item) {
+                self.mappedFields.push(item.selected);
+            });
         }
     },
     created() {

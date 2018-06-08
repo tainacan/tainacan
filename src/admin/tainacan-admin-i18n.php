@@ -223,6 +223,7 @@ return apply_filters('tainacan-admin-i18n', [
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 	'instruction_search'				         => __( 'Search', 'tainacan' ),
+    'instruction_select_a_field'				 => __( 'Select a Field', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
