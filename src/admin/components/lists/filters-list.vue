@@ -141,6 +141,7 @@
                             }">
                         <div 
                                 class="available-field-item"
+                                v-if="field.enabled"
                                 v-for="(field, index) in availableFieldList" 
                                 :key="index"
                                 @click.prevent="addFieldViaButton(field, index)">  
