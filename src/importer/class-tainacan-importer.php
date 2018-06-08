@@ -61,12 +61,14 @@ abstract class Importer {
 	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
-	 * Its an array of the target collections, with their IDs, the total number of items to be imported and the mapping array 
+	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be imported, the mapping array 
 	 * from the source structure to the ID of the metadata fields in tainacan
 	 *
 	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the 
 	 * values are the identifier from the source. This could be an ID or a string or whatever the importer finds appropriate to handle
 	 *
+	 * The source_id can be anyhting you like, that helps you relate this collection to your source.
+	 * 
 	 * Example of the structure of this propery for one collection:
 	 * 0 => [
 	 * 	'id' => 12,
@@ -74,7 +76,8 @@ abstract class Importer {
 	 * 	  30 => 'column1'
 	 * 	  31 => 'column2'
 	 * 	],
-	 * 	'total_items' => 1234
+	 * 	'total_items' => 1234,
+	 * 	'source_id' => 55
 	 * ],
 	 *
 	 * use add_collection() and remove_collection() to interact with thiis array.
@@ -119,6 +122,17 @@ abstract class Importer {
 			'callback' => 'process_collections'
 		]
 	];
+	
+	/**
+	 * Transients is used to store temporary data to be used accross multiple requests
+	 *
+	 * Add and remove transient data using add_transient() and delete_transient() methods
+	 *
+	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
+	 * 
+	 * @var array
+	 */
+	private $transients = [];
 
 	private $current_step = 0;
 	
@@ -129,15 +143,52 @@ abstract class Importer {
 	private $current_collection_item = 0;
 
 	private $url = '';
+	
+	/**
+	 * List of attributes that are saved in DB and that are used to 
+	 * reconstruct the object 
+	 * @var array
+	 */
+	private $array_attributes = [
+		'url',
+		'current_collection_item',
+		'current_collection',
+		'in_step_count',
+		'current_step',
+		'transients',
+		'options',
+		'collections',
+		'tmp_file'
+	];
 
-    public function __construct() {
+    public function __construct($attributess = array()) {
         if (!session_id()) {
             @session_start();
         }
 
         $this->id = uniqid();
         $_SESSION['tainacan_importer'][$this->get_id()] = $this;
+		
+		if (!empty($attributess)) {
+			foreach ($attributess as $attr => $value) {
+				$method = 'set_' . $attr;
+				if (method_exists($this, $method)) {
+					$this->$method($value);
+				}
+			}
+		}
+		
     }
+	
+	public function _to_Array() {
+		$return = [];
+		foreach ($this->array_attributes as $attr) {
+			$method = 'get_' . $attr;
+			$return[$attr] = $this->$method();
+		}
+		$return['class_name'] = get_class($this);
+		return $return;
+	}
 	
 	/////////////////////
 	// Getters and setters
@@ -288,6 +339,14 @@ abstract class Importer {
 		return $this->progress_total;
 	}
 	
+	private function get_transients() {
+		return $this->transients;
+	}
+	
+	private function set_transients(array $data) {
+		$this->transients = $data;
+	}
+	
 	////////////////////////////////////
 	// Utilities
 	
@@ -406,6 +465,21 @@ abstract class Importer {
 		}
 		return false;
 	}
+	
+	public function add_transient($key, $data) {
+		$this->transients[$key] = $data;
+	}
+	
+	public function delete_transient($key) {
+		if (isset($this->transients[$key]))
+			unset($this->transients[$key]);
+	}
+	
+	public function get_transient($key) {
+		if (isset($this->transients[$key]))
+			return $this->transients[$key];
+		return null;
+	}
 
     public function is_finished()
     {
@@ -430,8 +504,8 @@ abstract class Importer {
      *
      * @return array $fields_source the fields from the source
      */
-    abstract public function get_source_fields();
-
+    public function get_source_fields() {}
+		
     /**
      * get values for a single item
      *
@@ -452,7 +526,7 @@ abstract class Importer {
 	 * 
 	 * @return int
 	 */
-	abstract public function get_progress_total_from_source();
+	public function get_progress_total_from_source() {}
 	
 	
 	
@@ -466,9 +540,11 @@ abstract class Importer {
     public function process_collections() {
         
 		$current_collection = $this->get_current_collection();
+		$collections = $this->get_collections();
+		$collection_definition = isset($collections[$current_collection]) ? $collections[$current_collection] : false;
 		$current_collection_item = $this->get_current_collection_item();
 		
-		$processed_item = $this->process_item( $current_collection_item, $current_collection );
+		$processed_item = $this->process_item( $current_collection_item, $collection_definition );
 		if( $processed_item) {
 			$this->insert( $processed_item, $current_collection );
 		} else {
@@ -606,7 +682,8 @@ abstract class Importer {
             if($insertedItem->validate()) {
 	            $insertedItem = $Tainacan_Items->update( $insertedItem );
             } else {
-	            $this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
+				//error_log(print_r($insertedItem->get_errors(), true));
+	            //$this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
 	            return false;
             }
 
@@ -631,14 +708,13 @@ abstract class Importer {
 		$steps = $this->get_steps();
 		$current_step = $this->get_current_step();
 		$method_name = $steps[$current_step]['callback'];
-		
+
 		if (method_exists($this, $method_name)) {
 			$result = $this->$method_name();
 		} else {
 			$this->add_log( 'error', 'Callback not found for step ' . $steps[$current_step]['name']);
 			$result = false;
 		}
-		
 		if($result === false || (!is_numeric($result) || $result < 0)) {
 			//Move on to the next step
 			$this->set_in_step_count(0);

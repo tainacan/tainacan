@@ -9,8 +9,8 @@ class CSV extends Importer {
 	
 	protected $manual_collection = true;
 	
-	public function __construct() {
-        parent::__construct();
+	public function __construct($attributes = array()) {
+		parent::__construct($attributes);
 		
 		$this->set_default_options([
 			'delimiter' => ','
@@ -31,7 +31,7 @@ class CSV extends Importer {
     /**
      * @inheritdoc
      */
-    public function process_item( $index, $collection_index ){
+    public function process_item( $index, $collection_definition ){
         $processedItem = [];
         $headers = $this->get_source_fields();
         

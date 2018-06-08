@@ -8,7 +8,6 @@ const TAINACAN_TRAITS_DIR 	   = __DIR__ . '/traits/';
 const TAINACAN_VENDOR_DIR 	   = __DIR__ . '/../vendor/';
 const TAINACAN_TAPI_DIR          = __DIR__ . '/../api/';
 const TAINACAN_ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
-const TAINACAN_HELPERS_DIR      = __DIR__ . '/../helpers/';
 const TAINACAN_IMPORTER_DIR      = __DIR__ . '/../importer/';
 const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 
@@ -25,10 +24,16 @@ const DIRS = [
 	TAINACAN_EXPOSERS_DIR
 ];
 
+require_once('libs/wp-async-request.php');
+require_once('libs/wp-background-process.php');
+require_once('class-tainacan-background-process.php');
+require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-bg-importer.php');
+
 require_once(TAINACAN_VENDOR_DIR . 'autoload.php');
-require_once(TAINACAN_HELPERS_DIR . 'class-tainacan-helpers-html.php');
 require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer.php');
+require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer-handler.php');
 require_once(TAINACAN_EXPOSERS_DIR . 'class-tainacan-exposers.php');
+
 
 spl_autoload_register('tainacan_autoload');
 
@@ -129,5 +134,6 @@ $Tainacan_Admin = \Tainacan\Admin::get_instance();
 require_once(__DIR__ . '/../theme-helper/class-tainacan-theme-helper.php');
 require_once(__DIR__ . '/../theme-helper/template-tags.php');
 $Tainacan_Theme_Helper = \Tainacan\Theme_Helper::get_instance();
+
 
 ?>
