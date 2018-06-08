@@ -504,8 +504,8 @@ abstract class Importer {
      *
      * @return array $fields_source the fields from the source
      */
-    abstract public function get_source_fields();
-
+    public function get_source_fields() {}
+		
     /**
      * get values for a single item
      *
@@ -526,7 +526,7 @@ abstract class Importer {
 	 * 
 	 * @return int
 	 */
-	abstract public function get_progress_total_from_source();
+	public function get_progress_total_from_source() {}
 	
 	
 	
@@ -540,7 +540,8 @@ abstract class Importer {
     public function process_collections() {
         
 		$current_collection = $this->get_current_collection();
-		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
+		$collections = $this->get_collections();
+		$collection_definition = isset($collections[$current_collection]) ? $collections[$current_collection] : false;
 		$current_collection_item = $this->get_current_collection_item();
 		
 		$processed_item = $this->process_item( $current_collection_item, $collection_definition );
@@ -681,7 +682,8 @@ abstract class Importer {
             if($insertedItem->validate()) {
 	            $insertedItem = $Tainacan_Items->update( $insertedItem );
             } else {
-	            $this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
+				//error_log(print_r($insertedItem->get_errors(), true));
+	            //$this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
 	            return false;
             }
 
@@ -706,14 +708,13 @@ abstract class Importer {
 		$steps = $this->get_steps();
 		$current_step = $this->get_current_step();
 		$method_name = $steps[$current_step]['callback'];
-		
+
 		if (method_exists($this, $method_name)) {
 			$result = $this->$method_name();
 		} else {
 			$this->add_log( 'error', 'Callback not found for step ' . $steps[$current_step]['name']);
 			$result = false;
 		}
-		
 		if($result === false || (!is_numeric($result) || $result < 0)) {
 			//Move on to the next step
 			$this->set_in_step_count(0);

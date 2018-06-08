@@ -9,8 +9,8 @@ class CSV extends Importer {
 	
 	protected $manual_collection = true;
 	
-	public function __construct() {
-        parent::__construct();
+	public function __construct($attributes = array()) {
+		parent::__construct($attributes);
 		
 		$this->set_default_options([
 			'delimiter' => ','

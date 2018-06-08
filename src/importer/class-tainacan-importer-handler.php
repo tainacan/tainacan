@@ -8,7 +8,7 @@ class Importer_Handler {
 	
 	function __construct() {
 		
-		$this->bg_importer = new Tainacan_Bg_Importer();
+		$this->bg_importer = new Background_Importer();
 		
 	}
 	

@@ -1,4 +1,7 @@
 <?php
+
+namespace Tainacan;
+
 /**
  * Abstract Tainacan_Background_Process class.
  *
@@ -21,7 +24,7 @@ if ( ! class_exists( 'WP_Background_Process', false ) ) {
 /**
  * Tainacan_Background_Process class.
  */
-abstract class Tainacan_Background_Process extends WP_Background_Process {
+abstract class Background_Process extends \WP_Background_Process {
 
 	/**
 	 * Table name where the queue is stored
@@ -67,6 +70,7 @@ abstract class Tainacan_Background_Process extends WP_Background_Process {
 	public function save($priority = 10) {
 
 		if ( ! empty( $this->data ) ) {
+			global $wpdb;
 			$wpdb->insert(
 				$this->table, 
 				[
@@ -115,14 +119,14 @@ abstract class Tainacan_Background_Process extends WP_Background_Process {
 	 * @return $this
 	 */
 	public function close( $key ) {
-		if ( ! empty( $data ) ) {
-			global $wpdb;
-			$wpdb->update(
-				$this->table, 
-				['done' => true],
-				['ID' => $key]
-			);
-		}
+		global $wpdb;
+
+		$wpdb->update(
+			$this->table, 
+			['done' => 1],
+			['ID' => $key],
+			['%d']
+		);
 
 		return $this;
 	}
@@ -182,7 +186,7 @@ abstract class Tainacan_Background_Process extends WP_Background_Process {
 			LIMIT 1
 		", $this->action ) );
 
-		$batch       = new stdClass();
+		$batch       = new \stdClass();
 		$batch->key  = $query->ID;
 		$batch->data = maybe_unserialize( $query->data );
 
@@ -200,16 +204,14 @@ abstract class Tainacan_Background_Process extends WP_Background_Process {
 	 */
 	protected function handle() {
 		$this->lock_process();
-
+		//error_log('new request');
 		do {
-			error_log('ta rolando!');
 			$batch = $this->get_batch();
-			
 			$task = $this->task( $batch->data );
 
 			// Update or close current batch.
 			if ( false !== $task )  {
-				$this->update( $batch->key, $batch->data );
+				$this->update( $batch->key, $task );
 			} else {
 				$this->close( $batch->key );
 			}
