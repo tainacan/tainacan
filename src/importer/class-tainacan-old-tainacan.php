@@ -248,7 +248,11 @@ class Old_Tainacan extends Importer{
 
             $mapping = $this->create_collection_meta($file_fields, $Fields_Repository, $Tainacan_Fields, $created_repository_fields, $created_categories, $relationships);
 
-            //TODO: add collection definition
+            $this->add_collection([
+                'id' => $new_collection_id,
+                'map' => $mapping,
+                'total_items' => $this->get_total_items_from_source( $old_collection_id )
+            ]);
             
             // $this->set_repository_mapping($mapping, $old_collection_id);
             next($created_collections);
@@ -799,16 +803,10 @@ class Old_Tainacan extends Importer{
     * Method implemented by the child importer class to return the number of items to be imported
     * @return int
     */
-    public function get_total_items_from_source()
-    {
-        if(!isset($this->tmp_file)){
-           return 0;
-        }
-
-        $file = new \SplFileObject( $this->tmp_file, 'r' );
-        $file_content = unserialize($file->fread($file->getSize()));
-
-        return $this->total_items = $file_content->found_items;
+    public function get_total_items_from_source( $collection_id ) {
+        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items" );
+        $info = json_decode($info['body']);
+        return $this->total_items = $info->found_items;
     }
 
     /**

@@ -13,7 +13,7 @@ class Background_Importer extends Background_Process {
 
 		$className = $data['class_name'];
 		if (class_exists($className)) {
-			$object = new \Tainacan\Importer\Test_Importer($data);
+			$object = new $className($data);
 			$runned = $object->run();
 			if (false === $runned) {
 				return false;
