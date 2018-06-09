@@ -690,9 +690,6 @@
             align-items: center;
         }
         
-        #item-creation-options-dropdown {
-            margin-right: 80px;
-        }
         .dropdown-menu {
             display: block;
 

@@ -734,12 +734,21 @@ export default {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: width 0.6s;
+
+            @media screen and (max-width: 769px) {
+                width: 100%;
+            }
         }
         .column.is-4-5 {
             width: 37.5%;
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: all 0.6s;
+
+
+            @media screen and (max-width: 769px) {
+                width: 100%;
+            }
 
             .field {
                     padding: 10px 0px 10px 25px;
