@@ -25,6 +25,7 @@ class Exposers {
 	}
 	
 	public function __construct() {
+	    self::$instance = $this;
 		$this->register_exposer_type('Tainacan\Exposers\Types\Xml');
 		$this->register_exposer_type('Tainacan\Exposers\Types\Txt');
 		$this->register_exposer_type('Tainacan\Exposers\Types\Html');
