@@ -1,3 +1,5 @@
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/tainacan/tainacan.svg?columns=In%20Progress)](https://waffle.io/tainacan/tainacan) 
+
 # Tainacan
 
 ** This is the development repository of a new version of Tainacan. If you are looking for the current stable version, please visit http://github.com/medialab-ufg/tainacan. **

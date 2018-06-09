@@ -5,8 +5,12 @@ use Tainacan;
 
 class CSV extends Importer {
 
-    public function __construct() {
-        parent::__construct();
+	protected $manual_mapping = true;
+	
+	protected $manual_collection = true;
+	
+	public function __construct($attributes = array()) {
+		parent::__construct($attributes);
 		
 		$this->set_default_options([
 			'delimiter' => ','
@@ -17,7 +21,7 @@ class CSV extends Importer {
     /**
      * @inheritdoc
      */
-    public function get_fields(){
+    public function get_source_fields(){
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
         $file->seek(0 );
         return $file->fgetcsv( $this->get_option('delimiter') );
@@ -27,9 +31,9 @@ class CSV extends Importer {
     /**
      * @inheritdoc
      */
-    public function process_item( $index ){
+    public function process_item( $index, $collection_definition ){
         $processedItem = [];
-        $headers = $this->get_fields();
+        $headers = $this->get_source_fields();
         
         // search the index in the file and get values
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
@@ -50,6 +54,8 @@ class CSV extends Importer {
         foreach ($headers as $index => $header) {
             $processedItem[ $header ] = $values[ $index ];
         }
+		
+		$this->set_progress_current($index+1);
 
         return $processedItem;
     }
@@ -57,7 +63,7 @@ class CSV extends Importer {
     /**
      * @inheritdoc
      */
-    public function get_total_items_from_source(){
+    public function get_progress_total_from_source(){
         $file = new \SplFileObject( $this->tmp_file, 'r' );
         $file->seek(PHP_INT_MAX);
         // -1 removing header

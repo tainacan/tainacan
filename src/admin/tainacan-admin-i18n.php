@@ -1,6 +1,6 @@
 <?php
 
-return [
+return apply_filters('tainacan-admin-i18n', [
 	// Tainacan common terms
 	'repository'                               => __( 'Repository', 'tainacan' ),
 	'collections'                              => __( 'Collections', 'tainacan' ),
@@ -40,8 +40,12 @@ return [
 	'add_one_item'                             => __( 'Add one item', 'tainacan' ),
 	'add_items_bulk'                           => __( 'Add items in bulk', 'tainacan' ),
 	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
+	'new_mapped_item'                          => __( 'New mapped collection', 'tainacan' ),
+        'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
+	'add_more_one_search_field'                => __( 'Add more one search field', 'tainacan' ),
+	'clear_search'                             => __( 'Clear search', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
@@ -121,7 +125,7 @@ return [
 	'label_available_filters'                  => __( 'Available Filters', 'tainacan' ),
 	'label_available_filter_types'             => __( 'Available Filter Types', 'tainacan' ),
 	'label_per_page'                           => __( 'per Page', 'tainacan' ),
-	'label_table_fields'                       => __( 'Metadata on table', 'tainacan' ),
+	'label_displayed_metadata'                   => __( 'Displayed metadata', 'tainacan' ),
 	'label_required'                           => __( 'Required', 'tainacan' ),
 	'label_allow_multiple'                     => __( 'Allow multiple values', 'tainacan' ),
 	'label_default_value'                      => __( 'Default value', 'tainacan' ),
@@ -197,6 +201,12 @@ return [
 	'label_default_view_mode'			   	   => __( 'Default view mode', 'tainacan' ),
 	'label_enabled_view_modes'			   	   => __( 'Enabled view modes', 'tainacan' ),
 	'label_view_modes_available'			   => __( 'View modes available on theme', 'tainacan' ),
+	'label_warning'							   => __( 'Warning', 'tainacan' ),
+	'label_error'							   => __( 'Erro', 'tainacan' ),
+	'label_grid'							   => __( 'Grid', 'tainacan' ),
+	'label_table'							   => __( 'Table', 'tainacan' ),
+	'label_cards'							   => __( 'Cards', 'tainacan' ),
+	'label_visualization'					   => __( 'Visualization', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -218,6 +228,7 @@ return [
 	'instruction_insert_url'					 => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 	'instruction_search'				         => __( 'Search', 'tainacan' ),
+	'instruction_search_on_repository'           => __( 'Search on repository', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
@@ -303,5 +314,5 @@ return [
 	'tainacan-filter-category-taginput'        => __( 'Taxonomy Tag Input', 'tainacan' ),
 	'tainacan-filter-category-checkbox'        => __( 'Taxonomy Check Box', 'tainacan' ),
 	'tainacan-filter-category-selectbox'       => __( 'Taxonomy Select Box', 'tainacan' )
-]
+]);
 ?>

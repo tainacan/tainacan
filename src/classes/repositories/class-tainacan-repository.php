@@ -5,6 +5,7 @@ namespace Tainacan\Repositories;
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 use Tainacan;
+use Tainacan\Repositories;
 use \Respect\Validation\Validator as v;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
@@ -427,6 +428,9 @@ abstract class Repository {
 	 */
 	public static function get_entity_by_post_type( $post_type, $post = 0 ) {
 		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
+		$item_metadata = Repositories\Item_Metadata::get_instance();
+		$item_metadata_entity = new $item_metadata->entities_type(null, null);
+		$item_metadata_post_type = $item_metadata_entity::get_post_type();
 
 		// Is it a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
@@ -436,15 +440,15 @@ abstract class Repository {
 			} else {
 				throw new \Exception( 'Collection object not found for this post' );
 			}
-		} elseif ( $post_type === \Tainacan\Repositories\Item_Metadata::get_instance()->entities_type::get_post_type() ) {
+		} elseif ( $post_type === $item_metadata_post_type ) {
 			return new Entities\Item_Metadata_Entity( null, null );
 		} else {
-			$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-			$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
-			$Tainacan_Logs        = \Tainacan\Repositories\Logs::get_instance();
-			$Tainacan_Fields      = \Tainacan\Repositories\Fields::get_instance();
-			$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
-			$Tainacan_Terms       = \Tainacan\Repositories\Terms::get_instance();
+			$Tainacan_Collections = Repositories\Collections::get_instance();
+			$Tainacan_Filters     = Repositories\Filters::get_instance();
+			$Tainacan_Logs        = Repositories\Logs::get_instance();
+			$Tainacan_Fields      = Repositories\Fields::get_instance();
+			$Tainacan_Taxonomies  = Repositories\Taxonomies::get_instance();
+			$Tainacan_Terms       = Repositories\Terms::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
@@ -455,7 +459,9 @@ abstract class Repository {
 				$Tainacan_Logs
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
-				$entity_post_type = $tnc_repository->entities_type::get_post_type();
+				$tnc_entity = new $tnc_repository->entities_type();
+				$entity_post_type = $tnc_entity::get_post_type();
+
 				if ( $entity_post_type == $post_type ) {
 					return new $tnc_repository->entities_type( $post );
 				}
@@ -500,7 +506,9 @@ abstract class Repository {
 				$Tainacan_Logs
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
-				$entity_post_type = $tnc_repository->entities_type::get_post_type();
+				$tnc_entity = new $tnc_repository->entities_type();
+				$entity_post_type = $tnc_entity::get_post_type();
+
 				if ( $entity_post_type == $post_type ) {
 					return $tnc_repository;
 				}
@@ -683,7 +691,7 @@ abstract class Repository {
 	public function diff( $old = 0, $new ) {
 		$old_entity = null;
 
-		if ( $old === 0 ) { // self diff or other entity?
+		if ( $old === 0 || is_array($old) && count($old) == 0 ) { // self diff or other entity?
 			$id = $new->get_id();
 
 			if ( ! empty( $id ) ) { // there is a repository entity?

@@ -13,6 +13,7 @@ class Exposers {
 	protected $types = [];
 	protected $mappers = [];
 	private static $instance = null;
+	private static $request = null;
 	const MAPPER_CLASS_PREFIX = 'Tainacan\Exposers\Mappers\\';
 	
 	public static function get_instance() {
@@ -35,8 +36,9 @@ class Exposers {
 		do_action('tainacan-register-exposer-mappers');
 		
 		
-		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer mapping
-		add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 ); // exposer types
+		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer types
+		add_filter( 'tainacan-rest-response', [$this, 'rest_response'], 10, 2 ); // exposer mapper
+		add_filter( 'tainacan-admin-i18n', [$this, 'mappers_i18n']);
 	}
 	
 	/**
@@ -45,12 +47,15 @@ class Exposers {
 	 * @param $class_name string | object The class name or the instance
 	 */
 	public function register_exposer_type( $class_name ){
+	    $obj = $class_name;
 		if( is_object( $class_name ) ){
 			$class_name = get_class( $class_name );
+		} else {
+		    $obj = new $class_name;
 		}
 		
 		if(!in_array( $class_name, $this->types)){
-			$this->types[] = $class_name;
+		    $this->types[$obj->slug] = $class_name;
 		}
 	}
 	
@@ -60,12 +65,15 @@ class Exposers {
 	 * @param $class_name string | object The class name or the object instance
 	 */
 	public function register_exposer_mapper( $class_name ){
+	    $obj = $class_name;
 		if( is_object( $class_name ) ){
 			$class_name = get_class( $class_name );
+		} else {
+		    $obj = new $class_name;
 		}
 		
 		if(!in_array( $class_name, $this->mappers)){
-			$this->mappers[] = $class_name;
+			$this->mappers[$obj->slug] = $class_name;
 		}
 	}
 	
@@ -77,6 +85,15 @@ class Exposers {
 	 * @return string
 	 */
 	public function check_class_name($class_name, $root = false, $prefix = 'Tainacan\Exposers\Types\\') {
+	    if(is_string($class_name)) {
+    	    if(array_key_exists($class_name, $this->types)) {
+                $class_name = $this->types[$class_name];
+                $prefix = '';
+    	    } elseif( array_key_exists($class_name, $this->mappers)) {
+    	        $class_name = $this->mappers[$class_name];
+    	        $prefix = '';
+    	    }
+	    }
 		$class = $prefix.sanitize_text_field($class_name);
 		$class = str_replace(['-', ' '], ['_', '_'], $class);
 		
@@ -90,7 +107,7 @@ class Exposers {
 	 * @return array
 	 */
 	public function rest_response($item_arr, $request) {
-		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
+		if($request->get_method() == 'GET' && $this->is_tainacan_request($request)) {
 			if($exposer = $this->request_has_mapper($request)) {
 				if(substr($request->get_route(), 0, strlen('/tainacan/v2/items')) == '/tainacan/v2/items') { //TODO do it at rest not here
 					$repos_items = \Tainacan\Repositories\Items::get_instance();
@@ -153,6 +170,15 @@ class Exposers {
 	}
 	
 	/**
+	 * check if is a tainacan request
+	 * @param \WP_REST_Request $request
+	 * @return boolean
+	 */
+	public function is_tainacan_request($request) {
+	    return substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2';
+	}
+	
+	/**
 	 * adapt request response to exposer type 
 	 * @param \WP_REST_Response $response
 	 * @param \WP_REST_Server $handler
@@ -160,11 +186,17 @@ class Exposers {
 	 * @return \WP_REST_Response
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
-		if($request->get_method() == 'GET' && substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2') {
-			if($exposer = $this->request_has_type($request)) {
-				return $exposer->rest_request_after_callbacks($response, $handler, $request);
-			}
-		}
+	    if($this->is_tainacan_request($request) && $response instanceof \WP_REST_Response ) {
+    		if($request->get_method() == 'GET') {
+    			if($exposer = $this->request_has_type($request)) {
+    				return $exposer->rest_request_after_callbacks($response, $handler, $request);
+    			}
+    		} elseif($request->get_method() == 'POST') {
+    		    if($mapper = $this->request_has_mapper($request)) {
+    		        return $this->create_mapped_fields( $response, $handler, $request, $mapper );
+    		    }
+    		}
+	    }
 		// default JSON response
 		return $response;
 	}
@@ -178,7 +210,7 @@ class Exposers {
 		return in_array($this->check_class_name($type), $this->types);
 	}
 	/**
-	 * Return Type with request has type, false otherwise
+	 * Return Type if request has type, false otherwise
 	 * @param \WP_REST_Request $request
 	 * @return Types\Type|boolean false
 	 */
@@ -230,5 +262,81 @@ class Exposers {
 			return new $mapper;
 		}
 		return false; // No mapper need, using Tainacan defautls
+	}
+	
+	/**
+	 * Add mappers data to translations
+	 * @param array $i18n_strings
+	 * @return array
+	 */
+	public function mappers_i18n($i18n_strings) {
+		foreach ($this->mappers as $mapper) {
+			$obj = new $mapper;
+			$i18n_strings[$obj->slug] = $obj->slug; // For url breadcrumb translations
+			$i18n_strings[$obj->name] = $obj->name;
+		}
+		return $i18n_strings;
+	}
+	
+	/**
+	 * Return list of registered mappers 
+	 * @param string $output output format, ARRAY_N or OBJECT
+	 */
+	public function get_mappers($output = ARRAY_N) {
+		$ret = [];
+		switch ($output) {
+			case OBJECT:
+				foreach ($this->mappers as $mapper) {
+					$ret[] = new $mapper;
+				}
+			break;
+			case ARRAY_N:
+			default:
+				return $this->mappers;
+			break;
+		}
+		return $ret;
+	}
+	
+	/**
+	 * 
+	 * @param \WP_REST_Response $response
+	 * @param \WP_REST_Server $handler
+	 * @param \WP_REST_Request $request
+	 * @param Mapper $mapper
+	 */
+	public function create_mapped_fields( $response, $handler, $request, $mapper ) {
+	    if($response instanceof \WP_REST_Response && $response->get_status() == 201) {
+	       $collection_array = $response->get_data();
+	       $id = $collection_array['id'];
+	       $mapper_fields = $mapper->metadata;
+	       if(is_array($mapper_fields) ) {
+	           $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+	           foreach ($mapper_fields as $slug => $mapper_field) {
+	               if(array_key_exists('core_field', $mapper_field) && $mapper_field['core_field'] != false) continue;
+	               
+	               $field = new \Tainacan\Entities\Field();
+	               if(
+	                       array_key_exists('field_type', $mapper_field) &&
+	                       $mapper_field['field_type'] != false &&
+	                       class_exists($mapper_field['field_type'])
+	                   ) {
+	                   $field->set_field_type($mapper_field['field_type']);
+	               } else {
+	                   $field->set_field_type('Tainacan\Field_Types\Text');
+	               }
+	               $field->set_name($mapper_field['label']);
+	               $field->set_description($mapper_field['URI']);
+	               $field->set_exposer_mapping([
+	                   $mapper->slug => $slug
+	               ]);
+	               $field->set_status('publish');
+	               $field->set_collection_id($id);
+	               $field->set_slug($slug);
+	               if($field->validate()) $Tainacan_Fields->insert($field);
+	           }
+	       }
+	    }
+	    return $response;
 	}
 }

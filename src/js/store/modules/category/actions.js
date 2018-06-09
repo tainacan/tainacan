@@ -171,7 +171,7 @@ export const updateTerm = ({ commit }, { categoryId, termId, name, description, 
 
 export const fetchTerms = ({ commit }, categoryId ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/taxonomy/${categoryId}/terms/?hideempty=0`)
+        axios.tainacan.get(`/taxonomy/${categoryId}/terms/?hideempty=0&order=asc`)
             .then(res => {
                 let terms = res.data;
                 commit('setTerms', terms);

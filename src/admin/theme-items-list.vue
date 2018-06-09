@@ -96,16 +96,11 @@ export default {
             line-height: 20px !important;
             font-size: 14px !important;
         }
-        #collection-search-button {
-            border: 1px solid $secondary !important;
-            height: 32px !important;
-            background-color: $secondary;
-            color: white;
-        }
         .input, .textarea {
             font-size: 14px;
-            border: none;
+            border: 1px solid $tainacan-input-background;
             border-radius: 1px !important;
+            background-color: white;
             box-shadow: none !important;
 
             &:focus, &:active {
@@ -123,6 +118,8 @@ export default {
             display: block;
         }
         .b-checkbox.checkbox {
+            align-items: baseline;
+            margin-bottom: 5px;
 
             input[type="checkbox"] {
                 box-shadow: none !important;
@@ -272,7 +269,6 @@ export default {
         }
 
         .select select{
-            border: none;
             border-radius: 1;
             padding: 4px 16px;
             color: #1d1d1d;
@@ -288,9 +284,19 @@ export default {
 
         .filters-menu {
             height: auto;
-            min-width: $filter-menu-width;
+            min-width: $filter-menu-width-theme;
             background-color: unset;
-            border-right: 1px solid $tainacan-input-background;
+            border-right: 0;
+            padding: 25px 25px 25px 4.1666667%;
+        }
+
+        .search-control {
+            border-bottom: 0;
+        }
+
+        .table-container {
+            padding-left: 4.166666667%;
+            padding-right: 4.166666667%;
         }
 
         #items-list-area {

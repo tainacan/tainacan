@@ -126,7 +126,25 @@ export const fetchFieldTypes = ({commit}) => {
     });
 }
 
-
 export const updateFieldTypes = ({commit}, fieldTypes) => {
     commit('setFieldTypes', fieldTypes);
+};
+
+export const fetchFieldMappers = ({commit}) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get('/field-mappers')
+            .then((res) => {
+                let fieldMappers = res.data;
+                commit('setFieldMappers', fieldMappers);
+                resolve(fieldMappers);
+            })
+            .catch((error) => {
+                console.log(error);
+                reject(error);
+            });
+    });
+}
+
+export const updateFieldMappers = ({commit}, fieldMappers) => {
+    commit('setFieldMappers', fieldMappers);
 };

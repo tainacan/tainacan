@@ -21,7 +21,7 @@
                                 :title="$i18n.getHelperTitle('items', 'status')"
                                 :message="$i18n.getHelperMessage('items', 'status')"/>
                     </div>
-                    <div class="section-box section-status">
+                    <div class="section-status">
                         <div class="field">
                             <!-- <div class="block">
                                 <b-radio 
@@ -336,6 +336,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { eventBus } from '../../../js/event-bus-web-components.js'
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemEditionForm',
@@ -675,15 +676,18 @@ export default {
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
-            this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_item_not_saved'),
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_item_not_saved'),
                     onConfirm: () => {
                         next();
                     },
-                    cancelText: this.$i18n.get('cancel'),
-                    confirmText: this.$i18n.get('continue'),
-                    type: 'is-secondary'
-                });  
+                }
+            });  
         } else {
             next()
         }  
@@ -803,7 +807,7 @@ export default {
         }
     }
     .section-status{
-        width: 174px;        
+        padding: 16px 0;     
     }
     .section-thumbnail {
         width: 174px;

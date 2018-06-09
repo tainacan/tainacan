@@ -301,6 +301,7 @@
                                         class="control"
                                         custom>
                                     <b-checkbox
+                                            v-if="registeredViewModes[viewMode] != undefined"
                                             @input="updateViewModeslist(viewMode)"
                                             :value="checkIfViewModeEnabled(viewMode)">
                                         {{ registeredViewModes[viewMode].label }}
@@ -326,6 +327,7 @@
                                 @focus="clearErrors('default_view_mode')">
                             <option
                                     v-for="(viewMode, index) of form.enabled_view_modes"
+                                    v-if="registeredViewModes[viewMode] != undefined"
                                     :key="index"
                                     :value="viewMode">{{ registeredViewModes[viewMode].label }}
                             </option>
@@ -408,6 +410,8 @@ export default {
             editFormErrors: {},
             formErrorMessage: '',
             isNewCollection: false,
+            isMapped: false,
+            mapper: false,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
             isFetchingModerators: false,
@@ -492,7 +496,7 @@ export default {
             this.isLoading = true;
 
             // Creates draft Collection
-            let data = { name: '', description: '', status: 'auto-draft'};
+            let data = { name: '', description: '', status: 'auto-draft', mapper: (this.isMapped && this.mapper != false ? this.mapper : false ) };
             this.sendCollection(data).then(res => {
 
                 this.collectionId = res.id;
@@ -715,6 +719,15 @@ export default {
 
                 this.isLoading = false; 
             });
+        } else {
+            var tmppath = this.$route.fullPath.split("/");
+            var mapper = tmppath.pop();
+            if(tmppath.pop() == 'new') {
+                this.isNewCollection = true;
+                this.isMapped = true;
+                this.mapper = mapper;
+                this.createNewCollection();
+            }
         }
     },
     mounted() {

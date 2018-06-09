@@ -4,7 +4,7 @@
         <div v-if="type === 'date'">
             <b-datepicker
                     :placeholder="$i18n.get('label_selectbox_init')"
-                    :class="{'has-content': date_init !== undefined && date_init !== ''}"
+                    :class="{'has-content': date_init != undefined && date_init != ''}"
                     v-model="date_init"
                     size="is-small"
                     @focus="isTouched = true"
@@ -12,7 +12,7 @@
                     icon="calendar-today"/>
             <b-datepicker
                     :placeholder="$i18n.get('label_selectbox_init')"
-                    :class="{'has-content': date_end !== undefined && date_end !== ''}"
+                    :class="{'has-content': date_end != undefined && date_end != ''}"
                     v-model="date_end"
                     size="is-small"
                     @input="validate_values()"
@@ -25,7 +25,7 @@
                 class="columns"
                 v-else>
             <b-input
-                    :class="{'has-content': value_init !== undefined && value_init !== ''}"
+                    :class="{'has-content': value_init != undefined && value_init != ''}"
                     size="is-small"
                     type="number"
                     step="any"
@@ -33,7 +33,7 @@
                     class="column"
                     v-model="value_init"/>
             <b-input
-                    :class="{'has-content': value_end !== undefined && value_end !== ''}"
+                    :class="{'has-content': value_end != undefined && value_end != ''}"
                     size="is-small"
                     type="number"
                     step="any"

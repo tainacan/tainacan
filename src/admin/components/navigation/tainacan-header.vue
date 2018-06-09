@@ -20,7 +20,7 @@
                 <div class="control has-icons-right is-small is-clearfix">
                     <input 
                             autocomplete="on" 
-                            :placeholder="$i18n.get('instruction_search_repository')" 
+                            :placeholder="$i18n.get('instruction_search_on_repository')"
                             class="input is-small" 
                             type="search" 
                             v-model="searchTerm">
@@ -28,7 +28,7 @@
                         <i class="mdi mdi-magnify" />
                     </span>
                 </div>
-                <a href="">{{ $i18n.get('advanced_search') }}</a>
+                <a @click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>
             </span>
             <a 
                     class="level-item" 
@@ -48,6 +48,16 @@ export default {
             logoHeader: tainacan_plugin.base_url + '/admin/images/tainacan_logo_header.png',
             wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             searchTerm: ''
+        }
+    },
+    methods: {
+        toItemsPage(){
+          this.$router.push({
+              path: '/items',
+              query: {
+                  openAdvancedSearch: true
+              }
+          });
         }
     },
     props: {
@@ -105,12 +115,13 @@ export default {
                 color: $tertiary;
             }
             .search-area {
-                display: none;//display: flex;
+                display: flex;
                 align-items: center;
                 margin-right: 36px;
 
                 .control {
                     input {
+                        border-width: 0 !important;
                         height: 27px;
                         font-size: 11px;
                         color: $gray-light;

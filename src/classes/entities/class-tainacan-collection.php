@@ -699,8 +699,14 @@ class Collection extends Entity {
 	 *
 	 * @return void
 	 */
-	function set_moderators_ids( array $value ) {
-		
+	function set_moderators_ids( $value ) {
+	    if(!is_array($value)) {
+	        if(empty($value)) {
+                $value = [];
+	        } else {
+                throw new \Exception('moderators_ids must be a array of users ids');
+	        }
+	    }
 		// make sure you never have duplicated moderators 
 		$value = array_unique($value);
 		

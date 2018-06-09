@@ -174,7 +174,6 @@
             padding-top: 0px !important;
             select {
                 font-size: 14px;
-                border: none;
                 border-radius: 1px !important;
                 font-weight: normal;
                 height: 30px !important;
@@ -207,7 +206,6 @@
         .input, .textarea, .taginput-container {
 
             font-size: 14px;
-            border: none !important;
             border-radius: 1px !important;
             background-color: white;
             color: $tainacan-input-color;

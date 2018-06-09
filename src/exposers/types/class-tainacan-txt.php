@@ -9,6 +9,7 @@ namespace Tainacan\Exposers\Types;
 class Txt extends Type {
 	
 	public $mappers = ['Value'];
+	public $slug = 'txt'; // type slug for url safe
 	
 	/**
 	 * 

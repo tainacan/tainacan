@@ -13,6 +13,13 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         if (postQueries.metaquery != undefined && postQueries.metaquery.length > 0)
             hasFiltered = true;
 
+        // Garanttees at least empty fetch_only are passed in case none is found
+        if (qs.stringify(postQueries.fetch_only) == '')
+            dispatch('search/add_fetchonly', {} , { root: true });
+                
+        if (qs.stringify(postQueries.fetch_only['meta']) == '')
+            dispatch('search/add_fetchonly_meta', 0 , { root: true });
+
         // Differentiates between repository level and collection level queries
         let endpoint = '/collection/'+collectionId+'/items?'
 
@@ -22,26 +29,23 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         if (!isOnTheme)
             endpoint = endpoint + 'context=edit&'
             
-        if (qs.stringify(postQueries.fetch_only['meta']) != '') {
-            axios.tainacan.get(endpoint + qs.stringify(postQueries))
-            .then(res => {
-                
-                let items = res.data;
-                let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
-                            
-                if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
-                    commit('setItemsListTemplate', items );
-                    resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
-                } else {
-                    commit('setItems', items );
-                    resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
-                }
-                dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
-            })
-            .catch(error => reject(error));
-        } else {
-            reject("No fecth_only meta was found.");   
-        }
+        axios.tainacan.get(endpoint + qs.stringify(postQueries))
+        .then(res => {
+            
+            let items = res.data;
+            let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
+                        
+            if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
+                commit('setItemsListTemplate', items );
+                resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
+            } else {
+                commit('setItems', items );
+                resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
+            }
+            dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
+        })
+        .catch(error => reject(error));
+        
     });
     
 }
@@ -179,15 +183,16 @@ export const updateCollection = ({ commit }, {
     });
 }
 
-export const sendCollection = ( { commit }, { name, description, status }) => {
+export const sendCollection = ( { commit }, { name, description, status, mapper }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post('/collections/', {
             name: name,
             description: description,
-            status: status
+            status: status,
+            'exposer-map': mapper
         })
             .then( res => {
-                commit('setCollection', { name: name, description: description, status: status });
+                commit('setCollection', { name: name, description: description, status: status, mapper: mapper });
                 resolve( res.data );
             })
             .catch(error => {

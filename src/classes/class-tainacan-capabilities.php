@@ -268,6 +268,16 @@ class Capabilities {
 			]
 		],
 	];
+	
+	public static $dependencies = [
+	    "tainacan-items" => [
+	        'edit_posts'           => 'upload_files',
+	        "edit_private_posts"   => 'upload_files',
+	        "edit_published_posts" => 'upload_files',
+	        "edit_others_posts"    => 'upload_files'
+	    ]
+	];
+	
     private static $instance = null;
 
     public static function get_instance()
@@ -349,6 +359,43 @@ class Capabilities {
 		return $translations;
 	}
 	
+	protected function check_dependencies($role, $post_type, $cap, $add = true) {
+	    if(
+	        array_key_exists($post_type, self::$dependencies) &&
+	        array_key_exists($cap, self::$dependencies[$post_type])
+	    ) {
+	        $added = false;
+	        if(! $role->has_cap(self::$dependencies[$post_type][$cap]) && $add) {
+	            $role->add_cap(self::$dependencies[$post_type][$cap]);
+	            $added = true;
+	        }
+	        if($role instanceof \WP_User && $add) { //moderator
+	            $append_caps = get_user_meta($role->ID, '.tainacan-dependecies-caps', true);
+	            if(! is_array($append_caps)) $append_caps = [];
+	            if( 
+	                (! array_key_exists(self::$dependencies[$post_type][$cap], $append_caps) && $added ) || // we never added and need to add
+	                (
+	                    array_key_exists(self::$dependencies[$post_type][$cap], $append_caps) &&
+	                    $append_caps[self::$dependencies[$post_type][$cap]] === false &&
+	                    $added
+	                ) // we added but before is not need to add
+	            ) {
+	                $append_caps[self::$dependencies[$post_type][$cap]] = 0;
+	            }
+	            else { // we to not added this cap
+	                $append_caps[self::$dependencies[$post_type][$cap]] = false;
+	            }
+	            if($append_caps[self::$dependencies[$post_type][$cap]] !== false) {
+	               $append_caps[self::$dependencies[$post_type][$cap]]++; // add 1 to each collection he is a moderator
+	               update_user_meta($role->ID, '.tainacan-dependecies-caps', $append_caps);
+	            }
+	        }
+	        return self::$dependencies[$post_type][$cap];
+	    }
+	    return false;
+	}
+	
+	
 	/**
 	 * Update post_type caps using WordPress basic roles and register tainacan roles
 	 */
@@ -368,6 +415,7 @@ class Capabilities {
 				
 				foreach ($caps as $cap) {
 					$role->add_cap($entity_cap->$cap);
+					$this->check_dependencies($role, $post_type, $cap);
 				}
 				
 				$tainacan_roles = $this->get_tainacan_roles();
@@ -384,6 +432,7 @@ class Capabilities {
 						
 					foreach ($caps as $cap) {
 						$tainacan_role->add_cap($entity_cap->$cap);
+						$this->check_dependencies($tainacan_role, $post_type, $cap);
 					}
 				}
 				
@@ -414,6 +463,7 @@ class Capabilities {
 			
 			foreach ($caps as $cap) {
 				$role->add_cap($collection_items_caps->$cap);
+				$this->check_dependencies($role, 'tainacan-items', $cap);
 			}
 		}
         
@@ -464,6 +514,17 @@ class Capabilities {
                     $caps = $defaults_caps['tainacan-items']['editor'];
                     foreach ($caps as $cap) {
         				$user->remove_cap($collection_items_caps->$cap);
+        				$dep_cap = $this->check_dependencies($user, 'tainacan-items', $cap, false);
+        				if($dep_cap !== false) {
+            				$appended_caps = get_user_meta($user->ID, '.tainacan-dependecies-caps', true);
+            				if(array_key_exists($dep_cap, $appended_caps) && $appended_caps[$dep_cap] !== false && $appended_caps[$dep_cap] > 0) {
+            				    $appended_caps[$dep_cap]--;
+            				    update_user_meta($user->ID, '.tainacan-dependecies-caps', $appended_caps);
+            				    if($appended_caps == 0) { // they are not a moderator of a collection, remove cap at all
+            				        $user->remove_cap($cap);
+            				    }
+            				}
+        				}
         			}
                 }
             }
@@ -487,6 +548,7 @@ class Capabilities {
                     $caps = $defaults_caps['tainacan-items']['editor'];
                     foreach ($caps as $cap) {
         				$user->add_cap($collection_items_caps->$cap);
+        				$this->check_dependencies($user, 'tainacan-items', $cap);
         			}
                 }
             }

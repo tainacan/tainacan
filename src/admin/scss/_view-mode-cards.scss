@@ -1,0 +1,118 @@
+.tainacan-cards-container {
+    min-height: 200px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: center;
+
+    .selected-card {
+        background-color: $primary-lighter;
+        .metadata-title {
+            background-color: $primary-lighter-hover;
+        }
+    }
+
+    .tainacan-card {
+        padding: 0px;
+        flex-basis: 0;
+        margin: 0.75rem;
+        max-width: 410px;
+        min-width: 410px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $tainacan-input-background !important;
+        }
+
+        .card-checkbox {
+            position: absolute;
+            margin-left: 1.0rem;
+            margin-top: 9px;
+        }
+        .actions-area {
+            position: relative;
+            float: right;
+            top: -7px;
+            padding-right: 12px;
+            width: 80px;
+            display: flex;
+            justify-content: space-between;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+        &:hover .actions-area {
+            visibility: visible;
+            opacity: 1.0;
+        }
+
+        .card-line {
+            height: 1px;
+            background-color: $tainacan-input-background;
+            margin-left: -44px;
+            margin-right: -44px;
+            opacity: 0;
+            visibility: hidden;
+        }
+        img {
+            width: 170px;
+            height: auto;
+            border-radius: 2px;
+        }
+        &:hover img {
+            border-radius: 0;
+        }
+
+        .metadata-title {
+            flex-shrink: 0;
+            font-size: 0.875rem;
+            padding: 0.75rem 2.75rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            margin-bottom: -27px;
+        }
+        &:hover .metadata-title {
+            background-color: $gray-hover !important;
+        }
+
+        .media {
+            margin-bottom: -6px;
+            width: 100%;
+
+            .list-metadata {
+                padding: 0.75rem 1.5rem;
+                flex: 1;
+                font-size: 0.6875rem;
+                color: gray;
+                overflow: hidden;
+                width: 100%;
+            
+                .metadata-label {
+                    font-size: 0.75rem;
+                    line-height: 1.0;
+                    margin-bottom: 0.2rem;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    font-weight: 500;
+                    color: $gray-light;
+                }
+
+                .metadata-value {
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    margin-bottom: 1rem;
+                }
+   
+            }
+        }
+    
+    
+    }
+}
+
+

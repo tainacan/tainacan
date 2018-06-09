@@ -29,9 +29,10 @@
                                 :options="{ 
                                         group: { name:'fields', pull: false, put: true }, 
                                         sort: openedFieldId == '' || openedFieldId == undefined, 
-                                        disabled: openedFieldId != '' && openedFieldId != undefined,
+                                        //disabled: openedFieldId != '' && openedFieldId != undefined,
                                         handle: '.handle', 
                                         ghostClass: 'sortable-ghost',
+                                        chosenClass: 'sortable-chosen',
                                         filter: 'not-sortable-item', 
                                         animation: '250'}">
                             <div  
@@ -148,6 +149,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import GripIcon from '../other/grip-icon.vue';
 import FieldEditionForm from './../edition/field-edition-form.vue';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'FieldsList',
@@ -194,16 +196,19 @@ export default {
                 hasUnsavedForms = true;
         }
         if ((this.openedFieldId != '' && this.openedFieldId != undefined) || hasUnsavedForms ) {
-            this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_fields_not_saved'),
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_fields_not_saved'),
                     onConfirm: () => {
                         this.onEditionCanceled();
                         next();
                     },
-                    cancelText: this.$i18n.get('cancel'),
-                    confirmText: this.$i18n.get('continue'),
-                    type: 'is-secondary'
-                });  
+                }
+            });  
         } else {
             next()
         }  

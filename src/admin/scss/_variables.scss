@@ -12,17 +12,20 @@ $tertiary-invert: findColorInvert($tertiary);
 
 $primary-light:#c1dae0;
 $primary-lighter: #e6f6f8;
+$primary-lighter-hover: #d1e6e6;
 $primary-dark: #55A0AF;
 $primary-darker: darken($primary-dark, 5%);
 
 $success: #25a189;
 $success-invert: findColorInvert($success);
 
+$modal-backgound-color: #bfd8dd;
 $separator-color: #2b98a4;
 $tainacan-input-color: #1d1d1d;
 $tainacan-input-background: #e5e5e5;
 $tainacan-placeholder-color: #898d8f;
 $draggable-border-color: #d8d8d8;
+$gray-hover: #dcdcdc;
 
 $gray: #b1b1b1; 
 $gray-invert: findColorInvert($gray);
@@ -62,6 +65,7 @@ $header-height: 53px;
 $subheader-height: 82px;
 $side-menu-width: 180px;
 $filter-menu-width: 200px;
+$filter-menu-width-theme: 270px;
 $page-height: calc(100% - 53px);
 
 // Overall Pages padding:
