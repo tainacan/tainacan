@@ -207,7 +207,17 @@ abstract class Background_Process extends \WP_Background_Process {
 		//error_log('new request');
 		do {
 			$batch = $this->get_batch();
-			$task = $this->task( $batch->data );
+			
+			// TODO: find a way to catch and log PHP errors as
+			try {
+				$task = $this->task( $batch->data, $batch->key );
+			} catch (\Exception $e) {
+				// TODO: Add Stacktrace
+				$this->write_error_log($batch->key, ['Fatal Error: ' . $e->getMessage()]);
+				$this->write_error_log($batch->key, ['Process aborted']);
+				$task = false;
+			}
+			
 
 			// Update or close current batch.
 			if ( false !== $task )  {
@@ -255,4 +265,73 @@ abstract class Background_Process extends \WP_Background_Process {
 			wp_clear_scheduled_hook( $this->cron_hook_identifier );
 		}
 	}
+	
+	
+	
+	/**
+	 * LOG
+	 */
+	
+	protected function write_log_to_file($key, array $log, $type = '') {
+		
+		$upload_dir = wp_upload_dir();
+		$upload_dir = trailingslashit( $upload_dir['basedir'] );
+		$logs_folder = $upload_dir . 'tainacan';
+		
+		if (sizeof($log) < 1) {
+			return false;
+		}
+		
+		if (!is_dir($logs_folder)) {
+			if (!mkdir($logs_folder)) {
+				return false;
+			}
+		}
+		
+		$suffix = $type ? '-' . $type : '';
+		
+		$filename = 'bg-' . $this->action . '-' . $key . $suffix . '.log';
+		
+		$filepath = $logs_folder . '/' . $filename;
+		
+		file_put_contents($filepath, $this->recursive_stingify_log_array($log), FILE_APPEND);
+		
+		//$fh = fopen($filepath, 'a');
+		//
+		//foreach ($log as $message) {
+		//	fwrite($fh, $message."\n");
+		//}
+		//
+		//fclose($fh);
+		
+	}
+	
+	protected function write_log($key, $log) {
+		$this->write_log_to_file($key, $log);
+	}
+	protected function write_error_log($key, $log) {
+		$this->write_log_to_file($key, $log, 'error');
+	}
+	
+	private function recursive_stingify_log_array(array $log, $break = true) {
+		$return = '';
+		foreach ($log as $k => $l) {
+			if (!is_numeric($k)) {
+				$return .= $k . ': ';
+			}
+			if (is_array($l)) {
+				//$return .= $this->recursive_stingify_log_array($l, false);
+				$return .= print_r($l, true);
+			} elseif (is_string($l)) {
+				$return .= $l;
+			}
+			$return .="\n";
+			//$return .= $break ? "\n" : ', ';
+			
+		}
+		
+		return $return;
+		
+	}
+	
 }

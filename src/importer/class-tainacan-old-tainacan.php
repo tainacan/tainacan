@@ -590,7 +590,7 @@ class Old_Tainacan extends Importer{
     {
         if(is_wp_error($result))
         {
-            $this->add_log('error', $result->get_error_message());
+            $this->add_error_log($result->get_error_message());
             return false;
         }else if(isset($result['body']))
         {

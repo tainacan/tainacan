@@ -9,12 +9,16 @@ class Background_Importer extends Background_Process {
 	 */
 	protected $action = 'import';
 	
-	function task($data) {
+	function task($data, $key) {
 
 		$className = $data['class_name'];
 		if (class_exists($className)) {
 			$object = new $className($data);
 			$runned = $object->run();
+			
+			$this->write_log($key, $object->get_log());
+			$this->write_error_log($key, $object->get_error_log());
+			
 			if (false === $runned) {
 				return false;
 			}

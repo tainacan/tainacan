@@ -144,6 +144,10 @@ abstract class Importer {
 
 	private $url = '';
 	
+	private $log = [];
+	
+	private $error_log = [];
+	
 	/**
 	 * List of attributes that are saved in DB and that are used to 
 	 * reconstruct the object 
@@ -347,6 +351,14 @@ abstract class Importer {
 		$this->transients = $data;
 	}
 	
+	public function get_log() {
+		return $this->log;
+	}
+	
+	public function get_error_log() {
+		return $this->error_log;
+	}
+	
 	////////////////////////////////////
 	// Utilities
 	
@@ -369,10 +381,13 @@ abstract class Importer {
      * log the actions from importer
      *
      * @param $type
-     * @param $message
+     * @param $messagelog
      */
-    public function add_log($type, $message ){
-        $this->logs[] = [ 'type' => $type, 'message' => $message ];
+    public function add_log($message ){
+        $this->log[] = $message;
+    }
+	public function add_error_log($message ){
+        $this->error_log[] = $message;
     }
 	
 	public function add_collection(array $collection) {
@@ -548,7 +563,7 @@ abstract class Importer {
 		if( $processed_item) {
 			$this->insert( $processed_item, $current_collection );
 		} else {
-			$this->add_log('error', 'failed on item '. $start );
+			$this->add_error_log('failed on item '. $start );
 		}
 		
 		return $this->next_item();
@@ -620,7 +635,7 @@ abstract class Importer {
         $collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
 		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['map']) ) {
-			$this->add_log('error','Collection misconfigured');
+			$this->add_error_log('Collection misconfigured');
             return false;
 		}
 		
@@ -653,7 +668,7 @@ abstract class Importer {
             if( $item->validate() ){
                 $insertedItem = $Tainacan_Items->insert( $item );
             } else {
-                $this->add_log( 'error', 'Item ' . $index . ': ' ); // TODO add the  $item->get_errors() array
+                $this->add_error_log( 'Item ' . $index . ': ' ); // TODO add the  $item->get_errors() array
                 return false;
             }
 
@@ -663,17 +678,17 @@ abstract class Importer {
                 if( $itemMetadata->validate() ){
                     $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
                 } else {
-                    $this->add_log( 'error', 'Item ' . $insertedItem->get_id() . ' on field '. $itemMetadata->get_field()->get_name()
+                    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' on field '. $itemMetadata->get_field()->get_name()
                         .' has error ' . $itemMetadata->get_errors() );
                     continue;
                 }
 
                 if( $result ){
                 	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
-                    $this->add_log( 'success', 'Item ' . $insertedItem->get_id() .
+                    $this->add_log( 'Item ' . $insertedItem->get_id() .
                         ' has inserted the values: ' . $values . ' on field: ' . $itemMetadata->get_field()->get_name() );
                 } else {
-                    $this->add_log( 'error', 'Item ' . $insertedItem->get_id() . ' has an error' );
+                    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
                 }
             }
 
@@ -683,14 +698,14 @@ abstract class Importer {
 	            $insertedItem = $Tainacan_Items->update( $insertedItem );
             } else {
 				//error_log(print_r($insertedItem->get_errors(), true));
-	            //$this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
+	            //$this->add_error_log( 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
 	            return false;
             }
 
             return $insertedItem;
 			
         } else {
-            $this->add_log( 'error', 'Collection not set');
+            $this->add_error_log(  'Collection not set');
             return false;
         }
 
@@ -712,7 +727,7 @@ abstract class Importer {
 		if (method_exists($this, $method_name)) {
 			$result = $this->$method_name();
 		} else {
-			$this->add_log( 'error', 'Callback not found for step ' . $steps[$current_step]['name']);
+			$this->add_error_log( 'Callback not found for step ' . $steps[$current_step]['name']);
 			$result = false;
 		}
 		if($result === false || (!is_numeric($result) || $result < 0)) {
