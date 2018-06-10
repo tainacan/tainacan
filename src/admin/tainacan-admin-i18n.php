@@ -1,6 +1,13 @@
 <?php
 
 return [
+
+	// Advanced search comparators
+	'is_equal_to'                              => __( 'Equal', 'tainacan' ),
+	'is_not_equal_to'                          => __( 'Not Equal', 'tainacan'),
+	'contains'                                 => __( 'Contains', 'tainacan'),
+	'not_contains'                             => __( 'Not Contains', 'tainacan' ),
+
 	// Tainacan common terms
 	'repository'                               => __( 'Repository', 'tainacan' ),
 	'collections'                              => __( 'Collections', 'tainacan' ),
@@ -228,6 +235,7 @@ return [
 	'instruction_search_on_repository'           => __( 'Search on repository', 'tainacan' ),
 
 	// Info. Other feedback to user.
+	'info_search_results'                        => __( 'Search Results', 'tainacan' ),
 	'info_name_is_required'                    => __( 'Name is required.', 'tainacan' ),
 	'info_no_collection_created'               => __( 'No collection was created in this repository.', 'tainacan' ),
 	'info_no_collection_draft'                 => __( 'No draft collection found.', 'tainacan' ),

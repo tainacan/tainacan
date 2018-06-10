@@ -46,7 +46,7 @@ import VueMask from 'v-mask';
 
 // Configure and Register Plugins
 Vue.use(Buefy);
-Vue.use(VTooltip)
+Vue.use(VTooltip);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);

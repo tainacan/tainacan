@@ -17,11 +17,21 @@ export default {
                     this.$store.dispatch('search/setPage', 1);
         
                     if( data.taxonomy ){
-                      this.add_taxquery(data);
+                        this.add_taxquery(data);
                     } else {
                         this.add_metaquery(data);
                     }
         
+                    this.updateURLQueries();
+                });
+
+                this.$root.$on('searchAdvanced', advancedSearchQuery => {
+                    this.$store.dispatch('search/setPage', 1);
+
+                    console.log('Emit caught', advancedSearchQuery);
+
+                    this.searchAdvanced(advancedSearchQuery);
+
                     this.updateURLQueries();
                 });
             },
@@ -39,15 +49,27 @@ export default {
                             this.$route.query.order = 'DESC';
                         if (this.$route.query.orderby == undefined)
                             this.$route.query.orderby = 'date';
-                        
-                        this.$store.dispatch('search/set_postquery', this.$route.query);
-                        
+
+                        if(this.$route.query.advancedSearch){
+                            delete this.$route.query.advancedSearch;
+
+                            console.log('Route watch: '+ this.$route.query);
+
+                            this.$store.dispatch('search/set_advanced_query', this.$route.query);
+                        } else {
+                            this.$store.dispatch('search/set_postquery', this.$route.query);
+                        }
+
                         this.loadItems(to);
                     }
                     
                 }
             },
             methods: {
+                searchAdvanced(data) {
+                    this.$store.dispatch('search/set_advanced_query', data);
+                    this.updateURLQueries(true);
+                },
                 add_metaquery( data ){
                     if ( data && data.collection_id ){
                         this.$store.dispatch('search/add_metaquery', data );
@@ -112,9 +134,15 @@ export default {
                     this.$store.dispatch('search/setViewMode', viewMode);
                     this.updateURLQueries();  
                 },
-                updateURLQueries() {
+                updateURLQueries(isAdvancedSearch = false) {
                     this.$router.push({ query: {}});
-                    this.$router.push({ query: this.$store.getters['search/getPostQuery'] });
+
+                    if(isAdvancedSearch) {
+                        this.$router.push({query: this.$store.getters['search/getAdvancedSearchQuery']});
+                        console.log(this.$route);
+                    } else {
+                        this.$router.push({query: this.$store.getters['search/getPostQuery']});
+                    }
                 },
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
@@ -126,9 +154,10 @@ export default {
                         this.$emit( 'hasToPrepareFieldsAndFilters', to);
                     } else {
                         this.$emit( 'isLoadingItems', true);
-                        this.$store.dispatch('collection/fetchItems', 
-                            {   'collectionId': this.collectionId, 
-                                'isOnTheme': (this.$route.name == null) 
+
+                        this.$store.dispatch('collection/fetchItems', {
+                            'collectionId': this.collectionId,
+                            'isOnTheme': (this.$route.name == null)
                         })
                         .then((res) => {
                             this.$emit( 'isLoadingItems', false);

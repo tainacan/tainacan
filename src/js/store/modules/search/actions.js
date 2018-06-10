@@ -7,6 +7,10 @@ export const set_postquery = ({ commit }, postquery ) => {
     commit('setPostQuery', postquery );
 };
 
+export const set_advanced_query = ({commit}, advancedSearchQuery) => {
+    commit('setAdvancedSearchQuery', advancedSearchQuery);
+};
+
 // Meta Queries from filters
 export const add_metaquery = ( { commit }, filter  ) => {
     if( filter && filter.value.length === 0 ){

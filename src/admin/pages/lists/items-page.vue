@@ -315,11 +315,38 @@
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div class="above-search-control">
 
+                <div
+                        v-if="openAdvancedSearch && advancedSearchResults">
+                    <div class="advanced-search-results-title">
+                        <h1>{{ $i18n.get('info_search_results') }}</h1>
+                        <hr>
+                    </div>
+                </div>
+
                 <!-- Admin Table -->
+
+                <!-- When advanced search -->
                 <items-list
-                        v-if="!isOnTheme && 
+                        v-if="!isOnTheme &&
+                              !isLoadingItems &&
+                              totalItems > 0 &&
+                              openAdvancedSearch &&
+                              advancedSearchResults"
+
+                        :collection-id="collectionId"
+                        :table-fields="tableFields"
+                        :items="items"
+                        :is-loading="isLoadingItems"
+                        :is-on-trash="status == 'trash'"
+                        :view-mode="adminViewMode"/>
+
+                <!-- Regular -->
+                <items-list
+                        v-else-if="!isOnTheme &&
                               !isLoadingItems && 
-                              totalItems > 0"
+                              totalItems > 0 &&
+                              !openAdvancedSearch"
+
                         :collection-id="collectionId"
                         :table-fields="tableFields"
                         :items="items"
@@ -371,7 +398,18 @@
                 </section>
 
                 <!-- Pagination -->
-                <pagination v-if="totalItems > 0 && (!isOnTheme || registeredViewModes[viewMode].show_pagination)"/>
+
+                <!-- When advanced search -->
+                <pagination
+                        v-if="totalItems > 0 &&
+                         (!isOnTheme || registeredViewModes[viewMode].show_pagination) &&
+                          advancedSearchResults"/>
+
+                <!-- Regular -->
+                <pagination
+                        v-else-if="totalItems > 0 &&
+                         (!isOnTheme || registeredViewModes[viewMode].show_pagination) &&
+                          !openAdvancedSearch"/>
             </div>
         </div>
         
@@ -405,6 +443,7 @@
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 adminViewMode: 'table',
                 openAdvancedSearch: false,
+                advancedSearchResults: false,
             }
         },
         props: {
@@ -668,6 +707,23 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
+
+    .advanced-search-results-title {
+        padding: 0 $table-side-padding;
+
+        h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $tertiary;
+            display: inline-block;
+        }
+
+        hr{
+            margin: 3px 0px 4px 0px;
+            height: 1px;
+            background-color: $secondary;
+        }
+    }
 
     .tnc-advanced-search-close {
         padding-top: 47px;

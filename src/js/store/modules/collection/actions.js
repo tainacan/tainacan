@@ -3,6 +3,7 @@ import qs from 'qs';
 
 export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, isOnTheme }) => {
     commit('cleanItems');
+
     return new Promise ((resolve, reject) => {
         
         // Adds queries for filtering
@@ -48,7 +49,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         
     });
     
-}
+};
 
 export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     return new Promise((resolve, reject) => {
@@ -86,7 +87,7 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status }
             reject(error);
         });
     });
-}
+};
 
 export const fetchCollection = ({ commit }, id) => {
     commit('cleanCollection');
@@ -101,7 +102,7 @@ export const fetchCollection = ({ commit }, id) => {
             reject(error);
         })
     });
-}
+};
 
 export const fetchCollectionName = ({ commit }, id) => {
     //commit('cleanCollectionName');
@@ -116,7 +117,7 @@ export const fetchCollectionName = ({ commit }, id) => {
             reject(error);
         })
     });
-}
+};
 
 export const deleteCollection = ({ commit }, { collectionId, isPermanently }) => {
     return new Promise((resolve, reject) => { 
@@ -134,7 +135,7 @@ export const deleteCollection = ({ commit }, { collectionId, isPermanently }) =>
             reject(error);
         })
     });
-}
+};
 
 export const updateCollection = ({ commit }, { 
         collection_id, 
@@ -181,7 +182,7 @@ export const updateCollection = ({ commit }, {
         });
 
     });
-}
+};
 
 export const sendCollection = ( { commit }, { name, description, status }) => {
     return new Promise(( resolve, reject ) => {
@@ -329,4 +330,4 @@ export const fetchCollectionsForParent = ({ commit }) => {
             reject(error);
         })
     });
-}
+};

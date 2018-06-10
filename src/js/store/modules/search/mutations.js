@@ -8,9 +8,15 @@ export const setPostQuery = ( state, postquery ) => {
     state.postquery = postquery;
 };
 
+export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
+    state.advancedSearchQuery = advancedSearchQuery;
+};
+
 export const addMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
+
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
+
     if ( index >= 0 ){
         Vue.set( state.postquery.metaquery, index, {
             key: filter.field_id,
@@ -18,7 +24,7 @@ export const addMetaQuery = ( state, filter ) => {
             compare: filter.compare,
             type: filter.type
         } );
-    }else{
+    } else{
         state.postquery.metaquery.push({
             key: filter.field_id,
             value: filter.value,
