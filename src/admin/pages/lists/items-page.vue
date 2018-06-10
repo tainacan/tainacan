@@ -148,7 +148,7 @@
                         <button
                                 class="button is-white"
                                 slot="trigger">
-                            <span>{{ $i18n.get('label_table_fields') }}</span>
+                            <span>{{ $i18n.get('label_displayed_metadata') }}</span>
                             <b-icon icon="menu-down"/>
                         </button>
                         <div class="metadata-options-container">
@@ -222,6 +222,7 @@
                                 <span 
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
+                                    &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
                                 <b-icon icon="menu-down" />
                             </button>
                             <b-dropdown-item 
@@ -253,6 +254,7 @@
                                                         'table' : (adminViewMode == 'cards' ?
                                                         'view-list' : 'view-grid')"/>
                                 </span>
+                                &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
                                 <b-icon icon="menu-down" />
                             </button>
                             <b-dropdown-item :value="'table'">
@@ -763,21 +765,22 @@
         .search-area {
             display: flex;
             align-items: center;
-            margin-right: 36px;
+            width: 100%;
 
             .control {
+                width: 100%;
+
                 input {
                     height: 27px;
                     font-size: 11px;
                     color: $gray-light;
-                    width: 148px;
                 }
                 .icon {
                     pointer-events: all;
                     cursor: pointer;
                     color: $tertiary;
                     height: 27px;
-                    font-size: 18px;
+                    font-size: 18px !important;
                 }
                 margin-bottom: 5px;
             }
@@ -786,6 +789,11 @@
         .label {
             font-size: 12px;
             font-weight: normal;
+        }
+
+        .checkbox {
+            margin-bottom: 5px;
+            align-items: baseline;
         }
 
     }

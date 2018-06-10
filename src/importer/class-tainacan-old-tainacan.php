@@ -8,13 +8,15 @@
 
 namespace Tainacan\Importer;
 
-class Old_Tainacan extends Importer
-{
+class Old_Tainacan extends Importer{
+
+    protected $manual_mapping = true;
+	
+	protected $manual_collection = true;
+
     public function __construct()
     {
         parent::__construct();
-        $this->set_repository();
-        $this->set_steps($this->steps);
         $this->remove_import_method('file');
         $this->add_import_method('url');
         $this->tainacan_api_address = "/wp-json/tainacan/v1";
@@ -30,15 +32,39 @@ class Old_Tainacan extends Importer
         'socialdb_property_fixed_attachments'
     ],
     $steps = [
-        'Creating all categories' => 'create_categories',
-        'Create empty collections' => 'create_collections',
-        'Creating relationships metadata' => 'create_relationships_meta',
-        'Create repository metadata' => 'treat_repo_meta',
-        'Create collections metadata' => 'treat_collection_metas',
-        'Create collections items' => 'create_collection_items',
-        "Finishing" => 'clear'
-    ], $tainacan_api_address, $wordpress_api_address;
+        [
+            'name' => 'Create categories, collections and metadata',
+            'callback' => 'create_structure'
+        ],
+        [
+            'name' => 'Import Items',
+            'callback' => 'process_collections'
+        ],
+        [
+            'name' => 'Finishing',
+            'callback' => 'clear'
+        ]
+    ], $tainacan_api_address, $wordpress_api_address, $actual_collection;
 
+    /** 
+    * create structure tainacan
+    */
+    public function create_structure(){
+        $this->create_categories();
+        $this->create_collections();
+        $this->create_relationships_meta();
+        $this->treat_repo_meta();
+        $this->treat_collection_metas();
+        
+        return false;
+    }
+
+    /** 
+    * helper method to set the actual collection in loop
+    */
+    public function set_actual_collection($collection){
+        $this->actual_collection = $collection;
+    }
 
     public function create_categories()
     {
@@ -53,8 +79,10 @@ class Old_Tainacan extends Importer
 
             $categories_array = $this->remove_same_name($categories_array);
 
-            list($inside_step_pointer, $end) = $this->get_begin_end($categories_array);
-            if($inside_step_pointer === false) return false;
+            // list($inside_step_pointer, $end) = $this->get_begin_end($categories_array);
+            // if($inside_step_pointer === false) return false;
+            $inside_step_pointer = 0;
+            $end = ( $categories_array ) ? count( $categories_array) : 0;
 
             $created_categories = [];
             while($inside_step_pointer < $end)
@@ -96,8 +124,10 @@ class Old_Tainacan extends Importer
         $created_collections = [];
         if($collections_array)
         {
-            list($inside_step_pointer, $end) = $this->get_begin_end($collections_array);
-            if($inside_step_pointer === false) return false;
+            // list($inside_step_pointer, $end) = $this->get_begin_end($collections_array);
+            // if($inside_step_pointer === false) return false;
+            $inside_step_pointer = 0;
+            $end = ( $collections_array ) ? count( $collections_array) : 0;
 
             while($inside_step_pointer < $end)
             {
@@ -192,17 +222,19 @@ class Old_Tainacan extends Importer
         $created_categories = $this->read_from_file("categories");
         $relationships = $this->read_from_file("relationships");
 
-        list($inside_step_pointer, $end) = $this->get_begin_end($created_collections);
-        if($inside_step_pointer === false) return false;
+        // list($inside_step_pointer, $end) = $this->get_begin_end($created_collections);
+        // if($inside_step_pointer === false) return false;
+        $inside_step_pointer = 0;
+        $end = ( $created_collections ) ? count( $created_collections) : 0;
 
         $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
         $Fields_Repository = \Tainacan\Repositories\Fields::get_instance();
         $Repository_Collections = \Tainacan\Repositories\Collections::get_instance();
 
-        for($i = 0; $i < $inside_step_pointer; $i++)
-        {
-            next($created_collections);
-        }
+        //for($i = 0; $i < $inside_step_pointer; $i++)
+        // {
+        //    next($created_collections);
+        // }
 
         while($inside_step_pointer < $end)
         {
@@ -210,13 +242,19 @@ class Old_Tainacan extends Importer
             $new_collection_id = $collection_info['new_id'];
             $old_collection_id = key($created_collections);
             $collection = $Repository_Collections->fetch($new_collection_id);
-            $this->set_collection($collection);
+            $this->set_actual_collection($collection);
 
             $file_fields = $this->get_collection_fields($old_collection_id);
 
             $mapping = $this->create_collection_meta($file_fields, $Fields_Repository, $Tainacan_Fields, $created_repository_fields, $created_categories, $relationships);
 
-            $this->set_repository_mapping($mapping, $old_collection_id);
+            $this->add_collection([
+                'id' => $new_collection_id,
+                'map' => $mapping,
+                'total_items' => $this->get_total_items_from_source( $old_collection_id )
+            ]);
+            
+            // $this->set_repository_mapping($mapping, $old_collection_id);
             next($created_collections);
             $inside_step_pointer++;
         }
@@ -266,7 +304,7 @@ class Old_Tainacan extends Importer
                         $mapping[$new_id] = $created_repository_fields[$old_field_id]['name'];
                     }else
                     {
-                        $fields = $Tainacan_Fields->fetch_by_collection( $this->collection, [], 'OBJECT' );
+                        $fields = $Tainacan_Fields->fetch_by_collection( $this->actual_collection, [], 'OBJECT' );
 
                         foreach ($fields as $field)
                         {
@@ -353,7 +391,7 @@ class Old_Tainacan extends Importer
                 $newField->set_collection_id('default');
             }else
             {
-                $newField->set_collection($this->collection);
+                $newField->set_collection($this->actual_collection);
             }
         }else //Set compound as field parent
         {
@@ -399,7 +437,7 @@ class Old_Tainacan extends Importer
             $new_collection_id = $collection_info['new_id'];
             $old_collection_id = key($created_collections);
             $collection = $Repository_Collections->fetch($new_collection_id);
-            $this->set_collection($collection);
+            $this->set_actual_collection($collection);
 
             $mapping = $this->get_repository_mapping($old_collection_id);
             $this->set_mapping($mapping);
@@ -481,7 +519,7 @@ class Old_Tainacan extends Importer
 
     private function get_begin_end($items)
     {
-        $inside_step_pointer = $this->get_inside_step_pointer();
+        $inside_step_pointer = $this->get_in_step_count();
         $total_items = count($items);
 
         if($inside_step_pointer >= $total_items)
@@ -489,7 +527,7 @@ class Old_Tainacan extends Importer
             return [false, false];
         }
 
-        $end = $this->get_inside_step_pointer() + $this->get_items_per_step();
+        $end = $this->get_in_step_count() + $this->get_items_per_step();
         if($end > $total_items)
         {
             $end = $total_items;
@@ -552,7 +590,7 @@ class Old_Tainacan extends Importer
     {
         if(is_wp_error($result))
         {
-            $this->add_log('error', $result->get_error_message());
+            $this->add_error_log($result->get_error_message());
             return false;
         }else if(isset($result['body']))
         {
@@ -653,18 +691,19 @@ class Old_Tainacan extends Importer
      * get values for a single item
      *
      * @param  $index
+     * @param  $collection_id 
      * @return array with field_source's as the index and values for the
      * item
      *
      * Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
      */
-    public function process_item($index)
+    public function process_item( $index, $collection_id )
     {
         $processedItem = [];
         $headers = $this->get_fields();
 
         // search the index in the file and get values
-        $file =  new \SplFileObject( $this->tmp_file, 'r' );
+        /*$file =  new \SplFileObject( $this->tmp_file, 'r' );
         $file_content = unserialize($file->fread($file->getSize()));
         $values = $file_content->items[$index];
         foreach ($headers as $header)
@@ -687,7 +726,7 @@ class Old_Tainacan extends Importer
                     $processedItem[$header] = $values->item->{$header};
                 }
             }
-        }
+        }*/
 
         return $processedItem;
     }
@@ -733,7 +772,7 @@ class Old_Tainacan extends Importer
 
                 $newField->set_field_type('Tainacan\Field_Types\\'.$type);
 
-                $newField->set_collection($this->collection);
+                $newField->set_collection($this->actual_collection);
                 $newField->validate(); // there is no user input here, so we can be sure it will validate.
 
                 $newField = $fields_repository->insert($newField);
@@ -759,19 +798,29 @@ class Old_Tainacan extends Importer
     {
 
     }
+    
     /**
     * Method implemented by the child importer class to return the number of items to be imported
     * @return int
     */
-    public function get_total_items_from_source()
-    {
-        if(!isset($this->tmp_file)){
-           return 0;
-        }
-
-        $file = new \SplFileObject( $this->tmp_file, 'r' );
-        $file_content = unserialize($file->fread($file->getSize()));
-
-        return $this->total_items = $file_content->found_items;
+    public function get_total_items_from_source( $collection_id ) {
+        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items" );
+        $info = json_decode($info['body']);
+        return $this->total_items = $info->found_items;
     }
+
+    /**
+    * Method implemented by the child importer class to return the number of items to be imported
+    * @return int
+    */
+    public function get_progress_total_from_source(){
+    }
+
+    /**
+    * Method implemented by the child importer class to return the number of items to be imported
+    * @return int
+    */
+    public function get_source_fields(){
+    }
+    
 }

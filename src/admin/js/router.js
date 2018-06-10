@@ -35,6 +35,7 @@ const routes = [
 
     { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: {title: i18nGet('title_repository_collections_page'), icon: 'folder-multiple'} },
     { path: '/collections/new', name: 'CollectionCreationForm', component: CollectionEditionForm, meta: {title: i18nGet('title_create_collection'), icon: 'folder-multiple'} },
+    { path: '/collections/new/:mapper', name: 'MappedCollectionCreationForm', component: CollectionEditionForm, meta: {title: i18nGet('title_create_collection'), icon: 'folder-multiple'} },
     
     { path: '/collections/:collectionId', component: CollectionPage, meta: {title: i18nGet('title_collection_page'), icon: 'folder-multiple'}, 
       children: [

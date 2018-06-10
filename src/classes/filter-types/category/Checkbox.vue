@@ -55,7 +55,7 @@
         },
         methods: {
             getValuesCategory( taxonomy ){
-                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
+                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
                     for (let item of res.data) {
                         this.taxonomy = item.taxonomy;
                         this.options.push(item);
@@ -69,7 +69,7 @@
                 let promise = null;
                 this.isLoading = true;
 
-                axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                axios.get('/collection/'+ this.collection +'/fields/' + this.field)
                     .then( res => {
                         let field = res.data;
                         promise = this.getValuesCategory( field.field_type_options.taxonomy_id );

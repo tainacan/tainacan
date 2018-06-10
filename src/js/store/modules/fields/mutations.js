@@ -18,3 +18,7 @@ export const setFields = (state, fields) => {
 export const setFieldTypes = (state, fieldTypes) => {
     state.fieldTypes = fieldTypes;
 }
+
+export const setFieldMappers = (state, fieldMappers) => {
+    state.fieldMappers = fieldMappers;
+}

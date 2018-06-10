@@ -88,7 +88,7 @@
                 } else {
                     const instance = this;
 
-                    axios.post(`/taxonomy/${this.taxonomy_id}/terms`, {
+                    axios.post(`/taxonomy/${this.taxonomy_id}/terms?hideempty=0&order=asc`, {
                         name: this.name,
                         parent: this.parent
                     })

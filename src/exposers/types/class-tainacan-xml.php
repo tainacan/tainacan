@@ -8,6 +8,14 @@ namespace Tainacan\Exposers\Types;
  */
 class Xml extends Type {
 	/**
+	 * {@inheritdoc}
+	 * @see \Tainacan\Exposers\Types\Type::extension
+	 * @var string
+	 */
+	protected $extension = 'xml';
+	public $slug = 'xml'; // type slug for url safe
+	
+	/**
 	 * 
 	 * {@inheritDoc}
 	 * @see \Tainacan\Exposers\Types\Type::rest_request_after_callbacks()

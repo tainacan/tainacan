@@ -181,7 +181,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'CollectionsList',
@@ -229,72 +230,77 @@ export default {
                 this.selectedCollections.splice(i, 1, !this.allCollectionsOnPageSelected);
         },
         deleteOneCollection(collectionId) {
-            this.$dialog.confirm({
-                title: this.$i18n.get('label_warning'),
-                message: this.isOnTrash ? this.$i18n.get('info_warning_collection_delete') : this.$i18n.get('info_warning_collection_trash'),
-                onConfirm: () => {
-                    this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
-                    .then(() => {
-                    //     this.$toast.open({
-                    //         duration: 3000,
-                    //         message: this.$i18n.get('info_collection_deleted'),
-                    //         position: 'is-bottom',
-                    //         type: 'is-secondary',
-                    //         queue: true
-                    //     });
-                        for (let i = 0; i < this.selectedCollections.length; i++) {
-                            if (this.selectedCollections[i].id == collectionId)
-                                this.selectedCollections.splice(i, 1);
-                        }
-                    }).catch(() => {
-                    //     this.$toast.open({
-                    //         duration: 3000,
-                    //         message: this.$i18n.get('info_error_deleting_collection'),
-                    //         position: 'is-bottom',
-                    //         type: 'is-danger',
-                    //         queue: true
-                    //     })
-                    });
-                },
-                icon: 'alert-circle',
-                hasIcon: true,
-                type: 'is-success'
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_collection_delete') : this.$i18n.get('info_warning_collection_trash'),
+                    onConfirm: () => {
+                        this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
+                        .then(() => {
+                        //     this.$toast.open({
+                        //         duration: 3000,
+                        //         message: this.$i18n.get('info_collection_deleted'),
+                        //         position: 'is-bottom',
+                        //         type: 'is-secondary',
+                        //         queue: true
+                        //     });
+                            for (let i = 0; i < this.selectedCollections.length; i++) {
+                                if (this.selectedCollections[i].id == collectionId)
+                                    this.selectedCollections.splice(i, 1);
+                            }
+                        }).catch(() => {
+                        //     this.$toast.open({
+                        //         duration: 3000,
+                        //         message: this.$i18n.get('info_error_deleting_collection'),
+                        //         position: 'is-bottom',
+                        //         type: 'is-danger',
+                        //         queue: true
+                        //     })
+                        });
+                    }
+                
+                }
             });
         },
         deleteSelectedCollections() {
-            this.$dialog.confirm({
-                title: this.$i18n.get('label_warning'),
-                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_collections_delete') : this.$i18n.get('info_warning_selected_collections_trash'),
-                onConfirm: () => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_collections_delete') : this.$i18n.get('info_warning_selected_collections_trash'),
+                    onConfirm: () => {
 
-                    for (let i = 0; i < this.collections.length; i++) {
-                        if (this.selectedCollections[i]) {
-                            this.deleteCollection({ collectionId: this.collections[i].id, isPermanently: this.isOnTrash })
-                            .then(() => {
-                            //     this.loadCollections();
-                            //     this.$toast.open({
-                            //         duration: 3000,
-                            //         message: this.$i18n.get('info_collection_deleted'),
-                            //         position: 'is-bottom',
-                            //         type: 'is-secondary',
-                            //         queue: false
-                            //     })                            
-                            }).catch(() => { 
-                            //     this.$toast.open({
-                            //         duration: 3000,
-                            //         message: this.$i18n.get('info_error_deleting_collection'),
-                            //         position: 'is-bottom',
-                            //         type: 'is-danger',
-                            //         queue: false
-                            //     });
-                            });
+                        for (let i = 0; i < this.collections.length; i++) {
+                            if (this.selectedCollections[i]) {
+                                this.deleteCollection({ collectionId: this.collections[i].id, isPermanently: this.isOnTrash })
+                                .then(() => {
+                                //     this.loadCollections();
+                                //     this.$toast.open({
+                                //         duration: 3000,
+                                //         message: this.$i18n.get('info_collection_deleted'),
+                                //         position: 'is-bottom',
+                                //         type: 'is-secondary',
+                                //         queue: false
+                                //     })                            
+                                }).catch(() => { 
+                                //     this.$toast.open({
+                                //         duration: 3000,
+                                //         message: this.$i18n.get('info_error_deleting_collection'),
+                                //         position: 'is-bottom',
+                                //         type: 'is-danger',
+                                //         queue: false
+                                //     });
+                                });
+                            }
                         }
-                    }
-                    this.allCollectionsOnPageSelected = false;
-                },
-                icon: 'alert-circle',
-                hasIcon: true,
-                type: 'is-success'
+                        this.allCollectionsOnPageSelected = false;
+                    },
+                }
             });
         },
         goToCollectionPage(collectionId) {
@@ -366,6 +372,10 @@ export default {
                 color: $gray-light;
             }
         }
+    }
+
+    img.table-thumb {
+        border-radius: 50px !important;
     }
     
 </style>

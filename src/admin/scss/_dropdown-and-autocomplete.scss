@@ -16,11 +16,14 @@
     .dropdown-menu {
         padding: 0;
         border-radius: 0px;
+        min-width: 6rem;
         .dropdown-content {
             padding: 0;
             border-radius: 0px !important;
             .dropdown-item {
                 padding: 0.375rem 1rem;
+                font-size: 13px;
+                color: $tainacan-input-color !important;
                 label { margin-bottom: 0; }
                 &.control { font-size: 13px !important; }
                 .b-checkbox { width: 100% };

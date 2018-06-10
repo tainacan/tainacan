@@ -22,11 +22,9 @@ class DevInterface {
     }
 
     private function __construct() {
-
-        add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
-        add_action('save_post', array(&$this, 'save_post'), 10, 2);
-        add_action('admin_enqueue_scripts', array(&$this, 'add_admin_js'));
-
+        
+        add_action('admin_init', [$this, 'admin_init']);
+        
         $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
         $Tainacan_Logs = \Tainacan\Repositories\Logs::get_instance();
@@ -41,6 +39,14 @@ class DevInterface {
             $this->repositories[$cpt] = $repo;
         }
         
+    }
+    
+    public function admin_init() {
+        if ( function_exists('get_current_screen')) { // check if is in wordpress builtin admin screen
+            add_action('add_meta_boxes', array(&$this, 'register_metaboxes'));
+            add_action('save_post', array(&$this, 'save_post'), 10, 2);
+            add_action('admin_enqueue_scripts', array(&$this, 'add_admin_js'));
+        }
     }
     
     function add_admin_js() {
@@ -442,7 +448,7 @@ class DevInterface {
                 }
                 
                 
-                $entity->set_mapped_property($prop, $value);
+                $entity->set($prop, $value);
 
 
                 if ($entity->validate_prop($prop)) {
@@ -460,8 +466,8 @@ class DevInterface {
                         update_post_meta($post_id, 'filter_type_options', $_POST['filter_type_'.strtolower( $value ) ] );
                         update_post_meta($post_id, 'filter_type',  wp_slash( get_class( new $class() ) ) );
                     } elseif ($mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi') {
-
-                        $repo->insert_metadata($entity, $prop);
+                        $diffs = [];
+                        $repo->insert_metadata($entity, $prop, $diffs);
                         
         			}
                 }
@@ -494,7 +500,8 @@ class DevInterface {
                 // for new Items
                 if (!$entity->get_collection_id()) {
                     $entity->set_collection($cpts[$post_type]);
-                    $Tainacan_Items->insert_metadata($entity, 'collection_id');
+                    $diffs = [];
+                    $Tainacan_Items->insert_metadata($entity, 'collection_id', $diffs);
                 }
                 
                 

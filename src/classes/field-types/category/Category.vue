@@ -82,7 +82,7 @@
                 }
             },
             getTermsFromTaxonomy(){
-                axios.get('/taxonomy/' + this.taxonomy + '/terms?hideempty=0' ).then( res => {
+                axios.get('/taxonomy/' + this.taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
                     for (let item of res.data) {
                         this.terms.push( item );
                     }

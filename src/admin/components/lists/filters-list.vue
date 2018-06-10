@@ -141,6 +141,7 @@
                             }">
                         <div 
                                 class="available-field-item"
+                                v-if="field.enabled"
                                 v-for="(field, index) in availableFieldList" 
                                 :key="index"
                                 @click.prevent="addFieldViaButton(field, index)">  
@@ -177,6 +178,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import GripIcon from '../other/grip-icon.vue';
 import FilterEditionForm from './../edition/filter-edition-form.vue';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'FiltersList',
@@ -221,18 +223,18 @@ export default {
                 hasUnsavedForms = true;
         }
         if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
-            this.$dialog.confirm({
-                title: this.$i18n.get('label_warning'),
-                message: this.$i18n.get('info_warning_filters_not_saved'),
-                onConfirm: () => {
-                    this.onEditionCanceled();
-                    next();
-                },
-                icon: 'alert-circle',
-                hasIcon: true,
-                cancelText: this.$i18n.get('cancel'),
-                confirmText: this.$i18n.get('continue'),
-                type: 'is-success'
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_filters_not_saved'),
+                    onConfirm: () => {
+                        this.onEditionCanceled();
+                        next();
+                    },
+                }
             });  
         } else {
             next()

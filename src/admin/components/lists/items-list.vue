@@ -60,17 +60,15 @@
                             v-for="(column, index) in tableFields"
                             :key="index"
                             v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
-                            class="metadata-title">
-                        <a 
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
-                                @click="goToItemPage(item)"/>                             
-                    </p>  
+                            class="metadata-title"
+                            @click="goToItemPage(item)"
+                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>                             
                     
                     <!-- Thumbnail -->
                     <a
-                        v-if="item.thumbnail != undefined"
-                        @click="goToItemPage(item)">
-                        <img :src="item['thumbnail'].medium"> 
+                            v-if="item.thumbnail != undefined"
+                            @click="goToItemPage(item)">
+                        <img :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">
                     </a>
 
                     <!-- Actions -->
@@ -103,82 +101,76 @@
             <div
                     class="tainacan-cards-container"
                     v-if="viewMode == 'cards'">
-
-                <div class="columns is-multiline is-gapless no-gutters">
+                <div 
+                        :key="index"
+                        v-for="(item, index) of items"
+                        :class="{ 'selected-card': selectedItems[index] }"
+                        class="tainacan-card">
+                    
+                    <!-- Checkbox -->
                     <div 
+                            :class="{ 'is-selecting': isSelectingItems }"
+                            class="card-checkbox">
+                        <b-checkbox 
+                                size="is-small"
+                                v-model="selectedItems[index]"/> 
+                    </div>
+                    
+                    <!-- Title -->
+                    <p 
+                            v-for="(column, index) in tableFields"
                             :key="index"
-                            v-for="(item, index) of items"
-                            class="column is-12-tablet is-half-desktop is-half-widescreen is-one-third-fullhd">
-                        <div 
-                                :class="{ 'selected-card': selectedItems[index] }"
-                                class="tainacan-card">
-                            
-                            <!-- Checkbox -->
-                            <div 
-                                    :class="{ 'is-selecting': isSelectingItems }"
-                                    class="card-checkbox">
-                                <b-checkbox 
-                                        size="is-small"
-                                        v-model="selectedItems[index]"/> 
-                            </div>
-                            
-                            <!-- Title -->
-                            <p 
+                            v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
+                            class="metadata-title"
+                            @click="goToItemPage(item)"
+                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
+                    
+                    <!-- Actions -->
+                    <div 
+                            v-if="item.current_user_can_edit"
+                            class="actions-area"
+                            :label="$i18n.get('label_actions')">
+                        <a 
+                                id="button-edit"   
+                                :aria-label="$i18n.getFrom('items','edit_item')" 
+                                @click.prevent.stop="goToItemEditPage(item.id)">
+                            <b-icon
+                                    type="is-secondary" 
+                                    icon="pencil"/>
+                        </a>
+                        <a 
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click.prevent.stop="deleteOneItem(item.id)">
+                            <b-icon 
+                                    type="is-secondary" 
+                                    :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                        </a>
+                    </div>
+                    
+                    <!-- Remaining metadata -->  
+                    <div    
+                            class="media"
+                            @click="goToItemPage(item)">
+                        <a 
+                                v-if="item.thumbnail != undefined"
+                                @click="goToItemPage(item)">
+                            <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                        </a>
+
+                        <div class="list-metadata media-body">
+                            <span 
                                     v-for="(column, index) in tableFields"
                                     :key="index"
-                                    v-if="column.display && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop == 'title')"
-                                    class="metadata-title">
-                                <a 
+                                    v-if="column.display && column.slug != 'thumbnail' && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop != 'title')">
+                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                <p 
                                         v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
-                                        @click="goToItemPage(item)"/>                             
-                            </p>  
-
-                            <!-- Actions -->
-                            <div 
-                                    v-if="item.current_user_can_edit"
-                                    class="actions-area"
-                                    :label="$i18n.get('label_actions')">
-                                <a 
-                                        id="button-edit"   
-                                        :aria-label="$i18n.getFrom('items','edit_item')" 
-                                        @click.prevent.stop="goToItemEditPage(item.id)">
-                                    <b-icon
-                                            type="is-secondary" 
-                                            icon="pencil"/>
-                                </a>
-                                <a 
-                                        id="button-delete" 
-                                        :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneItem(item.id)">
-                                    <b-icon 
-                                            type="is-secondary" 
-                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
-                                </a>
-                            </div>
-                            <div class="card-line"/>
-                            
-                            <!-- Remaining metadata -->  
-                            <div class="media">
-                                <a
-                                    v-if="item.thumbnail != undefined"
-                                    @click="goToItemPage(item)">
-                                   <img :src="item['thumbnail'].thumb"> 
-                                </a>
-
-                                <div class="list-metadata media-body">
-                                    <span 
-                                            v-for="(column, index) in tableFields"
-                                            :key="index"
-                                            v-if="column.display && column.slug != 'thumbnail' && column.field_type_object != undefined && (column.field_type_object.related_mapped_prop != 'title')">
-                                        <h3 class="metadata-label">{{ column.name }}</h3>
-                                        <p 
-                                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
-                                                class="metadata-value"/>
-                                    </span>
-                                </div>
-                            </div>
+                                        class="metadata-value"/>
+                            </span>
                         </div>
-                    </div>                 
+                    </div>
+               
                 </div>
             </div>
             
@@ -267,7 +259,7 @@
                             <span v-if="column.field == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
-                                        :src="item[column.slug].thumb">
+                                        :src="item['thumbnail'].thumb ? item['thumbnail'].thumb : thumbPlaceholderPath">
                             </span> 
                             <p 
                                     v-tooltip="{
@@ -315,6 +307,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemsList',
@@ -323,6 +316,7 @@ export default {
             allItemsOnPageSelected: false,
             isSelectingItems: false,
             selectedItems: [],
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
         }
     },
     props: {
@@ -336,7 +330,7 @@ export default {
     mounted() {
         this.selectedItems = [];
         for (let i = 0; i < this.items.length; i++)
-            this.selectedItems.push(false);  
+            this.selectedItems.push(false);
     },
     watch: {
         selectedItems() {
@@ -362,77 +356,81 @@ export default {
                 this.selectedItems.splice(i, 1, !this.allItemsOnPageSelected);
         },
         deleteOneItem(itemId) {
-            this.$dialog.confirm({
-                title: this.$i18n.get('label_warning'),
-                message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
-                onConfirm: () => {
-                    this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
-                    .then(() => {
-                    //     this.$toast.open({
-                    //         duration: 3000,
-                    //         message: this.$i18n.get('info_item_deleted'),
-                    //         position: 'is-bottom',
-                    //         type: 'is-secondary',
-                    //         queue: true
-                    //     });
-                        for (let i = 0; i < this.selectedItems.length; i++) {
-                            if (this.selectedItems[i].id == itemId)
-                                this.selectedItems.splice(i, 1);
-                        }
-                    }).catch(() => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
+                    onConfirm: () => {
+                        this.deleteItem({ itemId: itemId, isPermanently: this.isOnTrash })
+            //         .then(() => {
+            //         //     this.$toast.open({
+            //         //         duration: 3000,
+            //         //         message: this.$i18n.get('info_item_deleted'),
+            //         //         position: 'is-bottom',
+            //         //         type: 'is-secondary',
+            //         //         queue: true
+            //         //     });
+            //             for (let i = 0; i < this.selectedItems.length; i++) {
+            //                 if (this.selectedItems[i].id == itemId)
+            //                     this.selectedItems.splice(i, 1);
+            //             }
+            //         }).catch(() => {
 
-                    //     this.$toast.open({ 
-                    //         duration: 3000,
-                    //         message: this.$i18n.get('info_error_deleting_item'),
-                    //         position: 'is-bottom',
-                    //         type: 'is-danger',
-                    //         queue: true
-                    //     })
-                    });
-                },
-                icon: 'alert-circle',
-                hasIcon: true,
-                type: 'is-success'
+            //         //     this.$toast.open({ 
+            //         //         duration: 3000,
+            //         //         message: this.$i18n.get('info_error_deleting_item'),
+            //         //         position: 'is-bottom',
+            //         //         type: 'is-danger',
+            //         //         queue: true
+            //         //     })
+            //         });
+                    }
+                }
             });
         },
         deleteSelectedItems() {
-            this.$dialog.confirm({
-                title: this.$i18n.get('label_warning'),
-                message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
-                onConfirm: () => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
+                    onConfirm: () => {
 
-                    for (let i = 0; i < this.selectedItems.length; i++) {
-                        if (this.selectedItems[i]) {
-                            this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
-                            .then(() => {
-                            //     this.$toast.open({
-                            //         duration: 3000,
-                            //         message: this.$i18n.get('info_item_deleted'),
-                            //         position: 'is-bottom',
-                            //         type: 'is-secondary',
-                            //         queue: false
-                            //     });
-                                for (let i = 0; i < this.selectedItems.length; i++) {
-                                    if (this.selectedItems[i].id == this.itemId)
-                                        this.selectedItems.splice(i, 1);
-                                }
-                                                        
-                            }).catch(() => { 
-                            //     this.$toast.open({
-                            //         duration: 3000,
-                            //         message: this.$i18n.get('info_error_deleting_item'),
-                            //         position: 'is-bottom',
-                            //         type: 'is-danger',
-                            //         queue: false
-                            //     });
-                            });
+                        for (let i = 0; i < this.selectedItems.length; i++) {
+                            if (this.selectedItems[i]) {
+                                this.deleteItem({ itemId: this.items[i].id, isPermanently: this.isOnTrash })
+                                .then(() => {
+                                //     this.$toast.open({
+                                //         duration: 3000,
+                                //         message: this.$i18n.get('info_item_deleted'),
+                                //         position: 'is-bottom',
+                                //         type: 'is-secondary',
+                                //         queue: false
+                                //     });
+                                    for (let i = 0; i < this.selectedItems.length; i++) {
+                                        if (this.selectedItems[i].id == this.itemId)
+                                            this.selectedItems.splice(i, 1);
+                                    }
+                                                            
+                                }).catch(() => { 
+                                //     this.$toast.open({
+                                //         duration: 3000,
+                                //         message: this.$i18n.get('info_error_deleting_item'),
+                                //         position: 'is-bottom',
+                                //         type: 'is-danger',
+                                //         queue: false
+                                //     });
+                                });
+                            }
                         }
+                        this.allItemsOnPageSelected = false;
                     }
-                    this.allItemsOnPageSelected = false;
-                },
-                icon: 'alert-circle',
-                hasIcon: true,
-                type: 'is-success'
+                }
             });
         },
         goToItemPage(item) {

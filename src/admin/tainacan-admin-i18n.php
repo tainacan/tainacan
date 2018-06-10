@@ -1,6 +1,6 @@
 <?php
 
-return [
+return apply_filters('tainacan-admin-i18n',[
 
 	// Advanced search comparators
 	'is_equal_to'                              => __( 'Equal', 'tainacan' ),
@@ -47,6 +47,8 @@ return [
 	'add_one_item'                             => __( 'Add one item', 'tainacan' ),
 	'add_items_bulk'                           => __( 'Add items in bulk', 'tainacan' ),
 	'add_items_external_source'                => __( 'Add items from an external source', 'tainacan' ),
+	'new_mapped_item'                          => __( 'New mapped collection', 'tainacan' ),
+	'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
 	'add_more_one_search_field'                => __( 'Add more one search field', 'tainacan' ),
@@ -130,7 +132,7 @@ return [
 	'label_available_filters'                  => __( 'Available Filters', 'tainacan' ),
 	'label_available_filter_types'             => __( 'Available Filter Types', 'tainacan' ),
 	'label_per_page'                           => __( 'per Page', 'tainacan' ),
-	'label_table_fields'                       => __( 'Metadata on table', 'tainacan' ),
+	'label_displayed_metadata'                   => __( 'Displayed metadata', 'tainacan' ),
 	'label_required'                           => __( 'Required', 'tainacan' ),
 	'label_allow_multiple'                     => __( 'Allow multiple values', 'tainacan' ),
 	'label_default_value'                      => __( 'Default value', 'tainacan' ),
@@ -211,6 +213,7 @@ return [
 	'label_grid'							   => __( 'Grid', 'tainacan' ),
 	'label_table'							   => __( 'Table', 'tainacan' ),
 	'label_cards'							   => __( 'Cards', 'tainacan' ),
+	'label_visualization'					   => __( 'Visualization', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -319,5 +322,5 @@ return [
 	'tainacan-filter-category-taginput'        => __( 'Taxonomy Tag Input', 'tainacan' ),
 	'tainacan-filter-category-checkbox'        => __( 'Taxonomy Check Box', 'tainacan' ),
 	'tainacan-filter-category-selectbox'       => __( 'Taxonomy Select Box', 'tainacan' )
-]
+]);
 ?>

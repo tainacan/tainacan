@@ -12,7 +12,8 @@ class Csv extends Type {
 	 * List of supported mappers
 	 * @var array
 	 */
-	public $mappers = ['Value']; 
+	public $mappers = ['Value'];
+	public $slug = 'csv'; // type slug for url safe
 	
 	/**
 	 * 

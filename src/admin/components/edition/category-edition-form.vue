@@ -140,6 +140,7 @@
     import { mapActions, mapGetters } from 'vuex';
     import TermsList from '../lists/terms-list.vue'
     import htmlToJSON from 'html-to-json';
+    import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
         name: 'CategoryEditionForm',
@@ -194,20 +195,20 @@
                 formNotSaved = true;
 
             if (formNotSaved) {
-                this.$dialog.confirm({
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_category_not_saved'),
-                    onConfirm: () => {
-                        next();
-                    },
-                    icon: 'alert-circle',
-                    hasIcon: true,
-                    cancelText: this.$i18n.get('cancel'),
-                    confirmText: this.$i18n.get('continue'),
-                    type: 'is-success'
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_category_not_saved'),
+                        onConfirm: () => {
+                            next();
+                        }
+                    }
                 });  
             } else {
-                next()
+                next();
             }  
         },
         methods: {

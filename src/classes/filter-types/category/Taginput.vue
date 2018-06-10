@@ -22,10 +22,10 @@
             this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
             this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
 
-            let in_route = '/collection/' + this.isRepositoryLevel + '/fields/' +  this.field +'?context=edit';
+            let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
 
             if(this.isRepositoryLevel){
-                in_route = '/fields?context=edit';
+                in_route = '/fields/' + this.field;
             }
 
             axios.get(in_route)
@@ -83,8 +83,9 @@
                 let promise = null;
                 this.options = [];
                 const q = query;
-                
-                axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                const endpoint = this.isRepositoryLevel ? '/fields/' + this.field : '/collection/'+ this.collection +'/fields/' + this.field;                 
+
+                axios.get(endpoint)
                     .then( res => {
                         let field = res.data;
                         promise = this.getValuesCategory( field.field_type_options.taxonomy_id, q );
@@ -102,7 +103,7 @@
                     });
             },
             getValuesCategory( taxonomy, query ){
-                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
+                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
                     for (let term of res.data) {
                         if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
                             this.taxonomy = term.taxonomy;
@@ -129,7 +130,7 @@
                 }
             },
             getTerm( taxonomy, id ){
-              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id ).then( res => {
+              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' ).then( res => {
                   this.$console.log(res);
               })
               .catch(error => {

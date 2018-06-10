@@ -8,7 +8,8 @@ namespace Tainacan\Exposers\Types;
  */
 class Html extends Type {
 	
-	public $mappers = ['Value']; 
+	public $mappers = ['Value'];
+	public $slug = 'html'; // type slug for url safe
 	
 	/**
 	 * 

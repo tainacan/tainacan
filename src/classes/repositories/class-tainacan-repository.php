@@ -691,7 +691,7 @@ abstract class Repository {
 	public function diff( $old = 0, $new ) {
 		$old_entity = null;
 
-		if ( $old === 0 ) { // self diff or other entity?
+		if ( $old === 0 || is_array($old) && count($old) == 0 ) { // self diff or other entity?
 			$id = $new->get_id();
 
 			if ( ! empty( $id ) ) { // there is a repository entity?

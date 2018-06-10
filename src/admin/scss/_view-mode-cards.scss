@@ -1,32 +1,49 @@
 .tainacan-cards-container {
     min-height: 200px;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: center;
 
     .selected-card {
         background-color: $primary-lighter;
+        .metadata-title {
+            background-color: $primary-lighter-hover;
+        }
     }
 
     .tainacan-card {
-        padding: 16px 44px 24px 44px;
+        padding: 0px;
+        flex-basis: 0;
+        margin: 0.75rem;
+        max-width: 410px;
+        min-width: 410px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $tainacan-input-background !important;
+        }
 
         .card-checkbox {
             position: absolute;
-            margin-left: -28px;
-            margin-top: -2px;
+            margin-left: 1.0rem;
+            margin-top: 9px;
         }
         .actions-area {
             position: relative;
             float: right;
-            top: -37px;
-            right: -30px;
-            width: 60px;
+            top: -7px;
+            padding-right: 12px;
+            width: 80px;
             display: flex;
             justify-content: space-between;
             visibility: hidden;
             opacity: 0;
             transition: visibility 0.2s, opacity 0.2s;
         }
-        &:hover .actions-area, &:hover .card-line, &.selected-card .card-line {
+        &:hover .actions-area {
             visibility: visible;
             opacity: 1.0;
         }
@@ -40,27 +57,38 @@
             visibility: hidden;
         }
         img {
-            width: 130px;
+            width: 170px;
             height: auto;
             border-radius: 2px;
-            margin-right: 1.5rem;
+        }
+        &:hover img {
+            border-radius: 0;
         }
 
         .metadata-title {
             flex-shrink: 0;
             font-size: 0.875rem;
-            margin-bottom: 0.875rem;
+            padding: 0.75rem 2.75rem;
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
+            margin-bottom: -27px;
         }
+        &:hover .metadata-title {
+            background-color: $gray-hover !important;
+        }
+
         .media {
+            margin-bottom: -6px;
+            width: 100%;
+
             .list-metadata {
-                padding-top: 12px;
+                padding: 0.75rem 1.5rem;
                 flex: 1;
                 font-size: 0.6875rem;
                 color: gray;
                 overflow: hidden;
+                width: 100%;
             
                 .metadata-label {
                     font-size: 0.75rem;

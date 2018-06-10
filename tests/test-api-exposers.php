@@ -167,6 +167,58 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	}
 	
 	/**
+	 * @group exposers-slug
+	 */
+	public function test_exposer_map_by_slug() {
+	    global $Tainacan_Fields, $Tainacan_Item_Metadata;
+	    extract($this->create_meta_requirements());
+	    
+	    $item__metadata_json = json_encode([
+	        'values'       => 'TestValues_exposers_slug',
+	    ]);
+	    
+	    $request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->field->get_id() );
+	    $request->set_body($item__metadata_json);
+	    
+	    $response = $this->server->dispatch($request);
+	    
+	    $this->assertEquals(200, $response->get_status());
+	    
+	    $data = $response->get_data();
+	    
+	    $this->assertEquals($this->item->get_id(), $data['item']['id']);
+	    $this->assertEquals('TestValues_exposers_slug', $data['value']);
+	    
+	    $item_exposer_json = json_encode([
+	        'exposer-map'       => 'dublin-core',
+	    ]);
+	    $request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->field->get_id() );
+	    $request->set_body($item_exposer_json);
+	    $response = $this->server->dispatch($request);
+	    $this->assertEquals(200, $response->get_status());
+	    $data = $response->get_data();
+	    $this->assertEquals('TestValues_exposers_slug', $data['dc:language']);
+	    
+	    $item_exposer_json = json_encode([
+	        'exposer-type'       => 'xml',
+	        'exposer-map'       => 'dublin-core',
+	    ]);
+	    $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata' );
+	    $request->set_body($item_exposer_json);
+	    $response = $this->server->dispatch($request);
+	    $this->assertEquals(200, $response->get_status());
+	    $data = $response->get_data();
+	    
+	    $xml = new \SimpleXMLElement($data);
+	    $rdf = $xml->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_RDF_NAMESPACE);
+	    $dc = $rdf->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE);
+	    
+	    $this->assertEquals('adasdasdsa', $dc->description);
+	    $this->assertEquals('item_teste_Expose', $dc->title);
+	    $this->assertEquals('TestValues_exposers_slug', $dc->language);
+	}
+	
+	/**
 	 * @group oai-pmh
 	 */
 	public function test_oai_pmh() {
@@ -343,6 +395,42 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('adasdasdsa', $data['Description']);
 		$this->assertEquals('item_teste_Expose', $data['Title']);
 		$this->assertEquals('TestValues_exposers', $data['teste_Expose']);
+	}
+	
+	/**
+	 * @group mapped_new_collection
+	 */
+	public function test_mapped_new_collection() {
+	    $collection_JSON = json_encode([
+	        'exposer-map'  => 'Dublin Core',
+	        'name'         => 'TesteJsonAddDublin_Core',
+	        'description'  => 'Teste JSON Dublin Core mapped',
+	        'status'       => 'publish'
+	    ]);
+	    
+	    $mapper = new \Tainacan\Exposers\Mappers\Dublin_Core();
+	    
+	    $request = new \WP_REST_Request('POST', $this->namespace . '/collections');
+	    $request->set_body($collection_JSON);
+	    $response = $this->server->dispatch($request);
+	    $this->assertEquals(201, $response->get_status(), sprintf('response: %s', print_r($response, true)));
+	    $collection_array = $response->get_data();
+	    $id = $collection_array['id'];
+	    $Tainacan_collections = \Tainacan\Repositories\Collections::get_instance();
+	    $collection = $Tainacan_collections->fetch($id);
+	    
+	    $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+	    $fields = $Tainacan_Fields->fetch_by_collection( $collection, [ 'order' => 'id' ], 'OBJECT' );
+	    
+	    $this->assertEquals(count($mapper->metadata), count($fields));
+	    foreach ($fields as $field) {
+	        $this->assertTrue(array_key_exists($field->get_slug(), $mapper->metadata));
+	        if(! array_key_exists('core_field', $mapper->metadata[$field->get_slug()]) || $mapper->metadata[$field->get_slug()]['core_field'] == false) {
+	           $this->assertEquals($mapper->metadata[$field->get_slug()]['URI'], $field->get_description());
+	        }
+	        $this->assertEquals($mapper->metadata[$field->get_slug()]['label'], $field->get_name());
+	    }
+	    
 	}
 	
 }
