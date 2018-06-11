@@ -204,6 +204,21 @@
                             </b-table>
                         </section>
                     </template>
+                    <div class="field is-grouped form-submit">
+                        <div class="control">
+                            <button
+                                    id="button-cancel-fields-mapper-update"
+                                    class="button is-outlined"
+                                    type="button"
+                                    @click="onCancelUpdateFieldsMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                        </div>
+                        <div class="control">
+                            <button
+                                    id="button-submit-fields-mapper-update"
+                                    @click.prevent="onUpdateFieldsMapperMetadataClick"
+                                    class="button is-success">{{ $i18n.get('save') }}</button>
+                        </div>
+                    </div>
                 </div>
             </b-tab-item>
         </b-tabs>
@@ -230,6 +245,7 @@ export default {
             formWithErrors: '',
             hightlightedField: '',
             editForms: {},
+            mapper: '',
             mapperMetadata: [],
             isMapperMetadataLoading: false,
             mappedFields: []
@@ -292,7 +308,8 @@ export default {
             'deleteField',
             'updateFields',
             'updateCollectionFieldsOrder',
-            'fetchFieldMappers'
+            'fetchFieldMappers',
+            'updateFieldsMapperMetadata'
         ]),
         ...mapGetters('fields',[
             'getFieldTypes',
@@ -389,7 +406,7 @@ export default {
         },
         onSelectFieldsMapper(field_mapper) {
             this.isMapperMetadataLoading = true;
-            
+            this.mapper = field_mapper;
             for (var k in field_mapper.metadata) {
                 var item = field_mapper.metadata[k];
                 item.slug = k;
@@ -417,6 +434,22 @@ export default {
             this.mapperMetadata.forEach(function(item) {
                 self.mappedFields.push(item.selected);
             });
+        },
+        onUpdateFieldsMapperMetadataClick() {
+            var fieldsMapperMetadata = [];
+            this.mapperMetadata.forEach(function(item) {
+                var map = {
+                        field_id: item.selected,
+                        mapper_metadata: item.slug
+                };
+                fieldsMapperMetadata.push(map);
+            });
+            this.updateFieldsMapperMetadata(fieldsMapperMetadata, this.mapper);
+        },
+        onCancelUpdateFieldsMapperMetadata() {
+            this.isMapperMetadataLoading = true;
+            this.onSelectFieldsMapper(this.mapper);
+            this.isMapperMetadataLoading = false;
         }
     },
     created() {
