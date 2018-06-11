@@ -274,7 +274,7 @@ class Items extends Repository {
 	 */
 	public function fetch_ids( $args = [], $collections = [] ) {
 		
-		$args['metadata'] = 'ids';
+		$args['fields'] = 'ids';
 		
 		return $this->fetch( $args, $collections )->get_posts();
 	}
