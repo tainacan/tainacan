@@ -667,6 +667,7 @@
             this.isRepositoryLevel = (this.collectionId === undefined);
 
             this.$eventBusSearch.setCollectionId(this.collectionId);
+            this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
                 this.isLoadingItems = isLoadingItems;

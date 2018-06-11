@@ -52,9 +52,6 @@ export default {
 
                         if(this.$route.query.advancedSearch){
                             delete this.$route.query.advancedSearch;
-
-                            console.log('Route watch: '+ this.$route.query);
-
                             this.$store.dispatch('search/set_advanced_query', this.$route.query);
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
