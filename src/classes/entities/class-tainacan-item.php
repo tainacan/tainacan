@@ -385,7 +385,7 @@ class Item extends Entity {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {
 				
 				// skip validation for Compound Metadata
-				if ( $itemMetadata->get_metadatum()->get_metadatum_type() == 'Tainacan\Metadatum_Types\Compound' ) {
+				if ( $itemMetadata->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
 					continue;
 				}
 
@@ -582,7 +582,7 @@ class Item extends Entity {
 		
 		foreach ( $metadata as $item_meta ) {
 
-			$fto = $item_meta->get_metadatum()->get_metadatum_type_object();
+			$fto = $item_meta->get_metadatum()->get_metadata_type_object();
 
 			if ( $fto->get_core() ) {
 				if ( $args['exclude_core'] ) {

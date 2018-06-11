@@ -317,13 +317,13 @@ class Exposers {
 	               
 	               $metadatum = new \Tainacan\Entities\Metadatum();
 	               if(
-	                       array_key_exists('metadatum_type', $mapper_metadatum) &&
-	                       $mapper_metadatum['metadatum_type'] != false &&
-	                       class_exists($mapper_metadatum['metadatum_type'])
+	                       array_key_exists('metadata_type', $mapper_metadatum) &&
+	                       $mapper_metadatum['metadata_type'] != false &&
+	                       class_exists($mapper_metadatum['metadata_type'])
 	                   ) {
-	                   $metadatum->set_metadatum_type($mapper_metadatum['metadatum_type']);
+	                   $metadatum->set_metadata_type($mapper_metadatum['metadata_type']);
 	               } else {
-	                   $metadatum->set_metadatum_type('Tainacan\Metadatum_Types\Text');
+	                   $metadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 	               }
 	               $metadatum->set_name($mapper_metadatum['label']);
 	               $metadatum->set_description($mapper_metadatum['URI']);

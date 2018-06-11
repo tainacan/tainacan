@@ -145,7 +145,7 @@
             </b-field>
 
             <b-field
-                    v-if="!originalMetadatum.metadatum_type_object.core"
+                    v-if="!originalMetadatum.metadata_type_object.core"
                     :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
                     :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                 <b-checkbox
@@ -183,11 +183,11 @@
         </b-field>
 
         <component
-                :errors="formErrors['metadatum_type_options']"
-                v-if="(editForm.metadatum_type_object && editForm.metadatum_type_object.form_component) || editForm.edit_form == ''"
-                :is="editForm.metadatum_type_object.form_component"
+                :errors="formErrors['metadata_type_options']"
+                v-if="(editForm.metadata_type_object && editForm.metadata_type_object.form_component) || editForm.edit_form == ''"
+                :is="editForm.metadata_type_object.form_component"
                 :metadatum="editForm"
-                v-model="editForm.metadatum_type_options"/>
+                v-model="editForm.metadata_type_options"/>
         <div
                 v-html="editForm.edit_form"
                 v-else/>
@@ -259,7 +259,7 @@
             ]),
             saveEdition(metadatum) {
 
-                if ((metadatum.metadatum_type_object && metadatum.metadatum_type_object.form_component) || metadatum.edit_form == '') {
+                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
 
                     this.updateMetadatum({
                         collectionId: this.collectionId,

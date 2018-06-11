@@ -20,7 +20,7 @@ class CategoryCheckbox extends Filter_Type {
 
     public function render( $filter ){
         return '<tainacan-filter-category-checkbox name="'.$filter->get_name().'"
-                                        filter_type="'.$filter->get_metadatum()->get_metadatum_type().'"
+                                        filter_type="'.$filter->get_metadatum()->get_metadata_type().'"
                                         collection_id="'.$filter->get_collection_id().'"
                                         metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-checkbox>';
     }

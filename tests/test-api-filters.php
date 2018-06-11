@@ -24,7 +24,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadata filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'metadatum_type'    => 'Tainacan\Metadatum_Types\Numeric',
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric',
 			),
 			true,
 			true
@@ -185,7 +185,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'metadatum_type'    => 'Tainacan\Metadatum_Types\Numeric'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric'
 			),
 			true
 		);
@@ -196,7 +196,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Other filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'metadatum_type'    => 'Tainacan\Metadatum_Types\Numeric'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Numeric'
 			),
 			true
 		);
@@ -273,7 +273,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => $collection->get_id(),
-				'metadatum_type'    => 'Tainacan\Metadatum_Types\Text'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text'
 			),
 			true
 		);
@@ -284,7 +284,7 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 				'name'          => 'Metadatum filtered',
 				'description'   => 'Is filtered',
 				'collection_id' => 'default',
-				'metadatum_type'    => 'Tainacan\Metadatum_Types\Text'
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text'
 			),
 			true
 		);

@@ -175,10 +175,10 @@ class DevInterface {
                                         ( isset( $value ) ) ? $value : '',
                                         'tnc_prop_metadatum'
                                     ) ?>
-                                <?php elseif ($prop == 'metadatum_type_options' || $prop == 'filter_type_options'): ?>
+                                <?php elseif ($prop == 'metadata_type_options' || $prop == 'filter_type_options'): ?>
                                     <?php echo $value; ?>
-                                <?php elseif ($prop == 'metadatum_type'): ?>
-                                    <?php echo $this->metadatum_type_dropdown($post->ID,$value); ?>
+                                <?php elseif ($prop == 'metadata_type'): ?>
+                                    <?php echo $this->metadata_type_dropdown($post->ID,$value); ?>
                                 <?php elseif ($prop == 'filter_type'): ?>
                                     <?php echo $this->filter_type_dropdown($post->ID,$value); ?>
                                 <?php else: ?>
@@ -332,7 +332,7 @@ class DevInterface {
                             </td>
                             <td>
                                 <?php //echo '<tainacan-text name="'.$item_meta->get_metadatum()->get_name().'"></tainacan-text>'; ?>
-                                <?php echo  $item_meta->get_metadatum()->get_metadatum_type_object()->render( $item_meta ); ?>
+                                <?php echo  $item_meta->get_metadatum()->get_metadata_type_object()->render( $item_meta ); ?>
                             </td>
                         </tr>
                         
@@ -347,26 +347,26 @@ class DevInterface {
         
     }
 
-    function metadatum_type_dropdown($id,$selected) {
+    function metadata_type_dropdown($id,$selected) {
 
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
         $class = ( class_exists( $selected ) ) ? new $selected() : '';
 
         if(is_object( $class )){
-            $selected =  str_replace('Tainacan\Metadatum_Types\\','', get_class( $class ) );
+            $selected =  str_replace('Tainacan\Metadata_Types\\','', get_class( $class ) );
         }
 
-        $metadatum_types = $Tainacan_Metadata->fetch_metadatum_types('NAME');
+        $metadata_types = $Tainacan_Metadata->fetch_metadata_types('NAME');
         ?>
-            <select name="tnc_prop_metadatum_type">
-                <?php foreach ($metadatum_types as $metadatum_type): ?>
-                    <option value="<?php echo $metadatum_type; ?>" <?php selected($metadatum_type, $selected) ?>><?php echo $metadatum_type; ?></option>
+            <select name="tnc_prop_metadata_type">
+                <?php foreach ($metadata_types as $metadata_type): ?>
+                    <option value="<?php echo $metadata_type; ?>" <?php selected($metadata_type, $selected) ?>><?php echo $metadata_type; ?></option>
                 <?php endforeach; ?>
             </select>
             <?php
              if( $class ){
-                 $options = get_post_meta($id,'metadatum_type_options',true);
+                 $options = get_post_meta($id,'metadata_type_options',true);
                  $class->set_options($options);
                  echo $class->form();
              }
@@ -454,12 +454,12 @@ class DevInterface {
                 if ($entity->validate_prop($prop)) {
 
                     // we cannot user repository->insert here, it would create an infinite loop
-                    if ($prop == 'metadatum_type') {
+                    if ($prop == 'metadata_type') {
                         //TODO: This can be better
-                        $class = '\Tainacan\Metadatum_Types\\'.$value;
-                        update_post_meta($post_id, 'metadatum_type_options', $_POST['metadatum_type_'.strtolower( $value ) ] );
-                        update_post_meta($post_id, 'metadatum_type',  wp_slash( get_class( new $class() ) ) );
-                    } elseif($prop == 'metadatum_type_options' || $prop == 'filter_type_options') {
+                        $class = '\Tainacan\Metadata_Types\\'.$value;
+                        update_post_meta($post_id, 'metadata_type_options', $_POST['metadata_type_'.strtolower( $value ) ] );
+                        update_post_meta($post_id, 'metadata_type',  wp_slash( get_class( new $class() ) ) );
+                    } elseif($prop == 'metadata_type_options' || $prop == 'filter_type_options') {
                         continue;
                     } elseif ($prop == 'filter_type') {
                         $class = str_replace('\\\\','\\','\Tainacan\Filter_Types\\'.$value );
@@ -510,7 +510,7 @@ class DevInterface {
                 foreach ($metalist as $meta) {
                     $item_meta = new \Tainacan\Entities\Item_Metadata_Entity($entity, $meta);
 
-                    $pos = strpos($item_meta->get_metadatum()->get_metadatum_type(), 'Core');
+                    $pos = strpos($item_meta->get_metadatum()->get_metadata_type(), 'Core');
                     if( $pos !== false ){
                         continue;
                     }

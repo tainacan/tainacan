@@ -16,7 +16,7 @@ use Tainacan\Entities;
 class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 
 	
-    function test_compound_metadatum_types() {
+    function test_compound_metadata_types() {
 
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
@@ -36,7 +36,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Compound',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Compound',
 				'status'	 => 'publish',
 	        ),
 	        true
@@ -48,7 +48,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta2',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Text',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Text',
 				'status'	 => 'publish',
 				'parent' 	 => $metadatum->get_id(),
 	        ),
@@ -61,7 +61,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta3',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Text',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Text',
 				'status'	 => 'publish',
 				'parent' 	 => $metadatum->get_id(),
 	        ),
@@ -115,7 +115,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
     }
 	
-	function test_multiple_compound_metadatum_types() {
+	function test_multiple_compound_metadata_types() {
 
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
@@ -135,7 +135,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Compound',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Compound',
 				'status'	 => 'publish',
 				'multiple'   => 'yes'
 	        ),
@@ -148,7 +148,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta2',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Text',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Text',
 				'status'	 => 'publish',
 				'parent' 	 => $metadatum->get_id(),
 	        ),
@@ -161,7 +161,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta3',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Text',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Text',
 				'status'	 => 'publish',
 				'parent' 	 => $metadatum->get_id(),
 	        ),
@@ -266,7 +266,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Compound',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Compound',
 				'status'	 => 'publish',
 				'multiple'   => 'yes'
 	        ),
@@ -275,12 +275,12 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 		$newMetadatum = new \Tainacan\Entities\Metadatum();
 		$newMetadatum->set_name('test_multiple');
-		$newMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\Category');
+		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
 		$newMetadatum->set_parent($metadatum->get_id());
 		
 		$this->assertFalse($newMetadatum->validate(), 'You cant add a category metadatum inside a multiple compound metadatum');
 		
-		$newMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\Text');
+		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 		$this->assertTrue($newMetadatum->validate());
 		
 		
@@ -304,7 +304,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Compound',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Compound',
 				'status'	 => 'publish',
 				'multiple'   => 'no'
 	        ),
@@ -313,7 +313,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 		$newMetadatum = new \Tainacan\Entities\Metadatum();
 		$newMetadatum->set_name('test_multiple');
-		$newMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\Category');
+		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
 		$newMetadatum->set_parent($metadatum->get_id());
 		
 		$this->assertTrue($newMetadatum->validate(), 'You can add a category metadatum inside a not multiple compound metadatum');
@@ -344,7 +344,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Compound',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Compound',
 				'status'	 => 'publish',
 				'multiple'   => 'no'
 	        ),
@@ -354,7 +354,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$newMetadatum = new \Tainacan\Entities\Metadatum();
 		$newMetadatum->set_name('test_multiple');
 		$newMetadatum->set_multiple('yes');
-		$newMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\Text');
+		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 		$newMetadatum->set_parent($metadatum->get_id());
 		
 		$this->assertFalse($newMetadatum->validate(), 'You cant add a multiple metadatum inside a compound metadatum');

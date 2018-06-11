@@ -21,8 +21,8 @@ class Metadatum extends Entity {
         $collection_key,
         $mask,
         $default_value,
-        $metadatum_type,
-        $metadatum_type_options;
+        $metadata_type,
+        $metadata_type_options;
 
     // Collection getter and setter declared here
     use \Tainacan\Traits\Entity_Collection_Relation;
@@ -166,14 +166,14 @@ class Metadatum extends Entity {
     }
 
     /**
-     * Return the an object child of \Tainacan\metadatum_Types\Metadatum_Type with options
+     * Return the an object child of \Tainacan\metadatum_Types\Metadata_Type with options
      *
-     * @return \Tainacan\Metadatum_Types\Metadatum_Type The metadatum type class with filled options
+     * @return \Tainacan\Metadata_Types\Metadata_Type The metadatum type class with filled options
      */
-    function get_metadatum_type_object(){
-        $class_name = $this->get_metadatum_type();
+    function get_metadata_type_object(){
+        $class_name = $this->get_metadata_type();
         $object_type = new $class_name();
-        $object_type->set_options(  $this->get_metadatum_type_options() );
+        $object_type->set_options(  $this->get_metadata_type_options() );
     	return $object_type;
     }
 
@@ -182,8 +182,8 @@ class Metadatum extends Entity {
      *
      * @return string The
      */
-    function get_metadatum_type(){
-    	return $this->get_mapped_property('metadatum_type');
+    function get_metadata_type(){
+    	return $this->get_mapped_property('metadata_type');
     }
 
     /**
@@ -191,8 +191,8 @@ class Metadatum extends Entity {
      *
      * @return array Configurations for the metadatum type object
      */
-    function get_metadatum_type_options(){
-        return $this->get_mapped_property('metadatum_type_options');
+    function get_metadata_type_options(){
+        return $this->get_mapped_property('metadata_type_options');
     }
 
     /**
@@ -330,10 +330,10 @@ class Metadatum extends Entity {
     /**
      * set the metadatum type class name
      *
-     * @param string | \Tainacan\Metadatum_Types\Metadatum_Type $value The name of the class or the instance
+     * @param string | \Tainacan\Metadata_Types\Metadata_Type $value The name of the class or the instance
      */
-    public function set_metadatum_type( $value ){
-    	$this->set_mapped_property('metadatum_type', ( is_object( $value ) ) ?  get_class( $value ) : $value ) ; // Encode to avoid backslaches removal
+    public function set_metadata_type( $value ){
+    	$this->set_mapped_property('metadata_type', ( is_object( $value ) ) ?  get_class( $value ) : $value ) ; // Encode to avoid backslaches removal
     }
     
     /**
@@ -350,8 +350,8 @@ class Metadatum extends Entity {
      * @param [string || integer] $value
      * @return void
      */
-    function set_metadatum_type_options( $value ){
-        $this->set_mapped_property('metadatum_type_options', $value);
+    function set_metadata_type_options( $value ){
+        $this->set_mapped_property('metadata_type_options', $value);
     }
     
     /**
@@ -423,26 +423,26 @@ class Metadatum extends Entity {
         
 		// You cant have a multiple metadatum inside a compound metadatum (except category)
 		if ($this->get_parent() > 0) {
-			if ( $this->is_multiple() && $this->get_metadatum_type_object()->get_primitive_type() != 'term') {
+			if ( $this->is_multiple() && $this->get_metadata_type_object()->get_primitive_type() != 'term') {
 				$this->add_error($this->get_id(), __('Compound metadata do not support metadata with multiple values (except categories)', 'tainacan'));
 				return false;
 			}
 		}
 		
 		// You cant have a category metadatum inside a multiple compound metadatum
-		if ( $this->get_parent() > 0 && $this->get_metadatum_type_object()->get_primitive_type() == 'term' ) {
+		if ( $this->get_parent() > 0 && $this->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 			$parent_metadatum = new \Tainacan\Entities\Metadatum($this->get_parent());
 			if ( $parent_metadatum->is_multiple() ) {
 				$this->add_error($this->get_id(), __('Taxonomy metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
 				return false;
 			}
 		}
-		if ( $this->get_metadatum_type() == 'Tainacan\Metadatum_Types\Compound' && $this->is_multiple() ) {
+		if ( $this->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' && $this->is_multiple() ) {
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$children = $Tainacan_Metadata->fetch(
 				[
 					'parent' => $this->get_id(),
-					'metadatum_type' => 'Tainacan\Metadatum_Types\Category',
+					'metadata_type' => 'Tainacan\Metadata_Types\Category',
 					'post_status' => 'any'
 				]
 				, 'OBJECT');
@@ -453,7 +453,7 @@ class Metadatum extends Entity {
 			}
 		}
 		
-        $fto = $this->get_metadatum_type_object();
+        $fto = $this->get_metadata_type_object();
 
         if (is_object($fto)) {
             $is_valid = $fto->validate_options($this);
@@ -469,7 +469,7 @@ class Metadatum extends Entity {
 	        throw new \Exception( "Return of validate_options metadatum type method should be an Array in case of error" );
         }
 
-	    $this->add_error('metadatum_type_options', $is_valid);
+	    $this->add_error('metadata_type_options', $is_valid);
         
         return false;
             

@@ -10,14 +10,14 @@ Vue.use(Buefy);
 
 Vue.use(VueCustomElement);
 
-import Text from '../classes/metadatum-types/text/Text.vue';
-import Textarea from '../classes/metadatum-types/textarea/Textarea.vue';
-import Selectbox from '../classes/metadatum-types/selectbox/Selectbox.vue';
-import Numeric from '../classes/metadatum-types/numeric/Numeric.vue';
-import Date from '../classes/metadatum-types/date/Date.vue';
-import Relationship from '../classes/metadatum-types/relationship/Relationship.vue';
+import Text from '../classes/metadata-types/text/Text.vue';
+import Textarea from '../classes/metadata-types/textarea/Textarea.vue';
+import Selectbox from '../classes/metadata-types/selectbox/Selectbox.vue';
+import Numeric from '../classes/metadata-types/numeric/Numeric.vue';
+import Date from '../classes/metadata-types/date/Date.vue';
+import Relationship from '../classes/metadata-types/relationship/Relationship.vue';
 
-import FormRelationship from '../classes/metadatum-types/relationship/FormRelationship.vue';
+import FormRelationship from '../classes/metadata-types/relationship/FormRelationship.vue';
 
 import FilterCustomInterval from '../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterSelectbox from '../classes/filter-types/selectbox/Selectbox.vue';

@@ -121,7 +121,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 		foreach ($items_metadata as $item_metadata){
 			$index = array_push($prepared_item, $this->prepare_item_for_response($item_metadata, $request));
-			$prepared_item[$index-1]['metadatum']['metadatum_type_object'] = $this->prepare_item_for_response( $item_metadata->get_metadatum()->get_metadatum_type_object(), $request);
+			$prepared_item[$index-1]['metadatum']['metadata_type_object'] = $this->prepare_item_for_response( $item_metadata->get_metadatum()->get_metadata_type_object(), $request);
 		}
 
 		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $prepared_item, $request), 200);
@@ -146,7 +146,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
 				$prepared_item = $this->prepare_item_for_response($item_metadata, $request);
-				$prepared_item['metadatum']['metadatum_type_object'] = $this->prepare_item_for_response( $metadatum->get_metadatum_type_object(), $request);
+				$prepared_item['metadatum']['metadata_type_object'] = $this->prepare_item_for_response( $metadatum->get_metadata_type_object(), $request);
 			}
 		}
 		
@@ -205,7 +205,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 					$metadatum_updated = $this->item_metadata_repository->update( $item_metadata );
 
 					$prepared_item =  $this->prepare_item_for_response($metadatum_updated, $request);
-					$prepared_item['metadatum']['metadatum_type_object'] = $this->prepare_item_for_response($metadatum_updated->get_metadatum()->get_metadatum_type_object(), $request);
+					$prepared_item['metadatum']['metadata_type_object'] = $this->prepare_item_for_response($metadatum_updated->get_metadatum()->get_metadata_type_object(), $request);
 				}
 				elseif($metadatum->get_accept_suggestion()) {
 					$log = $this->item_metadata_repository->suggest( $item_metadata );

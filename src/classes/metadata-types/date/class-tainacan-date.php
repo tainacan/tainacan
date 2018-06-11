@@ -1,19 +1,20 @@
 <?php
 
-namespace Tainacan\Metadatum_Types;
+namespace Tainacan\Metadata_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+use Tainacan\Helpers;
 /**
  * Class TainacanMetadatumType
  */
-class Text extends Metadatum_Type {
+class Date extends Metadata_Type {
 
     function __construct(){
         // call metadatum type constructor
         parent::__construct();
-        parent::set_primitive_type('string');
-        parent::set_component('tainacan-text');
+        $this->set_primitive_type('date');
+        $this->set_component('tainacan-date');
     }
 
     /**
@@ -22,9 +23,9 @@ class Text extends Metadatum_Type {
      */
 
     public function render( $itemMetadata ){
-        return '<tainacan-text metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'" 
+        return '<tainacan-date metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'" 
                                item_id="'.$itemMetadata->get_item()->get_id().'"    
                                value=\''.json_encode( $itemMetadata->get_value() ).'\'  
-                               name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-text>';
+                               name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-date>';
     }
 }

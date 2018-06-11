@@ -293,9 +293,9 @@ class Logs extends Repository {
 			}
 
 			if ( $new_value instanceof Entities\Metadatum ) {
-				$type = $new_value->get_metadatum_type();
+				$type = $new_value->get_metadata_type();
 
-				if ( $type === 'Tainacan\Metadatum_Types\Core_Title' || $type === 'Tainacan\Metadatum_Types\Core_Description' ) {
+				if ( $type === 'Tainacan\Metadata_Types\Core_Title' || $type === 'Tainacan\Metadata_Types\Core_Description' ) {
 					return false;
 				}
 			}

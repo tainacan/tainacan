@@ -54,7 +54,7 @@
                                     <span   
                                             v-if="metadatum.id != undefined"
                                             class="label-details">  
-                                        ({{ $i18n.get(metadatum.metadatum_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                        ({{ $i18n.get(metadatum.metadata_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
                                             <span 
                                                 class="not-saved" 
                                                 v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
@@ -84,8 +84,8 @@
                                         <a 
                                                 :style="{ visibility: 
                                                         metadatum.collection_id != collectionId ||
-                                                        metadatum.metadatum_type == 'Tainacan\\Metadatum_Types\\Core_Title' ||
-                                                        metadatum.metadatum_type == 'Tainacan\\Metadatum_Types\\Core_Description'
+                                                        metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title' ||
+                                                        metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Description'
                                                         ? 'hidden' : 'visible'
                                                     }" 
                                                 @click.prevent="removeMetadatum(metadatum)">
@@ -112,7 +112,7 @@
                 
                     <div class="column available-metadata-area" >
                         <div class="field">
-                            <h3 class="label">{{ $i18n.get('label_available_metadatum_types') }}</h3>
+                            <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
                             <draggable 
                                     v-model="availableMetadatumList"
                                     :options="{ 

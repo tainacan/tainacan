@@ -342,14 +342,14 @@ class Old_Tainacan extends Importer{
         $type = $this->define_type($type);
         $newMetadatum->set_name($name);
 
-        $newMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\\'.$type);
+        $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
         if(strcmp($type, "Category") === 0)
         {
             $taxonomy_id = $meta->metadata->taxonomy;
             if(isset($created_categories[$taxonomy_id]))
             {
                 $new_category_id = $created_categories[$taxonomy_id]['new_id'];
-                $newMetadatum->set_metadatum_type_options(['taxonomy_id' => $new_category_id]);
+                $newMetadatum->set_metadata_type_options(['taxonomy_id' => $new_category_id]);
             }
         }else if(strcmp($type, "Relationship") === 0)
         {
@@ -358,7 +358,7 @@ class Old_Tainacan extends Importer{
             if(isset($relationships[$taxonomy_id]))
             {
                 $new_collection_id = $relationships[$taxonomy_id]['new_id'];
-                $newMetadatum->set_metadatum_type_options(['collection_id' => $new_collection_id]);
+                $newMetadatum->set_metadata_type_options(['collection_id' => $new_collection_id]);
             }
         }else if(strcmp($type, "Compound") === 0)
         {
@@ -770,7 +770,7 @@ class Old_Tainacan extends Importer{
 
                 $newMetadatum->set_name($meta_name);
 
-                $newMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\\'.$type);
+                $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
 
                 $newMetadatum->set_collection($this->actual_collection);
                 $newMetadatum->validate(); // there is no user input here, so we can be sure it will validate.

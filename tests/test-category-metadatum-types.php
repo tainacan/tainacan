@@ -16,7 +16,7 @@ use Tainacan\Entities;
 class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 
 	
-    function test_category_metadatum_types() {
+    function test_category_metadata_types() {
 
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
@@ -45,9 +45,9 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Category',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Category',
 				'status'	 => 'publish',
-				'metadatum_type_options' => [
+				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
 					'allow_new_terms' => false
 				]
@@ -72,7 +72,7 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta2',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Category',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Category',
 				'status'	 => 'draft',
 	        ),
 	        true
@@ -104,9 +104,9 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertFalse($item_metadata->validate(), 'item metadata should not validate because it does not allow new terms');
 
 		// Lets change it
-		$options = $metadatum->get_metadatum_type_options();
+		$options = $metadatum->get_metadata_type_options();
 		$options['allow_new_terms'] = true;
-		$metadatum->set_metadatum_type_options($options);
+		$metadatum->set_metadata_type_options($options);
 		$metadatum->validate();
 		$metadatum = $Tainacan_Metadata->insert($metadatum);
 
@@ -123,7 +123,7 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertEquals('Tainacan\Entities\Term', get_class($check_item_metadata->get_value()));
 		
 		// test 2 metadata with same category
-		$metadatum2->set_metadatum_type_options([
+		$metadatum2->set_metadata_type_options([
 			'taxonomy_id' => $tax->get_id(),
 		]);
 		$metadatum2->set_status('publish');
@@ -131,7 +131,7 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertFalse($metadatum2->validate(), 'Category Metadatum should not validate when using a category in use by another metadatum in the same collection');
 		$errors = $metadatum2->get_errors();
 		$this->assertInternalType('array', $errors);
-		$this->assertArrayHasKey('taxonomy_id', $errors[0]['metadatum_type_options']);
+		$this->assertArrayHasKey('taxonomy_id', $errors[0]['metadata_type_options']);
     }
 	
 	function test_relate_taxonomy() {
@@ -168,9 +168,9 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Category',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Category',
 				'status'	 => 'publish',
-				'metadatum_type_options' => [
+				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
 					'allow_new_terms' => false
 				]
@@ -181,7 +181,7 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 		$checkTax = $Tainacan_Taxonomies->fetch($tax->get_id());
 		$this->assertContains($collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be added to taxonomy when metadatum is created');
 		
-		$metadatum->set_metadatum_type_options([
+		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $tax2->get_id(),
 			'allow_new_terms' => false
 		]);
@@ -243,9 +243,9 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Category',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Category',
 				'status'	 => 'publish',
-				'metadatum_type_options' => [
+				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
 					'allow_new_terms' => true
 				]

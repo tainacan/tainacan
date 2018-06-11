@@ -13,11 +13,11 @@ class Metadata extends Repository {
 	public $entities_type = '\Tainacan\Entities\Metadatum';
 	protected $default_metadata = 'default';
 
-	public $metadatum_types = [];
+	public $metadata_types = [];
 
 	public $core_metadata = [
-	    'Tainacan\Metadatum_Types\Core_Title',
-	    'Tainacan\Metadatum_Types\Core_Description'
+	    'Tainacan\Metadata_Types\Core_Title',
+	    'Tainacan\Metadata_Types\Core_Description'
     ];
 
     private static $instance = null;
@@ -82,7 +82,7 @@ class Metadata extends Repository {
 			    //'on_error'   => __('The description should be a text value', 'tainacan'),
 			    //'validation' => v::stringType()->notEmpty(),
 		    ],
-		    'metadatum_type'         => [
+		    'metadata_type'         => [
 			    'map'         => 'meta',
 			    'title'       => __( 'Type', 'tainacan' ),
 			    'type'        => 'string',
@@ -141,7 +141,7 @@ class Metadata extends Repository {
 			    'type'        => 'string',
 			    'description' => __( 'The default value for the metadata', 'tainacan' ),
 		    ],
-		    'metadatum_type_options' => [ // not showed in form
+		    'metadata_type_options' => [ // not showed in form
 			    'map'         => 'meta',
 			    'title'       => __( 'Metadata type options', 'tainacan' ),
 			    'type'        => 'array/object/string',
@@ -249,7 +249,7 @@ class Metadata extends Repository {
      *
      * @param $class_name string | object The class name or the instance
      */
-    public function register_metadatum_type( $class_name ){
+    public function register_metadata_type( $class_name ){
         
 		// TODO: we shoud not allow registration of metadatum types of retricted core metadatum types (e.g. compound, term) by plugins
 		
@@ -257,8 +257,8 @@ class Metadata extends Repository {
             $class_name = get_class( $class_name );
         }
 
-        if(!in_array( $class_name, $this->metadatum_types)){
-            $this->metadatum_types[] = $class_name;
+        if(!in_array( $class_name, $this->metadata_types)){
+            $this->metadata_types[] = $class_name;
         }
     }
 
@@ -267,14 +267,14 @@ class Metadata extends Repository {
      *
      * @param $class_name string | object The class name or the instance
      */
-    public function unregister_metadatum_type( $class_name ){
+    public function unregister_metadata_type( $class_name ){
         if( is_object( $class_name ) ){
             $class_name = get_class( $class_name );
         }
 
-        $key = array_search( $class_name, $this->metadatum_types );
+        $key = array_search( $class_name, $this->metadata_types );
         if($key !== false){
-            unset( $this->metadatum_types[$key] );
+            unset( $this->metadata_types[$key] );
         }
     }
 
@@ -478,22 +478,22 @@ class Metadata extends Repository {
      * NAME - return an Array of the names of metadatum types registered
      *
      * @param $output string CLASS | NAME
-     * @return array of Entities\Metadatum_Types\Metadatum_Type classes path name
+     * @return array of Entities\Metadata_Types\Metadata_Type classes path name
      */
-    public function fetch_metadatum_types( $output = 'CLASS'){
+    public function fetch_metadata_types( $output = 'CLASS'){
         $return = [];
 
-        do_action('register_metadatum_types');
+        do_action('register_metadata_types');
 
         if( $output === 'NAME' ){
-            foreach ($this->metadatum_types as $metadatum_type) {
-                $return[] = str_replace('Tainacan\Metadatum_Types\\','', $metadatum_type);
+            foreach ($this->metadata_types as $metadata_type) {
+                $return[] = str_replace('Tainacan\Metadata_Types\\','', $metadata_type);
             }
 
             return $return;
         }
 
-        return $this->metadatum_types;
+        return $this->metadata_types;
     }
 
 	/**
@@ -513,7 +513,7 @@ class Metadata extends Repository {
                 'name'          => 'Description',
                 'description'   => 'description',
                 'collection_id' => $collection->get_id(),
-                'metadatum_type'    => 'Tainacan\Metadatum_Types\Core_Description',
+                'metadata_type'    => 'Tainacan\Metadata_Types\Core_Description',
                 'status'        => 'publish',
             	'exposer_mapping'	=> [
             		'dublin-core' => 'description'
@@ -523,7 +523,7 @@ class Metadata extends Repository {
                 'name'          => 'Title',
                 'description'   => 'title',
                 'collection_id' => $collection->get_id(),
-                'metadatum_type'    => 'Tainacan\Metadatum_Types\Core_Title',
+                'metadata_type'    => 'Tainacan\Metadata_Types\Core_Title',
                 'status'        => 'publish',
             	'exposer_mapping'	=> [
             		'dublin-core' => 'title'
@@ -541,7 +541,7 @@ class Metadata extends Repository {
             } else {
                 $exists = false;
                 foreach ( $metadata as $metadatum ){
-                    if ( $metadatum->get_metadatum_type() === $data_core_metadatum['metadatum_type'] ) {
+                    if ( $metadatum->get_metadata_type() === $data_core_metadatum['metadata_type'] ) {
                         $exists = true;
                     }
                 }
@@ -565,7 +565,7 @@ class Metadata extends Repository {
     public function disable_delete_core_metadata( $before, $post ){
         $metadatum = $this->fetch( $post->ID );
 
-        if ( $metadatum && in_array( $metadatum->get_metadatum_type(), $this->core_metadata ) &&  is_numeric($metadatum->get_collection_id()) ) {
+        if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) &&  is_numeric($metadatum->get_collection_id()) ) {
             return false;
         }
     }
@@ -584,7 +584,7 @@ class Metadata extends Repository {
     public function force_delete_core_metadata( $before, $post, $force_delete ){
         $metadatum = $this->fetch( $post->ID );
 
-        if ( $metadatum && in_array( $metadatum->get_metadatum_type(), $this->core_metadata ) &&  is_numeric($metadatum->get_collection_id()) ) {
+        if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) &&  is_numeric($metadatum->get_collection_id()) ) {
             return false;
         }
     }
@@ -607,7 +607,7 @@ class Metadata extends Repository {
                 'compare' => 'IN',
             ),
             array(
-                'key'     => 'metadatum_type',
+                'key'     => 'metadata_type',
                 'value'   => $this->core_metadata,
                 'compare' => 'IN',
             )
@@ -665,14 +665,14 @@ class Metadata extends Repository {
 		$metadatum = new Entities\Metadatum( $metadatum_id );
 
 		// handle core titles
-		if( strpos( $metadatum->get_metadatum_type(), 'Core') !== false ){
+		if( strpos( $metadatum->get_metadata_type(), 'Core') !== false ){
 		    $collection = new Entities\Collection( $collection_id );
 		    $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
             $items = $Tainacan_Items->fetch( ['s' => $search], $collection, 'OBJECT');
             $return = [];
 
             foreach ($items as $item) {
-                if( strpos( $metadatum->get_metadatum_type(), 'Core_Title')  !== false  ){
+                if( strpos( $metadatum->get_metadata_type(), 'Core_Title')  !== false  ){
                 	$title = $item->get_title();
 
 	                if(!empty($search) && stristr($title, $search) !== false) {
@@ -819,13 +819,13 @@ class Metadata extends Repository {
 	 *
 	 */
 	private function pre_update_category_metadatum($metadatum) {
-		$metadatum_type = $metadatum->get_metadatum_type_object();
+		$metadata_type = $metadatum->get_metadata_type_object();
 		$current_tax = '';
-		if ($metadatum_type->get_primitive_type() == 'term') {
+		if ($metadata_type->get_primitive_type() == 'term') {
 			
-			$options = $this->get_mapped_property($metadatum, 'metadatum_type_options');
-			$metadatum_type->set_options($options);
-			$current_tax = $metadatum_type->get_option('taxonomy_id');
+			$options = $this->get_mapped_property($metadatum, 'metadata_type_options');
+			$metadata_type->set_options($options);
+			$current_tax = $metadata_type->get_option('taxonomy_id');
 		}
 		$this->current_taxonomy = $current_tax;
 	}
@@ -841,11 +841,11 @@ class Metadata extends Repository {
 	 * @return void [type]        [description]
 	 */
 	private function update_category_metadatum($metadatum) {
-		$metadatum_type = $metadatum->get_metadatum_type_object();
+		$metadata_type = $metadatum->get_metadata_type_object();
 		$new_tax = '';
 		
-		if ($metadatum_type->get_primitive_type() == 'term') {
-			$new_tax = $metadatum_type->get_option('taxonomy_id');
+		if ($metadata_type->get_primitive_type() == 'term') {
+			$new_tax = $metadata_type->get_option('taxonomy_id');
 		}
 		
 		if ($new_tax != $this->current_taxonomy) {
@@ -864,10 +864,10 @@ class Metadata extends Repository {
 	
 	private function delete_category_metadatum($metadatum_id) {
 		$metadatum = $this->fetch($metadatum_id);
-		$metadatum_type = $metadatum->get_metadatum_type_object();
+		$metadata_type = $metadatum->get_metadata_type_object();
 
-		if ($metadatum_type->get_primitive_type() == 'term') {
-			$removed_tax = $metadatum_type->get_option('taxonomy_id');
+		if ($metadata_type->get_primitive_type() == 'term') {
+			$removed_tax = $metadata_type->get_option('taxonomy_id');
 
 			$collection = $metadatum->get_collection();
 

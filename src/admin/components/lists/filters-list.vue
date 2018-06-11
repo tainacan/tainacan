@@ -319,7 +319,7 @@ export default {
 
             for (let filter of this.filterTypes) {
                 for (let supportedType of filter['supported_types']) {
-                    if (choosenMetadatum.metadatum_type_object.primitive_type == supportedType)
+                    if (choosenMetadatum.metadata_type_object.primitive_type == supportedType)
                         this.allowedFilterTypes.push(filter);
                 }
             }

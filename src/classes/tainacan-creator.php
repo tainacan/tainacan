@@ -1,7 +1,7 @@
 <?php
 
 const TAINACAN_ENTITIES_DIR 	   = __DIR__ . '/entities/';
-const TAINACAN_METADATUM_TYPES_DIR  = __DIR__ . '/metadatum-types/';
+const TAINACAN_METADATA_TYPES_DIR  = __DIR__ . '/metadata-types/';
 const TAINACAN_FILTER_TYPES_DIR = __DIR__ . '/filter-types/';
 const TAINACAN_REPOSITORIES_DIR = __DIR__ . '/repositories/';
 const TAINACAN_TRAITS_DIR 	   = __DIR__ . '/traits/';
@@ -14,7 +14,7 @@ const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 const DIRS = [
     TAINACAN_CLASSES_DIR,
     TAINACAN_ENTITIES_DIR,
-    TAINACAN_METADATUM_TYPES_DIR,
+    TAINACAN_METADATA_TYPES_DIR,
     TAINACAN_FILTER_TYPES_DIR,
     TAINACAN_REPOSITORIES_DIR,
     TAINACAN_TRAITS_DIR,
@@ -71,7 +71,7 @@ function tainacan_autoload($class_name){
 		    $dir = TAINACAN_CLASSES_DIR;
 	    }
 
-        if( in_array('Metadatum_Types', $class_path) || in_array('Filter_Types', $class_path) ){
+        if( in_array('Metadata_Types', $class_path) || in_array('Filter_Types', $class_path) ){
     	    $exceptions = ['categorytaginput','categorycheckbox','categoryselectbox'];
     	    if( in_array( strtolower( $class_name ), $exceptions) ){
                 $dir.= 'category/';
@@ -95,14 +95,14 @@ $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
 //register metadatum types
-$Tainacan_Metadata->register_metadatum_type('Tainacan\Metadatum_Types\Text');
-$Tainacan_Metadata->register_metadatum_type('Tainacan\Metadatum_Types\Textarea');
-$Tainacan_Metadata->register_metadatum_type('Tainacan\Metadatum_Types\Date');
-$Tainacan_Metadata->register_metadatum_type('Tainacan\Metadatum_Types\Numeric');
-$Tainacan_Metadata->register_metadatum_type('Tainacan\Metadatum_Types\Selectbox');
-$Tainacan_Metadata->register_metadatum_type('Tainacan\Metadatum_Types\Relationship');
-$Tainacan_Metadata->register_metadatum_type('Tainacan\Metadatum_Types\Category');
-$Tainacan_Metadata->register_metadatum_type('Tainacan\Metadatum_Types\Compound');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Text');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Textarea');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Date');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Numeric');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Selectbox');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Relationship');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Category');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
 
 $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 

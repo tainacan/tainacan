@@ -16,7 +16,7 @@ use Tainacan\Entities;
 class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 
 	
-    function test_core_metadatum_types() {
+    function test_core_metadata_types() {
 
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
@@ -35,7 +35,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'metadado',
 		        'description' => 'title',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Core_Title'
+		        'metadata_type' => 'Tainacan\Metadata_Types\Core_Title'
 	        ),
 	        true
         );
@@ -46,7 +46,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'metadado_desc',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Core_Description'
+		        'metadata_type' => 'Tainacan\Metadata_Types\Core_Description'
 	        ),
 	        true
         );
@@ -120,7 +120,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
         $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
 
         foreach ( $metadata as $index => $metadatum ){
-            if ( $metadatum->get_metadatum_type_object()->get_core() && $metadatum->get_metadatum_type_object()->get_related_mapped_prop() == 'title') {
+            if ( $metadatum->get_metadata_type_object()->get_core() && $metadatum->get_metadata_type_object()->get_related_mapped_prop() == 'title') {
                 $core_title = $metadatum;
             }
         }
@@ -155,10 +155,10 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
         $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
 
         foreach ( $metadata as $index => $metadatum ){
-            if ( $metadatum->get_metadatum_type_object()->get_core() && $metadatum->get_metadatum_type_object()->get_related_mapped_prop() == 'title') {
+            if ( $metadatum->get_metadata_type_object()->get_core() && $metadatum->get_metadata_type_object()->get_related_mapped_prop() == 'title') {
                 $core_title = $metadatum;
             }
-            if ( $metadatum->get_metadatum_type_object()->get_core() && $metadatum->get_metadatum_type_object()->get_related_mapped_prop() == 'description') {
+            if ( $metadatum->get_metadata_type_object()->get_core() && $metadatum->get_metadata_type_object()->get_related_mapped_prop() == 'description') {
                 $core_description = $metadatum;
             }
         }
@@ -189,7 +189,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'just to confuse',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadatum_type' => 'Tainacan\Metadatum_Types\Text'
+		        'metadata_type' => 'Tainacan\Metadata_Types\Text'
 	        ),
 	        true
         );
@@ -198,16 +198,16 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 
         $this->assertEquals(2, sizeof($core_metadata));
 
-        $this->assertNotEquals('Tainacan\Metadatum_Types\Text', $core_metadata[0]->get_metadatum_type());
-        $this->assertNotEquals('Tainacan\Metadatum_Types\Text', $core_metadata[1]->get_metadatum_type());
+        $this->assertNotEquals('Tainacan\Metadata_Types\Text', $core_metadata[0]->get_metadata_type());
+        $this->assertNotEquals('Tainacan\Metadata_Types\Text', $core_metadata[1]->get_metadata_type());
 
         $title = $collection->get_core_title_metadatum();
 
-        $this->assertEquals('Tainacan\Metadatum_Types\Core_Title', $title->get_metadatum_type());
+        $this->assertEquals('Tainacan\Metadata_Types\Core_Title', $title->get_metadata_type());
 
         $description = $collection->get_core_description_metadatum();
 
-        $this->assertEquals('Tainacan\Metadatum_Types\Core_Description', $description->get_metadatum_type());
+        $this->assertEquals('Tainacan\Metadata_Types\Core_Description', $description->get_metadata_type());
 
 
     }

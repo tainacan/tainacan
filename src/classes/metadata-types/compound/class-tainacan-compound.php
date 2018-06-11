@@ -1,6 +1,6 @@
 <?php
 
-namespace Tainacan\Metadatum_Types;
+namespace Tainacan\Metadata_Types;
 
 use Tainacan\Entities\Metadatum;
 use Tainacan\Entities\Item_Metadata_Entity;
@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanMetadatumType
  */
-class Compound extends Metadatum_Type {
+class Compound extends Metadata_Type {
 
     function __construct(){
         // call metadatum type constructor

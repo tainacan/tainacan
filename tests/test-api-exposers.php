@@ -29,7 +29,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 				'name'              => 'teste_Expose',
 				'description'       => 'descricao',
 				'collection'        => $collection,
-				'metadatum_type'		=> $type,
+				'metadata_type'		=> $type,
 				'exposer_mapping'	=> [
 					'dublin-core' => 'language'
 				]

@@ -29,7 +29,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'name'              => 'teste_metadado',
 				'description'       => 'descricao',
 				'collection'        => $collection,
-				'metadatum_type'		=> $type,
+				'metadata_type'		=> $type,
 				'accept_suggestion'	=> true
 			),
 			true,

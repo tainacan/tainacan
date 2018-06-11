@@ -1,6 +1,6 @@
 <?php
 
-namespace Tainacan\Metadatum_Types;
+namespace Tainacan\Metadata_Types;
 
 use Tainacan\Entities\Metadatum;
 use Tainacan\Entities\Item_Metadata_Entity;
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanMetadatumType
  */
-class Category extends Metadatum_Type {
+class Category extends Metadata_Type {
 
     function __construct(){
         // call metadatum type constructor
@@ -73,11 +73,11 @@ class Category extends Metadatum_Type {
 		
 		$category_metadata = $Tainacan_Metadata->fetch([
 			'collection_id' => $metadatum->get_collection_id(),
-			'metadatum_type' => 'Tainacan\\Metadatum_Types\\Category'
+			'metadata_type' => 'Tainacan\\Metadata_Types\\Category'
 		], 'OBJECT');
 		
 		$category_metadata = array_map(function ($metadatum_map) {
-			$fto = $metadatum_map->get_metadatum_type_object();
+			$fto = $metadatum_map->get_metadata_type_object();
 			return [ $metadatum_map->get_id() => $fto->get_option('taxonomy_id') ];
 		}, $category_metadata);
 

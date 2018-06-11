@@ -126,7 +126,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_items_per_page'                     => __( 'Items per Page:', 'tainacan' ),
 	'label_active_metadata'                      => __( 'Active Metadata', 'tainacan' ),
 	'label_available_metadata'                   => __( 'Available Metadata', 'tainacan' ),
-	'label_available_metadatum_types'              => __( 'Available Metadata Types', 'tainacan' ),
+	'label_available_metadata_types'              => __( 'Available Metadata Types', 'tainacan' ),
 	'label_active_filters'                     => __( 'Active Filters', 'tainacan' ),
 	'label_filter_type'                        => __( 'Filter Type', 'tainacan' ),
 	'label_available_filters'                  => __( 'Available Filters', 'tainacan' ),

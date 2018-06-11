@@ -156,8 +156,8 @@ class Test_Importer extends Importer {
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name('Colora');
 		$metadatum->set_collection($col1);
-		$metadatum->set_metadatum_type('Tainacan\Metadatum_Types\Category');
-		$metadatum->set_metadatum_type_options([
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $this->get_transient('tax_1_id'),
 			'allow_new_terms' => true
 		]);
@@ -177,8 +177,8 @@ class Test_Importer extends Importer {
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name('Qualitya');
 		$metadatum->set_collection($col1);
-		$metadatum->set_metadatum_type('Tainacan\Metadatum_Types\Category');
-		$metadatum->set_metadatum_type_options([
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $this->get_transient('tax_2_id'),
 			'allow_new_terms' => true
 		]);
@@ -211,7 +211,7 @@ class Test_Importer extends Importer {
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name('Test Metadatum');
 		$metadatum->set_collection($col2);
-		$metadatum->set_metadatum_type('Tainacan\Metadatum_Types\Text');
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 		$metadatum->set_status('publish');
 		
 		if ($metadatum->validate()) {
@@ -261,9 +261,9 @@ class Test_Importer extends Importer {
 		
 		
 		$metadatum1 = $this->metadata_repo->fetch( $this->get_transient('tax_1_metadatum') );
-		$options = $metadatum1->get_metadatum_type_options();
+		$options = $metadatum1->get_metadata_type_options();
 		$options['allow_new_terms'] = false;
-		$metadatum1->set_metadatum_type_options($options);
+		$metadatum1->set_metadata_type_options($options);
 		if ($metadatum1->validate()) {
 			$this->metadata_repo->insert($metadatum1);
 		} else {
@@ -272,9 +272,9 @@ class Test_Importer extends Importer {
 		}
 		
 		$metadatum2 = $this->metadata_repo->fetch( $this->get_transient('tax_2_metadatum') );
-		$options = $metadatum2->get_metadatum_type_options();
+		$options = $metadatum2->get_metadata_type_options();
 		$options['allow_new_terms'] = false;
-		$metadatum2->set_metadatum_type_options($options);
+		$metadatum2->set_metadata_type_options($options);
 		if ($metadatum2->validate()) {
 			$this->metadata_repo->insert($metadatum2);
 		} else {

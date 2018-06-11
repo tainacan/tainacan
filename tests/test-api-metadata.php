@@ -24,7 +24,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Moeda',
 				'description' => 'Descreve campo moeda.',
-				'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			)
 		);
         
@@ -60,7 +60,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Descreve valor do campo data.',
 				'collection'  => $collection,
 				'status'      => 'publish',
-				'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			), true
 		);
 
@@ -79,7 +79,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			array(
 				'name'        => 'Ano de Publicação',
 				'description' => 'Uma data no formato dd/mm/aaaa.',
-				'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			)
 		);
 
@@ -115,7 +115,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Descreve valor do campo data.',
 				'collection'  => $collection,
 				'status'      => 'publish',
-				'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			), true
 		);
 
@@ -126,7 +126,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description'    => 'Descreve valor do campo data.',
 				'collection_id'  => 'default',
 				'status'         => 'publish',
-				'metadatum_type'     => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'     => 'Tainacan\Metadata_Types\Text',
 			), true
 		);
 
@@ -171,7 +171,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Descreve valor do campo data.',
 				'collection'  => $collection,
 				'status'      => 'publish',
-				'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
 		);
@@ -244,7 +244,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Descreve o dado do campo data.',
 				'collection'  => $collection,
 				'status'      => 'publish',
-				'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 				'multiple'    => 'yes'
 			),
 			true
@@ -322,7 +322,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'No Statement',
 				'collection'  => $collection,
 				'status'      => 'publish',
-				'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 				'multiple'    => 'yes'
 			),
 			true
@@ -350,7 +350,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description'   => 'No Statement',
 				'collection_id' => 'default',
 				'status'        => 'publish',
-				'metadatum_type'    => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
 				'multiple'      => 'yes'
 			),
 			true
@@ -378,7 +378,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description'   => 'No Statement',
 				'collection_id' => 'default',
 				'status'        => 'publish',
-				'metadatum_type'    => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'    => 'Tainacan\Metadata_Types\Text',
 				'multiple'      => 'no'
 			),
 			true
@@ -446,7 +446,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'description' => 'Descreve valor do campo data.',
 				'collection'  => $collection,
 				'status'      => 'publish',
-				'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
 		);
