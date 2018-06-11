@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-loading :active.sync="isLoadingFieldTypes"/>
+        <b-loading :active.sync="isLoadingMetadatumTypes"/>
         <tainacan-title v-if="!isRepositoryLevel"/>
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
         <br>
@@ -35,7 +35,7 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenField.name == filter.name, 
+                                'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name,
                                 'not-focusable-item': openedFilterId == filter.id, 
                                 'disabled-filter': filter.enabled == false
                             }" 
@@ -84,7 +84,7 @@
                                 </a>
                             </span>
                         </div>
-                        <div v-if="choosenField.id == filter.id && openedFilterId == ''">
+                        <div v-if="choosenMetadatum.id == filter.id && openedFilterId == ''">
                             <form class="tainacan-form">
                                 <b-field :label="$i18n.get('label_filter_type')">
                                     <b-select
@@ -128,25 +128,25 @@
                     </div>
                 </draggable>
             </div>
-            <div class="column available-fields-area">
+            <div class="column available-metadata-area">
                 <div class="field" >
-                    <h3 class="label"> {{ $i18n.get('label_available_fields') }}</h3>
+                    <h3 class="label"> {{ $i18n.get('label_available_metadata') }}</h3>
                     <draggable
-                            v-if="availableFieldList.length > 0" 
-                            v-model="availableFieldList" 
+                            v-if="availableMetadatumList.length > 0"
+                            v-model="availableMetadatumList"
                             :options="{ 
                                 sort: false, 
                                 group: { name:'filters', pull: true, put: false, revertClone: true },
                                 dragClass: 'sortable-drag'
                             }">
                         <div 
-                                class="available-field-item"
-                                v-if="field.enabled"
-                                v-for="(field, index) in availableFieldList" 
+                                class="available-metadatum-item"
+                                v-if="metadatum.enabled"
+                                v-for="(metadatum, index) in availableMetadatumList"
                                 :key="index"
-                                @click.prevent="addFieldViaButton(field, index)">  
+                                @click.prevent="addMetadatumViaButton(metadatum, index)">
                             <grip-icon/> 
-                              <span class="field-name">{{ field.name }}</span>
+                              <span class="metadatum-name">{{ metadatum.name }}</span>
                         </div>
                     </draggable>   
                 
@@ -159,13 +159,13 @@
                                         icon="format-list-checks"
                                         size="is-large"/>
                             </p>
-                            <p>{{ $i18n.get('info_there_is_no_field' ) }}</p>  
+                            <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                             <router-link
-                                    id="button-create-field"
-                                    :to="isRepositoryLevel ? $routerHelper.getNewFieldPath() : $routerHelper.getNewCollectionFieldPath(collectionId)"
+                                    id="button-create-metadatum"
+                                    :to="isRepositoryLevel ? $routerHelper.getNewMetadatumPath() : $routerHelper.getNewCollectionMetadatumPath(collectionId)"
                                     tag="button" 
                                     class="button is-secondary is-centered">
-                                {{ $i18n.getFrom('fields', 'new_item') }}</router-link>
+                                {{ $i18n.getFrom('metadata', 'new_item') }}</router-link>
                         </div>
                     </section>
                 </div>
@@ -187,7 +187,7 @@ export default {
             collectionId: '',
             isRepositoryLevel: false,
             isDraggingFromAvailable: false,
-            isLoadingFieldTypes: true,
+            isLoadingMetadatumTypes: true,
             isLoadingFilters: false,
             isLoadingFilterTypes: false,
             isLoadingFilter: false,
@@ -196,9 +196,9 @@ export default {
             editForms: {},
             allowedFilterTypes: [],
             selectedFilterType: {},
-            choosenField: {},
+            choosenMetadatum: {},
             newIndex: 0,
-            availableFieldList: [],
+            availableMetadatumList: [],
             filterTypes: []        
         }
     },
@@ -255,11 +255,11 @@ export default {
             'getFilters',
             'getFilterTypes'
         ]),
-        ...mapActions('fields', [
-            'fetchFields',
+        ...mapActions('metadata', [
+            'fetchMetadata',
         ]),
-        ...mapGetters('fields', [
-            'getFields',
+        ...mapGetters('metadata', [
+            'getMetadata',
         ]),
         handleChange($event) {     
             if ($event.added) {
@@ -278,20 +278,20 @@ export default {
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
         },
-        updateListOfFields() {
+        updateListOfMetadata() {
 
-            let availableFields = JSON.parse(JSON.stringify(this.getFields())) ;
+            let availableMetadata = JSON.parse(JSON.stringify(this.getMetadata())) ;
 
             for (let activeFilter of this.activeFilterList) {
-                for (let i = availableFields.length - 1; i >= 0 ; i--) {
-                    if (activeFilter.field != undefined) {
-                        if (activeFilter.field.field_id == availableFields[i].id) 
-                            availableFields.splice(i, 1);
+                for (let i = availableMetadata.length - 1; i >= 0 ; i--) {
+                    if (activeFilter.metadatum != undefined) {
+                        if (activeFilter.metadatum.metadatum_id == availableMetadata[i].id)
+                            availableMetadata.splice(i, 1);
                     }
                 }
             }
 
-            this.availableFieldList = availableFields;
+            this.availableMetadatumList = availableMetadata;
         },
         onChangeEnable($event, index) {
             this.activeFilterList[index].enabled = $event;
@@ -301,17 +301,17 @@ export default {
             }
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
         },
-        addFieldViaButton(fieldType, fieldIndex) {
-            this.availableFieldList.splice(fieldIndex, 1);
+        addMetadatumViaButton(metadatumType, metadatumIndex) {
+            this.availableMetadatumList.splice(metadatumIndex, 1);
             let lastIndex = this.activeFilterList.length;
 
             // Updates store with temporary Filter
-            this.addTemporaryFilter(fieldType);
+            this.addTemporaryFilter(metadatumType);
 
-            this.addNewFilter(fieldType, lastIndex);
+            this.addNewFilter(metadatumType, lastIndex);
         },
-        addNewFilter(choosenField, newIndex) {
-            this.choosenField = choosenField;
+        addNewFilter(choosenMetadatum, newIndex) {
+            this.choosenMetadatum = choosenMetadatum;
             this.newIndex = newIndex;
             this.openedFilterId = '';
             this.allowedFilterTypes = [];
@@ -319,7 +319,7 @@ export default {
 
             for (let filter of this.filterTypes) {
                 for (let supportedType of filter['supported_types']) {
-                    if (choosenField.field_type_object.primitive_type == supportedType)
+                    if (choosenMetadatum.metadatum_type_object.primitive_type == supportedType)
                         this.allowedFilterTypes.push(filter);
                 }
             }
@@ -328,8 +328,8 @@ export default {
             
             this.sendFilter({
                 collectionId: this.collectionId, 
-                fieldId: this.choosenField.id, 
-                name: this.choosenField.name, 
+                metadatumId: this.choosenMetadatum.id,
+                name: this.choosenMetadatum.name,
                 filterType: this.selectedFilterType.name, 
                 status: 'auto-draft', 
                 isRepositoryLevel: this.isRepositoryLevel,
@@ -341,7 +341,7 @@ export default {
                     this.updateFiltersOrder();
 
                 this.newIndex = 0;
-                this.choosenField = {};
+                this.choosenMetadatum = {};
                 this.selectedFilterType = {}
                 this.allowedFilterTypes = [];
 
@@ -350,7 +350,7 @@ export default {
             .catch((error) => {
                 this.$console.error(error);
                 this.newIndex = 0;
-                this.choosenField = {};
+                this.choosenMetadatum = {};
                 this.selectedFilterType = {}
                 this.allowedFilterTypes = [];
             });
@@ -359,8 +359,8 @@ export default {
 
             this.deleteFilter(removedFilter.id)
             .then(() => {
-                // Reload Available Field Types List
-                this.updateListOfFields();
+                // Reload Available Metadatum Types List
+                this.updateListOfMetadata();
    
             })
             .catch((error) => { this.$console.log(error)});
@@ -372,8 +372,8 @@ export default {
             this.createChoosenFilter();
         },
         cancelFilterTypeSelection() {
-           this.availableFieldList.push(this.choosenField);
-           this.choosenField = {};
+           this.availableMetadatumList.push(this.choosenMetadatum);
+           this.choosenMetadatum = {};
            this.allowedFilterTypes = [];
            this.selectedFilterType = {};
            this.deleteTemporaryFilter(this.newIndex);
@@ -387,9 +387,9 @@ export default {
             // Opening collapse
             } else {
                 
-                if (this.openedFilterId == '' && this.choosenField.id != undefined) {
-                    this.availableFieldList.push(this.choosenField);
-                    this.choosenField = {};
+                if (this.openedFilterId == '' && this.choosenMetadatum.id != undefined) {
+                    this.availableMetadatumList.push(this.choosenMetadatum);
+                    this.choosenMetadatum = {};
                     this.allowedFilterTypes = [];
                     this.selectedFilterType = {};
                     this.deleteTemporaryFilter(this.newIndex);
@@ -429,7 +429,7 @@ export default {
         else
             this.collectionId = this.$route.params.collectionId;
 
-        this.isLoadingFieldTypes = true;
+        this.isLoadingMetadatumTypes = true;
         this.isLoadingFilters = true;
         this.isLoadingFilterTypes = true;
 
@@ -445,14 +445,14 @@ export default {
         this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: 'yes' })
             .then(() => {
                 this.isLoadingFilters = false;
-                // Needs to be done after activeFilterList exists to compare and remove chosen fields.
-                this.fetchFields({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
+                // Needs to be done after activeFilterList exists to compare and remove chosen metadata.
+                this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true })
                     .then(() => {
-                        this.isLoadingFieldTypes = false;
-                        this.updateListOfFields();
+                        this.isLoadingMetadatumTypes = false;
+                        this.updateListOfMetadata();
                     })
                     .catch(() => {
-                        this.isLoadingFieldTypes = false;
+                        this.isLoadingMetadatumTypes = false;
                     });
             })
             .catch(() => {
@@ -589,14 +589,14 @@ export default {
             &.not-focusable-item, &.not-focusable-item:hover {
                 cursor: default;
                
-                .field-name {
+                .metadatum-name {
                     color: $secondary;
                 }
                 .handle .label-details, .handle .icon {
                     color: $gray !important;
                 }
             }
-            &.disabled-field {
+            &.disabled-metadatum {
                 color: $gray;
             }    
         }
@@ -645,7 +645,7 @@ export default {
         }
     }
 
-    .available-fields-area {
+    .available-metadata-area {
         padding: 10px 0px 10px 10px;
         margin: 0;
         max-width: 280px;
@@ -657,8 +657,8 @@ export default {
             h3 {
                 margin: 1em 0em 1em 0em !important;
             }
-            .available-field-item::before, 
-            .available-field-item::after {
+            .available-metadatum-item::before,
+            .available-metadatum-item::after {
                 display: none !important;
             }
         }
@@ -669,7 +669,7 @@ export default {
             font-weight: 500;
         }
 
-        .available-field-item {
+        .available-metadatum-item {
             padding: 0.7em;
             margin: 4px;
             background-color: white;
@@ -692,7 +692,7 @@ export default {
                 position: relative;
                 bottom: 3px;
             }
-            .field-name {
+            .metadatum-name {
                 text-overflow: ellipsis;
                 overflow-x: hidden;
                 white-space: nowrap;
@@ -731,7 +731,7 @@ export default {
         .sortable-drag {
             opacity: 1 !important;
         }
-        .available-field-item:hover {
+        .available-metadatum-item:hover {
             background-color: $secondary;
             border-color: $secondary;
             color: white;

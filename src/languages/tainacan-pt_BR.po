@@ -44,9 +44,9 @@ msgid "Items"
 msgstr "Itens"
 
 #: admin/tainacan-admin-i18n.php:8 admin/tainacan-admin-i18n.php:14
-#: classes/repositories/class-tainacan-fields.php:194
-#: classes/repositories/class-tainacan-fields.php:195
-#: classes/repositories/class-tainacan-fields.php:205
+#: classes/repositories/class-tainacan-metadata.php:194
+#: classes/repositories/class-tainacan-metadata.php:195
+#: classes/repositories/class-tainacan-metadata.php:205
 #: classes/repositories/class-tainacan-filters.php:83
 #: dev-interface/class-tainacan-dev-interface.php:93
 #: dev-interface/class-tainacan-dev-interface.php:236
@@ -72,7 +72,7 @@ msgstr "Eventos"
 
 #: admin/tainacan-admin-i18n.php:12
 #: classes/repositories/class-tainacan-collections.php:200
-#: classes/repositories/class-tainacan-fields.php:154
+#: classes/repositories/class-tainacan-metadata.php:154
 #: classes/repositories/class-tainacan-filters.php:69
 #: classes/repositories/class-tainacan-items.php:58
 msgid "Collection"
@@ -226,7 +226,7 @@ msgstr "Página de Itens"
 
 #: admin/tainacan-admin-i18n.php:55
 #, fuzzy
-#| msgid "Repository Fields Page"
+#| msgid "Repository Metadata Page"
 msgid "Repository Metadata Page"
 msgstr "Página de metadados do repositório"
 
@@ -321,7 +321,7 @@ msgstr "Página de edição de filtro"
 
 #: admin/tainacan-admin-i18n.php:78
 #, fuzzy
-#| msgid "Field Edition Page"
+#| msgid "Metadatum Edition Page"
 msgid "Metadata Edition Page"
 msgstr "Página de edição de metadado"
 
@@ -375,7 +375,7 @@ msgstr "Ações"
 
 #: admin/tainacan-admin-i18n.php:92
 #: classes/repositories/class-tainacan-collections.php:41
-#: classes/repositories/class-tainacan-fields.php:46
+#: classes/repositories/class-tainacan-metadata.php:46
 #: classes/repositories/class-tainacan-filters.php:31
 #: classes/repositories/class-tainacan-taxonomies.php:38
 #: classes/repositories/class-tainacan-terms.php:41
@@ -384,7 +384,7 @@ msgstr "Nome"
 
 #: admin/tainacan-admin-i18n.php:93
 #: classes/repositories/class-tainacan-collections.php:87
-#: classes/repositories/class-tainacan-fields.php:78
+#: classes/repositories/class-tainacan-metadata.php:78
 #: classes/repositories/class-tainacan-filters.php:46
 #: classes/repositories/class-tainacan-items.php:50
 #: classes/repositories/class-tainacan-logs.php:70
@@ -403,7 +403,7 @@ msgstr "Status"
 
 #: admin/tainacan-admin-i18n.php:95
 #: classes/repositories/class-tainacan-collections.php:95
-#: classes/repositories/class-tainacan-fields.php:54
+#: classes/repositories/class-tainacan-metadata.php:54
 #: classes/repositories/class-tainacan-logs.php:78
 #: classes/repositories/class-tainacan-taxonomies.php:54
 msgid "Slug"
@@ -498,7 +498,7 @@ msgstr "Metadado"
 
 #: admin/tainacan-admin-i18n.php:116
 #, fuzzy
-#| msgid "Available Field Types"
+#| msgid "Available Metadatum Types"
 msgid "Available Metadata Types"
 msgstr "Tipos de Metadados disponíveis"
 
@@ -524,13 +524,13 @@ msgstr "por Página"
 
 #: admin/tainacan-admin-i18n.php:122
 #, fuzzy
-#| msgid "Field Edition Page"
+#| msgid "Metadatum Edition Page"
 msgid "Metadata on table"
 msgstr "Página de edição de metadado"
 
 # DESCOBRIR O CONTEXTO DESSA “REQUISIÇAO”
 #: admin/tainacan-admin-i18n.php:123
-#: classes/repositories/class-tainacan-fields.php:95
+#: classes/repositories/class-tainacan-metadata.php:95
 msgid "Required"
 msgstr "Requerido"
 
@@ -539,7 +539,7 @@ msgid "Allow multiple values"
 msgstr "Permitir valores múltiplos"
 
 #: admin/tainacan-admin-i18n.php:125
-#: classes/repositories/class-tainacan-fields.php:140
+#: classes/repositories/class-tainacan-metadata.php:140
 msgid "Default value"
 msgstr "Valor padrão"
 
@@ -561,20 +561,20 @@ msgid "Approved"
 msgstr "Aprovado"
 
 #: admin/tainacan-admin-i18n.php:130
-#: classes/field-types/category/class-tainacan-category.php:35
-#: classes/field-types/relationship/class-tainacan-relationship.php:26
+#: classes/metadatum-types/category/class-tainacan-category.php:35
+#: classes/metadatum-types/relationship/class-tainacan-relationship.php:26
 msgid "Collection Related"
 msgstr "Coleção relacionada"
 
 #: admin/tainacan-admin-i18n.php:131
-#: classes/field-types/relationship/class-tainacan-relationship.php:30
+#: classes/metadatum-types/relationship/class-tainacan-relationship.php:30
 #, fuzzy
-#| msgid "Fields for search"
+#| msgid "Metadata for search"
 msgid "Metadata for search"
 msgstr "Metadados para busca"
 
 #: admin/tainacan-admin-i18n.php:132
-#: classes/field-types/relationship/class-tainacan-relationship.php:34
+#: classes/metadatum-types/relationship/class-tainacan-relationship.php:34
 msgid "Allow repeated items"
 msgstr "Permitir itens repetidos"
 
@@ -585,12 +585,12 @@ msgid "Select taxonomy"
 msgstr "Categoria pai"
 
 #: admin/tainacan-admin-i18n.php:134
-#: classes/field-types/category/class-tainacan-category.php:39
+#: classes/metadatum-types/category/class-tainacan-category.php:39
 msgid "Input type"
 msgstr "Tipo de entrada"
 
 #: admin/tainacan-admin-i18n.php:135
-#: classes/field-types/category/class-tainacan-category.php:43
+#: classes/metadatum-types/category/class-tainacan-category.php:43
 msgid "Allow new terms"
 msgstr "Permitir termos novos"
 
@@ -695,7 +695,7 @@ msgstr "Página de capa"
 #: admin/tainacan-admin-i18n.php:159
 #: classes/repositories/class-tainacan-collections.php:118
 #, fuzzy
-#| msgid "Default Displayed Fields"
+#| msgid "Default Displayed Metadata"
 msgid "Default Displayed Metadata"
 msgstr "Metadados exibidos por padrão"
 
@@ -963,13 +963,13 @@ msgstr "Você realmente deseja deletar os itens selecionados?"
 
 #: admin/tainacan-admin-i18n.php:227
 #, fuzzy
-#| msgid "The field Collection related is required"
+#| msgid "The metadatum Collection related is required"
 msgid "The metadata Collection related is required"
 msgstr "O metadado Coleção é requerido"
 
 #: admin/tainacan-admin-i18n.php:228
 #, fuzzy
-#| msgid "No fields found in this collection"
+#| msgid "No metadata found in this collection"
 msgid "No metadata found in this collection"
 msgstr "Nenhum metadado encontrado nesta coleção"
 
@@ -1021,7 +1021,7 @@ msgstr ""
 
 #: admin/tainacan-admin-i18n.php:240
 #, fuzzy
-#| msgid "Are you sure? There are fields not saved, changes will be lost."
+#| msgid "Are you sure? There are metadata not saved, changes will be lost."
 msgid "Are you sure? There are metadata not saved, changes will be lost."
 msgstr ""
 "Opa, tem certeza? Como alguns Metadados não foram salvos, as alterações "
@@ -1039,7 +1039,7 @@ msgstr "Nenhuma descrição fornecida."
 
 #: admin/tainacan-admin-i18n.php:243
 #, fuzzy
-#| msgid "Are you sure? There are fields not saved, changes will be lost."
+#| msgid "Are you sure? There are metadata not saved, changes will be lost."
 msgid "Are you sure? The metadata is not saved, changes will be lost."
 msgstr ""
 "Opa, tem certeza? Como alguns Metadados não foram salvos, as alterações "
@@ -1073,7 +1073,7 @@ msgstr "O que foi atualizado?"
 
 #: admin/tainacan-admin-i18n.php:249
 #, fuzzy
-#| msgid "There is no field here yet."
+#| msgid "There is no metadatum here yet."
 msgid "There is no metadata here yet."
 msgstr "Opa, você ainda não configurou nenhum Metadado"
 
@@ -1176,14 +1176,14 @@ msgstr "Ordenar ascendente ou descendente."
 #: api/class-tainacan-rest-controller.php:419
 #: api/class-tainacan-rest-controller.php:441
 #, fuzzy
-#| msgid "Custom field key."
+#| msgid "Custom metadatum key."
 msgid "Custom metadata key."
 msgstr "Chave de Metadado customizado."
 
 #: api/class-tainacan-rest-controller.php:423
 #: api/class-tainacan-rest-controller.php:427
 #, fuzzy
-#| msgid "Custom field value"
+#| msgid "Custom metadatum value"
 msgid "Custom metadata value"
 msgstr "Valor de Metadado customizado."
 
@@ -1199,7 +1199,7 @@ msgstr ""
 
 #: api/class-tainacan-rest-controller.php:435
 #, fuzzy
-#| msgid "Limit result set to items that have specific custom fields"
+#| msgid "Limit result set to items that have specific custom metadata"
 msgid "Limits result set to items that have specific custom metadata"
 msgstr ""
 "Limita o conjunto de resultados a itens que possuem determinados metadados "
@@ -1254,7 +1254,7 @@ msgstr "OR ou AND, como os sub-arrays deveriam ser comparados."
 #: api/class-tainacan-rest-controller.php:460
 #, fuzzy
 #| msgid ""
-#| "Custom field type. Possible values are NUMERIC, BINARY, CHAR, DATE, "
+#| "Custom metadatum type. Possible values are NUMERIC, BINARY, CHAR, DATE, "
 #| "DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can "
 #| "also specify precision and scale for the DECIMAL and NUMERIC types (for "
 #| "example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works "
@@ -1381,7 +1381,7 @@ msgstr ""
 "'true'. Por padrão, essa ação irá apenas colocar a coleção na lixeira."
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:235
-#: api/endpoints/class-tainacan-rest-fields-controller.php:241
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:241
 #: api/endpoints/class-tainacan-rest-items-controller.php:294
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:286
 msgid "Body can not be empty."
@@ -1389,9 +1389,9 @@ msgstr "O corpo da mensagem não pode estar vazio."
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:255
 #: api/endpoints/class-tainacan-rest-collections-controller.php:361
-#: api/endpoints/class-tainacan-rest-fields-controller.php:212
-#: api/endpoints/class-tainacan-rest-fields-controller.php:232
-#: api/endpoints/class-tainacan-rest-fields-controller.php:428
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:212
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:232
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:428
 #: api/endpoints/class-tainacan-rest-items-controller.php:313
 #: api/endpoints/class-tainacan-rest-items-controller.php:400
 #: api/endpoints/class-tainacan-rest-taxonomies-controller.php:279
@@ -1407,7 +1407,7 @@ msgid "Collection with this ID was not found"
 msgstr "A coleção com esta ID não foi encontrada"
 
 #: api/endpoints/class-tainacan-rest-collections-controller.php:374
-#: api/endpoints/class-tainacan-rest-fields-controller.php:441
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:441
 #: api/endpoints/class-tainacan-rest-filters-controller.php:183
 #: api/endpoints/class-tainacan-rest-filters-controller.php:289
 #: api/endpoints/class-tainacan-rest-items-controller.php:413
@@ -1433,40 +1433,40 @@ msgstr ""
 msgid "Limits the result set to collections with a specific name"
 msgstr "Limita o conjunto de resultados a coleções com um nome específico"
 
-#: api/endpoints/class-tainacan-rest-field-types-controller.php:26
+#: api/endpoints/class-tainacan-rest-metadatum-types-controller.php:26
 #: api/endpoints/class-tainacan-rest-filter-types-controller.php:26
 #, fuzzy
 msgid "The structure of objects returned."
 msgstr "Retorna a estrutura dos objetos"
 
-#: api/endpoints/class-tainacan-rest-fields-controller.php:396
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:396
 #, fuzzy
-#| msgid "Field with that ID not found"
+#| msgid "Metadatum with that ID not found"
 msgid "Metadata with this ID was not found"
 msgstr "O metadado com esta ID não foi localizado"
 
-#: api/endpoints/class-tainacan-rest-fields-controller.php:402
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:402
 #, fuzzy
 #| msgid "That metadata is not a default metadata"
 msgid "This metadata is not a default metadata"
 msgstr "Este metadado não é um metadado padrão"
 
-#: api/endpoints/class-tainacan-rest-fields-controller.php:409
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:409
 #, fuzzy
-#| msgid "That field is not a collection field"
+#| msgid "That metadatum is not a collection metadatum"
 msgid "This metadata is not a collection metadata"
 msgstr "Este metadado não é um metadado de coleção"
 
-#: api/endpoints/class-tainacan-rest-fields-controller.php:476
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:476
 #, fuzzy
-#| msgid "Limit result set to field with specific name."
+#| msgid "Limit result set to metadatum with specific name."
 msgid "Limits the result set to metadata with a specific name"
 msgstr "Limita o conjunto de resultados a metadados com um nome específico"
 
-#: api/endpoints/class-tainacan-rest-fields-controller.php:496
+#: api/endpoints/class-tainacan-rest-metadata-controller.php:496
 #, fuzzy
 #| msgid ""
-#| "Fetch all values of a field from a collection in all it collection items"
+#| "Fetch all values of a metadatum from a collection in all it collection items"
 msgid "Fetch all content of a metadata within a collection"
 msgstr ""
 "Busca todos os conteúdos do metadado de uma coleção em todos os itens da "
@@ -1496,7 +1496,7 @@ msgstr "Limita o conjunto de resultados a filtros com um nome específico"
 
 #: api/endpoints/class-tainacan-rest-item-metadata-controller.php:216
 #, fuzzy
-#| msgid "Field do not accept suggestion."
+#| msgid "Metadatum do not accept suggestion."
 msgid "The metadata does not accept suggestions"
 msgstr "Esse metadado não aceita sugestões"
 
@@ -1588,10 +1588,10 @@ msgstr "Editor Tainacan"
 msgid " is invalid"
 msgstr "é inválida"
 
-#: classes/entities/class-tainacan-field.php:417
+#: classes/entities/class-tainacan-metadatum.php:417
 #, fuzzy
 #| msgid ""
-#| "Compound fields do not support fields with multiple values (except "
+#| "Compound metadata do not support metadata with multiple values (except "
 #| "categories)"
 msgid ""
 "Compound metadata do not support metadata with multiple values (except "
@@ -1600,8 +1600,8 @@ msgstr ""
 "Metadados compostos não suportam metadados com vários valores (exceto "
 "categorias)"
 
-#: classes/entities/class-tainacan-field.php:426
-#: classes/entities/class-tainacan-field.php:441
+#: classes/entities/class-tainacan-metadatum.php:426
+#: classes/entities/class-tainacan-metadatum.php:441
 #, fuzzy
 #| msgid ""
 #| "Category metadata can not be used inside Compound metadata with multiple "
@@ -1649,26 +1649,26 @@ msgstr "Novo termo de gênero"
 msgid "You can not have two terms with the same name at the same level"
 msgstr "Você não pode ter dois termos com o mesmo nome em um mesmo nível"
 
-#: classes/field-types/category/class-tainacan-category.php:36
-#: classes/field-types/relationship/class-tainacan-relationship.php:27
+#: classes/metadatum-types/category/class-tainacan-category.php:36
+#: classes/metadatum-types/relationship/class-tainacan-relationship.php:27
 msgid "Select the collection to fetch items"
 msgstr "Selecione a coleção para buscar itens"
 
-#: classes/field-types/category/class-tainacan-category.php:40
+#: classes/metadatum-types/category/class-tainacan-category.php:40
 msgid "The html type of the terms list "
 msgstr "O tipo de html utilizado na lista de termos"
 
-#: classes/field-types/category/class-tainacan-category.php:44
+#: classes/metadatum-types/category/class-tainacan-category.php:44
 msgid "Allows to create new terms"
 msgstr "Permite a criação de novos termos"
 
-#: classes/field-types/category/class-tainacan-category.php:70
+#: classes/metadatum-types/category/class-tainacan-category.php:70
 #, fuzzy
 #| msgid "Please select a category"
 msgid "Please select a taxonomy"
 msgstr "Por favor, selecione uma taxonomia."
 
-#: classes/field-types/category/class-tainacan-category.php:88
+#: classes/metadatum-types/category/class-tainacan-category.php:88
 #, fuzzy
 #| msgid ""
 #| "You can not have 2 taxonomy metadata using the same taxonomy in a "
@@ -1679,18 +1679,18 @@ msgstr ""
 "Você não pode ter 2 metadados de taxonomia utilizando a mesma taxonomia em "
 "uma coleção."
 
-#: classes/field-types/core-description/class-tainacan-core-description.php:71
-#: classes/field-types/core-title/class-tainacan-core-title.php:72
+#: classes/metadatum-types/core-description/class-tainacan-core-description.php:71
+#: classes/metadatum-types/core-title/class-tainacan-core-title.php:72
 msgid "Core Metadata can not accept multiple values"
 msgstr "Metadados fixos (Core) não podem aceitar valores múltiplos"
 
-#: classes/field-types/relationship/class-tainacan-relationship.php:31
+#: classes/metadatum-types/relationship/class-tainacan-relationship.php:31
 #, fuzzy
-#| msgid "Select the fields to help the search"
+#| msgid "Select the metadata to help the search"
 msgid "Select the metadata to help the search"
 msgstr "Selecione os metadados que irão auxiliar na busca"
 
-#: classes/field-types/relationship/class-tainacan-relationship.php:35
+#: classes/metadatum-types/relationship/class-tainacan-relationship.php:35
 #, fuzzy
 #| msgid "Allow different items with the same item selected"
 msgid ""
@@ -1700,23 +1700,23 @@ msgstr ""
 "Permite que itens diferentes sejam relacionados ao um mesmo item selecionado "
 "de outra coleção"
 
-#: classes/field-types/relationship/class-tainacan-relationship.php:60
+#: classes/metadatum-types/relationship/class-tainacan-relationship.php:60
 #, fuzzy
 #| msgid "The collection ID"
 msgid "Invalid collection ID"
 msgstr "O ID da coleção"
 
-#: classes/field-types/relationship/class-tainacan-relationship.php:64
+#: classes/metadatum-types/relationship/class-tainacan-relationship.php:64
 #, fuzzy
-#| msgid "The field Collection related is required"
+#| msgid "The metadatum Collection related is required"
 msgid "The related collection is required"
 msgstr "O metadado Coleção é requerido"
 
-#: classes/field-types/selectbox/class-tainacan-selectbox.php:26
+#: classes/metadatum-types/selectbox/class-tainacan-selectbox.php:26
 msgid "Options"
 msgstr "Opções"
 
-#: classes/field-types/selectbox/class-tainacan-selectbox.php:27
+#: classes/metadatum-types/selectbox/class-tainacan-selectbox.php:27
 #, fuzzy
 #| msgid "Create the options for the select, hit enter to add new one"
 msgid "Creates options for what is selected. Hit <enter> to add a new one."
@@ -1725,7 +1725,7 @@ msgstr ""
 "uma nova opção."
 
 # DESCOBRIR O CONTEXTO DESSA “REQUISIÇAO”
-#: classes/field-types/selectbox/class-tainacan-selectbox.php:56
+#: classes/metadatum-types/selectbox/class-tainacan-selectbox.php:56
 #, fuzzy
 #| msgid "Required"
 msgid "Required options"
@@ -1733,7 +1733,7 @@ msgstr "Requerido"
 
 #: classes/filter-types/filter-type/class-tainacan-filter-type.php:92
 #, fuzzy
-#| msgid "The field primitive type is not supported by this filter"
+#| msgid "The metadatum primitive type is not supported by this filter"
 msgid "The metadata primitive type is not supported by this filter"
 msgstr "O tipo primitivo do metadado não é suportado por este filtro"
 
@@ -1772,7 +1772,7 @@ msgid "The collection modification date"
 msgstr "Data de modificação da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:73
-#: classes/repositories/class-tainacan-fields.php:61
+#: classes/repositories/class-tainacan-metadata.php:61
 #: classes/repositories/class-tainacan-filters.php:39
 msgid "Order"
 msgstr "Ordem"
@@ -1780,7 +1780,7 @@ msgstr "Ordem"
 # COMO ASSIM?
 #: classes/repositories/class-tainacan-collections.php:75
 #, fuzzy
-#| msgid "Collection order. Field used if collections are manually ordered."
+#| msgid "Collection order. Metadatum used if collections are manually ordered."
 msgid ""
 "Collection order. This metadata is used if collections are manually ordered."
 msgstr ""
@@ -1811,7 +1811,7 @@ msgstr ""
 
 #: classes/repositories/class-tainacan-collections.php:102
 #, fuzzy
-#| msgid "Default Displayed Fields"
+#| msgid "Default Displayed Metadata"
 msgid "Default Order metadata"
 msgstr "Metadados exibidos por padrão"
 
@@ -1845,13 +1845,13 @@ msgstr "Modo de visualização padrão da coleção"
 
 #: classes/repositories/class-tainacan-collections.php:134
 #, fuzzy
-#| msgid "Ordination fields"
+#| msgid "Ordination metadata"
 msgid "Ordination metadata"
 msgstr "Metadados de ordenação"
 
 #: classes/repositories/class-tainacan-collections.php:137
 #, fuzzy
-#| msgid "Collection fields ordination"
+#| msgid "Collection metadata ordination"
 msgid "Collection metadata ordination"
 msgstr "Ordenação dos metadados de coleção"
 
@@ -1906,7 +1906,7 @@ msgstr ""
 "organização dos arquivos"
 
 #: classes/repositories/class-tainacan-collections.php:201
-#: classes/repositories/class-tainacan-fields.php:196
+#: classes/repositories/class-tainacan-metadata.php:196
 #: classes/repositories/class-tainacan-filters.php:99
 #: classes/repositories/class-tainacan-items.php:123
 #: classes/repositories/class-tainacan-items.php:124
@@ -1944,26 +1944,26 @@ msgstr "Nenhuma coleção encontrada na lixeira"
 msgid "Parent Collection:"
 msgstr "Coleção raiz"
 
-#: classes/repositories/class-tainacan-fields.php:48
+#: classes/repositories/class-tainacan-metadata.php:48
 #, fuzzy
-#| msgid "Name of the field"
+#| msgid "Name of the metadatum"
 msgid "Name of the metadata"
 msgstr "Nome do Metadado"
 
-#: classes/repositories/class-tainacan-fields.php:49
+#: classes/repositories/class-tainacan-metadata.php:49
 msgid "The name should be a text value and not empty"
 msgstr "O nome  deve ser um texto não vazio"
 
-#: classes/repositories/class-tainacan-fields.php:56
+#: classes/repositories/class-tainacan-metadata.php:56
 #, fuzzy
-#| msgid "A unique and santized string representation of the field"
+#| msgid "A unique and santized string representation of the metadatum"
 msgid "A unique and santized string representation of the metadata"
 msgstr "Um texto único e sanitizado representando o metadado"
 
 # COMO ASSIM?
-#: classes/repositories/class-tainacan-fields.php:63
+#: classes/repositories/class-tainacan-metadata.php:63
 #, fuzzy
-#| msgid "Field order. Field used if collections are manually ordered"
+#| msgid "Metadatum order. Metadatum used if collections are manually ordered"
 msgid ""
 "Metadata order. This metadata will be used if collections were manually "
 "ordered."
@@ -1971,148 +1971,148 @@ msgstr ""
 "Ordem do Metadado. Esse metadado será utilizado se as coleções forem "
 "ordenadas manualmente."
 
-#: classes/repositories/class-tainacan-fields.php:64
+#: classes/repositories/class-tainacan-metadata.php:64
 msgid "The menu order should be a numeric value"
 msgstr "A ordem do menu deve ser um valor numérico"
 
-#: classes/repositories/class-tainacan-fields.php:69
+#: classes/repositories/class-tainacan-metadata.php:69
 #: classes/repositories/class-tainacan-logs.php:63
 #: classes/repositories/class-tainacan-terms.php:49
 msgid "Parent"
 msgstr "Raiz"
 
-#: classes/repositories/class-tainacan-fields.php:71
+#: classes/repositories/class-tainacan-metadata.php:71
 msgid "Parent metadata"
 msgstr "Metadado raiz"
 
-#: classes/repositories/class-tainacan-fields.php:80
+#: classes/repositories/class-tainacan-metadata.php:80
 #, fuzzy
-#| msgid "The field description"
+#| msgid "The metadatum description"
 msgid "The metadata description"
 msgstr "Descrição do Metadado"
 
-#: classes/repositories/class-tainacan-fields.php:87
+#: classes/repositories/class-tainacan-metadata.php:87
 #: classes/repositories/class-tainacan-filters.php:62
 msgid "Type"
 msgstr "Tipo"
 
-#: classes/repositories/class-tainacan-fields.php:89
+#: classes/repositories/class-tainacan-metadata.php:89
 #, fuzzy
-#| msgid "The field type"
+#| msgid "The metadatum type"
 msgid "The metadata type"
 msgstr "O tipo de Metadado"
 
-#: classes/repositories/class-tainacan-fields.php:90
+#: classes/repositories/class-tainacan-metadata.php:90
 #, fuzzy
-#| msgid "Field type is empty"
+#| msgid "Metadatum type is empty"
 msgid "Metadata type is empty"
 msgstr "Tipo de metadado está vazio"
 
-#: classes/repositories/class-tainacan-fields.php:97
+#: classes/repositories/class-tainacan-metadata.php:97
 #, fuzzy
-#| msgid "The field is required"
+#| msgid "The metadatum is required"
 msgid "The metadata is required"
 msgstr "O metadado é requerido"
 
-#: classes/repositories/class-tainacan-fields.php:98
+#: classes/repositories/class-tainacan-metadata.php:98
 msgid "The metadata content is invalid"
 msgstr "O conteúdo do metadado é inválido"
 
-#: classes/repositories/class-tainacan-fields.php:104
+#: classes/repositories/class-tainacan-metadata.php:104
 msgid "Collection key"
 msgstr "Chave da coleção"
 
-#: classes/repositories/class-tainacan-fields.php:106
+#: classes/repositories/class-tainacan-metadata.php:106
 #, fuzzy
-#| msgid "Field value should not be repeated"
+#| msgid "Metadatum value should not be repeated"
 msgid "Metadata value should not be repeated"
 msgstr "Valores do metadado não devem ser repetidos"
 
-#: classes/repositories/class-tainacan-fields.php:107
+#: classes/repositories/class-tainacan-metadata.php:107
 msgid "Collection key is invalid"
 msgstr "Chave da coleção é invalida"
 
-#: classes/repositories/class-tainacan-fields.php:113
+#: classes/repositories/class-tainacan-metadata.php:113
 msgid "Multiple"
 msgstr "Múltiplo"
 
-#: classes/repositories/class-tainacan-fields.php:115
+#: classes/repositories/class-tainacan-metadata.php:115
 msgid "Allow multiple values for the metadata"
 msgstr "Permite várias entradas de conteúdo no metadado"
 
-#: classes/repositories/class-tainacan-fields.php:116
+#: classes/repositories/class-tainacan-metadata.php:116
 #, fuzzy
 #| msgid "Metadata"
 msgid "Invalid multiple metadata"
 msgstr "Metadado"
 
-#: classes/repositories/class-tainacan-fields.php:123
+#: classes/repositories/class-tainacan-metadata.php:123
 msgid "Cardinality"
 msgstr "Cardinalidade"
 
-#: classes/repositories/class-tainacan-fields.php:125
+#: classes/repositories/class-tainacan-metadata.php:125
 #, fuzzy
-#| msgid "Number of multiples possible fields"
+#| msgid "Number of multiples possible metadata"
 msgid "Number of multiples possible metadata"
 msgstr "Número de metadados múltiplos possíveis"
 
-#: classes/repositories/class-tainacan-fields.php:126
+#: classes/repositories/class-tainacan-metadata.php:126
 msgid "This number of multiples metadata is not allowed"
 msgstr "Este número de múltiplos metadados não é permitido"
 
-#: classes/repositories/class-tainacan-fields.php:132
+#: classes/repositories/class-tainacan-metadata.php:132
 msgid "Mask"
 msgstr "Máscara"
 
-#: classes/repositories/class-tainacan-fields.php:134
+#: classes/repositories/class-tainacan-metadata.php:134
 #, fuzzy
-#| msgid "The mask to be used in the field"
+#| msgid "The mask to be used in the metadatum"
 msgid "The mask to be used in the metadata"
 msgstr "A máscara que deve ser utilizada no metadado"
 
-#: classes/repositories/class-tainacan-fields.php:142
+#: classes/repositories/class-tainacan-metadata.php:142
 #, fuzzy
-#| msgid "The value default fot the field"
+#| msgid "The value default fot the metadatum"
 msgid "The default value for the metadata"
 msgstr "O conteúdo padrão para o campo"
 
-#: classes/repositories/class-tainacan-fields.php:146
+#: classes/repositories/class-tainacan-metadata.php:146
 #, fuzzy
-#| msgid "Field Type options"
+#| msgid "Metadatum Type options"
 msgid "Metadata type options"
 msgstr "Opções de tipo de metadado"
 
-#: classes/repositories/class-tainacan-fields.php:149
+#: classes/repositories/class-tainacan-metadata.php:149
 #, fuzzy
-#| msgid "Options specific for field type"
+#| msgid "Options specific for metadatum type"
 msgid "Specific options for metadata type"
 msgstr "Opções específicas do tipo de metadado"
 
-#: classes/repositories/class-tainacan-fields.php:156
+#: classes/repositories/class-tainacan-metadata.php:156
 #: classes/repositories/class-tainacan-filters.php:71
 #: classes/repositories/class-tainacan-items.php:60
 msgid "The collection ID"
 msgstr "O ID da coleção"
 
-#: classes/repositories/class-tainacan-fields.php:161
+#: classes/repositories/class-tainacan-metadata.php:161
 #, fuzzy
-#| msgid "Field Value Accepts Suggestions"
+#| msgid "Metadatum Value Accepts Suggestions"
 msgid "Metadata Value Accepts Suggestions"
 msgstr "O conteúdo do metadado aceita sugestões"
 
-#: classes/repositories/class-tainacan-fields.php:163
+#: classes/repositories/class-tainacan-metadata.php:163
 #, fuzzy
-#| msgid "Allow communities to suggest different values for the field"
+#| msgid "Allow communities to suggest different values for the metadatum"
 msgid "Allow community to suggest different values for the metadata"
 msgstr "Permite que a comunidade sugira valores diferentes para este campo"
 
-#: classes/repositories/class-tainacan-fields.php:169
+#: classes/repositories/class-tainacan-metadata.php:169
 #, fuzzy
 #| msgid "Metadata"
 msgid "Relationship metadata mapping"
 msgstr "Metadado"
 
-#: classes/repositories/class-tainacan-fields.php:172
+#: classes/repositories/class-tainacan-metadata.php:172
 #, fuzzy
 #| msgid ""
 #| "The metadata mapping options. Metadata can be configured to match another "
@@ -2124,57 +2124,57 @@ msgstr ""
 "Opções de mapeamento dos metadados. Aqui os metadados podem ser configurados "
 "para corresponder a outro tipo de distribuição de dados."
 
-#: classes/repositories/class-tainacan-fields.php:173
+#: classes/repositories/class-tainacan-metadata.php:173
 msgid "Invalid Metadata Mapping"
 msgstr "Metadado de mapeamento inválido"
 
-#: classes/repositories/class-tainacan-fields.php:179
+#: classes/repositories/class-tainacan-metadata.php:179
 msgid "Display"
 msgstr "Exposição"
 
-#: classes/repositories/class-tainacan-fields.php:180
+#: classes/repositories/class-tainacan-metadata.php:180
 msgid "string"
 msgstr "string"
 
-#: classes/repositories/class-tainacan-fields.php:182
+#: classes/repositories/class-tainacan-metadata.php:182
 #, fuzzy
 #| msgid "Display by default on listing or not display or never display."
 msgid "Display by default on listing or do not display or never display."
 msgstr "Expõe por padrão quando listado ou não exibe ou nunca exibe."
 
-#: classes/repositories/class-tainacan-fields.php:197
+#: classes/repositories/class-tainacan-metadata.php:197
 msgid "Add new Metadata"
 msgstr "Adiciona novo metadado"
 
-#: classes/repositories/class-tainacan-fields.php:198
+#: classes/repositories/class-tainacan-metadata.php:198
 msgid "Edit Metadata"
 msgstr "Editar metadado"
 
-#: classes/repositories/class-tainacan-fields.php:199
+#: classes/repositories/class-tainacan-metadata.php:199
 msgid "New Metadata"
 msgstr "Novo metadado"
 
-#: classes/repositories/class-tainacan-fields.php:200
+#: classes/repositories/class-tainacan-metadata.php:200
 msgid "View Metadata"
 msgstr "Exibir metadado"
 
-#: classes/repositories/class-tainacan-fields.php:201
+#: classes/repositories/class-tainacan-metadata.php:201
 msgid "Search Metadata"
 msgstr "Buscar metadado"
 
-#: classes/repositories/class-tainacan-fields.php:202
+#: classes/repositories/class-tainacan-metadata.php:202
 msgid "No Metadata found "
 msgstr "Nenhum metadado encontrado"
 
-#: classes/repositories/class-tainacan-fields.php:203
+#: classes/repositories/class-tainacan-metadata.php:203
 #, fuzzy
-#| msgid "No Field found in trash"
+#| msgid "No Metadatum found in trash"
 msgid "No Metadata found in trash"
 msgstr "Nenhum campo encontrado na lixeira"
 
-#: classes/repositories/class-tainacan-fields.php:204
+#: classes/repositories/class-tainacan-metadata.php:204
 #, fuzzy
-#| msgid "Parent Field:"
+#| msgid "Parent Metadatum:"
 msgid "Parent Metadata:"
 msgstr "Metadado Pai:"
 
@@ -2188,7 +2188,7 @@ msgstr "O nome do Filtro deve ser um texto não vazio"
 
 #: classes/repositories/class-tainacan-filters.php:41
 #, fuzzy
-#| msgid "Filter order. Field used if filters are manually ordered"
+#| msgid "Filter order. Metadatum used if filters are manually ordered"
 msgid "Filter order. This metadata is used if filters were manually ordered."
 msgstr ""
 "Ordem do Filtro. Este metadado é utilizado se os filtros forem ordenados "
@@ -2688,44 +2688,44 @@ msgstr "Coleções: %s"
 #~ msgid "Limit result set to term with specific name."
 #~ msgstr "Limita o conjunto de resultados a termos com um determinado nome"
 
-#~ msgid "Field"
+#~ msgid "Metadatum"
 #~ msgstr "Metadado"
 
-#~ msgid "Filter field"
+#~ msgid "Filter metadatum"
 #~ msgstr "Metadado do Filtro"
 
 #~| msgid "The filter type options"
-#~ msgid "The field mapping options"
-#~ msgstr "The field mapping options"
+#~ msgid "The metadatum mapping options"
+#~ msgstr "The metadatum mapping options"
 
 #, fuzzy
-#~| msgid "Field required field is invalid"
-#~ msgid "Metadata required field is invalid"
+#~| msgid "Metadatum required metadatum is invalid"
+#~ msgid "Metadata required metadatum is invalid"
 #~ msgstr "Metadado requerido é invalido"
 
-#~ msgid "Parent field"
+#~ msgid "Parent metadatum"
 #~ msgstr "Metadado pai"
 
-#~ msgid "Fields on table"
+#~ msgid "Metadata on table"
 #~ msgstr "Metadados na tabela"
 
-#~ msgid "Default Displayed Fields"
+#~ msgid "Default Displayed Metadata"
 #~ msgstr "Metadados exibidos por padrão"
 
-#~ msgid "Edit Fields of"
+#~ msgid "Edit Metadata of"
 #~ msgstr "Editar metadados de"
 
-#~ msgid "Active Fields"
+#~ msgid "Active Metadata"
 #~ msgstr "Metadados ativos"
 
-#~ msgid "Available Fields"
+#~ msgid "Available Metadata"
 #~ msgstr "Metadados disponíveis"
 
-#~ msgid "Field Page"
+#~ msgid "Metadatum Page"
 #~ msgstr "Página do Metadado"
 
-#~ msgid "Collection Fields"
-#~ msgstr "Collection Fields"
+#~ msgid "Collection Metadata"
+#~ msgstr "Collection Metadata"
 
 #, fuzzy
 #~| msgid "Metadata"
@@ -2738,19 +2738,19 @@ msgstr "Coleções: %s"
 #~ msgid "One or more attributes are invalid"
 #~ msgstr "Verifique, atributo(s) inválido(s)"
 
-#~ msgid "Fields"
+#~ msgid "Metadata"
 #~ msgstr "Metadados"
 
-#~ msgid "Edit Field"
+#~ msgid "Edit Metadatum"
 #~ msgstr "Editar Campo"
 
-#~ msgid "New Field"
+#~ msgid "New Metadatum"
 #~ msgstr "Novo campo"
 
-#~ msgid "View Field"
+#~ msgid "View Metadatum"
 #~ msgstr "Ver Campo"
 
-#~ msgid "Search Field"
+#~ msgid "Search Metadatum"
 #~ msgstr "Buscar Campo"
 
 #~ msgid "See"
@@ -2776,31 +2776,31 @@ msgstr "Coleções: %s"
 #~ msgid "Item Edition Page"
 #~ msgstr "Página de Edição do Item"
 
-#~ msgid "Collection Fields Edition Page"
+#~ msgid "Collection Metadata Edition Page"
 #~ msgstr "Página de Edição dos Metadados da Coleção"
 
-#~ msgid "Drag and drop Fields here to Collection."
+#~ msgid "Drag and drop Metadata here to Collection."
 #~ msgstr "Arraste e solte Metadados aqui para a Coleção."
 
-#~ msgid "Drag and drop Fields to create Filters on Collection."
+#~ msgid "Drag and drop Metadata to create Filters on Collection."
 #~ msgstr "Arraste e solte Metadados para criar Filtros na Coleção."
 
-#~ msgid "Drag and drop Fields here to Repository."
+#~ msgid "Drag and drop Metadata here to Repository."
 #~ msgstr "Araste e solte Metadados aqui para adicionar ao Repositório."
 
-#~ msgid "Drag and drop Fields to create Filters on Repository."
+#~ msgid "Drag and drop Metadata to create Filters on Repository."
 #~ msgstr "Arraste e solte Metadados para criar Filtros no Repositório."
 
 #~ msgid "Privacy"
 #~ msgstr "Privacidade"
 
-#~ msgid "The field should be omitted in item view"
+#~ msgid "The metadatum should be omitted in item view"
 #~ msgstr "O campo deve ser omitido na visualização do item"
 
 #~ msgid "Privacy is invalid"
 #~ msgstr "Privacidade invalida"
 
-#~ msgid "The field can be deleted"
+#~ msgid "The metadatum can be deleted"
 #~ msgstr "O campo pode ser deletado"
 
 #~ msgid "Can delete is invalid"

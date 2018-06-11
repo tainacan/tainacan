@@ -5,7 +5,7 @@ namespace Tainacan\Filter_Types;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class TainacanFieldType
+ * Class TainacanMetadatumType
  */
 class Custom_Interval extends Filter_Type {
 
@@ -17,14 +17,14 @@ class Custom_Interval extends Filter_Type {
     /**
      * @param $filter
      * @return string
-     * @internal param $field
+     * @internal param $metadatum
      */
     public function render( $filter ){
-         $type = ( $filter->get_field()->get_field_type() === 'Tainacan\Field_Types\Date' ) ? 'date' : 'numeric';
+         $type = ( $filter->get_metadatum()->get_metadatum_type() === 'Tainacan\Metadatum_Types\Date' ) ? 'date' : 'numeric';
          return '<tainacan-filter-custom-interval 
                                         name="'.$filter->get_name().'"
                                         typeRange="'.$type.'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-custom-interval>';
+                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-custom-interval>';
     }
 }

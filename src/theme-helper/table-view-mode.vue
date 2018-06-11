@@ -4,17 +4,17 @@
             <table class="tainacan-table">
                 <thead>
                     <tr>
-                        <!-- Displayed Fields -->
+                        <!-- Displayed Metadata -->
                         <th 
-                                v-for="(column, index) in tableFields"
+                                v-for="(column, index) in tableMetadata"
                                 :key="index"
                                 v-if="column.display"
                                 class="column-default-width"
                                 :class="{
-                                        'thumbnail-cell': column.field == 'row_thumbnail', 
-                                        'column-small-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Date' || column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
-                                        'column-medium-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Selectbox' || column.field_type_object.className == 'Tainacan\\Field_Types\\Category' || column.field_type_object.className == 'Tainacan\\Field_Types\\Compound') : false,
-                                        'column-large-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Textarea') : false,
+                                        'thumbnail-cell': column.metadatum == 'row_thumbnail', 
+                                        'column-small-width' : column.metadatum_type_object != undefined ? (column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Date' || column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Numeric') : false,
+                                        'column-medium-width' : column.metadatum_type_object != undefined ? (column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Selectbox' || column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Category' || column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Compound') : false,
+                                        'column-large-width' : column.metadatum_type_object != undefined ? (column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Textarea') : false,
                                 }"
                                 :custom-key="column.slug">
                             <div class="th-wrap">{{ column.name }}</div>
@@ -29,26 +29,26 @@
                         <!-- Item Displayed Metadata -->
                         <td 
                                 :key="index"    
-                                v-for="(column, index) in tableFields"
+                                v-for="(column, index) in tableMetadata"
                                 v-if="column.display"
                                 :label="column.name" 
-                                :aria-label="(column.field != 'row_thumbnail' && column.field != 'row_creation' && column.field != 'row_author')
+                                :aria-label="(column.metadatum != 'row_thumbnail' && column.metadatum != 'row_creation' && column.metadatum != 'row_author')
                                              ? column.name + '' + (item.metadata ? item.metadata[column.slug].value_as_string : '') : ''"
                                 class="column-default-width"
                                 :class="{
-                                        'thumbnail-cell': column.field == 'row_thumbnail',
-                                        'column-main-content' : column.field_type_object != undefined ? (column.field_type_object.related_mapped_prop == 'title') : false,
-                                        'column-needed-width column-align-right' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
-                                        'column-small-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Date' || column.field_type_object.className == 'Tainacan\\Field_Types\\Numeric') : false,
-                                        'column-medium-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Selectbox' || column.field_type_object.className == 'Tainacan\\Field_Types\\Category' || column.field_type_object.className == 'Tainacan\\Field_Types\\Compound') : false,
-                                        'column-large-width' : column.field_type_object != undefined ? (column.field_type_object.className == 'Tainacan\\Field_Types\\Textarea') : false,
+                                        'thumbnail-cell': column.metadatum == 'row_thumbnail',
+                                        'column-main-content' : column.metadatum_type_object != undefined ? (column.metadatum_type_object.related_mapped_prop == 'title') : false,
+                                        'column-needed-width column-align-right' : column.metadatum_type_object != undefined ? (column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Numeric') : false,
+                                        'column-small-width' : column.metadatum_type_object != undefined ? (column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Date' || column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Numeric') : false,
+                                        'column-medium-width' : column.metadatum_type_object != undefined ? (column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Selectbox' || column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Category' || column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Compound') : false,
+                                        'column-large-width' : column.metadatum_type_object != undefined ? (column.metadatum_type_object.className == 'Tainacan\\Metadatum_Types\\Textarea') : false,
                                 }"
                                 @click="goToItemPage(item)">
 
                             <!-- <data-and-tooltip
-                                    v-if="column.field !== 'row_thumbnail' &&
-                                            column.field !== 'row_actions' &&
-                                            column.field !== 'row_creation'"
+                                    v-if="column.metadatum !== 'row_thumbnail' &&
+                                            column.metadatum !== 'row_actions' &&
+                                            column.metadatum !== 'row_creation'"
                                     :data="renderMetadata( item.metadata[column.slug] )"/> -->
                             <p
                                     v-tooltip="{
@@ -58,13 +58,13 @@
                                         placement: 'auto-start'
                                     }"
                                     v-if="item.metadata != undefined &&
-                                          column.field !== 'row_thumbnail' &&
-                                          column.field !== 'row_actions' &&
-                                          column.field !== 'row_creation' &&
-                                          column.field !== 'row_author'"
+                                          column.metadatum !== 'row_thumbnail' &&
+                                          column.metadatum !== 'row_actions' &&
+                                          column.metadatum !== 'row_creation' &&
+                                          column.metadatum !== 'row_author'"
                                     v-html="renderMetadata( item.metadata[column.slug] )"/>
 
-                            <span v-if="column.field == 'row_thumbnail'">
+                            <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
                                         :src="item[column.slug].thumb">
@@ -76,7 +76,7 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
-                                    v-if="column.field == 'row_author' || column.field == 'row_creation'">
+                                    v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'">
                                     {{ item[column.slug] }}
                             </p>
 
@@ -94,7 +94,7 @@ export default {
     name: 'TableViewMode',
     props: {
         collectionId: Number,
-        tableFields: Array,
+        tableMetadata: Array,
         items: Array,
         isLoading: false
     },

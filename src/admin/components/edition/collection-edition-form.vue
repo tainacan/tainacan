@@ -47,7 +47,7 @@
                     <b-field 
                         :addons="false"
                         :label="$i18n.get('label_header_image')">
-                        <div class="thumbnail-field">                    
+                        <div class="thumbnail-field">
                             <a 
                                     class="button is-rounred is-secondary"
                                     id="button-edit-header-image" 
@@ -438,8 +438,8 @@ export default {
             'fetchUsers',
             'fetchCollectionsForParent'
         ]),
-        ...mapActions('fields', [
-            'fetchFields'
+        ...mapActions('metadata', [
+            'fetchMetadata'
         ]),
         onSubmit() {
             this.isLoading = true;

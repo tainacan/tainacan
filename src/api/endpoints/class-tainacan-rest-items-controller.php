@@ -109,22 +109,22 @@ class REST_Items_Controller extends REST_Controller {
 	 * @return mixed
 	 */
 	private function add_metadata_to_item($item_object, $item_array, $args = []){
-		$item_metadata = $item_object->get_fields($args);
+		$item_metadata = $item_object->get_metadata($args);
 
 		foreach($item_metadata as $index => $me){
-			$field               = $me->get_field();
-			$slug                = $field->get_slug();
+			$metadatum               = $me->get_metadatum();
+			$slug                = $metadatum->get_slug();
 			$item_metadata_array = $me->_toArray();
 
-			$item_array['metadata'][ $slug ]['name']            = $field->get_name();
-			if($field->get_field_type_object()->get_primitive_type() === 'date') {
+			$item_array['metadata'][ $slug ]['name']            = $metadatum->get_name();
+			if($metadatum->get_metadatum_type_object()->get_primitive_type() === 'date') {
 				$item_array['metadata'][ $slug ]['date_i18n'] = $item_metadata_array['date_i18n'];
 			} else {
 				$item_array['metadata'][ $slug ]['value']           = $item_metadata_array['value'];
 				$item_array['metadata'][ $slug ]['value_as_html']   = $item_metadata_array['value_as_html'];
 				$item_array['metadata'][ $slug ]['value_as_string'] = $item_metadata_array['value_as_string'];
 			}
-			$item_array['metadata'][ $slug ]['multiple']        = $field->get_multiple();
+			$item_array['metadata'][ $slug ]['multiple']        = $metadatum->get_multiple();
 		}
 
 		return $item_array;
@@ -238,11 +238,11 @@ class REST_Items_Controller extends REST_Controller {
 			
 			ob_start();
 
-			global $wp_query, $view_mode_displayed_fields;
+			global $wp_query, $view_mode_displayed_metadata;
 			$wp_query = $items;
 			$displayed_metadata = array_map(function($el) { return (int) $el; }, $request['fetch_only']['meta']);
-			$view_mode_displayed_fields = $request['fetch_only'];
-			$view_mode_displayed_fields['meta'] = $displayed_metadata;
+			$view_mode_displayed_metadata = $request['fetch_only'];
+			$view_mode_displayed_metadata['meta'] = $displayed_metadata;
 			
 			include $view_mode['template'];
 			

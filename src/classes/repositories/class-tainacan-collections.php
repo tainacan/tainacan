@@ -113,7 +113,7 @@ class Collections extends Repository {
 				'default'     => 'ASC',
 				'validation'  => v::stringType()->in( [ 'ASC', 'DESC' ] ),
 			],
-			'default_displayed_fields' => [
+			'default_displayed_metadata' => [
 				'map'         => 'meta',
 				'title'       => __( 'Default Displayed Metadata', 'tainacan' ),
 				'type'        => 'array/object/string',
@@ -138,7 +138,7 @@ class Collections extends Repository {
 				'default'     => [],
 				//'validation' => v::stringType(),
 			],
-			'fields_order'             => [
+			'metadata_order'             => [
 				'map'         => 'meta',
 				'title'       => __( 'Ordination metadata', 'tainacan' ),
 				'type'        => 'array/object/string',
@@ -259,12 +259,12 @@ class Collections extends Repository {
 	 * @see \Tainacan\Repositories\Repository::insert()
 	 */
 	public function insert( $collection ) {
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
 		$this->pre_update_moderators( $collection );
 		$new_collection = parent::insert( $collection );
 
-		$Tainacan_Fields->register_core_fields( $new_collection );
+		$Tainacan_Metadata->register_core_metadata( $new_collection );
 		$collection->register_collection_item_post_type();
 		flush_rewrite_rules(false); // needed to activate items post type archive url
 		$this->update_moderators( $new_collection );

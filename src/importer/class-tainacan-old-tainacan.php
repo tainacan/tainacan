@@ -178,20 +178,20 @@ class Old_Tainacan extends Importer{
         $repo_meta = wp_remote_get($repository_meta_link);
 
         $repo_meta_array = $this->verify_process_result($repo_meta);
-        $Fields_Repository = \Tainacan\Repositories\Fields::get_instance();
+        $Metadata_Repository = \Tainacan\Repositories\Metadata::get_instance();
         $created_categories = $this->read_from_file("categories");
         $relationships = $this->read_from_file("relationships");
 
-        $this->create_meta_repo($repo_meta_array, $Fields_Repository, $created_categories, $relationships);
+        $this->create_meta_repo($repo_meta_array, $Metadata_Repository, $created_categories, $relationships);
 
         return false;
     }
 
-    private function create_meta_repo($repo_meta_array, $Fields_Repository, $created_categories, $relationships, $compound_id = null)
+    private function create_meta_repo($repo_meta_array, $Metadata_Repository, $created_categories, $relationships, $compound_id = null)
     {
         if($repo_meta_array)
         {
-            $repository_fields = [];
+            $repository_metadata = [];
             foreach ($repo_meta_array as $meta)
             {
                 $special = [
@@ -201,24 +201,24 @@ class Old_Tainacan extends Importer{
 
                 if(!in_array($meta->slug, $this->avoid) && !in_array($meta->type, $special))
                 {
-                    $newField = $this->set_fields_properties($meta, $created_categories, $relationships, $Fields_Repository, $compound_id);
+                    $newMetadatum = $this->set_metadata_properties($meta, $created_categories, $relationships, $Metadata_Repository, $compound_id);
 
-                    if ($newField)
+                    if ($newMetadatum)
                     {
-                        $newField = $Fields_Repository->insert($newField);
-                        $repository_fields[] = $meta->id . "," . $newField->get_id() . "," . $meta->name;
+                        $newMetadatum = $Metadata_Repository->insert($newMetadatum);
+                        $repository_metadata[] = $meta->id . "," . $newMetadatum->get_id() . "," . $meta->name;
                     }
                 }
             }
 
-            $this->save_in_file('repository_fields', $repository_fields);
+            $this->save_in_file('repository_metadata', $repository_metadata);
         }
     }
 
     public function treat_collection_metas()
     {
         $created_collections = $this->read_from_file("collections");
-        $created_repository_fields = $this->read_from_file("repository_fields");
+        $created_repository_metadata = $this->read_from_file("repository_metadata");
         $created_categories = $this->read_from_file("categories");
         $relationships = $this->read_from_file("relationships");
 
@@ -227,8 +227,8 @@ class Old_Tainacan extends Importer{
         $inside_step_pointer = 0;
         $end = ( $created_collections ) ? count( $created_collections) : 0;
 
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
-        $Fields_Repository = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $Metadata_Repository = \Tainacan\Repositories\Metadata::get_instance();
         $Repository_Collections = \Tainacan\Repositories\Collections::get_instance();
 
         //for($i = 0; $i < $inside_step_pointer; $i++)
@@ -244,9 +244,9 @@ class Old_Tainacan extends Importer{
             $collection = $Repository_Collections->fetch($new_collection_id);
             $this->set_actual_collection($collection);
 
-            $file_fields = $this->get_collection_fields($old_collection_id);
+            $file_metadata = $this->get_collection_metadata($old_collection_id);
 
-            $mapping = $this->create_collection_meta($file_fields, $Fields_Repository, $Tainacan_Fields, $created_repository_fields, $created_categories, $relationships);
+            $mapping = $this->create_collection_meta($file_metadata, $Metadata_Repository, $Tainacan_Metadata, $created_repository_metadata, $created_categories, $relationships);
 
             $this->add_collection([
                 'id' => $new_collection_id,
@@ -263,55 +263,55 @@ class Old_Tainacan extends Importer{
     }
 
     private function create_collection_meta(
-        $file_fields,
-        $Fields_Repository,
-        $Tainacan_Fields,
-        $created_repository_fields,
+        $file_metadata,
+        $Metadata_Repository,
+        $Tainacan_Metadata,
+        $created_repository_metadata,
         $created_categories,
         $relationships,
         $compound_id = null)
     {
-        if($file_fields)
+        if($file_metadata)
         {
-            foreach($file_fields as $index => $meta)
+            foreach($file_metadata as $index => $meta)
             {
                 $meta_slug = $meta->slug;
-                $old_field_id = $meta->id;
+                $old_metadatum_id = $meta->id;
 
-                if(!in_array($meta_slug, $this->avoid) && !isset($created_repository_fields[$old_field_id]))
+                if(!in_array($meta_slug, $this->avoid) && !isset($created_repository_metadata[$old_metadatum_id]))
                 {
-                    $newField = $this->set_fields_properties(
+                    $newMetadatum = $this->set_metadata_properties(
                         $meta,
                         $created_categories,
                         $relationships,
-                        $Fields_Repository,
+                        $Metadata_Repository,
                         $compound_id,
-                        $created_repository_fields,
+                        $created_repository_metadata,
                         false,
-                        $Tainacan_Fields);
+                        $Tainacan_Metadata);
 
-                    if($newField->validate())
+                    if($newMetadatum->validate())
                     {
-                        $newField = $Fields_Repository->insert($newField);
+                        $newMetadatum = $Metadata_Repository->insert($newMetadatum);
 
-                        $mapping[$newField->get_id()] = $file_fields[$index]->name;
+                        $mapping[$newMetadatum->get_id()] = $file_metadata[$index]->name;
                     }
-                }else /*Map to respository fields*/
+                }else /*Map to respository metadata*/
                 {
-                    if(isset($created_repository_fields[$old_field_id]))
+                    if(isset($created_repository_metadata[$old_metadatum_id]))
                     {
-                        $new_id = $created_repository_fields[$old_field_id]['new_id'];
-                        $mapping[$new_id] = $created_repository_fields[$old_field_id]['name'];
+                        $new_id = $created_repository_metadata[$old_metadatum_id]['new_id'];
+                        $mapping[$new_id] = $created_repository_metadata[$old_metadatum_id]['name'];
                     }else
                     {
-                        $fields = $Tainacan_Fields->fetch_by_collection( $this->actual_collection, [], 'OBJECT' );
+                        $metadata = $Tainacan_Metadata->fetch_by_collection( $this->actual_collection, [], 'OBJECT' );
 
-                        foreach ($fields as $field)
+                        foreach ($metadata as $metadatum)
                         {
-                            if(($field->WP_Post->post_name === 'title' || $field->WP_Post->post_name === 'description') &&
+                            if(($metadatum->WP_Post->post_name === 'title' || $metadatum->WP_Post->post_name === 'description') &&
                                 ($meta_slug === 'socialdb_property_fixed_title' || $meta_slug === 'socialdb_property_fixed_description'))
                             {
-                                $mapping[$field->get_id()] = $field->WP_Post->post_name;
+                                $mapping[$metadatum->get_id()] = $metadatum->WP_Post->post_name;
                             }
                         }
                     }
@@ -323,33 +323,33 @@ class Old_Tainacan extends Importer{
         return $mapping;
     }
 
-    private function set_fields_properties(
+    private function set_metadata_properties(
         $meta,
         $created_categories,
         $relationships,
-        $Fields_Repository,
+        $Metadata_Repository,
         $compound_id,
-        $created_repository_fields = null,
+        $created_repository_metadata = null,
         $is_repository = true,
-        $Tainacan_Fields = null)
+        $Tainacan_Metadata = null)
     {
-        $newField = new \Tainacan\Entities\Field();
+        $newMetadatum = new \Tainacan\Entities\Metadatum();
 
 
         $name = $meta->name;
         $type = $meta->type;
 
         $type = $this->define_type($type);
-        $newField->set_name($name);
+        $newMetadatum->set_name($name);
 
-        $newField->set_field_type('Tainacan\Field_Types\\'.$type);
+        $newMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\\'.$type);
         if(strcmp($type, "Category") === 0)
         {
             $taxonomy_id = $meta->metadata->taxonomy;
             if(isset($created_categories[$taxonomy_id]))
             {
                 $new_category_id = $created_categories[$taxonomy_id]['new_id'];
-                $newField->set_field_type_options(['taxonomy_id' => $new_category_id]);
+                $newMetadatum->set_metadatum_type_options(['taxonomy_id' => $new_category_id]);
             }
         }else if(strcmp($type, "Relationship") === 0)
         {
@@ -358,7 +358,7 @@ class Old_Tainacan extends Importer{
             if(isset($relationships[$taxonomy_id]))
             {
                 $new_collection_id = $relationships[$taxonomy_id]['new_id'];
-                $newField->set_field_type_options(['collection_id' => $new_collection_id]);
+                $newMetadatum->set_metadatum_type_options(['collection_id' => $new_collection_id]);
             }
         }else if(strcmp($type, "Compound") === 0)
         {
@@ -366,20 +366,20 @@ class Old_Tainacan extends Importer{
             {
                 $this->create_meta_repo(
                     $meta->metadata->children,
-                    $Fields_Repository,
+                    $Metadata_Repository,
                     $created_categories,
                     $relationships,
-                    $newField->get_id());
+                    $newMetadatum->get_id());
             }else
             {
                 $this->create_collection_meta(
                     $meta->metadata->children,
-                    $Fields_Repository,
-                    $Tainacan_Fields,
-                    $created_repository_fields,
+                    $Metadata_Repository,
+                    $Tainacan_Metadata,
+                    $created_repository_metadata,
                     $created_categories,
                     $relationships,
-                    $newField->get_id());
+                    $newMetadatum->get_id());
             }
         }
 
@@ -388,26 +388,26 @@ class Old_Tainacan extends Importer{
         {
             if($is_repository)
             {
-                $newField->set_collection_id('default');
+                $newMetadatum->set_collection_id('default');
             }else
             {
-                $newField->set_collection($this->actual_collection);
+                $newMetadatum->set_collection($this->actual_collection);
             }
-        }else //Set compound as field parent
+        }else //Set compound as metadatum parent
         {
-            $newField->set_parent($compound_id);
+            $newMetadatum->set_parent($compound_id);
         }
 
-        /*Properties of field*/
+        /*Properties of metadatum*/
         if(isset($meta->metadata))
         {
             if($meta->metadata->required == 1)
             {
-                $newField->set_required(true);
+                $newMetadatum->set_required(true);
             }
             if(!empty($meta->metadata->default_value))
             {
-                $newField->set_default_value($meta->metadata->default_value);
+                $newMetadatum->set_default_value($meta->metadata->default_value);
             }
             /*if(!empty($meta->metadata->text_help))
             {
@@ -417,13 +417,13 @@ class Old_Tainacan extends Importer{
             {
                 if($meta->metadata->cardinality > 1)
                 {
-                    $newField->set_multiple('yes');
+                    $newMetadatum->set_multiple('yes');
                 }
             }
         }
 
-        if($newField->validate()){
-            return $newField;
+        if($newMetadatum->validate()){
+            return $newMetadatum;
         }else return false;
     }
 
@@ -453,33 +453,33 @@ class Old_Tainacan extends Importer{
         unlink($this->get_id()."_categories.txt");
         unlink($this->get_id()."_collections.txt");
         unlink($this->get_id()."_relationships.txt");
-        unlink($this->get_id()."_repository_fields.txt");
+        unlink($this->get_id()."_repository_metadata.txt");
         return false;
     }
 
     /*Aux functions*/
-    private function get_collection_fields($collections_id)
+    private function get_collection_metadata($collections_id)
     {
-        $fields_link = $this->get_url() . $this->tainacan_api_address . "/collections/".$collections_id."/metadata";
-        $collection = wp_remote_get($fields_link);
+        $metadata_link = $this->get_url() . $this->tainacan_api_address . "/collections/".$collections_id."/metadata";
+        $collection = wp_remote_get($metadata_link);
 
         $collection_metadata = $this->verify_process_result($collection);
         if($collection_metadata)
         {
-            $fields = [];
+            $metadata = [];
             foreach ($collection_metadata[0]->{'tab-properties'} as $metadata)
             {
-                $field_details_link = $fields_link . "/". $metadata->id;
-                $field_details = wp_remote_get($field_details_link);
-                $field_details = $this->verify_process_result($field_details);
+                $metadatum_details_link = $metadata_link . "/". $metadata->id;
+                $metadatum_details = wp_remote_get($metadatum_details_link);
+                $metadatum_details = $this->verify_process_result($metadatum_details);
 
-                if($field_details)
+                if($metadatum_details)
                 {
-                    $fields[] = $field_details[0];
+                    $metadata[] = $metadatum_details[0];
                 }
             }
 
-            return $fields;
+            return $metadata;
         }
 
         return false;
@@ -692,15 +692,15 @@ class Old_Tainacan extends Importer{
      *
      * @param  $index
      * @param  $collection_id 
-     * @return array with field_source's as the index and values for the
+     * @return array with metadatum_source's as the index and values for the
      * item
      *
-     * Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
+     * Ex: [ 'Metadatum1' => 'value1', 'Metadatum2' => [ 'value2','value3' ]
      */
     public function process_item( $index, $collection_id )
     {
         $processedItem = [];
-        $headers = $this->get_fields();
+        $headers = $this->get_metadata();
 
         // search the index in the file and get values
         /*$file =  new \SplFileObject( $this->tmp_file, 'r' );
@@ -744,14 +744,14 @@ class Old_Tainacan extends Importer{
         return false;
     }
 
-    public function create_fields_and_mapping()
+    public function create_metadata_and_mapping()
     {
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
-        $fields_repository = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
 
-        $file_fields = $this->get_fields();
+        $file_metadata = $this->get_metadata();
 
-        foreach($file_fields as $index => $meta_info)
+        foreach($file_metadata as $index => $meta_info)
         {
             if(is_array($meta_info))
             {
@@ -766,26 +766,26 @@ class Old_Tainacan extends Importer{
 
             if(!in_array($meta_name, $this->avoid))
             {
-                $newField = new \Tainacan\Entities\Field();
+                $newMetadatum = new \Tainacan\Entities\Metadatum();
 
-                $newField->set_name($meta_name);
+                $newMetadatum->set_name($meta_name);
 
-                $newField->set_field_type('Tainacan\Field_Types\\'.$type);
+                $newMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\\'.$type);
 
-                $newField->set_collection($this->actual_collection);
-                $newField->validate(); // there is no user input here, so we can be sure it will validate.
+                $newMetadatum->set_collection($this->actual_collection);
+                $newMetadatum->validate(); // there is no user input here, so we can be sure it will validate.
 
-                $newField = $fields_repository->insert($newField);
+                $newMetadatum = $metadata_repository->insert($newMetadatum);
 
-                $mapping[$newField->get_id()] = $file_fields[$index];
+                $mapping[$newMetadatum->get_id()] = $file_metadata[$index];
             }else
             {
-                $fields = $Tainacan_Fields->fetch_by_collection( $this->collection, [], 'OBJECT' ) ;
-                foreach ($fields as $field)
+                $metadata = $Tainacan_Metadata->fetch_by_collection( $this->collection, [], 'OBJECT' ) ;
+                foreach ($metadata as $metadatum)
                 {
-                    if($field->WP_Post->post_name === 'title' || $field->WP_Post->post_name === 'description')
+                    if($metadatum->WP_Post->post_name === 'title' || $metadatum->WP_Post->post_name === 'description')
                     {
-                        $mapping[$field->get_id()] = $file_fields[$meta_name];
+                        $mapping[$metadatum->get_id()] = $file_metadata[$meta_name];
                     }
                 }
             }
@@ -794,7 +794,7 @@ class Old_Tainacan extends Importer{
         $this->set_mapping($mapping);
     }
 
-    public function get_fields()
+    public function get_metadata()
     {
 
     }
@@ -820,7 +820,7 @@ class Old_Tainacan extends Importer{
     * Method implemented by the child importer class to return the number of items to be imported
     * @return int
     */
-    public function get_source_fields(){
+    public function get_source_metadata(){
     }
     
 }

@@ -446,13 +446,13 @@ abstract class Repository {
 			$Tainacan_Collections = Repositories\Collections::get_instance();
 			$Tainacan_Filters     = Repositories\Filters::get_instance();
 			$Tainacan_Logs        = Repositories\Logs::get_instance();
-			$Tainacan_Fields      = Repositories\Fields::get_instance();
+			$Tainacan_Metadata      = Repositories\Metadata::get_instance();
 			$Tainacan_Taxonomies  = Repositories\Taxonomies::get_instance();
 			$Tainacan_Terms       = Repositories\Terms::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
-				$Tainacan_Fields,
+				$Tainacan_Metadata,
 				$Tainacan_Filters,
 				$Tainacan_Taxonomies,
 				$Tainacan_Terms,
@@ -489,7 +489,7 @@ abstract class Repository {
 			return $Tainacan_Items;
 		} else {
 			$Tainacan_Collections   = \Tainacan\Repositories\Collections::get_instance();
-			$Tainacan_Fields        = \Tainacan\Repositories\Fields::get_instance();
+			$Tainacan_Metadata        = \Tainacan\Repositories\Metadata::get_instance();
 			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 			$Tainacan_Filters       = \Tainacan\Repositories\Filters::get_instance();
 			$Tainacan_Taxonomies    = \Tainacan\Repositories\Taxonomies::get_instance();
@@ -498,7 +498,7 @@ abstract class Repository {
 
 			$tnc_globals = [
 				$Tainacan_Collections,
-				$Tainacan_Fields,
+				$Tainacan_Metadata,
 				$Tainacan_Item_Metadata,
 				$Tainacan_Filters,
 				$Tainacan_Taxonomies,

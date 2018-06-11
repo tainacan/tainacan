@@ -47,13 +47,13 @@ class Item_Metadata extends Repository {
 		
 		$unique = !$item_metadata->is_multiple();
 
-		$field_type = $item_metadata->get_field()->get_field_type_object();
-		if ($field_type->get_core()) {
-			$this->save_core_field_value($item_metadata);
-		} elseif ($field_type->get_primitive_type() == 'term') {
-			$this->save_terms_field_value($item_metadata);
-		} elseif ($field_type->get_primitive_type() == 'compound') {
-			// do nothing. Compound values are updated when its child fields are updated
+		$metadatum_type = $item_metadata->get_metadatum()->get_metadatum_type_object();
+		if ($metadatum_type->get_core()) {
+			$this->save_core_metadatum_value($item_metadata);
+		} elseif ($metadatum_type->get_primitive_type() == 'term') {
+			$this->save_terms_metadatum_value($item_metadata);
+		} elseif ($metadatum_type->get_primitive_type() == 'compound') {
+			// do nothing. Compound values are updated when its child metadata are updated
 			return $item_metadata;
 		} else {
 			if ($unique) {
@@ -63,28 +63,28 @@ class Item_Metadata extends Repository {
 				} else {
 					
 					/**
-					 * When we are adding a field that is child of another, this means it is inside a compound field 
+					 * When we are adding a metadatum that is child of another, this means it is inside a compound metadatum
 					 *
 					 * In that case, if the Item_Metadata object is not set with a meta_id, it means we want to create a new one 
-					 * and not update an existing. This is the case of a multiple compound field.
+					 * and not update an existing. This is the case of a multiple compound metadatum.
 					 */
-					if ( $item_metadata->get_field()->get_parent() > 0 && is_null($item_metadata->get_meta_id()) ) {
-						$added_meta_id = add_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id(), wp_slash( $item_metadata->get_value() ) );
+					if ( $item_metadata->get_metadatum()->get_parent() > 0 && is_null($item_metadata->get_meta_id()) ) {
+						$added_meta_id = add_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $item_metadata->get_value() ) );
 						$added_compound = $this->add_compound_value($item_metadata, $added_meta_id);
 					} else {
-						update_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id(), wp_slash( $item_metadata->get_value() ) );
+						update_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $item_metadata->get_value() ) );
 					}
 					
 				}
 				
 	        } else {
-	            delete_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id());
+	            delete_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id());
 	            
 	            if (is_array($item_metadata->get_value())){
 	            	$values = $item_metadata->get_value();
 
 	                foreach ($values as $value){
-	                    add_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id(), wp_slash( $value ));
+	                    add_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $value ));
 	                }
 	            }
 	        }
@@ -93,7 +93,7 @@ class Item_Metadata extends Repository {
 			do_action('tainacan-insert-Item_Metadata_Entity', $item_metadata);
 		}
 
-        $new_entity = new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_field());
+        $new_entity = new Entities\Item_Metadata_Entity($item_metadata->get_item(), $item_metadata->get_metadatum());
 		
 		if (isset($added_compound) && is_int($added_compound)) {
 			$new_entity->set_parent_meta_id($added_compound);
@@ -114,14 +114,14 @@ class Item_Metadata extends Repository {
 	 */
 	public function delete($item_metadata){}
 
-    public function save_core_field_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
-        $field_type = $item_metadata->get_field()->get_field_type_object();
-        if ($field_type->get_core()) {
+    public function save_core_metadatum_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+        $metadatum_type = $item_metadata->get_metadatum()->get_metadatum_type_object();
+        if ($metadatum_type->get_core()) {
             $item = $item_metadata->get_item();
-            $set_method = 'set_' . $field_type->get_related_mapped_prop();
+            $set_method = 'set_' . $metadatum_type->get_related_mapped_prop();
             $value = $item_metadata->get_value();
             $item->$set_method( is_array( $value ) ? $value[0] : $value );
-            if ($item->validate_core_fields()) {
+            if ($item->validate_core_metadata()) {
                 $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
                 $Tainacan_Items->insert($item);
             } else {
@@ -130,11 +130,11 @@ class Item_Metadata extends Repository {
         }
     }
 	
-	public function save_terms_field_value($item_metadata) {
-		$field_type = $item_metadata->get_field()->get_field_type_object();
-		if ($field_type->get_primitive_type() == 'term') {
+	public function save_terms_metadatum_value($item_metadata) {
+		$metadatum_type = $item_metadata->get_metadatum()->get_metadatum_type_object();
+		if ($metadatum_type->get_primitive_type() == 'term') {
 			$new_terms = $item_metadata->get_value();
-			$taxonomy = new Entities\Taxonomy( $field_type->get_option('taxonomy_id') );
+			$taxonomy = new Entities\Taxonomy( $metadatum_type->get_option('taxonomy_id') );
 
 			if( $taxonomy ){
 				$old = $item_metadata;
@@ -170,15 +170,15 @@ class Item_Metadata extends Repository {
 		
 		if ( $item_metadata->get_parent_meta_id() > 0 ) {
 			update_metadata_by_mid( 'post', $item_metadata->get_parent_meta_id(), $current_value );
-		} elseif ( $item_metadata->get_field()->get_parent() > 0 ) {
-			return add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_parent(), $current_value );
+		} elseif ( $item_metadata->get_metadatum()->get_parent() > 0 ) {
+			return add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_parent(), $current_value );
 		}
 		
 		
 	}
 
 	/**
-	 * Fetch Item Field objects related to an Item
+	 * Fetch Item Metadatum objects related to an Item
 	 *
 	 * @param Entities\Item $object
 	 *
@@ -187,7 +187,7 @@ class Item_Metadata extends Repository {
 	 */
     public function fetch($object, $output = null, $args = [] ){
         if($object instanceof Entities\Item){
-            $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+            $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
             
             $collection = $object->get_collection();
             
@@ -195,7 +195,7 @@ class Item_Metadata extends Repository {
                 return [];
             }
             
-            $meta_list = $Tainacan_Fields->fetch_by_collection($collection, $args, 'OBJECT' );
+            $meta_list = $Tainacan_Metadata->fetch_by_collection($collection, $args, 'OBJECT' );
             
             $return = [];
             
@@ -212,7 +212,7 @@ class Item_Metadata extends Repository {
     }
 
 	/**
-	 * Get the value for a Item field.
+	 * Get the value for a Item metadatum.
 	 *
 	 * @param Entities\Item_Metadata_Entity $item_metadata
 	 *
@@ -222,17 +222,17 @@ class Item_Metadata extends Repository {
     public function get_value(Entities\Item_Metadata_Entity $item_metadata) {
         $unique = ! $item_metadata->is_multiple();
         
-        $field_type = $item_metadata->get_field()->get_field_type_object();
-        if ($field_type->get_core()) {
+        $metadatum_type = $item_metadata->get_metadatum()->get_metadatum_type_object();
+        if ($metadatum_type->get_core()) {
             $item = $item_metadata->get_item();
             
-            $get_method = 'get_' . $field_type->get_related_mapped_prop();
+            $get_method = 'get_' . $metadatum_type->get_related_mapped_prop();
             return $item->$get_method();
         
-		} elseif ($field_type->get_primitive_type() == 'term') {
+		} elseif ($metadatum_type->get_primitive_type() == 'term') {
 
-            if( is_numeric( $field_type->get_option('taxonomy_id') ) ){
-                $taxonomy = new Entities\Taxonomy( $field_type->get_option('taxonomy_id') );
+            if( is_numeric( $metadatum_type->get_option('taxonomy_id') ) ){
+                $taxonomy = new Entities\Taxonomy( $metadatum_type->get_option('taxonomy_id') );
                 if( $taxonomy ){
                     $taxonomy_slug = $taxonomy->get_db_identifier();
                 } else {
@@ -262,11 +262,11 @@ class Item_Metadata extends Repository {
 			
 			return $terms;
 		
-		} elseif ($field_type->get_primitive_type() == 'compound') {
+		} elseif ($metadatum_type->get_primitive_type() == 'compound') {
 			
 			global $wpdb;
 			$rows = $wpdb->get_results( 
-				$wpdb->prepare("SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id()), 
+				$wpdb->prepare("SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id()),
 				ARRAY_A );
 			
 			$return_value = [];
@@ -294,7 +294,7 @@ class Item_Metadata extends Repository {
 					return $value->meta_value;
 				}
 			} else {
-				return get_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_field()->get_id(), $unique);
+				return get_post_meta($item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), $unique);
 			}
 			
         }
@@ -302,7 +302,7 @@ class Item_Metadata extends Repository {
     }
 
 	/**
-	 * Transforms the array saved as meta_value with the IDs of post_meta saved as a value for compound fields
+	 * Transforms the array saved as meta_value with the IDs of post_meta saved as a value for compound metadata
 	 * and converts it into an array of Item Metadatada Entitites
 	 *
 	 * @param array $ids The array of post_meta ids
@@ -320,8 +320,8 @@ class Item_Metadata extends Repository {
 			foreach ($ids as $id) {
 				$post_meta_object = get_metadata_by_mid( 'post', $id );
 				if ( is_object($post_meta_object) ) {
-					$field = new Entities\Field($post_meta_object->meta_key);
-					$return_value[$field->get_id()] = new Entities\Item_Metadata_Entity( $item, $field, $id, $compund_meta_id );
+					$metadatum = new Entities\Metadatum($post_meta_object->meta_key);
+					$return_value[$metadatum->get_id()] = new Entities\Item_Metadata_Entity( $item, $metadatum, $id, $compund_meta_id );
 				}
 				
 			}
@@ -346,7 +346,7 @@ class Item_Metadata extends Repository {
 	}
 
     /**
-     * Suggest a value to be inserted as a item Field value, return a pending log  
+     * Suggest a value to be inserted as a item Metadatum value, return a pending log
      * @param Entities\Item_Metadata_Entity $item_metadata
      * @return Entities\Log
      */        

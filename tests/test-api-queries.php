@@ -104,59 +104,59 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		// Create Metadata and Field Type
+		// Create Metadata and Metadatum Type
 
-		$field_type = $this->tainacan_field_factory->create_field('text');
+		$metadatum_type = $this->tainacan_metadatum_factory->create_metadatum('text');
 
-		$fieldA1 = $this->tainacan_entity_factory->create_entity(
-			'field',
+		$metadatumA1 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
 			[
-				'name'        => 'Field A-1',
-				'description' => 'Simple field in collection A',
+				'name'        => 'Metadatum A-1',
+				'description' => 'Simple metadatum in collection A',
 				'status'      => 'publish',
 				'collection'  => $collectionA,
-				'field_type'  => $field_type
+				'metadatum_type'  => $metadatum_type
 			],
 			true
 		);
 
-		$fieldA2 = $this->tainacan_entity_factory->create_entity(
-			'field',
+		$metadatumA2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
 			[
-				'name'        => 'Field A-2',
-				'description' => 'Simple field in collection A',
+				'name'        => 'Metadatum A-2',
+				'description' => 'Simple metadatum in collection A',
 				'status'      => 'publish',
 				'collection'  => $collectionA,
-				'field_type'  => $field_type
+				'metadatum_type'  => $metadatum_type
 			],
 			true
 		);
 
-		$fieldA3 = $this->tainacan_entity_factory->create_entity(
-			'field',
+		$metadatumA3 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
 			[
-				'name'        => 'Field A-3',
-				'description' => 'Multiple field in a collection A',
+				'name'        => 'Metadatum A-3',
+				'description' => 'Multiple metadatum in a collection A',
 				'status'      => 'publish',
 				'collection'  => $collectionA,
-				'field_type'  => $field_type,
+				'metadatum_type'  => $metadatum_type,
 				'multiple'    => 'yes'
 			],
 			true
 		);
 
 		// Create a Item Metadata
-		$itemA1_metadata1 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA1, $fieldA1, 'E');
-		$itemA1_metadata2 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA1, $fieldA2, 'X');
-		$itemA1_metadata3 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA1, $fieldA3, ['Y', 'Z']);
+		$itemA1_metadata1 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA1, $metadatumA1, 'E');
+		$itemA1_metadata2 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA1, $metadatumA2, 'X');
+		$itemA1_metadata3 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA1, $metadatumA3, ['Y', 'Z']);
 
-		$itemA2_metadata1 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA2, $fieldA1, 'D');
-		$itemA2_metadata2 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA2, $fieldA2, 'Q');
-		$itemA2_metadata3 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA2, $fieldA3, ['R', 'S']);
+		$itemA2_metadata1 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA2, $metadatumA1, 'D');
+		$itemA2_metadata2 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA2, $metadatumA2, 'Q');
+		$itemA2_metadata3 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA2, $metadatumA3, ['R', 'S']);
 
-		$itemA3_metadata1 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA3, $fieldA1, 'G');
-		$itemA3_metadata2 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA3, $fieldA2, 'T');
-		$itemA3_metadata3 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA3, $fieldA3, ['Q', 'V']);
+		$itemA3_metadata1 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA3, $metadatumA1, 'G');
+		$itemA3_metadata2 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA3, $metadatumA2, 'T');
+		$itemA3_metadata3 = $this->tainacan_item_metadata_factory->create_item_metadata($itemA3, $metadatumA3, ['Q', 'V']);
 
 		//
 
@@ -194,17 +194,17 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
 		/* Meta Query:
 		 *
-		 * Fetch items from a collection desc ordered by fieldA1 and its only in range A to F.
+		 * Fetch items from a collection desc ordered by metadatumA1 and its only in range A to F.
 		 *
 		 * */
 
 		$meta_query = [
-			'metakey'   => $fieldA1->get_id(),
+			'metakey'   => $metadatumA1->get_id(),
 			'orderby'   => 'meta_value',
 			'order'     => 'DESC',
 			'metaquery' => array(
 				array(
-					'key'     => $fieldA1->get_id(),
+					'key'     => $metadatumA1->get_id(),
 					'value'   => array( 'A', 'F' ),
 					'compare' => 'BETWEEN'
 				),
@@ -220,15 +220,15 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
 		$this->assertCount(2, $data3);
 
-		$fieldA1_slug = $fieldA1->get_slug();
+		$metadatumA1_slug = $metadatumA1->get_slug();
 
-		$values = [$data3[0]['metadata'][$fieldA1_slug]['value'], $data3[1]['metadata'][$fieldA1_slug]['value']];
+		$values = [$data3[0]['metadata'][$metadatumA1_slug]['value'], $data3[1]['metadata'][$metadatumA1_slug]['value']];
 
 		$this->assertNotContains('G', $values);
 
 		// E have to come first, because DESC
-		$this->assertEquals('E', $data3[0]['metadata'][$fieldA1_slug]['value']);
-		$this->assertEquals('D', $data3[1]['metadata'][$fieldA1_slug]['value']);
+		$this->assertEquals('E', $data3[0]['metadata'][$metadatumA1_slug]['value']);
+		$this->assertEquals('D', $data3[1]['metadata'][$metadatumA1_slug]['value']);
 
 
 		/* Date Query:
@@ -277,7 +277,7 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 			'taxquery' => [
 				[
 					'taxonomy' => $taxonomyA->get_db_identifier(),
-					'field'    => 'slug',
+					'metadatum'    => 'slug',
 					'terms'    => 'term-a'
 				]
 			]

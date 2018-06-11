@@ -89,7 +89,7 @@
             <div 
                     v-show="!isMetadataColumnCompressed"
                     class="column is-4-5">
-                <label class="section-label">{{ $i18n.get('fields') }}</label>
+                <label class="section-label">{{ $i18n.get('metadata') }}</label>
                 <br>
                 <a
                         class="collapse-all"
@@ -100,10 +100,10 @@
                             :icon=" open ? 'menu-down' : 'menu-right'"/>
                 </a>
 
-                <!-- Fields -------------------------------- -->
+                <!-- Metadata -------------------------------- -->
                 <div>
                     <div
-                            v-for="(field, index) of fieldList"
+                            v-for="(metadatum, index) of metadatumList"
                             :key="index"
                             class="field">
                         <b-collapse :open="open">
@@ -115,17 +115,17 @@
                                         type="is-secondary"
                                         :icon="props.open ? 'menu-down' : 'menu-right'"
                                 />
-                                {{ field.field.name }}
+                                {{ metadatum.metadatum.name }}
                             </label>
                             <div
-                                    v-if="field.date_i18n"
+                                    v-if="metadatum.date_i18n"
                                     class="content">
-                                <p v-html="field.date_i18n"/>
+                                <p v-html="metadatum.date_i18n"/>
                             </div>
                             <div
                                     v-else
                                     class="content">
-                                <p v-html="field.value_as_html"/>
+                                <p v-html="metadatum.value_as_html"/>
                             </div>
                         </b-collapse>
                     </div>
@@ -157,16 +157,16 @@
             ...mapActions('item', [
                 'fetchItem',
                 'fetchAttachments',
-                'fetchFields',
+                'fetchMetadata',
             ]),
             ...mapGetters('item', [
                 'getItem',
-                'getFields',
+                'getMetadata',
                 'getAttachments'
             ]),
             loadMetadata() {
-                // Obtains Item Field
-                this.fetchFields(this.itemId).then(() => {
+                // Obtains Item Metadatum
+                this.fetchMetadata(this.itemId).then(() => {
                     this.isLoading = false;
                 });
             },
@@ -175,8 +175,8 @@
             item() {
                 return this.getItem();
             },
-            fieldList() {
-                return JSON.parse(JSON.stringify(this.getFields()));
+            metadatumList() {
+                return JSON.parse(JSON.stringify(this.getMetadata()));
             },
             attachmentsList() {
                 return this.getAttachments();

@@ -1,6 +1,6 @@
 <template>
     <div class="primary-page page-container">
-        <b-loading :active.sync="isLoadingFieldMappers"/>
+        <b-loading :active.sync="isLoadingMetadatumMappers"/>
         <tainacan-title />
         <div
                 class="sub-header"
@@ -24,14 +24,14 @@
                         </router-link>
                     </b-dropdown-item>
                     <b-dropdown-item
-                            :key="field_mapper.slug"
-                            v-for="field_mapper in field_mappers"
-                            v-if="field_mapper.metadata != false">
+                            :key="metadatum_mapper.slug"
+                            v-for="metadatum_mapper in metadatum_mappers"
+                            v-if="metadatum_mapper.metadata != false">
                         <router-link
-                                :id="'a-create-collection-' + field_mapper.slug"
+                                :id="'a-create-collection-' + metadatum_mapper.slug"
                                 tag="div"
-                                :to="{ path: $routerHelper.getNewMappedCollectionPath(field_mapper.slug) }">
-                            {{ $i18n.get(field_mapper.name) }}
+                                :to="{ path: $routerHelper.getNewMappedCollectionPath(metadatum_mapper.slug) }">
+                            {{ $i18n.get(metadatum_mapper.name) }}
                         </router-link>
                     </b-dropdown-item>
                 </b-dropdown>
@@ -140,7 +140,7 @@ export default {
             totalCollections: 0,
             page: 1,
             collectionsPerPage: 12,
-            isLoadingFieldMappers: true,
+            isLoadingMetadatumMappers: true,
             status: ''
         }
     },
@@ -151,14 +151,14 @@ export default {
          ...mapActions('collection', [
             'fetchCollections',
         ]),
-        ...mapActions('fields', [
-            'fetchFieldMappers'
+        ...mapActions('metadata', [
+            'fetchMetadatumMappers'
         ]),
         ...mapGetters('collection', [
             'getCollections'
         ]),
-        ...mapGetters('fields', [
-            'getFieldMappers'
+        ...mapGetters('metadata', [
+            'getMetadatumMappers'
         ]),
         onChangeTab(status) {
             this.status = status;
@@ -192,9 +192,9 @@ export default {
         }
     },
     computed: {
-        field_mappers: {
+        metadatum_mappers: {
             get() {
-                return this.getFieldMappers();
+                return this.getMetadatumMappers();
             }
         },
         collections() {
@@ -202,7 +202,7 @@ export default {
         }
     },
     created() {
-        this.isLoadingFieldTypes = true;
+        this.isLoadingMetadatumTypes = true;
         this.$userPrefs.get('collections_per_page')
             .then((value) => {
                 this.collectionsPerPage = value;
@@ -210,12 +210,12 @@ export default {
             .catch(() => {
                 this.$userPrefs.set('collections_per_page', 12, null);
             });
-        this.fetchFieldMappers()
+        this.fetchMetadatumMappers()
             .then(() => {
-                this.isLoadingFieldMappers = false;
+                this.isLoadingMetadatumMappers = false;
             })
             .catch(() => {
-                this.isLoadingFieldMappers = false;
+                this.isLoadingMetadatumMappers = false;
             });
     },
     mounted(){

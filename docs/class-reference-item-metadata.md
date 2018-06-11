@@ -5,9 +5,9 @@
 <!-- BEGIN DOC-COMMENT H3 src/classes/repositories/class-tainacan-item-metadata.php -->
 ### `if ( $item_metadata->get_field()->get_parent() > 0 && is_null($item_metadata->get_meta_id()) )`
 
-When we are adding a field that is child of another, this means it is inside a compound field 
+When we are adding a metadatum that is child of another, this means it is inside a compound metadatum 
 
-In that case, if the Item_Metadata object is not set with a meta_id, it means we want to create a new one and not update an existing. This is the case of a multiple compound field. 
+In that case, if the Item_Metadata object is not set with a meta_id, it means we want to create a new one and not update an existing. This is the case of a multiple compound metadatum. 
 
 
 ### `public function delete($item_metadata)`
@@ -24,7 +24,7 @@ In that case, if the Item_Metadata object is not set with a meta_id, it means we
 
 ### `public function fetch($object, $output = null )`
 
-Fetch Item Field objects related to an Item 
+Fetch Item Metadatum objects related to an Item 
 
 
 **Parameters:**
@@ -35,7 +35,7 @@ Fetch Item Field objects related to an Item
 
 ### `public function get_value(Entities\Item_Metadata_Entity $item_metadata)`
 
-Get the value for a Item field. 
+Get the value for a Item metadatum. 
 
 
 **Parameters:**
@@ -46,7 +46,7 @@ Get the value for a Item field.
 
 ### `private function extract_compound_value(array $ids, Entities\Item $item, $compund_meta_id)`
 
-Transforms the array saved as meta_value with the IDs of post_meta saved as a value for compound fields and converts it into an array of Item Metadatada Entitites 
+Transforms the array saved as meta_value with the IDs of post_meta saved as a value for compound metadata and converts it into an array of Item Metadatada Entitites 
 
 
 **Parameters:**
@@ -64,7 +64,7 @@ Transforms the array saved as meta_value with the IDs of post_meta saved as a va
 
 ### `public function suggest($item_metadata)`
 
-Suggest a value to be inserted as a item Field value, return a pending log 
+Suggest a value to be inserted as a item Metadatum value, return a pending log 
 **Parameters:**
 
 * `$item_metadata` — Entities\Item_Metadata_Entity
@@ -78,13 +78,13 @@ Suggest a value to be inserted as a item Field value, return a pending log
 <!-- BEGIN DOC-COMMENT H3 src/classes/entities/class-tainacan-item-metadata-entity.php -->
 ### `class Item_Metadata_Entity extends Entity`
 
-Represents the Item Field Entity 
+Represents the Item Metadatum Entity 
 
 
 ### `protected $repository = 'Item_Metadata'`
 
 {@inheritDoc} 
-### `function __construct(Item $item, Field $field, $meta_id = null, $parent_meta_id = null)`
+### `function __construct(Item $item, Metadatum $metadatum, $meta_id = null, $parent_meta_id = null)`
 
 
 
@@ -92,7 +92,7 @@ Represents the Item Field Entity
 **Parameters:**
 
 * `$item` — Item — Item Entity
-* `$field` — Field — Field Entity
+* `$metadatum` — Metadatum — Metadatum Entity
 * `$meta_id` — int — ID for a specific meta row
 
 ### `function set_item(Item $item)`
@@ -108,7 +108,7 @@ Define the item
 
 ### `function set_value($value)`
 
-Define the field value 
+Define the metadatum value 
 
 
 **Parameters:**
@@ -117,14 +117,14 @@ Define the field value
 
 **Returns:** void
 
-### `function set_field(Field $field)`
+### `function set_field(Metadatum $metadatum)`
 
-Define the field 
+Define the metadatum 
 
 
 **Parameters:**
 
-* `$field` — Field
+* `$metadatum` — Metadatum
 
 **Returns:** void
 
@@ -132,7 +132,7 @@ Define the field
 
 Set the specific meta ID for this metadata. 
 
-When this value is set, get_value() will use it to fetch the value from the post_meta table, instead of considering the item and field IDs 
+When this value is set, get_value() will use it to fetch the value from the post_meta table, instead of considering the item and metadatum IDs 
 
 
 **Parameters:**
@@ -141,9 +141,9 @@ When this value is set, get_value() will use it to fetch the value from the post
 
 ### `function set_parent_meta_id($parent_meta_id)`
 
-Set parent_meta_id. Used when a item_metadata is inside a compound Field 
+Set parent_meta_id. Used when a item_metadata is inside a compound Metadatum 
 
-When you have a multiple compound field, this indicates of which instace of the value this item_metadata is attached to 
+When you have a multiple compound metadatum, this indicates of which instace of the value this item_metadata is attached to 
 
 
 **Parameters:**
@@ -159,49 +159,49 @@ Return the item
 
 ### `function get_field()`
 
-Return the field 
+Return the metadatum 
 
 
-**Returns:** Field
+**Returns:** Metadatum
 
 ### `function get_meta_id()`
 
 Return the meta_id 
 
 
-**Returns:** Field
+**Returns:** Metadatum
 
 ### `function get_parent_meta_id()`
 
 Return the meta_id 
 
 
-**Returns:** Field
+**Returns:** Metadatum
 
 ### `function get_value()`
 
-Return the field value 
+Return the metadatum value 
 
 
 **Returns:** `string` — | integer
 
 ### `function is_multiple()`
 
-Return true if field is multiple, else return false 
+Return true if metadatum is multiple, else return false 
 
 
 **Returns:** boolean
 
 ### `function is_collection_key()`
 
-Return true if field is key 
+Return true if metadatum is key 
 
 
 **Returns:** boolean
 
 ### `function is_required()`
 
-Return true if field is required 
+Return true if metadatum is required 
 
 
 **Returns:** boolean

@@ -26,7 +26,7 @@ abstract class Importer {
 	 * the metadata from the source to the target collection.
 	 *
 	 * If set to true in the child class, it must implement the method 
-	 * get_source_fields() to return the field found in the source.
+	 * get_source_metadata() to return the metadatum found in the source.
 	 *
 	 * Note that this will only work when importing items to one single collection.
 	 * @var bool
@@ -62,7 +62,7 @@ abstract class Importer {
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
 	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be imported, the mapping array 
-	 * from the source structure to the ID of the metadata fields in tainacan
+	 * from the source structure to the ID of the metadata metadata in tainacan
 	 *
 	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the 
 	 * values are the identifier from the source. This could be an ID or a string or whatever the importer finds appropriate to handle
@@ -542,23 +542,23 @@ abstract class Importer {
 	
 
     /**
-     * get the fields of file/url to allow mapping
+     * get the metadata of file/url to allow mapping
      * should return an array
      *
      * Used when $manual_mapping is set to true, to build the mapping interface
      *
-     * @return array $fields_source the fields from the source
+     * @return array $metadata_source the metadata from the source
      */
-    public function get_source_fields() {}
+    public function get_source_metadata() {}
 		
     /**
      * get values for a single item
      *
      * @param  $index
-     * @return array with field_source's as the index and values for the
+     * @return array with metadatum_source's as the index and values for the
      * item
      *
-     * Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
+     * Ex: [ 'Metadatum1' => 'value1', 'Metadatum2' => [ 'value2','value3' ]
      */
     abstract public function process_item( $index, $collection_id );
 
@@ -658,7 +658,7 @@ abstract class Importer {
     /**
      * insert processed item from source to Tainacan
      *
-     * @param array $processed_item Associative array with field source's as index with
+     * @param array $processed_item Associative array with metadatum source's as index with
      *                              its value or values
      * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
      * 
@@ -675,7 +675,7 @@ abstract class Importer {
 		
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
 		
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
@@ -683,12 +683,12 @@ abstract class Importer {
         $itemMetadataArray = [];
 
         if( is_array( $processed_item ) ){
-            foreach ( $processed_item as $field_source => $values ){
-                $tainacan_field_id = array_search( $field_source, $collection_definition['map'] );
-                $field = $Tainacan_Fields->fetch( $tainacan_field_id );
+            foreach ( $processed_item as $metadatum_source => $values ){
+                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['map'] );
+                $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
-                if( $field instanceof Entities\Field ){
-                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $field); // *empty item will be replaced by inserted in the next foreach
+                if( $metadatum instanceof Entities\Metadatum ){
+                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
                     $singleItemMetadata->set_value( $values );
                     $itemMetadataArray[] = $singleItemMetadata;
                 } else {
@@ -715,7 +715,7 @@ abstract class Importer {
                 if( $itemMetadata->validate() ){
                     $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
                 } else {
-                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_field()->get_name());
+                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
                     $this->add_error_log($itemMetadata->get_errors());
                     continue;
                 }
@@ -723,7 +723,7 @@ abstract class Importer {
                 //if( $result ){
                 //	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
                 //    $this->add_log( 'Item ' . $insertedItem->get_id() .
-                //        ' has inserted the values: ' . $values . ' on field: ' . $itemMetadata->get_field()->get_name() );
+                //        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
                 //} else {
                 //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
                 //}

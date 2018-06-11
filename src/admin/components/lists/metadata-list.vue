@@ -1,0 +1,703 @@
+<template>
+    <div>
+        <b-loading :active.sync="isLoadingMetadatumTypes"/>
+        <tainacan-title v-if="!isRepositoryLevel"/>
+        <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
+        <br>
+        <b-tabs v-model="activeTab">    
+            <b-tab-item :label="$i18n.get('metadata')">
+                <div class="columns">
+                    <div class="column"> 
+                        <section 
+                                v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
+                                class="field is-grouped-centered section">
+                            <div class="content has-text-gray has-text-centered">
+                                <p>
+                                    <b-icon
+                                            icon="format-list-bulleted-type"
+                                            size="is-large"/>
+                                </p>
+                                <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
+                                <p>{{ $i18n.get('info_create_metadata' ) }}</p>
+                            </div>
+                        </section>             
+                        <draggable 
+                                v-model="activeMetadatumList"
+                                class="active-metadata-area"
+                                @change="handleChange"
+                                :class="{'metadata-area-receive': isDraggingFromAvailable}"
+                                :options="{ 
+                                        group: { name:'metadata', pull: false, put: true },
+                                        sort: openedMetadatumId == '' || openedMetadatumId == undefined,
+                                        //disabled: openedMetadatumId != '' && openedMetadatumId != undefined,
+                                        handle: '.handle', 
+                                        ghostClass: 'sortable-ghost',
+                                        chosenClass: 'sortable-chosen',
+                                        filter: 'not-sortable-item', 
+                                        animation: '250'}">
+                            <div  
+                                    class="active-metadatum-item"
+                                    :class="{
+                                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' ,
+                                        'not-focusable-item': openedMetadatumId == metadatum.id,
+                                        'disabled-metadatum': metadatum.enabled == false
+                                    }" 
+                                    v-for="(metadatum, index) in activeMetadatumList"
+                                    :key="index">
+                                <div class="handle">
+                                    <grip-icon/>
+                                    <span 
+                                            class="metadatum-name"
+                                            :class="{'is-danger': formWithErrors == metadatum.id }">
+                                            {{ metadatum.name }}
+                                    </span>
+                                    <span   
+                                            v-if="metadatum.id != undefined"
+                                            class="label-details">  
+                                        ({{ $i18n.get(metadatum.metadatum_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                            <span 
+                                                class="not-saved" 
+                                                v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
+                                            {{ $i18n.get('info_not_saved') }}
+                                            </span>
+                                    </span>
+                                    <span 
+                                            class="loading-spinner" 
+                                            v-if="metadatum.id == undefined"/>
+                                    <span 
+                                            class="controls" 
+                                            v-if="metadatum.id !== undefined">
+                                        <b-switch 
+                                                size="is-small" 
+                                                v-model="metadatum.enabled"
+                                                @input="onChangeEnable($event, index)"/>
+                                        <a 
+                                                :style="{ visibility: 
+                                                        metadatum.collection_id != collectionId
+                                                        ? 'hidden' : 'visible'
+                                                    }" 
+                                                @click.prevent="editMetadatum(metadatum)">
+                                            <b-icon 
+                                                    type="is-gray" 
+                                                    icon="pencil"/>
+                                        </a>
+                                        <a 
+                                                :style="{ visibility: 
+                                                        metadatum.collection_id != collectionId ||
+                                                        metadatum.metadatum_type == 'Tainacan\\Metadatum_Types\\Core_Title' ||
+                                                        metadatum.metadatum_type == 'Tainacan\\Metadatum_Types\\Core_Description'
+                                                        ? 'hidden' : 'visible'
+                                                    }" 
+                                                @click.prevent="removeMetadatum(metadatum)">
+                                            <b-icon 
+                                                    type="is-gray" 
+                                                    icon="delete"/>
+                                        </a>
+                                    </span>
+                                </div>
+                                <div v-if="openedMetadatumId == metadatum.id">
+                                    <metadatum-edition-form
+                                            :collection-id="collectionId"
+                                            :is-repository-level="isRepositoryLevel"
+                                            @onEditionFinished="onEditionFinished()"
+                                            @onEditionCanceled="onEditionCanceled()"
+                                            @onErrorFound="formWithErrors = metadatum.id"
+                                            :index="index"
+                                            :original-metadatum="metadatum"
+                                            :edited-metadatum="editForms[metadatum.id]"/>
+                                </div>
+                            </div>
+                        </draggable> 
+                    </div>
+                
+                    <div class="column available-metadata-area" >
+                        <div class="field">
+                            <h3 class="label">{{ $i18n.get('label_available_metadatum_types') }}</h3>
+                            <draggable 
+                                    v-model="availableMetadatumList"
+                                    :options="{ 
+                                        sort: false, 
+                                        group: { name:'metadata', pull: 'clone', put: false, revertClone: true },
+                                        dragClass: 'sortable-drag'
+                                    }">
+                                <div 
+                                        @click.prevent="addMetadatumViaButton(metadatum)"
+                                        class="available-metadatum-item"
+                                        :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name }"
+                                        v-for="(metadatum, index) in availableMetadatumList"
+                                        :key="index">
+                                <grip-icon/>  
+                                    <span class="metadatum-name">{{ metadatum.name }}</span>
+                                    <span 
+                                            class="loading-spinner" 
+                                            v-if="hightlightedMetadatum == metadatum.name"/>
+                                </div>
+                            </draggable>
+                        </div>
+                    </div> 
+                </div>
+            </b-tab-item>
+            <!-- Exposer -->
+            <b-tab-item :label="$i18n.get('mapping')">
+                <p>Under construction. You will be able to map your metadata to other metadata standards in this page.</p>
+            </b-tab-item>
+        </b-tabs>
+    </div> 
+</template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex';
+import GripIcon from '../other/grip-icon.vue';
+import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
+import CustomDialog from '../other/custom-dialog.vue';
+
+export default {
+    name: 'MetadataList',
+    data(){           
+        return {
+            collectionId: '',
+            isRepositoryLevel: false,
+            isDraggingFromAvailable: false,
+            isLoadingMetadatumTypes: true,
+            isLoadingMetadata: false,
+            isLoadingMetadatum: false,
+            openedMetadatumId: '',
+            formWithErrors: '',
+            hightlightedMetadatum: '',
+            editForms: {}
+        }
+    },
+    components: {
+        MetadatumEditionForm,
+        GripIcon
+    },
+    computed: {
+        availableMetadatumList: {
+            get() {
+                return this.getMetadatumTypes();
+            },
+            set(value) {
+                return this.updateMetadatumTypes(value);
+            }
+        },
+        activeMetadatumList: {
+            get() {
+                return this.getMetadata();
+            },
+            set(value) {
+                this.updateMetadata(value);
+            }
+        }
+    },
+    beforeRouteLeave ( to, from, next ) {
+        let hasUnsavedForms = false;
+        for (let editForm in this.editForms) {
+            if (!this.editForms[editForm].saved) 
+                hasUnsavedForms = true;
+        }
+        if ((this.openedMetadatumId != '' && this.openedMetadatumId != undefined) || hasUnsavedForms ) {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_metadata_not_saved'),
+                    onConfirm: () => {
+                        this.onEditionCanceled();
+                        next();
+                    },
+                }
+            });  
+        } else {
+            next()
+        }  
+    },
+    methods: {
+        ...mapActions('metadata', [
+            'fetchMetadatumTypes',
+            'updateMetadatumTypes',
+            'fetchMetadata',
+            'sendMetadatum',
+            'deleteMetadatum',
+            'updateMetadata',
+            'updateCollectionMetadataOrder'
+        ]),
+        ...mapGetters('metadata',[
+            'getMetadatumTypes',
+            'getMetadata'
+        ]),
+        handleChange(event) {     
+            if (event.added) {
+                this.addNewMetadatum(event.added.element, event.added.newIndex);
+            } else if (event.removed) {
+                this.removeMetadatum(event.removed.element);
+            } else if (event.moved) {
+                if (!this.isRepositoryLevel)
+                    this.updateMetadataOrder();
+            }
+        },
+        updateMetadataOrder() {
+            let metadataOrder = [];
+            for (let metadatum of this.activeMetadatumList) {
+                metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
+            }
+            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder });
+        },
+        onChangeEnable($event, index) {
+            this.activeMetadatumList[index].enabled = $event;
+            let metadataOrder = [];
+            for (let metadatum of this.activeMetadatumList) {
+                metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
+            }
+            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder });
+        },
+        addMetadatumViaButton(metadatumType) {
+            let lastIndex = this.activeMetadatumList.length;
+            this.addNewMetadatum(metadatumType, lastIndex);
+            
+            // Higlights the clicker metadatum
+            this.hightlightedMetadatum = metadatumType.name;
+
+        },
+        addNewMetadatum(newMetadatum, newIndex) {
+            this.sendMetadatum({collectionId: this.collectionId, name: newMetadatum.name, metadatumType: newMetadatum.className, status: 'auto-draft', isRepositoryLevel: this.isRepositoryLevel, newIndex: newIndex})
+            .then((metadatum) => {
+
+                if (!this.isRepositoryLevel)
+                    this.updateMetadataOrder();
+
+                this.editMetadatum(metadatum);
+                this.hightlightedMetadatum = '';
+            })
+            .catch((error) => {
+                this.$console.error(error);
+            });
+        },
+        removeMetadatum(removedMetadatum) {
+            this.deleteMetadatum({ collectionId: this.collectionId, metadatumId: removedMetadatum.id, isRepositoryLevel: this.isRepositoryLevel})
+            .then(() => {
+                if (!this.isRepositoryLevel)
+                    this.updateMetadataOrder();
+            })
+            .catch(() => {
+            });
+        },
+        editMetadatum(metadatum) {
+            // Closing collapse
+            if (this.openedMetadatumId == metadatum.id) {
+                this.openedMetadatumId = '';
+
+            // Opening collapse
+            } else {
+
+                this.openedMetadatumId = metadatum.id;
+                // First time opening
+                if (this.editForms[this.openedMetadatumId] == undefined) {
+                    this.editForms[this.openedMetadatumId] = JSON.parse(JSON.stringify(metadatum));
+                    this.editForms[this.openedMetadatumId].saved = true;
+
+                    // Metadatum inserted now
+                    if (this.editForms[this.openedMetadatumId].status == 'auto-draft') {
+                        this.editForms[this.openedMetadatumId].status = 'publish';
+                        this.editForms[this.openedMetadatumId].saved = false;
+                    }
+                }     
+            }
+        },
+        onEditionFinished() {
+            this.formWithErrors = '';
+            delete this.editForms[this.openedMetadatumId];
+            this.openedMetadatumId = '';
+        },
+        onEditionCanceled() {
+            this.formWithErrors = '';
+            delete this.editForms[this.openedMetadatumId];
+            this.openedMetadatumId = '';
+        }
+    },
+    created() {
+        this.isLoadingMetadatumTypes = true;
+        this.isLoadingMetadata = true;
+
+        this.fetchMetadatumTypes()
+            .then(() => {
+                this.isLoadingMetadatumTypes = false;
+            })
+            .catch(() => {
+                this.isLoadingMetadatumTypes = false;
+            });
+
+        this.isRepositoryLevel = this.$route.name == 'MetadataPage' ? true : false;
+        if (this.isRepositoryLevel)
+            this.collectionId = 'default';
+        else
+            this.collectionId = this.$route.params.collectionId;
+        
+
+        this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true})
+            .then(() => {
+                this.isLoadingMetadata = false;
+            })
+            .catch(() => {
+                this.isLoadingMetadata = false;
+            });
+    },
+    mounted() {
+        if (!this.isRepositoryLevel) {
+            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
+                this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+            });
+        }
+    }
+}
+</script>
+
+<style lang="scss">
+
+    @import "../../scss/_variables.scss";
+
+    .page-title {
+        border-bottom: 1px solid $secondary;
+        h2 {
+            color: $tertiary;
+            font-weight: 500;
+        }
+        margin: 1em 0em 2.0em 0em;
+    }
+
+    .loading-spinner {
+        animation: spinAround 500ms infinite linear;
+        border: 2px solid #dbdbdb;
+        border-radius: 290486px;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        content: "";
+        display: inline-block;
+        height: 1em; 
+        width: 1em;
+    }
+
+    .active-metadata-area {
+        font-size: 14px;
+        margin-right: 0.8em;
+        margin-left: -0.8em;
+        padding-right: 6em;
+        min-height: 330px;
+
+        @media screen and (max-width: 769px) {
+            min-height: 45px;
+            margin: 0; 
+            padding-right: 0em;
+        }
+        @media screen and (max-width: 1216px) {
+            padding-right: 1em;
+        }
+
+        &.metadata-area-receive {
+            border: 1px dashed gray;
+        }
+
+        .collapse {
+            display: initial;
+        }
+
+        .active-metadatum-item {
+            background-color: white;
+            padding: 0.7em 0.9em;
+            margin: 4px;
+            min-height: 40px;
+            display: block; 
+            position: relative;
+            cursor: grab;
+            opacity: 1 !important;
+            
+            .handle {
+                padding-right: 6em;
+            }
+            .grip-icon { 
+                fill: $gray; 
+                top: 2px;
+                position: relative;
+            }
+            .metadatum-name {
+                text-overflow: ellipsis;
+                overflow-x: hidden;
+                white-space: nowrap;
+                font-weight: bold;
+                margin-left: 0.4em;
+                margin-right: 0.4em;
+
+                &.is-danger {
+                    color: $danger !important;
+                }
+            }
+            .label-details {
+                font-weight: normal;
+                color: $gray;
+            }
+            .not-saved {
+                font-style: italic;
+                font-weight: bold;
+                color: $danger;
+            }
+            .controls { 
+                position: absolute;
+                right: 5px;
+                top: 10px;
+                .switch {
+                    position: relative;
+                    bottom: 3px;
+                }
+                .icon {
+                    bottom: 1px;   
+                    position: relative;
+                    i, i:before { font-size: 20px; }
+                }
+            }
+    
+            &.not-sortable-item, &.not-sortable-item:hover {
+                cursor: default;
+                background-color: white !important;
+
+                .handle .label-details, .handle .icon {
+                    color: $gray !important;
+                }
+            } 
+            &.not-focusable-item, &.not-focusable-item:hover {
+                cursor: default;
+               
+                .metadatum-name {
+                    color: $secondary;
+                }
+                .handle .label-details, .handle .icon {
+                    color: $gray !important;
+                }
+            }
+            &.disabled-metadatum {
+                color: $gray;
+            }    
+        }
+        .active-metadatum-item:hover:not(.not-sortable-item) {
+            background-color: $secondary;
+            border-color: $secondary;
+            color: white !important;
+
+            .label-details, .icon, .not-saved {
+                color: white !important;
+            }
+
+            .grip-icon { 
+                fill: white; 
+            }
+
+            .switch.is-small {
+                input[type="checkbox"] + .check {
+                    background-color: $secondary !important;
+                    border: 1.5px solid white !important;
+                    &::before { background-color: white !important; }
+                } 
+                input[type="checkbox"]:checked + .check {
+                    border: 1.5px solid white !important;
+                    &::before { background-color: white !important; }
+                }
+                &:hover input[type="checkbox"] + .check {
+                    border: 1.5px solid white !important;
+                    background-color: $secondary !important;
+                }
+            }
+        }
+        .sortable-ghost {
+            border: 1px dashed $draggable-border-color;
+            display: block;
+            padding: 0.7em 0.9em;
+            margin: 4px;
+            height: 40px;
+            position: relative;
+
+            .grip-icon { 
+                fill: white; 
+            }
+        }
+    }
+
+    .available-metadata-area {
+        padding: 10px 0px 10px 10px;
+        margin: 0;
+        max-width: 280px;
+        font-size: 14px;
+
+        @media screen and (max-width: 769px) {
+            max-width: 100%;
+            padding: 10px;
+            h3 {
+                margin: 1em 0em 1em 0em !important;
+            }
+            .available-metadatum-item::before,
+            .available-metadatum-item::after {
+                display: none !important;
+            }
+        }
+
+        h3 {
+            color: $secondary;
+            margin: 0.2em 0em 1em -1.2em;
+            font-weight: 500;
+        }
+
+        .available-metadatum-item {
+            padding: 0.7em;
+            margin: 4px;
+            background-color: white;
+            cursor: pointer;
+            left: 0;
+            line-height: 1.3em;
+            height: 40px;
+            position: relative;
+            border: 1px solid $draggable-border-color;
+            border-radius: 1px;
+            transition: left 0.2s ease;
+            
+            .grip-icon { 
+                fill: $gray;
+                top: -3px;
+                position: relative;
+                display: inline-block;
+            }
+            .icon {
+                position: relative;
+                bottom: 1px;
+            }
+            .metadatum-name {
+                text-overflow: ellipsis;
+                overflow-x: hidden;
+                white-space: nowrap;
+                font-weight: bold;
+                margin-left: 0.4em;
+                display: inline-block;
+                max-width: 200px;
+            }
+            &:after,
+            &:before {
+                content: '';
+                display: block;
+                position: absolute;
+                right: 100%;
+                width: 0;
+                height: 0;
+                border-style: solid;
+            }
+            &:after {
+                top: -1px;
+                border-color: transparent white transparent transparent;
+                border-right-width: 16px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                left: -19px;
+            }
+            &:before {
+                top: -1px;
+                border-color: transparent $draggable-border-color transparent transparent;
+                border-right-width: 16px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                left: -20px;
+            }
+        }
+
+        .sortable-drag {
+            opacity: 1 !important;
+        }
+
+        @keyframes hightlighten {
+            0%   {
+                color: #222;             
+                background-color: white;
+                border-color: white;
+            }
+            25%  {
+                color: white;            
+                background-color: #2cb4c1; 
+                border-color: #2cb4c1;
+            }
+            75%  {
+                color: white;            
+                background-color: #2cb4c1; 
+                border-color: #2cb4c1;
+            }
+            100% {
+                color: #222;             
+                background-color: white;
+                border-color: white;
+            }
+        }
+        @keyframes hightlighten-icon {
+            0%   { fill: #b1b1b1; }
+            25%  { fill: white; }
+            75%  { fill: white; }
+            100% { fill: #b1b1b1; }
+        }
+        @keyframes hightlighten-arrow {
+            0%   {
+                border-color: transparent white transparent transparent;
+                border-color: transparent white transparent transparent; 
+            }
+            25%  {
+                border-color: transparent #2cb4c1 transparent transparent;
+                border-color: transparent #2cb4c1 transparent transparent; 
+            }
+            75%  {
+                border-color: transparent #2cb4c1 transparent transparent;
+                border-color: transparent #2cb4c1 transparent transparent; 
+            }
+            100% {
+                border-color: transparent white transparent transparent;
+                border-color: transparent white transparent transparent;  
+            }
+        }
+        .hightlighted-metadatum {
+            background-color: white;
+            position: relative;
+            left: 0px;
+            animation-name: hightlighten;
+            animation-duration: 1.0s;
+            animation-iteration-count: 2;
+            
+            .grip-icon{
+                animation-name: hightlighten-icon;
+                animation-duration: 1.0s;
+                animation-iteration-count: 2; 
+            }
+
+            &::before,
+            &::after {
+                animation-name: hightlighten-arrow;
+                animation-duration: 1.0s;
+                animation-iteration-count: 2;
+            }
+        }
+        .available-metadatum-item:hover {
+            background-color: $secondary;
+            border-color: $secondary;
+            color: white;
+            position: relative;
+            left: -4px;
+
+            &:after {
+                border-color: transparent $secondary transparent transparent;
+            }
+            &:before {
+                border-color: transparent $secondary transparent transparent;
+            }
+            .icon {
+                color: white !important;
+            }
+          
+            .grip-icon { 
+                fill: white;
+            }
+            
+        }
+    }
+
+</style>
