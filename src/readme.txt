@@ -25,7 +25,7 @@ Faceted Search. Browse your collection (and let the public browse it) using a fa
 
 * "Themes": Tainacan has its own default theme, that helps you present your collections in a beautiful and effective way, but will also work with any WordPress theme. For developers, it will be easy to add tainacan specific features to an existing theme.
 
-* "API and Interoperability": Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. Expose you collection in different formats, such as Json, JsonLD, OAI-PMH and others. If your collection have a specific set of metadata, you can map your fields to match the standards you want to use.
+* "API and Interoperability": Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. Expose you collection in different formats, such as Json, JsonLD, OAI-PMH and others. If your collection have a specific set of metadata, you can map your metadata to match the standards you want to use.
 
 == Getting Started ==
 

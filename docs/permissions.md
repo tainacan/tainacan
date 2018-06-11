@@ -209,7 +209,7 @@ Allows to view Items marked as private and its items.
 
 ### Categories
 
-### Fields
+### Metadata
 
 ### Filters
 

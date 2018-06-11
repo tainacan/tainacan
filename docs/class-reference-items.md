@@ -240,9 +240,9 @@ Define the description
 
 Return a List of ItemMetadata objects 
 
-It will return all fields associeated with the collection this item is part of. 
+It will return all metadata associeated with the collection this item is part of. 
 
-If the item already has a value for any of the fields, it will be available. 
+If the item already has a value for any of the metadata, it will be available. 
 
 
 **Returns:** `array` — Array of ItemMetadata objects

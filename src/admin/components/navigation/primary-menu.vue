@@ -34,12 +34,12 @@
                 <li>
                     <router-link
                             tag="a"
-                            to="/fields"
-                            :class="activeRoute == 'FieldsPage' ? 'is-active':''">
+                            to="/metadata"
+                            :class="activeRoute == 'MetadataPage' ? 'is-active':''">
                         <b-icon
                                 size="is-small"
                                 icon="format-list-bulleted-type"/>
-                        <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
+                        <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
                 </li>
                 <li>

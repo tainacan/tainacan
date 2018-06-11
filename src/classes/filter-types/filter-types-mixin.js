@@ -3,21 +3,21 @@ import { tainacan as axios } from '../../js/axios/axios';
 export const filter_type_mixin = {
     props: {
         filter: {
-            type: Object // concentrate all attributes field id and type
+            type: Object // concentrate all attributes metadatum id and type
         },
-        field_id: [Number], // not required, but overrides the filter field id if is set
-        collection_id: [Number], // not required, but overrides the filter field id if is set
-        filter_type: [String],  // not required, but overrides the filter field type if is set
+        metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
+        collection_id: [Number], // not required, but overrides the filter metadatum id if is set
+        filter_type: [String],  // not required, but overrides the filter metadatum type if is set
         id: '',
         query: {}
     },
     methods: {
-        getValuesPlainText(fieldId, search, isRepositoryLevel) {
+        getValuesPlainText(metadatumId, search, isRepositoryLevel) {
 
-            let url = '/collection/' + this.collection + '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1';
+            let url = '/collection/' + this.collection + '/metadata/' + metadatumId + '?fetch=all_metadatum_values&nopaging=1';
 
             if(isRepositoryLevel){
-                url = '/fields/' + fieldId + '?fetch=all_field_values&nopaging=1';
+                url = '/metadata/' + metadatumId + '?fetch=all_metadatum_values&nopaging=1';
             }
 
             if( search ){

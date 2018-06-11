@@ -150,8 +150,8 @@
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
-                                for (let field of Object.keys(error)) {
-                                    this.$set(this.formErrors, field, (this.formErrors[field] !== undefined ? this.formErrors[field] : '') + error[field] + '\n');
+                                for (let metadatum of Object.keys(error)) {
+                                    this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
                             this.$emit('onErrorFound');
@@ -173,8 +173,8 @@
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
-                                for (let field of Object.keys(error)) {
-                                    this.$set(this.formErrors, field, (this.formErrors[field] !== undefined ? this.formErrors[field] : '') + error[field] + '\n');
+                                for (let metadatum of Object.keys(error)) {
+                                    this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
                             this.$emit('onErrorFound');

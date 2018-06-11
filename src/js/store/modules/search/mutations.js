@@ -15,18 +15,18 @@ export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
 export const addMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
 
-    let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
+    let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
 
     if ( index >= 0 ){
         Vue.set( state.postquery.metaquery, index, {
-            key: filter.field_id,
+            key: filter.metadatum_id,
             value: filter.value,
             compare: filter.compare,
             type: filter.type
         } );
     } else{
         state.postquery.metaquery.push({
-            key: filter.field_id,
+            key: filter.metadatum_id,
             value: filter.value,
             compare: filter.compare,
             type: filter.type
@@ -52,37 +52,37 @@ export const addTaxQuery = ( state, filter ) => {
     }
 };
 
-export const addFetchOnly = ( state, field ) => {
+export const addFetchOnly = ( state, metadatum ) => {
     state.postquery.fetch_only = ( ! state.postquery.fetch_only ) ? { '0': 'thumbnail', 'meta': [], '1': 'creation_date', '2': 'author_name' } : state.postquery.fetch_only;
 
-    for (let key in field) {
-        state.postquery.fetch_only[key] = field[key];
+    for (let key in metadatum) {
+        state.postquery.fetch_only[key] = metadatum[key];
     }
 };
-export const addFetchOnlyMeta = ( state, field ) => {
+export const addFetchOnlyMeta = ( state, metadatum ) => {
     state.postquery.fetch_only = ( ! state.postquery.fetch_only ) ? { '0': 'thumbnail', 'meta': [], '1': 'creation_date', '2': 'author_name' } : state.postquery.fetch_only;
    // console.log(state.postquery.fetch_only);
     //console.log(state.postquery.fetch_only['meta']);
     state.postquery.fetch_only['meta'] = ( ! state.postquery.fetch_only['meta'] ) ? [] : state.postquery.fetch_only['meta'];
-    let index = state.postquery.fetch_only['meta'].findIndex( item => item == field);
+    let index = state.postquery.fetch_only['meta'].findIndex( item => item == metadatum);
     if ( index >= 0 ){    
-        state.postquery.fetch_only['meta'][index] = field;
+        state.postquery.fetch_only['meta'][index] = metadatum;
     } else {
-        state.postquery.fetch_only['meta'].push(field);
+        state.postquery.fetch_only['meta'].push(metadatum);
     }
     //console.log(state.postquery.fetch_only['meta']);
     //console.log("----------------------------");
 };
 
-export const removeFetchOnly = ( state, field ) => {
-    for (let key in field) {
+export const removeFetchOnly = ( state, metadatum ) => {
+    for (let key in metadatum) {
         delete state.postquery.fetch_only[key];
     }
 };
 
-export const removeFetchOnlyMeta = ( state, field ) => {
+export const removeFetchOnlyMeta = ( state, metadatum ) => {
     if(state.postquery.fetch_only['meta'] != undefined) {
-        let index = state.postquery.fetch_only['meta'].findIndex( item => item == field);
+        let index = state.postquery.fetch_only['meta'].findIndex( item => item == metadatum);
         if (index >= 0) {
             state.postquery.fetch_only['meta'].splice(index, 1);
         }
@@ -91,7 +91,7 @@ export const removeFetchOnlyMeta = ( state, field ) => {
 
 export const removeMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
-    let index = state.postquery.metaquery.findIndex( item => item.key === filter.field_id);
+    let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
     if (index >= 0) {
         state.postquery.metaquery.splice(index, 1);
     }

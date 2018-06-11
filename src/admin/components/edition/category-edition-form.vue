@@ -370,38 +370,4 @@
     }
 </script>
 
-<style lang="scss" scoped>
-
-    .thumbnail-field {
-        width: 128px;
-        height: 128px;
-        max-width: 128px;
-        max-height: 128px;
-
-        .content {
-            padding: 10px;
-            font-size: 0.8em;
-        }
-        img {
-            bottom: 0;
-            position: absolute;
-        }
-
-        .thumbnail-buttons-row {
-            display: none;
-        }
-        &:hover {
-            .thumbnail-buttons-row {
-                display: inline-block;
-                position: relative;
-                bottom: 31px;
-                background-color: rgba(255,255,255,0.8);
-                padding: 2px 8px;
-                border-radius: 0px 4px 0px 0px;
-            }
-        }
-    }
-
-</style>
-
 

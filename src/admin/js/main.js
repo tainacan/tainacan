@@ -8,17 +8,17 @@ import Buefy from 'buefy';
 import VTooltip from 'v-tooltip'
 
 // Custom elements
-import Text from '../../classes/field-types/text/Text.vue';
-import Textarea from '../../classes/field-types/textarea/Textarea.vue';
-import Selectbox from '../../classes/field-types/selectbox/Selectbox.vue';
-import Numeric from '../../classes/field-types/numeric/Numeric.vue';
-import Date from '../../classes/field-types/date/Date.vue';
-import Relationship from '../../classes/field-types/relationship/Relationship.vue';
-import Category from '../../classes/field-types/category/Category.vue';
+import Text from '../../classes/metadatum-types/text/Text.vue';
+import Textarea from '../../classes/metadatum-types/textarea/Textarea.vue';
+import Selectbox from '../../classes/metadatum-types/selectbox/Selectbox.vue';
+import Numeric from '../../classes/metadatum-types/numeric/Numeric.vue';
+import Date from '../../classes/metadatum-types/date/Date.vue';
+import Relationship from '../../classes/metadatum-types/relationship/Relationship.vue';
+import Category from '../../classes/metadatum-types/category/Category.vue';
 
-import FormRelationship from '../../classes/field-types/relationship/FormRelationship.vue';
-import FormCategory from '../../classes/field-types/category/FormCategory.vue';
-import FormSelectbox from '../../classes/field-types/selectbox/FormSelectbox.vue';
+import FormRelationship from '../../classes/metadatum-types/relationship/FormRelationship.vue';
+import FormCategory from '../../classes/metadatum-types/category/FormCategory.vue';
+import FormSelectbox from '../../classes/metadatum-types/selectbox/FormSelectbox.vue';
 
 import FilterCustomInterval from '../../classes/filter-types/custom-interval/CustomInterval.vue';
 import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue';
@@ -30,7 +30,7 @@ import FilterCategoryCheckbox from '../../classes/filter-types/category/Checkbox
 import FilterCategoryTaginput from '../../classes/filter-types/category/Taginput.vue';
 import FilterCategorySelectbox from '../../classes/filter-types/category/Selectbox.vue';
 
-import TainacanFormItem from '../../classes/field-types/tainacan-form-item.vue';
+import TainacanFormItem from '../../classes/metadatum-types/tainacan-form-item.vue';
 import TainacanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
 
 // Remaining imports
@@ -54,7 +54,7 @@ Vue.use(UserCapabilitiesPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueMask);
 
-/* Fields */
+/* Metadata */
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
 Vue.component('tainacan-selectbox', Selectbox);

@@ -3,8 +3,8 @@
         <div class="columns is-multiline tnc-advanced-search-container">
 
             <div
-                    v-for="searchField in totalSearchMetadata"
-                    :key="searchField"
+                    v-for="searchMetadatum in totalSearchMetadata"
+                    :key="searchMetadatum"
                     class="field column is-12 tainacan-form">
 
                 <b-field
@@ -12,7 +12,7 @@
                         grouped>
                     <b-field class="column">
                         <b-select
-                                @input="addToAdvancedSearchQuery($event, 'field_id', searchField)">
+                                @input="addToAdvancedSearchQuery($event, 'field_id', searchMetadatum)">
                             <option
                                     v-for="metadata in metadataList"
                                     v-if="metadata.enabled"
@@ -24,12 +24,12 @@
 
                     <b-field class="column is-two-thirds">
                         <b-input
-                                @input="addValueToAdvancedSearchQuery($event, 'value', searchField)"/>
+                                @input="addValueToAdvancedSearchQuery($event, 'value', searchMetadatum)"/>
                     </b-field>
 
                     <b-field class="column">
                         <b-select
-                                @input="addToAdvancedSearchQuery($event, 'compare', searchField)">
+                                @input="addToAdvancedSearchQuery($event, 'compare', searchMetadatum)">
                             <option
                                     v-for="(opt, key) in compare"
                                     :value="key"
@@ -52,7 +52,7 @@
                     <a
                             @click="addSearchMetadata"
                             class="is-secondary is-small">
-                        {{ $i18n.get('add_more_one_search_field') }}</a>
+                        {{ $i18n.get('add_more_one_search_metadatum') }}</a>
                 </div>
 
             </div>
@@ -71,7 +71,7 @@
                 </div>
             </div>
         </div>
-        <pre>{{ advancedSearchQuery }}</pre>
+        <!-- <pre>{{ advancedSearchQuery }}</pre> -->
     </div>
 </template>
 

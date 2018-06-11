@@ -52,6 +52,8 @@ class Entity_Factory {
 			if($type[$type_size-1] == 'y'){
 				$type[$type_size-1] = 'i';
 				$this->repository_type = "\Tainacan\Repositories\\$type".'es';
+			} elseif($type == 'Metadatum'){
+				$this->repository_type = "\Tainacan\Repositories\Metadata";
 			} else {
 				$this->repository_type = "\Tainacan\Repositories\\$type".'s';
 			}

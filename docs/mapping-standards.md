@@ -1,6 +1,6 @@
 # Mapping Standards
 
-Mapping Standards are declarations of standards of metadata. Once they are available and activated in your repository, you can map the fields of your collections to them.
+Mapping Standards are declarations of standards of metadata. Once they are available and activated in your repository, you can map the metadata of your collections to them.
 
 ## Structure
 
@@ -10,20 +10,20 @@ A Mapping Standard has the following attributes.
 
 The name of the Mapping Standard.
 
-### Fields
+### Metadata
 
-A list of fields, terms or attributes that this mapping have. These are the element you will be able to map your Collection's Fields.
+A list of metadata, terms or attributes that this mapping have. These are the element you will be able to map your Collection's Metadata.
 
-Each field has the following attributes:
+Each metadatum has the following attributes:
 
-* Name - The field name, that refers to the name of the attribute in the origin vocabulary or ontology (e.g. title)
+* Name - The metadatum name, that refers to the name of the attribute in the origin vocabulary or ontology (e.g. title)
 * Label - The human readable name
 * URI - The URI of this term/attribute in the origin Ontoloy/Vocabulary
 
 
-### Allow additional custom fields
+### Allow additional custom metadata
 
-Boolen indicating wether this mapping allows additional custom fields to be added.
+Boolen indicating wether this mapping allows additional custom metadata to be added.
 
 ### Context URL / Vocab URL
 
@@ -38,7 +38,7 @@ The Class of the ontology that this mapping refers to. For example `CreativeWork
 ```
 {
 	'name': 'Dublin Core',
-	'fields': {
+	'metadata': {
 		{
 			'name': 'title',
 			'label': 'Title',
@@ -59,7 +59,7 @@ The Class of the ontology that this mapping refers to. For example `CreativeWork
 ```
 {
 	'name': 'Schema.org Creative Works',
-	'fields': {
+	'metadata': {
 		{
 			'name': 'name',
 			'label': 'Name',

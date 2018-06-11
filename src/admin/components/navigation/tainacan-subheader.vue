@@ -54,14 +54,14 @@
             <li class="level-item">
                 <router-link 
                         tag="a" 
-                        :to="{ path: $routerHelper.getCollectionFieldsPath(id) }" 
-                        :class="activeRoute == 'FieldsList' ? 'is-active':''" 
-                        :aria-label="$i18n.get('label_collection_fields')">
+                        :to="{ path: $routerHelper.getCollectionMetadataPath(id) }"
+                        :class="activeRoute == 'MetadataList' ? 'is-active':''"
+                        :aria-label="$i18n.get('label_collection_metadata')">
                     <b-icon 
                         size="is-small" 
                         icon="format-list-bulleted-type"/>
                     <br>
-                    <span class="menu-text">{{ $i18n.getFrom('fields', 'name') }}</span>
+                    <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                 </router-link>
             </li>
             <li class="level-item">

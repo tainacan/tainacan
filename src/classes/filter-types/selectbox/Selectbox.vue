@@ -25,21 +25,21 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
+            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
             const vm = this;
 
-            let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
+            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if(this.isRepositoryLevel){
-                in_route = '/fields/'+ this.field;
+            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
+                in_route = '/metadata/'+ this.metadatum;
             }
 
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.field_type ){
-                        vm.field_object = result;
-                        vm.type = result.field_type;
+                    if( result && result.metadatum_type ){
+                        vm.metadatum_object = result;
+                        vm.type = result.metadatum_type;
                         vm.loadOptions();
                     }
                 })
@@ -56,7 +56,7 @@
                 options: [],
                 type: '',
                 collection: '',
-                field: ''
+                metadatum: ''
             }
         },
         mixins: [filter_type_mixin],
@@ -64,7 +64,7 @@
             selected() {
                 if ( this.query && this.query.metaquery && Array.isArray( this.query.metaquery ) ) {
 
-                    let index = this.query.metaquery.findIndex(newField => newField.key === this.field );
+                    let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                     if ( index >= 0){
                         let metadata = this.query.metaquery[ index ];
                         return metadata.value;
@@ -78,7 +78,7 @@
                 this.isLoading = true;
 
                 let promise = null;
-                promise = this.getValuesPlainText( this.field, null, this.isRepositoryLevel );
+                promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
 
                 promise.then(() => {
                     this.isLoading = false;
@@ -91,7 +91,7 @@
             onSelect(value){
                 this.$emit('input', {
                     filter: 'selectbox',
-                    field_id: this.field,
+                    metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: ( value ) ? value : ''
                 });
@@ -100,7 +100,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newField => newField.key === this.field );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     this.selected = metadata.value;

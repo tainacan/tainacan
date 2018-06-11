@@ -20,8 +20,8 @@ class CategoryTaginput extends Filter_Type {
 
     public function render( $filter ){
         return '<tainacan-filter-category-taginput name="'.$filter->get_name().'"
-                                        filter_type="'.$filter->get_field()->get_field_type().'"
+                                        filter_type="'.$filter->get_metadatum()->get_metadatum_type().'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-taginput>';
+                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-taginput>';
     }
 }

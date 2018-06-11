@@ -17,6 +17,7 @@ const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 require_once(TAINACAN_CLASSES_DIR . 'tainacan-creator.php');
 require_once(TAINACAN_API_DIR     . 'tainacan-rest-creator.php');
 require_once('setup-db.php');
+require_once('migrate-post-type.php');
 
 // DEV Interface, used for debugging
 function tnc_enable_dev_wp_interface() {
@@ -37,3 +38,4 @@ add_action( 'plugins_loaded', 'tainacan_load_plugin_textdomain' );
 $Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 register_activation_hook( __FILE__, array( $Tainacan_Capabilities, 'init' ) );
 register_activation_hook( __FILE__, 'tainacan_create_bd_process_db' );
+register_activation_hook( __FILE__, 'tainacan_migrate_post_type_field_to_metadatum');

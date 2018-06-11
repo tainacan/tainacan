@@ -80,20 +80,20 @@ export default {
                         this.$store.dispatch('search/add_taxquery', data );
                     }
                 },
-                addFetchOnlyMeta( field ){
-                    this.$store.dispatch('search/add_fetchonly_meta', field );
+                addFetchOnlyMeta( metadatum ){
+                    this.$store.dispatch('search/add_fetchonly_meta', metadatum );
                     this.updateURLQueries();             
                 },
-                addFetchOnly( field ){
-                    this.$store.dispatch('search/add_fetchonly', field );
+                addFetchOnly( metadatum ){
+                    this.$store.dispatch('search/add_fetchonly', metadatum );
                     this.updateURLQueries();             
                 },
-                removeFetchOnlyMeta( field ){
-                    this.$store.dispatch('search/remove_fetchonly_meta', field );
+                removeFetchOnlyMeta( metadatum ){
+                    this.$store.dispatch('search/remove_fetchonly_meta', metadatum );
                     this.updateURLQueries();             
                 },
                 getErrors( filter_id ){
-                    let error = this.errors.find( errorItem => errorItem.field_id === filter_id );
+                    let error = this.errors.find( errorItem => errorItem.metadatum_id === filter_id );
                     return ( error ) ? error.errors : false;
                 },
                 listener(){
@@ -151,7 +151,7 @@ export default {
 
                     // Forces fetch_only to be filled before any search happens
                     if (this.$store.getters['search/getFetchOnly'] == undefined) {
-                        this.$emit( 'hasToPrepareFieldsAndFilters', to);
+                        this.$emit( 'hasToPrepareMetadataAndFilters', to);
                     } else {
                         this.$emit( 'isLoadingItems', true);
 

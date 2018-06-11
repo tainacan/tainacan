@@ -1,7 +1,7 @@
 <?php
 
 namespace Tainacan\Filter_Types;
-use Tainacan\Field_Types;
+use Tainacan\Metadatum_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -15,10 +15,10 @@ abstract class Filter_Type {
         add_action('register_filter_types', array(&$this, 'register_filter_type'));
     }
 
-    abstract function render( $field );
+    abstract function render( $metadatum );
 
     /**
-     * generate the fields for this field type
+     * generate the metadata for this metadatum type
      */
     public function form(){
 
@@ -72,19 +72,19 @@ abstract class Filter_Type {
 	 *
 	 * This method should be declared by each filter type sub classes
 	 *
-	 * @param  \Tainacan\Entities\Filter $filter The field object that is beeing validated
+	 * @param  \Tainacan\Entities\Filter $filter The metadatum object that is beeing validated
 	 *
-	 * @return true|array True if options are valid. If invalid, returns an array where keys are the field keys and values are error messages.
+	 * @return true|array True if options are valid. If invalid, returns an array where keys are the metadatum keys and values are error messages.
 	 * @throws \Exception
 	 */
     public function validate_options(\Tainacan\Entities\Filter $filter) {
-        $field_type = $filter->get_field()->get_field_type();
-        //if there is no field to validate
-        if( !$field_type ){
+        $metadatum_type = $filter->get_metadatum()->get_metadatum_type();
+        //if there is no metadatum to validate
+        if( !$metadatum_type ){
             return true;
         }
 
-        $class = ( is_object( $field_type ) ) ? $field_type : new $field_type();
+        $class = ( is_object( $metadatum_type ) ) ? $metadatum_type : new $metadatum_type();
 
         if(in_array( $class->get_primitive_type(), $this->supported_types  )){
             return true;

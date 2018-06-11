@@ -7,7 +7,7 @@ import CollectionsPage from '../pages/lists/collections-page.vue'
 import CollectionPage from '../pages/singles/collection-page.vue'
 import ItemsPage from '../pages/lists/items-page.vue'
 import ItemPage from '../pages/singles/item-page.vue'
-import FieldsPage from '../pages/lists/fields-page.vue'
+import MetadataPage from '../pages/lists/metadata-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
 import CategoriesPage from '../pages/lists/categories-page.vue'
 import CategoryPage from '../pages/singles/category-page.vue'
@@ -21,7 +21,7 @@ import CategoryEditionForm from '../components/edition/category-edition-form.vue
 
 // Listing components
 import FiltersList from '../components/lists/filters-list.vue'
-import FieldsList from '../components/lists/fields-list.vue'
+import MetadataList from '../components/lists/metadata-list.vue'
 
 Vue.use(VueRouter);
 
@@ -45,7 +45,7 @@ const routes = [
         { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection'), icon: 'folder-multiple'} },
         { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page'), icon: 'folder-multiple'} },   
         { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_collection_settings'), icon: 'folder-multiple'} },
-        { path: 'fields', component: FieldsList, name: 'FieldsList', meta: {title: i18nGet('title_collection_fields_edition'), icon: 'folder-multiple'} }, 
+        { path: 'metadata', component: MetadataList, name: 'MetadataList', meta: {title: i18nGet('title_collection_metadata_edition'), icon: 'folder-multiple'} },
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition'), icon: 'folder-multiple'} },
         { path: 'events', component: EventsPage, name: 'CollectionEventsPage', meta: {title: i18nGet('title_collection_events'), icon: 'flash'} }
       ]
@@ -56,7 +56,7 @@ const routes = [
 
     { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('title_repository_filters_page'), icon: 'filter'} },
 
-    { path: '/fields', name: 'FieldsPage', component: FieldsPage, meta: {title: i18nGet('title_repository_fields_page'), icon: 'format-list-checks'} },
+    { path: '/metadata', name: 'MetadataPage', component: MetadataPage, meta: {title: i18nGet('title_repository_metadata_page'), icon: 'format-list-checks'} },
 
     { path: '/taxonomies', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_categories_page'), icon: 'shape'} },
     { path: '/taxonomies/new', name: 'CategoryCreationForm', component: CategoryEditionForm, meta: {title: i18nGet('title_create_category_page'), icon: 'shape'} },

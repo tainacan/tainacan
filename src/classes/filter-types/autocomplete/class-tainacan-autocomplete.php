@@ -4,7 +4,7 @@ namespace Tainacan\Filter_Types;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class TainacanFieldType
+ * Class TainacanMetadatumType
  */
 class Autocomplete extends Filter_Type {
 
@@ -21,7 +21,7 @@ class Autocomplete extends Filter_Type {
     public function render( $filter ){
         return '<tainacan-filter-autocomplete name="'.$filter->get_name().'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        filter_type="'.$filter->get_field()->get_field_type().'"
-                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-autocomplete>';
+                                        filter_type="'.$filter->get_metadatum()->get_metadatum_type().'"
+                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-autocomplete>';
     }
 }

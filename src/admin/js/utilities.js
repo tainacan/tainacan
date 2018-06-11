@@ -162,8 +162,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionItemsPath(collectionId, query) {
             return '/collections/'+ collectionId + '/items/?' + qs.stringify(query);
         },
-        getCollectionFieldsPath(collectionId) {
-            return '/collections/'+ collectionId + '/fields/';
+        getCollectionMetadataPath(collectionId) {
+            return '/collections/'+ collectionId + '/metadata/';
         },
         getCollectionFiltersPath(collectionId) {
             return '/collections/'+ collectionId + '/filters/';
@@ -183,8 +183,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getFiltersPath(query) {
             return '/filters/?' + qs.stringify(query);
         },
-        getFieldsPath(query) {
-            return '/fields/?' + qs.stringify(query);
+        getMetadataPath(query) {
+            return '/metadata/?' + qs.stringify(query);
         },
         getEventsPath(query) {
             return '/events/?' + qs.stringify(query);
@@ -218,11 +218,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewItemPath(collectionId) {
             return '/collections/' + collectionId + '/items/new';
         },
-        getNewCollectionFieldPath(collectionId) {
-            return '/collections/' + collectionId + '/fields/';
+        getNewCollectionMetadatumPath(collectionId) {
+            return '/collections/' + collectionId + '/metadata/';
         },
-        getNewFieldPath() {
-            return '/fields';
+        getNewMetadatumPath() {
+            return '/metadata';
         },
         getNewCollectionFilterPath(collectionId) {
             return '/collections/' + collectionId + '/filters/';
