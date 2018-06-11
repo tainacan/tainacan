@@ -692,7 +692,7 @@ abstract class Importer {
                     $singleItemMetadata->set_value( $values );
                     $itemMetadataArray[] = $singleItemMetadata;
                 } else {
-					$this->add_error_log('Metadata ' . $field_source . ' not found');
+					$this->add_error_log('Metadata ' . $metadatum_source . ' not found');
 				}
 
             }
