@@ -19,6 +19,8 @@
         font-size: 14px; 
         display: inline-block;
         white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     .required-metadatum-asterisk {
         color: $gray;
