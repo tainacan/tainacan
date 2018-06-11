@@ -149,6 +149,12 @@ abstract class Importer {
 	private $error_log = [];
 	
 	/**
+	 * Wether to abort importer execution.
+	 * @var bool
+	 */
+	private $abort = false;
+	
+	/**
 	 * List of attributes that are saved in DB and that are used to 
 	 * reconstruct the object 
 	 * @var array
@@ -505,6 +511,30 @@ abstract class Importer {
 
         return false;
     }
+	
+	/**
+	 * Cancel Scheduled abortion at the end of run()
+	 * @return void
+	 */
+	protected function cancel_abort() {
+		$this->abort = false;
+	}
+	
+	/**
+	 * Schedule importer abortion at the end of run()
+	 * @return void
+	 */
+	protected function abort() {
+		$this->abort = true;
+	}
+	
+	/**
+	 * Return wether importer should abort execution or not
+	 * @return bool 
+	 */
+	public function get_abort() {
+		return $this->abort;
+	}
 
 
 	///////////////////////////////
@@ -559,11 +589,13 @@ abstract class Importer {
 		$collection_definition = isset($collections[$current_collection]) ? $collections[$current_collection] : false;
 		$current_collection_item = $this->get_current_collection_item();
 		
+		$this->add_log('Processing item ' . $current_collection_item);
 		$processed_item = $this->process_item( $current_collection_item, $collection_definition );
 		if( $processed_item) {
+			$this->add_log('Inserting item ' . $current_collection_item);
 			$this->insert( $processed_item, $current_collection );
 		} else {
-			$this->add_error_log('failed on item '. $start );
+			$this->add_error_log('failed on item '. $current_collection_item );
 		}
 		
 		return $this->next_item();
@@ -628,6 +660,8 @@ abstract class Importer {
      *
      * @param array $processed_item Associative array with field source's as index with
      *                              its value or values
+     * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+     * 
      * @return Tainacan\Entities\Item Item inserted
      */
     public function insert( $processed_item, $collection_index ) {
@@ -657,7 +691,9 @@ abstract class Importer {
                     $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $field); // *empty item will be replaced by inserted in the next foreach
                     $singleItemMetadata->set_value( $values );
                     $itemMetadataArray[] = $singleItemMetadata;
-                }
+                } else {
+					$this->add_error_log('Metadata ' . $field_source . ' not found');
+				}
 
             }
         }
@@ -668,7 +704,8 @@ abstract class Importer {
             if( $item->validate() ){
                 $insertedItem = $Tainacan_Items->insert( $item );
             } else {
-                $this->add_error_log( 'Item ' . $index . ': ' ); // TODO add the  $item->get_errors() array
+                $this->add_error_log( 'Error inserting item' );
+                $this->add_error_log( $item->get_errors() );
                 return false;
             }
 
@@ -678,18 +715,18 @@ abstract class Importer {
                 if( $itemMetadata->validate() ){
                     $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
                 } else {
-                    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' on field '. $itemMetadata->get_field()->get_name()
-                        .' has error ' . $itemMetadata->get_errors() );
+                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_field()->get_name());
+                    $this->add_error_log($itemMetadata->get_errors());
                     continue;
                 }
 
-                if( $result ){
-                	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
-                    $this->add_log( 'Item ' . $insertedItem->get_id() .
-                        ' has inserted the values: ' . $values . ' on field: ' . $itemMetadata->get_field()->get_name() );
-                } else {
-                    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
-                }
+                //if( $result ){
+                //	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
+                //    $this->add_log( 'Item ' . $insertedItem->get_id() .
+                //        ' has inserted the values: ' . $values . ' on field: ' . $itemMetadata->get_field()->get_name() );
+                //} else {
+                //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
+                //}
             }
 
             $insertedItem->set_status('publish' );
@@ -697,8 +734,8 @@ abstract class Importer {
             if($insertedItem->validate()) {
 	            $insertedItem = $Tainacan_Items->update( $insertedItem );
             } else {
-				//error_log(print_r($insertedItem->get_errors(), true));
-	            //$this->add_error_log( 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
+	            $this->add_error_log( 'Error publishing Item'  ); 
+	            $this->add_error_log( $insertedItem->get_errors() ); 
 	            return false;
             }
 

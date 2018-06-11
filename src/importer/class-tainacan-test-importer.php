@@ -72,8 +72,24 @@ class Test_Importer extends Importer {
 		$tax1->set_name('Color');
 		$tax1->set_allow_insert('yes');
 		$tax1->set_status('publish');
-		$tax1->validate();
-		$tax1 = $this->tax_repo->insert($tax1);
+		
+		if ($tax1->validate()) {
+			$tax1 = $this->tax_repo->insert($tax1);
+		} else {
+			
+			/**
+			 * In these set up steps, if we have an error adding 
+			 * a taxonomy, collection or metadatum, there is no point 
+			 * in continuing running the importer. So we throw an exception 
+			 * to abort it, because an error here would cause errors in the next 
+			 * steps anyway.
+			 */
+			$this->add_error_log('Error creating taxonomy Color');
+			$this->add_error_log($tax1->get_errors());
+			$this->abort();
+			return false;
+			
+		}
 		
 		$this->add_transient('tax_1_id', $tax1->get_id());
 		
@@ -81,8 +97,15 @@ class Test_Importer extends Importer {
 		$tax2->set_name('Quality');
 		$tax2->set_allow_insert('yes');
 		$tax2->set_status('publish');
-		$tax2->validate();
-		$tax2 = $this->tax_repo->insert($tax2);
+		if ($tax2->validate()) {
+			$tax2 = $this->tax_repo->insert($tax2);
+		} else {
+			$this->add_error_log('Error creating taxonomy Quality');
+			$this->add_error_log($tax2->get_errors());
+			$this->abort();
+			return false;
+			
+		}
 		
 		$this->add_transient('tax_2_id', $tax2->get_id());
 		
@@ -95,14 +118,29 @@ class Test_Importer extends Importer {
 		$col1 = new Entities\Collection();
 		$col1->set_name('Collection 1');
 		$col1->set_status('publish');
-		$col1->validate();
-		$col1 = $this->col_repo->insert($col1);
+		if ($col1->validate()) {
+			$col1 = $this->col_repo->insert($col1);
+		} else {
+			$this->add_error_log('Error creating Collection 1');
+			$this->add_error_log($col1->get_errors());
+			$this->abort();
+			return false;
+			
+		}
+		
 		
 		$col2 = new Entities\Collection();
 		$col2->set_name('Collection 2');
 		$col2->set_status('publish');
-		$col2->validate();
-		$col2 = $this->col_repo->insert($col2);
+		if ($col2->validate()) {
+			$col2 = $this->col_repo->insert($col2);
+		} else {
+			$this->add_error_log('Error creating Collection 2');
+			$this->add_error_log($col2->get_errors());
+			$this->abort();
+			return false;
+			
+		}
 		
 		$col1_map = [];
 		$col2_map = [];
@@ -124,8 +162,14 @@ class Test_Importer extends Importer {
 			'allow_new_terms' => true
 		]);
 		$field->set_status('publish');
-		$field->validate();
-		$field = $this->fields_repo->insert($field);
+		if ($field->validate()) {
+			$field = $this->fields_repo->insert($field);
+		} else {
+			$this->add_error_log('Error creating field3');
+			$this->add_error_log($field->get_errors());
+			$this->abort();
+			return false;
+		}
 		$col1_map[$field->get_id()] = 'field3';
 		$this->add_transient('tax_1_field', $field->get_id());
 		
@@ -139,8 +183,14 @@ class Test_Importer extends Importer {
 			'allow_new_terms' => true
 		]);
 		$field->set_status('publish');
-		$field->validate();
-		$field = $this->fields_repo->insert($field);
+		if ($field->validate()) {
+			$field = $this->fields_repo->insert($field);
+		} else {
+			$this->add_error_log('Error creating field4');
+			$this->add_error_log($field->get_errors());
+			$this->abort();
+			return false;
+		}
 		$col1_map[$field->get_id()] = 'field4';
 		$this->add_transient('tax_2_field', $field->get_id());
 		
@@ -163,8 +213,14 @@ class Test_Importer extends Importer {
 		$field->set_collection($col2);
 		$field->set_field_type('Tainacan\Field_Types\Text');
 		$field->set_status('publish');
-		$field->validate();
-		$field = $this->fields_repo->insert($field);
+		if ($field->validate()) {
+			$field = $this->fields_repo->insert($field);
+		} else {
+			$this->add_error_log('Error creating field3');
+			$this->add_error_log($field->get_errors());
+			$this->abort();
+			return false;
+		}
 		$col2_map[$field->get_id()] = 'field3';
 		
 		$this->add_collection([
@@ -182,28 +238,48 @@ class Test_Importer extends Importer {
 		
 		$tax1 = $this->tax_repo->fetch( $this->get_transient('tax_1_id') );
 		$tax1->set_allow_insert('no');
-		$tax1->validate();
-		$tax1 = $this->tax_repo->insert($tax1);
+		if ($tax1->validate()) {
+			$tax1 = $this->tax_repo->insert($tax1);
+		} else {
+			/**
+			 * This is an example of an error that 
+			 * we just want to log, but dont want to abort the process.
+			 */
+			$this->add_error_log('Error closing ' . $tax1->get_name());
+			$this->add_error_log($tax1->get_errors());
+		}
 		
 		$tax2 = $this->tax_repo->fetch( $this->get_transient('tax_2_id') );
 		$tax2->set_allow_insert('no');
-		$tax2->validate();
-		$tax2 = $this->tax_repo->insert($tax2);
+		if ($tax2->validate()) {
+			$tax2 = $this->tax_repo->insert($tax2);
+		} else {
+			$this->add_error_log('Error closing ' . $tax2->get_name());
+			$this->add_error_log($tax2->get_errors());
+		}
 		
 		
 		$field1 = $this->fields_repo->fetch( $this->get_transient('tax_1_field') );
 		$options = $field1->get_field_type_options();
 		$options['allow_new_terms'] = false;
 		$field1->set_field_type_options($options);
-		$field1->validate();
-		$this->fields_repo->insert($field1);
+		if ($field1->validate()) {
+			$this->fields_repo->insert($field1);
+		} else {
+			$this->add_error_log('Error closing ' . $field1->get_name());
+			$this->add_error_log($field1->get_errors());
+		}
 		
 		$field2 = $this->fields_repo->fetch( $this->get_transient('tax_2_field') );
 		$options = $field2->get_field_type_options();
 		$options['allow_new_terms'] = false;
 		$field2->set_field_type_options($options);
-		$field2->validate();
-		$this->fields_repo->insert($field2);
+		if ($field2->validate()) {
+			$this->fields_repo->insert($field2);
+		} else {
+			$this->add_error_log('Error closing ' . $field2->get_name());
+			$this->add_error_log($field2->get_errors());
+		}
 		
 	}
 	
