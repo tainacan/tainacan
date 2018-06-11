@@ -1,6 +1,6 @@
 # Tainacan Internal API
 
-This page shows how the internal API works and how to create and fetch all kinds of entities in Tainacan: Collections, items, taxnomies, fields, filters, terms, item metadata and logs.
+This page shows how the internal API works and how to create and fetch all kinds of entities in Tainacan: Collections, items, taxnomies, metadata, filters, terms, item metadata and logs.
 
 Its important that you first get familiar with the [key concepts](key-concepts.md) of tainacan. 
 
@@ -9,7 +9,7 @@ This page gives an overview of the API. Detailed documentation and reference on 
 * [Collections Reference](class-reference-collections.md)
 * [Items Reference](class-reference-items.md)
 * [Item Metadata Reference](class-reference-item-metadata.md)
-* [Fields Reference](class-reference-fields.md)
+* [Metadata Reference](class-reference-metadata.md)
 * [Filters Reference](class-reference-filters.md)
 * [Taxonomies Reference](class-reference-taxonomies.md)
 * [Terms Reference](class-reference-terms.md)
@@ -24,21 +24,21 @@ This layer is based on a Repository pattern. Each entity Tainacan deals with hav
 Repositories are the classes that comunicate with the database and know where everything is stored and how to find things. It is a singleton class, so it have only one instance available to be used by any part of the application.
 
 ```PHP
-$fields_repo = Tainacan\Repositories\Fields::get_instance();
+$metadata_repo = Tainacan\Repositories\Metadata::get_instance();
 ```
 Entities classes are the representation of the individual of each repository. 
 
 This abstraction allows us to easily manipulate entities without worrying how to save or fetch them.
 
-For example, Fields have many attributes, such as `name` and `required` (indicating wether this field is required or not). As mentioned before, Fields are stored as posts of a special post type called `tainacan-field`. The name of the field is, of course, the `post_title` and this `required` attribute is stored as a `post_meta`.
+For example, Metadata have many attributes, such as `name` and `required` (indicating wether this metadatum is required or not). As mentioned before, Metadata are stored as posts of a special post type called `tainacan-metadatum`. The name of the metadatum is, of course, the `post_title` and this `required` attribute is stored as a `post_meta`.
 
 However, you dont need to bother about that. This pattern allows you to manipulate a Field entity and it attributes in a transparent way, such as:
 
 ```PHP
-$field->get_name(); // returns the field name
-$field->get_required(); // returns the required value 
-$field->set_name('new name');
-$field->set_required('yes');
+$metadatum->get_name(); // returns the metadatum name
+$metadatum->get_required(); // returns the required value 
+$metadatum->set_name('new name');
+$metadatum->set_required('yes');
 ```
 
 Tainacan will automatically map the values of the attributes to and from where they are stored.
@@ -46,7 +46,7 @@ Tainacan will automatically map the values of the attributes to and from where t
 When you want to fetch entities from the database, this abstraction layer steps aside and let you use all the power and flexibility of `WP_Query`, which you know and love. For example:
 
 ```PHP
-Repositories\Fields::get_instance()->fetch('s=test');
+Repositories\Metadata::get_instance()->fetch('s=test');
 ```
 
 The `fetch` method from the repositories accept exactly the same arguments accepted by `WP_Query` and uses it internally. In fact, you could use `WP_Query` directly if you prefer, but using the repository class gives you some advantages. You dont have to know the name of the post type, you can also fetch by some mapped attribute calling it directly, withour having to use `meta_query` (or even know wether a property is stored as a post attribute or post_meta). See more details in the Fetch section below.
@@ -106,15 +106,15 @@ $items = $items_repo->fetch([
 Note that you can use the mapped attribute names to build your query, but it is just fine if you want to use the native WordPress names. The same can be achievied with attributes stored as post_meta:
 
 ```PHP
-$repo = Tainacan\Repositories\Fields::get_instance();
+$repo = Tainacan\Repositories\Metadata::get_instance();
 
-$fields = $repo->fetch([
+$metadata = $repo->fetch([
 	'required' => 'yes'
 ]);
 
 // is the same as
 
-$fields = $repo->fetch([
+$metadata = $repo->fetch([
 	'meta_query' => [
 		[
 			'key' => 'required',
@@ -176,13 +176,13 @@ Well, Item Metadata Entity is slightly different.
 
 `Item Metada` is a special kind of entity, because it is not an actual entity itself. Rather, it is the relationship between an Item and a Field. And this relationship has a value.
 
-So imagine a Collection of pens has a Field called "color". This means the an item of this collection will have a relationship with this field, and this relation will have a value. Red, for example.
+So imagine a Collection of pens has a Field called "color". This means the an item of this collection will have a relationship with this metadatum, and this relation will have a value. Red, for example.
 
-So the Item Metadata Entity constructor gets to entities: an item and a field. Lets see an example, considering I alredy have a collection with fields and an item.
+So the Item Metadata Entity constructor gets to entities: an item and a metadatum. Lets see an example, considering I alredy have a collection with metadata and an item.
 
 ```PHP
-// Considering $item is an existing Item Entity an $field an existing Field Entity
-$itemMetadada = new \Tainacan\Entities\ItemMetadataEntity($item, $field);
+// Considering $item is an existing Item Entity an $metadatum an existing Field Entity
+$itemMetadada = new \Tainacan\Entities\ItemMetadataEntity($item, $metadatum);
 
 $itemMetadata->set_value('Red');
 
@@ -195,20 +195,20 @@ if ($itemMetadata->validate()) {
 
 ```
 
-> Note: "Multiple" Fields, which can have more than one value for the same item, work exactly the same way, with the difference that its value is an array of values, and not just one single value. 
+> Note: "Multiple" Metadata, which can have more than one value for the same item, work exactly the same way, with the difference that its value is an array of values, and not just one single value. 
 
-If you want to iterate over all fields of an item or a collection, there are 2 usefull methods you can use. Fields repository have a `fetch_by_collection()` method that will fetch all fields from a given collection and return them in the right order.
+If you want to iterate over all metadata of an item or a collection, there are 2 usefull methods you can use. Metadata repository have a `fetch_by_collection()` method that will fetch all metadata from a given collection and return them in the right order.
 
 Also, ItemMetadata Repository `fetch()` method will return an array of ItemMetadata Entities related to a given item. 
 
 
-### Handling Compound fields
+### Handling Compound metadata
 
-Compound fields are a special type of fields that support child fields. It is a group of fields.
+Compound metadata are a special type of metadata that support child metadata. It is a group of metadata.
 
-The Compound field itself does not have a value, only its children have. So when you are saving a new value for a child field of a compound field, it will behave as it was a normal field.
+The Compound metadatum itself does not have a value, only its children have. So when you are saving a new value for a child metadatum of a compound metadatum, it will behave as it was a normal metadatum.
 
-However, when you save the value for the second field of that same group, you must inform that it belong to that group. You do this by passing a `parent_meta_id` when initializing the Item Metada Entity. Note that you will only have this ID after you saved the first ItemMetadata of that group, because only then the group was created.
+However, when you save the value for the second metadatum of that same group, you must inform that it belong to that group. You do this by passing a `parent_meta_id` when initializing the Item Metada Entity. Note that you will only have this ID after you saved the first ItemMetadata of that group, because only then the group was created.
 
 ```PHP
 
@@ -239,10 +239,10 @@ $compoundValue = $compoundItemMeta->get_value();
 
 // This is an array of ItemMetadata Entities
 
-foreach ($compoundValue as $field_id => $childItemMeta) {
+foreach ($compoundValue as $metadatum_id => $childItemMeta) {
 	var_dump( $childItemMeta instanceof \Tainacan\Entities\ItemMetadataEntity ); // true
-	var_dump( $field_id == $childItemMeta->get_field()->get_id() ); // true
-	echo "Value for field " . $childItemMeta->get_field()->get_name() " (child of " . $compoundItemMeta->get_name() . ") is:" . $childItemMeta->get_value();
+	var_dump( $metadatum_id == $childItemMeta->get_field()->get_id() ); // true
+	echo "Value for metadatum " . $childItemMeta->get_field()->get_name() " (child of " . $compoundItemMeta->get_name() . ") is:" . $childItemMeta->get_value();
 	var_dump( $childItemMeta->get_field()->get_parent() == compoundItemMeta->get_field()->get_id() ); // true
 	var_dump( is_int($childItemMeta->get_meta_id()) && $childItemMeta->get_parent_meta_id() ); // true. they are allways set when initialized by calling get_value() on the parent ItemMetadataEntity
 }
@@ -258,9 +258,9 @@ TODO: document the validation chains
 
 All validations validate the property with the validation declared in the get_map() method of the repository.
 
-Validate item -> call ItemMetadata->validate() for each field
+Validate item -> call ItemMetadata->validate() for each metadatum
 
-Validate ItemMetadata -> call $fieldType->validate() for the Field type of the field.
+Validate ItemMetadata -> call $metadatumType->validate() for the Field type of the metadatum.
 
 Validate Field -> call validate_options() of the Field type
 

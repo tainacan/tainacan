@@ -21,7 +21,7 @@ class CSV extends Importer {
     /**
      * @inheritdoc
      */
-    public function get_source_fields(){
+    public function get_source_metadata(){
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
         $file->seek(0 );
         return $file->fgetcsv( $this->get_option('delimiter') );
@@ -33,7 +33,7 @@ class CSV extends Importer {
      */
     public function process_item( $index, $collection_definition ){
         $processedItem = [];
-        $headers = $this->get_source_fields();
+        $headers = $this->get_source_metadata();
         
         // search the index in the file and get values
         $file =  new \SplFileObject( $this->tmp_file, 'r' );

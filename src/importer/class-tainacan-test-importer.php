@@ -62,7 +62,7 @@ class Test_Importer extends Importer {
 		$this->tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
 		$this->col_repo = \Tainacan\Repositories\Collections::get_instance();
 		$this->items_repo = \Tainacan\Repositories\Items::get_instance();
-		$this->fields_repo = \Tainacan\Repositories\Fields::get_instance();
+		$this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
 		
 	}
 	
@@ -72,8 +72,24 @@ class Test_Importer extends Importer {
 		$tax1->set_name('Color');
 		$tax1->set_allow_insert('yes');
 		$tax1->set_status('publish');
-		$tax1->validate();
-		$tax1 = $this->tax_repo->insert($tax1);
+		
+		if ($tax1->validate()) {
+			$tax1 = $this->tax_repo->insert($tax1);
+		} else {
+			
+			/**
+			 * In these set up steps, if we have an error adding 
+			 * a taxonomy, collection or metadatum, there is no point 
+			 * in continuing running the importer. So we throw an exception 
+			 * to abort it, because an error here would cause errors in the next 
+			 * steps anyway.
+			 */
+			$this->add_error_log('Error creating taxonomy Color');
+			$this->add_error_log($tax1->get_errors());
+			$this->abort();
+			return false;
+			
+		}
 		
 		$this->add_transient('tax_1_id', $tax1->get_id());
 		
@@ -81,8 +97,15 @@ class Test_Importer extends Importer {
 		$tax2->set_name('Quality');
 		$tax2->set_allow_insert('yes');
 		$tax2->set_status('publish');
-		$tax2->validate();
-		$tax2 = $this->tax_repo->insert($tax2);
+		if ($tax2->validate()) {
+			$tax2 = $this->tax_repo->insert($tax2);
+		} else {
+			$this->add_error_log('Error creating taxonomy Quality');
+			$this->add_error_log($tax2->get_errors());
+			$this->abort();
+			return false;
+			
+		}
 		
 		$this->add_transient('tax_2_id', $tax2->get_id());
 		
@@ -93,56 +116,83 @@ class Test_Importer extends Importer {
 	public function create_collections() {
 		
 		$col1 = new Entities\Collection();
-		$col1->set_name('Collection 1');
+		$col1->set_name('Collection 11');
 		$col1->set_status('publish');
-		$col1->validate();
-		$col1 = $this->col_repo->insert($col1);
+		if ($col1->validate()) {
+			$col1 = $this->col_repo->insert($col1);
+		} else {
+			$this->add_error_log('Error creating Collection 1');
+			$this->add_error_log($col1->get_errors());
+			$this->abort();
+			return false;
+			
+		}
+		
 		
 		$col2 = new Entities\Collection();
-		$col2->set_name('Collection 2');
+		$col2->set_name('Collection 22');
 		$col2->set_status('publish');
-		$col2->validate();
-		$col2 = $this->col_repo->insert($col2);
+		if ($col2->validate()) {
+			$col2 = $this->col_repo->insert($col2);
+		} else {
+			$this->add_error_log('Error creating Collection 2');
+			$this->add_error_log($col2->get_errors());
+			$this->abort();
+			return false;
+			
+		}
 		
 		$col1_map = [];
 		$col2_map = [];
 		
-		// fields 
+		// metadata
 		
-		// core fields
-		$col1_core_title = $col1->get_core_title_field();
-		$col1_core_description = $col1->get_core_description_field();
+		// core metadata
+		$col1_core_title = $col1->get_core_title_metadatum();
+		$col1_core_description = $col1->get_core_description_metadatum();
 		$col1_map[$col1_core_title->get_id()] = 'field1';
 		$col1_map[$col1_core_description->get_id()] = 'field2';
 		
-		$field = new Entities\Field();
-		$field->set_name('Color');
-		$field->set_collection($col1);
-		$field->set_field_type('Tainacan\Field_Types\Category');
-		$field->set_field_type_options([
+		$metadatum = new Entities\Metadatum();
+		$metadatum->set_name('Colora');
+		$metadatum->set_collection($col1);
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $this->get_transient('tax_1_id'),
 			'allow_new_terms' => true
 		]);
-		$field->set_status('publish');
-		$field->validate();
-		$field = $this->fields_repo->insert($field);
-		$col1_map[$field->get_id()] = 'field3';
-		$this->add_transient('tax_1_field', $field->get_id());
+		$metadatum->set_status('publish');
+		if ($metadatum->validate()) {
+			$metadatum = $this->metadata_repo->insert($metadatum);
+		} else {
+			$this->add_error_log('Error creating field3');
+			$this->add_error_log($metadatum->get_errors());
+			$this->abort();
+			return false;
+		}
+		$col1_map[$metadatum->get_id()] = 'field3';
+		$this->add_transient('tax_1_field', $metadatum->get_id());
 		
 		
-		$field = new Entities\Field();
-		$field->set_name('Quality');
-		$field->set_collection($col1);
-		$field->set_field_type('Tainacan\Field_Types\Category');
-		$field->set_field_type_options([
+		$metadatum = new Entities\Metadatum();
+		$metadatum->set_name('Qualitya');
+		$metadatum->set_collection($col1);
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $this->get_transient('tax_2_id'),
 			'allow_new_terms' => true
 		]);
-		$field->set_status('publish');
-		$field->validate();
-		$field = $this->fields_repo->insert($field);
-		$col1_map[$field->get_id()] = 'field4';
-		$this->add_transient('tax_2_field', $field->get_id());
+		$metadatum->set_status('publish');
+		if ($metadatum->validate()) {
+			$metadatum = $this->metadata_repo->insert($metadatum);
+		} else {
+			$this->add_error_log('Error creating field4');
+			$this->add_error_log($metadatum->get_errors());
+			$this->abort();
+			return false;
+		}
+		$col1_map[$metadatum->get_id()] = 'field4';
+		$this->add_transient('tax_2_field', $metadatum->get_id());
 		
 		$this->add_collection([
 			'id' => $col1->get_id(),
@@ -152,20 +202,27 @@ class Test_Importer extends Importer {
 		]);
 		
 		// Collection 2
-		// core fields
-		$col2_core_title = $col2->get_core_title_field();
-		$col2_core_description = $col2->get_core_description_field();
+		// core metadata
+		$col2_core_title = $col2->get_core_title_metadatum();
+		$col2_core_description = $col2->get_core_description_metadatum();
 		$col2_map[$col2_core_title->get_id()] = 'field1';
 		$col2_map[$col2_core_description->get_id()] = 'field2';
 		
-		$field = new Entities\Field();
-		$field->set_name('Test Field');
-		$field->set_collection($col2);
-		$field->set_field_type('Tainacan\Field_Types\Text');
-		$field->set_status('publish');
-		$field->validate();
-		$field = $this->fields_repo->insert($field);
-		$col2_map[$field->get_id()] = 'field3';
+		$metadatum = new Entities\Metadatum();
+		$metadatum->set_name('Test Metadatum');
+		$metadatum->set_collection($col2);
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
+		$metadatum->set_status('publish');
+		
+		if ($metadatum->validate()) {
+			$metadatum = $this->metadata_repo->insert($metadatum);
+		} else {
+			$this->add_error_log('Error creating field3');
+			$this->add_error_log($metadatum->get_errors());
+			$this->abort();
+			return false;
+		}
+		$col2_map[$metadatum->get_id()] = 'field3';
 		
 		$this->add_collection([
 			'id' => $col2->get_id(),
@@ -182,28 +239,48 @@ class Test_Importer extends Importer {
 		
 		$tax1 = $this->tax_repo->fetch( $this->get_transient('tax_1_id') );
 		$tax1->set_allow_insert('no');
-		$tax1->validate();
-		$tax1 = $this->tax_repo->insert($tax1);
+		if ($tax1->validate()) {
+			$tax1 = $this->tax_repo->insert($tax1);
+		} else {
+			/**
+			 * This is an example of an error that 
+			 * we just want to log, but dont want to abort the process.
+			 */
+			$this->add_error_log('Error closing ' . $tax1->get_name());
+			$this->add_error_log($tax1->get_errors());
+		}
 		
 		$tax2 = $this->tax_repo->fetch( $this->get_transient('tax_2_id') );
 		$tax2->set_allow_insert('no');
-		$tax2->validate();
-		$tax2 = $this->tax_repo->insert($tax2);
+		if ($tax2->validate()) {
+			$tax2 = $this->tax_repo->insert($tax2);
+		} else {
+			$this->add_error_log('Error closing ' . $tax2->get_name());
+			$this->add_error_log($tax2->get_errors());
+		}
 		
 		
-		$field1 = $this->fields_repo->fetch( $this->get_transient('tax_1_field') );
-		$options = $field1->get_field_type_options();
+		$metadatum1 = $this->metadata_repo->fetch( $this->get_transient('tax_1_metadatum') );
+		$options = $metadatum1->get_metadata_type_options();
 		$options['allow_new_terms'] = false;
-		$field1->set_field_type_options($options);
-		$field1->validate();
-		$this->fields_repo->insert($field1);
+		$metadatum1->set_metadata_type_options($options);
+		if ($metadatum1->validate()) {
+			$this->metadata_repo->insert($metadatum1);
+		} else {
+			$this->add_error_log('Error closing ' . $metadatum1->get_name());
+			$this->add_error_log($metadatum1->get_errors());
+		}
 		
-		$field2 = $this->fields_repo->fetch( $this->get_transient('tax_2_field') );
-		$options = $field2->get_field_type_options();
+		$metadatum2 = $this->metadata_repo->fetch( $this->get_transient('tax_2_metadatum') );
+		$options = $metadatum2->get_metadata_type_options();
 		$options['allow_new_terms'] = false;
-		$field2->set_field_type_options($options);
-		$field2->validate();
-		$this->fields_repo->insert($field2);
+		$metadatum2->set_metadata_type_options($options);
+		if ($metadatum2->validate()) {
+			$this->metadata_repo->insert($metadatum2);
+		} else {
+			$this->add_error_log('Error closing ' . $metadatum2->get_name());
+			$this->add_error_log($metadatum2->get_errors());
+		}
 		
 	}
 	

@@ -15,7 +15,7 @@ class Filter extends Entity {
         $description,
         $order,
         $color,
-        $field,
+        $metadatum,
         $filter_type,
         $filter_type_options;
 
@@ -39,11 +39,11 @@ class Filter extends Entity {
 	 */
 	public function _toArray(){
 		$filter_array = parent::_toArray();
-		$field_id = $filter_array['field'];
+		$metadatum_id = $filter_array['metadatum'];
 
-		$filter_array['field'] = [];
-		$filter_array['field']['field_id'] = $field_id;
-		$filter_array['field']['field_name'] = $this->get_field()->get_name();
+		$filter_array['metadatum'] = [];
+		$filter_array['metadatum']['metadatum_id'] = $metadatum_id;
+		$filter_array['metadatum']['metadatum_name'] = $this->get_metadatum()->get_name();
 
 		return $filter_array;
 	}
@@ -83,14 +83,14 @@ class Filter extends Entity {
     }
 
 	/**
-	 * Return the field
+	 * Return the metadatum
 	 *
-	 * @return Field
+	 * @return Metadatum
 	 * @throws \Exception
 	 */
-    function get_field() {
-        $id = $this->get_mapped_property('field');
-        return new Field( $id );
+    function get_metadatum() {
+        $id = $this->get_mapped_property('metadatum');
+        return new Metadatum( $id );
     }
 
     /**
@@ -169,15 +169,15 @@ class Filter extends Entity {
     }
 
     /**
-     * Define the filter field
+     * Define the filter metadatum
      * 
-     * @param \Tainacan\Entities\Field
+     * @param \Tainacan\Entities\Metadatum
      * @return void
      */
-    function set_field( $value ){
-    	$id = ( $value instanceof Field ) ? $value->get_id() : $value;
+    function set_metadatum( $value ){
+    	$id = ( $value instanceof Metadatum ) ? $value->get_id() : $value;
 
-        $this->set_mapped_property('field', $id);
+        $this->set_mapped_property('metadatum', $id);
     }
 
     /**
@@ -193,7 +193,7 @@ class Filter extends Entity {
 	/**
 	 * Transient property used to store the status of the filter for a particular collection
 	 *
-	 * Used by the API to tell front end when a field is disabled
+	 * Used by the API to tell front end when a metadatum is disabled
 	 *
 	 */
 	public function get_enabled_for_collection() {
@@ -207,7 +207,7 @@ class Filter extends Entity {
 	/**
 	 * {@inheritdoc }
 	 *
-	 * Also validates the field, calling the validate_options callback of the Field Type
+	 * Also validates the metadatum, calling the validate_options callback of the Metadatum Type
 	 *
 	 * @return bool valid or not
 	 * @throws \Exception
@@ -228,11 +228,11 @@ class Filter extends Entity {
         }
 
         if (!is_array($is_valid)) {
-	        throw new \Exception( "Return of validate_options field type method should be an Array in case of error" );
+	        throw new \Exception( "Return of validate_options metadatum type method should be an Array in case of error" );
         }
 
-        foreach ($is_valid as $field => $message) {
-            $this->add_error($field, $message);
+        foreach ($is_valid as $metadatum => $message) {
+            $this->add_error($metadatum, $message);
         }
 
         return false;

@@ -132,7 +132,7 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 		
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-		$Tainacan_Fields      = \Tainacan\Repositories\Fields::get_instance();
+		$Tainacan_Metadata      = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
 		$Tainacan_Items       = \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
@@ -141,7 +141,7 @@ class Admin {
 
 		$entities_labels = [
 			'collections' => $Tainacan_Collections->get_cpt_labels(),
-			'fields'      => $Tainacan_Fields->get_cpt_labels(),
+			'metadata'      => $Tainacan_Metadata->get_cpt_labels(),
 			'filters'     => $Tainacan_Filters->get_cpt_labels(),
 			'items'       => $Tainacan_Items->get_cpt_labels(),
 			'taxonomies'  => $Tainacan_Taxonomies->get_cpt_labels(),
@@ -183,21 +183,21 @@ class Admin {
 
 		$maps = [
 			'collections' => $Tainacan_Collections->get_map(),
-			'fields'      => $Tainacan_Fields->get_map(),
+			'metadata'      => $Tainacan_Metadata->get_map(),
 			'filters'     => $Tainacan_Filters->get_map(),
 			'items'       => $Tainacan_Items->get_map(),
 			'taxonomies'  => $Tainacan_Taxonomies->get_map(),
 		];
 
-		$field_types = $Tainacan_Fields->fetch_field_types();
+		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();
 
 		foreach( $maps as $type => $map ){
-		    foreach ( $map as $field => $details){
-                $settings['i18n']['helpers_label'][$type][$field] = [ 'title' => $details['title'], 'description' => $details['description'] ];
+		    foreach ( $map as $metadatum => $details){
+                $settings['i18n']['helpers_label'][$type][$metadatum] = [ 'title' => $details['title'], 'description' => $details['description'] ];
             }
         }
-        foreach ( $field_types as $index => $field_type){
-		    $class = new $field_type;
+        foreach ( $metadata_types as $index => $metadata_type){
+		    $class = new $metadata_type;
             $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
         }
 		

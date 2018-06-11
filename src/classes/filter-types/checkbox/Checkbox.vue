@@ -3,7 +3,7 @@
         <div
                 v-for="(option, index) in options"
                 :key="index"
-                class="field">
+                class="metadatum">
             <b-checkbox
                     v-model="selected"
                     :native-value="option.value"
@@ -19,21 +19,21 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
+            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
             const vm = this;
 
-            let in_route = '/collection/' + this.collection + '/fields/' +  this.field +'?nopaging=1';
+            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum +'?nopaging=1';
 
-            if(this.isRepositoryLevel){
-                in_route = '/fields?nopaging=1';
+            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
+                in_route = '/metadata?nopaging=1';
             }
 
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.field_type ){
-                        vm.field_object = result;
-                        vm.type = result.field_type;
+                    if( result && result.metadata_type ){
+                        vm.metadatum_object = result;
+                        vm.type = result.metadata_type;
                         vm.loadOptions();
                     }
                 })
@@ -50,9 +50,9 @@
                 options: [],
                 type: '',
                 collection: '',
-                field: '',
+                metadatum: '',
                 selected: [],
-                field_object: {}
+                metadatum_object: {}
             }
         },
         mixins: [filter_type_mixin],
@@ -67,13 +67,13 @@
                 let promise = null;
                 this.isLoading = true;
 
-                if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
-                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ?
-                        this.field_object.field_type_options.collection_id : this.collection_id;
+                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget );
 
                 } else {
-                    promise = this.getValuesPlainText( this.field, null, this.isRepositoryLevel );
+                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
                 }
 
                 promise.then(() => {
@@ -89,7 +89,7 @@
                 this.$emit('input', {
                     filter: 'checkbox',
                     compare: 'IN',
-                    field_id: this.field,
+                    metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: this.selected
                 });
@@ -98,7 +98,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newField => newField.key === this.field );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     this.selected = metadata.value;

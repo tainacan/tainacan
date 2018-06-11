@@ -33,7 +33,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
     public function test_automapping_old_tainacan()
     {
         //$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-        //$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        //$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
         $old_tainacan = new Importer\Old_Tainacan();
         $id = $old_tainacan->get_id();
@@ -65,7 +65,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
     /*public function test_file_old_tainacan () {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
         $old_tainacan = new Importer\Old_Tainacan();
         $id = $old_tainacan->get_id();
@@ -89,8 +89,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_total_items() );
 
-        // get fields to mapping
-        $headers =  $_SESSION['tainacan_importer'][$id]->get_fields();
+        // get metadata to mapping
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_metadata();
         $this->assertEquals( $headers[5], 'post_title' );
 
         // inserting the collection
@@ -108,13 +108,13 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // set the importer
         $_SESSION['tainacan_importer'][$id]->set_collection( $collection );
 
-        // get collection fields to map
-        $fields = $Tainacan_Fields->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        // get collection metadata to map
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
 
         //create a random mapping
         $map = [];
-        foreach ( $fields as $index => $field ){
-            $map[$field->get_id()] = $headers[$index];
+        foreach ( $metadata as $index => $metadatum ){
+            $map[$metadatum->get_id()] = $headers[$index];
         }
 
         // set the mapping
@@ -141,7 +141,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
      */
     public function test_file_csv () {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $file_name = 'demosaved.csv';
         $csv_importer = new Importer\CSV();
         $id = $csv_importer->get_id();
@@ -177,8 +177,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // count size of csv
         $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_progress_total_from_source() );
 
-        // get fields to mapping
-        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_fields();
+        // get metadata to mapping
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
         $this->assertEquals( $headers[4], 'Column 5' );
 
         // inserting the collection
@@ -198,13 +198,13 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 			'total_items' => $_SESSION['tainacan_importer'][$id]->get_progress_total_from_source(),
 		];
 		
-        // get collection fields to map
-        $fields = $Tainacan_Fields->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        // get collection metadata to map
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
 
         //create a random mapping
         $map = [];
-        foreach ( $fields as $index => $field ){
-            $map[$field->get_id()] = $headers[$index];
+        foreach ( $metadata as $index => $metadatum ){
+            $map[$metadatum->get_id()] = $headers[$index];
         }
 		
 		$collection_definition['map'] = $map;

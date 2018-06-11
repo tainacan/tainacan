@@ -11,7 +11,7 @@ export const cleanItem = ( state ) => {
 export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
-        //state.field[index] = field;
+        //state.metadatum[index] = metadatum;
         Vue.set( state.attachments, index, attachment );
     } else {
         state.attachments.push( attachment );
@@ -38,20 +38,20 @@ export const cleanItemTitle = ( state ) => {
     state.itemTitle = '';
 }
 
-export const setFields = ( state, fields) => {
-    state.fields = fields;
+export const setMetadata = ( state, metadata) => {
+    state.metadata = metadata;
 }
 
-export const cleanFields = (state) => {
-    state.fields = [];
+export const cleanMetadata = (state) => {
+    state.metadata = [];
 }
 
-export const setSingleField = ( state, field) => {
-    let index = state.fields.findIndex(itemMetadata => itemMetadata.field.id === field.field.id);
+export const setSingleMetadatum = ( state, metadatum) => {
+    let index = state.metadata.findIndex(itemMetadata => itemMetadata.metadatum.id === metadatum.metadatum.id);
     if ( index >= 0){
-        //state.field[index] = field;
-        Vue.set( state.fields, index, field );
+        //state.metadatum[index] = metadatum;
+        Vue.set( state.metadata, index, metadatum );
     } else {
-        state.fields.push( field );
+        state.metadata.push( metadatum );
     }
 }

@@ -11,8 +11,8 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
 1. [Collections](#collections)
 1. [Items](#items)
-1. [Fields](#fields)
-1. [Field Types](#field-types)
+1. [Metadata](#metadata)
+1. [Metadatum Types](#metadatum-types)
 1. [Item Metadata](#item-metadata)
 1. [Taxonomies](#taxonomies)
 1. [Filters](#filters)
@@ -117,22 +117,22 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 ```
 
 ------
-#### Fields
+#### Metadata
 
-1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/fields`
+1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadata`
     
       1. Endpoints:
-            1. GET (Fetch all collection field)
+            1. GET (Fetch all collection metadatum)
                 
-            1. POST (Create a field in collection and all it items)
+            1. POST (Create a metadatum in collection and all it items)
     
-                  In body of requisition pass a JSON with the attributes of field like:
+                  In body of requisition pass a JSON with the attributes of metadatum like:
    
 ```javascript
       {
             "name": "string", 
             "description": "string",
-            "field_type": "string",
+            "metadatum_type": "string",
             "order": "string",
             "parent": "integer",
             "required": "string",
@@ -145,15 +145,15 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
       }
 ```
 
-2. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/fields/(?P<field_id>[\d]+)`
+2. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadata/(?P<field_id>[\d]+)`
 
       1. Endpoints:
       
-            1. GET (Fetch a field from a collection or Fetch all field values)
+            1. GET (Fetch a metadatum from a collection or Fetch all metadatum values)
             
-                  To fetch all field values from a field of a collection in all it items, pass a query like `?fetch=all_field_values`
+                  To fetch all metadatum values from a metadatum of a collection in all it items, pass a query like `?fetch=all_field_values`
 
-            1. PATCH or PUT (Update a field in a collection and all it items)
+            1. PATCH or PUT (Update a metadatum in a collection and all it items)
 
                   In body of requisition pass a JSON with the attributes you need to update, like:
 
@@ -164,37 +164,37 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
       }
 ```
 
-3. Route `wp-json/tainacan/v2/fields`
+3. Route `wp-json/tainacan/v2/metadata`
 
       1. Endpoints:
       
-            1. GET (Fetch all default fields)
+            1. GET (Fetch all default metadata)
             
-            1. POST (Create a default field)
+            1. POST (Create a default metadatum)
             
-                  In body of requisition pass a JSON with the attributes of field.
+                  In body of requisition pass a JSON with the attributes of metadatum.
 
-4. Route `wp-json/tainacan/v2/fields/(?P(<field_id>[\d]+))`
+4. Route `wp-json/tainacan/v2/metadata/(?P(<field_id>[\d]+))`
 
       1. Endpoints:
       
-            1. DELETE (Trash a default field)
+            1. DELETE (Trash a default metadatum)
             
-            1. PATCH or PUT (Update a default field)
+            1. PATCH or PUT (Update a default metadatum)
                   
                   In body of requisition pass a JSON with the attributes you need to update.
                   
 ------
-#### Field Types
-1. Route `wp-json/tainacan/v2/field-types`
+#### Metadatum Types
+1. Route `wp-json/tainacan/v2/metadatum-types`
 
       1. Endpoint:
       
-            1. GET (Fetch all field types)
+            1. GET (Fetch all metadatum types)
 ------
 #### Item Metadata
 
-1. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)`
+1. Route `wp-json/tainacan/v2/item/(?P<item_id>[\d]+)/metadata/(?P<metadatum_id>[\d]+)`
 
       1. Endpoints:
     
@@ -271,7 +271,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 ------
 #### Filters
 
-1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/field/(?P<field_id>[\d]+)/filters`
+1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadatum/(?P<field_id>[\d]+)/filters`
     
       1. Endpoints:
     
@@ -317,7 +317,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 
             1. GET (Fetch all repository filters)
             
-            1. POST (Create a filter in repository. Without field and collection associations)
+            1. POST (Create a filter in repository. Without metadatum and collection associations)
             
                   Example of JSON passed in body for creating a filter:
     
@@ -338,7 +338,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
             
             1. GET (Fetch all collection filters)
             
-            1. POST (Create a filter in a collection, without field association)
+            1. POST (Create a filter in a collection, without metadatum association)
             
                   Example of JSON passed in body for creating a filter:
     

@@ -54,12 +54,12 @@ class Filters extends TAINACAN_UnitTestCase {
 	        true
         );
 
-	    $field = $this->tainacan_entity_factory->create_entity(
-	    	'field',
+	    $metadatum = $this->tainacan_entity_factory->create_entity(
+	    	'metadatum',
 		    array(
 		    	'name'              => 'metadado',
 			    'collection_id'     => $collection->get_id(),
-			    'field_type'  => 'Tainacan\Field_Types\Text',
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 		    	'description' => 'descricao',
 		    ),
 		    true
@@ -73,7 +73,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		    	'name'               => 'filtro',
 			    'collection'         => $collection,
 		    	'description' => 'descricao',
-			    'field'           => $field,
+			    'metadatum'           => $metadatum,
 			    'filter_type' => $filter_list_type
 		    ),
 		    true
@@ -88,7 +88,7 @@ class Filters extends TAINACAN_UnitTestCase {
 
         $this->assertEquals( 'filtro', $test->get_name() );
         $this->assertEquals( $collection->get_id(), $test->get_collection_id() );
-        $this->assertEquals( $field->get_id(), $test->get_field()->get_id() );
+        $this->assertEquals( $metadatum->get_id(), $test->get_metadatum()->get_id() );
         $objClass = get_class( $filter_list_type );
         $storedObjClass = get_class( $test->get_filter_type_object() );
         $this->assertEquals($objClass , $storedObjClass );
@@ -120,12 +120,12 @@ class Filters extends TAINACAN_UnitTestCase {
             true
         );
 
-        $field2 = $this->tainacan_entity_factory->create_entity(
-            'field',
+        $metadatum2 = $this->tainacan_entity_factory->create_entity(
+            'metadatum',
             array(
                 'name'          => 'Other filtered',
                 'description'   => 'Is filtered',
-                'field_type'    => 'Tainacan\Field_Types\Text',
+                'metadata_type'    => 'Tainacan\Metadata_Types\Text',
                 'collection_id' => $collection->get_id()
             ),
             true
@@ -139,7 +139,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		        'name'        => 'filtro',
 		        'collection'  => $collection,
 		        'description' => 'descricao',
-		        'field'       => $field2,
+		        'metadatum'       => $metadatum2,
 		        'filter_type' => $autocomplete
 	        ),
             true
@@ -155,10 +155,10 @@ class Filters extends TAINACAN_UnitTestCase {
         $filter2->set_name('filter 2');
         $filter2->set_collection($collection);
         $filter2->set_description('description');
-        $filter2->set_field($field2);
+        $filter2->set_metadatum($metadatum2);
         $filter2->set_filter_type($custom_interval);
 
-        $this->assertFalse($filter2->validate(), 'filter with a field with unsupported primitive type should not validate');
+        $this->assertFalse($filter2->validate(), 'filter with a metadatum with unsupported primitive type should not validate');
 
     }
 }

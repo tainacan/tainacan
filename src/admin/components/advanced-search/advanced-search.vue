@@ -3,8 +3,8 @@
         <div class="columns is-multiline tnc-advanced-search-container">
 
             <div
-                    v-for="searchField in totalSearchMetadata"
-                    :key="searchField"
+                    v-for="searchMetadatum in totalSearchMetadata"
+                    :key="searchMetadatum"
                     class="field column is-12 tainacan-form">
 
                 <b-field
@@ -12,7 +12,7 @@
                         grouped>
                     <b-field class="column">
                         <b-select
-                                @input.native="addToAdvancedSearchQuery($event)">
+                                @input="addToAdvancedSearchQuery($event, 'field_id', searchMetadatum)">
                             <option
                                     v-for="metadata in metadataList"
                                     v-if="metadata.enabled"
@@ -24,12 +24,12 @@
 
                     <b-field class="column is-two-thirds">
                         <b-input
-                                @input.native="addValueToAdvancedSearchQuery($event)"/>
+                                @input="addValueToAdvancedSearchQuery($event, 'value', searchMetadatum)"/>
                     </b-field>
 
                     <b-field class="column">
                         <b-select
-                                @input.native="addToAdvancedSearchQuery($event)">
+                                @input="addToAdvancedSearchQuery($event, 'compare', searchMetadatum)">
                             <option
                                     v-for="(opt, key) in compare"
                                     :value="key"
@@ -52,7 +52,7 @@
                     <a
                             @click="addSearchMetadata"
                             class="is-secondary is-small">
-                        {{ $i18n.get('add_more_one_search_field') }}</a>
+                        {{ $i18n.get('add_more_one_search_metadatum') }}</a>
                 </div>
 
             </div>
@@ -71,6 +71,7 @@
                 </div>
             </div>
         </div>
+        <!-- <pre>{{ advancedSearchQuery }}</pre> -->
     </div>
 </template>
 
@@ -81,11 +82,21 @@
             metadataList: Array,
             isRepositoryLevel: false,
         },
-        data(){
+        data() {
             return {
-                compare: {'=':'Igual', '!=':'Diferente', 'IN':'Contém', 'NOT IN':'Não Contém'},
+                compare: {
+                    '=': this.$i18n.get('is_equal_to'),
+                    '!=': this.$i18n.get('is_not_equal_to'),
+                    'IN': this.$i18n.get('contains'),
+                    'NOT IN': this.$i18n.get('not_contains')
+                },
                 totalSearchMetadata: 1,
-                advancedSearchQuery: {},
+                advancedSearchQuery: {
+                    advancedSearch: true,
+                    metaquery: {
+                        relation: 'AND',
+                    }
+                },
             }
         },
         methods: {
@@ -94,15 +105,35 @@
             },
             clearSearch(){
                 this.totalSearchMetadata = 1;
+                this.advancedSearchQuery = {
+                    advancedSearch: true,
+                    relation: 'AND',
+                };
             },
-            addValueToAdvancedSearchQuery: _.debounce(($event) => {
-                console.log($event);
+            addValueToAdvancedSearchQuery: _.debounce(function(value, type, relation) {
+                let vm = this;
+
+                vm.addToAdvancedSearchQuery(value, type, relation);
             }, 900),
             searchAdvanced(){
-
+                this.$eventBusSearch.$emit('searchAdvanced', this.advancedSearchQuery);
             },
-            addToAdvancedSearchQuery($event){
-                console.log($event);
+            addToAdvancedSearchQuery(value, type, relation){
+                if(this.advancedSearchQuery.metaquery.hasOwnProperty(relation)){
+                    //if(this.advancedSearchQuery[relation].compare === 'IN'){
+                        //this.advancedSearchQuery[relation][type] = value.split(' ');
+                    //} else {
+                    this.advancedSearchQuery.metaquery[relation][type] = value;
+                    //}
+                } else {
+                    this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
+                        [`${relation}`]: {
+                            [`${type}`]: value,
+                        }
+                    });
+                }
+
+                console.log(this.advancedSearchQuery);
             },
         }
     }

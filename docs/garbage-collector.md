@@ -1,5 +1,5 @@
 
 * everything auto draft
-* post_meta of deleted fields
-* post_meta of deleted instaces of a multiple compound Field. post_meta of a field that is child of a compound field, but which the ID does not appear in any array of a compound field meta_value
+* post_meta of deleted metadata
+* post_meta of deleted instaces of a multiple compound Metadatum. post_meta of a metadatum that is child of a compound metadatum, but which the ID does not appear in any array of a compound metadatum meta_value
 * orphan terms (with taxonomy that does not exist)

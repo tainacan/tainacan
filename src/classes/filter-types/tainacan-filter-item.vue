@@ -66,7 +66,7 @@
                 'setPage'
             ]),
             listen( event ){
-                this.$eventBusSearch.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
+                this.$eventBusSearch.$emit( 'input', ( event.metadatum_id ) ?  event :  event.detail[0] );
             },
             setFilterTypeMessage( message ){
                 this.filterTypeMessage = message;

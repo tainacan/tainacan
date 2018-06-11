@@ -28,7 +28,7 @@ Filters are stored as posts. Check WP_Query docs to learn all args accepted in t
 
 ### `public function register_filter_type( $class_name )`
 
-register field types class on array of types 
+register metadatum types class on array of types 
 
 
 **Parameters:**
@@ -37,7 +37,7 @@ register field types class on array of types
 
 ### `public function deregister_filter_type( $class_name )`
 
-register field types class on array of types 
+register metadatum types class on array of types 
 
 
 **Parameters:**
@@ -64,7 +64,7 @@ fetch only supported filters for the type specified
 
 **Parameters:**
 
-* `string` — ( — || array )  $types Primitve types of field ( float, string, int)
+* `string` — ( — || array )  $types Primitve types of metadatum ( float, string, int)
 
 **Returns:** `array` — Filters supported by the primitive types passed in $types
 
@@ -79,7 +79,7 @@ fetch filters by collection, searches all filters available
 * `$args` — array — WP_Query args plus disabled_fields
 * `$output` — string — The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 
-**Returns:** `Array` — Entities\Field
+**Returns:** `Array` — Entities\Metadatum
 
 ### `public function order_result( $result, Entities\Collection $collection )`
 
@@ -141,10 +141,10 @@ Return the filter color
 
 ### `function get_field()`
 
-Return the field 
+Return the metadatum 
 
 
-**Returns:** Field
+**Returns:** Metadatum
 
 ### `function get_filter_type_object()`
 
@@ -213,7 +213,7 @@ Define the filter color
 
 ### `function set_field( $value )`
 
-Define the filter field 
+Define the filter metadatum 
 
 
 **Returns:** void
@@ -231,7 +231,7 @@ Save the filter type class name
 
 {@inheritdoc } 
 
-Also validates the field, calling the validate_options callback of the Field Type 
+Also validates the metadatum, calling the validate_options callback of the Metadatum Type 
 
 
 **Returns:** `bool` — valid or not

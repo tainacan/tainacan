@@ -8,7 +8,7 @@ namespace Tainacan\Tests;
 class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	protected $item;
 	protected $collection;
-	protected $field;
+	protected $metadatum;
 	
 	protected function create_meta_requirements() {
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -21,15 +21,15 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 			true
 		);
 		
-		$type = $this->tainacan_field_factory->create_field('text');
+		$type = $this->tainacan_metadatum_factory->create_metadatum('text');
 		
-		$field = $this->tainacan_entity_factory->create_entity(
-			'field',
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
 			array(
 				'name'              => 'teste_Expose',
 				'description'       => 'descricao',
 				'collection'        => $collection,
-				'field_type'		=> $type,
+				'metadata_type'		=> $type,
 				'exposer_mapping'	=> [
 					'dublin-core' => 'language'
 				]
@@ -50,15 +50,15 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		);
 		$this->collection = $collection;
 		$this->item = $item;
-		$this->field = $field;
-		return ['collection' => $collection, 'item' => $item, 'field' => $field];
+		$this->metadatum = $metadatum;
+		return ['collection' => $collection, 'item' => $item, 'metadatum' => $metadatum];
 	}
 	
 	/**
 	 * @group value_exposer
 	 */
 	public function test_value_exposer() {
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		global $Tainacan_Metadata, $Tainacan_Item_Metadata;
 		
 		extract($this->create_meta_requirements());
 		
@@ -66,7 +66,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 			'values'       => 'TestValues_exposers',
 		]);
 		
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->field->get_id() );
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->metadatum->get_id() );
 		$request->set_body($item__metadata_json);
 		
 		$response = $this->server->dispatch($request);
@@ -81,7 +81,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$item_exposer_json = json_encode([
 			'exposer-map'       => 'Value',
 		]);
-		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->field->get_id() );
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
 		$request->set_body($item_exposer_json);
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
@@ -104,7 +104,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	 * @group xml_exposer
 	 */
 	public function test_xml_exposer() {
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		global $Tainacan_Metadata, $Tainacan_Item_Metadata;
 		
 		extract($this->create_meta_requirements());
 		
@@ -112,7 +112,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 			'values'       => 'TestValues_exposers',
 		]);
 		
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->field->get_id() );
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->metadatum->get_id() );
 		$request->set_body($item__metadata_json);
 		
 		$response = $this->server->dispatch($request);
@@ -128,7 +128,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 			'exposer-type'       => 'Xml',
 		]);
 		
-		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->field->get_id() );
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
 		$request->set_body($item_exposer_json);
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
@@ -139,7 +139,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$item_exposer_json = json_encode([
 			'exposer-map'       => 'Dublin Core',
 		]);
-		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->field->get_id() );
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
 		$request->set_body($item_exposer_json);
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
@@ -170,14 +170,14 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	 * @group exposers-slug
 	 */
 	public function test_exposer_map_by_slug() {
-	    global $Tainacan_Fields, $Tainacan_Item_Metadata;
+	    global $Tainacan_Metadata, $Tainacan_Item_Metadata;
 	    extract($this->create_meta_requirements());
 	    
 	    $item__metadata_json = json_encode([
 	        'values'       => 'TestValues_exposers_slug',
 	    ]);
 	    
-	    $request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->field->get_id() );
+	    $request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->metadatum->get_id() );
 	    $request->set_body($item__metadata_json);
 	    
 	    $response = $this->server->dispatch($request);
@@ -192,7 +192,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    $item_exposer_json = json_encode([
 	        'exposer-map'       => 'dublin-core',
 	    ]);
-	    $request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->field->get_id() );
+	    $request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
 	    $request->set_body($item_exposer_json);
 	    $response = $this->server->dispatch($request);
 	    $this->assertEquals(200, $response->get_status());
@@ -222,7 +222,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	 * @group oai-pmh
 	 */
 	public function test_oai_pmh() {
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		global $Tainacan_Metadata, $Tainacan_Item_Metadata;
 		
 		extract($this->create_meta_requirements());
 		
@@ -245,7 +245,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	 * @group exposer-type-html
 	 */
 	public function test_html_type() {
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		global $Tainacan_Metadata, $Tainacan_Item_Metadata;
 		
 		extract($this->create_meta_requirements());
 		
@@ -294,7 +294,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	 * @group exposer-type-csv
 	 */
 	public function test_csv_type() {
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		global $Tainacan_Metadata, $Tainacan_Item_Metadata;
 		
 		extract($this->create_meta_requirements());
 		
@@ -302,7 +302,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 			'values'       => 'TestValues_exposers',
 		]);
 		
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->field->get_id() );
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->metadatum->get_id() );
 		$request->set_body($item__metadata_json);
 		
 		$response = $this->server->dispatch($request);
@@ -340,7 +340,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	 * @group items_exposer
 	 */
 	public function test_items_exposer() {
-		global $Tainacan_Fields, $Tainacan_Item_Metadata;
+		global $Tainacan_Metadata, $Tainacan_Item_Metadata;
 		
 		extract($this->create_meta_requirements());
 		
@@ -348,7 +348,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 			'values'       => 'TestValues_exposers',
 		]);
 		
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->field->get_id() );
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->metadatum->get_id() );
 		$request->set_body($item__metadata_json);
 		
 		$response = $this->server->dispatch($request);
@@ -419,16 +419,16 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    $Tainacan_collections = \Tainacan\Repositories\Collections::get_instance();
 	    $collection = $Tainacan_collections->fetch($id);
 	    
-	    $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
-	    $fields = $Tainacan_Fields->fetch_by_collection( $collection, [ 'order' => 'id' ], 'OBJECT' );
+	    $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+	    $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [ 'order' => 'id' ], 'OBJECT' );
 	    
-	    $this->assertEquals(count($mapper->metadata), count($fields));
-	    foreach ($fields as $field) {
-	        $this->assertTrue(array_key_exists($field->get_slug(), $mapper->metadata));
-	        if(! array_key_exists('core_field', $mapper->metadata[$field->get_slug()]) || $mapper->metadata[$field->get_slug()]['core_field'] == false) {
-	           $this->assertEquals($mapper->metadata[$field->get_slug()]['URI'], $field->get_description());
+	    $this->assertEquals(count($mapper->metadata), count($metadata));
+	    foreach ($metadata as $metadatum) {
+	        $this->assertTrue(array_key_exists($metadatum->get_slug(), $mapper->metadata));
+	        if(! array_key_exists('core_metadatum', $mapper->metadata[$metadatum->get_slug()]) || $mapper->metadata[$metadatum->get_slug()]['core_metadatum'] == false) {
+	           $this->assertEquals($mapper->metadata[$metadatum->get_slug()]['URI'], $metadatum->get_description());
 	        }
-	        $this->assertEquals($mapper->metadata[$field->get_slug()]['label'], $field->get_name());
+	        $this->assertEquals($mapper->metadata[$metadatum->get_slug()]['label'], $metadatum->get_name());
 	    }
 	    
 	}

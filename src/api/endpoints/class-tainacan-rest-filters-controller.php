@@ -10,8 +10,8 @@ class REST_Filters_Controller extends REST_Controller {
 	private $collection;
 	private $collection_repository;
 
-	private $field;
-	private $field_repository;
+	private $metadatum;
+	private $metadatum_repository;
 
 	private $filter_repository;
 
@@ -31,13 +31,13 @@ class REST_Filters_Controller extends REST_Controller {
 		$this->collection = new Entities\Collection();
 		$this->collection_repository = Repositories\Collections::get_instance();
 		
-		$this->field_repository = Repositories\Fields::get_instance();
+		$this->metadatum_repository = Repositories\Metadata::get_instance();
 		
 		$this->filter_repository = Repositories\Filters::get_instance();
 	}
 
 	public function register_routes() {
-		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/field/(?P<field_id>[\d]+)/' . $this->rest_base, array(
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/metadatum/(?P<metadatum_id>[\d]+)/' . $this->rest_base, array(
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
@@ -131,30 +131,30 @@ class REST_Filters_Controller extends REST_Controller {
 			$filter_obj->set($attribute, $value);
 		}
 
-		if(isset($request['collection_id']) && isset($request['field_id'])) {
+		if(isset($request['collection_id']) && isset($request['metadatum_id'])) {
 			$collection_id = $request['collection_id'];
-			$field_id      = $request['field_id'];
+			$metadatum_id      = $request['metadatum_id'];
 
 			$filter_obj->set_collection_id( $collection_id );
-			$filter_obj->set_field( $field_id );
+			$filter_obj->set_metadatum( $metadatum_id );
 		} elseif (isset($request['collection_id'])){
 			$collection_id = $request['collection_id'];
 
 			$filter_obj->set_collection_id( $collection_id );
 
-			if(!isset($body['field'])){
-				throw new \InvalidArgumentException('You need provide a field id');
+			if(!isset($body['metadatum'])){
+				throw new \InvalidArgumentException('You need provide a metadatum id');
 			}
 
-			$filter_obj->set_field($body['field']);
+			$filter_obj->set_metadatum($body['metadatum']);
 		} else {
 			$filter_obj->set_collection_id( 'filter_in_repository' );
 
-			if(!isset($body['field'])){
-				throw new \InvalidArgumentException('You need provide a field id');
+			if(!isset($body['metadatum'])){
+				throw new \InvalidArgumentException('You need provide a metadatum id');
 			}
 
-			$filter_obj->set_field($body['field']);
+			$filter_obj->set_metadatum($body['metadatum']);
 		}
 
 		$filter_obj->set_filter_type($filter_type);
@@ -197,11 +197,11 @@ class REST_Filters_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(isset($request['collection_id']) && isset($request['field_id'])) {
-			$metadata   = $this->field_repository->fetch( $request['field_id'] );
+		if(isset($request['collection_id']) && isset($request['metadatum_id'])) {
+			$metadata   = $this->metadatum_repository->fetch( $request['metadatum_id'] );
 			$collection = $this->collection_repository->fetch( $request['collection_id'] );
 
-			if ( ( $metadata instanceof Entities\Field ) && ( $collection instanceof Entities\Collection ) ) {
+			if ( ( $metadata instanceof Entities\Metadatum ) && ( $collection instanceof Entities\Collection ) ) {
 				return $this->filter_repository->can_edit( new Entities\Filter() ) && $metadata->can_edit() && $collection->can_edit();
 			}
 
@@ -214,7 +214,7 @@ class REST_Filters_Controller extends REST_Controller {
 
 		}
 
-		return $this->filter_repository->can_edit(new Entities\Field());
+		return $this->filter_repository->can_edit(new Entities\Metadatum());
 	}
 
 	/**

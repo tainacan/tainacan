@@ -7,6 +7,10 @@ export const set_postquery = ({ commit }, postquery ) => {
     commit('setPostQuery', postquery );
 };
 
+export const set_advanced_query = ({commit}, advancedSearchQuery) => {
+    commit('setAdvancedSearchQuery', advancedSearchQuery);
+};
+
 // Meta Queries from filters
 export const add_metaquery = ( { commit }, filter  ) => {
     if( filter && filter.value.length === 0 ){
@@ -17,19 +21,19 @@ export const add_metaquery = ( { commit }, filter  ) => {
 };
 
 // Fetch Only for item attributes limiting on results
-export const add_fetchonly = ( { commit }, field ) => {
-        commit('addFetchOnly', field );   
+export const add_fetchonly = ( { commit }, metadatum ) => {
+        commit('addFetchOnly', metadatum );
 };
-export const remove_fetchonly = ( { commit }, field ) => {
-    commit('removeFetchOnly', field );
+export const remove_fetchonly = ( { commit }, metadatum ) => {
+    commit('removeFetchOnly', metadatum );
 };
 
 // Fetch Only for metadata limiting on results
-export const add_fetchonly_meta = ( { commit }, field ) => {
-    commit('addFetchOnlyMeta', field );
+export const add_fetchonly_meta = ( { commit }, metadatum ) => {
+    commit('addFetchOnlyMeta', metadatum );
 };
-export const remove_fetchonly_meta = ( { commit }, field ) => {
-    commit('removeFetchOnlyMeta', field );
+export const remove_fetchonly_meta = ( { commit }, metadatum ) => {
+    commit('removeFetchOnlyMeta', metadatum );
 };
 
 // Tax Queries from filters
@@ -73,15 +77,15 @@ export const setOrderBy = ({ commit }, orderBy ) => {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'date' } );
     } else if (orderBy.id == 'author_name') {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'author_name' } );
-    } else if (orderBy.field_type_object.primitive_type == 'float' || orderBy.field_type_object.primitive_type == 'int') {
+    } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value_num' } );
-    } else if (orderBy.field_type_object.primitive_type == 'date') {
+    } else if (orderBy.metadata_type_object.primitive_type == 'date') {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'meta_type', value: 'DATETIME' } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
-    } else if (orderBy.field_type_object.core) {
-        commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.field_type_object.related_mapped_prop } );
+    } else if (orderBy.metadata_type_object.core) {
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.metadata_type_object.related_mapped_prop } );
     } else {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );

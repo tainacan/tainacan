@@ -27,7 +27,7 @@ class Collection extends Entity {
         $columns,
 		$default_view_mode,
 		$enabled_view_modes,
-        $fields_order,
+        $metadata_order,
         $filters_order,
         $enable_cover_page,
         $cover_page_id,
@@ -342,8 +342,8 @@ class Collection extends Entity {
 	 *
 	 * @return string
 	 */
-	function get_default_displayed_fields() {
-		return $this->get_mapped_property( 'default_displayed_fields' );
+	function get_default_displayed_metadata() {
+		return $this->get_mapped_property( 'default_displayed_metadata' );
 	}
 
 	/**
@@ -365,12 +365,12 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Get collection fields ordination
+	 * Get collection metadata ordination
 	 *
 	 * @return string
 	 */
-	function get_fields_order() {
-		return $this->get_mapped_property( 'fields_order' );
+	function get_metadata_order() {
+		return $this->get_mapped_property( 'metadata_order' );
 	}
 	
 	/**
@@ -439,34 +439,34 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Get collection field.
+	 * Get collection metadatum.
 	 *
-	 * Returns an array of \Entity\Field objects, representing all the field of the collection.
+	 * Returns an array of \Entity\Metadatum objects, representing all the metadatum of the collection.
 	 *
-	 * @see \Tainacan\Repositories\Fields->fetch()
+	 * @see \Tainacan\Repositories\Metadata->fetch()
 	 *
-	 * @return [\Tainacan\Entities\Field] array
+	 * @return [\Tainacan\Entities\Metadatum] array
 	 * @throws \Exception
 	 */
-	function get_fields() {
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+	function get_metadata() {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
-		return $Tainacan_Fields->fetch_by_collection( $this, [], 'OBJECT' );
+		return $Tainacan_Metadata->fetch_by_collection( $this, [], 'OBJECT' );
 	}
 
 	/**
-	 * Get the two core fields of the collection (title and description)
+	 * Get the two core metadata of the collection (title and description)
 	 * 
-	 * @return array[\Tainacan\Entities\Field]
+	 * @return array[\Tainacan\Entities\Metadatum]
 	 */
-	function get_core_fields() {
-		$repo = \Tainacan\Repositories\Fields::get_instance();
+	function get_core_metadata() {
+		$repo = \Tainacan\Repositories\Metadata::get_instance();
 
 		return $repo->fetch_by_collection($this, [
 			'meta_query' => [
 				[
-					'key' => 'field_type',
-					'value' => ['Tainacan\Field_Types\Core_Title', 'Tainacan\Field_Types\Core_Description'],
+					'key' => 'metadata_type',
+					'value' => ['Tainacan\Metadata_Types\Core_Title', 'Tainacan\Metadata_Types\Core_Description'],
 					'compare' => 'IN'
 				]
 			]
@@ -474,48 +474,48 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Get the Core Title Field for this collection
+	 * Get the Core Title Metadatum for this collection
 	 * 
-	 * @return \Tainacan\Entities\Field The Core Title Field
+	 * @return \Tainacan\Entities\Metadatum The Core Title Metadatum
 	 */
-	function get_core_title_field() {
-		$repo = \Tainacan\Repositories\Fields::get_instance();
+	function get_core_title_metadatum() {
+		$repo = \Tainacan\Repositories\Metadata::get_instance();
 
 		$results = $repo->fetch_by_collection($this, [
 			'meta_query' => [
 				[
-					'key' => 'field_type',
-					'value' => 'Tainacan\Field_Types\Core_Title',
+					'key' => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Title',
 				]
 			],
 			'posts_per_page' => 1
 		], 'OBJECT');
 
-		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Field) {
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum) {
 			return $results[0];
 		}
 		return false;
 	}
 
 	/**
-	 * Get the Core Description Field for this collection
+	 * Get the Core Description Metadatum for this collection
 	 * 
-	 * @return \Tainacan\Entities\Field The Core Description Field
+	 * @return \Tainacan\Entities\Metadatum The Core Description Metadatum
 	 */
-	function get_core_description_field() {
-		$repo = \Tainacan\Repositories\Fields::get_instance();
+	function get_core_description_metadatum() {
+		$repo = \Tainacan\Repositories\Metadata::get_instance();
 
 		$results = $repo->fetch_by_collection($this, [
 			'meta_query' => [
 				[
-					'key' => 'field_type',
-					'value' => 'Tainacan\Field_Types\Core_Description',
+					'key' => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Description',
 				]
 			],
 			'posts_per_page' => 1
 		], 'OBJECT');
 
-		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Field) {
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum) {
 			return $results[0];
 		}
 		return false;
@@ -611,8 +611,8 @@ class Collection extends Entity {
 	 *
 	 * @return void
 	 */
-	function set_default_displayed_fields( $value ) {
-		$this->set_mapped_property( 'default_displayed_fields', $value );
+	function set_default_displayed_metadata( $value ) {
+		$this->set_mapped_property( 'default_displayed_metadata', $value );
 	}
 
 	/**
@@ -638,14 +638,14 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Set collection fields ordination
+	 * Set collection metadata ordination
 	 *
 	 * @param [string] $value
 	 *
 	 * @return void
 	 */
-	function set_fields_order( $value ) {
-		$this->set_mapped_property( 'fields_order', $value );
+	function set_metadata_order( $value ) {
+		$this->set_mapped_property( 'metadata_order', $value );
 	}
 
 	/**
