@@ -98,7 +98,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'   => 'metadado',
 			    'status' => 'publish',
 			    'collection' => $collection,
-			    'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 		    ),
 		    true
 	    );
@@ -109,7 +109,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'   => 'metadado2',
 			    'status' => 'publish',
 			    'collection' => $collection,
-			    'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 		    ),
 		    true
 	    );
@@ -120,7 +120,7 @@ class Items extends TAINACAN_UnitTestCase {
 			    'name'              => 'metadado3',
 			    'status'            => 'publish',
 			    'collection'        => $collection,
-			    'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 		    ),
 		    true
 	    );

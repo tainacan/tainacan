@@ -19,6 +19,10 @@ class Background_Importer extends Background_Process {
 			$this->write_log($key, $object->get_log());
 			$this->write_error_log($key, $object->get_error_log());
 			
+			if (true === $object->get_abort()) {
+				throw new \Exception('Process aborted by Importer');
+			}
+			
 			if (false === $runned) {
 				return false;
 			}

@@ -1,7 +1,7 @@
 <?php
 
 namespace Tainacan\Filter_Types;
-use Tainacan\Metadatum_Types;
+use Tainacan\Metadata_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -78,13 +78,13 @@ abstract class Filter_Type {
 	 * @throws \Exception
 	 */
     public function validate_options(\Tainacan\Entities\Filter $filter) {
-        $metadatum_type = $filter->get_metadatum()->get_metadatum_type();
+        $metadata_type = $filter->get_metadatum()->get_metadata_type();
         //if there is no metadatum to validate
-        if( !$metadatum_type ){
+        if( !$metadata_type ){
             return true;
         }
 
-        $class = ( is_object( $metadatum_type ) ) ? $metadatum_type : new $metadatum_type();
+        $class = ( is_object( $metadata_type ) ) ? $metadata_type : new $metadata_type();
 
         if(in_array( $class->get_primitive_type(), $this->supported_types  )){
             return true;

@@ -20,7 +20,7 @@
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
             this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
-            this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadatum_type;
+            this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadata_type;
 
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
@@ -31,7 +31,7 @@
             axios.get(in_route)
                 .then( res => {
                     let metadatum = res.data;
-                    this.selectedValues( metadatum.metadatum_type_options.taxonomy_id );
+                    this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
                 });
         },
         data(){
@@ -88,7 +88,7 @@
                 axios.get(endpoint)
                     .then( res => {
                         let metadatum = res.data;
-                        promise = this.getValuesCategory( metadatum.metadatum_type_options.taxonomy_id, q );
+                        promise = this.getValuesCategory( metadatum.metadata_type_options.taxonomy_id, q );
                         this.isLoading = true;
                         promise.then( () => {
                             this.isLoading = false;

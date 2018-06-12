@@ -106,7 +106,7 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
 		// Create Metadata and Metadatum Type
 
-		$metadatum_type = $this->tainacan_metadatum_factory->create_metadatum('text');
+		$metadata_type = $this->tainacan_metadatum_factory->create_metadatum('text');
 
 		$metadatumA1 = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
@@ -115,7 +115,7 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 				'description' => 'Simple metadatum in collection A',
 				'status'      => 'publish',
 				'collection'  => $collectionA,
-				'metadatum_type'  => $metadatum_type
+				'metadata_type'  => $metadata_type
 			],
 			true
 		);
@@ -127,7 +127,7 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 				'description' => 'Simple metadatum in collection A',
 				'status'      => 'publish',
 				'collection'  => $collectionA,
-				'metadatum_type'  => $metadatum_type
+				'metadata_type'  => $metadata_type
 			],
 			true
 		);
@@ -139,7 +139,7 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 				'description' => 'Multiple metadatum in a collection A',
 				'status'      => 'publish',
 				'collection'  => $collectionA,
-				'metadatum_type'  => $metadatum_type,
+				'metadata_type'  => $metadata_type,
 				'multiple'    => 'yes'
 			],
 			true

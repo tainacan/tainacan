@@ -37,9 +37,9 @@
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.metadatum_type ){
+                    if( result && result.metadata_type ){
                         vm.metadatum_object = result;
-                        vm.type = result.metadatum_type;
+                        vm.type = result.metadata_type;
                         vm.loadOptions();
                     }
                 })

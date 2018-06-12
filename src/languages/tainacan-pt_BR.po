@@ -561,20 +561,20 @@ msgid "Approved"
 msgstr "Aprovado"
 
 #: admin/tainacan-admin-i18n.php:130
-#: classes/metadatum-types/category/class-tainacan-category.php:35
-#: classes/metadatum-types/relationship/class-tainacan-relationship.php:26
+#: classes/metadata-types/category/class-tainacan-category.php:35
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:26
 msgid "Collection Related"
 msgstr "Coleção relacionada"
 
 #: admin/tainacan-admin-i18n.php:131
-#: classes/metadatum-types/relationship/class-tainacan-relationship.php:30
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:30
 #, fuzzy
 #| msgid "Metadata for search"
 msgid "Metadata for search"
 msgstr "Metadados para busca"
 
 #: admin/tainacan-admin-i18n.php:132
-#: classes/metadatum-types/relationship/class-tainacan-relationship.php:34
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:34
 msgid "Allow repeated items"
 msgstr "Permitir itens repetidos"
 
@@ -585,12 +585,12 @@ msgid "Select taxonomy"
 msgstr "Categoria pai"
 
 #: admin/tainacan-admin-i18n.php:134
-#: classes/metadatum-types/category/class-tainacan-category.php:39
+#: classes/metadata-types/category/class-tainacan-category.php:39
 msgid "Input type"
 msgstr "Tipo de entrada"
 
 #: admin/tainacan-admin-i18n.php:135
-#: classes/metadatum-types/category/class-tainacan-category.php:43
+#: classes/metadata-types/category/class-tainacan-category.php:43
 msgid "Allow new terms"
 msgstr "Permitir termos novos"
 
@@ -1433,7 +1433,7 @@ msgstr ""
 msgid "Limits the result set to collections with a specific name"
 msgstr "Limita o conjunto de resultados a coleções com um nome específico"
 
-#: api/endpoints/class-tainacan-rest-metadatum-types-controller.php:26
+#: api/endpoints/class-tainacan-rest-metadata-types-controller.php:26
 #: api/endpoints/class-tainacan-rest-filter-types-controller.php:26
 #, fuzzy
 msgid "The structure of objects returned."
@@ -1649,26 +1649,26 @@ msgstr "Novo termo de gênero"
 msgid "You can not have two terms with the same name at the same level"
 msgstr "Você não pode ter dois termos com o mesmo nome em um mesmo nível"
 
-#: classes/metadatum-types/category/class-tainacan-category.php:36
-#: classes/metadatum-types/relationship/class-tainacan-relationship.php:27
+#: classes/metadata-types/category/class-tainacan-category.php:36
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:27
 msgid "Select the collection to fetch items"
 msgstr "Selecione a coleção para buscar itens"
 
-#: classes/metadatum-types/category/class-tainacan-category.php:40
+#: classes/metadata-types/category/class-tainacan-category.php:40
 msgid "The html type of the terms list "
 msgstr "O tipo de html utilizado na lista de termos"
 
-#: classes/metadatum-types/category/class-tainacan-category.php:44
+#: classes/metadata-types/category/class-tainacan-category.php:44
 msgid "Allows to create new terms"
 msgstr "Permite a criação de novos termos"
 
-#: classes/metadatum-types/category/class-tainacan-category.php:70
+#: classes/metadata-types/category/class-tainacan-category.php:70
 #, fuzzy
 #| msgid "Please select a category"
 msgid "Please select a taxonomy"
 msgstr "Por favor, selecione uma taxonomia."
 
-#: classes/metadatum-types/category/class-tainacan-category.php:88
+#: classes/metadata-types/category/class-tainacan-category.php:88
 #, fuzzy
 #| msgid ""
 #| "You can not have 2 taxonomy metadata using the same taxonomy in a "
@@ -1679,18 +1679,18 @@ msgstr ""
 "Você não pode ter 2 metadados de taxonomia utilizando a mesma taxonomia em "
 "uma coleção."
 
-#: classes/metadatum-types/core-description/class-tainacan-core-description.php:71
-#: classes/metadatum-types/core-title/class-tainacan-core-title.php:72
+#: classes/metadata-types/core-description/class-tainacan-core-description.php:71
+#: classes/metadata-types/core-title/class-tainacan-core-title.php:72
 msgid "Core Metadata can not accept multiple values"
 msgstr "Metadados fixos (Core) não podem aceitar valores múltiplos"
 
-#: classes/metadatum-types/relationship/class-tainacan-relationship.php:31
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:31
 #, fuzzy
 #| msgid "Select the metadata to help the search"
 msgid "Select the metadata to help the search"
 msgstr "Selecione os metadados que irão auxiliar na busca"
 
-#: classes/metadatum-types/relationship/class-tainacan-relationship.php:35
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:35
 #, fuzzy
 #| msgid "Allow different items with the same item selected"
 msgid ""
@@ -1700,23 +1700,23 @@ msgstr ""
 "Permite que itens diferentes sejam relacionados ao um mesmo item selecionado "
 "de outra coleção"
 
-#: classes/metadatum-types/relationship/class-tainacan-relationship.php:60
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:60
 #, fuzzy
 #| msgid "The collection ID"
 msgid "Invalid collection ID"
 msgstr "O ID da coleção"
 
-#: classes/metadatum-types/relationship/class-tainacan-relationship.php:64
+#: classes/metadata-types/relationship/class-tainacan-relationship.php:64
 #, fuzzy
 #| msgid "The metadatum Collection related is required"
 msgid "The related collection is required"
 msgstr "O metadado Coleção é requerido"
 
-#: classes/metadatum-types/selectbox/class-tainacan-selectbox.php:26
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:26
 msgid "Options"
 msgstr "Opções"
 
-#: classes/metadatum-types/selectbox/class-tainacan-selectbox.php:27
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:27
 #, fuzzy
 #| msgid "Create the options for the select, hit enter to add new one"
 msgid "Creates options for what is selected. Hit <enter> to add a new one."
@@ -1725,7 +1725,7 @@ msgstr ""
 "uma nova opção."
 
 # DESCOBRIR O CONTEXTO DESSA “REQUISIÇAO”
-#: classes/metadatum-types/selectbox/class-tainacan-selectbox.php:56
+#: classes/metadata-types/selectbox/class-tainacan-selectbox.php:56
 #, fuzzy
 #| msgid "Required"
 msgid "Required options"

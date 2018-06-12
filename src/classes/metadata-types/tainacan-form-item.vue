@@ -14,17 +14,17 @@
                     v-if="metadatum.metadatum.required == 'yes'"
                     class="required-metadatum-asterisk"
                     :class="metadatumTypeMessage">*</span>
-            <span class="metadatum-type">({{ $i18n.get(metadatum.metadatum.metadatum_type_object.component) }})</span>
+            <span class="metadata-type">({{ $i18n.get(metadatum.metadatum.metadata_type_object.component) }})</span>
             <help-button 
                     :title="metadatum.metadatum.name"
                     :message="metadatum.metadatum.description"/>
         </span>
         <div   
                 v-show="isCollapsed || metadatumTypeMessage == 'is-danger'"
-                v-if="isTextInputComponent( metadatum.metadatum.metadatum_type_object.component )">
+                v-if="isTextInputComponent( metadatum.metadatum.metadata_type_object.component )">
             <component 
-                    :id="metadatum.metadatum.metadatum_type_object.component + '-' + metadatum.metadatum.slug"
-                    :is="metadatum.metadatum.metadatum_type_object.component"
+                    :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                    :is="metadatum.metadatum.metadata_type_object.component"
                     v-model="inputs[0]" 
                     :metadatum="metadatum"
                     @blur="changeValue()"/>
@@ -35,8 +35,8 @@
                         :key="index" 
                         class="multiple-inputs">
                     <component 
-                            :id="metadatum.metadatum.metadatum_type_object.component + '-' + metadatum.metadatum.slug"
-                            :is="metadatum.metadatum.metadatum_type_object.component"
+                            :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                            :is="metadatum.metadatum.metadata_type_object.component"
                             v-model="inputs[index]" 
                             :metadatum="metadatum"
                             @blur="changeValue()"/><a 
@@ -53,8 +53,8 @@
                 v-show="isCollapsed"
                 v-else>
             <component
-                    :id="metadatum.metadatum.metadatum_type_object.component + '-' + metadatum.metadatum.slug"
-                    :is="metadatum.metadatum.metadatum_type_object.component"
+                    :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                    :is="metadatum.metadatum.metadata_type_object.component"
                     v-model="inputs"
                     :metadatum="metadatum"
                     @blur="changeValue()"/>
@@ -156,7 +156,7 @@
             margin-left: 18px;
             margin-bottom: 0.5em;
         }
-        .metadatum-type {
+        .metadata-type {
             font-size: 13px;
             font-weight: 400;
             color: $gray;

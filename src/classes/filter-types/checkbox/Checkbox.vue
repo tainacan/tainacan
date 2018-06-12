@@ -31,9 +31,9 @@
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.metadatum_type ){
+                    if( result && result.metadata_type ){
                         vm.metadatum_object = result;
-                        vm.type = result.metadatum_type;
+                        vm.type = result.metadata_type;
                         vm.loadOptions();
                     }
                 })
@@ -67,9 +67,9 @@
                 let promise = null;
                 this.isLoading = true;
 
-                if ( this.type === 'Tainacan\\Metadatum_Types\\Relationship' ) {
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadatum_type_options.collection_id ) ?
-                        this.metadatum_object.metadatum_type_options.collection_id : this.collection_id;
+                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget );
 
                 } else {

@@ -13,12 +13,12 @@ abstract class Mapper {
 	 * ['slug'] => [
 	 *     'URI' => 'http://...',          // URI of the metadatum description
 	 *     'label' => 'Label',             // Label to show on UI
-	 *     'metadatum_type' => 'date',         // Tainacan recomended metadatum type, default text
+	 *     'metadata_type' => 'date',         // Tainacan recomended metadatum type, default text
 	 *     'core_metadatum' => 'description'   // if have a core tainacan metadatum, what?
 	 * ['date' => [
 	 *     	'URI' => 'http://purl.org/dc/elements/1.1/date',
 	 *  	'label' => 'Date',
-     *      'metadatum_type' => 'date'
+     *      'metadata_type' => 'date'
 	 *  ],
 	 *  'description' => [
 	 *  	'URI' => 'http://purl.org/dc/elements/1.1/description',

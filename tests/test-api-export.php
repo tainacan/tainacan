@@ -26,7 +26,7 @@ class TAINACAN_REST_Export_Controller extends TAINACAN_UnitApiTestCase {
 				'name'              => 'teste_Export',
 				'description'       => 'descricao',
 				'collection'        => $collection,
-				'metadatum_type'		=> $type,
+				'metadata_type'		=> $type,
 				'exposer_mapping'	=> [
 					'dublin-core' => 'language'
 				]

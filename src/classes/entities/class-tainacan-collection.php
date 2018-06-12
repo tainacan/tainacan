@@ -465,8 +465,8 @@ class Collection extends Entity {
 		return $repo->fetch_by_collection($this, [
 			'meta_query' => [
 				[
-					'key' => 'metadatum_type',
-					'value' => ['Tainacan\Metadatum_Types\Core_Title', 'Tainacan\Metadatum_Types\Core_Description'],
+					'key' => 'metadata_type',
+					'value' => ['Tainacan\Metadata_Types\Core_Title', 'Tainacan\Metadata_Types\Core_Description'],
 					'compare' => 'IN'
 				]
 			]
@@ -484,8 +484,8 @@ class Collection extends Entity {
 		$results = $repo->fetch_by_collection($this, [
 			'meta_query' => [
 				[
-					'key' => 'metadatum_type',
-					'value' => 'Tainacan\Metadatum_Types\Core_Title',
+					'key' => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Title',
 				]
 			],
 			'posts_per_page' => 1
@@ -508,8 +508,8 @@ class Collection extends Entity {
 		$results = $repo->fetch_by_collection($this, [
 			'meta_query' => [
 				[
-					'key' => 'metadatum_type',
-					'value' => 'Tainacan\Metadatum_Types\Core_Description',
+					'key' => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Description',
 				]
 			],
 			'posts_per_page' => 1

@@ -1,13 +1,13 @@
 <?php
 
-namespace Tainacan\Metadatum_Types;
+namespace Tainacan\Metadata_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class TainacanMetadatumType
  */
-abstract class Metadatum_Type  {
+abstract class Metadata_Type  {
 
     
     /**
@@ -24,7 +24,7 @@ abstract class Metadatum_Type  {
     private $primitive_type;
     
     /**
-     * Array of options specific to this metadatum type. Stored in metadatum_type_options property of the Metadatum object
+     * Array of options specific to this metadatum type. Stored in metadata_type_options property of the Metadatum object
      * @var array
      */
     private $options = [];

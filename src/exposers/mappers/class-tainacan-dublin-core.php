@@ -30,7 +30,7 @@ class Dublin_Core extends Mapper {
 		'date' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/date',
 			'label' => 'Date',
-            'metadatum_type' => 'date'
+            'metadata_type' => 'date'
 		],
 		'description' => [
 			'URI' => 'http://purl.org/dc/elements/1.1/description',

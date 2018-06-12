@@ -234,6 +234,7 @@ abstract class Background_Process extends \WP_Background_Process {
 			$this->dispatch();
 		} else {
 			$this->complete();
+			$this->write_log($batch->key, ['Process Finished']);
 		}
 
 		wp_die();

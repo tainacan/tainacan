@@ -21,7 +21,7 @@
 
     export default {
         created(){
-            let collectionId = ( this.metadatum && this.metadatum.metadatum.metadatum_type_options.collection_id ) ? this.metadatum.metadatum.metadatum_type_options.collection_id : this.collection_id;
+            let collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : this.collection_id;
             if( this.metadatum.value ){
                 let query = qs.stringify({ postin: ( Array.isArray( this.metadatum.value ) ) ? this.metadatum.value : [ this.metadatum.value ]  });
 
@@ -36,12 +36,12 @@
                     });
             }
 
-            if( this.metadatum.metadatum.metadatum_type_options
-                    && this.metadatum.metadatum.metadatum_type_options.search.length > 0){
+            if( this.metadatum.metadatum.metadata_type_options
+                    && this.metadatum.metadatum.metadata_type_options.search.length > 0){
                 axios.get('/collection/'+ collectionId +'/metadata?context=edit')
                     .then( res => {
                         for (let item of res.data) {
-                            if( this.metadatum.metadatum.metadatum_type_options.search.indexOf( item.id ) >= 0 )
+                            if( this.metadatum.metadatum.metadata_type_options.search.indexOf( item.id ) >= 0 )
                                 this.searchMetadata.push( item );
                         }
                     })
@@ -103,7 +103,7 @@
                     let metaquery = this.mountQuery( query );
                     this.loading = true;
                     this.options = [];
-                    let collectionId = ( this.metadatum && this.metadatum.metadatum.metadatum_type_options.collection_id ) ? this.metadatum.metadatum.metadatum_type_options.collection_id : this.collection_id;
+                    let collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : this.collection_id;
                     axios.get('/collection/'+collectionId+'/items?' + qs.stringify( metaquery ))
                     .then( res => {
                         this.loading = false;

@@ -4,7 +4,7 @@ namespace Tainacan\Tests\Factories;
 
 class Metadatum_Factory {
 	private $metadatum;
-	protected $metadatum_type;
+	protected $metadata_type;
 
 	public function create_metadatum($type, $primitive_type = []){
 		if(empty($type)){
@@ -15,8 +15,8 @@ class Metadatum_Factory {
 			$type = ucwords(strtolower($type), '_');
 		}
 
-		$this->metadatum_type = "\Tainacan\Metadatum_Types\\$type";
-		$this->metadatum = new $this->metadatum_type(/* Here goes the primitive type */);
+		$this->metadata_type = "\Tainacan\Metadata_Types\\$type";
+		$this->metadatum = new $this->metadata_type(/* Here goes the primitive type */);
 
 		return $this->metadatum;
 	}

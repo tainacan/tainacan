@@ -189,15 +189,15 @@ class Admin {
 			'taxonomies'  => $Tainacan_Taxonomies->get_map(),
 		];
 
-		$metadatum_types = $Tainacan_Metadata->fetch_metadatum_types();
+		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();
 
 		foreach( $maps as $type => $map ){
 		    foreach ( $map as $metadatum => $details){
                 $settings['i18n']['helpers_label'][$type][$metadatum] = [ 'title' => $details['title'], 'description' => $details['description'] ];
             }
         }
-        foreach ( $metadatum_types as $index => $metadatum_type){
-		    $class = new $metadatum_type;
+        foreach ( $metadata_types as $index => $metadata_type){
+		    $class = new $metadata_type;
             $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
         }
 		

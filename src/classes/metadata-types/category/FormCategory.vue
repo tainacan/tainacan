@@ -38,7 +38,7 @@
             </label>
             <b-select
                     v-if="listInputType"
-                    name="metadatum_type_options[component_type]"
+                    name="metadata_type_options[component_type]"
                     placeholder="Select the input type for the category metadatum"
                     @input="emitValues()"
                     v-model="input_type">
@@ -51,7 +51,7 @@
             </b-select>
 
             <b-select
-                    name="metadatum_type_options[input_type]"
+                    name="metadata_type_options[input_type]"
                     placeholder="Select the input type for the category metadatum"
                     v-model="input_type"
                     @input="emitValues()"

@@ -35,7 +35,7 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
             endpoint = '/metadata/';
         axios.tainacan.post(endpoint + '?context=edit', {
             name: name,
-            metadatum_type: metadatumType,
+            metadata_type: metadatumType,
             status: status
         })
             .then(res => {
@@ -113,7 +113,7 @@ export const updateCollectionMetadataOrder = ({ dispatch }, {collectionId, metad
 
 export const fetchMetadatumTypes = ({commit}) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/metadatum-types')
+        axios.tainacan.get('/metadata-types')
             .then((res) => {
                 let metadatumTypes = res.data;
                 commit('setMetadatumTypes', metadatumTypes);

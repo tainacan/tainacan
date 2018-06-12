@@ -47,12 +47,18 @@ class Item_Metadata extends Repository {
 		
 		$unique = !$item_metadata->is_multiple();
 
-		$metadatum_type = $item_metadata->get_metadatum()->get_metadatum_type_object();
-		if ($metadatum_type->get_core()) {
+		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+		
+		if ($metadata_type->get_core()) {
 			$this->save_core_metadatum_value($item_metadata);
-		} elseif ($metadatum_type->get_primitive_type() == 'term') {
+			// Core metadata are also stored as regular metadata (in the code following below)
+			// This is usefull to create queries via filters, advanced search or apis
+			// si you can search for title and content with meta_query as if they were regular metadata
+		} 
+		
+		if ($metadata_type->get_primitive_type() == 'term') {
 			$this->save_terms_metadatum_value($item_metadata);
-		} elseif ($metadatum_type->get_primitive_type() == 'compound') {
+		} elseif ($metadata_type->get_primitive_type() == 'compound') {
 			// do nothing. Compound values are updated when its child metadata are updated
 			return $item_metadata;
 		} else {
@@ -115,10 +121,10 @@ class Item_Metadata extends Repository {
 	public function delete($item_metadata){}
 
     public function save_core_metadatum_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
-        $metadatum_type = $item_metadata->get_metadatum()->get_metadatum_type_object();
-        if ($metadatum_type->get_core()) {
+        $metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+        if ($metadata_type->get_core()) {
             $item = $item_metadata->get_item();
-            $set_method = 'set_' . $metadatum_type->get_related_mapped_prop();
+            $set_method = 'set_' . $metadata_type->get_related_mapped_prop();
             $value = $item_metadata->get_value();
             $item->$set_method( is_array( $value ) ? $value[0] : $value );
             if ($item->validate_core_metadata()) {
@@ -131,10 +137,10 @@ class Item_Metadata extends Repository {
     }
 	
 	public function save_terms_metadatum_value($item_metadata) {
-		$metadatum_type = $item_metadata->get_metadatum()->get_metadatum_type_object();
-		if ($metadatum_type->get_primitive_type() == 'term') {
+		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+		if ($metadata_type->get_primitive_type() == 'term') {
 			$new_terms = $item_metadata->get_value();
-			$taxonomy = new Entities\Taxonomy( $metadatum_type->get_option('taxonomy_id') );
+			$taxonomy = new Entities\Taxonomy( $metadata_type->get_option('taxonomy_id') );
 
 			if( $taxonomy ){
 				$old = $item_metadata;
@@ -222,17 +228,17 @@ class Item_Metadata extends Repository {
     public function get_value(Entities\Item_Metadata_Entity $item_metadata) {
         $unique = ! $item_metadata->is_multiple();
         
-        $metadatum_type = $item_metadata->get_metadatum()->get_metadatum_type_object();
-        if ($metadatum_type->get_core()) {
+        $metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+        if ($metadata_type->get_core()) {
             $item = $item_metadata->get_item();
             
-            $get_method = 'get_' . $metadatum_type->get_related_mapped_prop();
+            $get_method = 'get_' . $metadata_type->get_related_mapped_prop();
             return $item->$get_method();
         
-		} elseif ($metadatum_type->get_primitive_type() == 'term') {
+		} elseif ($metadata_type->get_primitive_type() == 'term') {
 
-            if( is_numeric( $metadatum_type->get_option('taxonomy_id') ) ){
-                $taxonomy = new Entities\Taxonomy( $metadatum_type->get_option('taxonomy_id') );
+            if( is_numeric( $metadata_type->get_option('taxonomy_id') ) ){
+                $taxonomy = new Entities\Taxonomy( $metadata_type->get_option('taxonomy_id') );
                 if( $taxonomy ){
                     $taxonomy_slug = $taxonomy->get_db_identifier();
                 } else {
@@ -262,7 +268,7 @@ class Item_Metadata extends Repository {
 			
 			return $terms;
 		
-		} elseif ($metadatum_type->get_primitive_type() == 'compound') {
+		} elseif ($metadata_type->get_primitive_type() == 'compound') {
 			
 			global $wpdb;
 			$rows = $wpdb->get_results( 

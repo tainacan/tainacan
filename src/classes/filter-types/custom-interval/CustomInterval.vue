@@ -75,9 +75,9 @@
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.metadatum_type ){
+                    if( result && result.metadata_type ){
                         vm.metadatum_object = result;
-                        vm.type = ( result.metadatum_type === 'Tainacan\\Metadatum_Types\\Date') ? 'date' : 'numeric';
+                        vm.type = ( result.metadata_type === 'Tainacan\\Metadata_Types\\Date') ? 'date' : 'numeric';
                         vm.selectedValues();
                     }
                 })

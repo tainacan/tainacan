@@ -187,11 +187,11 @@
                                         metadatum.id === 'creation_date' ||
                                         metadatum.id === 'author_name' || (
                                             metadatum.id !== undefined &&
-                                            metadatum.metadatum_type_object && 
-                                            metadatum.metadatum_type_object.related_mapped_prop !== 'description' &&
-                                            metadatum.metadatum_type_object.primitive_type !== 'term' &&
-                                            metadatum.metadatum_type_object.primitive_type !== 'item' &&
-                                            metadatum.metadatum_type_object.primitive_type !== 'compound'
+                                            metadatum.metadata_type_object && 
+                                            metadatum.metadata_type_object.related_mapped_prop !== 'description' &&
+                                            metadatum.metadata_type_object.primitive_type !== 'term' &&
+                                            metadatum.metadata_type_object.primitive_type !== 'item' &&
+                                            metadatum.metadata_type_object.primitive_type !== 'compound'
                                     )"
                                     :value="metadatum"
                                     :key="metadatum.id">
@@ -587,7 +587,7 @@
                         metadata.push({
                             name: this.$i18n.get('label_thumbnail'),
                             metadatum: 'row_thumbnail',
-                            metadatum_type: undefined,
+                            metadata_type: undefined,
                             slug: 'thumbnail',
                             id: undefined,
                             display: true
@@ -610,8 +610,8 @@
                                         name: metadatum.name,
                                         metadatum: metadatum.description,
                                         slug: metadatum.slug,
-                                        metadatum_type: metadatum.metadatum_type,
-                                        metadatum_type_object: metadatum.metadatum_type_object,
+                                        metadata_type: metadatum.metadata_type,
+                                        metadata_type_object: metadatum.metadata_type_object,
                                         id: metadatum.id,
                                         display: display
                                     }
@@ -624,7 +624,7 @@
                         metadata.push({
                             name: this.$i18n.get('label_creation_date'),
                             metadatum: 'row_creation',
-                            metadatum_type: undefined,
+                            metadata_type: undefined,
                             slug: 'creation_date',
                             id: undefined,
                             display: true
@@ -632,7 +632,7 @@
                         metadata.push({
                             name: this.$i18n.get('label_created_by'),
                             metadatum: 'row_author',
-                            metadatum_type: undefined,
+                            metadata_type: undefined,
                             slug: 'author_name',
                             id: undefined,
                             display: true
@@ -667,6 +667,7 @@
             this.isRepositoryLevel = (this.collectionId === undefined);
 
             this.$eventBusSearch.setCollectionId(this.collectionId);
+            this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
                 this.isLoadingItems = isLoadingItems;
@@ -703,7 +704,7 @@
             // Watch Scroll for shrinking header, only on Admin at collection level
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
-                    this.isHeaderShrinked = ($event.originalTarget.scrollTop > 53);
+                    this.isHeaderShrinked = ($event.target.scrollTop > 53);
                     this.$emit('onShrinkHeader', this.isHeaderShrinked); 
                 });
             }
@@ -774,18 +775,13 @@
 
             .control {
                 width: 100%;
-
-                input {
-                    height: 27px;
-                    font-size: 11px;
-                    color: $gray-light;
-                }
                 .icon {
                     pointer-events: all;
                     cursor: pointer;
                     color: $tertiary;
                     height: 27px;
                     font-size: 18px !important;
+                    height: 2rem !important;
                 }
                 margin-bottom: 5px;
             }

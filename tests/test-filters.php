@@ -59,7 +59,7 @@ class Filters extends TAINACAN_UnitTestCase {
 		    array(
 		    	'name'              => 'metadado',
 			    'collection_id'     => $collection->get_id(),
-			    'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 		    	'description' => 'descricao',
 		    ),
 		    true
@@ -125,7 +125,7 @@ class Filters extends TAINACAN_UnitTestCase {
             array(
                 'name'          => 'Other filtered',
                 'description'   => 'Is filtered',
-                'metadatum_type'    => 'Tainacan\Metadatum_Types\Text',
+                'metadata_type'    => 'Tainacan\Metadata_Types\Text',
                 'collection_id' => $collection->get_id()
             ),
             true

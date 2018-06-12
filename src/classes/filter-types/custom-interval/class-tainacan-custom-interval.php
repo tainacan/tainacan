@@ -20,7 +20,7 @@ class Custom_Interval extends Filter_Type {
      * @internal param $metadatum
      */
     public function render( $filter ){
-         $type = ( $filter->get_metadatum()->get_metadatum_type() === 'Tainacan\Metadatum_Types\Date' ) ? 'date' : 'numeric';
+         $type = ( $filter->get_metadatum()->get_metadata_type() === 'Tainacan\Metadata_Types\Date' ) ? 'date' : 'numeric';
          return '<tainacan-filter-custom-interval 
                                         name="'.$filter->get_name().'"
                                         typeRange="'.$type.'"

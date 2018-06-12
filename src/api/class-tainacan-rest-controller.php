@@ -247,13 +247,13 @@ class REST_Controller extends \WP_REST_Controller {
                 // handle core metadatum
                 if( is_array($a) && array_key_exists("key", $a) ){
                     $metadatum = new \Tainacan\Entities\Metadatum($a['key']);
-                    if( strpos( $metadatum->get_metadatum_type(), 'Core_Title') !== false ){
+                    if( strpos( $metadatum->get_metadata_type(), 'Core_Title') !== false ){
                         $args[ 'post_title_in' ] = [
                             'relation' => ( isset( $request_meta_query['relation']) ) ? $request_meta_query['relation'] : 'AND' ,
                             'value' => ( is_array( $a['value'] ) ) ? $a['value'] : [$a['value']]
                         ];
                         continue;
-                    } else if( strpos( $metadatum->get_metadatum_type(), 'Core_Description') !== false ) {
+                    } else if( strpos( $metadatum->get_metadata_type(), 'Core_Description') !== false ) {
                         $args[ 'post_content_in' ] = [
                             'relation' => ( isset( $request_meta_query['relation']) ) ? $request_meta_query['relation'] : 'AND' ,
                             'value' => ( is_array( $a['value'] ) ) ? $a['value'] : [$a['value']]

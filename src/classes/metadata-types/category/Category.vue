@@ -27,15 +27,15 @@
 
     export default {
         created(){
-            let metadatum_type_options = this.metadatum.metadatum.metadatum_type_options;
-            this.component = ( metadatum_type_options && metadatum_type_options.input_type )
-                ? this.metadatum.metadatum.metadatum_type_options.input_type : this.componentAttribute
+            let metadata_type_options = this.metadatum.metadatum.metadata_type_options;
+            this.component = ( metadata_type_options && metadata_type_options.input_type )
+                ? this.metadatum.metadatum.metadata_type_options.input_type : this.componentAttribute
 
             this.collectionId = this.metadatum.metadatum.collection_id;
-            this.taxonomy = metadatum_type_options.taxonomy_id;
+            this.taxonomy = metadata_type_options.taxonomy_id;
 
-            if( metadatum_type_options && metadatum_type_options.allow_new_terms ){
-                this.allowNew = metadatum_type_options.allow_new_terms === 'yes'
+            if( metadata_type_options && metadata_type_options.allow_new_terms ){
+                this.allowNew = metadata_type_options.allow_new_terms === 'yes'
             }
             this.getTermsFromTaxonomy();
             this.getTermsId();
@@ -77,8 +77,8 @@
         methods: {
             getComponent(){
                 if( this.metadatum.metadatum
-                    && this.metadatum.metadatum.metadatum_type_options && this.metadatum.metadatum.metadatum_type_options.input_type ){
-                    return this.metadatum.metadatum.metadatum_type_options.input_type;
+                    && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.input_type ){
+                    return this.metadatum.metadatum.metadata_type_options.input_type;
                 }
             },
             getTermsFromTaxonomy(){

@@ -12,7 +12,7 @@
                         :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')"/>
             </label>
             <b-select
-                    name="metadatum_type_relationship[collection_id]"
+                    name="metadata_type_relationship[collection_id]"
                     placeholder="Select the collection to fetch items"
                     v-model="collection"
                     @change.native="emitValues()"
@@ -47,7 +47,7 @@
                         :key="index"
                         class="field">
                         <b-checkbox
-                                name="metadatum_type_relationship[search][]"
+                                name="metadata_type_relationship[search][]"
                                 v-model="modelSearch"
                                 :native-value="option.id">
                             {{ option.name }}
@@ -183,7 +183,7 @@
                             this.metadata = [];
 
                             for( let metadatum of metadata ){
-                               if( metadatum.metadatum_type !== "Tainacan\\Metadatum_Types\\Relationship"){
+                               if( metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Relationship"){
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
                                    this.checkMetadata()

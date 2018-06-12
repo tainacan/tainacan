@@ -1,7 +1,7 @@
 <?php
 
 namespace Tainacan\Tests;
-use Tainacan\Metadatum_Types;
+use Tainacan\Metadata_Types;
 /**
  * Class Metadatum
  *
@@ -35,7 +35,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		        'description' => 'descricao',
 		        'collection' => $collection,
 	        	'accept_suggestion' => true,
-		        'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 	        ),
 	        true
         );
@@ -68,7 +68,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		        'name'              => 'metadado',
 		        'description'       => 'descricao',
 		        'collection_id'     => $collection->get_id(),
-		        'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 	        ),
 	        true
         );
@@ -77,8 +77,8 @@ class Metadata extends TAINACAN_UnitTestCase {
 
         $this->assertEquals($test->get_name(), 'metadado');
         $this->assertEquals($test->get_collection_id(), $collection->get_id());
-        $this->assertEquals('Tainacan\Metadatum_Types\Text', $test->get_metadatum_type());
-        $this->assertEquals($test->get_metadatum_type(), 'Tainacan\Metadatum_Types\Text');
+        $this->assertEquals('Tainacan\Metadata_Types\Text', $test->get_metadata_type());
+        $this->assertEquals($test->get_metadata_type(), 'Tainacan\Metadata_Types\Text');
     }
 
     /**
@@ -92,7 +92,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	        array(
 	        	'name'              => 'metadatum default',
 		        'collection_id'     => $Tainacan_Metadata->get_default_metadata_attribute(),
-		        'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 		        'status'            => 'publish'
 	        ),
 	        true
@@ -111,7 +111,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	        array(
 	        	'name'              => 'metadatum grandfather',
 		        'collection_id'     => $collection_grandfather->get_id(),
-		        'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+		        'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 		        'status'            => 'publish'
 	        ),
 	        true
@@ -131,7 +131,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		    array(
 			    'name'              => 'metadatum father',
 			    'collection_id'     => $collection_father->get_id(),
-			    'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			    'status'            => 'publish'
 		    ),
 		    true
@@ -154,7 +154,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		    array(
 			    'name'              => 'metadatum son',
 			    'collection_id'     => $collection_son->get_id(),
-			    'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+			    'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			    'status'            => 'publish'
 		    ),
 		    true
@@ -192,9 +192,9 @@ class Metadata extends TAINACAN_UnitTestCase {
     /**
      * test if the defaults types are registered
      */
-    function test_metadata_metadatum_type(){
+    function test_metadata_metadata_type(){
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-        $this->assertEquals( 8, sizeof( $Tainacan_Metadata->fetch_metadatum_types() ) );
+        $this->assertEquals( 8, sizeof( $Tainacan_Metadata->fetch_metadata_types() ) );
     }
 
 
@@ -219,7 +219,7 @@ class Metadata extends TAINACAN_UnitTestCase {
                 'name' => 'metadatum1',
                 'description' => 'descricao',
                 'collection' => $collection,
-                'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+                'metadata_type'  => 'Tainacan\Metadata_Types\Text',
                 'status' => 'publish'
             ),
             true
@@ -231,7 +231,7 @@ class Metadata extends TAINACAN_UnitTestCase {
                 'name' => 'metadatum2',
                 'description' => 'metadatum2',
                 'collection' => $collection,
-                'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+                'metadata_type'  => 'Tainacan\Metadata_Types\Text',
                 'status' => 'publish'
             ),
             true
@@ -244,7 +244,7 @@ class Metadata extends TAINACAN_UnitTestCase {
                 'name' => 'metadatum3',
                 'description' => 'metadatum3',
                 'collection' => $collection,
-                'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+                'metadata_type'  => 'Tainacan\Metadata_Types\Text',
                 'status' => 'publish'
             ),
             true
@@ -278,7 +278,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 				'description'   => 'adasdasdsa',
                 'slug'          => 'duplicated_slug',
                 'status'        => 'publish',
-                'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+                'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
 		);
@@ -290,7 +290,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 				'description'   => 'adasdasdsa',
                 'slug'          => 'duplicated_slug',
                 'status'        => 'publish',
-                'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+                'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
 		);
@@ -304,7 +304,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 				'name'          => 'teste',
 				'description'   => 'adasdasdsa',
                 'slug'          => 'duplicated_slug',
-                'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+                'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
 		);
@@ -315,7 +315,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 				'name'          => 'teste',
 				'description'   => 'adasdasdsa',
                 'slug'          => 'duplicated_slug',
-                'metadatum_type'  => 'Tainacan\Metadatum_Types\Text',
+                'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
 		);
@@ -334,7 +334,7 @@ class Metadata extends TAINACAN_UnitTestCase {
         
     }
 
-    function test_validation_of_metadatum_types() {
+    function test_validation_of_metadata_types() {
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
@@ -350,8 +350,8 @@ class Metadata extends TAINACAN_UnitTestCase {
         $validMetadatum->set_name('test');
         $validMetadatum->set_description('test');
         $validMetadatum->set_collection($collection);
-        $validMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\Relationship');
-        $validMetadatum->set_metadatum_type_options(['collection_id' => 12]);
+        $validMetadatum->set_metadata_type('Tainacan\Metadata_Types\Relationship');
+        $validMetadatum->set_metadata_type_options(['collection_id' => 12]);
         
         $this->assertTrue($validMetadatum->validate());
         
@@ -360,8 +360,8 @@ class Metadata extends TAINACAN_UnitTestCase {
         $invalidMetadatum->set_description('test');
         $invalidMetadatum->set_collection($collection);
         $invalidMetadatum->set_status('publish');
-        $invalidMetadatum->set_metadatum_type('Tainacan\Metadatum_Types\Relationship');
-        $invalidMetadatum->set_metadatum_type_options(['collection_id' => 'string']);
+        $invalidMetadatum->set_metadata_type('Tainacan\Metadata_Types\Relationship');
+        $invalidMetadatum->set_metadata_type_options(['collection_id' => 'string']);
         
         $this->assertFalse($invalidMetadatum->validate());
 
@@ -371,7 +371,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 /**
  * Class TainacanMetadatumType
  */
-class RandomType extends Metadatum_Types\Metadatum_Type {
+class RandomType extends Metadata_Types\Metadata_Type {
 
     function __construct(){
         parent::__construct();

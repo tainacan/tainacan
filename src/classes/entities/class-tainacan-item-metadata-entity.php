@@ -54,7 +54,7 @@ class Item_Metadata_Entity extends Entity {
 		$metadatum = $this->get_metadatum();
 		
 		if (is_object($metadatum)) {
-			$fto = $metadatum->get_metadatum_type_object();
+			$fto = $metadatum->get_metadata_type_object();
 			if (is_object($fto)) {
 				
 				if ( method_exists($fto, 'get_value_as_html') ) {
@@ -143,7 +143,7 @@ class Item_Metadata_Entity extends Entity {
 		$as_array['value_as_html'] = $this->get_value_as_html();
 		$as_array['value_as_string'] = $this->get_value_as_string();
 
-		if($this->get_metadatum()->get_metadatum_type_object()->get_primitive_type() === 'date'){
+		if($this->get_metadatum()->get_metadata_type_object()->get_primitive_type() === 'date'){
 			$as_array['date_i18n'] = $this->get_date_i18n($this->get_value_as_string());
 		}
 
@@ -321,11 +321,11 @@ class Item_Metadata_Entity extends Entity {
             return false;
         }
 
-        $classMetadatumType = $metadatum->get_metadatum_type_object();
+        $classMetadatumType = $metadatum->get_metadata_type_object();
         if( is_object( $classMetadatumType ) ){
             if( method_exists ( $classMetadatumType , 'validate' ) ){
                 if( ! $classMetadatumType->validate( $this ) ) {
-                    $this->add_error('metadatum_type_error', $classMetadatumType->get_errors() );
+                    $this->add_error('metadata_type_error', $classMetadatumType->get_errors() );
                     return false;
                 }
             }

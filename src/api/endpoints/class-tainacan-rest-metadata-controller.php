@@ -297,12 +297,12 @@ class REST_Metadata_Controller extends REST_Controller {
 		if(!empty($item)){
 			$item_arr = $item->_toArray();
 			
-			$item_arr['metadatum_type_object'] = $item->get_metadatum_type_object()->_toArray();
+			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
 			
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 				ob_start();
-				$item->get_metadatum_type_object()->form();
+				$item->get_metadata_type_object()->form();
 				$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
 				$item_arr['enabled'] = $item->get_enabled_for_collection();

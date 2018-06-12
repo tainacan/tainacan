@@ -44,8 +44,8 @@
                 if ( this.options && this.options !== '' ){
                     return this.options.split("\n");
                 }
-                else if ( this.metadatum && this.metadatum.metadatum.metadatum_type_options.options ) {
-                    const metadata = this.metadatum.metadatum.metadatum_type_options.options;
+                else if ( this.metadatum && this.metadatum.metadatum.metadata_type_options.options ) {
+                    const metadata = this.metadatum.metadatum.metadata_type_options.options;
                     return ( metadata ) ? metadata.split("\n") : [];
                 }
                 return [];
