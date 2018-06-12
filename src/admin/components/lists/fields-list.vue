@@ -432,19 +432,33 @@ export default {
             var self = this;
             this.mappedFields = [];
             this.mapperMetadata.forEach(function(item) {
-                self.mappedFields.push(item.selected);
+                if(item.selected.length != 0) {
+                    self.mappedFields.push(item.selected);
+                }
             });
         },
         onUpdateFieldsMapperMetadataClick() {
             var fieldsMapperMetadata = [];
+            var self = this;
             this.mapperMetadata.forEach(function(item) {
-                var map = {
-                        field_id: item.selected,
-                        mapper_metadata: item.slug
-                };
-                fieldsMapperMetadata.push(map);
+                if (item.selected.length != 0) {
+                    var map = {
+                            field_id: item.selected,
+                            mapper_metadata: item.slug
+                    };
+                    fieldsMapperMetadata.push(map);
+                }
             });
-            this.updateFieldsMapperMetadata(fieldsMapperMetadata, this.mapper);
+            this.activeFieldList.forEach(function(item) {
+                if(self.mappedFields.indexOf(item.id) == -1) {
+                    var map = {
+                            field_id: item.id,
+                            mapper_metadata: ''
+                    };
+                    fieldsMapperMetadata.push(map);
+                }
+            });
+            this.updateFieldsMapperMetadata({fieldsMapperMetadata: fieldsMapperMetadata, mapper: this.mapper.slug});
         },
         onCancelUpdateFieldsMapperMetadata() {
             this.isMapperMetadataLoading = true;
