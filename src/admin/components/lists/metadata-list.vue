@@ -141,7 +141,7 @@
             <!-- Exposer -->
             <b-tab-item
                     :label="$i18n.get('mapping')"
-                    @click="onSelectMetadataMapper(this.mapper)">
+                    v-model="activeMetadatumList">
                 <div class="active-metadata-area">
                     <section 
                             v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
