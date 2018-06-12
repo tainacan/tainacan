@@ -149,10 +149,10 @@
                             <b-icon icon="menu-down"/>
                         </button>
                         <b-dropdown-item
-                                :key="field_mapper.slug"
-                                v-for="field_mapper in field_mappers"
-                                @click="onSelectFieldsMapper(field_mapper)">
-                            {{ $i18n.get(field_mapper.name) }}
+                                :key="metadatum_mapper.slug"
+                                v-for="metadatum_mapper in metadatum_mappers"
+                                @click="onSelectMetadataMapper(metadatum_mapper)">
+                            {{ $i18n.get(metadatum_mapper.name) }}
                         </b-dropdown-item>
                     </b-dropdown>
                     <section
@@ -162,17 +162,17 @@
                                 <button
                                         class="button is-outlined"
                                         type="button"
-                                        @click="onCancelUpdateFieldsMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                                        @click="onCancelUpdateMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
                             </div>
                             <div class="control">
                                 <button
-                                        @click.prevent="onUpdateFieldsMapperMetadataClick"
+                                        @click.prevent="onUpdateMetadataMapperMetadataClick"
                                         class="button is-success">{{ $i18n.get('save') }}</button>
                             </div>
                         </div>
                     </section>
                     <section 
-                            v-if="activeFieldList.length <= 0 && !isLoadingFields"
+                            v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
                             class="field is-grouped-centered section">
                         <div class="content has-text-gray has-text-centered">
                             <p>
@@ -180,7 +180,7 @@
                                         icon="format-list-bulleted-type"
                                         size="is-large"/>
                             </p>
-                            <p>{{ $i18n.get('info_there_is_no_field' ) }}</p>  
+                            <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>  
                             <p>{{ $i18n.get('info_create_metadata' ) }}</p>
                         </div>
                     </section>             
@@ -199,21 +199,21 @@
     
                                     <b-table-column
                                             field="slug"
-                                            :label="$i18n.get('field')">
+                                            :label="$i18n.get('metadatum')">
                                         <b-select
-                                                :name="'mappers-field-select-' + props.row.slug"
+                                                :name="'mappers-metadatum-select-' + props.row.slug"
                                                 v-model="props.row.selected"
-                                                @input="onSelectFieldForMapperMetadata">
+                                                @input="onSelectMetadatumForMapperMetadata">
                                             <option
                                                     value="">
-                                                {{ $i18n.get('instruction_select_a_field') }}
+                                                {{ $i18n.get('instruction_select_a_metadatum') }}
                                             </option>
                                             <option
-                                                v-for="(field, index) in activeFieldList"
+                                                v-for="(metadatum, index) in activeMetadatumList"
                                                 :key="index"
-                                                :value="field.id"
-                                                :disabled="isFieldSelected(field.id)">
-                                                {{ field.name }}
+                                                :value="metadatum.id"
+                                                :disabled="isMetadatumSelected(metadatum.id)">
+                                                {{ metadatum.name }}
                                             </option>
                                         </b-select>
                                     </b-table-column>
@@ -228,11 +228,11 @@
                                 <button
                                         class="button is-outlined"
                                         type="button"
-                                        @click="onCancelUpdateFieldsMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                                        @click="onCancelUpdateMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
                             </div>
                             <div class="control">
                                 <button
-                                        @click.prevent="onUpdateFieldsMapperMetadataClick"
+                                        @click.prevent="onUpdateMetadataMapperMetadataClick"
                                         class="button is-success">{{ $i18n.get('save') }}</button>
                             </div>
                         </div>
@@ -260,7 +260,7 @@ export default {
             mapper: '',
             mapperMetadata: [],
             isMapperMetadataLoading: false,
-            mappedFields: []
+            mappedMetadata: []
             isLoadingMetadatumTypes: true,
             isLoadingMetadata: false,
             isLoadingMetadatum: false,
@@ -291,9 +291,9 @@ export default {
                 this.updateMetadata(value);
             }
         },
-        field_mappers: {
+        metadatum_mappers: {
             get() {
-                return this.getFieldMappers();
+                return this.getMetadatumMappers();
             }
         },
     },
@@ -330,13 +330,13 @@ export default {
             'deleteMetadatum',
             'updateMetadata',
             'updateCollectionMetadataOrder',
-            'fetchFieldMappers',
-            'updateFieldsMapperMetadata'
+            'fetchMetadatumMappers',
+            'updateMetadataMapperMetadata'
         ]),
         ...mapGetters('metadata',[
             'getMetadatumTypes',
             'getMetadata',
-            'getFieldMappers'
+            'getMetadatumMappers'
         ]),
         handleChange(event) {     
             if (event.added) {
@@ -426,20 +426,20 @@ export default {
             delete this.editForms[this.openedMetadatumId];
             this.openedMetadatumId = '';
         }
-        onSelectFieldsMapper(field_mapper) {
+        onSelectMetadataMapper(metadatum_mapper) {
             this.isMapperMetadataLoading = true;
-            this.mapper = field_mapper;
-            for (var k in field_mapper.metadata) {
-                var item = field_mapper.metadata[k];
+            this.mapper = metadatum_mapper;
+            for (var k in metadatum_mapper.metadata) {
+                var item = metadatum_mapper.metadata[k];
                 item.slug = k;
                 item.selected = '';
                 var self = this;
-                this.activeFieldList.forEach(function(field) {
+                this.activeMetadatumList.forEach(function(metadatum) {
                     if(
-                            field.exposer_mapping.hasOwnProperty(field_mapper.slug) &&
-                            field.exposer_mapping[field_mapper.slug] == item.slug ) {
-                        item.selected = field.id;
-                        self.mappedFields.push(field.id);
+                            metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
+                            metadatum.exposer_mapping[metadatum_mapper.slug] == item.slug ) {
+                        item.selected = metadatum.id;
+                        self.mappedMetadata.push(metadatum.id);
                     }
                 });
                 this.mapperMetadata.push(item);
@@ -447,46 +447,46 @@ export default {
             this.isMapperMetadataLoading = false;
             //console.log(JSON.stringify(this.mapperMetadata));
         },
-        isFieldSelected(id) {
-            return this.mappedFields.indexOf(id) > -1;
+        isMetadatumSelected(id) {
+            return this.mappedMetadata.indexOf(id) > -1;
         },
-        onSelectFieldForMapperMetadata() {
+        onSelectMetadatumForMapperMetadata() {
             var self = this;
-            this.mappedFields = [];
+            this.mappedMetadata = [];
             this.mapperMetadata.forEach(function(item) {
                 if(item.selected.length != 0) {
-                    self.mappedFields.push(item.selected);
+                    self.mappedMetadata.push(item.selected);
                 }
             });
         },
-        onUpdateFieldsMapperMetadataClick() {
+        onUpdateMetadataMapperMetadataClick() {
             this.isMapperMetadataLoading = true;
-            var fieldsMapperMetadata = [];
+            var metadataMapperMetadata = [];
             var self = this;
             this.mapperMetadata.forEach(function(item) {
                 if (item.selected.length != 0) {
                     var map = {
-                            field_id: item.selected,
+                            metadatum_id: item.selected,
                             mapper_metadata: item.slug
                     };
-                    fieldsMapperMetadata.push(map);
+                    metadataMapperMetadata.push(map);
                 }
             });
-            this.activeFieldList.forEach(function(item) {
-                if(self.mappedFields.indexOf(item.id) == -1) {
+            this.activeMetadatumList.forEach(function(item) {
+                if(self.mappedMetadata.indexOf(item.id) == -1) {
                     var map = {
-                            field_id: item.id,
+                            metadatum_id: item.id,
                             mapper_metadata: ''
                     };
-                    fieldsMapperMetadata.push(map);
+                    metadataMapperMetadata.push(map);
                 }
             });
-            this.updateFieldsMapperMetadata({fieldsMapperMetadata: fieldsMapperMetadata, mapper: this.mapper.slug});
+            this.updateMetadataMapperMetadata({metadataMapperMetadata: metadataMapperMetadata, mapper: this.mapper.slug});
             this.isMapperMetadataLoading = false;
         },
-        onCancelUpdateFieldsMapperMetadata() {
+        onCancelUpdateMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
-            this.onSelectFieldsMapper(this.mapper);
+            this.onSelectMetadataMapper(this.mapper);
             this.isMapperMetadataLoading = false;
         }
     },
@@ -516,7 +516,7 @@ export default {
             .catch(() => {
                 this.isLoadingMetadata = false;
             });
-        this.fetchFieldMappers()
+        this.fetchMetadatumMappers()
             .then(() => {
                 this.isLoadingMetadatumMappers = false;
             })
