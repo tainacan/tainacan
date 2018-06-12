@@ -158,6 +158,8 @@ export const updateMetadataMapperMetadata = ({ dispatch }, {metadataMapperMetada
                 reject(error);
             });
     });
+}
+
 export const updateMetadatumMappers = ({commit}, metadatumMappers) => {
     commit('setMetadatumMappers', metadatumMappers);
 };

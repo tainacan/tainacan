@@ -260,7 +260,7 @@ export default {
             mapper: '',
             mapperMetadata: [],
             isMapperMetadataLoading: false,
-            mappedMetadata: []
+            mappedMetadata: [],
             isLoadingMetadatumTypes: true,
             isLoadingMetadata: false,
             isLoadingMetadatum: false,
@@ -425,7 +425,7 @@ export default {
             this.formWithErrors = '';
             delete this.editForms[this.openedMetadatumId];
             this.openedMetadatumId = '';
-        }
+        },
         onSelectMetadataMapper(metadatum_mapper) {
             this.isMapperMetadataLoading = true;
             this.mapper = metadatum_mapper;
