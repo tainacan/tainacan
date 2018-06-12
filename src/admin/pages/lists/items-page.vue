@@ -326,8 +326,6 @@
                     </div>
                 </div>
 
-                <!-- Admin Table -->
-
                 <!-- When advanced search -->
                 <items-list
                         v-if="!isOnTheme &&
@@ -343,7 +341,7 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
 
-                <!-- Regular -->
+                <!-- Admin View Modes-->
                 <items-list
                         v-else-if="!isOnTheme &&
                               !isLoadingItems && 
@@ -370,10 +368,10 @@
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component'"
                         :collection-id="collectionId"
-                        :table-metadata="tableMetadata"
+                        :displayed-metadata="tableMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is="'table-view-mode'"/>     
+                        :is="registeredViewModes[viewMode].component"/>     
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section

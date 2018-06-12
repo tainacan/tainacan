@@ -1,7 +1,7 @@
 <template>
     <div 
             class="tainacan-page-title">
-        <h1>{{ pageTitle }} <span class="is-italic">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
+        <h1>{{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
         <a 
                 @click="$router.go(-1)"
                 class="back-link is-secondary">
