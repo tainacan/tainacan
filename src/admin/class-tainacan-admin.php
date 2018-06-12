@@ -223,9 +223,9 @@ class Admin {
 
 	function register_user_meta() {
 		$args = array(
-			//'sanitize_callback' => 'sanitize_my_meta_key',
+			//'sanitize_callback' => array(&$this, 'santize_user_tainacan_prefs'),
 			//'auth_callback' => 'authorize_my_meta_key',
-			'type'         => 'array',
+			'type'         => 'string',
 			'description'  => 'Tainacan admin user preferences',
 			'single'       => true,
 			'show_in_rest' => true,
