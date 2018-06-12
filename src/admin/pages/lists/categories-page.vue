@@ -35,7 +35,7 @@
                             :is-loading="isLoading"
                             :total-categories="totalCategories"
                             :page="page"
-                            :categories-per-page="categoriesPerPage"
+                            :categories-per-page="taxonomiesPerPage"
                             :categories="categories"/>
                     
                     <!-- Empty state image -->
@@ -68,7 +68,7 @@
                         <div class="shown-items">
                             {{
                                 $i18n.get('info_showing_categories') +
-                                (categoriesPerPage * (page - 1) + 1) +
+                                (taxonomiesPerPage * (page - 1) + 1) +
                                 $i18n.get('info_to') +
                                 getLastCategoryNumber() +
                                 $i18n.get('info_of') + totalCategories + '.'
@@ -79,7 +79,7 @@
                                     horizontal 
                                     :label="$i18n.get('label_categories_per_page')">
                                 <b-select
-                                        :value="categoriesPerPage"
+                                        :value="taxonomiesPerPage"
                                         @input="onChangeCategoriesPerPage"
                                         :disabled="categories.length <= 0">
                                     <option value="12">12</option>
@@ -96,7 +96,7 @@
                                     :current.sync="page"
                                     order="is-centered"
                                     size="is-small"
-                                    :per-page="categoriesPerPage"/>
+                                    :per-page="taxonomiesPerPage"/>
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                 isLoading: false,
                 totalCategories: 0,
                 page: 1,
-                categoriesPerPage: 12,
+                taxonomiesPerPage: 12,
                 status: ''
             }
         },
@@ -136,9 +136,14 @@
                 this.loadCategories();
             },
             onChangeCategoriesPerPage(value) {
-                let prevValue = this.categoriesPerPage;
-                this.categoriesPerPage = value;
-                this.$userPrefs.set('categories_per_page', value,  prevValue);
+               this.taxonomiesPerPage = value;
+                this.$userPrefs.set('taxonomies_per_page', value)
+                .then((newValue) => {
+                    this.taxonomiesPerPage = newValue;
+                })
+                .catch(() => {
+                    this.$console.log("Error settings user prefs for taxonomies per page")
+                });
                 this.loadCategories();
             },
             onPageChange(page) {
@@ -148,7 +153,7 @@
             loadCategories() {
                 this.isLoading = true;
 
-                this.fetchCategories({ 'page': this.page, 'categoriesPerPage': this.categoriesPerPage, 'status': this.status })
+                this.fetchCategories({ 'page': this.page, 'taxonomiesPerPage': this.taxonomiesPerPage, 'status': this.status })
                     .then((res) => {
                         this.isLoading = false;
                         this.totalCategories = res.total;
@@ -158,29 +163,29 @@
                     });
             },
             getLastCategoryNumber() {
-                let last = (Number(this.categoriesPerPage * (this.page - 1)) + Number(this.categoriesPerPage));
+                let last = (Number(this.taxonomiesPerPage * (this.page - 1)) + Number(this.taxonomiesPerPage));
                 return last > this.totalCategories ? this.totalCategories : last;
             }
         },
         computed: {
             categories(){
                 return this.getCategories();
-                // for (let category of categories)
-                //     category['creation'] = this.$i18n.get('info_created_by') +
-                //         category['author_name'] + '<br>' + this.$i18n.get('info_date') +
-                //         moment(category['creation_date'], 'YYYY-MM-DD').format('DD/MM/YYYY');
             }
         },
         created() {
-            this.$userPrefs.get('categories_per_page')
-                .then((value) => {
-                    this.categoriesPerPage = value;
-                })
-                .catch(() => {
-                    this.$userPrefs.set('categories_per_page', 12, null);
-                });
+            this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
         },
         mounted(){
+            this.$userPrefs.fetch('taxonomies_per_page')
+            .then((value) => {
+                if (this.taxonomiesPerPage != value) {
+                    this.taxonomiesPerPage = value;
+                    this.loadCategories;
+                }
+            })
+            .catch(() => {
+                this.$userPrefs.set('taxonomies_per_page', 12);
+            });
             this.loadCategories();
         }
     }

@@ -56,7 +56,9 @@
                 </div>
 
             </div>
-            <div class="field column is-12">
+            <div 
+                :class="{'tag-container-border': Object.keys(advancedSearchQuery).length > 1}"
+                class="field column is-12">
                 <b-field 
                         grouped
                         group-multiline>
@@ -118,12 +120,15 @@
         },
         methods: {
             removeThis(searchCriteria){
+                console.log(searchCriteria);
                 let criteriaIndex = this.searchCriterias.findIndex((element) => {
                     return element == searchCriteria;
                 });
 
                 this.searchCriterias.splice(criteriaIndex, 1);
-                delete this.advancedSearchQuery[criteriaIndex];
+                delete this.advancedSearchQuery[searchCriteria];
+
+                console.log(this.advancedSearchQuery);
             },
             addSearchCriteria(){
                 let aleatoryKey = Math.floor(Math.random() * 1000) + 2;
@@ -150,8 +155,12 @@
                 vm.addToAdvancedSearchQuery(value, type, relation);
             }, 900),
             searchAdvanced(){
-                if(this.advancedSearchQuery.length > 2){
+                if(Object.keys(this.advancedSearchQuery).length > 2){
                     this.advancedSearchQuery.relation = 'AND';
+                } 
+                
+                if(this.advancedSearchQuery.hasOwnProperty('relation') && Object.keys(this.advancedSearchQuery).length <= 2){
+                    delete this.advancedSearchQuery.relation;
                 }
 
                 this.$eventBusSearch.$emit('searchAdvanced', this.advancedSearchQuery);
@@ -202,6 +211,9 @@
         padding-left: $page-side-padding;
         padding-bottom: 47px;
 
+        .tag-container-border {
+            border: 1px solid $tainacan-input-background;
+        }
         .column {
             padding: 0 0.3rem 0.3rem !important;
         }

@@ -72,10 +72,7 @@ export default {
             if( this.itemsPerPage == value){
                 return false;
             }
-            
-            let prevValue = this.itemsPerPage;
             this.$eventBusSearch.setItemsPerPage(value);
-            this.$userPrefs.set('items_per_page', value, prevValue);
         },
         onPageChange(page) {
             if(page == 0)
@@ -90,10 +87,9 @@ export default {
         getFirstItem(){
             if( this.totalItems == 0 )
                 return 0;
-
             return ( this.itemsPerPage * ( this.page - 1 ) + 1)
         },
-    },
+    }
 }
 </script>
 

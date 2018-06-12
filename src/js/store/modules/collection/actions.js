@@ -13,21 +13,21 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         let hasFiltered = false;
         let advancedSearchResults = false;
 
-        if (postQueries.metaquery != undefined && postQueries.metaquery.metaquery){
+        if (postQueries.metaquery != undefined &&
+             (Object.keys(postQueries.metaquery).length > 0 ||
+              postQueries.metaquery.length > 0)){
             hasFiltered = true;
 
-            if(postQueries.metaquery.metaquery.advancedSearch){
+            if(postQueries.metaquery.advancedSearch){
 
-                advancedSearchResults = postQueries.metaquery.metaquery.advancedSearch;
+                advancedSearchResults = postQueries.metaquery.advancedSearch;
     
-                delete postQueries.metaquery.metaquery.advancedSearch;
-    
-                query = qs.stringify({metaquery: postQueries.metaquery.metaquery});
-    
-                console.log({q: query});
-            } else {
-                query = postQueries;
+                delete postQueries.metaquery.advancedSearch;
             }
+
+            query = qs.stringify(postQueries);
+        } else {
+            query = qs.stringify(postQueries);
         }
 
         // Garanttees at least empty fetch_only are passed in case none is found
@@ -47,6 +47,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         if (!isOnTheme){
             endpoint = endpoint + 'context=edit&'
         }
+
+        console.log(postQueries);
         
         axios.tainacan.get(endpoint+query)
         .then(res => {

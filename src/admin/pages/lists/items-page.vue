@@ -493,6 +493,12 @@
         watch: {
             tableMetadata() {
                 this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
+            },
+            openAdvancedSearch(newValue){
+                if(newValue == false){
+                    this.$router.push({query: {}});
+                    location.reload();
+                }
             }
         },
         methods: {
@@ -690,12 +696,16 @@
 
             this.$eventBusSearch.setViewMode(this.defaultViewMode);
 
-            if(this.$route.query.openAdvancedSearch) {
-                this.openAdvancedSearch = this.$route.query.openAdvancedSearch;
+            if(this.$router.query && this.$router.query.metaquery && this.$router.query.metaquery.advancedSearch) {
+                this.openAdvancedSearch = this.$router.query.advancedSearch;
             }
         },
         mounted() {
             
+            if(this.$router.query && this.$router.query.metaquery && this.$router.query.metaquery.advancedSearch) {
+                this.openAdvancedSearch = this.$router.query.advancedSearch;
+            }
+
             this.prepareMetadataAndFilters();
             this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 
