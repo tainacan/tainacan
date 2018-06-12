@@ -145,11 +145,11 @@ export const fetchFieldMappers = ({commit}) => {
     });
 }
 
-export const updateFieldsMapperMetadata = ({ dispatch }, fieldsMapperMetadata, mapper) => {
+export const updateFieldsMapperMetadata = ({ dispatch }, {fieldsMapperMetadata, mapper}) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.post('/field-mappers', {
                 fields_mappers: fieldsMapperMetadata,
-                "exposer_map": mapper
+                exposer_map: mapper
             }).then((res) => {
                 resolve(res.data);
             })
