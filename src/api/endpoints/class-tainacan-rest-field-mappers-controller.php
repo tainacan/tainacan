@@ -131,7 +131,7 @@ class REST_Field_Mappers_Controller extends REST_Controller {
     	            $field = $Tainacan_Fields->fetch($field_mapper['field_id']);
     	            $exposer_mapping = $field->get('exposer_mapping');
     	            if($field_mapper['mapper_metadata'] == '') {
-    	                if(array_key_exists($exposer_mapping, $mapper->slug) ) unset($exposer_mapping[$mapper->slug]);
+    	                if(array_key_exists($mapper->slug, $exposer_mapping) ) unset($exposer_mapping[$mapper->slug]);
     	            } else {
     	                $exposer_mapping[$mapper->slug] = $field_mapper['mapper_metadata'];
     	            }
