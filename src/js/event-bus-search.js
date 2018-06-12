@@ -39,10 +39,10 @@ export default {
                         this.collectionId = parseInt(this.$route.params.collectionId);
 
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
-                        //if (this.$route.query.perpage == undefined) {
-                        let perPage = (this.collectionId != undefined ? this.$userPrefs.get('items_per_page_' + this.collectionId) : this.$userPrefs.get('items_per_page'));
-                        this.$route.query.perpage = perPage ? perPage : 12;
-                        //}    
+                        if (this.$route.query.perpage == undefined) {
+                            let perPage = (this.collectionId != undefined ? this.$userPrefs.get('items_per_page_' + this.collectionId) : this.$userPrefs.get('items_per_page'));
+                            this.$route.query.perpage = perPage ? perPage : 12;
+                        }    
                         if (this.$route.query.paged == undefined)
                             this.$route.query.paged = 1;
                         if (this.$route.query.order == undefined)
