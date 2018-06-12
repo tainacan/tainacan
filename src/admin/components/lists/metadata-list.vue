@@ -156,20 +156,17 @@
                     </section>
                     <section >
                         <div class="field is-grouped form-submit">
-                            <b-dropdown id="mappers-options-dropdown">
-                                <button
-                                        class="button is-secondary"
-                                        slot="trigger">
-                                    <div>{{ $i18n.get('mappers') }}</div>
-                                    <b-icon icon="menu-down"/>
-                                </button>
-                                <b-dropdown-item
-                                        :key="metadatum_mapper.slug"
+                            <b-select
+                                    id="mappers-options-dropdown"
+                                    class="button is-secondary"
+                                    :placeholder="$i18n.get('mappers')">
+                                <option
                                         v-for="metadatum_mapper in metadatum_mappers"
+                                        :key="metadatum_mapper.slug"
                                         @click="onSelectMetadataMapper(metadatum_mapper)">
                                     {{ $i18n.get(metadatum_mapper.name) }}
-                                </b-dropdown-item>
-                            </b-dropdown>
+                                </option>
+                            </b-select>
                             <div
                                     class="control"
                                     v-if="mapper != '' && !isLoadingMetadatumMappers">
@@ -430,25 +427,27 @@ export default {
             this.openedMetadatumId = '';
         },
         onSelectMetadataMapper(metadatum_mapper) {
-            this.isMapperMetadataLoading = true;
-            this.mapper = metadatum_mapper;
-            for (var k in metadatum_mapper.metadata) {
-                var item = metadatum_mapper.metadata[k];
-                item.slug = k;
-                item.selected = '';
-                var self = this;
-                this.activeMetadatumList.forEach(function(metadatum) {
-                    if(
-                            metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
-                            metadatum.exposer_mapping[metadatum_mapper.slug] == item.slug ) {
-                        item.selected = metadatum.id;
-                        self.mappedMetadata.push(metadatum.id);
-                    }
-                });
-                this.mapperMetadata.push(item);
+            if(metadatum_mapper != '') {
+                this.isMapperMetadataLoading = true;
+                this.mapper = metadatum_mapper;
+                for (var k in metadatum_mapper.metadata) {
+                    var item = metadatum_mapper.metadata[k];
+                    item.slug = k;
+                    item.selected = '';
+                    var self = this;
+                    this.activeMetadatumList.forEach(function(metadatum) {
+                        if(
+                                metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
+                                metadatum.exposer_mapping[metadatum_mapper.slug] == item.slug ) {
+                            item.selected = metadatum.id;
+                            self.mappedMetadata.push(metadatum.id);
+                        }
+                    });
+                    this.mapperMetadata.push(item);
+                }
+                this.isMapperMetadataLoading = false;
+                //console.log(JSON.stringify(this.mapperMetadata));
             }
-            this.isMapperMetadataLoading = false;
-            //console.log(JSON.stringify(this.mapperMetadata));
         },
         isMetadatumSelected(id) {
             return this.mappedMetadata.indexOf(id) > -1;
@@ -882,6 +881,10 @@ export default {
             }
             
         }
+    }
+    #mappers-options-dropdown {
+        background-color: transparent;
+        color: #fff;
     }
 
 </style>
