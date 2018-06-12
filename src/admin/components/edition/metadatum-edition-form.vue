@@ -18,7 +18,6 @@
                         :message="$i18n.getHelperMessage('metadata', 'name')"/>
             </label>
             <b-input
-                    :class="{'has-content': editForm.name != undefined && editForm.name != ''}"
                     v-model="editForm.name"
                     name="name"
                     @focus="clearErrors('name')"/>
@@ -35,7 +34,6 @@
                         :message="$i18n.getHelperMessage('metadata', 'description')"/>
             </label>
             <b-input
-                    :class="{'has-content': editForm.description != undefined && editForm.description != ''}"
                     type="textarea"
                     name="description"
                     v-model="editForm.description"
