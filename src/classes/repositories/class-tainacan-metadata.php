@@ -665,7 +665,7 @@ class Metadata extends Repository {
 		$metadatum = new Entities\Metadatum( $metadatum_id );
 
 		// handle core titles
-		if( strpos( $metadatum->get_metadata_type(), 'Core') !== false ){
+		if( strpos( $metadatum->get_metadata_type(), 'Core') !== false && $search){
 		    $collection = new Entities\Collection( $collection_id );
 		    $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
             $items = $Tainacan_Items->fetch( ['s' => $search], $collection, 'OBJECT');

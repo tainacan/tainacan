@@ -49,8 +49,7 @@ export default {
                             this.$route.query.orderby = 'date';
                         
                         if(this.$route.query.metaquery && this.$route.query.metaquery.advancedSearch){
-                            console.log(this.$route);
-                            this.$store.dispatch('search/set_advanced_query', this.$route.query);
+                            this.$store.dispatch('search/set_advanced_query', this.$route.query.metaquery);
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
