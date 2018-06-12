@@ -135,5 +135,4 @@ require_once(__DIR__ . '/../theme-helper/class-tainacan-theme-helper.php');
 require_once(__DIR__ . '/../theme-helper/template-tags.php');
 $Tainacan_Theme_Helper = \Tainacan\Theme_Helper::get_instance();
 
-
 ?>

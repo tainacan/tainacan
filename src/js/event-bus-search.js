@@ -28,8 +28,6 @@ export default {
                 this.$root.$on('searchAdvanced', advancedSearchQuery => {
                     this.$store.dispatch('search/setPage', 1);
 
-                    console.log('Emit caught', advancedSearchQuery);
-
                     this.searchAdvanced(advancedSearchQuery);
 
                     this.updateURLQueries();
@@ -49,12 +47,9 @@ export default {
                             this.$route.query.order = 'DESC';
                         if (this.$route.query.orderby == undefined)
                             this.$route.query.orderby = 'date';
-
-                        if(this.$route.query.advancedSearch){
-                            delete this.$route.query.advancedSearch;
-
-                            console.log('Route watch: '+ this.$route.query);
-
+                        
+                        if(this.$route.query.metaquery && this.$route.query.metaquery.advancedSearch){
+                            console.log(this.$route);
                             this.$store.dispatch('search/set_advanced_query', this.$route.query);
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
@@ -134,15 +129,10 @@ export default {
                     this.$store.dispatch('search/setViewMode', viewMode);
                     this.updateURLQueries();  
                 },
-                updateURLQueries(isAdvancedSearch = false) {
-                    this.$router.push({ query: {}});
-
-                    if(isAdvancedSearch) {
-                        this.$router.push({query: this.$store.getters['search/getAdvancedSearchQuery']});
-                        console.log(this.$route);
-                    } else {
-                        this.$router.push({query: this.$store.getters['search/getPostQuery']});
-                    }
+                updateURLQueries(isAdvancedSearch) {
+                    this.$router.push({query: {}});
+                    this.$route.meta['advancedSearch'] = isAdvancedSearch;
+                    this.$router.push({query: this.$store.getters['search/getPostQuery']});
                 },
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
@@ -162,6 +152,10 @@ export default {
                         .then((res) => {
                             this.$emit( 'isLoadingItems', false);
                             this.$emit( 'hasFiltered', res.hasFiltered);
+
+                            if(res.advancedSearchResults){
+                                this.$emit('advancedSearchResults', res.advancedSearchResults);
+                            }
                         })
                         .catch(() => {
                             this.$emit( 'isLoadingItems', false);

@@ -78,7 +78,7 @@
             apply_filter(){
                 this.$eventBusSearch.$emit( 'input', {
                     filter: 'checkbox',
-                    field_id: 'collection_id',
+                    metadatum_id: 'collection_id',
                     value: this.collectionsIdsToFilter,
                     compare: 'IN',
                     collection_id: this.collectionsIdsToFilter,

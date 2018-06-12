@@ -145,7 +145,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
       }
 ```
 
-2. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadata/(?P<field_id>[\d]+)`
+2. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadatum_id>[\d]+)`
 
       1. Endpoints:
       
@@ -174,7 +174,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
             
                   In body of requisition pass a JSON with the attributes of metadatum.
 
-4. Route `wp-json/tainacan/v2/metadata/(?P(<field_id>[\d]+))`
+4. Route `wp-json/tainacan/v2/metadata/(?P(<metadatum_id>[\d]+))`
 
       1. Endpoints:
       
@@ -271,7 +271,7 @@ A REST API for Tainacan Plugin. This API uses the Wordpress REST API.
 ------
 #### Filters
 
-1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadatum/(?P<field_id>[\d]+)/filters`
+1. Route `wp-json/tainacan/v2/collection/(?P<collection_id>[\d]+)/metadatum/(?P<metadatum_id>[\d]+)/filters`
     
       1. Endpoints:
     
