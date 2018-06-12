@@ -700,7 +700,7 @@
             // Watch Scroll for shrinking header, only on Admin at collection level
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
-                    this.isHeaderShrinked = ($event.originalTarget.scrollTop > 53);
+                    this.isHeaderShrinked = ($event.target.scrollTop > 53);
                     this.$emit('onShrinkHeader', this.isHeaderShrinked); 
                 });
             }
@@ -771,18 +771,13 @@
 
             .control {
                 width: 100%;
-
-                input {
-                    height: 27px;
-                    font-size: 11px;
-                    color: $gray-light;
-                }
                 .icon {
                     pointer-events: all;
                     cursor: pointer;
                     color: $tertiary;
                     height: 27px;
                     font-size: 18px !important;
+                    height: 2rem !important;
                 }
                 margin-bottom: 5px;
             }

@@ -9,9 +9,8 @@
                 label-width="120px">
 
             <!-- Header Page -------------------------------- --> 
-            <b-field 
-                :addons="false"
-                :label="$i18n.get('label_header_image')">
+            <b-field :addons="false">
+                <label class="section-label">{{ $i18n.get('label_header_image') }}</label>
                 <div class="header-field">
                     <a 
                             class="button is-rounred is-secondary"
@@ -43,9 +42,8 @@
                 <div class="column">
 
                     <!-- Thumbnail -------------------------------- --> 
-                    <b-field 
-                        :addons="false"
-                        :label="$i18n.get('label_thumbnail')">
+                    <b-field :addons="false">
+                        <label class="section-label">{{ $i18n.get('label_thumbnail') }}</label>
                         <div class="thumbnail-field">
                             <a 
                                     class="button is-rounred is-secondary"
@@ -228,7 +226,6 @@
                             :title="$i18n.getHelperTitle('collections', 'name')" 
                             :message="$i18n.getHelperMessage('collections', 'name')"/>
                         <b-input
-                            :class="{'has-content': form.name != undefined && form.name != ''}"
                             id="tainacan-text-name"
                             v-model="form.name"
                             @focus="clearErrors('name')"/>  
@@ -244,7 +241,6 @@
                                 :title="$i18n.getHelperTitle('collections', 'description')" 
                                 :message="$i18n.getHelperMessage('collections', 'description')"/>
                         <b-input
-                                :class="{'has-content': form.description != undefined && form.description != ''}"
                                 id="tainacan-text-description"
                                 type="textarea"
                                 v-model="form.description"
@@ -304,7 +300,6 @@
                                 :title="$i18n.getHelperTitle('collections', 'slug')" 
                                 :message="$i18n.getHelperMessage('collections', 'slug')"/>
                         <b-input
-                                :class="{'has-content': form.slug != undefined && form.slug != ''}"
                                 id="tainacan-text-slug"
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
@@ -734,7 +729,7 @@ export default {
 
         if (this.$route.fullPath.split("/").pop() != "new") {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+                this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
             });
         }
     }
@@ -750,13 +745,20 @@ export default {
     .field {
         position: relative;
     }
+
+    .section-label {
+        font-size: 16px !important;
+        font-weight: 500 !important;
+        color: $tertiary !important;
+        line-height: 1.2em;
+    }
+
     #button-edit-thumbnail, #button-edit-header-image {
 
         border-radius: 100px !important;
         height: 40px !important;
         width: 40px !important;
-        bottom: -20px;
-        left: -20px;
+        bottom: -40px;
         z-index: 99;
         
         .icon {
