@@ -149,7 +149,7 @@ export const updateFieldsMapperMetadata = ({ dispatch }, fieldsMapperMetadata, m
     return new Promise((resolve, reject) => {
         axios.tainacan.post('/field-mappers', {
                 fields_mappers: fieldsMapperMetadata,
-                "exposer-map": mapper
+                "exposer_map": mapper
             }).then((res) => {
                 resolve(res.data);
             })

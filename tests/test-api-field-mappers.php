@@ -100,7 +100,7 @@ class TAINACAN_REST_Field_Mappers_Controller extends TAINACAN_UnitApiTestCase {
 	            ['field_id' => $field->get_id(), 'mapper_metadata' => 'contributor'],
 	            ['field_id' => $field2->get_id(), 'mapper_metadata' => 'coverage']
 	        ],
-	        'exposer-map'          => $dc->slug
+	        'exposer_map'          => $dc->slug
 	    ]);
 	    $field_mapper_request->set_body($field_mapper_json);
 	    $field_mapper_response = $this->server->dispatch($field_mapper_request);

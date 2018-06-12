@@ -248,14 +248,14 @@ class Exposers {
 		
 		$type = self::request_has_type($request);
 		if( // There are a defined mapper
-			is_array($body) && array_key_exists('exposer-map', $body) &&
-			$Tainacan_Exposers->has_mapper($body['exposer-map'])
+			is_array($body) && array_key_exists('exposer_map', $body) &&
+			$Tainacan_Exposers->has_mapper($body['exposer_map'])
 		) {
 			if(
 				$type === false || // do not have a exposer type
 				$type->get_mappers() === true || // the type accept all mappers
-				( is_array($type->get_mappers()) && in_array($body['exposer-map'], $type->get_mappers()) ) ) { // the current mapper is accepted by type
-				$mapper = $Tainacan_Exposers->check_class_name($body['exposer-map'], true, self::MAPPER_CLASS_PREFIX);
+				( is_array($type->get_mappers()) && in_array($body['exposer_map'], $type->get_mappers()) ) ) { // the current mapper is accepted by type
+				$mapper = $Tainacan_Exposers->check_class_name($body['exposer_map'], true, self::MAPPER_CLASS_PREFIX);
 				return new $mapper;
 			} 
 		} elseif( is_object($type) && is_array($type->get_mappers()) && count($type->get_mappers()) > 0 ) { //there are no defined mapper, let use the first one o list if has a list

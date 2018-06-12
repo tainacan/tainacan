@@ -104,7 +104,7 @@ class REST_Field_Mappers_Controller extends REST_Controller {
 	           array_key_exists('fields_mappers', $body) &&
 	           is_array($body['fields_mappers']) &&
 	           count($body['fields_mappers']) > 0 &&
-	           array_key_exists('exposer-map', $body)
+	           array_key_exists('exposer_map', $body)
 	    ) {
 	        $field_mapper = $body['fields_mappers'][0];
 	        $field = \Tainacan\Repositories\Repository::get_entity_by_post($field_mapper['field_id']);

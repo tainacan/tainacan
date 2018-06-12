@@ -102,7 +102,7 @@ class TAINACAN_REST_Export_Controller extends TAINACAN_UnitApiTestCase {
 		
 		$item_exposer_json = json_encode([
 			'exposer-type'       => 'Xml',
-			'exposer-map'     => 'Value',
+			'exposer_map'     => 'Value',
 			'export-background' => false
 		]);
 		
