@@ -60,7 +60,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
             $this->assertTrue(true);    
         }
-        
+        $this->assertTrue($old_tainacan instanceof \Tainacan\Importer\Old_Tainacan);
     }
 
     /*public function test_file_old_tainacan () {
