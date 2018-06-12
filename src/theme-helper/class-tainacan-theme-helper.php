@@ -55,7 +55,13 @@ class Theme_Helper {
 			'icon' => '<span class="icon"><i class="mdi mdi-table mdi-24px"></i></span>',
 			'type' => 'component',
 		]);
-		
+		$this->register_view_mode('cards', [
+			'label' => __('Cards view', 'tainacan'),
+			'dynamic_metadata' => true,
+			'description' => 'A cards view, flexible for metadata',
+			'icon' => '<span class="icon"><i class="mdi mdi-view-list mdi-24px"></i></span>',
+			'type' => 'component'
+		]);
 	}
 	
 	public function enqueue_scripts($force = false) {
@@ -298,7 +304,7 @@ class Theme_Helper {
 	 * 												Default: theme-path/tainacan/view-mode-{$slug}.php
 	 * 		@type string		$component			Component tag name. The web component js must be included and must accept two props:
 	 * 													* items - the list of items to be rendered
-	 * 													* displayed_metadata - list of metadata to be displayed
+	 * 													* displayed-metadata - list of metadata to be displayed
 	 * 												Default view-mode-{$slug}
 	 * 		@type string		$thumbnail			Full URL to an thumbnail that represents the view mode. Displayed in admin.
 	 * 		@type string		$icon 				HTML that outputs an icon that represents the view mode. Displayed in front end.

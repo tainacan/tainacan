@@ -6,7 +6,7 @@
                     <tr>
                         <!-- Displayed Metadata -->
                         <th 
-                                v-for="(column, index) in tableMetadata"
+                                v-for="(column, index) in displayedMetadata"
                                 :key="index"
                                 v-if="column.display"
                                 class="column-default-width"
@@ -33,7 +33,7 @@
                         <!-- Item Displayed Metadata -->
                         <td 
                                 :key="index"    
-                                v-for="(column, index) in tableMetadata"
+                                v-for="(column, index) in displayedMetadata"
                                 v-if="column.display"
                                 :label="column.name" 
                                 :aria-label="(column.metadatum != 'row_thumbnail' && column.metadatum != 'row_creation' && column.metadatum != 'row_author')
@@ -100,10 +100,10 @@
 <script>
 
 export default {
-    name: 'TableViewMode',
+    name: 'ViewModeTable',
     props: {
         collectionId: Number,
-        tableMetadata: Array,
+        displayedMetadata: Array,
         items: Array,
         isLoading: false
     },
