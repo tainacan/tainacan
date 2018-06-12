@@ -3,6 +3,7 @@
 namespace Tainacan\API\EndPoints;
 
 use \Tainacan\API\REST_Controller;
+use Tainacan\Entities\Metadatum;
 
 class REST_Metadatum_Mappers_Controller extends REST_Controller {
 
@@ -45,7 +46,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	}
 	
 	/**
-	 * @param mixed $item
+	 * @param Metadatum $item
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return array|\WP_Error|\WP_REST_Response
@@ -54,7 +55,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	    if(!empty($item)){
 	        $item_arr = $item->_toArray();
 	        
-	        $item_arr['metadatum_type_object'] = $item->get_metadatum_type_object()->_toArray();
+	        $item_arr['metadatum_type_object'] = $item->get_metadata_type_object()->_toArray();
 	        
 	        return $item_arr;
 	    }

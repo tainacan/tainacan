@@ -26,7 +26,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
                 'name'              => 'test_MetadatumMappers',
                 'description'       => 'descricao',
                 'collection'        => $collection,
-                'metadatum_type'		=> $type,
+                'metadata_type'		=> $type,
                 'exposer_mapping'	=> [
                     'dublin-core' => 'language'
                 ]
@@ -41,7 +41,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
                 'name'              => 'test_MetadatumMappers2',
                 'description'       => 'descricao2',
                 'collection'        => $collection,
-                'metadatum_type'		=> $type
+                'metadata_type'		=> $type
             ),
             true,
             true
