@@ -25,7 +25,6 @@ return apply_filters('tainacan-admin-i18n',[
 	'term'                                     => __( 'Term', 'tainacan' ),
 	'terms'                                    => __( 'Terms', 'tainacan' ),
 	'mapping'                                  => __( 'Mapping', 'tainacan' ),
-    'mappers'                                  => __( 'Mappers', 'tainacan' ),
     'metadata'                                 => __( 'metadata', 'tainacan' ),
 
 	// Actions
@@ -239,6 +238,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'instruction_write_text'					 => __( 'Write Text', 'tainacan' ),
 	'instruction_search'				         => __( 'Search', 'tainacan' ),
     'instruction_select_a_metadatum'			 => __( 'Select a metadatum', 'tainacan' ),
+    'instruction_select_a_mapper'   			 => __( 'Select a mapper', 'tainacan' ),
 	'instruction_search_on_repository'           => __( 'Search on repository', 'tainacan' ),
 
 	// Info. Other feedback to user.

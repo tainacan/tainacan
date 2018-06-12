@@ -139,7 +139,9 @@
                 </div>
             </b-tab-item>
             <!-- Exposer -->
-            <b-tab-item :label="$i18n.get('mapping')">
+            <b-tab-item
+                    :label="$i18n.get('mapping')"
+                    @click="onSelectMetadataMapper(this.mapper)">
                 <div class="active-metadata-area">
                     <section 
                             v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
@@ -159,7 +161,7 @@
                             <b-select
                                     id="mappers-options-dropdown"
                                     class="button is-secondary"
-                                    :placeholder="$i18n.get('mappers')">
+                                    :placeholder="$i18n.get('instruction_select_a_mapper')">
                                 <option
                                         v-for="metadatum_mapper in metadatum_mappers"
                                         :key="metadatum_mapper.slug"
@@ -427,9 +429,11 @@ export default {
             this.openedMetadatumId = '';
         },
         onSelectMetadataMapper(metadatum_mapper) {
+            this.isMapperMetadataLoading = true;
+            this.mapper = metadatum_mapper; //TODO try to use v-model again
+            this.mapperMetadata = [];
+            this.mappedMetadata = [];
             if(metadatum_mapper != '') {
-                this.isMapperMetadataLoading = true;
-                this.mapper = metadatum_mapper;
                 for (var k in metadatum_mapper.metadata) {
                     var item = metadatum_mapper.metadata[k];
                     item.slug = k;
@@ -445,9 +449,8 @@ export default {
                     });
                     this.mapperMetadata.push(item);
                 }
-                this.isMapperMetadataLoading = false;
-                //console.log(JSON.stringify(this.mapperMetadata));
             }
+            this.isMapperMetadataLoading = false;
         },
         isMetadatumSelected(id) {
             return this.mappedMetadata.indexOf(id) > -1;
@@ -483,8 +486,12 @@ export default {
                     metadataMapperMetadata.push(map);
                 }
             });
-            this.updateMetadataMapperMetadata({metadataMapperMetadata: metadataMapperMetadata, mapper: this.mapper.slug});
-            this.isMapperMetadataLoading = false;
+            this.updateMetadataMapperMetadata({metadataMapperMetadata: metadataMapperMetadata, mapper: this.mapper.slug}).then(() => {
+                this.isMapperMetadataLoading = false;
+            })
+            .catch(() => {
+                this.isMapperMetadataLoading = false;
+            });
         },
         onCancelUpdateMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
