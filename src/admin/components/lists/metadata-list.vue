@@ -140,37 +140,7 @@
             </b-tab-item>
             <!-- Exposer -->
             <b-tab-item :label="$i18n.get('mapping')">
-                <div >
-                    <b-dropdown id="mappers-options-dropdown">
-                        <button
-                                class="button is-secondary"
-                                slot="trigger">
-                            <div>{{ $i18n.get('mappers') }}</div>
-                            <b-icon icon="menu-down"/>
-                        </button>
-                        <b-dropdown-item
-                                :key="metadatum_mapper.slug"
-                                v-for="metadatum_mapper in metadatum_mappers"
-                                @click="onSelectMetadataMapper(metadatum_mapper)">
-                            {{ $i18n.get(metadatum_mapper.name) }}
-                        </b-dropdown-item>
-                    </b-dropdown>
-                    <section
-                            v-if="mapper != '' && !isLoadingMetadatumMappers">
-                        <div class="field is-grouped form-submit">
-                            <div class="control">
-                                <button
-                                        class="button is-outlined"
-                                        type="button"
-                                        @click="onCancelUpdateMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
-                            </div>
-                            <div class="control">
-                                <button
-                                        @click.prevent="onUpdateMetadataMapperMetadataClick"
-                                        class="button is-success">{{ $i18n.get('save') }}</button>
-                            </div>
-                        </div>
-                    </section>
+                <div class="active-metadata-area">
                     <section 
                             v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
                             class="field is-grouped-centered section">
@@ -183,7 +153,40 @@
                             <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>  
                             <p>{{ $i18n.get('info_create_metadata' ) }}</p>
                         </div>
-                    </section>             
+                    </section>
+                    <section >
+                        <div class="field is-grouped form-submit">
+                            <b-dropdown id="mappers-options-dropdown">
+                                <button
+                                        class="button is-secondary"
+                                        slot="trigger">
+                                    <div>{{ $i18n.get('mappers') }}</div>
+                                    <b-icon icon="menu-down"/>
+                                </button>
+                                <b-dropdown-item
+                                        :key="metadatum_mapper.slug"
+                                        v-for="metadatum_mapper in metadatum_mappers"
+                                        @click="onSelectMetadataMapper(metadatum_mapper)">
+                                    {{ $i18n.get(metadatum_mapper.name) }}
+                                </b-dropdown-item>
+                            </b-dropdown>
+                            <div
+                                    class="control"
+                                    v-if="mapper != '' && !isLoadingMetadatumMappers">
+                                <button
+                                        class="button is-outlined"
+                                        type="button"
+                                        @click="onCancelUpdateMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                            </div>
+                            <div
+                                    class="control"
+                                    v-if="mapper != '' && !isLoadingMetadatumMappers">
+                                <button
+                                        @click.prevent="onUpdateMetadataMapperMetadataClick"
+                                        class="button is-success">{{ $i18n.get('save') }}</button>
+                            </div>
+                        </div>
+                    </section>
                     <template>
                         <section>
                             <b-table
