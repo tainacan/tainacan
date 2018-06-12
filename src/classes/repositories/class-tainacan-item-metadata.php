@@ -48,9 +48,15 @@ class Item_Metadata extends Repository {
 		$unique = !$item_metadata->is_multiple();
 
 		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+		
 		if ($metadata_type->get_core()) {
 			$this->save_core_metadatum_value($item_metadata);
-		} elseif ($metadata_type->get_primitive_type() == 'term') {
+			// Core metadata are also stored as regular metadata (in the code following below)
+			// This is usefull to create queries via filters, advanced search or apis
+			// si you can search for title and content with meta_query as if they were regular metadata
+		} 
+		
+		if ($metadata_type->get_primitive_type() == 'term') {
 			$this->save_terms_metadatum_value($item_metadata);
 		} elseif ($metadata_type->get_primitive_type() == 'compound') {
 			// do nothing. Compound values are updated when its child metadata are updated
