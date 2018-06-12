@@ -193,9 +193,13 @@
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
-                                        'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Date' || column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Numeric') : false,
-                                        'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Selectbox' || column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Category' || column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Compound') : false,
-                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Textarea') : false,
+                                        'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
+                                                                                                           column.metadata_type_object.primitive_type == 'float' ||
+                                                                                                           column.metadata_type_object.primitive_type == 'int') : false,
+                                        'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' || 
+                                                                                                            column.metadata_type_object.primitive_type == 'item' || 
+                                                                                                            column.metadata_type_object.primitive_type == 'compound') : false,
+                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }"
                                 :custom-key="column.slug">
                             <div class="th-wrap">{{ column.name }}</div>
@@ -230,10 +234,15 @@
                                 :class="{
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
                                         'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
-                                        'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Numeric') : false,
-                                        'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Date' || column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Numeric') : false,
-                                        'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Selectbox' || column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Category' || column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Compound') : false,
-                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.className == 'Tainacan\\Metadata_Types\\Textarea') : false,
+                                        'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
+                                                                                                                               column.metadata_type_object.primitive_type == 'int' ) : false,
+                                        'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
+                                                                                                           column.metadata_type_object.primitive_type == 'int' ||
+                                                                                                           column.metadata_type_object.primitive_type == 'float') : false,
+                                        'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'item' || 
+                                                                                                            column.metadata_type_object.primitive_type == 'term' || 
+                                                                                                            column.metadata_type_object.primitive_type == 'compound') : false,
+                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }"
                                 @click="goToItemPage(item)">
 
