@@ -5,98 +5,204 @@ use Tainacan\Entities;
 
 abstract class Importer {
 
-    private $id;
-    private $processed_items = [];
-	
-	/**
-	 * indicates wether this importer will create all the fields collection and set the mapping
-	 * without user interaction
-	 *
-	 * if set to true, user will have the ability to choose to create a new collection upon importing.
-	 *
-	 * The importer will have to implement the create_fields_and_mapping() method.
-	 * 
-	 * @var bool
-	 */
-	protected $import_structure_and_mapping = false;
-	
     /**
-     * The collection the items are going to be imported to.
+     * The ID for this importer session
+     *
+     * When creating a new importer session via API, an id is returned and used to access this
+     * importer instance in the SESSION array
      * 
-     * @var \Tainacan\Entities\Collection 
+     * @var identifier
      */
-	public $collection;
-    
-	/**
-	 * The mapping from the source metadata structure to the Field Ids of the destination collection
-	 *
-	 * The format is an array where the keys are the field IDs of the destination collection and the 
-	 * values are the identifier from the source. This coulb be an ID or a string or whatever the importer finds appropriate to http_persistent_handles_clean
-	 * 
-	 * @var array
-	 */
-	public $mapping;
-	private $repository_mapping;
+	private $id;
     
 	/**
 	 * The path to the temporary file created when user uploads a file
 	 * @var string
 	 */
-	public $tmp_file;
-    
+	protected $tmp_file;
+	
 	/**
-	 * The total number of items to be imported.
-	 * @var int
-	 */
-	protected $total_items;
-    
-	/**
-	 * THe number of items to be processes in each step
-	 * @var int
-	 */
-	private $items_per_step = 100;
-    
-	/**
-	 * The index of the item to start the import in the next step.
+	 * Wether Tainacan must present the user with an interface to manually map 
+	 * the metadata from the source to the target collection.
 	 *
-	 * (items are imported in a series of steps, via ajax, to avoid timeout)
-	 * @var int
+	 * If set to true in the child class, it must implement the method 
+	 * get_source_metadata() to return the metadatum found in the source.
+	 *
+	 * Note that this will only work when importing items to one single collection.
+	 * @var bool
 	 */
-	private $start = 0;
-	private $inside_step_pointer = 0;
+	protected $manual_mapping = false;
+	
+	/**
+	 * Wether Tainacan will let the user choose a destination collection.
+	 *
+	 * If set to true, the API endpoints will handle Collection creation and will assign it to 
+	 * the importer object using add_collection() method.
+	 *
+	 * Otherwise, the child importer class must create the collections and add them to the collections property also 
+	 * using add_collection()
+	 * 
+	 * @var bool
+	 */
+	protected $manual_collection = true;
+	
     
 	/**
-	 * The log with everything that happened during the import process. It generates a report afterwards
+	 * The total number of iterations to be imported.
+	 *
+	 * if not possible to calculate, inform 0 (zero) and no progress bar will be displayed.
+	 * 
+	 * @var int
+	 */
+	protected $progress_total;
+	
+	protected $progress_current;
+	
+	/**
+	 * This array holds the structure that the default step 'process_collections' will handle.
+	 *
+	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be imported, the mapping array 
+	 * from the source structure to the ID of the metadata metadata in tainacan
+	 *
+	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the 
+	 * values are the identifier from the source. This could be an ID or a string or whatever the importer finds appropriate to handle
+	 *
+	 * The source_id can be anyhting you like, that helps you relate this collection to your source.
+	 * 
+	 * Example of the structure of this propery for one collection:
+	 * 0 => [
+	 * 	'id' => 12,
+	 * 	'map' => [
+	 * 	  30 => 'column1'
+	 * 	  31 => 'column2'
+	 * 	],
+	 * 	'total_items' => 1234,
+	 * 	'source_id' => 55
+	 * ],
+	 *
+	 * use add_collection() and remove_collection() to interact with thiis array.
+	 *
+	 * 
 	 * @var array
 	 */
-	public $logs = [];
-	
+	protected $collections = [];
+    
+	/**
+	 * Stores the options for the importer. Each importer might use this property to save
+	 * their own specific option
+	 * @var array
+	 */
 	private $options = [];
 	
-	private $default_options = [];
+	/**
+	 * Stores the default options for the importer options
+	 * @var array
+	 */
+	protected $default_options = [];
 	
 	private $accpets = [
 		'file' => true,
 		'url'  => false,
 	];
-
-	private $is_repository = false;
-
-	private $steps = [];
+	
+	/**
+	 * Declares what are the steps the importer will run, in the right order.
+	 *
+	 * By default, there is only one step, and the callback is the process_collections method 
+	 * that process items for the collections in the collections array.
+	 *
+	 * Child classes may declare as many steps as they want and can keep this default step to use 
+	 * this method for import the items. But it is optional.
+	 * 
+	 * @var array
+	 */
+	protected $steps = [
+		[
+			'name' => 'Import Items',
+			'callback' => 'process_collections'
+		]
+	];
+	
+	/**
+	 * Transients is used to store temporary data to be used accross multiple requests
+	 *
+	 * Add and remove transient data using add_transient() and delete_transient() methods
+	 *
+	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
+	 * 
+	 * @var array
+	 */
+	private $transients = [];
 
 	private $current_step = 0;
+	
+	private $in_step_count = 0;
+	
+	private $current_collection = 0;
+	
+	private $current_collection_item = 0;
 
 	private $url = '';
+	
+	private $log = [];
+	
+	private $error_log = [];
+	
+	/**
+	 * Wether to abort importer execution.
+	 * @var bool
+	 */
+	private $abort = false;
+	
+	/**
+	 * List of attributes that are saved in DB and that are used to 
+	 * reconstruct the object 
+	 * @var array
+	 */
+	private $array_attributes = [
+		'url',
+		'current_collection_item',
+		'current_collection',
+		'in_step_count',
+		'current_step',
+		'transients',
+		'options',
+		'collections',
+		'tmp_file'
+	];
 
-    public function __construct() {
+    public function __construct($attributess = array()) {
         if (!session_id()) {
             @session_start();
         }
 
         $this->id = uniqid();
         $_SESSION['tainacan_importer'][$this->get_id()] = $this;
+		
+		if (!empty($attributess)) {
+			foreach ($attributess as $attr => $value) {
+				$method = 'set_' . $attr;
+				if (method_exists($this, $method)) {
+					$this->$method($value);
+				}
+			}
+		}
+		
     }
-
+	
+	public function _to_Array() {
+		$return = [];
+		foreach ($this->array_attributes as $attr) {
+			$method = 'get_' . $attr;
+			$return[$attr] = $this->$method();
+		}
+		$return['class_name'] = get_class($this);
+		return $return;
+	}
+	
+	/////////////////////
+	// Getters and setters
+	
     /**
      * @return string
      */
@@ -133,82 +239,141 @@ abstract class Importer {
         return false;
     }
 
-    /**
-     * @return array Mapping
-     */
-    public function get_mapping(){
-        return $this->mapping;
+	public function get_current_step() {
+		return $this->current_step;
+	}
+	
+	public function set_current_step($value) {
+		$this->current_step = $value;
+	}
+	
+	public function get_in_step_count() {
+		return $this->in_step_count;
+	}
+	
+	public function set_in_step_count($value) {
+		$this->in_step_count = $value;
+	}
+	
+	public function get_current_collection() {
+		return $this->current_collection;
+	}
+	
+	public function set_current_collection($value) {
+		$this->current_collection = $value;
+	}
+	
+	public function get_current_collection_item() {
+		return $this->current_collection_item;
+	}
+	
+	public function set_current_collection_item($value) {
+		$this->current_collection_item = $value;
+	}
+	
+	public function get_tmp_file(){
+        return $this->tmp_file;
     }
-
-    /**
-     * @return array Array with ids inserted in Tainacan
-     */
-    public function get_processed_items(){
-        return $this->processed_items;
+	
+	public function set_tmp_file($filepath){
+        $this->tmp_file = $filepath;
     }
-
-    /**
-     * @return array the last index from source
+	
+	public function get_progress_current() {
+		return $this->progress_current;
+	}
+	
+	public function set_progress_current($value) {
+		$this->progress_current = $value;
+	}
+	
+	public function get_collections() {
+		return $this->collections;
+	}
+	
+	public function set_collections($value) {
+		$this->collections = $value;
+	}
+	
+	/**
+     * Gets the options for this importer, including default values for options
+     * that were not set yet.
+     * @return array Importer options
      */
-    public function get_logs(){
-        return $this->logs;
+    public function get_options() {
+        return array_merge($this->default_options, $this->options);
     }
-
-    /**
-     * @param Tainacan\Entities\Collection $collection
-     */
-    public function set_collection( Entities\Collection $collection ){
-        $this->collection = $collection;
+	
+	/**
+	 * Set the options array
+	 * @param array $options 
+	 */
+	public function set_options($options) {
+		$this->options = $options;
+	}
+	
+	/**
+	 * Set the default options values.
+	 *
+	 * Must be called from the __construct method of the child importer class to set default values.
+	 * 
+	 * @param array $options 
+	 */
+	protected function set_default_options($options) {
+		$this->default_options = $options;
+	}
+	
+	
+    public function set_steps($steps) {
+        $this->steps = $steps;
     }
-
-    /**
-     * save an associative array with tainacan field id as index and field from source as value
+	
+	public function get_steps() {
+        return $this->steps;
+    }
+	
+	/**
+     * return the total progress number to calculate progress
      *
-     * @param array $mapping Mapping importer-fields
+     * @return int Total of items
      */
-    public function set_mapping( $mapping){
-        if(!empty($mapping))
-        {
-            $this->mapping = $mapping;
-        }
-    }
-
-    public function set_repository_mapping( $mapping, $item_id ){
-        if(!empty($mapping) && !empty($item_id))
-        {
-            $this->repository_mapping[$item_id] = $mapping;
-        }else return false;
-    }
-
-    public function get_repository_mapping($item_id)
-    {
-        if(!empty($item_id))
-        {
-            return $this->repository_mapping[$item_id];
-        }else return false;
-    }
-
-    /**
-     * set how many items should be processes in each step
-     *
-     * @param $size The total of items
-     */
-    public function set_items_per_step( $size ){
-        $this->items_per_step = $size;
-    }
-
-    /**
-     * @param int $start the first index to init the process
-     */
-    public function set_start( $start ){
-        $this->start = $start;
-    }
+    public function get_progress_total() {
+		if ( !isset( $this->progress_total ) ) {
+            if ( method_exists($this, 'get_progress_total_from_source') ) {
+				$this->progress_total = $this->get_progress_total_from_source();
+			} else {
+				$this->progress_total = 0;
+			}
+			
+		}
+		return $this->progress_total;
+	}
+	
+	private function get_transients() {
+		return $this->transients;
+	}
+	
+	private function set_transients(array $data) {
+		$this->transients = $data;
+	}
+	
+	public function get_log() {
+		return $this->log;
+	}
+	
+	public function get_error_log() {
+		return $this->error_log;
+	}
+	
+	////////////////////////////////////
+	// Utilities
+	
 
     /**
      * @param $file File to be managed by importer
      * @return bool
      */
-    public function set_file( $file ){
+    public function add_file( $file ){
         $new_file = $this->upload_file( $file );
         if ( is_numeric( $new_file ) ) {
             $this->tmp_file = get_attached_file( $new_file );
@@ -216,31 +381,36 @@ abstract class Importer {
             return false;
         }
     }
-
-    public function set_inside_step_pointer($step_pointer)
-    {
-        if(is_numeric($step_pointer) && $step_pointer >= 0)
-        {
-            $this->inside_step_pointer = $step_pointer;
-        }else
-        {
-            $this->inside_step_pointer = 0;
-        }
-    }
-
-    public function get_inside_step_pointer()
-    {
-        return $this->inside_step_pointer;
-    }
+	
+	
     /**
      * log the actions from importer
      *
      * @param $type
-     * @param $message
+     * @param $messagelog
      */
-    public function add_log($type, $message ){
-        $this->logs[] = [ 'type' => $type, 'message' => $message ];
+    public function add_log($message ){
+        $this->log[] = $message;
     }
+	public function add_error_log($message ){
+        $this->error_log[] = $message;
+    }
+	
+	public function add_collection(array $collection) {
+		if (isset($collection['id'])) {
+			$this->remove_collection($collection['id']);
+			$this->collections[] = $collection;
+		}
+	}
+	
+	public function remove_collection($col_id) {
+		foreach ($this->get_collections() as $index => $col) {
+			if ($col['id'] == $col_id) {
+				unset($this->collections[$index]);
+				break;
+			}
+		}
+	}
 
     /**
      * internal function to upload the file
@@ -264,58 +434,12 @@ abstract class Importer {
      */
     public function fetch_from_remote( $url ){
         $tmp = wp_remote_get( $url );
-        if( isset( $tmp['body'] ) ){
+        if( !is_wp_error($tmp) && isset( $tmp['body'] ) ){
             $file = fopen( $this->get_id().'.txt', 'w' );
             fwrite( $file, $tmp['body'] );
             fclose( $file );
-            return $this->set_file( $this->get_id().'.txt' );
+            return $this->add_file( $this->get_id().'.txt' );
         }
-    }
-
-    /**
-     * get the fields of file/url to allow mapping
-     * should return an array
-     *
-     * @return array $fields_source the fields from the source
-     */
-    abstract public function get_fields();
-
-    /**
-     * get values for a single item
-     *
-     * @param  $index
-     * @return array with field_source's as the index and values for the
-     * item
-     *
-     * Ex: [ 'Field1' => 'value1', 'Field2' => [ 'value2','value3' ]
-     */
-    abstract public function process_item( $index );
-
-    /**
-     * return the all items found
-     *
-     * @return int Total of items
-     */
-    public function get_total_items() {
-		if ( !isset( $this->total_items ) ) {
-            $this->total_items = $this->get_total_items_from_source();
-		}
-		return $this->total_items;
-	}
-	
-	/**
-	 * Method implemented by the child importer class to return the number of items to be imported
-	 * @return int
-	 */
-	abstract public function get_total_items_from_source();
-	
-	/**
-     * Gets the options for this importer, including default values for options
-     * that were not set yet.
-     * @return array Importer options
-     */
-    public function get_options() {
-        return array_merge($this->default_options, $this->options);
     }
     
     /**
@@ -330,25 +454,6 @@ abstract class Importer {
         $options = $this->get_options();
         return isset($options[$key]) ? $options[$key] : '';
     }
-	
-	/**
-	 * Set the default options values.
-	 *
-	 * Must be called from the __construct method of the child importer class to set default values.
-	 * 
-	 * @param array $options 
-	 */
-	protected function set_default_options($options) {
-		$this->default_options = $options;
-	}
-	
-	/**
-	 * Set the options array
-	 * @param array $options 
-	 */
-	public function set_options($options) {
-		$this->options = $options;
-	}
 	
 	/**
 	 * Adds a new method accepeted by the importer
@@ -366,38 +471,6 @@ abstract class Importer {
 		return false;
 	}
 
-	protected function get_start()
-    {
-        return $this->start;
-    }
-
-    protected function get_items_per_step()
-    {
-        return $this->items_per_step;
-    }
-
-    /**
-     * Sets importer as repository importer
-     */
-	public function set_repository()
-    {
-        $this->is_repository = true;
-    }
-
-    public function set_steps($steps)
-    {
-        $this->steps =$steps;
-    }
-
-    public function is_finished()
-    {
-        if($this->current_step >= count($this->steps))
-        {
-            return true;
-        }
-
-        return false;
-    }
 	/**
 	 * Removes method accepeted by the importer
 	 *
@@ -414,157 +487,297 @@ abstract class Importer {
 		return false;
 	}
 	
-    /**
-     * process a limited size of items
-     *
-     * @param int $start the index of the item to start processing from
-     */
-    public function process( $start ){
-        
-		$end = $start + $this->items_per_step;
+	public function add_transient($key, $data) {
+		$this->transients[$key] = $data;
+	}
+	
+	public function delete_transient($key) {
+		if (isset($this->transients[$key]))
+			unset($this->transients[$key]);
+	}
+	
+	public function get_transient($key) {
+		if (isset($this->transients[$key]))
+			return $this->transients[$key];
+		return null;
+	}
 
-		while ( $start <  $end && count( $this->get_processed_items() ) < $this->get_total_items() ) {
-            $processed_item = $this->process_item( $start );
-            if( $processed_item) {
-                $this->insert( $start, $processed_item );
-            } else {
-                $this->add_log('error', 'failed on item '.$start );
-                break;
-            }
-            $start++;
+    public function is_finished()
+    {
+        if($this->current_step >= count($this->steps))
+        {
+            return true;
         }
-		
-		$this->set_start($start);
+
+        return false;
     }
+	
+	/**
+	 * Cancel Scheduled abortion at the end of run()
+	 * @return void
+	 */
+	protected function cancel_abort() {
+		$this->abort = false;
+	}
+	
+	/**
+	 * Schedule importer abortion at the end of run()
+	 * @return void
+	 */
+	protected function abort() {
+		$this->abort = true;
+	}
+	
+	/**
+	 * Return wether importer should abort execution or not
+	 * @return bool 
+	 */
+	public function get_abort() {
+		return $this->abort;
+	}
+
+
+	///////////////////////////////
+	// Abstract methods
+	
+
+    /**
+     * get the metadata of file/url to allow mapping
+     * should return an array
+     *
+     * Used when $manual_mapping is set to true, to build the mapping interface
+     *
+     * @return array $metadata_source the metadata from the source
+     */
+    public function get_source_metadata() {}
+		
+    /**
+     * get values for a single item
+     *
+     * @param  $index
+     * @return array with metadatum_source's as the index and values for the
+     * item
+     *
+     * Ex: [ 'Metadatum1' => 'value1', 'Metadatum2' => [ 'value2','value3' ]
+     */
+    abstract public function process_item( $index, $collection_id );
+
+    
+	
+	/**
+	 * Method implemented by the child importer class to return the total number of interations the importer must run
+	 *
+	 * Used to build the progress bar
+	 * 
+	 * @return int
+	 */
+	public function get_progress_total_from_source() {}
+	
+	
+	
+	////////////////////////////////////////
+	// Core methods
+	
+    /**
+     * process an item from the collections queue
+     *
+     */
+    public function process_collections() {
+        
+		$current_collection = $this->get_current_collection();
+		$collections = $this->get_collections();
+		$collection_definition = isset($collections[$current_collection]) ? $collections[$current_collection] : false;
+		$current_collection_item = $this->get_current_collection_item();
+		
+		$this->add_log('Processing item ' . $current_collection_item);
+		$processed_item = $this->process_item( $current_collection_item, $collection_definition );
+		if( $processed_item) {
+			$this->add_log('Inserting item ' . $current_collection_item);
+			$this->insert( $processed_item, $current_collection );
+		} else {
+			$this->add_error_log('failed on item '. $current_collection_item );
+		}
+		
+		return $this->next_item();
+    }
+	
+	protected function next_item() {
+		
+		$current_collection = $this->get_current_collection();
+		$current_collection_item = $this->get_current_collection_item();
+		$collections = $this->get_collections();
+		$collection = $collections[$current_collection];
+		
+		$current_collection_item ++;
+		$this->set_current_collection_item($current_collection_item);
+		
+		if ($current_collection_item >= $collection['total_items']) {
+			return $this->next_collection();
+		}
+		
+		return $current_collection_item;
+		
+	}
+	
+	protected function next_collection() {
+		
+		$current_collection = $this->get_current_collection();
+		$collections = $this->get_collections();
+		
+		$this->set_current_collection_item(0);
+		
+		$current_collection ++;
+		
+		if (isset($collections[$current_collection])) {
+			$this->set_current_collection($current_collection);
+			return $current_collection;
+		}	
+		
+		return false;
+		
+		
+	}
+	
+	protected function next_step() {
+		
+		$current_step = $this->get_current_step();
+		$steps = $this->get_steps();
+		
+		$current_step ++;
+		$this->set_current_step($current_step);
+		
+		if (isset($steps[$current_step])) {
+			return $current_step;
+		}	
+		
+		return false;
+		
+		
+	}
 
     /**
      * insert processed item from source to Tainacan
      *
-     * @param int $index the source id unique for the item
-     * @param array $processed_item Associative array with field source's as index with
+     * @param array $processed_item Associative array with metadatum source's as index with
      *                              its value or values
+     * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+     * 
      * @return Tainacan\Entities\Item Item inserted
      */
-    public function insert( $index, $processed_item ){
-        $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+    public function insert( $processed_item, $collection_index ) {
+		
+        $collections = $this->get_collections();
+		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
+		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['map']) ) {
+			$this->add_error_log('Collection misconfigured');
+            return false;
+		}
+		
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
+		
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
-        $isUpdate = ( is_array( $this->processed_items ) && isset( $this->processed_items[ $index ] ) )
-            ? $this->processed_items[ $index ] : 0;
-        $item = new Entities\Item( $isUpdate );
+        $item = new Entities\Item();
         $itemMetadataArray = [];
 
-        if( !isset( $this->mapping ) ){
-            $this->add_log('error','Mapping is not set');
-            return false;
-        }
-
         if( is_array( $processed_item ) ){
-            foreach ( $processed_item as $field_source => $values ){
-                $tainacan_field_id = array_search( $field_source, $this->mapping );
-                $field = $Tainacan_Fields->fetch( $tainacan_field_id );
+            foreach ( $processed_item as $metadatum_source => $values ){
+                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['map'] );
+                $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
-                if( $field instanceof Entities\Field ){
-                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $field);
+                if( $metadatum instanceof Entities\Metadatum ){
+                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
                     $singleItemMetadata->set_value( $values );
                     $itemMetadataArray[] = $singleItemMetadata;
-                }
+                } else {
+					$this->add_error_log('Metadata ' . $metadatum_source . ' not found');
+				}
 
             }
         }
 
-        if( !empty( $itemMetadataArray ) && $this->collection instanceof Entities\Collection ){
-            $item->set_collection( $this->collection );
+        if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
+            $item->set_collection( $collection );
 
             if( $item->validate() ){
                 $insertedItem = $Tainacan_Items->insert( $item );
             } else {
-                $this->add_log( 'error', 'Item ' . $index . ': ' ); // TODO add the  $item->get_errors() array
+                $this->add_error_log( 'Error inserting item' );
+                $this->add_error_log( $item->get_errors() );
                 return false;
             }
 
             foreach ( $itemMetadataArray as $itemMetadata ) {
-                $itemMetadata->set_item( $insertedItem );
+                $itemMetadata->set_item( $insertedItem );  // *I told you
 
                 if( $itemMetadata->validate() ){
                     $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
                 } else {
-                    $this->add_log( 'error', 'Item ' . $index . ' on field '. $itemMetadata->get_field()->get_name()
-                        .' has error ' . $itemMetadata->get_errors() );
+                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
+                    $this->add_error_log($itemMetadata->get_errors());
                     continue;
                 }
 
-                if( $result ){
-                	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
-                    $this->add_log( 'success', 'Item ' . $index .
-                        ' has inserted the values: ' . $values . ' on field: ' . $itemMetadata->get_field()->get_name() );
-                } else {
-                    $this->add_log( 'error', 'Item ' . $index . ' has an error' );
-                }
+                //if( $result ){
+                //	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
+                //    $this->add_log( 'Item ' . $insertedItem->get_id() .
+                //        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
+                //} else {
+                //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
+                //}
             }
 
             $insertedItem->set_status('publish' );
 
-            // inserted the id on processed item with its index as array index
-            $this->processed_items[ $index ] = $insertedItem->get_id();
             if($insertedItem->validate()) {
 	            $insertedItem = $Tainacan_Items->update( $insertedItem );
             } else {
-	            $this->add_log( 'error', 'Item ' . $index . ': ' . $insertedItem->get_errors()[0]['title'] ); // TODO add the  $item->get_errors() array
+	            $this->add_error_log( 'Error publishing Item'  ); 
+	            $this->add_error_log( $insertedItem->get_errors() ); 
 	            return false;
             }
 
             return $insertedItem;
+			
         } else {
-            $this->add_log( 'error', 'Collection not set');
+            $this->add_error_log(  'Collection not set');
             return false;
         }
 
     }
 
     /**
-     * run the process
+     * runs one iteration
      */
     public function run(){
-        if($this->is_repository && $this->current_step < count($this->steps))
-        {
-            //$process_name = key($this->steps);
-            $function_name = current($this->steps);
-            $inside_step_pointer = $this->{$function_name}();//If unlike numeric this means that still there is stuff to process
 
-            if($inside_step_pointer === false || (!is_numeric($inside_step_pointer) || $inside_step_pointer < 0))
-            {
-                //Move on to the next step
-                next($this->steps);
-                $this->current_step++;
-                $this->set_inside_step_pointer(0);
-            }else if(is_numeric($inside_step_pointer) && $inside_step_pointer > 0)
-            {
-                $this->set_inside_step_pointer($inside_step_pointer);
-            }
-        }
-        else
-        {
-            if ( ( !isset($this->collection) || ! $this->collection instanceof Entities\Collection ) && $this->import_structure_and_mapping ) {
-                $new_collection = new Entities\Collection();
-                $new_collection->set_name('New Imported Collection');
-                $new_collection->set_status('publish');
-                $new_collection->validate();
-                $new_collection = Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
+		if ($this->is_finished()) {
+			return false;
+		}
+        
+		$steps = $this->get_steps();
+		$current_step = $this->get_current_step();
+		$method_name = $steps[$current_step]['callback'];
 
-                $this->set_collection($new_collection);
-
-                if (!method_exists($this, 'create_fields_and_mapping')) {
-                    throw new Exception('Importers with import_structure_and_mapping true must implement create_fields_and_mapping method');
-                }
-
-                $this->create_fields_and_mapping();
-
-            }
-
-            $this->process( $this->start );
-            return sizeof($this->get_processed_items());
-        }
+		if (method_exists($this, $method_name)) {
+			$result = $this->$method_name();
+		} else {
+			$this->add_error_log( 'Callback not found for step ' . $steps[$current_step]['name']);
+			$result = false;
+		}
+		if($result === false || (!is_numeric($result) || $result < 0)) {
+			//Move on to the next step
+			$this->set_in_step_count(0);
+			$return = $this->next_step();
+		} else if(is_numeric($result) && $result > 0) {
+			$this->set_in_step_count($result);
+			$return = $result;
+		}
+		
+		return $return;
+		
+		
     }
 }

@@ -16,12 +16,12 @@
                     <!-- Status -------------------------------- -->
                     <div class="section-label">
                         <label>{{ $i18n.get('label_status') }}</label>
-                        <span class="required-field-asterisk">*</span>
+                        <span class="required-metadatum-asterisk">*</span>
                         <help-button
                                 :title="$i18n.getHelperTitle('items', 'status')"
                                 :message="$i18n.getHelperMessage('items', 'status')"/>
                     </div>
-                    <div class="section-box section-status">
+                    <div class="section-status">
                         <div class="field">
                             <!-- <div class="block">
                                 <b-radio 
@@ -302,7 +302,7 @@
                 <div 
                         class="column is-4-5"
                         v-show="!isMetadataColumnCompressed">
-                    <label class="section-label">{{ $i18n.get('fields') }}</label>
+                    <label class="section-label">{{ $i18n.get('metadata') }}</label>
                     <br>
                     <a
                             class="collapse-all"
@@ -313,12 +313,12 @@
                                 :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
 
-                    <!-- Fields from Collection-------------------------------- -->
+                    <!-- Metadata from Collection-------------------------------- -->
                     <tainacan-form-item
-                            v-for="(field, index) of fieldList"
+                            v-for="(metadatum, index) of metadatumList"
                             :key="index"
-                            :field="field"
-                            :is-collapsed="fieldCollapses[index]" 
+                            :metadatum="metadatum"
+                            :is-collapsed="metadatumCollapses[index]"
                             @changeCollapse="onChangeCollapse($event, index)"/>
 
                 </div>
@@ -336,6 +336,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { eventBus } from '../../../js/event-bus-web-components.js'
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'ItemEditionForm',
@@ -347,7 +348,7 @@ export default {
             collectionId: Number,
             isLoading: false,
             isMetadataColumnCompressed: false,
-            fieldCollapses: [],
+            metadatumCollapses: [],
             collapseAll: false,
             form: {
                 collectionId: Number,
@@ -382,8 +383,8 @@ export default {
         }
     },
     computed: {
-        fieldList() {
-            return JSON.parse(JSON.stringify(this.getFields()));
+        metadatumList() {
+            return JSON.parse(JSON.stringify(this.getMetadata()));
         },
         attachmentsList(){
             return this.getAttachments();
@@ -397,16 +398,16 @@ export default {
             'sendItem',
             'updateItem',
             'updateItemDocument',
-            'fetchFields',
-            'sendField',
+            'fetchMetadata',
+            'sendMetadatum',
             'fetchItem',
-            'cleanFields',
+            'cleanMetadata',
             'sendAttachments',
             'updateThumbnail',
             'fetchAttachments'
         ]),
         ...mapGetters('item',[
-            'getFields',
+            'getMetadata',
             'getAttachments'
         ]),
         onSubmit() {
@@ -430,8 +431,8 @@ export default {
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
-                    for (let field of Object.keys(error)){
-                       eventBus.errors.push({ field_id: field, errors: error[field]});
+                    for (let metadatum of Object.keys(error)){
+                       eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
                 }
                 this.formErrorMessage = errors.error_message;
@@ -465,11 +466,11 @@ export default {
             .catch(error => this.$console.error(error));
         },
         loadMetadata() {
-            // Obtains Item Field
-            this.fetchFields(this.itemId).then((fields) => {
+            // Obtains Item Metadatum
+            this.fetchMetadata(this.itemId).then((metadata) => {
                 this.isLoading = false;
-                for (let field of fields) {
-                    this.fieldCollapses.push(field.field.required == 'yes');
+                for (let metadatum of metadata) {
+                    this.metadatumCollapses.push(metadatum.metadatum.required == 'yes');
                 }
             });
         },
@@ -491,8 +492,8 @@ export default {
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
-                    for (let field of Object.keys(error)){
-                       eventBus.errors.push({ field_id: field, errors: error[field]});
+                    for (let metadatum of Object.keys(error)){
+                       eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
                 }
                 this.formErrorMessage = errors.error_message;
@@ -523,8 +524,8 @@ export default {
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
-                    for (let field of Object.keys(error)){
-                       eventBus.errors.push({ field_id: field, errors: error[field]});
+                    for (let metadatum of Object.keys(error)){
+                       eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
                 }
                 this.formErrorMessage = errors.error_message;
@@ -577,8 +578,8 @@ export default {
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
-                                for (let field of Object.keys(error)){
-                                eventBus.errors.push({ field_id: field, errors: error[field]});
+                                for (let metadatum of Object.keys(error)){
+                                eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                                 }
                             }
                             this.formErrorMessage = errors.error_message;
@@ -622,17 +623,17 @@ export default {
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
 
-            for (let i = 0; i < this.fieldCollapses.length; i++)
-                this.fieldCollapses[i] = this.collapseAll;
+            for (let i = 0; i < this.metadatumCollapses.length; i++)
+                this.metadatumCollapses[i] = this.collapseAll;
 
         },
         onChangeCollapse(event, index) {
-            this.fieldCollapses.splice(index, 1, event);
+            this.metadatumCollapses.splice(index, 1, event);
         }
     },
     created(){
         // Obtains collection ID
-        this.cleanFields();
+        this.cleanMetadata();
         eventBus.clearAllErrors();
         this.formErrorMessage = '';
         this.collectionId = this.$route.params.collectionId;
@@ -675,15 +676,18 @@ export default {
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
-            this.$dialog.confirm({
-                message: this.$i18n.get('info_warning_item_not_saved'),
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_item_not_saved'),
                     onConfirm: () => {
                         next();
                     },
-                    cancelText: this.$i18n.get('cancel'),
-                    confirmText: this.$i18n.get('continue'),
-                    type: 'is-secondary'
-                });  
+                }
+            });  
         } else {
             next()
         }  
@@ -741,7 +745,7 @@ export default {
             padding-right: $page-side-padding;
             transition: all 0.6s;
 
-            .field {
+            .metadatum {
                     padding: 10px 0px 10px 25px;
             }
 
@@ -794,7 +798,7 @@ export default {
         }
     }
     .section-status{
-        width: 174px;        
+        padding: 16px 0;     
     }
     .section-thumbnail {
         width: 174px;

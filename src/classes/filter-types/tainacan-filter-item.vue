@@ -66,7 +66,7 @@
                 'setPage'
             ]),
             listen( event ){
-                this.$eventBusSearch.$emit( 'input', ( event.field_id ) ?  event :  event.detail[0] );
+                this.$eventBusSearch.$emit( 'input', ( event.metadatum_id ) ?  event :  event.detail[0] );
             },
             setFilterTypeMessage( message ){
                 this.filterTypeMessage = message;
@@ -174,7 +174,6 @@
             padding-top: 0px !important;
             select {
                 font-size: 14px;
-                border: none;
                 border-radius: 1px !important;
                 font-weight: normal;
                 height: 30px !important;
@@ -207,7 +206,6 @@
         .input, .textarea, .taginput-container {
 
             font-size: 14px;
-            border: none !important;
             border-radius: 1px !important;
             background-color: white;
             color: $tainacan-input-color;

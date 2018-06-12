@@ -78,7 +78,7 @@ class Filters extends Repository {
                 'description'=> __('Filter color', 'tainacan'),
                 'validation' => ''
             ],
-            'field'               => [
+            'metadatum'               => [
                 'map'        => 'meta',
                 'title'      => __('Metadata', 'tainacan'),
                 'type'       => 'integer',
@@ -128,7 +128,7 @@ class Filters extends Repository {
             'can_export'          => true,
             'rewrite'             => true,
         	'map_meta_cap'		  => true,
-        	'capability_type'     => Entities\Field::get_capability_type(),
+        	'capability_type'     => Entities\Metadatum::get_capability_type(),
             'supports'            => [
                 'title',
                 'editor',
@@ -140,30 +140,30 @@ class Filters extends Repository {
 
 
     /**
-     * @param Entities\Field $field
+     * @param Entities\Metadatum $metadatum
      * @return int
      *
-    public function insert($field) {
+    public function insert($metadatum) {
         // First iterate through the native post properties
         $map = $this->get_map();
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $field->WP_Post->{$mapped['map']} = $field->get_mapped_property($prop);
+                $metadatum->WP_Post->{$mapped['map']} = $metadatum->get_mapped_property($prop);
             }
         }
 
         // save post and get its ID
-        $field->WP_Post->post_type = Entities\Filter::get_post_type();
-        $field->WP_Post->post_status = 'publish';
-        $id = wp_insert_post($field->WP_Post);
-        $field->WP_Post = get_post($id);
+        $metadatum->WP_Post->post_type = Entities\Filter::get_post_type();
+        $metadatum->WP_Post->post_status = 'publish';
+        $id = wp_insert_post($metadatum->WP_Post);
+        $metadatum->WP_Post = get_post($id);
 
         // Now run through properties stored as postmeta
         foreach ($map as $prop => $mapped) {
             if ($mapped['map'] == 'meta') {
-                update_post_meta($id, $prop, $field->get_mapped_property($prop));
+                update_post_meta($id, $prop, $metadatum->get_mapped_property($prop));
             } elseif ($mapped['map'] == 'meta_multi') {
-                $values = $field->get_mapped_property($prop);
+                $values = $metadatum->get_mapped_property($prop);
 
                 delete_post_meta($id, $prop);
 
@@ -176,7 +176,7 @@ class Filters extends Repository {
         }
 
         // return a brand new object
-        return new Entities\Filter($field->WP_Post);
+        return new Entities\Filter($metadatum->WP_Post);
     }*/
 
     /**
@@ -249,7 +249,7 @@ class Filters extends Repository {
 
 
     /**
-     * register field types class on array of types
+     * register metadatum types class on array of types
      *
      * @param $class_name string | object The class name or the instance
      */
@@ -264,7 +264,7 @@ class Filters extends Repository {
     }
 
     /**
-     * register field types class on array of types
+     * register metadatum types class on array of types
      *
      * @param $class_name string | object The class name or the instance
      */
@@ -308,7 +308,7 @@ class Filters extends Repository {
     /**
      * fetch only supported filters for the type specified
      *
-     * @param ( string || array )  $types Primitve types of field ( float, string, int)
+     * @param ( string || array )  $types Primitve types of metadatum ( float, string, int)
      * @return array Filters supported by the primitive types passed in $types
      */
     public function fetch_supported_filter_types($types){
@@ -336,10 +336,10 @@ class Filters extends Repository {
      * fetch filters by collection, searches all filters available
      *
      * @param Entities\Collection $collection
-     * @param array $args WP_Query args plus disabled_fields
+     * @param array $args WP_Query args plus disabled_metadata
      * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
      *
-     * @return array Entities\Field
+     * @return array Entities\Metadatum
      * @throws \Exception
      */
     public function fetch_by_collection(Entities\Collection $collection, $args = [], $output = null){
@@ -351,7 +351,7 @@ class Filters extends Repository {
         //insert the actual collection
         $parents[] = $collection_id;
 
-        //search for default field
+        //search for default metadatum
         //$parents[] = $this->get_default_metadata_attribute();
 
         $meta_query = array(
@@ -397,7 +397,7 @@ class Filters extends Repository {
 
                     if( $index !== false ) {
 
-	                    // skipping fields disabled if the arg is set
+	                    // skipping metadata disabled if the arg is set
 	                    if ( ! $include_disabled && isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] ) {
 		                    continue;
 	                    }

@@ -18,7 +18,7 @@
                                 @click="headerImageMediaFrame.openFrame($event)">
                             <b-icon icon="pencil"/>
                         </a>
-                        <figure class="image is-128x128">
+                        <figure class="image">
                             <span
                                     v-if="editForm.header_image === undefined || editForm.header_image === false"
                                     class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
@@ -29,18 +29,22 @@
                         <div class="thumbnail-buttons-row">
                             <a
                                     id="button-delete"
-                                    :aria-label="$i18n.get('label_button_delete_header_image')"
-                                    @click="deleteHeaderImage()">
-                                <b-icon icon="delete"/>
+                                    :aria-label="$i18n.get('label_button_delete_thumb')"
+                                    @click="deleteThumbnail()">
+                                <b-icon 
+                                    type="is-gray"
+                                    icon="delete" />
+                                <span class="text">{{ $i18n.get('remove') }} </span>
                             </a>
                         </div>
-                        <a
-                                v-if="editForm.url != undefined && editForm.url!= ''"
-                                class="button is-secondary"
-                                :href="editForm.url">
-                            {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
-                        </a>
+                        <br>
                     </div>
+                    <a
+                            v-if="editForm.url != undefined && editForm.url!= ''"
+                            class="button is-secondary"
+                            :href="editForm.url">
+                        {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
+                    </a>
                 </b-field>
             </div>
 
@@ -146,8 +150,8 @@
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
-                                for (let field of Object.keys(error)) {
-                                    this.$set(this.formErrors, field, (this.formErrors[field] !== undefined ? this.formErrors[field] : '') + error[field] + '\n');
+                                for (let metadatum of Object.keys(error)) {
+                                    this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
                             this.$emit('onErrorFound');
@@ -169,8 +173,8 @@
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
-                                for (let field of Object.keys(error)) {
-                                    this.$set(this.formErrors, field, (this.formErrors[field] !== undefined ? this.formErrors[field] : '') + error[field] + '\n');
+                                for (let metadatum of Object.keys(error)) {
+                                    this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
                             this.$emit('onErrorFound');
@@ -229,15 +233,22 @@
 
     @import "../../scss/_variables.scss";
 
+    .column {
+        padding: 0;
+        &.is-narrow {
+            padding-right: 42px;
+        }
+    }    
+
     form {
-        padding: 1.0em 2.0em;
+        padding: 2.0rem 2rem 1rem 2rem;
         border-top: 1px solid $draggable-border-color;
         border-bottom: 1px solid $draggable-border-color;
         margin-top: 1.0em;
 
         .thumbnail-field {
             max-height: 128px;
-            margin-bottom: 96px;
+            margin-bottom: 66px;
             margin-top: -20px;
 
             .content {
@@ -245,12 +256,14 @@
                 font-size: 0.8em;
             }
             img {
-                position: absolute;
+                position: relative;
+                width: 128px;
             }
             .image-placeholder {
                 position: absolute;
                 margin-left: 10px;
                 margin-right: 10px;
+                top: 24px;
                 bottom: 50%;
                 font-size: 0.8rem;
                 font-weight: bold;
@@ -273,18 +286,19 @@
                     margin-top: 1px;
                 }
             }
+                
             .thumbnail-buttons-row {
-                display: none;
-            }
-            &:hover {
-                .thumbnail-buttons-row {
-                    display: inline-block;
+                display: inline-block;
+                padding: 8px 0px;
+                border-radius: 0px 0px 0px 4px;
+                font-size: 14px;
+                a { color: $tainacan-input-color; }
+                .text {
+                    top: -3px;
                     position: relative;
-                    top: -128px;
-                    background-color: rgba(255, 255, 255, 0.9);
-                    padding: 2px 8px;
-                    border-radius: 0px 0px 0px 4px;
-                    left: 88px;
+                }
+                i.mdi-24px.mdi-set, i.mdi-24px.mdi::before {
+                    font-size: 20px;
                 }
             }
         }

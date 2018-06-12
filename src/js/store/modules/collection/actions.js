@@ -3,6 +3,7 @@ import qs from 'qs';
 
 export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, isOnTheme }) => {
     commit('cleanItems');
+
     return new Promise ((resolve, reject) => {
         
         // Adds queries for filtering
@@ -13,6 +14,13 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         if (postQueries.metaquery != undefined && postQueries.metaquery.length > 0)
             hasFiltered = true;
 
+        // Garanttees at least empty fetch_only are passed in case none is found
+        if (qs.stringify(postQueries.fetch_only) == '')
+            dispatch('search/add_fetchonly', {} , { root: true });
+                
+        if (qs.stringify(postQueries.fetch_only['meta']) == '')
+            dispatch('search/add_fetchonly_meta', 0 , { root: true });
+
         // Differentiates between repository level and collection level queries
         let endpoint = '/collection/'+collectionId+'/items?'
 
@@ -21,8 +29,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
         if (!isOnTheme)
             endpoint = endpoint + 'context=edit&'
-
-        axios.tainacan.get(endpoint + qs.stringify(postQueries) )
+            
+        axios.tainacan.get(endpoint + qs.stringify(postQueries))
         .then(res => {
             
             let items = res.data;
@@ -36,10 +44,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
             }
             dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
-         })
+        })
         .catch(error => reject(error));
+        
     });
-}
+    
+};
 
 export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     return new Promise((resolve, reject) => {
@@ -77,7 +87,7 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status }
             reject(error);
         });
     });
-}
+};
 
 export const fetchCollection = ({ commit }, id) => {
     commit('cleanCollection');
@@ -92,7 +102,7 @@ export const fetchCollection = ({ commit }, id) => {
             reject(error);
         })
     });
-}
+};
 
 export const fetchCollectionName = ({ commit }, id) => {
     //commit('cleanCollectionName');
@@ -107,7 +117,7 @@ export const fetchCollectionName = ({ commit }, id) => {
             reject(error);
         })
     });
-}
+};
 
 export const deleteCollection = ({ commit }, { collectionId, isPermanently }) => {
     return new Promise((resolve, reject) => { 
@@ -125,7 +135,7 @@ export const deleteCollection = ({ commit }, { collectionId, isPermanently }) =>
             reject(error);
         })
     });
-}
+};
 
 export const updateCollection = ({ commit }, { 
         collection_id, 
@@ -172,7 +182,7 @@ export const updateCollection = ({ commit }, {
         });
 
     });
-}
+};
 
 export const sendCollection = ( { commit }, { name, description, status, mapper }) => {
     return new Promise(( resolve, reject ) => {
@@ -321,4 +331,4 @@ export const fetchCollectionsForParent = ({ commit }) => {
             reject(error);
         })
     });
-}
+};

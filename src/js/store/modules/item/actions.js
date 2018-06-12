@@ -1,13 +1,13 @@
 import axios from '../../../axios/axios';
 
-// Actions related to Item's field
-export const sendField = ( { commit }, { item_id, field_id, values }) => {
+// Actions related to Item's metadatum
+export const sendMetadatum = ( { commit }, { item_id, metadatum_id, values }) => {
    return new Promise( (resolve, reject) => {
-        axios.tainacan.post('/item/'+item_id+'/metadata/'+field_id, {
+        axios.tainacan.post('/item/'+item_id+'/metadata/'+metadatum_id, {
             values: values
         })
         .then( res => {
-            commit('setSingleMetadata', { item_id: item_id, field_id: field_id, values: values });
+            commit('setSingleMetadata', { item_id: item_id, metadatum_id: metadatum_id, values: values });
             resolve( res.data );
         })
         .catch(error => {
@@ -17,15 +17,15 @@ export const sendField = ( { commit }, { item_id, field_id, values }) => {
 };
 
 
-export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
+export const updateMetadata = ({ commit }, { item_id, metadatum_id, values }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch(`/item/${item_id}/metadata/${field_id}`, {
+        axios.tainacan.patch(`/item/${item_id}/metadata/${metadatum_id}`, {
             values: values,
         })
             .then( res => {
-                let field = res.data;
-                commit('setSingleField', field);
-                resolve(field)
+                let metadatum = res.data;
+                commit('setSingleMetadatum', metadatum);
+                resolve(metadatum)
             })
             .catch( error => {
                 reject(error.response.data.errors);
@@ -33,14 +33,14 @@ export const updateMetadata = ({ commit }, { item_id, field_id, values }) => {
     });
 };
 
-export const fetchFields = ({ commit }, item_id) => {
-    commit('cleanFields');
+export const fetchMetadata = ({ commit }, item_id) => {
+    commit('cleanMetadata');
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/item/'+item_id+'/metadata')
         .then(res => {
-            let fields = res.data;
-            commit('setFields', fields);
-            resolve( fields );
+            let metadata = res.data;
+            commit('setMetadata', metadata);
+            resolve( metadata );
         })
         .catch(error => {
             reject( error );
@@ -48,8 +48,8 @@ export const fetchFields = ({ commit }, item_id) => {
     });
 };
 
-export const cleanFields = ({ commit }) => {
-    commit('cleanFields');
+export const cleanMetadata = ({ commit }) => {
+    commit('cleanMetadata');
 };
 
 // Actions directly related to Item

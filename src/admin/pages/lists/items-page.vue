@@ -4,7 +4,8 @@
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
-        <button 
+        <button
+                v-if="!openAdvancedSearch"
                 id="filter-menu-compress-button"
                 :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
                 :style="{ top: isHeaderShrinked ? '125px' : '152px'}"
@@ -12,38 +13,34 @@
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
         <!-- Side bar with search and filters -->
-        <aside 
-                v-show="!isFiltersMenuCompressed"
-                class="filters-menu">
+        <aside
+                v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
+                class="filters-menu"
+                :class="{ 'tainacan-form': isOnTheme }">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <b-field> 
-                <div class="control is-small is-clearfix">
+            <div class="search-area">
+                <div class="control has-icons-right  is-small is-clearfix">
                     <input
-                        class="input is-small"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        autocomplete="on"
-                        :value="searchQuery"
-                        @input="futureSearchQuery = $event.target.value"
-                        @keyup.enter="updateSearch()">
+                            class="input is-small"
+                            :placeholder="$i18n.get('instruction_search')"
+                            type="search"
+                            autocomplete="on"
+                            :value="searchQuery"
+                            @input="futureSearchQuery = $event.target.value"
+                            @keyup.enter="updateSearch()">
+                        <span
+                                @click="updateSearch()"
+                                class="icon is-right">
+                            <i class="mdi mdi-magnify" />
+                        </span>
                 </div>
-
-                <p class="control">
-                    <button                             
-                            id="collection-search-button"
-                            type="submit"
-                            class="button"
-                            @click="updateSearch()">
-                        <b-icon 
-                                icon="magnify" 
-                                size="is-small"/>
-                    </button>
-                </p>
-            </b-field>
-            <!-- <a class="is-size-7 is-secondary is-pulled-right">Busca avançada</a> -->
+            </div>
+            <a
+                    @click="openAdvancedSearch = !openAdvancedSearch"
+                    class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -76,11 +73,12 @@
                 <div class="content has-text-gray has-text-centered">
                     <p>
                         <b-icon
-                                icon="filter-outline"
+                                icon="filter"
                                 size="is-large"/>
                     </p>
                     <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                     <router-link
+                            v-if="!isOnTheme"
                             id="button-create-filter"
                             :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                             tag="button"
@@ -101,10 +99,12 @@
                     :active.sync="isLoadingItems"/>
 
             <!-- SEARCH CONTROL ------------------------- -->
-            <div class="search-control">
+            <div
+                    v-if="!openAdvancedSearch"
+                    class="search-control">
                 <b-loading
                         :is-full-page="false"
-                        :active.sync="isLoadingFields"/>
+                        :active.sync="isLoadingMetadata"/>
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
@@ -136,24 +136,24 @@
                     </b-dropdown>
 
                 </div>
-                <!-- Displayed Fields Dropdown -->
+                <!-- Displayed Metadata Dropdown -->
                 <div    
                         v-if="!isOnTheme || registeredViewModes[viewMode].dynamic_metadata"
                         class="search-control-item">
                     <b-dropdown
-                            ref="displayedFieldsDropdown"
+                            ref="displayedMetadataDropdown"
                             :mobile-modal="false"
-                            :disabled="totalItems <= 0"
+                            :disabled="totalItems <= 0 || adminViewMode == 'grid'"
                             class="show">
                         <button
                                 class="button is-white"
                                 slot="trigger">
-                            <span>{{ $i18n.get('label_table_fields') }}</span>
+                            <span>{{ $i18n.get('label_displayed_metadata') }}</span>
                             <b-icon icon="menu-down"/>
                         </button>
                         <div class="metadata-options-container">
                         <b-dropdown-item
-                                v-for="(column, index) in localTableFields"
+                                v-for="(column, index) in localTableMetadata"
                                 :key="index"
                                 class="control"
                                 custom>
@@ -166,7 +166,7 @@
                         </div>
                         <div class="dropdown-item-apply">
                             <button 
-                                    @click="onChangeDisplayedFields()"
+                                    @click="onChangeDisplayedMetadata()"
                                     class="button is-success">
                                 {{ $i18n.get('label_apply_changes') }}
                             </button>
@@ -182,19 +182,20 @@
                                 @input="onChangeOrderBy($event)"
                                 :placeholder="$i18n.get('label_sorting')">
                             <option
-                                    v-for="field in tableFields"
+                                    v-for="metadatum in tableMetadata"
                                     v-if="
-                                        field.id === 'creation_date' || 
-                                        field.id === 'author_name' || (
-                                            field.id !== undefined &&
-                                            field.field_type_object.related_mapped_prop !== 'description' &&
-                                            field.field_type_object.primitive_type !== 'term' &&
-                                            field.field_type_object.primitive_type !== 'item' &&
-                                            field.field_type_object.primitive_type !== 'compound'
+                                        metadatum.id === 'creation_date' ||
+                                        metadatum.id === 'author_name' || (
+                                            metadatum.id !== undefined &&
+                                            metadatum.metadata_type_object && 
+                                            metadatum.metadata_type_object.related_mapped_prop !== 'description' &&
+                                            metadatum.metadata_type_object.primitive_type !== 'term' &&
+                                            metadatum.metadata_type_object.primitive_type !== 'item' &&
+                                            metadatum.metadata_type_object.primitive_type !== 'compound'
                                     )"
-                                    :value="field"
-                                    :key="field.id">
-                                {{ field.name }}
+                                    :value="metadatum"
+                                    :key="metadatum.id">
+                                {{ metadatum.name }}
                             </option>
                         </b-select>
                         <button
@@ -211,7 +212,7 @@
                         v-if="isOnTheme"
                         class="search-control-item">
                     <b-field>
-                    <b-dropdown 
+                        <b-dropdown
                                 @change="onChangeViewMode($event)"
                                 :mobile-modal="false"
                                 position="is-bottom-left"
@@ -222,6 +223,7 @@
                                 <span 
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
+                                    &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
                                 <b-icon icon="menu-down" />
                             </button>
                             <b-dropdown-item 
@@ -235,12 +237,70 @@
                         </b-dropdown>
                     </b-field>
                 </div>
-
+                <div
+                        v-if="!isOnTheme"
+                        class="search-control-item">
+                    <b-field>
+                        <b-dropdown
+                                v-model="adminViewMode"
+                                :mobile-modal="false"
+                                position="is-bottom-left"
+                                :aria-label="$i18n.get('label_view_mode')">
+                            <button
+                                    class="button is-white"
+                                    slot="trigger">
+                                <span>
+                                    <b-icon
+                                            :icon="(adminViewMode == 'table' || adminViewMode == undefined) ?
+                                                        'table' : (adminViewMode == 'cards' ?
+                                                        'view-list' : 'view-grid')"/>
+                                </span>
+                                &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
+                                <b-icon icon="menu-down" />
+                            </button>
+                            <b-dropdown-item :value="'table'">
+                                <b-icon icon="table"/>
+                                {{ $i18n.get('label_table') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item :value="'cards'">
+                                <b-icon icon="view-list"/>
+                                {{ $i18n.get('label_cards') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item :value="'grid'">
+                                <b-icon icon="view-grid"/>
+                                {{ $i18n.get('label_grid') }}
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </b-field>
+                </div>
             </div>
+
+
+            <!-- ADVANCED SEARCH -->
+            <div
+                    v-if="openAdvancedSearch">
+                <div class="columns tnc-advanced-search-close">
+                    <div class="column">
+                        <button
+                                @click="openAdvancedSearch = false"
+                                class="button is-white is-pulled-right">
+                            <b-icon
+                                    size="is-small"
+                                    icon="close"/>
+                        </button>
+                    </div>
+                </div>
+                <advanced-search
+                        :is-repository-level="isRepositoryLevel"
+                        :metadata-list="metadata" />
+            </div>
+
+
+            <!-- --------------- -->
 
             <!-- STATUS TABS, only on Admin -------- -->
             <div 
-                    v-if="!isOnTheme"
+                    v-if="!isOnTheme && !openAdvancedSearch"
                     class="tabs">
                 <ul>
                     <li 
@@ -258,16 +318,44 @@
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div class="above-search-control">
 
+                <div
+                        v-if="openAdvancedSearch && advancedSearchResults">
+                    <div class="advanced-search-results-title">
+                        <h1>{{ $i18n.get('info_search_results') }}</h1>
+                        <hr>
+                    </div>
+                </div>
+
                 <!-- Admin Table -->
+
+                <!-- When advanced search -->
                 <items-list
-                        v-if="!isOnTheme && 
-                              !isLoadingItems && 
-                              totalItems > 0"
+                        v-if="!isOnTheme &&
+                              !isLoadingItems &&
+                              totalItems > 0 &&
+                              openAdvancedSearch &&
+                              advancedSearchResults"
+
                         :collection-id="collectionId"
-                        :table-fields="tableFields"
+                        :table-metadata="tableMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is-on-trash="status == 'trash'"/>     
+                        :is-on-trash="status == 'trash'"
+                        :view-mode="adminViewMode"/>
+
+                <!-- Regular -->
+                <items-list
+                        v-else-if="!isOnTheme &&
+                              !isLoadingItems && 
+                              totalItems > 0 &&
+                              !openAdvancedSearch"
+
+                        :collection-id="collectionId"
+                        :table-metadata="tableMetadata"
+                        :items="items"
+                        :is-loading="isLoadingItems"
+                        :is-on-trash="status == 'trash'"
+                        :view-mode="adminViewMode"/>
                 
                 <!-- Theme View Modes -->
                 <div 
@@ -282,7 +370,7 @@
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component'"
                         :collection-id="collectionId"
-                        :table-fields="tableFields"
+                        :table-metadata="tableMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is="'table-view-mode'"/>     
@@ -313,7 +401,18 @@
                 </section>
 
                 <!-- Pagination -->
-                <pagination v-if="totalItems > 0 && (!isOnTheme || registeredViewModes[viewMode].show_pagination)"/>
+
+                <!-- When advanced search -->
+                <pagination
+                        v-if="totalItems > 0 &&
+                         (!isOnTheme || registeredViewModes[viewMode].show_pagination) &&
+                          advancedSearchResults"/>
+
+                <!-- Regular -->
+                <pagination
+                        v-else-if="totalItems > 0 &&
+                         (!isOnTheme || registeredViewModes[viewMode].show_pagination) &&
+                          !openAdvancedSearch"/>
             </div>
         </div>
         
@@ -324,6 +423,7 @@
     import ItemsList from '../../components/lists/items-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
+    import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -331,19 +431,22 @@
         data() {
             return {
                 isRepositoryLevel: false,
-                tableFields: [],
-                prefTableFields: [],
+                tableMetadata: [],
+                prefTableMetadata: [],
                 isLoadingItems: false,
                 isLoadingFilters: false,
-                isLoadingFields: false,
+                isLoadingMetadata: false,
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
                 collapseAll: true,
                 isOnTheme: false,
                 futureSearchQuery: '',
                 isHeaderShrinked: false,
-                localTableFields: [],
-                registeredViewModes: tainacan_plugin.registered_view_modes
+                localTableMetadata: [],
+                registeredViewModes: tainacan_plugin.registered_view_modes,
+                adminViewMode: 'table',
+                openAdvancedSearch: false,
+                advancedSearchResults: false,
             }
         },
         props: {
@@ -364,8 +467,8 @@
             filters() {
                 return this.getFilters();
             },
-            fields() {
-                return this.getFields();
+            metadata() {
+                return this.getMetadata();
             },
             searchQuery() {
                 return this.getSearchQuery();
@@ -386,11 +489,12 @@
         components: {
             ItemsList,
             FiltersItemsList,
-            Pagination
+            Pagination,
+            AdvancedSearch,
         },
         watch: {
-            tableFields() {
-                this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));
+            tableMetadata() {
+                this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
             }
         },
         methods: {
@@ -398,11 +502,11 @@
                 'getItems',
                 'getItemsListTemplate'
             ]),
-            ...mapActions('fields', [
-                'fetchFields'
+            ...mapActions('metadata', [
+                'fetchMetadata'
             ]),
-            ...mapGetters('fields', [
-                'getFields'
+            ...mapGetters('metadata', [
+                'getMetadata'
             ]),
             ...mapActions('filter', [
                 'fetchFilters'
@@ -421,8 +525,8 @@
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
-            onChangeOrderBy(field) {
-                this.$eventBusSearch.setOrderBy(field);
+            onChangeOrderBy(metadatum) {
+                this.$eventBusSearch.setOrderBy(metadatum);
             },
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
@@ -433,120 +537,126 @@
             onChangeViewMode(viewMode) {
                 this.$eventBusSearch.setViewMode(viewMode);
             },
-            onChangeDisplayedFields() {
-                let fetchOnlyFieldIds = [];
+            onChangeDisplayedMetadata() {
+                let fetchOnlyMetadatumIds = [];
 
-                for (let i = 0; i < this.localTableFields.length; i++) {
+                for (let i = 0; i < this.localTableMetadata.length; i++) {
 
-                    this.tableFields[i].display = this.localTableFields[i].display;
-                    if (this.tableFields[i].id != undefined) {
-                        if (this.tableFields[i].display) {
-                            fetchOnlyFieldIds.push(this.tableFields[i].id);                      
+                    this.tableMetadata[i].display = this.localTableMetadata[i].display;
+                    if (this.tableMetadata[i].id != undefined) {
+                        if (this.tableMetadata[i].display) {
+                            fetchOnlyMetadatumIds.push(this.tableMetadata[i].id);
                         }
                     }
                 }
+                let thumbnailMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'thumbnail');
+                let creationDateMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'creation_date');
+                let authorNameMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'author_name');
+
                 this.$eventBusSearch.addFetchOnly({
-                    '0': 'thumbnail',
-                    'meta': fetchOnlyFieldIds,
-                    '1': 'creation_date',
-                    '2': 'author_name'
+                    '0': thumbnailMetadatum.display ? 'thumbnail' : null,
+                    'meta': fetchOnlyMetadatumIds,
+                    '1': creationDateMetadatum.display ? 'creation_date' : null,
+                    '2': authorNameMetadatum.display ? 'author_name': null
                 });
-                this.$refs.displayedFieldsDropdown.toggle();
+                this.$refs.displayedMetadataDropdown.toggle();
             },
-            prepareFieldsAndFilters() {
+            prepareMetadataAndFilters() {
 
                 this.isLoadingFilters = true;
 
                 this.fetchFilters({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: true,
+                    isContextEdit: !this.isOnTheme,
                     includeDisabled: 'no',
                 })
                     .then(() => this.isLoadingFilters = false)
                     .catch(() => this.isLoadingFilters = false);
 
-                this.isLoadingFields = true;
-                this.tableFields = [];
-
-                this.fetchFields({
+                this.isLoadingMetadata = true;
+                // Processing is done inside a local variable
+                let metadata = [];
+                this.fetchMetadata({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: false
+                    isContextEdit: !this.isOnTheme
                 })
                     .then(() => {
 
-                        this.tableFields.push({
+                        metadata.push({
                             name: this.$i18n.get('label_thumbnail'),
-                            field: 'row_thumbnail',
-                            field_type: undefined,
+                            metadatum: 'row_thumbnail',
+                            metadata_type: undefined,
                             slug: 'thumbnail',
                             id: undefined,
                             display: true
                         });
 
-                        let fetchOnlyFieldIds = [];
+                        let fetchOnlyMetadatumIds = [];
 
-                        for (let field of this.fields) {
-                            if (field.display !== 'never') {
+                        for (let metadatum of this.metadata) {
+                            if (metadatum.display !== 'never') {
 
-                                let display = true;
+                                let display;
 
-                                if (field.display === 'no') {
+                                if (metadatum.display == 'no')
                                     display = false;
-                                }
+                                else if (metadatum.display == 'yes')
+                                    display = true;
 
-                                this.tableFields.push(
+                                metadata.push(
                                     {
-                                        name: field.name,
-                                        field: field.description,
-                                        slug: field.slug,
-                                        field_type: field.field_type,
-                                        field_type_object: field.field_type_object,
-                                        id: field.id,
+                                        name: metadatum.name,
+                                        metadatum: metadatum.description,
+                                        slug: metadatum.slug,
+                                        metadata_type: metadatum.metadata_type,
+                                        metadata_type_object: metadatum.metadata_type_object,
+                                        id: metadatum.id,
                                         display: display
                                     }
                                 );    
-                                fetchOnlyFieldIds.push(field.id);                      
+                                if (display)
+                                    fetchOnlyMetadatumIds.push(metadatum.id);                      
                             }
                         }
 
-                        this.tableFields.push({
+                        metadata.push({
                             name: this.$i18n.get('label_creation_date'),
-                            field: 'row_creation',
-                            field_type: undefined,
+                            metadatum: 'row_creation',
+                            metadata_type: undefined,
                             slug: 'creation_date',
                             id: undefined,
                             display: true
                         });
-                        this.tableFields.push({
+                        metadata.push({
                             name: this.$i18n.get('label_created_by'),
-                            field: 'row_author',
-                            field_type: undefined,
+                            metadatum: 'row_author',
+                            metadata_type: undefined,
                             slug: 'author_name',
                             id: undefined,
                             display: true
                         });
 
-                        // this.prefTableFields = this.tableFields;
+                        // this.prefTableMetadata = this.tableMetadata;
                         // this.$userPrefs.get('table_columns_' + this.collectionId)
                         //     .then((value) => {
-                        //         this.prefTableFields = value;
+                        //         this.prefTableMetadata = value;
                         //     })
                         //     .catch((error) => {
-                        //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableFields, null);
+                        //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableMetadata, null);
                         //     });
                         this.$eventBusSearch.addFetchOnly({
                             '0': 'thumbnail',
-                            'meta': fetchOnlyFieldIds,
+                            'meta': fetchOnlyMetadatumIds,
                             '1': 'creation_date',
                             '2': 'author_name'
                         });
-                        this.isLoadingFields = false;
-
+                        this.isLoadingMetadata = false;
+                        this.tableMetadata = metadata;
                     })
                     .catch(() => {
-                        this.isLoadingFields = false;
+                        this.isLoadingMetadata = false;
                     });
             }
         },
@@ -557,6 +667,7 @@
             this.isRepositoryLevel = (this.collectionId === undefined);
 
             this.$eventBusSearch.setCollectionId(this.collectionId);
+            this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
                 this.isLoadingItems = isLoadingItems;
@@ -566,22 +677,25 @@
                 this.hasFiltered = hasFiltered;
             });
 
-            this.$eventBusSearch.$on('hasToPrepareFieldsAndFilters', (to) => {
-                /* This condition is to prevent a incorrect fetch by filter or fields when we come from items
+            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
+                /* This condition is to prevent a incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level
                  */
-                if(this.collectionId === to.params.collectionId) {
-                    this.prepareFieldsAndFilters();
+                if (this.collectionId === to.params.collectionId) {
+                    this.prepareMetadataAndFilters();
                 }
             });
 
             this.$eventBusSearch.setViewMode(this.defaultViewMode);
 
+            if(this.$route.query.openAdvancedSearch) {
+                this.openAdvancedSearch = this.$route.query.openAdvancedSearch;
+            }
         },
         mounted() {
             
-            this.prepareFieldsAndFilters();
-            this.localTableFields = JSON.parse(JSON.stringify(this.tableFields));
+            this.prepareMetadataAndFilters();
+            this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 
             // Watch Scroll for shrinking header, only on Admin at collection level
             if (!this.isRepositoryLevel && !this.isOnTheme) {
@@ -598,6 +712,33 @@
 
     @import '../../scss/_variables.scss';
 
+    .advanced-search-results-title {
+        padding: 0 $table-side-padding;
+
+        h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $tertiary;
+            display: inline-block;
+        }
+
+        hr{
+            margin: 3px 0px 4px 0px;
+            height: 1px;
+            background-color: $secondary;
+        }
+    }
+
+    .tnc-advanced-search-close {
+        padding-top: 47px;
+        padding-right: $page-side-padding;
+        padding-left: $page-side-padding;
+
+        .column {
+            padding: 0 0.3rem 0.3rem !important;
+        }
+    }
+
     .page-container {
         padding: 0px;   
     }
@@ -612,6 +753,7 @@
         padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;
+        overflow-x: hidden;
         visibility: visible;
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;
@@ -622,18 +764,38 @@
             margin-top: 48px;
         }
 
-        #collection-search-button {
-            border-radius: 0 !important;
-            padding: 0 8px !important;
-            border-color: $tainacan-input-background;
-            &:focus, &:active {
-                border-color: none !important;
+        .search-area {
+            display: flex;
+            align-items: center;
+            width: 100%;
+
+            .control {
+                width: 100%;
+
+                input {
+                    height: 27px;
+                    font-size: 11px;
+                    color: $gray-light;
+                }
+                .icon {
+                    pointer-events: all;
+                    cursor: pointer;
+                    color: $tertiary;
+                    height: 27px;
+                    font-size: 18px !important;
+                }
+                margin-bottom: 5px;
             }
         }
 
         .label {
             font-size: 12px;
             font-weight: normal;
+        }
+
+        .checkbox {
+            margin-bottom: 5px;
+            align-items: baseline;
         }
 
     }
@@ -668,22 +830,14 @@
 
     .search-control {
         min-height: $subheader-height;
-        height: $subheader-height;
+        height: auto;
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
         border-bottom: 0.5px solid #ddd;
         display: flex;
         justify-content: space-between;
-
-        @media screen and (max-width: 769px) {
-            height: 60px;
-            margin-top: 0;
-
-            .search-control-item {
-                padding-right: 0.5em;
-            }
-        }
+        flex-wrap: wrap;
     }
 
     .search-control-item {
@@ -744,6 +898,7 @@
     .table-container {
         padding-left: 8.333333%;
         padding-right: 8.333333%;
+        min-height: 200px;
         //height: calc(100% - 82px);
     }
 

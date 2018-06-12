@@ -4,7 +4,7 @@ namespace Tainacan\Filter_Types;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class TainacanFieldType
+ * Class TainacanMetadatumType
  */
 class Taginput extends Filter_Type {
 
@@ -20,8 +20,8 @@ class Taginput extends Filter_Type {
 
     public function render( $filter ){
         return '<tainacan-filter-taginput name="'.$filter->get_name().'"
-                                        filter_type="'.$filter->get_field()->get_field_type().'"
+                                        filter_type="'.$filter->get_metadatum()->get_metadata_type().'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        field_id="'.$filter->get_field()->get_id().'"></tainacan-filter-taginput>';
+                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-taginput>';
     }
 }

@@ -8,44 +8,53 @@ use \Tainacan\Repositories;
  * 
  * Return the item metadata as a HTML string to be used as output.
  *
- * Each metadata is a label with the field name and the value.
+ * Each metadata is a label with the metadatum name and the value.
  *
- * If an ID, a slug or a Tainacan\Entities\Field object is passed, it returns only one metadata, otherwise
+ * If an ID, a slug or a Tainacan\Entities\Metadatum object is passed in 'metadata' parameter, it returns only one metadata, otherwise
  * it returns all metadata
  * 
- * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
- * @param array|string $args 
  * @param array|string $args {
- *     Optional. Array or string of arguments.
- *
- *     @type bool        $hide_empty                Wether to hide or not fields the item has no value to
- *                                                  Default: true
- *     @type string      $before_title              String to be added before each metadata title
- *                                                  Default '<h3>'
- *     @type string      $after_title               String to be added after each metadata title
- *                                                  Default '</h3>'
- *     @type string      $before_value              String to be added before each metadata value
- *                                                  Default '<p>'
- *     @type string      $after_value               String to be added after each metadata value
- *                                                  Default '</p>'
- * }
+	 *     Optional. Array or string of arguments.
+	 * 
+	 * 	   @type mixed		 $metadata					Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata
+	 * 
+	 *     @type array		 $metadata__in				Array of metadata IDs or Slugs to be retrieved. Default none
+	 * 
+	 *     @type array		 $metadata__not_in			Array of metadata IDs (slugs not accepted) to excluded. Default none
+	 * 
+	 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
+	 * 
+	 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
+	 * 
+	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
+	 * 
+	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *                                                  Default: true
+	 *     @type string      $before_title              String to be added before each metadata title
+	 *                                                  Default '<h3>'
+	 *     @type string      $after_title               String to be added after each metadata title
+	 *                                                  Default '</h3>'
+	 *     @type string      $before_value              String to be added before each metadata value
+	 *                                                  Default '<p>'
+	 *     @type string      $after_value               String to be added after each metadata value
+	 *                                                  Default '</p>'
+	 * }
  * @return string        The HTML output
  */
-function tainacan_get_the_metadata($field = null, $args = array()) {
-	$post = get_post();
-	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+function tainacan_get_the_metadata($args = array()) {
 	
-	if (!$theme_helper->is_post_an_item($post))
-		return;
-	
-	$item = new Entities\Item($post);
-	
-	return $item->get_metadata_as_html($field, $args);
+	$item = tainacan_get_item();
+
+	if ($item instanceof \Tainacan\Entities\Item) {
+		return $item->get_metadata_as_html($args);
+	}
+
+	return '';
 	
 }
 
-function tainacan_the_metadata($field = null, $args = array()) {
-	echo tainacan_get_the_metadata($field, $args);
+function tainacan_the_metadata($metadatum = null, $args = array()) {
+	echo tainacan_get_the_metadata($metadatum, $args);
 }
 
 /**
@@ -53,8 +62,8 @@ function tainacan_the_metadata($field = null, $args = array()) {
  * 
  * Return the item document as a HTML string to be used as output.
  *
- * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
- * @param bool $hide_empty Wether to hide or not fields the item has no value to
+ * @param  int|string|Tainacan\Entities\Metadatum $metadatum Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata
+ * @param bool $hide_empty Wether to hide or not metadata the item has no value to
  * @return string        The HTML output
  */
 function tainacan_get_the_document() {
@@ -189,4 +198,53 @@ function tainacan_get_term() {
  */
 function tainacan_register_view_mode($slug, $args = []) {
 	\Tainacan\Theme_Helper::get_instance()->register_view_mode($slug, $args);
+}
+
+/**
+ * Gets the Tainacan Item Entity object
+ * 
+ * If used inside the Loop of items, will get the Item object for the current post
+ */
+function tainacan_get_item($post_id = 0) {
+	$post = get_post( $post_id );
+
+	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+	
+	if (!$theme_helper->is_post_an_item($post))
+		return null;
+	
+	$item = new Entities\Item($post);
+
+	return $item;
+
+}
+
+/**
+ * To be used inside The Loop of a faceted serach view mode template.
+ * 
+ * Returns true or false indicating wether a certain property or metadata is
+ * selected to be displayed
+ * 
+ * @param string|integer The property to be checked. If a string is passed, it will check against
+ * 	one of the native property of the item, such as title, description and creation_date. 
+ *  If an integer is passed, it will check against the IDs of the metadata.
+ * 
+ * @return bool
+ */
+function tainacan_current_view_displays($property) {
+	global $view_mode_displayed_metadata;
+
+	// Core metadata appear in fetch_only as metadata
+	if ($property == 'title' || $property == 'description') {
+		$item = tainacan_get_item();
+		$core_getter_method = "get_core_{$property}_metadatum";
+        $property = $item->get_collection()->$core_getter_method()->get_id();
+	}
+
+	if (is_string($property)) {
+		return in_array($property, $view_mode_displayed_metadata);
+	} elseif (is_integer($property)) {
+		return in_array($property, $view_mode_displayed_metadata['meta']);
+	}
+	return false;
 }

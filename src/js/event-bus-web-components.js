@@ -27,7 +27,7 @@ export const eventBus = new Vue({
                     if (event.detail && event.detail[0] ){
                         this.updateValue({
                             item_id: $(eventElement).attr("item_id"),
-                            field_id: $(eventElement).attr("field_id"),
+                            metadatum_id: $(eventElement).attr("metadatum_id"),
                             values: event.detail
                         })
                     }
@@ -36,18 +36,19 @@ export const eventBus = new Vue({
         },
         updateValue(data){
             if ( data.item_id ){
+                
                 let values = ( Array.isArray( data.values[0] ) ) ? data.values[0] : data.values ;
                 const promisse = this.$store.dispatch('item/updateMetadata',
-                    { item_id: data.item_id, field_id: data.field_id, values: values });
+                    { item_id: data.item_id, metadatum_id: data.metadatum_id, values: values });
 
                     promisse.then( () => {
-                    let index = this.errors.findIndex( errorItem => errorItem.field_id == data.field_id );
+                    let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
                     if ( index >= 0){
                         this.errors.splice( index, 1);
                     }
                 })
                 .catch((error) => {
-                    let index = this.errors.findIndex( errorItem => errorItem.field_id == data.field_id );
+                    let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
                     let messages = [];
 
                     for (let index in error) {
@@ -55,25 +56,25 @@ export const eventBus = new Vue({
                     }
 
                     if ( index >= 0){
-                        Vue.set( this.errors, index, { field_id: data.field_id, errors: messages });
+                        Vue.set( this.errors, index, { metadatum_id: data.metadatum_id, errors: messages });
                     } else {
-                        this.errors.push( { field_id: data.field_id, errors: messages } );
+                        this.errors.push( { metadatum_id: data.metadatum_id, errors: messages } );
                     }
                 });
             }
         },
-        getErrors(field_id){
-            let error = this.errors.find( errorItem => errorItem.field_id == field_id );
+        getErrors(metadatum_id) {
+            let error = this.errors.find( errorItem => errorItem.metadatum_id == metadatum_id );
             return ( error ) ? error.errors : false
         },
         clearAllErrors(){
            this.errors = [];
         },
         setValues(){
-            const field = this.$store.getters['item/getMetadata'];
-            if( field ){
-                for(let singleMetadata of field){
-                    const eventElement = this.getComponentById( singleMetadata.field_id );
+            const metadatum = this.$store.getters['item/getMetadata'];
+            if( metadatum ){
+                for(let singleMetadata of metadatum){
+                    const eventElement = this.getComponentById( singleMetadata.metadatum_id );
                     eventElement.value =  singleMetadata.values;
                 }
             }
@@ -96,12 +97,12 @@ export const eventBus = new Vue({
             }
             return components;
         },
-        getComponentById( field_id ){
+        getComponentById( metadatum_id ){
             for( let component of this.componentsTag ){
                 const eventElements = document.getElementsByTagName( component );
                 if( eventElements ) {
                     for (let eventElement of eventElements){
-                        if( eventElement.field_id === field_id ){
+                        if( eventElement.metadatum_id === metadatum_id ){
                             return eventElement;
                         }
                     }

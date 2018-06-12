@@ -85,7 +85,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import TermEditionForm from '../edition/term-edition-form.vue'
+import TermEditionForm from '../edition/term-edition-form.vue';
+import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'TermsList',
@@ -212,14 +213,16 @@ export default {
 
             // Checks if user is deleting a term with unsaved info.
             if (term.id == 'new' || !term.saved || term.opened) {
-                this.$dialog.confirm({
-                    message: this.$i18n.get('info_warning_terms_not_saved'),
-                        onCancel: () => { return },
-                        onConfirm: () => { this.removeTerm(term);},
-                        cancelText: this.$i18n.get('cancel'),
-                        confirmText: this.$i18n.get('continue'),
-                        type: 'is-secondary'
-                    });  
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_terms_not_saved'),
+                        onConfirm: () => { this.removeTerm(term); },
+                    }
+                });  
             } else{
                 this.removeTerm(term);
             }

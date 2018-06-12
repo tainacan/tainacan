@@ -86,11 +86,11 @@ class REST_Controller extends \WP_REST_Controller {
 		];
 
 		$meta_query = [
-			'key'       => 'key',
-			'value'     => 'value',
-			'compare'   => 'compare',
-			'relation'  => 'relation',
-			'fieldtype' => 'type',
+			'key'       	=> 'key',
+			'value'     	=> 'value',
+			'compare'   	=> 'compare',
+			'relation'  	=> 'relation',
+			'metadatumtype' => 'type',
 		];
 
 		$date_query = [
@@ -109,11 +109,11 @@ class REST_Controller extends \WP_REST_Controller {
 		];
 
 		$tax_query = [
-			'taxonomy' => 'taxonomy',
-			'field'    => 'field',
-			'terms'    => 'terms',
-			'operator' => 'operator',
-			'relation' => 'relation',
+			'taxonomy'  => 'taxonomy',
+			'metadatum' => 'field',
+			'terms'     => 'terms',
+			'operator'  => 'operator',
+			'relation'  => 'relation',
 		];
 
 		$args = [];
@@ -140,12 +140,12 @@ class REST_Controller extends \WP_REST_Controller {
 
 	/**
 	 * @param $data
-	 * @param $field_name
+	 * @param $metadatum_name
 	 * @param $request
 	 *
 	 * @return \WP_Error
 	 */
-	function gt_user_meta( $data, $field_name, $request ) {
+	function gt_user_meta( $data, $metadatum_name, $request ) {
 		if( $data['id'] ){
 			$user_meta = get_user_meta( $data['id'] );
 		}
@@ -164,19 +164,19 @@ class REST_Controller extends \WP_REST_Controller {
 	/**
 	 * @param $meta
 	 * @param $user
-	 * @param $field_name
+	 * @param $metadatum_name
 	 *
 	 * @param $request
 	 *
 	 * @return mixed|\WP_Error
 	 */
-	public function up_user_meta( $meta, $user, $field_name, $request ) {
+	public function up_user_meta( $meta, $user, $metadatum_name, $request ) {
 		if ( !$user->ID ) {
 			return new \WP_Error( 'No user found', 'No user found', array( 'status' => 404 ) );
 		}
 
 		$user_id = $user->ID;
-		$metas = $field_name === 'meta' ? $meta : [];
+		$metas = $metadatum_name === 'meta' ? $meta : [];
 
 		$map = [
 			'metakey',
@@ -244,16 +244,16 @@ class REST_Controller extends \WP_REST_Controller {
 
 			foreach ( $request_meta_query as $index1 => $a ) {
 
-                // handle core field
+                // handle core metadatum
                 if( is_array($a) && array_key_exists("key", $a) ){
-                    $field = new \Tainacan\Entities\Field($a['key']);
-                    if( strpos( $field->get_field_type(), 'Core_Title') !== false ){
+                    $metadatum = new \Tainacan\Entities\Metadatum($a['key']);
+                    if( strpos( $metadatum->get_metadata_type(), 'Core_Title') !== false ){
                         $args[ 'post_title_in' ] = [
                             'relation' => ( isset( $request_meta_query['relation']) ) ? $request_meta_query['relation'] : 'AND' ,
                             'value' => ( is_array( $a['value'] ) ) ? $a['value'] : [$a['value']]
                         ];
                         continue;
-                    } else if( strpos( $field->get_field_type(), 'Core_Description') !== false ) {
+                    } else if( strpos( $metadatum->get_metadata_type(), 'Core_Description') !== false ) {
                         $args[ 'post_content_in' ] = [
                             'relation' => ( isset( $request_meta_query['relation']) ) ? $request_meta_query['relation'] : 'AND' ,
                             'value' => ( is_array( $a['value'] ) ) ? $a['value'] : [$a['value']]
@@ -435,7 +435,7 @@ class REST_Controller extends \WP_REST_Controller {
 							'description' => __('OR or AND, how the sub-arrays should be compared.'),
 							'default'     => 'AND',
 						),
-						'fieldtype' => array(
+						'metadatumtype' => array(
 							'type'        => 'string',
 							'description' => __('Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
 						),
@@ -507,7 +507,7 @@ class REST_Controller extends \WP_REST_Controller {
 							'type'        => 'string',
 							'description' => __('The taxonomy data base identifier.')
 						),
-						'field'    => array(
+						'metadatum'    => array(
 							'type'        => 'string',
 							'description' => __('Select taxonomy term by. Possible values are term_id, name, slug or term_taxonomy_id. Default value is term_id.')
 						),

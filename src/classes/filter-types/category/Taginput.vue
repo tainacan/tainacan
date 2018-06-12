@@ -19,19 +19,19 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
-            this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
+            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
+            this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadata_type;
 
-            let in_route = '/collection/' + this.isRepositoryLevel + '/fields/' +  this.field +'?context=edit';
+            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if(this.isRepositoryLevel){
-                in_route = '/fields?context=edit';
+            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
+                in_route = '/metadata/'+ this.metadatum;
             }
 
             axios.get(in_route)
                 .then( res => {
-                    let field = res.data;
-                    this.selectedValues( field.field_type_options.taxonomy_id );
+                    let metadatum = res.data;
+                    this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
                 });
         },
         data(){
@@ -42,20 +42,20 @@
                 isLoading: false,
                 type: '',
                 collection: '',
-                field: '',
+                metadatum: '',
                 taxonomy: ''
             }
         },
         props: {
             filter: {
-                type: Object // concentrate all attributes field id and type
+                type: Object // concentrate all attributes metadatum id and type
             },
-            field_id: [Number], // not required, but overrides the filter field id if is set
-            collection_id: [Number], // not required, but overrides the filter field id if is set
-            filter_type: [String],  // not required, but overrides the filter field type if is set
+            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
+            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
+            filter_type: [String],  // not required, but overrides the filter metadatum type if is set
             id: '',
             query: {
-                type: Object // concentrate all attributes field id and type
+                type: Object // concentrate all attributes metadatum id and type
             },
             isRepositoryLevel: Boolean,
         },
@@ -72,7 +72,7 @@
                     filter: 'taginput',
                     compare: 'IN',
                     taxonomy: this.taxonomy,
-                    field_id: ( this.field_id ) ? this.field_id : this.filter.field,
+                    metadatum_id: ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     terms: values
                 });
@@ -83,11 +83,12 @@
                 let promise = null;
                 this.options = [];
                 const q = query;
-                
-                axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                const endpoint = this.isRepositoryLevel ? '/metadata/' + this.metadatum : '/collection/'+ this.collection +'/metadata/' + this.metadatum;
+
+                axios.get(endpoint)
                     .then( res => {
-                        let field = res.data;
-                        promise = this.getValuesCategory( field.field_type_options.taxonomy_id, q );
+                        let metadatum = res.data;
+                        promise = this.getValuesCategory( metadatum.metadata_type_options.taxonomy_id, q );
                         this.isLoading = true;
                         promise.then( () => {
                             this.isLoading = false;
@@ -102,7 +103,7 @@
                     });
             },
             getValuesCategory( taxonomy, query ){
-                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
+                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
                     for (let term of res.data) {
                         if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
                             this.taxonomy = term.taxonomy;
@@ -118,7 +119,7 @@
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 
-                let index = this.query.taxquery.findIndex(newField => newField.taxonomy === this.taxonomy );
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy === this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     for ( let id of metadata.terms ){
@@ -129,7 +130,7 @@
                 }
             },
             getTerm( taxonomy, id ){
-              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id ).then( res => {
+              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' ).then( res => {
                   this.$console.log(res);
               })
               .catch(error => {

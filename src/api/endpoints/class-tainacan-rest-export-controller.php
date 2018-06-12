@@ -11,7 +11,7 @@ class REST_Export_Controller extends REST_Controller {
 	private $item_metadata_repository;
 	private $items_repository;
 	private $collection_repository;
-	private $field_repository;
+	private $metadatum_repository;
 
 	public function __construct() {
 		$this->rest_base = 'export';
@@ -25,20 +25,20 @@ class REST_Export_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function init_objects() {
-		$this->field_repository = Repositories\Fields::get_instance();
+		$this->metadatum_repository = Repositories\Metadata::get_instance();
 		$this->item_metadata_repository = Repositories\Item_Metadata::get_instance();
 		$this->items_repository = Repositories\Items::get_instance();
 		$this->collection_repository = Repositories\Collections::get_instance();
 	}
 
 	/**
-	 * If POST on field/collection/<collection_id>, then
-	 * a field will be created in matched collection and all your item will receive this field
+	 * If POST on metadatum/collection/<collection_id>, then
+	 * a metadatum will be created in matched collection and all your item will receive this metadatum
 	 *
-	 * If POST on field/item/<item_id>, then a value will be added in a field and field passed
+	 * If POST on metadatum/item/<item_id>, then a value will be added in a metadatum and metadatum passed
 	 * id body of requisition
 	 *
-	 * Both of GETs return the field of matched objects
+	 * Both of GETs return the metadatum of matched objects
 	 *
 	 * @throws \Exception
 	 */
@@ -82,15 +82,15 @@ class REST_Export_Controller extends REST_Controller {
 	 */
 	public function get_item( $request ) {
 		/*$collection_id = $request['collection_id'];
-		$field_id = $request['field_id'];
+		$metadatum_id = $request['metadatum_id'];
 
-		if($request['fetch'] === 'all_field_values'){
-			$results = $this->field_repository->fetch_all_field_values($collection_id, $field_id);
+		if($request['fetch'] === 'all_metadatum_values'){
+			$results = $this->metadatum_repository->fetch_all_metadatum_values($collection_id, $metadatum_id);
 
 			return new \WP_REST_Response($results, 200);
 		}
 
-		$result = $this->field_repository->fetch($field_id, 'OBJECT');
+		$result = $this->metadatum_repository->fetch($metadatum_id, 'OBJECT');
 
 		$prepared_item = $this->prepare_item_for_response($result, $request);
 		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $prepared_item, $request), 200);*/
@@ -133,7 +133,7 @@ class REST_Export_Controller extends REST_Controller {
 	 * @return array|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$items_metadata = $item->get_fields();
+		$items_metadata = $item->get_metadata();
 		
 		$prepared_item = [];
 		

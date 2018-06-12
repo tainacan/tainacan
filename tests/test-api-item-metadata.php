@@ -8,7 +8,7 @@ namespace Tainacan\Tests;
 class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 	protected $item;
 	protected $collection;
-	protected $field;
+	protected $metadatum;
 	
 	protected function create_meta_requirements() {
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -21,15 +21,15 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 		
-		$type = $this->tainacan_field_factory->create_field('text');
+		$type = $this->tainacan_metadatum_factory->create_metadatum('text');
 		
-		$field = $this->tainacan_entity_factory->create_entity(
-			'field',
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
 			array(
 				'name'              => 'teste_metadado',
 				'description'       => 'descricao',
 				'collection'        => $collection,
-				'field_type'		=> $type,
+				'metadata_type'		=> $type,
 				'accept_suggestion'	=> true
 			),
 			true,
@@ -48,8 +48,8 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		);
 		$this->collection = $collection;
 		$this->item = $item;
-		$this->field = $field;
-		return ['collection' => $collection, 'item' => $item, 'field' => $field];
+		$this->metadatum = $metadatum;
+		return ['collection' => $collection, 'item' => $item, 'metadatum' => $metadatum];
 	}
 	
 	public function test_create_suggestion_item_metadata_in_a_collection(){
@@ -60,7 +60,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			'values'       => 'TestValues_metadado',
 		]);
 
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $field->get_id() );
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $metadatum->get_id() );
 		$request->set_body($item__metadata_json);
 
 		$response = $this->server->dispatch($request);
@@ -72,7 +72,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals($item->get_id() , $data['item']['id']);
 		$this->assertEquals('TestValues_metadado', $data['value']);
 		
-		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/'. $field->get_id() );
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/'. $metadatum->get_id() );
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
@@ -86,7 +86,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			'values'       => 'TestValuesSuggestion_metadado',
 		]);
 		
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $field->get_id() );
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $metadatum->get_id() );
 		$request->set_body($item__metadata_json);
 		$response = $this->server->dispatch($request);
 		
@@ -114,7 +114,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		
 		$this->assertEquals(200, $response->get_status());
 		
-		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/'. $field->get_id()  );
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/'. $metadatum->get_id()  );
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
@@ -129,7 +129,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			'values'       => 'TestValues_metadado',
 		]);
 		
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $field->get_id() );
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $metadatum->get_id() );
 		$request->set_body($item__metadata_json);
 		
 		$response = $this->server->dispatch($request);
@@ -146,7 +146,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			'values'       => 'TestValuesAnonymousSuggestion_metadado',
 		]);
 		
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $field->get_id() );
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $metadatum->get_id() );
 		$request->set_body($item__metadata_json);
 		$response = $this->server->dispatch($request);
 		
@@ -174,7 +174,7 @@ class TAINACAN_REST_Item_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		
 		$this->assertEquals(200, $response->get_status());
 		
-		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/'. $field->get_id()  );
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/'. $metadatum->get_id()  );
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();

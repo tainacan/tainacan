@@ -4,7 +4,7 @@
         <div v-if="type === 'date'">
             <b-datepicker
                     :placeholder="$i18n.get('label_selectbox_init')"
-                    :class="{'has-content': date_init !== undefined && date_init !== ''}"
+                    :class="{'has-content': date_init != undefined && date_init != ''}"
                     v-model="date_init"
                     size="is-small"
                     @focus="isTouched = true"
@@ -12,7 +12,7 @@
                     icon="calendar-today"/>
             <b-datepicker
                     :placeholder="$i18n.get('label_selectbox_init')"
-                    :class="{'has-content': date_end !== undefined && date_end !== ''}"
+                    :class="{'has-content': date_end != undefined && date_end != ''}"
                     v-model="date_end"
                     size="is-small"
                     @input="validate_values()"
@@ -25,7 +25,7 @@
                 class="columns"
                 v-else>
             <b-input
-                    :class="{'has-content': value_init !== undefined && value_init !== ''}"
+                    :class="{'has-content': value_init != undefined && value_init != ''}"
                     size="is-small"
                     type="number"
                     step="any"
@@ -33,7 +33,7 @@
                     class="column"
                     v-model="value_init"/>
             <b-input
-                    :class="{'has-content': value_end !== undefined && value_end !== ''}"
+                    :class="{'has-content': value_end != undefined && value_end != ''}"
                     size="is-small"
                     type="number"
                     step="any"
@@ -64,20 +64,20 @@
         created(){
             const vm = this;
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
+            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
 
-            let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
+            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if(this.isRepositoryLevel){
-                in_route = '/fields/'+ this.field;
+            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
+                in_route = '/metadata/'+ this.metadatum;
             }
 
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.field_type ){
-                        vm.field_object = result;
-                        vm.type = ( result.field_type === 'Tainacan\\Field_Types\\Date') ? 'date' : 'numeric';
+                    if( result && result.metadata_type ){
+                        vm.metadatum_object = result;
+                        vm.type = ( result.metadata_type === 'Tainacan\\Metadata_Types\\Date') ? 'date' : 'numeric';
                         vm.selectedValues();
                     }
                 })
@@ -96,16 +96,16 @@
                 clear: false,
                 type: 'numeric',
                 collection: '',
-                field: '',
-                field_object: {},
+                metadatum: '',
+                metadatum_object: {},
             }
         },
         props: {
             filter: {
-                type: Object // concentrate all attributes field id and type
+                type: Object // concentrate all attributes metadatum id and type
             },
-            field_id: [Number], // not required, but overrides the filter field id if is set
-            collection_id: [Number], // not required, but overrides the filter field id if is set
+            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
+            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
             id: '',
             query: Object,
             isRepositoryLevel: Boolean,
@@ -165,7 +165,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newField => newField.key === this.field );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     if( metadata.value.length > 0 && this.type === 'numeric'){
@@ -204,7 +204,7 @@
                 this.$emit('input', {
                     filter: 'range',
                     compare: 'BETWEEN',
-                    field_id: this.field,
+                    metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: ''
                 });
@@ -278,7 +278,7 @@
                     filter: 'range',
                     type: type,
                     compare: 'BETWEEN',
-                    field_id: vm.field,
+                    metadatum_id: vm.metadatum,
                     collection_id: ( vm.collection_id ) ? vm.collection_id : vm.filter.collection_id,
                     value: values
                 });

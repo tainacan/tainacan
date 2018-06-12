@@ -21,21 +21,21 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id;
+            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id;
             const vm = this;
 
-            let in_route = '/collection/' + this.collection + '/fields/' +  this.field;
+            let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
-            if(this.isRepositoryLevel){
-                in_route = '/fields?nopaging=1';
+            if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
+                in_route = '/metadata?nopaging=1';
             }
 
             axios.get(in_route)
                 .then( res => {
                     let result = res.data;
-                    if( result && result.field_type ){
-                        vm.field_object = result;
-                        vm.type = result.field_type;
+                    if( result && result.metadata_type ){
+                        vm.metadatum_object = result;
+                        vm.type = result.metadata_type;
                         vm.selectedValues();
                     }
                 })
@@ -51,8 +51,8 @@
                 isLoading: false,
                 type: '',
                 collection: '',
-                field: '',
-                field_object: {}
+                metadatum: '',
+                metadatum_object: {}
             }
         },
         props: {
@@ -71,7 +71,7 @@
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
-                    field_id: this.field,
+                    metadatum_id: this.metadatum,
                     collection_id: this.collection,
                     value: values
                 });
@@ -81,13 +81,13 @@
             search( query ){
                 let promise = null;
                 this.options = [];
-                if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
-                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ?
-                        this.field_object.field_type_options.collection_id : this.collection_id;
+                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
                     promise = this.getValuesRelationship( collectionTarget, query );
 
                 } else {
-                    promise = this.getValuesPlainText( this.field, query, this.isRepositoryLevel );
+                    promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
                 }
                 this.isLoading = true;
                 promise.then(() => {
@@ -102,14 +102,14 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newField => newField.key === this.field );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
-                    let collectionTarget = ( this.field_object && this.field_object.field_type_options.collection_id ) ?
-                        this.field_object.field_type_options.collection_id : this.collection_id;
+                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
 
-                    if ( this.type === 'Tainacan\\Field_Types\\Relationship' ) {
+                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let query = qs.stringify({ postin: metadata.value  });
 
                         axios.get('/collection/' + collectionTarget + '/items?' + query)

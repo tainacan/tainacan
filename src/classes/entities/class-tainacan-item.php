@@ -336,13 +336,13 @@ class Item extends Entity {
 	/**
 	 * Return a List of ItemMetadata objects
 	 *
-	 * It will return all fields associeated with the collection this item is part of.
+	 * It will return all metadata associeated with the collection this item is part of.
 	 *
-	 * If the item already has a value for any of the fields, it will be available.
+	 * If the item already has a value for any of the metadata, it will be available.
 	 *
 	 * @return array Array of ItemMetadata objects
 	 */
-	function get_fields($args = []) {
+	function get_metadata($args = []) {
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
 		return $Tainacan_Item_Metadata->fetch( $this, 'OBJECT', $args );
@@ -380,18 +380,18 @@ class Item extends Entity {
 			$is_valid = false;
 		}
 
-		$arrayItemMetadata = $this->get_fields();
+		$arrayItemMetadata = $this->get_metadata();
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {
 				
-				// skip validation for Compound Fields
-				if ( $itemMetadata->get_field()->get_field_type() == 'Tainacan\Field_Types\Compound' ) {
+				// skip validation for Compound Metadata
+				if ( $itemMetadata->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
 					continue;
 				}
 
 				if ( ! $itemMetadata->validate() ) {
 					$errors = $itemMetadata->get_errors();
-					$this->add_error( $itemMetadata->get_field()->get_id(), $errors );
+					$this->add_error( $itemMetadata->get_metadatum()->get_id(), $errors );
 					$is_valid = false;
 				}
 			}
@@ -410,7 +410,7 @@ class Item extends Entity {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::validate()
 	 */
-	public function validate_core_fields() {
+	public function validate_core_metadata() {
 		if ( ! in_array( $this->get_status(), apply_filters( 'tainacan-status-require-validation', [
 			'publish',
 			'future',
@@ -449,38 +449,55 @@ class Item extends Entity {
 	/**
 	 * Return the item metadata as a HTML string to be used as output.
 	 *
-	 * Each metadata is a label with the field name and the value.
+	 * Each metadata is a label with the metadatum name and the value.
 	 *
-	 * If an ID, a slug or a Tainacan\Entities\Field object is passed, it returns only one metadata, otherwise
+	 * If an ID, a slug or a Tainacan\Entities\Metadatum object is passed in the 'metadata' argument, it returns only one metadata, otherwise
 	 * it returns all metadata
 	 *
-	 * @param  int|string|Tainacan\Entities\Field $field Field object, ID or slug to retrieve only one field. empty returns all fields
-	* @param array|string $args {
-	*     Optional. Array or string of arguments.
-	*
-	*     @type bool        $hide_empty                Wether to hide or not fields the item has no value to
-	*                                                  Default: true
-	*     @type string      $before_title              String to be added before each metadata title
-	*                                                  Default '<h3>'
-	*     @type string      $after_title               String to be added after each metadata title
-	*                                                  Default '</h3>'
-	*     @type string      $before_value              String to be added before each metadata value
-	*                                                  Default '<p>'
-	*     @type string      $after_value               String to be added after each metadata value
-	*                                                  Default '</p>'
-	* }
+	 * @param array|string $args {
+	 *     Optional. Array or string of arguments.
+	 * 
+	 * 	   @type mixed		 $metadata					Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata
+	 * 
+	 *     @type array		 $metadata__in				Array of metadata IDs or Slugs to be retrieved. Default none
+	 * 
+	 *     @type array		 $metadata__not_in			Array of metadata IDs (slugs not accepted) to excluded. Default none
+	 * 
+	 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
+	 * 
+	 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
+	 * 
+	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
+	 * 
+	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *                                                  Default: true
+	 *     @type string      $before_title              String to be added before each metadata title
+	 *                                                  Default '<h3>'
+	 *     @type string      $after_title               String to be added after each metadata title
+	 *                                                  Default '</h3>'
+	 *     @type string      $before_value              String to be added before each metadata value
+	 *                                                  Default '<p>'
+	 *     @type string      $after_value               String to be added after each metadata value
+	 *                                                  Default '</p>'
+	 * }
 	 *
 	 * @return string        The HTML output
 	 * @throws \Exception
 	 */
-	public function get_metadata_as_html($field = null, $args = array()) {
+	public function get_metadata_as_html($args = array()) {
 		
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-		$Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		
 		$return = '';
 		
 		$defaults = array(
+			'metadata' => null,
+			'metadata__in' => null,
+			'metadata__not_in' => null,
+			'exclude_title' => false,
+			'exclude_description' => false,
+			'exclude_core' => false,
 			'hide_empty' => true,
 			'before_title' => '<h3>',
 			'after_title' => '</h3>',
@@ -489,25 +506,35 @@ class Item extends Entity {
 		);
 		$args = wp_parse_args($args, $defaults);
 
-		if (!is_null($field)) {
+		if (!is_null($args['metadata'])) {
 			
-			$field_object = null;
+			$metadatum_object = null;
 			
-			if ( $field instanceof \Tainacan\Entities\Field ) {
-				$field_object = $field;
-			} elseif ( is_int($field) ) {
-				$field_object = $Tainacan_Fields->fetch($field);
-			} elseif ( is_string($field) ) {
-				$query = $Tainacan_Fields->fetch(['slug' => $field], 'OBJECT');
-				if ( is_array($query) && sizeof($query) == 1 && isset($field[0])) {
-					$field_object = $field[0];
+			if ( $metadatum instanceof \Tainacan\Entities\Metadatum ) {
+				$metadatum_object = $metadatum;
+			} elseif ( is_int($metadatum) ) {
+				$metadatum_object = $Tainacan_Metadata->fetch($metadatum);
+			} elseif ( is_string($metadatum) ) {
+				$query = $Tainacan_Metadata->fetch(['slug' => $metadatum], 'OBJECT');
+				if ( is_array($query) && sizeof($query) == 1 && isset($metadatum[0])) {
+					$metadatum_object = $metadatum[0];
 				}
 			}
 			
-			if ( $field_object instanceof \Tainacan\Entities\Field ) {
-				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $field_object);
+			if ( $metadatum_object instanceof \Tainacan\Entities\Metadatum ) {
+
+				if ( is_array($args['metadata__not_in']) 
+					&& (
+						in_array($metadatum_object->get_slug(), $args['metadata__not_in']) ||
+						in_array($metadatum_object->get_id(), $args['metadata__not_in'])
+					)
+				) {
+					return $return;
+				}
+
+				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
 				if ($item_meta->has_value() || !$args['hide_empty']) {
-					$return .= $args['before_title'] . $field_object->get_name() . $args['after_title'];
+					$return .= $args['before_title'] . $metadatum_object->get_name() . $args['after_title'];
 					$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
 				}
 				
@@ -516,12 +543,59 @@ class Item extends Entity {
 			return $return;
 			
 		}
+
+
+
+		$query_args = [];
+		$post__in = [];
+		$post__not_in = [];
+		$post__name_in = [];
+		if (is_array($args['metadata__in'])) {
+			foreach ($args['metadata__in'] as $meta) {
+				if (is_string($meta)) {
+					$post__name_in[] = $meta;
+				} elseif (is_integer($meta)) {
+					$post__in[] = $meta;
+				}
+			}
+		}
+		if (is_array($args['metadata__not_in'])) {
+			foreach ($args['metadata__not_in'] as $meta) {
+				if (is_integer($meta)) {
+					$post__not_in[] = $meta;
+				}
+			}
+		}
+
+		if (sizeof($post__in) > 0) {
+			$query_args['post__in'] = $post__in;
+		}
+		if (sizeof($post__not_in) > 0) {
+			$query_args['post__not_in'] = $post__not_in;
+		}
+		if (sizeof($post__name_in) > 0) {
+			$query_args['post__name_in'] = $post__name_in;
+		}
+
 		
-		$fields = $this->get_fields();
+		$metadata = $this->get_metadata($query_args);
 		
-		foreach ( $fields as $item_meta ) {
+		foreach ( $metadata as $item_meta ) {
+
+			$fto = $item_meta->get_metadatum()->get_metadata_type_object();
+
+			if ( $fto->get_core() ) {
+				if ( $args['exclude_core'] ) {
+					continue;
+				} elseif ( $args['exclude_title'] && $fto->get_related_mapped_prop() == 'title' ) {
+					continue;
+				} elseif ( $args['exclude_description'] && $fto->get_related_mapped_prop() == 'description' ) {
+					continue;
+				}
+			}
+
 			if ($item_meta->has_value() || !$args['hide_empty']) {
-				$return .= $args['before_title'] . $item_meta->get_field()->get_name() . $args['after_title'];
+				$return .= $args['before_title'] . $item_meta->get_metadatum()->get_name() . $args['after_title'];
 				$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
 			}
 		}

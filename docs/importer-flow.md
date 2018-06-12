@@ -18,7 +18,7 @@ If called from inside a collection, this step is skipped and the current collect
 If the importer has the attribute `$import_structure_and_mapping` set to `true`, and the importer is called from repository level,
 they will also be able to choose to create a new collection. 
 
-In that cases, a new collection is created, and the importer must implement a method called `create_fields_and_mapping()`, which, as the name says, will create all collections fields and set the mapping for the importer.
+In that cases, a new collection is created, and the importer must implement a method called `create_fields_and_mapping()`, which, as the name says, will create all collections metadata and set the mapping for the importer.
 
 
 ## Set options
@@ -79,12 +79,12 @@ From that point forward, the importer will behave just as if it was using the fi
 
 ## Mapping
 
-At this point the user is presented with an interface to map the fields from the source to the fields present in the chosen collection.
+At this point the user is presented with an interface to map the metadata from the source to the metadata present in the chosen collection.
 
-The Importer class must implement the `get_fields()` method, that will return an array of the fields found in the source. It can either return an hard coded array or an array that is red from the source file. For example, an importer that fetches data from an api knows beforehand what are the fields the api will return, however, an importer that reads from a csv, may want to return whatever is found in the first line of the array. 
+The Importer class must implement the `get_fields()` method, that will return an array of the metadata found in the source. It can either return an hard coded array or an array that is red from the source file. For example, an importer that fetches data from an api knows beforehand what are the metadata the api will return, however, an importer that reads from a csv, may want to return whatever is found in the first line of the array. 
 
 ```
-// Example 1: returns a hard coded set of fields
+// Example 1: returns a hard coded set of metadata
 function get_fields() {
 	return [
 		'title',
@@ -103,7 +103,7 @@ public function get_fields(){
 
 ## Importing Collection Structure and Mapping
 
-Alternatively, an importer may also create all the fields and mappings from the source. In that cases, the user does not have to map anything.
+Alternatively, an importer may also create all the metadata and mappings from the source. In that cases, the user does not have to map anything.
 
 First thing an Importer must do to accomplish this is to declare it does so in the `construct()`, by setting `$import_structure_and_mapping` to `true`.
 
@@ -115,38 +115,38 @@ function __construct() {
 }
 ```
 
-Second, the importer must implement the `create_fields_and_mapping()` to populate the collection with fields and set the mapping.
+Second, the importer must implement the `create_fields_and_mapping()` to populate the collection with metadata and set the mapping.
 
-In order to do this, the Importer will use Tainacan internal API to create the fields. Please refer to the documentation (TODO: write this documentation).
+In order to do this, the Importer will use Tainacan internal API to create the metadata. Please refer to the documentation (TODO: write this documentation).
 
-This method must be aware that even a brand new collection comes with two core fields (title and description), and use them.
+This method must be aware that even a brand new collection comes with two core metadata (title and description), and use them.
 
-Again, this fields can come from the file, the URL or may be hardcoded in the function.
+Again, this metadata can come from the file, the URL or may be hardcoded in the function.
 
 Example
 ```
 function create_fields_and_mapping() {
 	
-	$fields_repository = \Tainacan\Repositories\Fields::get_instance();
+	$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
 	
-	$newField1 = new \Tainacan\Entities\Field();
-	$newField1->set_name = 'New Field';
-	$newField1->set_field_type = 'Tainacan\Field_Types\Text';
-	$newField1->set_collection($this->collection);
+	$newMetadatum1 = new \Tainacan\Entities\Metadatum();
+	$newMetadatum1->set_name = 'New Metadatum';
+	$newMetadatum1->set_field_type = 'Tainacan\Metadatum_Types\Text';
+	$newMetadatum1->set_collection($this->collection);
 	
-	$newField1->validate(); // there is no user input here, so we can be sure it will validate.
+	$newMetadatum1->validate(); // there is no user input here, so we can be sure it will validate.
 
-	$newField1 = $fields_repository->insert($newField1);
+	$newMetadatum1 = $metadata_repository->insert($newMetadatum1);
 
 	$source_fields = $this->get_fields();
 	
 	$this->set_mapping([
-		$newField1->get_id() => $source_fields[0]
+		$newMetadatum1->get_id() => $source_fields[0]
 	]);
 	
 }
 
-TODO: helpers and explanation on how to fetch the core fields and map them
+TODO: helpers and explanation on how to fetch the core metadata and map them
 
 ```
 
@@ -159,6 +159,6 @@ The `run()` method is called, the importer runs a step of the import process, an
 
 In order to allow this, the importer must implement the `get_total_items_from_source()` method, which will inform the total number of items present in the source.
 
-All the steps and insertion are handled by the Importer super class. The importer class only have to implement one method (`process_item()`) to handle one single item. It will receive the index of this item and it must return the item in as an array, where each key is the identifier of the source field (the same used in the mapping array), and the values are each field value.
+All the steps and insertion are handled by the Importer super class. The importer class only have to implement one method (`process_item()`) to handle one single item. It will receive the index of this item and it must return the item in as an array, where each key is the identifier of the source metadatum (the same used in the mapping array), and the values are each metadatum value.
 
 In the end, a report is generated with all the logs generated in the process. 

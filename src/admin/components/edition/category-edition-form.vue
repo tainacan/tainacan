@@ -140,6 +140,7 @@
     import { mapActions, mapGetters } from 'vuex';
     import TermsList from '../lists/terms-list.vue'
     import htmlToJSON from 'html-to-json';
+    import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
         name: 'CategoryEditionForm',
@@ -194,17 +195,20 @@
                 formNotSaved = true;
 
             if (formNotSaved) {
-                this.$dialog.confirm({
-                    message: this.$i18n.get('info_warning_category_not_saved'),
+                this.$modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        title: this.$i18n.get('label_warning'),
+                        message: this.$i18n.get('info_warning_category_not_saved'),
                         onConfirm: () => {
                             next();
-                        },
-                        cancelText: this.$i18n.get('cancel'),
-                        confirmText: this.$i18n.get('continue'),
-                        type: 'is-secondary'
-                    });  
+                        }
+                    }
+                });  
             } else {
-                next()
+                next();
             }  
         },
         methods: {
@@ -365,39 +369,5 @@
         }
     }
 </script>
-
-<style lang="scss" scoped>
-
-    .thumbnail-field {
-        width: 128px;
-        height: 128px;
-        max-width: 128px;
-        max-height: 128px;
-
-        .content {
-            padding: 10px;
-            font-size: 0.8em;
-        }
-        img {
-            bottom: 0;
-            position: absolute;
-        }
-
-        .thumbnail-buttons-row {
-            display: none;
-        }
-        &:hover {
-            .thumbnail-buttons-row {
-                display: inline-block;
-                position: relative;
-                bottom: 31px;
-                background-color: rgba(255,255,255,0.8);
-                padding: 2px 8px;
-                border-radius: 0px 4px 0px 0px;
-            }
-        }
-    }
-
-</style>
 
 

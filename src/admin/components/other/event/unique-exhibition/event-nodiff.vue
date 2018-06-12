@@ -47,7 +47,7 @@
                                 </div>
 
                                 <div
-                                        v-else-if="key === 'fields_order' || key === 'filters_order'"
+                                        v-else-if="key === 'metadata_order' || key === 'filters_order'"
                                         class="is-capitalized">
                                     {{ `ID: ${d.id} Enabled: ${d.enabled}` }}
                                 </div>

@@ -10,7 +10,7 @@
             <label class="label is-inline">
                 {{ $i18n.get('label_name') }} 
                 <span 
-                        class="required-field-asterisk" 
+                        class="required-metadatum-asterisk"
                         :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
                 <help-button 
                         :title="$i18n.getHelperTitle('filters', 'name')" 

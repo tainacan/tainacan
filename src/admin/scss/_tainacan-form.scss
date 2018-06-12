@@ -4,7 +4,7 @@
 
     .form-submit {
         justify-content: space-between !important;
-        padding: 12px 30px;
+        padding: 12px 0px ;
         margin-bottom: 0px;
         .button {
             border-width: 1px;
@@ -18,16 +18,17 @@
         font-weight: bold;
         font-size: 14px; 
         display: inline-block;
+        white-space: nowrap;
     }
-    .required-field-asterisk {
+    .required-metadatum-asterisk {
         color: $gray;
         &.is-danger {
             color: $danger;
         }
     }
     .input, .textarea {
-
-        background-color: $tainacan-input-background;
+        background-color: white;
+        border: 1px solid $tainacan-input-background;
         color: $tainacan-input-color;
         transition: background-color 0.1s;
 
@@ -54,7 +55,9 @@
         }
     }
     .radio, .checkbox {
-        margin-bottom: 0.2em;
+        margin-bottom: 5px;
+        align-items: baseline;
+
         &.is-danger {
             border-color: $danger;
         }   
@@ -75,7 +78,7 @@
             }
         }
         &.is-empty select{
-            background-color: $tainacan-input-background !important;
+            //background-color: $tainacan-input-background !important;
         }     
     }
     .dropdown {

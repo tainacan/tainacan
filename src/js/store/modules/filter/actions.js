@@ -32,11 +32,11 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isCon
     });
 };
 
-export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterType, status, isRepositoryLevel, newIndex }) => {
+export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filterType, status, isRepositoryLevel, newIndex }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
         if (!isRepositoryLevel) 
-            endpoint = '/collection/' + collectionId + '/field/' + fieldId +'/filters/'; 
+            endpoint = '/collection/' + collectionId + '/metadatum/' + metadatumId +'/filters/';
         else
             endpoint = '/filters/';
 
@@ -46,7 +46,7 @@ export const sendFilter = ( { commit }, { collectionId, fieldId, name, filterTyp
                 name: name,
                 status: status
             },
-            field: fieldId,
+            metadatum: metadatumId,
         })
             .then( res => {
                 let filter = res.data;

@@ -5,6 +5,7 @@ namespace Tainacan\Repositories;
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 use Tainacan;
+use Tainacan\Repositories;
 use \Respect\Validation\Validator as v;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
@@ -427,6 +428,9 @@ abstract class Repository {
 	 */
 	public static function get_entity_by_post_type( $post_type, $post = 0 ) {
 		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
+		$item_metadata = Repositories\Item_Metadata::get_instance();
+		$item_metadata_entity = new $item_metadata->entities_type(null, null);
+		$item_metadata_post_type = $item_metadata_entity::get_post_type();
 
 		// Is it a collection Item?
 		if ( $prefix == Entities\Collection::$db_identifier_prefix ) {
@@ -436,26 +440,28 @@ abstract class Repository {
 			} else {
 				throw new \Exception( 'Collection object not found for this post' );
 			}
-		} elseif ( $post_type === \Tainacan\Repositories\Item_Metadata::get_instance()->entities_type::get_post_type() ) {
+		} elseif ( $post_type === $item_metadata_post_type ) {
 			return new Entities\Item_Metadata_Entity( null, null );
 		} else {
-			$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-			$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
-			$Tainacan_Logs        = \Tainacan\Repositories\Logs::get_instance();
-			$Tainacan_Fields      = \Tainacan\Repositories\Fields::get_instance();
-			$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
-			$Tainacan_Terms       = \Tainacan\Repositories\Terms::get_instance();
+			$Tainacan_Collections = Repositories\Collections::get_instance();
+			$Tainacan_Filters     = Repositories\Filters::get_instance();
+			$Tainacan_Logs        = Repositories\Logs::get_instance();
+			$Tainacan_Metadata      = Repositories\Metadata::get_instance();
+			$Tainacan_Taxonomies  = Repositories\Taxonomies::get_instance();
+			$Tainacan_Terms       = Repositories\Terms::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
-				$Tainacan_Fields,
+				$Tainacan_Metadata,
 				$Tainacan_Filters,
 				$Tainacan_Taxonomies,
 				$Tainacan_Terms,
 				$Tainacan_Logs
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
-				$entity_post_type = $tnc_repository->entities_type::get_post_type();
+				$tnc_entity = new $tnc_repository->entities_type();
+				$entity_post_type = $tnc_entity::get_post_type();
+
 				if ( $entity_post_type == $post_type ) {
 					return new $tnc_repository->entities_type( $post );
 				}
@@ -483,7 +489,7 @@ abstract class Repository {
 			return $Tainacan_Items;
 		} else {
 			$Tainacan_Collections   = \Tainacan\Repositories\Collections::get_instance();
-			$Tainacan_Fields        = \Tainacan\Repositories\Fields::get_instance();
+			$Tainacan_Metadata        = \Tainacan\Repositories\Metadata::get_instance();
 			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 			$Tainacan_Filters       = \Tainacan\Repositories\Filters::get_instance();
 			$Tainacan_Taxonomies    = \Tainacan\Repositories\Taxonomies::get_instance();
@@ -492,7 +498,7 @@ abstract class Repository {
 
 			$tnc_globals = [
 				$Tainacan_Collections,
-				$Tainacan_Fields,
+				$Tainacan_Metadata,
 				$Tainacan_Item_Metadata,
 				$Tainacan_Filters,
 				$Tainacan_Taxonomies,
@@ -500,11 +506,38 @@ abstract class Repository {
 				$Tainacan_Logs
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
-				$entity_post_type = $tnc_repository->entities_type::get_post_type();
+				$tnc_entity = new $tnc_repository->entities_type();
+				$entity_post_type = $tnc_entity::get_post_type();
+
 				if ( $entity_post_type == $post_type ) {
 					return $tnc_repository;
 				}
 			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Fetch one Entity based on query args.
+	 * 
+	 * Note: Does not work with Item_Metadata Repository
+	 * 
+	 * @param array $args Query Args as expected by fetch
+	 * 
+	 * @return false|\Tainacan\Entities The entity or false if none was found
+	 */
+	public function fetch_one($args) {
+		if ($this->get_name() == 'Item_Metadata') {
+			return false;
+		}
+
+		$args['posts_per_page'] = 1;
+
+		$results = $this->fetch($args, 'OBJECT');
+		
+		if (is_array($results) && sizeof($results) > 0 && $results[0] instanceof \Tainacan\Entities\Entity) {
+			return $results[0];
 		}
 
 		return false;

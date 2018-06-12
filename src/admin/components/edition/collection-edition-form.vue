@@ -47,7 +47,7 @@
                     <b-field 
                         :addons="false"
                         :label="$i18n.get('label_header_image')">
-                        <div class="thumbnail-field">                    
+                        <div class="thumbnail-field">
                             <a 
                                     class="button is-rounred is-secondary"
                                     id="button-edit-header-image" 
@@ -301,6 +301,7 @@
                                         class="control"
                                         custom>
                                     <b-checkbox
+                                            v-if="registeredViewModes[viewMode] != undefined"
                                             @input="updateViewModeslist(viewMode)"
                                             :value="checkIfViewModeEnabled(viewMode)">
                                         {{ registeredViewModes[viewMode].label }}
@@ -326,6 +327,7 @@
                                 @focus="clearErrors('default_view_mode')">
                             <option
                                     v-for="(viewMode, index) of form.enabled_view_modes"
+                                    v-if="registeredViewModes[viewMode] != undefined"
                                     :key="index"
                                     :value="viewMode">{{ registeredViewModes[viewMode].label }}
                             </option>
@@ -436,8 +438,8 @@ export default {
             'fetchUsers',
             'fetchCollectionsForParent'
         ]),
-        ...mapActions('fields', [
-            'fetchFields'
+        ...mapActions('metadata', [
+            'fetchMetadata'
         ]),
         onSubmit() {
             this.isLoading = true;

@@ -52,7 +52,7 @@ export const cleanCollectionName = (state) => {
 export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
-        //state.field[index] = field;
+        //state.metadatum[index] = metadatum;
         Vue.set( state.attachments, index, attachment );
     } else {
         state.attachments.push( attachment );

@@ -113,7 +113,7 @@ class Exposers {
 				if(substr($request->get_route(), 0, strlen('/tainacan/v2/items')) == '/tainacan/v2/items') { //TODO do it at rest not here
 					$repos_items = \Tainacan\Repositories\Items::get_instance();
 					$item = $repos_items->fetch($item_arr['id']);
-					$items_metadata = $item->get_fields();
+					$items_metadata = $item->get_metadata();
 					$prepared_item = [];
 					foreach ($items_metadata as $item_metadata){
 						array_push($prepared_item, $item_metadata->_toArray());
@@ -127,21 +127,21 @@ class Exposers {
 	}
 	
 	/**
-	 * Return array of mapped field 
+	 * Return array of mapped metadatum 
 	 * @param array $item_arr
 	 * @param Mappers\Mapper $mapper
 	 * @return array
 	 */
-	protected function map_field($item_arr, $mapper) {
+	protected function map_metadatum($item_arr, $mapper) {
 		$ret = $item_arr;
-		$field_mapping = $item_arr['field']['exposer_mapping'];
-		if(array_key_exists($mapper->slug, $field_mapping)) {
-			if(is_array($mapper->metadata) && !array_key_exists( $field_mapping[$mapper->slug], $mapper->metadata) ) {
+		$metadatum_mapping = $item_arr['metadatum']['exposer_mapping'];
+		if(array_key_exists($mapper->slug, $metadatum_mapping)) {
+			if(is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ) {
 				throw new \Exception('Invalid Mapper Option');
 			}
-			$ret = [$mapper->prefix.$field_mapping[$mapper->slug].$mapper->sufix => $item_arr['value']]; //TODO Validate option
+			$ret = [$mapper->prefix.$metadatum_mapping[$mapper->slug].$mapper->sufix => $item_arr['value']]; //TODO Validate option
 		} else if($mapper->slug == 'value') {
-			$ret = [$item_arr['field']['name'] => $item_arr['value']];
+			$ret = [$item_arr['metadatum']['name'] => $item_arr['value']];
 		}
 		return $ret;
 	}
@@ -155,12 +155,12 @@ class Exposers {
 	 */
 	protected function map($item_arr, $mapper, $resquest) {
 		$ret = $item_arr;
-		if(array_key_exists('field', $item_arr)){ // getting a unique field
-			$ret = $this->map_field($item_arr, $mapper);
+		if(array_key_exists('metadatum', $item_arr)){ // getting a unique metadatum
+			$ret = $this->map_metadatum($item_arr, $mapper);
 		} else { // array of elements
 			$ret = [];
 			foreach ($item_arr as $item) {
-				if(array_key_exists('field', $item)) {
+				if(array_key_exists('metadatum', $item)) {
 					$ret = array_merge($ret, $this->map($item, $mapper, $resquest) );
 				} else {
 					$ret[] = $this->map($item, $mapper, $resquest);
@@ -194,7 +194,7 @@ class Exposers {
     			}
     		} elseif($request->get_method() == 'POST') {
     		    if($mapper = $this->request_has_mapper($request)) {
-    		        return $this->create_mapped_fields( $response, $handler, $request, $mapper );
+    		        return $this->create_mapped_metadata( $response, $handler, $request, $mapper );
     		    }
     		}
 	    }
@@ -306,35 +306,35 @@ class Exposers {
 	 * @param \WP_REST_Request $request
 	 * @param Mapper $mapper
 	 */
-	public function create_mapped_fields( $response, $handler, $request, $mapper ) {
+	public function create_mapped_metadata( $response, $handler, $request, $mapper ) {
 	    if($response instanceof \WP_REST_Response && $response->get_status() == 201) {
 	       $collection_array = $response->get_data();
 	       $id = $collection_array['id'];
-	       $mapper_fields = $mapper->metadata;
-	       if(is_array($mapper_fields) ) {
-	           $Tainacan_Fields = \Tainacan\Repositories\Fields::get_instance();
-	           foreach ($mapper_fields as $slug => $mapper_field) {
-	               if(array_key_exists('core_field', $mapper_field) && $mapper_field['core_field'] != false) continue;
+	       $mapper_metadata = $mapper->metadata;
+	       if(is_array($mapper_metadata) ) {
+	           $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+	           foreach ($mapper_metadata as $slug => $mapper_metadatum) {
+	               if(array_key_exists('core_metadatum', $mapper_metadatum) && $mapper_metadatum['core_metadatum'] != false) continue;
 	               
-	               $field = new \Tainacan\Entities\Field();
+	               $metadatum = new \Tainacan\Entities\Metadatum();
 	               if(
-	                       array_key_exists('field_type', $mapper_field) &&
-	                       $mapper_field['field_type'] != false &&
-	                       class_exists($mapper_field['field_type'])
+	                       array_key_exists('metadata_type', $mapper_metadatum) &&
+	                       $mapper_metadatum['metadata_type'] != false &&
+	                       class_exists($mapper_metadatum['metadata_type'])
 	                   ) {
-	                   $field->set_field_type($mapper_field['field_type']);
+	                   $metadatum->set_metadata_type($mapper_metadatum['metadata_type']);
 	               } else {
-	                   $field->set_field_type('Tainacan\Field_Types\Text');
+	                   $metadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 	               }
-	               $field->set_name($mapper_field['label']);
-	               $field->set_description($mapper_field['URI']);
-	               $field->set_exposer_mapping([
+	               $metadatum->set_name($mapper_metadatum['label']);
+	               $metadatum->set_description($mapper_metadatum['URI']);
+	               $metadatum->set_exposer_mapping([
 	                   $mapper->slug => $slug
 	               ]);
-	               $field->set_status('publish');
-	               $field->set_collection_id($id);
-	               $field->set_slug($slug);
-	               if($field->validate()) $Tainacan_Fields->insert($field);
+	               $metadatum->set_status('publish');
+	               $metadatum->set_collection_id($id);
+	               $metadatum->set_slug($slug);
+	               if($metadatum->validate()) $Tainacan_Metadata->insert($metadatum);
 	           }
 	       }
 	    }

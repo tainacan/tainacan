@@ -292,10 +292,10 @@ class Logs extends Repository {
 				return false;
 			}
 
-			if ( $new_value instanceof Entities\Field ) {
-				$type = $new_value->get_field_type();
+			if ( $new_value instanceof Entities\Metadatum ) {
+				$type = $new_value->get_metadata_type();
 
-				if ( $type === 'Tainacan\Field_Types\Core_Title' || $type === 'Tainacan\Field_Types\Core_Description' ) {
+				if ( $type === 'Tainacan\Metadata_Types\Core_Title' || $type === 'Tainacan\Metadata_Types\Core_Description' ) {
 					return false;
 				}
 			}
@@ -304,7 +304,7 @@ class Logs extends Repository {
 			$class_name = explode( '\\', $type )[2];
 
 			$name = method_exists( $new_value, 'get_name' ) ? $new_value->get_name() :
-				( method_exists( $new_value, 'get_title' ) ? $new_value->get_title() : $new_value->get_field()->get_name() );
+				( method_exists( $new_value, 'get_title' ) ? $new_value->get_title() : $new_value->get_metadatum()->get_name() );
 
 			if ( ! $name ) {
 				$name = $new_value->get_status();
@@ -364,7 +364,7 @@ class Logs extends Repository {
 	 * @return string
 	 */
 	private function prepare_event_message($object, $name, $class_name, $action_message){
-		if ( $object instanceof Entities\Field || $object instanceof Entities\Item || $object instanceof Entities\Filter) {
+		if ( $object instanceof Entities\Metadatum || $object instanceof Entities\Item || $object instanceof Entities\Filter) {
 			$collection = $object->get_collection();
 			$parent     = $collection;
 

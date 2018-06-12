@@ -23,8 +23,8 @@
     export default {
         created(){
             this.collection = ( this.collection_id ) ? this.collection_id : this.filter.collection_id;
-            this.field = ( this.field_id ) ? this.field_id : this.filter.field.field_id ;
-            this.type = ( this.filter_type ) ? this.filter_type : this.filter.field.field_type;
+            this.metadatum = ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum.metadatum_id ;
+            this.type = ( this.filter_type ) ? this.filter_type : this.filter.metadatum.metadata_type;
             this.loadOptions();
         },
         data(){
@@ -32,21 +32,21 @@
                 isLoading: false,
                 options: [],
                 collection: '',
-                field: '',
+                metadatum: '',
                 selected: '',
                 taxonomy: ''
             }
         },
         props: {
             filter: {
-                type: Object // concentrate all attributes field id and type
+                type: Object // concentrate all attributes metadatum id and type
             },
-            field_id: [Number], // not required, but overrides the filter field id if is set
-            collection_id: [Number], // not required, but overrides the filter field id if is set
-            filter_type: [String],  // not required, but overrides the filter field type if is set
+            metadatum_id: [Number], // not required, but overrides the filter metadatum id if is set
+            collection_id: [Number], // not required, but overrides the filter metadatum id if is set
+            filter_type: [String],  // not required, but overrides the filter metadatum type if is set
             id: '',
             query: {
-                type: Object // concentrate all attributes field id and type
+                type: Object // concentrate all attributes metadatum id and type
             }
         },
         watch: {
@@ -71,10 +71,10 @@
                 let promise = null;
                 this.isLoading = true;
 
-                axios.get('/collection/'+ this.collection +'/fields/' + this.field + '?context=edit')
+                axios.get('/collection/'+ this.collection +'/metadata/' + this.metadatum)
                     .then( res => {
-                        let field = res.data;
-                        promise = this.getValuesCategory( field.field_type_options.taxonomy_id );
+                        let metadatum = res.data;
+                        promise = this.getValuesCategory( metadatum.metadata_type_options.taxonomy_id );
 
                         promise.then( () => {
                             this.isLoading = false;
@@ -108,7 +108,7 @@
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 
-                let index = this.query.taxquery.findIndex(newField => newField.taxonomy === this.taxonomy );
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy === this.taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     this.selected = metadata.terms;
@@ -121,7 +121,7 @@
                     filter: 'selectbox',
                     compare: 'IN',
                     taxonomy: this.taxonomy,
-                    field_id: this.field,
+                    metadatum_id: this.metadatum,
                     collection_id: this.collection,
                     terms: this.selected
                 });
