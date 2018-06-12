@@ -103,29 +103,36 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
         
         tainacanPrefs: {
             'items_per_page': 12,
-            'collections_per_page': 12
+            'collections_per_page': 12,
+            'taxonomies_per_page': 12,
+            'events_per_page': 12
         },
         init() {
-            let data = {'meta': {'tainacan_prefs': this.tainacanPrefs} };
-            
             wpApi.get('/users/me/')
                 .then( res => {
-                    if (res.data.meta['tainacan_prefs'] == undefined) {
-                        wpApi.post('/users/me/', qs.stringify(data))  
+                    if (res.data.meta['tainacan_prefs'] == undefined || res.data.meta['tainacan_prefs'] == '') {
+                        let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+                        wpApi.post('/users/me/', qs.stringify(data))
+                        .then( updatedRes => {
+                            let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
+                            this.tainacanPrefs = prefs;
+                        });
+                    } else {
+                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                        this.tainacanPrefs = prefs;
                     }
-                })
-                .catch(error => {
-                    
                 });
         },
-        get() {
+        fetch(key) {
             return new Promise(( resolve, reject ) => {
                 wpApi.get('/users/me/')
                 .then( res => {
-                    if (res.data.meta['tainacan_prefs']['items_per_page']) {
-                            resolve( res.data.meta['tainacan_prefs']['items_per_page'] );  
+                    let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                    this.tainacanPrefs[key] = prefs[key];
+                    if (prefs[key]) { 
+                        resolve( prefs[key] );  
                     } else {
-                        reject( { message: 'Key does not exists in user preference.', value: false } );
+                        reject('Key ' + key + 'does not exists in user preference.');
                     }
                 })
                 .catch(error => {
@@ -133,18 +140,31 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 });
             }); 
         },
+        get(key) {
+            return this.tainacanPrefs[key];
+        },
         set(key, value) {
             this.tainacanPrefs[key] = value;
-            let data = {'meta': {'tainacan_prefs': this.tainacanPrefs} };
+            let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
             return new Promise(( resolve, reject ) => {
                 wpApi.post('/users/me/', qs.stringify(data))
                 .then( res => {
-                    resolve( res.data );
+                    let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                    this.tainacanPrefs[key] = prefs[key];
+                    if (prefs[key]) { 
+                        resolve( prefs[key] );  
+                    } else {
+                        reject('Key ' + key + 'does not exists in user preference.');
+                    }
                 })
                 .catch(error => {
                     reject( error );
                 });
             }); 
+        },
+        clear() {
+            let data = {'meta': {'tainacan_prefs': ''} };
+            wpApi.post('/users/me/', qs.stringify(data))
         }
     }
 

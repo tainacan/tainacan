@@ -39,8 +39,10 @@ export default {
                         this.collectionId = parseInt(this.$route.params.collectionId);
 
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
-                        if (this.$route.query.perpage == undefined)
-                            this.$route.query.perpage = 12;
+                        if (this.$route.query.perpage == undefined) {
+                            let perPage = (this.collectionId != undefined ? this.$userPrefs.get('items_per_page_' + this.collectionId) : this.$userPrefs.get('items_per_page'));
+                            this.$route.query.perpage = perPage ? perPage : 12;
+                        }    
                         if (this.$route.query.paged == undefined)
                             this.$route.query.paged = 1;
                         if (this.$route.query.order == undefined)
@@ -55,8 +57,7 @@ export default {
                         }
 
                         this.loadItems(to);
-                    }
-                    
+                    }  
                 }
             },
             methods: {
@@ -105,6 +106,12 @@ export default {
                     this.updateURLQueries();
                 },
                 setItemsPerPage(itemsPerPage) {
+                    let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
+                    this.$userPrefs.set(prefsPerPage, itemsPerPage)
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for items per page")
+                    });
+
                     this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
                     this.updateURLQueries();
                 },
