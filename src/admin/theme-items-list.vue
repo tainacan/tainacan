@@ -287,7 +287,11 @@ export default {
             min-width: $filter-menu-width-theme;
             background-color: unset;
             border-right: 0;
-            padding: 25px 25px 25px 4.1666667%;
+            padding: 25px 12px 25px 4.1666667%;
+
+            .columns {
+                display: flex;
+            }
         }
 
         .search-control {

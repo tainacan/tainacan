@@ -201,6 +201,7 @@
             font-weight: normal;
             font-size: 14px;
             display: inline-flex;
+            width: 100%;
         }
 
         .input, .textarea, .taginput-container {

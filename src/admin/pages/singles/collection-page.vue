@@ -5,7 +5,7 @@
                     :class="{ 'is-shrink': shouldShrinkHeader }"
                     :id="collectionId"/>
             <router-view
-                    @onShrinkHeader="shouldShrinkHeader = $event"
+                    @onShrinkHeader="onUpdateShrinkHeader($event)"
                     id="collection-page-container"
                     :collection-id="collectionId" 
                     class="page-container page-container-small"
@@ -32,7 +32,11 @@ export default {
         this.collectionId = parseInt(this.$route.params.collectionId);
         this.$eventBusSearch.setCollectionId(this.collectionId);
     },
-    mounted() {
+    methods: {
+        onUpdateShrinkHeader(event) {
+            if (this.shouldShrinkHeader != event)
+                this.shouldShrinkHeader = event;
+        }
     }
 
 }

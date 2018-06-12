@@ -12,7 +12,7 @@ class Textarea extends Metadata_Type {
     function __construct(){
         // call metadatum type constructor
         parent::__construct();
-        $this->set_primitive_type('string');
+        $this->set_primitive_type('long_string');
         $this->set_component('tainacan-textarea');
     }
 

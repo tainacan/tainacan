@@ -21,7 +21,6 @@ const state = {
         },
         view_mode: 'table'
     },
-    advancedSearchQuery: {},
     totalItems: 0
 };
 

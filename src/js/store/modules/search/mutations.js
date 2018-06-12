@@ -9,7 +9,7 @@ export const setPostQuery = ( state, postquery ) => {
 };
 
 export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
-    state.advancedSearchQuery = advancedSearchQuery;
+    state.postquery.metaquery = advancedSearchQuery;
 };
 
 export const addMetaQuery = ( state, filter ) => {

@@ -24,32 +24,15 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
         $collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
-				'name'   => 'test',
+                'name'   => 'test',
+                'status' => 'publish'
 			),
 			true
 		);
         
-        $metadatum = $this->tainacan_entity_factory->create_entity(
-        	'metadatum',
-	        array(
-	        	'name' => 'metadado',
-		        'description' => 'title',
-		        'collection' => $collection,
-		        'metadata_type' => 'Tainacan\Metadata_Types\Core_Title'
-	        ),
-	        true
-        );
+        $metadatum = $collection->get_core_title_metadatum();
         
-        $metadatumDescription = $this->tainacan_entity_factory->create_entity(
-        	'metadatum',
-	        array(
-	        	'name' => 'metadado_desc',
-		        'description' => 'description',
-		        'collection' => $collection,
-		        'metadata_type' => 'Tainacan\Metadata_Types\Core_Description'
-	        ),
-	        true
-        );
+        $metadatumDescription = $collection->get_core_description_metadatum();
         
         
         $i = $this->tainacan_entity_factory->create_entity(
@@ -57,7 +40,8 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
            array(
                'title'         => 'item test',
                'description'   => 'adasdasdsa',
-               'collection'    => $collection
+               'collection'    => $collection,
+               'status'        => 'publish'
            ),
            true
        );
@@ -90,6 +74,19 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
        
        $check_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($checkItem, $metadatumDescription);
        $this->assertEquals('changed description', $check_item_metadata->get_value());
+
+       // check that the value was also stored in postmeta table
+       $checkMeta = $Tainacan_Items->fetch([
+           'meta_query' => [
+               [
+                   'key' => $metadatumDescription->get_id(),
+                   'value' => 'changed description'
+               ]
+           ]
+               ], [], 'OBJECT');
+
+       $this->assertEquals(1, sizeof($checkMeta));
+       $this->assertEquals('changed description', $checkMeta[0]->get_description());
        
     }
 

@@ -326,8 +326,6 @@
                     </div>
                 </div>
 
-                <!-- Admin Table -->
-
                 <!-- When advanced search -->
                 <items-list
                         v-if="!isOnTheme &&
@@ -343,7 +341,7 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
 
-                <!-- Regular -->
+                <!-- Admin View Modes-->
                 <items-list
                         v-else-if="!isOnTheme &&
                               !isLoadingItems && 
@@ -370,10 +368,10 @@
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component'"
                         :collection-id="collectionId"
-                        :table-metadata="tableMetadata"
+                        :displayed-metadata="tableMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is="'table-view-mode'"/>     
+                        :is="registeredViewModes[viewMode].component"/>     
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
@@ -677,6 +675,10 @@
                 this.hasFiltered = hasFiltered;
             });
 
+            this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
+                this.advancedSearchResults = advancedSearchResults;
+            });
+
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
                 /* This condition is to prevent a incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level
@@ -700,7 +702,7 @@
             // Watch Scroll for shrinking header, only on Admin at collection level
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
-                    this.isHeaderShrinked = ($event.originalTarget.scrollTop > 53);
+                    this.isHeaderShrinked = ($event.target.scrollTop > 53);
                     this.$emit('onShrinkHeader', this.isHeaderShrinked); 
                 });
             }
@@ -771,18 +773,13 @@
 
             .control {
                 width: 100%;
-
-                input {
-                    height: 27px;
-                    font-size: 11px;
-                    color: $gray-light;
-                }
                 .icon {
                     pointer-events: all;
                     cursor: pointer;
                     color: $tertiary;
                     height: 27px;
                     font-size: 18px !important;
+                    height: 2rem !important;
                 }
                 margin-bottom: 5px;
             }

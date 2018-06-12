@@ -85,8 +85,8 @@
                                         <a 
                                                 :style="{ visibility: 
                                                         metadatum.collection_id != collectionId ||
-                                                        metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title' ||
-                                                        metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Description'
+                                                         metadatum.metadata_type_object.related_mapped_prop == 'title' ||
+                                                        metadatum.metadata_type_object.related_mapped_prop == 'description'
                                                         ? 'hidden' : 'visible'
                                                     }" 
                                                 @click.prevent="removeMetadatum(metadatum)">
@@ -527,7 +527,7 @@ export default {
     mounted() {
         if (!this.isRepositoryLevel) {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+                this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
             });
         }
     }

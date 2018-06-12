@@ -148,7 +148,7 @@
 
             if (!this.isRepositoryLevel) {
                 document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                    this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+                    this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
                 });
             }
         }
