@@ -51,7 +51,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
-	'add_more_one_search_metadatum'                => __( 'Add more one search metadatum', 'tainacan' ),
+	'add_more_one_search_criteria'             => __( 'Add more one search criteria', 'tainacan' ),
 	'clear_search'                             => __( 'Clear search', 'tainacan' ),
 
 	// Wordpress Status

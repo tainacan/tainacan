@@ -61,7 +61,6 @@
                                 :message="$i18n.get('info_help_term_name')"/>
                     </label>
                     <b-input
-                            :class="{'has-content': editForm.name != undefined && editForm.name != ''}"
                             v-model="editForm.name"
                             name="name"
                             @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
@@ -78,7 +77,6 @@
                                 :message="$i18n.get('info_help_term_description')"/>
                     </label>
                     <b-input
-                            :class="{'has-content': editForm.description != undefined && editForm.description != ''}"
                             type="textarea"
                             name="description"
                             v-model="editForm.description"

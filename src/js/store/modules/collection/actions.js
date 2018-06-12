@@ -8,11 +8,27 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         
         // Adds queries for filtering
         let postQueries = rootGetters['search/getPostQuery'];
-        
+        let query = '';
         // Sets a flag to inform components that an empty sate is or not due to filtering
         let hasFiltered = false;
-        if (postQueries.metaquery != undefined && postQueries.metaquery.length > 0)
+        let advancedSearchResults = false;
+
+        if (postQueries.metaquery != undefined &&
+             (Object.keys(postQueries.metaquery).length > 0 ||
+              postQueries.metaquery.length > 0)){
             hasFiltered = true;
+
+            if(postQueries.metaquery.advancedSearch){
+
+                advancedSearchResults = postQueries.metaquery.advancedSearch;
+    
+                delete postQueries.metaquery.advancedSearch;
+            }
+
+            query = qs.stringify(postQueries);
+        } else {
+            query = qs.stringify(postQueries);
+        }
 
         // Garanttees at least empty fetch_only are passed in case none is found
         if (qs.stringify(postQueries.fetch_only) == '')
@@ -24,24 +40,28 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         // Differentiates between repository level and collection level queries
         let endpoint = '/collection/'+collectionId+'/items?'
 
-        if (collectionId == undefined)
+        if (collectionId == undefined){
             endpoint = '/items?'
+        }
 
-        if (!isOnTheme)
+        if (!isOnTheme){
             endpoint = endpoint + 'context=edit&'
-            
-        axios.tainacan.get(endpoint + qs.stringify(postQueries))
+        }
+
+        console.log(postQueries);
+        
+        axios.tainacan.get(endpoint+query)
         .then(res => {
             
             let items = res.data;
             let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
                         
             if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
-                commit('setItemsListTemplate', items );
-                resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
+                commit('setItemsListTemplate', items);
+                resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults:  advancedSearchResults});
             } else {
-                commit('setItems', items );
-                resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered});
+                commit('setItems', items);
+                resolve({'items': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults: advancedSearchResults });
             }
             dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
         })

@@ -84,9 +84,14 @@
                 'getEvents'
             ]),
             onChangeEventsPerPage(value) {
-                let prevValue = this.eventsPerPage;
                 this.eventsPerPage = value;
-                this.$userPrefs.set('events_per_page', value,  prevValue);
+                this.$userPrefs.set('events_per_page', value)
+                .then((newValue) => {
+                    this.eventsPerPage = newValue;
+                })
+                .catch(() => {
+                    this.$console.log("Error settings user prefs for events per page")
+                });
                 this.loadEvents();
             },
             onPageChange(page) {
@@ -134,21 +139,25 @@
             }
         },
         created() {
+            this.eventsPerPage = this.$userPrefs.get('events_per_page');
             this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
-            this.$userPrefs.get('events_per_page')
-                .then((value) => {
-                    this.eventsPerPage = value;
-                })
-                .catch(() => {
-                    this.$userPrefs.set('events_per_page', 12, null);
-                });
         },
         mounted(){
+            this.$userPrefs.fetch('events_per_page')
+            .then((value) => {
+                if (this.eventsPerPage != value) {
+                    this.eventsPerPage = value;
+                    this.loadEvents;
+                }
+            })
+            .catch(() => {
+                this.$userPrefs.set('events_per_page', 12);
+            });
             this.loadEvents();
 
             if (!this.isRepositoryLevel) {
                 document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                    this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+                    this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
                 });
             }
         }

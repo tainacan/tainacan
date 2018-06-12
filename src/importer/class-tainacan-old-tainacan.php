@@ -1,812 +1,122 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: andre
- * Date: 03/04/18
- * Time: 08:39
- */
 
 namespace Tainacan\Importer;
+use \Tainacan\Entities;
 
 class Old_Tainacan extends Importer{
 
     protected $manual_mapping = true;
-	
-	protected $manual_collection = true;
+    protected $manual_collection = true;
 
-    public function __construct()
-    {
+    protected $steps = [
+		
+		[
+			'name' => 'Create Taxonomies',
+			'callback' => 'create_taxonomies'
+        ],
+        [
+			'name' => 'Create Repo Metadata',
+			'callback' => 'create_repo_metadata'
+		],
+		[
+			'name' => 'Create Collections',
+			'callback' => 'create_collections'
+		],
+		[
+			'name' => 'Import Items',
+			'callback' => 'process_collections'
+		],
+		[
+			'name' => 'Link relationship metadata',
+			'callback' => 'close_taxonomies'
+		],
+		[
+			'name' => 'Finalize',
+			'callback' => 'finish_processing'
+		]
+		
+	];
+    
+    protected $tainacan_api_address, $wordpress_api_address, $actual_collection;
+
+    /**
+     * tainacan old importer construct
+     */
+    public function __construct(){
+
         parent::__construct();
+
+        $this->tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
+		$this->col_repo = \Tainacan\Repositories\Collections::get_instance();
+		$this->items_repo = \Tainacan\Repositories\Items::get_instance();
+        $this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
+        $this->term_repo = \Tainacan\Repositories\Terms::get_instance();
+        
         $this->remove_import_method('file');
         $this->add_import_method('url');
         $this->tainacan_api_address = "/wp-json/tainacan/v1";
         $this->wordpress_api_address = "/wp-json/wp/v2";
-    }
 
-
-    public $avoid = [
-        'socialdb_property_fixed_title',
-        'socialdb_property_fixed_description',
-        'socialdb_property_fixed_content',
-        'socialdb_property_fixed_thumbnail',
-        'socialdb_property_fixed_attachments'
-    ],
-    $steps = [
-        [
-            'name' => 'Create categories, collections and metadata',
-            'callback' => 'create_structure'
-        ],
-        [
-            'name' => 'Import Items',
-            'callback' => 'process_collections'
-        ],
-        [
-            'name' => 'Finishing',
-            'callback' => 'clear'
-        ]
-    ], $tainacan_api_address, $wordpress_api_address, $actual_collection;
-
-    /** 
-    * create structure tainacan
-    */
-    public function create_structure(){
-        $this->create_categories();
-        $this->create_collections();
-        $this->create_relationships_meta();
-        $this->treat_repo_meta();
-        $this->treat_collection_metas();
-        
-        return false;
-    }
-
-    /** 
-    * helper method to set the actual collection in loop
-    */
-    public function set_actual_collection($collection){
-        $this->actual_collection = $collection;
-    }
-
-    public function create_categories()
-    {
-        $categories_link = $this->get_url() . $this->tainacan_api_address . "/categories";
-
-        $categories = wp_remote_get($categories_link);
-
-        $categories_array = $this->verify_process_result($categories);
-        if($categories_array)
-        {
-            $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
-
-            $categories_array = $this->remove_same_name($categories_array);
-
-            // list($inside_step_pointer, $end) = $this->get_begin_end($categories_array);
-            // if($inside_step_pointer === false) return false;
-            $inside_step_pointer = 0;
-            $end = ( $categories_array ) ? count( $categories_array) : 0;
-
-            $created_categories = [];
-            while($inside_step_pointer < $end)
-            {
-                $category = $categories_array[$inside_step_pointer];
-
-                $taxonomy = new \Tainacan\Entities\Taxonomy();
-
-                $taxonomy->set_name($category->name);
-                $taxonomy->set_description($category->description);
-                $taxonomy->set_allow_insert(true);
-
-                $Tainacan_Taxonomies->insert($taxonomy);
-
-                $inserted_taxonomy = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
-
-                /*Insert old tainacan id*/
-                $created_categories[] = $category->term_id.",".$inserted_taxonomy->get_id().",".$category->name;
-
-                if(isset($category->children) && $inserted_taxonomy)
-                {
-                    $this->add_all_terms($inserted_taxonomy, $category->children);
-                }
-
-                $inside_step_pointer++;
-            }
-
-            $this->save_in_file("categories", $created_categories);
-        }
-        return $inside_step_pointer;
-    }
-
-    public function create_collections()
-    {
-        $collections_link = $this->get_url() . $this->tainacan_api_address . "/collections";
-        $collections = wp_remote_get($collections_link);
-
-        $collections_array = $this->verify_process_result($collections);
-        $created_collections = [];
-        if($collections_array)
-        {
-            // list($inside_step_pointer, $end) = $this->get_begin_end($collections_array);
-            // if($inside_step_pointer === false) return false;
-            $inside_step_pointer = 0;
-            $end = ( $collections_array ) ? count( $collections_array) : 0;
-
-            while($inside_step_pointer < $end)
-            {
-                $collection = $collections_array[$inside_step_pointer];
-
-                $new_collection = new \Tainacan\Entities\Collection();
-                $new_collection->set_name($collection->post_title);
-                $new_collection->set_status('publish');
-                $new_collection->validate();
-                $new_collection = \Tainacan\Repositories\Collections::get_instance()->insert($new_collection);
-
-                /*Add old id*/
-                $created_collections[] = $collection->ID.",".$new_collection->get_id().",".$collection->post_title;
-
-                $inside_step_pointer++;
-            }
-            $this->save_in_file("collections", $created_collections);
-        }
-
-        return $inside_step_pointer;
-    }
-
-    public function create_relationships_meta()
-    {
-        $relationships = [];
-        $created_collection = $this->read_from_file("collections");
-        $created_categories = $this->read_from_file("categories");
-        foreach ($created_categories as $category_id => $category)
-        {
-            $category_name = $category['name'];
-            foreach ($created_collection as $collection_id => $collection)
-            {
-                $collection_name = $collection['name'];
-                if(strcmp($category_name, $collection_name) === 0)
-                {
-                    $relationships[] = $category_id.",".$collection['new_id'].",".$category['name'];
-                }
-            }
-        }
-
-        $this->save_in_file('relationships', $relationships);
-        return false;
-    }
-
-    public function treat_repo_meta()
-    {
-        $repository_meta_link = $this->get_url() . $this->tainacan_api_address . "/repository/metadata?includeMetadata=1";
-        $repo_meta = wp_remote_get($repository_meta_link);
-
-        $repo_meta_array = $this->verify_process_result($repo_meta);
-        $Metadata_Repository = \Tainacan\Repositories\Metadata::get_instance();
-        $created_categories = $this->read_from_file("categories");
-        $relationships = $this->read_from_file("relationships");
-
-        $this->create_meta_repo($repo_meta_array, $Metadata_Repository, $created_categories, $relationships);
-
-        return false;
-    }
-
-    private function create_meta_repo($repo_meta_array, $Metadata_Repository, $created_categories, $relationships, $compound_id = null)
-    {
-        if($repo_meta_array)
-        {
-            $repository_metadata = [];
-            foreach ($repo_meta_array as $meta)
-            {
-                $special = [
-                    'socialdb_property_fixed_type',
-                    'stars'
-                ];
-
-                if(!in_array($meta->slug, $this->avoid) && !in_array($meta->type, $special))
-                {
-                    $newMetadatum = $this->set_metadata_properties($meta, $created_categories, $relationships, $Metadata_Repository, $compound_id);
-
-                    if ($newMetadatum)
-                    {
-                        $newMetadatum = $Metadata_Repository->insert($newMetadatum);
-                        $repository_metadata[] = $meta->id . "," . $newMetadatum->get_id() . "," . $meta->name;
-                    }
-                }
-            }
-
-            $this->save_in_file('repository_metadata', $repository_metadata);
-        }
-    }
-
-    public function treat_collection_metas()
-    {
-        $created_collections = $this->read_from_file("collections");
-        $created_repository_metadata = $this->read_from_file("repository_metadata");
-        $created_categories = $this->read_from_file("categories");
-        $relationships = $this->read_from_file("relationships");
-
-        // list($inside_step_pointer, $end) = $this->get_begin_end($created_collections);
-        // if($inside_step_pointer === false) return false;
-        $inside_step_pointer = 0;
-        $end = ( $created_collections ) ? count( $created_collections) : 0;
-
-        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-        $Metadata_Repository = \Tainacan\Repositories\Metadata::get_instance();
-        $Repository_Collections = \Tainacan\Repositories\Collections::get_instance();
-
-        //for($i = 0; $i < $inside_step_pointer; $i++)
-        // {
-        //    next($created_collections);
-        // }
-
-        while($inside_step_pointer < $end)
-        {
-            $collection_info = current($created_collections);
-            $new_collection_id = $collection_info['new_id'];
-            $old_collection_id = key($created_collections);
-            $collection = $Repository_Collections->fetch($new_collection_id);
-            $this->set_actual_collection($collection);
-
-            $file_metadata = $this->get_collection_metadata($old_collection_id);
-
-            $mapping = $this->create_collection_meta($file_metadata, $Metadata_Repository, $Tainacan_Metadata, $created_repository_metadata, $created_categories, $relationships);
-
-            $this->add_collection([
-                'id' => $new_collection_id,
-                'map' => $mapping,
-                'total_items' => $this->get_total_items_from_source( $old_collection_id )
-            ]);
-            
-            // $this->set_repository_mapping($mapping, $old_collection_id);
-            next($created_collections);
-            $inside_step_pointer++;
-        }
-
-        return $inside_step_pointer;
-    }
-
-    private function create_collection_meta(
-        $file_metadata,
-        $Metadata_Repository,
-        $Tainacan_Metadata,
-        $created_repository_metadata,
-        $created_categories,
-        $relationships,
-        $compound_id = null)
-    {
-        if($file_metadata)
-        {
-            foreach($file_metadata as $index => $meta)
-            {
-                $meta_slug = $meta->slug;
-                $old_metadatum_id = $meta->id;
-
-                if(!in_array($meta_slug, $this->avoid) && !isset($created_repository_metadata[$old_metadatum_id]))
-                {
-                    $newMetadatum = $this->set_metadata_properties(
-                        $meta,
-                        $created_categories,
-                        $relationships,
-                        $Metadata_Repository,
-                        $compound_id,
-                        $created_repository_metadata,
-                        false,
-                        $Tainacan_Metadata);
-
-                    if($newMetadatum->validate())
-                    {
-                        $newMetadatum = $Metadata_Repository->insert($newMetadatum);
-
-                        $mapping[$newMetadatum->get_id()] = $file_metadata[$index]->name;
-                    }
-                }else /*Map to respository metadata*/
-                {
-                    if(isset($created_repository_metadata[$old_metadatum_id]))
-                    {
-                        $new_id = $created_repository_metadata[$old_metadatum_id]['new_id'];
-                        $mapping[$new_id] = $created_repository_metadata[$old_metadatum_id]['name'];
-                    }else
-                    {
-                        $metadata = $Tainacan_Metadata->fetch_by_collection( $this->actual_collection, [], 'OBJECT' );
-
-                        foreach ($metadata as $metadatum)
-                        {
-                            if(($metadatum->WP_Post->post_name === 'title' || $metadatum->WP_Post->post_name === 'description') &&
-                                ($meta_slug === 'socialdb_property_fixed_title' || $meta_slug === 'socialdb_property_fixed_description'))
-                            {
-                                $mapping[$metadatum->get_id()] = $metadatum->WP_Post->post_name;
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-
-        return $mapping;
-    }
-
-    private function set_metadata_properties(
-        $meta,
-        $created_categories,
-        $relationships,
-        $Metadata_Repository,
-        $compound_id,
-        $created_repository_metadata = null,
-        $is_repository = true,
-        $Tainacan_Metadata = null)
-    {
-        $newMetadatum = new \Tainacan\Entities\Metadatum();
-
-
-        $name = $meta->name;
-        $type = $meta->type;
-
-        $type = $this->define_type($type);
-        $newMetadatum->set_name($name);
-
-        $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
-        if(strcmp($type, "Category") === 0)
-        {
-            $taxonomy_id = $meta->metadata->taxonomy;
-            if(isset($created_categories[$taxonomy_id]))
-            {
-                $new_category_id = $created_categories[$taxonomy_id]['new_id'];
-                $newMetadatum->set_metadata_type_options(['taxonomy_id' => $new_category_id]);
-            }
-        }else if(strcmp($type, "Relationship") === 0)
-        {
-            $taxonomy_id = $meta->metadata->object_category_id;
-
-            if(isset($relationships[$taxonomy_id]))
-            {
-                $new_collection_id = $relationships[$taxonomy_id]['new_id'];
-                $newMetadatum->set_metadata_type_options(['collection_id' => $new_collection_id]);
-            }
-        }else if(strcmp($type, "Compound") === 0)
-        {
-            if($is_repository)
-            {
-                $this->create_meta_repo(
-                    $meta->metadata->children,
-                    $Metadata_Repository,
-                    $created_categories,
-                    $relationships,
-                    $newMetadatum->get_id());
-            }else
-            {
-                $this->create_collection_meta(
-                    $meta->metadata->children,
-                    $Metadata_Repository,
-                    $Tainacan_Metadata,
-                    $created_repository_metadata,
-                    $created_categories,
-                    $relationships,
-                    $newMetadatum->get_id());
-            }
-        }
-
-        /*Compound treatement*/
-        if($compound_id === null)
-        {
-            if($is_repository)
-            {
-                $newMetadatum->set_collection_id('default');
-            }else
-            {
-                $newMetadatum->set_collection($this->actual_collection);
-            }
-        }else //Set compound as metadatum parent
-        {
-            $newMetadatum->set_parent($compound_id);
-        }
-
-        /*Properties of metadatum*/
-        if(isset($meta->metadata))
-        {
-            if($meta->metadata->required == 1)
-            {
-                $newMetadatum->set_required(true);
-            }
-            if(!empty($meta->metadata->default_value))
-            {
-                $newMetadatum->set_default_value($meta->metadata->default_value);
-            }
-            /*if(!empty($meta->metadata->text_help))
-            {
-
-            }*/
-            if(!empty($meta->metadata->cardinality))
-            {
-                if($meta->metadata->cardinality > 1)
-                {
-                    $newMetadatum->set_multiple('yes');
-                }
-            }
-        }
-
-        if($newMetadatum->validate()){
-            return $newMetadatum;
-        }else return false;
-    }
-
-    public function create_collection_items()
-    {
-        $created_collections = $this->read_from_file("collections");
-        if(!empty($created_collections))
-        {
-            $Repository_Collections = \Tainacan\Repositories\Collections::get_instance();
-            $collection_info = current($created_collections);
-            $new_collection_id = $collection_info['new_id'];
-            $old_collection_id = key($created_collections);
-            $collection = $Repository_Collections->fetch($new_collection_id);
-            $this->set_actual_collection($collection);
-
-            $mapping = $this->get_repository_mapping($old_collection_id);
-            $this->set_mapping($mapping);
-
-            $this->process($this->get_start());
-        }
-
-        return false;
-    }
-
-    public function clear()
-    {
-        unlink($this->get_id()."_categories.txt");
-        unlink($this->get_id()."_collections.txt");
-        unlink($this->get_id()."_relationships.txt");
-        unlink($this->get_id()."_repository_metadata.txt");
-        return false;
-    }
-
-    /*Aux functions*/
-    private function get_collection_metadata($collections_id)
-    {
-        $metadata_link = $this->get_url() . $this->tainacan_api_address . "/collections/".$collections_id."/metadata";
-        $collection = wp_remote_get($metadata_link);
-
-        $collection_metadata = $this->verify_process_result($collection);
-        if($collection_metadata)
-        {
-            $metadata = [];
-            foreach ($collection_metadata[0]->{'tab-properties'} as $metadata)
-            {
-                $metadatum_details_link = $metadata_link . "/". $metadata->id;
-                $metadatum_details = wp_remote_get($metadatum_details_link);
-                $metadatum_details = $this->verify_process_result($metadatum_details);
-
-                if($metadatum_details)
-                {
-                    $metadata[] = $metadatum_details[0];
-                }
-            }
-
-            return $metadata;
-        }
-
-        return false;
-    }
-
-    private function read_from_file($name)
-    {
-        $file_name = $this->get_id()."_".$name.".txt";
-        $fp = fopen($file_name, "r");
-        $content = explode("|", fread($fp, filesize($file_name)));
-        $result = [];
-        foreach ($content as $ids)
-        {
-            $old_new_name = explode(",", $ids);
-            $result[$old_new_name[0]] = ['new_id' => $old_new_name[1], 'name' => $old_new_name[2]];
-        }
-
-        return $result;
-    }
-
-    private function save_in_file($name, $ids)
-    {
-        /*Old ID, new ID*/
-        $file_name = $this->get_id()."_".$name.".txt";
-        $content = implode("|", $ids);
-        if(file_exists($file_name))
-        {
-            $content = "|".$content;
-        }
-
-        $fp = fopen($file_name, "a+");
-
-        fwrite($fp, $content);
-
-        fclose($fp);
-    }
-
-    private function get_begin_end($items)
-    {
-        $inside_step_pointer = $this->get_in_step_count();
-        $total_items = count($items);
-
-        if($inside_step_pointer >= $total_items)
-        {
-            return [false, false];
-        }
-
-        $end = $this->get_in_step_count() + $this->get_items_per_step();
-        if($end > $total_items)
-        {
-            $end = $total_items;
-        }
-
-        return [$inside_step_pointer, $end];
-    }
-
-    private function add_all_terms($taxonomy_father, $children, $term_father = null)
-    {
-        $Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
-
-        $children = $this->remove_same_name($children);
-        foreach ($children as $term)
-        {
-            $new_term = new \Tainacan\Entities\Term();
-
-            $new_term->set_taxonomy($taxonomy_father->get_db_identifier());
-            if($term_father)
-            {
-                $new_term->set_parent($term_father->get_id());
-            }
-
-            $new_term->set_name($term->name);
-            $new_term->set_description($term->description);
-
-            $inserted_term = $Tainacan_Terms->insert($new_term);
-
-            /*Insert old tainacan id*/
-            add_term_meta($inserted_term->get_id(), 'old_tainacan_category_id', $term->term_id );
-
-            if(isset($term->children))
-            {
-                $this->add_all_terms($taxonomy_father, $term->children, $inserted_term);
-            }
-        }
-    }
-
-    private function remove_same_name($terms)
-    {
-        $unique = [];
-        $unique_terms = [];
-        foreach($terms as $term)
-        {
-            $unique[$term->name] = $term->term_id;
-        }
-
-        foreach($terms as $index => $term)
-        {
-            if(in_array($term->term_id, $unique))
-            {
-                array_push($unique_terms, $term);
-            }
-        }
-
-        return $unique_terms;
-    }
-
-    private function verify_process_result($result)
-    {
-        if(is_wp_error($result))
-        {
-            $this->add_error_log($result->get_error_message());
-            return false;
-        }else if(isset($result['body']))
-        {
-            return json_decode($result['body']);
-        }
-
-        return false;
-    }
-
-    public function define_type($type)
-    {
-        $type = strtolower($type);
-        $tainacan_types = ['text', 'textarea', 'numeric', 'date'];
-
-        if(in_array($type, $tainacan_types))
-        {
-            $type = ucfirst($type);
-        }else if(strcmp($type, 'autoincrement') === 0)
-        {
-            $type = "Numeric";
-        }else if(strcmp($type, 'item') === 0)
-        {
-            $type = "Relationship";
-        }else if(strcmp($type, 'tree') === 0)
-        {
-            $type = "Category";
-        }else if(strcmp($type, 'compound') === 0)
-        {
-            $type = "Compound";
-        }
-        else $type = 'Text';
-
-        return $type;
-    }
-
-    /*END aux functions*/
-
-    public function fetch_from_remote( $url ){
-        $url_json = explode('/colecao/', $url)[0] . "/wp-json/tainacan/v1/collections";
-
-        $all_collections_info = wp_remote_get($url_json);
-
-        if(isset($all_collections_info['body']))
-        {
-            $all_collections_array = json_decode($all_collections_info['body']);
-
-            $collection_name = explode('/', $url);
-            $collection_name = array_filter($collection_name, function($item){
-                if(empty($item)) return false;
-
-                return true;
-            });
-            $collection_name = end($collection_name);
-
-            foreach($all_collections_array as $collection)
-            {
-                if(strcmp($collection->post_name, $collection_name) === 0)
-                {
-                    $link = $collection->link[0]->href;
-                    break;
-                }
-            }
-
-            if(!empty($link))
-            {
-                $info = wp_remote_get( $link."/items/?includeMetadata=1" );
-                $info = json_decode($info['body']);
-                $count_total_pages = ceil($info->found_items / $info->items_per_page);
-
-                $items_json = wp_remote_get( $link."/items/?includeMetadata=1&filter[page]=1" );
-                if(isset($items_json['body']))
-                {
-                    $items = json_decode($items_json['body']);
-                    for ($i = 2; $i <= $count_total_pages; $i++)
-                    {
-                        $part = wp_remote_get($link . "/items/?includeMetadata=1&filter[page]=".$i);
-                        if(isset($part['body']))
-                        {
-                            $part_array = json_decode($part['body'])->items;
-                            foreach ($part_array as $item)
-                            {
-                                $items->items[] =  $item;
-                            }
-                        }
-                    }
-                }
-
-                $file = fopen( $this->get_id().'.txt', 'w' );
-                fwrite( $file, serialize($items));
-                fclose( $file );
-
-                return $this->set_file( $this->get_id().'.txt' );
-            }
-        }
     }
 
     /**
-     * get values for a single item
-     *
-     * @param  $index
-     * @param  $collection_id 
-     * @return array with metadatum_source's as the index and values for the
-     * item
-     *
-     * Ex: [ 'Metadatum1' => 'value1', 'Metadatum2' => [ 'value2','value3' ]
+     * create taxonomies ( categories in tainacan old in first level )
+     * next create the terms
+     * 
      */
-    public function process_item( $index, $collection_id )
-    {
-        $processedItem = [];
-        $headers = $this->get_metadata();
+    public function create_taxonomies() {
+        
+        foreach ($this->get_taxonomies() as $taxonomy) {
 
-        // search the index in the file and get values
-        /*$file =  new \SplFileObject( $this->tmp_file, 'r' );
-        $file_content = unserialize($file->fread($file->getSize()));
-        $values = $file_content->items[$index];
-        foreach ($headers as $header)
-        {
-            if(isset($header['name']))
-            {
-                $item_index = $this->search_obj_in_array($values->metadata, $header['name']);
-                if(isset($values->metadata[ $item_index ]->values))
-                    $processedItem[ $header['name'] ] = $values->metadata[ $item_index ]->values[0];
-                else $processedItem[ $header['name'] ] = '';
-            }
-            else
-            {
-                if($header === 'link')
-                {
-                    $processedItem[$header] = $values->item->link[0]->href;
+            $tax = new Entities\Taxonomy();
+            $tax->set_name( $category->name );
+            $tax->set_description( $category->description );
+            $tax->set_allow_insert('yes');
+            $tax->set_status('publish');    
+
+            if ($tax->validate()) {
+                $tax = $this->tax_repo->insert($tax);
+
+                $this->add_transient('tax_' . $term->term_id . '_id', $tax->get_id());
+                $this->add_transient('tax_' . $term->term_id . '_name', $tax->get_name());
+
+                if (isset($category->children) && $tax) {
+                    $this->add_all_terms($tax, $category->children);
                 }
-                else
-                {
-                    $processedItem[$header] = $values->item->{$header};
-                }
-            }
-        }*/
 
-        return $processedItem;
-    }
-
-    public function search_obj_in_array($array, $name)
-    {
-        foreach ($array as $index => $obj)
-        {
-            if(strcmp($obj->name, $name) === 0)
-            {
-                return $index;
+            } else {
+                $this->add_error_log('Error creating taxonomy ' . $category->name );
+                $this->add_error_log($tax->get_errors());
+                $this->abort();
+                return false;
+                
             }
+
         }
-
-        return false;
-    }
-
-    public function create_metadata_and_mapping()
-    {
-        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-        $metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
-
-        $file_metadata = $this->get_metadata();
-
-        foreach($file_metadata as $index => $meta_info)
-        {
-            if(is_array($meta_info))
-            {
-                $meta_name = $meta_info['name'];
-                $type = $this->define_type($meta_info['type']);
-            }
-            else
-            {
-                $meta_name = $meta_info;
-                $type = 'Text';
-            }
-
-            if(!in_array($meta_name, $this->avoid))
-            {
-                $newMetadatum = new \Tainacan\Entities\Metadatum();
-
-                $newMetadatum->set_name($meta_name);
-
-                $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
-
-                $newMetadatum->set_collection($this->actual_collection);
-                $newMetadatum->validate(); // there is no user input here, so we can be sure it will validate.
-
-                $newMetadatum = $metadata_repository->insert($newMetadatum);
-
-                $mapping[$newMetadatum->get_id()] = $file_metadata[$index];
-            }else
-            {
-                $metadata = $Tainacan_Metadata->fetch_by_collection( $this->collection, [], 'OBJECT' ) ;
-                foreach ($metadata as $metadatum)
-                {
-                    if($metadatum->WP_Post->post_name === 'title' || $metadatum->WP_Post->post_name === 'description')
-                    {
-                        $mapping[$metadatum->get_id()] = $file_metadata[$meta_name];
-                    }
-                }
-            }
-        }
-
-        $this->set_mapping($mapping);
-    }
-
-    public function get_metadata()
-    {
-
+		
+		return false;
     }
     
     /**
-    * Method implemented by the child importer class to return the number of items to be imported
+     * create the repository metadata which each collection inherits by default
+     * 
+     */
+    public function create_repo_metadata(){
+
+        foreach ($this->get_repo_metadata() as $metadata) {
+
+            if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
+               $metadatum_id = $this->create_metadata( $metadata );  
+            }
+
+        }
+    }
+
+    /**
+    * Method implemented by the child importer class to proccess each item
     * @return int
     */
-    public function get_total_items_from_source( $collection_id ) {
-        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items" );
-        $info = json_decode($info['body']);
-        return $this->total_items = $info->found_items;
+    public function process_item( $index, $collection_id ){
     }
 
     /**
@@ -823,4 +133,126 @@ class Old_Tainacan extends Importer{
     public function get_source_metadata(){
     }
     
+
+    // AUX functions
+
+    /**
+    * decode request from wp_remote
+    * @return array/bool
+    */
+    protected function decode_request($result){
+        if (is_wp_error($result)) {
+
+            $this->add_error_log($result->get_error_message());
+            $this->add_error_log('Error in fetch remote');
+			$this->abort();
+            return false;
+
+        } else if (isset($result['body'])){
+            return json_decode($result['body']);
+        }
+
+        $this->add_error_log('Error in fetch remote');
+        $this->abort();
+        return false;
+    }
+
+    /**
+    * return all taxonomies from tainacan old
+    * @return array
+    */
+    protected function get_taxonomies(){
+
+        $categories_link = $this->get_url() . $this->tainacan_api_address . "/categories";
+        $categories = wp_remote_get($categories_link);
+        $categories_array = $this->decode_request($categories);
+
+        return ($categories_array) ? $categories_array : [];
+    }
+
+    /**
+    * return all repository metadata from tainacan old
+    * @return array
+    */
+    protected function get_repo_metadata(){
+
+        $repository_meta_link = $this->get_url() . $this->tainacan_api_address . "/repository/metadata?includeMetadata=1";
+        $repo_meta = wp_remote_get($repository_meta_link);
+        $repo_meta_array = $this->decode_request($repo_meta);
+
+        return ($repo_meta_array) ? $repo_meta_array : [];
+    }
+
+    /**
+    * create recursively the terms from tainacan OLD
+    *
+    * @param Entities\Taxonomy $taxonomy_father
+    * @param array $children Array of categories from tainacan old 
+    * @param (optional) int $term_father the ID of father
+    *
+    * @return array
+    */
+    protected function add_all_terms($taxonomy_father, $children, $term_father = null){
+
+        foreach ($children as $term) {
+
+            $new_term = new Entities\Term();
+            $new_term->set_taxonomy($taxonomy_father->get_db_identifier());
+            $new_term->set_name($term->name);
+            $new_term->set_description($term->description);
+
+            if($term_father){
+                $new_term->set_parent($term_father->get_id());
+            }
+
+            $inserted_term = $this->term_repo->insert($new_term);
+
+            /*Insert old tainacan id*/
+            $this->add_transient('term_' . $term->term_id . '_id', $inserted_term->get_id());
+            $this->add_transient('term_' . $term->term_id . '_name', $inserted_term->get_name());
+            $this->add_transient('term_' . $term->term_id . '_tax', $taxonomy_father->get_db_identifier());
+
+            if(isset($term->children)){
+                $this->add_all_terms($taxonomy_father, $term->children, $inserted_term);
+            }
+        }
+
+    }
+
+    /**
+     * create the a Metadatum in tainacan
+     * 
+     * @return int $metadatum_id 
+     */
+    protected function create_metadata( $node_metadata_old, $collection_id = null){
+        //TODO: create process to insert different types of metadata
+    }
+    
+    /**
+     * Define the class to create in new Tainacan
+     * 
+     * @param string $type The type from tainacan old
+     * 
+     * @return string the class name
+     */
+    private function define_type($type){
+        $type = strtolower($type);
+        $tainacan_types = ['text', 'textarea', 'numeric', 'date'];
+
+        if (in_array($type, $tainacan_types)) {
+            $type = ucfirst($type);
+        } else if(strcmp($type, 'autoincrement') === 0) {
+            $type = "Numeric";
+        } else if(strcmp($type, 'item') === 0) {
+            $type = "Relationship";
+        } else if(strcmp($type, 'tree') === 0) {
+            $type = "Category";
+        } else if(strcmp($type, 'compound') === 0) {
+            $type = "Compound";
+        } else {
+            $type = 'Text';
+        } 
+
+        return $type;
+    }
 }

@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Autocomplete extends Filter_Type {
 
     function __construct(){
-        $this->set_supported_types(['string','item']);
+        $this->set_supported_types(['string','long_string','item']);
         $this->set_component('tainacan-filter-autocomplete');
     }
 

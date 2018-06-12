@@ -168,7 +168,6 @@
                                 <hr>
                             </div>
                             <b-input
-                                    :class="{'has-content': textContent != undefined && textContent != ''}"
                                     type="textarea"
                                     v-model="textContent"/>
 
@@ -203,9 +202,7 @@
                                 <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
                                 <hr>
                             </div>
-                            <b-input
-                                    :class="{'has-content': urlLink != undefined && urlLink != ''}"
-                                    v-model="urlLink"/>
+                            <b-input v-model="urlLink"/>
 
                             <div class="field is-grouped form-submit">
                                 <div class="control">
@@ -671,7 +668,7 @@ export default {
     },
     mounted() {
         document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-            this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+            this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
         });
     },
     beforeRouteLeave ( to, from, next ) {

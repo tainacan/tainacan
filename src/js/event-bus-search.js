@@ -28,8 +28,6 @@ export default {
                 this.$root.$on('searchAdvanced', advancedSearchQuery => {
                     this.$store.dispatch('search/setPage', 1);
 
-                    console.log('Emit caught', advancedSearchQuery);
-
                     this.searchAdvanced(advancedSearchQuery);
 
                     this.updateURLQueries();
@@ -41,25 +39,25 @@ export default {
                         this.collectionId = parseInt(this.$route.params.collectionId);
 
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
-                        if (this.$route.query.perpage == undefined)
-                            this.$route.query.perpage = 12;
+                        if (this.$route.query.perpage == undefined) {
+                            let perPage = (this.collectionId != undefined ? this.$userPrefs.get('items_per_page_' + this.collectionId) : this.$userPrefs.get('items_per_page'));
+                            this.$route.query.perpage = perPage ? perPage : 12;
+                        }    
                         if (this.$route.query.paged == undefined)
                             this.$route.query.paged = 1;
                         if (this.$route.query.order == undefined)
                             this.$route.query.order = 'DESC';
                         if (this.$route.query.orderby == undefined)
                             this.$route.query.orderby = 'date';
-
-                        if(this.$route.query.advancedSearch){
-                            delete this.$route.query.advancedSearch;
-                            this.$store.dispatch('search/set_advanced_query', this.$route.query);
+                        
+                        if(this.$route.query.metaquery && this.$route.query.metaquery.advancedSearch){
+                            this.$store.dispatch('search/set_advanced_query', this.$route.query.metaquery);
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
 
                         this.loadItems(to);
-                    }
-                    
+                    }  
                 }
             },
             methods: {
@@ -108,6 +106,12 @@ export default {
                     this.updateURLQueries();
                 },
                 setItemsPerPage(itemsPerPage) {
+                    let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
+                    this.$userPrefs.set(prefsPerPage, itemsPerPage)
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for items per page")
+                    });
+
                     this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
                     this.updateURLQueries();
                 },
@@ -131,15 +135,10 @@ export default {
                     this.$store.dispatch('search/setViewMode', viewMode);
                     this.updateURLQueries();  
                 },
-                updateURLQueries(isAdvancedSearch = false) {
-                    this.$router.push({ query: {}});
-
-                    if(isAdvancedSearch) {
-                        this.$router.push({query: this.$store.getters['search/getAdvancedSearchQuery']});
-                        console.log(this.$route);
-                    } else {
-                        this.$router.push({query: this.$store.getters['search/getPostQuery']});
-                    }
+                updateURLQueries(isAdvancedSearch) {
+                    this.$router.push({query: {}});
+                    this.$route.meta['advancedSearch'] = isAdvancedSearch;
+                    this.$router.push({query: this.$store.getters['search/getPostQuery']});
                 },
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
@@ -159,6 +158,10 @@ export default {
                         .then((res) => {
                             this.$emit( 'isLoadingItems', false);
                             this.$emit( 'hasFiltered', res.hasFiltered);
+
+                            if(res.advancedSearchResults){
+                                this.$emit('advancedSearchResults', res.advancedSearchResults);
+                            }
                         })
                         .catch(() => {
                             this.$emit( 'isLoadingItems', false);

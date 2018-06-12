@@ -29,7 +29,8 @@ import FilterCategorySelectbox from '../../classes/filter-types/category/Selectb
 import TaincanFormItem from '../../classes/metadata-types/tainacan-form-item.vue';
 import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
 import ItemsPage from '../pages/lists/items-page.vue';
-import TableViewMode from '../../theme-helper/table-view-mode.vue';
+import ViewModeTable from '../../theme-helper/view-mode-table.vue';
+import ViewModeCards from '../../theme-helper/view-mode-cards.vue';
 
 // Remaining imports
 import HelpButton from '../components/other/help-button.vue';
@@ -77,7 +78,9 @@ Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
 Vue.component('items-page', ItemsPage);
 
-Vue.component('table-view-mode', TableViewMode);
+// Oficial view modes
+Vue.component('view-mode-table', ViewModeTable);
+Vue.component('view-mode-cards', ViewModeCards);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 

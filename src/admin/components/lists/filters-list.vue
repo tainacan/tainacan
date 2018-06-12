@@ -319,7 +319,7 @@ export default {
 
             for (let filter of this.filterTypes) {
                 for (let supportedType of filter['supported_types']) {
-                    if (choosenMetadatum.metadata_type_object.primitive_type == supportedType)
+                    if (choosenMetadatum.metadatum_type_object.primitive_type == supportedType)
                         this.allowedFilterTypes.push(filter);
                 }
             }
@@ -462,7 +462,7 @@ export default {
     mounted() {
         if (!this.isRepositoryLevel) {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                this.$emit('onShrinkHeader', ($event.originalTarget.scrollTop > 53)); 
+                this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
             });
         }
     }

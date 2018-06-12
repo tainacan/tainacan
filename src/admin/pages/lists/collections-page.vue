@@ -165,9 +165,14 @@ export default {
             this.loadCollections();
         },
         onChangeCollectionsPerPage(value) {
-            let prevValue = this.collectionsPerPage;
             this.collectionsPerPage = value;
-            this.$userPrefs.set('collections_per_page', value,  prevValue);
+            this.$userPrefs.set('collections_per_page', value)
+            .then((newValue) => {
+                this.collectionsPerPage = newValue;
+            })
+            .catch(() => {
+                this.$console.log("Error settings user prefs for collection per page")
+            });
             this.loadCollections();
         },
         onPageChange(page) {
@@ -202,14 +207,8 @@ export default {
         }
     },
     created() {
+        this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
         this.isLoadingMetadatumTypes = true;
-        this.$userPrefs.get('collections_per_page')
-            .then((value) => {
-                this.collectionsPerPage = value;
-            })
-            .catch(() => {
-                this.$userPrefs.set('collections_per_page', 12, null);
-            });
         this.fetchMetadatumMappers()
             .then(() => {
                 this.isLoadingMetadatumMappers = false;
@@ -219,6 +218,16 @@ export default {
             });
     },
     mounted(){
+        this.$userPrefs.fetch('collections_per_page')
+        .then((value) => {
+            if (this.collectionsPerPage != value) {
+                this.collectionsPerPage = value;
+                this.loadCollections;
+            }
+        })
+        .catch(() => {
+            this.$userPrefs.set('collections_per_page', 12);
+        });
         this.loadCollections();
     }
 }

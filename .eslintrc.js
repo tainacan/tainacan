@@ -9,6 +9,7 @@ module.exports = {
     },
     rules: {
         // override/add rules settings here, such as:
+        'no-extra-boolean-cast': 'off',
         'vue/no-unused-vars': 'error',
         'no-console': 'warn',
         'no-unused-vars': 'warn',
