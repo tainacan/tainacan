@@ -154,6 +154,22 @@
                             {{ $i18n.get(field_mapper.name) }}
                         </b-dropdown-item>
                     </b-dropdown>
+                    <section
+                            v-if="mapper != '' && !isLoadingFieldMappers">
+                        <div class="field is-grouped form-submit">
+                            <div class="control">
+                                <button
+                                        class="button is-outlined"
+                                        type="button"
+                                        @click="onCancelUpdateFieldsMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                            </div>
+                            <div class="control">
+                                <button
+                                        @click.prevent="onUpdateFieldsMapperMetadataClick"
+                                        class="button is-success">{{ $i18n.get('save') }}</button>
+                            </div>
+                        </div>
+                    </section>
                     <section 
                             v-if="activeFieldList.length <= 0 && !isLoadingFields"
                             class="field is-grouped-centered section">
@@ -204,21 +220,22 @@
                             </b-table>
                         </section>
                     </template>
-                    <div class="field is-grouped form-submit">
-                        <div class="control">
-                            <button
-                                    id="button-cancel-fields-mapper-update"
-                                    class="button is-outlined"
-                                    type="button"
-                                    @click="onCancelUpdateFieldsMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                    <section
+                            v-if="mapper != '' && !isLoadingFieldMappers">
+                        <div class="field is-grouped form-submit">
+                            <div class="control">
+                                <button
+                                        class="button is-outlined"
+                                        type="button"
+                                        @click="onCancelUpdateFieldsMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                            </div>
+                            <div class="control">
+                                <button
+                                        @click.prevent="onUpdateFieldsMapperMetadataClick"
+                                        class="button is-success">{{ $i18n.get('save') }}</button>
+                            </div>
                         </div>
-                        <div class="control">
-                            <button
-                                    id="button-submit-fields-mapper-update"
-                                    @click.prevent="onUpdateFieldsMapperMetadataClick"
-                                    class="button is-success">{{ $i18n.get('save') }}</button>
-                        </div>
-                    </div>
+                    </section>
                 </div>
             </b-tab-item>
         </b-tabs>
@@ -438,6 +455,7 @@ export default {
             });
         },
         onUpdateFieldsMapperMetadataClick() {
+            this.isMapperMetadataLoading = true;
             var fieldsMapperMetadata = [];
             var self = this;
             this.mapperMetadata.forEach(function(item) {
@@ -459,6 +477,7 @@ export default {
                 }
             });
             this.updateFieldsMapperMetadata({fieldsMapperMetadata: fieldsMapperMetadata, mapper: this.mapper.slug});
+            this.isMapperMetadataLoading = false;
         },
         onCancelUpdateFieldsMapperMetadata() {
             this.isMapperMetadataLoading = true;
