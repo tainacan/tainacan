@@ -72,8 +72,6 @@ export default {
             if( this.itemsPerPage == value){
                 return false;
             }
-            
-            let prevValue = this.itemsPerPage;
             this.$eventBusSearch.setItemsPerPage(value);
         },
         onPageChange(page) {
