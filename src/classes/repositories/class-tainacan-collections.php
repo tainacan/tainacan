@@ -136,6 +136,7 @@ class Collections extends Repository {
 				'type'        => 'array',
 				'description' => __( 'Which visualization modes will be available for the public to choose from', 'tainacan' ),
 				'default'     => ['table', 'cards'],
+			    'items'       => [ 'type' => 'string' ],
 				//'validation' => v::stringType(),
 			],
 			'metadata_order'             => [
