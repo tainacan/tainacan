@@ -438,13 +438,12 @@ export default {
                     var item = metadatum_mapper.metadata[k];
                     item.slug = k;
                     item.selected = '';
-                    var self = this;
-                    this.activeMetadatumList.forEach(function(metadatum) {
+                    this.activeMetadatumList.forEach((metadatum) => {
                         if(
                                 metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
                                 metadatum.exposer_mapping[metadatum_mapper.slug] == item.slug ) {
                             item.selected = metadatum.id;
-                            self.mappedMetadata.push(metadatum.id);
+                            this.mappedMetadata.push(metadatum.id);
                         }
                     });
                     this.mapperMetadata.push(item);
@@ -456,19 +455,17 @@ export default {
             return this.mappedMetadata.indexOf(id) > -1;
         },
         onSelectMetadatumForMapperMetadata() {
-            var self = this;
             this.mappedMetadata = [];
-            this.mapperMetadata.forEach(function(item) {
+            this.mapperMetadata.forEach((item) => {
                 if(item.selected.length != 0) {
-                    self.mappedMetadata.push(item.selected);
+                    this.mappedMetadata.push(item.selected);
                 }
             });
         },
         onUpdateMetadataMapperMetadataClick() {
             this.isMapperMetadataLoading = true;
             var metadataMapperMetadata = [];
-            var self = this;
-            this.mapperMetadata.forEach(function(item) {
+            this.mapperMetadata.forEach((item) => {
                 if (item.selected.length != 0) {
                     var map = {
                             metadatum_id: item.selected,
@@ -477,8 +474,8 @@ export default {
                     metadataMapperMetadata.push(map);
                 }
             });
-            this.activeMetadatumList.forEach(function(item) {
-                if(self.mappedMetadata.indexOf(item.id) == -1) {
+            this.activeMetadatumList.forEach((item) => {
+                if(this.mappedMetadata.indexOf(item.id) == -1) {
                     var map = {
                             metadatum_id: item.id,
                             mapper_metadata: ''
