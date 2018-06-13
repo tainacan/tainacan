@@ -107,7 +107,10 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'taxonomies_per_page': 12,
             'events_per_page': 12,
             'order': 'DESC',
-            'order_by': 'date'
+            'order_by': { 
+                id: 'creation_date',
+                name: 'Creation Date'
+            }
         },
         init() {
             if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {
@@ -144,7 +147,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 });
             }); 
         },
-        clear() {
+        clean() {
             let data = {'meta': {'tainacan_prefs': ''} };
             wpApi.post('/users/me/', qs.stringify(data))
         }

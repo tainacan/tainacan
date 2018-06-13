@@ -4,6 +4,10 @@ export const setPostQueryAttribute = ( state, { attr, value }) => {
     Vue.set( state.postquery, attr , value );
 };
 
+export const cleanPostQueryAttribute = ( state, { attr }) => {
+    Vue.set( state.postquery, attr , null );
+};
+
 export const setPostQuery = ( state, postquery ) => {
     state.postquery = postquery;
 };

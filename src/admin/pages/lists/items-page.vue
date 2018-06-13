@@ -184,8 +184,8 @@
                             <option
                                     v-for="metadatum in tableMetadata"
                                     v-if="
-                                        metadatum.id === 'creation_date' ||
-                                        metadatum.id === 'author_name' || (
+                                        metadatum.slug === 'creation_date' ||
+                                        metadatum.slug === 'author_name' || (
                                             metadatum.id !== undefined &&
                                             metadatum.metadata_type_object && 
                                             metadatum.metadata_type_object.related_mapped_prop !== 'description' &&
@@ -194,7 +194,7 @@
                                             metadatum.metadata_type_object.primitive_type !== 'compound'
                                     )"
                                     :value="metadatum"
-                                    :key="metadatum.id">
+                                    :key="metadatum.slug">
                                 {{ metadatum.name }}
                             </option>
                         </b-select>
