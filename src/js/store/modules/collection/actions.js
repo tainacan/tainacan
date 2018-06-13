@@ -9,6 +9,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         // Adds queries for filtering
         let postQueries = rootGetters['search/getPostQuery'];
         let query = '';
+        
         // Sets a flag to inform components that an empty sate is or not due to filtering
         let hasFiltered = false;
         let advancedSearchResults = false;

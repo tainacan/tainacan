@@ -70,12 +70,13 @@ export const setStatus= ({ commit }, status ) => {
 };
 
 // Sorting queries
-export const setOrderBy = ({ commit }, orderBy ) => {
-
+export const setOrderBy = ({ state, commit }, orderBy ) => {
+    commit('cleanPostQueryAttribute', {  attr: 'orderby' } );
+    
     // Primitive Types: string, date, item, term, compound, float
-    if (orderBy.id == 'creation_date') {
+    if (orderBy.slug == 'creation_date') {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'date' } );
-    } else if (orderBy.id == 'author_name') {
+    } else if (orderBy.slug == 'author_name') {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'author_name' } );
     } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
@@ -90,6 +91,7 @@ export const setOrderBy = ({ commit }, orderBy ) => {
         commit('setPostQueryAttribute', {  attr: 'meta_key', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'meta_value' } );
     }
+
 };
 
 export const setOrder = ({ commit }, order ) => {

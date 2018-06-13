@@ -176,17 +176,15 @@
             this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
         },
         mounted(){
-            this.$userPrefs.fetch('taxonomies_per_page')
-            .then((value) => {
-                if (this.taxonomiesPerPage != value) {
-                    this.taxonomiesPerPage = value;
-                    this.load;
-                }
-            })
-            .catch(() => {
+            if (this.taxonomiesPerPage != this.$userPrefs.get('taxonomies_per_page'))
+                this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
+
+            if (!this.taxonomiesPerPage) {
+                this.taxonomiesPerPage = 12;
                 this.$userPrefs.set('taxonomies_per_page', 12);
-            });
-            this.load();
+            }
+            
+            this.loadCategories();
         }
     }
 </script>
