@@ -421,15 +421,15 @@ class Metadatum extends Entity {
         if (false === $is_valid)
             return false;
         
-		// You cant have a multiple metadatum inside a compound metadatum (except category)
+		// You cant have a multiple metadatum inside a compound metadatum (except taxonomy)
 		if ($this->get_parent() > 0) {
 			if ( $this->is_multiple() && $this->get_metadata_type_object()->get_primitive_type() != 'term') {
-				$this->add_error($this->get_id(), __('Compound metadata do not support metadata with multiple values (except categories)', 'tainacan'));
+				$this->add_error($this->get_id(), __('Compound metadata do not support metadata with multiple values (except taxonomies)', 'tainacan'));
 				return false;
 			}
 		}
 		
-		// You cant have a category metadatum inside a multiple compound metadatum
+		// You cant have a taxonomy metadatum inside a multiple compound metadatum
 		if ( $this->get_parent() > 0 && $this->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 			$parent_metadatum = new \Tainacan\Entities\Metadatum($this->get_parent());
 			if ( $parent_metadatum->is_multiple() ) {
@@ -442,7 +442,7 @@ class Metadatum extends Entity {
 			$children = $Tainacan_Metadata->fetch(
 				[
 					'parent' => $this->get_id(),
-					'metadata_type' => 'Tainacan\Metadata_Types\Category',
+					'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
 					'post_status' => 'any'
 				]
 				, 'OBJECT');

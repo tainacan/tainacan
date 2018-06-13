@@ -9,15 +9,15 @@ import ItemsPage from '../pages/lists/items-page.vue'
 import ItemPage from '../pages/singles/item-page.vue'
 import MetadataPage from '../pages/lists/metadata-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
-import CategoriesPage from '../pages/lists/categories-page.vue'
-import CategoryPage from '../pages/singles/category-page.vue'
+import CategoriesPage from '../pages/lists/taxonomies-page.vue'
+import TaxonomyPage from '../pages/singles/taxonomy-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 import EventPage from '../pages/singles/event-page.vue'
 
 // Edition Form Components
 import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
 import ItemEditionForm from '../components/edition/item-edition-form.vue'
-import CategoryEditionForm from '../components/edition/category-edition-form.vue'
+import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
 
 // Listing components
 import FiltersList from '../components/lists/filters-list.vue'
@@ -58,10 +58,10 @@ const routes = [
 
     { path: '/metadata', name: 'MetadataPage', component: MetadataPage, meta: {title: i18nGet('title_repository_metadata_page'), icon: 'format-list-checks'} },
 
-    { path: '/taxonomies', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_categories_page'), icon: 'shape'} },
-    { path: '/taxonomies/new', name: 'CategoryCreationForm', component: CategoryEditionForm, meta: {title: i18nGet('title_create_category_page'), icon: 'shape'} },
-    { path: '/taxonomies/:categoryId/edit', name: 'CategoryEditionForm', component: CategoryEditionForm, meta: {title: i18nGet('title_category_edition_page'), icon: 'shape'} },
-    { path: '/taxonomies/:categoryId', name: 'CategoryPage', component: CategoryPage, meta: {title: i18nGet('title_category_page'), icon: 'shape'} },
+    { path: '/taxonomies', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_taxonomies_page'), icon: 'shape'} },
+    { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_create_taxonomy_page'), icon: 'shape'} },
+    { path: '/taxonomies/:taxonomyId/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_taxonomy_edition_page'), icon: 'shape'} },
+    { path: '/taxonomies/:taxonomyId', name: 'TaxonomyPage', component: TaxonomyPage, meta: {title: i18nGet('title_taxonomy_page'), icon: 'shape'} },
 
     { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_repository_events_page'), icon: 'flash'} },
     { path: '/events/:eventId', name: 'EventPage', component: EventPage, meta: {title: i18nGet('title_event_page'), icon: 'flash'} },

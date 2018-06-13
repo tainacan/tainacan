@@ -2,7 +2,7 @@
     <div>
         <b-field
                 :addons="false"
-                :label="$i18n.get('label_category_terms')">
+                :label="$i18n.get('label_taxonomy_terms')">
             <button
                     class="button is-secondary is-pulled-right"
                     type="button"
@@ -41,7 +41,7 @@
                 <button
                         class="button is-success is-small"
                         type="button"
-                        :href="categoryPath + '/' + term.slug">
+                        :href="taxonomyPath + '/' + term.slug">
                     {{ $i18n.get('label_view_term') }}
                 </button>
             -->
@@ -69,7 +69,7 @@
             </span>
             <div v-show="term.opened">
                 <term-edition-form 
-                        :category-id="categoryId"
+                        :taxonomy-id="taxonomyId"
                         @onEditionFinished="onTermEditionFinished()"
                         @onEditionCanceled="onTermEditionCanceled(term)"
                         @onErrorFound="formWithErrors = term.id"
@@ -98,8 +98,8 @@ export default {
         }
     },
     props: {
-        categoryId: String,
-        //categoryPath: ''
+        taxonomyId: String,
+        //taxonomyPath: ''
     },
     computed: {
         termsList() {
@@ -110,7 +110,7 @@ export default {
         termsList() {
             this.generateOrderedTerms();
         },
-        categoryId() {
+        taxonomyId() {
             this.loadTerms();
         }
     },
@@ -118,17 +118,17 @@ export default {
         TermEditionForm
     },
     methods: {
-        ...mapActions('category', [
+        ...mapActions('taxonomy', [
             'updateTerm',
             'deleteTerm',
             'fetchTerms'
         ]),
-        ...mapGetters('category',[
+        ...mapGetters('taxonomy',[
             'getTerms'
         ]),
         addNewTerm() {
             let newTerm = {
-                categoryId: this.categoryId,
+                taxonomyId: this.taxonomyId,
                 name: this.$i18n.get('label_term_without_name'),
                 description: '',
                 parent: 0,
@@ -141,7 +141,7 @@ export default {
         },
         addNewChildTerm(parent, parentIndex) {
             let newTerm = {
-                categoryId: this.categoryId,
+                taxonomyId: this.taxonomyId,
                 name:  this.$i18n.get('label_term_without_name'),
                 description: '',
                 parent: parent.id,
@@ -238,7 +238,7 @@ export default {
                 }
             } else {
                 
-                this.deleteTerm({categoryId: this.categoryId, termId: term.id})
+                this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id})
                 .then(() => {
 
                 })
@@ -250,7 +250,7 @@ export default {
                 for (let orphanTerm of this.termsList) {
                     if (orphanTerm.parent == term.id) {
                         this.updateTerm({
-                            categoryId: this.categoryId, 
+                            taxonomyId: this.taxonomyId, 
                             termId: orphanTerm.id, 
                             name: orphanTerm.name,
                             description: orphanTerm.description,
@@ -314,7 +314,7 @@ export default {
         },
         loadTerms() {
             this.isLoadingTerms = true;
-            this.fetchTerms(this.categoryId)
+            this.fetchTerms(this.taxonomyId)
                 .then(() => {
                     // Fill this.form data with current data.
                     this.isLoadingTerms = false;
@@ -326,7 +326,7 @@ export default {
         }
     },
     created() {
-        if (this.categoryId !== String) {
+        if (this.taxonomyId !== String) {
             this.loadTerms();
         }
     }

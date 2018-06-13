@@ -64,7 +64,7 @@ I18NPlugin.install = function (Vue, options = {}) {
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
         },
         getFrom(entity, key) {
-            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
                 entity = 'taxonomies'
             if (tainacan_plugin.i18n['entities_labels'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
@@ -72,7 +72,7 @@ I18NPlugin.install = function (Vue, options = {}) {
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + key;
         },
         getHelperTitle(entity, key) {
-            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
                 entity = 'taxonomies'
             if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
@@ -82,7 +82,7 @@ I18NPlugin.install = function (Vue, options = {}) {
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n helper object.";
         },
         getHelperMessage(entity, key) {
-            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
                 entity = 'taxonomies'
             if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
@@ -197,8 +197,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCategoriesPath(query) {
             return '/taxonomies/?' + qs.stringify(query);
         },
-        getCategoryTermsPath(categoryId, query) {
-            return '/categoryId/' + categoryId + '/terms/?' + qs.stringify(query);
+        getTaxonomyTermsPath(taxonomyId, query) {
+            return '/taxonomyId/' + taxonomyId + '/terms/?' + qs.stringify(query);
         },
         getFiltersPath(query) {
             return '/filters/?' + qs.stringify(query);
@@ -219,11 +219,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getFilterPath(id) {
             return '/filters/' + id;
         },
-        getCategoryPath(id) {
+        getTaxonomyPath(id) {
             return '/taxonomies/' + id;
         },
-        getTermPath(categoryId, termId) {
-            return '/taxonomies/' + categoryId + '/terms/' + termId;
+        getTermPath(taxonomyId, termId) {
+            return '/taxonomies/' + taxonomyId + '/terms/' + termId;
         },
         getEventPath(id) {
             return '/events/' + id;
@@ -250,11 +250,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewFilterPath() {
             return '/filters/new';
         },
-        getNewCategoryPath() {
+        getNewTaxonomyPath() {
             return '/taxonomies/new';
         },
-        getNewTermPath(categoryId) {
-            return '/taxonomies/' + categoryId + '/terms/new';
+        getNewTermPath(taxonomyId) {
+            return '/taxonomies/' + taxonomyId + '/terms/new';
         },
         getNewEventPath() {
             return '/events/new';
@@ -269,11 +269,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getFilterEditPath(id) {
             return '/filters/' + id + '/edit';
         },
-        getCategoryEditPath(id) {
+        getTaxonomyEditPath(id) {
             return '/taxonomies/' + id + '/edit';
         },
-        getTermEditPath(categoryId, termId) {
-            return '/taxonomies/' + categoryId + '/terms/' + termId + '/edit';
+        getTermEditPath(taxonomyId, termId) {
+            return '/taxonomies/' + taxonomyId + '/terms/' + termId + '/edit';
         },
         getEventEditPath(id) {
             return '/events/' + id + '/edit';

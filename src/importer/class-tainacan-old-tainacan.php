@@ -60,7 +60,7 @@ class Old_Tainacan extends Importer{
     }
 
     /**
-     * create taxonomies ( categories in tainacan old in first level )
+     * create taxonomies ( taxonomies in tainacan old in first level )
      * next create the terms
      * 
      */
@@ -69,8 +69,8 @@ class Old_Tainacan extends Importer{
         foreach ($this->get_taxonomies() as $taxonomy) {
 
             $tax = new Entities\Taxonomy();
-            $tax->set_name( $category->name );
-            $tax->set_description( $category->description );
+            $tax->set_name( $taxonomy->name );
+            $tax->set_description( $taxonomy->description );
             $tax->set_allow_insert('yes');
             $tax->set_status('publish');    
 
@@ -80,12 +80,12 @@ class Old_Tainacan extends Importer{
                 $this->add_transient('tax_' . $term->term_id . '_id', $tax->get_id());
                 $this->add_transient('tax_' . $term->term_id . '_name', $tax->get_name());
 
-                if (isset($category->children) && $tax) {
-                    $this->add_all_terms($tax, $category->children);
+                if (isset($taxonomy->children) && $tax) {
+                    $this->add_all_terms($tax, $taxonomy->children);
                 }
 
             } else {
-                $this->add_error_log('Error creating taxonomy ' . $category->name );
+                $this->add_error_log('Error creating taxonomy ' . $taxonomy->name );
                 $this->add_error_log($tax->get_errors());
                 $this->abort();
                 return false;
@@ -191,11 +191,11 @@ class Old_Tainacan extends Importer{
     */
     protected function get_taxonomies(){
 
-        $categories_link = $this->get_url() . $this->tainacan_api_address . "/categories";
-        $categories = wp_remote_get($categories_link);
-        $categories_array = $this->decode_request($categories);
+        $taxonomies_link = $this->get_url() . $this->tainacan_api_address . "/taxonomies";
+        $taxonomies = wp_remote_get($taxonomies_link);
+        $taxonomies_array = $this->decode_request($taxonomies);
 
-        return ($categories_array) ? $categories_array : [];
+        return ($taxonomies_array) ? $taxonomies_array : [];
     }
 
     /**
@@ -215,7 +215,7 @@ class Old_Tainacan extends Importer{
     * create recursively the terms from tainacan OLD
     *
     * @param Entities\Taxonomy $taxonomy_father
-    * @param array $children Array of categories from tainacan old 
+    * @param array $children Array of taxonomies from tainacan old 
     * @param (optional) int $term_father the ID of father
     *
     * @return array
@@ -271,7 +271,7 @@ class Old_Tainacan extends Importer{
         $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
         $newMetadatum->set_parent( (isset($collection_id)) ? $collection_id : 'default');
 
-        if(strcmp($type, "Category") === 0){
+        if(strcmp($type, "Taxonomy") === 0){
             $taxonomy_id = $meta->metadata->taxonomy;
 
             $related_taxonomy = $this->get_transient('tax_' . $taxonomy_id . '_id');
@@ -280,7 +280,7 @@ class Old_Tainacan extends Importer{
             }
 
         } else if(strcmp($type, "Relationship") === 0){
-            $relation_id = $meta->metadata->object_category_id;
+            $relation_id = $meta->metadata->object_taxonomy_id;
             $related_taxonomy = $this->get_transient('tax_' . $relation_id . '_id');
             $related_name = $this->get_transient('tax_' . $relation_id . '_name');
 
@@ -350,7 +350,7 @@ class Old_Tainacan extends Importer{
         } else if(strcmp($type, 'item') === 0) {
             $type = "Relationship";
         } else if(strcmp($type, 'tree') === 0) {
-            $type = "Category";
+            $type = "Taxonomy";
         } else if(strcmp($type, 'compound') === 0) {
             $type = "Compound";
         } else {

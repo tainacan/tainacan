@@ -13,10 +13,10 @@ use Tainacan\Entities;
 /**
  * Sample test case.
  */
-class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
+class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 
 	
-    function test_category_metadata_types() {
+    function test_taxonomy_metadata_types() {
 
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
@@ -45,7 +45,7 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadata_type' => 'Tainacan\Metadata_Types\Category',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
@@ -72,7 +72,7 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta2',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadata_type' => 'Tainacan\Metadata_Types\Category',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
 				'status'	 => 'draft',
 	        ),
 	        true
@@ -122,13 +122,13 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 
 		$this->assertEquals('Tainacan\Entities\Term', get_class($check_item_metadata->get_value()));
 		
-		// test 2 metadata with same category
+		// test 2 metadata with same taxonomy
 		$metadatum2->set_metadata_type_options([
 			'taxonomy_id' => $tax->get_id(),
 		]);
 		$metadatum2->set_status('publish');
 		
-		$this->assertFalse($metadatum2->validate(), 'Category Metadatum should not validate when using a category in use by another metadatum in the same collection');
+		$this->assertFalse($metadatum2->validate(), 'Taxonomy Metadatum should not validate when using a taxonomy in use by another metadatum in the same collection');
 		$errors = $metadatum2->get_errors();
 		$this->assertInternalType('array', $errors);
 		$this->assertArrayHasKey('taxonomy_id', $errors[0]['metadata_type_options']);
@@ -168,7 +168,7 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadata_type' => 'Tainacan\Metadata_Types\Category',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
@@ -243,7 +243,7 @@ class CategoryMetadatumTypes extends TAINACAN_UnitTestCase {
 	        	'name' => 'meta',
 		        'description' => 'description',
 		        'collection' => $collection,
-		        'metadata_type' => 'Tainacan\Metadata_Types\Category',
+		        'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
 				'status'	 => 'publish',
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),

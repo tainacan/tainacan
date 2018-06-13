@@ -11,7 +11,7 @@ The typical workflow when you create a Digital Repository with Tainacan is:
 
 A collection is a group of items, that share the same set of metadata. Every item uploaded to your digital repository will be part of a collection - and only one collection. For instance, you could have a "paintings" collections, with metadata such as Title, Author, Country, Tecnique, etc and another collection for "films", with Title, Director, Country and Genre.
 
-For each collection you can set a different set of metadata and they can share common categories, which means you could browse for items in a specific Country, and get both paintings and films in your results. 
+For each collection you can set a different set of metadata and they can share common taxonomies, which means you could browse for items in a specific Country, and get both paintings and films in your results. 
 
 Collections can also have child collections, which will inherit parent's collection metadata and can add their own set of additional information.
 
@@ -69,7 +69,7 @@ Taxonomies can be created and used to classify items. Typical Taxonomies are Gen
 
 In WordPress language, they are Custom Taxonomies, and they can be shared among many collections.
 
-Each Category has a set of terms. For example, the category Genre may have terms like "drama" and "comedy".
+Each Taxonomy has a set of terms. For example, the taxonomy Genre may have terms like "drama" and "comedy".
 
 Terms can have hierarchy, which means that when you browse for items that have a parente term (for instance, "Rock"), the results will include items that have any of the child terms (for instance, "Progressive Rock" and "Classic Rock").
 

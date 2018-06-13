@@ -248,7 +248,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
     }
 	
-	function test_validations_category_in_multiple() {
+	function test_validations_taxonomy_in_multiple() {
 		
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		
@@ -275,10 +275,10 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 		$newMetadatum = new \Tainacan\Entities\Metadatum();
 		$newMetadatum->set_name('test_multiple');
-		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$newMetadatum->set_parent($metadatum->get_id());
 		
-		$this->assertFalse($newMetadatum->validate(), 'You cant add a category metadatum inside a multiple compound metadatum');
+		$this->assertFalse($newMetadatum->validate(), 'You cant add a taxonomy metadatum inside a multiple compound metadatum');
 		
 		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 		$this->assertTrue($newMetadatum->validate());
@@ -286,7 +286,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 	}
 	
-	function test_validations_category_in_multiple_2() {
+	function test_validations_taxonomy_in_multiple_2() {
 		
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		
@@ -313,15 +313,15 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 		$newMetadatum = new \Tainacan\Entities\Metadatum();
 		$newMetadatum->set_name('test_multiple');
-		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$newMetadatum->set_parent($metadatum->get_id());
 		
-		$this->assertTrue($newMetadatum->validate(), 'You can add a category metadatum inside a not multiple compound metadatum');
+		$this->assertTrue($newMetadatum->validate(), 'You can add a taxonomy metadatum inside a not multiple compound metadatum');
 		$newMetadatum = $Tainacan_Metadata->insert($newMetadatum);
 		
 		$metadatum->set_multiple('yes');
 		
-		$this->assertFalse($metadatum->validate(), 'You cant turn a compound metadatum into multiple when there is a category metadatum inside it');
+		$this->assertFalse($metadatum->validate(), 'You cant turn a compound metadatum into multiple when there is a taxonomy metadatum inside it');
 		
 		
 	}

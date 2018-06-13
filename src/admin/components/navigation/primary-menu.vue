@@ -61,7 +61,7 @@
                         <b-icon
                                 size="is-small"
                                 icon="shape"/>
-                        <span class="menu-text">{{ $i18n.getFrom('categories', 'name') }}</span>
+                        <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
                 </li>
                 <li>

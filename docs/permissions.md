@@ -207,7 +207,7 @@ Who's got it: Administrators, Editors and Tainacan Editors
 Allows to view Items marked as private and its items.
 
 
-### Categories
+### Taxonomies
 
 ### Metadata
 

@@ -141,11 +141,11 @@ export default {
         ...mapGetters('item', [
             'getItemTitle'
         ]),
-        ...mapActions('category', [
-            'fetchCategoryName'
+        ...mapActions('taxonomy', [
+            'fetchTaxonomyName'
         ]),
-        ...mapGetters('category', [
-            'getCategoryName'
+        ...mapGetters('taxonomy', [
+            'getTaxonomyName'
         ]),
         ...mapActions('event', [
             'fetchEventTitle'
@@ -171,8 +171,8 @@ export default {
                                 .catch((error) => this.$console.error(error));
                             break;
                         case 'taxonomies':
-                            this.fetchCategoryName(this.arrayRealPath[i])
-                                .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
+                            this.fetchTaxonomyName(this.arrayRealPath[i])
+                                .then(taxonomyName => this.arrayViewPath.splice(i, 1, taxonomyName))
                                 .catch((error) => this.$console.error(error));
                             break;
                         case 'events':
