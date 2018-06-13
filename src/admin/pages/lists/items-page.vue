@@ -697,7 +697,7 @@
             this.$eventBusSearch.setViewMode(this.defaultViewMode);
 
             if(this.$router.query && this.$router.query.metaquery && this.$router.query.metaquery.advancedSearch) {
-                this.openAdvancedSearch = this.$router.query.advancedSearch;
+                this.openAdvancedSearch = this.$router.query.metaquery.advancedSearch;
             }
         },
         mounted() {

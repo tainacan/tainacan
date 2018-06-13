@@ -60,6 +60,7 @@
                 :class="{'tag-container-border': Object.keys(advancedSearchQuery).length > 1}"
                 class="field column is-12">
                 <b-field 
+                        :style="{'padding': '0.3rem 0 0 0'}"
                         grouped
                         group-multiline>
                     <div 
@@ -94,6 +95,7 @@
                 </div>
             </div>
         </div>
+        <pre>{{ advancedSearchQuery }}</pre>
     </div>
 </template>
 
@@ -149,10 +151,10 @@
                     advancedSearch: true,
                 };
             },
-            addValueToAdvancedSearchQuery: _.debounce(function(value, type, relation) {
+            addValueToAdvancedSearchQuery: _.debounce(function(value, type, searchCriteria) {
                 let vm = this;
 
-                vm.addToAdvancedSearchQuery(value, type, relation);
+                vm.addToAdvancedSearchQuery(value, type, searchCriteria);
             }, 900),
             searchAdvanced(){
                 if(Object.keys(this.advancedSearchQuery).length > 2){
@@ -165,30 +167,49 @@
 
                 this.$eventBusSearch.$emit('searchAdvanced', this.advancedSearchQuery);
             },
-            addToAdvancedSearchQuery(value, type, relation){
-                if(this.advancedSearchQuery.hasOwnProperty(relation)){
-                    //if(this.advancedSearchQuery[relation].compare === 'IN'){
-                        //this.advancedSearchQuery[relation][type] = value.split(' ');
-                    //} else {
-                    if(type == 'compare' && (this.advancedSearchQuery[relation]['compare'] == 'IN' ||
-                     this.advancedSearchQuery[relation]['compare'] == 'NOT IN')){
-
-                        this.advancedSearchQuery[relation].value.push(value);
+            addToAdvancedSearchQuery(value, type, searchCriteria){
+                if(this.advancedSearchQuery.hasOwnProperty(searchCriteria)){
+                    if(type == 'value' && (this.advancedSearchQuery[searchCriteria]['compare'] == 'IN' ||
+                     this.advancedSearchQuery[searchCriteria]['compare'] == 'NOT IN')){
+                        if(value.includes(';')){
+                            this.advancedSearchQuery[searchCriteria].value = value.split(';');
+                        } else {
+                            this.advancedSearchQuery[searchCriteria].value.pop();
+                            if(!this.advancedSearchQuery[searchCriteria].value.includes(value)){
+                                this.advancedSearchQuery[searchCriteria].value.push(value);
+                            }
+                        }
                     } else {
-                        this.advancedSearchQuery[relation][type] = value;
+                        if(type == 'compare' && 
+                         this.advancedSearchQuery[searchCriteria].compare &&
+                         !Array.isArray(this.advancedSearchQuery[searchCriteria].value) &&
+                          (this.advancedSearchQuery.compare != 'IN' && value == 'IN' ||
+                           this.advancedSearchQuery.compare != 'NOT IN' && value == 'NOT IN')){
+
+                            let valueAsArray = this.advancedSearchQuery[searchCriteria].value.split(' ');
+                            this.advancedSearchQuery[searchCriteria].value = valueAsArray;
+                        } else if(type == 'compare' && 
+                         this.advancedSearchQuery[searchCriteria].compare &&
+                          (this.advancedSearchQuery.compare != '=' && value == '=' ||
+                           this.advancedSearchQuery.compare != '!=' && value == '!=')){
+
+                            let valueAsString = this.advancedSearchQuery[searchCriteria].value.toString().replace(/,/g, ' ');
+                            this.advancedSearchQuery[searchCriteria].value = valueAsString;
+                        } 
+                        
+                        this.$set(this.advancedSearchQuery[searchCriteria], `${type}`, value);
                     }
-                    //}
                 } else {
                     if(type == 'compare' && (value == 'IN' || value == 'NOT IN')){
 
                         this.advancedSearchQuery = Object.assign({}, this.advancedSearchQuery, {
-                            [`${relation}`]: {
+                            [`${searchCriteria}`]: {
                                 [`${type}`]: [value],
                             }
                         });
                     } else {
                         this.advancedSearchQuery = Object.assign({}, this.advancedSearchQuery, {
-                            [`${relation}`]: {
+                            [`${searchCriteria}`]: {
                                 [`${type}`]: value,
                             }
                         });

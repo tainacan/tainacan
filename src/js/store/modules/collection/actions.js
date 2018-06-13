@@ -47,8 +47,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         if (!isOnTheme){
             endpoint = endpoint + 'context=edit&'
         }
-
-        console.log(postQueries);
         
         axios.tainacan.get(endpoint+query)
         .then(res => {
