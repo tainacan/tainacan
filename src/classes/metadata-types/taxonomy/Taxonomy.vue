@@ -8,7 +8,7 @@
                 :options="getOptions(0)"/>
         <add-new-term
                 class="add-new-term"
-                v-if="getComponent() !== 'tainacan-category-tag-input' && allowNew"
+                v-if="getComponent() !== 'tainacan-taxonomy-tag-input' && allowNew"
                 :taxonomy_id="taxonomy"
                 :metadatum="metadatum"
                 :item_id="metadatum.item.id"
@@ -19,10 +19,10 @@
 </template>
 <script>
     import { tainacan as axios } from '../../../js/axios/axios'
-    import TainacanCategoryRadio from './CategoryRadio.vue'
-    import TainacanCategoryCheckbox from './CategoryCheckbox.vue'
-    import TainacanCategoryTagInput from './CategoryTaginput.vue'
-    import TainacanCategorySelectbox from './CategorySelectbox.vue'
+    import TainacanTaxonomyRadio from './TaxonomyRadio.vue'
+    import TainacanTaxonomyCheckbox from './TaxonomyCheckbox.vue'
+    import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue'
+    import TainacanTaxonomySelectbox from './TaxonomySelectbox.vue'
     import AddNewTerm from  './AddNewTerm.vue'
 
     export default {
@@ -41,10 +41,10 @@
             this.getTermsId();
         },
         components: {
-            TainacanCategoryRadio,
-            TainacanCategoryCheckbox,
-            TainacanCategoryTagInput,
-            TainacanCategorySelectbox,
+            TainacanTaxonomyRadio,
+            TainacanTaxonomyCheckbox,
+            TainacanTaxonomyTagInput,
+            TainacanTaxonomySelectbox,
             AddNewTerm
         },
         data(){

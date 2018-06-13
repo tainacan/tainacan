@@ -1,27 +1,27 @@
 import Vue from 'vue';
 
-// CATEGORIES
-export const setCategory = (state, category) => {
-    state.category = category;
+// TAXONOMIES
+export const setTaxonomy = (state, taxonomy) => {
+    state.taxonomy = taxonomy;
 };
 
-export const setCategories = (state, categories) => {
-    state.categories = categories;
+export const set = (state, taxonomies) => {
+    state.taxonomies = taxonomies;
 };
 
-export const setCategoryName = (state, name) => {
-    state.categoryName = name;
+export const setTaxonomyName = (state, name) => {
+    state.taxonomyName = name;
 };
 
-export const deleteCategory = ( state, category ) => {
-    let index = state.categories.findIndex(deletedCategory => deletedCategory.id === category.id);
+export const deleteTaxonomy = ( state, taxonomy ) => {
+    let index = state.taxonomies.findIndex(deletedTaxonomy => deletedTaxonomy.id === taxonomy.id);
 
     if (index >= 0) {
-        state.categories.splice(index, 1);
+        state.taxonomies.splice(index, 1);
     }
 };
 
-// CATEGORY TERMS
+// TAXONOMY TERMS
 export const setSingleTerm = (state, term) => {
 
     let index = state.terms.findIndex(updatedTerm => updatedTerm.id === term.id);

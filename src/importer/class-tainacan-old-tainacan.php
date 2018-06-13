@@ -21,14 +21,14 @@ class Old_Tainacan extends Importer{
 		[
 			'name' => 'Create Collections',
 			'callback' => 'create_collections'
+        ],
+		[
+			'name' => 'Link relationship metadata',
+			'callback' => 'link_relationships'
 		],
 		[
 			'name' => 'Import Items',
 			'callback' => 'process_collections'
-		],
-		[
-			'name' => 'Link relationship metadata',
-			'callback' => 'close_taxonomies'
 		],
 		[
 			'name' => 'Finalize',
@@ -60,7 +60,7 @@ class Old_Tainacan extends Importer{
     }
 
     /**
-     * create taxonomies ( categories in tainacan old in first level )
+     * create taxonomies ( taxonomies in tainacan old in first level )
      * next create the terms
      * 
      */
@@ -69,8 +69,8 @@ class Old_Tainacan extends Importer{
         foreach ($this->get_taxonomies() as $taxonomy) {
 
             $tax = new Entities\Taxonomy();
-            $tax->set_name( $category->name );
-            $tax->set_description( $category->description );
+            $tax->set_name( $taxonomy->name );
+            $tax->set_description( $taxonomy->description );
             $tax->set_allow_insert('yes');
             $tax->set_status('publish');    
 
@@ -80,12 +80,12 @@ class Old_Tainacan extends Importer{
                 $this->add_transient('tax_' . $term->term_id . '_id', $tax->get_id());
                 $this->add_transient('tax_' . $term->term_id . '_name', $tax->get_name());
 
-                if (isset($category->children) && $tax) {
-                    $this->add_all_terms($tax, $category->children);
+                if (isset($taxonomy->children) && $tax) {
+                    $this->add_all_terms($tax, $taxonomy->children);
                 }
 
             } else {
-                $this->add_error_log('Error creating taxonomy ' . $category->name );
+                $this->add_error_log('Error creating taxonomy ' . $taxonomy->name );
                 $this->add_error_log($tax->get_errors());
                 $this->abort();
                 return false;
@@ -107,6 +107,21 @@ class Old_Tainacan extends Importer{
 
             if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
                $metadatum_id = $this->create_metadata( $metadata );  
+            }
+
+        }
+    }
+
+    /**
+     * create all collections and its metadata
+     * 
+     */
+    public function create_collections(){
+
+        foreach ($this->fetch_collections() as $collection) {
+
+            if ( isset($collection->post_title) && $collection->post_status === 'publish') {
+               //TODO: insert collection and its metadata
             }
 
         }
@@ -161,13 +176,26 @@ class Old_Tainacan extends Importer{
     * return all taxonomies from tainacan old
     * @return array
     */
+    protected function fetch_collections(){
+
+        $collections_link = $this->get_url() . $this->tainacan_api_address . "/collections";
+        $collections = wp_remote_get($collections_link);
+        $collections_array = $this->decode_request($collections);
+
+        return ($collections_array) ? $collections_array : [];
+    }
+
+    /**
+    * return all taxonomies from tainacan old
+    * @return array
+    */
     protected function get_taxonomies(){
 
-        $categories_link = $this->get_url() . $this->tainacan_api_address . "/categories";
-        $categories = wp_remote_get($categories_link);
-        $categories_array = $this->decode_request($categories);
+        $taxonomies_link = $this->get_url() . $this->tainacan_api_address . "/taxonomies";
+        $taxonomies = wp_remote_get($taxonomies_link);
+        $taxonomies_array = $this->decode_request($taxonomies);
 
-        return ($categories_array) ? $categories_array : [];
+        return ($taxonomies_array) ? $taxonomies_array : [];
     }
 
     /**
@@ -187,7 +215,7 @@ class Old_Tainacan extends Importer{
     * create recursively the terms from tainacan OLD
     *
     * @param Entities\Taxonomy $taxonomy_father
-    * @param array $children Array of categories from tainacan old 
+    * @param array $children Array of taxonomies from tainacan old 
     * @param (optional) int $term_father the ID of father
     *
     * @return array
@@ -207,6 +235,14 @@ class Old_Tainacan extends Importer{
 
             $inserted_term = $this->term_repo->insert($new_term);
 
+            if (is_wp_error($inserted_term)) {
+
+                $this->add_error_log($inserted_term->get_error_message());
+                $this->abort();
+                return false;
+    
+            }
+
             /*Insert old tainacan id*/
             $this->add_transient('term_' . $term->term_id . '_id', $inserted_term->get_id());
             $this->add_transient('term_' . $term->term_id . '_name', $inserted_term->get_name());
@@ -225,7 +261,75 @@ class Old_Tainacan extends Importer{
      * @return int $metadatum_id 
      */
     protected function create_metadata( $node_metadata_old, $collection_id = null){
-        //TODO: create process to insert different types of metadata
+        $newMetadatum = new Entities\Metadatum();
+        $meta = $node_metadata_old;
+
+        $name = $meta->name;
+        $type = $this->define_type($meta->type);
+
+        $newMetadatum->set_name($name);
+        $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
+        $newMetadatum->set_parent( (isset($collection_id)) ? $collection_id : 'default');
+
+        if(strcmp($type, "Taxonomy") === 0){
+            $taxonomy_id = $meta->metadata->taxonomy;
+
+            $related_taxonomy = $this->get_transient('tax_' . $taxonomy_id . '_id');
+            if ($related_taxonomy) {
+                $newMetadatum->set_metadata_type_options(['taxonomy_id' => $related_taxonomy]);
+            }
+
+        } else if(strcmp($type, "Relationship") === 0){
+            $relation_id = $meta->metadata->object_taxonomy_id;
+            $related_taxonomy = $this->get_transient('tax_' . $relation_id . '_id');
+            $related_name = $this->get_transient('tax_' . $relation_id . '_name');
+
+            if(isset($related_taxonomy)){
+                $newMetadatum->set_metadata_type_options(['collection_id' => $related_taxonomy]);
+            }
+
+        } else if(strcmp($type, "Compound") === 0){
+             
+            if( isset( $meta->metadata->children ) ){
+                foreach( $meta->metadata->children as $child ){
+                    $this->create_metadata( $node_metadata_old, $collection_id);
+                }
+            }
+
+        }
+
+        /*Properties of metadatum*/
+        if(isset($meta->metadata)){
+            if($meta->metadata->required == 1){
+                $newMetadatum->set_required(true);
+            }
+
+            if(!empty($meta->metadata->default_value)){
+                $newMetadatum->set_default_value($meta->metadata->default_value);
+            }
+
+            if(!empty($meta->metadata->cardinality)){
+
+                if($meta->metadata->cardinality > 1){
+                    $newMetadatum->set_multiple('yes');
+                }
+
+            }
+        }
+
+        if($newMetadatum->validate()){
+            $inserted_metadata = $this->meta_repo->insert( $newMetadatum );
+
+            if(isset( $related_name) )
+                $this->add_transient('relation_' . $inserted_metadata->get_id() . '_name', $related_name);
+
+            return $inserted_metadata->get_id();
+        } else{ 
+            $this->add_error_log('Error creating metadata ' . $name );
+            $this->add_error_log($newMetadatum->get_errors());
+            $this->abort();
+            return false;
+        } 
     }
     
     /**
@@ -246,7 +350,7 @@ class Old_Tainacan extends Importer{
         } else if(strcmp($type, 'item') === 0) {
             $type = "Relationship";
         } else if(strcmp($type, 'tree') === 0) {
-            $type = "Category";
+            $type = "Taxonomy";
         } else if(strcmp($type, 'compound') === 0) {
             $type = "Compound";
         } else {

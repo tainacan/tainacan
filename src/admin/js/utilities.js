@@ -64,7 +64,7 @@ I18NPlugin.install = function (Vue, options = {}) {
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
         },
         getFrom(entity, key) {
-            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
                 entity = 'taxonomies'
             if (tainacan_plugin.i18n['entities_labels'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
@@ -72,7 +72,7 @@ I18NPlugin.install = function (Vue, options = {}) {
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + key;
         },
         getHelperTitle(entity, key) {
-            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
                 entity = 'taxonomies'
             if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
@@ -82,7 +82,7 @@ I18NPlugin.install = function (Vue, options = {}) {
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n helper object.";
         },
         getHelperMessage(entity, key) {
-            if (entity == 'categories') // Temporary hack, while we decide this terminology...
+            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
                 entity = 'taxonomies'
             if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
@@ -105,40 +105,25 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'items_per_page': 12,
             'collections_per_page': 12,
             'taxonomies_per_page': 12,
-            'events_per_page': 12
+            'events_per_page': 12,
+            'order': 'DESC',
+            'order_by': { 
+                id: 'creation_date',
+                name: 'Creation Date'
+            }
         },
         init() {
-            wpApi.get('/users/me/')
-                .then( res => {
-                    if (res.data.meta['tainacan_prefs'] == undefined || res.data.meta['tainacan_prefs'] == '') {
-                        let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
-                        wpApi.post('/users/me/', qs.stringify(data))
-                        .then( updatedRes => {
-                            let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
-                            this.tainacanPrefs = prefs;
-                        });
-                    } else {
-                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                        this.tainacanPrefs = prefs;
-                    }
+            if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {
+                let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+                wpApi.post('/users/me/', qs.stringify(data))
+                .then( updatedRes => {
+                    let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
+                    this.tainacanPrefs = prefs;
                 });
-        },
-        fetch(key) {
-            return new Promise(( resolve, reject ) => {
-                wpApi.get('/users/me/')
-                .then( res => {
-                    let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                    this.tainacanPrefs[key] = prefs[key];
-                    if (prefs[key]) { 
-                        resolve( prefs[key] );  
-                    } else {
-                        reject('Key ' + key + 'does not exists in user preference.');
-                    }
-                })
-                .catch(error => {
-                    reject( { message: error, value: false});
-                });
-            }); 
+            } else {
+                let prefs = JSON.parse(tainacan_plugin.user_prefs);
+                this.tainacanPrefs = prefs;
+            }
         },
         get(key) {
             return this.tainacanPrefs[key];
@@ -162,7 +147,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 });
             }); 
         },
-        clear() {
+        clean() {
             let data = {'meta': {'tainacan_prefs': ''} };
             wpApi.post('/users/me/', qs.stringify(data))
         }
@@ -194,11 +179,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
         },
-        getCategoriesPath(query) {
+        getPath(query) {
             return '/taxonomies/?' + qs.stringify(query);
         },
-        getCategoryTermsPath(categoryId, query) {
-            return '/categoryId/' + categoryId + '/terms/?' + qs.stringify(query);
+        getTaxonomyTermsPath(taxonomyId, query) {
+            return '/taxonomyId/' + taxonomyId + '/terms/?' + qs.stringify(query);
         },
         getFiltersPath(query) {
             return '/filters/?' + qs.stringify(query);
@@ -219,11 +204,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getFilterPath(id) {
             return '/filters/' + id;
         },
-        getCategoryPath(id) {
+        getTaxonomyPath(id) {
             return '/taxonomies/' + id;
         },
-        getTermPath(categoryId, termId) {
-            return '/taxonomies/' + categoryId + '/terms/' + termId;
+        getTermPath(taxonomyId, termId) {
+            return '/taxonomies/' + taxonomyId + '/terms/' + termId;
         },
         getEventPath(id) {
             return '/events/' + id;
@@ -250,11 +235,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getNewFilterPath() {
             return '/filters/new';
         },
-        getNewCategoryPath() {
+        getNewTaxonomyPath() {
             return '/taxonomies/new';
         },
-        getNewTermPath(categoryId) {
-            return '/taxonomies/' + categoryId + '/terms/new';
+        getNewTermPath(taxonomyId) {
+            return '/taxonomies/' + taxonomyId + '/terms/new';
         },
         getNewEventPath() {
             return '/events/new';
@@ -269,11 +254,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getFilterEditPath(id) {
             return '/filters/' + id + '/edit';
         },
-        getCategoryEditPath(id) {
+        getTaxonomyEditPath(id) {
             return '/taxonomies/' + id + '/edit';
         },
-        getTermEditPath(categoryId, termId) {
-            return '/taxonomies/' + categoryId + '/terms/' + termId + '/edit';
+        getTermEditPath(taxonomyId, termId) {
+            return '/taxonomies/' + taxonomyId + '/terms/' + termId + '/edit';
         },
         getEventEditPath(id) {
             return '/events/' + id + '/edit';

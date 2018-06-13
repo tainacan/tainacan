@@ -440,10 +440,10 @@ class Metadata extends Repository {
      * @see \Tainacan\Repositories\Repository::insert()
      */
     public function insert($metadatum){
-    	$this->pre_update_category_metadatum($metadatum);
+    	$this->pre_update_taxonomy_metadatum($metadatum);
         $new_metadatum = parent::insert($metadatum);
 
-        $this->update_category_metadatum($new_metadatum);
+        $this->update_taxonomy_metadatum($new_metadatum);
     	return $new_metadatum;
     }
 
@@ -459,7 +459,7 @@ class Metadata extends Repository {
     }
 
     public function delete($metadatum_id){
-		$this->delete_category_metadatum($metadatum_id);
+		$this->delete_taxonomy_metadatum($metadatum_id);
 
 		$deleted =  new Entities\Metadatum( wp_trash_post( $metadatum_id ) );
 
@@ -815,10 +815,10 @@ class Metadata extends Repository {
 	}
 	
 	/**
-	 * Stores the value of the taxonomy_id option to use on update_category_metadatum method.
+	 * Stores the value of the taxonomy_id option to use on update_taxonomy_metadatum method.
 	 *
 	 */
-	private function pre_update_category_metadatum($metadatum) {
+	private function pre_update_taxonomy_metadatum($metadatum) {
 		$metadata_type = $metadatum->get_metadata_type_object();
 		$current_tax = '';
 		if ($metadata_type->get_primitive_type() == 'term') {
@@ -831,16 +831,16 @@ class Metadata extends Repository {
 	}
 
 	/**
-	 * Triggers hooks when saving a Category Metadatum, indicating wich taxonomy was added or removed from a collection.
+	 * Triggers hooks when saving a Taxonomy Metadatum, indicating wich taxonomy was added or removed from a collection.
 	 *
 	 * This is used by Taxonomies repository to update the collections_ids property of the taxonomy as
-	 * a metadatum type category is inserted or removed
+	 * a metadatum type taxonomy is inserted or removed
 	 *
 	 * @param  [type] $metadatum [description]
 	 *
 	 * @return void [type]        [description]
 	 */
-	private function update_category_metadatum($metadatum) {
+	private function update_taxonomy_metadatum($metadatum) {
 		$metadata_type = $metadatum->get_metadata_type_object();
 		$new_tax = '';
 		
@@ -862,7 +862,7 @@ class Metadata extends Repository {
 		}
 	}
 	
-	private function delete_category_metadatum($metadatum_id) {
+	private function delete_taxonomy_metadatum($metadatum_id) {
 		$metadatum = $this->fetch($metadatum_id);
 		$metadata_type = $metadatum->get_metadata_type_object();
 

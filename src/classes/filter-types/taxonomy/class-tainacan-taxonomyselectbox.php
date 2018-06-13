@@ -6,11 +6,11 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanMetadatumType
  */
-class CategoryCheckbox extends Filter_Type {
+class TaxonomySelectbox extends Filter_Type {
 
     function __construct(){
         $this->set_supported_types(['term']);
-        $this->set_component('tainacan-filter-category-checkbox');
+        $this->set_component('tainacan-filter-taxonomy-selectbox');
     }
 
     /**
@@ -19,9 +19,9 @@ class CategoryCheckbox extends Filter_Type {
      */
 
     public function render( $filter ){
-        return '<tainacan-filter-category-checkbox name="'.$filter->get_name().'"
+        return '<tainacan-filter-taxonomy-selectbox name="'.$filter->get_name().'"
                                         filter_type="'.$filter->get_metadatum()->get_metadata_type().'"
                                         collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-checkbox>';
+                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-selectbox>';
     }
 }

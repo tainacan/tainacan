@@ -7,10 +7,10 @@
                     v-if="$userCaps.hasCapability('edit_tainacan-taxonomies')">
                 <div class="header-item">
                     <router-link
-                            id="button-create-category" 
+                            id="button-create-taxonomy" 
                             tag="button" 
                             class="button is-secondary"
-                            :to="{ path: $routerHelper.getNewCategoryPath() }">
+                            :to="{ path: $routerHelper.getNewTaxonomyPath() }">
                         {{ $i18n.getFrom('taxonomies', 'new_item') }}
                     </router-link>
                 </div>
@@ -31,15 +31,15 @@
                     </ul>
                 </div>
                 <div>
-                    <categories-list
+                    <taxonomies-list
                             :is-loading="isLoading"
-                            :total-categories="totalCategories"
+                            :total-taxonomies="total"
                             :page="page"
-                            :categories-per-page="taxonomiesPerPage"
-                            :categories="categories"/>
+                            :taxonomies-per-page="taxonomiesPerPage"
+                            :taxonomies="taxonomies"/>
                     
                     <!-- Empty state image -->
-                    <div v-if="totalCategories <= 0 && !isLoading">
+                    <div v-if="total <= 0 && !isLoading">
                         <section class="section">
                             <div class="content has-text-grey has-text-centered">
                                 <p>
@@ -47,16 +47,16 @@
                                             icon="inbox"
                                             size="is-large"/>
                                 </p>
-                                <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_category_created') }}</p>
-                                <p v-if="status == 'draft'">{{ $i18n.get('info_no_category_draft') }}</p>
-                                <p v-if="status == 'trash'">{{ $i18n.get('info_no_category_trash') }}</p>
+                                <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
+                                <p v-if="status == 'draft'">{{ $i18n.get('info_no_taxonomy_draft') }}</p>
+                                <p v-if="status == 'trash'">{{ $i18n.get('info_no_taxonomy_trash') }}</p>
                                 <router-link
                                         v-if="status == undefined || status == ''"
-                                        id="button-create-category"
+                                        id="button-create-taxonomy"
                                         tag="button"
                                         class="button is-primary"
-                                        :to="{ path: $routerHelper.getNewCategoryPath() }">
-                                    {{ $i18n.getFrom('categories', 'new_item') }}
+                                        :to="{ path: $routerHelper.getNewTaxonomyPath() }">
+                                    {{ $i18n.getFrom('taxonomies', 'new_item') }}
                                 </router-link>
                             </div>
                         </section>
@@ -64,24 +64,24 @@
                     <!-- Footer -->
                     <div 
                             class="pagination-area" 
-                            v-if="totalCategories > 0">
+                            v-if="total > 0">
                         <div class="shown-items">
                             {{
-                                $i18n.get('info_showing_categories') +
+                                $i18n.get('info_showing_taxonomies') +
                                 (taxonomiesPerPage * (page - 1) + 1) +
                                 $i18n.get('info_to') +
-                                getLastCategoryNumber() +
-                                $i18n.get('info_of') + totalCategories + '.'
+                                getLastTaxonomyNumber() +
+                                $i18n.get('info_of') + total + '.'
                             }}
                         </div>
                         <div class="items-per-page">
                             <b-field 
                                     horizontal 
-                                    :label="$i18n.get('label_categories_per_page')">
+                                    :label="$i18n.get('label_taxonomies_per_page')">
                                 <b-select
                                         :value="taxonomiesPerPage"
-                                        @input="onChangeCategoriesPerPage"
-                                        :disabled="categories.length <= 0">
+                                        @input="onChangePerPage"
+                                        :disabled="taxonomies.length <= 0">
                                     <option value="12">12</option>
                                     <option value="24">24</option>
                                     <option value="48">48</option>
@@ -92,7 +92,7 @@
                         <div class="pagination">
                             <b-pagination
                                     @change="onPageChange"
-                                    :total="totalCategories"
+                                    :total="total"
                                     :current.sync="page"
                                     order="is-centered"
                                     size="is-small"
@@ -106,36 +106,36 @@
 </template>
 
 <script>
-    import CategoriesList from "../../components/lists/categories-list.vue";
+    import List from "../../components/lists/taxonomies-list.vue";
     import { mapActions, mapGetters } from 'vuex';
     //import moment from 'moment'
 
     export default {
-        name: 'CategoriesPage',
+        name: 'Page',
         data(){
             return {
                 isLoading: false,
-                totalCategories: 0,
+                total: 0,
                 page: 1,
                 taxonomiesPerPage: 12,
                 status: ''
             }
         },
         components: {
-            CategoriesList
+            List
         },
         methods: {
-            ...mapActions('category', [
-                'fetchCategories',
+            ...mapActions('taxonomy', [
+                'fetch',
             ]),
-            ...mapGetters('category', [
-                'getCategories'
+            ...mapGetters('taxonomy', [
+                'get'
             ]),
             onChangeTab(status) {
                 this.status = status;
-                this.loadCategories();
+                this.load();
             },
-            onChangeCategoriesPerPage(value) {
+            onChangePerPage(value) {
                this.taxonomiesPerPage = value;
                 this.$userPrefs.set('taxonomies_per_page', value)
                 .then((newValue) => {
@@ -144,48 +144,46 @@
                 .catch(() => {
                     this.$console.log("Error settings user prefs for taxonomies per page")
                 });
-                this.loadCategories();
+                this.load();
             },
             onPageChange(page) {
                 this.page = page;
-                this.loadCategories();
+                this.load();
             },
-            loadCategories() {
+            load() {
                 this.isLoading = true;
 
-                this.fetchCategories({ 'page': this.page, 'taxonomiesPerPage': this.taxonomiesPerPage, 'status': this.status })
+                this.fetch({ 'page': this.page, 'taxonomiesPerPage': this.taxonomiesPerPage, 'status': this.status })
                     .then((res) => {
                         this.isLoading = false;
-                        this.totalCategories = res.total;
+                        this.total = res.total;
                     })
                     .catch(() => {
                         this.isLoading = false;
                     });
             },
-            getLastCategoryNumber() {
+            getLastTaxonomyNumber() {
                 let last = (Number(this.taxonomiesPerPage * (this.page - 1)) + Number(this.taxonomiesPerPage));
-                return last > this.totalCategories ? this.totalCategories : last;
+                return last > this.total ? this.total : last;
             }
         },
         computed: {
-            categories(){
-                return this.getCategories();
+            taxonomies(){
+                return this.get();
             }
         },
         created() {
             this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
         },
         mounted(){
-            this.$userPrefs.fetch('taxonomies_per_page')
-            .then((value) => {
-                if (this.taxonomiesPerPage != value) {
-                    this.taxonomiesPerPage = value;
-                    this.loadCategories;
-                }
-            })
-            .catch(() => {
+            if (this.taxonomiesPerPage != this.$userPrefs.get('taxonomies_per_page'))
+                this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
+
+            if (!this.taxonomiesPerPage) {
+                this.taxonomiesPerPage = 12;
                 this.$userPrefs.set('taxonomies_per_page', 12);
-            });
+            }
+            
             this.loadCategories();
         }
     }

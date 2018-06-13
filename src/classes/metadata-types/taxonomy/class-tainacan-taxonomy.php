@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanMetadatumType
  */
-class Category extends Metadata_Type {
+class Taxonomy extends Metadata_Type {
 
     function __construct(){
         // call metadatum type constructor
@@ -22,8 +22,8 @@ class Category extends Metadata_Type {
             'allow_new_terms' => false
         ]);
 
-        $this->set_form_component('tainacan-form-category');
-        $this->set_component('tainacan-category');
+        $this->set_form_component('tainacan-form-taxonomy');
+        $this->set_component('tainacan-taxonomy');
     }
 
     /**
@@ -71,20 +71,20 @@ class Category extends Metadata_Type {
 		
 		$Tainacan_Metadata = Metadata::get_instance();
 		
-		$category_metadata = $Tainacan_Metadata->fetch([
+		$taxonomy_metadata = $Tainacan_Metadata->fetch([
 			'collection_id' => $metadatum->get_collection_id(),
-			'metadata_type' => 'Tainacan\\Metadata_Types\\Category'
+			'metadata_type' => 'Tainacan\\Metadata_Types\\Taxonomy'
 		], 'OBJECT');
 		
-		$category_metadata = array_map(function ($metadatum_map) {
+		$taxonomy_metadata = array_map(function ($metadatum_map) {
 			$fto = $metadatum_map->get_metadata_type_object();
 			return [ $metadatum_map->get_id() => $fto->get_option('taxonomy_id') ];
-		}, $category_metadata);
+		}, $taxonomy_metadata);
 
-		if( is_array( $category_metadata ) ){
-            foreach ($category_metadata as $metadatum_id => $category_metadatum) {
-                if ( is_array( $category_metadatum ) && key($category_metadatum) != $metadatum->get_id()
-                    && in_array($this->get_option('taxonomy_id'), $category_metadatum)) {
+		if( is_array( $taxonomy_metadata ) ){
+            foreach ($taxonomy_metadata as $metadatum_id => $taxonomy_metadatum) {
+                if ( is_array( $taxonomy_metadatum ) && key($taxonomy_metadatum) != $metadatum->get_id()
+                    && in_array($this->get_option('taxonomy_id'), $taxonomy_metadatum)) {
                     return ['taxonomy_id' => __('You can not have 2 taxonomy metadata using the same taxonomy in a collection.', 'tainacan')];
                 }
 		    }
@@ -95,7 +95,7 @@ class Category extends Metadata_Type {
 	}
 
 	/**
-	 * Validate item based on metadatum type categories options
+	 * Validate item based on metadatum type taxonomies options
 	 *
 	 * @param Item_Metadata_Entity $item_metadata
 	 *

@@ -156,7 +156,7 @@ class Test_Importer extends Importer {
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name('Colora');
 		$metadatum->set_collection($col1);
-		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $this->get_transient('tax_1_id'),
 			'allow_new_terms' => true
@@ -177,7 +177,7 @@ class Test_Importer extends Importer {
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name('Qualitya');
 		$metadatum->set_collection($col1);
-		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $this->get_transient('tax_2_id'),
 			'allow_new_terms' => true

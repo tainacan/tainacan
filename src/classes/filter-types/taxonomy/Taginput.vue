@@ -88,7 +88,7 @@
                 axios.get(endpoint)
                     .then( res => {
                         let metadatum = res.data;
-                        promise = this.getValuesCategory( metadatum.metadata_type_options.taxonomy_id, q );
+                        promise = this.getValuesTaxonomy( metadatum.metadata_type_options.taxonomy_id, q );
                         this.isLoading = true;
                         promise.then( () => {
                             this.isLoading = false;
@@ -102,7 +102,7 @@
                         this.$console.log(error);
                     });
             },
-            getValuesCategory( taxonomy, query ){
+            getValuesTaxonomy( taxonomy, query ){
                 return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
                     for (let term of res.data) {
                         if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){

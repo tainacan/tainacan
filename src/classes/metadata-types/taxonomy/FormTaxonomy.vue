@@ -7,10 +7,10 @@
                 :type="taxonomyType"
                 :message="taxonomyMessage">
             <label class="label is-inline">
-                {{ $i18n.get('label_select_category') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.get('label_select_taxonomy') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
                 <help-button
-                        :title="$i18n.getHelperTitle('tainacan-category', 'taxonomy_id')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'taxonomy_id')"/>
+                        :title="$i18n.getHelperTitle('tainacan-taxonomy', 'taxonomy_id')"
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'taxonomy_id')"/>
             </label>
             <b-select
                     name="field_type_options[taxonomy_id]"
@@ -31,15 +31,15 @@
 
         <b-field :addons="false">
             <label class="label">
-                {{ $i18n.get('label_select_category_input_type') }}
+                {{ $i18n.get('label_select_taxonomy_input_type') }}
                 <help-button
-                        :title="$i18n.getHelperTitle('tainacan-category', 'input_type')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'input_type')"/>
+                        :title="$i18n.getHelperTitle('tainacan-taxonomy', 'input_type')"
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'input_type')"/>
             </label>
             <b-select
                     v-if="listInputType"
                     name="metadata_type_options[component_type]"
-                    placeholder="Select the input type for the category metadatum"
+                    placeholder="Select the input type for the taxonomy metadatum"
                     @input="emitValues()"
                     v-model="input_type">
                 <option
@@ -52,7 +52,7 @@
 
             <b-select
                     name="metadata_type_options[input_type]"
-                    placeholder="Select the input type for the category metadatum"
+                    placeholder="Select the input type for the taxonomy metadatum"
                     v-model="input_type"
                     @input="emitValues()"
                     v-else>
@@ -69,10 +69,10 @@
 
         <b-field :addons="false">
             <label class="label">
-                {{ $i18n.get('label_category_allow_new_terms') }}
+                {{ $i18n.get('label_taxonomy_allow_new_terms') }}
                 <help-button
-                        :title="$i18n.getHelperTitle('tainacan-category', 'allow_new_terms')"
-                        :message="$i18n.getHelperMessage('tainacan-category', 'allow_new_terms')"/>
+                        :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
             </label>
             <div class="block">
                 <b-checkbox 
@@ -110,10 +110,10 @@
                 this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
             }
 
-            this.single_types['tainacan-category-radio'] = 'Radio';
-            this.single_types['tainacan-category-selectbox'] = 'Selectbox';
-            this.multiple_types['tainacan-category-tag-input'] = 'Tag Input';
-            this.multiple_types['tainacan-category-checkbox'] = 'Checkbox';
+            this.single_types['tainacan-taxonomy-radio'] = 'Radio';
+            this.single_types['tainacan-taxonomy-selectbox'] = 'Selectbox';
+            this.multiple_types['tainacan-taxonomy-tag-input'] = 'Tag Input';
+            this.multiple_types['tainacan-taxonomy-checkbox'] = 'Checkbox';
 
             this.isReady = true;
         },
@@ -122,12 +122,12 @@
                 if( this.metadatum && this.metadatum.multiple === 'no' ){
                     let types = Object.keys( this.single_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-category-radio' );
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-radio' );
                     return true;
                 } else {
                     let types = Object.keys( this.multiple_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-category-checkbox' );
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-checkbox' );
                     return false;
                 }
             },
@@ -147,7 +147,7 @@
                 taxonomy_id: '',
                 loading: true,
                 allow_new_terms: 'yes',
-                input_type: 'tainacan-category-radio',
+                input_type: 'tainacan-taxonomy-radio',
                 multiple_types: {},
                 single_types: {},
                 taxonomyType:'',

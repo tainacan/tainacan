@@ -5,7 +5,7 @@
                     :id="id"
                     v-model="selected"
                     @input="emitChange()"
-                    :placeholder="$i18n.get('label_select_category')" 
+                    :placeholder="$i18n.get('label_select_taxonomy')" 
                     expanded>
                 <option
                         v-for="(option, index) in options"

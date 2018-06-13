@@ -5,7 +5,7 @@
             <b-tabs v-model="activeTab">    
                 <b-tab-item :label="$i18n.get('taxonomy')">
                     <form 
-                            v-if="category != null && category != undefined" 
+                            v-if="taxonomy != null && taxonomy != undefined" 
                             class="tainacan-form" 
                             label-width="120px">
 
@@ -16,8 +16,8 @@
                                 :type="editFormErrors['name'] != undefined ? 'is-danger' : ''"
                                 :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
                             <help-button 
-                                    :title="$i18n.getHelperTitle('categories', 'name')" 
-                                    :message="$i18n.getHelperMessage('categories', 'name')"/>
+                                    :title="$i18n.getHelperTitle('taxonomies', 'name')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'name')"/>
                             <b-input
                                     id="tainacan-text-name"
                                     v-model="form.name"
@@ -32,8 +32,8 @@
                                 :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
                                 :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                             <help-button 
-                                    :title="$i18n.getHelperTitle('categories', 'description')" 
-                                    :message="$i18n.getHelperMessage('categories', 'description')"/>
+                                    :title="$i18n.getHelperTitle('taxonomies', 'description')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'description')"/>
                             <b-input
                                     id="tainacan-text-description"
                                     type="textarea"
@@ -48,8 +48,8 @@
                                 :type="editFormErrors['status'] != undefined ? 'is-danger' : ''"
                                 :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
                             <help-button 
-                                    :title="$i18n.getHelperTitle('categories', 'status')" 
-                                    :message="$i18n.getHelperMessage('categories', 'status')"/>
+                                    :title="$i18n.getHelperTitle('taxonomies', 'status')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'status')"/>
                             <b-select
                                     id="tainacan-select-status"
                                     v-model="form.status"
@@ -71,8 +71,8 @@
                                 :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
                                 :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
                             <help-button 
-                                    :title="$i18n.getHelperTitle('categories', 'slug')" 
-                                    :message="$i18n.getHelperMessage('categories', 'slug')"/>
+                                    :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'slug')"/>
                             <b-icon :class="{'is-loading': isUpdatingSlug}"/>
                             <b-input
                                     @input="updateSlug()"
@@ -85,10 +85,10 @@
                         <!-- Allow Insert -->
                         <b-field 
                                 :addons="false"
-                                :label="$i18n.get('label_category_allow_new_terms')">
+                                :label="$i18n.get('label_taxonomy_allow_new_terms')">
                             <help-button 
-                                :title="$i18n.getHelperTitle('categories', 'allow_insert')" 
-                                :message="$i18n.getHelperMessage('categories', 'allow_insert')"/>
+                                :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
+                                :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"/>
                             <div class="block" >
                                 <b-checkbox
                                         v-model="form.allowInsert"
@@ -103,14 +103,14 @@
                         <div class="field is-grouped form-submit">
                             <div class="control">
                                 <button
-                                        id="button-cancel-category-creation"
+                                        id="button-cancel-taxonomy-creation"
                                         class="button is-outlined"
                                         type="button"
                                         @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                             </div>
                             <div class="control">
                                 <button
-                                        id="button-submit-category-creation"
+                                        id="button-submit-taxonomy-creation"
                                         @click.prevent="onSubmit"
                                         class="button is-success">{{ $i18n.get('save') }}</button>
                             </div>
@@ -121,11 +121,11 @@
                 
                 <b-tab-item :label="$i18n.get('terms')">
                     <!-- Terms List -->    
-                    <terms-list :category-id="categoryId"/>       
+                    <terms-list :taxonomy-id="taxonomyId"/>       
                 </b-tab-item>
 
                 <b-loading 
-                        :active.sync="isLoadingCategory" 
+                        :active.sync="isLoadingTaxonomy" 
                         :can-cancel="false"/>
             </b-tabs>
         </div>
@@ -140,14 +140,14 @@
     import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
-        name: 'CategoryEditionForm',
+        name: 'TaxonomyEditionForm',
         mixins: [ wpAjax ],
         data(){
             return {
-                categoryId: String,
+                taxonomyId: String,
                 activeTab: 0,
-                category: null,
-                isLoadingCategory: false,
+                taxonomy: null,
+                isLoadingTaxonomy: false,
                 isUpdatingSlug: false,
                 form: {
                     name: String,
@@ -180,15 +180,15 @@
         beforeRouteLeave( to, from, next ) {
             let formNotSaved = false;
 
-            if (this.category.name != this.form.name)
+            if (this.taxonomy.name != this.form.name)
                 formNotSaved = true;
-            if (this.category.description != this.form.description)
+            if (this.taxonomy.description != this.form.description)
                 formNotSaved = true;
-            if (this.category.slug != this.form.slug)
+            if (this.taxonomy.slug != this.form.slug)
                 formNotSaved = true;
-            if (this.category.allow_insert != this.form.allowInsert)
+            if (this.taxonomy.allow_insert != this.form.allowInsert)
                 formNotSaved = true;
-            if (this.category.status != this.form.status)
+            if (this.taxonomy.status != this.form.status)
                 formNotSaved = true;
 
             if (formNotSaved) {
@@ -198,7 +198,7 @@
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_category_not_saved'),
+                        message: this.$i18n.get('info_warning_taxonomy_not_saved'),
                         onConfirm: () => {
                             next();
                         }
@@ -209,21 +209,21 @@
             }  
         },
         methods: {
-            ...mapActions('category', [
-                'createCategory',
-                'updateCategory',
-                'fetchCategory',
+            ...mapActions('taxonomy', [
+                'createTaxonomy',
+                'updateTaxonomy',
+                'fetchTaxonomy',
                 'fetchOnlySlug'
             ]),
-            ...mapGetters('category',[
-                'getCategory',
+            ...mapGetters('taxonomy',[
+                'getTaxonomy',
             ]),
             onSubmit() {
 
-                this.isLoadingCategory = true;
+                this.isLoadingTaxonomy = true;
 
                 let data = {
-                    categoryId: this.categoryId,
+                    taxonomyId: this.taxonomyId,
                     name: this.form.name,
                     description: this.form.description,
                     slug: this.form.slug,
@@ -231,23 +231,23 @@
                     allowInsert: this.form.allowInsert
                 };
 
-                this.updateCategory(data)
-                    .then(updatedCategory => {
+                this.updateTaxonomy(data)
+                    .then(updatedTaxonomy => {
 
-                        this.category = updatedCategory;
+                        this.taxonomy = updatedTaxonomy;
 
                         // Fill this.form data with current data.
-                        this.form.name = this.category.name;
-                        this.form.slug = this.category.slug;
-                        this.form.description = this.category.description;
-                        this.form.status = this.category.status;
-                        this.form.allowInsert = this.category.allow_insert;
+                        this.form.name = this.taxonomy.name;
+                        this.form.slug = this.taxonomy.slug;
+                        this.form.description = this.taxonomy.description;
+                        this.form.status = this.taxonomy.status;
+                        this.form.allowInsert = this.taxonomy.allow_insert;
 
-                        this.isLoadingCategory = false;
+                        this.isLoadingTaxonomy = false;
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
 
-                        this.$router.push(this.$routerHelper.getCategoriesPath());
+                        this.$router.push(this.$routerHelper.getPath());
                     })
                     .catch((errors) => {
                         for (let error of errors.errors) {
@@ -257,7 +257,7 @@
                         }
                         this.formErrorMessage = errors.error_message;
 
-                        this.isLoadingCategory = false;
+                        this.isLoadingTaxonomy = false;
                     });
             },
             updateSlug(){
@@ -267,7 +267,7 @@
 
                 this.isUpdatingSlug = true;
 
-                this.getSamplePermalink(this.categoryId, this.form.name, this.form.slug)
+                this.getSamplePermalink(this.taxonomyId, this.form.name, this.form.slug)
                     .then(samplePermalink => {
 
                         let promise = htmlToJSON.parse(samplePermalink, {
@@ -292,11 +292,11 @@
                     });
 
             },
-            createNewCategory() {
-                // Puts loading on Draft Category creation
-                this.isLoadingCategory = true;
+            createNewTaxonomy() {
+                // Puts loading on Draft Taxonomy creation
+                this.isLoadingTaxonomy = true;
 
-                // Creates draft Category
+                // Creates draft Taxonomy
                 let data = {
                     name: '',
                     description: '',
@@ -305,22 +305,22 @@
                     allowInsert: '',
                 };
 
-                this.createCategory(data)
+                this.createTaxonomy(data)
                     .then(res => {
 
-                        this.categoryId = res.id;
-                        this.category = res;
+                        this.taxonomyId = res.id;
+                        this.taxonomy = res;
 
                         // Fill this.form data with current data.
-                        this.form.name = this.category.name;
-                        this.form.description = this.category.description;
-                        this.form.slug = this.category.slug;
-                        this.form.allowInsert = this.category.allow_insert;
+                        this.form.name = this.taxonomy.name;
+                        this.form.description = this.taxonomy.description;
+                        this.form.slug = this.taxonomy.slug;
+                        this.form.allowInsert = this.taxonomy.allow_insert;
 
                         // Pre-fill status with publish to incentivate it
                         this.form.status = 'publish';
 
-                        this.isLoadingCategory = false;
+                        this.isLoadingTaxonomy = false;
 
                     })
                     .catch(error => this.$console.error(error));
@@ -329,7 +329,7 @@
                 this.editFormErrors[attribute] = undefined;
             },
             cancelBack(){
-                this.$router.push(this.$routerHelper.getCategoriesPath());
+                this.$router.push(this.$routerHelper.getPath());
             },
             labelNewTerms(){
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
@@ -338,26 +338,26 @@
         created(){
 
             if (this.$route.fullPath.split("/").pop() === "new") {
-                this.createNewCategory();
+                this.createNewTaxonomy();
             } else if (this.$route.fullPath.split("/").pop() === "edit" || this.$route.fullPath.split("/").pop() === "terms") {
 
-                this.isLoadingCategory = true;
+                this.isLoadingTaxonomy = true;
 
-                // Obtains current category ID from URL
+                // Obtains current taxonomy ID from URL
                 this.pathArray = this.$route.fullPath.split("/").reverse();
-                this.categoryId = this.pathArray[1];
+                this.taxonomyId = this.pathArray[1];
 
-                this.fetchCategory(this.categoryId).then(res => {
-                    this.category = res.category;
+                this.fetchTaxonomy(this.taxonomyId).then(res => {
+                    this.taxonomy = res.taxonomy;
 
                     // Fill this.form data with current data.
-                    this.form.name = this.category.name;
-                    this.form.description = this.category.description;
-                    this.form.slug = this.category.slug;
-                    this.form.status = this.category.status;
-                    this.form.allowInsert = this.category.allow_insert;
+                    this.form.name = this.taxonomy.name;
+                    this.form.description = this.taxonomy.description;
+                    this.form.slug = this.taxonomy.slug;
+                    this.form.status = this.taxonomy.status;
+                    this.form.allowInsert = this.taxonomy.allow_insert;
 
-                    this.isLoadingCategory = false;
+                    this.isLoadingTaxonomy = false;
                 });
 
                 if (this.$route.fullPath.split("/").pop() === "terms") 

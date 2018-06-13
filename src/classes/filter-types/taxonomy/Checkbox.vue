@@ -1,19 +1,16 @@
 <template>
     <div class="block">
-        <b-select
-                :id = "id"
-                :loading = "isLoading"
-                v-model = "selected"
-                @input = "onSelect()"
-                size="is-small"
-                expanded>
-            <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
-            <option
-                    v-for=" (option, index) in options"
-                    :key="index"
-                    :label="option.name"
-                    :value="option.id">{{ option.name }}</option>
-        </b-select>
+        <div
+                v-for="(option,index) in getOptions(0)"
+                :key="index"
+                :value="index"
+                class="control">
+            <b-checkbox
+                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
+                    v-model="selected"
+                    :native-value="option.id"
+            >{{ option.name }}</b-checkbox>
+        </div>
     </div>
 </template>
 
@@ -31,9 +28,10 @@
             return {
                 isLoading: false,
                 options: [],
+                type: '',
                 collection: '',
                 metadatum: '',
-                selected: '',
+                selected: [],
                 taxonomy: ''
             }
         },
@@ -56,16 +54,16 @@
             }
         },
         methods: {
-            getValuesCategory( taxonomy ){
-                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0' ).then( res => {
+            getValuesTaxonomy( taxonomy ){
+                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
                     for (let item of res.data) {
                         this.taxonomy = item.taxonomy;
                         this.options.push(item);
                     }
                 })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
+                .catch(error => {
+                    this.$console.log(error);
+                });
             },
             loadOptions(){
                 let promise = null;
@@ -74,11 +72,11 @@
                 axios.get('/collection/'+ this.collection +'/metadata/' + this.metadatum)
                     .then( res => {
                         let metadatum = res.data;
-                        promise = this.getValuesCategory( metadatum.metadata_type_options.taxonomy_id );
+                        promise = this.getValuesTaxonomy( metadatum.metadata_type_options.taxonomy_id );
 
                         promise.then( () => {
                             this.isLoading = false;
-                            this.selectedValues();
+                            this.selectedValues()
                         })
                             .catch( error => {
                                 this.$console.log('error select', error );
@@ -119,8 +117,8 @@
             onSelect(){
                 this.$emit('input', {
                     filter: 'selectbox',
-                    compare: 'IN',
                     taxonomy: this.taxonomy,
+                    compare: 'IN',
                     metadatum_id: this.metadatum,
                     collection_id: this.collection,
                     terms: this.selected

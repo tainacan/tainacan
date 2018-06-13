@@ -121,21 +121,21 @@
         },
         props: {
             editForm: Object,
-            categoryId: ''
+            taxonomyId: ''
         },
         methods: {
-            ...mapActions('category', [
+            ...mapActions('taxonomy', [
                 'sendTerm',
                 'updateTerm',
             ]),
-            ...mapGetters('category', [
+            ...mapGetters('taxonomy', [
                 'getTerms'
             ]),
             saveEdition(term) {
 
                 if (term.id === 'new') {
                     this.sendTerm({
-                        categoryId: this.categoryId,
+                        taxonomyId: this.taxonomyId,
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.editForm.parent,
@@ -157,7 +157,7 @@
 
                 } else {
                     this.updateTerm({
-                        categoryId: this.categoryId,
+                        taxonomyId: this.taxonomyId,
                         termId: this.editForm.id,
                         name: this.editForm.name,
                         description: this.editForm.description,

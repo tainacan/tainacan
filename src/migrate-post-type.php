@@ -85,7 +85,7 @@ function tainacan_migrate_post_type_field_to_metadatum(){
 
 
     $wpdb->update($wpdb->postmeta,
-        ['meta_value' => 'Tainacan\Metadata_Types\Category'],
+        ['meta_value' => 'Tainacan\Metadata_Types\Taxonomy'],
         ['meta_value' => 'Tainacan\Field_Types\Category'],
         '%s', '%s');
 
@@ -96,57 +96,75 @@ function tainacan_migrate_post_type_field_to_metadatum(){
         '%s', '%s');
 		
 	
-		$wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Core_Description'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Core_Description'],
-	        '%s', '%s');
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Core_Description'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Core_Description'],
+	    '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Core_Title'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Core_Title'],
-	        '%s', '%s');
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Core_Title'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Core_Title'],
+	    '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Text'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Text'],
-	        '%s', '%s');
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Text'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Text'],
+	    '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Textarea'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Textarea'],
-	        '%s', '%s');
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Textarea'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Textarea'],
+	    '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Date'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Date'],
-	        '%s', '%s');
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Date'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Date'],
+	    '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Numeric'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Numeric'],
-	        '%s', '%s');
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Numeric'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Numeric'],
+	    '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Selectbox'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Selectbox'],
-	        '%s', '%s');
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Selectbox'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Selectbox'],
+	    '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Relationship'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Relationship'],
-	        '%s', '%s');
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Relationship'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Relationship'],
+        '%s', '%s');
+        
+    $wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Compound'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Compound'],
+        '%s', '%s');
 
+	$wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Taxonomy'],
+	    ['meta_value' => 'Tainacan\Metadatum_Types\Category'],
+        '%s', '%s');
+        
+    $wpdb->update($wpdb->postmeta,
+	    ['meta_value' => 'Tainacan\Metadata_Types\Taxonomy'],
+	    ['meta_value' => 'Tainacan\Metadata_Types\Category'],
+	    '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Category'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Category'],
-	        '%s', '%s');
+    $wpdb->update($wpdb->postmeta,
+        ['meta_value' => 'Tainacan\Filter_Types\TaxonomyTaginput'],
+        ['meta_value' => 'Tainacan\Filter_Types\CategoryTaginput'],
+        '%s', '%s');
 
+    $wpdb->update($wpdb->postmeta,
+        ['meta_value' => 'Tainacan\Filter_Types\TaxonomyCheckbox'],
+        ['meta_value' => 'Tainacan\Filter_Types\CategoryCheckbox'],
+        '%s', '%s');
 
-	    $wpdb->update($wpdb->postmeta,
-	        ['meta_value' => 'Tainacan\Metadata_Types\Compound'],
-	        ['meta_value' => 'Tainacan\Metadatum_Types\Compound'],
-	        '%s', '%s');
+    $wpdb->update($wpdb->postmeta,
+        ['meta_value' => 'Tainacan\Filter_Types\TaxonomySelectbox'],
+        ['meta_value' => 'Tainacan\Filter_Types\CategorySelectbox'],
+        '%s', '%s');
 	
 }
 

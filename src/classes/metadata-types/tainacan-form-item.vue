@@ -128,7 +128,7 @@
                 this.changeValue();
             },
             isTextInputComponent( component ){
-                let array = ['tainacan-relationship','tainacan-category'];
+                let array = ['tainacan-relationship','tainacan-taxonomy'];
                 return !( array.indexOf( component ) >= 0 );
             },
             setMetadatumTypeMessage( message ){

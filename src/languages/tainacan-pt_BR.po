@@ -235,7 +235,7 @@ msgid "Repository Filters Page"
 msgstr "Página de Filtros do repositório"
 
 #: admin/tainacan-admin-i18n.php:57
-msgid "Categories Page"
+msgid "Taxonomies Page"
 msgstr "Página de Categorias"
 
 # ESTÁ REPETIDO
@@ -287,7 +287,7 @@ msgstr "Página de Criação da Coleção"
 
 #: admin/tainacan-admin-i18n.php:71
 #, fuzzy
-#| msgid "Category Creation Page"
+#| msgid "Taxonomy Creation Page"
 msgid "Taxonomy Creation Page"
 msgstr "Página de Criação da Taxonomia"
 
@@ -311,7 +311,7 @@ msgstr "Editar item"
 
 #: admin/tainacan-admin-i18n.php:76
 #, fuzzy
-#| msgid "Category Creation Page"
+#| msgid "Taxonomy Creation Page"
 msgid "Taxonomy Edition Page"
 msgstr "Página de Criação da Taxonomia"
 
@@ -473,7 +473,7 @@ msgid "Collections per Page:"
 msgstr "Coleções por Página:"
 
 #: admin/tainacan-admin-i18n.php:111
-msgid "Categories per Page:"
+msgid "Taxonomies per Page:"
 msgstr "Categorias por página:"
 
 #: admin/tainacan-admin-i18n.php:112
@@ -561,7 +561,7 @@ msgid "Approved"
 msgstr "Aprovado"
 
 #: admin/tainacan-admin-i18n.php:130
-#: classes/metadata-types/category/class-tainacan-category.php:35
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:35
 #: classes/metadata-types/relationship/class-tainacan-relationship.php:26
 msgid "Collection Related"
 msgstr "Coleção relacionada"
@@ -585,12 +585,12 @@ msgid "Select taxonomy"
 msgstr "Categoria pai"
 
 #: admin/tainacan-admin-i18n.php:134
-#: classes/metadata-types/category/class-tainacan-category.php:39
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:39
 msgid "Input type"
 msgstr "Tipo de entrada"
 
 #: admin/tainacan-admin-i18n.php:135
-#: classes/metadata-types/category/class-tainacan-category.php:43
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:43
 msgid "Allow new terms"
 msgstr "Permitir termos novos"
 
@@ -803,7 +803,7 @@ msgid "Select all items on page"
 msgstr "Selecione um tipo de filtro."
 
 #: admin/tainacan-admin-i18n.php:188
-msgid "Delete selected categories"
+msgid "Delete selected taxonomies"
 msgstr "Deletar categorias selecionadas"
 
 #: admin/tainacan-admin-i18n.php:189
@@ -887,7 +887,7 @@ msgstr "Nenhuma coleção foi criada neste repositório."
 
 #: admin/tainacan-admin-i18n.php:210
 #, fuzzy
-#| msgid "No category was created in this repository."
+#| msgid "No taxonomy was created in this repository."
 msgid "No taxonomy was created in this repository."
 msgstr "Nenhuma taxonomia foi criada neste repositório."
 
@@ -921,7 +921,7 @@ msgstr "Erro ao deletar coleção."
 
 #: admin/tainacan-admin-i18n.php:218
 #, fuzzy
-#| msgid "Error on deleting category"
+#| msgid "Error on deleting taxonomy"
 msgid "Error on deleting taxonomy"
 msgstr "Erro ao deletar taxonomia"
 
@@ -982,7 +982,7 @@ msgid "Showing collections "
 msgstr "Exibindo coleções "
 
 #: admin/tainacan-admin-i18n.php:231
-msgid "Showing categories "
+msgid "Showing taxonomies "
 msgstr "Exibindo categorias "
 
 #: admin/tainacan-admin-i18n.php:232
@@ -1149,13 +1149,13 @@ msgstr "Caixa de verificação"
 
 #: admin/tainacan-admin-i18n.php:271
 #, fuzzy
-#| msgid "Category Tag Input"
+#| msgid "Taxonomy Tag Input"
 msgid "Taxonomy Tag Input"
 msgstr "Entrada de etiquetas de taxonomia"
 
 #: admin/tainacan-admin-i18n.php:272
 #, fuzzy
-#| msgid "Category Check Box"
+#| msgid "Taxonomy Check Box"
 msgid "Taxonomy Check Box"
 msgstr "Caixa de verificação de taxonomias"
 
@@ -1592,10 +1592,10 @@ msgstr "é inválida"
 #, fuzzy
 #| msgid ""
 #| "Compound metadata do not support metadata with multiple values (except "
-#| "categories)"
+#| "taxonomies)"
 msgid ""
 "Compound metadata do not support metadata with multiple values (except "
-"categories)"
+"taxonomies)"
 msgstr ""
 "Metadados compostos não suportam metadados com vários valores (exceto "
 "categorias)"
@@ -1604,7 +1604,7 @@ msgstr ""
 #: classes/entities/class-tainacan-metadatum.php:441
 #, fuzzy
 #| msgid ""
-#| "Category metadata can not be used inside Compound metadata with multiple "
+#| "Taxonomy metadata can not be used inside Compound metadata with multiple "
 #| "values"
 msgid ""
 "Taxonomy metadata can not be used inside Compound metadata with multiple "
@@ -1649,26 +1649,26 @@ msgstr "Novo termo de gênero"
 msgid "You can not have two terms with the same name at the same level"
 msgstr "Você não pode ter dois termos com o mesmo nome em um mesmo nível"
 
-#: classes/metadata-types/category/class-tainacan-category.php:36
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:36
 #: classes/metadata-types/relationship/class-tainacan-relationship.php:27
 msgid "Select the collection to fetch items"
 msgstr "Selecione a coleção para buscar itens"
 
-#: classes/metadata-types/category/class-tainacan-category.php:40
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:40
 msgid "The html type of the terms list "
 msgstr "O tipo de html utilizado na lista de termos"
 
-#: classes/metadata-types/category/class-tainacan-category.php:44
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:44
 msgid "Allows to create new terms"
 msgstr "Permite a criação de novos termos"
 
-#: classes/metadata-types/category/class-tainacan-category.php:70
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:70
 #, fuzzy
-#| msgid "Please select a category"
+#| msgid "Please select a taxonomy"
 msgid "Please select a taxonomy"
 msgstr "Por favor, selecione uma taxonomia."
 
-#: classes/metadata-types/category/class-tainacan-category.php:88
+#: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:88
 #, fuzzy
 #| msgid ""
 #| "You can not have 2 taxonomy metadata using the same taxonomy in a "
@@ -2640,37 +2640,37 @@ msgstr "Selecione uma opção"
 msgid "Collection: %s"
 msgstr "Coleções: %s"
 
-#~ msgid "Category Select Box"
+#~ msgid "Taxonomy Select Box"
 #~ msgstr "Lista de seleção de taxonomias"
 
-#~ msgid "Category"
+#~ msgid "Taxonomy"
 #~ msgstr "Taxonomia"
 
 # MUITO IMPRECISA!!!!!!!!!!!
-#~ msgid "Category Terms"
+#~ msgid "Taxonomy Terms"
 #~ msgstr "Termos de Categorias"
 
-#~ msgid "Category deleted"
+#~ msgid "Taxonomy deleted"
 #~ msgstr "Taxonomia deletada"
 
-#~ msgid "Do you really want to delete this category?"
+#~ msgid "Do you really want to delete this taxonomy?"
 #~ msgstr "Você realmente deseja deletar esta taxonomia?"
 
-#~ msgid "Category Edition Page"
+#~ msgid "Taxonomy Edition Page"
 #~ msgstr "Página de edição da taxonomia"
 
-#~ msgid "Select category"
+#~ msgid "Select taxonomy"
 #~ msgstr "Selecionar taxonomia"
 
-#~ msgid "Are you sure? The category is not saved, changes will be lost."
+#~ msgid "Are you sure? The taxonomy is not saved, changes will be lost."
 #~ msgstr ""
 #~ "Opa, tem certeza? Como a taxonomia não foi salva, as alterações podem ser "
 #~ "perdidas"
 
-#~ msgid "Category Page"
+#~ msgid "Taxonomy Page"
 #~ msgstr "Página da Taxonomia"
 
-#~ msgid "Categories"
+#~ msgid "Taxonomies"
 #~ msgstr "Taxonomies"
 
 #~ msgid "exposer_mapping"
