@@ -9,7 +9,7 @@ import ItemsPage from '../pages/lists/items-page.vue'
 import ItemPage from '../pages/singles/item-page.vue'
 import MetadataPage from '../pages/lists/metadata-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
-import CategoriesPage from '../pages/lists/taxonomies-page.vue'
+import Page from '../pages/lists/taxonomies-page.vue'
 import TaxonomyPage from '../pages/singles/taxonomy-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 import EventPage from '../pages/singles/event-page.vue'
@@ -58,7 +58,7 @@ const routes = [
 
     { path: '/metadata', name: 'MetadataPage', component: MetadataPage, meta: {title: i18nGet('title_repository_metadata_page'), icon: 'format-list-checks'} },
 
-    { path: '/taxonomies', name: 'CategoriesPage', component: CategoriesPage, meta: {title: i18nGet('title_taxonomies_page'), icon: 'shape'} },
+    { path: '/taxonomies', name: 'Page', component: Page, meta: {title: i18nGet('title_taxonomies_page'), icon: 'shape'} },
     { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_create_taxonomy_page'), icon: 'shape'} },
     { path: '/taxonomies/:taxonomyId/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_taxonomy_edition_page'), icon: 'shape'} },
     { path: '/taxonomies/:taxonomyId', name: 'TaxonomyPage', component: TaxonomyPage, meta: {title: i18nGet('title_taxonomy_page'), icon: 'shape'} },

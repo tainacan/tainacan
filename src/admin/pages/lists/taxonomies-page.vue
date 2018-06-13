@@ -33,13 +33,13 @@
                 <div>
                     <taxonomies-list
                             :is-loading="isLoading"
-                            :total-taxonomies="totalCategories"
+                            :total-taxonomies="total"
                             :page="page"
                             :taxonomies-per-page="taxonomiesPerPage"
                             :taxonomies="taxonomies"/>
                     
                     <!-- Empty state image -->
-                    <div v-if="totalCategories <= 0 && !isLoading">
+                    <div v-if="total <= 0 && !isLoading">
                         <section class="section">
                             <div class="content has-text-grey has-text-centered">
                                 <p>
@@ -64,14 +64,14 @@
                     <!-- Footer -->
                     <div 
                             class="pagination-area" 
-                            v-if="totalCategories > 0">
+                            v-if="total > 0">
                         <div class="shown-items">
                             {{
                                 $i18n.get('info_showing_taxonomies') +
                                 (taxonomiesPerPage * (page - 1) + 1) +
                                 $i18n.get('info_to') +
                                 getLastTaxonomyNumber() +
-                                $i18n.get('info_of') + totalCategories + '.'
+                                $i18n.get('info_of') + total + '.'
                             }}
                         </div>
                         <div class="items-per-page">
@@ -80,7 +80,7 @@
                                     :label="$i18n.get('label_taxonomies_per_page')">
                                 <b-select
                                         :value="taxonomiesPerPage"
-                                        @input="onChangeCategoriesPerPage"
+                                        @input="onChangePerPage"
                                         :disabled="taxonomies.length <= 0">
                                     <option value="12">12</option>
                                     <option value="24">24</option>
@@ -92,7 +92,7 @@
                         <div class="pagination">
                             <b-pagination
                                     @change="onPageChange"
-                                    :total="totalCategories"
+                                    :total="total"
                                     :current.sync="page"
                                     order="is-centered"
                                     size="is-small"
@@ -106,36 +106,36 @@
 </template>
 
 <script>
-    import CategoriesList from "../../components/lists/taxonomies-list.vue";
+    import List from "../../components/lists/taxonomies-list.vue";
     import { mapActions, mapGetters } from 'vuex';
     //import moment from 'moment'
 
     export default {
-        name: 'CategoriesPage',
+        name: 'Page',
         data(){
             return {
                 isLoading: false,
-                totalCategories: 0,
+                total: 0,
                 page: 1,
                 taxonomiesPerPage: 12,
                 status: ''
             }
         },
         components: {
-            CategoriesList
+            List
         },
         methods: {
             ...mapActions('taxonomy', [
-                'fetchCategories',
+                'fetch',
             ]),
             ...mapGetters('taxonomy', [
-                'getCategories'
+                'get'
             ]),
             onChangeTab(status) {
                 this.status = status;
-                this.loadCategories();
+                this.load();
             },
-            onChangeCategoriesPerPage(value) {
+            onChangePerPage(value) {
                this.taxonomiesPerPage = value;
                 this.$userPrefs.set('taxonomies_per_page', value)
                 .then((newValue) => {
@@ -144,19 +144,19 @@
                 .catch(() => {
                     this.$console.log("Error settings user prefs for taxonomies per page")
                 });
-                this.loadCategories();
+                this.load();
             },
             onPageChange(page) {
                 this.page = page;
-                this.loadCategories();
+                this.load();
             },
-            loadCategories() {
+            load() {
                 this.isLoading = true;
 
-                this.fetchCategories({ 'page': this.page, 'taxonomiesPerPage': this.taxonomiesPerPage, 'status': this.status })
+                this.fetch({ 'page': this.page, 'taxonomiesPerPage': this.taxonomiesPerPage, 'status': this.status })
                     .then((res) => {
                         this.isLoading = false;
-                        this.totalCategories = res.total;
+                        this.total = res.total;
                     })
                     .catch(() => {
                         this.isLoading = false;
@@ -164,12 +164,12 @@
             },
             getLastTaxonomyNumber() {
                 let last = (Number(this.taxonomiesPerPage * (this.page - 1)) + Number(this.taxonomiesPerPage));
-                return last > this.totalCategories ? this.totalCategories : last;
+                return last > this.total ? this.total : last;
             }
         },
         computed: {
             taxonomies(){
-                return this.getCategories();
+                return this.get();
             }
         },
         created() {
@@ -180,13 +180,13 @@
             .then((value) => {
                 if (this.taxonomiesPerPage != value) {
                     this.taxonomiesPerPage = value;
-                    this.loadCategories;
+                    this.load;
                 }
             })
             .catch(() => {
                 this.$userPrefs.set('taxonomies_per_page', 12);
             });
-            this.loadCategories();
+            this.load();
         }
     }
 </script>

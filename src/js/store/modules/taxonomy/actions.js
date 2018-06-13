@@ -1,6 +1,6 @@
 import axios from '../../../axios/axios'
 
-// CATEGORIES
+// TAXONOMIES
 export const createTaxonomy = ({commit}, taxonomy) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post('/taxonomies', {
@@ -58,7 +58,7 @@ export const updateTaxonomy = ({ commit }, taxonomy) => {
     });
 };
 
-export const fetchCategories = ({ commit }, { page, taxonomiesPerPage, status } ) => {
+export const fetch = ({ commit }, { page, taxonomiesPerPage, status } ) => {
     return new Promise((resolve, reject) => {
         let endpoint = `/taxonomies?paged=${page}&perpage=${taxonomiesPerPage}&context=edit`;
 
@@ -69,7 +69,7 @@ export const fetchCategories = ({ commit }, { page, taxonomiesPerPage, status } 
             .then(res => {
                 let taxonomies = res.data;
 
-                commit('setCategories', taxonomies);
+                commit('set', taxonomies);
 
                 resolve({
                     'taxonomies': taxonomies,

@@ -1,11 +1,11 @@
 import Vue from 'vue';
 
-// CATEGORIES
+// TAXONOMIES
 export const setTaxonomy = (state, taxonomy) => {
     state.taxonomy = taxonomy;
 };
 
-export const setCategories = (state, taxonomies) => {
+export const set = (state, taxonomies) => {
     state.taxonomies = taxonomies;
 };
 

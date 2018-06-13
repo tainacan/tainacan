@@ -1,21 +1,21 @@
 <template>
     <div 
-            v-if="totalCategories > 0 && !isLoading"
+            v-if="total > 0 && !isLoading"
             class="table-container">
 
         <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
-                            @click.native="selectAllCategoriesOnPage()" 
-                            :value="allCategoriesOnPageSelected">{{ $i18n.get('label_select_all_taxonomies_page') }}</b-checkbox>
+                            @click.native="selectAllOnPage()" 
+                            :value="allOnPageSelected">{{ $i18n.get('label_select_all_taxonomies_page') }}</b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
                         v-if="taxonomies[0].current_user_can_edit"
-                        :disabled="!isSelectingCategories"
+                        :disabled="!isSelecting"
                         id="bulk-actions-dropdown">
                     <button
                             class="button is-white"
@@ -26,7 +26,7 @@
 
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            @click="deleteSelectedCategories()">
+                            @click="deleteSelected()">
                         {{ $i18n.get('label_delete_selected_taxonomies') }}
                     </b-dropdown-item>
                     <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
@@ -61,16 +61,16 @@
                 </thead>
                 <tbody>
                     <tr     
-                            :class="{ 'selected-row': selectedCategories[index] }"
+                            :class="{ 'selected-row': selected[index] }"
                             :key="index"
                             v-for="(taxonomy, index) of taxonomies">
                         <!-- Checking list -->
                         <td 
-                                :class="{ 'is-selecting': isSelectingCategories }"
+                                :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
                                     size="is-small"
-                                    v-model="selectedCategories[index]"/> 
+                                    v-model="selected[index]"/> 
                         </td>
                         <!-- Name -->
                         <td 
@@ -136,48 +136,48 @@
     import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
-        name: 'CategoriesList',
+        name: 'List',
         data() {
             return {
-                selectedCategories: [],
-                allCategoriesOnPageSelected: false,
-                isSelectingCategories: false
+                selected: [],
+                allOnPageSelected: false,
+                isSelecting: false
             }
         },
         props: {
             isLoading: false,
-            totalCategories: 0,
+            total: 0,
             page: 1,
             taxonomiesPerPage: 12,
             taxonomies: Array
         },
         watch: {
             taxonomies() {
-                this.selectedCategories = [];
+                this.selected = [];
                 for (let i = 0; i < this.taxonomies.length; i++)
-                    this.selectedCategories.push(false);    
+                    this.selected.push(false);    
             },
-            selectedCategories() {
+            selected() {
                 let allSelected = true;
                 let isSelecting = false;
-                for (let i = 0; i < this.selectedCategories.length; i++) {
-                    if (this.selectedCategories[i] == false) {
+                for (let i = 0; i < this.selected.length; i++) {
+                    if (this.selected[i] == false) {
                         allSelected = false;
                     } else {
                         isSelecting = true;
                     }
                 }
-                this.allCategoriesOnPageSelected = allSelected;
-                this.isSelectingCategories = isSelecting;
+                this.allOnPageSelected = allSelected;
+                this.isSelecting = isSelecting;
             }
         },
         methods: {
             ...mapActions('taxonomy', [
                 'deleteTaxonomy'
             ]),
-            selectAllCategoriesOnPage() {
-                for (let i = 0; i < this.selectedCategories.length; i++) 
-                    this.selectedCategories.splice(i, 1, !this.allCategoriesOnPageSelected);
+            selectAllOnPage() {
+                for (let i = 0; i < this.selected.length; i++) 
+                    this.selected.splice(i, 1, !this.allOnPageSelected);
             },
             deleteOneTaxonomy(taxonomyId) {
                 this.$modal.open({
@@ -197,9 +197,9 @@
                                     //     type: 'is-secondary',
                                     //     queue: true
                                     // });
-                                    for (let i = 0; i < this.selectedCategories.length; i++) {
-                                        if (this.selectedCategories[i].id === this.taxonomyId)
-                                            this.selectedCategories.splice(i, 1);
+                                    for (let i = 0; i < this.selected.length; i++) {
+                                        if (this.selected[i].id === this.taxonomyId)
+                                            this.selected.splice(i, 1);
                                     }
                                 })
                                 .catch(() => {
@@ -215,7 +215,7 @@
                     }
                 });
             },
-            deleteSelectedCategories() {
+            deleteSelected() {
                 this.$modal.open({
                     parent: this,
                     component: CustomDialog,
@@ -226,10 +226,10 @@
                         onConfirm: () => {
 
                             for (let i = 0; i < this.taxonomies.length;  i++) {
-                                if (this.selectedCategories[i]) {
+                                if (this.selected[i]) {
                                     this.deleteTaxonomy(this.taxonomies[i].id)
                                         .then(() => {
-                                            // this.loadCategories();
+                                            // this.load();
                                             // this.$toast.open({
                                             //     duration: 3000,
                                             //     message: this.$i18n.get('info_taxonomy_deleted'),
@@ -248,7 +248,7 @@
                                     });
                                 }
                             }
-                            this.allCategoriesOnPageSelected = false;
+                            this.allOnPageSelected = false;
                         }
                     }
                 });

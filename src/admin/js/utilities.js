@@ -194,7 +194,7 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
         },
-        getCategoriesPath(query) {
+        getPath(query) {
             return '/taxonomies/?' + qs.stringify(query);
         },
         getTaxonomyTermsPath(taxonomyId, query) {

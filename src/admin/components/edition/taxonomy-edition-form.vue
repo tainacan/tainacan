@@ -247,7 +247,7 @@
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
 
-                        this.$router.push(this.$routerHelper.getCategoriesPath());
+                        this.$router.push(this.$routerHelper.getPath());
                     })
                     .catch((errors) => {
                         for (let error of errors.errors) {
@@ -329,7 +329,7 @@
                 this.editFormErrors[attribute] = undefined;
             },
             cancelBack(){
-                this.$router.push(this.$routerHelper.getCategoriesPath());
+                this.$router.push(this.$routerHelper.getPath());
             },
             labelNewTerms(){
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');

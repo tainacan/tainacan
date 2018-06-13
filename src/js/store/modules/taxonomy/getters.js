@@ -2,7 +2,7 @@ export const getTaxonomy = state => {
   return state.taxonomy;
 };
 
-export const getCategories = state => {
+export const get = state => {
   return state.taxonomies;
 };
 

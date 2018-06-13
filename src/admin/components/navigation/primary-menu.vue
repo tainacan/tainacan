@@ -57,7 +57,7 @@
                     <router-link
                             tag="a"
                             to="/taxonomies"
-                            :class="activeRoute == 'CategoriesPage' ? 'is-active':''">
+                            :class="activeRoute == 'Page' ? 'is-active':''">
                         <b-icon
                                 size="is-small"
                                 icon="shape"/>
