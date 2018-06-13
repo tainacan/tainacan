@@ -21,14 +21,14 @@ class Old_Tainacan extends Importer{
 		[
 			'name' => 'Create Collections',
 			'callback' => 'create_collections'
+        ],
+		[
+			'name' => 'Link relationship metadata',
+			'callback' => 'link_relationships'
 		],
 		[
 			'name' => 'Import Items',
 			'callback' => 'process_collections'
-		],
-		[
-			'name' => 'Link relationship metadata',
-			'callback' => 'close_taxonomies'
 		],
 		[
 			'name' => 'Finalize',
@@ -113,6 +113,21 @@ class Old_Tainacan extends Importer{
     }
 
     /**
+     * create all collections and its metadata
+     * 
+     */
+    public function create_collections(){
+
+        foreach ($this->fetch_collections() as $collection) {
+
+            if ( isset($collection->post_title) && $collection->post_status === 'publish') {
+               //TODO: insert collection and its metadata
+            }
+
+        }
+    }
+
+    /**
     * Method implemented by the child importer class to proccess each item
     * @return int
     */
@@ -155,6 +170,19 @@ class Old_Tainacan extends Importer{
         $this->add_error_log('Error in fetch remote');
         $this->abort();
         return false;
+    }
+
+    /**
+    * return all taxonomies from tainacan old
+    * @return array
+    */
+    protected function fetch_collections(){
+
+        $collections_link = $this->get_url() . $this->tainacan_api_address . "/collections";
+        $collections = wp_remote_get($collections_link);
+        $collections_array = $this->decode_request($collections);
+
+        return ($collections_array) ? $collections_array : [];
     }
 
     /**
@@ -207,6 +235,14 @@ class Old_Tainacan extends Importer{
 
             $inserted_term = $this->term_repo->insert($new_term);
 
+            if (is_wp_error($inserted_term)) {
+
+                $this->add_error_log($inserted_term->get_error_message());
+                $this->abort();
+                return false;
+    
+            }
+
             /*Insert old tainacan id*/
             $this->add_transient('term_' . $term->term_id . '_id', $inserted_term->get_id());
             $this->add_transient('term_' . $term->term_id . '_name', $inserted_term->get_name());
@@ -225,7 +261,75 @@ class Old_Tainacan extends Importer{
      * @return int $metadatum_id 
      */
     protected function create_metadata( $node_metadata_old, $collection_id = null){
-        //TODO: create process to insert different types of metadata
+        $newMetadatum = new Entities\Metadatum();
+        $meta = $node_metadata_old;
+
+        $name = $meta->name;
+        $type = $this->define_type($meta->type);
+
+        $newMetadatum->set_name($name);
+        $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
+        $newMetadatum->set_parent( (isset($collection_id)) ? $collection_id : 'default');
+
+        if(strcmp($type, "Category") === 0){
+            $taxonomy_id = $meta->metadata->taxonomy;
+
+            $related_taxonomy = $this->get_transient('tax_' . $taxonomy_id . '_id');
+            if ($related_taxonomy) {
+                $newMetadatum->set_metadata_type_options(['taxonomy_id' => $related_taxonomy]);
+            }
+
+        } else if(strcmp($type, "Relationship") === 0){
+            $relation_id = $meta->metadata->object_category_id;
+            $related_taxonomy = $this->get_transient('tax_' . $relation_id . '_id');
+            $related_name = $this->get_transient('tax_' . $relation_id . '_name');
+
+            if(isset($related_taxonomy)){
+                $newMetadatum->set_metadata_type_options(['collection_id' => $related_taxonomy]);
+            }
+
+        } else if(strcmp($type, "Compound") === 0){
+             
+            if( isset( $meta->metadata->children ) ){
+                foreach( $meta->metadata->children as $child ){
+                    $this->create_metadata( $node_metadata_old, $collection_id);
+                }
+            }
+
+        }
+
+        /*Properties of metadatum*/
+        if(isset($meta->metadata)){
+            if($meta->metadata->required == 1){
+                $newMetadatum->set_required(true);
+            }
+
+            if(!empty($meta->metadata->default_value)){
+                $newMetadatum->set_default_value($meta->metadata->default_value);
+            }
+
+            if(!empty($meta->metadata->cardinality)){
+
+                if($meta->metadata->cardinality > 1){
+                    $newMetadatum->set_multiple('yes');
+                }
+
+            }
+        }
+
+        if($newMetadatum->validate()){
+            $inserted_metadata = $this->meta_repo->insert( $newMetadatum );
+
+            if(isset( $related_name) )
+                $this->add_transient('relation_' . $inserted_metadata->get_id() . '_name', $related_name);
+
+            return $inserted_metadata->get_id();
+        } else{ 
+            $this->add_error_log('Error creating metadata ' . $name );
+            $this->add_error_log($newMetadatum->get_errors());
+            $this->abort();
+            return false;
+        } 
     }
     
     /**
