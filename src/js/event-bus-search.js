@@ -39,16 +39,33 @@ export default {
                         this.collectionId = parseInt(this.$route.params.collectionId);
 
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
-                        if (this.$route.query.perpage == undefined) {
-                            let perPage = (this.collectionId != undefined ? this.$userPrefs.get('items_per_page_' + this.collectionId) : this.$userPrefs.get('items_per_page'));
-                            this.$route.query.perpage = perPage ? perPage : 12;
+                        
+                        if (this.$route.query.perpage == undefined || to.params.collectionId == from.params.collectionId) {
+                            let perPageKey = (this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page');
+                            let perPageValue = this.$userPrefs.get(perPageKey);
+
+                            if (perPageValue)
+                                this.$route.query.perpage = perPageValue;
+                            else {
+                                this.$route.query.perpage = 12;
+                                this.$userPrefs.set(perPageKey, 12);
+                            }
                         }    
-                        if (this.$route.query.paged == undefined)
+                        if (this.$route.query.paged == undefined || to.params.collectionId == from.params.collectionId)
                             this.$route.query.paged = 1;
-                        if (this.$route.query.order == undefined)
+                        if (this.$route.query.order == undefined || to.params.collectionId == from.params.collectionId)
                             this.$route.query.order = 'DESC';
-                        if (this.$route.query.orderby == undefined)
-                            this.$route.query.orderby = 'date';
+                        if (this.$route.query.orderby == undefined || to.params.collectionId == from.params.collectionId) {
+                            let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
+                            let orderByValue = this.$userPrefs.get(orderByKey);
+
+                            if (orderByValue)
+                                this.$route.query.orderby = orderByValue;
+                            else {
+                                this.$route.query.orderby = 'date';
+                                this.$userPrefs.set(orderByKey, 'date');
+                            }
+                        }
                         
                         if(this.$route.query.metaquery && this.$route.query.metaquery.advancedSearch){
                             this.$store.dispatch('search/set_advanced_query', this.$route.query.metaquery);
@@ -108,14 +125,16 @@ export default {
                 setItemsPerPage(itemsPerPage) {
                     let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
                     this.$userPrefs.set(prefsPerPage, itemsPerPage)
-                    .catch(() => {
-                        this.$console.log("Error settings user prefs for items per page")
-                    });
+                    .catch(() => { this.$console.log("Error settings user prefs for items per page.") });
 
                     this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
                     this.updateURLQueries();
                 },
                 setOrderBy(newOrderBy) {
+                    let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
+                    this.$userPrefs.set(prefsOrderBy, newOrderBy.slug)
+                    .catch(() => { this.$console.log("Error settings user prefs for order by.") });
+
                     this.$store.dispatch('search/setOrderBy', newOrderBy);
                     this.updateURLQueries();
                 },
