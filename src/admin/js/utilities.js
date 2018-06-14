@@ -110,7 +110,9 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'order_by': { 
                 slug: 'creation_date',
                 name: 'Creation Date'
-            }
+            },
+            'view_mode': 'cards',
+            'admin_view_mode': 'table'
         },
         init() {
             if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {

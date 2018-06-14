@@ -253,7 +253,8 @@
                         class="search-control-item">
                     <b-field>
                         <b-dropdown
-                                v-model="adminViewMode"
+                                @input="onChangeAdminViewMode($event)"
+                                :value="adminViewMode"
                                 :mobile-modal="false"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
@@ -549,6 +550,10 @@
             onChangeViewMode(viewMode) {
                 this.$eventBusSearch.setViewMode(viewMode);
             },
+            onChangeAdminViewMode(viewMode) {
+                this.adminViewMode = viewMode;
+                this.$eventBusSearch.setAdminViewMode(viewMode);
+            },
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];
 
@@ -707,14 +712,6 @@
                 this.openAdvancedSearch = this.$router.query.metaquery.advancedSearch;
             }
 
-            // // Setting initial view mode
-            // if (this.isOnTheme) {
-            //     let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
-            //     if (this.$userPrefs.get(prefsViewMode) == undefined)
-            //         this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
-            //     else 
-            //         this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
-            // }
         },
         mounted() {
             
@@ -732,6 +729,13 @@
                     this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
                 else 
                     this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+            } else {
+                let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
+                if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
+                    this.adminViewMode = 'table';
+                else 
+                    this.adminViewMode = this.$userPrefs.get(prefsAdminViewMode);
+
             }
             
             // Watch Scroll for shrinking header, only on Admin at collection level

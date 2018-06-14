@@ -225,6 +225,16 @@ export default {
                     this.$store.dispatch('search/setViewMode', viewMode);
                     this.updateURLQueries();  
                 },
+                setAdminViewMode(viewMode) {
+                    let prefsAdminViewMode = this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
+                    if(this.$userPrefs.get(prefsAdminViewMode) != viewMode) {
+                        this.$userPrefs.set(prefsAdminViewMode, viewMode)
+                            .catch(() => { this.$console.log("Error settings user prefs for admin view mode.") });
+                    }
+                    // Admin view mode is not syncronizing with URL yet.
+                    //this.$store.dispatch('search/setViewMode', viewMode);
+                    //this.updateURLQueries();  
+                },
                 setInitialViewMode(viewMode) {
                     this.$store.dispatch('search/setViewMode', viewMode);
                     this.updateURLQueries(); 
