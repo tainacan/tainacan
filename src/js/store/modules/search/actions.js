@@ -107,3 +107,8 @@ export const setSearchQuery = ({ commit }, searchQuery ) => {
 export const setViewMode = ({ commit }, viewMode ) => {
     commit('setViewMode', viewMode );
 };
+
+// Set AdminViewMode (admin_view_mode)
+export const setAdminViewMode = ({ commit }, adminViewMode ) => {
+    commit('setAdminViewMode', adminViewMode );
+};

@@ -111,7 +111,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 slug: 'creation_date',
                 name: 'Creation Date'
             },
-            'view_mode': 'cards',
+            'view_mode': 'table',
             'admin_view_mode': 'table'
         },
         init() {

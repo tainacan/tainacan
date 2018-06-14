@@ -50,7 +50,11 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 postQueries.view_mode = null;
                 
             endpoint = endpoint + 'context=edit&'
-        }        
+        } else {
+            if (postQueries.admin_view_mode != undefined)
+                postQueries.admin_view_mode = null;
+        }   
+
         axios.tainacan.get(endpoint+query)
         .then(res => {
             

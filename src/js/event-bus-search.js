@@ -122,6 +122,22 @@ export default {
                             }
                         }
 
+                        // Admin View Modes
+                        if (this.$route.name != null && this.$route.name != undefined  && 
+                            (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') &&
+                            (this.$route.query.admin_view_mode == undefined || to.params.collectionId != from.params.collectionId)
+                        ) {
+                            let adminViewModeKey = (this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode');
+                            let adminViewModeValue = this.$userPrefs.get(adminViewModeKey);
+
+                            if (adminViewModeValue)
+                                this.$route.query.admin_view_mode = adminViewModeValue;
+                            else {
+                                this.$route.query.admin_view_mode = 'table';
+                                this.$userPrefs.set(adminViewModeKey, 'table');
+                            }
+                        }
+
                         // Advanced Search
                         if (this.$route.query.metaquery && this.$route.query.metaquery.advancedSearch){
                             this.$store.dispatch('search/set_advanced_query', this.$route.query.metaquery);
@@ -225,15 +241,15 @@ export default {
                     this.$store.dispatch('search/setViewMode', viewMode);
                     this.updateURLQueries();  
                 },
-                setAdminViewMode(viewMode) {
+                setAdminViewMode(adminViewMode) {
                     let prefsAdminViewMode = this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
-                    if(this.$userPrefs.get(prefsAdminViewMode) != viewMode) {
-                        this.$userPrefs.set(prefsAdminViewMode, viewMode)
+                    if(this.$userPrefs.get(prefsAdminViewMode) != adminViewMode) {
+                        this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
                             .catch(() => { this.$console.log("Error settings user prefs for admin view mode.") });
                     }
-                    // Admin view mode is not syncronizing with URL yet.
-                    //this.$store.dispatch('search/setViewMode', viewMode);
-                    //this.updateURLQueries();  
+                    
+                    this.$store.dispatch('search/setAdminViewMode', adminViewMode);
+                    this.updateURLQueries();  
                 },
                 setInitialViewMode(viewMode) {
                     this.$store.dispatch('search/setViewMode', viewMode);
