@@ -263,7 +263,7 @@
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
                                           column.metadatum !== 'row_author'"
-                                    v-html="renderMetadata(item.metadata, column)"/>
+                                    v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 

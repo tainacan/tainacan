@@ -134,11 +134,11 @@
                             {{ $i18n.get('add_items_external_source') + ' (Not ready)' }}
                         </b-dropdown-item>
                     </b-dropdown>
-
                 </div>
+
                 <!-- Displayed Metadata Dropdown -->
                 <div    
-                        v-if="!isOnTheme || registeredViewModes[viewMode].dynamic_metadata"
+                        v-if="!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
                         class="search-control-item">
                     <b-dropdown
                             ref="displayedMetadataDropdown"
@@ -184,6 +184,17 @@
                             <option
                                     v-for="metadatum in tableMetadata"
                                     v-if="
+                                        metadatum.slug === 'creation_date' || (
+                                            metadatum.metadata_type_object && 
+                                            metadatum.metadata_type_object.related_mapped_prop == 'title'
+                                    )"
+                                    :value="metadatum"
+                                    :key="metadatum.slug">
+                                {{ metadatum.name }}
+                            </option>
+                            <!-- <option
+                                    v-for="metadatum in tableMetadata"
+                                    v-if="
                                         metadatum.slug === 'creation_date' ||
                                         metadatum.slug === 'author_name' || (
                                             metadatum.id !== undefined &&
@@ -196,7 +207,7 @@
                                     :value="metadatum"
                                     :key="metadatum.slug">
                                 {{ metadatum.name }}
-                            </option>
+                            </option> -->
                         </b-select>
                         <button
                                 :disabled="totalItems <= 0"
@@ -275,7 +286,6 @@
                 </div>
             </div>
 
-
             <!-- ADVANCED SEARCH -->
             <div
                     v-if="openAdvancedSearch">
@@ -294,7 +304,6 @@
                         :is-repository-level="isRepositoryLevel"
                         :metadata-list="metadata" />
             </div>
-
 
             <!-- --------------- -->
 
@@ -371,7 +380,7 @@
                         :displayed-metadata="tableMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode].component"/>     
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
@@ -399,17 +408,16 @@
                 </section>
 
                 <!-- Pagination -->
-
                 <!-- When advanced search -->
                 <pagination
                         v-if="totalItems > 0 &&
-                         (!isOnTheme || registeredViewModes[viewMode].show_pagination) &&
+                         (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
                           advancedSearchResults"/>
 
                 <!-- Regular -->
                 <pagination
                         v-else-if="totalItems > 0 &&
-                         (!isOnTheme || registeredViewModes[viewMode].show_pagination) &&
+                         (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
                           !openAdvancedSearch"/>
             </div>
         </div>
@@ -566,7 +574,7 @@
                 this.$refs.displayedMetadataDropdown.toggle();
             },
             prepareMetadataAndFilters() {
-
+                
                 this.isLoadingFilters = true;
 
                 this.fetchFilters({
@@ -665,7 +673,7 @@
             }
         },
         created() {
-
+            
             this.isOnTheme = (this.$route.name === null);
 
             this.isRepositoryLevel = (this.collectionId === undefined);
@@ -689,16 +697,24 @@
                 /* This condition is to prevent a incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level
                  */
-                if (this.collectionId === to.params.collectionId) {
+
+                if (this.isOnTheme || this.collectionId === to.params.collectionId) {
                     this.prepareMetadataAndFilters();
                 }
             });
 
-            this.$eventBusSearch.setViewMode(this.defaultViewMode);
-
             if(this.$router.query && this.$router.query.metaquery && this.$router.query.metaquery.advancedSearch) {
                 this.openAdvancedSearch = this.$router.query.metaquery.advancedSearch;
             }
+
+            // // Setting initial view mode
+            // if (this.isOnTheme) {
+            //     let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
+            //     if (this.$userPrefs.get(prefsViewMode) == undefined)
+            //         this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
+            //     else 
+            //         this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+            // }
         },
         mounted() {
             
@@ -709,6 +725,15 @@
             this.prepareMetadataAndFilters();
             this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 
+            // Setting initial view mode on Theme
+            if (this.isOnTheme) {
+                let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
+                if (this.$userPrefs.get(prefsViewMode) == undefined)
+                    this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
+                else 
+                    this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+            }
+            
             // Watch Scroll for shrinking header, only on Admin at collection level
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {

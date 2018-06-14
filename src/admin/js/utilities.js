@@ -108,7 +108,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'events_per_page': 12,
             'order': 'DESC',
             'order_by': { 
-                id: 'creation_date',
+                slug: 'creation_date',
                 name: 'Creation Date'
             }
         },
@@ -139,7 +139,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                     if (prefs[key]) { 
                         resolve( prefs[key] );  
                     } else {
-                        reject('Key ' + key + 'does not exists in user preference.');
+                        reject('Key ' + key + ' does not exists in user preference.');
                     }
                 })
                 .catch(error => {

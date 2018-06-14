@@ -46,15 +46,17 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         }
 
         if (!isOnTheme){
+            if (postQueries.view_mode != undefined)
+                postQueries.view_mode = null;
+                
             endpoint = endpoint + 'context=edit&'
-        }
-        
+        }        
         axios.tainacan.get(endpoint+query)
         .then(res => {
             
             let items = res.data;
             let viewModeObject = tainacan_plugin.registered_view_modes[postQueries.view_mode];
-                        
+
             if (isOnTheme && viewModeObject != undefined && viewModeObject.type == 'template') {
                 commit('setItemsListTemplate', items);
                 resolve({'itemsListTemplate': items, 'total': res.headers['x-wp-total'], hasFiltered: hasFiltered, advancedSearchResults:  advancedSearchResults});

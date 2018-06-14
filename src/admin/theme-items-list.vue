@@ -9,6 +9,9 @@
 <script>
 export default {
     name: "ThemeItemsList",
+    created() {
+        this.$userPrefs.init();
+    }
 }
 </script>
 
