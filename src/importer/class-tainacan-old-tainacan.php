@@ -23,10 +23,6 @@ class Old_Tainacan extends Importer{
 			'callback' => 'create_collections'
         ],
 		[
-			'name' => 'Link relationship metadata',
-			'callback' => 'link_relationships'
-		],
-		[
 			'name' => 'Import Items',
 			'callback' => 'process_collections'
 		],
@@ -124,7 +120,7 @@ class Old_Tainacan extends Importer{
             if ( isset($collection->post_title) && $collection->post_status === 'publish') {
 
                 $collection_id = $this->create_collection( $collection );
-                foreach( $this->get_collection_metadata( $collection_id ) as $metadatum_old ) {
+                foreach( $this->get_collection_metadata( $collection->ID ) as $metadatum_old ) {
 
                     $metadatum_id = $this->create_metadata( $metadatum_old, $collection_id );
                     $map[$metadatum_id] = $metadatum_old->id;
@@ -134,8 +130,9 @@ class Old_Tainacan extends Importer{
                 $this->add_collection([
                     'id' => $collection_id,
                     'map' => $map,
-                    'total_items' => $this->get_total_items_from_source( $collection_id ),
-                    'source_id' => $collection->ID
+                    'total_items' => $this->get_total_items_from_source( $collection->ID ),
+                    'source_id' => $collection->ID,
+                    'items' => $this->get_all_items( $collection->ID ) 
                 ]);
             }
 
@@ -148,15 +145,10 @@ class Old_Tainacan extends Importer{
     */
     public function link_relationships(){
         $args = [];
-        $args['meta_query'] = [ 'relation' => 'OR' ];
 
-        $args['meta_query'][] = array(
-            'key'     => 'metadata_type',
-            'value'   => 'Tainacan\Metadata_Types\\Relationship',
-            'compare' => 'IN',
-        );
-
-        $this->metadata_repo->fetch($args, 'OBJECT' );
+       foreach( $this->metadata_repo->fetch($args, 'OBJECT' ) as $metadatum ){
+           //var_dump($metadatum->get_metadata_type());
+       }
 
         // TODO: get all imported relationships and find the collection target
     }
@@ -166,6 +158,7 @@ class Old_Tainacan extends Importer{
     * @return int
     */
     public function process_item( $index, $collection_id ){
+        var_dump($collection_id['items'][$index]);
     }
 
     /**
@@ -182,6 +175,31 @@ class Old_Tainacan extends Importer{
             return 0;
         }
         
+    }
+
+    /**
+    * Method that retrieves all items
+    * @return int
+    */
+    public function get_all_items( $collection_id ) {
+        $page = 1;
+        $items = [];
+
+        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items?includeMetadata=1&filter[items_per_page]=50&filter[page]=" . $page );
+        $info = json_decode($info['body']);
+
+        while( isset($info->items) && count( $info->items ) > 0  ){
+
+            foreach( $info->items as $item){
+                $items[] = $item;
+            }
+
+            $page++;
+            $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items?includeMetadata=1&filter[items_per_page]=50&filter[page]=" . $page );
+            $info = json_decode($info['body']);
+        } 
+        
+        return $items;
     }
 
     /**
@@ -276,8 +294,8 @@ class Old_Tainacan extends Importer{
         if($collection_tabs){
 
             foreach ($collection_tabs as $tab) {
-                if($tab->properties){
-                    $metadata = array_merge($metadata, $tab->properties);
+                if($tab->{'tab-properties'}){
+                    $metadata = array_merge($metadata, $tab->{'tab-properties'});
                 }
             }
 
@@ -344,7 +362,7 @@ class Old_Tainacan extends Importer{
 
         $newMetadatum->set_name($name);
         $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
-        $newMetadatum->set_parent( (isset($collection_id)) ? $collection_id : 'default');
+        $newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
 
         if(strcmp($type, "Category") === 0){
             $taxonomy_id = $meta->metadata->taxonomy;
@@ -362,7 +380,6 @@ class Old_Tainacan extends Importer{
             if(isset($related_taxonomy)){
                 $newMetadatum->set_metadata_type_options(['collection_id' => $related_taxonomy]);
             }
-
         } else if(strcmp($type, "Compound") === 0){
              
             if( isset( $meta->metadata->children ) ){
@@ -395,8 +412,9 @@ class Old_Tainacan extends Importer{
         if($newMetadatum->validate()){
             $inserted_metadata = $this->metadata_repo->insert( $newMetadatum );
 
-            if(isset( $related_name) )
+            if(isset( $related_name) ){
                 $this->add_transient('relation_' . $inserted_metadata->get_id() . '_name', $related_name);
+            }
 
             return $inserted_metadata->get_id();
         } else{ 
