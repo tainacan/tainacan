@@ -949,8 +949,8 @@
     }
 
     .table-container {
-        padding-left: 8.333333%;
-        padding-right: 8.333333%;
+        padding-left: 4.166666667%;
+        padding-right: 4.166666667%;
         min-height: 200px;
         //height: calc(100% - 82px);
     }

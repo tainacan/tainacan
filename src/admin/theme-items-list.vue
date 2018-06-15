@@ -301,11 +301,6 @@ export default {
             border-bottom: 0;
         }
 
-        .table-container {
-            padding-left: 4.166666667%;
-            padding-right: 4.166666667%;
-        }
-
         #items-list-area {
             width: 100%;
             overflow-y: unset;
