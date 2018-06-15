@@ -202,20 +202,7 @@ class Old_Tainacan extends Importer{
         return $items;
     }
 
-    /**
-    * Method implemented by the child importer class to return the number of items to be imported
-    * @return int
-    */
-    public function get_progress_total_from_source(){
-    }
 
-    /**
-    * Method implemented by the child importer class to return the number of items to be imported
-    * @return int
-    */
-    public function get_source_metadata(){
-    }
-    
 
     // AUX functions
 
