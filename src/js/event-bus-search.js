@@ -255,6 +255,10 @@ export default {
                     this.$store.dispatch('search/setViewMode', viewMode);
                     this.updateURLQueries(); 
                 },
+                setInitialAdminViewMode(adminViewMode) { 
+                    this.$store.dispatch('search/setAdminViewMode', adminViewMode);
+                    this.updateURLQueries();  
+                },
                 updateURLQueries(isAdvancedSearch) {
 
                     this.$router.push({query: {}});
@@ -265,7 +269,7 @@ export default {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
                 loadItems(to) {
-
+                    
                     // Forces fetch_only to be filled before any search happens
                     if (this.$store.getters['search/getFetchOnly'] == undefined) {
                         this.$emit( 'hasToPrepareMetadataAndFilters', to);

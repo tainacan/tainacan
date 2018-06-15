@@ -192,7 +192,8 @@
                                     :key="metadatum.slug">
                                 {{ metadatum.name }}
                             </option>
-                            <!-- <option
+                            <!-- Once we have sorting by metadata we can use this -->
+                            <!-- <option 
                                     v-for="metadatum in tableMetadata"
                                     v-if="
                                         metadatum.slug === 'creation_date' ||
@@ -253,8 +254,7 @@
                         class="search-control-item">
                     <b-field>
                         <b-dropdown
-                                @input="onChangeAdminViewMode($event)"
-                                :value="adminViewMode"
+                                @change="onChangeAdminViewMode($event)"
                                 :mobile-modal="false"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
@@ -451,7 +451,6 @@
                 isHeaderShrinked: false,
                 localTableMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
-                adminViewMode: 'table',
                 openAdvancedSearch: false,
                 advancedSearchResults: false,
             }
@@ -485,6 +484,9 @@
             },
             viewMode() {
                 return this.getViewMode();
+            },
+            adminViewMode() {
+                return this.getAdminViewMode();
             },
             orderBy() {
                 return this.getOrderBy();
@@ -533,7 +535,8 @@
                 'getOrderBy',
                 'getOrder',
                 'getViewMode',
-                'getTotalItems'
+                'getTotalItems',
+                'getAdminViewMode'
             ]),
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
@@ -550,9 +553,8 @@
             onChangeViewMode(viewMode) {
                 this.$eventBusSearch.setViewMode(viewMode);
             },
-            onChangeAdminViewMode(viewMode) {
-                this.adminViewMode = viewMode;
-                this.$eventBusSearch.setAdminViewMode(viewMode);
+            onChangeAdminViewMode(adminViewMode) {
+                this.$eventBusSearch.setAdminViewMode(adminViewMode);
             },
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];
@@ -731,11 +733,11 @@
                     this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
+                
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
-                    this.adminViewMode = 'table';
+                    this.$eventBusSearch.setInitialAdminViewMode('table');
                 else 
-                    this.adminViewMode = this.$userPrefs.get(prefsAdminViewMode);
-
+                    this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
             }
             
             // Watch Scroll for shrinking header, only on Admin at collection level
