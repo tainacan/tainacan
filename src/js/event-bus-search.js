@@ -102,7 +102,7 @@ export default {
                                 this.$userPrefs.set(orderByKey, { 
                                     slug: 'creation_date',
                                     name: this.$i18n.get('label_creation_date')
-                                }).catch(() => { this.$console.log("Error settings user prefs for order by.") });
+                                }).catch(() => { });
                             }
                         }
 
@@ -169,8 +169,14 @@ export default {
                     this.updateURLQueries();             
                 },
                 addFetchOnly( metadatum ){
+                    let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
+                    if(this.$userPrefs.get(prefsFetchOnly) != metadatum) {
+                        this.$userPrefs.set(prefsFetchOnly, metadatum)
+                            .catch(() => {});
+                    }
+                
                     this.$store.dispatch('search/add_fetchonly', metadatum );
-                    this.updateURLQueries();             
+                    this.updateURLQueries();   
                 },
                 removeFetchOnlyMeta( metadatum ){
                     this.$store.dispatch('search/remove_fetchonly_meta', metadatum );
@@ -198,7 +204,7 @@ export default {
                     let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
                     if(this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
                         this.$userPrefs.set(prefsPerPage, itemsPerPage)
-                            .catch(() => { this.$console.log("Error settings user prefs for items per page.") });
+                            .catch(() => {});
                     }
 
                     this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
@@ -208,7 +214,7 @@ export default {
                     let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
                     if(this.$userPrefs.get(prefsOrderBy) != orderBy) {
                         this.$userPrefs.set(prefsOrderBy, orderBy)
-                            .catch(() => { this.$console.log("Error settings user prefs for order by.") });
+                            .catch(() => {});
                     }
                     this.$store.dispatch('search/setOrderBy', orderBy);
                     this.updateURLQueries();
@@ -217,7 +223,7 @@ export default {
                     let prefsOrder = this.collectionId != undefined ? 'order_' + this.collectionId : 'order';
                     if(this.$userPrefs.get(prefsOrder) != order) {
                         this.$userPrefs.set(prefsOrder, order)
-                            .catch(() => { this.$console.log("Error settings user prefs for order.") });
+                            .catch(() => {});
                     }
 
                     this.$store.dispatch('search/setOrder', order);
@@ -235,7 +241,7 @@ export default {
                     let prefsViewMode = this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode';
                     if(this.$userPrefs.get(prefsViewMode) != viewMode) {
                         this.$userPrefs.set(prefsViewMode, viewMode)
-                            .catch(() => { this.$console.log("Error settings user prefs for view mode.") });
+                            .catch(() => {});
                     }
 
                     this.$store.dispatch('search/setViewMode', viewMode);
@@ -245,7 +251,7 @@ export default {
                     let prefsAdminViewMode = this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                     if(this.$userPrefs.get(prefsAdminViewMode) != adminViewMode) {
                         this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
-                            .catch(() => { this.$console.log("Error settings user prefs for admin view mode.") });
+                            .catch(() => { });
                     }
                     
                     this.$store.dispatch('search/setAdminViewMode', adminViewMode);

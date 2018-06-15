@@ -112,7 +112,13 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 name: 'Creation Date'
             },
             'view_mode': 'table',
-            'admin_view_mode': 'table'
+            'admin_view_mode': 'table',
+            'fetch_only': {
+                0: 'thumbnail',
+                1: 'creation_date',
+                2: 'author_name',
+                meta: []
+            }
         },
         init() {
             if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {

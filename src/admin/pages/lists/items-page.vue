@@ -572,12 +572,15 @@
                 let creationDateMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 let authorNameMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'author_name');
 
+                // Updates Search
                 this.$eventBusSearch.addFetchOnly({
                     '0': thumbnailMetadatum.display ? 'thumbnail' : null,
                     'meta': fetchOnlyMetadatumIds,
                     '1': creationDateMetadatum.display ? 'creation_date' : null,
                     '2': authorNameMetadatum.display ? 'author_name': null
                 });
+
+                // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
             },
             prepareMetadataAndFilters() {
@@ -594,14 +597,20 @@
                     .catch(() => this.isLoadingFilters = false);
 
                 this.isLoadingMetadata = true;
+                
                 // Processing is done inside a local variable
                 let metadata = [];
                 this.fetchMetadata({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: !this.isOnTheme
+                    isContextEdit: false
                 })
                     .then(() => {
+
+                        // Loads user prefs object as we'll need to check if there's something configured by user 
+                        let prefsFetchOnly = !this.isRepositoryLevel ? 'fetch_only_' + this.collectionId : 'fetch_only';
+                        let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly); 
+                        let thumbnailMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['0'] != null) : true;
 
                         metadata.push({
                             name: this.$i18n.get('label_thumbnail'),
@@ -609,7 +618,7 @@
                             metadata_type: undefined,
                             slug: 'thumbnail',
                             id: undefined,
-                            display: true
+                            display: thumbnailMetadatumDisplay
                         });
 
                         let fetchOnlyMetadatumIds = [];
@@ -619,10 +628,21 @@
 
                                 let display;
 
+                                // Deciding display based on collection settings
                                 if (metadatum.display == 'no')
                                     display = false;
                                 else if (metadatum.display == 'yes')
                                     display = true;
+
+                                // // Deciding display based on user prefs
+                                // if (prefsFetchOnlyObject != undefined && 
+                                //     prefsFetchOnlyObject.meta != undefined) {
+                                //     let index = prefsFetchOnlyObject.meta.findIndex(metadatumId => metadatumId == metadatum.id);
+                                //     if (index >= 0)
+                                //         display = true;
+                                //     else
+                                //         display = false;
+                                // }
 
                                 metadata.push(
                                     {
@@ -640,13 +660,16 @@
                             }
                         }
 
+                        let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
+                        let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
+
                         metadata.push({
                             name: this.$i18n.get('label_creation_date'),
                             metadatum: 'row_creation',
                             metadata_type: undefined,
                             slug: 'creation_date',
                             id: undefined,
-                            display: true
+                            display: creationDateMetadatumDisplay
                         });
                         metadata.push({
                             name: this.$i18n.get('label_created_by'),
@@ -654,22 +677,14 @@
                             metadata_type: undefined,
                             slug: 'author_name',
                             id: undefined,
-                            display: true
+                            display: authorNameMetadatumDisplay
                         });
 
-                        // this.prefTableMetadata = this.tableMetadata;
-                        // this.$userPrefs.get('table_columns_' + this.collectionId)
-                        //     .then((value) => {
-                        //         this.prefTableMetadata = value;
-                        //     })
-                        //     .catch((error) => {
-                        //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableMetadata, null);
-                        //     });
                         this.$eventBusSearch.addFetchOnly({
-                            '0': 'thumbnail',
+                            '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
                             'meta': fetchOnlyMetadatumIds,
-                            '1': 'creation_date',
-                            '2': 'author_name'
+                            '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
+                            '2': (authorNameMetadatumDisplay ? 'author_name' : null)
                         });
                         this.isLoadingMetadata = false;
                         this.tableMetadata = metadata;
