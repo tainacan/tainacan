@@ -178,6 +178,159 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertNotEquals($item->get_title(), $data['title']);
 		$this->assertEquals('SCRUM e XP', $data['title']);
 	}
+
+	function test_fetch_only() {
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Agile',
+				'description' => 'Agile methods',
+                'status'      => 'publish'
+			),
+			true
+		);
+
+		$private_meta = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'private_meta',
+			    'status' => 'publish',
+			    'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'private'
+		    ),
+		    true
+		);
+		
+		$public_meta = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'public_meta',
+			    'status' => 'publish',
+			    'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish'
+		    ),
+		    true
+		);
+		
+		$discarded = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+			    'name'   => 'discarded',
+			    'status' => 'publish',
+			    'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish'
+		    ),
+		    true
+	    );
+
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Lean Startup',
+				'description' => 'Um processo ágil de criação de novos negócios.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'SCRUM',
+				'description' => 'Um framework ágil para gerenciamento de tarefas.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$itemMetaRepo = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $public_meta);
+		$newMeta->set_value('test');
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $private_meta);
+		$newMeta->set_value('test');
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $discarded);
+		$newMeta->set_value('test');
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item2, $public_meta);
+		$newMeta->set_value('test');
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item2, $private_meta);
+		$newMeta->set_value('test');
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item2, $discarded);
+		$newMeta->set_value('test');
+		$newMeta->validate();
+		$itemMetaRepo->insert($newMeta);
+
+
+		$attributes = [
+			'fetch_only' => [
+				'meta' => [
+					$public_meta->get_id(),
+					$private_meta->get_id()
+				]
+			],
+		];
+
+		
+		// First without fetch only
+		$request = new \WP_REST_Request(
+			'GET', $this->namespace . '/items'
+		);
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+		$this->assertEquals( 2, sizeof($data) );
+		$this->assertEquals( 5, sizeof($data[0]['metadata']) );
+
+		// Fetch only as admin
+		$request = new \WP_REST_Request(
+			'GET', $this->namespace . '/items'
+		);
+		$request->set_query_params($attributes);
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+
+		$this->assertEquals( 2, sizeof($data) );
+		$this->assertEquals( 2, sizeof($data[0]['metadata']) );
+
+		
+		////
+		
+		$new_user = $this->factory()->user->create(array( 'role' => 'subscriber' ));
+		wp_set_current_user($new_user);
+
+		// Fetch only as subscriber
+		$request = new \WP_REST_Request(
+			'GET', $this->namespace . '/items'
+		);
+		$request->set_query_params($attributes);
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+		$this->assertEquals( 2, sizeof($data) );
+		$this->assertEquals( 1, sizeof($data[0]['metadata']) );
+		$this->assertEquals( 'public_meta', $data[0]['metadata']['public_meta']['name'] );
+
+
+
+	}
 }
 
 ?>
