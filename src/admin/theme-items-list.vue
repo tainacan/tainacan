@@ -9,6 +9,9 @@
 <script>
 export default {
     name: "ThemeItemsList",
+    created() {
+        this.$userPrefs.init();
+    }
 }
 </script>
 
@@ -296,11 +299,6 @@ export default {
 
         .search-control {
             border-bottom: 0;
-        }
-
-        .table-container {
-            padding-left: 4.166666667%;
-            padding-right: 4.166666667%;
         }
 
         #items-list-area {

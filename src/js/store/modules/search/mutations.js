@@ -128,3 +128,7 @@ export const setStatus = ( state, status ) => {
 export const setViewMode = ( state, viewMode ) => {
     state.postquery.view_mode = viewMode;
 };
+
+export const setAdminViewMode = ( state, adminViewMode ) => {
+    state.postquery.admin_view_mode = adminViewMode;
+};

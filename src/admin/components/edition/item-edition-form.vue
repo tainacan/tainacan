@@ -235,7 +235,7 @@
                     <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
                             <a
-                                    class="button is-rounred is-secondary"
+                                    class="button is-rounded is-secondary"
                                     id="button-edit-thumbnail"
                                     :aria-label="$i18n.get('label_button_edit_thumb')"
                                     @click.prevent="thumbnailMediaFrame.openFrame($event)">
