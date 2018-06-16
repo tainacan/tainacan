@@ -158,7 +158,21 @@ class Old_Tainacan extends Importer{
     * @return int
     */
     public function process_item( $index, $collection_id ){
-        var_dump($collection_id['items'][$index]);
+
+        if( isset($collection_id['items'][$index]) ){
+            $item_Old = $collection_id['items'][$index]->item;
+
+            $item = new Entities\Item();
+            $item->set_name( $item_Old->post_title );
+            $item->set_description( $item_Old->post_content_filtered );
+
+        } else {
+            $this->add_error_log($result->get_error_message());
+            $this->add_error_log('proccessing an item empty');
+			$this->abort();
+            return false;
+        }
+        var_dump($collection_id['items'][$index]->item);
     }
 
     /**
@@ -167,6 +181,14 @@ class Old_Tainacan extends Importer{
     */
     public function get_total_items_from_source( $collection_id ) {
         $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items" );
+
+        if( !isset($info['body']) ){
+            $this->add_error_log($result->get_error_message());
+            $this->add_error_log('Error in fetch remote total items');
+			$this->abort();
+            return false;
+        }
+
         $info = json_decode($info['body']);
 
         if( isset($info->found_items) ){
@@ -184,8 +206,20 @@ class Old_Tainacan extends Importer{
     public function get_all_items( $collection_id ) {
         $page = 1;
         $items = [];
+        $args = array(
+            'timeout'     => 30,
+            'redirection' => 30,
+        ); 
 
-        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items?includeMetadata=1&filter[items_per_page]=50&filter[page]=" . $page );
+        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items?includeMetadata=1&filter[page]=" . $page,  $args );  
+        
+        if( !isset($info['body']) ){
+            $this->add_error_log($result->get_error_message());
+            $this->add_error_log('Error in fetch remote first page item');
+			$this->abort();
+            return false;
+        }
+        
         $info = json_decode($info['body']);
 
         while( isset($info->items) && count( $info->items ) > 0  ){
@@ -195,7 +229,7 @@ class Old_Tainacan extends Importer{
             }
 
             $page++;
-            $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items?includeMetadata=1&filter[items_per_page]=50&filter[page]=" . $page );
+            $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items?includeMetadata=1&filter[page]=" . $page, $args );                    
             $info = json_decode($info['body']);
         } 
         
