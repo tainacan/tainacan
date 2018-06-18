@@ -17,6 +17,8 @@ class Importer_Handler {
 	public function init() {
 
 		$this->register_importer([
+			'name' => 'CSV',
+			'description' => __('Import items from a CSV file to a chosen collection', 'tainacan'),
 			'slug' => 'csv',
 			'class_name' => '\Tainacan\Importer\CSV'
 		]);
