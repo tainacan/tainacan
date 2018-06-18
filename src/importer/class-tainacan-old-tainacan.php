@@ -162,9 +162,25 @@ class Old_Tainacan extends Importer{
         if( isset($collection_id['items'][$index]) ){
             $item_Old = $collection_id['items'][$index]->item;
 
+            $collection = new Entities\Collection($collection_id['id']);
             $item = new Entities\Item();
-            $item->set_name( $item_Old->post_title );
+            $item->set_title( $item_Old->post_title );
             $item->set_description( $item_Old->post_content_filtered );
+
+            $item->set_collection( $collection );
+
+            if( $item->validate() ){
+                $insertedItem = $Tainacan_Items->insert( $item );
+
+                if( $insertedItem->get_id() && is_array($collection_id['items'][$index]->metadata) ){
+                    $this->add_metadata(  $insertedItem, $collection_id['items'][$index]->metadata );
+                }
+
+            } else {
+                $this->add_error_log( 'Error inserting item' );
+                $this->add_error_log( $item->get_errors() );
+                return false;
+            }
 
         } else {
             $this->add_error_log($result->get_error_message());
@@ -172,7 +188,13 @@ class Old_Tainacan extends Importer{
 			$this->abort();
             return false;
         }
-        var_dump($collection_id['items'][$index]->item);
+    }
+
+    /**
+    * Method responsible to insert item metadata
+    */
+    public function add_metadata( $item, $metadata_old ){
+        //TODO: Insert item metadata getting reference in transient
     }
 
     /**
@@ -180,7 +202,12 @@ class Old_Tainacan extends Importer{
     * @return int
     */
     public function get_total_items_from_source( $collection_id ) {
-        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items" );
+        $args = array(
+            'timeout'     => 30,
+            'redirection' => 30,
+        );
+
+        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items",  $args );
 
         if( !isset($info['body']) ){
             $this->add_error_log($result->get_error_message());
