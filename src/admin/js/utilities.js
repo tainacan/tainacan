@@ -202,6 +202,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getEventsPath(query) {
             return '/events/?' + qs.stringify(query);
         },
+        getAvailableImportersPath() {
+            return '/importers/new';
+        },
         // Singles
         getCollectionPath(id) {
             return '/collections/' + id;
@@ -270,7 +273,10 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getEventEditPath(id) {
             return '/events/' + id + '/edit';
-        }   
+        },
+        getImporterEditionPath() {
+            return '/importers/session';
+        },   
     }
 }
 

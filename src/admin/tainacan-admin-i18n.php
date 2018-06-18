@@ -66,14 +66,14 @@ return apply_filters('tainacan-admin-i18n',[
 	// Page Titles (used mainly on Router)
 	'title_repository_collections_page'        => __( 'Repository Collections', 'tainacan' ),
 	'title_items_page'                         => __( 'Items', 'tainacan' ),
-	'title_repository_metadata_page'             => __( 'Repository Metadata', 'tainacan' ),
+	'title_repository_metadata_page'           => __( 'Repository Metadata', 'tainacan' ),
 	'title_repository_filters_page'            => __( 'Repository Filters', 'tainacan' ),
 	'title_taxonomies_page'                    => __( 'Taxonomies Page', 'tainacan' ),
 	'title_terms_page'                         => __( 'Terms', 'tainacan' ),
 	'title_repository_events_page'             => __( 'Repository Events', 'tainacan' ),
 	'title_collection_page'                    => __( 'Collection', 'tainacan' ),
 	'title_item_page'                          => __( 'Item', 'tainacan' ),
-	'title_metadatum_page'                         => __( 'Metadata', 'tainacan' ),
+	'title_metadatum_page'                     => __( 'Metadata', 'tainacan' ),
 	'title_collection_events'                  => __( 'Collection Events', 'tainacan' ),
 	'title_filter_page'                        => __( 'Filter', 'tainacan' ),
 	'title_taxonomy_page'                      => __( 'Taxonomy', 'tainacan' ),
@@ -87,9 +87,11 @@ return apply_filters('tainacan-admin-i18n',[
 	'title_edit_item'     	                   => __( 'Edit Item', 'tainacan' ),
 	'title_taxonomy_edition_page'              => __( 'Taxonomy Edition', 'tainacan' ),
 	'title_filter_edition'                     => __( 'Filter Edition', 'tainacan' ),
-	'title_metadatum_edition'                      => __( 'Metadata Edition', 'tainacan' ),
-	'title_collection_metadata_edition'          => __( 'Edit Metadata of', 'tainacan' ),
+	'title_metadatum_edition'                  => __( 'Metadata Edition', 'tainacan' ),
+	'title_collection_metadata_edition'        => __( 'Edit Metadata of', 'tainacan' ),
 	'title_collection_filters_edition'         => __( 'Edit Filters of', 'tainacan' ),
+	'title_importer_page'           => __( 'Importer', 'tainacan' ),
+	'title_available_importers_page'           => __( 'Available Importers', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                              => __( 'Clear', 'tainacan' ),
@@ -214,6 +216,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_table'							   => __( 'Table', 'tainacan' ),
 	'label_cards'							   => __( 'Cards', 'tainacan' ),
 	'label_visualization'					   => __( 'Visualization', 'tainacan' ),
+	'label_available_importers'				   => __( 'Available Importers', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -303,6 +306,8 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_create_filters'	   				   => __( 'Click or Drag and Drop Metadata here for creating a new Filter.', 'tainacan' ),
 	'info_create_metadata'	   				   => __( 'Click or Drag and Drop Metadata Types here for creating a new Metadata.', 'tainacan' ),
 	'info_choose_your_metadata'	   			   => __( 'Choose your metadata.', 'tainacan' ),
+	'info_available_importers_helper'	   	   => __( 'The available importer type will affect the file or link that will provide your data besides deciding wich options are available to the importer.', 'tainacan' ),	
+	'info_select_a_target_collection'	   	   => __( 'The collection to which imported data will be send.', 'tainacan' ),	
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),
