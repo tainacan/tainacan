@@ -28,7 +28,7 @@ class REST_Importers_Controller extends REST_Controller {
 	 * Register the collections route and their endpoints
 	 */
 	public function register_routes(){
-        register_rest_route($this->namespace, '/session/' . $this->rest_base, array(
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session', array(
 	        array(
 		        'methods'             => \WP_REST_Server::CREATABLE,
 		        'callback'            => array($this, 'create_item'),
@@ -75,11 +75,11 @@ class REST_Importers_Controller extends REST_Controller {
             
         ));
         
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/source_metadata', array(
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/source_info', array(
             
             array(
                 'methods'             => \WP_REST_Server::READABLE,
-                'callback'            => array($this, 'source_metadata'),
+                'callback'            => array($this, 'source_info'),
                 'permission_callback' => array($this, 'import_permissions_check'),
             ),
             
@@ -175,6 +175,19 @@ class REST_Importers_Controller extends REST_Controller {
 	    	if($importer) {
                 
                 foreach ($body as $att => $value){
+                    
+                    if ($att == 'collection') {
+                        if (is_array($value) && isset($value['id'])) {
+                            $importer->add_collection($value);
+                            continue;
+                        } else {
+                            return new \WP_REST_Response([
+                                'error_message' => __('Invalid collection', 'tainacan' ),
+                                'session_id' => $session_id
+                            ], 400);
+                        }
+                    }
+                    
                     $method = 'set_' . $att;
                     if (method_exists($importer, $method)) {
                         $importer->$method($value);
@@ -199,7 +212,7 @@ class REST_Importers_Controller extends REST_Controller {
     }
 
 
-    public function source_metadata() {
+    public function source_info() {
         $session_id = $request['session_id'];
         $importer = $_SESSION['tainacan_importer'][$session_id];
 
@@ -212,10 +225,15 @@ class REST_Importers_Controller extends REST_Controller {
 
         $response = [
             'source_metadata' => false,
+            'source_total_items' => false
         ];
 
         if ( method_exists($importer, 'get_source_metadata') ) {
             $response['source_metadata'] = $importer->get_source_metadata();
+        }
+
+        if ( method_exists($importer, 'get_source_number_of_items') ) {
+            $response['source_total_items'] = $importer->get_source_number_of_items();
         }
 
         return new \WP_REST_Response( $response, 200 );
