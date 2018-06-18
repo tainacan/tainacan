@@ -21,16 +21,8 @@ class REST_Importers_Controller extends REST_Controller {
 	public function __construct(){
         $this->rest_base = 'importers';
 		parent::__construct();
-        add_action('init', array(&$this, 'init_objects'), 11);
     }
-    
-    /**
-     * Initialize objects after post_type register
-     */
-    public function init_objects() {
-    	//$this->collections_repository = Repositories\Collections::get_instance();
-    	//$this->collection = new Entities\Collection();
-    }
+
 
 	/**
 	 * Register the collections route and their endpoints
