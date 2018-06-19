@@ -4,9 +4,13 @@ return apply_filters('tainacan-admin-i18n',[
 
 	// Advanced search comparators
 	'is_equal_to'                              => __( 'Equal', 'tainacan' ),
-	'is_not_equal_to'                          => __( 'Not Equal', 'tainacan'),
+	'is_not_equal_to'                          => __( 'Not equal', 'tainacan'),
 	'contains'                                 => __( 'Contains', 'tainacan'),
-	'not_contains'                             => __( 'Not Contains', 'tainacan' ),
+	'not_contains'                             => __( 'Not contains', 'tainacan' ),
+	'greater_than'							   => __( 'Greater than', 'tainacan' ),
+	'less_than'								   => __( 'Less than', 'tainacan' ),
+	'greater_than_or_equal_to'				   => __( 'Greater than or equal to', 'tainacan' ),
+	'less_than_or_equal_to'					   => __( 'Less than or equal to', 'tainacan' ),
 
 	// Tainacan common terms
 	'repository'                               => __( 'Repository', 'tainacan' ),

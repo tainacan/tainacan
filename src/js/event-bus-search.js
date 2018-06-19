@@ -171,8 +171,8 @@ export default {
                 addFetchOnly( metadatum ){
                     let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
                     if(this.$userPrefs.get(prefsFetchOnly) != metadatum) {
-                        // this.$userPrefs.set(prefsFetchOnly, metadatum)
-                        //     .catch(() => {});
+                        this.$userPrefs.set(prefsFetchOnly, metadatum)
+                            .catch(() => {});
                     }
                 
                     this.$store.dispatch('search/add_fetchonly', metadatum );
@@ -203,8 +203,8 @@ export default {
                 setItemsPerPage(itemsPerPage) {
                     let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
                     if(this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
-                        // this.$userPrefs.set(prefsPerPage, itemsPerPage)
-                        //     .catch(() => {});
+                        this.$userPrefs.set(prefsPerPage, itemsPerPage)
+                            .catch(() => {});
                     }
 
                     this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
@@ -213,8 +213,8 @@ export default {
                 setOrderBy(orderBy) { 
                     let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
                     if(this.$userPrefs.get(prefsOrderBy) != orderBy) {
-                        // this.$userPrefs.set(prefsOrderBy, orderBy)
-                        //     .catch(() => {});
+                        this.$userPrefs.set(prefsOrderBy, orderBy)
+                            .catch(() => {});
                     }
                     this.$store.dispatch('search/setOrderBy', orderBy);
                     this.updateURLQueries();
@@ -222,8 +222,8 @@ export default {
                 setOrder(order) {
                     let prefsOrder = this.collectionId != undefined ? 'order_' + this.collectionId : 'order';
                     if(this.$userPrefs.get(prefsOrder) != order) {
-                        // this.$userPrefs.set(prefsOrder, order)
-                        //     .catch(() => {});
+                        this.$userPrefs.set(prefsOrder, order)
+                            .catch(() => {});
                     }
 
                     this.$store.dispatch('search/setOrder', order);
@@ -240,8 +240,8 @@ export default {
                 setViewMode(viewMode) {
                     let prefsViewMode = this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode';
                     if(this.$userPrefs.get(prefsViewMode) != viewMode) {
-                        // this.$userPrefs.set(prefsViewMode, viewMode)
-                        //     .catch(() => {});
+                        this.$userPrefs.set(prefsViewMode, viewMode)
+                            .catch(() => {});
                     }
 
                     this.$store.dispatch('search/setViewMode', viewMode);
@@ -250,8 +250,8 @@ export default {
                 setAdminViewMode(adminViewMode) {
                     let prefsAdminViewMode = this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
                     if(this.$userPrefs.get(prefsAdminViewMode) != adminViewMode) {
-                        // this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
-                        //     .catch(() => { });
+                        this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
+                            .catch(() => { });
                     }
                     
                     this.$store.dispatch('search/setAdminViewMode', adminViewMode);

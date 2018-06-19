@@ -188,7 +188,14 @@ class REST_Collections_Controller extends REST_Controller {
 				}
 				
 				$item_arr['url'] = get_permalink( $item_arr['id'] );
-	        }
+			}
+
+			$total_items = wp_count_posts( $item->get_db_identifier(), 'readable' );
+
+			$item_arr['total_items']['trash'] = $total_items->trash;
+			$item_arr['total_items']['publish'] = $total_items->publish;
+			$item_arr['total_items']['draft'] = $total_items->draft;
+			$item_arr['total_items']['private'] = $total_items->private;
 
             return $item_arr;
         }

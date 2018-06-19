@@ -19,7 +19,7 @@
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriteria)">
                             <option
                                     v-for="metadatum in metadata"
-                                    :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}`"
+                                    :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
                                     :key="metadatum.id"
                             >{{ metadatum.name }}</option>
                         </b-select>
@@ -30,6 +30,8 @@
                             class="column is-two-thirds">
                         <b-input
                                 v-if="advancedSearchQuery.metaquery[searchCriteria]"
+                                :type="advancedSearchQuery.metaquery[searchCriteria].ptype == 'date' ?
+                                 'date' : (advancedSearchQuery.metaquery[searchCriteria].ptype == 'int' || advancedSearchQuery.metaquery[searchCriteria].ptype == 'float' ? 'number' : 'text')"
                                 @input="addValueToAdvancedSearchQuery($event, 'value', searchCriteria)"
                                 />
                         <b-taginput
@@ -101,7 +103,7 @@
                         <b-tag 
                                 v-if="(advancedSearchQuery.taxquery[searchCriteria] && advancedSearchQuery.taxquery[searchCriteria].terms)"
                                 type="is-white"
-                                @close="removeValueOf(searchCriteria)" 
+                                @close="removeThis(searchCriteria)" 
                                 attached 
                                 closable>
                                 {{ Array.isArray(advancedSearchQuery.taxquery[searchCriteria].terms) ?
@@ -111,7 +113,7 @@
                         <b-tag 
                                 v-else-if="(advancedSearchQuery.metaquery[searchCriteria] && advancedSearchQuery.metaquery[searchCriteria].value)"
                                 type="is-white"
-                                @close="removeValueOf(searchCriteria)" 
+                                @close="removeThis(searchCriteria)" 
                                 attached
                                 :loading="isFetching" 
                                 closable>
@@ -157,7 +159,11 @@
                     '=': this.$i18n.get('is_equal_to'),
                     '!=': this.$i18n.get('is_not_equal_to'),
                     'LIKE': this.$i18n.get('contains'),
-                    'NOT LIKE': this.$i18n.get('not_contains')
+                    'NOT LIKE': this.$i18n.get('not_contains'),
+                    '>': this.$i18n.get('greater_than'),
+                    '<': this.$i18n.get('less_than'),
+                    '>=': this.$i18n.get('greater_than_or_equal_to'),
+                    '<=': this.$i18n.get('less_than_or_equal_to'),
                 },
                 taxqueryOperators: {
                     'IN': this.$i18n.get('contains'),
@@ -310,6 +316,8 @@
                                 key: Number(criteriaKey[0]),
                             }
                         });
+
+                        this.$set(this.advancedSearchQuery.metaquery[searchCriteria], 'ptype', criteriaKey[2]);
                     }
                 } else if(type == 'terms'){
                     let termIndex = this.terms.findIndex((element, index) => {
