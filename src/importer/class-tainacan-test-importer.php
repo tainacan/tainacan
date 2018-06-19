@@ -35,23 +35,29 @@ class Test_Importer extends Importer {
 		
 		[
 			'name' => 'Create Taxonomies',
+			'progress_label' => 'Creating taxonomies',
 			'callback' => 'create_taxonomies'
 		],
 		[
 			'name' => 'Create Collections',
+			'progress_label' => 'Creating Collections',
 			'callback' => 'create_collections'
 		],
 		[
 			'name' => 'Import Items',
+			'progress_label' => 'Importing items',
 			'callback' => 'process_collections'
 		],
 		[
 			'name' => 'Post-configure taxonomies',
+			'progress_label' => 'post processing taxonomies',
 			'callback' => 'close_taxonomies'
 		],
 		[
 			'name' => 'Finalize',
-			'callback' => 'finish_processing'
+			'progress_label' => 'Finalizing',
+			'callback' => 'finish_processing',
+			'total' => 5
 		]
 		
 	];

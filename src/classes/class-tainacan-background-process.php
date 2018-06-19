@@ -105,14 +105,17 @@ abstract class Background_Process extends \WP_Background_Process {
 	 *
 	 * @return $this
 	 */
-	public function update( $key, $data ) {
+	public function update( $key, $batch ) {
+		$data = $batch->data;
 		if ( ! empty( $data ) ) {
 			global $wpdb;
 			$wpdb->update(
 				$this->table, 
 				[
 					'data' => maybe_serialize($data),
-					'processed_last' => date('Y-m-d H:i:s')
+					'processed_last' => date('Y-m-d H:i:s'),
+					'progress_label' => $batch->progress_label,
+					'progress_value' => $batch->progress_value
 				],
 				['ID' => $key]
 			);
@@ -221,7 +224,7 @@ abstract class Background_Process extends \WP_Background_Process {
 			
 			// TODO: find a way to catch and log PHP errors as
 			try {
-				$task = $this->task( $batch->data, $batch->key );
+				$task = $this->task( $batch );
 			} catch (\Exception $e) {
 				// TODO: Add Stacktrace
 				$this->write_error_log($batch->key, ['Fatal Error: ' . $e->getMessage()]);

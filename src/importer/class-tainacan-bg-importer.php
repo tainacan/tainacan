@@ -9,8 +9,11 @@ class Background_Importer extends Background_Process {
 	 */
 	protected $action = 'import';
 	
-	function task($data, $key) {
+	function task($batch) {
 
+		$data = $batch->data;
+		$key = $batch->key;
+		
 		$className = $data['class_name'];
 		if (class_exists($className)) {
 			$object = new $className($data);
@@ -26,7 +29,13 @@ class Background_Importer extends Background_Process {
 			if (false === $runned) {
 				return false;
 			}
-			return $object->_to_Array();
+			
+			$batch->progress_label = $object->get_progress_label();
+			$batch->progress_value = $object->get_progress_value();
+			
+			$batch->data = $object->_to_Array(true);
+			
+			return $batch;
 		}
 		return false;
 		
