@@ -134,7 +134,7 @@ class Old_Tainacan extends Importer{
 
                 $this->add_collection([
                     'id' => $collection_id,
-                    'map' => $map,
+                    'mapping' => $map,
                     'total_items' => $this->get_total_items_from_source( $collection->ID ),
                     'source_id' => $collection->ID,
                     'items' => $this->get_all_items( $collection->ID ) 
@@ -209,8 +209,8 @@ class Old_Tainacan extends Importer{
 
         foreach( $metadata_old as $metadatum ){
 
-            if( isset($metadatum->id) && array_search($metadatum->id,$collection_id['map']) ){
-                $new_tainacanid = array_search($metadatum->id,$collection_id['map']);
+            if( isset($metadatum->id) && array_search($metadatum->id,$collection_id['mapping']) ){
+                $new_tainacanid = array_search($metadatum->id,$collection_id['mapping']);
                 $newMetadatum = new Entities\Metadatum($new_tainacanid);
 
                 $item_metadata = new Entities\Item_Metadata_Entity( $item, $newMetadatum );
