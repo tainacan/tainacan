@@ -116,7 +116,7 @@ export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
     });
 };
 
-export const runImporter = ( { commit } , { importerId }) => {
+export const runImporter = ( { commit } , importerId ) => {
     return new Promise(( resolve, reject ) => {
 
         axios.tainacan.post('importers/session/' + importerId + '/run')

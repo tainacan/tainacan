@@ -36,7 +36,7 @@ abstract class Background_Process extends \WP_Background_Process {
 	 * ID of the process in the database
 	 * @var false|int
 	 */
-	protected $ID = false;
+	public $ID = false;
 	
 	/**
 	 * Prefix

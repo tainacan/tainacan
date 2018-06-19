@@ -15,7 +15,8 @@
                         :title="$i18n.get('label_source_file')" 
                         :message="$i18n.get('info_source_file_upload')"/>
                 <br>
-                <b-upload 
+                <b-upload
+                        v-if="importer.tmp_file == undefined" 
                         :value="importerFile"
                         @input="onUploadFile($event)"
                         drag-drop>
@@ -137,7 +138,7 @@ export default {
             },
             mappedCollection: {
                 'id': Number,
-                'map': Array,
+                'mapping': {},
                 'total_items': Number
             },
             importerTypes: [],
@@ -146,7 +147,7 @@ export default {
             importerSourceInfo: null,
             collections: [],
             collectionMetadata: [],
-            collectionId: Number
+            collectionId: undefined
         }
     },
     methods: {
@@ -209,7 +210,7 @@ export default {
             });
         },
         checkIfMetadatumIsAvailable(metadatumId) {
-            return this.mappedCollection.map[metadatumId] != undefined;
+            return this.mappedCollection['mapping'][metadatumId] != undefined;
         },
         onRunImporter() {
             if (this.importer.manual_collection) {
@@ -217,7 +218,7 @@ export default {
                 .then(updatedImporter => {    
                     this.importer = updatedImporter;
 
-                    this.runImporter({ sessionId: this.sessionId })
+                    this.runImporter(this.sessionId)
                     .then(backgroundProcess => {    
                         this.$console.log(backgroundProcess);
                     })
@@ -229,7 +230,7 @@ export default {
                     this.$console.log(errors);
                 });
             } else {
-                this.runImporter({ sessionId: this.sessionId })
+                this.runImporter(this.sessionId)
                 .then(backgroundProcess => {    
                     this.$console.log(backgroundProcess);
                 })
@@ -253,7 +254,7 @@ export default {
         },
         onSelectCollection(collectionId) {
             this.collectionId = collectionId;
-            this.mappedCollection.id = collectionId;
+            this.mappedCollection['id'] = collectionId;
 
             // Generates options for metadata listing
             this.isFetchingCollectionMetadata = true;
@@ -270,7 +271,7 @@ export default {
         },
         onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum) {
             this.isFetchingCollectionMetadata = true;
-            this.mappedCollection.map[selectedMetadatum] = sourceMetadatum;
+            this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
             this.isFetchingCollectionMetadata = false;
         }
     },

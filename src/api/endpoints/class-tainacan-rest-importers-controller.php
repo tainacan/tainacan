@@ -56,7 +56,7 @@ class REST_Importers_Controller extends REST_Controller {
                         'description' => __( 'The URL to be used by the importer', 'tainacan' ),
                     ],
                     'collection' => [
-                        'type'        => 'array',
+                        'type'        => 'array/object',
                         'description' => __( 'The array describing the destination collectino as expected by the importer', 'tainacan' ),
                     ],
                     'options' => [
@@ -272,7 +272,7 @@ class REST_Importers_Controller extends REST_Controller {
     }
 
 
-    public function run() {
+    public function run($request) {
         $session_id = $request['session_id'];
         $importer = $_SESSION['tainacan_importer'][$session_id];
 
@@ -286,8 +286,16 @@ class REST_Importers_Controller extends REST_Controller {
         global $Tainacan_Importer_Handler; 
 
         $process = $Tainacan_Importer_Handler->add_to_queue($importer);
+
+        if (false === $process) {
+            return new \WP_REST_Response([
+		    	'error_message' => __('Error starting importer', 'tainacan' ),
+			    'session_id' => $session_id
+		    ], 400);
+        }
+
         $response = [
-            'bg_process_id' => $process->get_id()
+            'bg_process_id' => $process->ID
         ];
         return new \WP_REST_Response( $response, 200 );
 
