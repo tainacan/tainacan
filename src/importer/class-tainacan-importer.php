@@ -108,6 +108,7 @@ abstract class Importer {
 	protected $steps = [
 		[
 			'name' => 'Import Items',
+			'progress_label' => 'Importing Items',
 			'callback' => 'process_collections'
 		]
 	];
@@ -514,6 +515,131 @@ abstract class Importer {
 	 */
 	public function get_abort() {
 		return $this->abort;
+	}
+
+	/**
+	 * Gets the current label to be displayed below the progress bar to give
+	 * feedback to the user.
+	 * 
+	 * It automatically gets the attribute progress_label from the current step running.
+	 * 
+	 * Importers may change this label whenever they want
+	 * 
+	 * @return string
+	 */
+	public function get_progress_label() {
+		$current_step = $this->get_current_step();
+		$steps = $this->get_current_step();
+		$label = '';
+		if ( isset($steps[$current_step]) ) {
+			$step = $steps[$current_step];
+			if ( isset($step['progress_label']) ) {
+				$label = $step['progress_label'];
+			} elseif ( isset($step['name']) ) {
+				$label = $step['name'];
+			}
+		}
+
+		if ( sizeof($steps) > 1 ) {
+			$preLabel = sprintf( __('Step %d of %d', 'tainacan'), $current_step + 1, sizeof($steps) );
+			$label = $preLabel . ': ' . $label;
+		}
+
+		if ( empty($label) ) {
+			$label = __('Running Importer', 'tainacan');
+		}
+
+		return $label;
+
+	}
+
+	/**
+	 * Gets the current value to build the progress bar and give feedback to the user
+	 * on the background process that is running the importer.
+	 * 
+	 * It does so by comparing the "size" attribute with the $in_step_count class attribute
+	 * where size indicates the total size of iterations the step will take and $this->in_step_count 
+	 * is the current iteration.
+	 * 
+	 * For the step with "process_items" as a callback, this method will look for the the $this->collections array
+	 * and sum the value of all "total_items" attributes of each collection. Then it will look for 
+	 * $this->get_current_collection and $this->set_current_collection_item to calculate the progress.
+	 * 
+	 * The value must be from 0 to 100
+	 * 
+	 * If a negative value is passed, it is assumed that the progress is unknown
+	 */
+	public function get_progress_value() {
+		$current_step = $this->get_current_step();
+		$steps = $this->get_current_step();
+		$value = -1;
+
+		if ( isset($steps[$current_step]) ) {
+			$step = $steps[$current_step];
+
+			if ($step['callback'] == 'process_items') {
+
+				$totalItems = 0;
+				$currentItem = $this->get_current_collection_item();
+				$current_collection = $this->get_current_collection();
+				$collections = $this->get_collections();
+
+				foreach ($collections as $i => $col) {
+					if ( isset($col['total_items']) && is_integer($col['total_items']) ) {
+						$totalItems += $col['total_items'];
+						if ($i < $current_collection) {
+							$currentItem += $col['total_items'];
+						}
+					}
+				}
+
+				if ($totalItems > 0) {
+					$value = round( ($currentItem/$totalItems) * 100 );
+				}
+
+
+			} else {
+
+				if ( isset($step['total']) && is_integer($step['total']) && $step['total'] > 0 ) {
+					$current = $this->get_in_step_count();
+					$value = round( ($current/$step['total']) * 100 );
+				}
+
+			}
+
+
+		}
+		return $value;
+	}
+
+	/**
+	 * Sets the total attribute for the current step
+	 * 
+	 * The "total" attribute of a step indicates the number of iterations this step will take to complete.
+	 * 
+	 * The iteration is counted using $this->in_step_count attribute, and comparing the two values gives us
+	 * the current progress of the process.
+	 * 
+	 */
+	protected function set_current_step_total(int $value) {
+		$this->set_step_total($this->get_current_step(), $value);
+	}
+
+	/**
+	 * Sets the total attribute for a given step
+	 * 
+	 * The "total" attribute of a step indicates the number of iterations this step will take to complete.
+	 * 
+	 * The iteration is counted using $this->in_step_count attribute, and comparing the two values gives us
+	 * the current progress of the process.
+	 * 
+	 */
+	protected function set_step_total(int $step, int $value) {
+		$steps = $this->get_steps();
+		if (isset($steps[$step]) && is_array($steps[$step])) {
+			$steps[$step]['total'] = $value;
+			$this->set_steps($steps);
+		}
 	}
 
 

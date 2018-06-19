@@ -22,6 +22,12 @@ class Importer_Handler {
 			'slug' => 'csv',
 			'class_name' => '\Tainacan\Importer\CSV'
 		]);
+		$this->register_importer([
+			'name' => 'Test Importer',
+			'description' => __('Create 2 test colletions with random items', 'tainacan'),
+			'slug' => 'test',
+			'class_name' => '\Tainacan\Importer\Test_Importer'
+		]);
 
 		do_action('tainacan_register_importers');
 
