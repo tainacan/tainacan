@@ -1,19 +1,22 @@
 <template>
-    <div class="page-container">
+    <div class="primary-page page-container">
         <tainacan-title />
 
         <h3>{{ $i18n.get('label_available_importers') }}</h3>
         <p>{{ $i18n.get('info_available_importers_helper') }}</p>
         <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
-        
-        <div
-                v-for="importerType in availableImporters"
-                :key="importerType.slug"
-                @click="onSelectImporter(importerType)">
-            <p>{{ importerType.label }}</p>
-            <p>{{ importerType.description }}</p>            
-        </div>
+        <div class="importer-types-container">
+            <div
+                    class="importer-type"
+                    v-for="importerType in availableImporters"
+                    :key="importerType.slug"
+                    @click="onSelectImporter(importerType)">
+                <h4>{{ importerType.name }}</h4>
+                <p>{{ importerType.description }}</p>            
+            </div>
 
+        </div>
+        
         <b-loading 
                 :active.sync="isLoading" 
                 :can-cancel="false"/>
@@ -35,8 +38,8 @@ export default {
         ...mapActions('importer', [
             'fetchAvailableImporters'
         ]),
-        onSelectImporter() {
-            this.$router.push(this.$routerHelper.getImporterEditionPath());
+        onSelectImporter(importerType) {
+            this.$router.push(this.$routerHelper.getImporterEditionPath(importerType.slug));
         }
     },
     created() {
@@ -57,6 +60,18 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+
+    .importer-types-container {
+        display: flex;
+        flex: wrap;
+
+        .importer-type {
+            border: 1px solid $tainacan-input-background;
+            padding: 15px;
+            margin: 20px;
+            cursor: pointer;
+        }
+    }
 
 </style>
 

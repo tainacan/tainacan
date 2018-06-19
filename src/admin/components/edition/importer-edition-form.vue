@@ -1,53 +1,69 @@
 <template>
     <div 
-            class="page-container">
+            class="primary-page page-container">
         <tainacan-title />
         <form 
                 class="tainacan-form" 
                 label-width="120px">
 
-            <div class="columns">
+            <b-field
+                    :addons="false">
+                <label class="label">{{ $i18n.get('label_source_file') }}</label>
+                <help-button 
+                        :title="$i18n.get('label_source_file')" 
+                        :message="$i18n.get('info_source_file_upload')"/>
+                <br>
+                <b-upload 
+                        v-model="importerFile"
+                        drag-drop>
+                    <section class="drop-inner">
+                        <div class="content has-text-centered">
+                            <p>
+                                <b-icon
+                                        icon="upload"
+                                        size="is-large"/>
+                            </p>
+                            <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
+                        </div>
+                    </section>
+                </b-upload>
+            </b-field>
 
-                <div class="column">
-                    <!-- Status -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_registered_importer_types')">
-                        <help-button 
-                                :title="$i18n.get('label_registered_importer_types')" 
-                                :message="$i18n.get('info_registered_importer_types_helper')"/>
-                        <b-select
-                                id="tainacan-select-registered-importer-types"
-                                v-model="importerType"
-                                :placeholder="$i18n.get('instruction_select_an_importer_type')">
-                            <option
-                                    v-for="anImporterType in importerTypes"
-                                    :key="anImporterType.slug"
-                                    :value="anImporterType.slug">{{ statusOption.label }}
-                            </option>
-                        </b-select>
-                    </b-field>
+            <!-- Target collection selection -------------------------------- --> 
+            <b-field
+                    v-if="form != undefined"
+                    :addons="false" 
+                    :label="$i18n.get('label_target_collection')">
+                <help-button 
+                        :title="$i18n.get('label_target_collection')" 
+                        :message="$i18n.get('info_target_collection_helper')"/>
+                <b-select
+                        id="tainacan-select-target-collection"
+                        v-model="form.collectionId"
+                        :loading="isFetchingCollections"
+                        :placeholder="$i18n.get('instruction_select_a_target_collection')">
+                    <option
+                            v-for="collection of collections"
+                            :key="collection.id"
+                            :value="collection.id">{{ collection.name }}
+                    </option>
+                </b-select>
+            </b-field>
 
-                    <!-- Target collection selection -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_target_collection')">
-                        <help-button 
-                                :title="$i18n.get('label_target_collection')" 
-                                :message="$i18n.get('info_target_collection_helper')"/>
-                        <b-select
-                                id="tainacan-select-target-collection"
-                                v-model="form.collectionId"
-                                :loading="isFetchingCollections"
-                                :placeholder="$i18n.get('instruction_select_a_target_collection')">
-                            <option
-                                    v-for="collection of collections"
-                                    :key="collection.id"
-                                    :value="collection.id">{{ collection.name }}
-                            </option>
-                        </b-select>
-                    </b-field>
-                    
+            <!-- Form submit -------------------------------- --> 
+            <div class="field is-grouped form-submit">
+                <div class="control">
+                    <button
+                            id="button-cancel-collection-creation"
+                            class="button is-outlined"
+                            type="button"
+                            @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                </div>
+                <div class="control">
+                    <button
+                            id="button-submit-collection-creation"
+                            @click.prevent="runImporter"
+                            class="button is-success">{{ $i18n.get('save') }}</button>
                 </div>
             </div>
         </form>
@@ -70,7 +86,7 @@ export default {
             isLoading: false,
             isFetchingCollections: false,
             form: {
-                collectionId
+                collectionId: Number
             },
             importerTypes: [],
             importerType: '',
@@ -92,42 +108,25 @@ export default {
         ...mapActions('collection', [
             'fetchCollectionsForParent',
         ]),
-        onSubmit() {
-            this.isLoading = true;
-
-            let data = { 
-                collection_id: this.collectionId
-            };
-            this.updateImporter({ sessionId: this.sessionId, options: data })
-            .then(updatedImporter => {    
-                
-                this.importer = updatedImporter;
-                this.form = this.updateImporter.options;
-
-                this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
-            })
-            .catch((errors) => {
-                this.$console.log(errors);
-                this.isLoading = false;
-            });
-        },
         createImporter() {
             // Puts loading on Draft Importer creation
             this.isLoading = true;
 
             // Creates draft Importer
-            let data = { collectionId: '' };
-            this.sendImporter(data).then(res => {
+            this.sendImporter(this.importerType)
+            .then(res => {
 
                 this.sessionId = res.id;
-                this.form = res.options;
+                this.importer = JSON.parse(JSON.stringify(res));
+
+                this.form = this.importer.options;
                 this.isLoading = false;
                 
             })
             .catch(error => this.$console.error(error));
         },
         cancelBack(){
-            this.$router.push(this.$routerHelper.getCollectionsPath());
+            this.$router.go(-1);
         },
         runImporter() {
             this.runImporter({ sessionId: this.sessionId })
@@ -141,20 +140,22 @@ export default {
     },
     created(){
 
-        if (this.$route.fullPath.split("/").pop() == "new") {
+        this.importerType = this.$route.params.importerSlug;
+
+        if (this.$route.params.sessionId == undefined || this.$route.params.sessionId == null) {
             this.createImporter();
         } else {
 
             this.isLoading = true;
 
-            // Obtains current Session ID from URL
-            this.pathArray = this.$route.fullPath.split("/").reverse(); 
-            this.sessionId = this.pathArray[1];
+            this.sessionId = this.$route.params.sessionId
 
             this.fetchImporter(this.sessionId).then(res => {
-                this.importer = res;
-                this.form = res.options;
-                this.isLoading = false; 
+                this.sessionId = res.id;
+                this.importer = JSON.parse(JSON.stringify(res));
+
+                this.form = this.importer.options;
+                this.isLoading = false;
             });
         } 
 
@@ -170,14 +171,6 @@ export default {
             this.isFetchingCollections = false;
         }); 
 
-    },
-    mounted() {
-
-        if (this.$route.fullPath.split("/").pop() != "new") {
-            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
-            });
-        }
     }
 
 }
@@ -197,6 +190,10 @@ export default {
         font-weight: 500 !important;
         color: $tertiary !important;
         line-height: 1.2em;
+    }
+
+    .drop-inner{
+        padding: 1rem 3rem;
     }
 
 </style>

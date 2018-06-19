@@ -274,8 +274,8 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getEventEditPath(id) {
             return '/events/' + id + '/edit';
         },
-        getImporterEditionPath() {
-            return '/importers/session';
+        getImporterEditionPath(importerType) {
+            return '/importers/' + importerType;
         },   
     }
 }

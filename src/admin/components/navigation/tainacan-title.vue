@@ -36,7 +36,6 @@ export default {
     name: 'TainacanTitle',
     data(){
         return {
-            wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             isRepositoryLevel: true,
             pageTitle: '',
             arrayRealPath: [],
@@ -67,6 +66,9 @@ export default {
         ...mapActions('event', [
             'fetchEventTitle'
         ]),
+        ...mapActions('importer', [
+            'fetchAvailableImporters'
+        ]),
         generateViewPath() {
 
             for (let i = 0; i < this.arrayRealPath.length; i++) {
@@ -96,8 +98,15 @@ export default {
                                 .then(eventName => this.arrayViewPath.splice(i, 1, eventName))
                                 .catch((error) => this.$console.error(error));
                             break;
+        
                     }
                     
+                } else if (this.arrayRealPath[i-1] == 'importers' && i > 0){
+                    this.fetchAvailableImporters()
+                        .then(importers => { 
+                            this.arrayViewPath.splice(i, 1, importers[this.arrayRealPath[i]].name);
+                        })
+                        .catch((error) => this.$console.error(error));
                 } else {
                     this.arrayViewPath.splice(i, 1, this.$i18n.get(this.arrayRealPath[i])); 
                 }
