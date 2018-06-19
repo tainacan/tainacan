@@ -280,13 +280,8 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_warning_selected_items_delete'       => __( 'Do you really want to permanently delete the selected items?', 'tainacan' ),
 	'info_warning_selected_items_trash'        => __( 'Do you really want to trash the selected items?', 'tainacan' ),
 	'info_warning_selected_taxonomies_delete'  => __( 'Do you really want to delete the selected taxonomies?', 'tainacan' ),
-<<<<<<< HEAD
-	'info_warning_related_collection'          => __( 'The metadata Collection related is required', 'tainacan' ),
-	'info_warning_no_metadata_found'             => __( 'No metadata found in this collection', 'tainacan' ),
-=======
-	'info_warning_collection_related'          => __( 'The metadata Collection related is required', 'tainacan' ),
+	'info_warning_collection_related'          => __( 'The metadata related collection is required', 'tainacan' ),
 	'info_warning_no_metadata_found'           => __( 'No metadata found in this collection', 'tainacan' ),
->>>>>>> d461f05933bd727ee4c1ff0d8b2fc9dfd272bdaa
 	'info_showing_items'                       => __( 'Showing items ', 'tainacan' ),
 	'info_showing_collections'                 => __( 'Showing collections ', 'tainacan' ),
 	'info_showing_taxonomies'                  => __( 'Showing taxonomies ', 'tainacan' ),
