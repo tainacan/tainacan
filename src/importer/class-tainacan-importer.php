@@ -89,7 +89,7 @@ abstract class Importer {
 	 */
 	protected $default_options = [];
 	
-	private $accpets = [
+	private $accepts = [
 		'file' => true,
 		'url'  => false,
 	];
@@ -436,8 +436,8 @@ abstract class Importer {
 	 * @return bool true for success, false if method does not exist
 	 */
 	public function add_import_method($method) {
-		if ( array_key_exists($method, $this->accpets) ) {
-			$this->acceps[$method] = true;
+		if ( array_key_exists($method, $this->accepts) ) {
+			$this->accepts[$method] = true;
 			return true;
 		}
 		return false;
@@ -452,8 +452,8 @@ abstract class Importer {
 	 * @return bool true for success, false if method does not exist
 	 */
 	public function remove_import_method($method) {
-		if ( array_key_exists($method, $this->accpets) ) {
-			$this->acceps[$method] = false;
+		if ( array_key_exists($method, $this->accepts) ) {
+			$this->accepts[$method] = false;
 			return true;
 		}
 		return false;
