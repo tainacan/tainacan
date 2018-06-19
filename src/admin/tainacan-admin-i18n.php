@@ -54,6 +54,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'unified'                                  => __( 'Unified', 'tainacan' ),
 	'add_more_one_search_criteria'             => __( 'Add more one search criteria', 'tainacan' ),
 	'clear_search'                             => __( 'Clear search', 'tainacan' ),
+	'run'		                               => __( 'Run', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),
@@ -91,8 +92,8 @@ return apply_filters('tainacan-admin-i18n',[
 	'title_metadatum_edition'                  => __( 'Metadata Edition', 'tainacan' ),
 	'title_collection_metadata_edition'        => __( 'Edit Metadata of', 'tainacan' ),
 	'title_collection_filters_edition'         => __( 'Edit Filters of', 'tainacan' ),
-	'title_importer_page'           => __( 'Importer', 'tainacan' ),
-	'title_available_importers_page'           => __( 'Available Importers', 'tainacan' ),
+	'title_importer_page'           		   => __( 'Importer', 'tainacan' ),
+	'title_importers_page'			           => __( 'Importers', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                              => __( 'Clear', 'tainacan' ),
@@ -220,6 +221,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_available_importers'				   => __( 'Available Importers', 'tainacan' ),
 	'label_target_collection'				   => __( 'Target Collection', 'tainacan' ),
 	'label_source_file'						   => __( 'Source file', 'tainacan' ),
+	'label_metadata_mapping'				   => __( 'Metadata mapping', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -315,7 +317,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_available_importers_helper'	   	   => __( 'The available importer type will affect the file or link that will provide your data besides deciding wich options are available to the importer.', 'tainacan' ),	
 	'info_target_collection_helper'		   	   => __( 'The collection to which imported data will be send.', 'tainacan' ),	
 	'info_source_file_upload'			   	   => __( 'The file containing the data to be imported.', 'tainacan' ),	
-
+	'info_metadata_mapping_helper'			   => __( 'Map each file metadata with the corresponding one in selected collection.', 'tainacan' ),	
 	// Tainacan Metadatum Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),
 	'tainacan-textarea'                        => __( 'Text area', 'tainacan' ),

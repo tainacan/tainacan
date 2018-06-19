@@ -348,7 +348,8 @@ abstract class Importer {
     public function add_file( $file ){
         $new_file = $this->upload_file( $file );
         if ( is_numeric( $new_file ) ) {
-            $this->tmp_file = get_attached_file( $new_file );
+			$this->tmp_file = get_attached_file( $new_file );
+			return true;
         } else {
             return false;
         }
@@ -390,12 +391,19 @@ abstract class Importer {
      * @param $path_file
      * @return array $response
      */
-    private function upload_file( $path_file ){
-        $name = basename( $path_file );
-        $file_array['name'] = $name;
-        $file_array['tmp_name'] = $path_file;
-        $file_array['size'] = filesize( $path_file );
-        return media_handle_sideload( $file_array, 0 );
+    private function upload_file( $file_array ){
+        //$name = basename( $path_file );
+        //$file_array['name'] = $name;
+        //$file_array['tmp_name'] = $path_file;
+        //$file_array['size'] = filesize( $path_file );
+		
+		if ( !function_exists('media_handle_upload') ) {
+			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+		}
+		//var_dump(media_handle_sideload( $file_array, 0 )); die;
+		return media_handle_sideload( $file_array, 0 );
     }
 
     /**

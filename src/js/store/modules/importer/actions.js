@@ -65,12 +65,19 @@ export const updateImporter = ( { commit }, { sessionId, options }) => {
 
 export const updateImporterFile = ( { commit }, { sessionId, file }) => {
     return new Promise(( resolve, reject ) => {
+        
+        let formData = new FormData();
+        formData.append('file', file)
 
-        axios.tainacan.put('importers/session/' + sessionId + '/file/' + file)
+        axios.tainacan.post('importers/session/' + sessionId + '/file', formData, {
+                headers: { 
+                    'Content-Type': 'multipart/form-data;', 
+                    'Content-Disposition': 'form-data; filename=' + file.name + '; filesize=' + file.size}, 
+            })
             .then( res => {
-                let importerFile = res.data;
-                commit('setImporterFile', importerFile);
-                resolve( importerFile );
+                let updatedImporter = res.data;
+                commit('setImporter', updatedImporter);
+                resolve( updatedImporter );
             })
             .catch(error => {
                 reject(error);
@@ -80,7 +87,7 @@ export const updateImporterFile = ( { commit }, { sessionId, file }) => {
 
 export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/importers/' + sessionId + 'sessionId')
+        axios.tainacan.get('/importers/session/' + sessionId + '/source_info')
         .then((res) => {
             let importerSourceInfo = res.data;
             commit('setImporterSourceInfo', importerSourceInfo);
@@ -95,7 +102,7 @@ export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
 export const runImporter = ( { commit } , { importerId }) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.post('importers/' + importerId + '/run')
+        axios.tainacan.post('importers/session/' + importerId + '/run')
             .then( res => {
                 let backgroundProcessId = res.data;
                 // probably send this a dedicated store to background process

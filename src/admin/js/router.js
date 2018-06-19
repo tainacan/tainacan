@@ -68,9 +68,8 @@ const routes = [
     { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_repository_events_page'), icon: 'flash'} },
     { path: '/events/:eventId', name: 'EventPage', component: EventPage, meta: {title: i18nGet('title_event_page'), icon: 'flash'} },
 
-    { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: {title: i18nGet('title_available_importers_page'), icon: 'file-multiple'} },
-    { path: '/importers/:importerSlug', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page'), icon: 'file-multiple'} },
-    { path: '/importers/:importerSlug/:sessionId', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page'), icon: 'file-multiple'} },
+    { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: {title: i18nGet('title_importers_page'), icon: 'file-multiple'} },
+    { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page'), icon: 'file-multiple'} },
 
     { path: '*', redirect: '/'}
 ];

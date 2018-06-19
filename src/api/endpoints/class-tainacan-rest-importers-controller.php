@@ -20,6 +20,9 @@ class REST_Importers_Controller extends REST_Controller {
 	 */
 	public function __construct(){
         $this->rest_base = 'importers';
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
 		parent::__construct();
     }
 
@@ -212,7 +215,7 @@ class REST_Importers_Controller extends REST_Controller {
     }
 
 
-    public function source_info() {
+    public function source_info( $request ) {
         $session_id = $request['session_id'];
         $importer = $_SESSION['tainacan_importer'][$session_id];
 
@@ -240,7 +243,7 @@ class REST_Importers_Controller extends REST_Controller {
 
     }
 
-    public function add_file() {
+    public function add_file( $request )  {
         $session_id = $request['session_id'];
         $importer = $_SESSION['tainacan_importer'][$session_id];
 

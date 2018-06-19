@@ -4,9 +4,11 @@
         <tainacan-title />
         <form 
                 class="tainacan-form" 
-                label-width="120px">
+                label-width="120px"
+                v-if="importer != undefined && importer != null">
 
             <b-field
+                    v-if="importer.accepts.file"
                     :addons="false">
                 <label class="label">{{ $i18n.get('label_source_file') }}</label>
                 <help-button 
@@ -14,7 +16,8 @@
                         :message="$i18n.get('info_source_file_upload')"/>
                 <br>
                 <b-upload 
-                        v-model="importerFile"
+                        :value="importerFile"
+                        @input="onUploadFile($event)"
                         drag-drop>
                     <section class="drop-inner">
                         <div class="content has-text-centered">
@@ -27,11 +30,12 @@
                         </div>
                     </section>
                 </b-upload>
+                <div v-if="importer.tmp_file != undefined">{{ importer.tmp_file }}</div>
             </b-field>
 
             <!-- Target collection selection -------------------------------- --> 
             <b-field
-                    v-if="form != undefined"
+                    v-if="importer.manual_collection"
                     :addons="false" 
                     :label="$i18n.get('label_target_collection')">
                 <help-button 
@@ -50,6 +54,31 @@
                 </b-select>
             </b-field>
 
+            <!-- Metadata Mapping -->
+            <b-field
+                    v-if="importer.manual_mapping"
+                    :addons="false" 
+                    :label="$i18n.get('label_metadata_mapping')">
+                <help-button 
+                        :title="$i18n.get('label_metadata_mapping')" 
+                        :message="$i18n.get('info_metadata_mapping_helper')"/>
+                <div class="columns">
+                    <div class="column">
+                        <ol v-if="importerSourceInfo != undefined">
+                            <li
+                                    v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
+                                    :key="index">{{ source_metadatum }}</li>
+                        </ol>
+                        <div v-else>
+                            Upload a source to load metadata.
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div>Select collection to list metadada. (no implemented)</div>
+                    </div>
+                </div>
+            </b-field>
+
             <!-- Form submit -------------------------------- --> 
             <div class="field is-grouped form-submit">
                 <div class="control">
@@ -63,7 +92,7 @@
                     <button
                             id="button-submit-collection-creation"
                             @click.prevent="runImporter"
-                            class="button is-success">{{ $i18n.get('save') }}</button>
+                            class="button is-success">{{ $i18n.get('run') }}</button>
                 </div>
             </div>
         </form>
@@ -121,12 +150,34 @@ export default {
 
                 this.form = this.importer.options;
                 this.isLoading = false;
+
+                if (this.importer.manual_collection)
+                    this.loadCollections();
                 
             })
             .catch(error => this.$console.error(error));
         },
         cancelBack(){
             this.$router.go(-1);
+        },
+        onUploadFile(file) {
+            this.updateImporterFile({ sessionId: this.sessionId, file: file[0] })
+            .then(updatedImporter => {    
+                this.importer = updatedImporter;
+                this.importerFile = this.importer.tmp_file;
+
+                this.fetchImporterSourceInfo(this.sessionId)
+                .then(importerSourceInfo => {    
+                    this.importerSourceInfo = importerSourceInfo;
+                    console.log(this.importerSourceInfo);
+                })
+                .catch((errors) => {
+                    this.$console.log(errors);
+                });
+            })
+            .catch((errors) => {
+                this.$console.log(errors);
+            });
         },
         runImporter() {
             this.runImporter({ sessionId: this.sessionId })
@@ -136,41 +187,26 @@ export default {
             .catch((errors) => {
                 this.$console.log(errors);
             });
+        },
+        loadCollections() {
+            // Generates options for target collection
+            this.isFetchingCollections = true;
+            this.fetchCollectionsForParent()
+            .then((collections) => {
+                this.collections = collections;
+                this.isFetchingCollections = false;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+                this.isFetchingCollections = false;
+            }); 
+
         }
     },
     created(){
 
         this.importerType = this.$route.params.importerSlug;
-
-        if (this.$route.params.sessionId == undefined || this.$route.params.sessionId == null) {
-            this.createImporter();
-        } else {
-
-            this.isLoading = true;
-
-            this.sessionId = this.$route.params.sessionId
-
-            this.fetchImporter(this.sessionId).then(res => {
-                this.sessionId = res.id;
-                this.importer = JSON.parse(JSON.stringify(res));
-
-                this.form = this.importer.options;
-                this.isLoading = false;
-            });
-        } 
-
-        // Generates options for target collection
-        this.isFetchingCollections = true;
-        this.fetchCollectionsForParent()
-        .then((collections) => {
-            this.collections = collections;
-            this.isFetchingCollections = false;
-        })
-        .catch((error) => {
-            this.$console.error(error);
-            this.isFetchingCollections = false;
-        }); 
-
+        this.createImporter();    
     }
 
 }
