@@ -19,7 +19,6 @@
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriteria)">
                             <option
                                     v-for="metadatum in metadata"
-                                    v-if="metadatum.enabled"
                                     :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}`"
                                     :key="metadatum.id"
                             >{{ metadatum.name }}</option>
