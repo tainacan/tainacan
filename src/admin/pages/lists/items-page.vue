@@ -134,11 +134,11 @@
                             {{ $i18n.get('add_items_external_source') + ' (Not ready)' }}
                         </b-dropdown-item>
                     </b-dropdown>
-
                 </div>
+
                 <!-- Displayed Metadata Dropdown -->
                 <div    
-                        v-if="!isOnTheme || registeredViewModes[viewMode].dynamic_metadata"
+                        v-if="!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
                         class="search-control-item">
                     <b-dropdown
                             ref="displayedMetadataDropdown"
@@ -184,6 +184,18 @@
                             <option
                                     v-for="metadatum in tableMetadata"
                                     v-if="
+                                        metadatum.slug === 'creation_date' || (
+                                            metadatum.metadata_type_object && 
+                                            metadatum.metadata_type_object.related_mapped_prop == 'title'
+                                    )"
+                                    :value="metadatum"
+                                    :key="metadatum.slug">
+                                {{ metadatum.name }}
+                            </option>
+                            <!-- Once we have sorting by metadata we can use this -->
+                            <!-- <option 
+                                    v-for="metadatum in tableMetadata"
+                                    v-if="
                                         metadatum.slug === 'creation_date' ||
                                         metadatum.slug === 'author_name' || (
                                             metadatum.id !== undefined &&
@@ -196,7 +208,7 @@
                                     :value="metadatum"
                                     :key="metadatum.slug">
                                 {{ metadatum.name }}
-                            </option>
+                            </option> -->
                         </b-select>
                         <button
                                 :disabled="totalItems <= 0"
@@ -242,7 +254,7 @@
                         class="search-control-item">
                     <b-field>
                         <b-dropdown
-                                v-model="adminViewMode"
+                                @change="onChangeAdminViewMode($event)"
                                 :mobile-modal="false"
                                 position="is-bottom-left"
                                 :aria-label="$i18n.get('label_view_mode')">
@@ -275,7 +287,6 @@
                 </div>
             </div>
 
-
             <!-- ADVANCED SEARCH -->
             <div
                     v-if="openAdvancedSearch">
@@ -294,7 +305,6 @@
                         :is-repository-level="isRepositoryLevel"
                         :metadata="metadata" />
             </div>
-
 
             <!-- --------------- -->
 
@@ -375,7 +385,7 @@
                         :displayed-metadata="tableMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode].component"/> 
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
                 
                 <!-- Regular -->
                 <component
@@ -388,8 +398,7 @@
                         :displayed-metadata="tableMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode].component"/>  
-   
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
@@ -417,17 +426,16 @@
                 </section>
 
                 <!-- Pagination -->
-
                 <!-- When advanced search -->
                 <pagination
                         v-if="totalItems > 0 &&
-                         (!isOnTheme || registeredViewModes[viewMode].show_pagination) &&
+                         (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
                           advancedSearchResults"/>
 
                 <!-- Regular -->
                 <pagination
                         v-else-if="totalItems > 0 &&
-                         (!isOnTheme || registeredViewModes[viewMode].show_pagination) &&
+                         (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
                           !openAdvancedSearch"/>
             </div>
         </div>
@@ -460,7 +468,6 @@
                 isHeaderShrinked: false,
                 localTableMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
-                adminViewMode: 'table',
                 openAdvancedSearch: false,
                 advancedSearchResults: false,
             }
@@ -494,6 +501,9 @@
             },
             viewMode() {
                 return this.getViewMode();
+            },
+            adminViewMode() {
+                return this.getAdminViewMode();
             },
             orderBy() {
                 return this.getOrderBy();
@@ -542,7 +552,8 @@
                 'getOrderBy',
                 'getOrder',
                 'getViewMode',
-                'getTotalItems'
+                'getTotalItems',
+                'getAdminViewMode'
             ]),
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
@@ -558,6 +569,9 @@
             },
             onChangeViewMode(viewMode) {
                 this.$eventBusSearch.setViewMode(viewMode);
+            },
+            onChangeAdminViewMode(adminViewMode) {
+                this.$eventBusSearch.setAdminViewMode(adminViewMode);
             },
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];
@@ -575,16 +589,19 @@
                 let creationDateMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 let authorNameMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'author_name');
 
+                // Updates Search
                 this.$eventBusSearch.addFetchOnly({
                     '0': thumbnailMetadatum.display ? 'thumbnail' : null,
                     'meta': fetchOnlyMetadatumIds,
                     '1': creationDateMetadatum.display ? 'creation_date' : null,
                     '2': authorNameMetadatum.display ? 'author_name': null
                 });
+
+                // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
             },
             prepareMetadataAndFilters() {
-
+                
                 this.isLoadingFilters = true;
 
                 this.fetchFilters({
@@ -597,14 +614,20 @@
                     .catch(() => this.isLoadingFilters = false);
 
                 this.isLoadingMetadata = true;
+                
                 // Processing is done inside a local variable
                 let metadata = [];
                 this.fetchMetadata({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: !this.isOnTheme
+                    isContextEdit: false
                 })
                     .then(() => {
+
+                        // Loads user prefs object as we'll need to check if there's something configured by user 
+                        let prefsFetchOnly = !this.isRepositoryLevel ? 'fetch_only_' + this.collectionId : 'fetch_only';
+                        let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly); 
+                        let thumbnailMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['0'] != null) : true;
 
                         metadata.push({
                             name: this.$i18n.get('label_thumbnail'),
@@ -612,7 +635,7 @@
                             metadata_type: undefined,
                             slug: 'thumbnail',
                             id: undefined,
-                            display: true
+                            display: thumbnailMetadatumDisplay
                         });
 
                         let fetchOnlyMetadatumIds = [];
@@ -622,10 +645,21 @@
 
                                 let display;
 
+                                // Deciding display based on collection settings
                                 if (metadatum.display == 'no')
                                     display = false;
                                 else if (metadatum.display == 'yes')
                                     display = true;
+
+                                // // Deciding display based on user prefs
+                                // if (prefsFetchOnlyObject != undefined && 
+                                //     prefsFetchOnlyObject.meta != undefined) {
+                                //     let index = prefsFetchOnlyObject.meta.findIndex(metadatumId => metadatumId == metadatum.id);
+                                //     if (index >= 0)
+                                //         display = true;
+                                //     else
+                                //         display = false;
+                                // }
 
                                 metadata.push(
                                     {
@@ -643,13 +677,16 @@
                             }
                         }
 
+                        let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
+                        let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
+
                         metadata.push({
                             name: this.$i18n.get('label_creation_date'),
                             metadatum: 'row_creation',
                             metadata_type: undefined,
                             slug: 'creation_date',
                             id: undefined,
-                            display: true
+                            display: creationDateMetadatumDisplay
                         });
                         metadata.push({
                             name: this.$i18n.get('label_created_by'),
@@ -657,22 +694,14 @@
                             metadata_type: undefined,
                             slug: 'author_name',
                             id: undefined,
-                            display: true
+                            display: authorNameMetadatumDisplay
                         });
 
-                        // this.prefTableMetadata = this.tableMetadata;
-                        // this.$userPrefs.get('table_columns_' + this.collectionId)
-                        //     .then((value) => {
-                        //         this.prefTableMetadata = value;
-                        //     })
-                        //     .catch((error) => {
-                        //         this.$userPrefs.set('table_columns_' + this.collectionId, this.prefTableMetadata, null);
-                        //     });
                         this.$eventBusSearch.addFetchOnly({
-                            '0': 'thumbnail',
+                            '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
                             'meta': fetchOnlyMetadatumIds,
-                            '1': 'creation_date',
-                            '2': 'author_name'
+                            '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
+                            '2': (authorNameMetadatumDisplay ? 'author_name' : null)
                         });
                         this.isLoadingMetadata = false;
                         this.tableMetadata = metadata;
@@ -683,7 +712,7 @@
             }
         },
         created() {
-
+            
             this.isOnTheme = (this.$route.name === null);
 
             this.isRepositoryLevel = (this.collectionId === undefined);
@@ -707,7 +736,8 @@
                 /* This condition is to prevent a incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level
                  */
-                if (this.collectionId === to.params.collectionId) {
+
+                if (this.isOnTheme || this.collectionId === to.params.collectionId) {
                     this.prepareMetadataAndFilters();
                 }
             });
@@ -717,6 +747,7 @@
             if(this.$route.query && this.$route.query.advancedSearch) {
                 this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
+
         },
         mounted() {
             
@@ -727,6 +758,22 @@
             this.prepareMetadataAndFilters();
             this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 
+            // Setting initial view mode on Theme
+            if (this.isOnTheme) {
+                let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
+                if (this.$userPrefs.get(prefsViewMode) == undefined)
+                    this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
+                else 
+                    this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+            } else {
+                let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
+                
+                if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
+                    this.$eventBusSearch.setInitialAdminViewMode('table');
+                else 
+                    this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
+            }
+            
             // Watch Scroll for shrinking header, only on Admin at collection level
             if (!this.isRepositoryLevel && !this.isOnTheme) {
                 document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
@@ -921,8 +968,8 @@
     }
 
     .table-container {
-        padding-left: 8.333333%;
-        padding-right: 8.333333%;
+        padding-left: 4.166666667%;
+        padding-right: 4.166666667%;
         min-height: 200px;
         //height: calc(100% - 82px);
     }

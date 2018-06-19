@@ -108,8 +108,16 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'events_per_page': 12,
             'order': 'DESC',
             'order_by': { 
-                id: 'creation_date',
+                slug: 'creation_date',
                 name: 'Creation Date'
+            },
+            'view_mode': 'table',
+            'admin_view_mode': 'table',
+            'fetch_only': {
+                0: 'thumbnail',
+                1: 'creation_date',
+                2: 'author_name',
+                meta: []
             }
         },
         init() {
@@ -139,7 +147,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                     if (prefs[key]) { 
                         resolve( prefs[key] );  
                     } else {
-                        reject('Key ' + key + 'does not exists in user preference.');
+                        reject('Key ' + key + ' does not exists in user preference.');
                     }
                 })
                 .catch(error => {
@@ -193,6 +201,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getEventsPath(query) {
             return '/events/?' + qs.stringify(query);
+        },
+        getAvailableImportersPath() {
+            return '/importers/new';
         },
         // Singles
         getCollectionPath(id) {
@@ -262,7 +273,10 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getEventEditPath(id) {
             return '/events/' + id + '/edit';
-        }   
+        },
+        getImporterEditionPath(importerType) {
+            return '/importers/' + importerType;
+        },   
     }
 }
 

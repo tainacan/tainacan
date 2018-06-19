@@ -56,7 +56,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
             $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
             $collections = $Tainacan_Collections->fetch([], 'OBJECT');
-            $this->assertEquals(3, $collections, 'total collection in this url does not match');
+            $this->assertEquals(3, count( $collections ), 'total collection in this url does not match');
 
             $this->assertTrue(true);    
         }
@@ -175,7 +175,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
 
         // count size of csv
-        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_progress_total_from_source() );
+        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
 
         // get metadata to mapping
         $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
@@ -195,7 +195,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		
 		$collection_definition = [
 			'id' => $collection->get_id(),
-			'total_items' => $_SESSION['tainacan_importer'][$id]->get_progress_total_from_source(),
+			'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
 		];
 		
         // get collection metadata to map
@@ -222,7 +222,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
 
-        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_progress_total_from_source(), count( $items ) );
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
     }
 
     /**

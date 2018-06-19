@@ -12,13 +12,6 @@
             <b-field :addons="false">
                 <label class="section-label">{{ $i18n.get('label_header_image') }}</label>
                 <div class="header-field">
-                    <a 
-                            class="button is-rounred is-secondary"
-                            id="button-edit-header-image" 
-                            :aria-label="$i18n.get('label_button_edit_header_image')"
-                            @click="headerImageMediaFrame.openFrame($event)">
-                        <b-icon icon="pencil" />
-                    </a>
                     <figure class="image">
                         <span 
                                 v-if="collection.header_image == undefined || collection.header_image == false"
@@ -29,7 +22,15 @@
                     </figure>
                     <div class="header-buttons-row">
                         <a 
-                                id="button-delete" 
+                                class="button is-rounded is-secondary"
+                                id="button-edit-header-image" 
+                                :aria-label="$i18n.get('label_button_edit_header_image')"
+                                @click="headerImageMediaFrame.openFrame($event)">
+                            <b-icon icon="pencil" />
+                        </a>
+                        <a 
+                                class="button is-rounded is-secondary"
+                                id="button-delete-header-image" 
                                 :aria-label="$i18n.get('label_button_delete_thumb')" 
                                 @click="deleteHeaderImage()">
                             <b-icon icon="delete" />
@@ -45,13 +46,7 @@
                     <b-field :addons="false">
                         <label class="section-label">{{ $i18n.get('label_thumbnail') }}</label>
                         <div class="thumbnail-field">
-                            <a 
-                                    class="button is-rounred is-secondary"
-                                    id="button-edit-thumbnail" 
-                                    :aria-label="$i18n.get('label_button_edit_thumb')"
-                                    @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                <b-icon icon="pencil" />
-                            </a>
+
                             <figure class="image">
                                 <span 
                                         v-if="collection.thumbnail.thumb == undefined || collection.thumbnail.thumb == false"
@@ -63,7 +58,15 @@
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
-                                        id="button-delete" 
+                                        class="button is-rounded is-secondary"
+                                        id="button-edit-thumbnail" 
+                                        :aria-label="$i18n.get('label_button_edit_thumb')"
+                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                    <b-icon icon="pencil" />
+                                </a>
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-delete-header-image" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteThumbnail()">
                                     <b-icon icon="delete" />
@@ -753,13 +756,16 @@ export default {
         line-height: 1.2em;
     }
 
-    #button-edit-thumbnail, #button-edit-header-image {
+    #button-edit-thumbnail, 
+    #button-edit-header-image,
+    #button-delete-thumbnail, 
+    #button-delete-header-image {
 
         border-radius: 100px !important;
         height: 40px !important;
         width: 40px !important;
-        bottom: -40px;
         z-index: 99;
+        margin-left: 16px !important;
         
         .icon {
             display: inherit;
@@ -771,6 +777,21 @@ export default {
     .header-field {  
         img {
             padding: 20px;
+        }
+        .image-placeholder {
+            position: relative;
+            left: 45%;
+            bottom: -100px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 99;
+            text-align: center;
+            color: gray;
+        }
+        .header-buttons-row {
+            text-align: right;
+            top: -42px;
+            position: relative;
         }
     }
     .thumbnail-field {  
@@ -790,31 +811,19 @@ export default {
             padding: 20px;
         }
         .image-placeholder {
-            position: absolute;
-            margin-left: 10px;
-            margin-right: 10px;
-            bottom: 50%;
+            position: relative;
+            left: 40px;
+            bottom: -100px;
             font-size: 0.8rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
         }
-        
         .thumbnail-buttons-row {
-            visibility: hidden;
-            display: inline-block;
             position: relative;
-            top: -20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 2px 8px;
-            border-radius: 0px 0px 0px 4px;
-            left: 88px;
-        }
-        &:hover {
-             .thumbnail-buttons-row {
-                 visibility: visible;
-            }
+            left: 80px;
+            bottom: -136px;
         }
     }
     .selected-cover-page {

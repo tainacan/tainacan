@@ -48,17 +48,6 @@ abstract class Importer {
 	
     
 	/**
-	 * The total number of iterations to be imported.
-	 *
-	 * if not possible to calculate, inform 0 (zero) and no progress bar will be displayed.
-	 * 
-	 * @var int
-	 */
-	protected $progress_total;
-	
-	protected $progress_current;
-	
-	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
 	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be imported, the mapping array 
@@ -100,7 +89,7 @@ abstract class Importer {
 	 */
 	protected $default_options = [];
 	
-	private $accpets = [
+	private $accepts = [
 		'file' => true,
 		'url'  => false,
 	];
@@ -190,13 +179,20 @@ abstract class Importer {
 		
     }
 	
-	public function _to_Array() {
-		$return = [];
+	public function _to_Array($short = false) {
+		$return = ['id' => $this->get_id()];
 		foreach ($this->array_attributes as $attr) {
 			$method = 'get_' . $attr;
 			$return[$attr] = $this->$method();
 		}
 		$return['class_name'] = get_class($this);
+
+		if ($short === false) {
+			$return['manual_collection'] = $this->manual_collection;
+			$return['manual_mapping'] = $this->manual_mapping;
+			$return['accepts'] = $this->accepts;
+		}
+
 		return $return;
 	}
 	
@@ -279,14 +275,6 @@ abstract class Importer {
         $this->tmp_file = $filepath;
     }
 	
-	public function get_progress_current() {
-		return $this->progress_current;
-	}
-	
-	public function set_progress_current($value) {
-		$this->progress_current = $value;
-	}
-	
 	public function get_collections() {
 		return $this->collections;
 	}
@@ -332,22 +320,6 @@ abstract class Importer {
         return $this->steps;
     }
 	
-	/**
-     * return the total progress number to calculate progress
-     *
-     * @return int Total of items
-     */
-    public function get_progress_total() {
-		if ( !isset( $this->progress_total ) ) {
-            if ( method_exists($this, 'get_progress_total_from_source') ) {
-				$this->progress_total = $this->get_progress_total_from_source();
-			} else {
-				$this->progress_total = 0;
-			}
-			
-		}
-		return $this->progress_total;
-	}
 	
 	private function get_transients() {
 		return $this->transients;
@@ -376,7 +348,8 @@ abstract class Importer {
     public function add_file( $file ){
         $new_file = $this->upload_file( $file );
         if ( is_numeric( $new_file ) ) {
-            $this->tmp_file = get_attached_file( $new_file );
+			$this->tmp_file = get_attached_file( $new_file );
+			return true;
         } else {
             return false;
         }
@@ -418,12 +391,19 @@ abstract class Importer {
      * @param $path_file
      * @return array $response
      */
-    private function upload_file( $path_file ){
-        $name = basename( $path_file );
-        $file_array['name'] = $name;
-        $file_array['tmp_name'] = $path_file;
-        $file_array['size'] = filesize( $path_file );
-        return media_handle_sideload( $file_array, 0 );
+    private function upload_file( $file_array ){
+        //$name = basename( $path_file );
+        //$file_array['name'] = $name;
+        //$file_array['tmp_name'] = $path_file;
+        //$file_array['size'] = filesize( $path_file );
+		
+		if ( !function_exists('media_handle_upload') ) {
+			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+		}
+		//var_dump(media_handle_sideload( $file_array, 0 )); die;
+		return media_handle_sideload( $file_array, 0 );
     }
 
     /**
@@ -464,8 +444,8 @@ abstract class Importer {
 	 * @return bool true for success, false if method does not exist
 	 */
 	public function add_import_method($method) {
-		if ( array_key_exists($method, $this->accpets) ) {
-			$this->acceps[$method] = true;
+		if ( array_key_exists($method, $this->accepts) ) {
+			$this->accepts[$method] = true;
 			return true;
 		}
 		return false;
@@ -480,8 +460,8 @@ abstract class Importer {
 	 * @return bool true for success, false if method does not exist
 	 */
 	public function remove_import_method($method) {
-		if ( array_key_exists($method, $this->accpets) ) {
-			$this->acceps[$method] = false;
+		if ( array_key_exists($method, $this->accepts) ) {
+			$this->accepts[$method] = false;
 			return true;
 		}
 		return false;
@@ -565,13 +545,13 @@ abstract class Importer {
     
 	
 	/**
-	 * Method implemented by the child importer class to return the total number of interations the importer must run
+	 * Method implemented by the child importer class to return the total number of items that will be imported
 	 *
 	 * Used to build the progress bar
 	 * 
 	 * @return int
 	 */
-	public function get_progress_total_from_source() {}
+	public function get_source_number_of_items() {}
 	
 	
 	

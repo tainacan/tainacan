@@ -135,7 +135,7 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
     commit('cleanAttachment');
     return new Promise(( resolve, reject ) => {
         axios.wp.post('/media/?post=' + item_id, file, {
-            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
+            headers: { 'Content-Type': 'multipart/form-data;', 'Content-Disposition': 'attachment; filename=' + file.name },
         })
             .then( res => {
                 let attachment = res.data;

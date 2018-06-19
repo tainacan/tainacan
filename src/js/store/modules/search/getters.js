@@ -52,6 +52,9 @@ export const getViewMode = state => {
     return state.postquery.view_mode;
 };
 
+export const getAdminViewMode = state => {
+    return state.postquery.admin_view_mode;
+};
 export const getFetchOnly = state => {
     return state.postquery.fetch_only;
 };

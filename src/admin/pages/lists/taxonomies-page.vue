@@ -33,7 +33,7 @@
                 <div>
                     <taxonomies-list
                             :is-loading="isLoading"
-                            :total-taxonomies="total"
+                            :total="total"
                             :page="page"
                             :taxonomies-per-page="taxonomiesPerPage"
                             :taxonomies="taxonomies"/>
@@ -106,7 +106,7 @@
 </template>
 
 <script>
-    import List from "../../components/lists/taxonomies-list.vue";
+    import TaxonomiesList from "../../components/lists/taxonomies-list.vue";
     import { mapActions, mapGetters } from 'vuex';
     //import moment from 'moment'
 
@@ -122,7 +122,7 @@
             }
         },
         components: {
-            List
+            TaxonomiesList
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -184,7 +184,7 @@
                 this.$userPrefs.set('taxonomies_per_page', 12);
             }
             
-            this.loadCategories();
+            this.load();
         }
     }
 </script>

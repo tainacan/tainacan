@@ -12,7 +12,7 @@
                         :label="$i18n.get('label_header_image')">
                     <div class="thumbnail-field">
                         <a
-                                class="button is-rounred is-secondary"
+                                class="button is-rounded is-secondary"
                                 id="button-edit-thumbnail"
                                 :aria-label="$i18n.get('label_button_edit_header_image')"
                                 @click="headerImageMediaFrame.openFrame($event)">

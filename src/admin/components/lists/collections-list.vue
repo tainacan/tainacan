@@ -361,7 +361,7 @@ export default {
 
     .selection-control {
         
-        padding: 6px 0px 0px 13px;
+        padding: 6px 0px 0px 12px;
         background: white;
         height: 40px;
 

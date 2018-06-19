@@ -31,6 +31,12 @@ abstract class Background_Process extends \WP_Background_Process {
 	 * @var string
 	 */
 	protected $table = '';
+
+	/**
+	 * ID of the process in the database
+	 * @var false|int
+	 */
+	protected $ID = false;
 	
 	/**
 	 * Prefix
@@ -60,6 +66,10 @@ abstract class Background_Process extends \WP_Background_Process {
 		global $wpdb;
 		$this->table = $wpdb->prefix . 'tnc_bg_process';
 	}
+
+	public function get_id() {
+		return $this->ID;
+	}
 	
 	
 	/**
@@ -81,6 +91,7 @@ abstract class Background_Process extends \WP_Background_Process {
 					'queued_on' => date('Y-m-d H:i:s')
 				]
 			);
+			$this->ID = $wpdb->insert_id;
 		}
 
 		return $this;
