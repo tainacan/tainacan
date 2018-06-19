@@ -15,7 +15,8 @@
                         :title="$i18n.get('label_source_file')" 
                         :message="$i18n.get('info_source_file_upload')"/>
                 <br>
-                <b-upload 
+                <b-upload
+                        v-if="importer.tmp_file == undefined" 
                         :value="importerFile"
                         @input="onUploadFile($event)"
                         drag-drop>
@@ -43,7 +44,8 @@
                         :message="$i18n.get('info_target_collection_helper')"/>
                 <b-select
                         id="tainacan-select-target-collection"
-                        v-model="form.collectionId"
+                        :value="collectionId"
+                        @input="onSelectCollection($event)"
                         :loading="isFetchingCollections"
                         :placeholder="$i18n.get('instruction_select_a_target_collection')">
                     <option
@@ -62,21 +64,37 @@
                 <help-button 
                         :title="$i18n.get('label_metadata_mapping')" 
                         :message="$i18n.get('info_metadata_mapping_helper')"/>
-                <div class="columns">
-                    <div class="column">
-                        <ol v-if="importerSourceInfo != undefined">
-                            <li
-                                    v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
-                                    :key="index">{{ source_metadatum }}</li>
-                        </ol>
-                        <div v-else>
-                            Upload a source to load metadata.
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div>Select collection to list metadada. (no implemented)</div>
+   
+                <div 
+                        v-if="importerSourceInfo != undefined && 
+                            importerSourceInfo != null">
+                    <div
+                            class="source-metadatum"
+                            v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
+                            :key="index"><p>{{ source_metadatum }}</p>
+                    
+                        <b-select
+                                v-if="collectionMetadata != undefined &&
+                                      collectionMetadata.length > 0 &&
+                                      !isFetchingCollectionMetadata"
+                                @input="onSelectCollectionMetadata($event, source_metadatum)"
+                                :placeholder="$i18n.get('label_select_metadatum')">
+                            <option
+                                    v-for="(metadatum, index) of collectionMetadata"
+                                    :key="index"
+                                    :value="metadatum.id"
+                                    :disabled="checkIfMetadatumIsAvailable(metadatum.id)">{{ metadatum.name }}
+                            </option>
+                        </b-select>
+                        <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
                     </div>
                 </div>
+                <div 
+                        v-if="importerSourceInfo == undefined || 
+                            importerSourceInfo == null">
+                    <p>{{ $i18n.get('info_upload_a_source_to_see_metadata') }}</p>
+                </div>
+ 
             </b-field>
 
             <!-- Form submit -------------------------------- --> 
@@ -90,8 +108,9 @@
                 </div>
                 <div class="control">
                     <button
+                            :disabled="sessionId == undefined || importer == undefined"
                             id="button-submit-collection-creation"
-                            @click.prevent="runImporter"
+                            @click.prevent="onRunImporter"
                             class="button is-success">{{ $i18n.get('run') }}</button>
                 </div>
             </div>
@@ -115,13 +134,20 @@ export default {
             isLoading: false,
             isFetchingCollections: false,
             form: {
-                collectionId: Number
+                
+            },
+            mappedCollection: {
+                'id': Number,
+                'mapping': {},
+                'total_items': Number
             },
             importerTypes: [],
             importerType: '',
             importerFile: {},
-            importerSourceInfo: {},
+            importerSourceInfo: null,
             collections: [],
+            collectionMetadata: [],
+            collectionId: undefined
         }
     },
     methods: {
@@ -132,10 +158,14 @@ export default {
             'updateImporter',
             'updateImporterFile',
             'fetchImporterSourceInfo',
+            'updateImporterCollection',
             'runImporter'
         ]),
         ...mapActions('collection', [
-            'fetchCollectionsForParent',
+            'fetchCollectionsForParent'
+        ]),
+        ...mapActions('metadata', [
+            'fetchMetadata'
         ]),
         createImporter() {
             // Puts loading on Draft Importer creation
@@ -169,7 +199,7 @@ export default {
                 this.fetchImporterSourceInfo(this.sessionId)
                 .then(importerSourceInfo => {    
                     this.importerSourceInfo = importerSourceInfo;
-                    console.log(this.importerSourceInfo);
+                    this.mappedCollection['total_items'] = this.importerSourceInfo.source_total_items;
                 })
                 .catch((errors) => {
                     this.$console.log(errors);
@@ -179,14 +209,35 @@ export default {
                 this.$console.log(errors);
             });
         },
-        runImporter() {
-            this.runImporter({ sessionId: this.sessionId })
-            .then(backgroundProcess => {    
-                this.$console.log(backgroundProcess);
-            })
-            .catch((errors) => {
-                this.$console.log(errors);
-            });
+        checkIfMetadatumIsAvailable(metadatumId) {
+            return this.mappedCollection['mapping'][metadatumId] != undefined;
+        },
+        onRunImporter() {
+            if (this.importer.manual_collection) {
+                this.updateImporterCollection({ sessionId: this.sessionId, collection: this.mappedCollection })
+                .then(updatedImporter => {    
+                    this.importer = updatedImporter;
+
+                    this.runImporter(this.sessionId)
+                    .then(backgroundProcess => {    
+                        this.$console.log(backgroundProcess);
+                    })
+                    .catch((errors) => {
+                        this.$console.log(errors);
+                    });
+                })
+                .catch((errors) => {
+                    this.$console.log(errors);
+                });
+            } else {
+                this.runImporter(this.sessionId)
+                .then(backgroundProcess => {    
+                    this.$console.log(backgroundProcess);
+                })
+                .catch((errors) => {
+                    this.$console.log(errors);
+                });
+            }
         },
         loadCollections() {
             // Generates options for target collection
@@ -200,11 +251,31 @@ export default {
                 this.$console.error(error);
                 this.isFetchingCollections = false;
             }); 
+        },
+        onSelectCollection(collectionId) {
+            this.collectionId = collectionId;
+            this.mappedCollection['id'] = collectionId;
 
+            // Generates options for metadata listing
+            this.isFetchingCollectionMetadata = true;
+            this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
+            .then((metadata) => {
+                this.collectionMetadata = metadata;
+                this.isFetchingCollectionMetadata = false;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+                this.isFetchingCollectionMetadata = false;
+            }); 
+            
+        },
+        onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum) {
+            this.isFetchingCollectionMetadata = true;
+            this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
+            this.isFetchingCollectionMetadata = false;
         }
     },
     created(){
-
         this.importerType = this.$route.params.importerSlug;
         this.createImporter();    
     }
@@ -226,6 +297,16 @@ export default {
         font-weight: 500 !important;
         color: $tertiary !important;
         line-height: 1.2em;
+    }
+
+    .source-metadatum {
+        padding: 2px 0;
+        border-bottom: 1px solid $tainacan-input-background;
+        width: 100%;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .drop-inner{

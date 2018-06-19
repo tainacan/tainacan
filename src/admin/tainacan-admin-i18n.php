@@ -56,7 +56,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
-	'add_another_search_criteria'             => __( 'Add another search criteria', 'tainacan' ),
+	'add_more_one_search_criteria'             => __( 'Add more one search criteria', 'tainacan' ),
 	'clear_search'                             => __( 'Clear search', 'tainacan' ),
 	'run'		                               => __( 'Run', 'tainacan' ),
 
@@ -148,7 +148,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_yes'                                => __( 'Yes', 'tainacan' ),
 	'label_no'                                 => __( 'No', 'tainacan' ),
 	'label_approved'                                 => __( 'Approved', 'tainacan' ),
-	'label_related_collection'                 => __( 'Related Collection', 'tainacan' ),
+	'label_collection_related'                 => __( 'Collection Related', 'tainacan' ),
 	'label_metadata_for_search'                  => __( 'Metadata for search', 'tainacan' ),
 	'label_allow_repeated_items'               => __( 'Allow repeated items', 'tainacan' ),
 	'label_select_taxonomy'                    => __( 'Select taxonomy', 'tainacan' ),
@@ -226,6 +226,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_target_collection'				   => __( 'Target Collection', 'tainacan' ),
 	'label_source_file'						   => __( 'Source file', 'tainacan' ),
 	'label_metadata_mapping'				   => __( 'Metadata mapping', 'tainacan' ),
+	'label_select_metadatum'				   => __( 'Select metadatum', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -284,7 +285,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_warning_selected_items_delete'       => __( 'Do you really want to permanently delete the selected items?', 'tainacan' ),
 	'info_warning_selected_items_trash'        => __( 'Do you really want to trash the selected items?', 'tainacan' ),
 	'info_warning_selected_taxonomies_delete'  => __( 'Do you really want to delete the selected taxonomies?', 'tainacan' ),
-	'info_warning_collection_related'          => __( 'The metadata related collection is required', 'tainacan' ),
+	'info_warning_collection_related'          => __( 'The metadata Collection related is required', 'tainacan' ),
 	'info_warning_no_metadata_found'           => __( 'No metadata found in this collection', 'tainacan' ),
 	'info_showing_items'                       => __( 'Showing items ', 'tainacan' ),
 	'info_showing_collections'                 => __( 'Showing collections ', 'tainacan' ),
@@ -322,6 +323,9 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_target_collection_helper'		   	   => __( 'The collection to which imported data will be send.', 'tainacan' ),	
 	'info_source_file_upload'			   	   => __( 'The file containing the data to be imported.', 'tainacan' ),	
 	'info_metadata_mapping_helper'			   => __( 'Map each file metadata with the corresponding one in selected collection.', 'tainacan' ),	
+	'info_upload_a_source_to_see_metadata'	   => __( 'Upload a source file to load metadata.', 'tainacan' ),	
+	'info_select_collection_to_list_metadata'  => __( 'Select a target collection to list metadata.', 'tainacan' ),	
+		
 	// Tainacan Metadatum Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),
 	'tainacan-textarea'                        => __( 'Text area', 'tainacan' ),

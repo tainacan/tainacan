@@ -61,7 +61,7 @@ abstract class Importer {
 	 * Example of the structure of this propery for one collection:
 	 * 0 => [
 	 * 	'id' => 12,
-	 * 	'map' => [
+	 * 	'mapping' => [
 	 * 	  30 => 'column1'
 	 * 	  31 => 'column2'
 	 * 	],
@@ -774,7 +774,7 @@ abstract class Importer {
 		
         $collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
-		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['map']) ) {
+		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
 			$this->add_error_log('Collection misconfigured');
             return false;
 		}
@@ -790,7 +790,7 @@ abstract class Importer {
 
         if( is_array( $processed_item ) ){
             foreach ( $processed_item as $metadatum_source => $values ){
-                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['map'] );
+                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
                 $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
                 if( $metadatum instanceof Entities\Metadatum ){

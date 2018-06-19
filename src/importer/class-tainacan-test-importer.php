@@ -202,7 +202,7 @@ class Test_Importer extends Importer {
 		
 		$this->add_collection([
 			'id' => $col1->get_id(),
-			'map' => $col1_map,
+			'mapping' => $col1_map,
 			'total_items' => $this->get_col1_number_of_items(),
 			'source_id' => 'col1'
 		]);
@@ -232,7 +232,7 @@ class Test_Importer extends Importer {
 		
 		$this->add_collection([
 			'id' => $col2->get_id(),
-			'map' => $col2_map,
+			'mapping' => $col2_map,
 			'total_items' => $this->get_col2_number_of_items(),
 			'source_id' => 'col2'
 		]);
