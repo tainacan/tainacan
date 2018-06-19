@@ -153,13 +153,37 @@ class Old_Tainacan extends Importer{
 
         if( $collections && is_array( $collections ) ){
 
-            foreach( $collections as $collection ){
+            foreach( $collections as $collection ){ // loop collections
                 $map = $this->get_transient('collection_' . $collection->get_id() . '_relationships'); 
-                var_dump($map);
+                
+                foreach( $map as $metadatum_id => $items ){ // all relations in collection 
+                    $newMetadatum = new Entities\Metadatum($metadatum_id);
+
+                    $first_index_id = key($items); 
+                    $collection_id = $this->get_transient('item_' . $items[$first_index_id] . '_collection'); 
+
+                    $newMetadatum->set_metadata_type_options(['collection_id' => $collection_id ]);
+
+                    if($newMetadatum->validate()){
+                        $this->metadata_repo->update( $newMetadatum );
+                    }
+
+                    reset($items);
+                    foreach( $items as $item_id => $value_old ){ // all values
+                        $value_new = $this->get_transient('item_' . $value_old . '_id'); 
+                        $item = new Entities\Item($item_id);
+                        $item_metadata = new Entities\Item_Metadata_Entity( $item, $newMetadatum );
+
+                        $item_metadata->set_value($value_new);
+
+                        if( $item_metadata->validate() ){
+                            $this->item_metadata_repo->insert( $item_metadata );
+                        }
+                    }
+
+                }
             }
         }
-
-        // TODO: get all imported relationships and find the collection target
     }
 
     /**
@@ -185,6 +209,9 @@ class Old_Tainacan extends Importer{
 
                 if( $insertedItem->get_id() && is_array($collection_id['items'][$index]->metadata) ){
                     $this->add_item_metadata(  $insertedItem, $collection_id['items'][$index]->metadata, $collection_id );
+
+                    //inserting attachments
+                    $this->insert_attachments( $item_Old, $insertedItem );
                 }
 
             } else {
@@ -259,7 +286,7 @@ class Old_Tainacan extends Importer{
 
                         $id = $this->get_transient('term_' . $value . '_id');
                         if( $id )
-                            $values[] = intval($id);
+                            $values = intval($id);
 
                     }
 
@@ -268,11 +295,9 @@ class Old_Tainacan extends Importer{
 
                 if( $item_metadata->validate() ){
                     $inserted = $this->item_metadata_repo->insert( $item_metadata );
-                    
-                    // TODO: verify why taxonomies is not saving
                 } else {
-                    $this->add_error_log( 'Error inserting item' );
-                    $this->add_error_log( $item->get_errors() );
+                    $this->add_error_log( 'Error inserting metadatum' );
+                    $this->add_error_log( $item_metadata->get_errors() );
                     return false;
                 }
             }
@@ -613,5 +638,30 @@ class Old_Tainacan extends Importer{
         } 
 
         return $type;
+    }
+
+    /**
+     * create attachments from old
+     * 
+     * @param string $node_old 
+     * 
+     * @return string the class name
+     */
+    private function insert_attachments( $node_old, $item ){
+        if( isset( $node_old->attachments ) && $node_old->attachments ){
+            $TainacanMedia = \Tainacan\Media::get_instance();
+            $types = ['audio','video','image'];
+
+            foreach( $types as $type){
+                if( isset( $node_old->attachments->$type ) ){
+                    
+                    foreach( $node_old->attachments->$type as $attach){
+                        $TainacanMedia->insert_attachment_from_url($attach->url, $item->get_id());
+                    }
+                }
+            }
+
+            
+        }
     }
 }
