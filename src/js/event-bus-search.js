@@ -35,7 +35,7 @@ export default {
             },
             watch: {
                 '$route' (to, from) {
-                    
+
                     this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
 
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
@@ -60,23 +60,23 @@ export default {
                             let orderBy = this.$userPrefs.get(orderByKey);
 
                             if (orderBy) {
-                                if (orderBy.slug == 'creation_date') {
-                                    this.$route.query.orderby = 'date';
-                                } else if (orderBy.slug == 'author_name') {
-                                    this.$route.query.orderby = 'author_name';
-                                } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
-                                    this.$route.query.orderby = 'meta_value_num';
-                                    this.$route.query.meta_key = orderBy.id;
-                                } else if (orderBy.metadata_type_object.primitive_type == 'date') {
-                                    this.$route.query.orderby = 'meta_value';
-                                    this.$route.query.meta_key = orderBy.id;
-                                    this.$route.query.meta_type = 'DATETIME';
-                                } else if (orderBy.metadata_type_object.core) {
-                                    this.$route.query.orderby =  orderBy.metadata_type_object.related_mapped_prop;
-                                } else {
-                                    this.$route.query.orderby = 'meta_value';
-                                    this.$route.query.meta_key = orderBy.id;
-                                }
+                                // if (orderBy.slug == 'creation_date') {
+                                //     this.$route.query.orderby = 'date';
+                                // } else if (orderBy.slug == 'author_name') {
+                                //     this.$route.query.orderby = 'author_name';
+                                // } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
+                                //     this.$route.query.orderby = 'meta_value_num';
+                                //     this.$route.query.meta_key = orderBy.id;
+                                // } else if (orderBy.metadata_type_object.primitive_type == 'date') {
+                                //     this.$route.query.orderby = 'meta_value';
+                                //     this.$route.query.meta_key = orderBy.id;
+                                //     this.$route.query.meta_type = 'DATETIME';
+                                // } else if (orderBy.metadata_type_object.core) {
+                                //     this.$route.query.orderby =  orderBy.metadata_type_object.related_mapped_prop;
+                                // } else {
+                                //     this.$route.query.orderby = 'meta_value';
+                                //     this.$route.query.meta_key = orderBy.id;
+                                // }
 
                             } else {
                                 this.$route.query.orderby = 'date';
@@ -87,8 +87,8 @@ export default {
                             }
                         }
                         
-                        if(this.$route.query.metaquery && this.$route.query.metaquery.advancedSearch){
-                            this.$store.dispatch('search/set_advanced_query', this.$route.query.metaquery);
+                        if(this.$route.query && this.$route.query.advancedSearch){
+                            this.$store.dispatch('search/set_advanced_query', this.$route.query);
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
@@ -100,7 +100,7 @@ export default {
             methods: {
                 searchAdvanced(data) {
                     this.$store.dispatch('search/set_advanced_query', data);
-                    this.updateURLQueries(true);
+                    this.updateURLQueries();
                 },
                 add_metaquery( data ){
                     if ( data && data.collection_id ){
@@ -174,9 +174,8 @@ export default {
                     this.$store.dispatch('search/setViewMode', viewMode);
                     this.updateURLQueries();  
                 },
-                updateURLQueries(isAdvancedSearch) {
+                updateURLQueries() {
                     this.$router.push({query: {}});
-                    this.$route.meta['advancedSearch'] = isAdvancedSearch;
                     this.$router.push({query: this.$store.getters['search/getPostQuery']});
                 },
                 updateStoreFromURL() {
@@ -199,6 +198,7 @@ export default {
                             this.$emit( 'hasFiltered', res.hasFiltered);
 
                             if(res.advancedSearchResults){
+                                this.$router.push({query: this.$store.getters['search/getPostQuery'],});
                                 this.$emit('advancedSearchResults', res.advancedSearchResults);
                             }
                         })

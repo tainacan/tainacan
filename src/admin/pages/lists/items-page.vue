@@ -292,7 +292,7 @@
                 </div>
                 <advanced-search
                         :is-repository-level="isRepositoryLevel"
-                        :metadata-list="metadata" />
+                        :metadata="metadata" />
             </div>
 
 
@@ -362,16 +362,34 @@
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
+                
+                <!-- When advanced search -->
                 <component
                         v-if="isOnTheme && 
                               !isLoadingItems && 
                               registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'component'"
+                              registeredViewModes[viewMode].type == 'component' &&
+                              openAdvancedSearch &&
+                              advancedSearchResults"
                         :collection-id="collectionId"
                         :displayed-metadata="tableMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
-                        :is="registeredViewModes[viewMode].component"/>     
+                        :is="registeredViewModes[viewMode].component"/> 
+                
+                <!-- Regular -->
+                <component
+                        v-else-if="isOnTheme && 
+                              !isLoadingItems && 
+                              registeredViewModes[viewMode] != undefined &&
+                              registeredViewModes[viewMode].type == 'component' &&
+                              !openAdvancedSearch"
+                        :collection-id="collectionId"
+                        :displayed-metadata="tableMetadata"
+                        :items="items"
+                        :is-loading="isLoadingItems"
+                        :is="registeredViewModes[viewMode].component"/>  
+   
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
@@ -696,14 +714,14 @@
 
             this.$eventBusSearch.setViewMode(this.defaultViewMode);
 
-            if(this.$router.query && this.$router.query.metaquery && this.$router.query.metaquery.advancedSearch) {
-                this.openAdvancedSearch = this.$router.query.metaquery.advancedSearch;
+            if(this.$route.query && this.$route.query.advancedSearch) {
+                this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
         },
         mounted() {
             
-            if(this.$router.query && this.$router.query.metaquery && this.$router.query.metaquery.advancedSearch) {
-                this.openAdvancedSearch = this.$router.query.advancedSearch;
+            if(this.$route.query && this.$route.query.advancedSearch) {
+                this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
 
             this.prepareMetadataAndFilters();

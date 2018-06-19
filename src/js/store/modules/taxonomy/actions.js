@@ -1,4 +1,5 @@
 import axios from '../../../axios/axios'
+import qs from 'qs'
 
 // TAXONOMIES
 export const createTaxonomy = ({commit}, taxonomy) => {
@@ -169,9 +170,18 @@ export const updateTerm = ({ commit }, { taxonomyId, termId, name, description, 
     });
 };
 
-export const fetchTerms = ({ commit }, taxonomyId ) => {
+export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search}) => {
+    
+    let query = '';
+    
+    if(fetchOnly && search){
+        query = `?order=asc&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+    } else {
+        query = '?hideempty=0&order=asc';
+    }
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/taxonomy/${taxonomyId}/terms/?hideempty=0&order=asc`)
+        axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
                 let terms = res.data;
                 commit('setTerms', terms);

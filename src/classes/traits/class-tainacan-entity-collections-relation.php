@@ -21,7 +21,11 @@ trait Entity_Collections_Relation {
 			$this->collections = [];
 			
 			foreach ($this->get_collections_ids() as $col_id) {
-				$this->collections[] = $Tainacan_Collections->fetch($col_id);
+                $collection = $Tainacan_Collections->fetch($col_id);
+
+                if($collection instanceof \Tainacan\Entities\Collection){
+                    $this->collections[] = $collection;
+                }
 			}
 			
             return $this->collections;

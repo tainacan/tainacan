@@ -51,7 +51,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
-	'add_more_one_search_criteria'             => __( 'Add more one search criteria', 'tainacan' ),
+	'add_another_search_criteria'             => __( 'Add another search criteria', 'tainacan' ),
 	'clear_search'                             => __( 'Clear search', 'tainacan' ),
 
 	// Wordpress Status
@@ -140,7 +140,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_yes'                                => __( 'Yes', 'tainacan' ),
 	'label_no'                                 => __( 'No', 'tainacan' ),
 	'label_approved'                                 => __( 'Approved', 'tainacan' ),
-	'label_collection_related'                 => __( 'Collection Related', 'tainacan' ),
+	'label_related_collection'                 => __( 'Related Collection', 'tainacan' ),
 	'label_metadata_for_search'                  => __( 'Metadata for search', 'tainacan' ),
 	'label_allow_repeated_items'               => __( 'Allow repeated items', 'tainacan' ),
 	'label_select_taxonomy'                    => __( 'Select taxonomy', 'tainacan' ),
@@ -269,7 +269,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_warning_selected_items_delete'       => __( 'Do you really want to permanently delete the selected items?', 'tainacan' ),
 	'info_warning_selected_items_trash'       => __( 'Do you really want to trash the selected items?', 'tainacan' ),
 	'info_warning_selected_taxonomies_delete'  => __( 'Do you really want to delete the selected taxonomies?', 'tainacan' ),
-	'info_warning_collection_related'          => __( 'The metadata Collection related is required', 'tainacan' ),
+	'info_warning_related_collection'          => __( 'The metadata Collection related is required', 'tainacan' ),
 	'info_warning_no_metadata_found'             => __( 'No metadata found in this collection', 'tainacan' ),
 	'info_showing_items'                       => __( 'Showing items ', 'tainacan' ),
 	'info_showing_collections'                 => __( 'Showing collections ', 'tainacan' ),

@@ -314,7 +314,7 @@ export default {
         },
         loadTerms() {
             this.isLoadingTerms = true;
-            this.fetchTerms(this.taxonomyId)
+            this.fetchTerms({ taxonomyId: this.taxonomyId, fetchOnly: '', search: ''})
                 .then(() => {
                     // Fill this.form data with current data.
                     this.isLoadingTerms = false;

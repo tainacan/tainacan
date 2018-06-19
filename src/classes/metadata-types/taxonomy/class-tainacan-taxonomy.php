@@ -32,7 +32,7 @@ class Taxonomy extends Metadata_Type {
     public function get_form_labels(){
         return [
             'taxonomy_id' => [
-                'title' => __( 'Collection Related', 'tainacan' ),
+                'title' => __( 'Related Collection', 'tainacan' ),
                 'description' => __( 'Select the collection to fetch items', 'tainacan' ),
             ],
             'input_type' => [

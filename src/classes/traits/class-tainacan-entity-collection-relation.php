@@ -34,7 +34,10 @@ trait Entity_Collection_Relation {
             $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
             $this->collection = $Tainacan_Collections->fetch($this->get_collection_id());
-            return $this->collection;
+
+            if($this->collection instanceof Entities\Collection){
+                return $this->collection;
+            }
         }
         
         return null;
