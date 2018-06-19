@@ -28,7 +28,7 @@ class Importer_Handler {
 	}
 	
 	function add_to_queue(\Tainacan\Importer\Importer $importer_object) {
-		$data = $importer_object->_to_Array();
+		$data = $importer_object->_to_Array(true);
 		$importer_object = $this->bg_importer->data($data)->save()->dispatch();
 		return $importer_object;
 	}

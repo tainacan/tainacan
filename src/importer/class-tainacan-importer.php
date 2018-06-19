@@ -179,13 +179,20 @@ abstract class Importer {
 		
     }
 	
-	public function _to_Array() {
+	public function _to_Array($short = false) {
 		$return = ['id' => $this->get_id()];
 		foreach ($this->array_attributes as $attr) {
 			$method = 'get_' . $attr;
 			$return[$attr] = $this->$method();
 		}
 		$return['class_name'] = get_class($this);
+
+		if ($short === false) {
+			$return['manual_collection'] = $this->manual_collection;
+			$return['manual_mapping'] = $this->manual_mapping;
+			$return['accepts'] = $this->accepts;
+		}
+
 		return $return;
 	}
 	
