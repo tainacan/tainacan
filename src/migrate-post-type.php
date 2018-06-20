@@ -168,4 +168,45 @@ function tainacan_migrate_post_type_field_to_metadatum(){
 	
 }
 
+
+if (!get_option('tainacan_fix_core_indexes')) {
+    
+    add_action('init', function() {
+        global $wpdb;
+        update_option('tainacan_fix_core_indexes', true);
+        $collections = \Tainacan\Repositories\Collections::get_instance()->fetch([], 'OBJECT');
+        
+        foreach ($collections as $collection) {
+
+            // get title 
+            $title_meta = $collection->get_core_title_metadatum();
+
+            // delete metadata if exists
+            $wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->postmeta WHERE meta_key = %s", $title_meta->get_id() ));
+            // create metadata
+            $wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->postmeta 
+                (post_id,meta_key,meta_value)
+                SELECT ID, %s, post_title FROM $wpdb->posts WHERE post_type = %s
+                ", $title_meta->get_id(), $collection->get_db_identifier() ));
+
+            // get description
+            $description_meta = $collection->get_core_description_metadatum();
+
+            // delete metadata if exists
+            $wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->postmeta WHERE meta_key = %s", $description_meta->get_id() ));
+
+            // create metadata
+            $wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->postmeta 
+                (post_id,meta_key,meta_value)
+                SELECT ID, %s, post_content FROM $wpdb->posts WHERE post_type = %s
+                ", $description_meta->get_id(), $collection->get_db_identifier() ));
+
+        }
+
+    });
+    
+
+}
+
+
 ?>
