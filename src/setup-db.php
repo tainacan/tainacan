@@ -24,7 +24,7 @@ function tainacan_create_bd_process_db() {
 	
 	$wpdb->query($query);
 
-	$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'wp_t' AND column_name = 'progress_label'"  );
+	$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'progress_label'"  );
 
     if(empty($column_exists)) {
 		$wpdb->query("

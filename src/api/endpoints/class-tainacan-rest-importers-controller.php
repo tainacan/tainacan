@@ -21,7 +21,7 @@ class REST_Importers_Controller extends REST_Controller {
 	public function __construct(){
         $this->rest_base = 'importers';
         if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+            @session_start(); // @ avoids Warnings when running phpunit tests
         }
 		parent::__construct();
     }
