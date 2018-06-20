@@ -154,7 +154,10 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
-        $result = $wpdb->get_results($query);
+        $result = $wpdb->get_row($query);
+
+        $result->log = $this->get_log_url($id, $result->action);
+        $result->error_log = $this->get_log_url($id, $result->action, 'error');
 
         return new \WP_REST_Response( $result, 200 );
 
@@ -218,6 +221,19 @@ class REST_Background_Processes_Controller extends REST_Controller {
         // TODO: delete log files
 
         return new \WP_REST_Response( $result, 200 );
+
+    }
+
+    public function get_log_url($id, $action, $type = '') {
+        $suffix = $type ? '-' . $type : '';
+		
+        $filename = 'bg-' . $action . '-' . $id . $suffix . '.log';
+        
+        $upload_url = wp_upload_dir();
+		$upload_url = trailingslashit( $upload_url['url'] );
+        $logs_url = $upload_url . 'tainacan';
+        
+        return $logs_url;
 
     }
 
