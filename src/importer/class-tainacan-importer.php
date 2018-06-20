@@ -529,7 +529,7 @@ abstract class Importer {
 	 */
 	public function get_progress_label() {
 		$current_step = $this->get_current_step();
-		$steps = $this->get_current_step();
+		$steps = $this->get_steps();
 		$label = '';
 		if ( isset($steps[$current_step]) ) {
 			$step = $steps[$current_step];
@@ -571,13 +571,13 @@ abstract class Importer {
 	 */
 	public function get_progress_value() {
 		$current_step = $this->get_current_step();
-		$steps = $this->get_current_step();
+		$steps = $this->get_steps();
 		$value = -1;
 
 		if ( isset($steps[$current_step]) ) {
 			$step = $steps[$current_step];
 
-			if ($step['callback'] == 'process_items') {
+			if ($step['callback'] == 'process_collections') {
 
 				$totalItems = 0;
 				$currentItem = $this->get_current_collection_item();

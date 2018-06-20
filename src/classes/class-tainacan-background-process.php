@@ -218,9 +218,18 @@ abstract class Background_Process extends \WP_Background_Process {
 	 */
 	protected function handle() {
 		$this->lock_process();
-		//error_log('new request');
+		
+		// while we are debugging performance
+		$newRequest = true;
+		
+		
 		do {
 			$batch = $this->get_batch();
+
+			if ($newRequest) {
+				$this->write_log($batch->key, ['New Request']);
+				$newRequest = false;
+			}
 			
 			// TODO: find a way to catch and log PHP errors as
 			try {
