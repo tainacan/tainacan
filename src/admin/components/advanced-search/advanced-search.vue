@@ -30,8 +30,8 @@
                             class="column is-two-thirds">
                         <b-input
                                 v-if="advancedSearchQuery.metaquery[searchCriteria]"
-                                :type="advancedSearchQuery.metaquery[searchCriteria].ptype == 'date' ?
-                                 'date' : (advancedSearchQuery.metaquery[searchCriteria].ptype == 'int' || advancedSearchQuery.metaquery[searchCriteria].ptype == 'float' ? 'number' : 'text')"
+                                :type="advancedSearchQuery.metaquery[searchCriteria].ptype == 'int' ||
+                                 advancedSearchQuery.metaquery[searchCriteria].ptype == 'float' ? 'number' : 'text'"
                                 @input="addValueToAdvancedSearchQuery($event, 'value', searchCriteria)"
                                 />
                         <b-taginput
@@ -73,27 +73,25 @@
                 </b-field>
 
             </div>
+
+            <!-- Add button -->
             <div
                     :style="{'padding-left': '25px !important'}"
                     class="field column is-12">
-
-                <div class="is-inline">
+                <a
+                    @click="addSearchCriteria"
+                    class="is-secondary is-small">
                     <b-icon
                             icon="plus-circle"
                             size="is-small"
                             type="is-secondary"/>
-                    <a
-                            @click="addSearchCriteria"
-                            class="is-secondary is-small">
-                        {{ $i18n.get('add_another_search_criteria') }}</a>
-                </div>
-
+                    {{ $i18n.get('add_another_search_criteria') }}</a>
             </div>
+
+            <!-- Tags -->
             <div 
-                :class="{'tag-container-border': Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0}"
                 class="field column is-12">
                 <b-field 
-                        :style="{'padding': '0.3rem 0 0 0'}"
                         grouped
                         group-multiline>
                     <div 
@@ -103,6 +101,7 @@
                         <b-tag 
                                 v-if="(advancedSearchQuery.taxquery[searchCriteria] && advancedSearchQuery.taxquery[searchCriteria].terms)"
                                 type="is-white"
+                                class="is-rounded"
                                 @close="removeThis(searchCriteria)" 
                                 attached 
                                 closable>
@@ -113,6 +112,7 @@
                         <b-tag 
                                 v-else-if="(advancedSearchQuery.metaquery[searchCriteria] && advancedSearchQuery.metaquery[searchCriteria].value)"
                                 type="is-white"
+                                class="is-rounded"
                                 @close="removeThis(searchCriteria)" 
                                 attached
                                 :loading="isFetching" 
@@ -124,6 +124,8 @@
                     </div>
                 </b-field>
             </div>
+
+            <!-- Clear and search button -->
             <div class="column">
                 <div class="field is-grouped is-pulled-right">
                     <p class="control">
@@ -155,15 +157,19 @@
         },
         data() {
             return {
-                metaqueryOperators: {
+                metaqueryOperatorsForInterval: {
                     '=': this.$i18n.get('is_equal_to'),
                     '!=': this.$i18n.get('is_not_equal_to'),
-                    'LIKE': this.$i18n.get('contains'),
-                    'NOT LIKE': this.$i18n.get('not_contains'),
                     '>': this.$i18n.get('greater_than'),
                     '<': this.$i18n.get('less_than'),
                     '>=': this.$i18n.get('greater_than_or_equal_to'),
                     '<=': this.$i18n.get('less_than_or_equal_to'),
+                },
+                metaqueryOperatorsRegular: {
+                    '=': this.$i18n.get('is_equal_to'),
+                    '!=': this.$i18n.get('is_not_equal_to'),
+                    'LIKE': this.$i18n.get('contains'),
+                    'NOT LIKE': this.$i18n.get('not_contains'),
                 },
                 taxqueryOperators: {
                     'IN': this.$i18n.get('contains'),
@@ -222,7 +228,13 @@
                 if(this.advancedSearchQuery.taxquery[searchCriteria]){
                     return this.taxqueryOperators;
                 } else if(this.advancedSearchQuery.metaquery[searchCriteria]){
-                    return this.metaqueryOperators;
+                    if(this.advancedSearchQuery.metaquery[searchCriteria].ptype == 'int' ||
+                    this.advancedSearchQuery.metaquery[searchCriteria].ptype == 'float' ||
+                    this.advancedSearchQuery.metaquery[searchCriteria].ptype == 'date'){
+                        return this.metaqueryOperatorsForInterval;
+                    } else{
+                        return this.metaqueryOperatorsRegular;
+                    }
                 }
             },
             removeThis(searchCriteria){
@@ -352,14 +364,6 @@
         padding-right: $page-side-padding;
         padding-left: $page-side-padding;
         padding-bottom: 47px;
-
-        .tag-container-border {
-            border: 1px solid $tainacan-input-background;
-
-            span.tag{
-                color: $secondary;
-            }
-        }
 
         .column {
             padding: 0 0.3rem 0.3rem !important;

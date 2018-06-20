@@ -1,0 +1,13 @@
+.tags {
+    border: solid 1px $tainacan-input-background !important;
+    border-radius: 20px;
+
+    &:hover{
+        background-color: $tainacan-input-background;
+    }
+
+    .tag {
+        background: none !important;
+        margin-bottom: 0 !important;
+    }
+}

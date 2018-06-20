@@ -16,20 +16,24 @@
             </div>
         </div>
         <div class="level-right">
-            <span class="search-area">
+            <div class="search-area">
                 <div class="control has-icons-right is-small is-clearfix">
                     <input 
                             autocomplete="on" 
                             :placeholder="$i18n.get('instruction_search_on_repository')"
                             class="input is-small" 
                             type="search" 
-                            v-model="searchTerm">
-                    <span class="icon is-right">
-                        <i class="mdi mdi-magnify" />
-                    </span>
+                            :value="searchQuery"
+                            @input="futureSearchQuery = $event.target.value"
+                            @keyup.enter="updateSearch()">
+                        <span
+                                @click="updateSearch()"
+                                class="icon is-right">
+                            <i class="mdi mdi-magnify" />
+                        </span>
                 </div>
                 <a @click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>
-            </span>
+            </div>
             <a 
                     class="level-item" 
                     :href="wordpressAdmin">
@@ -47,7 +51,8 @@ export default {
         return {
             logoHeader: tainacan_plugin.base_url + '/admin/images/tainacan_logo_header.png',
             wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
-            searchTerm: ''
+            searchQuery: '',
+            futureSearchQuery: '',
         }
     },
     methods: {
@@ -55,10 +60,13 @@ export default {
           this.$router.push({
               path: '/items',
               query: {
-                  openAdvancedSearch: true
+                  advancedSearch: true
               }
           });
-        }
+        },
+        updateSearch() {
+            this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+        },  
     },
     props: {
         isMenuCompressed: false
@@ -133,7 +141,9 @@ export default {
                         width: 220px !important;
                     }
                     .icon {
+                        pointer-events: all;
                         color: $tertiary;
+                        cursor: pointer;
                         height: 27px;
                         font-size: 18px;
                     }

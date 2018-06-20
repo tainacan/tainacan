@@ -290,20 +290,36 @@
             <!-- ADVANCED SEARCH -->
             <div
                     v-if="openAdvancedSearch">
-                <div class="columns tnc-advanced-search-close">
-                    <div class="column">
-                        <button
-                                @click="openAdvancedSearch = false"
-                                class="button is-white is-pulled-right">
-                            <b-icon
-                                    size="is-small"
-                                    icon="close"/>
-                        </button>
-                    </div>
-                </div>
-                <advanced-search
-                        :is-repository-level="isRepositoryLevel"
-                        :metadata="metadata" />
+                    <b-collapse 
+                            class="show" 
+                            :open="advancedSearchResults ? false : true">
+                        <div
+                            slot="trigger" 
+                            slot-scope="props" 
+                            class="columns tnc-advanced-search-close">
+                            <div class="column">
+                                <button
+                                        @click="openAdvancedSearch = false"
+                                        class="button is-white is-pulled-right">
+                                    <b-icon
+                                            size="is-small"
+                                            icon="close"/>
+                                </button>
+                                <button 
+                                        class="button is-white is-pulled-right">
+                                    <span>
+                                        {{ props.open ? $i18n.get('hide_advanced_search') : $i18n.get('show_advanced_search') }}
+                                    </span>
+                                    <b-icon
+                                            :style="'margin-left'"
+                                            :icon="props.open ? 'menu-down' : 'menu-up'" />
+                                </button>
+                            </div>
+                        </div>
+                        <advanced-search
+                                :is-repository-level="isRepositoryLevel"
+                                :metadata="metadata" />
+                    </b-collapse>
             </div>
 
             <!-- --------------- -->
@@ -365,15 +381,17 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
                 
+                <!-- When advanced search -->
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
                               !isLoadingItems &&
+                              openAdvancedSearch &&
+                              advancedSearchResults &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
-                
-                <!-- When advanced search -->
+
                 <component
                         v-if="isOnTheme && 
                               !isLoadingItems && 
@@ -388,6 +406,14 @@
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
                 
                 <!-- Regular -->
+                <!-- Theme View Modes -->
+                <div 
+                        v-if="isOnTheme &&
+                              !isLoadingItems &&
+                              !openAdvancedSearch &&
+                              registeredViewModes[viewMode] != undefined &&
+                              registeredViewModes[viewMode].type == 'template'"
+                        v-html="itemsListTemplate"/>
                 <component
                         v-else-if="isOnTheme && 
                               !isLoadingItems && 
