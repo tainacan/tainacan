@@ -301,7 +301,7 @@ export default {
             this.isFetchingCollectionMetadata = true;
             this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
             .then((metadata) => {
-                this.collectionMetadata = metadata;
+                this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
                 this.isFetchingCollectionMetadata = false;
             })
             .catch((error) => {
@@ -311,12 +311,13 @@ export default {
             
         },
         onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum) {
-            this.isFetchingCollectionMetadata = true;
             this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
-            this.isFetchingCollectionMetadata = false;
+            // Necessary for causing reactivity to re-check if metadata remains available
+            this.collectionMetadata.push("");
+            this.collectionMetadata.pop();
         }
     },
-    created(){
+    created() {
         this.importerType = this.$route.params.importerSlug;
         this.createImporter();    
     }

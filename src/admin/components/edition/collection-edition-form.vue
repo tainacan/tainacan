@@ -783,14 +783,20 @@ export default {
             padding: 20px;
         }
         .image-placeholder {
-            position: relative;
-            left: 45%;
-            bottom: -100px;
-            font-size: 0.8rem;
+            position: absolute;
+            left: 30%;
+            right: 30%;
+            top: 40%;
+            font-size: 2.0rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
+            
+            @media screen and (max-width: 769px) {
+                font-size: 1.2rem;
+            }
+            
         }
         .header-buttons-row {
             text-align: right;
