@@ -7,6 +7,10 @@
                 }">
             <tainacan-title />
             <div :class="{ 'above-subheader': isRepositoryLevel }">
+
+                <b-loading 
+                        :active.sync="isLoading" 
+                        :can-cancel="false"/>
                 <events-list
                         :is-loading="isLoading"
                         :total-events="totalEvents"

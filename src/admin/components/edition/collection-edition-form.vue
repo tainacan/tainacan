@@ -221,17 +221,17 @@
             
                     <!-- Name -------------------------------- --> 
                     <b-field 
-                        :addons="false"
-                        :label="$i18n.get('label_name')"
-                        :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
-                        :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                            :addons="false"
+                            :label="$i18n.get('label_name')"
+                            :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
                         <help-button 
-                            :title="$i18n.getHelperTitle('collections', 'name')" 
-                            :message="$i18n.getHelperMessage('collections', 'name')"/>
+                                :title="$i18n.getHelperTitle('collections', 'name')" 
+                                :message="$i18n.getHelperMessage('collections', 'name')"/>
                         <b-input
-                            id="tainacan-text-name"
-                            v-model="form.name"
-                            @focus="clearErrors('name')"/>  
+                                id="tainacan-text-name"
+                                v-model="form.name"
+                                @focus="clearErrors('name')"/>  
                     </b-field>
                         
                     <!-- Description -------------------------------- --> 
@@ -420,7 +420,8 @@ export default {
             thumbnailMediaFrame: undefined,
             headerImageMediaFrame: undefined,
             registeredViewModes: tainacan_plugin.registered_view_modes,
-            viewModesList: []
+            viewModesList: [],
+            fromImporter: ''
         }
     },
     methods: {
@@ -656,6 +657,9 @@ export default {
     },
     created(){
 
+        if (this.$route.params.fromImporter != undefined)
+            this.fromImporter = this.$route.params.fromImporter;
+
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewCollection();
             this.isNewCollection = true;
@@ -779,14 +783,20 @@ export default {
             padding: 20px;
         }
         .image-placeholder {
-            position: relative;
-            left: 45%;
-            bottom: -100px;
-            font-size: 0.8rem;
+            position: absolute;
+            left: 30%;
+            right: 30%;
+            top: 40%;
+            font-size: 2.0rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
+            
+            @media screen and (max-width: 769px) {
+                font-size: 1.2rem;
+            }
+            
         }
         .header-buttons-row {
             text-align: right;

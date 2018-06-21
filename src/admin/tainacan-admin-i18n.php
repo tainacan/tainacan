@@ -227,6 +227,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_available_importers'				   => __( 'Available Importers', 'tainacan' ),
 	'label_target_collection'				   => __( 'Target Collection', 'tainacan' ),
 	'label_source_file'						   => __( 'Source file', 'tainacan' ),
+	'label_url_source_link'					   => __( 'URL Source link', 'tainacan' ),
 	'label_metadata_mapping'				   => __( 'Metadata mapping', 'tainacan' ),
 	'label_select_metadatum'				   => __( 'Select metadatum', 'tainacan' ),
 
@@ -327,6 +328,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_metadata_mapping_helper'			   => __( 'Map each file metadata with the corresponding one in selected collection.', 'tainacan' ),	
 	'info_upload_a_source_to_see_metadata'	   => __( 'Upload a source file to load metadata.', 'tainacan' ),	
 	'info_select_collection_to_list_metadata'  => __( 'Select a target collection to list metadata.', 'tainacan' ),	
+	'info_url_source_link_helper'			   => __( 'Link to file containing the data to be imported.', 'tainacan' ),	
 		
 	// Tainacan Metadatum Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),

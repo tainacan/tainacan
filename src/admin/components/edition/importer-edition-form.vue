@@ -7,6 +7,42 @@
                 label-width="120px"
                 v-if="importer != undefined && importer != null">
 
+
+            <!-- Target collection selection -------------------------------- --> 
+            <b-field
+                    v-if="importer.manual_collection"
+                    :addons="false" 
+                    :label="$i18n.get('label_target_collection')">
+                <help-button 
+                        :title="$i18n.get('label_target_collection')" 
+                        :message="$i18n.get('info_target_collection_helper')"/>
+                <br>
+                <div class="is-inline">
+                    <b-select
+                            id="tainacan-select-target-collection"
+                            :value="collectionId"
+                            @input="onSelectCollection($event)"
+                            :loading="isFetchingCollections"
+                            :placeholder="$i18n.get('instruction_select_a_target_collection')">
+                        <option
+                                v-for="collection of collections"
+                                :key="collection.id"
+                                :value="collection.id">{{ collection.name }}
+                        </option>
+                    </b-select>
+                    <router-link
+                            tag="a" 
+                            class="is-inline add-link"     
+                            :to="{ path: $routerHelper.getNewCollectionPath(), params: { fromImporter: importerType }}">
+                        <b-icon
+                                icon="plus-circle"
+                                size="is-small"
+                                type="is-secondary"/>
+                            {{ $i18n.get('new_blank_collection') }}</router-link>
+                </div>
+            </b-field>
+
+            <!-- File Source input -->
             <b-field
                     v-if="importer.accepts.file"
                     :addons="false">
@@ -34,28 +70,20 @@
                 <div v-if="importer.tmp_file != undefined">{{ importer.tmp_file }}</div>
             </b-field>
 
-            <!-- Target collection selection -------------------------------- --> 
-            <b-field
-                    v-if="importer.manual_collection"
-                    :addons="false" 
-                    :label="$i18n.get('label_target_collection')">
+            <!-- URL source input -------------------------------- --> 
+            <b-field 
+                    v-if="importer.accepts.url"
+                    :addons="false"
+                    :label="$i18n.get('label_url_source_link')">
                 <help-button 
-                        :title="$i18n.get('label_target_collection')" 
-                        :message="$i18n.get('info_target_collection_helper')"/>
-                <b-select
-                        id="tainacan-select-target-collection"
-                        :value="collectionId"
-                        @input="onSelectCollection($event)"
-                        :loading="isFetchingCollections"
-                        :placeholder="$i18n.get('instruction_select_a_target_collection')">
-                    <option
-                            v-for="collection of collections"
-                            :key="collection.id"
-                            :value="collection.id">{{ collection.name }}
-                    </option>
-                </b-select>
+                        :title="$i18n.get('label_url_source_link')" 
+                        :message="$i18n.get('info_url_source_link_helper')"/>
+                <b-input
+                        id="tainacan-url-link-source"
+                        :value="url"
+                        @input="onInputURL($event)"/>  
             </b-field>
-
+                    
             <!-- Metadata Mapping -->
             <b-field
                     v-if="importer.manual_mapping"
@@ -147,7 +175,8 @@ export default {
             importerSourceInfo: null,
             collections: [],
             collectionMetadata: [],
-            collectionId: undefined
+            collectionId: undefined,
+            url: ''
         }
     },
     methods: {
@@ -157,6 +186,7 @@ export default {
             'sendImporter',
             'updateImporter',
             'updateImporterFile',
+            'updateImporterURL',
             'fetchImporterSourceInfo',
             'updateImporterCollection',
             'runImporter'
@@ -212,6 +242,17 @@ export default {
         checkIfMetadatumIsAvailable(metadatumId) {
             return this.mappedCollection['mapping'][metadatumId] != undefined;
         },
+        onInputURL(event) {
+            this.url = event;
+
+            this.updateImporterURL({ sessionId: this.sessionId, url: this.url })
+                .then(updatedImporter => {    
+                    this.importer = updatedImporter;
+                })
+                .catch((errors) => {
+                    this.$console.log(errors);
+                });
+        },
         onRunImporter() {
             if (this.importer.manual_collection) {
                 this.updateImporterCollection({ sessionId: this.sessionId, collection: this.mappedCollection })
@@ -260,7 +301,7 @@ export default {
             this.isFetchingCollectionMetadata = true;
             this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
             .then((metadata) => {
-                this.collectionMetadata = metadata;
+                this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
                 this.isFetchingCollectionMetadata = false;
             })
             .catch((error) => {
@@ -270,12 +311,13 @@ export default {
             
         },
         onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum) {
-            this.isFetchingCollectionMetadata = true;
             this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
-            this.isFetchingCollectionMetadata = false;
+            // Necessary for causing reactivity to re-check if metadata remains available
+            this.collectionMetadata.push("");
+            this.collectionMetadata.pop();
         }
     },
-    created(){
+    created() {
         this.importerType = this.$route.params.importerSlug;
         this.createImporter();    
     }
@@ -309,6 +351,9 @@ export default {
         align-items: center;
     }
 
+    .is-inline .control{
+        display: inline;
+    }
     .drop-inner{
         padding: 1rem 3rem;
     }

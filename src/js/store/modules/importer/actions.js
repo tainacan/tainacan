@@ -65,9 +65,24 @@ export const updateImporter = ( { commit }, { sessionId, options }) => {
 
 export const updateImporterCollection = ( { commit }, { sessionId, collection }) => {
     return new Promise(( resolve, reject ) => {
-        console.log(collection)
         axios.tainacan.put('importers/session/' + sessionId, {
             collection: collection
+        })
+            .then( res => {
+                let importer = res.data;
+                commit('setImporter', importer);
+                resolve( importer );
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};
+
+export const updateImporterURL = ( { commit }, { sessionId, url }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.put('importers/session/' + sessionId, {
+            url: url
         })
             .then( res => {
                 let importer = res.data;
