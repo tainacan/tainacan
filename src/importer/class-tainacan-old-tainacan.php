@@ -127,8 +127,10 @@ class Old_Tainacan extends Importer{
                 $collection_id = $this->create_collection( $collection );
                 foreach( $this->get_collection_metadata( $collection->ID ) as $metadatum_old ) {
 
-                    $metadatum_id = $this->create_metadata( $metadatum_old, $collection_id );
-                    $map[$metadatum_id] = $metadatum_old->id;
+                    if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
+                        $metadatum_id = $this->create_metadata( $metadatum_old, $collection_id );
+                        $map[$metadatum_id] = $metadatum_old->id;
+                    }
 
                 }
 
@@ -156,6 +158,10 @@ class Old_Tainacan extends Importer{
             foreach( $collections as $collection ){ // loop collections
                 $map = $this->get_transient('collection_' . $collection->get_id() . '_relationships'); 
                 
+                if(!$map){
+                    return false;
+                }
+
                 foreach( $map as $metadatum_id => $items ){ // all relations in collection 
                     $newMetadatum = new Entities\Metadatum($metadatum_id);
 
@@ -199,6 +205,7 @@ class Old_Tainacan extends Importer{
             $item = new Entities\Item();
             $item->set_title( $item_Old->post_title );
             $item->set_description( $item_Old->post_content_filtered );
+            $item->set_status('publish');
 
             $item->set_collection( $collection );
 
@@ -210,8 +217,8 @@ class Old_Tainacan extends Importer{
                 if( $insertedItem->get_id() && is_array($collection_id['items'][$index]->metadata) ){
                     $this->add_item_metadata(  $insertedItem, $collection_id['items'][$index]->metadata, $collection_id );
 
-                    //inserting attachments
-                    $this->insert_attachments( $item_Old, $insertedItem );
+                    //inserting files
+                    $this->insert_files( $item_Old, $insertedItem );
                 }
 
             } else {
@@ -221,7 +228,6 @@ class Old_Tainacan extends Importer{
             }
 
         } else {
-            $this->add_error_log($result->get_error_message());
             $this->add_error_log('proccessing an item empty');
 			$this->abort();
             return false;
@@ -521,6 +527,7 @@ class Old_Tainacan extends Importer{
         $newMetadatum->set_name($name);
         $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
         $newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
+        $newMetadatum->set_status('publish');
 
         if(strcmp($type, "Taxonomy") === 0){
             $taxonomy_id = $meta->metadata->taxonomy;
@@ -641,13 +648,13 @@ class Old_Tainacan extends Importer{
     }
 
     /**
-     * create attachments from old
+     * create attachments, document and thumb from old
      * 
      * @param string $node_old 
      * 
      * @return string the class name
      */
-    private function insert_attachments( $node_old, $item ){
+    private function insert_files( $node_old, $item ){
         if( isset( $node_old->attachments ) && $node_old->attachments ){
             $TainacanMedia = \Tainacan\Media::get_instance();
             $types = ['audio','video','image'];
@@ -660,8 +667,35 @@ class Old_Tainacan extends Importer{
                     }
                 }
             }
+        }
 
+        if( isset( $node_old->thumbnail ) && $node_old->thumbnail ){
+            $TainacanMedia = \Tainacan\Media::get_instance();
+            $id = $TainacanMedia->insert_attachment_from_url( $node_old->thumbnail, $item->get_id());
+            $item->set__thumbnail_id( $id );
+        }
+
+        if( isset( $node_old->content_tainacan ) && $node_old->content_tainacan ){
+            $TainacanMedia = \Tainacan\Media::get_instance();
+            
+            if( isset($node_old->content_tainacan->guid) ){
+                $id = $TainacanMedia->insert_attachment_from_url( $node_old->content_tainacan->guid, $item->get_id());
+
+                if( $id ){
+                    $item->set_document( $id );
+                    $item->set_document_type( 'attachment' );
+                } 
+            } else if(filter_var($node_old->content_tainacan, FILTER_VALIDATE_URL)){
+                $id = $TainacanMedia->insert_attachment_from_url( $node_old->content_tainacan, $item->get_id());
+
+                if( $id ){
+                    $item->set_document( $id );
+                    $item->set_document_type( 'attachment' );
+                } 
+            }
             
         }
+
+        $this->items_repo->update($item);
     }
 }
