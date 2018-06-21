@@ -5,8 +5,8 @@ use \Tainacan\Entities;
 
 class Old_Tainacan extends Importer{
 
-    protected $manual_mapping = true;
-    protected $manual_collection = true;
+    protected $manual_mapping = false;
+    protected $manual_collection = false;
 
     protected $steps = [
 		
@@ -127,7 +127,7 @@ class Old_Tainacan extends Importer{
                 $collection_id = $this->create_collection( $collection );
                 foreach( $this->get_collection_metadata( $collection->ID ) as $metadatum_old ) {
 
-                    if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
+                    if (isset($metadatum_old->slug) && strpos($metadatum_old->slug, 'socialdb_property_fixed') === false) {
                         $metadatum_id = $this->create_metadata( $metadatum_old, $collection_id );
                         $map[$metadatum_id] = $metadatum_old->id;
                     }
@@ -696,6 +696,7 @@ class Old_Tainacan extends Importer{
             
         }
 
-        $this->items_repo->update($item);
+        if( $item->validate() )
+            $this->items_repo->update($item);
     }
 }

@@ -29,6 +29,13 @@ class Importer_Handler {
 			'class_name' => '\Tainacan\Importer\Test_Importer'
 		]);
 
+		$this->register_importer([
+			'name' => 'Tainacan Old',
+			'description' => __('Import structure from previously version of tainacan', 'tainacan'),
+			'slug' => 'tainacan_old',
+			'class_name' => '\Tainacan\Importer\Old_Tainacan'
+		]);
+
 		do_action('tainacan_register_importers');
 
 	}
