@@ -7,6 +7,41 @@
                 label-width="120px"
                 v-if="importer != undefined && importer != null">
 
+
+            <!-- Target collection selection -------------------------------- --> 
+            <b-field
+                    v-if="importer.manual_collection"
+                    :addons="false" 
+                    :label="$i18n.get('label_target_collection')">
+                <help-button 
+                        :title="$i18n.get('label_target_collection')" 
+                        :message="$i18n.get('info_target_collection_helper')"/>
+                <br>
+                <div class="is-inline">
+                    <b-select
+                            id="tainacan-select-target-collection"
+                            :value="collectionId"
+                            @input="onSelectCollection($event)"
+                            :loading="isFetchingCollections"
+                            :placeholder="$i18n.get('instruction_select_a_target_collection')">
+                        <option
+                                v-for="collection of collections"
+                                :key="collection.id"
+                                :value="collection.id">{{ collection.name }}
+                        </option>
+                    </b-select>
+                    <router-link
+                            tag="a" 
+                            class="is-inline add-link"     
+                            :to="{ path: $routerHelper.getNewCollectionPath(), params: { fromImporter: importerType }}">
+                        <b-icon
+                                icon="plus-circle"
+                                size="is-small"
+                                type="is-secondary"/>
+                            {{ $i18n.get('new_blank_collection') }}</router-link>
+                </div>
+            </b-field>
+
             <b-field
                     v-if="importer.accepts.file"
                     :addons="false">
@@ -33,29 +68,7 @@
                 </b-upload>
                 <div v-if="importer.tmp_file != undefined">{{ importer.tmp_file }}</div>
             </b-field>
-
-            <!-- Target collection selection -------------------------------- --> 
-            <b-field
-                    v-if="importer.manual_collection"
-                    :addons="false" 
-                    :label="$i18n.get('label_target_collection')">
-                <help-button 
-                        :title="$i18n.get('label_target_collection')" 
-                        :message="$i18n.get('info_target_collection_helper')"/>
-                <b-select
-                        id="tainacan-select-target-collection"
-                        :value="collectionId"
-                        @input="onSelectCollection($event)"
-                        :loading="isFetchingCollections"
-                        :placeholder="$i18n.get('instruction_select_a_target_collection')">
-                    <option
-                            v-for="collection of collections"
-                            :key="collection.id"
-                            :value="collection.id">{{ collection.name }}
-                    </option>
-                </b-select>
-            </b-field>
-
+    
             <!-- Metadata Mapping -->
             <b-field
                     v-if="importer.manual_mapping"
@@ -309,6 +322,9 @@ export default {
         align-items: center;
     }
 
+    .is-inline .control{
+        display: inline;
+    }
     .drop-inner{
         padding: 1rem 3rem;
     }

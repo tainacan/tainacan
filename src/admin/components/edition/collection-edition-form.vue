@@ -420,7 +420,8 @@ export default {
             thumbnailMediaFrame: undefined,
             headerImageMediaFrame: undefined,
             registeredViewModes: tainacan_plugin.registered_view_modes,
-            viewModesList: []
+            viewModesList: [],
+            fromImporter: ''
         }
     },
     methods: {
@@ -655,6 +656,9 @@ export default {
         }
     },
     created(){
+
+        if (this.$route.params.fromImporter != undefined)
+            this.fromImporter = this.$route.params.fromImporter;
 
         if (this.$route.fullPath.split("/").pop() == "new") {
             this.createNewCollection();
