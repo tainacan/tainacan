@@ -221,17 +221,17 @@
             
                     <!-- Name -------------------------------- --> 
                     <b-field 
-                        :addons="false"
-                        :label="$i18n.get('label_name')"
-                        :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
-                        :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                            :addons="false"
+                            :label="$i18n.get('label_name')"
+                            :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
                         <help-button 
-                            :title="$i18n.getHelperTitle('collections', 'name')" 
-                            :message="$i18n.getHelperMessage('collections', 'name')"/>
+                                :title="$i18n.getHelperTitle('collections', 'name')" 
+                                :message="$i18n.getHelperMessage('collections', 'name')"/>
                         <b-input
-                            id="tainacan-text-name"
-                            v-model="form.name"
-                            @focus="clearErrors('name')"/>  
+                                id="tainacan-text-name"
+                                v-model="form.name"
+                                @focus="clearErrors('name')"/>  
                     </b-field>
                         
                     <!-- Description -------------------------------- --> 

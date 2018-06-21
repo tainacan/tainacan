@@ -42,6 +42,7 @@
                 </div>
             </b-field>
 
+            <!-- File Source input -->
             <b-field
                     v-if="importer.accepts.file"
                     :addons="false">
@@ -68,7 +69,21 @@
                 </b-upload>
                 <div v-if="importer.tmp_file != undefined">{{ importer.tmp_file }}</div>
             </b-field>
-    
+
+            <!-- URL source input -------------------------------- --> 
+            <b-field 
+                    v-if="importer.accepts.url"
+                    :addons="false"
+                    :label="$i18n.get('label_url_source_link')">
+                <help-button 
+                        :title="$i18n.get('label_url_source_link')" 
+                        :message="$i18n.get('info_url_source_link_helper')"/>
+                <b-input
+                        id="tainacan-url-link-source"
+                        :value="url"
+                        @input="onInputURL($event)"/>  
+            </b-field>
+                    
             <!-- Metadata Mapping -->
             <b-field
                     v-if="importer.manual_mapping"
@@ -160,7 +175,8 @@ export default {
             importerSourceInfo: null,
             collections: [],
             collectionMetadata: [],
-            collectionId: undefined
+            collectionId: undefined,
+            url: ''
         }
     },
     methods: {
@@ -170,6 +186,7 @@ export default {
             'sendImporter',
             'updateImporter',
             'updateImporterFile',
+            'updateImporterURL',
             'fetchImporterSourceInfo',
             'updateImporterCollection',
             'runImporter'
@@ -224,6 +241,17 @@ export default {
         },
         checkIfMetadatumIsAvailable(metadatumId) {
             return this.mappedCollection['mapping'][metadatumId] != undefined;
+        },
+        onInputURL(event) {
+            this.url = event;
+
+            this.updateImporterURL({ sessionId: this.sessionId, url: this.url })
+                .then(updatedImporter => {    
+                    this.importer = updatedImporter;
+                })
+                .catch((errors) => {
+                    this.$console.log(errors);
+                });
         },
         onRunImporter() {
             if (this.importer.manual_collection) {
