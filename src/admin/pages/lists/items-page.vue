@@ -414,6 +414,7 @@
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
+
                 <component
                         v-else-if="isOnTheme && 
                               !isLoadingItems && 
@@ -550,8 +551,8 @@
             },
             openAdvancedSearch(newValue){
                 if(newValue == false){
-                    this.$router.push({query: {}});
-                    location.reload();
+                    this.$eventBusSearch.$emit('closeAdvancedSearch');
+                    this.advancedSearchResults = false;
                 }
             }
         },

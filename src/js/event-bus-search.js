@@ -25,6 +25,12 @@ export default {
                     this.updateURLQueries();
                 });
 
+                this.$root.$on('closeAdvancedSearch', () => {
+                    this.$store.dispatch('search/setPage', 1);
+                    
+                    this.searchAdvanced({});
+                });
+
                 this.$root.$on('searchAdvanced', advancedSearchQuery => {
                     this.$store.dispatch('search/setPage', 1);
 
