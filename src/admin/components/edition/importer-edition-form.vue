@@ -33,7 +33,7 @@
                     <router-link
                             tag="a" 
                             class="is-inline add-link"     
-                            :to="{ path: $routerHelper.getNewCollectionPath(), params: { fromImporter: importerType }}">
+                            :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
                         <b-icon
                                 icon="plus-circle"
                                 size="is-small"
@@ -96,6 +96,8 @@
                 <div 
                         v-if="importerSourceInfo != undefined && 
                             importerSourceInfo != null">
+                    <p class="mapping-header-label is-inline">{{ $i18n.get('label_from_source_collection') }}</p>
+                    <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
                     <div
                             class="source-metadatum"
                             v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
@@ -116,13 +118,35 @@
                         </b-select>
                         <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
                     </div>
+                    <!-- <b-modal 
+                            :active.sync="isNewMetadatumModalActive" 
+                            has-modal-card>
+                        <metadatum-edition-form
+                                :collection-id="collectionId"
+                                :is-repository-level="false"
+                                @onEditionFinished="onEditionFinished()"
+                                @onEditionCanceled="onEditionCanceled()"
+                                :index="0"
+                                :original-metadatum="{}"
+                                :edited-metadatum="{}"/>
+                    </b-modal>
+                    <a
+                            v-if="collectionId != null && collectionId != undefined"
+                            class="is-inline is-pulled-right add-link"
+                            @click="isNewMetadatumModalActive = true">
+                        <b-icon
+                                icon="plus-circle"
+                                size="is-small"
+                                type="is-secondary"/>
+                            {{ $i18n.get('label_add_more_metadata') }}</a> -->
                 </div>
                 <div 
                         v-if="importerSourceInfo == undefined || 
                             importerSourceInfo == null">
                     <p>{{ $i18n.get('info_upload_a_source_to_see_metadata') }}</p>
                 </div>
- 
+              
+
             </b-field>
 
             <!-- Form submit -------------------------------- --> 
@@ -152,6 +176,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
 
 export default {
     name: 'ImporterEditionForm',
@@ -176,8 +201,12 @@ export default {
             collections: [],
             collectionMetadata: [],
             collectionId: undefined,
-            url: ''
+            url: '',
+            isNewMetadatumModalActive: false
         }
+    },
+    components: {
+        MetadatumEditionForm
     },
     methods: {
         ...mapActions('importer', [
@@ -315,6 +344,18 @@ export default {
             // Necessary for causing reactivity to re-check if metadata remains available
             this.collectionMetadata.push("");
             this.collectionMetadata.pop();
+        },
+        onMetadatumEditionFinished() {
+            // this.formWithErrors = '';
+            // delete this.editForms[this.openedMetadatumId];
+            // this.openedMetadatumId = '';
+            console.log("Metadatum Edition Finished!");
+        },
+        onEditionCanceled() {
+            // this.formWithErrors = '';
+            // delete this.editForms[this.openedMetadatumId];
+            // this.openedMetadatumId = '';
+            console.log("Metadatum Edition Canceled");
         }
     },
     created() {
@@ -356,6 +397,11 @@ export default {
     }
     .drop-inner{
         padding: 1rem 3rem;
+    }
+
+    .mapping-header-label {
+        color: $gray-light;
+        margin: 12px 0 6px 0;
     }
 
 </style>

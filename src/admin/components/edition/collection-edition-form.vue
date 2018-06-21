@@ -478,7 +478,10 @@ export default {
                 this.formErrorMessage = '';
                 this.editFormErrors = {};
 
-                this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                if (this.fromImporter)
+                    this.$router.go(-1);
+                else
+                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
             .catch((errors) => {
                 for (let error of errors.errors) {     
@@ -539,7 +542,10 @@ export default {
             this.editFormErrors[attribute] = undefined;
         },
         cancelBack(){
-            this.$router.push(this.$routerHelper.getCollectionsPath());
+            if (this.fromImporter)
+                this.$router.go(-1);
+            else
+                this.$router.push(this.$routerHelper.getCollectionsPath());
         },
         updateViewModeslist(viewMode) {
         
@@ -657,18 +663,18 @@ export default {
     },
     created(){
 
-        if (this.$route.params.fromImporter != undefined)
-            this.fromImporter = this.$route.params.fromImporter;
+        if (this.$route.query.fromImporter != undefined) 
+            this.fromImporter = this.$route.query.fromImporter;
 
-        if (this.$route.fullPath.split("/").pop() == "new") {
+        if (this.$route.path.split("/").pop() == "new") {
             this.createNewCollection();
             this.isNewCollection = true;
-        } else if (this.$route.fullPath.split("/").pop() == "settings") {
+        } else if (this.$route.path.split("/").pop() == "settings") {
 
             this.isLoading = true;
 
             // Obtains current Collection ID from URL
-            this.pathArray = this.$route.fullPath.split("/").reverse(); 
+            this.pathArray = this.$route.path.split("/").reverse(); 
             this.collectionId = this.pathArray[1];
 
             this.fetchCollection(this.collectionId).then(res => {
@@ -734,7 +740,7 @@ export default {
     },
     mounted() {
 
-        if (this.$route.fullPath.split("/").pop() != "new") {
+        if (this.$route.path.split("/").pop() != "new") {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
                 this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
             });
