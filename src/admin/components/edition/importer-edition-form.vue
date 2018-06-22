@@ -118,27 +118,58 @@
                         </b-select>
                         <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
                     </div>
-                    <!-- <b-modal 
-                            :active.sync="isNewMetadatumModalActive" 
-                            has-modal-card>
-                        <metadatum-edition-form
-                                :collection-id="collectionId"
-                                :is-repository-level="false"
-                                @onEditionFinished="onEditionFinished()"
-                                @onEditionCanceled="onEditionCanceled()"
-                                :index="0"
-                                :original-metadatum="{}"
-                                :edited-metadatum="{}"/>
+                    <b-modal 
+                            @close="onMetadatumEditionCanceled()"
+                            :active.sync="isNewMetadatumModalActive">
+                         <b-loading 
+                                :is-full-page="isFullPage" 
+                                :active.sync="isLoadingMetadatumTypes"/>
+                        <div 
+                                v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
+                                class="tainacan-modal-content">
+                            <div class="tainacan-modal-title">
+                                <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
+                                <hr>
+                            </div>
+                            <b-select
+                                    :value="selectedMetadatumType"
+                                    @input="onSelectMetadatumType($event)"
+                                    :placeholder="$i18n.get('label_select_metadatum_type')">
+                                <option
+                                        v-for="(metadatumType, index) of metadatumTypes"
+                                        :key="index"
+                                        :value="metadatumType">
+                                    {{ metadatumType.name }}
+                                </option>
+                            </b-select>
+                        </div>
+                        <div 
+                                v-if="isEditingMetadatum"
+                                class="tainacan-modal-content">
+                            <div class="tainacan-modal-title">
+                                <h2>{{ $i18n.get('instruction_configure_new_metadatum') }}</h2>
+                                <hr>
+                            </div>
+                            <metadatum-edition-form
+                                    :collection-id="collectionId"
+                                    :is-repository-level="false"
+                                    @onEditionFinished="onMetadatumEditionFinished()"
+                                    @onEditionCanceled="onMetadatumEditionCanceled()"
+                                    :index="0"
+                                    :original-metadatum="metadatum"
+                                    :edited-metadatum="editedMetadatum"
+                                    :is-on-modal="true"/>
+                        </div>
                     </b-modal>
                     <a
                             v-if="collectionId != null && collectionId != undefined"
                             class="is-inline is-pulled-right add-link"
-                            @click="isNewMetadatumModalActive = true">
+                            @click="createNewMetadatum()">
                         <b-icon
                                 icon="plus-circle"
                                 size="is-small"
                                 type="is-secondary"/>
-                            {{ $i18n.get('label_add_more_metadata') }}</a> -->
+                            {{ $i18n.get('label_add_more_metadata') }}</a>
                 </div>
                 <div 
                         v-if="importerSourceInfo == undefined || 
@@ -175,7 +206,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
 
 export default {
@@ -202,11 +233,21 @@ export default {
             collectionMetadata: [],
             collectionId: undefined,
             url: '',
-            isNewMetadatumModalActive: false
+            isNewMetadatumModalActive: false,
+            isLoadingMetadatumTypes: false,
+            selectedMetadatumType: undefined,
+            isEditingMetadatum: false,
+            metadatum: {},
+            editedMetadatum: {}
         }
     },
     components: {
         MetadatumEditionForm
+    },
+    computed: {
+        metadatumTypes() {
+            return this.getMetadatumTypes();
+        }
     },
     methods: {
         ...mapActions('importer', [
@@ -224,7 +265,12 @@ export default {
             'fetchCollectionsForParent'
         ]),
         ...mapActions('metadata', [
-            'fetchMetadata'
+            'fetchMetadata',
+            'fetchMetadatumTypes',
+            'sendMetadatum'
+        ]),
+        ...mapGetters('metadata', [
+            'getMetadatumTypes'
         ]),
         createImporter() {
             // Puts loading on Draft Importer creation
@@ -345,17 +391,63 @@ export default {
             this.collectionMetadata.push("");
             this.collectionMetadata.pop();
         },
-        onMetadatumEditionFinished() {
-            // this.formWithErrors = '';
-            // delete this.editForms[this.openedMetadatumId];
-            // this.openedMetadatumId = '';
-            console.log("Metadatum Edition Finished!");
+        onSelectMetadatumType(newMetadatum) {
+            this.sendMetadatum({
+                collectionId: this.collectionId, 
+                name: newMetadatum.name, metadatumType: 
+                newMetadatum.className, 
+                status: 'auto-draft', 
+                isRepositoryLevel: false, 
+                newIndex: 0
+            })
+            .then((metadatum) => {
+                this.metadatum = metadatum;
+                this.editedMetadatum = JSON.parse(JSON.stringify(metadatum));
+                this.editedMetadatum.saved = false;
+                this.editedMetadatum.status = 'publish';
+                this.isEditingMetadatum = true;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+            });
         },
-        onEditionCanceled() {
-            // this.formWithErrors = '';
-            // delete this.editForms[this.openedMetadatumId];
-            // this.openedMetadatumId = '';
-            console.log("Metadatum Edition Canceled");
+        createNewMetadatum() {
+            this.fetchMetadatumTypes()
+                .then(() => {
+                    this.isLoadingMetadatumTypes = false;
+                    this.isNewMetadatumModalActive = true;
+                })
+                .catch(() => {
+                    this.isLoadingMetadatumTypes = false;
+                });
+        },
+        onMetadatumEditionFinished() {
+            // Reset variables for metadatum creation
+            delete this.metadatum;
+            delete this.editedMetadatum;
+            this.isEditingMetadatum = false;
+            this.isNewMetadatumModalActive = false;
+            this.selectedMetadatumType = undefined;
+            
+             // Generates options for metadata listing
+            this.isFetchingCollectionMetadata = true;
+            this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
+            .then((metadata) => {
+                this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
+                this.isFetchingCollectionMetadata = false;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+                this.isFetchingCollectionMetadata = false;
+            }); 
+        },
+        onMetadatumEditionCanceled() {
+            // Reset variables for metadatum creation
+            delete this.metadatum;
+            delete this.editedMetadatum;
+            this.isEditingMetadatum = false;
+            this.isNewMetadatumModalActive = false;
+            this.selectedMetadatumType = undefined;
         }
     },
     created() {
@@ -403,6 +495,16 @@ export default {
         color: $gray-light;
         margin: 12px 0 6px 0;
     }
+
+    .modal .animation-content {
+        width: 100%;
+        z-index: 99999;
+
+        #metadatumEditForm {
+            background-color: white;
+        }
+    }
+
 
 </style>
 

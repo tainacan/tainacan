@@ -230,6 +230,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_url_source_link'					   => __( 'URL Source link', 'tainacan' ),
 	'label_metadata_mapping'				   => __( 'Metadata mapping', 'tainacan' ),
 	'label_select_metadatum'				   => __( 'Select metadatum', 'tainacan' ),
+	'label_select_metadatum_type'				   => __( 'Select a metadatum type', 'tainacan' ),
 	'label_add_more_metadata'				   => __( 'Add more metadata', 'tainacan' ),
 	'label_from_source_collection'		   	   => __( 'From source collection', 'tainacan' ),
 	'label_to_target_collection'			   => __( 'To target collection', 'tainacan' ),
@@ -258,6 +259,8 @@ return apply_filters('tainacan-admin-i18n',[
 	'instruction_select_a_target_collection'   	 => __( 'Select a target collection', 'tainacan' ),	
 	'instruction_select_an_importer_type'        => __( 'Select an importer type from the options above:', 'tainacan' ),
 	'instruction_drop_file_or_click_to_upload'	 => __( 'Drop your source file or click here to upload.', 'tainacan' ),	
+	'instruction_select_metadatum_type'			 => __( 'Select a metadatum type.', 'tainacan' ),	
+	'instruction_configure_new_metadatum'		 => __( 'Configure new metadatum.', 'tainacan' ),	
 
 	// Info. Other feedback to user.
 	'info_search_results'                      => __( 'Search Results', 'tainacan' ),
