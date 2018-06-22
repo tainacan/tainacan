@@ -26,7 +26,7 @@
                     <b-dropdown-item 
                             @click="deleteSelectedItems()"
                             id="item-delete-selected-items">
-                        {{ $i18n.get('label_delete_selected_items') }}
+                        {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
                     <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_items') + ' (Not ready)' }}
                     </b-dropdown-item>
