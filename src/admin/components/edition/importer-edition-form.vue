@@ -109,6 +109,9 @@
                                       !isFetchingCollectionMetadata"
                                 @input="onSelectCollectionMetadata($event, source_metadatum)"
                                 :placeholder="$i18n.get('label_select_metadatum')">
+                            <option :value="undefined">
+                                {{ $i18n.get('label_select_metadatum') }}
+                            </option>
                             <option
                                     v-for="(metadatum, index) of collectionMetadata"
                                     :key="index"
@@ -195,17 +198,19 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <div class="control">
+                <div 
+                        v-if="!hasRunImporter"
+                        class="control">
                     <button
-                            v-if="!hasRunImporter"
                             :disabled="sessionId == undefined || importer == undefined"
                             id="button-submit-collection-creation"
                             @click.prevent="onRunImporter"
                             class="button is-success">{{ $i18n.get('run') }}</button>
                 </div>
-                <div class="control">
+                <div 
+                        v-if="hasRunImporter"
+                        class="control">
                     <button
-                            v-if="hasRunImporter"
                             :disabled="sessionId == undefined || importer == undefined"
                             id="button-submit-collection-creation"
                             @click.prevent="onCheckBackgroundProcessStatus"
@@ -370,7 +375,6 @@ export default {
                 .then(backgroundProcess => {
                     this.hasRunImporter = true;    
                     this.backgroundProcess = backgroundProcess;
-                    this.$console.log(backgroundProcess);
                 })
                 .catch((errors) => {
                     this.$console.log(errors);
@@ -417,7 +421,21 @@ export default {
             
         },
         onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum) {
-            this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
+
+            if (selectedMetadatum)
+                this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
+            else {
+                let removedKey = '';
+                for (let key in this.mappedCollection['mapping']) {
+                    if(this.mappedCollection['mapping'][key] == sourceMetadatum)
+                        removedKey = key;
+                }
+
+                if (removedKey != '')
+                    delete this.mappedCollection['mapping'][removedKey];
+
+            }
+
             // Necessary for causing reactivity to re-check if metadata remains available
             this.collectionMetadata.push("");
             this.collectionMetadata.pop();
