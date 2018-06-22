@@ -295,6 +295,7 @@ export default {
             a:hover, 
             a.is-active {
                 background-color: #d1f1f2;
+                text-decoration: none;
             }
             a:focus{
                 box-shadow: none;

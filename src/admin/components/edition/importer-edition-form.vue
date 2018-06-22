@@ -197,10 +197,19 @@
                 </div>
                 <div class="control">
                     <button
+                            v-if="!hasRunImporter"
                             :disabled="sessionId == undefined || importer == undefined"
                             id="button-submit-collection-creation"
                             @click.prevent="onRunImporter"
                             class="button is-success">{{ $i18n.get('run') }}</button>
+                </div>
+                <div class="control">
+                    <button
+                            v-if="hasRunImporter"
+                            :disabled="sessionId == undefined || importer == undefined"
+                            id="button-submit-collection-creation"
+                            @click.prevent="onCheckBackgroundProcessStatus"
+                            class="button is-success">Check Status</button>
                 </div>
             </div>
         </form>
@@ -214,6 +223,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
+import { tainacan as axios } from '../../../js/axios/axios.js';
 
 export default {
     name: 'ImporterEditionForm',
@@ -244,7 +254,9 @@ export default {
             selectedMetadatumType: undefined,
             isEditingMetadatum: false,
             metadatum: {},
-            editedMetadatum: {}
+            editedMetadatum: {},
+            hasRunImporter: false,
+            backgroundProcess: undefined
         }
     },
     components: {
@@ -342,6 +354,8 @@ export default {
 
                     this.runImporter(this.sessionId)
                     .then(backgroundProcess => {    
+                        this.hasRunImporter = true;
+                        this.backgroundProcess = backgroundProcess;
                         this.$console.log(backgroundProcess);
                     })
                     .catch((errors) => {
@@ -353,13 +367,24 @@ export default {
                 });
             } else {
                 this.runImporter(this.sessionId)
-                .then(backgroundProcess => {    
+                .then(backgroundProcess => {
+                    this.hasRunImporter = true;    
+                    this.backgroundProcess = backgroundProcess;
                     this.$console.log(backgroundProcess);
                 })
                 .catch((errors) => {
                     this.$console.log(errors);
                 });
             }
+        },
+        onCheckBackgroundProcessStatus() {
+            axios.get('/bg-processes/' + this.backgroundProcess.bg_process_id)
+            .then((backgroundProcess) => {
+                this.$console.log(JSON.stringify(backgroundProcess));
+            })
+            .catch((error) => {
+                this.$console.error(error);
+            }); 
         },
         loadCollections() {
             // Generates options for target collection

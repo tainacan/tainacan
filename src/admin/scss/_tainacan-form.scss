@@ -70,14 +70,11 @@
         select {
             color: $tainacan-input-color;
             background-color: white !important;
-            border: 1px solid $tainacan-input-background;
+            border: 1px solid $tainacan-input-background !important;
             &:focus>option:checked, &:focus>option:hover {
                 background-color: $primary-lighter !important;
             }
-        }
-        &.is-empty select{
-            //background-color: $tainacan-input-background !important;
-        }     
+        }   
     }
     .dropdown {
         .button {

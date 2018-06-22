@@ -259,11 +259,11 @@
             }
             .image-placeholder {
                 position: absolute;
-                margin-left: 10px;
-                margin-right: 10px;
-                top: 24px;
+                margin-left: 15%;
+                margin-right: 15%;
+                top: 6px;
                 bottom: 50%;
-                font-size: 0.8rem;
+                font-size: 0.6rem;
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;

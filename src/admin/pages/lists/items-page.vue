@@ -15,8 +15,7 @@
         <!-- Side bar with search and filters -->
         <aside
                 v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
-                class="filters-menu"
-                :class="{ 'tainacan-form': isOnTheme }">
+                class="filters-menu tainacan-form">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
@@ -853,7 +852,7 @@
         max-width: $filter-menu-width;
         min-height: 100%;
         height: 100%;
-        background-color: $tainacan-input-background;
+        background-color: white;
         padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;

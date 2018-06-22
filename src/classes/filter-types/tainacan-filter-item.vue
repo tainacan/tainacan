@@ -165,7 +165,10 @@
         .collapse-content {
             margin-top: 12px;
         }
-
+        .columns{
+            margin-left: 0px;
+            margin-right: 0px;
+        }
         .column {
             padding: 0.75rem 1px 0.75rem 0 !important;
         }
@@ -180,16 +183,10 @@
                 padding: 2px 25px 2px 15px !important;
                 margin-top: 0px !important;
                 margin-bottom: 0px !important;
-                background-color: white;
-                color: black;
-                &:focus > option:checked, &:focus > option:hover {
-                    background-color: $primary-lighter !important;
-                }
             }
             &:not(.is-multiple)::after {
                 content: "\F35D" !important;
                 font: normal normal normal 24px/1 "Material Design Icons" !important;
-                border: none !important;
                 transform: none;
                 margin-top: -0.6em;
                 right: 0.95em;
@@ -208,8 +205,6 @@
 
             font-size: 14px;
             border-radius: 1px !important;
-            background-color: white;
-            color: $tainacan-input-color;
             box-shadow: none !important;
             transition: background-color 0.1s;
             height: 2.25em !important;
