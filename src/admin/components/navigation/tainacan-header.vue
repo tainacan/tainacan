@@ -119,9 +119,6 @@ export default {
             a{ 
                 color: white;
             }
-            a:hover {
-                color: $tertiary;
-            }
             .search-area {
                 display: flex;
                 align-items: center;
