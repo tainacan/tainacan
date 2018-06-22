@@ -107,6 +107,7 @@
                                 v-if="collectionMetadata != undefined &&
                                       collectionMetadata.length > 0 &&
                                       !isFetchingCollectionMetadata"
+                                :value="checkCurrentSelectedCollectionMetadatum(source_metadatum)"
                                 @input="onSelectCollectionMetadata($event, source_metadatum)"
                                 :placeholder="$i18n.get('label_select_metadatum')">
                             <option :value="undefined">
@@ -340,6 +341,13 @@ export default {
         checkIfMetadatumIsAvailable(metadatumId) {
             return this.mappedCollection['mapping'][metadatumId] != undefined;
         },
+        checkCurrentSelectedCollectionMetadatum(sourceMetadatum) {
+            for (let key in this.mappedCollection['mapping']) {
+                if(this.mappedCollection['mapping'][key] == sourceMetadatum)
+                    return key;
+            }
+            return undefined;
+        },
         onInputURL(event) {
             this.url = event;
 
@@ -433,9 +441,8 @@ export default {
 
                 if (removedKey != '')
                     delete this.mappedCollection['mapping'][removedKey];
-
             }
-
+            
             // Necessary for causing reactivity to re-check if metadata remains available
             this.collectionMetadata.push("");
             this.collectionMetadata.pop();
