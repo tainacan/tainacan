@@ -113,7 +113,13 @@
                                     v-for="(metadatum, index) of collectionMetadata"
                                     :key="index"
                                     :value="metadatum.id"
-                                    :disabled="checkIfMetadatumIsAvailable(metadatum.id)">{{ metadatum.name }}
+                                    :disabled="checkIfMetadatumIsAvailable(metadatum.id)">
+                                <span class="metadatum-name">
+                                    {{ metadatum.name }}
+                                </span>
+                                <span class="label-details">  
+                                    ({{ $i18n.get(metadatum.metadata_type_object.component) }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                </span>
                             </option>
                         </b-select>
                         <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
@@ -443,8 +449,10 @@ export default {
         },
         onMetadatumEditionCanceled() {
             // Reset variables for metadatum creation
-            delete this.metadatum;
-            delete this.editedMetadatum;
+            if (this.metadatum)
+                delete this.metadatum;
+            if (this.editedMetadatum)
+                delete this.editedMetadatum;
             this.isEditingMetadatum = false;
             this.isNewMetadatumModalActive = false;
             this.selectedMetadatumType = undefined;
