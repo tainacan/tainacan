@@ -14,35 +14,35 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         let hasFiltered = false;
         let advancedSearchResults = false;
 
-        if (postQueries.metaquery != undefined &&
+        if ( (postQueries.metaquery != undefined &&
              (Object.keys(postQueries.metaquery).length > 0 ||
-              postQueries.metaquery.length > 0)){
+              postQueries.metaquery.length > 0)) || (postQueries.taxquery != undefined &&
+                (Object.keys(postQueries.taxquery).length > 0 ||
+                 postQueries.taxquery.length > 0)) ) {
+            
             hasFiltered = true;
 
-            if(postQueries.metaquery.advancedSearch){
-
-                advancedSearchResults = postQueries.metaquery.advancedSearch;
-    
-                delete postQueries.metaquery.advancedSearch;
+            if(postQueries.advancedSearch){
+                advancedSearchResults = postQueries.advancedSearch;
             }
-
-            query = qs.stringify(postQueries);
-        } else {
-            query = qs.stringify(postQueries);
         }
+        
+        query = qs.stringify(postQueries);
 
         // Garanttees at least empty fetch_only are passed in case none is found
-        if (qs.stringify(postQueries.fetch_only) == '')
-            dispatch('search/add_fetchonly', {} , { root: true });
+        if (qs.stringify(postQueries.fetch_only) == ''){
+            dispatch('search/add_fetchonly', {}, { root: true });
+        }
                 
-        if (qs.stringify(postQueries.fetch_only['meta']) == '')
-            dispatch('search/add_fetchonly_meta', 0 , { root: true });
+        if (qs.stringify(postQueries.fetch_only['meta']) == ''){
+            dispatch('search/add_fetchonly_meta', 0, { root: true });
+        }
 
         // Differentiates between repository level and collection level queries
-        let endpoint = '/collection/'+collectionId+'/items?'
+        let endpoint = '/collection/'+ collectionId +'/items?';
 
         if (collectionId == undefined){
-            endpoint = '/items?'
+            endpoint = '/items?';
         }
 
         if (!isOnTheme){
@@ -54,6 +54,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             if (postQueries.admin_view_mode != undefined)
                 postQueries.admin_view_mode = null;
         }   
+        
         axios.tainacan.get(endpoint+query)
         .then(res => {
             
@@ -78,8 +79,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/items/' + itemId;
-        if (isPermanently)
-            endpoint = endpoint + '?permanently=1'
+        
+        if (isPermanently){
+            endpoint = endpoint + '?permanently=1';
+        } else {
+            endpoint = endpoint + '?permanently=0';
+        }
 
         axios.tainacan.delete(endpoint)
         .then( res => {
@@ -146,8 +151,11 @@ export const fetchCollectionName = ({ commit }, id) => {
 export const deleteCollection = ({ commit }, { collectionId, isPermanently }) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId;
-        if (isPermanently)
-            endpoint = endpoint + '?permanently=true'
+        if (isPermanently){
+            endpoint = endpoint +'?permanently=1';
+        } else {
+            endpoint = endpoint +'?permanently=0';
+        }
 
         axios.tainacan.delete(endpoint)
         .then(res => {

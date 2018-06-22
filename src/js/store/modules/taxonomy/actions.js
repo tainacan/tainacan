@@ -1,4 +1,5 @@
 import axios from '../../../axios/axios'
+import qs from 'qs'
 
 // TAXONOMIES
 export const createTaxonomy = ({commit}, taxonomy) => {
@@ -24,7 +25,7 @@ export const createTaxonomy = ({commit}, taxonomy) => {
 
 export const deleteTaxonomy = ({ commit }, taxonomyId) => {
   return new Promise(( resolve, reject ) => {
-      axios.tainacan.delete(`/taxonomies/${taxonomyId}?permanently=${true}`)
+      axios.tainacan.delete(`/taxonomies/${taxonomyId}?permanently=1`)
           .then(res => {
               commit('deleteTaxonomy', res.data);
 
@@ -138,7 +139,7 @@ export const sendTerm = ({commit}, { taxonomyId, name, description, parent, head
 
 export const deleteTerm = ({ commit }, { taxonomyId, termId }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?permanently=${true}`)
+        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?permanently=1`)
             .then(res => {
                 let term = res.data;
                 commit('deleteTerm', termId);
@@ -169,9 +170,18 @@ export const updateTerm = ({ commit }, { taxonomyId, termId, name, description, 
     });
 };
 
-export const fetchTerms = ({ commit }, taxonomyId ) => {
+export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search}) => {
+    
+    let query = '';
+    
+    if(fetchOnly && search){
+        query = `?order=asc&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+    } else {
+        query = '?hideempty=0&order=asc';
+    }
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/taxonomy/${taxonomyId}/terms/?hideempty=0&order=asc`)
+        axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
                 let terms = res.data;
                 commit('setTerms', terms);

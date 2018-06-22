@@ -104,6 +104,10 @@ export default {
         max-width: $side-menu-width;
         z-index: 99;
 
+        a:hover {
+            text-decoration: none;
+        }
+
         .menu {
             padding-top: 10px;
         }

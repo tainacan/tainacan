@@ -1,5 +1,4 @@
 import axios from '../../../axios/axios';
-import qs from 'qs';
 
 export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit}) => {
     return new Promise((resolve, reject) => {

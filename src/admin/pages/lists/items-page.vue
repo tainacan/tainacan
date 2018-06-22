@@ -15,8 +15,7 @@
         <!-- Side bar with search and filters -->
         <aside
                 v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
-                class="filters-menu"
-                :class="{ 'tainacan-form': isOnTheme }">
+                class="filters-menu tainacan-form">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
@@ -290,20 +289,36 @@
             <!-- ADVANCED SEARCH -->
             <div
                     v-if="openAdvancedSearch">
-                <div class="columns tnc-advanced-search-close">
-                    <div class="column">
-                        <button
-                                @click="openAdvancedSearch = false"
-                                class="button is-white is-pulled-right">
-                            <b-icon
-                                    size="is-small"
-                                    icon="close"/>
-                        </button>
-                    </div>
-                </div>
-                <advanced-search
-                        :is-repository-level="isRepositoryLevel"
-                        :metadata-list="metadata" />
+                    <b-collapse 
+                            class="show" 
+                            :open="advancedSearchResults ? false : true">
+                        <div
+                            slot="trigger" 
+                            slot-scope="props" 
+                            class="columns tnc-advanced-search-close">
+                            <div class="column">
+                                <button
+                                        @click="openAdvancedSearch = false"
+                                        class="button is-white is-pulled-right">
+                                    <b-icon
+                                            size="is-small"
+                                            icon="close"/>
+                                </button>
+                                <button 
+                                        class="button is-white is-pulled-right">
+                                    <span>
+                                        {{ props.open ? $i18n.get('hide_advanced_search') : $i18n.get('show_advanced_search') }}
+                                    </span>
+                                    <b-icon
+                                            :style="'margin-left'"
+                                            :icon="props.open ? 'menu-down' : 'menu-up'" />
+                                </button>
+                            </div>
+                        </div>
+                        <advanced-search
+                                :is-repository-level="isRepositoryLevel"
+                                :metadata="metadata" />
+                    </b-collapse>
             </div>
 
             <!-- --------------- -->
@@ -365,18 +380,46 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"/>
                 
+                <!-- When advanced search -->
                 <!-- Theme View Modes -->
                 <div 
                         v-if="isOnTheme &&
                               !isLoadingItems &&
+                              openAdvancedSearch &&
+                              advancedSearchResults &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
+
                 <component
                         v-if="isOnTheme && 
                               !isLoadingItems && 
                               registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'component'"
+                              registeredViewModes[viewMode].type == 'component' &&
+                              openAdvancedSearch &&
+                              advancedSearchResults"
+                        :collection-id="collectionId"
+                        :displayed-metadata="tableMetadata"
+                        :items="items"
+                        :is-loading="isLoadingItems"
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
+                
+                <!-- Regular -->
+                <!-- Theme View Modes -->
+                <div 
+                        v-if="isOnTheme &&
+                              !isLoadingItems &&
+                              !openAdvancedSearch &&
+                              registeredViewModes[viewMode] != undefined &&
+                              registeredViewModes[viewMode].type == 'template'"
+                        v-html="itemsListTemplate"/>
+
+                <component
+                        v-else-if="isOnTheme && 
+                              !isLoadingItems && 
+                              registeredViewModes[viewMode] != undefined &&
+                              registeredViewModes[viewMode].type == 'component' &&
+                              !openAdvancedSearch"
                         :collection-id="collectionId"
                         :displayed-metadata="tableMetadata"
                         :items="items"
@@ -507,8 +550,8 @@
             },
             openAdvancedSearch(newValue){
                 if(newValue == false){
-                    this.$router.push({query: {}});
-                    location.reload();
+                    this.$eventBusSearch.$emit('closeAdvancedSearch');
+                    this.advancedSearchResults = false;
                 }
             }
         },
@@ -725,15 +768,17 @@
                 }
             });
 
-            if(this.$router.query && this.$router.query.metaquery && this.$router.query.metaquery.advancedSearch) {
-                this.openAdvancedSearch = this.$router.query.metaquery.advancedSearch;
+            this.$eventBusSearch.setViewMode(this.defaultViewMode);
+
+            if(this.$route.query && this.$route.query.advancedSearch) {
+                this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
 
         },
         mounted() {
             
-            if(this.$router.query && this.$router.query.metaquery && this.$router.query.metaquery.advancedSearch) {
-                this.openAdvancedSearch = this.$router.query.advancedSearch;
+            if(this.$route.query && this.$route.query.advancedSearch) {
+                this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
 
             this.prepareMetadataAndFilters();
@@ -807,7 +852,7 @@
         max-width: $filter-menu-width;
         min-height: 100%;
         height: 100%;
-        background-color: $tainacan-input-background;
+        background-color: white;
         padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;

@@ -23,7 +23,7 @@ class Relationship extends Metadata_Type {
     public function get_form_labels(){
        return [
            'collection_id' => [
-               'title' => __( 'Collection Related', 'tainacan' ),
+               'title' => __( 'Related Collection', 'tainacan' ),
                'description' => __( 'Select the collection to fetch items', 'tainacan' ),
            ],
            'search' => [

@@ -6,6 +6,8 @@
         justify-content: space-between !important;
         padding: 12px 0px ;
         margin-bottom: 0px;
+        width: 100%;
+
         .button {
             border-width: 1px;
             padding: 2px 30px !important;
@@ -68,14 +70,11 @@
         select {
             color: $tainacan-input-color;
             background-color: white !important;
-            border: 1px solid $tainacan-input-background;
+            border: 1px solid $tainacan-input-background !important;
             &:focus>option:checked, &:focus>option:hover {
                 background-color: $primary-lighter !important;
             }
-        }
-        &.is-empty select{
-            //background-color: $tainacan-input-background !important;
-        }     
+        }   
     }
     .dropdown {
         .button {
@@ -83,5 +82,8 @@
             border-radius: 0 !important;
             padding: 2px 20px !important;
         }
+    }
+    .upload-draggable {
+        border-radius: 0 !important;
     }
 }

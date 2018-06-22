@@ -20,23 +20,18 @@ class REST_Importers_Controller extends REST_Controller {
 	 */
 	public function __construct(){
         $this->rest_base = 'importers';
+        if (session_status() == PHP_SESSION_NONE) {
+            @session_start(); // @ avoids Warnings when running phpunit tests
+        }
 		parent::__construct();
-        add_action('init', array(&$this, 'init_objects'), 11);
     }
-    
-    /**
-     * Initialize objects after post_type register
-     */
-    public function init_objects() {
-    	//$this->collections_repository = Repositories\Collections::get_instance();
-    	//$this->collection = new Entities\Collection();
-    }
+
 
 	/**
 	 * Register the collections route and their endpoints
 	 */
 	public function register_routes(){
-        register_rest_route($this->namespace, '/' . $this->rest_base, array(
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session', array(
 	        array(
 		        'methods'             => \WP_REST_Server::CREATABLE,
 		        'callback'            => array($this, 'create_item'),
@@ -49,7 +44,7 @@ class REST_Importers_Controller extends REST_Controller {
                 ],
 	        ),
         ));
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<session_id>[0-9a-f]+)', array(
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)', array(
             
             array(
                 'methods'             => \WP_REST_Server::EDITABLE,
@@ -61,7 +56,7 @@ class REST_Importers_Controller extends REST_Controller {
                         'description' => __( 'The URL to be used by the importer', 'tainacan' ),
                     ],
                     'collection' => [
-                        'type'        => 'array',
+                        'type'        => 'array/object',
                         'description' => __( 'The array describing the destination collectino as expected by the importer', 'tainacan' ),
                     ],
                     'options' => [
@@ -73,7 +68,7 @@ class REST_Importers_Controller extends REST_Controller {
             
         ));
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<session_id>[0-9a-f]+)/file', array(
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/file', array(
             
             array(
                 'methods'             => \WP_REST_Server::CREATABLE,
@@ -83,7 +78,7 @@ class REST_Importers_Controller extends REST_Controller {
             
         ));
         
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<session_id>[0-9a-f]+)/source_info', array(
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/source_info', array(
             
             array(
                 'methods'             => \WP_REST_Server::READABLE,
@@ -93,7 +88,7 @@ class REST_Importers_Controller extends REST_Controller {
             
         ));
 
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<session_id>[0-9a-f]+)/run', array(
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/run', array(
             
             array(
                 'methods'             => \WP_REST_Server::CREATABLE,
@@ -102,6 +97,17 @@ class REST_Importers_Controller extends REST_Controller {
             ),
             
         ));
+
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/available', array(
+            
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array($this, 'get_registered_importers'),
+                'permission_callback' => array($this, 'import_permissions_check'),
+            ),
+            
+        ));
+
     }
 
 	
@@ -172,6 +178,19 @@ class REST_Importers_Controller extends REST_Controller {
 	    	if($importer) {
                 
                 foreach ($body as $att => $value){
+                    
+                    if ($att == 'collection') {
+                        if (is_array($value) && isset($value['id'])) {
+                            $importer->add_collection($value);
+                            continue;
+                        } else {
+                            return new \WP_REST_Response([
+                                'error_message' => __('Invalid collection', 'tainacan' ),
+                                'session_id' => $session_id
+                            ], 400);
+                        }
+                    }
+                    
                     $method = 'set_' . $att;
                     if (method_exists($importer, $method)) {
                         $importer->$method($value);
@@ -196,7 +215,7 @@ class REST_Importers_Controller extends REST_Controller {
     }
 
 
-    public function source_info() {
+    public function source_info( $request ) {
         $session_id = $request['session_id'];
         $importer = $_SESSION['tainacan_importer'][$session_id];
 
@@ -224,7 +243,7 @@ class REST_Importers_Controller extends REST_Controller {
 
     }
 
-    public function add_file() {
+    public function add_file( $request )  {
         $session_id = $request['session_id'];
         $importer = $_SESSION['tainacan_importer'][$session_id];
 
@@ -253,7 +272,7 @@ class REST_Importers_Controller extends REST_Controller {
     }
 
 
-    public function run() {
+    public function run($request) {
         $session_id = $request['session_id'];
         $importer = $_SESSION['tainacan_importer'][$session_id];
 
@@ -267,11 +286,25 @@ class REST_Importers_Controller extends REST_Controller {
         global $Tainacan_Importer_Handler; 
 
         $process = $Tainacan_Importer_Handler->add_to_queue($importer);
+
+        if (false === $process) {
+            return new \WP_REST_Response([
+		    	'error_message' => __('Error starting importer', 'tainacan' ),
+			    'session_id' => $session_id
+		    ], 400);
+        }
+
         $response = [
-            'bg_process_id' => $process->get_id()
+            'bg_process_id' => $process->ID
         ];
         return new \WP_REST_Response( $response, 200 );
 
+    }
+
+    public function get_registered_importers() {
+        global $Tainacan_Importer_Handler; 
+        $importers = $Tainacan_Importer_Handler->get_registered_importers();
+        return new \WP_REST_Response( $importers, 200 );
     }
 
 

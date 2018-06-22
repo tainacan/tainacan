@@ -221,17 +221,17 @@
             
                     <!-- Name -------------------------------- --> 
                     <b-field 
-                        :addons="false"
-                        :label="$i18n.get('label_name')"
-                        :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
-                        :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                            :addons="false"
+                            :label="$i18n.get('label_name')"
+                            :type="editFormErrors['name'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
                         <help-button 
-                            :title="$i18n.getHelperTitle('collections', 'name')" 
-                            :message="$i18n.getHelperMessage('collections', 'name')"/>
+                                :title="$i18n.getHelperTitle('collections', 'name')" 
+                                :message="$i18n.getHelperMessage('collections', 'name')"/>
                         <b-input
-                            id="tainacan-text-name"
-                            v-model="form.name"
-                            @focus="clearErrors('name')"/>  
+                                id="tainacan-text-name"
+                                v-model="form.name"
+                                @focus="clearErrors('name')"/>  
                     </b-field>
                         
                     <!-- Description -------------------------------- --> 
@@ -420,7 +420,8 @@ export default {
             thumbnailMediaFrame: undefined,
             headerImageMediaFrame: undefined,
             registeredViewModes: tainacan_plugin.registered_view_modes,
-            viewModesList: []
+            viewModesList: [],
+            fromImporter: ''
         }
     },
     methods: {
@@ -477,7 +478,10 @@ export default {
                 this.formErrorMessage = '';
                 this.editFormErrors = {};
 
-                this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                if (this.fromImporter)
+                    this.$router.go(-1);
+                else
+                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
             .catch((errors) => {
                 for (let error of errors.errors) {     
@@ -538,7 +542,10 @@ export default {
             this.editFormErrors[attribute] = undefined;
         },
         cancelBack(){
-            this.$router.push(this.$routerHelper.getCollectionsPath());
+            if (this.fromImporter)
+                this.$router.go(-1);
+            else
+                this.$router.push(this.$routerHelper.getCollectionsPath());
         },
         updateViewModeslist(viewMode) {
         
@@ -656,15 +663,18 @@ export default {
     },
     created(){
 
-        if (this.$route.fullPath.split("/").pop() == "new") {
+        if (this.$route.query.fromImporter != undefined) 
+            this.fromImporter = this.$route.query.fromImporter;
+
+        if (this.$route.path.split("/").pop() == "new") {
             this.createNewCollection();
             this.isNewCollection = true;
-        } else if (this.$route.fullPath.split("/").pop() == "settings") {
+        } else if (this.$route.path.split("/").pop() == "settings") {
 
             this.isLoading = true;
 
             // Obtains current Collection ID from URL
-            this.pathArray = this.$route.fullPath.split("/").reverse(); 
+            this.pathArray = this.$route.path.split("/").reverse(); 
             this.collectionId = this.pathArray[1];
 
             this.fetchCollection(this.collectionId).then(res => {
@@ -730,7 +740,7 @@ export default {
     },
     mounted() {
 
-        if (this.$route.fullPath.split("/").pop() != "new") {
+        if (this.$route.path.split("/").pop() != "new") {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
                 this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
             });
@@ -779,14 +789,20 @@ export default {
             padding: 20px;
         }
         .image-placeholder {
-            position: relative;
-            left: 45%;
-            bottom: -100px;
-            font-size: 0.8rem;
+            position: absolute;
+            left: 30%;
+            right: 30%;
+            top: 40%;
+            font-size: 2.0rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
+            
+            @media screen and (max-width: 769px) {
+                font-size: 1.2rem;
+            }
+            
         }
         .header-buttons-row {
             text-align: right;

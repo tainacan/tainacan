@@ -15,12 +15,25 @@ function tainacan_create_bd_process_db() {
 	  data longtext NOT NULL,
 	  action text NOT NULL,
 	  done boolean not null default 0,
+	  progress_label text,
+	  progress_value int,
 	  PRIMARY KEY (ID),
 	  KEY user_id (user_id),
 	  KEY action (action($max_index_length))
 	) $charset_collate;\n";
 	
 	$wpdb->query($query);
+
+	$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'progress_label'"  );
+
+    if(empty($column_exists)) {
+		$wpdb->query("
+        ALTER TABLE {$wpdb->prefix}tnc_bg_process
+        ADD progress_label text,
+        ADD progress_value int
+        ");
+	}
+    
 	
 }
 

@@ -500,7 +500,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract protected function task( $item, $key );
+		abstract protected function task( $item );
 
 	}
 }

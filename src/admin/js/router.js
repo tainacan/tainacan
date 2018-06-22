@@ -16,8 +16,10 @@ import EventPage from '../pages/singles/event-page.vue'
 
 // Edition Form Components
 import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
+import ImporterEditionForm from '../components/edition/importer-edition-form.vue'
 import ItemEditionForm from '../components/edition/item-edition-form.vue'
 import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
+import AvailableImportersPage from '../pages/lists/available-importers-page.vue';
 
 // Listing components
 import FiltersList from '../components/lists/filters-list.vue'
@@ -65,6 +67,9 @@ const routes = [
 
     { path: '/events',  name: 'EventsPage', component: EventsPage, meta: {title: i18nGet('title_repository_events_page'), icon: 'flash'} },
     { path: '/events/:eventId', name: 'EventPage', component: EventPage, meta: {title: i18nGet('title_event_page'), icon: 'flash'} },
+
+    { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: {title: i18nGet('title_importers_page'), icon: 'file-multiple'} },
+    { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page'), icon: 'file-multiple'} },
 
     { path: '*', redirect: '/'}
 ];

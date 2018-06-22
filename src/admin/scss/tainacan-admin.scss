@@ -20,6 +20,7 @@
 @import "../scss/_tooltips.scss";
 @import "../scss/_pagination.scss";
 @import "../scss/_modals.scss";
+@import "../scss/_tags.scss";
 
 // Clears wordpress content
 body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
@@ -46,6 +47,11 @@ html {
 // Link (hover is the same color as secondary
 a:hover {
     color: $secondary;
+    text-decoration: underline;
+}
+.add-link {
+    display: inline;
+    font-size: 12px; 
 }
 
 // Page settings
@@ -63,10 +69,6 @@ a:hover {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    
-    @media screen and (max-width: 769px) {
-        padding: $page-mobile-top-padding $page-mobile-side-padding;
-    }
 }
 // Used for pages with collection subheader
 .page-container-small {

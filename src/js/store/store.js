@@ -8,6 +8,7 @@ import filter from './modules/filter/';
 import search from './modules/search/';
 import taxonomy from './modules/taxonomy/';
 import event from './modules/event';
+import importer from './modules/importer';
 
 Vue.use(Vuex);
 
@@ -28,5 +29,6 @@ export default new Vuex.Store({
         search,
         taxonomy,
         event,
+        importer
     }
 })

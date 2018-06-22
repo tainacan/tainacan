@@ -292,6 +292,7 @@ export default {
             } else {
 
                 this.openedMetadatumId = metadatum.id;
+                
                 // First time opening
                 if (this.editForms[this.openedMetadatumId] == undefined) {
                     this.editForms[this.openedMetadatumId] = JSON.parse(JSON.stringify(metadatum));

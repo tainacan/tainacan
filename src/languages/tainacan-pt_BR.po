@@ -563,7 +563,7 @@ msgstr "Aprovado"
 #: admin/tainacan-admin-i18n.php:130
 #: classes/metadata-types/taxonomy/class-tainacan-taxonomy.php:35
 #: classes/metadata-types/relationship/class-tainacan-relationship.php:26
-msgid "Collection Related"
+msgid "Related Collection"
 msgstr "Coleção relacionada"
 
 #: admin/tainacan-admin-i18n.php:131

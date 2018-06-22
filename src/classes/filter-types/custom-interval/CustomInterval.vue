@@ -168,11 +168,11 @@
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
-                    if( metadata.value.length > 0 && this.type === 'numeric'){
+                    if( metadata.value && metadata.value.length > 0 && this.type === 'numeric'){
                         this.value_init = metadata.value[0];
                         this.value_end = metadata.value[1];
                         this.isValid = true;
-                    } else if( metadata.value.length > 0 ){
+                    } else if( metadata.value && metadata.value.length > 0 ){
                         this.date_init = new Date( metadata.value[0] );
                         this.date_end = new Date( metadata.value[1] );
 

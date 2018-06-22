@@ -2,6 +2,7 @@
     <form
             id="metadatumEditForm"
             class="tainacan-form"
+            :class="{ 'inCollapse': !isOnModal }"
             @submit.prevent="saveEdition(editForm)">
 
         <b-field
@@ -229,7 +230,8 @@
             editedMetadatum: Object,
             originalMetadatum: Object,
             isRepositoryLevel: false,
-            collectionId: ''
+            collectionId: '',
+            isOnModal: false
         },
         created() {
 
@@ -334,7 +336,7 @@
 
     @import "../../scss/_variables.scss";
 
-    form {
+    form.inCollapse {
         padding: 1.0em 2.0em;
         border-top: 1px solid $draggable-border-color;
         border-bottom: 1px solid $draggable-border-color;

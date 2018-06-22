@@ -207,7 +207,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
             $map[$metadatum->get_id()] = $headers[$index];
         }
 		
-		$collection_definition['map'] = $map;
+		$collection_definition['mapping'] = $map;
 
         // add the collection
         $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );

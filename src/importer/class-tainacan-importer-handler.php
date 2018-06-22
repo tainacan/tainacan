@@ -17,8 +17,23 @@ class Importer_Handler {
 	public function init() {
 
 		$this->register_importer([
+			'name' => 'CSV',
+			'description' => __('Import items from a CSV file to a chosen collection', 'tainacan'),
 			'slug' => 'csv',
 			'class_name' => '\Tainacan\Importer\CSV'
+		]);
+		$this->register_importer([
+			'name' => 'Test Importer',
+			'description' => __('Create 2 test colletions with random items', 'tainacan'),
+			'slug' => 'test',
+			'class_name' => '\Tainacan\Importer\Test_Importer'
+		]);
+
+		$this->register_importer([
+			'name' => 'Tainacan Old',
+			'description' => __('Import structure from previously version of tainacan', 'tainacan'),
+			'slug' => 'tainacan_old',
+			'class_name' => '\Tainacan\Importer\Old_Tainacan'
 		]);
 
 		do_action('tainacan_register_importers');
@@ -26,9 +41,13 @@ class Importer_Handler {
 	}
 	
 	function add_to_queue(\Tainacan\Importer\Importer $importer_object) {
-		$data = $importer_object->_to_Array();
-		$importer_object = $this->bg_importer->data($data)->save()->dispatch();
-		return $importer_object;
+		$data = $importer_object->_to_Array(true);
+		$bg_process = $this->bg_importer->data($data)->save();
+		if ( is_wp_error($bg_process->dispatch()) ) {
+			return false;
+		}
+		return $bg_process;
+		
 	}
 
 	/**

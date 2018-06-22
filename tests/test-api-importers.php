@@ -14,7 +14,7 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 		]);
 
 
-		$request  = new \WP_REST_Request('POST', $this->namespace . '/importers');
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/importers/session');
 		$request->set_body($params);
 
 		$response = $this->server->dispatch($request);
@@ -38,10 +38,18 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 
         $params = json_encode([
             'url'       => 'http://test.com',
-            'options'   => ['delimiter' => ';']
+            'options'   => ['delimiter' => ';'],
+            'collection' => [
+                'id' => 231,
+                'map' => [
+                    30 => 'column1',
+                    31 => 'column2'
+                ],
+                'total_items' => 1234
+            ]
 		]);
 
-        $request  = new \WP_REST_Request('PATCH', $this->namespace . '/importers/' . $session_id);
+        $request  = new \WP_REST_Request('PATCH', $this->namespace . '/importers/session/' . $session_id);
 		$request->set_body($params);
 
         $response = $this->server->dispatch($request);
@@ -55,6 +63,8 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
         $this->assertEquals(';', $__importer->get_option('delimiter'));
 
         $this->assertEquals($__importer->get_url(), $data['url']);
+
+        $this->assertEquals(1234, $__importer->get_collections()[0]['total_items']);
 
 		
 
