@@ -11,28 +11,30 @@ class Old_Tainacan extends Importer{
     protected $steps = [
 		
 		[
-			'name' => 'Create Taxonomies',
+            'name' => 'Create Taxonomies',
+            'progress_label' => 'Creating taxonomies',
 			'callback' => 'create_taxonomies'
         ],
         [
-			'name' => 'Create Repo Metadata',
+            'name' => 'Create Repo Metadata',
+            'progress_label' => 'Create Repo Metadata',
 			'callback' => 'create_repo_metadata'
 		],
 		[
-			'name' => 'Create Collections',
+            'name' => 'Create Collections',
+            'progress_label' => 'Create Collections',
 			'callback' => 'create_collections'
         ],
 		[
-			'name' => 'Import Items',
+            'name' => 'Import Items',
+            'progress_label' => 'Import Items',
 			'callback' => 'process_collections'
         ],
         [
-			'name' => 'Link Relationships',
-			'callback' => 'link_relationships'
-		],
-		[
-			'name' => 'Finalize',
-			'callback' => 'finish_processing'
+            'name' => 'Link Relationships',
+            'progress_label' => 'Link Relationships',
+            'callback' => 'link_relationships',
+            'total' => 5
 		]
 		
 	];
@@ -42,9 +44,8 @@ class Old_Tainacan extends Importer{
     /**
      * tainacan old importer construct
      */
-    public function __construct(){
-
-        parent::__construct();
+    public function __construct($attributes = array()) {
+		parent::__construct($attributes);
 
         $this->tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
 		$this->col_repo = \Tainacan\Repositories\Collections::get_instance();
@@ -204,7 +205,7 @@ class Old_Tainacan extends Importer{
             $collection = new Entities\Collection($collection_id['id']);
             $item = new Entities\Item();
             $item->set_title( $item_Old->post_title );
-            $item->set_description( $item_Old->post_content_filtered );
+            $item->set_description( (isset($item_Old->post_content)) ? $item_Old->post_content : '' );
             $item->set_status('publish');
 
             $item->set_collection( $collection );
