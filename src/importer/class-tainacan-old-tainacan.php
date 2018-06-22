@@ -68,7 +68,9 @@ class Old_Tainacan extends Importer{
      */
     public function create_taxonomies() {
         
-        foreach ($this->get_taxonomies() as $taxonomy) {
+        $this->add_log('Creating taxonomies');
+		
+		foreach ($this->get_taxonomies() as $taxonomy) {
 
             $tax = new Entities\Taxonomy();
             $tax->set_name( $taxonomy->name );
@@ -78,6 +80,8 @@ class Old_Tainacan extends Importer{
 
             if ($tax->validate()) {
                 $tax = $this->tax_repo->insert($tax);
+				
+				$this->add_log('Taxonomy ' . $tax->get_name() . ' created');
 
                 $this->add_transient('tax_' . $taxonomy->term_id . '_id', $tax->get_id());
                 $this->add_transient('tax_' . $taxonomy->term_id . '_name', $tax->get_name());
@@ -105,7 +109,9 @@ class Old_Tainacan extends Importer{
      */
     public function create_repo_metadata(){
 
-        foreach ($this->get_repo_metadata() as $metadata) {
+        $this->add_log('Creating repository metadata');
+		
+		foreach ($this->get_repo_metadata() as $metadata) {
 
             if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
                $metadatum_id = $this->create_metadata( $metadata );  
@@ -120,7 +126,9 @@ class Old_Tainacan extends Importer{
      */
     public function create_collections(){
 
-        foreach ($this->fetch_collections() as $collection) {
+        $this->add_log('Creating collections');
+		
+		foreach ($this->fetch_collections() as $collection) {
             $map = [];
 
             if ( isset($collection->post_title) && $collection->post_status === 'publish') {
@@ -480,7 +488,9 @@ class Old_Tainacan extends Importer{
     */
     protected function add_all_terms($taxonomy_father, $children, $term_father = null){
 
-        foreach ($children as $term) {
+        $this->add_log('adding terms');
+		
+		foreach ($children as $term) {
 
             $new_term = new Entities\Term();
             $new_term->set_taxonomy($taxonomy_father->get_db_identifier());
@@ -499,7 +509,9 @@ class Old_Tainacan extends Importer{
                 $this->abort();
                 return false;
     
-            }
+            } else {
+				$this->add_log('Added term: ' . $inserted_term->get_name());
+			}
 
             /*Insert old tainacan id*/
             $this->add_transient('term_' . $term->term_id . '_id', $inserted_term->get_id());
@@ -536,7 +548,9 @@ class Old_Tainacan extends Importer{
             $related_taxonomy = $this->get_transient('tax_' . $taxonomy_id . '_id');
             if ($related_taxonomy) {
                 $newMetadatum->set_metadata_type_options(['taxonomy_id' => $related_taxonomy]);
-            }
+            } else {
+				$this->add_error_log('Taxonomy ID not found: ' . $taxonomy_id);
+			}
 
         } else if(strcmp($type, "Relationship") === 0){
             $relation_id = $meta->metadata->object_category_id;
@@ -545,7 +559,9 @@ class Old_Tainacan extends Importer{
 
             if(isset($related_taxonomy)){
                 $newMetadatum->set_metadata_type_options(['collection_id' => $related_taxonomy]);
-            }
+            } else {
+				$this->add_error_log('Related Collection ID not found: ' . $relation_id);
+			}
         } else if(strcmp($type, "Compound") === 0){
              
             if( isset( $meta->metadata->children ) ){
@@ -577,6 +593,9 @@ class Old_Tainacan extends Importer{
 
         if($newMetadatum->validate()){
             $inserted_metadata = $this->metadata_repo->insert( $newMetadatum );
+			
+			$this->add_log('Metadata created: ' . $inserted_metadata->get_name());
+			
             $this->add_transient('metadata_' . $inserted_metadata->get_id() . '_id', $inserted_metadata->get_id());
 
             if(isset( $related_name) ){
@@ -606,6 +625,8 @@ class Old_Tainacan extends Importer{
 
         if($new_collection->validate()){
             $new_collection =$this->col_repo->insert($new_collection);
+			
+			$this->add_log('Collection created: ' . $new_collection->get_name());
 
             if( $new_collection )
                 $this->add_transient('collection_' . $node_collection->ID . '_name', $new_collection->get_id());
