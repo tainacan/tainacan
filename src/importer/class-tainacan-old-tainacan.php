@@ -152,7 +152,7 @@ class Old_Tainacan extends Importer{
                     'mapping' => $map,
                     'total_items' => $this->get_total_items_from_source( $collection->ID ),
                     'source_id' => $collection->ID,
-                    'items' => $this->get_all_items( $collection->ID ) 
+                    //'items' => $this->get_all_items( $collection->ID ) 
                 ]);
             }
 
@@ -212,12 +212,36 @@ class Old_Tainacan extends Importer{
     * @return int
     */
     public function process_item( $index, $collection_id ){
+        $args = array(
+            'timeout'     => 30,
+            'redirection' => 30,
+        );
 
-        if( isset($collection_id['items'][$index]) ){
-            $item_Old = $collection_id['items'][$index]->item;
+        $page = intval( $index ) + 1; 
 
+        $this->add_log('Proccess item index' . $index . ' in collection OLD ' . $collection_id['source_id'] );
+
+        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page, $args );                    
+        $info = json_decode($info['body']);
+
+        if( !isset( $info->items ) ){
+            $this->add_error_log('Error in fetch remote (' . $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page);
+            $this->abort();
+            return false;
+        }
+        
+        $the_item = null;
+
+        foreach( $info->items as $item ){
+            $the_item = $item;
+        }
+
+        if( isset($the_item) && isset($the_item->item) && !empty($the_item->item) ){
+            $item_Old = $the_item;
+            $this->add_log('item found ', $the_item->item->ID );  
            return [ 'item' => $item_Old, 'collection_definition' => $collection_id ];
         } else {
+            $this->add_error_log('fetching remote (' . $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page);
             $this->add_error_log('proccessing an item empty');
 			$this->abort();
             return false;
@@ -235,11 +259,13 @@ class Old_Tainacan extends Importer{
      */
     public function insert( $processed_item, $collection_index ) {
         $collection_id = $processed_item['collection_definition'];
-        $item_Old = $processed_item['item'];
+        $item_Old = $processed_item['item']->item;
 
         $collection = new Entities\Collection($collection_id['id']);
         $item = new Entities\Item();
         $item->set_title( $item_Old->post_title );
+        $this->add_log('Begin insert ' . $item_Old->post_title . ' in collection ' . $collection_id['id'] );
+
         $item->set_description( (isset($item_Old->post_content)) ? $item_Old->post_content : '' );
         $item->set_status('publish');
 
@@ -250,10 +276,10 @@ class Old_Tainacan extends Importer{
             $this->add_transient('item_' . $item_Old->ID . '_id', $insertedItem->get_id()); // add reference for relations
             $this->add_transient('item_' . $item_Old->ID . '_collection', $collection_id['id']); // add collection for relations
 
-            if( $insertedItem->get_id() && is_array($collection_id['items'][$index]->metadata) ){
+            if( $insertedItem->get_id() && is_array($processed_item['item']->metadata) ){
                 $this->add_log('Item ' . $insertedItem->get_title() . ' inserted');
 
-                $this->add_item_metadata(  $insertedItem, $collection_id['items'][$index]->metadata, $collection_id );
+                $this->add_item_metadata(  $insertedItem, $processed_item['item']->metadata, $collection_id );
 
                 //inserting files
                 $this->insert_files( $item_Old, $insertedItem );
@@ -594,8 +620,8 @@ class Old_Tainacan extends Importer{
             if ($related_taxonomy) {
                 $newMetadatum->set_metadata_type_options(['taxonomy_id' => $related_taxonomy]);
             } else {
-                $this->add_error_log('Taxonomy ID not found: ' . $taxonomy_id);
-                $this->add_error_log('Skipping creating metadata ' . $name . ' taxonomy ID is required ' );
+                $this->add_log('Taxonomy ID not found: ' . $taxonomy_id);
+                $this->add_log('Skipping creating metadata ' . $name . ' taxonomy ID is required ' );
                 return false;
 			}
 
@@ -607,8 +633,8 @@ class Old_Tainacan extends Importer{
             if(isset($related_taxonomy)){
                 $newMetadatum->set_metadata_type_options(['collection_id' => $related_taxonomy]);
             } else {
-                $this->add_error_log('Related Collection ID not found: ' . $relation_id);
-                $this->add_error_log('Skipping creating metadata ' . $name . ' Related Collection ID is required ' );
+                $this->add_log('Related Collection ID not found: ' . $relation_id);
+                $this->add_log('Skipping creating metadata ' . $name . ' Related Collection ID is required ' );
                 return false;
 			}
         } else if(strcmp($type, "Compound") === 0){
@@ -755,10 +781,12 @@ class Old_Tainacan extends Importer{
                 if( $id ){
                     $item->set_document( $id );
                     $item->set_document_type( 'attachment' );
+                    $this->add_log('Document imported from ' . $node_old->content_tainacan->guid);
                 } 
             } else if(filter_var($node_old->content_tainacan, FILTER_VALIDATE_URL)){
-                    $item->set_document( $node_old->content_tainacanid );
+                    $item->set_document( $node_old->content_tainacan );
                     $item->set_document_type( 'url' );
+                    $this->add_log('URL imported from ' . $node_old->content_tainacan);
             }
             
         }
