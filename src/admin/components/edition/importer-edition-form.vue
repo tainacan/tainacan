@@ -229,7 +229,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
-import { tainacan as axios } from '../../../js/axios/axios.js';
 
 export default {
     name: 'ImporterEditionForm',
@@ -288,6 +287,9 @@ export default {
         ...mapActions('collection', [
             'fetchCollectionsForParent'
         ]),
+        ...mapActions('bgprocess', [
+            'fetchProcess'
+        ]),
         ...mapActions('metadata', [
             'fetchMetadata',
             'fetchMetadatumTypes',
@@ -295,6 +297,9 @@ export default {
         ]),
         ...mapGetters('metadata', [
             'getMetadatumTypes'
+        ]),
+        ...mapGetters('bgprocess', [
+            'getProcess'
         ]),
         createImporter() {
             // Puts loading on Draft Importer creation
@@ -390,7 +395,7 @@ export default {
             }
         },
         onCheckBackgroundProcessStatus() {
-            axios.get('/bg-processes/' + this.backgroundProcess.bg_process_id)
+            this.fetchProcess(this.backgroundProcess.bg_process_id)
             .then((backgroundProcess) => {
                 this.$console.log(JSON.stringify(backgroundProcess));
             })

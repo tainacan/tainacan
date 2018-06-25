@@ -344,7 +344,7 @@ class REST_Filters_Controller extends REST_Controller {
 	public function get_items( $request ) {
 		$args = $this->prepare_filters( $request );
 
-		if ($request['include_disabled'] === 'yes') {
+		if ($request['include_disabled'] === 'true') {
 			$args['include_disabled'] = true;
 		}
 

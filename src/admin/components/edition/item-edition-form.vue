@@ -13,6 +13,9 @@
             <div class="columns">
                 <div class="column is-5-5">
 
+                    <!-- Last Updated Info -->
+                    <p>{{ $i18n.get('info_updated_at') + ' ' + lastUpdated }}</p>
+
                     <!-- Status -------------------------------- -->
                     <div class="section-label">
                         <label>{{ $i18n.get('label_status') }}</label>
@@ -385,6 +388,9 @@ export default {
         },
         attachmentsList(){
             return this.getAttachments();
+        },
+        lastUpdated() {
+            return this.getLastUpdated();
         }
     },
     components: {
@@ -405,7 +411,8 @@ export default {
         ]),
         ...mapGetters('item',[
             'getMetadata',
-            'getAttachments'
+            'getAttachments',
+            'getLastUpdated'
         ]),
         onSubmit() {
             // Puts loading on Item edition

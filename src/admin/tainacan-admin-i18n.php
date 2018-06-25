@@ -336,6 +336,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_upload_a_source_to_see_metadata'	   => __( 'Upload a source file to load metadata.', 'tainacan' ),	
 	'info_select_collection_to_list_metadata'  => __( 'Select a target collection to list metadata.', 'tainacan' ),	
 	'info_url_source_link_helper'			   => __( 'Link to file containing the data to be imported.', 'tainacan' ),	
+	'info_updated_at'						   => __( 'Updated at', 'tainacan' ),	
 		
 	// Tainacan Metadatum Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),
@@ -345,6 +346,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'tainacan-selectbox'                       => __( 'Select box', 'tainacan' ),
 	'tainacan-relationship'                    => __( 'Relationship', 'tainacan' ),
 	'tainacan-taxonomy'                        => __( 'Taxonomy', 'tainacan' ),
+	'tainacan-compound'                        => __( 'Compound', 'tainacan' ),
 
 	// Tainacan Filter Types
 	'tainacan-filter-custom-interval'          => __( 'Custom Interval', 'tainacan' ),

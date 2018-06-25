@@ -3,13 +3,10 @@ import * as getters from './getters';
 import * as mutations from './mutations';
 
 const state = {
-    item: [],
-    metadata: [],
-    error: [],
-    itemTitle: '',
-    attachment: {},
-    attachments: [],
-    lastUpdated: ''
+    bg_processes: [],
+    bg_process: {},
+    log: {},
+    error_log: {}
 };
 
 

@@ -55,3 +55,10 @@ export const setSingleMetadatum = ( state, metadatum) => {
         state.metadata.push( metadatum );
     }
 }
+
+export const setLastUpdated = (state) => {
+    console.log(state.lastUpdated);
+    let now = new Date();
+    state.lastUpdated = now.toLocaleString();
+}
+
