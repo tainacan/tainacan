@@ -34,7 +34,11 @@ export const eventBus = new Vue({
                 });
             }
         },
+        isChangingValue() {
+            this.$emit('isChangingValue', true);
+        },  
         updateValue(data){
+            this.$emit('isUpdatingValue', true);
             if ( data.item_id ){
                 
                 let values = ( Array.isArray( data.values[0] ) ) ? data.values[0] : data.values ;
@@ -42,12 +46,14 @@ export const eventBus = new Vue({
                     { item_id: data.item_id, metadatum_id: data.metadatum_id, values: values });
 
                     promisse.then( () => {
+                    this.$emit('isUpdatingValue', false);
                     let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
                     if ( index >= 0){
                         this.errors.splice( index, 1);
                     }
                 })
                 .catch((error) => {
+                    this.$emit('isUpdatingValue', false);
                     let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
                     let messages = [];
 

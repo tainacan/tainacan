@@ -51,7 +51,10 @@ export const fetchMetadata = ({ commit }, item_id) => {
 
 export const cleanMetadata = ({ commit }) => {
     commit('cleanMetadata');
-    commit('setLastUpdated');
+};
+
+export const cleanLastUpdated = ({commit}) => {
+    commit('cleanLastUpdated');
 };
 
 // Actions directly related to Item

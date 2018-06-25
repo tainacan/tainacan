@@ -231,10 +231,12 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_url_source_link'					   => __( 'URL Source link', 'tainacan' ),
 	'label_metadata_mapping'				   => __( 'Metadata mapping', 'tainacan' ),
 	'label_select_metadatum'				   => __( 'Select metadatum', 'tainacan' ),
-	'label_select_metadatum_type'				   => __( 'Select a metadatum type', 'tainacan' ),
+	'label_select_metadatum_type'			   => __( 'Select a metadatum type', 'tainacan' ),
 	'label_add_more_metadata'				   => __( 'Add more metadata', 'tainacan' ),
 	'label_from_source_collection'		   	   => __( 'From source collection', 'tainacan' ),
 	'label_to_target_collection'			   => __( 'To target collection', 'tainacan' ),
+	'label_add_value'						   => __( 'Add value', 'tainacan' ),
+	'label_remove_value'					   => __( 'Remove value', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -337,7 +339,9 @@ return apply_filters('tainacan-admin-i18n',[
 	'info_select_collection_to_list_metadata'  => __( 'Select a target collection to list metadata.', 'tainacan' ),	
 	'info_url_source_link_helper'			   => __( 'Link to file containing the data to be imported.', 'tainacan' ),	
 	'info_updated_at'						   => __( 'Updated at', 'tainacan' ),	
-		
+	'info_editing_metadata_values'		   	   => __( 'Editing metadata values...', 'tainacan' ),	
+	'info_updating_metadata_values'		   	   => __( 'Updating metadata values...', 'tainacan' ),	
+			
 	// Tainacan Metadatum Types
 	'tainacan-text'                            => __( 'Text', 'tainacan' ),
 	'tainacan-textarea'                        => __( 'Text area', 'tainacan' ),

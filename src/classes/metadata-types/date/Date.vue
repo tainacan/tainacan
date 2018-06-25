@@ -7,7 +7,7 @@
                     class="input"
                     type="text"
                     v-mask="dateMask"
-                    v-model="dateValue"
+                    :value="dateValue"
                     @blur="onBlur"
                     @input="onInput"
                     :placeholder="dateFormat">

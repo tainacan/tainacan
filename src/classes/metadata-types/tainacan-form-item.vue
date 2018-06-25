@@ -27,7 +27,8 @@
                     :is="metadatum.metadatum.metadata_type_object.component"
                     v-model="inputs[0]" 
                     :metadatum="metadatum"
-                    @blur="changeValue()"/>
+                    @blur="changeValue()"
+                    @input="emitIsChangingValue()"/>
             <div v-if="metadatum.metadatum.multiple == 'yes'">
                 <div 
                         v-if="index > 0" 
@@ -39,14 +40,28 @@
                             :is="metadatum.metadatum.metadata_type_object.component"
                             v-model="inputs[index]" 
                             :metadatum="metadatum"
-                            @blur="changeValue()"/><a 
-                            class="button" 
-                            v-if="index > 0" 
-                            @click="removeInput(index)">-</a>
+                            @blur="changeValue()"  
+                            @input="emitIsChangingValue()"/>
+                        <a 
+                                v-if="index > 0" 
+                                @click="removeInput(index)"
+                                class="is-inline add-link">
+                            <b-icon
+                                    icon="minus-circle"
+                                    size="is-small"
+                                    type="is-secondary"/>
+                                {{ $i18n.get('label_remove_value') }}</a>
                 </div>
+
                 <a 
-                        class="button" 
-                        @click="addInput">+</a>
+                        @click="addInput"
+                        class="is-inline add-link">
+                    <b-icon
+                            icon="plus-circle"
+                            size="is-small"
+                            type="is-secondary"/>
+                        {{ $i18n.get('label_add_value') }}</a>
+
             </div>
         </div>
         <div 
@@ -57,7 +72,8 @@
                     :is="metadatum.metadatum.metadata_type_object.component"
                     v-model="inputs"
                     :metadatum="metadatum"
-                    @blur="changeValue()"/>
+                    @blur="changeValue()"
+                    @input="emitIsChangingValue()"/>
         </div>
     </b-field>
 </template>
@@ -107,6 +123,9 @@
             this.getValue();
         },
         methods: {
+            emitIsChangingValue() {
+                eventBus.isChangingValue(true);
+            },
             changeValue(){
                 eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
             },
@@ -144,6 +163,8 @@
 
     .multiple-inputs {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .field {
@@ -153,7 +174,7 @@
         .label {
             font-size: 14px;
             font-weight: 500;
-            margin-left: 18px;
+            margin-left: 15px;
             margin-bottom: 0.5em;
         }
         .metadata-type {
@@ -169,6 +190,7 @@
         .collapse-handle {
             cursor: pointer;
             position: relative;
+            margin-left: -42px;
         }
     }
 </style>

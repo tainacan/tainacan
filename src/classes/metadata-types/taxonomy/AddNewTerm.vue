@@ -1,18 +1,21 @@
 <template>
     <div>
          <span>
-             <a
-                class="button"
-                @click="showForm = !showForm"><b-icon 
-                size="is-small" 
-                icon="plus"/>&nbsp;{{ $i18n.get('label_new_term') }}</a>
+                <a
+                        @click="showForm = !showForm"
+                        class="is-inline add-link">
+                    <b-icon
+                            icon="plus-circle"
+                            size="is-small"
+                            type="is-secondary"/>
+                        &nbsp;{{ $i18n.get('label_new_term') }}</a>
+
          </span>
-        <div class="columns">
+        <div>
             <transition name="fade">
 
                 <section
                         v-if="showForm"
-                        class="column is-one-third"
                         style="padding-left: 0px;">
 
                     <b-field :label="$i18n.get('label_name')">
@@ -36,7 +39,7 @@
                     </b-field>
 
                     <a
-                            class="button is-primary"
+                            class="button is-secondary"
                             @click="save">{{ $i18n.get('save') }}</a>
                 </section>
 
@@ -124,9 +127,4 @@
     }
 </script>
 <style scoped>
-    button{
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-    }
 </style>
