@@ -127,7 +127,33 @@
                 eventBus.isChangingValue(true);
             },
             changeValue(){
-                eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
+                if(this.metadatum.value != this.inputs){
+                    if(this.inputs.length > 0 && this.inputs[0].value){
+                        let terms = []
+
+                        for(let term of this.inputs){
+                            terms.push(term.value);
+                        }
+
+                        if(this.metadatum.value instanceof Array){
+                            for(let meta of this.metadatum.value){
+                                let found = terms.find((element) => {
+                                    return meta.id == element;
+                                });
+
+                                if(found){
+                                    return;
+                                }
+                            }
+                        }
+                    } else if(this.metadatum.value.constructor.name == 'Object'){
+                        if(this.metadatum.value.id == this.inputs){
+                            return;
+                        }
+                    }
+
+                    eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
+                }
             },
             getValue(){ 
                 if (this.metadatum.value instanceof Array) {
