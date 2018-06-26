@@ -40,7 +40,7 @@
             </b-field>
 
             <div class="columns">
-                <div class="column">
+                <div class="column is-4">
 
                     <!-- Thumbnail -------------------------------- --> 
                     <b-field :addons="false">
@@ -141,6 +141,7 @@
                                     :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
                         <div class="control">
                             <b-dropdown
+                                    class="enabled-view-modes"
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="false"
                                     :disabled="Object.keys(registeredViewModes).length < 0">
@@ -193,6 +194,7 @@
                     </b-field>
                     
                 </div>
+                <div class="column is-1" />
                 <div class="column">
                     <!-- Status -------------------------------- --> 
                     <b-field
@@ -838,6 +840,16 @@ export default {
             position: relative;
             left: 80px;
             bottom: -136px;
+        }
+    }
+    .enabled-view-modes {
+        .dropdown-content {
+            display: flex;
+            flex-wrap: wrap;
+
+            .dropdown-item {
+                width: 10%;
+            }
         }
     }
     .selected-cover-page {
