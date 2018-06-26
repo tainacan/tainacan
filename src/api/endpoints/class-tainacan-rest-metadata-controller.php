@@ -368,7 +368,7 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-metadata') ) {
+		if ( 'edit' === $request['context'] && ! $this->metadatum_repository->can_edit(new Entities\Metadatum()) ) {
 			return false;
 		}
 
