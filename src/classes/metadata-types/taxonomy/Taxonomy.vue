@@ -5,6 +5,7 @@
                 v-model="valueComponent"
                 :allow-new="allowNew"
                 :terms="terms"
+                :taxonomy-id="taxonomy"
                 :options="getOptions(0)"/>
         <add-new-term
                 class="add-new-term"
@@ -37,7 +38,12 @@
             if( metadata_type_options && metadata_type_options.allow_new_terms ){
                 this.allowNew = metadata_type_options.allow_new_terms === 'yes'
             }
-            this.getTermsFromTaxonomy();
+
+            // This condition is temporary
+            if(this.component != 'tainacan-taxonomy-tag-input'){
+                this.getTermsFromTaxonomy();
+            }
+
             this.getTermsId();
         },
         components: {
@@ -108,6 +114,7 @@
             },
             getTermsId(){
               let values = [];
+
               if( this.value && this.value.length > 0){
                   for( let term of this.value ){
                       if( term && term.id)
@@ -115,8 +122,16 @@
                   }
               }
 
-              if( values.length > 0 && this.metadatum.metadatum){
-                  this.valueComponent = (  this.metadatum.metadatum && this.metadatum.metadatum.multiple === 'no' ) ? values[0] : values
+              if( values.length > 0 && this.metadatum.metadatum && this.component != 'tainacan-taxonomy-tag-input'){
+                  this.valueComponent = (  this.metadatum.metadatum && this.metadatum.metadatum.multiple === 'no' ) ? values[0] : values;
+              } else if(values.length > 0 && this.metadatum.metadatum && this.component == 'tainacan-taxonomy-tag-input') {
+                    let values = [];
+                        
+                    for(let term of this.value){
+                        values.push({label: term.name, value: term.id});
+                    }
+
+                    this.valueComponent = values;
               }
 
             },

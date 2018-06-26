@@ -4,75 +4,109 @@
                 size="is-small"
                 icon="magnify"
                 :allow-new="allowNew"
-                @input="emitChange"
+                @add="emitAdd"
+                @remove="emitRemove"
                 v-model="selected"
                 :data="labels"
                 field="label"
                 attached
+                ellipsis
+                :loading="isFetching"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 autocomplete
-                @typing="search"/>
+                @typing="autoCompleteTerm"/>
     </div>
 </template>
 <script>
+
+    import { mapActions, mapGetters } from 'vuex';
+
     export default {
         data(){
             return {
                 selected: [],
-                labels: []
-            }
-        },
-        watch: {
-            terms(){
-                this.selectedValues();
+                labels: [],
+                termList: [],
+                isFetching: false,
             }
         },
         props: {
-            terms:  [ Number, String, Array ],
             options: {
                 type: Array
             },
             value: [ Number, String, Array ],
-            allowNew: [ Boolean ]
+            allowNew: [ Boolean ],
+            taxonomyId: Number,
+        },
+        created(){
+            if(this.value && this.value.length > 0){
+                this.selected = this.value;
+            }
         },
         methods: {
-            search( query ){
-                if( this.terms && this.terms.length > 0 ){
-                    let result = this.terms.filter( ( item ) => {
-                        let name = item.name.toLowerCase();
-                        let q = query.toLowerCase();
-                        return ( name.indexOf(q) >= 0 )
-                    });
-                    this.labels = [];
-                    for( let term of result){
-                        this.labels.push({label: term.name, value: term.id})
-                    }
-                }
-            },
-            selectedValues(){
-                if( this.value && this.value.length > 0 && this.selected.length === 0){
-                    let result = this.terms.filter( ( item ) => {
-                        let id = item.id;
-                        return ( this.value.indexOf( id ) >= 0 )
-                    });
+            ...mapActions('taxonomy', [
+                'fetchTerms'
+            ]),
+            ...mapGetters('taxonomy', [
+                'getTerms'
+            ]),
+            autoCompleteTerm: _.debounce( function(value){
+                this.termList = [];
+                this.labels = [];
+                this.isFetching = true;
 
-                    let selected = [];
-                    for( let term of result){
-                        selected.push({label: term.name, value: term.id})
+                this.fetchTerms({ 
+                    taxonomyId: this.taxonomyId,
+                    fetchOnly: { 
+                        fetch_only: {
+                            0: 'name',
+                            1: 'id'
+                        }
+                    },
+                    search: { 
+                        searchterm: value
+                    },
+                    all: true
+                }).then((res) => {
+                    this.termList = res;
+                    
+                    for(let term of this.termList){
+                        this.labels.push({label: term.name, value: term.id});
                     }
-                    this.selected = selected;
+                    this.isFetching = false;
+                }).catch((error) => {
+                    this.isFetching = false;
+                    throw error;
+                });
+            }, 300),
+            selectedValues(){
+                let selected = [];
+
+                for( let term of this.value){
+                    selected.push({label: term.label, value: term.value})
+                }
+
+                this.selected = selected;
+            },
+            emitAdd(){
+                let val = this.selected;
+                let results = [];
+
+                if(val.length > 0){
+                    for( let term of val ){
+                        results.push( term.value );
+                    }
+
+                    this.$emit('input', results);
+                    this.$emit('blur');
                 }
             },
-            emitChange(){
+            emitRemove(){
                 let val = this.selected;
                 let results = [];
 
                 for( let term of val ){
-                    if( term.value ){
-                        results.push( term.value );
-                    } else {
-                        results.push( term );
-                    }
+                    results.push( term.value );
                 }
 
                 this.$emit('input', results);

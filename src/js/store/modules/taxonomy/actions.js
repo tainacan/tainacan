@@ -170,12 +170,14 @@ export const updateTerm = ({ commit }, { taxonomyId, termId, name, description, 
     });
 };
 
-export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search}) => {
+export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all}) => {
     
     let query = '';
     
-    if(fetchOnly && search){
+    if(fetchOnly && search && !all ){
         query = `?order=asc&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+    } else if(fetchOnly && search && all ){ 
+        query = `?hideempty=0&order=asc&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
     } else {
         query = '?hideempty=0&order=asc';
     }

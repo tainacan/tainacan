@@ -129,11 +129,13 @@
             changeValue(){
                 eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
             },
-            getValue(){           
+            getValue(){ 
                 if (this.metadatum.value instanceof Array) {
                     this.inputs = this.metadatum.value;
-                    if (this.inputs.length === 0)
+                    
+                    if (this.inputs.length === 0){
                         this.inputs.push('');
+                    }
                 } else {
                     this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs.push('') : this.inputs.push(this.metadatum.value);
                 }

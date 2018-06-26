@@ -48,6 +48,7 @@
                                 v-else-if="advancedSearchQuery.taxquery[searchCriteria]"
                                 :data="terms"
                                 autocomplete
+                                :loading="isFetching"
                                 attached
                                 ellipsis
                                 :before-adding="hasTagIn($event, searchCriteria)"
@@ -233,7 +234,8 @@
                     },
                     search: { 
                         searchterm: value
-                    }
+                    },
+                    all: false
                 }).then((res) => {
                     this.termList = res;
 
