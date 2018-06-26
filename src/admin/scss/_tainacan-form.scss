@@ -87,6 +87,16 @@
             padding: 2px 14px 2px 18px !important
         }
     }
+    .two-columns-dropdown {
+        &>.dropdown-menu>.dropdown-content {
+            display: flex;
+            flex-wrap: wrap;
+
+            .dropdown-item {
+                width: 50%;
+            }
+        }
+    }
     .upload-draggable {
         border-radius: 0 !important;
     }

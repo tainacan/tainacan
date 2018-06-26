@@ -141,7 +141,7 @@
                                     :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
                         <div class="control">
                             <b-dropdown
-                                    class="enabled-view-modes"
+                                    class="two-columns-dropdown"
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="false"
                                     :disabled="Object.keys(registeredViewModes).length < 0">
@@ -840,16 +840,6 @@ export default {
             position: relative;
             left: 80px;
             bottom: -136px;
-        }
-    }
-    .enabled-view-modes {
-        .dropdown-content {
-            display: flex;
-            flex-wrap: wrap;
-
-            .dropdown-item {
-                width: 10%;
-            }
         }
     }
     .selected-cover-page {

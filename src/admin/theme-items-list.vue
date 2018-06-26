@@ -34,6 +34,7 @@ export default {
 
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_tags.scss";
     @import "../admin/scss/_selects.scss";
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
