@@ -151,8 +151,7 @@ class Old_Tainacan extends Importer{
                     'id' => $collection_id,
                     'mapping' => $map,
                     'total_items' => $this->get_total_items_from_source( $collection->ID ),
-                    'source_id' => $collection->ID,
-                    //'items' => $this->get_all_items( $collection->ID ) 
+                    'source_id' => $collection->ID
                 ]);
             }
 
@@ -263,6 +262,15 @@ class Old_Tainacan extends Importer{
 
         $collection = new Entities\Collection($collection_id['id']);
         $item = new Entities\Item();
+
+        // get the id if exists
+        $id = $this->get_transient('item_' . $item_Old->ID . '_id');
+
+        if( $id && is_numeric( $id ) ) {
+            $this->add_log('Updating item ' . $item_Old->post_title . ' in collection ');
+            $item = new Entities\Item( $id );
+        }
+
         $item->set_title( $item_Old->post_title );
         $this->add_log('Begin insert ' . $item_Old->post_title . ' in collection ' . $collection_id['id'] );
 
