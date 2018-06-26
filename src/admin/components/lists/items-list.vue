@@ -56,14 +56,14 @@
                     </div>
 
                     <!-- Title -->
-                    <p 
-                            v-for="(column, index) in tableMetadata"
-                            :key="index"
-                            v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                            class="metadata-title"
-                            @click="goToItemPage(item)"
-                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>                             
-                    
+                    <div class="metadata-title">
+                        <p 
+                                v-for="(column, index) in tableMetadata"
+                                :key="index"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                @click="goToItemPage(item)"
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>                             
+                        </div>
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
@@ -117,14 +117,14 @@
                     </div>
                     
                     <!-- Title -->
-                    <p 
-                            v-for="(column, index) in tableMetadata"
-                            :key="index"
-                            v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                            class="metadata-title"
-                            @click="goToItemPage(item)"
-                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
-                    
+                    <div class="metadata-title">
+                        <p 
+                                v-for="(column, index) in tableMetadata"
+                                :key="index"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                @click="goToItemPage(item)"
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
+                    </div>
                     <!-- Actions -->
                     <div 
                             v-if="item.current_user_can_edit"

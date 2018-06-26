@@ -9,4 +9,8 @@
         background-color: white;
         border: 1px solid $tainacan-input-background !important;
     }    
+    &[disabled] {
+        color: $tainacan-placeholder-color;
+        background-color: $tainacan-input-background;
+    }
 }

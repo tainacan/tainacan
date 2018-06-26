@@ -40,7 +40,7 @@
             </b-field>
 
             <div class="columns">
-                <div class="column">
+                <div class="column is-4">
 
                     <!-- Thumbnail -------------------------------- --> 
                     <b-field :addons="false">
@@ -75,28 +75,18 @@
                         </div>
                     </b-field>
 
-                    <!-- Enable Cover Page -------------------------------- -->
-                    <div class="field">
-                        <b-checkbox
-                                id="tainacan-checkbox-cover-page" 
-                                size="is-small"
-                                true-value="yes" 
-                                false-value="no"
-                                v-model="form.enable_cover_page">
-                            {{ $i18n.get('label_enable_cover_page') }}
-                        </b-checkbox>
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'enable_cover_page')" 
-                                :message="$i18n.getHelperMessage('collections', 'enable_cover_page')"/>
-                    </div>
-
                     <!-- Cover Page -------------------------------- --> 
                     <b-field
-                            v-show="form.enable_cover_page == 'yes'"
                             :addons="false" 
                             :label="$i18n.get('label_cover_page')"
                             :type="editFormErrors['cover_page_id'] != undefined ? 'is-danger' : ''" 
                             :message="editFormErrors['cover_page_id'] != undefined ? editFormErrors['cover_page_id'] : ''">
+                        <b-switch
+                                id="tainacan-checkbox-cover-page" 
+                                size="is-small"
+                                true-value="yes" 
+                                false-value="no"
+                                v-model="form.enable_cover_page" />
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'cover_page_id')" 
                                 :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
@@ -109,7 +99,8 @@
                                 :loading="isFetchingPages"
                                 @input="fecthCoverPages($event)"
                                 @focus="clearErrors('cover_page_id')"
-                                v-if="coverPage == undefined || coverPage.title == undefined">
+                                v-if="coverPage == undefined || coverPage.title == undefined"
+                                :disabled="form.enable_cover_page != 'yes'">
                             <template slot-scope="props">
                                 {{ props.option.title.rendered }}
                             </template>
@@ -122,16 +113,22 @@
                             <span v-html="coverPage.title.rendered" />
                             <span class="selected-cover-page-control">
                                 <a 
-                                        target="blank" 
-                                        :href="coverPageEditPath">{{ $i18n.get('edit') }}</a>
+                                        target="_blank" 
+                                        :href="coverPage.link">
+                                    <b-icon icon="eye"/>
+                                </a>
                                 &nbsp;&nbsp;
                                 <a 
-                                        target="_blank" 
-                                        :href="coverPage.link">{{ $i18n.get('see') }}</a>
+                                        target="blank" 
+                                        :href="coverPageEditPath">
+                                    <b-icon icon="pencil"/>
+                                </a>
                                 &nbsp;&nbsp;
-                                <button  
-                                        class="button is-secondary is-small"
-                                        @click.prevent="removeCoverPage()">{{ $i18n.get('remove') }}</button>
+                                <a 
+                                        target="_blank"
+                                        @click.prevent="removeCoverPage()">
+                                    <b-icon icon="delete"/>
+                                </a>
                             </span>
                         </div>
                     </b-field>
@@ -144,6 +141,7 @@
                                     :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
                         <div class="control">
                             <b-dropdown
+                                    class="enabled-view-modes"
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="false"
                                     :disabled="Object.keys(registeredViewModes).length < 0">
@@ -182,6 +180,7 @@
                                 :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
                                 :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
                         <b-select
+                                expanded
                                 id="tainacan-select-default_view_mode"
                                 v-model="form.default_view_mode"
                                 @focus="clearErrors('default_view_mode')">
@@ -195,6 +194,7 @@
                     </b-field>
                     
                 </div>
+                <div class="column is-1" />
                 <div class="column">
                     <!-- Status -------------------------------- --> 
                     <b-field
@@ -840,6 +840,16 @@ export default {
             position: relative;
             left: 80px;
             bottom: -136px;
+        }
+    }
+    .enabled-view-modes {
+        .dropdown-content {
+            display: flex;
+            flex-wrap: wrap;
+
+            .dropdown-item {
+                width: 10%;
+            }
         }
     }
     .selected-cover-page {

@@ -213,7 +213,9 @@
                                 :disabled="totalItems <= 0"
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
-                            <b-icon :icon="order === 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
+                            <b-icon 
+                                    class="gray-icon"
+                                    :icon="order === 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
                         </button>
                     </b-field>
                 </div>
@@ -232,6 +234,7 @@
                                     class="button is-white" 
                                     slot="trigger">
                                 <span 
+                                        class="gray-icon view-mode-icon"
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
                                     &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
@@ -242,7 +245,9 @@
                                     :key="index"
                                     :value="viewModeOption"
                                     v-if="registeredViewModes[viewModeOption] != undefined">
-                                <span v-html="registeredViewModes[viewModeOption].icon"/>
+                                <span 
+                                        class="gray-icon"
+                                        v-html="registeredViewModes[viewModeOption].icon"/>
                                 {{ registeredViewModes[viewModeOption].label }}
                             </b-dropdown-item>
                         </b-dropdown>
@@ -262,6 +267,7 @@
                                     slot="trigger">
                                 <span>
                                     <b-icon
+                                            class="gray-icon view-mode-icon" 
                                             :icon="(adminViewMode == 'table' || adminViewMode == undefined) ?
                                                         'table' : (adminViewMode == 'cards' ?
                                                         'view-list' : 'view-grid')"/>
@@ -270,15 +276,21 @@
                                 <b-icon icon="menu-down" />
                             </button>
                             <b-dropdown-item :value="'table'">
-                                <b-icon icon="table"/>
+                                <b-icon 
+                                        class="gray-icon" 
+                                        icon="table"/>
                                 {{ $i18n.get('label_table') }}
                             </b-dropdown-item>
                             <b-dropdown-item :value="'cards'">
-                                <b-icon icon="view-list"/>
+                                <b-icon 
+                                        class="gray-icon" 
+                                        icon="view-list"/>
                                 {{ $i18n.get('label_cards') }}
                             </b-dropdown-item>
                             <b-dropdown-item :value="'grid'">
-                                <b-icon icon="view-grid"/>
+                                <b-icon 
+                                        class="gray-icon" 
+                                        icon="view-grid"/>
                                 {{ $i18n.get('label_grid') }}
                             </b-dropdown-item>
                         </b-dropdown>
@@ -940,22 +952,41 @@
 
     .search-control-item {
         display: inline-block;
+
+        .button {
+            align-items: flex-start;
+        }
         
         .field {
             align-items: center;
         }
+
+        .gray-icon, .gray-icon .icon {
+            color: $tainacan-placeholder-color !important;
+        }
+         .gray-icon .icon i::before, .gray-icon i::before {
+            font-size: 21px !important;
+        }
         
+        .view-mode-icon {
+            margin-right: 4px !important;
+            margin-top: 1px;
+        }
+
         .dropdown-menu {
             display: block;
 
             div.dropdown-content {
                 padding: 0;
 
+
                 .metadata-options-container {
                     max-height: 240px;
                     overflow: auto;
                 }
-                            
+                .dropdown-item span{
+                    vertical-align: sub;
+                }      
                 .dropdown-item-apply {
                     width: 100%;
                     border-top: 1px solid #efefef;

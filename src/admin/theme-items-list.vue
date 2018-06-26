@@ -298,6 +298,17 @@ export default {
 
         .search-control {
             border-bottom: 0;
+
+            .gray-icon, .gray-icon .icon {
+                color: $tainacan-placeholder-color !important;
+                i::before {
+                    font-size: 21px;
+                }
+            }
+            .view-mode-icon {
+                margin-right: 8px !important;
+                margin-top: 2px;
+            }
         }
 
         #items-list-area {

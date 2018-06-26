@@ -77,10 +77,14 @@
         }   
     }
     .dropdown {
+        width: 100%;
+        .dropdown-trigger { width: 100% }
         .button {
+            justify-content: space-between;
+            width: 100%;
             border: 1px solid $tainacan-input-background !important;
             border-radius: 0 !important;
-            padding: 2px 20px !important;
+            padding: 2px 14px 2px 18px !important
         }
     }
     .upload-draggable {
