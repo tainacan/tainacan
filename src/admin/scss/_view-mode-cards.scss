@@ -64,15 +64,18 @@
         &:hover img {
             border-radius: 0;
         }
-
         .metadata-title {
             flex-shrink: 0;
-            font-size: 0.875rem;
-            padding: 0.75rem 2.75rem;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
+            padding: 0.75rem 4.75rem 0.75rem 2.75rem;
             margin-bottom: -27px;
+            min-height: 42px;
+
+            p { 
+                font-size: 0.875rem; 
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
         }
         &:hover .metadata-title {
             background-color: $gray-hover !important;
