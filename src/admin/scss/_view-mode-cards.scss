@@ -20,6 +20,7 @@
         margin: 0.75rem;
         max-width: 410px;
         min-width: 410px;
+        min-height: 218px;
         cursor: pointer;
 
         &:hover {
@@ -95,7 +96,6 @@
             
                 .metadata-label {
                     font-size: 0.75rem;
-                    line-height: 1.0;
                     margin-bottom: 0.2rem;
                     text-overflow: ellipsis;
                     white-space: nowrap;
