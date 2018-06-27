@@ -85,7 +85,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'title_collection_events'                  => __( 'Collection Events', 'tainacan' ),
 	'title_filter_page'                        => __( 'Filter', 'tainacan' ),
 	'title_taxonomy_page'                      => __( 'Taxonomy', 'tainacan' ),
-	'title_term_page'                          => __( 'Term', 'tainacan' ),
+	'title_term_edition'                  => __( 'Term edition', 'tainacan' ),
 	'title_event_page'                         => __( 'Event', 'tainacan' ),
 	'title_create_collection'                  => __( 'Collection Creation', 'tainacan' ),
 	'title_create_taxonomy_page'               => __( 'Taxonomy Creation', 'tainacan' ),

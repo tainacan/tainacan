@@ -944,7 +944,6 @@
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
-        border-bottom: 0.5px solid #ddd;
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;

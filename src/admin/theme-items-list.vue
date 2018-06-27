@@ -298,7 +298,6 @@ export default {
         }
 
         .search-control {
-            border-bottom: 0;
 
             .gray-icon, .gray-icon .icon {
                 color: $tainacan-placeholder-color !important;

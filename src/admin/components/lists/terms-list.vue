@@ -1,81 +1,82 @@
 <template>
-    <div>
-        <b-field
-                :addons="false"
-                :label="$i18n.get('label_taxonomy_terms')">
+    <div class="columns">
+        <div class="column">
             <button
-                    class="button is-secondary is-pulled-right"
+                    class="button is-secondary"
                     type="button"
                     @click="addNewTerm()">
                 {{ $i18n.get('label_new_term') }}
             </button>
-        </b-field>
-        <br>
-        <br>
-        <div    
-                class="term-item"
-                :class="{
-                    'not-sortable-item': term.opened || !term.saved, 
-                    'not-focusable-item': term.opened
-                }" 
-                :style="{'margin-left': (term.depth * 20) + 'px'}"
-                v-for="(term, index) in orderedTermsList"
-                :key="term.id"> 
-            <span 
-                    class="term-name" 
-                    :class="{'is-danger': formWithErrors == term.id }">
-                {{ term.saved && !term.opened ? term.name : getUnsavedTermName(term) }}
-            </span>
-            <span   
-                    v-if="term.id != undefined"
-                    class="label-details">
-                <span 
-                        class="not-saved" 
-                        v-if="!term.saved"> 
-                    {{ $i18n.get('info_not_saved') }}
-                </span>
-            </span>
-          
-            <span class="controls" >
-            <!--
-                <button
-                        class="button is-success is-small"
-                        type="button"
-                        :href="taxonomyPath + '/' + term.slug">
-                    {{ $i18n.get('label_view_term') }}
-                </button>
-            -->
+            <br>
+            <br>
+            <div    
+                    class="term-item"
+                    :class="{
+                        'not-sortable-item': term.opened || !term.saved, 
+                        'not-focusable-item': term.opened
+                    }" 
+                    :style="{'margin-left': (term.depth * 40) + 'px'}"
+                    v-for="(term, index) in orderedTermsList"
+                    :key="term.id"> 
                 <a
-                        class="is-small"
+                        class="is-medium"
                         type="button"
                         @click="addNewChildTerm(term, index)">
-                    <b-icon 
-                            size="is-small"
-                            icon="plus-circle"/>
-                    {{ $i18n.get('label_new_child') }}
+                    <b-icon icon="plus-circle"/>
                 </a>
+                <span 
+                        class="term-name" 
+                        :class="{'is-danger': formWithErrors == term.id }">
+                    {{ term.saved && !term.opened ? term.name : getUnsavedTermName(term) }}
+                </span>
+                <span   
+                        v-if="term.id != undefined"
+                        class="label-details">
+                    <span 
+                            class="not-saved" 
+                            v-if="!term.saved"> 
+                        {{ $i18n.get('info_not_saved') }}
+                    </span>
+                </span>
+            
+                <span class="controls" >
+                <!--
+                    <button
+                            class="button is-success is-small"
+                            type="button"
+                            :href="taxonomyPath + '/' + term.slug">
+                        {{ $i18n.get('label_view_term') }}
+                    </button>
+                -->
 
-                <a @click.prevent="editTerm(term, index)">
-                    <b-icon 
-                            type="is-gray" 
-                            icon="pencil"/>
-                </a>
-                <a 
-                    @click.prevent="tryToRemoveTerm(term)">
-                    <b-icon 
-                            type="is-gray" 
-                            icon="delete"/>
-                </a>
-            </span>
-            <div v-show="term.opened">
-                <term-edition-form 
-                        :taxonomy-id="taxonomyId"
-                        @onEditionFinished="onTermEditionFinished()"
-                        @onEditionCanceled="onTermEditionCanceled(term)"
-                        @onErrorFound="formWithErrors = term.id"
-                        :edit-form="term"/>
-
+                    <a @click.prevent="editTerm(term, index)">
+                        <b-icon 
+                                type="is-secondary" 
+                                icon="pencil"/>
+                    </a>
+                    <a 
+                        @click.prevent="tryToRemoveTerm(term)">
+                        <b-icon 
+                                type="is-secondary" 
+                                icon="delete"/>
+                    </a>
+                </span>
+                
             </div>
+        </div>
+        <div 
+                class="column" 
+                :key="index"
+                v-for="(term, index) in orderedTermsList"
+                v-show="term.opened">
+            <term-edition-form 
+                    :taxonomy-id="taxonomyId"
+                    @onEditionFinished="onTermEditionFinished()"
+                    @onEditionCanceled="onTermEditionCanceled(term)"
+                    @onErrorFound="formWithErrors = term.id"
+                    :edit-form="term"/>
+
+
         </div>
         <b-loading 
                 :active.sync="isLoadingTerms" 
@@ -340,21 +341,14 @@ export default {
 
     .term-item {
         font-size: 14px;
-        border-left: 1px solid #eee;
         padding: 0.7em 0.9em;
         margin: 4px;
         min-height: 40px;
         display: block; 
         position: relative;
-        //cursor: grab;
         
         .handle {
             padding-right: 6em;
-        }
-        .grip-icon { 
-            fill: $gray; 
-            top: 2px;
-            position: relative;
         }
         .term-name {
             text-overflow: ellipsis;
@@ -402,18 +396,12 @@ export default {
             cursor: default;
             background-color: white !important;
 
-            .handle .label-details, .handle .icon {
-                color: $gray !important;
-            }
         } 
         &.not-focusable-item, &.not-focusable-item:hover {
             cursor: default;
             
             .term-name {
                 color: $primary;
-            }
-            .handle .label-details, .handle .icon {
-                color: $gray !important;
             }
         }
   
