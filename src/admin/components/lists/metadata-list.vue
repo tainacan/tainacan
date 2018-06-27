@@ -125,6 +125,7 @@
                                         class="available-metadatum-item"
                                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name }"
                                         v-for="(metadatum, index) in availableMetadatumList"
+                                        v-if="metadatum.primitive_type != 'compound'"
                                         :key="index">
                                 <grip-icon/>  
                                     <span class="metadatum-name">{{ metadatum.name }}</span>

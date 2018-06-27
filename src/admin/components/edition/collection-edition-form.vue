@@ -876,7 +876,7 @@ export default {
         }
     }
     .selected-cover-page {
-        background-color: $tainacan-input-background;
+        border: 1px solid $tainacan-input-background;
         padding: 8px;
         font-size: .75rem;
         .span { vertical-align: middle;}
