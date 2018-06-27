@@ -238,6 +238,7 @@ return apply_filters('tainacan-admin-i18n',[
 	'label_add_value'						   => __( 'Add value', 'tainacan' ),
 	'label_remove_value'					   => __( 'Remove value', 'tainacan' ),
 	'label_create_new_page'					   => __( 'Create new page', 'tainacan' ),
+	'label_total_items'						   => __( 'Total items', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
