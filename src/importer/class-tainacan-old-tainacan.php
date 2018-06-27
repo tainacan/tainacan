@@ -150,7 +150,7 @@ class Old_Tainacan extends Importer{
                 $this->add_collection([
                     'id' => $collection_id,
                     'mapping' => $map,
-                    'total_items' => $this->get_total_items_from_source( $collection->ID ),
+                    'total_items' => intval( $this->get_total_items_from_source( $collection->ID ) ),
                     'source_id' => $collection->ID
                 ]);
             }
