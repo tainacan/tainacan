@@ -10,7 +10,7 @@
 
             <!-- Header Page -------------------------------- --> 
             <b-field :addons="false">
-                <label class="section-label">{{ $i18n.get('label_header_image') }}</label>
+                <label class="label">{{ $i18n.get('label_header_image') }}</label>
                 <div class="header-field">
                     <figure class="image">
                         <span 
@@ -26,14 +26,18 @@
                                 id="button-edit-header-image" 
                                 :aria-label="$i18n.get('label_button_edit_header_image')"
                                 @click="headerImageMediaFrame.openFrame($event)">
-                            <b-icon icon="pencil" />
+                            <b-icon 
+                                    size="is-small"
+                                    icon="pencil" />
                         </a>
                         <a 
                                 class="button is-rounded is-secondary"
                                 id="button-delete-header-image" 
                                 :aria-label="$i18n.get('label_button_delete_thumb')" 
                                 @click="deleteHeaderImage()">
-                            <b-icon icon="delete" />
+                            <b-icon 
+                                    size="is-small"
+                                    icon="delete" />
                         </a>
                     </div>     
                 </div>
@@ -44,7 +48,7 @@
 
                     <!-- Thumbnail -------------------------------- --> 
                     <b-field :addons="false">
-                        <label class="section-label">{{ $i18n.get('label_thumbnail') }}</label>
+                        <label class="label">{{ $i18n.get('label_thumbnail') }}</label>
                         <div class="thumbnail-field">
 
                             <figure class="image">
@@ -62,14 +66,18 @@
                                         id="button-edit-thumbnail" 
                                         :aria-label="$i18n.get('label_button_edit_thumb')"
                                         @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                    <b-icon icon="pencil" />
+                                    <b-icon 
+                                            size="is-small"
+                                            icon="pencil" />
                                 </a>
                                 <a 
                                         class="button is-rounded is-secondary"
                                         id="button-delete-header-image" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteThumbnail()">
-                                    <b-icon icon="delete" />
+                                    <b-icon 
+                                            size="is-small"
+                                            icon="delete" />
                                 </a>
                             </div>
                         </div>
@@ -113,24 +121,44 @@
                             <span v-html="coverPage.title.rendered" />
                             <span class="selected-cover-page-control">
                                 <a 
-                                        target="_blank" 
-                                        :href="coverPage.link">
-                                    <b-icon icon="eye"/>
-                                </a>
-                                &nbsp;&nbsp;
-                                <a 
-                                        target="blank" 
-                                        :href="coverPageEditPath">
-                                    <b-icon icon="pencil"/>
-                                </a>
-                                &nbsp;&nbsp;
-                                <a 
                                         target="_blank"
                                         @click.prevent="removeCoverPage()">
-                                    <b-icon icon="delete"/>
+                                    <b-icon 
+                                            size="is-small"
+                                            icon="close"/>
                                 </a>
                             </span>
                         </div>
+                        <span 
+                                :class="{'disabled': form.enable_cover_page != 'yes' || coverPage == undefined || coverPage.title == undefined}"
+                                class="selected-cover-page-buttons">
+                            <a 
+                                    target="_blank" 
+                                    :href="coverPage.link">
+                                <b-icon 
+                                        size="is-small"
+                                        icon="eye"/>
+                            </a>
+                            &nbsp;&nbsp;
+                            <a 
+                                    target="blank" 
+                                    :href="coverPageEditPath">
+                                <b-icon 
+                                        size="is-small"
+                                        icon="pencil"/>
+                            </a>
+                        </span>
+                        <br>
+                        <a
+                                class="is-inline add-link"   
+                                :class="{'disabled': form.enable_cover_page != 'yes'}"
+                                target="_blank"  
+                                :href="newPagePath">
+                            <b-icon
+                                    icon="plus-circle"
+                                    size="is-small"
+                                    type="is-secondary"/>
+                                {{ $i18n.get('label_create_new_page') }}</a>                        
                     </b-field>
 
                     <!-- Enabled View Modes ------------------------------- --> 
@@ -206,6 +234,7 @@
                                 :title="$i18n.getHelperTitle('collections', 'status')" 
                                 :message="$i18n.getHelperMessage('collections', 'status')"/>
                         <b-select
+                                expanded
                                 id="tainacan-select-status"
                                 v-model="form.status"
                                 @focus="clearErrors('status')"
@@ -248,6 +277,32 @@
                                 type="textarea"
                                 v-model="form.description"
                                 @focus="clearErrors('description')"/>
+                    </b-field>
+
+                    <!-- Parent Collection -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_parent_collection')"
+                            :type="editFormErrors['parent'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['parent'] != undefined ? editFormErrors['parent'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'parent')" 
+                                :message="$i18n.getHelperMessage('collections', 'parent')"/>
+                        <b-select
+                                expanded
+                                id="tainacan-select-parent"
+                                v-model="form.parent"
+                                @focus="clearErrors('parent')"
+                                :loading="isFetchingCollections"
+                                :placeholder="$i18n.get('instruction_select_a_parent_collection')">
+                            <option value="0">{{ $i18n.get('label_no_parent_collection') }}</option>
+                            <option
+                                    v-if="collection.id != anotherCollection.id"
+                                    v-for="anotherCollection of collections"
+                                    :key="anotherCollection.id"
+                                    :value="anotherCollection.id">{{ anotherCollection.name }}
+                            </option>
+                        </b-select>
                     </b-field>
 
                      <!-- Moderators List -------------------------------- --> 
@@ -306,31 +361,6 @@
                                 id="tainacan-text-slug"
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
-                    </b-field>
-
-                    <!-- Parent Collection -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_parent_collection')"
-                            :type="editFormErrors['parent'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['parent'] != undefined ? editFormErrors['parent'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'parent')" 
-                                :message="$i18n.getHelperMessage('collections', 'parent')"/>
-                        <b-select
-                                id="tainacan-select-parent"
-                                v-model="form.parent"
-                                @focus="clearErrors('parent')"
-                                :loading="isFetchingCollections"
-                                :placeholder="$i18n.get('instruction_select_a_parent_collection')">
-                            <option value="0">{{ $i18n.get('label_no_parent_collection') }}</option>
-                            <option
-                                    v-if="collection.id != anotherCollection.id"
-                                    v-for="anotherCollection of collections"
-                                    :key="anotherCollection.id"
-                                    :value="anotherCollection.id">{{ anotherCollection.name }}
-                            </option>
-                        </b-select>
                     </b-field>
                 </div>
             </div>
@@ -421,7 +451,8 @@ export default {
             headerImageMediaFrame: undefined,
             registeredViewModes: tainacan_plugin.registered_view_modes,
             viewModesList: [],
-            fromImporter: ''
+            fromImporter: '',
+            newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page'
         }
     },
     methods: {
@@ -575,7 +606,7 @@ export default {
             this.form.cover_page_id = selectedPage.id; 
             this.coverPage = selectedPage;
             this.coverPageTitle = this.coverPage.title.rendered;
-            this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + selectedPage.id + '&action=edit';
+            this.coverPageEditPath = tainacan_plugin.admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
         },
         fecthModerators(search) {
             this.isFetchingModerators = true;
@@ -772,16 +803,17 @@ export default {
     #button-delete-header-image {
 
         border-radius: 100px !important;
-        height: 40px !important;
-        width: 40px !important;
+        height: 30px !important;
+        width: 30px !important;
         z-index: 99;
-        margin-left: 16px !important;
+        margin-left: 10px !important;
         
         .icon {
             display: inherit;
             padding: 0;
             margin: 0;
             margin-top: 1px;
+            font-size: 18px;
         }
     }
     .header-field {  
@@ -806,7 +838,8 @@ export default {
         }
         .header-buttons-row {
             text-align: right;
-            top: -42px;
+            top: -35px;
+            right: 5px;
             position: relative;
         }
     }
@@ -838,20 +871,27 @@ export default {
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 80px;
+            left: 100px;
             bottom: -136px;
         }
     }
     .selected-cover-page {
         background-color: $tainacan-input-background;
         padding: 8px;
-        font-size: .85rem;
+        font-size: .75rem;
         .span { vertical-align: middle;}
 
         .selected-cover-page-control {
             float: right;
         }
-
+    }
+    .selected-cover-page-buttons {
+        float: right;
+        padding: 4px 6px;
+        .icon { font-size: 20px; }
+        &.disabled {
+           .icon { color: $tainacan-input-background; }
+        }
     }
     .moderators-empty-list { 
         color: gray;

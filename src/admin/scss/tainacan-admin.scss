@@ -52,6 +52,15 @@ a:hover {
 .add-link {
     display: inline;
     font-size: 12px; 
+    &.disabled {
+        pointer-events: none;
+        cursor: default;
+        color: $tainacan-input-background;
+
+        .icon {
+            color: $tainacan-input-background !important;
+        }
+    }
 }
 
 // Page settings
