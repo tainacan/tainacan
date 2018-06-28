@@ -278,7 +278,7 @@
                 margin-left: auto;
                 margin-right: auto;
                 width: 100%;
-                top: 32px;
+                top: 35%;
                 font-size: 1.2rem;
                 font-weight: bold;
                 z-index: 99;
