@@ -136,28 +136,50 @@
                         }
 
                         if(this.metadatum.value instanceof Array){
-                            for(let meta of this.metadatum.value){
-                                let found = terms.find((element) => {
-                                    return meta.id == element;
+                            let eq = [];
+
+                            for(let meta of terms){
+                                let found = this.metadatum.value.find((element) => {
+                                    return meta == element.id;
                                 });
 
                                 if(found){
-                                    return;
+                                    eq.push(found);
                                 }
+                            }
+
+                            if(eq.length == terms.length && this.metadatum.value.length <= eq.length){
+                                return;
                             }
                         }
                     } else if(this.metadatum.value.constructor.name == 'Object'){
                         if(this.metadatum.value.id == this.inputs){
                             return;
                         }
-                    }
+                    } else if(this.metadatum.value instanceof Array){                        
+                        let eq = [];
+
+                        for(let meta of this.inputs){
+                            let found = this.metadatum.value.find((element) => {
+                                return meta == element.id;
+                            });
+
+                            if(found){
+                                eq.push(found);
+                            }
+                        }
+
+                        if(eq.length == this.inputs.length && this.metadatum.value.length <= eq.length){
+                            return;
+                        }
+                    } 
 
                     eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
                 }
             },
             getValue(){ 
                 if (this.metadatum.value instanceof Array) {
-                    this.inputs = this.metadatum.value;
+                    this.inputs = this.metadatum.value.slice(0);
                     
                     if (this.inputs.length === 0){
                         this.inputs.push('');
