@@ -53,13 +53,9 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	 */
 	public function prepare_metadatum_for_response( $item, $request ) {
 	    if(!empty($item)){
-	        $item_arr = $item->_toArray();
-	        
-	        $item_arr['metadatum_type_object'] = $item->get_metadata_type_object()->_toArray();
-	        
+	        $item_arr = ['field_id' => $item->get_id(), 'exposer_mapping' => $item->get('exposer_mapping')];
 	        return $item_arr;
 	    }
-	    
 	    return $item;
 	}
 
@@ -128,24 +124,34 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	    if($mapper = $Tainacan_Exposers::request_has_mapper($request)) {
 	        if(count($body['metadata_mappers']) > 0) {
 	            $response = [];
+	            $saved = [];
     	        foreach ($body['metadata_mappers'] as $metadatum_mapper) {
+    	            $isSaved = false;
     	            $metadatum = $Tainacan_Metadata->fetch($metadatum_mapper['metadatum_id']);
     	            $exposer_mapping = $metadatum->get('exposer_mapping');
     	            if($metadatum_mapper['mapper_metadata'] == '') {
-    	                if(array_key_exists($mapper->slug, $exposer_mapping) ) unset($exposer_mapping[$mapper->slug]);
+    	                if(array_key_exists($mapper->slug, $exposer_mapping) ) {
+    	                    unset($exposer_mapping[$mapper->slug]);
+    	                    $isSaved = true;
+    	                }
     	            } else {
-    	                $exposer_mapping[$mapper->slug] = $metadatum_mapper['mapper_metadata'];
+    	                if( !array_key_exists($mapper->slug, $exposer_mapping) || $exposer_mapping[$mapper->slug] != $metadatum_mapper['mapper_metadata']) {
+    	                    $exposer_mapping[$mapper->slug] = $metadatum_mapper['mapper_metadata'];
+    	                    $isSaved = true;
+    	                }
     	            }
-    	            $metadatum->set('exposer_mapping', $exposer_mapping);
-    	            if($metadatum->validate()) {
-    	               $Tainacan_Metadata->update($metadatum);
-    	               $response[] = $this->prepare_metadatum_for_response($metadatum, $request);
-    	            } else {
-    	                return new \WP_REST_Response([
-    	                    'error_message' => __('One or more values are invalid.', 'tainacan'),
-    	                    'errors'        => $prepared->get_errors(),
-    	                    'metadatum'         => $this->prepare_item_for_response($prepared, $request),
-    	                ], 400);
+    	            if($isSaved) {
+        	            $metadatum->set('exposer_mapping', $exposer_mapping);
+        	            if($metadatum->validate()) {
+        	               $Tainacan_Metadata->update($metadatum);
+        	               $response[] = $this->prepare_metadatum_for_response($metadatum, $request);
+        	            } else {
+        	                return new \WP_REST_Response([
+        	                    'error_message' => __('One or more values are invalid.', 'tainacan'),
+        	                    'errors'        => $prepared->get_errors(),
+        	                    'metadatum'         => $this->prepare_item_for_response($prepared, $request),
+        	                ], 400);
+        	            }
     	            }
     	        }
 	        
