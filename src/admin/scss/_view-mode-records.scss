@@ -1,4 +1,4 @@
-.tainacan-cards-container {
+.tainacan-records-container {
     min-height: 200px;
     padding: 0;
     display: flex;
@@ -7,14 +7,14 @@
     flex-shrink: 1;
     justify-content: center;
 
-    .selected-card {
+    .selected-record {
         background-color: $primary-lighter;
         .metadata-title {
             background-color: $primary-lighter-hover;
         }
     }
 
-    .tainacan-card {
+    .tainacan-record {
         padding: 0px;
         flex-basis: 0;
         margin: 0.75rem;
@@ -27,7 +27,7 @@
             background-color: $tainacan-input-background !important;
         }
 
-        .card-checkbox {
+        .record-checkbox {
             position: absolute;
             margin-left: 1.0rem;
             margin-top: 9px;
@@ -49,7 +49,7 @@
             opacity: 1.0;
         }
 
-        .card-line {
+        .record-line {
             height: 1px;
             background-color: $tainacan-input-background;
             margin-left: -44px;
@@ -95,16 +95,22 @@
                 color: gray;
                 overflow: hidden;
                 width: 100%;
-
-                .metadata-description {
-                    margin-bottom: 1.5rem;
-                }
-
-                .metadata-author-creation {
+            
+                .metadata-label {
+                    font-size: 0.75rem;
+                    margin-bottom: 0.2rem;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
-                    margin-bottom: 0;
+                    font-weight: 500;
+                    color: $gray-light;
+                }
+
+                .metadata-value {
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    margin-bottom: 1rem;
                 }
    
             }

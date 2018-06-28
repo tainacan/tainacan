@@ -127,7 +127,9 @@
                 eventBus.isChangingValue(true);
             },
             changeValue(){
+                
                 if(this.metadatum.value != this.inputs){
+
                     if(this.inputs.length > 0 && this.inputs[0].value){
                         let terms = []
 
@@ -153,6 +155,7 @@
                             }
                         }
                     } else if(this.metadatum.value.constructor.name == 'Object'){
+
                         if(this.metadatum.value.id == this.inputs){
                             return;
                         }

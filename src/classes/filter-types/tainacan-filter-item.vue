@@ -7,6 +7,12 @@
                 class="show" 
                 :open="open">
             <label
+                    v-tooltip="{
+                                    content: filter.name,
+                                    html: false,
+                                    autoHide: false,
+                                    placement: 'top-start'
+                                }"
                     class="label"
                     slot="trigger"
                     slot-scope="props">
@@ -195,9 +201,8 @@
         }
 
         .label {
-            font-weight: normal;
+            font-weight: normal !important;
             font-size: 14px;
-            display: inline-flex;
             width: 100%;
         }
 
