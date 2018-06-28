@@ -58,6 +58,12 @@
                     <!-- Title -->
                     <div class="metadata-title">
                         <p 
+                                v-tooltip="{
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
                                 v-for="(column, index) in tableMetadata"
                                 :key="index"
                                 v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
@@ -119,6 +125,12 @@
                     <!-- Title -->
                     <div class="metadata-title">
                         <p 
+                                v-tooltip="{
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
                                 v-for="(column, index) in tableMetadata"
                                 :key="index"
                                 v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
@@ -163,8 +175,21 @@
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
                                     v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
-                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                <h3 
+                                        v-tooltip="{
+                                            content: column.name,
+                                            html: false,
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        class="metadata-label">{{ column.name }}</h3>
                                 <p 
+                                        v-tooltip="{
+                                            content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                            html: true,
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
                                         v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
                                         class="metadata-value"/>
                             </span>

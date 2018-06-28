@@ -861,7 +861,7 @@
     .filters-menu {
         position: relative;
         width: $filter-menu-width;
-        max-width: $filter-menu-width;
+        min-width: 180px;
         min-height: 100%;
         height: 100%;
         background-color: white;
