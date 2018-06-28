@@ -142,7 +142,7 @@
                     <b-dropdown
                             ref="displayedMetadataDropdown"
                             :mobile-modal="false"
-                            :disabled="totalItems <= 0 || adminViewMode == 'grid'"
+                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards'"
                             class="show">
                         <button
                                 class="button is-white"
@@ -286,6 +286,12 @@
                                         class="gray-icon" 
                                         icon="view-list"/>
                                 {{ $i18n.get('label_cards') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item :value="'records'">
+                                <b-icon 
+                                        class="gray-icon" 
+                                        icon="view-module"/>
+                                {{ $i18n.get('label_records') }}
                             </b-dropdown-item>
                             <b-dropdown-item :value="'grid'">
                                 <b-icon 

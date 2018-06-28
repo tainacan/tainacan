@@ -31,6 +31,7 @@ import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.
 import ItemsPage from '../pages/lists/items-page.vue';
 import ViewModeTable from '../../theme-helper/view-mode-table.vue';
 import ViewModeCards from '../../theme-helper/view-mode-cards.vue';
+import ViewModeRecords from '../../theme-helper/view-mode-records.vue';
 
 // Remaining imports
 import HelpButton from '../components/other/help-button.vue';
@@ -81,6 +82,7 @@ Vue.component('items-page', ItemsPage);
 // Oficial view modes
 Vue.component('view-mode-table', ViewModeTable);
 Vue.component('view-mode-cards', ViewModeCards);
+Vue.component('view-mode-records', ViewModeRecords);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 
