@@ -7,6 +7,17 @@
                     @click="addNewTerm()">
                 {{ $i18n.get('label_new_term') }}
             </button>
+            <b-field class="order-area">
+                <button
+                        :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm"
+                        class="button is-white is-small"
+                        @click="onChangeOrder()">
+                    <b-icon 
+                            class="gray-icon"
+                            :icon="order === 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
+                </button>
+            </b-field>
+
             <br>
             <br>
             <div    
@@ -94,13 +105,14 @@ export default {
     data(){
         return {
             isLoadingTerms: false,
+            isEditingTerm: false,
             formWithErrors: '',
-            orderedTermsList: []
+            orderedTermsList: [],
+            order: 'asc'
         }
     },
     props: {
         taxonomyId: String,
-        //taxonomyPath: ''
     },
     computed: {
         termsList() {
@@ -127,6 +139,10 @@ export default {
         ...mapGetters('taxonomy',[
             'getTerms'
         ]),
+        onChangeOrder() {
+            this.order == 'asc' ? this.order = 'desc' : this.order = 'asc';
+            this.loadTerms();
+        },
         addNewTerm() {
             let newTerm = {
                 taxonomyId: this.taxonomyId,
@@ -154,7 +170,7 @@ export default {
             this.editTerm(newTerm, parentIndex + 1);
         },
         editTerm(term, index) {
-     
+            this.isEditingTerm = true;
             if (!term.opened) {
 
                 for (let i = 0; i < this.orderedTermsList.length; i++) {
@@ -265,7 +281,7 @@ export default {
             }   
         },
         onTermEditionFinished() {   
-
+            this.isEditingTerm = false;
         },
         onTermEditionCanceled(term) {
 
@@ -278,6 +294,7 @@ export default {
                 if (term.id == 'new')
                     this.removeTerm(term);
             }
+            this.isEditingTerm = false;
         },
         buildOrderedTermsList(parentId, termDepth) {
 
@@ -315,7 +332,7 @@ export default {
         },
         loadTerms() {
             this.isLoadingTerms = true;
-            this.fetchTerms({ taxonomyId: this.taxonomyId, fetchOnly: '', search: '', all: ''})
+            this.fetchTerms({ taxonomyId: this.taxonomyId, fetchOnly: '', search: '', all: '', order: this.order})
                 .then(() => {
                     // Fill this.form data with current data.
                     this.isLoadingTerms = false;
@@ -338,6 +355,19 @@ export default {
 <style lang="scss">
 
     @import "../../scss/_variables.scss";
+
+    .order-area {
+        display: inline-block;
+        padding: 4px;
+        margin-left: 30px;
+
+        .gray-icon, .gray-icon .icon {
+            color: $tainacan-placeholder-color !important;
+        }
+        .gray-icon .icon i::before, .gray-icon i::before {
+            font-size: 21px !important;
+        }
+    }
 
     .term-item {
         font-size: 14px;

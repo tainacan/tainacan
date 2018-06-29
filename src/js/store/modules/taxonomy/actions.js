@@ -170,16 +170,19 @@ export const updateTerm = ({ commit }, { taxonomyId, termId, name, description, 
     });
 };
 
-export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all}) => {
+export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, order}) => {
     
     let query = '';
-    
+    if (order == undefined) {
+        order = 'asc';
+    }
+
     if(fetchOnly && search && !all ){
-        query = `?order=asc&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+        query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
     } else if(fetchOnly && search && all ){ 
-        query = `?hideempty=0&order=asc&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+        query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
     } else {
-        query = '?hideempty=0&order=asc';
+        query =`?hideempty=0&order=${order}`;
     }
 
     return new Promise((resolve, reject) => {
