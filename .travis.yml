@@ -40,7 +40,7 @@ install:
 - sudo chmod +x /tmp/phpunit-5.phar
 - sudo mv /tmp/phpunit-5.phar /usr/local/bin/phpunit-5
 - echo '#!/bin/bash' |sudo tee /usr/local/bin/phpunit > /dev/null
-- echo 'if ( php -v|grep -q --only-matching --perl-regexp "5\.\\d+\.\\d+" );then /usr/local/bin/phpunit-5 $@;else /usr/local/bin/phpunit-6 $@;fi' |sudo tee -a /usr/local/bin/phpunit > /dev/null
+- echo 'if ( php -v|grep -q --only-matching --perl-regexp "5\.\\d+\.\\d+" );then /usr/local/bin/phpunit-5 $@;else /usr/local/bin/phpunit-6 $@;fi;exit $?' |sudo tee -a /usr/local/bin/phpunit > /dev/null
 - sudo chmod +x /usr/local/bin/phpunit
 script: /usr/local/bin/phpunit # phpunit
 before_deploy:
