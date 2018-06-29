@@ -3,9 +3,10 @@
         <b-select 
             :id = "id"
             :placeholder="$i18n.get('label_selectbox_init')"
-            v-model="selected" 
-            :class="{'is-empty': selected == undefined || selected == ''}"
-            @input="onChecked()">
+            :value="value" 
+            :class="{'is-empty': value == undefined || value == ''}"
+            @blur="$emit('blur')"
+            @input="onChecked($event)">
             <option
                     v-for="(option, index) in getOptions"
                     :key="index"
@@ -19,16 +20,6 @@
 <script>
 
     export default {
-        created(){
-            if( this.value && this.value ){
-                this.selected = this.value
-            }
-        },
-        data(){
-            return {
-                selected: undefined
-            }
-        },
         props: {
             metadatum: {
                 type: Object
@@ -52,14 +43,9 @@
             }
         },
         methods: {
-            onChecked() {
-                this.$emit('blur');
-                if (this.selected != undefined)
-                    this.onInput(this.selected)
+            onChecked(value) {
+                this.$emit('input', value);
             },
-            onInput($event) {
-                this.$emit('input', $event);
-            }
         }
     }
 </script>

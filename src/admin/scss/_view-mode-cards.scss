@@ -20,6 +20,7 @@
         margin: 0.75rem;
         max-width: 410px;
         min-width: 410px;
+        min-height: 218px;
         cursor: pointer;
 
         &:hover {
@@ -57,55 +58,53 @@
             visibility: hidden;
         }
         img {
-            width: 170px;
+            width: 172px;
             height: auto;
             border-radius: 2px;
         }
         &:hover img {
             border-radius: 0;
         }
-
         .metadata-title {
             flex-shrink: 0;
-            font-size: 0.875rem;
-            padding: 0.75rem 2.75rem;
+            padding: 0.75rem 4.75rem 0.75rem 2.75rem;
+            margin-bottom: -27px;
+            min-height: 42px;
+            font-size: 0.875rem !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            margin-bottom: -27px;
+            p {
+                font-size: 0.875rem !important; 
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
         }
         &:hover .metadata-title {
             background-color: $gray-hover !important;
         }
 
         .media {
-            margin-bottom: -6px;
             width: 100%;
 
             .list-metadata {
-                padding: 0.75rem 1.5rem;
+                padding: 0.75rem 1.375rem;
                 flex: 1;
                 font-size: 0.6875rem;
                 color: gray;
                 overflow: hidden;
                 width: 100%;
-            
-                .metadata-label {
-                    font-size: 0.75rem;
-                    line-height: 1.0;
-                    margin-bottom: 0.2rem;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    font-weight: 500;
-                    color: $gray-light;
+
+                .metadata-description {
+                    margin-bottom: 1.5rem;
                 }
 
-                .metadata-value {
+                .metadata-author-creation {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
-                    margin-bottom: 1rem;
+                    margin-bottom: 0;
                 }
    
             }

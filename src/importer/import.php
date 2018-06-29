@@ -69,8 +69,7 @@ class ScriptTainacanOld {
         $old_tainacan = new \Tainacan\Importer\Old_Tainacan();
         $id = $old_tainacan->get_id();
 
-        $_SESSION['tainacan_importer'][$id]->set_url($url);
-        $_SESSION['tainacan_importer'][$id]->set_repository();
+        $_SESSION['tainacan_importer'][$id]->set_url($this->url);
 
         while (!$_SESSION['tainacan_importer'][$id]->is_finished()){
             $_SESSION['tainacan_importer'][$id]->run();

@@ -7,7 +7,7 @@
                     class="input"
                     type="text"
                     v-mask="dateMask"
-                    v-model="dateValue"
+                    :value="dateValue"
                     @blur="onBlur"
                     @input="onInput"
                     :placeholder="dateFormat">
@@ -49,7 +49,7 @@
             this.dateFormat = localeData.longDateFormat('L');
 
             if( this.value ){
-                this.dateValue = this.parseDateToNavigatorLanguage(new Date(this.value.replace(/-/g, '/')));
+                this.dateValue = this.parseDateToNavigatorLanguage(this.value);
             }
         },
         data() {
@@ -83,6 +83,8 @@
                 this.$emit('blur');
             },
             parseDateToNavigatorLanguage(date){
+                date = new Date(date.replace(/-/g, '/'));
+
                 return moment(date, moment.ISO_8601).format(this.dateFormat);
             }
         }

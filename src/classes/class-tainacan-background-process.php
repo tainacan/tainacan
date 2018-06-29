@@ -31,6 +31,12 @@ abstract class Background_Process extends \WP_Background_Process {
 	 * @var string
 	 */
 	protected $table = '';
+
+	/**
+	 * ID of the process in the database
+	 * @var false|int
+	 */
+	public $ID = false;
 	
 	/**
 	 * Prefix
@@ -60,6 +66,10 @@ abstract class Background_Process extends \WP_Background_Process {
 		global $wpdb;
 		$this->table = $wpdb->prefix . 'tnc_bg_process';
 	}
+
+	public function get_id() {
+		return $this->ID;
+	}
 	
 	
 	/**
@@ -81,6 +91,7 @@ abstract class Background_Process extends \WP_Background_Process {
 					'queued_on' => date('Y-m-d H:i:s')
 				]
 			);
+			$this->ID = $wpdb->insert_id;
 		}
 
 		return $this;
@@ -94,14 +105,17 @@ abstract class Background_Process extends \WP_Background_Process {
 	 *
 	 * @return $this
 	 */
-	public function update( $key, $data ) {
+	public function update( $key, $batch ) {
+		$data = $batch->data;
 		if ( ! empty( $data ) ) {
 			global $wpdb;
 			$wpdb->update(
 				$this->table, 
 				[
 					'data' => maybe_serialize($data),
-					'processed_last' => date('Y-m-d H:i:s')
+					'processed_last' => date('Y-m-d H:i:s'),
+					'progress_label' => $batch->progress_label,
+					'progress_value' => $batch->progress_value
 				],
 				['ID' => $key]
 			);
@@ -204,13 +218,22 @@ abstract class Background_Process extends \WP_Background_Process {
 	 */
 	protected function handle() {
 		$this->lock_process();
-		//error_log('new request');
+		
+		// while we are debugging performance
+		$newRequest = true;
+		
+		
 		do {
 			$batch = $this->get_batch();
+
+			if ($newRequest) {
+				$this->write_log($batch->key, ['New Request']);
+				$newRequest = false;
+			}
 			
 			// TODO: find a way to catch and log PHP errors as
 			try {
-				$task = $this->task( $batch->data, $batch->key );
+				$task = $this->task( $batch );
 			} catch (\Exception $e) {
 				// TODO: Add Stacktrace
 				$this->write_error_log($batch->key, ['Fatal Error: ' . $e->getMessage()]);

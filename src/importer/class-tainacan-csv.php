@@ -55,18 +55,20 @@ class CSV extends Importer {
             $processedItem[ $header ] = $values[ $index ];
         }
 		
-		$this->set_progress_current($index+1);
-
         return $processedItem;
     }
 
     /**
      * @inheritdoc
      */
-    public function get_progress_total_from_source(){
-        $file = new \SplFileObject( $this->tmp_file, 'r' );
-        $file->seek(PHP_INT_MAX);
-        // -1 removing header
-        return $this->total_items = $file->key() - 1;
+    public function get_source_number_of_items(){
+        if (isset($this->tmp_file) && file_exists($this->tmp_file)) {
+            $file = new \SplFileObject( $this->tmp_file, 'r' );
+            $file->seek(PHP_INT_MAX);
+            // -1 removing header
+            return $this->total_items = $file->key() - 1;
+        }
+        return false;
+        
     }
 }

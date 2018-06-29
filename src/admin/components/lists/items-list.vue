@@ -26,7 +26,7 @@
                     <b-dropdown-item 
                             @click="deleteSelectedItems()"
                             id="item-delete-selected-items">
-                        {{ $i18n.get('label_delete_selected_items') }}
+                        {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
                     <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_items') + ' (Not ready)' }}
                     </b-dropdown-item>
@@ -56,14 +56,20 @@
                     </div>
 
                     <!-- Title -->
-                    <p 
-                            v-for="(column, index) in tableMetadata"
-                            :key="index"
-                            v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                            class="metadata-title"
-                            @click="goToItemPage(item)"
-                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>                             
-                    
+                    <div class="metadata-title">
+                        <p 
+                                v-tooltip="{
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                v-for="(column, index) in tableMetadata"
+                                :key="index"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                @click="goToItemPage(item)"
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>                             
+                        </div>
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
@@ -117,14 +123,20 @@
                     </div>
                     
                     <!-- Title -->
-                    <p 
-                            v-for="(column, index) in tableMetadata"
-                            :key="index"
-                            v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                            class="metadata-title"
-                            @click="goToItemPage(item)"
-                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
-                    
+                    <div class="metadata-title">
+                        <p 
+                                v-tooltip="{
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                v-for="(column, index) in tableMetadata"
+                                :key="index"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                @click="goToItemPage(item)"
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
+                    </div>
                     <!-- Actions -->
                     <div 
                             v-if="item.current_user_can_edit"
@@ -152,19 +164,135 @@
                     <div    
                             class="media"
                             @click="goToItemPage(item)">
-                        <a 
+                      
+                        <img 
                                 v-if="item.thumbnail != undefined"
-                                @click="goToItemPage(item)">
-                            <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
-                        </a>
+                                :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                    
+                        <div class="list-metadata media-body">
+                            <!-- Description -->
+                            <p 
+                                    v-tooltip="{
+                                        content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"   
+                                    v-if="
+                                        column.metadata_type_object != undefined && 
+                                        (column.metadata_type_object.related_mapped_prop == 'description')"
+                                    v-for="(column, index) in tableMetadata"
+                                    :key="index"
+                                    class="metadata-description"
+                                    v-html="(item.metadata != undefined && item.metadata[column.slug] != undefined) ? getLimitedDescription(item.metadata[column.slug].value_as_string) : ''" />                             
+                            <br>
+                            <!-- Author and Creation Date-->
+                            <p 
+                                    v-tooltip="{
+                                        content: column.metadatum == 'row_author' || column.metadatum == 'row_creation',
+                                        html: false,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"   
+                                    v-for="(column, index) in tableMetadata"
+                                    :key="index"
+                                    v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'"
+                                    class="metadata-author-creation">   
+                                {{ column.metadatum == 'row_author' ? $i18n.get('info_created_by') + ' ' + item[column.slug] : $i18n.get('info_date') + ' ' + item[column.slug] }}
+                            </p>   
+                        </div>
+                    </div>
+               
+                </div>
+            </div>
 
+            <!-- RECORDS VIEW MODE -->
+            <div
+                    class="tainacan-records-container"
+                    v-if="viewMode == 'records'">
+                <div 
+                        :key="index"
+                        v-for="(item, index) of items"
+                        :class="{ 'selected-record': selectedItems[index] }"
+                        class="tainacan-record">
+                    
+                    <!-- Checkbox -->
+                    <div 
+                            :class="{ 'is-selecting': isSelectingItems }"
+                            class="record-checkbox">
+                        <b-checkbox 
+                                size="is-small"
+                                v-model="selectedItems[index]"/> 
+                    </div>
+                    
+                    <!-- Title -->
+                    <div class="metadata-title">
+                        <p 
+                                v-tooltip="{
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                v-for="(column, index) in tableMetadata"
+                                :key="index"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                @click="goToItemPage(item)"
+                                class="metadata-title"
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
+                    </div>
+                    <!-- Actions -->
+                    <div 
+                            v-if="item.current_user_can_edit"
+                            class="actions-area"
+                            :label="$i18n.get('label_actions')">
+                        <a 
+                                id="button-edit"   
+                                :aria-label="$i18n.getFrom('items','edit_item')" 
+                                @click.prevent.stop="goToItemEditPage(item.id)">
+                            <b-icon
+                                    type="is-secondary" 
+                                    icon="pencil"/>
+                        </a>
+                        <a 
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click.prevent.stop="deleteOneItem(item.id)">
+                            <b-icon 
+                                    type="is-secondary" 
+                                    :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                        </a>
+                    </div>
+                    
+                    <!-- Remaining metadata -->  
+                    <div    
+                            class="media"
+                            @click="goToItemPage(item)">
+                    
+                        <img 
+                                v-if="item.thumbnail != undefined"
+                                :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                        
                         <div class="list-metadata media-body">
                             <span 
                                     v-for="(column, index) in tableMetadata"
                                     :key="index"
                                     v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
-                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                <h3 
+                                        v-tooltip="{
+                                            content: column.name,
+                                            html: false,
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        class="metadata-label">{{ column.name }}</h3>
                                 <p 
+                                        v-tooltip="{
+                                            content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                            html: true,
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
                                         v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
                                         class="metadata-value"/>
                             </span>
@@ -263,7 +391,7 @@
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
                                           column.metadatum !== 'row_author'"
-                                    v-html="renderMetadata(item.metadata, column)"/>
+                                    v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
@@ -459,6 +587,9 @@ export default {
             } else {
                 return metadata.value_as_html;
             }
+        },
+        getLimitedDescription(description) {
+            return description.length > 120 ? description.substring(0, 117) + '...' : description;
         }
     }
 }
@@ -469,10 +600,11 @@ export default {
     @import "../../scss/_variables.scss";
     @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-cards.scss";
+    @import "../../scss/_view-mode-records.scss";
 
     .selection-control {
         
-        padding: 6px 0px 0px 13px;
+        padding: 6px 0px 0px 12px;
         background: white;
         height: 40px;
 

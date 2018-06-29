@@ -36,7 +36,6 @@ export default {
     name: 'TainacanTitle',
     data(){
         return {
-            wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
             isRepositoryLevel: true,
             pageTitle: '',
             arrayRealPath: [],
@@ -58,14 +57,17 @@ export default {
         ...mapGetters('item', [
             'getItemTitle'
         ]),
-        ...mapActions('category', [
-            'fetchCategoryName'
+        ...mapActions('taxonomy', [
+            'fetchTaxonomyName'
         ]),
-        ...mapGetters('category', [
-            'getCategoryName'
+        ...mapGetters('taxonomy', [
+            'getTaxonomyName'
         ]),
         ...mapActions('event', [
             'fetchEventTitle'
+        ]),
+        ...mapActions('importer', [
+            'fetchAvailableImporters'
         ]),
         generateViewPath() {
 
@@ -87,8 +89,8 @@ export default {
                                 .catch((error) => this.$console.error(error));
                             break;
                         case 'taxonomies':
-                            this.fetchCategoryName(this.arrayRealPath[i])
-                                .then(categoryName => this.arrayViewPath.splice(i, 1, categoryName))
+                            this.fetchTaxonomyName(this.arrayRealPath[i])
+                                .then(taxonomyName => this.arrayViewPath.splice(i, 1, taxonomyName))
                                 .catch((error) => this.$console.error(error));
                             break;
                         case 'events':
@@ -96,8 +98,15 @@ export default {
                                 .then(eventName => this.arrayViewPath.splice(i, 1, eventName))
                                 .catch((error) => this.$console.error(error));
                             break;
+        
                     }
                     
+                } else if (this.arrayRealPath[i-1] == 'importers' && i > 0){
+                    this.fetchAvailableImporters()
+                        .then(importers => { 
+                            this.arrayViewPath.splice(i, 1, importers[this.arrayRealPath[i]].name);
+                        })
+                        .catch((error) => this.$console.error(error));
                 } else {
                     this.arrayViewPath.splice(i, 1, this.$i18n.get(this.arrayRealPath[i])); 
                 }

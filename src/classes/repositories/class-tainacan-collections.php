@@ -168,7 +168,7 @@ class Collections extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Cover Page ID', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The page to be used as cover for this collection', 'tainacan' ),
+				'description' => __( 'If enabled, this custom page will be used as cover for this collection, instead of default items list.', 'tainacan' ),
 				'on_error'    => __( 'Invalid page', 'tainacan' ),
 				//'validation' => v::numeric(),
 				'default'     => ''

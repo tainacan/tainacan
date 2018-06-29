@@ -4,13 +4,18 @@ export const setPostQueryAttribute = ( state, { attr, value }) => {
     Vue.set( state.postquery, attr , value );
 };
 
+export const cleanPostQueryAttribute = ( state, { attr }) => {
+    Vue.set( state.postquery, attr , null );
+};
+
 export const setPostQuery = ( state, postquery ) => {
     state.postquery = postquery;
 };
 
 export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
-    console.log(advancedSearchQuery);
-    state.postquery.metaquery = advancedSearchQuery;
+    state.postquery.advancedSearch = advancedSearchQuery.advancedSearch;
+    state.postquery.metaquery = advancedSearchQuery.metaquery;
+    state.postquery.taxquery = advancedSearchQuery.taxquery;
 };
 
 export const addMetaQuery = ( state, filter ) => {
@@ -123,4 +128,8 @@ export const setStatus = ( state, status ) => {
 
 export const setViewMode = ( state, viewMode ) => {
     state.postquery.view_mode = viewMode;
+};
+
+export const setAdminViewMode = ( state, adminViewMode ) => {
+    state.postquery.admin_view_mode = adminViewMode;
 };

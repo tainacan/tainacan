@@ -69,7 +69,7 @@
                                             v-if="metadatum.id !== undefined">
                                         <b-switch 
                                                 size="is-small" 
-                                                v-model="metadatum.enabled"
+                                                :value="metadatum.enabled"
                                                 @input="onChangeEnable($event, index)"/>
                                         <a 
                                                 :style="{ visibility: 
@@ -245,11 +245,11 @@ export default {
             this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder });
         },
         onChangeEnable($event, index) {
-            this.activeMetadatumList[index].enabled = $event;
             let metadataOrder = [];
             for (let metadatum of this.activeMetadatumList) {
                 metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
             }
+            metadataOrder[index].enabled = $event;
             this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder });
         },
         addMetadatumViaButton(metadatumType) {
@@ -292,6 +292,7 @@ export default {
             } else {
 
                 this.openedMetadatumId = metadatum.id;
+                
                 // First time opening
                 if (this.editForms[this.openedMetadatumId] == undefined) {
                     this.editForms[this.openedMetadatumId] = JSON.parse(JSON.stringify(metadatum));
@@ -335,7 +336,7 @@ export default {
             this.collectionId = this.$route.params.collectionId;
         
 
-        this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true})
+        this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: true})
             .then(() => {
                 this.isLoadingMetadata = false;
             })

@@ -72,9 +72,9 @@ function tainacan_autoload($class_name){
 	    }
 
         if( in_array('Metadata_Types', $class_path) || in_array('Filter_Types', $class_path) ){
-    	    $exceptions = ['categorytaginput','categorycheckbox','categoryselectbox'];
+    	    $exceptions = ['taxonomytaginput','taxonomycheckbox','taxonomyselectbox'];
     	    if( in_array( strtolower( $class_name ), $exceptions) ){
-                $dir.= 'category/';
+                $dir.= 'taxonomy/';
             }else{
                 $dir.= strtolower(str_replace('_', '-' , $class_name)).'/';
             }
@@ -101,7 +101,7 @@ $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Date');
 $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Numeric');
 $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Selectbox');
 $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Relationship');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Category');
+$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
 
 $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
@@ -112,9 +112,9 @@ $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Autocomplete');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Taginput');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Checkbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategoryTaginput');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategoryCheckbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\CategorySelectbox');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
+$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomySelectbox');
 
 $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 

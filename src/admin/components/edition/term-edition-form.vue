@@ -3,87 +3,83 @@
             id="termEditForm"
             class="tainacan-form"
             @submit.prevent="saveEdition(editForm)">
-
-        <div class="columns">
-            <div class="column is-narrow">
-                <!-- Header Image -------------------------------- -->
-                <b-field
-                        :addons="false"
-                        :label="$i18n.get('label_header_image')">
-                    <div class="thumbnail-field">
-                        <a
-                                class="button is-rounred is-secondary"
-                                id="button-edit-thumbnail"
-                                :aria-label="$i18n.get('label_button_edit_header_image')"
-                                @click="headerImageMediaFrame.openFrame($event)">
-                            <b-icon icon="pencil"/>
-                        </a>
-                        <figure class="image">
-                            <span
-                                    v-if="editForm.header_image === undefined || editForm.header_image === false"
-                                    class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
-                            <img
-                                    :alt="$i18n.get('label_header_image')"
-                                    :src="(editForm.header_image === undefined || editForm.header_image === false) ? headerPlaceholderPath : editForm.header_image">
-                        </figure>
-                        <div class="thumbnail-buttons-row">
-                            <a
-                                    id="button-delete"
-                                    :aria-label="$i18n.get('label_button_delete_thumb')"
-                                    @click="deleteThumbnail()">
-                                <b-icon 
-                                    type="is-gray"
-                                    icon="delete" />
-                                <span class="text">{{ $i18n.get('remove') }} </span>
-                            </a>
-                        </div>
-                        <br>
-                    </div>
-                    <a
-                            v-if="editForm.url != undefined && editForm.url!= ''"
-                            class="button is-secondary"
-                            :href="editForm.url">
-                        {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
-                    </a>
-                </b-field>
-            </div>
-
-            <div class="column">
-                <b-field
-                        :addons="false"
-                        :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
-                        :message="formErrors.name ? formErrors : formErrors.repeated">
-                    <label class="label is-inline">
-                        {{ $i18n.get('label_name') }}
-                        <span class="required-term-asterisk">*</span>
-                        <help-button
-                                :title="$i18n.get('label_name')"
-                                :message="$i18n.get('info_help_term_name')"/>
-                    </label>
-                    <b-input
-                            v-model="editForm.name"
-                            name="name"
-                            @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
-                </b-field>
-
-                <b-field
-                        :addons="false"
-                        :type="formErrors['description'] !== '' && formErrors['description'] !== undefined ? 'is-danger' : ''"
-                        :message="formErrors['description']">
-                    <label class="label">
-                        {{ $i18n.get('label_description') }}
-                        <help-button
-                                :title="$i18n.get('label_description')"
-                                :message="$i18n.get('info_help_term_description')"/>
-                    </label>
-                    <b-input
-                            type="textarea"
-                            name="description"
-                            v-model="editForm.description"
-                            @focus="clearErrors('description')"/>
-                </b-field>
-            </div>
+        <div class="tainacan-page-title">
+            <h2>{{ $i18n.get("title_term_edition") }}</h2>
+            <hr>
         </div>
+
+        <!-- Header Image -------------------------------- -->
+        <b-field
+                :addons="false"
+                :label="$i18n.get('label_header_image')">
+            <div class="thumbnail-field">
+                <figure class="image">
+                    <span
+                            v-if="editForm.header_image === undefined || editForm.header_image === false"
+                            class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
+                    <img
+                            :alt="$i18n.get('label_header_image')"
+                            :src="(editForm.header_image === undefined || editForm.header_image === false) ? headerPlaceholderPath : editForm.header_image">
+                </figure>
+                <div class="thumbnail-buttons-row">
+                    <a
+                            class="button is-rounded is-secondary"
+                            id="button-edit-header"
+                            :aria-label="$i18n.get('label_button_edit_header_image')"
+                            @click="headerImageMediaFrame.openFrame($event)">
+                        <b-icon 
+                            size="is-small"
+                            icon="pencil"/>
+                    </a>
+                    <a
+                            class="button is-rounded is-secondary"
+                            id="button-delete-header"
+                            :aria-label="$i18n.get('label_button_delete_thumb')"
+                            @click="deleteThumbnail()">
+                        <b-icon 
+                            size="is-small"
+                            icon="delete" />
+                    </a>
+                </div>
+                <br>
+            </div>
+        </b-field>
+    
+
+        <b-field
+                :addons="false"
+                :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
+                :message="formErrors.name ? formErrors : formErrors.repeated">
+            <label class="label is-inline">
+                {{ $i18n.get('label_name') }}
+                <span class="required-term-asterisk">*</span>
+                <help-button
+                        :title="$i18n.get('label_name')"
+                        :message="$i18n.get('info_help_term_name')"/>
+            </label>
+            <b-input
+                    v-model="editForm.name"
+                    name="name"
+                    @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
+        </b-field>
+
+        <b-field
+                :addons="false"
+                :type="formErrors['description'] !== '' && formErrors['description'] !== undefined ? 'is-danger' : ''"
+                :message="formErrors['description']">
+            <label class="label">
+                {{ $i18n.get('label_description') }}
+                <help-button
+                        :title="$i18n.get('label_description')"
+                        :message="$i18n.get('info_help_term_description')"/>
+            </label>
+            <b-input
+                    type="textarea"
+                    name="description"
+                    v-model="editForm.description"
+                    @focus="clearErrors('description')"/>
+        </b-field>
+
 
         <div class="field is-grouped form-submit">
             <div class="control">
@@ -93,6 +89,15 @@
                         @click.prevent="cancelEdition()"
                         slot="trigger">
                     {{ $i18n.get('cancel') }}
+                </button>
+            </div>
+            <div class="control">
+                <button
+                        type="button"
+                        v-if="editForm.url != undefined && editForm.url!= ''"
+                        class="button is-secondary"
+                        :href="editForm.url">
+                    {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
                 </button>
             </div>
             <div class="control">
@@ -121,21 +126,21 @@
         },
         props: {
             editForm: Object,
-            categoryId: ''
+            taxonomyId: ''
         },
         methods: {
-            ...mapActions('category', [
+            ...mapActions('taxonomy', [
                 'sendTerm',
                 'updateTerm',
             ]),
-            ...mapGetters('category', [
+            ...mapGetters('taxonomy', [
                 'getTerms'
             ]),
             saveEdition(term) {
 
                 if (term.id === 'new') {
                     this.sendTerm({
-                        categoryId: this.categoryId,
+                        taxonomyId: this.taxonomyId,
                         name: this.editForm.name,
                         description: this.editForm.description,
                         parent: this.editForm.parent,
@@ -157,7 +162,7 @@
 
                 } else {
                     this.updateTerm({
-                        categoryId: this.categoryId,
+                        taxonomyId: this.taxonomyId,
                         termId: this.editForm.id,
                         name: this.editForm.name,
                         description: this.editForm.description,
@@ -239,15 +244,27 @@
     }    
 
     form {
-        padding: 2.0rem 2rem 1rem 2rem;
-        border-top: 1px solid $draggable-border-color;
-        border-bottom: 1px solid $draggable-border-color;
+        padding: 2.0rem 0rem 1rem 3rem;
+        border-left: 1px solid $draggable-border-color;
         margin-top: 1.0em;
 
+        .tainacan-page-title {
+            margin-bottom: 40px;
+
+            h2 {
+                font-size: 20px;
+                font-weight: 500;
+                color: $tertiary;
+                display: inline-block;
+            }
+            hr{
+                margin: 3px 0px 4px 0px; 
+                height: 1px;
+                background-color: $secondary;
+            }
+        }
+
         .thumbnail-field {
-            max-height: 128px;
-            margin-bottom: 66px;
-            margin-top: -20px;
 
             .content {
                 padding: 10px;
@@ -255,49 +272,41 @@
             }
             img {
                 position: relative;
-                width: 128px;
             }
             .image-placeholder {
                 position: absolute;
-                margin-left: 10px;
-                margin-right: 10px;
-                top: 24px;
-                bottom: 50%;
-                font-size: 0.8rem;
+                margin-left: auto;
+                margin-right: auto;
+                width: 100%;
+                top: 35%;
+                font-size: 1.2rem;
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;
                 color: gray;
             }
-            #button-edit-thumbnail, #button-edit-header-image {
+            #button-delete-header,
+            #button-edit-header {
 
                 border-radius: 100px !important;
-                height: 40px !important;
-                width: 40px !important;
-                bottom: -20px;
-                left: -20px;
+                height: 30px !important;
+                width: 30px !important;
                 z-index: 99;
-
+                margin-left: 10px !important;
+                
                 .icon {
                     display: inherit;
                     padding: 0;
+                    margin: 0;
                     margin-top: 1px;
+                    font-size: 18px;
                 }
             }
                 
             .thumbnail-buttons-row {
-                display: inline-block;
-                padding: 8px 0px;
-                border-radius: 0px 0px 0px 4px;
-                font-size: 14px;
-                a { color: $tainacan-input-color; }
-                .text {
-                    top: -3px;
-                    position: relative;
-                }
-                i.mdi-24px.mdi-set, i.mdi-24px.mdi::before {
-                    font-size: 20px;
-                }
+                text-align: right;
+                top: -15px;
+                position: relative;
             }
         }
     }

@@ -8,6 +8,7 @@ export const sendMetadatum = ( { commit }, { item_id, metadatum_id, values }) =>
         })
         .then( res => {
             commit('setSingleMetadata', { item_id: item_id, metadatum_id: metadatum_id, values: values });
+            commit('setLastUpdated');
             resolve( res.data );
         })
         .catch(error => {
@@ -15,7 +16,6 @@ export const sendMetadatum = ( { commit }, { item_id, metadatum_id, values }) =>
         });
    });
 };
-
 
 export const updateMetadata = ({ commit }, { item_id, metadatum_id, values }) => {
     return new Promise((resolve, reject) => {
@@ -25,6 +25,7 @@ export const updateMetadata = ({ commit }, { item_id, metadatum_id, values }) =>
             .then( res => {
                 let metadatum = res.data;
                 commit('setSingleMetadatum', metadatum);
+                commit('setLastUpdated');
                 resolve(metadatum)
             })
             .catch( error => {
@@ -50,6 +51,10 @@ export const fetchMetadata = ({ commit }, item_id) => {
 
 export const cleanMetadata = ({ commit }) => {
     commit('cleanMetadata');
+};
+
+export const cleanLastUpdated = ({commit}) => {
+    commit('cleanLastUpdated');
 };
 
 // Actions directly related to Item
@@ -90,6 +95,7 @@ export const sendItem = ( { commit }, { collection_id, status }) => {
         })
             .then( res => {
                 commit('setItem', res.data);
+                commit('setLastUpdated');
                 resolve( res.data );
             })
             .catch(error => {
@@ -105,6 +111,7 @@ export const updateItem = ({ commit }, { item_id, status }) => {
             status: status 
         }).then( res => {
             commit('setItem', res.data);
+            commit('setLastUpdated');
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -122,6 +129,7 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
             let item = res.data;
 
             commit('setItem', item);
+            commit('setLastUpdated');
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -135,11 +143,12 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
     commit('cleanAttachment');
     return new Promise(( resolve, reject ) => {
         axios.wp.post('/media/?post=' + item_id, file, {
-            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
+            headers: { 'Content-Type': 'multipart/form-data;', 'Content-Disposition': 'attachment; filename=' + file.name },
         })
             .then( res => {
                 let attachment = res.data;
                 commit('setSingleAttachment', attachment);
+                commit('setLastUpdated');
                 resolve( attachment );
             })
             .catch(error => {
@@ -171,6 +180,7 @@ export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
         }).then( res => {
             let item = res.data
             commit('setItem', item);
+            commit('setLastUpdated');
             resolve( item );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });

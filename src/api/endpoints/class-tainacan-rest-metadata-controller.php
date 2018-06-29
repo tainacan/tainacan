@@ -298,6 +298,12 @@ class REST_Metadata_Controller extends REST_Controller {
 			$item_arr = $item->_toArray();
 			
 			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
+
+			if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id'])){
+				$taxonomy = new Entities\Taxonomy($item_arr['metadata_type_options']['taxonomy_id']);
+
+				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
+			}
 			
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
@@ -326,7 +332,7 @@ class REST_Metadata_Controller extends REST_Controller {
 
 			$args = $this->prepare_filters( $request );
 			
-			if ($request['context'] === 'edit') {
+			if ($request['include_disabled'] === 'true') {
 				$args['include_disabled'] = true;
 			}
 
@@ -362,7 +368,7 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		if ( 'edit' === $request['context'] && ! current_user_can('edit_tainacan-metadata') ) {
+		if ( 'edit' === $request['context'] && ! $this->metadatum_repository->can_edit(new Entities\Metadatum()) ) {
 			return false;
 		}
 

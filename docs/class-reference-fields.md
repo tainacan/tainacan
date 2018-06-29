@@ -175,18 +175,18 @@ Fetch all values of a metadatum from a collection in all it collection items
 
 **Returns:** array|null|object
 
-### `private function pre_update_category_field($metadatum)`
+### `private function pre_update_taxonomy_field($metadatum)`
 
-Stores the value of the taxonomy_id option to use on update_category_field method. 
-
-
+Stores the value of the taxonomy_id option to use on update_taxonomy_field method. 
 
 
-### `private function update_category_field($metadatum)`
 
-Triggers hooks when saving a Category Metadatum, indicating wich taxonomy was added or removed from a collection. 
 
-This is used by Taxonomies repository to update the collections_ids property of the taxonomy as a metadatum type category is inserted or removed 
+### `private function update_taxonomy_field($metadatum)`
+
+Triggers hooks when saving a Taxonomy Metadatum, indicating wich taxonomy was added or removed from a collection. 
+
+This is used by Taxonomies repository to update the collections_ids property of the taxonomy as a metadatum type taxonomy is inserted or removed 
 
 
 **Parameters:**
