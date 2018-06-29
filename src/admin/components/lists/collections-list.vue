@@ -63,7 +63,7 @@
                             <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
                         </th>
                         <!-- Total Items -->
-                        <th>
+                        <th v-if="!isOnTrash">
                             <div class="th-wrap">{{ $i18n.get('label_total_items') }}</div>
                         </th>
                         <th class="actions-header">
@@ -158,6 +158,7 @@
                                 @click="goToCollectionPage(collection.id)"
                                 class="column-small-width column-align-right" 
                                 :label="$i18n.get('label_total_items')" 
+                                v-if="collection.total_items != undefined"
                                 :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)">
                             <p
                                     v-tooltip="{

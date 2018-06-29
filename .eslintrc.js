@@ -18,6 +18,7 @@ module.exports = {
         'vue/require-default-prop': 'off', // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/require-default-prop.md
     },
     globals: {
-        'tainacan_plugin': true
+        'tainacan_plugin': true,
+        '_': true
     }
 }

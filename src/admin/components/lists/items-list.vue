@@ -238,7 +238,6 @@
                                 :key="index"
                                 v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 @click="goToItemPage(item)"
-                                class="metadata-title"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
                     </div>
                     <!-- Actions -->
