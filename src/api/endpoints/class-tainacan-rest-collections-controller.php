@@ -192,7 +192,11 @@ class REST_Collections_Controller extends REST_Controller {
 
 			$total_items = wp_count_posts( $item->get_db_identifier(), 'readable' );
 			
-			if (isset($total_items->publish)) {
+			if (isset($total_items->publish) ||
+			 isset($total_items->private) ||
+			  isset($total_items->trash) ||
+			   isset($total_items->draft)) {
+
 				$item_arr['total_items']['trash'] = $total_items->trash;
 				$item_arr['total_items']['publish'] = $total_items->publish;
 				$item_arr['total_items']['draft'] = $total_items->draft;

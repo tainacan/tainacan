@@ -78,6 +78,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'metacompare'  => 'meta_compare',
 			'hideempty'    => 'hide_empty',
 			'perpage'      => 'posts_per_page',
+			'number'	   => 'number',
 			'paged'        => 'paged',
 			'postin'       => 'post__in',
 			'relation'     => 'relation',
