@@ -66,7 +66,7 @@
                                     v-if="filter.filter_type != undefined">
                                 <b-switch 
                                         size="is-small" 
-                                        v-model="filter.enabled" 
+                                        :value="filter.enabled" 
                                         @input="onChangeEnable($event, index)"/>
                                 <a 
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
@@ -294,11 +294,11 @@ export default {
             this.availableMetadatumList = availableMetadata;
         },
         onChangeEnable($event, index) {
-            this.activeFilterList[index].enabled = $event;
             let filtersOrder = [];
             for (let filter of this.activeFilterList) {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
+            filtersOrder[index].enabled = $event;
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
         },
         addMetadatumViaButton(metadatumType, metadatumIndex) {
@@ -319,7 +319,7 @@ export default {
 
             for (let filter of this.filterTypes) {
                 for (let supportedType of filter['supported_types']) {
-                    if (choosenMetadatum.metadatum_type_object.primitive_type == supportedType)
+                    if (choosenMetadatum.metadata_type_object.primitive_type == supportedType)
                         this.allowedFilterTypes.push(filter);
                 }
             }
@@ -442,7 +442,7 @@ export default {
                 this.isLoadingFilterTypes = false;
             });        
 
-        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: 'yes' })
+        this.fetchFilters({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: true })
             .then(() => {
                 this.isLoadingFilters = false;
                 // Needs to be done after activeFilterList exists to compare and remove chosen metadata.

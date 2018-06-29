@@ -35,23 +35,29 @@ class Test_Importer extends Importer {
 		
 		[
 			'name' => 'Create Taxonomies',
+			'progress_label' => 'Creating taxonomies',
 			'callback' => 'create_taxonomies'
 		],
 		[
 			'name' => 'Create Collections',
+			'progress_label' => 'Creating Collections',
 			'callback' => 'create_collections'
 		],
 		[
 			'name' => 'Import Items',
+			'progress_label' => 'Importing items',
 			'callback' => 'process_collections'
 		],
 		[
 			'name' => 'Post-configure taxonomies',
+			'progress_label' => 'post processing taxonomies',
 			'callback' => 'close_taxonomies'
 		],
 		[
 			'name' => 'Finalize',
-			'callback' => 'finish_processing'
+			'progress_label' => 'Finalizing',
+			'callback' => 'finish_processing',
+			'total' => 5
 		]
 		
 	];
@@ -156,7 +162,7 @@ class Test_Importer extends Importer {
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name('Colora');
 		$metadatum->set_collection($col1);
-		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $this->get_transient('tax_1_id'),
 			'allow_new_terms' => true
@@ -177,7 +183,7 @@ class Test_Importer extends Importer {
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name('Qualitya');
 		$metadatum->set_collection($col1);
-		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Category');
+		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$metadatum->set_metadata_type_options([
 			'taxonomy_id' => $this->get_transient('tax_2_id'),
 			'allow_new_terms' => true
@@ -196,7 +202,7 @@ class Test_Importer extends Importer {
 		
 		$this->add_collection([
 			'id' => $col1->get_id(),
-			'map' => $col1_map,
+			'mapping' => $col1_map,
 			'total_items' => $this->get_col1_number_of_items(),
 			'source_id' => 'col1'
 		]);
@@ -226,7 +232,7 @@ class Test_Importer extends Importer {
 		
 		$this->add_collection([
 			'id' => $col2->get_id(),
-			'map' => $col2_map,
+			'mapping' => $col2_map,
 			'total_items' => $this->get_col2_number_of_items(),
 			'source_id' => 'col2'
 		]);

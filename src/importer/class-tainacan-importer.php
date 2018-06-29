@@ -48,17 +48,6 @@ abstract class Importer {
 	
     
 	/**
-	 * The total number of iterations to be imported.
-	 *
-	 * if not possible to calculate, inform 0 (zero) and no progress bar will be displayed.
-	 * 
-	 * @var int
-	 */
-	protected $progress_total;
-	
-	protected $progress_current;
-	
-	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
 	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be imported, the mapping array 
@@ -72,7 +61,7 @@ abstract class Importer {
 	 * Example of the structure of this propery for one collection:
 	 * 0 => [
 	 * 	'id' => 12,
-	 * 	'map' => [
+	 * 	'mapping' => [
 	 * 	  30 => 'column1'
 	 * 	  31 => 'column2'
 	 * 	],
@@ -100,7 +89,7 @@ abstract class Importer {
 	 */
 	protected $default_options = [];
 	
-	private $accpets = [
+	private $accepts = [
 		'file' => true,
 		'url'  => false,
 	];
@@ -119,6 +108,7 @@ abstract class Importer {
 	protected $steps = [
 		[
 			'name' => 'Import Items',
+			'progress_label' => 'Importing Items',
 			'callback' => 'process_collections'
 		]
 	];
@@ -190,13 +180,20 @@ abstract class Importer {
 		
     }
 	
-	public function _to_Array() {
-		$return = [];
+	public function _to_Array($short = false) {
+		$return = ['id' => $this->get_id()];
 		foreach ($this->array_attributes as $attr) {
 			$method = 'get_' . $attr;
 			$return[$attr] = $this->$method();
 		}
 		$return['class_name'] = get_class($this);
+
+		if ($short === false) {
+			$return['manual_collection'] = $this->manual_collection;
+			$return['manual_mapping'] = $this->manual_mapping;
+			$return['accepts'] = $this->accepts;
+		}
+
 		return $return;
 	}
 	
@@ -279,14 +276,6 @@ abstract class Importer {
         $this->tmp_file = $filepath;
     }
 	
-	public function get_progress_current() {
-		return $this->progress_current;
-	}
-	
-	public function set_progress_current($value) {
-		$this->progress_current = $value;
-	}
-	
 	public function get_collections() {
 		return $this->collections;
 	}
@@ -332,22 +321,6 @@ abstract class Importer {
         return $this->steps;
     }
 	
-	/**
-     * return the total progress number to calculate progress
-     *
-     * @return int Total of items
-     */
-    public function get_progress_total() {
-		if ( !isset( $this->progress_total ) ) {
-            if ( method_exists($this, 'get_progress_total_from_source') ) {
-				$this->progress_total = $this->get_progress_total_from_source();
-			} else {
-				$this->progress_total = 0;
-			}
-			
-		}
-		return $this->progress_total;
-	}
 	
 	private function get_transients() {
 		return $this->transients;
@@ -376,7 +349,8 @@ abstract class Importer {
     public function add_file( $file ){
         $new_file = $this->upload_file( $file );
         if ( is_numeric( $new_file ) ) {
-            $this->tmp_file = get_attached_file( $new_file );
+			$this->tmp_file = get_attached_file( $new_file );
+			return true;
         } else {
             return false;
         }
@@ -418,12 +392,19 @@ abstract class Importer {
      * @param $path_file
      * @return array $response
      */
-    private function upload_file( $path_file ){
-        $name = basename( $path_file );
-        $file_array['name'] = $name;
-        $file_array['tmp_name'] = $path_file;
-        $file_array['size'] = filesize( $path_file );
-        return media_handle_sideload( $file_array, 0 );
+    private function upload_file( $file_array ){
+        //$name = basename( $path_file );
+        //$file_array['name'] = $name;
+        //$file_array['tmp_name'] = $path_file;
+        //$file_array['size'] = filesize( $path_file );
+		
+		if ( !function_exists('media_handle_upload') ) {
+			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+		}
+		//var_dump(media_handle_sideload( $file_array, 0 )); die;
+		return media_handle_sideload( $file_array, 0 );
     }
 
     /**
@@ -464,8 +445,8 @@ abstract class Importer {
 	 * @return bool true for success, false if method does not exist
 	 */
 	public function add_import_method($method) {
-		if ( array_key_exists($method, $this->accpets) ) {
-			$this->acceps[$method] = true;
+		if ( array_key_exists($method, $this->accepts) ) {
+			$this->accepts[$method] = true;
 			return true;
 		}
 		return false;
@@ -480,8 +461,8 @@ abstract class Importer {
 	 * @return bool true for success, false if method does not exist
 	 */
 	public function remove_import_method($method) {
-		if ( array_key_exists($method, $this->accpets) ) {
-			$this->acceps[$method] = false;
+		if ( array_key_exists($method, $this->accepts) ) {
+			$this->accepts[$method] = false;
 			return true;
 		}
 		return false;
@@ -536,6 +517,131 @@ abstract class Importer {
 		return $this->abort;
 	}
 
+	/**
+	 * Gets the current label to be displayed below the progress bar to give
+	 * feedback to the user.
+	 * 
+	 * It automatically gets the attribute progress_label from the current step running.
+	 * 
+	 * Importers may change this label whenever they want
+	 * 
+	 * @return string
+	 */
+	public function get_progress_label() {
+		$current_step = $this->get_current_step();
+		$steps = $this->get_steps();
+		$label = '';
+		if ( isset($steps[$current_step]) ) {
+			$step = $steps[$current_step];
+			if ( isset($step['progress_label']) ) {
+				$label = $step['progress_label'];
+			} elseif ( isset($step['name']) ) {
+				$label = $step['name'];
+			}
+		}
+
+		if ( sizeof($steps) > 1 ) {
+			$preLabel = sprintf( __('Step %d of %d', 'tainacan'), $current_step + 1, sizeof($steps) );
+			$label = $preLabel . ': ' . $label;
+		}
+
+		if ( empty($label) ) {
+			$label = __('Running Importer', 'tainacan');
+		}
+
+		return $label;
+
+	}
+
+	/**
+	 * Gets the current value to build the progress bar and give feedback to the user
+	 * on the background process that is running the importer.
+	 * 
+	 * It does so by comparing the "size" attribute with the $in_step_count class attribute
+	 * where size indicates the total size of iterations the step will take and $this->in_step_count 
+	 * is the current iteration.
+	 * 
+	 * For the step with "process_items" as a callback, this method will look for the the $this->collections array
+	 * and sum the value of all "total_items" attributes of each collection. Then it will look for 
+	 * $this->get_current_collection and $this->set_current_collection_item to calculate the progress.
+	 * 
+	 * The value must be from 0 to 100
+	 * 
+	 * If a negative value is passed, it is assumed that the progress is unknown
+	 */
+	public function get_progress_value() {
+		$current_step = $this->get_current_step();
+		$steps = $this->get_steps();
+		$value = -1;
+
+		if ( isset($steps[$current_step]) ) {
+			$step = $steps[$current_step];
+
+			if ($step['callback'] == 'process_collections') {
+
+				$totalItems = 0;
+				$currentItem = $this->get_current_collection_item();
+				$current_collection = $this->get_current_collection();
+				$collections = $this->get_collections();
+
+				foreach ($collections as $i => $col) {
+					if ( isset($col['total_items']) && is_integer($col['total_items']) ) {
+						$totalItems += $col['total_items'];
+						if ($i < $current_collection) {
+							$currentItem += $col['total_items'];
+						}
+					}
+				}
+
+				if ($totalItems > 0) {
+					$value = round( ($currentItem/$totalItems) * 100 );
+				}
+
+
+			} else {
+
+				if ( isset($step['total']) && is_integer($step['total']) && $step['total'] > 0 ) {
+					$current = $this->get_in_step_count();
+					$value = round( ($current/$step['total']) * 100 );
+				}
+
+			}
+
+
+		}
+		return $value;
+	}
+
+	/**
+	 * Sets the total attribute for the current step
+	 * 
+	 * The "total" attribute of a step indicates the number of iterations this step will take to complete.
+	 * 
+	 * The iteration is counted using $this->in_step_count attribute, and comparing the two values gives us
+	 * the current progress of the process.
+	 * 
+	 */
+	protected function set_current_step_total(int $value) {
+		$this->set_step_total($this->get_current_step(), $value);
+	}
+
+	/**
+	 * Sets the total attribute for a given step
+	 * 
+	 * The "total" attribute of a step indicates the number of iterations this step will take to complete.
+	 * 
+	 * The iteration is counted using $this->in_step_count attribute, and comparing the two values gives us
+	 * the current progress of the process.
+	 * 
+	 */
+	protected function set_step_total(int $step, int $value) {
+		$steps = $this->get_steps();
+		if (isset($steps[$step]) && is_array($steps[$step])) {
+			$steps[$step]['total'] = $value;
+			$this->set_steps($steps);
+		}
+	}
+
 
 	///////////////////////////////
 	// Abstract methods
@@ -565,13 +671,13 @@ abstract class Importer {
     
 	
 	/**
-	 * Method implemented by the child importer class to return the total number of interations the importer must run
+	 * Method implemented by the child importer class to return the total number of items that will be imported
 	 *
 	 * Used to build the progress bar
 	 * 
 	 * @return int
 	 */
-	public function get_progress_total_from_source() {}
+	public function get_source_number_of_items() {}
 	
 	
 	
@@ -668,7 +774,7 @@ abstract class Importer {
 		
         $collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
-		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['map']) ) {
+		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
 			$this->add_error_log('Collection misconfigured');
             return false;
 		}
@@ -684,7 +790,7 @@ abstract class Importer {
 
         if( is_array( $processed_item ) ){
             foreach ( $processed_item as $metadatum_source => $values ){
-                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['map'] );
+                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
                 $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
                 if( $metadatum instanceof Entities\Metadatum ){

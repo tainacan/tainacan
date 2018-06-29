@@ -7,6 +7,10 @@
                 }">
             <tainacan-title />
             <div :class="{ 'above-subheader': isRepositoryLevel }">
+
+                <b-loading 
+                        :active.sync="isLoading" 
+                        :can-cancel="false"/>
                 <events-list
                         :is-loading="isLoading"
                         :total-events="totalEvents"
@@ -143,16 +147,13 @@
             this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         },
         mounted(){
-            this.$userPrefs.fetch('events_per_page')
-            .then((value) => {
-                if (this.eventsPerPage != value) {
-                    this.eventsPerPage = value;
-                    this.loadEvents;
-                }
-            })
-            .catch(() => {
+            if (this.eventsPerPage != this.$userPrefs.get('events_per_page'))
+                this.eventsPerPage = this.$userPrefs.get('events_per_page');
+
+            if (!this.eventsPerPage) {
+                this.eventsPerPage = 12;
                 this.$userPrefs.set('events_per_page', 12);
-            });
+            }
             this.loadEvents();
 
             if (!this.isRepositoryLevel) {

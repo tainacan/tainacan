@@ -79,7 +79,8 @@ class Taxonomy extends Entity {
         );
         
         
-        $tax_cpts = [];
+		$tax_cpts = [];
+		
         if (is_array($this->get_collections())){
             foreach ($this->get_collections() as $tax_col){
                 $tax_cpts[] = $tax_col->get_db_identifier();

@@ -21,18 +21,15 @@
                                 :title="$i18n.getHelperTitle('items', 'status')"
                                 :message="$i18n.getHelperMessage('items', 'status')"/>
                     </div>
+                    <!-- Last Updated Info -->      
+                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        <em>
+                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
+                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
+                        </em>
+                    </p>
                     <div class="section-status">
-                        <div class="field">
-                            <!-- <div class="block">
-                                <b-radio 
-                                        :id="`status-option-${statusOption.value}`"
-                                        v-for="statusOption in statusOptions"
-                                        :key="statusOption.value"
-                                        :value="statusOption.value"
-                                        :disabled="statusOption.disabled">
-                                    {{ statusOption.label }}
-                                </b-radio>
-                            </div> -->
+                        <div class="field has-addons">
                             <b-select
                                     v-model="form.status"
                                     :placeholder="$i18n.get('instruction_select_a_status')">
@@ -44,13 +41,6 @@
                                         :disabled="statusOption.disabled">{{ statusOption.label }}
                                 </option>
                             </b-select>
-                            <p
-                                    v-if="item.status == 'auto-draft'"
-                                    class="help is-danger">
-                                {{ $i18n.get('info_item_not_saved') }}
-                            </p>
-                        </div>
-                        <div class="field is-grouped">
                             <div class="control">
                                 <button
                                         type="button"
@@ -61,6 +51,11 @@
                                 </button>
                             </div>
                         </div>
+                        <p
+                                v-if="item.status == 'auto-draft'"
+                                class="help is-danger">
+                            {{ $i18n.get('info_item_not_saved') }}
+                        </p>
                         <p class="help is-danger">{{ formErrorMessage }}</p>
                     </div>
 
@@ -235,7 +230,7 @@
                     <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
                             <a
-                                    class="button is-rounred is-secondary"
+                                    class="button is-rounded is-secondary"
                                     id="button-edit-thumbnail"
                                     :aria-label="$i18n.get('label_button_edit_thumb')"
                                     @click.prevent="thumbnailMediaFrame.openFrame($event)">
@@ -376,7 +371,9 @@ export default {
             isURLModalActive: false,
             urlLink: '',
             isTextModalActive: false,
-            textLink: ''
+            textLink: '',
+            isEditingValues: false,
+            isUpdatingValues: false
         }
     },
     computed: {
@@ -385,6 +382,9 @@ export default {
         },
         attachmentsList(){
             return this.getAttachments();
+        },
+        lastUpdated() {
+            return this.getLastUpdated();
         }
     },
     components: {
@@ -401,11 +401,13 @@ export default {
             'cleanMetadata',
             'sendAttachments',
             'updateThumbnail',
-            'fetchAttachments'
+            'fetchAttachments',
+            'cleanLastUpdated'
         ]),
         ...mapGetters('item',[
             'getMetadata',
-            'getAttachments'
+            'getAttachments',
+            'getLastUpdated'
         ]),
         onSubmit() {
             // Puts loading on Item edition
@@ -665,6 +667,18 @@ export default {
             // Fetch current existing attachments
             this.fetchAttachments(this.itemId);
         }
+
+        // Sets feedback variables
+        eventBus.$on('isChangingValue', () => {
+            this.isEditingValues = true;
+            setTimeout(()=> {
+                this.isEditingValues = false;
+            }, 1000)
+        });
+        eventBus.$on('isUpdatingValue', (status) => {
+            this.isUpdatingValues = status;
+        });
+        this.cleanLastUpdated();
     },
     mounted() {
         document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
@@ -735,6 +749,10 @@ export default {
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: width 0.6s;
+
+            @media screen and (max-width: 769px) {
+                width: 100%;
+            }
         }
         .column.is-4-5 {
             width: 37.5%;
@@ -742,8 +760,8 @@ export default {
             padding-right: $page-side-padding;
             transition: all 0.6s;
 
-            .metadatum {
-                    padding: 10px 0px 10px 25px;
+            .field {
+                padding: 10px 0px 10px 60px;
             }
 
         }

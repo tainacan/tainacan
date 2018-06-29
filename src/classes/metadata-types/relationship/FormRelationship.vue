@@ -6,7 +6,7 @@
                 :type="collectionType"
                 :message="collectionMessage">
             <label class="label is-inline">
-                {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.get('label_related_collection') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
                         :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')"/>

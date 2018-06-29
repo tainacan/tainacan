@@ -11,7 +11,7 @@ export const eventBus = new Vue({
         if( tainacan_plugin.components ){
             this.componentsTag = tainacan_plugin.components;
         }
-		this.$on('input', data => this.updateValue(data) );
+        this.$on('input', data => this.updateValue(data) );
     },
     methods : {
         registerComponent( name ){
@@ -34,20 +34,36 @@ export const eventBus = new Vue({
                 });
             }
         },
+        isChangingValue() {
+            this.$emit('isChangingValue', true);
+        },  
         updateValue(data){
+            
+            this.$emit('isUpdatingValue', true);
             if ( data.item_id ){
-                
+
+                if(data.values.length > 0 && data.values[0].value){
+                    let val = [];
+                    for(let i of data.values){
+                        val.push(i.value);
+                    }
+
+                    data.values = val;
+                }  
+
                 let values = ( Array.isArray( data.values[0] ) ) ? data.values[0] : data.values ;
                 const promisse = this.$store.dispatch('item/updateMetadata',
                     { item_id: data.item_id, metadatum_id: data.metadatum_id, values: values });
 
                     promisse.then( () => {
+                    this.$emit('isUpdatingValue', false);
                     let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
                     if ( index >= 0){
                         this.errors.splice( index, 1);
                     }
                 })
                 .catch((error) => {
+                    this.$emit('isUpdatingValue', false);
                     let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
                     let messages = [];
 

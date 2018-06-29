@@ -217,7 +217,7 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
-
+		
 		$response = [];
 
 		$return_template = false;

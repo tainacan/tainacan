@@ -6,6 +6,8 @@
         justify-content: space-between !important;
         padding: 12px 0px ;
         margin-bottom: 0px;
+        width: 100%;
+
         .button {
             border-width: 1px;
             padding: 2px 30px !important;
@@ -68,20 +70,34 @@
         select {
             color: $tainacan-input-color;
             background-color: white !important;
-            border: 1px solid $tainacan-input-background;
+            border: 1px solid $tainacan-input-background !important;
             &:focus>option:checked, &:focus>option:hover {
                 background-color: $primary-lighter !important;
             }
-        }
-        &.is-empty select{
-            //background-color: $tainacan-input-background !important;
-        }     
+        }   
     }
     .dropdown {
+        width: 100%;
+        .dropdown-trigger { width: 100% }
         .button {
+            justify-content: space-between;
+            width: 100%;
             border: 1px solid $tainacan-input-background !important;
             border-radius: 0 !important;
-            padding: 2px 20px !important;
+            padding: 2px 14px 2px 18px !important
         }
+    }
+    .two-columns-dropdown {
+        &>.dropdown-menu>.dropdown-content {
+            display: flex;
+            flex-wrap: wrap;
+
+            .dropdown-item {
+                width: 50%;
+            }
+        }
+    }
+    .upload-draggable {
+        border-radius: 0 !important;
     }
 }

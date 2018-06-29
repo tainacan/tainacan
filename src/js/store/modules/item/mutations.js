@@ -8,6 +8,10 @@ export const cleanItem = ( state ) => {
     state.item = [];
 }
 
+export const cleanLastUpdated = ( state ) => {
+    state.cleanLastUpdated = '';
+}
+
 export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
@@ -55,3 +59,9 @@ export const setSingleMetadatum = ( state, metadatum) => {
         state.metadata.push( metadatum );
     }
 }
+
+export const setLastUpdated = (state) => {
+    let now = new Date();
+    state.lastUpdated = now.toLocaleString();
+}
+

@@ -62,6 +62,10 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
                         </th>
+                        <!-- Total Items -->
+                        <th v-if="!isOnTrash">
+                            <div class="th-wrap">{{ $i18n.get('label_total_items') }}</div>
+                        </th>
                         <th class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
@@ -149,6 +153,21 @@
                                     }" 
                                     v-html="collection.author_name" />
                         </td>
+                        <!-- Total items -->
+                        <td
+                                @click="goToCollectionPage(collection.id)"
+                                class="column-small-width column-align-right" 
+                                :label="$i18n.get('label_total_items')" 
+                                v-if="collection.total_items != undefined"
+                                :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)">
+                            <p
+                                    v-tooltip="{
+                                        content: getTotalItems(collection.total_items),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="getTotalItems(collection.total_items)" />
+                        </td>
                         <!-- Actions -->
                         <td 
                                 @click="goToCollectionPage(collection.id)"
@@ -228,6 +247,9 @@ export default {
         selectAllCollectionsOnPage() {
             for (let i = 0; i < this.selectedCollections.length; i++) 
                 this.selectedCollections.splice(i, 1, !this.allCollectionsOnPageSelected);
+        },
+        getTotalItems(total_items) {
+            return Number(total_items['publish']) + Number(total_items['private']);
         },
         deleteOneCollection(collectionId) {
             this.$modal.open({
@@ -361,7 +383,7 @@ export default {
 
     .selection-control {
         
-        padding: 6px 0px 0px 13px;
+        padding: 6px 0px 0px 12px;
         background: white;
         height: 40px;
 

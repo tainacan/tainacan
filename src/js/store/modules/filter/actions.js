@@ -15,8 +15,8 @@ export const fetchFilters = ({ commit }, {collectionId, isRepositoryLevel, isCon
             endpoint += '&context=edit';
         }
 
-        if (includeDisabled === 'yes'){
-            endpoint += '&include_disabled=yes'
+        if (includeDisabled){
+            endpoint += '&include_disabled=' + includeDisabled;
         }
 
         axios.tainacan.get(endpoint)

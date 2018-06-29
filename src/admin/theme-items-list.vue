@@ -9,6 +9,9 @@
 <script>
 export default {
     name: "ThemeItemsList",
+    created() {
+        this.$userPrefs.init();
+    }
 }
 </script>
 
@@ -31,6 +34,7 @@ export default {
 
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_tags.scss";
     @import "../admin/scss/_selects.scss";
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
@@ -285,7 +289,6 @@ export default {
         .filters-menu {
             height: auto;
             min-width: $filter-menu-width-theme;
-            background-color: unset;
             border-right: 0;
             padding: 25px 12px 25px 4.1666667%;
 
@@ -295,12 +298,17 @@ export default {
         }
 
         .search-control {
-            border-bottom: 0;
-        }
 
-        .table-container {
-            padding-left: 4.166666667%;
-            padding-right: 4.166666667%;
+            .gray-icon, .gray-icon .icon {
+                color: $tainacan-placeholder-color !important;
+                i::before {
+                    font-size: 21px;
+                }
+            }
+            .view-mode-icon {
+                margin-right: 8px !important;
+                margin-top: 2px;
+            }
         }
 
         #items-list-area {

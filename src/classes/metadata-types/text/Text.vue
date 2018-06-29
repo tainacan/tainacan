@@ -1,24 +1,14 @@
 <template>
     <b-input
-            :class="{'has-content': inputValue !== undefined && inputValue !== ''}"
+            :class="{'has-content': value !== undefined && value !== ''}"
             :id="id"
-            :value="inputValue"
-            @blur="onBlur"
+            :value="value"
+            @blur="$emit('blur')"
             @input="onInput($event)"/>
 </template>
 
 <script>
     export default {
-        created(){
-            if( this.value ){
-                this.inputValue = this.value
-            }
-        },
-        data() {
-            return {
-                inputValue: '',
-            }
-        },
         props: {
             metadatum: {
                 type: Object
@@ -27,12 +17,8 @@
             id: ''
         },
         methods: {
-            onBlur() {
-                this.$emit('blur');
-            },
-            onInput($event) {
-                this.inputValue = $event;
-                this.$emit('input', this.inputValue);
+            onInput(value) {
+                this.$emit('input', value);
             }
         }
     }

@@ -218,16 +218,14 @@ export default {
             });
     },
     mounted(){
-        this.$userPrefs.fetch('collections_per_page')
-        .then((value) => {
-            if (this.collectionsPerPage != value) {
-                this.collectionsPerPage = value;
-                this.loadCollections;
-            }
-        })
-        .catch(() => {
+        if (this.collectionsPerPage != this.$userPrefs.get('collections_per_page'))
+            this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
+
+        if (!this.collectionsPerPage) {
+            this.collectionsPerPage = 12;
             this.$userPrefs.set('collections_per_page', 12);
-        });
+        }
+
         this.loadCollections();
     }
 }

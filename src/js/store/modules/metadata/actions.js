@@ -1,7 +1,6 @@
 import axios from '../../../axios/axios';
-import qs from 'qs';
 
-export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit}) => {
+export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel)
@@ -10,8 +9,12 @@ export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isCont
             endpoint = '/metadata/';
 
         endpoint += '?nopaging=1';
+        
         if (isContextEdit)
             endpoint += '&context=edit';
+
+        if (includeDisabled)
+            endpoint += '&include_disabled=' + includeDisabled;
 
         axios.tainacan.get(endpoint)
             .then((res) => {

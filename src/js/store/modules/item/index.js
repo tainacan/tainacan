@@ -8,7 +8,8 @@ const state = {
     error: [],
     itemTitle: '',
     attachment: {},
-    attachments: []
+    attachments: [],
+    lastUpdated: ''
 };
 
 

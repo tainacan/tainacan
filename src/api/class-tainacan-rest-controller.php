@@ -64,6 +64,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'authorid'     => 'author_id',
 			'authorname'   => 'author_name',
 			'search'       => 's',
+			'searchterm'   => 'search',
 			'status'       => 'post_status',
 			'offset'       => 'offset',
 			'metaquery'    => 'meta_query',
@@ -77,6 +78,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'metacompare'  => 'meta_compare',
 			'hideempty'    => 'hide_empty',
 			'perpage'      => 'posts_per_page',
+			'number'	   => 'number',
 			'paged'        => 'paged',
 			'postin'       => 'post__in',
 			'relation'     => 'relation',
@@ -245,7 +247,7 @@ class REST_Controller extends \WP_REST_Controller {
 			foreach ( $request_meta_query as $index1 => $a ) {
 
                 // handle core metadatum
-                if( is_array($a) && array_key_exists("key", $a) ){
+                if( is_array($a) && array_key_exists("key", $a) && !$request['advancedSearch'] ){
                     $metadatum = new \Tainacan\Entities\Metadatum($a['key']);
                     if( strpos( $metadatum->get_metadata_type(), 'Core_Title') !== false ){
                         $args[ 'post_title_in' ] = [

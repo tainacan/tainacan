@@ -27,7 +27,8 @@
                     :is="metadatum.metadatum.metadata_type_object.component"
                     v-model="inputs[0]" 
                     :metadatum="metadatum"
-                    @blur="changeValue()"/>
+                    @blur="changeValue()"
+                    @input="emitIsChangingValue()"/>
             <div v-if="metadatum.metadatum.multiple == 'yes'">
                 <div 
                         v-if="index > 0" 
@@ -39,14 +40,28 @@
                             :is="metadatum.metadatum.metadata_type_object.component"
                             v-model="inputs[index]" 
                             :metadatum="metadatum"
-                            @blur="changeValue()"/><a 
-                            class="button" 
-                            v-if="index > 0" 
-                            @click="removeInput(index)">-</a>
+                            @blur="changeValue()"  
+                            @input="emitIsChangingValue()"/>
+                        <a 
+                                v-if="index > 0" 
+                                @click="removeInput(index)"
+                                class="is-inline add-link">
+                            <b-icon
+                                    icon="minus-circle"
+                                    size="is-small"
+                                    type="is-secondary"/>
+                                {{ $i18n.get('label_remove_value') }}</a>
                 </div>
+
                 <a 
-                        class="button" 
-                        @click="addInput">+</a>
+                        @click="addInput"
+                        class="is-inline add-link">
+                    <b-icon
+                            icon="plus-circle"
+                            size="is-small"
+                            type="is-secondary"/>
+                        {{ $i18n.get('label_add_value') }}</a>
+
             </div>
         </div>
         <div 
@@ -57,7 +72,8 @@
                     :is="metadatum.metadatum.metadata_type_object.component"
                     v-model="inputs"
                     :metadatum="metadatum"
-                    @blur="changeValue()"/>
+                    @blur="changeValue()"
+                    @input="emitIsChangingValue()"/>
         </div>
     </b-field>
 </template>
@@ -107,14 +123,70 @@
             this.getValue();
         },
         methods: {
-            changeValue(){
-                eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
+            emitIsChangingValue() {
+                eventBus.isChangingValue(true);
             },
-            getValue(){           
+            changeValue(){
+                
+                if(this.metadatum.value != this.inputs){
+
+                    if(this.inputs.length > 0 && this.inputs[0].value){
+                        let terms = []
+
+                        for(let term of this.inputs){
+                            terms.push(term.value);
+                        }
+
+                        if(this.metadatum.value instanceof Array){
+                            let eq = [];
+
+                            for(let meta of terms){
+                                let found = this.metadatum.value.find((element) => {
+                                    return meta == element.id;
+                                });
+
+                                if(found){
+                                    eq.push(found);
+                                }
+                            }
+
+                            if(eq.length == terms.length && this.metadatum.value.length <= eq.length){
+                                return;
+                            }
+                        }
+                    } else if(this.metadatum.value.constructor.name == 'Object'){
+
+                        if(this.metadatum.value.id == this.inputs){
+                            return;
+                        }
+                    } else if(this.metadatum.value instanceof Array){                        
+                        let eq = [];
+
+                        for(let meta of this.inputs){
+                            let found = this.metadatum.value.find((element) => {
+                                return meta == element.id;
+                            });
+
+                            if(found){
+                                eq.push(found);
+                            }
+                        }
+
+                        if(eq.length == this.inputs.length && this.metadatum.value.length <= eq.length){
+                            return;
+                        }
+                    } 
+
+                    eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
+                }
+            },
+            getValue(){ 
                 if (this.metadatum.value instanceof Array) {
-                    this.inputs = this.metadatum.value;
-                    if (this.inputs.length === 0)
+                    this.inputs = this.metadatum.value.slice(0);
+                    
+                    if (this.inputs.length === 0){
                         this.inputs.push('');
+                    }
                 } else {
                     this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs.push('') : this.inputs.push(this.metadatum.value);
                 }
@@ -128,7 +200,7 @@
                 this.changeValue();
             },
             isTextInputComponent( component ){
-                let array = ['tainacan-relationship','tainacan-category'];
+                let array = ['tainacan-relationship','tainacan-taxonomy'];
                 return !( array.indexOf( component ) >= 0 );
             },
             setMetadatumTypeMessage( message ){
@@ -144,6 +216,8 @@
 
     .multiple-inputs {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .field {
@@ -153,7 +227,7 @@
         .label {
             font-size: 14px;
             font-weight: 500;
-            margin-left: 18px;
+            margin-left: 15px;
             margin-bottom: 0.5em;
         }
         .metadata-type {
@@ -169,6 +243,7 @@
         .collapse-handle {
             cursor: pointer;
             position: relative;
+            margin-left: -42px;
         }
     }
 </style>

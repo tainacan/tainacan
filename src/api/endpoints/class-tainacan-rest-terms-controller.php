@@ -284,6 +284,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 
 		$args = $this->prepare_filters($request);
+		$prepared_args = $args;
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
 
@@ -292,7 +293,27 @@ class REST_Terms_Controller extends REST_Controller {
 			array_push($response, $this->prepare_item_for_response( $term, $request ));
 		}
 
-		return new \WP_REST_Response($response, 200);
+		$response = new \WP_REST_Response($response, 200);
+
+		if(isset($args['number'], $args['offset'])){
+			unset( $args['number'], $args['offset'] );
+			$total_terms = wp_count_terms( $this->taxonomy->get_db_identifier(), $args );
+
+			if ( ! $total_terms ) {
+				$total_terms = 0;
+			}
+
+			$per_page = (int) $prepared_args['number'];
+			$page     = ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
+		
+			$response->header( 'X-WP-Total', (int) $total_terms );
+		
+			$max_pages = ceil( $total_terms / $per_page );
+		
+			$response->header( 'X-WP-TotalPages', (int) $max_pages );
+		}
+		
+		return $response;
 	}
 
 	/**

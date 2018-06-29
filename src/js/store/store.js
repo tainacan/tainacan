@@ -6,8 +6,10 @@ import collection from './modules/collection/';
 import metadata from './modules/metadata/';
 import filter from './modules/filter/';
 import search from './modules/search/';
-import category from './modules/category/';
+import taxonomy from './modules/taxonomy/';
 import event from './modules/event';
+import importer from './modules/importer';
+import bgprocess from './modules/bgprocess';
 
 Vue.use(Vuex);
 
@@ -26,7 +28,9 @@ export default new Vuex.Store({
         metadata,
         filter,
         search,
-        category,
+        taxonomy,
         event,
+        importer,
+        bgprocess
     }
 })
