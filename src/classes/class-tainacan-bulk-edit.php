@@ -2,6 +2,7 @@
 
 namespace Tainacan;
 use Tainacan\Repositories;
+use Tainacan\Entities;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -132,6 +133,244 @@ class Bulk_Edit  {
 			return $wpdb->get_var( $wpdb->prepare("SELECT COUNT(post_id) FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $id) );
 		}
 		return 0;
+	}
+
+	private function _build_select($fields) {
+		global $wpdb;
+
+		return $wpdb->prepare( "SELECT $fields FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $this->get_id() );
+
+	}
+
+	public function add_value(Entities\Metadatum $metadatum, $value) {
+
+		if (!$this->get_id()) {
+			return false;
+		}
+
+		// Specific validation
+		if (!$metadatum->is_multiple()) {
+			return ['error' => __('Unable to add a value to a metadata if it does not accepts multiple values', 'tainacan')];
+		}
+		if ($metadatum->is_collection_key()) {
+			return ['error' => __('Unable to add a value to a metadata set to be a collection key', 'tainacan')];
+		}
+
+		$dummyItem = new Entities/Item();
+		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
+		$checkItemMetadata->set_value([$value]);
+
+		if ($checkItemMetadata->validate()) {
+			$this->_add_value($metadatum, $value);
+		} else {
+			return ['error' => __('Invalid value', 'tainacan')];
+		}
+
+
+	}
+
+	public function set_value(Entities\Metadatum $metadatum, $value) {
+
+		if (!$this->get_id()) {
+			return false;
+		}
+
+		// Specific validation
+		
+		if ($metadatum->is_collection_key()) {
+			return ['error' => __('Unable to set a value to a metadata set to be a collection key', 'tainacan')];
+		}
+
+		$dummyItem = new Entities/Item();
+		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
+		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$value] : $value );
+
+		if ($checkItemMetadata->validate()) {
+			$this->_delete_values($metadatum);
+			return $this->_add_value($metadatum, $value);
+		} else {
+			return ['error' => __('Invalid value', 'tainacan')];
+		}
+
+
+	}
+
+	public function replace_value(Entities\Metadatum $metadatum, $old_value, $new_value) {
+
+		if (!$this->get_id()) {
+			return false;
+		}
+
+		// Specific validation
+		
+		if ($metadatum->is_collection_key()) {
+			return ['error' => __('Unable to set a value to a metadata set to be a collection key', 'tainacan')];
+		}
+
+		$dummyItem = new Entities/Item();
+		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
+		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$new_value] : $new_value );
+
+		if ($checkItemMetadata->validate()) {
+			$this->_delete_value($metadatum, $old_value);
+			return $this->_add_value($metadatum, $new_value);
+		} else {
+			return ['error' => __('Invalid value', 'tainacan')];
+		}
+
+
+	}
+
+
+	/**
+	 * Adds a value to the current group of items
+	 * 
+	 * This method adds value to the database directly, any check or validation must be done beforehand
+	 */
+	private function _add_value(Entities\Metadatum $metadatum, $value) {
+
+		$type = $metadatum->get_metadata_type_object();
+
+		if ($type->primitive_type == 'term') {
+
+			$options = $metadatum->get_metadata_type_options();
+			$taxonomy_id = $options['taxonomy_id'];
+			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
+
+			if ($tax instanceof Entities\Taxonoy) {
+
+				$term = term_exists($value, $tax->get_db_identifier());
+
+				if (!is_array($term)) {
+					$term = wp_insert_term($value, $tax->get_db_identifier());
+				}
+
+				if (is_wp_error($term) || !isset($term['term_taxonomy_id'])) {
+					return false;
+				}
+
+				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term['term_taxonomy_id']) );
+
+				$query = "INSERT INTO $wpdb->term_relationship (object_id, term_taxonomy_id) $insert_q";
+
+				return $wpdb->query($query);
+
+				//TODO update term count
+
+
+			}
+
+		} else {
+
+			global $wpdb;
+
+			$insert_q = $this->_build_select( $wpdb->prepare("post_id, %s, %s", $metadatum->get_id(), $value) );
+
+			$query = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
+
+			return $wpdb->query($query);
+
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * Removes a value from the current group of items
+	 * 
+	 * This method removes value from the database directly, any check or validation must be done beforehand
+	 */
+	private function _delete_value(Entities\Metadatum $metadatum, $value) {
+
+		$type = $metadatum->get_metadata_type_object();
+
+		if ($type->primitive_type == 'term') {
+
+			$options = $metadatum->get_metadata_type_options();
+			$taxonomy_id = $options['taxonomy_id'];
+			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
+
+			if ($tax instanceof Entities\Taxonoy) {
+
+				$term = term_exists($value, $tax->get_db_identifier());
+
+				if (!is_array($term)) {
+					$term = wp_insert_term($value, $tax->get_db_identifier());
+				}
+
+				if (is_wp_error($term) || !isset($term['term_taxonomy_id'])) {
+					return false;
+				}
+
+				$delete_q = $this->_build_select( "post_id" );
+
+				$query = $wpdb->prepare( "DELETE FROM $wpdb->term_relationship WHERE term_taxonomy_id = %d AND object_id IN ($delete_q)", $term['term_taxonomy_id'] );
+
+				return $wpdb->query($query);
+
+				//TODO update term count
+
+			}
+
+		} else {
+
+			global $wpdb;
+
+			$delete_q = $this->_build_select( "post_id" );
+
+			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s AND post_id IN ($delete_q)", $metadatum->get_id(), $value );
+
+			return $wpdb->query($query);
+
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * Removes all values of a metadatum from the current group of items
+	 * 
+	 * This method removes value from the database directly, any check or validation must be done beforehand
+	 */
+	private function _delete_values(Entities\Metadatum $metadatum) {
+
+		$type = $metadatum->get_metadata_type_object();
+
+		if ($type->primitive_type == 'term') {
+
+			$options = $metadatum->get_metadata_type_options();
+			$taxonomy_id = $options['taxonomy_id'];
+			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
+
+			if ($tax instanceof Entities\Taxonoy) {
+
+				$delete_q = $this->_build_select( "post_id" );
+				$delete_tax_q = $wpdb->prepare( "SELECT term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s" , $tax->get_db_identifier() );
+
+				$query = $wpdb->prepare( "DELETE FROM $wpdb->term_relationship WHERE term_taxonomy_id IN ($delete_tax_q) AND object_id IN ($delete_q)" );
+
+				return $wpdb->query($query);
+
+				//TODO update term count
+
+			}
+
+		} else {
+
+			global $wpdb;
+
+			$delete_q = $this->_build_select( "post_id" );
+
+			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND post_id IN ($delete_q)", $metadatum->get_id() );
+
+			return $wpdb->query($query);
+
+		}
+
+		return false;
+
 	}
 	
 	
