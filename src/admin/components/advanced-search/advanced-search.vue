@@ -3,6 +3,7 @@
         <div class="columns is-multiline tnc-advanced-search-container">
 
             <div
+                    v-show="!advancedSearchResults"
                     v-for="searchCriteria in searchCriterias"
                     :key="searchCriteria"
                     class="field column is-12 tainacan-form">
@@ -92,6 +93,7 @@
 
             <!-- Add button -->
             <div
+                    v-show="!advancedSearchResults"
                     :style="{'padding-left': '25px !important'}"
                     class="field column is-12">
                 <a
@@ -105,8 +107,9 @@
             </div>
 
             <!-- Tags -->
-            <div 
-                class="field column is-12">
+            <div
+                    v-show="advancedSearchResults"
+                    class="field column is-12">
                 <b-field 
                         grouped
                         group-multiline>
@@ -114,8 +117,8 @@
                             v-for="searchCriteria in searchCriterias"
                             :key="searchCriteria"
                             class="control taginput-container">
-                        <b-tag 
-                                v-if="(advancedSearchQuery.taxquery[searchCriteria] && advancedSearchQuery.taxquery[searchCriteria].terms)"
+                        <b-tag
+                                v-if="advancedSearchQuery.taxquery[searchCriteria] && advancedSearchQuery.taxquery[searchCriteria].terms"
                                 type="is-white"
                                 class="is-rounded"
                                 @close="removeThis(searchCriteria)" 
@@ -126,7 +129,7 @@
                                   advancedSearchQuery.taxquery[searchCriteria].btags }}
                         </b-tag>
                         <b-tag 
-                                v-else-if="(advancedSearchQuery.metaquery[searchCriteria] && advancedSearchQuery.metaquery[searchCriteria].value)"
+                                v-else-if="advancedSearchQuery.metaquery[searchCriteria] && advancedSearchQuery.metaquery[searchCriteria].value"
                                 type="is-white"
                                 class="is-rounded"
                                 @close="removeThis(searchCriteria)" 
@@ -140,7 +143,9 @@
             </div>
 
             <!-- Clear and search button -->
-            <div class="column">
+            <div
+                    v-show="!advancedSearchResults"
+                    class="column">
                 <div class="field is-grouped is-pulled-right">
                     <p class="control">
                         <button
@@ -170,6 +175,14 @@
         props: {
             metadata: Array,
             isRepositoryLevel: false,
+            advancedSearchResults: false,
+            openFormAdvancedSearch: false,
+            isDoSearch: false,
+        },
+        watch: {
+          isDoSearch(){
+              this.searchAdvanced();
+          }
         },
         created(){
             let locale = navigator.language;

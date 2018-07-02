@@ -108,7 +108,7 @@ class Bulk_Edit  {
 	 * Internally used to filter WP_Query and build the INSERT statement. 
 	 * Must be public becaus is registered as a filter callback
 	 */
-	public function add_fields_to_query($fields, &$wp_query) {
+	public function add_fields_to_query($fields, $wp_query) {
 		global $wpdb;
 		if ( $wp_query->get('fields') == 'ids' ) { // just to make sure we are in the right query
 			$fields .= $wpdb->prepare( ", %s, %s", $this->meta_key, $this->get_id() );

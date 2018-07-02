@@ -307,36 +307,45 @@
             <!-- ADVANCED SEARCH -->
             <div
                     v-if="openAdvancedSearch">
-                    <b-collapse 
-                            class="show" 
-                            :open="advancedSearchResults ? false : true">
+                <div class="columns tnc-advanced-search-close">
+
+                    <div class="column">
                         <div
-                            slot="trigger" 
-                            slot-scope="props" 
-                            class="columns tnc-advanced-search-close">
-                            <div class="column">
+                                class="field is-grouped is-pulled-right">
+                            <p
+                                    v-if="advancedSearchResults"
+                                    class="control">
+                                <button
+                                        @click="advancedSearchResults = !advancedSearchResults"
+                                        class="button is-small is-light">Edit search</button>
+                            </p>
+                            <p
+                                    v-if="advancedSearchResults"
+                                    class="control">
+                                <button
+                                        @click="isDoSearch = !isDoSearch"
+                                        class="button is-small is-secondary">Search</button>
+                            </p>
+                            <p class="control">
                                 <button
                                         @click="openAdvancedSearch = false"
-                                        class="button is-white is-pulled-right">
+                                        class="button is-white">
                                     <b-icon
                                             size="is-small"
                                             icon="close"/>
                                 </button>
-                                <button 
-                                        class="button is-white is-pulled-right">
-                                    <span>
-                                        {{ props.open ? $i18n.get('hide_advanced_search') : $i18n.get('show_advanced_search') }}
-                                    </span>
-                                    <b-icon
-                                            :style="'margin-left'"
-                                            :icon="props.open ? 'menu-down' : 'menu-up'" />
-                                </button>
-                            </div>
+                            </p>
                         </div>
-                        <advanced-search
-                                :is-repository-level="isRepositoryLevel"
-                                :metadata="metadata" />
-                    </b-collapse>
+
+                    </div>
+
+                </div>
+                <advanced-search
+                        :is-repository-level="isRepositoryLevel"
+                        :advanced-search-results="advancedSearchResults"
+                        :open-form-advanced-search="openFormAdvancedSearch"
+                        :is-do-search="isDoSearch"
+                        :metadata="metadata"/>
             </div>
 
             <!-- --------------- -->
@@ -513,7 +522,9 @@
                 localTableMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
+                openFormAdvancedSearch: false,
                 advancedSearchResults: false,
+                isDoSearch: false,
             }
         },
         props: {
