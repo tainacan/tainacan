@@ -95,6 +95,22 @@ export const updateImporterURL = ( { commit }, { sessionId, url }) => {
     });
 };
 
+export const updateImporterOptions = ( { commit }, { sessionId, options }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.put('importers/session/' + sessionId, {
+            options: options
+        })
+            .then( res => {
+                let importer = res.data;
+                commit('setImporter', importer);
+                resolve( importer );
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};
+
 export const updateImporterFile = ( { commit }, { sessionId, file }) => {
     return new Promise(( resolve, reject ) => {
         

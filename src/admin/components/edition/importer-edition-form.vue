@@ -42,6 +42,13 @@
                 </div>
             </b-field>
 
+            <!-- Importer custom options -->
+            <form 
+                    id="importerOptionsForm"
+                    v-if="importer.options_form != undefined && importer.options_form != null && importer.options_form != ''">
+                <div v-html="importer.options_form"/>
+            </form>
+
             <!-- File Source input -->
             <b-field
                     v-if="importer.accepts.file"
@@ -280,6 +287,7 @@ export default {
             'updateImporter',
             'updateImporterFile',
             'updateImporterURL',
+            'updateImporterOptions',
             'fetchImporterSourceInfo',
             'updateImporterCollection',
             'runImporter'
@@ -370,29 +378,62 @@ export default {
                 .then(updatedImporter => {    
                     this.importer = updatedImporter;
 
-                    this.runImporter(this.sessionId)
-                    .then(backgroundProcess => {    
-                        this.hasRunImporter = true;
-                        this.backgroundProcess = backgroundProcess;
-                        this.$console.log(backgroundProcess);
-                    })
-                    .catch((errors) => {
-                        this.$console.log(errors);
-                    });
+                    if (this.importer.options_form != undefined && this.importer.options != null && this.importer.options_form != '') {
+                        
+                        let formElement = document.getElementById('importerOptionsForm');
+                        let formData = new FormData(formElement);
+                        let formObj = {};
+
+                        for (let [key, value] of formData.entries())
+                            formObj[key] = value;
+
+                        this.updateImporterOptions({ sessionId: this.sessionId, options: formObj })
+                        .then(updatedImporter => {    
+                            this.importer = updatedImporter;
+                            this.finishRunImporter();
+                         })
+                        .catch((errors) => {
+                            this.$console.log(errors);
+                        });
+                    
+                    } else
+                        this.finishRunImporter();
                 })
                 .catch((errors) => {
                     this.$console.log(errors);
                 });
             } else {
-                this.runImporter(this.sessionId)
-                .then(backgroundProcess => {
-                    this.hasRunImporter = true;    
-                    this.backgroundProcess = backgroundProcess;
-                })
-                .catch((errors) => {
-                    this.$console.log(errors);
-                });
+                if (this.importer.options_form != undefined && this.importer.options != null && this.importer.options_form != '') {
+                        
+                    let formElement = document.getElementById('importerOptionsForm');
+                    let formData = new FormData(formElement);
+                    let formObj = {};
+
+                    for (let [key, value] of formData.entries())
+                        formObj[key] = value;
+
+                    this.updateImporterOptions({ sessionId: this.sessionId, optionsForm: formObj })
+                    .then(updatedImporter => {    
+                        this.importer = updatedImporter;
+                        this.finishRunImporter();
+                        })
+                    .catch((errors) => {
+                        this.$console.log(errors);
+                    });
+                
+                } else
+                    this.finishRunImporter();
             }
+        },
+        finishRunImporter() {
+            this.runImporter(this.sessionId)
+                    .then(backgroundProcess => {
+                        this.hasRunImporter = true;    
+                        this.backgroundProcess = backgroundProcess;
+                    })
+                    .catch((errors) => {
+                        this.$console.log(errors);
+                    });
         },
         onCheckBackgroundProcessStatus() {
             this.fetchProcess(this.backgroundProcess.bg_process_id)
