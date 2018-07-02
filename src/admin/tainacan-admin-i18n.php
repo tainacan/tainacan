@@ -56,11 +56,10 @@ return apply_filters('tainacan-admin-i18n',[
 	'new_blank_collection'                     => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                    => __( 'Split', 'tainacan' ),
 	'unified'                                  => __( 'Unified', 'tainacan' ),
-	'add_another_search_criteria'             => __( 'Add another search criteria', 'tainacan' ),
+	'add_another_search_criteria'              => __( 'Add another search criteria', 'tainacan' ),
 	'clear_search'                             => __( 'Clear search', 'tainacan' ),
 	'run'		                               => __( 'Run', 'tainacan' ),
-	'show_advanced_search'					   => __( 'Show advanced search', 'tainacan'),
-	'hide_advanced_search'					   => __( 'Hide advanced search', 'tainacan'),
+	'edit_search'					           => __( 'Edit search', 'tainacan'),
 
 	// Wordpress Status
 	'publish'                                  => __( 'Publish', 'tainacan' ),

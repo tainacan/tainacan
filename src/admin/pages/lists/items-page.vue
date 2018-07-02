@@ -317,14 +317,14 @@
                                     class="control">
                                 <button
                                         @click="advancedSearchResults = !advancedSearchResults"
-                                        class="button is-small is-light">Edit search</button>
+                                        class="button is-small is-light">{{ $i18n.get('edit_search') }}</button>
                             </p>
                             <p
                                     v-if="advancedSearchResults"
                                     class="control">
                                 <button
                                         @click="isDoSearch = !isDoSearch"
-                                        class="button is-small is-secondary">Search</button>
+                                        class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
                             </p>
                             <p class="control">
                                 <button
