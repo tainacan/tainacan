@@ -192,6 +192,7 @@ abstract class Importer {
 			$return['manual_collection'] = $this->manual_collection;
 			$return['manual_mapping'] = $this->manual_mapping;
 			$return['accepts'] = $this->accepts;
+			$return['options_form'] = $this->options_form();
 		}
 
 		return $return;
@@ -678,6 +679,12 @@ abstract class Importer {
 	 * @return int
 	 */
 	public function get_source_number_of_items() {}
+
+
+	/**
+	 * Method implemented by child importer to return the HTML of the Options Form to be rendered in the Importer page
+	 */
+	public function options_form() {}
 	
 	
 	

@@ -71,4 +71,13 @@ class CSV extends Importer {
         return false;
         
     }
+
+    public function options_form() {
+
+        $form = '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
+        $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
+
+        return $form;
+
+    }
 }
