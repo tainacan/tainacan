@@ -159,11 +159,12 @@ class REST_Items_Controller extends REST_Controller {
 
 			$attributes_to_filter = $request['fetch_only'];
 
-			# Always returns id
+			# Always returns id and collection id
 			if(is_array($attributes_to_filter)) {
 				$attributes_to_filter[] = 'id';
+				$attributes_to_filter[] = 'collection_id';
 			} else {
-				$attributes_to_filter = array($attributes_to_filter, 'id');
+				$attributes_to_filter = array($attributes_to_filter, 'id', 'collection_id');
 			}
 
 			$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);

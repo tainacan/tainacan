@@ -85,7 +85,7 @@
                         <a 
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
-                                @click.prevent.stop="goToItemEditPage(item.id)">
+                                @click.prevent.stop="goToItemEditPage(item)">
                             <b-icon
                                     type="is-secondary" 
                                     icon="pencil"/>
@@ -145,7 +145,7 @@
                         <a 
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
-                                @click.prevent.stop="goToItemEditPage(item.id)">
+                                @click.prevent.stop="goToItemEditPage(item)">
                             <b-icon
                                     type="is-secondary" 
                                     icon="pencil"/>
@@ -248,7 +248,7 @@
                         <a 
                                 id="button-edit"   
                                 :aria-label="$i18n.getFrom('items','edit_item')" 
-                                @click.prevent.stop="goToItemEditPage(item.id)">
+                                @click.prevent.stop="goToItemEditPage(item)">
                             <b-icon
                                     type="is-secondary" 
                                     icon="pencil"/>
@@ -419,7 +419,7 @@
                                 <a 
                                         id="button-edit"   
                                         :aria-label="$i18n.getFrom('items','edit_item')" 
-                                        @click.prevent.stop="goToItemEditPage(item.id)">
+                                        @click.prevent.stop="goToItemEditPage(item)">
                                     <b-icon
                                             type="is-secondary" 
                                             icon="pencil"/>
@@ -570,10 +570,10 @@ export default {
             });
         },
         goToItemPage(item) {
-            this.$router.push(this.$routerHelper.getItemPath(this.collectionId, item.id));
+            this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
         },
-        goToItemEditPage(itemId) {
-            this.$router.push(this.$routerHelper.getItemEditPath(this.collectionId, itemId));
+        goToItemEditPage(item) {
+            this.$router.push(this.$routerHelper.getItemEditPath(item.collectionId, item.id));
         },
         renderMetadata(itemMetadata, column) {
 

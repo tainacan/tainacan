@@ -29,7 +29,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         
         query = qs.stringify(postQueries);
 
-        // Garanttees at least empty fetch_only are passed in case none is found
+        // Guarantees at least empty fetch_only are passed in case none is found
         if (qs.stringify(postQueries.fetch_only) == ''){
             dispatch('search/add_fetchonly', {}, { root: true });
         }
