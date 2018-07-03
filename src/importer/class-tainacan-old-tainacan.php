@@ -133,6 +133,7 @@ class Old_Tainacan extends Importer{
 		
 		foreach ($this->fetch_collections() as $collection) {
             $map = [];
+            $this->add_log(memory_get_usage());
 
             if ( isset($collection->post_title) && $collection->post_status === 'publish') {
 

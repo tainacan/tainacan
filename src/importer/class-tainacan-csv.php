@@ -13,7 +13,8 @@ class CSV extends Importer {
 		parent::__construct($attributes);
 		
 		$this->set_default_options([
-			'delimiter' => ','
+            'delimiter' => ',',
+            'multivalued_delimiter' => '||'
 		]);
 		
     }
@@ -76,6 +77,9 @@ class CSV extends Importer {
 
         $form = '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
         $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
+
+        $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
+        $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
 
         return $form;
 
