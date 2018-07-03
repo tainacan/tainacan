@@ -107,7 +107,7 @@ class Bulk_Edit  {
 	
 	/**
 	 * Internally used to filter WP_Query and build the INSERT statement. 
-	 * Must be public becaus is registered as a filter callback
+	 * Must be public because it is registered as a filter callback
 	 */
 	public function add_fields_to_query($fields, $wp_query) {
 		global $wpdb;
@@ -142,6 +142,11 @@ class Bulk_Edit  {
 
 	}
 
+	/**
+	 * Adds a value to a metadatum to all items in the current group
+	 * Must be used with a multiple metadatum
+	 * 
+	 */
 	public function add_value(Entities\Metadatum $metadatum, $value) {
 
 		if (!$this->get_id()) {
@@ -150,18 +155,18 @@ class Bulk_Edit  {
 
 		// Specific validation
 		if (!$metadatum->is_multiple()) {
-			return ['error' => __('Unable to add a value to a metadata if it does not accepts multiple values', 'tainacan')];
+			return ['error' => __('Unable to add a value to a metadata if it does not accept multiple values', 'tainacan')];
 		}
 		if ($metadatum->is_collection_key()) {
 			return ['error' => __('Unable to add a value to a metadata set to be a collection key', 'tainacan')];
 		}
 
-		$dummyItem = new Entities/Item();
+		$dummyItem = new Entities\Item();
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value([$value]);
 
 		if ($checkItemMetadata->validate()) {
-			$this->_add_value($metadatum, $value);
+			return $this->_add_value($metadatum, $value);
 		} else {
 			return ['error' => __('Invalid value', 'tainacan')];
 		}
@@ -169,6 +174,12 @@ class Bulk_Edit  {
 
 	}
 
+	/**
+	 * Sets a value to a metadatum to all items in the current group.
+	 * 
+	 * If metadatum is multiple, it will delete all values item may have for this metadatum and then add
+	 * this value
+	 */
 	public function set_value(Entities\Metadatum $metadatum, $value) {
 
 		if (!$this->get_id()) {
@@ -181,12 +192,12 @@ class Bulk_Edit  {
 			return ['error' => __('Unable to set a value to a metadata set to be a collection key', 'tainacan')];
 		}
 
-		$dummyItem = new Entities/Item();
+		$dummyItem = new Entities\Item();
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$value] : $value );
 
 		if ($checkItemMetadata->validate()) {
-			$this->_delete_values($metadatum);
+			$this->_remove_values($metadatum);
 			return $this->_add_value($metadatum, $value);
 		} else {
 			return ['error' => __('Invalid value', 'tainacan')];
@@ -195,6 +206,35 @@ class Bulk_Edit  {
 
 	}
 
+	/**
+	 * Removes one value from a metadatum of all items in current group
+	 * 
+	 * Must be used with multiple metadatum that are not set as required
+	 * 
+	 */
+	public function remove_value(Entities\Metadatum $metadatum, $value) {
+
+		if (!$this->get_id()) {
+			return false;
+		}
+
+		// Specific validation
+		
+		if ($metadatum->is_required()) {
+			return ['error' => __('Unable to remove a value from a required metadatum', 'tainacan')];
+		}
+		if (!$metadatum->is_multiple()) {
+			return ['error' => __('Unable to remove a value from a metadata if it does not accept multiple values', 'tainacan')];
+		}
+
+		return $this->_remove_value($metadatum, $value);
+
+
+	}
+
+	/**
+	 * Relplaces a value from one metadata with another value in all items in current group
+	 */
 	public function replace_value(Entities\Metadatum $metadatum, $old_value, $new_value) {
 
 		if (!$this->get_id()) {
@@ -207,12 +247,12 @@ class Bulk_Edit  {
 			return ['error' => __('Unable to set a value to a metadata set to be a collection key', 'tainacan')];
 		}
 
-		$dummyItem = new Entities/Item();
+		$dummyItem = new Entities\Item();
 		$checkItemMetadata = new Entities\Item_Metadata_Entity($dummyItem, $metadatum);
 		$checkItemMetadata->set_value( $metadatum->is_multiple() ? [$new_value] : $new_value );
 
 		if ($checkItemMetadata->validate()) {
-			$this->_delete_value($metadatum, $old_value);
+			$this->_remove_value($metadatum, $old_value);
 			return $this->_add_value($metadatum, $new_value);
 		} else {
 			return ['error' => __('Invalid value', 'tainacan')];
@@ -228,16 +268,16 @@ class Bulk_Edit  {
 	 * This method adds value to the database directly, any check or validation must be done beforehand
 	 */
 	private function _add_value(Entities\Metadatum $metadatum, $value) {
-
+		global $wpdb;
 		$type = $metadatum->get_metadata_type_object();
 
-		if ($type->primitive_type == 'term') {
+		if ($type->get_primitive_type() == 'term') {
 
 			$options = $metadatum->get_metadata_type_options();
 			$taxonomy_id = $options['taxonomy_id'];
 			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
 
-			if ($tax instanceof Entities\Taxonoy) {
+			if ($tax instanceof Entities\Taxonomy) {
 
 				$term = term_exists($value, $tax->get_db_identifier());
 
@@ -251,7 +291,7 @@ class Bulk_Edit  {
 
 				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term['term_taxonomy_id']) );
 
-				$query = "INSERT INTO $wpdb->term_relationship (object_id, term_taxonomy_id) $insert_q";
+				$query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q";
 
 				return $wpdb->query($query);
 
@@ -268,7 +308,22 @@ class Bulk_Edit  {
 
 			$query = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
 
-			return $wpdb->query($query);
+			$affected = $wpdb->query($query);
+
+			if ($type->get_core()) {
+				$field = $type->get_related_mapped_prop();
+				$map_field = [
+					'title' => 'post_title',
+					'description' => 'post_content'
+				];
+				$column = $map_field[$field];
+				$update_q = $this->_build_select( "post_id" );
+				$core_query = $wpdb->prepare( "UPDATE $wpdb->posts SET $column = %s WHERE ID IN ($update_q)", $value );
+
+				$wpdb->query($core_query);
+			}
+
+			return $affected;
 
 		}
 
@@ -281,22 +336,22 @@ class Bulk_Edit  {
 	 * 
 	 * This method removes value from the database directly, any check or validation must be done beforehand
 	 */
-	private function _delete_value(Entities\Metadatum $metadatum, $value) {
-
+	private function _remove_value(Entities\Metadatum $metadatum, $value) {
+		global $wpdb;
 		$type = $metadatum->get_metadata_type_object();
 
-		if ($type->primitive_type == 'term') {
+		if ($type->get_primitive_type() == 'term') {
 
 			$options = $metadatum->get_metadata_type_options();
 			$taxonomy_id = $options['taxonomy_id'];
 			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
 
-			if ($tax instanceof Entities\Taxonoy) {
+			if ($tax instanceof Entities\Taxonomy) {
 
 				$term = term_exists($value, $tax->get_db_identifier());
 
-				if (!is_array($term)) {
-					$term = wp_insert_term($value, $tax->get_db_identifier());
+				if (!$term) {
+					return 0;
 				}
 
 				if (is_wp_error($term) || !isset($term['term_taxonomy_id'])) {
@@ -305,7 +360,7 @@ class Bulk_Edit  {
 
 				$delete_q = $this->_build_select( "post_id" );
 
-				$query = $wpdb->prepare( "DELETE FROM $wpdb->term_relationship WHERE term_taxonomy_id = %d AND object_id IN ($delete_q)", $term['term_taxonomy_id'] );
+				$query = $wpdb->prepare( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d AND object_id IN ($delete_q)", $term['term_taxonomy_id'] );
 
 				return $wpdb->query($query);
 
@@ -319,7 +374,7 @@ class Bulk_Edit  {
 
 			$delete_q = $this->_build_select( "post_id" );
 
-			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s AND post_id IN ($delete_q)", $metadatum->get_id(), $value );
+			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s AND post_id IN ( SELECT implicitTemp.post_id FROM ($delete_q) implicitTemp )", $metadatum->get_id(), $value );
 
 			return $wpdb->query($query);
 
@@ -334,22 +389,22 @@ class Bulk_Edit  {
 	 * 
 	 * This method removes value from the database directly, any check or validation must be done beforehand
 	 */
-	private function _delete_values(Entities\Metadatum $metadatum) {
-
+	private function _remove_values(Entities\Metadatum $metadatum) {
+		global $wpdb;
 		$type = $metadatum->get_metadata_type_object();
 
-		if ($type->primitive_type == 'term') {
+		if ($type->get_primitive_type() == 'term') {
 
 			$options = $metadatum->get_metadata_type_options();
 			$taxonomy_id = $options['taxonomy_id'];
 			$tax = Repositories\Taxonomies::get_instance()->fetch($taxonomy_id);
 
-			if ($tax instanceof Entities\Taxonoy) {
+			if ($tax instanceof Entities\Taxonomy) {
 
 				$delete_q = $this->_build_select( "post_id" );
 				$delete_tax_q = $wpdb->prepare( "SELECT term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s" , $tax->get_db_identifier() );
 
-				$query = $wpdb->prepare( "DELETE FROM $wpdb->term_relationship WHERE term_taxonomy_id IN ($delete_tax_q) AND object_id IN ($delete_q)" );
+				$query = "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ($delete_tax_q) AND object_id IN ($delete_q)";
 
 				return $wpdb->query($query);
 
@@ -363,7 +418,8 @@ class Bulk_Edit  {
 
 			$delete_q = $this->_build_select( "post_id" );
 
-			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND post_id IN ($delete_q)", $metadatum->get_id() );
+			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND post_id IN ( SELECT implicitTemp.post_id FROM ($delete_q) implicitTemp )", $metadatum->get_id() );
+
 
 			return $wpdb->query($query);
 
