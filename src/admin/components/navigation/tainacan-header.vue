@@ -65,8 +65,6 @@ export default {
           });
         },
         updateSearch() {
-            console.log(this.$route);
-
             if(this.$route.path != '/items') {
                 this.$router.push({
                     path: '/items',
