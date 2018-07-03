@@ -20,7 +20,7 @@
                 <div class="control has-icons-right is-small is-clearfix">
                     <input 
                             autocomplete="on" 
-                            :placeholder="$i18n.get('instruction_search_on_repository')"
+                            :placeholder="$i18n.get('instruction_search_in_repository')"
                             class="input is-small" 
                             type="search" 
                             :value="searchQuery"
