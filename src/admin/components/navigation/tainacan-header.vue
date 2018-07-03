@@ -26,10 +26,10 @@
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
                             @keyup.enter="updateSearch()">
-                        <span
-                                @click="updateSearch()"
-                                class="icon is-right">
-                            <i class="mdi mdi-magnify" />
+                        <span class="icon is-right">
+                            <i
+                                    @click="updateSearch()"
+                                    class="mdi mdi-magnify" />
                         </span>
                 </div>
                 <a @click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>
@@ -65,6 +65,14 @@ export default {
           });
         },
         updateSearch() {
+            console.log(this.$route);
+
+            if(this.$route.path != '/items') {
+                this.$router.push({
+                    path: '/items',
+                });
+            }
+
             this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
         },  
     },
@@ -116,7 +124,7 @@ export default {
         }
         .level-right {
             padding-right: 12px;
-            a{ 
+            a {
                 color: white;
             }
             .search-area {
@@ -143,6 +151,7 @@ export default {
                         cursor: pointer;
                         height: 27px;
                         font-size: 18px;
+                        width: auto !important;
                     }
                 }
                
