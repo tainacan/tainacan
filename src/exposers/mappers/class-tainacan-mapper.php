@@ -32,6 +32,7 @@ abstract class Mapper {
 	public $prefix = ''; // Tag prefix like "dc:"
 	public $sufix = ''; // Tag sufix
 	public $header = false; // API response header or file header to be used with
+	public $show_ui = true; // Show mapper in ui and api calls
 	
 	public function _toArray() {
 		return [

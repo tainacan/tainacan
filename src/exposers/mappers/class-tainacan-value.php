@@ -13,5 +13,6 @@ class Value extends Mapper {
 	public $context_url = '';
 	public $header = '';
 	public $metadata = false;
+	public $show_ui = false;
 	
 }

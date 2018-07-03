@@ -71,7 +71,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 
 		$prepared = [];
 		foreach ($metadatum_mappers as $metadatum_mapper){
-			array_push($prepared, $this->prepare_item_for_response($metadatum_mapper, $request));
+		    if($metadatum_mapper->show_ui) array_push($prepared, $this->prepare_item_for_response($metadatum_mapper, $request));
 		}
 
 		return new \WP_REST_Response($prepared, 200);
