@@ -573,7 +573,7 @@ export default {
             this.$router.push(this.$routerHelper.getItemPath(item.collection_id, item.id));
         },
         goToItemEditPage(item) {
-            this.$router.push(this.$routerHelper.getItemEditPath(item.collectionId, item.id));
+            this.$router.push(this.$routerHelper.getItemEditPath(item.collection_id, item.id));
         },
         renderMetadata(itemMetadata, column) {
 
