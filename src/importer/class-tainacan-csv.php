@@ -14,7 +14,9 @@ class CSV extends Importer {
 		
 		$this->set_default_options([
             'delimiter' => ',',
-            'multivalued_delimiter' => '||'
+            'multivalued_delimiter' => '||',
+            'encode' => 'UTF-8',
+            'cell_encapsulate' => '"'
 		]);
 		
     }
@@ -51,11 +53,17 @@ class CSV extends Importer {
         if( count( $headers ) !== count( $values ) ){
            return false;
         }
+        
+        $cont = 0;
+        foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
+            $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
 
-        foreach ($headers as $index => $header) {
-            $processedItem[ $header ] = $values[ $index ];
+            $processedItem[ $header ] = ( $metadatum->get_multiple() ) ? 
+                explode( $this->get_option('multivalued_delimiter'), $values[ $cont ]) : $values[ $cont ];
+
+            $cont++;
         }
-		
+        
         return $processedItem;
     }
 
@@ -80,6 +88,12 @@ class CSV extends Importer {
 
         $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
         $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
+
+        $form .= '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
+        $form .= '<input type="text" class="input" name="encode" value="' . $this->get_option('encode') . '" />';
+
+        $form .= '<label class="label">' . __('Cell Encapsulate', 'tainacan') . '</label>';
+        $form .= '<input type="text" class="input" name="cell_encapsulate" value="' . $this->get_option('cell_encapsulate') . '" />';
 
         return $form;
 
