@@ -8,7 +8,6 @@
                 :loading="isLoading"
                 field="label"
                 attached
-                :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"/>
     </div>
 </template>
@@ -27,7 +26,7 @@
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
             if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
-                in_route = '/metadata?nopaging=1';
+                in_route = '/metadata/'+ this.metadatum + '?nopaging=1';
             }
 
             axios.get(in_route)
@@ -42,6 +41,33 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
+            
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+               
+                if (filterTag.filterId == this.filter.id) {
+
+                    let values = [];
+                    if( this.selected.length > 0 ){
+                        for(let val of this.selected){
+                            if (val.value != filterTag.singleValue)
+                                values.push( val.value );
+                        }
+                    }
+                    
+                    this.$emit('input', {
+                        filter: 'taginput',
+                        compare: 'IN',
+                        metadatum_id: this.metadatum,
+                        collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                        value: values
+                    });
+
+                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: this.filter.id,
+                        value: values
+                    });
+                }
+            });
         },
         data(){
             return {
@@ -72,7 +98,7 @@
                     filter: 'taginput',
                     compare: 'IN',
                     metadatum_id: this.metadatum,
-                    collection_id: this.collection,
+                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: values
                 });
             }
@@ -117,6 +143,12 @@
                                 for (let item of res.data) {
                                     instance.selected.push({ label: item.title, value: item.id, img: '' });
                                 }
+
+                                let onlyLabels = instance.selected.map((selected => selected.label))
+                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                                    filterId: instance.filter.id,
+                                    value: onlyLabels
+                                });
                             })
                             .catch(error => {
                                 this.$console.log(error);
@@ -124,6 +156,12 @@
                     } else {
                         for (let item of metadata.value) {
                             instance.selected.push({ label: item, value: item, img: '' });
+
+                            let onlyValues = instance.selected.map((selected => selected.label))
+                            this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                                filterId: instance.filter.id,
+                                value: onlyValues
+                            });
                         }
                     }
                 } else {

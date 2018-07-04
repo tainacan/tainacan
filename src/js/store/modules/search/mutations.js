@@ -62,8 +62,9 @@ export const addFetchOnly = ( state, metadatum ) => {
     state.postquery.fetch_only = ( ! state.postquery.fetch_only ) ? { '0': 'thumbnail', 'meta': [], '1': 'creation_date', '2': 'author_name' } : state.postquery.fetch_only;
 
     for (let key in metadatum) {
-        state.postquery.fetch_only[key] = metadatum[key];
+        Vue.set(state.postquery.fetch_only, `${key}`, metadatum[key]);
     }
+
 };
 export const addFetchOnlyMeta = ( state, metadatum ) => {
     state.postquery.fetch_only = ( ! state.postquery.fetch_only ) ? { '0': 'thumbnail', 'meta': [], '1': 'creation_date', '2': 'author_name' } : state.postquery.fetch_only;
@@ -97,14 +98,14 @@ export const removeFetchOnlyMeta = ( state, metadatum ) => {
 
 export const removeMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
-    let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
+    let index = state.postquery.metaquery.findIndex( item => item.key == filter.metadatum_id);
     if (index >= 0) {
         state.postquery.metaquery.splice(index, 1);
     }
 };
 
 export const removeTaxQuery = ( state, filter ) => {
-    let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
+    let index = state.postquery.taxquery.findIndex( item => item.taxonomy == filter.taxonomy);
     if (index >= 0) {
         state.postquery.taxquery.splice(index, 1);
     }
@@ -132,4 +133,36 @@ export const setViewMode = ( state, viewMode ) => {
 
 export const setAdminViewMode = ( state, adminViewMode ) => {
     state.postquery.admin_view_mode = adminViewMode;
+};
+
+export const addFilterTag = ( state, filterTag ) => {
+    state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;
+    let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
+    if ( index >= 0 )
+        Vue.set( state.filter_tags, index, filterTag );
+    else
+        state.filter_tags.push(filterTag);
+};
+
+export const removeFilterTag = ( state, filterTag ) => {
+    state.filter_tags = ( ! state.filter_tags ) ? [] : state.filter_tags;
+    let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
+    if (index >= 0) {
+        state.filter_tags.splice(index, 1);
+    }
+};
+
+export const removeSingleValueFromFilterTag = (state, filterTag) => {
+    state.filter_tags = (!state.filter_tags) ? [] : state.filter_tags;
+    let index = state.filter_tags.findIndex(tag => tag.filterId == filterTag.filterId);
+    if (index >= 0) {
+        let valueIndex = state.filter_tags[index].value.findIndex(valueTag => valueTag == filterTag.singleValue);
+        if (valueIndex >= 0) {
+            state.filter_tags[index].value.splice(valueIndex, 1);
+        } 
+    }
+};
+
+export const cleanFilterTags = ( state ) => {
+    state.filter_tags = [];
 };

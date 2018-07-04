@@ -33,6 +33,41 @@
                     let metadatum = res.data;
                     this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
                 });
+            
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+               
+                if (filterTag.filterId == this.filter.id) {
+
+                    // let selectedIndex = this.selected.findIndex(option => option.value == filterTag.singleValue);
+                    // if (selectedIndex >= 0) {
+
+                        let values = [];
+                        let labels = [];
+                        if( this.selected.length > 0 ){
+                            for(let val of this.selected){
+                                if (val.label != filterTag.singleValue) {
+                                    values.push( val.value );
+                                    labels.push( val.label );
+                                }
+                            }
+                        }
+                        this.$emit('input', {
+                            filter: 'taginput',
+                            compare: 'IN',
+                            taxonomy: this.taxonomy,
+                            metadatum_id: ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum,
+                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            terms: values
+                        });
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: labels
+                        });
+                        console.log(this.taxonomy)
+                        this.selectedValues();
+                   // }
+                }
+            });
         },
         data(){
             return {
@@ -75,6 +110,12 @@
                     metadatum_id: ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     terms: values
+                });
+
+                let onlyLabels = this.selected.map((selected => selected.label))
+                this.$eventBusSearch.$emit("sendValuesToTags", {
+                    filterId: this.filter.id,
+                    value: onlyLabels
                 });
             }
         },

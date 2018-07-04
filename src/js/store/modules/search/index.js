@@ -22,6 +22,7 @@ const state = {
         view_mode: 'table',
         admin_view_mode: 'table'
     },
+    filter_tags: [],
     totalItems: 0
 };
 

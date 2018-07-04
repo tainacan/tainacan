@@ -13,7 +13,7 @@ export const set_advanced_query = ({commit}, advancedSearchQuery) => {
 
 // Meta Queries from filters
 export const add_metaquery = ( { commit }, filter  ) => {
-    if( filter && filter.value.length === 0 ){
+    if (filter && (filter.value == undefined || filter.value == null || filter.value.length === 0 || filter.value == '')) {
         commit('removeMetaQuery', filter  );
     } else {
         commit('addMetaQuery', filter  );
@@ -22,7 +22,7 @@ export const add_metaquery = ( { commit }, filter  ) => {
 
 // Fetch Only for item attributes limiting on results
 export const add_fetchonly = ( { commit }, metadatum ) => {
-        commit('addFetchOnly', metadatum );
+    commit('addFetchOnly', metadatum );
 };
 export const remove_fetchonly = ( { commit }, metadatum ) => {
     commit('removeFetchOnly', metadatum );
@@ -38,7 +38,7 @@ export const remove_fetchonly_meta = ( { commit }, metadatum ) => {
 
 // Tax Queries from filters
 export const add_taxquery = ( { commit }, filter  ) => {
-    if( filter && filter.terms.length === 0 ){
+    if (filter && (filter.terms == undefined || filter.terms == null || filter.terms == '' || filter.terms.length == 0 )) {
         commit('removeTaxQuery', filter  );
     } else {
         commit('addTaxQuery', filter  );
@@ -111,4 +111,24 @@ export const setViewMode = ({ commit }, viewMode ) => {
 // Set AdminViewMode (admin_view_mode)
 export const setAdminViewMode = ({ commit }, adminViewMode ) => {
     commit('setAdminViewMode', adminViewMode );
+};
+
+// Remove filter tag
+export const addFilterTag = ( { commit }, filterTag  ) => {
+    commit('addFilterTag', filterTag  );
+};
+
+// Remove filter tag
+export const removeFilterTag = ( { commit }, filterTag  ) => {
+    commit('removeFilterTag', filterTag  );
+};
+
+// Remove a single value from a multi-value filter tag
+export const removeSingleValueFromFilterTag = ({ commit }, filterTagSingleValue) => {
+    commit('removeSingleValueFromFilterTag', filterTagSingleValue);
+};
+
+// Remove filter tag
+export const cleanFilterTags = ( { commit } ) => {
+    commit('cleanFilterTags');
 };

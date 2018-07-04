@@ -1,13 +1,12 @@
 <template>
     <div class="block">
         <b-select
-                :id = "id"
-                :loading = "isLoading"
-                v-model = "selected"
-                @input = "onSelect($event)"
+                :id="id"
+                :loading="isLoading"
+                :value="selected"
+                @input="onSelect($event)"
                 :placeholder="$i18n.get('label_selectbox_init')"
-                expanded
-                :class="{'is-empty': selected == undefined || selected == ''}">
+                expanded>
             <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
             <option
                     v-for="(option, index) in options"
@@ -46,6 +45,11 @@
                 .catch(error => {
                     this.$console.error(error);
                 });
+            
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+                if (filterTag.filterId == this.filter.id)
+                    this.onSelect();
+            });
         },
         props: {
             isRepositoryLevel: Boolean,
@@ -89,12 +93,20 @@
                 });
             },
             onSelect(value){
+                this.selected = value;
                 this.$emit('input', {
                     filter: 'selectbox',
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: ( value ) ? value : ''
                 });
+
+                if (value) {
+                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: this.filter.id,
+                        value: value
+                    });
+                }
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -104,6 +116,7 @@
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     this.selected = metadata.value;
+
                 } else {
                     return false;
                 }

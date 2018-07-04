@@ -97,6 +97,12 @@
                     :is-full-page="false"
                     :active.sync="isLoadingItems"/>
 
+            <!-- FILTERS TAG LIST-->
+            <filters-tags-list 
+                    class="filter-tags-list"
+                    :filters="filters"
+                    v-if="hasFiltered">Teste</filters-tags-list>
+
             <!-- SEARCH CONTROL ------------------------- -->
             <div
                     v-if="!openAdvancedSearch"
@@ -499,6 +505,7 @@
 
 <script>
     import ItemsList from '../../components/lists/items-list.vue';
+    import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
@@ -570,6 +577,7 @@
         },
         components: {
             ItemsList,
+            FiltersTagsList,
             FiltersItemsList,
             Pagination,
             AdvancedSearch,
@@ -752,7 +760,7 @@
                             id: undefined,
                             display: authorNameMetadatumDisplay
                         });
-
+                        
                         this.$eventBusSearch.addFetchOnly({
                             '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
                             'meta': fetchOnlyMetadatumIds,
@@ -823,7 +831,6 @@
                     this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
-                
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
                     this.$eventBusSearch.setInitialAdminViewMode('table');
                 else 
@@ -971,6 +978,10 @@
 
     .spaced-to-right {
         margin-left: $filter-menu-width;
+    }
+
+    .filter-tags-list {
+        padding: 1.5rem $page-side-padding 0px $page-side-padding;
     }
 
     .search-control {

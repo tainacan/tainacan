@@ -25,18 +25,6 @@
                 </div>
             </template>
         </b-autocomplete>
-        <!-- <ul 
-                class="selected-list-box"
-                v-if="selected !== '' && selected !== undefined">
-            <li>
-                <b-tag 
-                        attached
-                        closable
-                        @close="clearSearch()">
-                    {{ label }}
-                </b-tag>
-            </li>
-        </ul> -->
     </div>
 </template>
 
@@ -69,6 +57,12 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
+
+            
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+                if (filterTag.filterId == this.filter.id)
+                    this.cleanSearch();
+            })
         },
         data(){
             return {
@@ -79,6 +73,7 @@
                 type: '',
                 collection: '',
                 metadatum: '',
+                metadatum_object: {},
                 label: ''
             }
         },
@@ -101,25 +96,30 @@
                     collection_id: this.collection,
                     value: this.results
                 });
+                this.selectedValues();
             },
             search( query ){
-                let promise = null;
-                this.options = [];
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget );
-
+                if (query == '') {
+                    this.cleanSearch();
                 } else {
-                    promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
-                }
+                    let promise = null;
+                    this.options = [];
+                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                        let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                            this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
+                        promise = this.getValuesRelationship( collectionTarget );
 
-                promise.then( () => {
-                    this.isLoading = false;
-                }).catch( error => {
-                    this.$console.log('error select', error );
-                    this.isLoading = false;
-                });
+                    } else {
+                        promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
+                    }
+
+                    promise.then( () => {
+                        this.isLoading = false;
+                    }).catch( error => {
+                        this.$console.log('error select', error );
+                        this.isLoading = false;
+                    });
+                }
             },
             selectedValues(){
                 const instance = this;
@@ -136,26 +136,34 @@
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let query = qs.stringify({ postin: metadata.value  });
 
-                        axios.get('/collection/' + collectionTarget + '/items?' + query)
+                        axios.get('/items/' + metadata.value)
                             .then( res => {
-                                for (let item of res.data) {
-                                   // instance.selected.push({ label: item.title, value: item.id, img: '' });
-                                    this.$console.log(item.title);
-                                    instance.results = item.title;
-                                    instance.label = item.title;
-                                }
+      
+                                let item = res.data;
+                                instance.results = item.title;
+                                instance.label = item.title;
+         
+                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                                    filterId: instance.filter.id,
+                                    value: instance.label
+                                });
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
                         instance.results = metadata.value;
+
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: instance.filter.id,
+                            value: metadata.value
+                        });
                     }
                 } else {
                     return false;
                 }
             },
-            clearSearch(){
+            cleanSearch(){
                 this.results = '';
                 this.label = '';
                 this.selected = '';

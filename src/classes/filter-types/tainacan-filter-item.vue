@@ -207,17 +207,11 @@
         }
 
         .input, .textarea, .taginput-container {
-
             font-size: 14px;
             border-radius: 1px !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
             height: 2.25em !important;
-
-            &:focus, &:active {
-                box-shadow: none !important;
-                border: none !important;
-            }
         }
 
         .taginput-container {
