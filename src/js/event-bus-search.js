@@ -46,7 +46,7 @@ export default {
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
 
-                    // Fills the URL with apropriate default values in case a query is not passed
+                    // Fills the URL with appropriate default values in case a query is not passed
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
 
                         // Items Per Page

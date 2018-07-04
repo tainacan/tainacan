@@ -307,36 +307,37 @@
             <!-- ADVANCED SEARCH -->
             <div
                     v-if="openAdvancedSearch">
+
                 <div class="columns tnc-advanced-search-close">
-
                     <div class="column">
-                        <div
-                                class="field is-grouped is-pulled-right">
-                            <p
-                                    v-if="advancedSearchResults"
-                                    class="control">
-                                <button
-                                        @click="advancedSearchResults = !advancedSearchResults"
-                                        class="button is-small is-light">{{ $i18n.get('edit_search') }}</button>
-                            </p>
-                            <p
-                                    v-if="advancedSearchResults"
-                                    class="control">
-                                <button
-                                        @click="isDoSearch = !isDoSearch"
-                                        class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
-                            </p>
-                            <p class="control">
-                                <button
-                                        @click="openAdvancedSearch = false"
-                                        class="button is-white">
-                                    <b-icon
-                                            size="is-small"
-                                            icon="close"/>
-                                </button>
-                            </p>
-                        </div>
+                        <div class="advanced-search-criteria-title">
+                            <h1>{{ $i18n.get('info_search_criteria') }}</h1>
 
+                            <div
+                                    :style="{'margin-bottom': 'auto'}"
+                                    class="field is-grouped is-pulled-right">
+                                <p
+                                        v-if="advancedSearchResults"
+                                        class="control">
+                                    <button
+                                            @click="advancedSearchResults = !advancedSearchResults"
+                                            class="button is-small is-light">{{ $i18n.get('edit_search') }}</button>
+                                </p>
+                                <p
+                                        v-if="advancedSearchResults"
+                                        class="control">
+                                    <button
+                                            @click="isDoSearch = !isDoSearch"
+                                            class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
+                                </p>
+                                <p class="control">
+                                    <a @click="openAdvancedSearch = false">
+                                        {{ $i18n.get('exit') }}
+                                    </a>
+                                </p>
+                            </div>
+                            <hr>
+                        </div>
                     </div>
 
                 </div>
@@ -844,6 +845,23 @@
 
     @import '../../scss/_variables.scss';
 
+    .advanced-search-criteria-title {
+        padding: 0;
+
+        h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $tertiary;
+            display: inline-block;
+        }
+
+        hr {
+            margin: 3px 0px 4px 0px;
+            height: 1px;
+            background-color: $secondary;
+        }
+    }
+
     .advanced-search-results-title {
         padding: 0 $table-side-padding;
 
@@ -854,7 +872,7 @@
             display: inline-block;
         }
 
-        hr{
+        hr {
             margin: 3px 0px 4px 0px;
             height: 1px;
             background-color: $secondary;

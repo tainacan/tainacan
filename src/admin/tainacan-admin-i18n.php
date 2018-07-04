@@ -56,10 +56,11 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'new_blank_collection'                       => __( 'New Blank Collection', 'tainacan' ),
 	'split'                                      => __( 'Split', 'tainacan' ),
 	'unified'                                    => __( 'Unified', 'tainacan' ),
-	'add_another_search_criteria'                => __( 'Add another search criteria', 'tainacan' ),
+	'add_another_search_criterion'               => __( 'Add another search criterion', 'tainacan' ),
 	'clear_search'                               => __( 'Clear search', 'tainacan' ),
 	'run'                                        => __( 'Run', 'tainacan' ),
 	'edit_search'                                => __( 'Edit search', 'tainacan' ),
+	'exit'                                       => __( 'Exit', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                    => __( 'Publish', 'tainacan' ),
@@ -248,6 +249,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_a_status'                => __( 'Select a status:', 'tainacan' ),
 	'instruction_select_a_filter_type'           => __( 'Select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'           => __( 'Select a parent term:', 'tainacan' ),
+	'instruction_select_a_metadatum'             => __( 'Select a metadatum', 'tainacan' ),
 	'instruction_cover_page'                     => __( 'Type to search a Page to choose.', 'tainacan' ),
 	'instruction_moderators'                     => __( 'Type to search a User to add.', 'tainacan' ),
 	'instruction_select_a_parent_collection'     => __( 'Select a parent collection.', 'tainacan' ),
@@ -269,6 +271,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 
 	// Info. Other feedback to user.
 	'info_search_results'                        => __( 'Search Results', 'tainacan' ),
+	'info_search_criteria'                       => __( 'Search Criteria', 'tainacan' ),
 	'info_name_is_required'                      => __( 'Name is required.', 'tainacan' ),
 	'info_no_collection_created'                 => __( 'No collection was created in this repository.', 'tainacan' ),
 	'info_no_collection_draft'                   => __( 'No draft collection found.', 'tainacan' ),

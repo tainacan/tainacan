@@ -14,8 +14,8 @@ export const setPostQuery = ( state, postquery ) => {
 
 export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
     state.postquery.advancedSearch = advancedSearchQuery.advancedSearch;
-    state.postquery.metaquery = advancedSearchQuery.metaquery;
-    state.postquery.taxquery = advancedSearchQuery.taxquery;
+    state.postquery.metaquery = Object.assign({}, advancedSearchQuery.metaquery);
+    state.postquery.taxquery = Object.assign({}, advancedSearchQuery.taxquery);
 };
 
 export const addMetaQuery = ( state, filter ) => {

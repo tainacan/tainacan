@@ -38,7 +38,7 @@ export const remove_fetchonly_meta = ( { commit }, metadatum ) => {
 
 // Tax Queries from filters
 export const add_taxquery = ( { commit }, filter  ) => {
-    if( filter && filter.terms.length === 0 ){
+    if( filter && (!filter.terms || filter.terms.length === 0) ){
         commit('removeTaxQuery', filter  );
     } else {
         commit('addTaxQuery', filter  );

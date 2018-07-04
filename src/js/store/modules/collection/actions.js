@@ -8,8 +8,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
         
         // Adds queries for filtering
         let postQueries = rootGetters['search/getPostQuery'];
-        let query = '';
-        
+
         // Sets a flag to inform components that an empty sate is or not due to filtering
         let hasFiltered = false;
         let advancedSearchResults = false;
@@ -27,7 +26,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             }
         }
         
-        query = qs.stringify(postQueries);
+        let query = qs.stringify(postQueries);
 
         // Guarantees at least empty fetch_only are passed in case none is found
         if (qs.stringify(postQueries.fetch_only) == ''){
