@@ -53,13 +53,8 @@ export default {
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
-<<<<<<< HEAD
 
                     // Fills the URL with appropriate default values in case a query is not passed
-=======
-                    
-                    // Fills the URL with apropriate default values in case a query is not passed
->>>>>>> Fixes infinite loop after transiting to advanced search page. Implements Filter Tags (on tests), except for tag inputs, which still present issues on removing values.
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
                         
                         // Items Per Page
