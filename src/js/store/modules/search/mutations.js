@@ -19,7 +19,7 @@ export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
 };
 
 export const addMetaQuery = ( state, filter ) => {
-    state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
+    state.postquery.metaquery = ( ! state.postquery.metaquery  || state.postquery.metaquery.length == undefined ) ? [] : state.postquery.metaquery;
 
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
 
@@ -41,7 +41,7 @@ export const addMetaQuery = ( state, filter ) => {
 };
 
 export const addTaxQuery = ( state, filter ) => {
-    state.postquery.taxquery = ( ! state.postquery.taxquery ) ? [] : state.postquery.taxquery;
+    state.postquery.taxquery = ( ! state.postquery.taxquery || state.postquery.taxquery.length == undefined ) ? [] : state.postquery.taxquery;
     let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
     if ( index >= 0 ){
         Vue.set( state.postquery.taxquery, index, {
