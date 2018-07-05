@@ -152,17 +152,6 @@ export const removeFilterTag = ( state, filterTag ) => {
     }
 };
 
-export const removeSingleValueFromFilterTag = (state, filterTag) => {
-    state.filter_tags = (!state.filter_tags) ? [] : state.filter_tags;
-    let index = state.filter_tags.findIndex(tag => tag.filterId == filterTag.filterId);
-    if (index >= 0) {
-        let valueIndex = state.filter_tags[index].value.findIndex(valueTag => valueTag == filterTag.singleValue);
-        if (valueIndex >= 0) {
-            state.filter_tags[index].value.splice(valueIndex, 1);
-        } 
-    }
-};
-
 export const cleanFilterTags = ( state ) => {
     state.filter_tags = [];
 };

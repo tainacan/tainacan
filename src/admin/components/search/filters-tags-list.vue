@@ -1,31 +1,14 @@
 <template>
-    <div>
-        <div
-                class="is-inline-block"
+    <div class="is-inline-flex">
+        <b-tag            
                 v-if="filterTags != undefined && filterTags.length > 0"
                 v-for="(filterTag, index) of filterTags"
-                :key="index">
-            <b-tag
-                    v-if="!Array.isArray(filterTag.value)"
-                    attached
-                    closable
-                    @close="removeMetaQuery(filterTag.filterId, filterTag.value)">
-                {{ filterTag.value }}
-            </b-tag>
-            <div 
-                    class="is-flex"
-                    style="align-items: flex-start"
-                    v-if="Array.isArray(filterTag.value)">
-                <b-tag
-                        v-for="(value, otherIndex) of filterTag.value"
-                        :key="otherIndex"
-                        attached
-                        closable
-                        @close="removeMetaQuery(filterTag.filterId, filterTag.value, value)">
-                    {{ value }}
-                </b-tag>
-            </div>
-        </div>
+                :key="index"       
+                attached
+                closable
+                @close="removeMetaQuery(filterTag.filterId, filterTag.value, filterTag.singleValue)">
+            {{ filterTag.singleValue != undefined ? filterTag.singleValue : filterTag.value }}
+        </b-tag>
     </div>
 </template>
 <script>
@@ -38,8 +21,17 @@
         },
         computed: {
             filterTags() {
-                this.$console.log(this.getFilterTags());
-                return this.getFilterTags();
+                let tags = this.getFilterTags();
+                let flattenTags = [];
+                for (let tag of tags) {
+                    if (Array.isArray(tag.value)) {
+                        for (let valueTag of tag.value) 
+                            flattenTags.push({filterId: tag.filterId, value: tag, singleValue: valueTag}); 
+                    } else {
+                        flattenTags.push(tag);
+                    }
+                }
+                return flattenTags;
             }
         },
         methods: {
@@ -55,28 +47,25 @@
                     this.$eventBusSearch.removeMetaFromFilterTag({ filterId: filterId, singleValue: singleValue });
                 else
                     this.$eventBusSearch.removeMetaFromFilterTag({ filterId: filterId, value: value });
-            },
-            getFilterValue(query, value) {
-                let filterIndex = this.filters.findIndex(filter => filter.metadatum.metadatum_id == query.key);
-                if (filterIndex >= 0) {
-
-                    this.fetchMetadatum({ collectionId: this.filters[filterIndex].collection_id, metadatumId: query.key })
-                    .then((metadatum) => {
-                        if (metadatum.metadatum_type == 'Tainacan\\Metadata_Types\\Relationship') {
-                            // Fetch CollectionItem where, collection if == metadataum.metadatum_type_options.collection_id,
-                            // item_id == value
-                        }
-                    })
-                    .catch((error) => {
-                        this.$console.log(error);
-                    });
-                    
-                }
-                return value;
             }
-        },
-        created() {
-            
         }
     }
 </script>
+
+<style lang="scss" scoped>
+
+    @import "../../scss/_variables.scss";
+
+    .filter-tags-list {
+        width: 100%;
+        padding: 1.5rem $page-side-padding 0px $page-side-padding;
+        font-size: 0.75rem;
+        margin-bottom: -0.375rem;
+
+        &.is-inline-flex {
+            flex-wrap: wrap;
+            justify-content: flex-start;   
+        }     
+    }
+
+</style>

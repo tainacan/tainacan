@@ -29,10 +29,6 @@ export default {
                     this.$store.dispatch('search/addFilterTag', data);
                 });
 
-                this.$on('removeSingleValueFromTag', data => {
-                    this.$store.dispatch('search/removeSingleValueFromFilterTag', data);
-                });
-
                 this.$root.$on('closeAdvancedSearch', () => {
                     this.$store.dispatch('search/setPage', 1);
                     

@@ -31,7 +31,7 @@
 <script>
     import { tainacan as axios } from '../../../js/axios/axios'
     import { filter_type_mixin } from '../filter-types-mixin'
-    import qs from 'qs';
+    // import qs from 'qs';
 
     export default {
         created(){
@@ -129,12 +129,12 @@
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
+                    // let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                        // this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
 
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        let query = qs.stringify({ postin: metadata.value  });
+                        // let query = qs.stringify({ postin: metadata.value  });
 
                         axios.get('/items/' + metadata.value)
                             .then( res => {

@@ -980,10 +980,6 @@
         margin-left: $filter-menu-width;
     }
 
-    .filter-tags-list {
-        padding: 1.5rem $page-side-padding 0px $page-side-padding;
-    }
-
     .search-control {
         min-height: $subheader-height;
         height: auto;

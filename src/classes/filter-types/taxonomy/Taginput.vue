@@ -63,7 +63,6 @@
                             filterId: this.filter.id,
                             value: labels
                         });
-                        console.log(this.taxonomy)
                         this.selectedValues();
                    // }
                 }

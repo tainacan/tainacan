@@ -123,11 +123,6 @@ export const removeFilterTag = ( { commit }, filterTag  ) => {
     commit('removeFilterTag', filterTag  );
 };
 
-// Remove a single value from a multi-value filter tag
-export const removeSingleValueFromFilterTag = ({ commit }, filterTagSingleValue) => {
-    commit('removeSingleValueFromFilterTag', filterTagSingleValue);
-};
-
 // Remove filter tag
 export const cleanFilterTags = ( { commit } ) => {
     commit('cleanFilterTags');
