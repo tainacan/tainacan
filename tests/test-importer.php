@@ -263,7 +263,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $data = array(
             array('Data 11', 'Data 12', 'Data 13||TESTE', 'Data 14', 'Data 15'),
             array('Data 21', 'Data 22', 'Data 23', 'Data 24', 'Data 25'),
-            array('Data 31', 'Data 32', 'Data 33||ROUPA', 'Data 34', 'Data 35'),
+            array('Data 31', 'Data 32', utf8_decode( 'Data 33||Rééço' ), 'Data 34', 'Data 35'),
             array('Data 41', 'Data 42', 'Data 43||limbbo', 'Data 44', 'Data 45'),
             array('Data 51', 'Data 52', 'Data 53', 'Data 54', 'Data 55')
         );
@@ -344,6 +344,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         // add the collection
         $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
+        $_SESSION['tainacan_importer'][$id]->set_option('encode','iso88591');
+        //$_SESSION['tainacan_importer'][$id]->set_option('encode','utf8');
 
         //execute the process
 		$this->assertEquals(1, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 1 item');
