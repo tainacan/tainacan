@@ -1,7 +1,8 @@
 <template>
-    <div class="is-inline-flex">
+    <div 
+            class="is-inline-flex"
+            v-if="filterTags != undefined && filterTags.length > 0">
         <b-tag            
-                v-if="filterTags != undefined && filterTags.length > 0"
                 v-for="(filterTag, index) of filterTags"
                 :key="index"       
                 attached

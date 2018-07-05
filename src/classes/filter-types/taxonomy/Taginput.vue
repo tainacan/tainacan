@@ -38,19 +38,18 @@
                
                 if (filterTag.filterId == this.filter.id) {
 
-                    // let selectedIndex = this.selected.findIndex(option => option.value == filterTag.singleValue);
-                    // if (selectedIndex >= 0) {
+                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
+                    if (selectedIndex >= 0) {
+
+                        this.selected.splice(selectedIndex, 1);
 
                         let values = [];
                         let labels = [];
-                        if( this.selected.length > 0 ){
-                            for(let val of this.selected){
-                                if (val.label != filterTag.singleValue) {
-                                    values.push( val.value );
-                                    labels.push( val.label );
-                                }
-                            }
+                        for(let val of this.selected){
+                            values.push( val.value );
+                            labels.push( val.label );
                         }
+                        
                         this.$emit('input', {
                             filter: 'taginput',
                             compare: 'IN',
@@ -63,8 +62,8 @@
                             filterId: this.filter.id,
                             value: labels
                         });
-                        this.selectedValues();
-                   // }
+
+                   }
                 }
             });
         },
@@ -96,10 +95,13 @@
         watch: {
             selected( value ){
                 this.selected = value;
+
                 let values = [];
+                let labels = [];
                 if( this.selected.length > 0 ){
                     for(let val of this.selected){
                         values.push( val.value );
+                        labels.push( val.label );
                     }
                 }
                 this.$emit('input', {
@@ -111,10 +113,9 @@
                     terms: values
                 });
 
-                let onlyLabels = this.selected.map((selected => selected.label))
                 this.$eventBusSearch.$emit("sendValuesToTags", {
                     filterId: this.filter.id,
-                    value: onlyLabels
+                    value: labels
                 });
             }
         },

@@ -48,10 +48,10 @@
                
                 if (filterTag.filterId == this.filter.id) {
 
-                    let filterIndex = this.selected.findIndex(filter => filter.label == filterTag.singleValue);
-                    if (filterIndex >= 0) {
+                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
+                    if (selectedIndex >= 0) {
 
-                        this.selected.splice(filterIndex, 1);
+                        this.selected.splice(selectedIndex, 1);
 
                         let values = [];
                         let labels = [];  
