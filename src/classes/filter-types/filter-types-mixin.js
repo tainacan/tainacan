@@ -52,7 +52,7 @@ export const filter_type_mixin = {
                 url += "search=" + search;
             }
 
-            return axios.get( url + '&nopaging=1')
+            return axios.get(url + '&nopaging=1&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id')
                 .then(res => {
                     if (res.data.length > 0) {
                         for (let item of res.data) {

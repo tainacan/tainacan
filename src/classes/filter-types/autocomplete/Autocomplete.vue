@@ -109,7 +109,7 @@
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                             this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                        promise = this.getValuesRelationship( collectionTarget );
+                        promise = this.getValuesRelationship( collectionTarget, query );
 
                     } else {
                         promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
