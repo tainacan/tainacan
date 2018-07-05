@@ -346,6 +346,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_updated_at'                            => __( 'Updated at', 'tainacan' ),
 	'info_editing_metadata_values'               => __( 'Editing metadata values...', 'tainacan' ),
 	'info_updating_metadata_values'              => __( 'Updating metadata values...', 'tainacan' ),
+	'info_type_to_search'			             => __( 'Type to search...', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                              => __( 'Text', 'tainacan' ),

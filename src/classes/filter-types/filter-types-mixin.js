@@ -1,6 +1,11 @@
 import { tainacan as axios } from '../../js/axios/axios';
 
 export const filter_type_mixin = {
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+        }
+    },
     props: {
         filter: {
             type: Object // concentrate all attributes metadatum id and type
@@ -51,7 +56,7 @@ export const filter_type_mixin = {
                 .then(res => {
                     if (res.data.length > 0) {
                         for (let item of res.data) {
-                            this.options.push({label: item.title, value: item.id, img: item.thumbnail.thumb });
+                            this.options.push({label: item.title, value: item.id, img: ( item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath ) });
                         }
                     }
                 })

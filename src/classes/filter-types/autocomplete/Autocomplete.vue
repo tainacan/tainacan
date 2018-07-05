@@ -6,17 +6,19 @@
                 :id="id"
                 v-model="selected"
                 :data="options"
+                expanded
                 @input="search"
                 :loading="isLoading"
                 field="label"
-                @select="option => setResults(option) ">
+                @select="option => setResults(option) "
+                :placeholder="$i18n.get('info_type_to_search')">
             <template slot-scope="props">
                 <div class="media">
                     <div
                             class="media-left"
                             v-if="props.option.img">
                         <img
-                                width="32"
+                                width="24"
                                 :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
