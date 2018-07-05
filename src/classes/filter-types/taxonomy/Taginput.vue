@@ -2,14 +2,16 @@
     <div class="block">
         <b-taginput
                 size="is-small"
+                icon="magnify"
                 v-model="selected"
                 :data="options"
-                :loading="isLoading"
                 autocomplete
+                expanded
                 field="label"
                 attached
                 :class="{'has-selected': selected != undefined && selected != []}"
-                @typing="search" />
+                @typing="search"
+                :placeholder="$i18n.get('info_type_to_search')" />
     </div>
 </template>
 
@@ -160,7 +162,7 @@
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 
-                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy === this.taxonomy );
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == 'tnc_tax_' + taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     for ( let id of metadata.terms ){
@@ -171,8 +173,9 @@
                 }
             },
             getTerm( taxonomy, id ){
-              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' ).then( res => {
-                  this.$console.log(res);
+              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' )
+              .then( res => {
+                  this.selected.push({ label: res.data.name, value: res.data.id })
               })
               .catch(error => {
                   this.$console.log(error);

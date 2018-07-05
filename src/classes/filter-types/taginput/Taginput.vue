@@ -81,7 +81,6 @@
                 results:'',
                 selected:[],
                 options: [],
-                isLoading: false,
                 type: '',
                 collection: '',
                 metadatum: '',
@@ -130,12 +129,10 @@
                 } else {
                     promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
                 }
-                this.isLoading = true;
-                promise.then(() => {
-                    this.isLoading = false;
-                }).catch( error => {
+
+                promise
+                .catch( error => {
                     this.$console.log('error select', error );
-                    this.isLoading = false;
                 });
             },
             selectedValues(){
@@ -143,7 +140,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?

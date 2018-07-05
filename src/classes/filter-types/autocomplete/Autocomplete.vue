@@ -9,7 +9,6 @@
                 expanded
                 :clear-on-select="true"
                 @input="search"
-                :loading="isLoading"
                 field="label"
                 @select="option => setResults(option) "
                 :placeholder="$i18n.get('info_type_to_search')">
@@ -72,7 +71,6 @@
                 results:'',
                 selected:'',
                 options: [],
-                isLoading: false,
                 type: '',
                 collection: '',
                 metadatum: '',
@@ -102,27 +100,22 @@
                 this.selectedValues();
             },
             search( query ){
-                if (query == '') {
-                    this.cleanSearch();
+                
+                let promise = null;
+                this.options = [];
+                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
+                    promise = this.getValuesRelationship( collectionTarget, query );
+
                 } else {
-                    let promise = null;
-                    this.options = [];
-                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                            this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                        promise = this.getValuesRelationship( collectionTarget, query );
-
-                    } else {
-                        promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
-                    }
-
-                    promise.then( () => {
-                        this.isLoading = false;
-                    }).catch( error => {
-                        this.$console.log('error select', error );
-                        this.isLoading = false;
-                    });
+                    promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
                 }
+
+                promise.catch( error => {
+                    this.$console.log('error select', error );
+                });
+                
             },
             selectedValues(){
                 const instance = this;
@@ -138,7 +131,7 @@
 
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         // let query = qs.stringify({ postin: metadata.value  });
-
+                        
                         axios.get('/items/' + metadata.value)
                             .then( res => {
       
