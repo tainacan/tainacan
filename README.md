@@ -1,4 +1,4 @@
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/tainacan/tainacan.svg?columns=In%20Progress)](https://waffle.io/tainacan/tainacan) 
+[![Build Status](https://travis-ci.org/tainacan/tainacan.svg?branch=develop)](https://travis-ci.org/tainacan/tainacan) [![Waffle.io - Columns and their card count](https://badge.waffle.io/tainacan/tainacan.svg?columns=In%20Progress)](https://waffle.io/tainacan/tainacan) 
 
 # Tainacan
 
