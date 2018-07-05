@@ -7,6 +7,7 @@
                 :data="options"
                 autocomplete
                 expanded
+                :remove-on-keys="[]"
                 field="label"
                 attached
                 :class="{'has-selected': selected != undefined && selected != []}"
@@ -125,7 +126,8 @@
             search( query ){
                 let promise = null;
                 this.options = [];
-                const q = query;
+                const q = query; 
+
                 const endpoint = this.isRepositoryLevel ? '/metadata/' + this.metadatum : '/collection/'+ this.collection +'/metadata/' + this.metadatum;
 
                 axios.get(endpoint)
@@ -146,12 +148,26 @@
                     });
             },
             getValuesTaxonomy( taxonomy, query ){
+                let valuesToIgnore = [];
+                for(let val of this.selected)
+                    valuesToIgnore.push( val.value );
+                
                 return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
-                    for (let term of res.data) {
-                        if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
-                            this.taxonomy = term.taxonomy;
-                            this.options.push({label: term.name, value: term.id});
-                        }
+                    for (let term of res.data) {     
+                        if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
+                            let indexToIgnore = valuesToIgnore.findIndex(value => value == term.id);
+                            if (indexToIgnore < 0) {
+                                if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                                    this.taxonomy = term.taxonomy;
+                                    this.options.push({label: term.name, value: term.id});
+                                }
+                            }
+                        } else {
+                            if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                                this.taxonomy = term.taxonomy;
+                                this.options.push({label: term.name, value: term.id});
+                            }
+                        }                                       
                     }
                 })
                 .catch(error => {
