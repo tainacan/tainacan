@@ -7,6 +7,7 @@
                 v-model="selected"
                 :data="options"
                 expanded
+                :clear-on-select="true"
                 @input="search"
                 :loading="isLoading"
                 field="label"

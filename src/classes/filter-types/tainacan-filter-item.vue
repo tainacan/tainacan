@@ -216,6 +216,19 @@
 
         .taginput-container {
             display: table-cell;
+            border: none !important;
+            &.is-focusable:active, &.is-focusable:focus  {
+                border: none !important;
+            }    
+            input, input:active, input:focus {
+                border: 1px solid $tainacan-input-background !important;
+            }
+            .control.has-icons-left .icon {
+                top: 5px;
+            }
+            .tags {
+                display: none !important;
+            }
         }
 
         .input {

@@ -1,14 +1,16 @@
 <template>
     <div class="block">
         <b-taginput
+                icon="magnify"
                 size="is-small"
                 v-model="selected"
                 :data="options"
                 autocomplete
-                :loading="isLoading"
+                expanded
                 field="label"
                 attached
-                @typing="search"/>
+                @typing="search"
+                :placeholder="$i18n.get('info_type_to_search')"/>
     </div>
 </template>
 
@@ -46,26 +48,31 @@
                
                 if (filterTag.filterId == this.filter.id) {
 
-                    let values = [];
-                    if( this.selected.length > 0 ){
-                        for(let val of this.selected){
-                            if (val.value != filterTag.singleValue)
-                                values.push( val.value );
-                        }
-                    }
-                    
-                    this.$emit('input', {
-                        filter: 'taginput',
-                        compare: 'IN',
-                        metadatum_id: this.metadatum,
-                        collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
-                        value: values
-                    });
+                    let filterIndex = this.selected.findIndex(filter => filter.label == filterTag.singleValue);
+                    if (filterIndex >= 0) {
 
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: values
-                    });
+                        this.selected.splice(filterIndex, 1);
+
+                        let values = [];
+                        let labels = [];  
+                        for(let val of this.selected){
+                            values.push( val.value );
+                            labels.push( val.label );
+                        }
+                        
+                        this.$emit('input', {
+                            filter: 'taginput',
+                            compare: 'IN',
+                            metadatum_id: this.metadatum,
+                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            value: values
+                        });
+
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: labels
+                        });
+                    }
                 }
             });
         },
@@ -88,10 +95,13 @@
         watch: {
             selected( value ){
                 this.selected = value;
+
                 let values = [];
+                let labels = [];
                 if( this.selected.length > 0 ){
                     for(let val of this.selected){
                         values.push( val.value );
+                        labels.push( val.label );
                     }
                 }
                 this.$emit('input', {
@@ -100,6 +110,11 @@
                     metadatum_id: this.metadatum,
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: values
+                });
+
+                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                    filterId: this.filter.id,
+                    value: labels
                 });
             }
         },
@@ -143,12 +158,6 @@
                                 for (let item of res.data) {
                                     instance.selected.push({ label: item.title, value: item.id, img: '' });
                                 }
-
-                                let onlyLabels = instance.selected.map((selected => selected.label))
-                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                    filterId: instance.filter.id,
-                                    value: onlyLabels
-                                });
                             })
                             .catch(error => {
                                 this.$console.log(error);
@@ -156,12 +165,6 @@
                     } else {
                         for (let item of metadata.value) {
                             instance.selected.push({ label: item, value: item, img: '' });
-
-                            let onlyValues = instance.selected.map((selected => selected.label))
-                            this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                                filterId: instance.filter.id,
-                                value: onlyValues
-                            });
                         }
                     }
                 } else {
