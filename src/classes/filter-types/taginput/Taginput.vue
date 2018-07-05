@@ -10,7 +10,7 @@
                 field="label"
                 attached
                 @typing="search"
-                :placeholder="$i18n.get('info_type_to_search')"/>
+                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')"/>
     </div>
 </template>
 

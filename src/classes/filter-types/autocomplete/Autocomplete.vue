@@ -11,7 +11,7 @@
                 @input="search"
                 field="label"
                 @select="option => setResults(option) "
-                :placeholder="$i18n.get('info_type_to_search')">
+                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div

@@ -11,7 +11,7 @@
                 attached
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
-                :placeholder="$i18n.get('info_type_to_search')" />
+                :placeholder="$i18n.get('info_type_to_add_terms')" />
     </div>
 </template>
 
