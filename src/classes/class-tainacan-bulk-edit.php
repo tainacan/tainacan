@@ -60,7 +60,7 @@ class Bulk_Edit  {
 
 		if (isset($params['query']) && is_array($params['query'])) {
 			
-			if (!isset($params['collection_id']) || !is_integer($params['collection_id'])) {
+			if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
 				throw new \Exception('Collection ID must be informed when creating a group via query');
 			}
 			
@@ -150,15 +150,15 @@ class Bulk_Edit  {
 	public function add_value(Entities\Metadatum $metadatum, $value) {
 
 		if (!$this->get_id()) {
-			return false;
+			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
 		}
 
 		// Specific validation
 		if (!$metadatum->is_multiple()) {
-			return ['error' => __('Unable to add a value to a metadata if it does not accept multiple values', 'tainacan')];
+			return new \WP_Error( 'invalid_action', __( 'Unable to add a value to a metadata if it does not accept multiple values', 'tainacan' ) );
 		}
 		if ($metadatum->is_collection_key()) {
-			return ['error' => __('Unable to add a value to a metadata set to be a collection key', 'tainacan')];
+			return new \WP_Error( 'invalid_action', __( 'Unable to add a value to a metadata set to be a collection key', 'tainacan' ) );
 		}
 
 		$dummyItem = new Entities\Item();
@@ -168,7 +168,7 @@ class Bulk_Edit  {
 		if ($checkItemMetadata->validate()) {
 			return $this->_add_value($metadatum, $value);
 		} else {
-			return ['error' => __('Invalid value', 'tainacan')];
+			return new \WP_Error( 'invalid_value', __( 'Invalid Value', 'tainacan' ) );
 		}
 
 
@@ -183,13 +183,13 @@ class Bulk_Edit  {
 	public function set_value(Entities\Metadatum $metadatum, $value) {
 
 		if (!$this->get_id()) {
-			return false;
+			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
 		}
 
 		// Specific validation
 		
 		if ($metadatum->is_collection_key()) {
-			return ['error' => __('Unable to set a value to a metadata set to be a collection key', 'tainacan')];
+			return new \WP_Error( 'invalid_action', __( 'Unable to set a value to a metadata set to be a collection key', 'tainacan' ) );
 		}
 
 		$dummyItem = new Entities\Item();
@@ -200,7 +200,7 @@ class Bulk_Edit  {
 			$this->_remove_values($metadatum);
 			return $this->_add_value($metadatum, $value);
 		} else {
-			return ['error' => __('Invalid value', 'tainacan')];
+			return new \WP_Error( 'invalid_value', __( 'Invalid Value', 'tainacan' ) );
 		}
 
 
@@ -215,16 +215,16 @@ class Bulk_Edit  {
 	public function remove_value(Entities\Metadatum $metadatum, $value) {
 
 		if (!$this->get_id()) {
-			return false;
+			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
 		}
 
 		// Specific validation
 		
 		if ($metadatum->is_required()) {
-			return ['error' => __('Unable to remove a value from a required metadatum', 'tainacan')];
+			return new \WP_Error( 'invalid_action', __( 'Unable to remove a value from a required metadatum', 'tainacan' ) );
 		}
 		if (!$metadatum->is_multiple()) {
-			return ['error' => __('Unable to remove a value from a metadata if it does not accept multiple values', 'tainacan')];
+			return new \WP_Error( 'invalid_action', __( 'Unable to remove a value from a metadata if it does not accept multiple values', 'tainacan' ) );
 		}
 
 		return $this->_remove_value($metadatum, $value);
@@ -235,16 +235,16 @@ class Bulk_Edit  {
 	/**
 	 * Relplaces a value from one metadata with another value in all items in current group
 	 */
-	public function replace_value(Entities\Metadatum $metadatum, $old_value, $new_value) {
+	public function replace_value(Entities\Metadatum $metadatum, $new_value, $old_value) {
 
 		if (!$this->get_id()) {
-			return false;
+			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
 		}
 
 		// Specific validation
 		
 		if ($metadatum->is_collection_key()) {
-			return ['error' => __('Unable to set a value to a metadata set to be a collection key', 'tainacan')];
+			return new \WP_Error( 'invalid_action', __( 'Unable to set a value to a metadata set to be a collection key', 'tainacan' ) );
 		}
 
 		$dummyItem = new Entities\Item();
@@ -255,7 +255,7 @@ class Bulk_Edit  {
 			$this->_remove_value($metadatum, $old_value);
 			return $this->_add_value($metadatum, $new_value);
 		} else {
-			return ['error' => __('Invalid value', 'tainacan')];
+			return new \WP_Error( 'invalid_value', __( 'Invalid Value', 'tainacan' ) );
 		}
 
 
@@ -285,8 +285,8 @@ class Bulk_Edit  {
 					$term = wp_insert_term($value, $tax->get_db_identifier());
 				}
 
-				if (is_wp_error($term) || !isset($term['term_taxonomy_id'])) {
-					return false;
+				if (is_\WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+					return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
 				}
 
 				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term['term_taxonomy_id']) );
@@ -327,8 +327,6 @@ class Bulk_Edit  {
 
 		}
 
-		return false;
-
 	}
 
 	/**
@@ -354,8 +352,8 @@ class Bulk_Edit  {
 					return 0;
 				}
 
-				if (is_wp_error($term) || !isset($term['term_taxonomy_id'])) {
-					return false;
+				if (is_\WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+					return new \WP_Error( 'error', __( 'Term not found', 'tainacan' ) );
 				}
 
 				$delete_q = $this->_build_select( "post_id" );
@@ -379,8 +377,6 @@ class Bulk_Edit  {
 			return $wpdb->query($query);
 
 		}
-
-		return false;
 
 	}
 
@@ -424,8 +420,6 @@ class Bulk_Edit  {
 			return $wpdb->query($query);
 
 		}
-
-		return false;
 
 	}
 	

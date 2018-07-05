@@ -13,7 +13,7 @@ use Tainacan\Entities;
 /**
  * Sample test case.
  */
-class BulkEdit extends TAINACAN_UnitTestCase {
+class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 	public $items_ids = [];
 
@@ -105,6 +105,8 @@ class BulkEdit extends TAINACAN_UnitTestCase {
 			$this->tainacan_item_metadata_factory->create_item_metadata($item, $category, ['good', 'bad']);
 		
 		}
+
+		$this->api_baseroute = $this->namespace . '/collection/' . $collection->get_id() . '/bulk-edit';
 		
 	}
 	
@@ -382,7 +384,7 @@ class BulkEdit extends TAINACAN_UnitTestCase {
 		]);
 
 
-		$bulk->replace_value($this->category, 'good', 'awesome');
+		$bulk->replace_value($this->category, 'awesome', 'good');
 
 		
 		$items = $Tainacan_Items->fetch([
@@ -445,7 +447,7 @@ class BulkEdit extends TAINACAN_UnitTestCase {
 		]);
 
 
-		$bulk->replace_value($this->metadatum, 'even', 'super');
+		$bulk->replace_value($this->metadatum, 'super', 'even');
 
 
 		$items = $Tainacan_Items->fetch([
@@ -720,6 +722,122 @@ class BulkEdit extends TAINACAN_UnitTestCase {
 		$count = $wpdb->get_var( "SELECT COUNT(ID) FROM $wpdb->posts WHERE post_content = 'test_description'" );
 
 		$this->assertEquals(7, $count);
+
+
+	}
+
+	/**
+	 * @group api
+	 */
+	function test_api_create_by_items_ids() {
+
+		$ids = array_slice($this->items_ids, 2, 17);
+
+		$request = new \WP_REST_Request(
+			'POST', $this->api_baseroute
+		);
+
+		$request->set_body( json_encode(['items_ids' => $ids]) );
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+
+		$data = $response->get_data();
+
+		$this->assertTrue(is_string($data['id']));
+
+		$this->assertEquals(17, $response->headers['X-WP-Total']);
+
+
+	}
+
+	/**
+	 * @group api
+	 */
+	function test_api_create_by_query() {
+
+		$query = [
+
+			'metaquery' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'odd'
+				]
+			],
+			'taxquery' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'field' => 'name',
+					'terms' => 'good'
+				]
+			],
+			'perpage' => 4,
+			'paged' => 2
+
+		];
+
+		
+
+		$request = new \WP_REST_Request(
+			'POST', $this->api_baseroute
+		);
+
+		$request->set_query_params($query);
+
+		$request->set_body( json_encode(['use_query' => 1]) );
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+
+		$data = $response->get_data();
+
+		$this->assertTrue(is_string($data['id']));
+
+		$this->assertEquals(20, $response->headers['X-WP-Total']);
+
+
+	}
+
+	/**
+	 * @group api
+	 */
+	public function test_api_add_action() {
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$ids = array_slice($this->items_ids, 2, 14);
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $ids,
+		]);
+
+		$body = json_encode([
+			'metadatum_id' => $this->multiple_meta->get_id(),
+			'value' => 'superduper'
+		]);
+
+		
+		$request = new \WP_REST_Request(
+			'POST', $this->api_baseroute . '/' . $bulk->get_id() . '/add'
+		);
+
+		$request->set_body( $body );
+
+		$response = $this->server->dispatch($request);
+
+		$items = $Tainacan_Items->fetch([
+			'meta_query' => [
+				[
+					'key' => $this->multiple_meta->get_id(),
+					'value' => 'superduper'
+				]
+			],
+			'posts_per_page' => -1
+		]);
+
+		$this->assertEquals(14, $items->found_posts);
 
 
 	}

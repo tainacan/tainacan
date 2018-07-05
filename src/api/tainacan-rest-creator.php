@@ -15,6 +15,7 @@ $rest_metadata_types_controller = new \Tainacan\API\EndPoints\REST_Metadata_Type
 $rest_filter_types_controller    = new \Tainacan\API\EndPoints\REST_Filter_Types_Controller();
 $rest_importers_controller    = new \Tainacan\API\EndPoints\REST_Importers_Controller();
 $rest_background_processes_controller    = new \Tainacan\API\EndPoints\REST_Background_Processes_Controller();
+$rest_bulkedit_controller    = new \Tainacan\API\EndPoints\REST_Bulkedit_Controller();
 new \Tainacan\API\EndPoints\REST_Export_Controller();
 new \Tainacan\API\EndPoints\REST_Metadatum_Mappers_Controller();
 // Add here other endpoints imports
