@@ -285,7 +285,7 @@ class Bulk_Edit  {
 					$term = wp_insert_term($value, $tax->get_db_identifier());
 				}
 
-				if (is_\WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+				if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
 					return new \WP_Error( 'error', __( 'Error adding term', 'tainacan' ) );
 				}
 
@@ -352,7 +352,7 @@ class Bulk_Edit  {
 					return 0;
 				}
 
-				if (is_\WP_Error($term) || !isset($term['term_taxonomy_id'])) {
+				if (is_WP_Error($term) || !isset($term['term_taxonomy_id'])) {
 					return new \WP_Error( 'error', __( 'Term not found', 'tainacan' ) );
 				}
 
