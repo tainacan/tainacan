@@ -29,8 +29,10 @@ class JSON_LD extends Type {
 		    $context_slug = str_replace(':', '', $mapper->prefix);
 		    $this->contexts[$context_slug] = $namespace;
 		}
+		$this->contexts['@language'] = $this->get_locale($response->get_data());
 		$contexts = '';
 		foreach ($this->contexts as $slug => $url) {
+		    if(strlen($contexts) > 0) $contexts .= ',\n';
 		    $contexts .= '"'.$slug.'": "'.$url.'"';
 		}
 		$jsonld ='';
@@ -57,9 +59,17 @@ class JSON_LD extends Type {
 			if( is_array($value) ) {
 				$jsonld .= (strlen($jsonld) > 0 ? ',' : '').'"'.$key.'": '.$this->array_to_jsonld($value, '['.$jsonld.']');
 			} else {
-			    $jsonld .= (strlen($jsonld) > 0 ? ',' : '').'"'.$key.'": [{"@value": "'.$value .'"}]';
+			    $jsonld .= (strlen($jsonld) > 0 ? ',' : '').'"'.$key.'": {"@value": "'.$value .'"}';
 			}
 		}
 		return $jsonld;
+	}
+	
+	public function get_locale($obj) {
+	    if(array_key_exists('ID', $obj) && function_exists('wpml_get_language_information')) {
+	        $lang_envs = wpml_get_language_information($obj['ID']);
+	        return $lang_envs['locale'];
+	    }
+	    return get_locale();
 	}
 }
