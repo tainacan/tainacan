@@ -22,7 +22,7 @@
                                  advancedSearchQuery.metaquery[searchCriterion] ? true : false"
                                 :value="advancedSearchQuery.metaquery[searchCriterion] ?
                                  advancedSearchQuery.metaquery[searchCriterion].originalMeta :
-                                  (advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].originalMeta : '')"
+                                  (advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].originalMeta : undefined)"
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriterion)">
                             <option
                                     v-for="metadatum in metadata"
@@ -223,11 +223,14 @@
                     return element == 'relation';
                 });
 
-                keys.splice(relationIndex, 1);
+                if(relationIndex != -1) {
+                    keys.splice(relationIndex, 1);
+                }
 
                 for(let k of keys){
                     this.searchCriteria.push(k);
                 }
+
             }
 
             if(this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0){
@@ -243,7 +246,9 @@
                     return element == 'relation';
                 });
 
-                keys.splice(relationIndex, 1);
+                if(relationIndex != -1) {
+                    keys.splice(relationIndex, 1);
+                }
 
                 for(let k of keys){
                     this.searchCriteria.push(k);
@@ -366,7 +371,7 @@
             //     });
             // },
             addSearchCriteria(){
-                let aleatoryKey = Math.floor(Math.random() * 1000) + 2;
+                let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
 
                 let found = this.searchCriteria.find((element) => {
                     return element == aleatoryKey;
