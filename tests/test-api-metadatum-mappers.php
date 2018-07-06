@@ -74,6 +74,10 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 		$Tainacan_Metadata = \Tainacan\Exposers\Exposers::get_instance();
 
 		$metadatum_mappers = $Tainacan_Metadata->get_mappers("OBJECT");
+		/** @var \Tainacan\Exposers\Mappers\Mapper $metadatum_mapper **/
+		foreach ($metadatum_mappers as $k => $metadatum_mapper) {
+		    if(!$metadatum_mapper->show_ui) unset($metadatum_mappers[$k]);
+		}
 
 		$this->assertEquals(count($metadatum_mappers), count($data));
 		
