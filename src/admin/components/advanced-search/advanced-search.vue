@@ -19,7 +19,10 @@
                         <b-select
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                 :disabled="advancedSearchQuery.taxquery[searchCriterion] ||
-                            advancedSearchQuery.metaquery[searchCriterion] ? true : false"
+                                 advancedSearchQuery.metaquery[searchCriterion] ? true : false"
+                                :value="advancedSearchQuery.metaquery[searchCriterion] ?
+                                 advancedSearchQuery.metaquery[searchCriterion].originalMeta :
+                                  (advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].originalMeta : '')"
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriterion)">
                             <option
                                     v-for="metadatum in metadata"
@@ -38,11 +41,13 @@
                                 :type="advancedSearchQuery.metaquery[searchCriterion].ptype == 'int' ||
                                  advancedSearchQuery.metaquery[searchCriterion].ptype == 'float' ? 'number' : 'text'"
                                 @input="addValueToAdvancedSearchQuery($event, 'value', searchCriterion)"
-                                />
+                                :value="advancedSearchQuery.metaquery[searchCriterion].value"
+                        />
                         <input
                             v-else-if="advancedSearchQuery.metaquery[searchCriterion] &&
                              advancedSearchQuery.metaquery[searchCriterion].ptype == 'date'"
                             class="input"
+                            :value="parseDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion].value)"
                             v-mask="dateMask"
                             @focus="addValueToAdvancedSearchQueryWithoutDelay($event, '', searchCriterion)"
                             @input="addValueToAdvancedSearchQueryWithoutDelay($event, 'value', searchCriterion)"
@@ -51,6 +56,8 @@
                         <b-taginput
                                 v-else-if="advancedSearchQuery.taxquery[searchCriterion]"
                                 :data="terms"
+                                :value="advancedSearchQuery.taxquery[searchCriterion].btags.length > 0 ?
+                                 Array.from(new Set(advancedSearchQuery.taxquery[searchCriterion].btags)) : []"
                                 autocomplete
                                 :loading="isFetching"
                                 attached
@@ -66,7 +73,7 @@
                             class="column">
                         <b-select
                                 v-if="advancedSearchQuery.taxquery[searchCriterion] ||
-                                advancedSearchQuery.metaquery[searchCriterion] ? true : false"
+                                 advancedSearchQuery.metaquery[searchCriterion] ? true : false"
                                 @input="addToAdvancedSearchQuery($event, 'comparator', searchCriterion)"
                                 :value="advancedSearchQuery.taxquery[searchCriterion] ?
                                  advancedSearchQuery.taxquery[searchCriterion].operator :
@@ -165,6 +172,8 @@
                 </div>
             </div>
         </div>
+        <pre>{{ terms }}</pre>
+        <pre>{{ advancedSearchQuery }}</pre>
     </div>
 </template>
 
@@ -196,6 +205,52 @@
 
             let localeData = moment.localeData();
             this.dateFormat = localeData.longDateFormat('L');
+
+            if((this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) ||
+                (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) ){
+                this.searchCriteria = [];
+            }
+
+            if(this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0){
+
+                let metaquery = this.$route.query.metaquery;
+
+                for(let meta in metaquery){
+                    this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
+                }
+
+                let keys = Object.keys(this.advancedSearchQuery.metaquery);
+
+                let relationIndex = keys.findIndex((element) => {
+                    return element == 'relation';
+                });
+
+                keys.splice(relationIndex, 1);
+
+                for(let k of keys){
+                    this.searchCriteria.push(k);
+                }
+            }
+
+            if(this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0){
+                let taxquery = this.$route.query.taxquery;
+
+                for(let tax in taxquery){
+                    this.$set(this.advancedSearchQuery.taxquery, `${tax}`, taxquery[tax]);
+                }
+
+                let keys = Object.keys(this.advancedSearchQuery.taxquery);
+
+                let relationIndex = keys.findIndex((element) => {
+                    return element == 'relation';
+                });
+
+                keys.splice(relationIndex, 1);
+
+                for(let k of keys){
+                    this.searchCriteria.push(k);
+                }
+            }
         },
         data() {
             return {
@@ -366,8 +421,7 @@
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
                             if(value.includes('/')){
-                                this.advancedSearchQuery.metaquery[metaquery].value = this.convertDateToMatchInDB(value);
-                                //this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.convertDateToMatchInDB(value));
+                                this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.convertDateToMatchInDB(value));
                             }
                         }
                     }
@@ -394,15 +448,19 @@
                                 if(value.includes('-')){
                                     this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.parseDateToNavigatorLanguage(value));
                                 }
-                            }, 110);
+                            }, 200);
                         }
                     }
                 }
             },
             parseDateToNavigatorLanguage(date){
-                date = new Date(date.replace(/-/g, '/'));
+                if(date && date.length === this.dateMask.length) {
+                    date = new Date(date.replace(/-/g, '/'));
 
-                return moment(date, moment.ISO_8601).format(this.dateFormat);
+                    return moment(date, moment.ISO_8601).format(this.dateFormat);
+                } else {
+                    return date;
+                }
             },
             addToAdvancedSearchQuery(value, type, searchCriterion){
 
@@ -418,6 +476,7 @@
                                 btags: [],
                                 field: 'term_id',
                                 operator: 'IN',
+                                originalMeta: value,
                                 taxonomy_id: Number(criteriaKey[1].match(/[\d]+/))
                             }
                         });
@@ -427,14 +486,16 @@
                             this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
                                 [`${searchCriterion}`]: {
                                     key: Number(criteriaKey[0]),
-                                    compare: 'LIKE'
+                                    compare: 'LIKE',
+                                    originalMeta: value,
                                 }
                             });
                         } else {
                             this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
                                 [`${searchCriterion}`]: {
                                     key: Number(criteriaKey[0]),
-                                    compare: '='
+                                    compare: '=',
+                                    originalMeta: value,
                                 }
                             });
                         }
