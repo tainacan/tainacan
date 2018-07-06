@@ -275,6 +275,32 @@
                         class="column is-4-5"
                         v-show="!isMetadataColumnCompressed">
 
+                    
+                    <!-- Visibility (status public or private) -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_visibility') }}</label>
+                        <span class="required-metadatum-asterisk">*</span>
+                        <help-button
+                                :title="$i18n.get('label_visibility')"
+                                :message="$i18n.get('info_visibility_helper')"/>
+                    </div>
+                    <div class="section-status">
+                        <div class="field has-addons">
+                            <b-radio
+                                    v-model="visibility"
+                                    value="publish"
+                                    native-value="publish">
+                                {{ $i18n.get('publish_visibility') }}
+                            </b-radio>
+                            <b-radio
+                                    v-model="visibility"
+                                    value="private"
+                                    native-value="private">
+                                {{ $i18n.get('private_visibility') }}
+                            </b-radio>
+                        </div>
+                    </div>
+
                     <!-- Status -------------------------------- -->
                     <div class="section-label">
                         <label>{{ $i18n.get('label_status') }}</label>
@@ -291,7 +317,37 @@
                         </em>
                     </p>
                     <div class="section-status">
-                        <div class="field has-addons">
+                        <div v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                            <button 
+                                    v-if="form.status == 'draft'"
+                                    @click="form.status = 'trash'; onSubmit()"
+                                    type="button"
+                                    class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                            <button 
+                                    v-if="form.status == 'auto-draft'"
+                                    @click="onDiscart()"
+                                    type="button"
+                                    class="button is-outlined">{{ $i18n.get('label_discart') }}</button>
+                            <button 
+                                    @click="form.status = 'draft'; onSubmit()"
+                                    type="button"
+                                    class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
+                            <button 
+                                    @click="form.status = visibility; onSubmit()"
+                                    type="button"
+                                    class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                        </div>
+                        <div v-if="form.status == 'publish' || form.status == 'private'">
+                            <button 
+                                    @click="form.status = 'trash'; onSubmit()"
+                                    type="button"
+                                    class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                            <button 
+                                    @click="form.status = visibility; onSubmit()"
+                                    type="button"
+                                    class="button is-success">{{ $i18n.get('label_update') }}</button>
+                        </div>
+                        <!--<div class="field has-addons">
                             <b-select
                                     v-model="form.status"
                                     :placeholder="$i18n.get('instruction_select_a_status')">
@@ -312,7 +368,7 @@
                                     {{ $i18n.get('save') }}
                                 </button>
                             </div>
-                        </div>
+                        </div> -->
                         <p
                                 v-if="item.status == 'auto-draft'"
                                 class="help is-danger">
@@ -342,6 +398,7 @@
 
                 </div>
             </div>
+        <div class="footer form-submission-footer" />
         </form>
 
         <b-loading
@@ -369,6 +426,7 @@ export default {
             isMetadataColumnCompressed: false,
             metadatumCollapses: [],
             collapseAll: false,
+            visibility: 'publish',
             form: {
                 collectionId: Number,
                 status: '',
@@ -466,6 +524,9 @@ export default {
                 this.isLoading = false;
             });
         },
+        onDiscart() {
+            this.$router.go(-1);
+        },
         createNewItem() {
             // Puts loading on Draft Item creation
             this.isLoading = true;
@@ -481,7 +542,8 @@ export default {
                 this.initializeMediaFrames();
 
                 // Pre-fill status with publish to incentivate it
-                this.form.status = 'publish';
+                this.visibility = 'publish';
+                this.form.status = 'auto-draft'
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
 
@@ -928,6 +990,14 @@ export default {
             left: 90px;
             bottom: 22px;
         }
+    }
+
+    .form-submission-footer {
+        padding: 24px $page-side-padding;
+        position: absolute;
+        bottom: 0;
+        z-index: 9999999999;
+        width: 100%;
     }
 
 

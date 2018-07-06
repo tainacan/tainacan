@@ -3,7 +3,9 @@
         <figure 
                 class="file-item"
                 @click="isPreviewModalActive = true">
-            <figcaption v-if="showName">{{ file.title.rendered }}</figcaption>
+            <figcaption 
+                    :style="{ 'max-width': size != undefined ? size + 'px' : '112px' }"
+                    v-if="showName">{{ file.title.rendered }}</figcaption>
             <div 
                     :class="{ 'rounded': showName }"
                     :style="{ 'width': size != undefined ? size + 'px' : '112px', 'height': size != undefined ? size + 'px' : '112px' }"

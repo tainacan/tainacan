@@ -245,6 +245,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_total_items'                          => __( 'Total items', 'tainacan' ),
 	'label_see_more'	                         => __( 'See more', 'tainacan' ),
 	'label_until'		                         => __( 'until', 'tainacan' ),
+	'label_visibility'	                         => __( 'Visibility', 'tainacan' ),
+	'label_discart'		                         => __( 'Discart', 'tainacan' ),
+	'label_save_as_draft'		                 => __( 'Save as draft', 'tainacan' ),
+	'label_publish'				                 => __( 'Publish', 'tainacan' ),
+	'label_send_to_trash'		                 => __( 'Send to trash', 'tainacan' ),
+	'label_update'		                 		 => __( 'Update', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -356,6 +362,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_type_to_add_terms'			         => __( 'Add terms...', 'tainacan' ),
 	'info_type_to_search_metadata'			     => __( 'Search metadata...', 'tainacan' ),
 	'info_type_to_add_metadata'			         => __( 'Add metadata...', 'tainacan' ),
+	'info_visibility_helper'			         => __( 'How the item will be available to visualization.', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                              => __( 'Text', 'tainacan' ),
