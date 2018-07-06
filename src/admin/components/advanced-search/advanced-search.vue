@@ -172,8 +172,6 @@
                 </div>
             </div>
         </div>
-        <pre>{{ terms }}</pre>
-        <pre>{{ advancedSearchQuery }}</pre>
     </div>
 </template>
 
