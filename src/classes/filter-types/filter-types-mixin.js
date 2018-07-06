@@ -17,7 +17,7 @@ export const filter_type_mixin = {
         query: {}
     },
     methods: {
-        getValuesPlainText(metadatumId, search, isRepositoryLevel) {
+        getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore) {
 
             let url = '/collection/' + this.collection + '/metadata/' + metadatumId + '?fetch=all_metadatum_values&nopaging=1';
 
@@ -35,7 +35,13 @@ export const filter_type_mixin = {
                         for (let metadata of res.data[0]) {
                             let index = this.options.findIndex(itemMetadata => itemMetadata.value === metadata.mvalue);
                             if (index < 0 && metadata.mvalue !== '') {
-                                this.options.push({label: metadata.mvalue, value: metadata.mvalue})
+                                if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
+                                    let indexToIgnore = valuesToIgnore.findIndex(value => value == metadata.mvalue);
+                                    if (indexToIgnore < 0)
+                                        this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
+                                } else {
+                                    this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
+                                }                                   
                             }
 
                         }
@@ -45,7 +51,7 @@ export const filter_type_mixin = {
                     this.$console.error(error);
                 });
         },
-        getValuesRelationship(collectionTarget, search) {
+        getValuesRelationship(collectionTarget, search, valuesToIgnore) {
             let url = '/collection/' + collectionTarget + '/items?';
 
             if( search ){
@@ -56,7 +62,13 @@ export const filter_type_mixin = {
                 .then(res => {
                     if (res.data.length > 0) {
                         for (let item of res.data) {
-                            this.options.push({label: item.title, value: item.id, img: ( item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath ) });
+                            if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
+                                let indexToIgnore = valuesToIgnore.findIndex(value => value == item.id);
+                                if (indexToIgnore < 0)
+                                    this.options.push({ label: item.title, value: item.id, img: (item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath) });
+                            } else {
+                                this.options.push({ label: item.title, value: item.id, img: (item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath) });
+                            }  
                         }
                     }
                 })
