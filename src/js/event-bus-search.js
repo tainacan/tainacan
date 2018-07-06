@@ -324,6 +324,12 @@ export default {
                 setCollectionId(collectionId) {
                     this.collectionId = collectionId;
                 },
+                clearAllFilters() {
+                    this.$store.dispatch('search/cleanFilterTags');
+                    this.$store.dispatch('search/cleanMetaQueries');
+                    this.$store.dispatch('search/cleanTaxQueries');
+                    this.updateURLQueries();
+                },
                  /* Dev interfaces methods */
         
                 registerComponent( name ){

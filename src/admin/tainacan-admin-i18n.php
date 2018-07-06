@@ -103,6 +103,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                                => __( 'Clear', 'tainacan' ),
+	'label_clear_filters'                        => __( 'Clear filters', 'tainacan' ),
 	'label_selected'                             => __( 'Selected', 'tainacan' ),
 	'label_relationship_new_search'              => __( 'New Search', 'tainacan' ),
 	'label_relationship_items_found'             => __( 'Items found', 'tainacan' ),
@@ -128,6 +129,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_button_delete_header_image'           => __( 'Button Delete Header Image', 'tainacan' ),
 	'label_button_edit_thumb'                    => __( 'Button Edit Thumbnail', 'tainacan' ),
 	'label_button_edit_header_image'             => __( 'Button Edit Header Image', 'tainacan' ),
+	'label_button_edit_document'	             => __( 'Button Edit Document', 'tainacan' ),
+	'label_button_delete_document'	             => __( 'Button Delete Document', 'tainacan' ),
 	'label_choose_thumb'                         => __( 'Choose Thumbnail', 'tainacan' ),
 	'label_button_delete_thumb'                  => __( 'Button Delete Thumbnail', 'tainacan' ),
 	'label_collections_per_page'                 => __( 'Collections per Page:', 'tainacan' ),
@@ -240,6 +243,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_remove_value'                         => __( 'Remove value', 'tainacan' ),
 	'label_create_new_page'                      => __( 'Create new page', 'tainacan' ),
 	'label_total_items'                          => __( 'Total items', 'tainacan' ),
+	'label_see_more'	                         => __( 'See more', 'tainacan' ),
+	'label_until'		                         => __( 'until', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

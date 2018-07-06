@@ -127,3 +127,11 @@ export const removeFilterTag = ( { commit }, filterTag  ) => {
 export const cleanFilterTags = ( { commit } ) => {
     commit('cleanFilterTags');
 };
+
+export const cleanMetaQueries = ( { commit } ) => {
+    commit('cleanMetaQueries');
+};
+
+export const cleanTaxQueries = ({ commit }) => {
+    commit('cleanTaxQueries');
+};

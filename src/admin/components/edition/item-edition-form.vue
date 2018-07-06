@@ -13,52 +13,6 @@
             <div class="columns">
                 <div class="column is-5-5">
 
-                    <!-- Status -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_status') }}</label>
-                        <span class="required-metadatum-asterisk">*</span>
-                        <help-button
-                                :title="$i18n.getHelperTitle('items', 'status')"
-                                :message="$i18n.getHelperMessage('items', 'status')"/>
-                    </div>
-                    <!-- Last Updated Info -->      
-                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
-                        <em>
-                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
-                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
-                        </em>
-                    </p>
-                    <div class="section-status">
-                        <div class="field has-addons">
-                            <b-select
-                                    v-model="form.status"
-                                    :placeholder="$i18n.get('instruction_select_a_status')">
-                                <option
-                                        :id="`status-option-${statusOption.value}`"
-                                        v-for="statusOption in statusOptions"
-                                        :key="statusOption.value"
-                                        :value="statusOption.value"
-                                        :disabled="statusOption.disabled">{{ statusOption.label }}
-                                </option>
-                            </b-select>
-                            <div class="control">
-                                <button
-                                        type="button"
-                                        id="button-submit-item-creation"
-                                        @click.prevent="onSubmit"
-                                        class="button is-success">
-                                    {{ $i18n.get('save') }}
-                                </button>
-                            </div>
-                        </div>
-                        <p
-                                v-if="item.status == 'auto-draft'"
-                                class="help is-danger">
-                            {{ $i18n.get('info_item_not_saved') }}
-                        </p>
-                        <p class="help is-danger">{{ formErrorMessage }}</p>
-                    </div>
-
                     <!-- Document -------------------------------- -->
                     <div class="section-label">
                         <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
@@ -66,61 +20,84 @@
                                 :title="$i18n.getHelperTitle('items', 'document')"
                                 :message="$i18n.getHelperMessage('items', 'document')"/>
                     </div>
-                    <div class="section-box ">
+                    <div class="section-box document-field">
                         <div
                                 v-if="form.document != undefined && form.document != null &&
                                         form.document_type != undefined && form.document_type != null &&
                                         form.document != '' && form.document_type != 'empty'">
                             <div v-if="form.document_type == 'attachment'">
                                 <div v-html="item.document_as_html" />
-                                <button
-                                        type="button"
-                                        class="button is-primary"
-                                        size="is-small"
-                                        @click.prevent="setFileDocument($event)">
-                                    {{ $i18n.get('edit') }}
-                                </button>
-                                <button
-                                        type="button"
-                                        class="button is-primary"
-                                        size="is-small"
-                                        @click.prevent="removeDocument()">
-                                    {{ $i18n.get('remove') }}
-                                </button>
+                                <div class="document-buttons-row">
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            id="button-edit-document"
+                                            :aria-label="$i18n.get('label_button_edit_document')"
+                                            @click.prevent="setFileDocument($event)">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="pencil" />
+                                    </a>
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            id="button-delete-document"
+                                            :aria-label="$i18n.get('label_button_delete_document')"
+                                            @click.prevent="removeDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="delete" />
+                                    </a>
+                                </div>
                             </div>
                             <div v-if="form.document_type == 'text'">
                                 <div v-html="item.document_as_html" />
-                                <button
-                                        type="button"
-                                        class="button is-primary"
-                                        size="is-small"
-                                        @click.prevent="setTextDocument()">
-                                    {{ $i18n.get('edit') }}
-                                </button>
-                                <button
-                                        type="button"
-                                        class="button is-primary"
-                                        size="is-small"
-                                        @click.prevent="removeDocument()">
-                                    {{ $i18n.get('remove') }}
-                                </button>
+                                <div class="document-buttons-row">
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            :aria-label="$i18n.get('label_button_edit_document')"
+                                            id="button-edit-document"
+                                            @click.prevent="setTextDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="pencil" />
+                                    </a>
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            :aria-label="$i18n.get('label_button_delete_document')"
+                                            id="button-delete-document"
+                                            @click.prevent="removeDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="delete" />
+                                    </a>
+                                </div>
                             </div>
                             <div v-if="form.document_type == 'url'">
                                 <div v-html="item.document_as_html" />
-                                <button
-                                        type="button"
-                                        class="button is-secondary"
-                                        size="is-small"
-                                        @click.prevent="setURLDocument()">
-                                    {{ $i18n.get('edit') }}
-                                </button>
-                                <button
-                                        type="button"
-                                        class="button is-secondary"
-                                        size="is-small"
-                                        @click.prevent="removeDocument()">
-                                    {{ $i18n.get('remove') }}
-                                </button>
+                                <div class="document-buttons-row">
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            :aria-label="$i18n.get('label_button_edit_document')"
+                                            id="button-edit-document"
+                                            @click.prevent="setURLDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="pencil" />
+                                    </a>
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            :aria-label="$i18n.get('label_button_delete_document')"
+                                            id="button-delete-document"
+                                            @click.prevent="removeDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="delete" />
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <ul v-else>
@@ -229,16 +206,10 @@
                     </div>                    
                     <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
-                            <a
-                                    class="button is-rounded is-secondary"
-                                    id="button-edit-thumbnail"
-                                    :aria-label="$i18n.get('label_button_edit_thumb')"
-                                    @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                <b-icon icon="pencil" />
-                            </a>
                             <file-item
                                     v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
                                     :show-name="false"
+                                    :size="178"
                                     :file="{ 
                                         media_type: 'image', 
                                         guid: { rendered: item.thumbnail.thumb },
@@ -254,13 +225,22 @@
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a
-                                        id="button-delete"
+                                        class="button is-rounded is-secondary"
+                                        id="button-edit-thumbnail"
+                                        :aria-label="$i18n.get('label_button_edit_thumb')"
+                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                    <b-icon 
+                                            size="is-small"
+                                            icon="pencil" />
+                                </a>
+                                <a
+                                        id="button-delete-thumbnail"
+                                        class="button is-rounded is-secondary"
                                         :aria-label="$i18n.get('label_button_delete_thumb')"
                                         @click="deleteThumbnail()">
                                    <b-icon 
-                                        type="is-gray"
+                                        size="is-small"
                                         icon="delete" />
-                                   <span class="text">{{ $i18n.get('remove') }} </span>
                                 </a>
                             </div>
                         </div>
@@ -294,6 +274,53 @@
                 <div 
                         class="column is-4-5"
                         v-show="!isMetadataColumnCompressed">
+
+                    <!-- Status -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_status') }}</label>
+                        <span class="required-metadatum-asterisk">*</span>
+                        <help-button
+                                :title="$i18n.getHelperTitle('items', 'status')"
+                                :message="$i18n.getHelperMessage('items', 'status')"/>
+                    </div>
+                    <!-- Last Updated Info -->      
+                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        <em>
+                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
+                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
+                        </em>
+                    </p>
+                    <div class="section-status">
+                        <div class="field has-addons">
+                            <b-select
+                                    v-model="form.status"
+                                    :placeholder="$i18n.get('instruction_select_a_status')">
+                                <option
+                                        :id="`status-option-${statusOption.value}`"
+                                        v-for="statusOption in statusOptions"
+                                        :key="statusOption.value"
+                                        :value="statusOption.value"
+                                        :disabled="statusOption.disabled">{{ statusOption.label }}
+                                </option>
+                            </b-select>
+                            <div class="control">
+                                <button
+                                        type="button"
+                                        id="button-submit-item-creation"
+                                        @click.prevent="onSubmit"
+                                        class="button is-success">
+                                    {{ $i18n.get('save') }}
+                                </button>
+                            </div>
+                        </div>
+                        <p
+                                v-if="item.status == 'auto-draft'"
+                                class="help is-danger">
+                            {{ $i18n.get('info_item_not_saved') }}
+                        </p>
+                        <p class="help is-danger">{{ formErrorMessage }}</p>
+                    </div>
+
                     <label class="section-label">{{ $i18n.get('metadata') }}</label>
                     <br>
                     <a
@@ -673,10 +700,22 @@ export default {
             this.isEditingValues = true;
             setTimeout(()=> {
                 this.isEditingValues = false;
-            }, 1000)
+            }, 2000)
+            this.$toast.open({
+                duration: 2000,
+                message: this.$i18n.get('info_editing_metadata_values'),
+                position: 'is-bottom',
+            })
         });
         eventBus.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
+            if (this.isUpdatingValues) {
+                this.$toast.open({
+                    duration: 2000,
+                    message: this.$i18n.get('info_updating_metadata_values'),
+                    position: 'is-bottom',
+                })
+            }
         });
         this.cleanLastUpdated();
     },
@@ -784,7 +823,7 @@ export default {
     }
 
     .section-box {
-        border: 1px solid $draggable-border-color;
+       
         background-color: white;
         padding: 26px;
         margin-top: 16px;
@@ -815,12 +854,8 @@ export default {
     .section-status{
         padding: 16px 0;     
     }
-    .section-thumbnail {
-        width: 174px;
-        padding-top: 0;
-        padding-bottom: 0;
-    }
     .section-attachments {
+        border: 1px solid $draggable-border-color;
         height: 250px;
         max-width: 100%;
         resize: vertical;
@@ -836,8 +871,36 @@ export default {
         margin-right: -15px;
     }
 
+    .document-field {  
+
+        .document-buttons-row {
+            text-align: right;
+            top: -21px;
+            position: relative;
+        }
+    }
+
+    #button-edit-thumbnail, 
+    #button-edit-document,
+    #button-delete-thumbnail, 
+    #button-delete-document {
+
+        border-radius: 100px !important;
+        height: 30px !important;
+        width: 30px !important;
+        z-index: 99;
+        margin-left: 10px !important;
+        
+        .icon {
+            display: inherit;
+            padding: 0;
+            margin: 0;
+            margin-top: 1px;
+            font-size: 18px;
+        }
+    }
+
     .thumbnail-field {
-        margin-top: -8px;
 
         .content {
             padding: 10px;
@@ -859,36 +922,11 @@ export default {
             top: 38px;
             max-width: 90px;
         }
-        #button-edit-thumbnail {
-
-            border-radius: 100px !important;
-            height: 40px !important;
-            width: 40px !important;
-            bottom: -20px;
-            left: -20px;
-            z-index: 99;
-
-            .icon {
-                display: inherit;
-                padding: 0;
-                margin: 0;
-                margin-top: 1px;
-            }
-        }
     
         .thumbnail-buttons-row {
-            display: inline-block;
-            padding: 8px 0px;
-            border-radius: 0px 0px 0px 4px;
-            font-size: 14px;
-            a { color: $tainacan-input-color; }
-            .text {
-                top: -3px;
-                position: relative;
-            }
-            i.mdi-24px.mdi-set, i.mdi-24px.mdi::before {
-                font-size: 20px;
-            }
+            position: relative;
+            left: 90px;
+            bottom: 22px;
         }
     }
 

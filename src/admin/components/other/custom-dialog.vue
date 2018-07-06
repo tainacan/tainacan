@@ -18,7 +18,7 @@
             </section>
             <footer class="modal-card-foot form-submit">
                 <button 
-                        class="button is-outline" 
+                        class="button is-outlined" 
                         type="button"
                         @click="$parent.close()">
                     {{ $i18n.get('cancel') }}

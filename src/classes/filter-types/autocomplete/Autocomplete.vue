@@ -7,7 +7,6 @@
                 v-model="selected"
                 :data="options"
                 expanded
-                :clear-on-select="true"
                 @input="search"
                 field="label"
                 @select="option => setResults(option) "
@@ -100,22 +99,24 @@
                 this.selectedValues();
             },
             search( query ){
-                
-                let promise = null;
-                this.options = [];
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget, query );
+                if (query != '') {
+                    let promise = null;
+                    this.options = [];
+                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                        let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                            this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
+                        promise = this.getValuesRelationship( collectionTarget, query );
 
+                    } else {
+                        promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
+                    }
+
+                    promise.catch( error => {
+                        this.$console.log('error select', error );
+                    });
                 } else {
-                    promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
+                    this.cleanSearch();
                 }
-
-                promise.catch( error => {
-                    this.$console.log('error select', error );
-                });
-                
             },
             selectedValues(){
                 const instance = this;
@@ -138,6 +139,7 @@
                                 let item = res.data;
                                 instance.results = item.title;
                                 instance.label = item.title;
+                                instance.selected = item.title;
          
                                 this.$eventBusSearch.$emit( 'sendValuesToTags', {
                                     filterId: instance.filter.id,
@@ -149,6 +151,8 @@
                             });
                     } else {
                         instance.results = metadata.value;
+                        instance.label = metadata.value;
+                        instance.selected = metadata.value;
 
                         this.$eventBusSearch.$emit( 'sendValuesToTags', {
                             filterId: instance.filter.id,

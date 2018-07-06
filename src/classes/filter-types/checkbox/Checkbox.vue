@@ -6,15 +6,22 @@
                 class="metadatum">
             <b-checkbox
                     v-model="selected"
-                    :native-value="option.value"
-            >{{ option.label }}</b-checkbox>
+                    :native-value="option.value">
+                {{ option.label }}
+            </b-checkbox>
         </div>
+        <!-- <a 
+                @click="openCheckboxModal()"
+                class="add-link">
+            {{ $i18n.get('label_see_more') }}
+        </a> -->
     </div>
 </template>
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../filter-types-mixin'
+    // import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue'
 
     export default {
         created(){
@@ -138,7 +145,16 @@
                     this.selected = [];
                     return false;
                 }
-            }
+            },
+            // openCheckboxModal() {
+            //     this.$modal.open({
+            //         parent: this,
+            //         component: CheckboxFilterModal,
+            //         props: {
+            //             title: this.filter.name
+            //         }
+            //     });
+            // }
         }
     }
 </script>

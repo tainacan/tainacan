@@ -10,6 +10,12 @@
                 @close="removeMetaQuery(filterTag.filterId, filterTag.value, filterTag.singleValue)">
             {{ filterTag.singleValue != undefined ? filterTag.singleValue : filterTag.value }}
         </b-tag>
+        <button 
+                @click="clearAllFilters()"
+                id="button-clear-all"
+                class="button is-outlined">
+            {{ $i18n.get('label_clear_filters') }}
+        </button>
     </div>
 </template>
 <script>
@@ -48,6 +54,12 @@
                     this.$eventBusSearch.removeMetaFromFilterTag({ filterId: filterId, singleValue: singleValue });
                 else
                     this.$eventBusSearch.removeMetaFromFilterTag({ filterId: filterId, value: value });
+            },
+            clearAllFilters() {
+                // this.$eventBusSearch.clearAllFilters();
+                for (let tag of this.filterTags) {
+                    this.removeMetaQuery(tag.filterId, tag.value, tag.singleValue);
+                }
             }
         }
     }
@@ -66,7 +78,11 @@
         &.is-inline-flex {
             flex-wrap: wrap;
             justify-content: flex-start;   
-        }     
+        }  
+        
+        #button-clear-all {
+            margin-left: auto;
+        }
     }
 
 </style>

@@ -155,3 +155,11 @@ export const removeFilterTag = ( state, filterTag ) => {
 export const cleanFilterTags = ( state ) => {
     state.filter_tags = [];
 };
+
+export const cleanMetaQueries = (state) => {
+    state.postquery.metaquery = [];
+};
+
+export const cleanTaxQueries = (state) => {
+    state.postquery.taxquery = [];
+};

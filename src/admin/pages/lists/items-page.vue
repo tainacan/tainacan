@@ -914,7 +914,6 @@
         visibility: visible;
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;
-        margin-bottom: -0.1rem;
 
         h3 {
             font-size: 100%;
