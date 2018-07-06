@@ -31,6 +31,7 @@ class Exposers {
 		$this->register_exposer_type('Tainacan\Exposers\Types\Html');
 		$this->register_exposer_type('Tainacan\Exposers\Types\Csv');
 		$this->register_exposer_type('Tainacan\Exposers\Types\OAI_PMH');
+		$this->register_exposer_type('Tainacan\Exposers\Types\JSON_LD');
 		do_action('tainacan-register-exposer-types');
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Dublin_Core');
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Value');
