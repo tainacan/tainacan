@@ -40,6 +40,7 @@
                                  advancedSearchQuery.metaquery[searchCriterion].ptype != 'date'"
                                 :type="advancedSearchQuery.metaquery[searchCriterion].ptype == 'int' ||
                                  advancedSearchQuery.metaquery[searchCriterion].ptype == 'float' ? 'number' : 'text'"
+                                step="any"
                                 @input="addValueToAdvancedSearchQuery($event, 'value', searchCriterion)"
                                 :value="advancedSearchQuery.metaquery[searchCriterion].value"
                         />
