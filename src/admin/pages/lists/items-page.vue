@@ -812,13 +812,12 @@
                 this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
 
+            this.$root.$on('openAdvancedSearch', (openAdvancedSearch) => {
+                this.openAdvancedSearch = openAdvancedSearch;
+            });
+
         },
         mounted() {
-            
-            if(this.$route.query && this.$route.query.advancedSearch) {
-                this.openAdvancedSearch = this.$route.query.advancedSearch;
-            }
-
             this.prepareMetadataAndFilters();
             this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 

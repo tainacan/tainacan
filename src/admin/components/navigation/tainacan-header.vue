@@ -83,12 +83,18 @@
         },
         methods: {
             toItemsPage() {
-                this.$router.push({
-                    path: '/items',
-                    query: {
-                        advancedSearch: true
-                    }
-                });
+                if(this.$route.path == '/items') {
+                    this.$root.$emit('openAdvancedSearch', true);
+                }
+
+                if(this.$route.path != '/items') {
+                    this.$router.push({
+                        path: '/items',
+                        query: {
+                            advancedSearch: true
+                        }
+                    });
+                }
             },
             updateSearch() {
                 if (this.$route.path != '/items') {
