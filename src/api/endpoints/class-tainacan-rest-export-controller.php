@@ -6,6 +6,7 @@ use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 use Tainacan\Entities\Entity;
+use Tainacan\Tests\TAINACAN_REST_Collections_Controller;
 
 class REST_Export_Controller extends REST_Controller {
 	private $item_metadata_repository;
@@ -80,21 +81,7 @@ class REST_Export_Controller extends REST_Controller {
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
-	public function get_item( $request ) {
-		/*$collection_id = $request['collection_id'];
-		$metadatum_id = $request['metadatum_id'];
-
-		if($request['fetch'] === 'all_metadatum_values'){
-			$results = $this->metadatum_repository->fetch_all_metadatum_values($collection_id, $metadatum_id);
-
-			return new \WP_REST_Response($results, 200);
-		}
-
-		$result = $this->metadatum_repository->fetch($metadatum_id, 'OBJECT');
-
-		$prepared_item = $this->prepare_item_for_response($result, $request);
-		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $prepared_item, $request), 200);*/
-	}
+	public function get_item( $request ) { }
 
 	/**
 	 * @param \WP_REST_Request $request
@@ -212,7 +199,6 @@ class REST_Export_Controller extends REST_Controller {
 							$prepared_item = $this->prepare_item_for_response($item, $request);
 							
 							array_push($response, $prepared_item);
-							file_put_contents('/tmp/2', print_r($prepared_item, true), FILE_APPEND);
 						}
 						wp_reset_postdata();
 					}
@@ -225,12 +211,42 @@ class REST_Export_Controller extends REST_Controller {
 						$response = [$prepared_item];
 					}
 				} else { // Export All
-					
+				    $collections = $query;
+				    $collection_controller = new REST_Collections_Controller();
+				    if ($collections->have_posts()) {
+				        while ($collections->have_posts()) {
+				            $collections->the_post();
+				            $collection_id = $collections->post->ID;
+				            $collection = \Tainacan\Repositories\Repository::get_entity_by_post($collections->post);
+				            
+				            $prepared_collection = $collection_controller->prepare_item_for_response($collection, $request);
+				            
+				            $prepared_items = [];
+				            
+				            $items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
+        				    if ($items->have_posts()) {
+        				        while ( $items->have_posts() ) { //TODO write line by line
+        				            $items->the_post();
+        				            
+        				            $item = new Entities\Item($items->post);
+        				            
+        				            $prepared_item = $this->prepare_item_for_response($item, $request);
+        				            
+        				            array_push($prepared_items, $prepared_item);
+        				        }
+        				        wp_reset_postdata();
+        				    }
+        				    
+        				    $prepared_collection['items'] = $prepared_items;
+        				    array_push($prepared_collection, $response);
+				        }
+				        wp_reset_postdata();
+				    }
 				}
 				
 				$rest_response = new \WP_REST_Response(apply_filters('tainacan-rest-response', $response, $request));
-				//file_put_contents($filename, $rest_response->get_data());
-				file_put_contents('/tmp/1', print_r($rest_response->get_data(), true));
+				$data = $rest_response->get_data();
+				file_put_contents($filename, is_string($data) ? $data : print_r($data, true));
 				
 				if($background) {
 					$log->set_status('publish');
@@ -291,7 +307,15 @@ class REST_Export_Controller extends REST_Controller {
 				$rest_response->header('X-WP-TotalPages', 1);
 			}
 		} else { // Export All
-			
+		    $Tainacan_Collection = \Tainacan\Repositories\Collections::get_instance();
+		    $collections = $Tainacan_Collection->fetch(['post_status' => 'publish'], 'WP_Query');
+    		    
+		    $response = $this->export($request, $collections, $args);
+   		    $total_items = $collections->found_posts;
+   		    $ret = $response instanceof Entity ? $response->__toArray() : $response;
+   		    $rest_response = new \WP_REST_Response($ret, 200);
+
+   		    $rest_response->header('X-WP-Total', (int) $total_items);
 		}
 		
 		return $rest_response;
