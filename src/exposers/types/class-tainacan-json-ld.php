@@ -32,17 +32,17 @@ class JSON_LD extends Type {
 		$this->contexts['@language'] = $this->get_locale($response->get_data());
 		$contexts = '';
 		foreach ($this->contexts as $slug => $url) {
-		    if(strlen($contexts) > 0) $contexts .= ',\n';
+		    if(strlen($contexts) > 0) $contexts .= ',';
 		    $contexts .= '"'.$slug.'": "'.$url.'"';
 		}
 		$jsonld ='';
-		$jsonld ='
-{
+		$jsonld =
+'{
     "@context":{
 '.$contexts.'
-    }
+    },
     '.$this->array_to_jsonld($response->get_data(), apply_filters('tainacan-exposer-jsonld', $jsonld)).'
-},
+}
 '       ;
 		$response->set_data($jsonld);
 		return $response;
