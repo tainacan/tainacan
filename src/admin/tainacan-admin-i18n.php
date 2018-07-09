@@ -248,6 +248,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_visibility'	                         => __( 'Visibility', 'tainacan' ),
 	'label_discart'		                         => __( 'Discart', 'tainacan' ),
 	'label_save_as_draft'		                 => __( 'Save as draft', 'tainacan' ),
+	'label_update_draft'		                 => __( 'Update draft', 'tainacan' ),
+	'label_return_to_draft'		                 => __( 'Return to draft', 'tainacan' ),
 	'label_publish'				                 => __( 'Publish', 'tainacan' ),
 	'label_send_to_trash'		                 => __( 'Send to trash', 'tainacan' ),
 	'label_update'		                 		 => __( 'Update', 'tainacan' ),

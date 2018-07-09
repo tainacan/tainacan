@@ -234,6 +234,7 @@
                                             icon="pencil" />
                                 </a>
                                 <a
+                                        v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
                                         id="button-delete-thumbnail"
                                         class="button is-rounded is-secondary"
                                         :aria-label="$i18n.get('label_button_delete_thumb')"
@@ -317,36 +318,7 @@
                         </em>
                     </p>
                     <div class="section-status">
-                        <div v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
-                            <button 
-                                    v-if="form.status == 'draft'"
-                                    @click="form.status = 'trash'; onSubmit()"
-                                    type="button"
-                                    class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                            <button 
-                                    v-if="form.status == 'auto-draft'"
-                                    @click="onDiscart()"
-                                    type="button"
-                                    class="button is-outlined">{{ $i18n.get('label_discart') }}</button>
-                            <button 
-                                    @click="form.status = 'draft'; onSubmit()"
-                                    type="button"
-                                    class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
-                            <button 
-                                    @click="form.status = visibility; onSubmit()"
-                                    type="button"
-                                    class="button is-success">{{ $i18n.get('label_publish') }}</button>
-                        </div>
-                        <div v-if="form.status == 'publish' || form.status == 'private'">
-                            <button 
-                                    @click="form.status = 'trash'; onSubmit()"
-                                    type="button"
-                                    class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                            <button 
-                                    @click="form.status = visibility; onSubmit()"
-                                    type="button"
-                                    class="button is-success">{{ $i18n.get('label_update') }}</button>
-                        </div>
+                        
                         <!--<div class="field has-addons">
                             <b-select
                                     v-model="form.status"
@@ -398,7 +370,52 @@
 
                 </div>
             </div>
-        <div class="footer form-submission-footer" />
+            <div class="footer form-submission-footer">
+                <div v-if="form.status == 'trash'">
+                    <button 
+                            @click="onDeletePermanently()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
+                    <button 
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                </div>
+                <div v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                    <button 
+                            v-if="form.status == 'draft'"
+                            @click="onSubmit('trash')"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                    <button 
+                            v-if="form.status == 'auto-draft'"
+                            @click="onDiscart()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_discart') }}</button>
+                    <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_save_as_draft') }}</button>
+                    <button 
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                </div>
+                <div v-if="form.status == 'publish' || form.status == 'private'">
+                    <button 
+                            @click="onSubmit('trash')"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                    <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
+                    <button 
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                </div>
+            </div>
         </form>
 
         <b-loading
@@ -494,9 +511,15 @@ export default {
             'getAttachments',
             'getLastUpdated'
         ]),
-        onSubmit() {
+        ...mapActions('collection', [
+            'deleteItem',
+        ]),
+        onSubmit(status) {
             // Puts loading on Item edition
             this.isLoading = true;
+
+            let previousStatus = this.form.status;
+            this.form.status = status;
 
             let data = {item_id: this.itemId, status: this.form.status};
 
@@ -511,7 +534,10 @@ export default {
 
                 this.isLoading = false;
 
-                this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                if (this.form.status != 'trash') 
+                    this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                else
+                    this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
@@ -520,6 +546,8 @@ export default {
                     }
                 }
                 this.formErrorMessage = errors.error_message;
+                this.form.status = previousStatus;
+                this.item.status = previousStatus;
 
                 this.isLoading = false;
             });
@@ -717,6 +745,21 @@ export default {
         },
         onChangeCollapse(event, index) {
             this.metadatumCollapses.splice(index, 1, event);
+        },
+        onDeletePermanently() {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
+                    onConfirm: () => {
+                        this.deleteItem({ itemId: this.itemId, isPermanently: true })
+                        this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId))
+                    }
+                }
+            });
         }
     },
     created(){
@@ -750,6 +793,9 @@ export default {
                 if (this.form.document_type != undefined && this.form.document_type == 'text')
                     this.textContent = this.form.document;
 
+                if (this.item.status == 'publish' || this.item.status == 'private')
+                    this.visibility = this.item.status;
+
                 this.loadMetadata();
             });
 
@@ -759,24 +805,28 @@ export default {
 
         // Sets feedback variables
         eventBus.$on('isChangingValue', () => {
-            this.isEditingValues = true;
-            setTimeout(()=> {
-                this.isEditingValues = false;
-            }, 2000)
-            this.$toast.open({
-                duration: 2000,
-                message: this.$i18n.get('info_editing_metadata_values'),
-                position: 'is-bottom',
-            })
-        });
-        eventBus.$on('isUpdatingValue', (status) => {
-            this.isUpdatingValues = status;
-            if (this.isUpdatingValues) {
+            if (!this.isEditingValues) {
+                this.isEditingValues = true;
+                setTimeout(()=> {
+                    this.isEditingValues = false;
+                }, 2000)
                 this.$toast.open({
                     duration: 2000,
-                    message: this.$i18n.get('info_updating_metadata_values'),
+                    message: this.$i18n.get('info_editing_metadata_values'),
                     position: 'is-bottom',
                 })
+            }
+        });
+        eventBus.$on('isUpdatingValue', (status) => {
+            if (!this.isUpdatingValues) {
+                this.isUpdatingValues = status;
+                if (this.isUpdatingValues) {
+                    this.$toast.open({
+                        duration: 2000,
+                        message: this.$i18n.get('info_updating_metadata_values'),
+                        position: 'is-bottom',
+                    })
+                }
             }
         });
         this.cleanLastUpdated();
@@ -833,6 +883,10 @@ export default {
         }
     }
 
+    .page-container-shrinked {
+        height: calc(100% - 136px) !important; // Bigger than the others due footer's height
+    }
+
     .page-container {
         padding: 25px 0px;
 
@@ -841,10 +895,6 @@ export default {
             padding-right: $page-side-padding;
         }
 
-        .column {
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
         .column.is-5-5 {
             width: 45.833333333%;
             padding-left: $page-side-padding;
@@ -969,19 +1019,19 @@ export default {
             font-size: 0.8em;
         }
         img {
-            height: 112px;
-            width: 112px;
+            height: 178px;
+            width: 178px;
         }
         .image-placeholder {
             position: absolute;
-            margin-left: 10px;
-            margin-right: 10px;
+            margin-left: 45px;
+            margin-right: 45px;
             font-size: 0.8rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
-            top: 38px;
+            top: 70px;
             max-width: 90px;
         }
     
@@ -996,8 +1046,10 @@ export default {
         padding: 24px $page-side-padding;
         position: absolute;
         bottom: 0;
-        z-index: 9999999999;
+        z-index: 999999;
         width: 100%;
+        display: flex;
+        justify-content: end;
     }
 
 

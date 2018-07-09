@@ -98,7 +98,8 @@ export default {
     @import "../../scss/_variables.scss";
 
     .file-item {
-        
+        display: inline-block;
+
         &:hover {
             cursor: pointer;
             .image, .file-placeholder {
