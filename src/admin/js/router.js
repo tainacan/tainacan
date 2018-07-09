@@ -71,6 +71,10 @@ const routes = [
     { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: {title: i18nGet('title_importers_page'), icon: 'file-multiple'} },
     { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page'), icon: 'file-multiple'} },
 
+    { path: '/export/collection/:collectionId', name: 'ExportCollection', component: ExportPage, meta: {title: i18nGet('title_export_collection_page'), icon: 'export'} },
+    { path: '/export/item/:itemId', name: 'ExportItem', component: ExportPage, meta: {title: i18nGet('title_export_item_page'), icon: 'export'} },
+    { path: '/export', name: 'Export', component: ExportPage, meta: {title: i18nGet('title_export_page'), icon: 'export'} },
+    
     { path: '*', redirect: '/'}
 ];
 

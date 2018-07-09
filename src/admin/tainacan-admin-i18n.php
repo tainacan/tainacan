@@ -101,6 +101,9 @@ return apply_filters('tainacan-admin-i18n',[
 	'title_collection_filters_edition'         => __( 'Edit Filters of', 'tainacan' ),
 	'title_importer_page'           		   => __( 'Importer', 'tainacan' ),
 	'title_importers_page'			           => __( 'Importers', 'tainacan' ),
+    'title_export_collection_page'	           => __( 'Export Collection Page', 'tainacan' ),
+    'title_export_item_page'			       => __( 'Export Item Page', 'tainacan' ),
+    'title_export_page'			               => __( 'Export Page', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                              => __( 'Clear', 'tainacan' ),
