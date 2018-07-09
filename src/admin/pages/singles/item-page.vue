@@ -9,7 +9,7 @@
             <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
         </button>
         <tainacan-title/>
-        <div class="columns">
+        <div class="tainacan-form columns">
             <div class="column is-5-5">
                 <div class="column is-12">
                     <router-link
@@ -130,6 +130,20 @@
                         </b-collapse>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="form-submission-footer">
+                <router-link
+                        class="button is-secondary"
+                        :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
+                    {{ $i18n.getFrom('items','edit_item') }}
+                </router-link>
+                <a
+                        class="button is-success is-pulled-right"
+                        :href="item.url">
+                    {{ $i18n.getFrom('items', 'view_item') }}
+                </a>
             </div>
         </div>
     </div>
@@ -340,6 +354,32 @@
         flex-flow: wrap;
         margin-left: -15px;
         margin-right: -15px;
+    }
+
+    .footer {
+
+        padding: 24px $page-side-padding;
+        position: absolute;
+        bottom: 0;
+        z-index: 999999;
+        background-color: white;
+        border-top: 1px solid $tainacan-input-background;
+        width: 100%;
+
+        .form-submission-footer {    
+            width: 100%;
+            display: flex;
+            justify-content: end;
+
+            .button {
+                margin-left: 6px;
+                margin-right: 6px;
+            }
+            .button.is-outlined {
+                margin-left: 0px;
+                margin-right: auto;
+            }
+        }
     }
 </style>
 

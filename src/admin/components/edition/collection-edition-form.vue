@@ -806,7 +806,7 @@ export default {
         height: 30px !important;
         width: 30px !important;
         z-index: 99;
-        margin-left: 10px !important;
+        margin-left: 12px !important;
         
         .icon {
             display: inherit;
@@ -839,7 +839,7 @@ export default {
         .header-buttons-row {
             text-align: right;
             top: -35px;
-            right: 5px;
+            right: 20px;
             position: relative;
         }
     }
@@ -871,8 +871,8 @@ export default {
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 100px;
-            bottom: -136px;
+            left: 60px;
+            bottom: -142px;
         }
     }
     .selected-cover-page {

@@ -291,13 +291,17 @@
                                     v-model="visibility"
                                     value="publish"
                                     native-value="publish">
-                                {{ $i18n.get('publish_visibility') }}
+                                <span class="icon">
+                                    <i class="mdi mdi-earth"/>
+                                </span> {{ $i18n.get('publish_visibility') }}
                             </b-radio>
                             <b-radio
                                     v-model="visibility"
                                     value="private"
                                     native-value="private">
-                                {{ $i18n.get('private_visibility') }}
+                                <span class="icon">
+                                    <i class="mdi mdi-lock"/>
+                                </span>  {{ $i18n.get('private_visibility') }}
                             </b-radio>
                         </div>
                     </div>
@@ -370,18 +374,26 @@
 
                 </div>
             </div>
-            <div class="footer form-submission-footer">
-                <div v-if="form.status == 'trash'">
+            <div class="footer">
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'trash'">
                     <button 
                             @click="onDeletePermanently()"
                             type="button"
                             class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
                     <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
+                    <button 
                             @click="onSubmit(visibility)"
                             type="button"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
                 </div>
-                <div v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
                     <button 
                             v-if="form.status == 'draft'"
                             @click="onSubmit('trash')"
@@ -401,7 +413,9 @@
                             type="button"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
                 </div>
-                <div v-if="form.status == 'publish' || form.status == 'private'">
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'publish' || form.status == 'private'">
                     <button 
                             @click="onSubmit('trash')"
                             type="button"
@@ -967,6 +981,13 @@ export default {
     }
     .section-status{
         padding: 16px 0;     
+        .field .b-radio {
+            margin-right: 24px;
+            .icon  {
+                font-size: 18px !important; 
+                color: $gray;
+            }
+        }
     }
     .section-attachments {
         border: 1px solid $draggable-border-color;
@@ -1044,15 +1065,30 @@ export default {
         }
     }
 
-    .form-submission-footer {
+    .footer {
+
         padding: 24px $page-side-padding;
         position: absolute;
         bottom: 0;
         z-index: 999999;
+        background-color: white;
+        border-top: 1px solid $tainacan-input-background;
         width: 100%;
-        display: flex;
-        justify-content: end;
-    }
 
+        .form-submission-footer {    
+            width: 100%;
+            display: flex;
+            justify-content: end;
+
+            .button {
+                margin-left: 6px;
+                margin-right: 6px;
+            }
+            .button.is-outlined {
+                margin-left: 0px;
+                margin-right: auto;
+            }
+        }
+    }
 
 </style>
