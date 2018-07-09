@@ -40,6 +40,7 @@ export const eventBus = new Vue({
         updateValue(data){
             
             this.$emit('isUpdatingValue', true);
+
             if ( data.item_id ){
 
                 if(data.values.length > 0 && data.values[0].value){
@@ -55,7 +56,7 @@ export const eventBus = new Vue({
                 const promisse = this.$store.dispatch('item/updateMetadata',
                     { item_id: data.item_id, metadatum_id: data.metadatum_id, values: values });
 
-                    promisse.then( () => {
+                promisse.then( () => {
                     this.$emit('isUpdatingValue', false);
                     let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == data.metadatum_id );
                     if ( index >= 0){

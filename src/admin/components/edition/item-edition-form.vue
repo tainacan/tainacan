@@ -809,7 +809,7 @@ export default {
                 this.isEditingValues = true;
                 setTimeout(()=> {
                     this.isEditingValues = false;
-                }, 2000)
+                }, 2000);
                 this.$toast.open({
                     duration: 2000,
                     message: this.$i18n.get('info_editing_metadata_values'),
@@ -827,6 +827,8 @@ export default {
                         position: 'is-bottom',
                     })
                 }
+            } else {
+                this.isUpdatingValues = false;
             }
         });
         this.cleanLastUpdated();
