@@ -367,7 +367,7 @@ class Metadata extends Repository {
      * metadata not ordinated appear on the end of the list
      *
      *
-     * @param $result Response from method fetch
+     * @param \WP_Query|array $result Response from method fetch
      * @param Entities\Collection $collection
      * @param bool $include_disabled Wether to include disabled metadata in the results or not
      * @return array or WP_Query ordinate
