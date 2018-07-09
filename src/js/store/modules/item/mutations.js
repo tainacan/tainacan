@@ -9,7 +9,7 @@ export const cleanItem = ( state ) => {
 }
 
 export const cleanLastUpdated = ( state ) => {
-    state.cleanLastUpdated = '';
+    state.lastUpdated = '';
 }
 
 export const setSingleAttachment = ( state, attachment ) => {
@@ -60,8 +60,12 @@ export const setSingleMetadatum = ( state, metadatum) => {
     }
 }
 
-export const setLastUpdated = (state) => {
-    let now = new Date();
-    state.lastUpdated = now.toLocaleString();
+export const setLastUpdated = (state, value) => {
+    if (value != undefined)
+        state.lastUpdated = value;
+    else {
+        let now = new Date();
+        state.lastUpdated = now.toLocaleString();
+    }
 }
 

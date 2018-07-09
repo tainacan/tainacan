@@ -1,5 +1,8 @@
 <template>
     <div>
+        <b-loading
+                :active.sync="isLoading"
+                :can-cancel="false"/>
         <button 
                 id="metadata-column-compress-button"
                 @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
@@ -307,23 +310,16 @@
                     </div>
 
                     <!-- Status -------------------------------- -->
-                    <div class="section-label">
+                    <!--<div class="section-label">
                         <label>{{ $i18n.get('label_status') }}</label>
                         <span class="required-metadatum-asterisk">*</span>
                         <help-button
                                 :title="$i18n.getHelperTitle('items', 'status')"
                                 :message="$i18n.getHelperMessage('items', 'status')"/>
                     </div>
-                    <!-- Last Updated Info -->      
-                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
-                        <em>
-                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
-                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
-                        </em>
-                    </p>
                     <div class="section-status">
                         
-                        <!--<div class="field has-addons">
+                        <div class="field has-addons">
                             <b-select
                                     v-model="form.status"
                                     :placeholder="$i18n.get('instruction_select_a_status')">
@@ -344,14 +340,8 @@
                                     {{ $i18n.get('save') }}
                                 </button>
                             </div>
-                        </div> -->
-                        <p
-                                v-if="item.status == 'auto-draft'"
-                                class="help is-danger">
-                            {{ $i18n.get('info_item_not_saved') }}
-                        </p>
-                        <p class="help is-danger">{{ formErrorMessage }}</p>
-                    </div>
+                        </div> 
+                    </div>-->
 
                     <label class="section-label">{{ $i18n.get('metadata') }}</label>
                     <br>
@@ -375,6 +365,17 @@
                 </div>
             </div>
             <div class="footer">
+                <!-- Last Updated Info --> 
+                <div class="update-info-section">     
+                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        <em>
+                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
+                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
+                        </em>
+                    </p>
+                    <p class="help is-danger">{{ errorList }}</p>
+                    <p class="help is-danger">{{ formErrorMessage }}</p>
+                </div>  
                 <div 
                         class="form-submission-footer"
                         v-if="form.status == 'trash'">
@@ -431,10 +432,6 @@
                 </div>
             </div>
         </form>
-
-        <b-loading
-                :active.sync="isLoading"
-                :can-cancel="false"/>
     </div>
 </template>
 
@@ -501,6 +498,9 @@ export default {
         },
         lastUpdated() {
             return this.getLastUpdated();
+        },
+        errrorList() {
+            return eventBus.errors;
         }
     },
     components: {
@@ -518,7 +518,8 @@ export default {
             'sendAttachments',
             'updateThumbnail',
             'fetchAttachments',
-            'cleanLastUpdated'
+            'cleanLastUpdated',
+            'setLastUpdated'
         ]),
         ...mapGetters('item',[
             'getMetadata',
@@ -558,6 +559,7 @@ export default {
                     for (let metadatum of Object.keys(error)){
                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
+                    
                 }
                 this.formErrorMessage = errors.error_message;
                 this.form.status = previousStatus;
@@ -811,6 +813,7 @@ export default {
                     this.visibility = this.item.status;
 
                 this.loadMetadata();
+                this.setLastUpdated(this.item.modification_date);
             });
 
             // Fetch current existing attachments
@@ -818,32 +821,15 @@ export default {
         }
 
         // Sets feedback variables
-        eventBus.$on('isChangingValue', () => {
-            if (!this.isEditingValues) {
-                this.isEditingValues = true;
-                setTimeout(()=> {
-                    this.isEditingValues = false;
-                }, 2000);
-                this.$toast.open({
-                    duration: 2000,
-                    message: this.$i18n.get('info_editing_metadata_values'),
-                    position: 'is-bottom',
-                })
-            }
-        });
         eventBus.$on('isUpdatingValue', (status) => {
-            if (!this.isUpdatingValues) {
-                this.isUpdatingValues = status;
-                if (this.isUpdatingValues) {
-                    this.$toast.open({
-                        duration: 2000,
-                        message: this.$i18n.get('info_updating_metadata_values'),
-                        position: 'is-bottom',
-                    })
-                }
-            } else {
-                this.isUpdatingValues = false;
-            }
+            this.isUpdatingValues = status;
+                // if (this.isUpdatingValues) {
+                //     this.$toast.open({
+                //         duration: 2000,
+                //         message: this.$i18n.get('info_updating_metadata_values'),
+                //         position: 'is-bottom',
+                //     })
+                // }
         });
         this.cleanLastUpdated();
     },
@@ -900,7 +886,7 @@ export default {
     }
 
     .page-container-shrinked {
-        height: calc(100% - 136px) !important; // Bigger than the others due footer's height
+        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {
@@ -931,6 +917,10 @@ export default {
                 padding: 10px 0px 10px 60px;
             }
 
+            @media screen and (max-width: 769px) {
+                width: 100%;
+            }
+
         }
 
     }
@@ -947,7 +937,9 @@ export default {
 
     .collapse-all {
         font-size: 12px;
-        .icon { vertical-align: bottom; }
+        .icon { 
+            vertical-align: bottom; 
+        }
     }
 
     .section-box {
@@ -1072,7 +1064,7 @@ export default {
         bottom: 0;
         z-index: 999999;
         background-color: white;
-        border-top: 1px solid $tainacan-input-background;
+        border-top: 2px solid $secondary;
         width: 100%;
 
         .form-submission-footer {    
@@ -1088,6 +1080,14 @@ export default {
                 margin-left: 0px;
                 margin-right: auto;
             }
+        }
+
+        .update-info-section {
+            text-align: center;
+            position: relative;
+            margin-top: -20px;
+            top: 28px;
+            color: $gray-light;
         }
     }
 

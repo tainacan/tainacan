@@ -33,10 +33,7 @@ export const eventBus = new Vue({
                     }
                 });
             }
-        },
-        isChangingValue() {
-            this.$emit('isChangingValue', true);
-        },  
+        }, 
         updateValue(data){
             
             this.$emit('isUpdatingValue', true);
