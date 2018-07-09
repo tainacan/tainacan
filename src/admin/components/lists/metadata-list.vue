@@ -222,6 +222,44 @@
                                 </template>
                             </b-table>
                         </section>
+                        <section
+                                v-if="mapper != '' && !isLoadingMetadatumMappers && !isMapperMetadataCreating">
+                            <div class="control">
+                                <button
+                                        class="button is-outlined"
+                                        type="button"
+                                        @click="onNewMetadataMapperMetadata"> 
+                                    {{ $i18n.get('new') }}
+                                </button>
+                            </div>
+                        </section>
+                        <section
+                                v-if="isMapperMetadataCreating">
+                            <b-field>
+                                <b-input
+                                        v-model="new_metadata_label"
+                                        :placeholder="$i18n.get('label_name')"/>
+                            </b-field>
+                            <b-field>
+                                <b-input
+                                        placeholder="URI"
+                                        type="url"
+                                        v-model="new_metadata_uri"/>
+                            </b-field>
+                            <div class="field is-grouped form-submit">
+                                <div class="control">
+                                    <button
+                                            class="button is-outlined"
+                                            type="button"
+                                            @click="onCancelNewMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                                </div>
+                                <div class="control">
+                                    <button
+                                            @click.prevent="onSaveNewMetadataMapperMetadata"
+                                            class="button is-success">{{ $i18n.get('new') }}</button>
+                                </div>
+                            </div>
+                        </section>
                     </template>
                     <section
                             v-if="mapper != '' && !isLoadingMetadatumMappers">
@@ -262,6 +300,7 @@ export default {
             mapper: '',
             mapperMetadata: [],
             isMapperMetadataLoading: false,
+            isMapperMetadataCreating: false,
             mappedMetadata: [],
             isLoadingMetadatumTypes: true,
             isLoadingMetadata: false,
@@ -269,7 +308,10 @@ export default {
             openedMetadatumId: '',
             formWithErrors: '',
             hightlightedMetadatum: '',
-            editForms: {}
+            editForms: {},
+            newMapperMetadataList: [],
+            new_metadata_label: '',
+            new_metadata_uri: ''
         }
     },
     components: {
@@ -495,6 +537,47 @@ export default {
             this.isMapperMetadataLoading = true;
             this.onSelectMetadataMapper(this.mapper);
             this.isMapperMetadataLoading = false;
+        },
+        onNewMetadataMapperMetadata() {
+            this.isMapperMetadataCreating = true;
+        },
+        onCancelNewMetadataMapperMetadata() {
+            this.isMapperMetadataCreating = false;
+            console.log('Cancel: ' + (this.isMapperMetadataCreating ? 'OK' : 'Err' ));
+        },
+        onSaveNewMetadataMapperMetadata() {
+            this.isMapperMetadataLoading = true;
+            var newMapperMetadata = {
+                    label: this.new_metadata_label,
+                    uri: this.new_metadata_uri,
+                    slug: this.stringToSlug(this.new_metadata_label)
+            };
+            this.newMapperMetadataList.push(newMapperMetadata);
+            newMapperMetadata.selected = '';
+            this.mapperMetadata.push(newMapperMetadata);
+            this.new_metadata_label = '';
+            this.new_metadata_uri = '';
+            this.isMapperMetadataCreating = false;
+            this.isMapperMetadataLoading = false;
+        },
+        stringToSlug(str) { // adapted from https://gist.github.com/spyesx/561b1d65d4afb595f295
+            str = str.replace(/^\s+|\s+$/g, ''); // trim
+            str = str.toLowerCase();
+
+            // remove accents, swap ñ for n, etc
+            var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+            var to   = "aaaaeeeeiiiioooouuuunc------";
+
+            for (var i=0, l=from.length ; i<l ; i++) {
+                str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+            }
+
+            str = str.replace('.', '-') // replace a dot by a dash 
+                .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+                .replace(/\s+/g, '-') // collapse whitespace and replace by a dash
+                .replace(/-+/g, '-'); // collapse dashes
+
+            return str;
         }
     },
     created() {
