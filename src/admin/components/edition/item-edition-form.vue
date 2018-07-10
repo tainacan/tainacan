@@ -378,13 +378,13 @@
             <div class="footer">
                 <!-- Last Updated Info --> 
                 <div class="update-info-section">     
-                    <p v-if="isUpdatingValues">
+                    <p v-if="!isUpdatingValues">
                         {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
                         <span class="help is-danger">{{ formErrorMessage }}</span>
                     </p>     
                     <p 
                             class="update-warning"
-                            v-if="!isUpdatingValues">
+                            v-if="isUpdatingValues">
                         <b-icon icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
                         <span class="help is-danger">{{ formErrorMessage }}</span>
                     </p>
@@ -1088,12 +1088,12 @@ export default {
         z-index: 999999;
         background-color: $primary-lighter;
         width: 100%;
+        height: 65px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
 
         .form-submission-footer {    
-            width: 100%;
-            display: flex;
-            justify-content: end;
-
             .button {
                 margin-left: 16px;
                 margin-right: 6px;
@@ -1115,10 +1115,8 @@ export default {
         }
 
         .update-info-section {
-            position: relative;
-            margin-top: -20px;
-            top: 28px;
             color: $gray-light;
+            margin-right: auto;
         }
 
         .help {

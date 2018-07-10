@@ -36,6 +36,9 @@
                                 <div v-html="item.document_as_html"/>
                             </div>
                         </div>
+                        <div v-else>
+                            <p>{{ $i18n.get('info_no_document_to_item') }}</p>
+                        </div>
                     </div>
 
                     <!-- Thumbnail -------------------------------- -->
@@ -193,7 +196,8 @@
                 isLoading: false,
                 isMetadataColumnCompressed: false,
                 open: false,
-                collectionName: ''
+                collectionName: '',
+                thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
             }
         },
         components: {
@@ -317,16 +321,15 @@
             .field {
                 padding: 10px 0px 10px 30px;
 
-                .collapse .collapse-content {
-                    margin-left: 30px; 
-                }
             }
 
             @media screen and (max-width: 769px) {
                 width: 100%;
             }
         }
-
+            .collapse .collapse-content {
+                margin-left: 30px; 
+            }
     }
 
     .field {
@@ -452,12 +455,13 @@
         bottom: 0;
         z-index: 999999;
         background-color: $primary-lighter;
-        width: 100%;
+        width: 100%;    
+        height: 65px;
 
         .form-submission-footer {    
             width: 100%;
             display: flex;
-            justify-content: end;
+            justify-content: flex-end;
 
             .button {
                 margin-left: 16px;
