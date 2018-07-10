@@ -223,47 +223,63 @@
                             </b-table>
                         </section>
                         <section
-                                v-if="mapper != '' && !isLoadingMetadatumMappers && !isMapperMetadataCreating">
-                            <div class="control">
-                                <button
-                                        class="button is-outlined"
-                                        type="button"
-                                        @click="onNewMetadataMapperMetadata"> 
-                                    {{ $i18n.get('new') }}
-                                </button>
+                                v-if="mapper != '' && mapper.allow_extra_metadata">
+                            <div
+                                    class="modal-new-link">
+                                <a
+                                        v-if="collectionId != null && collectionId != undefined"
+                                        class="is-inline is-pulled-left add-link"
+                                        @click="onNewMetadataMapperMetadata()">
+                                    <b-icon
+                                            icon="plus-circle"
+                                            size="is-small"
+                                            type="is-secondary"/>
+                                    {{ $i18n.get('label_add_more_mapper_metadata') }}
+                                </a>
                             </div>
                         </section>
-                        <section
-                                v-if="isMapperMetadataCreating">
-                            <b-field>
-                                <b-input
-                                        v-model="new_metadata_label"
-                                        :placeholder="$i18n.get('label_name')"/>
-                            </b-field>
-                            <b-field>
-                                <b-input
-                                        placeholder="URI"
-                                        type="url"
-                                        v-model="new_metadata_uri"/>
-                            </b-field>
-                            <div class="field is-grouped form-submit">
-                                <div class="control">
-                                    <button
-                                            class="button is-outlined"
-                                            type="button"
-                                            @click="onCancelNewMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                        <b-modal
+                                @close="onCancelNewMetadataMapperMetadata"
+                                :active.sync="isMapperMetadataCreating">
+                            <div 
+                                    class="tainacan-modal-content">
+                                <div class="tainacan-modal-title">
+                                    <h2>{{ $i18n.get('instruction_insert_mapper_metadatum_info') }}</h2>
+                                    <hr>
                                 </div>
-                                <div class="control">
-                                    <button
-                                            @click.prevent="onSaveNewMetadataMapperMetadata"
-                                            class="button is-success">{{ $i18n.get('new') }}</button>
+                                <b-field>
+                                    <b-input
+                                            v-model="new_metadata_label"
+                                            required
+                                            :placeholder="$i18n.get('label_name')"/>
+                                </b-field>
+                                <b-field>
+                                    <b-input
+                                            placeholder="URI"
+                                            type="url"
+                                            required
+                                            v-model="new_metadata_uri"/>
+                                </b-field>
+                                <div class="field is-grouped form-submit">
+                                    <div class="control">
+                                        <button
+                                                class="button is-outlined"
+                                                type="button"
+                                                @click="onCancelNewMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                                    </div>
+                                    <div class="control">
+                                        <button
+                                                @click.prevent="onSaveNewMetadataMapperMetadata"
+                                                :disabled="isNewMetadataMapperMetadataDisabled"
+                                                class="button is-success">{{ $i18n.get('save') }}</button>
+                                    </div>
                                 </div>
                             </div>
-                        </section>
+                        </b-modal>
                     </template>
                     <section
                             v-if="mapper != '' && !isLoadingMetadatumMappers">
-                        <div class="field is-grouped form-submit">
+                        <div class="field is-grouped form-submit w-100">
                             <div class="control">
                                 <button
                                         class="button is-outlined"
@@ -340,6 +356,11 @@ export default {
                 return this.getMetadatumMappers();
             }
         },
+        isNewMetadataMapperMetadataDisabled: {
+            get() {
+                return !this.new_metadata_label || !this.new_metadata_uri;
+            }
+        }
     },
     beforeRouteLeave ( to, from, next ) {
         let hasUnsavedForms = false;
@@ -543,7 +564,6 @@ export default {
         },
         onCancelNewMetadataMapperMetadata() {
             this.isMapperMetadataCreating = false;
-            console.log('Cancel: ' + (this.isMapperMetadataCreating ? 'OK' : 'Err' ));
         },
         onSaveNewMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
@@ -635,6 +655,16 @@ export default {
             font-weight: 500;
         }
         margin: 1em 0em 2.0em 0em;
+    }
+
+    .w-100 {
+        width: 100%;
+        position: relative;
+        float: left;
+    }
+    
+    .modal-new-link {
+        padding: 0.5em 1em 3em 1em;
     }
 
     .loading-spinner {
