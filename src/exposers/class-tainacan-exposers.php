@@ -221,7 +221,7 @@ class Exposers {
     				$type_responde = $exposer->rest_request_after_callbacks($response, $handler, $request);
     				if(self::request_has_url_param($request)) {
     				    header(implode('', $response->get_headers()));
-    				    echo $response->get_data();
+    				    echo stripcslashes($response->get_data());
     				    exit();
     				}
     				return $type_responde;
@@ -424,7 +424,7 @@ class Exposers {
 	 */
 	public static function get_exposer_urls($base_url = '') {
 	    $Tainacan_Exposers = self::get_instance();
-	    $mappers = $Tainacan_Exposers->get_mappers();
+	    $mappers = $Tainacan_Exposers->get_mappers(\OBJECT);
 	    $types = $Tainacan_Exposers->get_types(\OBJECT);
 	    $urls = [];
 	    foreach ($types as $type) {
@@ -440,8 +440,8 @@ class Exposers {
 	                $urls[$type->slug][] = $url.'&exposer_map='.$type_mapper;
 	            }
 	        } else {
-	            foreach ($mappers as $type_mapper) {
-	                $urls[$type->slug][] = $url.'&exposer_map='.$type_mapper;
+	            foreach ($mappers as $mapper) {
+	                $urls[$type->slug][] = $url.'&exposer_map='.$mapper->slug;
 	            }
 	        }
 	    }
