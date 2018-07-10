@@ -215,7 +215,7 @@
         }
 
         .taginput-container {
-            display: table-cell;
+            //display: table-cell;
             border: none !important;
             &.is-focusable:active, &.is-focusable:focus  {
                 border: none !important;
@@ -224,7 +224,7 @@
                 border: 1px solid $tainacan-input-background !important;
             }
             .control.has-icons-left .icon {
-                top: 5px;
+                top: 0px !important;
             }
             .tags {
                 display: none !important;

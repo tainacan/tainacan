@@ -13,6 +13,11 @@ export const eventBus = new Vue({
         }
         this.$on('input', data => this.updateValue(data) );
     },
+    watch: {
+        errors() {
+            this.$emit('hasErrorsOnForm', this.errors.length > 0);
+        }
+    },
     methods : {
         registerComponent( name ){
             if (this.componentsTag.indexOf(name) < 0) {
