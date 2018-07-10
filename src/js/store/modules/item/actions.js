@@ -53,8 +53,12 @@ export const cleanMetadata = ({ commit }) => {
     commit('cleanMetadata');
 };
 
-export const cleanLastUpdated = ({commit}) => {
+export const cleanLastUpdated = ({ commit }) => {
     commit('cleanLastUpdated');
+};
+
+export const setLastUpdated = ({ commit}, value) => {
+    commit('setLastUpdated', value);
 };
 
 // Actions directly related to Item
@@ -172,7 +176,6 @@ export const fetchAttachments = ({ commit }, item_id) => {
     });
 };
 
- 
 export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/items/' + itemId, {

@@ -221,7 +221,7 @@ export const sendCollection = ( { commit }, { name, description, status, mapper 
             name: name,
             description: description,
             status: status,
-            'exposer-map': mapper
+            exposer_map: mapper
         })
             .then( res => {
                 commit('setCollection', { name: name, description: description, status: status, mapper: mapper });

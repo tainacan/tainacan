@@ -25,11 +25,13 @@ class Exposers {
 	}
 	
 	public function __construct() {
+	    self::$instance = $this;
 		$this->register_exposer_type('Tainacan\Exposers\Types\Xml');
 		$this->register_exposer_type('Tainacan\Exposers\Types\Txt');
 		$this->register_exposer_type('Tainacan\Exposers\Types\Html');
 		$this->register_exposer_type('Tainacan\Exposers\Types\Csv');
 		$this->register_exposer_type('Tainacan\Exposers\Types\OAI_PMH');
+		$this->register_exposer_type('Tainacan\Exposers\Types\JSON_LD');
 		do_action('tainacan-register-exposer-types');
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Dublin_Core');
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Value');
@@ -135,12 +137,23 @@ class Exposers {
 		$ret = $item_arr;
 		$metadatum_mapping = $item_arr['metadatum']['exposer_mapping'];
 		if(array_key_exists($mapper->slug, $metadatum_mapping)) {
-			if(is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ) {
+			if(
+			    is_string($metadatum_mapping[$mapper->slug]) && is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ||
+			    is_array($metadatum_mapping[$mapper->slug]) && $mapper->allow_extra_metadata != true
+			) {
 				throw new \Exception('Invalid Mapper Option');
 			}
-			$ret = [$mapper->prefix.$metadatum_mapping[$mapper->slug].$mapper->sufix => $item_arr['value']]; //TODO Validate option
-		} else if($mapper->slug == 'value') {
+			$slug = '';
+			if(is_string($metadatum_mapping[$mapper->slug])) {
+			    $slug = $metadatum_mapping[$mapper->slug];
+			} else {
+			    $slug = $metadatum_mapping[$mapper->slug]['slug'];
+			}
+			$ret = [$mapper->prefix.$slug.$mapper->sufix => $item_arr['value']]; //TODO Validate option
+		} elseif($mapper->slug == 'value') {
 			$ret = [$item_arr['metadatum']['name'] => $item_arr['value']];
+		} else {
+		    $ret = [];
 		}
 		return $ret;
 	}
@@ -179,6 +192,22 @@ class Exposers {
 	}
 	
 	/**
+	 * check if query came from url
+	 * @param \WP_REST_Request $request
+	 */
+	public static function request_has_url_param($request) {
+	    $Tainacan_Exposers = self::get_instance();
+	    $query_url_params = $request->get_query_params();
+	    if (
+	        is_array($query_url_params) && array_key_exists('exposer_type', $query_url_params) &&
+	        $Tainacan_Exposers->has_type($query_url_params['exposer_type'])
+	    ) {
+	        return true;
+	    }
+	    return false;
+	}
+	
+	/**
 	 * adapt request response to exposer type 
 	 * @param \WP_REST_Response $response
 	 * @param \WP_REST_Server $handler
@@ -189,7 +218,13 @@ class Exposers {
 	    if($this->is_tainacan_request($request) && $response instanceof \WP_REST_Response ) {
     		if($request->get_method() == 'GET') {
     			if($exposer = $this->request_has_type($request)) {
-    				return $exposer->rest_request_after_callbacks($response, $handler, $request);
+    				$type_responde = $exposer->rest_request_after_callbacks($response, $handler, $request);
+    				if(self::request_has_url_param($request)) {
+    				    header(implode('', $response->get_headers()));
+    				    echo $response->get_data();
+    				    exit();
+    				}
+    				return $type_responde;
     			}
     		} elseif($request->get_method() == 'POST') {
     		    if($mapper = $this->request_has_mapper($request)) {
@@ -216,13 +251,20 @@ class Exposers {
 	 */
 	public static function request_has_type($request) {
 		$body = json_decode( $request->get_body(), true );
+		$query_url_params = $request->get_query_params();
 		$Tainacan_Exposers = self::get_instance();
 		if(
-			is_array($body) && array_key_exists('exposer-type', $body) &&
-			$Tainacan_Exposers->has_type($body['exposer-type'])
+    			is_array($body) && array_key_exists('exposer_type', $body) &&
+    			$Tainacan_Exposers->has_type($body['exposer_type'])
 		) {
-			$type = $Tainacan_Exposers->check_class_name($body['exposer-type'], true);
+			$type = $Tainacan_Exposers->check_class_name($body['exposer_type'], true);
 			return new $type;
+		} elseif (
+                is_array($query_url_params) && array_key_exists('exposer_type', $query_url_params) &&
+                $Tainacan_Exposers->has_type($query_url_params['exposer_type'])
+        ){
+            $type = $Tainacan_Exposers->check_class_name($query_url_params['exposer_type'], true);
+		    return new $type;
 		}
 		return false;
 	}
@@ -244,19 +286,33 @@ class Exposers {
 	public static function request_has_mapper($request) {
 		$body = json_decode( $request->get_body(), true );
 		$Tainacan_Exposers = self::get_instance();
+		$query_url_params = $request->get_query_params();
 		
 		$type = self::request_has_type($request);
 		if( // There are a defined mapper
-			is_array($body) && array_key_exists('exposer-map', $body) &&
-			$Tainacan_Exposers->has_mapper($body['exposer-map'])
+			is_array($body) && array_key_exists('exposer_map', $body) &&
+			$Tainacan_Exposers->has_mapper($body['exposer_map'])
 		) {
 			if(
 				$type === false || // do not have a exposer type
 				$type->get_mappers() === true || // the type accept all mappers
-				( is_array($type->get_mappers()) && in_array($body['exposer-map'], $type->get_mappers()) ) ) { // the current mapper is accepted by type
-				$mapper = $Tainacan_Exposers->check_class_name($body['exposer-map'], true, self::MAPPER_CLASS_PREFIX);
+				( is_array($type->get_mappers()) && in_array($body['exposer_map'], $type->get_mappers()) )
+			) { // the current mapper is accepted by type
+				$mapper = $Tainacan_Exposers->check_class_name($body['exposer_map'], true, self::MAPPER_CLASS_PREFIX);
 				return new $mapper;
-			} 
+			}
+		} elseif(
+		    is_array($query_url_params) && array_key_exists('exposer_map', $query_url_params) &&
+		    $Tainacan_Exposers->has_mapper($query_url_params['exposer_map'])
+		) {
+		    if(
+		        $type === false || // do not have a exposer type
+		        $type->get_mappers() === true || // the type accept all mappers
+		        ( is_array($type->get_mappers()) && in_array($query_url_params['exposer_map'], $type->get_mappers()) )
+		        ) { // the current mapper is accepted by type
+		            $mapper = $Tainacan_Exposers->check_class_name($query_url_params['exposer_map'], true, self::MAPPER_CLASS_PREFIX);
+		            return new $mapper;
+		    }
 		} elseif( is_object($type) && is_array($type->get_mappers()) && count($type->get_mappers()) > 0 ) { //there are no defined mapper, let use the first one o list if has a list
 			$mapper = $Tainacan_Exposers->check_class_name($type->get_mappers()[0], true, self::MAPPER_CLASS_PREFIX);
 			return new $mapper;
@@ -299,6 +355,27 @@ class Exposers {
 	}
 	
 	/**
+	 * Return list of registered types
+	 * @param string $output output format, ARRAY_N or OBJECT
+	 * @return array of slug or array of \Tainacan\Exposers\Types\Type
+	 */
+	public function get_types($output = \ARRAY_N) {
+	    $ret = [];
+	    switch ($output) {
+	        case \OBJECT:
+	            foreach ($this->types as $type) {
+	                $ret[] = new $type;
+	            }
+	            break;
+	        case \ARRAY_N:
+	        default:
+	            return $this->types;
+	            break;
+	    }
+	    return $ret;
+	}
+	
+	/**
 	 * 
 	 * @param \WP_REST_Response $response
 	 * @param \WP_REST_Server $handler
@@ -338,5 +415,36 @@ class Exposers {
 	       }
 	    }
 	    return $response;
+	}
+	
+	/**
+	 * 
+	 * @param string $base_url url base for exposer parameters append
+	 * @return string|string[][]
+	 */
+	public static function get_exposer_urls($base_url = '') {
+	    $Tainacan_Exposers = self::get_instance();
+	    $mappers = $Tainacan_Exposers->get_mappers();
+	    $types = $Tainacan_Exposers->get_types(\OBJECT);
+	    $urls = [];
+	    foreach ($types as $type) {
+	        $url = $base_url.(strpos($base_url, '?') === false ? '?' : '&').'exposer_type='.$type->slug;
+	        $urls[$type->slug] = [$url];
+	        if(is_array($type->get_mappers())) {
+	            $first = true; // first is default, jump
+	            foreach ($type->get_mappers() as $type_mapper) {
+	                if($first) {
+	                    $first = false;
+	                    continue;
+	                }
+	                $urls[$type->slug][] = $url.'&exposer_map='.$type_mapper;
+	            }
+	        } else {
+	            foreach ($mappers as $type_mapper) {
+	                $urls[$type->slug][] = $url.'&exposer_map='.$type_mapper;
+	            }
+	        }
+	    }
+	    return $urls;
 	}
 }

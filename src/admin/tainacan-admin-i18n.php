@@ -30,6 +30,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'terms'                                      => __( 'Terms', 'tainacan' ),
 	'mapping'                                    => __( 'Mapping', 'tainacan' ),
 	'importers'                                  => __( 'Importers', 'tainacan' ),
+    'metadata'                                   => __( 'metadata', 'tainacan' ),
 
 	// Actions
 	'edit'                                       => __( 'Edit', 'tainacan' ),
@@ -100,6 +101,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_collection_filters_edition'           => __( 'Edit Filters of', 'tainacan' ),
 	'title_importer_page'                        => __( 'Importer', 'tainacan' ),
 	'title_importers_page'                       => __( 'Importers', 'tainacan' ),
+    	'title_export_collection_page'               => __( 'Export Collection Page', 'tainacan' ),
+	'title_export_item_page'		     => __( 'Export Item Page', 'tainacan' ),
+	'title_export_page'			     => __( 'Export Page', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                                => __( 'Clear', 'tainacan' ),
@@ -253,6 +257,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_publish'				                 => __( 'Publish', 'tainacan' ),
 	'label_send_to_trash'		                 => __( 'Send to trash', 'tainacan' ),
 	'label_update'		                 		 => __( 'Update', 'tainacan' ),
+    'label_mapper_metadata'                      => __( 'Mapper Metadata', 'tainacan' ),
+    'label_add_more_mapper_metadata'             => __( 'Add more mapper\'s metadata', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -277,10 +283,13 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_search'                         => __( 'Search', 'tainacan' ),
 	'instruction_search_in_repository'           => __( 'Search in repository', 'tainacan' ),
 	'instruction_select_a_target_collection'     => __( 'Select a target collection', 'tainacan' ),
+    'instruction_select_a_metadatum'			 => __( 'Select a metadatum', 'tainacan' ),
+    'instruction_select_a_mapper'   			 => __( 'Select a mapper', 'tainacan' ),
 	'instruction_select_an_importer_type'        => __( 'Select an importer type from the options above:', 'tainacan' ),
 	'instruction_drop_file_or_click_to_upload'   => __( 'Drop your source file or click here to upload.', 'tainacan' ),
 	'instruction_select_metadatum_type'          => __( 'Select a metadatum type.', 'tainacan' ),
 	'instruction_configure_new_metadatum'        => __( 'Configure new metadatum.', 'tainacan' ),
+    'instruction_insert_mapper_metadatum_info'   => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_search_results'                        => __( 'Search Results', 'tainacan' ),

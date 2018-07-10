@@ -14,7 +14,7 @@ abstract class Mapper {
 	 *     'URI' => 'http://...',          // URI of the metadatum description
 	 *     'label' => 'Label',             // Label to show on UI
 	 *     'metadata_type' => 'date',         // Tainacan recomended metadatum type, default text
-	 *     'core_metadatum' => 'description'   // if have a core tainacan metadatum, what?
+	 *     'core_metadatum' => false   // if have a core tainacan metadatum, what?
 	 * ['date' => [
 	 *     	'URI' => 'http://purl.org/dc/elements/1.1/date',
 	 *  	'label' => 'Date',
@@ -23,7 +23,7 @@ abstract class Mapper {
 	 *  'description' => [
 	 *  	'URI' => 'http://purl.org/dc/elements/1.1/description',
 	 *  	'label' => 'Description',
-	 *      'core_metadatum' => 'description'
+	 *      'core_metadatum' => true
 	 *  ]]
 	 * @var array
 	 */
@@ -32,6 +32,7 @@ abstract class Mapper {
 	public $prefix = ''; // Tag prefix like "dc:"
 	public $sufix = ''; // Tag sufix
 	public $header = false; // API response header or file header to be used with
+	public $show_ui = true; // Show mapper in ui and api calls
 	
 	public function _toArray() {
 		return [

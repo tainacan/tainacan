@@ -1,5 +1,8 @@
 <template>
     <div>
+        <b-loading
+                :active.sync="isLoading"
+                :can-cancel="false"/>
         <button 
                 id="metadata-column-compress-button"
                 @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
@@ -291,35 +294,32 @@
                                     v-model="visibility"
                                     value="publish"
                                     native-value="publish">
-                                {{ $i18n.get('publish_visibility') }}
+                                <span class="icon">
+                                    <i class="mdi mdi-earth"/>
+                                </span> {{ $i18n.get('publish_visibility') }}
                             </b-radio>
                             <b-radio
                                     v-model="visibility"
                                     value="private"
                                     native-value="private">
-                                {{ $i18n.get('private_visibility') }}
+                                <span class="icon">
+                                    <i class="mdi mdi-lock"/>
+                                </span>  {{ $i18n.get('private_visibility') }}
                             </b-radio>
                         </div>
                     </div>
 
                     <!-- Status -------------------------------- -->
-                    <div class="section-label">
+                    <!--<div class="section-label">
                         <label>{{ $i18n.get('label_status') }}</label>
                         <span class="required-metadatum-asterisk">*</span>
                         <help-button
                                 :title="$i18n.getHelperTitle('items', 'status')"
                                 :message="$i18n.getHelperMessage('items', 'status')"/>
                     </div>
-                    <!-- Last Updated Info -->      
-                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
-                        <em>
-                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
-                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
-                        </em>
-                    </p>
                     <div class="section-status">
                         
-                        <!--<div class="field has-addons">
+                        <div class="field has-addons">
                             <b-select
                                     v-model="form.status"
                                     :placeholder="$i18n.get('instruction_select_a_status')">
@@ -340,14 +340,8 @@
                                     {{ $i18n.get('save') }}
                                 </button>
                             </div>
-                        </div> -->
-                        <p
-                                v-if="item.status == 'auto-draft'"
-                                class="help is-danger">
-                            {{ $i18n.get('info_item_not_saved') }}
-                        </p>
-                        <p class="help is-danger">{{ formErrorMessage }}</p>
-                    </div>
+                        </div> 
+                    </div>-->
 
                     <label class="section-label">{{ $i18n.get('metadata') }}</label>
                     <br>
@@ -370,18 +364,37 @@
 
                 </div>
             </div>
-            <div class="footer form-submission-footer">
-                <div v-if="form.status == 'trash'">
+            <div class="footer">
+                <!-- Last Updated Info --> 
+                <div class="update-info-section">     
+                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        <em>
+                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
+                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
+                        </em>
+                    </p>
+                    <p class="help is-danger">{{ errorList }}</p>
+                    <p class="help is-danger">{{ formErrorMessage }}</p>
+                </div>  
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'trash'">
                     <button 
                             @click="onDeletePermanently()"
                             type="button"
                             class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
                     <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
+                    <button 
                             @click="onSubmit(visibility)"
                             type="button"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
                 </div>
-                <div v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
                     <button 
                             v-if="form.status == 'draft'"
                             @click="onSubmit('trash')"
@@ -401,7 +414,9 @@
                             type="button"
                             class="button is-success">{{ $i18n.get('label_publish') }}</button>
                 </div>
-                <div v-if="form.status == 'publish' || form.status == 'private'">
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'publish' || form.status == 'private'">
                     <button 
                             @click="onSubmit('trash')"
                             type="button"
@@ -417,10 +432,6 @@
                 </div>
             </div>
         </form>
-
-        <b-loading
-                :active.sync="isLoading"
-                :can-cancel="false"/>
     </div>
 </template>
 
@@ -487,6 +498,9 @@ export default {
         },
         lastUpdated() {
             return this.getLastUpdated();
+        },
+        errrorList() {
+            return eventBus.errors;
         }
     },
     components: {
@@ -504,7 +518,8 @@ export default {
             'sendAttachments',
             'updateThumbnail',
             'fetchAttachments',
-            'cleanLastUpdated'
+            'cleanLastUpdated',
+            'setLastUpdated'
         ]),
         ...mapGetters('item',[
             'getMetadata',
@@ -544,6 +559,7 @@ export default {
                     for (let metadatum of Object.keys(error)){
                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
+                    
                 }
                 this.formErrorMessage = errors.error_message;
                 this.form.status = previousStatus;
@@ -797,6 +813,7 @@ export default {
                     this.visibility = this.item.status;
 
                 this.loadMetadata();
+                this.setLastUpdated(this.item.modification_date);
             });
 
             // Fetch current existing attachments
@@ -804,32 +821,15 @@ export default {
         }
 
         // Sets feedback variables
-        eventBus.$on('isChangingValue', () => {
-            if (!this.isEditingValues) {
-                this.isEditingValues = true;
-                setTimeout(()=> {
-                    this.isEditingValues = false;
-                }, 2000);
-                this.$toast.open({
-                    duration: 2000,
-                    message: this.$i18n.get('info_editing_metadata_values'),
-                    position: 'is-bottom',
-                })
-            }
-        });
         eventBus.$on('isUpdatingValue', (status) => {
-            if (!this.isUpdatingValues) {
-                this.isUpdatingValues = status;
-                if (this.isUpdatingValues) {
-                    this.$toast.open({
-                        duration: 2000,
-                        message: this.$i18n.get('info_updating_metadata_values'),
-                        position: 'is-bottom',
-                    })
-                }
-            } else {
-                this.isUpdatingValues = false;
-            }
+            this.isUpdatingValues = status;
+                // if (this.isUpdatingValues) {
+                //     this.$toast.open({
+                //         duration: 2000,
+                //         message: this.$i18n.get('info_updating_metadata_values'),
+                //         position: 'is-bottom',
+                //     })
+                // }
         });
         this.cleanLastUpdated();
     },
@@ -886,7 +886,7 @@ export default {
     }
 
     .page-container-shrinked {
-        height: calc(100% - 136px) !important; // Bigger than the others due footer's height
+        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {
@@ -917,6 +917,10 @@ export default {
                 padding: 10px 0px 10px 60px;
             }
 
+            @media screen and (max-width: 769px) {
+                width: 100%;
+            }
+
         }
 
     }
@@ -933,7 +937,9 @@ export default {
 
     .collapse-all {
         font-size: 12px;
-        .icon { vertical-align: bottom; }
+        .icon { 
+            vertical-align: bottom; 
+        }
     }
 
     .section-box {
@@ -967,6 +973,13 @@ export default {
     }
     .section-status{
         padding: 16px 0;     
+        .field .b-radio {
+            margin-right: 24px;
+            .icon  {
+                font-size: 18px !important; 
+                color: $gray;
+            }
+        }
     }
     .section-attachments {
         border: 1px solid $draggable-border-color;
@@ -1044,15 +1057,38 @@ export default {
         }
     }
 
-    .form-submission-footer {
+    .footer {
+
         padding: 24px $page-side-padding;
         position: absolute;
         bottom: 0;
         z-index: 999999;
+        background-color: white;
+        border-top: 2px solid $secondary;
         width: 100%;
-        display: flex;
-        justify-content: end;
-    }
 
+        .form-submission-footer {    
+            width: 100%;
+            display: flex;
+            justify-content: end;
+
+            .button {
+                margin-left: 6px;
+                margin-right: 6px;
+            }
+            .button.is-outlined {
+                margin-left: 0px;
+                margin-right: auto;
+            }
+        }
+
+        .update-info-section {
+            text-align: center;
+            position: relative;
+            margin-top: -20px;
+            top: 28px;
+            color: $gray-light;
+        }
+    }
 
 </style>

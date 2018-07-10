@@ -9,86 +9,103 @@
             <b-icon :icon="isMetadataColumnCompressed ? 'menu-left' : 'menu-right'" />
         </button>
         <tainacan-title/>
-        <div class="columns">
+        <div class="tainacan-form columns">
             <div class="column is-5-5">
-                <div class="column is-12">
-                    <router-link
-                            class="button is-secondary"
-                            :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                        {{ $i18n.getFrom('items','edit_item') }}
-                    </router-link>
-                    <a
-                            class="button is-success is-pulled-right"
-                            :href="item.url">
-                        {{ $i18n.getFrom('items', 'view_item') }}
-                    </a>
 
-                    <br>
-                    <br>
-
-                    <!-- Status -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_status') }}</label>
-                    </div>
-                    <div>
-                        <p>{{ item.status }}</p>
-                    </div>
-                    <br>
+                <!-- Document -------------------------------- -->
+                <div class="section-label">
+                    <label>{{ item.document !== undefined && item.document !== null && item.document !== '' ?
+                        $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
                 </div>
+                <div class="section-box">
+                    <div
+                            v-if="item.document !== undefined && item.document !== null &&
+                                    item.document_type !== undefined && item.document_type !== null &&
+                                    item.document !== '' && item.document_type !== 'empty'">
 
-                <div class="column is-12">
+                        <div v-if="item.document_type === 'attachment'">
+                            <div v-html="item.document_as_html"/>
+                        </div>
 
-                    <!-- Document -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ item.document !== undefined && item.document !== null && item.document !== '' ?
-                            $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
-                    </div>
-                    <div class="section-box">
-                        <div
-                                v-if="item.document !== undefined && item.document !== null &&
-                                        item.document_type !== undefined && item.document_type !== null &&
-                                        item.document !== '' && item.document_type !== 'empty'">
+                        <div v-else-if="item.document_type === 'text'">
+                            <div v-html="item.document_as_html"/>
+                        </div>
 
-                            <div v-if="item.document_type === 'attachment'">
-                                <div v-html="item.document_as_html"/>
-                            </div>
-
-                            <div v-else-if="item.document_type === 'text'">
-                                <div v-html="item.document_as_html"/>
-                            </div>
-
-                            <div v-else-if="item.document_type === 'url'">
-                                <div v-html="item.document_as_html"/>
-                            </div>
+                        <div v-else-if="item.document_type === 'url'">
+                            <div v-html="item.document_as_html"/>
                         </div>
                     </div>
                 </div>
 
-                <div class="column is-12">
-
-                    <!-- Attachments ------------------------------------------ -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_attachments') }}</label>
+                <!-- Thumbnail -------------------------------- -->
+                <div class="section-label">
+                    <label>{{ $i18n.get('label_thumbnail') }}</label>
+                </div>                    
+                <div class="section-box section-thumbnail">
+                    <div class="thumbnail-field">
+                        <file-item
+                                v-if="item.thumbnail != undefined && item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
+                                :show-name="false"
+                                :size="178"
+                                :file="{ 
+                                    media_type: 'image', 
+                                    guid: { rendered: item.thumbnail.thumb },
+                                    title: { rendered: $i18n.get('label_thumbnail')},
+                                    description: { rendered: `<img alt='Thumbnail' src='` + item.thumbnail.full + `'/>` }}"/>
+                        <figure 
+                                v-if="item.thumbnail == undefined || item.thumbnail.thumb == undefined || item.thumbnail.thumb == false"
+                                class="image">
+                            <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                            <img
+                                    :alt="$i18n.get('label_thumbnail')"
+                                    :src="thumbPlaceholderPath">
+                        </figure>
                     </div>
-                    <div class="section-box section-attachments">
-                        <div class="uploaded-files">
-                            <file-item
-                                    :style="{ margin: 15 + 'px'}"
-                                    v-if="attachmentsList.length > 0" 
-                                    v-for="(attachment, index) in attachmentsList"
-                                    :key="index"
-                                    :show-name="true"
-                                    :file="attachment"/>
-                            <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
-                        </div>
-                    </div>
+                </div>
 
+                <!-- Attachments ------------------------------------------ -->
+                <div class="section-label">
+                    <label>{{ $i18n.get('label_attachments') }}</label>
+                </div>
+                <div class="section-box section-attachments">
+                    <div class="uploaded-files">
+                        <file-item
+                                :style="{ margin: 15 + 'px'}"
+                                v-if="attachmentsList.length > 0" 
+                                v-for="(attachment, index) in attachmentsList"
+                                :key="index"
+                                :show-name="true"
+                                :file="attachment"/>
+                        <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
+                    </div>
                 </div>
 
             </div>
             <div 
                     v-show="!isMetadataColumnCompressed"
                     class="column is-4-5">
+                
+                <!-- Visibility (status public or private) -------------------------------- -->
+                <div class="section-label">
+                    <label>{{ $i18n.get('label_visibility') }}</label>
+                    <span class="required-metadatum-asterisk">*</span>
+                </div>
+                <div class="section-status">
+                    <div class="field has-addons">
+                        <span v-if="item.status != 'private'">
+                            <span class="icon">
+                                <i class="mdi mdi-earth"/>
+                            </span> {{ $i18n.get('publish_visibility') }}
+                        </span>
+                        <span v-if="item.status == 'private'">
+                            <span class="icon">
+                                <i class="mdi mdi-lock"/>
+                            </span>  {{ $i18n.get('private_visibility') }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Metadata -------------------------------- -->
                 <label class="section-label">{{ $i18n.get('metadata') }}</label>
                 <br>
                 <a
@@ -99,8 +116,6 @@
                             type="is-secondary"
                             :icon=" open ? 'menu-down' : 'menu-right'"/>
                 </a>
-
-                <!-- Metadata -------------------------------- -->
                 <div>
                     <div
                             v-for="(metadatum, index) of metadatumList"
@@ -130,6 +145,20 @@
                         </b-collapse>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="form-submission-footer">
+                <router-link
+                        class="button is-secondary"
+                        :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
+                    {{ $i18n.getFrom('items','edit_item') }}
+                </router-link>
+                <a
+                        class="button is-success is-pulled-right"
+                        :href="item.url">
+                    {{ $i18n.getFrom('items', 'view_item') }}
+                </a>
             </div>
         </div>
     </div>
@@ -228,6 +257,10 @@
         }
     }
 
+    .page-container-shrinked {
+        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
+    }
+
     .page-container {
         padding: 25px 0px;
 
@@ -236,21 +269,33 @@
             padding-right: $page-side-padding;
         }
 
-        .column {
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
         .column.is-5-5 {
             width: 45.833333333%;
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: width 0.6s;
+
+            @media screen and (max-width: 769px) {
+                width: 100%;
+            }
         }
         .column.is-4-5 {
             width: 37.5%;
             padding-left: $page-side-padding;
             padding-right: $page-side-padding;
             transition: all 0.6s;
+
+            .field {
+                padding: 10px 0px 10px 30px;
+
+                .collapse .collapse-content {
+                    margin-left: 30px; 
+                }
+            }
+
+            @media screen and (max-width: 769px) {
+                width: 100%;
+            }
         }
 
     }
@@ -288,8 +333,9 @@
     }
 
     .section-box {
-        border: 1px solid $draggable-border-color;
-        padding: 30px;
+        
+        background-color: white;
+        padding: 26px;
         margin-top: 16px;
         margin-bottom: 38px;
 
@@ -318,19 +364,24 @@
         }
     }
     .section-status{
-        width: 174px;        
-    }
-    .section-thumbnail {
-        width: 174px;
-        padding-top: 0;
-        padding-bottom: 0;
+        padding-bottom: 16px;    
+        font-size: 0.75rem; 
+
+        .field {
+            border-bottom: none;
+
+            .icon  {
+                font-size: 18px !important; 
+                color: $gray;
+            }
+        }
     }
     .section-attachments {
+        border: 1px solid $draggable-border-color;
         height: 250px;
         max-width: 100%;
         resize: vertical;
         overflow: auto;
-        padding: 15px;
 
         p { margin: 4px 15px }
     }
@@ -340,6 +391,56 @@
         flex-flow: wrap;
         margin-left: -15px;
         margin-right: -15px;
+    }
+
+     .thumbnail-field {
+
+        .content {
+            padding: 10px;
+            font-size: 0.8em;
+        }
+        img {
+            height: 178px;
+            width: 178px;
+        }
+        .image-placeholder {
+            position: absolute;
+            margin-left: 45px;
+            margin-right: 45px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 99;
+            text-align: center;
+            color: gray;
+            top: 70px;
+            max-width: 90px;
+        }
+    }
+
+    .footer {
+
+        padding: 24px $page-side-padding;
+        position: absolute;
+        bottom: 0;
+        z-index: 999999;
+        background-color: white;
+        border-top: 2px solid $secondary;
+        width: 100%;
+
+        .form-submission-footer {    
+            width: 100%;
+            display: flex;
+            justify-content: end;
+
+            .button {
+                margin-left: 6px;
+                margin-right: 6px;
+            }
+            .button.is-outlined {
+                margin-left: 0px;
+                margin-right: auto;
+            }
+        }
     }
 </style>
 

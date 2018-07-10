@@ -8,6 +8,10 @@ namespace Tainacan\Tests;
 class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	protected $item;
 	protected $collection;
+	/**
+	 * 
+	 * @var \Tainacan\Entities\Metadatum
+	 */
 	protected $metadatum;
 	
 	protected function create_meta_requirements() {
@@ -79,7 +83,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('TestValues_exposers', $data['value']);
 		
 		$item_exposer_json = json_encode([
-			'exposer-map'       => 'Value',
+			'exposer_map'       => 'Value',
 		]);
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
 		$request->set_body($item_exposer_json);
@@ -125,7 +129,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('TestValues_exposers', $data['value']);
 		
 		$item_exposer_json = json_encode([
-			'exposer-type'       => 'Xml',
+			'exposer_type'       => 'Xml',
 		]);
 		
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
@@ -137,7 +141,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertInstanceOf('SimpleXMLElement', @simplexml_load_string($data));
 		
 		$item_exposer_json = json_encode([
-			'exposer-map'       => 'Dublin Core',
+			'exposer_map'       => 'Dublin Core',
 		]);
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
 		$request->set_body($item_exposer_json);
@@ -147,8 +151,8 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('TestValues_exposers', $data['dc:language']);
 		
 		$item_exposer_json = json_encode([
-			'exposer-type'       => 'Xml',
-			'exposer-map'       => 'Dublin Core',
+			'exposer_type'       => 'Xml',
+			'exposer_map'       => 'Dublin Core',
 		]);
 		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata' );
 		$request->set_body($item_exposer_json);
@@ -190,7 +194,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    $this->assertEquals('TestValues_exposers_slug', $data['value']);
 	    
 	    $item_exposer_json = json_encode([
-	        'exposer-map'       => 'dublin-core',
+	        'exposer_map'       => 'dublin-core',
 	    ]);
 	    $request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
 	    $request->set_body($item_exposer_json);
@@ -200,8 +204,8 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    $this->assertEquals('TestValues_exposers_slug', $data['dc:language']);
 	    
 	    $item_exposer_json = json_encode([
-	        'exposer-type'       => 'xml',
-	        'exposer-map'       => 'dublin-core',
+	        'exposer_type'       => 'xml',
+	        'exposer_map'       => 'dublin-core',
 	    ]);
 	    $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata' );
 	    $request->set_body($item_exposer_json);
@@ -227,7 +231,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		extract($this->create_meta_requirements());
 		
 		$item_exposer_json = json_encode([
-			'exposer-type'       => 'OAI-PMH',
+			'exposer_type'       => 'OAI-PMH',
 		]);
 		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata' );
 		$request->set_body($item_exposer_json);
@@ -250,8 +254,8 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		extract($this->create_meta_requirements());
 		
 		$item_exposer_json = json_encode([
-			'exposer-type'       => 'Html',
-			'exposer-map'       => 'Value'
+			'exposer_type'       => 'Html',
+			'exposer_map'       => 'Value'
 		]);
 		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata' );
 		$request->set_body($item_exposer_json);
@@ -310,7 +314,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $response->get_status());
 		
 		$item_exposer_json = json_encode([
-			'exposer-type'       => 'Csv',
+			'exposer_type'       => 'Csv',
 		]);
 		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata' );
 		$request->set_body($item_exposer_json);
@@ -383,7 +387,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		);
 		
 		$item_exposer_json = json_encode([
-			'exposer-map'       => 'Value',
+			'exposer_map'       => 'Value',
 		]);
 		
 		$request = new \WP_REST_Request('GET', $this->namespace . '/items/' . $this->item->get_id() );
@@ -402,7 +406,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	 */
 	public function test_mapped_new_collection() {
 	    $collection_JSON = json_encode([
-	        'exposer-map'  => 'Dublin Core',
+	        'exposer_map'  => 'Dublin Core',
 	        'name'         => 'TesteJsonAddDublin_Core',
 	        'description'  => 'Teste JSON Dublin Core mapped',
 	        'status'       => 'publish'
@@ -432,6 +436,68 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    }
 	    
 	}
+	
+	/**
+	 * @group json_dl_exposer
+	 */
+	public function test_jsondl_exposer() {
+	    global $Tainacan_Metadata, $Tainacan_Item_Metadata;
+	    
+	    extract($this->create_meta_requirements());
+	    
+	    $item__metadata_json = json_encode([
+	        'values'       => 'TestValues_exposers',
+	    ]);
+	    
+	    $request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->metadatum->get_id() );
+	    $request->set_body($item__metadata_json);
+	    
+	    $response = $this->server->dispatch($request);
+	    
+	    $this->assertEquals(200, $response->get_status());
+	    
+	    $data = $response->get_data();
+	    
+	    $this->assertEquals($this->item->get_id(), $data['item']['id']);
+	    $this->assertEquals('TestValues_exposers', $data['value']);
+	    
+	    $item_exposer_json = json_encode([
+	        'exposer_type'       => 'json-ld',
+	        'exposer_map'       => 'dublin-core',
+	    ]);
+	    $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata' );
+	    $request->set_body($item_exposer_json);
+	    $response = $this->server->dispatch($request);
+	    $this->assertEquals(200, $response->get_status());
+	    $data = json_decode($response->get_data());
+	    
+	    $this->assertEquals('http://purl.org/dc/elements/1.1/', $data->{'@context'}->dc);
+	    $this->assertEquals(get_locale(), $data->{'@context'}->{'@language'});
+	    $this->assertEquals($this->item->get('description'), $data->{'dc:description'}->{'@value'});
+	    $this->assertEquals($this->item->get('title'), $data->{'dc:title'}->{'@value'});
+	    $this->assertEquals('TestValues_exposers', $data->{'dc:language'}->{'@value'});
+	    
+	}
+	
+	/**
+	 * @group exposer_urls
+	 */
+	/*public function test_exposer_urls() {
+	    global $Tainacan_Metadata, $Tainacan_Item_Metadata;
+	    
+	    extract($this->create_meta_requirements());
+	    
+	    $id = $item->get_id();
+	    $base_url = "{$this->namespace}/items/{$id}/";
+	    $urls = \Tainacan\Exposers\Exposers::get_exposer_urls($base_url);
+	    foreach ($urls as $type => $type_urls) {
+	        foreach ($type_urls as $url) {
+    	        $request = new \WP_REST_Request('GET', $url);
+    	        $response = $this->server->dispatch($request);
+    	        $this->assertEquals(200, $response->get_status(), $url);
+	        }
+	    }
+	}*/ // TODO automate test this
 	
 }
 

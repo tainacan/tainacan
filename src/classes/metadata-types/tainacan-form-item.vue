@@ -121,11 +121,9 @@
         },
         methods: {
             emitIsChangingValue() {
-                eventBus.isChangingValue(true);
-
                 this.changeValue();
             },
-            changeValue: _.debounce(function(){
+            changeValue: _.debounce(function() {
                 
                 if(this.metadatum.value != this.inputs){
 
@@ -178,7 +176,7 @@
 
                     eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
                 }
-            }, 4000),
+            }, 1000),
             getValue(){ 
                 if (this.metadatum.value instanceof Array) {
                     this.inputs = this.metadatum.value.slice(0);
