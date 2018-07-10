@@ -408,13 +408,14 @@ export default {
                     let formElement = document.getElementById('importerOptionsForm');
                     let formData = new FormData(formElement);
                     let formObj = {};
-
+                    
                     for (let [key, value] of formData.entries())
                         formObj[key] = value;
 
                     this.updateImporterOptions({ sessionId: this.sessionId, optionsForm: formObj })
                     .then(updatedImporter => {    
                         this.importer = updatedImporter;
+
                         this.finishRunImporter();
                         })
                     .catch((errors) => {
