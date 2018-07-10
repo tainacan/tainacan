@@ -295,6 +295,12 @@ export default {
             .columns {
                 display: flex;
             }
+
+            .taginput-container {
+                .control.has-icons-left .icon {
+                    top: 5px;
+                }
+            }
         }
 
         .search-control {

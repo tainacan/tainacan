@@ -374,6 +374,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_type_to_search_metadata'			     => __( 'Search metadata...', 'tainacan' ),
 	'info_type_to_add_metadata'			         => __( 'Add metadata...', 'tainacan' ),
 	'info_visibility_helper'			         => __( 'How the item will be available to visualization.', 'tainacan' ),
+	'info_errors_in_form'                        => __( 'There are errors in the form', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                              => __( 'Text', 'tainacan' ),

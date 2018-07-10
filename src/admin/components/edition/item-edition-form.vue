@@ -343,6 +343,19 @@
                         </div> 
                     </div>-->
 
+                    <!-- Collection -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('collection') }}</label>
+                    </div>
+                    <div class="section-collection">
+                        <div class="field has-addons">
+                            <p>
+                                {{ collectionName }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Metadata from Collection-------------------------------- -->
                     <label class="section-label">{{ $i18n.get('metadata') }}</label>
                     <br>
                     <a
@@ -353,8 +366,6 @@
                                 type="is-gray"
                                 :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
-
-                    <!-- Metadata from Collection-------------------------------- -->
                     <tainacan-form-item
                             v-for="(metadatum, index) of metadatumList"
                             :key="index"
@@ -367,13 +378,12 @@
             <div class="footer">
                 <!-- Last Updated Info --> 
                 <div class="update-info-section">     
-                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                    <p v-if="formErrorMessage == '' || formErrorMessage == undefined">
                         <em>
-                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
-                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
+                            <span v-if="isUpdatingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
                         </em>
+                        {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
                     </p>
-                    <p class="help is-danger">{{ errorList }}</p>
                     <p class="help is-danger">{{ formErrorMessage }}</p>
                 </div>  
                 <div 
@@ -426,6 +436,7 @@
                             type="button"
                             class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
                     <button 
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
                             @click="onSubmit(visibility)"
                             type="button"
                             class="button is-success">{{ $i18n.get('label_update') }}</button>
@@ -485,8 +496,8 @@ export default {
             urlLink: '',
             isTextModalActive: false,
             textLink: '',
-            isEditingValues: false,
-            isUpdatingValues: false
+            isUpdatingValues: false,
+            collectionName: ''
         }
     },
     computed: {
@@ -498,9 +509,6 @@ export default {
         },
         lastUpdated() {
             return this.getLastUpdated();
-        },
-        errrorList() {
-            return eventBus.errors;
         }
     },
     components: {
@@ -527,6 +535,7 @@ export default {
             'getLastUpdated'
         ]),
         ...mapActions('collection', [
+            'fetchCollectionName',
             'deleteItem',
         ]),
         onSubmit(status) {
@@ -820,6 +829,11 @@ export default {
             this.fetchAttachments(this.itemId);
         }
 
+        // Obtains collection name
+        this.fetchCollectionName(this.collectionId).then((collectionName) => {
+            this.collectionName = collectionName;
+        });
+
         // Sets feedback variables
         eventBus.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
@@ -830,6 +844,12 @@ export default {
                 //         position: 'is-bottom',
                 //     })
                 // }
+        });
+        eventBus.$on('hasErrorsOnForm', (hasErrors) => {
+            if (hasErrors)
+                this.formErrorMessage = this.$i18n.get('info_errors_in_form');
+            else 
+                this.formErrorMessage = '';
         });
         this.cleanLastUpdated();
     },
