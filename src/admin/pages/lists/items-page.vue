@@ -327,7 +327,7 @@
                                         class="control">
                                     <button
                                             @click="advancedSearchResults = !advancedSearchResults"
-                                            class="button is-small is-light">{{ $i18n.get('edit_search') }}</button>
+                                            class="button is-small is-outlined">{{ $i18n.get('edit_search') }}</button>
                                 </p>
                                 <p
                                         v-if="advancedSearchResults"
