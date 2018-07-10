@@ -153,7 +153,7 @@ class REST_Items_Controller extends REST_Controller {
 				}
 
 				$item_arr['document_as_html'] = $item->get_document_html($img_size);
-
+				$item_arr['exposer_urls'] = \Tainacan\Exposers\Exposers::get_exposer_urls(rest_url("{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
 				return $this->add_metadata_to_item( $item, $item_arr );
 			}
 
@@ -181,6 +181,7 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			$item_arr['url'] = get_permalink( $item_arr['id'] );
+			$item_arr['exposer_urls'] = \Tainacan\Exposers\Exposers::get_exposer_urls(get_rest_url(null, "{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
 			
 			return $item_arr;
 		}
