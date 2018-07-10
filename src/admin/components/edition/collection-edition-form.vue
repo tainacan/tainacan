@@ -260,7 +260,8 @@
                         <b-input
                                 id="tainacan-text-name"
                                 v-model="form.name"
-                                @focus="clearErrors('name')"/>  
+                                @blur="updateSlug"
+                                @focus="clearErrors('name')"/>
                     </b-field>
                         
                     <!-- Description -------------------------------- --> 
@@ -359,6 +360,7 @@
                                 :message="$i18n.getHelperMessage('collections', 'slug')"/>
                         <b-input
                                 id="tainacan-text-slug"
+                                @input="updateSlug"
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
                     </b-field>
@@ -393,9 +395,12 @@
 <script>
 import { mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
+import { wpAjax } from '../../js/mixins';
+import htmlToJSON from 'html-to-json'
 
 export default {
     name: 'CollectionEditionForm',
+    mixins: [ wpAjax ],
     data(){
         return {
             collectionId: Number,
@@ -452,7 +457,8 @@ export default {
             registeredViewModes: tainacan_plugin.registered_view_modes,
             viewModesList: [],
             fromImporter: '',
-            newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page'
+            newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
+            isUpdatingSlug: false,
         }
     },
     methods: {
@@ -471,6 +477,37 @@ export default {
         ...mapActions('metadata', [
             'fetchMetadata'
         ]),
+        updateSlug(){
+            if(!this.form.name || this.form.name.length <= 0){
+                return;
+            }
+
+            this.isUpdatingSlug = true;
+
+            this.getSamplePermalink(this.collectionId, this.form.name, this.form.slug)
+                .then(samplePermalink => {
+
+                    let promise = htmlToJSON.parse(samplePermalink, {
+                        permalink($doc) {
+                            return $doc.find('#editable-post-name-full').text();
+                        }
+                    });
+
+                    promise.done((result) => {
+                        this.form.slug = result.permalink;
+                        this.$console.info(this.form.slug);
+                    });
+
+                    this.isUpdatingSlug = false;
+                    this.formErrorMessage = '';
+                    this.editFormErrors = {};
+                })
+                .catch(errors => {
+                    this.$console.error(errors);
+
+                    this.isUpdatingSlug = false;
+                });
+        },
         onSubmit() {
             this.isLoading = true;
 
