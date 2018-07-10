@@ -23,9 +23,9 @@ export const createTaxonomy = ({commit}, taxonomy) => {
     });
 };
 
-export const deleteTaxonomy = ({ commit }, taxonomyId) => {
+export const deleteTaxonomy = ({ commit }, { taxonomyId, isPermanently }) => {
   return new Promise(( resolve, reject ) => {
-      axios.tainacan.delete(`/taxonomies/${taxonomyId}?permanently=1`)
+      axios.tainacan.delete(`/taxonomies/${taxonomyId}?permanently=` + (isPermanently ? '1' : '0'))
           .then(res => {
               commit('deleteTaxonomy', res.data);
 

@@ -120,7 +120,7 @@
                                         @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
                                     <b-icon 
                                             type="is-secondary" 
-                                            icon="delete"/>
+                                            :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
                                 </a>
                             </div>
                         </td>
@@ -149,7 +149,8 @@
             total: 0,
             page: 1,
             taxonomiesPerPage: 12,
-            taxonomies: Array
+            taxonomies: Array,
+            isOnTrash: false
         },
         watch: {
             taxonomies() {
@@ -188,7 +189,7 @@
                         title: this.$i18n.get('label_warning'),
                         message: this.$i18n.get('info_warning_taxonomy_delete'),
                         onConfirm: () => {
-                            this.deleteTaxonomy(taxonomyId)
+                            this.deleteTaxonomy({ taxonomyId: taxonomyId, isPermanently: this.isOnTrash })
                                 .then(() => {
                                     // this.$toast.open({
                                     //     duration: 3000,
@@ -227,7 +228,7 @@
 
                             for (let i = 0; i < this.taxonomies.length;  i++) {
                                 if (this.selected[i]) {
-                                    this.deleteTaxonomy(this.taxonomies[i].id)
+                                    this.deleteTaxonomy({ taxonomyId: this.taxonomies[i].id, isPermanently: this.isOnTrash })
                                         .then(() => {
                                             // this.load();
                                             // this.$toast.open({

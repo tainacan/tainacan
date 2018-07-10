@@ -37,6 +37,7 @@
                     <taxonomies-list
                             :is-loading="isLoading"
                             :total="total"
+                            :is-on-trash="status == 'trash'"
                             :page="page"
                             :taxonomies-per-page="taxonomiesPerPage"
                             :taxonomies="taxonomies"/>
