@@ -251,7 +251,7 @@ class TAINACAN_REST_Export_Controller extends TAINACAN_UnitApiTestCase {
 	    
 	    $this->assertInstanceOf('SimpleXMLElement', $xml = @simplexml_load_string($data));
 	    
-	    var_dump($data);
+	    //var_dump($data);
 	    /*
 	    $this->assertEquals(3, $xml->count());
 	    $i = 0;
