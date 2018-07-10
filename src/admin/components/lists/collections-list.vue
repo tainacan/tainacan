@@ -1,6 +1,6 @@
 <template>
     <div 
-            v-if="totalCollections > 0 && !isLoading"
+            v-if="collections.length > 0 && !isLoading"
             class="table-container">
         <div class="selection-control">
             <div class="field select-all is-pulled-left">
@@ -13,7 +13,7 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="collections[0].current_user_can_edit"
+                        v-if="$userCaps.hasCapability('delete_tainacan-collections')"
                         :disabled="!isSelectingCollections"
                         id="bulk-actions-dropdown">
                     <button
