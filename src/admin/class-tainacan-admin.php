@@ -18,7 +18,9 @@ class Admin {
 
 	private function __construct() {
 
-		add_action( 'wp_ajax_tainacan_date_i18n', array( &$this, 'ajax_date_i18n') );
+		add_action( 'wp_ajax_tainacan-date-i18n', array( &$this, 'ajax_date_i18n') );
+		add_action( 'wp_ajax_tainacan-sample-permalink', array( &$this, 'ajax_sample_permalink') );
+
 		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
 		add_filter( 'admin_body_class', array( &$this, 'admin_body_class' ) );
 
@@ -119,7 +121,7 @@ class Admin {
 
 		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
 		wp_enqueue_media();
-		wp_enqueue_script('undescore', includes_url('js') . '/underscore.min.js' );
+		wp_enqueue_script('underscore', includes_url('js') . '/underscore.min.js' );
 		wp_enqueue_script('jcrop');
 		wp_enqueue_script( 'customize-controls' );
 		
@@ -170,7 +172,6 @@ class Admin {
 			'root_wp_api'            => esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            => admin_url( 'admin-ajax.php' ),
 			'nonce'                  => wp_create_nonce( 'wp_rest' ),
-			'sample_permalink_nonce' => wp_create_nonce( 'samplepermalink' ),
 			'components'             => $components,
 			'i18n'                   => $tainacan_admin_i18n,
 			'user_caps'              => $user_caps,
@@ -238,6 +239,62 @@ class Admin {
 		$unix_time_stamp = strtotime($_POST['date_string']);
 
 		echo date_i18n(get_option('date_format'), $unix_time_stamp);
+
+		wp_die();
+	}
+
+	function ajax_sample_permalink(){
+
+		$id = $_POST['post_id'];
+		$title = $_POST['new_title'];
+		$name = $_POST['new_slug'];
+
+		$post = get_post( $id );
+		if ( ! $post )
+			return array( '', '' );
+
+		$ptype = get_post_type_object($post->post_type);
+
+		// Hack: get_permalink() would return ugly permalink for drafts, so we will fake that our post is published.
+		if ( in_array( $post->post_status, array( 'auto-draft', 'draft', 'pending', 'future' ) ) ) {
+			$post->post_status = 'publish';
+			$post->post_name = sanitize_title($post->post_name ? $post->post_name : $post->post_title, $post->ID);
+		}
+
+		// If the user wants to set a new name -- override the current one
+		// Note: if empty name is supplied -- use the title instead, see #6072
+		if ( !is_null($name) )
+			$post->post_name = sanitize_title($name ? $name : $title, $post->ID);
+
+		$post->post_name = wp_unique_post_slug($post->post_name, $post->ID, $post->post_status, $post->post_type, $post->post_parent);
+
+		$post->filter = 'sample';
+
+		$permalink = get_permalink($post, true);
+
+		// Replace custom post_type Token with generic pagename token for ease of use.
+		$permalink = str_replace("%$post->post_type%", '%pagename%', $permalink);
+
+		// Handle page hierarchy
+		if ( $ptype->hierarchical ) {
+			$uri = get_page_uri($post);
+			if ( $uri ) {
+				$uri = untrailingslashit($uri);
+				$uri = strrev( stristr( strrev( $uri ), '/' ) );
+				$uri = untrailingslashit($uri);
+			}
+
+			/** This filter is documented in wp-admin/edit-tag-form.php */
+			$uri = apply_filters( 'editable_slug', $uri, $post );
+			if ( !empty($uri) )
+				$uri .= '/';
+			$permalink = str_replace('%pagename%', "{$uri}%pagename%", $permalink);
+		}
+
+		/** This filter is documented in wp-admin/edit-tag-form.php */
+		$permalink = array( 'permalink' => $permalink, 'slug' => apply_filters( 'editable_slug', $post->post_name, $post ) );
+
+		echo json_encode($permalink);
 
 		wp_die();
 	}

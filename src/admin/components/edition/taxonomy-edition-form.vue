@@ -135,8 +135,7 @@
 <script>
     import { wpAjax } from "../../js/mixins";
     import { mapActions, mapGetters } from 'vuex';
-    import TermsList from '../lists/terms-list.vue'
-    import htmlToJSON from 'html-to-json';
+    import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
@@ -268,18 +267,8 @@
                 this.isUpdatingSlug = true;
 
                 this.getSamplePermalink(this.taxonomyId, this.form.name, this.form.slug)
-                    .then(samplePermalink => {
-
-                        let promise = htmlToJSON.parse(samplePermalink, {
-                            permalink($doc) {
-                                return $doc.find('#editable-post-name-full').text();
-                            }
-                        });
-
-                        promise.done((result) => {
-                            this.form.slug = result.permalink;
-                            //this.$console.info(this.form.slug);
-                        });
+                    .then((res) => {
+                        this.form.slug = res.data.slug;
 
                         this.isUpdatingSlug = false;
                         this.formErrorMessage = '';

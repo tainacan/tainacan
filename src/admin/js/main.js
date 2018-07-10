@@ -1,6 +1,6 @@
 // Overrides lodash by original WordPress Underscore Library
-window.lodash = _.noConflict();
-window.underscore = _.noConflict();
+//window.lodash = _.noConflict();
+//window.underscore = _.noConflict();
 
 // Main imports
 import Vue from 'vue';
