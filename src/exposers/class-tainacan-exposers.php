@@ -141,8 +141,10 @@ class Exposers {
 				throw new \Exception('Invalid Mapper Option');
 			}
 			$ret = [$mapper->prefix.$metadatum_mapping[$mapper->slug].$mapper->sufix => $item_arr['value']]; //TODO Validate option
-		} else if($mapper->slug == 'value') {
+		} elseif($mapper->slug == 'value') {
 			$ret = [$item_arr['metadatum']['name'] => $item_arr['value']];
+		} else {
+		    $ret = [];
 		}
 		return $ret;
 	}
