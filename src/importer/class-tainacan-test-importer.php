@@ -8,19 +8,6 @@
  * used to learn how to write an importer and to 
  * create test collections and items
  *
- * Example how to invoke it
- *
- * add_action('init', function() {
- * 	if ( isset($_GET['run_test_importer']) && $_GET['run_test_importer'] == 'go' ) {
- * 		global $Tainacan_Importer_Handler;
- * 		$test = new \Tainacan\Importer\Test_Importer();
- * 		$Tainacan_Importer_Handler->add_to_queue($test);
- * 	}
- * });
- *
- * Put this code somewhere and access any URL of your site with ?run_test_importer=go
- * 
- * TODO: check validate() methods and write log & abort importer in case of error.
  */
 
 namespace Tainacan\Importer;
@@ -70,7 +57,27 @@ class Test_Importer extends Importer {
 		$this->items_repo = \Tainacan\Repositories\Items::get_instance();
 		$this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
 		
+		$this->remove_import_method('file');
+		$this->remove_import_method('url');
+		
+		$this->set_default_options([
+            'items_col_1' => 20,
+            'items_col_2' => 20
+		]);
+		
 	}
+	
+	public function options_form() {
+
+        $form = '<label class="label">' . __('Number of items in collection 1', 'tainacan') . '</label>';
+        $form .= '<input type="text" class="input" name="items_col_1" value="' . $this->get_option('items_col_1') . '" />';
+
+		$form .= '<label class="label">' . __('Number of items in collection 2', 'tainacan') . '</label>';
+        $form .= '<input type="text" class="input" name="items_col_2" value="' . $this->get_option('items_col_2') . '" />';
+
+        return $form;
+
+    }
 	
 	public function create_taxonomies() {
 		
@@ -324,10 +331,10 @@ class Test_Importer extends Importer {
 	 * Here we are just returning random values
 	 */
 	public function get_col1_number_of_items() {
-		return 10;
+		return $this->get_option('items_col_1');
 	}
 	public function get_col2_number_of_items() {
-		return 20;
+		return $this->get_option('items_col_2');
 	}
 	public function get_col1_item($index) {
 		
