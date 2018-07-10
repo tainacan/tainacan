@@ -8,6 +8,10 @@ namespace Tainacan\Tests;
 class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	protected $item;
 	protected $collection;
+	/**
+	 * 
+	 * @var \Tainacan\Entities\Metadatum
+	 */
 	protected $metadatum;
 	
 	protected function create_meta_requirements() {
@@ -457,18 +461,6 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    $this->assertEquals($this->item->get_id(), $data['item']['id']);
 	    $this->assertEquals('TestValues_exposers', $data['value']);
 	    
-	    /*$item_exposer_json = json_encode([
-	        'exposer-type'       => 'json-ld',
-	    ]);
-	    
-	    $request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
-	    $request->set_body($item_exposer_json);
-	    $response = $this->server->dispatch($request);
-	    $this->assertEquals(200, $response->get_status());
-	    $data = $response->get_data();
-	    
-	    var_dump($data);*/
-	    
 	    $item_exposer_json = json_encode([
 	        'exposer-type'       => 'json-ld',
 	        'exposer_map'       => 'dublin-core',
@@ -477,9 +469,13 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    $request->set_body($item_exposer_json);
 	    $response = $this->server->dispatch($request);
 	    $this->assertEquals(200, $response->get_status());
-	    $data = $response->get_data();
+	    $data = json_decode($response->get_data());
 	    
-	    var_dump($data);
+	    $this->assertEquals('http://purl.org/dc/elements/1.1/', $data->{'@context'}->dc);
+	    $this->assertEquals(get_locale(), $data->{'@context'}->{'@language'});
+	    $this->assertEquals($this->item->get('description'), $data->{'dc:description'}->{'@value'});
+	    $this->assertEquals($this->item->get('title'), $data->{'dc:title'}->{'@value'});
+	    $this->assertEquals('TestValues_exposers', $data->{'dc:language'}->{'@value'});
 	    
 	}
 	
