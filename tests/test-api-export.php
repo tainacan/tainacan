@@ -193,7 +193,7 @@ class TAINACAN_REST_Export_Controller extends TAINACAN_UnitApiTestCase {
 		extract($this->create_requirements());
 		
 		$item_exposer_json = json_encode([
-			'exposer-type'       => 'Xml',
+			'exposer_type'       => 'Xml',
 			'exposer_map'     => 'Value',
 			'export-background' => false
 		]);
@@ -232,7 +232,7 @@ class TAINACAN_REST_Export_Controller extends TAINACAN_UnitApiTestCase {
 	    extract($this->create_requirements());
 	    
 	    $item_exposer_json = json_encode([
-	        'exposer-type'       => 'Xml',
+	        'exposer_type'       => 'Xml',
 	        'exposer-map'     => 'Value',
 	        'export-background' => false
 	    ]);

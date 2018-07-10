@@ -168,7 +168,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	    $this->assertEquals(200, $response->get_status());
 	    
 	    $item_exposer_json = json_encode([
-	        'exposer-type'       => 'OAI-PMH',
+	        'exposer_type'       => 'OAI-PMH',
 	    ]);
 	    $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
 	    $request->set_body($item_exposer_json);
