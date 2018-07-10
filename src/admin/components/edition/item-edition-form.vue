@@ -378,15 +378,17 @@
             <div class="footer">
                 <!-- Last Updated Info --> 
                 <div class="update-info-section">     
-                    <p v-if="!isUpdatingValues && (formErrorMessage == '' || formErrorMessage == undefined)">
+                    <p v-if="isUpdatingValues">
                         {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
                     </p>     
-                    <p v-if="isUpdatingValues && (formErrorMessage == '' || formErrorMessage == undefined)">
-                        <b-icon
-                                size="is-small"
-                                icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
+                    <p 
+                            class="update-warning"
+                            v-if="!isUpdatingValues">
+                        <b-icon icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
                     </p>
-                    <p class="help is-danger">{{ formErrorMessage }}</p>
+                    
                 </div>  
                 <div 
                         class="form-submission-footer"
@@ -420,7 +422,7 @@
                     <button 
                             @click="onSubmit('draft')"
                             type="button"
-                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_save_as_draft') }}</button>
+                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
                     <button 
                             @click="onSubmit(visibility)"
                             type="button"
@@ -441,7 +443,7 @@
                             :disabled="formErrorMessage != undefined && formErrorMessage != ''"
                             @click="onSubmit(visibility)"
                             type="button"
-                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                            class="button is-secondary">{{ $i18n.get('label_update') }}</button>
                 </div>
             </div>
         </form>
@@ -908,7 +910,7 @@ export default {
     }
 
     .page-container-shrinked {
-        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
+        height: calc(100% - 118px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {
@@ -1080,8 +1082,7 @@ export default {
     }
 
     .footer {
-
-        padding: 24px $page-side-padding;
+        padding: 18px $page-side-padding;
         position: absolute;
         bottom: 0;
         z-index: 999999;
@@ -1099,11 +1100,32 @@ export default {
             }
         }
 
+        @keyframes blink {
+            from { color: $tertiary; }
+            to { color: $gray-light; }
+        }
+
+        .update-warning {
+            color: $tertiary;
+            animation-name: blink;
+            animation-duration: 0.5s;
+            animation-delay: 0.5s;
+            align-items: center;
+            display: flex;
+        }
+
         .update-info-section {
             position: relative;
             margin-top: -20px;
             top: 28px;
             color: $gray-light;
+        }
+
+        .help {
+            display: inline-block;
+            font-size: 1.0em;
+            margin-top: 0;
+            margin-left: 24px;
         }
     }
 

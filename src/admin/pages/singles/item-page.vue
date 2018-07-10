@@ -283,7 +283,7 @@
     }
 
     .page-container-shrinked {
-        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
+        height: calc(100% - 118px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {
@@ -447,13 +447,11 @@
     }
 
     .footer {
-
-        padding: 24px $page-side-padding;
+        padding: 18px $page-side-padding;
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: white;
-        border-top: 2px solid $secondary;
+        background-color: $primary-lighter;
         width: 100%;
 
         .form-submission-footer {    
@@ -462,7 +460,7 @@
             justify-content: end;
 
             .button {
-                margin-left: 6px;
+                margin-left: 16px;
                 margin-right: 6px;
             }
             .button.is-outlined {
