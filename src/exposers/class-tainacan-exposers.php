@@ -137,10 +137,19 @@ class Exposers {
 		$ret = $item_arr;
 		$metadatum_mapping = $item_arr['metadatum']['exposer_mapping'];
 		if(array_key_exists($mapper->slug, $metadatum_mapping)) {
-			if(is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ) {
+			if(
+			    is_string($metadatum_mapping[$mapper->slug]) && is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ||
+			    is_array($metadatum_mapping[$mapper->slug]) && $mapper->allow_extra_metadata != true
+			) {
 				throw new \Exception('Invalid Mapper Option');
 			}
-			$ret = [$mapper->prefix.$metadatum_mapping[$mapper->slug].$mapper->sufix => $item_arr['value']]; //TODO Validate option
+			$slug = '';
+			if(is_string($metadatum_mapping[$mapper->slug])) {
+			    $slug = $metadatum_mapping[$mapper->slug];
+			} else {
+			    $slug = $metadatum_mapping[$mapper->slug]['slug'];
+			}
+			$ret = [$mapper->prefix.$slug.$mapper->sufix => $item_arr['value']]; //TODO Validate option
 		} elseif($mapper->slug == 'value') {
 			$ret = [$item_arr['metadatum']['name'] => $item_arr['value']];
 		} else {

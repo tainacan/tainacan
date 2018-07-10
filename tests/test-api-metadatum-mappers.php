@@ -156,6 +156,33 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	    $this->assertEquals('TesteNewMetaUri.com', $data[1]['exposer_mapping']['dublin-core']['uri']);
 	    $this->assertEquals('text', $data[1]['exposer_mapping']['dublin-core']['type']);
 	    
+	    $item__metadata_json = json_encode([
+	        'values'       => 'TestValues_exposersCustomMeta',
+	    ]);
+	    
+	    $request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $metadatum2->get_id() );
+	    $request->set_body($item__metadata_json);
+	    
+	    $response = $this->server->dispatch($request);
+	    
+	    $this->assertEquals(200, $response->get_status());
+	    
+	    $item_exposer_json = json_encode([
+	        'exposer-type'       => 'OAI-PMH',
+	    ]);
+	    $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
+	    $request->set_body($item_exposer_json);
+	    $response = $this->server->dispatch($request);
+	    $this->assertEquals(200, $response->get_status());
+	    $data = $response->get_data();
+	    
+	    $xml = new \SimpleXMLElement($data);
+	    $dc = $xml->children(\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE);
+	    $this->assertEquals('adasdasdsaadsf', $dc->description);
+	    $this->assertEquals('item_teste_MetadatumMappers', $dc->title);
+	    $this->assertEquals('', $dc->contributor);
+	    $this->assertEquals('TestValues_exposersCustomMeta', $dc->TesteNewMeta);
+	    
 	}
 	
 }
