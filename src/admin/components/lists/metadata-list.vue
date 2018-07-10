@@ -219,6 +219,30 @@
                                             </option>
                                         </b-select>
                                     </b-table-column>
+                                    <b-table-column
+                                            field="isCustom"
+                                            label="">
+                                        <a 
+                                                :style="{ visibility: 
+                                                        props.row.isCustom
+                                                        ? 'visible' : 'hidden'
+                                                    }" 
+                                                @click.prevent="editMetadatumCustomMapper(props.row)">
+                                            <b-icon 
+                                                    type="is-gray" 
+                                                    icon="pencil"/>
+                                        </a>
+                                        <a 
+                                                :style="{ visibility: 
+                                                        props.row.isCustom
+                                                        ? 'visible' : 'hidden'
+                                                    }" 
+                                                @click.prevent="removeMetadatumCustomMapper(props.row)">
+                                            <b-icon 
+                                                    type="is-gray" 
+                                                    icon="delete"/>
+                                        </a>
+                                    </b-table-column>
                                 </template>
                             </b-table>
                         </section>
@@ -327,7 +351,8 @@ export default {
             editForms: {},
             newMapperMetadataList: [],
             new_metadata_label: '',
-            new_metadata_uri: ''
+            new_metadata_uri: '',
+            new_metadata_slug: ''
         }
     },
     components: {
@@ -503,6 +528,7 @@ export default {
                     var item = metadatum_mapper.metadata[k];
                     item.slug = k;
                     item.selected = '';
+                    item.isCustom = false;
                     this.activeMetadatumList.forEach((metadatum) => {
                         if(
                                 metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
@@ -519,10 +545,11 @@ export default {
                             metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
                             typeof metadatum.exposer_mapping[metadatum_mapper.slug] == 'object'
                     ) {
-                        this.newMapperMetadataList.push(metadatum.exposer_mapping[metadatum_mapper.slug]);
+                        this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[metadatum_mapper.slug]));
                         this.mappedMetadata.push(metadatum.id);
-                        var item = metadatum.exposer_mapping[metadatum_mapper.slug];
+                        var item = Object.assign({},metadatum.exposer_mapping[metadatum_mapper.slug]);
                         item.selected = metadatum.id;
+                        item.isCustom = true;
                         this.mapperMetadata.push(item);
                     }
                 });
@@ -567,12 +594,15 @@ export default {
                     if(meta.mapper_metadata == slug) {
                         var item_clone = Object.assign({}, item); // TODO check if still need to clone
                         delete item_clone.selected;
+                        delete item_clone.isCustom;
                         meta.mapper_metadata = item_clone;
                         metadataMapperMetadata[index] = meta;
                     }
                 });
             });
             this.updateMetadataMapperMetadata({metadataMapperMetadata: metadataMapperMetadata, mapper: this.mapper.slug}).then(() => {
+                this.isLoadingMetadata = true;
+                this.refreshMetadata();
                 this.isMapperMetadataLoading = false;
             })
             .catch(() => {
@@ -589,19 +619,38 @@ export default {
         },
         onCancelNewMetadataMapperMetadata() {
             this.isMapperMetadataCreating = false;
+            this.new_metadata_label = '';
+            this.new_metadata_uri = '';
+            this.new_metadata_slug = '';
         },
         onSaveNewMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
             var newMapperMetadata = {
                     label: this.new_metadata_label,
                     uri: this.new_metadata_uri,
-                    slug: this.stringToSlug(this.new_metadata_label)
+                    slug: this.stringToSlug(this.new_metadata_label),
+                    isCustom: true
             };
+            var selected = '';
+            if(this.new_metadata_slug != '') { // Editing
+                this.newMapperMetadataList.forEach((meta, index) => {
+                    if(meta.slug == this.new_metadata_slug) {
+                        this.newMapperMetadataList.splice(index);
+                        this.mapperMetadata.forEach((item, index2) => {
+                            if (item.slug == this.new_metadata_slug) {
+                                selected = item.selected;
+                                this.mapperMetadata.splice(index2);
+                            }
+                        });
+                    }
+                });
+            }
             this.newMapperMetadataList.push(newMapperMetadata);
-            newMapperMetadata.selected = '';
+            newMapperMetadata.selected = selected;
             this.mapperMetadata.push(newMapperMetadata);
             this.new_metadata_label = '';
             this.new_metadata_uri = '';
+            this.new_metadata_slug = '';
             this.isMapperMetadataCreating = false;
             this.isMapperMetadataLoading = false;
         },
@@ -623,6 +672,47 @@ export default {
                 .replace(/-+/g, '-'); // collapse dashes
 
             return str;
+        },
+        editMetadatumCustomMapper(customMapperMeta) {
+            this.new_metadata_label = customMapperMeta.label;
+            this.new_metadata_uri = customMapperMeta.uri;
+            this.new_metadata_slug = customMapperMeta.slug;
+            this.isMapperMetadataCreating = true;
+        },
+        removeMetadatumCustomMapper(customMapperMeta) {
+            var itemid = 0;
+            this.newMapperMetadataList.forEach((meta, index) => {
+                if(meta.slug == customMapperMeta.slug) {
+                    this.newMapperMetadataList.splice(index);
+                    var rem = this.mappedMetadata.indexOf(meta.selected);
+                    this.mappedMetadata.splice(rem);
+                    itemid = customMapperMeta.selected;
+                }
+            });
+            if(itemid != '' && itemid > 0) {
+                this.mapperMetadata.forEach((item, index) => {
+                    if (item.selected == itemid) {
+                        this.mapperMetadata.splice(index);
+                    }
+                });
+            }
+            return true;
+        },
+        refreshMetadata() {
+            this.isRepositoryLevel = this.$route.name == 'MetadataPage' ? true : false;
+            if (this.isRepositoryLevel)
+                this.collectionId = 'default';
+            else
+                this.collectionId = this.$route.params.collectionId;
+            
+
+            this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: true})
+                .then(() => {
+                    this.isLoadingMetadata = false;
+                })
+                .catch(() => {
+                    this.isLoadingMetadata = false;
+                });
         }
     },
     created() {
@@ -636,21 +726,7 @@ export default {
             .catch(() => {
                 this.isLoadingMetadatumTypes = false;
             });
-
-        this.isRepositoryLevel = this.$route.name == 'MetadataPage' ? true : false;
-        if (this.isRepositoryLevel)
-            this.collectionId = 'default';
-        else
-            this.collectionId = this.$route.params.collectionId;
-        
-
-        this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: this.isRepositoryLevel, isContextEdit: true, includeDisabled: true})
-            .then(() => {
-                this.isLoadingMetadata = false;
-            })
-            .catch(() => {
-                this.isLoadingMetadata = false;
-            });
+        this.refreshMetadata();
         this.fetchMetadatumMappers()
             .then(() => {
                 this.isLoadingMetadatumMappers = false;
