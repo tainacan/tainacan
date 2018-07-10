@@ -33,6 +33,7 @@ install:
   true
 - composer install
 - sudo mkdir /tmp/wordpress/wordpress-test/wp-content/uploads
+- sudo chmod -R 777 /tmp/wordpress/wordpress-test/wp-content/uploads
 - sudo wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp 
 - sudo chmod +x /tmp/phpunit-6.5.7.phar
 - sudo mv /tmp/phpunit-6.5.7.phar /usr/local/bin/phpunit-6
