@@ -477,7 +477,7 @@ export default {
         ...mapActions('metadata', [
             'fetchMetadata'
         ]),
-        updateSlug(){
+        updateSlug: _.debounce(function() {
             if(!this.form.name || this.form.name.length <= 0){
                 return;
             }
@@ -495,7 +495,7 @@ export default {
 
                     promise.done((result) => {
                         this.form.slug = result.permalink;
-                        this.$console.info(this.form.slug);
+                        //this.$console.info(this.form.slug);
                     });
 
                     this.isUpdatingSlug = false;
@@ -507,7 +507,7 @@ export default {
 
                     this.isUpdatingSlug = false;
                 });
-        },
+        }, 500),
         onSubmit() {
             this.isLoading = true;
 

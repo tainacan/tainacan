@@ -260,7 +260,7 @@
                         this.isLoadingTaxonomy = false;
                     });
             },
-            updateSlug(){
+            updateSlug: _.debounce(function(){
                 if(!this.form.name || this.form.name.length <= 0){
                     return;
                 }
@@ -291,7 +291,7 @@
                         this.isUpdatingSlug = false;
                     });
 
-            },
+            }, 500),
             createNewTaxonomy() {
                 // Puts loading on Draft Taxonomy creation
                 this.isLoadingTaxonomy = true;
