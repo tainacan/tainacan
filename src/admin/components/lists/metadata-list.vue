@@ -497,6 +497,7 @@ export default {
             this.mapper = metadatum_mapper; //TODO try to use v-model again
             this.mapperMetadata = [];
             this.mappedMetadata = [];
+            
             if(metadatum_mapper != '') {
                 for (var k in metadatum_mapper.metadata) {
                     var item = metadatum_mapper.metadata[k];
@@ -505,13 +506,26 @@ export default {
                     this.activeMetadatumList.forEach((metadatum) => {
                         if(
                                 metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
-                                metadatum.exposer_mapping[metadatum_mapper.slug] == item.slug ) {
+                                metadatum.exposer_mapping[metadatum_mapper.slug] == item.slug
+                        ) {
                             item.selected = metadatum.id;
                             this.mappedMetadata.push(metadatum.id);
                         }
                     });
                     this.mapperMetadata.push(item);
                 }
+                this.activeMetadatumList.forEach((metadatum) => {
+                    if(
+                            metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
+                            typeof metadatum.exposer_mapping[metadatum_mapper.slug] == 'object'
+                    ) {
+                        this.newMapperMetadataList.push(metadatum.exposer_mapping[metadatum_mapper.slug]);
+                        this.mappedMetadata.push(metadatum.id);
+                        var item = metadatum.exposer_mapping[metadatum_mapper.slug];
+                        item.selected = metadatum.id;
+                        this.mapperMetadata.push(item);
+                    }
+                });
             }
             this.isMapperMetadataLoading = false;
         },
@@ -546,6 +560,17 @@ export default {
                     };
                     metadataMapperMetadata.push(map);
                 }
+            });
+            this.newMapperMetadataList.forEach((item) => {
+                var slug = item.slug;
+                metadataMapperMetadata.forEach( (meta, index) => {
+                    if(meta.mapper_metadata == slug) {
+                        var item_clone = Object.assign({}, item); // TODO check if still need to clone
+                        delete item_clone.selected;
+                        meta.mapper_metadata = item_clone;
+                        metadataMapperMetadata[index] = meta;
+                    }
+                });
             });
             this.updateMetadataMapperMetadata({metadataMapperMetadata: metadataMapperMetadata, mapper: this.mapper.slug}).then(() => {
                 this.isMapperMetadataLoading = false;
