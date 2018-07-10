@@ -3,7 +3,13 @@
         <figure 
                 class="file-item"
                 @click="isPreviewModalActive = true">
-            <div class="image-wrapper">
+            <figcaption 
+                    :style="{ 'max-width': size != undefined ? size + 'px' : '112px' }"
+                    v-if="showName">{{ file.title.rendered }}</figcaption>
+            <div 
+                    :class="{ 'rounded': showName }"
+                    :style="{ 'width': size != undefined ? size + 'px' : '112px', 'height': size != undefined ? size + 'px' : '112px' }"
+                    class="image-wrapper">
                 <div
                         v-if="file.media_type == 'image'" 
                         class="image"
@@ -17,7 +23,6 @@
                             type="is-gray"/>
                  </div>
             </div>
-            <figcaption v-if="showName">{{ file.title.rendered }}</figcaption>
         </figure> 
 
         <!-- Preview Modal ----------------- -->
@@ -54,6 +59,7 @@ export default {
     name: 'FileItem',
     props: {
         file: Object,
+        size: 112,
         showName: false,
         isSelected: false,
         isPreviewModalActive: false
@@ -92,7 +98,8 @@ export default {
     @import "../../scss/_variables.scss";
 
     .file-item {
-        
+        display: inline-block;
+
         &:hover {
             cursor: pointer;
             .image, .file-placeholder {
@@ -100,13 +107,15 @@ export default {
             }
         }
         .image-wrapper {
-            height: 112px;
-            width: 112px;
-            border-radius: 2px;
             overflow: hidden;
             position: relative;
             display: inline-block;
             background-color: $tainacan-input-background; 
+
+            &.rounded {
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
 
             .image {
                 height: 100%;
@@ -136,12 +145,11 @@ export default {
 
         figcaption {
             background-color: $tainacan-input-background;
-            border-bottom-left-radius: 7px;
-            border-bottom-right-radius: 7px;
-            padding: 5px 15px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            padding: 8px 15px;
             font-size: 9px;
-            margin-top: -4px;
-            width: 112px;
+            width: 100%;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;

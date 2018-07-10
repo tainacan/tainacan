@@ -27,7 +27,6 @@
                     :is="metadatum.metadatum.metadata_type_object.component"
                     v-model="inputs[0]" 
                     :metadatum="metadatum"
-                    @blur="changeValue()"
                     @input="emitIsChangingValue()"/>
             <div v-if="metadatum.metadatum.multiple == 'yes'">
                 <div 
@@ -40,7 +39,6 @@
                             :is="metadatum.metadatum.metadata_type_object.component"
                             v-model="inputs[index]" 
                             :metadatum="metadatum"
-                            @blur="changeValue()"  
                             @input="emitIsChangingValue()"/>
                         <a 
                                 v-if="index > 0" 
@@ -72,7 +70,6 @@
                     :is="metadatum.metadatum.metadata_type_object.component"
                     v-model="inputs"
                     :metadatum="metadatum"
-                    @blur="changeValue()"
                     @input="emitIsChangingValue()"/>
         </div>
     </b-field>
@@ -124,14 +121,14 @@
         },
         methods: {
             emitIsChangingValue() {
-                eventBus.isChangingValue(true);
+                this.changeValue();
             },
-            changeValue(){
+            changeValue: _.debounce(function() {
                 
                 if(this.metadatum.value != this.inputs){
 
                     if(this.inputs.length > 0 && this.inputs[0].value){
-                        let terms = []
+                        let terms = [];
 
                         for(let term of this.inputs){
                             terms.push(term.value);
@@ -179,7 +176,7 @@
 
                     eventBus.$emit('input', { item_id: this.metadatum.item.id, metadatum_id: this.metadatum.metadatum.id, values: this.inputs } );
                 }
-            },
+            }, 1000),
             getValue(){ 
                 if (this.metadatum.value instanceof Array) {
                     this.inputs = this.metadatum.value.slice(0);

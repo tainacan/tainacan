@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{ 'is-flex': metadatum.metadatum.multiple != 'yes' }">
         <b-taginput
                 :id="id"
                 v-model="selected"
@@ -146,5 +146,8 @@
 <style>
     .help.counter {
         display: none;
+    }
+    div.is-flex {
+        justify-content: flex-start;
     }
 </style>

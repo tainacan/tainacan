@@ -118,6 +118,9 @@ class Old_Tainacan extends Importer{
             }
 
         }
+
+        $this->add_log('FInished repository metadata');
+        return false;
     }
 
     /**
@@ -130,6 +133,7 @@ class Old_Tainacan extends Importer{
 		
 		foreach ($this->fetch_collections() as $collection) {
             $map = [];
+            $this->add_log(memory_get_usage());
 
             if ( isset($collection->post_title) && $collection->post_status === 'publish') {
 
@@ -156,6 +160,8 @@ class Old_Tainacan extends Importer{
             }
 
         }
+
+        return false;
     }
 
     /**
@@ -204,6 +210,8 @@ class Old_Tainacan extends Importer{
                 }
             }
         }
+
+        return false;
     }
 
     /**
@@ -220,7 +228,7 @@ class Old_Tainacan extends Importer{
 
         $this->add_log('Proccess item index' . $index . ' in collection OLD ' . $collection_id['source_id'] );
 
-        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page, $args );                    
+        $info = $this->requester( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page, $args );                    
         $info = json_decode($info['body']);
 
         if( !isset( $info->items ) ){
@@ -391,7 +399,7 @@ class Old_Tainacan extends Importer{
             'redirection' => 30,
         );
 
-        $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items",  $args );
+        $info = $this->requester( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items",  $args );
 
         if( !isset($info['body']) ){
             $this->add_error_log($result->get_error_message());
@@ -547,12 +555,55 @@ class Old_Tainacan extends Importer{
      * executes the request 
      */
     protected function requester( $link ){
+        $has_response = false;
+        $requests = 0;
+
         $args = array(
-            'timeout'     => 30,
+            'timeout'     => 60,
             'redirection' => 30,
         );
 
-        return wp_remote_get($link, $args);
+        $this->add_log('fetching init  ' . $link );
+        $result = wp_remote_get($link, $args);
+
+        while( !$has_response ){
+               
+            if (is_wp_error($result)) {
+
+                $this->add_log($result->get_error_message());
+                $this->add_log('Error in fetch remote' . $url);
+                $this->add_log('request number ' . $requests);
+    
+            } else if (isset($result['body'])){
+                $this->add_log('fetch OK  ');
+                return $result;
+            }
+
+            if( $requests > 10 ){
+                break;
+            }
+
+            if( $requests > 3 ){
+                $this->add_log('taking a moment to breathe, waiting for ' . ( $requests * 10 ) . ' seconds ' );
+                sleep( $requests * 10 ); 
+            }
+
+            $args = array(
+                'timeout'     => 60,
+                'redirection' => 30,
+            );
+    
+            $result = wp_remote_get($link, $args);
+
+            $requests++;
+            $this->add_log('going to  ' . $requests );
+        }
+
+        
+
+        $this->add_error_log('Error in fetch remote, expired the 10 requests limit ' . $url);
+        $this->abort();
+        return false;
     }
 
     /**
@@ -687,9 +738,8 @@ class Old_Tainacan extends Importer{
 
             return $inserted_metadata->get_id();
         } else{ 
-            $this->add_error_log('Error creating metadata ' . $name );
-            $this->add_error_log($newMetadatum->get_errors());
-            $this->abort();
+            $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
+            $this->add_log($newMetadatum->get_errors());
             return false;
         } 
     }

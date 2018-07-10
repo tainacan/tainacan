@@ -97,6 +97,12 @@
                     :is-full-page="false"
                     :active.sync="isLoadingItems"/>
 
+            <!-- FILTERS TAG LIST-->
+            <filters-tags-list 
+                    class="filter-tags-list"
+                    :filters="filters"
+                    v-if="hasFiltered">Teste</filters-tags-list>
+
             <!-- SEARCH CONTROL ------------------------- -->
             <div
                     v-if="!openAdvancedSearch"
@@ -307,36 +313,46 @@
             <!-- ADVANCED SEARCH -->
             <div
                     v-if="openAdvancedSearch">
-                    <b-collapse 
-                            class="show" 
-                            :open="advancedSearchResults ? false : true">
-                        <div
-                            slot="trigger" 
-                            slot-scope="props" 
-                            class="columns tnc-advanced-search-close">
-                            <div class="column">
-                                <button
-                                        @click="openAdvancedSearch = false"
-                                        class="button is-white is-pulled-right">
-                                    <b-icon
-                                            size="is-small"
-                                            icon="close"/>
-                                </button>
-                                <button 
-                                        class="button is-white is-pulled-right">
-                                    <span>
-                                        {{ props.open ? $i18n.get('hide_advanced_search') : $i18n.get('show_advanced_search') }}
-                                    </span>
-                                    <b-icon
-                                            :style="'margin-left'"
-                                            :icon="props.open ? 'menu-down' : 'menu-up'" />
-                                </button>
+
+                <div class="columns tnc-advanced-search-close">
+                    <div class="column">
+                        <div class="advanced-search-criteria-title">
+                            <h1>{{ $i18n.get('info_search_criteria') }}</h1>
+
+                            <div
+                                    :style="{'margin-bottom': 'auto'}"
+                                    class="field is-grouped is-pulled-right">
+                                <p
+                                        v-if="advancedSearchResults"
+                                        class="control">
+                                    <button
+                                            @click="advancedSearchResults = !advancedSearchResults"
+                                            class="button is-small is-light">{{ $i18n.get('edit_search') }}</button>
+                                </p>
+                                <p
+                                        v-if="advancedSearchResults"
+                                        class="control">
+                                    <button
+                                            @click="isDoSearch = !isDoSearch"
+                                            class="button is-small is-secondary">{{ $i18n.get('search') }}</button>
+                                </p>
+                                <p class="control">
+                                    <a @click="openAdvancedSearch = false">
+                                        {{ $i18n.get('exit') }}
+                                    </a>
+                                </p>
                             </div>
+                            <hr>
                         </div>
-                        <advanced-search
-                                :is-repository-level="isRepositoryLevel"
-                                :metadata="metadata" />
-                    </b-collapse>
+                    </div>
+
+                </div>
+                <advanced-search
+                        :is-repository-level="isRepositoryLevel"
+                        :advanced-search-results="advancedSearchResults"
+                        :open-form-advanced-search="openFormAdvancedSearch"
+                        :is-do-search="isDoSearch"
+                        :metadata="metadata"/>
             </div>
 
             <!-- --------------- -->
@@ -489,6 +505,7 @@
 
 <script>
     import ItemsList from '../../components/lists/items-list.vue';
+    import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
@@ -513,7 +530,9 @@
                 localTableMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
+                openFormAdvancedSearch: false,
                 advancedSearchResults: false,
+                isDoSearch: false,
             }
         },
         props: {
@@ -558,6 +577,7 @@
         },
         components: {
             ItemsList,
+            FiltersTagsList,
             FiltersItemsList,
             Pagination,
             AdvancedSearch,
@@ -740,7 +760,7 @@
                             id: undefined,
                             display: authorNameMetadatumDisplay
                         });
-
+                        
                         this.$eventBusSearch.addFetchOnly({
                             '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
                             'meta': fetchOnlyMetadatumIds,
@@ -792,13 +812,12 @@
                 this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
 
+            this.$root.$on('openAdvancedSearch', (openAdvancedSearch) => {
+                this.openAdvancedSearch = openAdvancedSearch;
+            });
+
         },
         mounted() {
-            
-            if(this.$route.query && this.$route.query.advancedSearch) {
-                this.openAdvancedSearch = this.$route.query.advancedSearch;
-            }
-
             this.prepareMetadataAndFilters();
             this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 
@@ -811,7 +830,6 @@
                     this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
             } else {
                 let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
-                
                 if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
                     this.$eventBusSearch.setInitialAdminViewMode('table');
                 else 
@@ -833,6 +851,23 @@
 
     @import '../../scss/_variables.scss';
 
+    .advanced-search-criteria-title {
+        padding: 0;
+
+        h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $tertiary;
+            display: inline-block;
+        }
+
+        hr {
+            margin: 3px 0px 4px 0px;
+            height: 1px;
+            background-color: $secondary;
+        }
+    }
+
     .advanced-search-results-title {
         padding: 0 $table-side-padding;
 
@@ -843,7 +878,7 @@
             display: inline-block;
         }
 
-        hr{
+        hr {
             margin: 3px 0px 4px 0px;
             height: 1px;
             background-color: $secondary;
@@ -878,7 +913,6 @@
         visibility: visible;
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;
-        margin-bottom: -0.1rem;
 
         h3 {
             font-size: 100%;

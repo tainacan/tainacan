@@ -6,15 +6,22 @@
                 class="metadatum">
             <b-checkbox
                     v-model="selected"
-                    :native-value="option.value"
-            >{{ option.label }}</b-checkbox>
+                    :native-value="option.value">
+                {{ option.label }}
+            </b-checkbox>
         </div>
+        <!-- <a 
+                @click="openCheckboxModal()"
+                class="add-link">
+            {{ $i18n.get('label_see_more') }}
+        </a> -->
     </div>
 </template>
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
     import { filter_type_mixin } from '../filter-types-mixin'
+    // import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue'
 
     export default {
         created(){
@@ -40,6 +47,33 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
+
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+                if (filterTag.filterId == this.filter.id) {
+
+                    let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);
+                    if (selectedIndex >= 0) {
+
+                        let newSelected = this.selected.slice();
+                        newSelected.splice(selectedIndex, 1); 
+
+                        this.$emit('input', {
+                            filter: 'checkbox',
+                            compare: 'IN',
+                            metadatum_id: this.metadatum,
+                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            value: newSelected
+                        });
+
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: newSelected
+                        });
+
+                        this.selectedValues();
+                    }
+                }
+            });
         },
         props: {
             isRepositoryLevel: Boolean,
@@ -93,6 +127,11 @@
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: this.selected
                 });
+
+                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                    filterId: this.filter.id,
+                    value: this.selected
+                });
             },
             selectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -100,12 +139,22 @@
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                 if ( index >= 0){
-                    let metadata = this.query.metaquery[ index ];
-                    this.selected = metadata.value;
+                    let query = this.query.metaquery.slice();
+                    this.selected = query[ index ].value;
                 } else {
+                    this.selected = [];
                     return false;
                 }
-            }
+            },
+            // openCheckboxModal() {
+            //     this.$modal.open({
+            //         parent: this,
+            //         component: CheckboxFilterModal,
+            //         props: {
+            //             title: this.filter.name
+            //         }
+            //     });
+            // }
         }
     }
 </script>

@@ -1,16 +1,23 @@
 .tags {
     border: solid 1px $tainacan-input-background !important;
     border-radius: 20px;
+    flex-wrap: nowrap;
+    margin-bottom: 0.375rem !important;
+    margin-right: 0.375rem;
+    max-width: 100%;
+    overflow: hidden;
 
     &:hover{
         background-color: $tainacan-input-background;
     }
 
     .tag {
-        background: none !important;
+        background-color: white;
         margin-bottom: 0 !important;
-    }
-    &:last-child {
-        margin-bottom: 0;
+        max-width: calc(100% - 21px);
+        justify-content: flex-start;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }

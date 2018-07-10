@@ -62,3 +62,7 @@ export const getFetchOnly = state => {
 export const getFetchOnlyMeta = state => {
     return ( ! state.postquery.fetch_only['meta'] ) ? [] : state.postquery.fetch_only['meta'];
 };
+
+export const getFilterTags = state => {
+    return state.filter_tags;
+};

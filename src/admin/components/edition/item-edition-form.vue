@@ -1,5 +1,8 @@
 <template>
     <div>
+        <b-loading
+                :active.sync="isLoading"
+                :can-cancel="false"/>
         <button 
                 id="metadata-column-compress-button"
                 @click="isMetadataColumnCompressed = !isMetadataColumnCompressed">
@@ -13,52 +16,6 @@
             <div class="columns">
                 <div class="column is-5-5">
 
-                    <!-- Status -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_status') }}</label>
-                        <span class="required-metadatum-asterisk">*</span>
-                        <help-button
-                                :title="$i18n.getHelperTitle('items', 'status')"
-                                :message="$i18n.getHelperMessage('items', 'status')"/>
-                    </div>
-                    <!-- Last Updated Info -->      
-                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
-                        <em>
-                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
-                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
-                        </em>
-                    </p>
-                    <div class="section-status">
-                        <div class="field has-addons">
-                            <b-select
-                                    v-model="form.status"
-                                    :placeholder="$i18n.get('instruction_select_a_status')">
-                                <option
-                                        :id="`status-option-${statusOption.value}`"
-                                        v-for="statusOption in statusOptions"
-                                        :key="statusOption.value"
-                                        :value="statusOption.value"
-                                        :disabled="statusOption.disabled">{{ statusOption.label }}
-                                </option>
-                            </b-select>
-                            <div class="control">
-                                <button
-                                        type="button"
-                                        id="button-submit-item-creation"
-                                        @click.prevent="onSubmit"
-                                        class="button is-success">
-                                    {{ $i18n.get('save') }}
-                                </button>
-                            </div>
-                        </div>
-                        <p
-                                v-if="item.status == 'auto-draft'"
-                                class="help is-danger">
-                            {{ $i18n.get('info_item_not_saved') }}
-                        </p>
-                        <p class="help is-danger">{{ formErrorMessage }}</p>
-                    </div>
-
                     <!-- Document -------------------------------- -->
                     <div class="section-label">
                         <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
@@ -66,61 +23,84 @@
                                 :title="$i18n.getHelperTitle('items', 'document')"
                                 :message="$i18n.getHelperMessage('items', 'document')"/>
                     </div>
-                    <div class="section-box ">
+                    <div class="section-box document-field">
                         <div
                                 v-if="form.document != undefined && form.document != null &&
                                         form.document_type != undefined && form.document_type != null &&
                                         form.document != '' && form.document_type != 'empty'">
                             <div v-if="form.document_type == 'attachment'">
                                 <div v-html="item.document_as_html" />
-                                <button
-                                        type="button"
-                                        class="button is-primary"
-                                        size="is-small"
-                                        @click.prevent="setFileDocument($event)">
-                                    {{ $i18n.get('edit') }}
-                                </button>
-                                <button
-                                        type="button"
-                                        class="button is-primary"
-                                        size="is-small"
-                                        @click.prevent="removeDocument()">
-                                    {{ $i18n.get('remove') }}
-                                </button>
+                                <div class="document-buttons-row">
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            id="button-edit-document"
+                                            :aria-label="$i18n.get('label_button_edit_document')"
+                                            @click.prevent="setFileDocument($event)">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="pencil" />
+                                    </a>
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            id="button-delete-document"
+                                            :aria-label="$i18n.get('label_button_delete_document')"
+                                            @click.prevent="removeDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="delete" />
+                                    </a>
+                                </div>
                             </div>
                             <div v-if="form.document_type == 'text'">
                                 <div v-html="item.document_as_html" />
-                                <button
-                                        type="button"
-                                        class="button is-primary"
-                                        size="is-small"
-                                        @click.prevent="setTextDocument()">
-                                    {{ $i18n.get('edit') }}
-                                </button>
-                                <button
-                                        type="button"
-                                        class="button is-primary"
-                                        size="is-small"
-                                        @click.prevent="removeDocument()">
-                                    {{ $i18n.get('remove') }}
-                                </button>
+                                <div class="document-buttons-row">
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            :aria-label="$i18n.get('label_button_edit_document')"
+                                            id="button-edit-document"
+                                            @click.prevent="setTextDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="pencil" />
+                                    </a>
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            :aria-label="$i18n.get('label_button_delete_document')"
+                                            id="button-delete-document"
+                                            @click.prevent="removeDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="delete" />
+                                    </a>
+                                </div>
                             </div>
                             <div v-if="form.document_type == 'url'">
                                 <div v-html="item.document_as_html" />
-                                <button
-                                        type="button"
-                                        class="button is-secondary"
-                                        size="is-small"
-                                        @click.prevent="setURLDocument()">
-                                    {{ $i18n.get('edit') }}
-                                </button>
-                                <button
-                                        type="button"
-                                        class="button is-secondary"
-                                        size="is-small"
-                                        @click.prevent="removeDocument()">
-                                    {{ $i18n.get('remove') }}
-                                </button>
+                                <div class="document-buttons-row">
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            :aria-label="$i18n.get('label_button_edit_document')"
+                                            id="button-edit-document"
+                                            @click.prevent="setURLDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="pencil" />
+                                    </a>
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            size="is-small"
+                                            :aria-label="$i18n.get('label_button_delete_document')"
+                                            id="button-delete-document"
+                                            @click.prevent="removeDocument()">
+                                        <b-icon 
+                                                size="is-small"
+                                                icon="delete" />
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <ul v-else>
@@ -229,16 +209,10 @@
                     </div>                    
                     <div class="section-box section-thumbnail">
                         <div class="thumbnail-field">
-                            <a
-                                    class="button is-rounded is-secondary"
-                                    id="button-edit-thumbnail"
-                                    :aria-label="$i18n.get('label_button_edit_thumb')"
-                                    @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                <b-icon icon="pencil" />
-                            </a>
                             <file-item
                                     v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
                                     :show-name="false"
+                                    :size="178"
                                     :file="{ 
                                         media_type: 'image', 
                                         guid: { rendered: item.thumbnail.thumb },
@@ -254,13 +228,23 @@
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a
-                                        id="button-delete"
+                                        class="button is-rounded is-secondary"
+                                        id="button-edit-thumbnail"
+                                        :aria-label="$i18n.get('label_button_edit_thumb')"
+                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                    <b-icon 
+                                            size="is-small"
+                                            icon="pencil" />
+                                </a>
+                                <a
+                                        v-if="item.thumbnail.thumb != undefined && item.thumbnail.thumb != false"
+                                        id="button-delete-thumbnail"
+                                        class="button is-rounded is-secondary"
                                         :aria-label="$i18n.get('label_button_delete_thumb')"
                                         @click="deleteThumbnail()">
                                    <b-icon 
-                                        type="is-gray"
+                                        size="is-small"
                                         icon="delete" />
-                                   <span class="text">{{ $i18n.get('remove') }} </span>
                                 </a>
                             </div>
                         </div>
@@ -294,6 +278,71 @@
                 <div 
                         class="column is-4-5"
                         v-show="!isMetadataColumnCompressed">
+
+                    
+                    <!-- Visibility (status public or private) -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_visibility') }}</label>
+                        <span class="required-metadatum-asterisk">*</span>
+                        <help-button
+                                :title="$i18n.get('label_visibility')"
+                                :message="$i18n.get('info_visibility_helper')"/>
+                    </div>
+                    <div class="section-status">
+                        <div class="field has-addons">
+                            <b-radio
+                                    v-model="visibility"
+                                    value="publish"
+                                    native-value="publish">
+                                <span class="icon">
+                                    <i class="mdi mdi-earth"/>
+                                </span> {{ $i18n.get('publish_visibility') }}
+                            </b-radio>
+                            <b-radio
+                                    v-model="visibility"
+                                    value="private"
+                                    native-value="private">
+                                <span class="icon">
+                                    <i class="mdi mdi-lock"/>
+                                </span>  {{ $i18n.get('private_visibility') }}
+                            </b-radio>
+                        </div>
+                    </div>
+
+                    <!-- Status -------------------------------- -->
+                    <!--<div class="section-label">
+                        <label>{{ $i18n.get('label_status') }}</label>
+                        <span class="required-metadatum-asterisk">*</span>
+                        <help-button
+                                :title="$i18n.getHelperTitle('items', 'status')"
+                                :message="$i18n.getHelperMessage('items', 'status')"/>
+                    </div>
+                    <div class="section-status">
+                        
+                        <div class="field has-addons">
+                            <b-select
+                                    v-model="form.status"
+                                    :placeholder="$i18n.get('instruction_select_a_status')">
+                                <option
+                                        :id="`status-option-${statusOption.value}`"
+                                        v-for="statusOption in statusOptions"
+                                        :key="statusOption.value"
+                                        :value="statusOption.value"
+                                        :disabled="statusOption.disabled">{{ statusOption.label }}
+                                </option>
+                            </b-select>
+                            <div class="control">
+                                <button
+                                        type="button"
+                                        id="button-submit-item-creation"
+                                        @click.prevent="onSubmit"
+                                        class="button is-success">
+                                    {{ $i18n.get('save') }}
+                                </button>
+                            </div>
+                        </div> 
+                    </div>-->
+
                     <label class="section-label">{{ $i18n.get('metadata') }}</label>
                     <br>
                     <a
@@ -315,11 +364,74 @@
 
                 </div>
             </div>
+            <div class="footer">
+                <!-- Last Updated Info --> 
+                <div class="update-info-section">     
+                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        <em>
+                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
+                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
+                        </em>
+                    </p>
+                    <p class="help is-danger">{{ errorList }}</p>
+                    <p class="help is-danger">{{ formErrorMessage }}</p>
+                </div>  
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'trash'">
+                    <button 
+                            @click="onDeletePermanently()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
+                    <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
+                    <button 
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                </div>
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                    <button 
+                            v-if="form.status == 'draft'"
+                            @click="onSubmit('trash')"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                    <button 
+                            v-if="form.status == 'auto-draft'"
+                            @click="onDiscart()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_discart') }}</button>
+                    <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_save_as_draft') }}</button>
+                    <button 
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                </div>
+                <div 
+                        class="form-submission-footer"
+                        v-if="form.status == 'publish' || form.status == 'private'">
+                    <button 
+                            @click="onSubmit('trash')"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                    <button 
+                            @click="onSubmit('draft')"
+                            type="button"
+                            class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
+                    <button 
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                </div>
+            </div>
         </form>
-
-        <b-loading
-                :active.sync="isLoading"
-                :can-cancel="false"/>
     </div>
 </template>
 
@@ -342,6 +454,7 @@ export default {
             isMetadataColumnCompressed: false,
             metadatumCollapses: [],
             collapseAll: false,
+            visibility: 'publish',
             form: {
                 collectionId: Number,
                 status: '',
@@ -385,6 +498,9 @@ export default {
         },
         lastUpdated() {
             return this.getLastUpdated();
+        },
+        errrorList() {
+            return eventBus.errors;
         }
     },
     components: {
@@ -402,16 +518,23 @@ export default {
             'sendAttachments',
             'updateThumbnail',
             'fetchAttachments',
-            'cleanLastUpdated'
+            'cleanLastUpdated',
+            'setLastUpdated'
         ]),
         ...mapGetters('item',[
             'getMetadata',
             'getAttachments',
             'getLastUpdated'
         ]),
-        onSubmit() {
+        ...mapActions('collection', [
+            'deleteItem',
+        ]),
+        onSubmit(status) {
             // Puts loading on Item edition
             this.isLoading = true;
+
+            let previousStatus = this.form.status;
+            this.form.status = status;
 
             let data = {item_id: this.itemId, status: this.form.status};
 
@@ -426,18 +549,27 @@ export default {
 
                 this.isLoading = false;
 
-                this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                if (this.form.status != 'trash') 
+                    this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                else
+                    this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
+                    
                 }
                 this.formErrorMessage = errors.error_message;
+                this.form.status = previousStatus;
+                this.item.status = previousStatus;
 
                 this.isLoading = false;
             });
+        },
+        onDiscart() {
+            this.$router.go(-1);
         },
         createNewItem() {
             // Puts loading on Draft Item creation
@@ -454,7 +586,8 @@ export default {
                 this.initializeMediaFrames();
 
                 // Pre-fill status with publish to incentivate it
-                this.form.status = 'publish';
+                this.visibility = 'publish';
+                this.form.status = 'auto-draft'
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
 
@@ -628,6 +761,21 @@ export default {
         },
         onChangeCollapse(event, index) {
             this.metadatumCollapses.splice(index, 1, event);
+        },
+        onDeletePermanently() {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
+                    onConfirm: () => {
+                        this.deleteItem({ itemId: this.itemId, isPermanently: true })
+                        this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId))
+                    }
+                }
+            });
         }
     },
     created(){
@@ -661,7 +809,11 @@ export default {
                 if (this.form.document_type != undefined && this.form.document_type == 'text')
                     this.textContent = this.form.document;
 
+                if (this.item.status == 'publish' || this.item.status == 'private')
+                    this.visibility = this.item.status;
+
                 this.loadMetadata();
+                this.setLastUpdated(this.item.modification_date);
             });
 
             // Fetch current existing attachments
@@ -669,14 +821,15 @@ export default {
         }
 
         // Sets feedback variables
-        eventBus.$on('isChangingValue', () => {
-            this.isEditingValues = true;
-            setTimeout(()=> {
-                this.isEditingValues = false;
-            }, 1000)
-        });
         eventBus.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
+                // if (this.isUpdatingValues) {
+                //     this.$toast.open({
+                //         duration: 2000,
+                //         message: this.$i18n.get('info_updating_metadata_values'),
+                //         position: 'is-bottom',
+                //     })
+                // }
         });
         this.cleanLastUpdated();
     },
@@ -732,6 +885,10 @@ export default {
         }
     }
 
+    .page-container-shrinked {
+        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
+    }
+
     .page-container {
         padding: 25px 0px;
 
@@ -740,10 +897,6 @@ export default {
             padding-right: $page-side-padding;
         }
 
-        .column {
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
         .column.is-5-5 {
             width: 45.833333333%;
             padding-left: $page-side-padding;
@@ -764,6 +917,10 @@ export default {
                 padding: 10px 0px 10px 60px;
             }
 
+            @media screen and (max-width: 769px) {
+                width: 100%;
+            }
+
         }
 
     }
@@ -780,11 +937,13 @@ export default {
 
     .collapse-all {
         font-size: 12px;
-        .icon { vertical-align: bottom; }
+        .icon { 
+            vertical-align: bottom; 
+        }
     }
 
     .section-box {
-        border: 1px solid $draggable-border-color;
+       
         background-color: white;
         padding: 26px;
         margin-top: 16px;
@@ -814,13 +973,16 @@ export default {
     }
     .section-status{
         padding: 16px 0;     
-    }
-    .section-thumbnail {
-        width: 174px;
-        padding-top: 0;
-        padding-bottom: 0;
+        .field .b-radio {
+            margin-right: 24px;
+            .icon  {
+                font-size: 18px !important; 
+                color: $gray;
+            }
+        }
     }
     .section-attachments {
+        border: 1px solid $draggable-border-color;
         height: 250px;
         max-width: 100%;
         resize: vertical;
@@ -836,61 +998,97 @@ export default {
         margin-right: -15px;
     }
 
+    .document-field {  
+
+        .document-buttons-row {
+            text-align: right;
+            top: -21px;
+            position: relative;
+        }
+    }
+
+    #button-edit-thumbnail, 
+    #button-edit-document,
+    #button-delete-thumbnail, 
+    #button-delete-document {
+
+        border-radius: 100px !important;
+        height: 30px !important;
+        width: 30px !important;
+        z-index: 99;
+        margin-left: 10px !important;
+        
+        .icon {
+            display: inherit;
+            padding: 0;
+            margin: 0;
+            margin-top: 1px;
+            font-size: 18px;
+        }
+    }
+
     .thumbnail-field {
-        margin-top: -8px;
 
         .content {
             padding: 10px;
             font-size: 0.8em;
         }
         img {
-            height: 112px;
-            width: 112px;
+            height: 178px;
+            width: 178px;
         }
         .image-placeholder {
             position: absolute;
-            margin-left: 10px;
-            margin-right: 10px;
+            margin-left: 45px;
+            margin-right: 45px;
             font-size: 0.8rem;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: gray;
-            top: 38px;
+            top: 70px;
             max-width: 90px;
-        }
-        #button-edit-thumbnail {
-
-            border-radius: 100px !important;
-            height: 40px !important;
-            width: 40px !important;
-            bottom: -20px;
-            left: -20px;
-            z-index: 99;
-
-            .icon {
-                display: inherit;
-                padding: 0;
-                margin: 0;
-                margin-top: 1px;
-            }
         }
     
         .thumbnail-buttons-row {
-            display: inline-block;
-            padding: 8px 0px;
-            border-radius: 0px 0px 0px 4px;
-            font-size: 14px;
-            a { color: $tainacan-input-color; }
-            .text {
-                top: -3px;
-                position: relative;
-            }
-            i.mdi-24px.mdi-set, i.mdi-24px.mdi::before {
-                font-size: 20px;
-            }
+            position: relative;
+            left: 90px;
+            bottom: 22px;
         }
     }
 
+    .footer {
+
+        padding: 24px $page-side-padding;
+        position: absolute;
+        bottom: 0;
+        z-index: 999999;
+        background-color: white;
+        border-top: 2px solid $secondary;
+        width: 100%;
+
+        .form-submission-footer {    
+            width: 100%;
+            display: flex;
+            justify-content: end;
+
+            .button {
+                margin-left: 6px;
+                margin-right: 6px;
+            }
+            .button.is-outlined {
+                margin-left: 0px;
+                margin-right: auto;
+            }
+        }
+
+        .update-info-section {
+            text-align: center;
+            position: relative;
+            margin-top: -20px;
+            top: 28px;
+            color: $gray-light;
+        }
+    }
 
 </style>

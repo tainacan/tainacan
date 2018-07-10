@@ -1,16 +1,16 @@
 <template>
     <div
-            id="tainacan-header" 
-            class="level" 
+            id="tainacan-header"
+            class="level"
             :class="{'menu-compressed': isMenuCompressed}">
         <div class="level-left">
             <div class="level-item">
-                <router-link 
-                        tag="a" 
+                <router-link
+                        tag="a"
                         to="/">
-                    <img 
-                            class="tainacan-logo" 
-                            alt="Tainacan Logo" 
+                    <img
+                            class="tainacan-logo"
+                            alt="Tainacan Logo"
                             :src="logoHeader">
                 </router-link>
             </div>
@@ -18,24 +18,45 @@
         <div class="level-right">
             <div class="search-area">
                 <div class="control has-icons-right is-small is-clearfix">
-                    <input 
-                            autocomplete="on" 
-                            :placeholder="$i18n.get('instruction_search_on_repository')"
-                            class="input is-small" 
-                            type="search" 
+                    <input
+                            autocomplete="on"
+                            :placeholder="$i18n.get('instruction_search_in_repository')"
+                            class="input is-small"
+                            type="search"
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
                             @keyup.enter="updateSearch()">
-                        <span
+                    <span class="icon is-right">
+                        <i
                                 @click="updateSearch()"
-                                class="icon is-right">
-                            <i class="mdi mdi-magnify" />
-                        </span>
+                                class="mdi mdi-magnify"/>
+                    </span>
+                    <!--<b-dropdown-->
+                            <!--position="is-bottom-left">-->
+                        <!--<b-icon-->
+                                <!--class="is-right"-->
+                                <!--slot="trigger"-->
+                                <!--size="is-small"-->
+                                <!--icon="menu-down"/>-->
+                        <!--<b-dropdown-item>-->
+                            <!--<p class="is-left">{{ $i18n.get('advanced_search') }}</p>-->
+                            <!--<b-icon-->
+                                    <!--icon="menu-up"-->
+                                    <!--class="is-right" />-->
+                        <!--</b-dropdown-item>-->
+                        <!--<b-dropdown-item-->
+                                <!--:custom="true">-->
+                            <!--<advanced-search />-->
+                        <!--</b-dropdown-item>-->
+                    <!--</b-dropdown>-->
                 </div>
-                <a @click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>
+                <a
+                        :style="{color: 'white'}"
+                        @click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>
             </div>
-            <a 
-                    class="level-item" 
+            <a
+                    :style="{color: 'white'}"
+                    class="level-item"
                     :href="wordpressAdmin">
                 <b-icon icon="wordpress"/>
             </a>
@@ -45,39 +66,56 @@
 
 <script>
 
-export default {
-    name: 'TainacanHeader',
-    data(){
-        return {
-            logoHeader: tainacan_plugin.base_url + '/admin/images/tainacan_logo_header.png',
-            wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
-            searchQuery: '',
-            futureSearchQuery: '',
-        }
-    },
-    methods: {
-        toItemsPage(){
-          this.$router.push({
-              path: '/items',
-              query: {
-                  advancedSearch: true
-              }
-          });
+    import AdvancedSearch from '../advanced-search/advanced-search.vue';
+
+    export default {
+        name: 'TainacanHeader',
+        data() {
+            return {
+                logoHeader: tainacan_plugin.base_url + '/admin/images/tainacan_logo_header.png',
+                wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
+                searchQuery: '',
+                futureSearchQuery: '',
+            }
         },
-        updateSearch() {
-            this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
-        },  
-    },
-    props: {
-        isMenuCompressed: false
+        components: {
+            AdvancedSearch,
+        },
+        methods: {
+            toItemsPage() {
+                if(this.$route.path == '/items') {
+                    this.$root.$emit('openAdvancedSearch', true);
+                }
+
+                if(this.$route.path != '/items') {
+                    this.$router.push({
+                        path: '/items',
+                        query: {
+                            advancedSearch: true
+                        }
+                    });
+                }
+            },
+            updateSearch() {
+                if (this.$route.path != '/items') {
+                    this.$router.push({
+                        path: '/items',
+                    });
+                }
+
+                this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+            },
+        },
+        props: {
+            isMenuCompressed: false
+        }
     }
-}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
     @import "../../scss/_variables.scss";
-    
+
     // Tainacan Header
     #tainacan-header {
         background-color: $secondary;
@@ -85,7 +123,7 @@ export default {
         max-height: $header-height;
         width: 100%;
         padding: 12px;
-        vertical-align: middle; 
+        vertical-align: middle;
         left: 0;
         right: 0;
         position: absolute;
@@ -93,16 +131,16 @@ export default {
         color: white;
 
         .level-left {
-            margin-left: -12px; 
+            margin-left: -12px;
 
-            .level-item{
+            .level-item {
                 height: $header-height;
                 width: 180px;
                 transition: width 0.15s, background-color 0.2s;
-                -webkit-transition: width 0.15s background-color 0.2s;   
+                -webkit-transition: width 0.15s background-color 0.2s;
                 cursor: pointer;
                 background-color: #257787;
-                
+
                 &:focus {
                     box-shadow: none;
                 }
@@ -110,21 +148,18 @@ export default {
                     max-height: 22px;
                     padding: 0px 24px;
                     transition: padding 0.15s;
-                    -webkit-transition: padding linear 0.15s;   
+                    -webkit-transition: padding linear 0.15s;
                 }
-            }   
+            }
         }
         .level-right {
             padding-right: 12px;
-            a{ 
-                color: white;
-            }
             .search-area {
                 display: flex;
                 align-items: center;
                 margin-right: 36px;
 
-                .control {
+                .control:not(.tnc-advanced-search-container) {
                     input {
                         border-width: 0 !important;
                         height: 27px;
@@ -143,9 +178,18 @@ export default {
                         cursor: pointer;
                         height: 27px;
                         font-size: 18px;
+                        width: 30px !important;
                     }
                 }
-               
+
+                /*.dropdown-content {*/
+                    /*width: 800px !important;*/
+                /*}*/
+
+                /*.dropdown-item:hover {*/
+                    /*background-color: white;*/
+                /*}*/
+
                 a {
                     margin: 0px 12px;
                     font-size: 12px;
@@ -157,10 +201,10 @@ export default {
                 width: 220px;
                 background-color: $secondary;
                 .tainacan-logo {
-                    padding: 0px 42px;   
+                    padding: 0px 42px;
                 }
             }
-            
+
         }
 
         @media screen and (max-width: 769px) {

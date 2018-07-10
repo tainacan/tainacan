@@ -2,14 +2,17 @@
     <div class="block">
         <b-taginput
                 size="is-small"
+                icon="magnify"
                 v-model="selected"
                 :data="options"
-                :loading="isLoading"
                 autocomplete
+                expanded
+                :remove-on-keys="[]"
                 field="label"
                 attached
                 :class="{'has-selected': selected != undefined && selected != []}"
-                @typing="search" />
+                @typing="search"
+                :placeholder="$i18n.get('info_type_to_add_terms')" />
     </div>
 </template>
 
@@ -33,6 +36,39 @@
                     let metadatum = res.data;
                     this.selectedValues( metadatum.metadata_type_options.taxonomy_id );
                 });
+            
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+               
+                if (filterTag.filterId == this.filter.id) {
+
+                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
+                    if (selectedIndex >= 0) {
+
+                        this.selected.splice(selectedIndex, 1);
+
+                        let values = [];
+                        let labels = [];
+                        for(let val of this.selected){
+                            values.push( val.value );
+                            labels.push( val.label );
+                        }
+                        
+                        this.$emit('input', {
+                            filter: 'taginput',
+                            compare: 'IN',
+                            taxonomy: this.taxonomy,
+                            metadatum_id: ( this.metadatum_id ) ? this.metadatum_id : this.filter.metadatum,
+                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            terms: values
+                        });
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: labels
+                        });
+
+                   }
+                }
+            });
         },
         data(){
             return {
@@ -62,10 +98,13 @@
         watch: {
             selected( value ){
                 this.selected = value;
+
                 let values = [];
+                let labels = [];
                 if( this.selected.length > 0 ){
                     for(let val of this.selected){
                         values.push( val.value );
+                        labels.push( val.label );
                     }
                 }
                 this.$emit('input', {
@@ -76,13 +115,19 @@
                     collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     terms: values
                 });
+
+                this.$eventBusSearch.$emit("sendValuesToTags", {
+                    filterId: this.filter.id,
+                    value: labels
+                });
             }
         },
         methods: {
             search( query ){
                 let promise = null;
                 this.options = [];
-                const q = query;
+                const q = query; 
+
                 const endpoint = this.isRepositoryLevel ? '/metadata/' + this.metadatum : '/collection/'+ this.collection +'/metadata/' + this.metadatum;
 
                 axios.get(endpoint)
@@ -103,12 +148,26 @@
                     });
             },
             getValuesTaxonomy( taxonomy, query ){
+                let valuesToIgnore = [];
+                for(let val of this.selected)
+                    valuesToIgnore.push( val.value );
+                
                 return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
-                    for (let term of res.data) {
-                        if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
-                            this.taxonomy = term.taxonomy;
-                            this.options.push({label: term.name, value: term.id});
-                        }
+                    for (let term of res.data) {     
+                        if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
+                            let indexToIgnore = valuesToIgnore.findIndex(value => value == term.id);
+                            if (indexToIgnore < 0) {
+                                if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                                    this.taxonomy = term.taxonomy;
+                                    this.options.push({label: term.name, value: term.id});
+                                }
+                            }
+                        } else {
+                            if( term.name.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                                this.taxonomy = term.taxonomy;
+                                this.options.push({label: term.name, value: term.id});
+                            }
+                        }                                       
                     }
                 })
                 .catch(error => {
@@ -119,7 +178,7 @@
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
 
-                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy === this.taxonomy );
+                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == 'tnc_tax_' + taxonomy );
                 if ( index >= 0){
                     let metadata = this.query.taxquery[ index ];
                     for ( let id of metadata.terms ){
@@ -130,8 +189,9 @@
                 }
             },
             getTerm( taxonomy, id ){
-              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' ).then( res => {
-                  this.$console.log(res);
+              return axios.get('/taxonomy/' + taxonomy + '/terms/' + id + '?order=asc&hideempty=0' )
+              .then( res => {
+                  this.selected.push({ label: res.data.name, value: res.data.id })
               })
               .catch(error => {
                   this.$console.log(error);

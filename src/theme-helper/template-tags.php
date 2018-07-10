@@ -53,8 +53,8 @@ function tainacan_get_the_metadata($args = array()) {
 	
 }
 
-function tainacan_the_metadata($metadatum = null, $args = array()) {
-	echo tainacan_get_the_metadata($metadatum, $args);
+function tainacan_the_metadata($args = array()) {
+	echo tainacan_get_the_metadata($args);
 }
 
 /**

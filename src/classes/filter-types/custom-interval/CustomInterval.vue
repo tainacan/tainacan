@@ -4,15 +4,14 @@
         <div v-if="type === 'date'">
             <b-datepicker
                     :placeholder="$i18n.get('label_selectbox_init')"
-                    :class="{'has-content': date_init != undefined && date_init != ''}"
                     v-model="date_init"
                     size="is-small"
                     @focus="isTouched = true"
                     @input="validate_values()"
                     icon="calendar-today"/>
+            <p class="is-size-7 has-text-centered">{{ $i18n.get('label_until') }}</p>
             <b-datepicker
                     :placeholder="$i18n.get('label_selectbox_init')"
-                    :class="{'has-content': date_end != undefined && date_end != ''}"
                     v-model="date_end"
                     size="is-small"
                     @input="validate_values()"
@@ -25,7 +24,6 @@
                 class="columns"
                 v-else>
             <b-input
-                    :class="{'has-content': value_init != undefined && value_init != ''}"
                     size="is-small"
                     type="number"
                     step="any"
@@ -33,7 +31,6 @@
                     class="column"
                     v-model="value_init"/>
             <b-input
-                    :class="{'has-content': value_end != undefined && value_end != ''}"
                     size="is-small"
                     type="number"
                     step="any"
@@ -41,16 +38,6 @@
                     @focus="isTouched = true"
                     class="column"
                     v-model="value_end"/>
-        </div>
-        <div
-                class="selected-list-box"
-                v-if="isValid && !clear">
-                <b-tag
-                        attached
-                        closable
-                        @close="clearSearch()">
-                    {{ showSearch() }}
-                </b-tag>
         </div>
     </div>
 </template>
@@ -84,6 +71,11 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
+
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+                if (filterTag.filterId == this.filter.id)
+                    this.clearSearch();
+            });
         },
         data(){
             return {
@@ -179,6 +171,13 @@
                         this.isValid = true;
                     }
 
+                    if (metadata.value[0] != undefined && metadata.value[1] != undefined) {
+                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: this.filter.id,
+                        value: metadata.value[0] + ' - ' + metadata.value[1]
+                    });
+                }
+
                 } else {
                     return false;
                 }
@@ -214,8 +213,8 @@
                     this.date_end = null;
                     this.isTouched = false;
                 } else {
-                    // this.value_end = null;
-                    // this.value_init = null;
+                    this.value_end = null;
+                    this.value_init = null;
                     this.isTouched = false;
                 }
             },
@@ -273,7 +272,6 @@
                     }
                 }
 
-
                 vm.$emit('input', {
                     filter: 'range',
                     type: type,
@@ -282,6 +280,13 @@
                     collection_id: ( vm.collection_id ) ? vm.collection_id : vm.filter.collection_id,
                     value: values
                 });
+
+                if (values[0] != undefined && values[1] != undefined) {
+                    vm.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: vm.filter.id,
+                        value: values[0] + ' - ' + values[1]
+                    });
+                }
             }
         }
     }

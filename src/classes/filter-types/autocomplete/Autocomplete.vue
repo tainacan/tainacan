@@ -6,17 +6,18 @@
                 :id="id"
                 v-model="selected"
                 :data="options"
+                expanded
                 @input="search"
-                :loading="isLoading"
                 field="label"
-                @select="option => setResults(option) ">
+                @select="option => setResults(option) "
+                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
             <template slot-scope="props">
                 <div class="media">
                     <div
                             class="media-left"
                             v-if="props.option.img">
                         <img
-                                width="32"
+                                width="24"
                                 :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">
@@ -25,25 +26,13 @@
                 </div>
             </template>
         </b-autocomplete>
-        <!-- <ul 
-                class="selected-list-box"
-                v-if="selected !== '' && selected !== undefined">
-            <li>
-                <b-tag 
-                        attached
-                        closable
-                        @close="clearSearch()">
-                    {{ label }}
-                </b-tag>
-            </li>
-        </ul> -->
     </div>
 </template>
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios'
     import { filter_type_mixin } from '../filter-types-mixin'
-    import qs from 'qs';
+    // import qs from 'qs';
 
     export default {
         created(){
@@ -69,16 +58,22 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
+
+            
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+                if (filterTag.filterId == this.filter.id)
+                    this.cleanSearch();
+            })
         },
         data(){
             return {
                 results:'',
                 selected:'',
                 options: [],
-                isLoading: false,
                 type: '',
                 collection: '',
                 metadatum: '',
+                metadatum_object: {},
                 label: ''
             }
         },
@@ -101,25 +96,27 @@
                     collection_id: this.collection,
                     value: this.results
                 });
+                this.selectedValues();
             },
             search( query ){
-                let promise = null;
-                this.options = [];
-                if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget );
+                if (query != '') {
+                    let promise = null;
+                    this.options = [];
+                    if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                        let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                            this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
+                        promise = this.getValuesRelationship( collectionTarget, query );
 
+                    } else {
+                        promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
+                    }
+
+                    promise.catch( error => {
+                        this.$console.log('error select', error );
+                    });
                 } else {
-                    promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
+                    this.cleanSearch();
                 }
-
-                promise.then( () => {
-                    this.isLoading = false;
-                }).catch( error => {
-                    this.$console.log('error select', error );
-                    this.isLoading = false;
-                });
             },
             selectedValues(){
                 const instance = this;
@@ -129,33 +126,44 @@
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
-                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
-                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
+                    // let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                        // this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
 
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
-                        let query = qs.stringify({ postin: metadata.value  });
-
-                        axios.get('/collection/' + collectionTarget + '/items?' + query)
+                        // let query = qs.stringify({ postin: metadata.value  });
+                        
+                        axios.get('/items/' + metadata.value)
                             .then( res => {
-                                for (let item of res.data) {
-                                   // instance.selected.push({ label: item.title, value: item.id, img: '' });
-                                    this.$console.log(item.title);
-                                    instance.results = item.title;
-                                    instance.label = item.title;
-                                }
+      
+                                let item = res.data;
+                                instance.results = item.title;
+                                instance.label = item.title;
+                                instance.selected = item.title;
+         
+                                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                                    filterId: instance.filter.id,
+                                    value: instance.label
+                                });
                             })
                             .catch(error => {
                                 this.$console.log(error);
                             });
                     } else {
                         instance.results = metadata.value;
+                        instance.label = metadata.value;
+                        instance.selected = metadata.value;
+
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: instance.filter.id,
+                            value: metadata.value
+                        });
                     }
                 } else {
                     return false;
                 }
             },
-            clearSearch(){
+            cleanSearch(){
                 this.results = '';
                 this.label = '';
                 this.selected = '';

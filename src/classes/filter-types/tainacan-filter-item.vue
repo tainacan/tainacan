@@ -207,21 +207,28 @@
         }
 
         .input, .textarea, .taginput-container {
-
             font-size: 14px;
             border-radius: 1px !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
             height: 2.25em !important;
-
-            &:focus, &:active {
-                box-shadow: none !important;
-                border: none !important;
-            }
         }
 
         .taginput-container {
             display: table-cell;
+            border: none !important;
+            &.is-focusable:active, &.is-focusable:focus  {
+                border: none !important;
+            }    
+            input, input:active, input:focus {
+                border: 1px solid $tainacan-input-background !important;
+            }
+            .control.has-icons-left .icon {
+                top: 5px;
+            }
+            .tags {
+                display: none !important;
+            }
         }
 
         .input {

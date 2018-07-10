@@ -1,15 +1,32 @@
 <template>
     <div class="block">
         <b-taginput
+                icon="magnify"
                 size="is-small"
                 v-model="selected"
                 :data="options"
                 autocomplete
-                :loading="isLoading"
+                expanded
+                :remove-on-keys="[]"
                 field="label"
                 attached
-                :class="{'has-selected': selected != undefined && selected != []}"
-                @typing="search"/>
+                @typing="search"
+                :placeholder="(type == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')">
+            <template slot-scope="props">
+                <div class="media">
+                    <div
+                            class="media-left"
+                            v-if="props.option.img">
+                        <img
+                                width="24"
+                                :src="`${props.option.img}`">
+                    </div>
+                    <div class="media-content">
+                        {{ props.option.label }}
+                    </div>
+                </div>
+            </template>
+        </b-taginput>
     </div>
 </template>
 
@@ -27,7 +44,7 @@
             let in_route = '/collection/' + this.collection + '/metadata/' +  this.metadatum;
 
             if(this.isRepositoryLevel || this.collection == 'filter_in_repository'){
-                in_route = '/metadata?nopaging=1';
+                in_route = '/metadata/'+ this.metadatum + '?nopaging=1';
             }
 
             axios.get(in_route)
@@ -42,13 +59,44 @@
                 .catch(error => {
                     this.$console.log(error);
                 });
+            
+            this.$eventBusSearch.$on('removeFromFilterTag', (filterTag) => {
+               
+                if (filterTag.filterId == this.filter.id) {
+
+                    let selectedIndex = this.selected.findIndex(option => option.label == filterTag.singleValue);
+                    if (selectedIndex >= 0) {
+
+                        this.selected.splice(selectedIndex, 1);
+
+                        let values = [];
+                        let labels = [];  
+                        for(let val of this.selected){
+                            values.push( val.value );
+                            labels.push( val.label );
+                        }
+                        
+                        this.$emit('input', {
+                            filter: 'taginput',
+                            compare: 'IN',
+                            metadatum_id: this.metadatum,
+                            collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
+                            value: values
+                        });
+
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: labels
+                        });
+                    }
+                }
+            });
         },
         data(){
             return {
                 results:'',
                 selected:[],
                 options: [],
-                isLoading: false,
                 type: '',
                 collection: '',
                 metadatum: '',
@@ -62,18 +110,26 @@
         watch: {
             selected( value ){
                 this.selected = value;
+
                 let values = [];
+                let labels = [];
                 if( this.selected.length > 0 ){
                     for(let val of this.selected){
                         values.push( val.value );
+                        labels.push( val.label );
                     }
                 }
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
                     metadatum_id: this.metadatum,
-                    collection_id: this.collection,
+                    collection_id: ( this.collection_id ) ? this.collection_id : this.filter.collection_id,
                     value: values
+                });
+
+                this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                    filterId: this.filter.id,
+                    value: labels
                 });
             }
         },
@@ -81,20 +137,23 @@
             search( query ){
                 let promise = null;
                 this.options = [];
+                let valuesToIgnore = [];
+
+                for(let val of this.selected)
+                    valuesToIgnore.push( val.value );
+
                 if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget, query );
+                    promise = this.getValuesRelationship( collectionTarget, query, valuesToIgnore );
 
                 } else {
-                    promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel );
+                    promise = this.getValuesPlainText( this.metadatum, query, this.isRepositoryLevel, valuesToIgnore );
                 }
-                this.isLoading = true;
-                promise.then(() => {
-                    this.isLoading = false;
-                }).catch( error => {
+
+                promise
+                .catch( error => {
                     this.$console.log('error select', error );
-                    this.isLoading = false;
                 });
             },
             selectedValues(){
@@ -102,7 +161,7 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key === this.metadatum );
+                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatum );
                 if ( index >= 0){
                     let metadata = this.query.metaquery[ index ];
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
@@ -115,7 +174,7 @@
                         axios.get('/collection/' + collectionTarget + '/items?' + query)
                             .then( res => {
                                 for (let item of res.data) {
-                                    instance.selected.push({ label: item.title, value: item.id, img: '' });
+                                    instance.selected.push({ label: item.title, value: item.id, img: item.thumbnail.thumb });
                                 }
                             })
                             .catch(error => {

@@ -8,7 +8,6 @@ namespace Tainacan;
  * Uses https://github.com/A5hleyRich/wp-background-processing to handle DB
  * updates in the background.
  *
- * @package WooCommerce/Classes
  */
 
 defined( 'ABSPATH' ) || exit;

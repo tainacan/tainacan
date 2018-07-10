@@ -25,6 +25,10 @@ export default {
                     this.updateURLQueries();
                 });
 
+                this.$on('sendValuesToTags', data => {
+                    this.$store.dispatch('search/addFilterTag', data);
+                });
+
                 this.$root.$on('closeAdvancedSearch', () => {
                     this.$store.dispatch('search/setPage', 1);
                     
@@ -46,9 +50,9 @@ export default {
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.collectionId = !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId);
 
-                    // Fills the URL with apropriate default values in case a query is not passed
+                    // Fills the URL with appropriate default values in case a query is not passed
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
-
+                        
                         // Items Per Page
                         if (this.$route.query.perpage == undefined || to.params.collectionId != from.params.collectionId) {
                             let perPageKey = (this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page');
@@ -143,16 +147,17 @@ export default {
                                 this.$userPrefs.set(adminViewModeKey, 'table');
                             }
                         }
-
+                        
                         // Advanced Search
                         if (this.$route.query && this.$route.query.advancedSearch){
                             this.$store.dispatch('search/set_advanced_query', this.$route.query);
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
-
+                        
                         this.loadItems(to);
                     }  
+                    
                 }
             },
             methods: {
@@ -165,6 +170,15 @@ export default {
                         this.$store.dispatch('search/add_metaquery', data );
                     }
                 },
+                removeMetaQuery(query) {
+                    this.$store.dispatch('search/remove_metaquery', query );
+                    this.updateURLQueries();
+                },
+                removeMetaFromFilterTag(filterTag) {
+                    this.$emit('removeFromFilterTag', filterTag);
+                    if (filterTag.singleValue == undefined)
+                        this.$store.dispatch('search/removeFilterTag', filterTag);
+                },
                 add_taxquery( data ){
                     if ( data && data.collection_id ){
                         this.$store.dispatch('search/add_taxquery', data );
@@ -176,6 +190,7 @@ export default {
                 },
                 addFetchOnly( metadatum ){
                     let prefsFetchOnly = this.collectionId != undefined ? 'fetch_only_' + this.collectionId : 'fetch_only';
+
                     if(this.$userPrefs.get(prefsFetchOnly) != metadatum) {
                         this.$userPrefs.set(prefsFetchOnly, metadatum)
                             .catch(() => {});
@@ -281,7 +296,7 @@ export default {
                 loadItems(to) {
                     
                     // Forces fetch_only to be filled before any search happens
-                    if (this.$store.getters['search/getFetchOnly'] == undefined) {
+                    if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {
                         this.$emit( 'hasToPrepareMetadataAndFilters', to);
                     } else {
 
@@ -308,6 +323,12 @@ export default {
                 },
                 setCollectionId(collectionId) {
                     this.collectionId = collectionId;
+                },
+                clearAllFilters() {
+                    this.$store.dispatch('search/cleanFilterTags');
+                    this.$store.dispatch('search/cleanMetaQueries');
+                    this.$store.dispatch('search/cleanTaxQueries');
+                    this.updateURLQueries();
                 },
                  /* Dev interfaces methods */
         

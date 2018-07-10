@@ -76,6 +76,26 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
     });
 };
 
+export const fetchMetadatum = ({commit}, {collectionId, metadatumId}) => {
+    return new Promise((resolve, reject) => {
+        let endpoint = '';
+        if (collectionId && collectionId != "default")
+            endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;
+        else
+            endpoint = '/metadata/' + metadatumId;
+
+        axios.tainacan.get(endpoint)
+            .then((res) => {
+                let metadata = res.data;
+                resolve(metadata);
+            })
+            .catch((error) => {
+                console.log(error);
+                reject(error);
+            });
+    });
+};
+
 export const updateMetadata = ({commit}, metadata) => {
     commit('setMetadata', metadata);
 };
