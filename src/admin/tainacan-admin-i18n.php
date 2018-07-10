@@ -24,7 +24,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'item'                                       => __( 'Item', 'tainacan' ),
 	'metadatum'                                  => __( 'Metadata', 'tainacan' ),
 	'filter'                                     => __( 'Filter', 'tainacan' ),
-	'taxonomy'                                   => __( 'Taxonomia', 'tainacan' ),
+	'taxonomy'                                   => __( 'Taxonomy', 'tainacan' ),
 	'event'                                      => __( 'Event', 'tainacan' ),
 	'term'                                       => __( 'Term', 'tainacan' ),
 	'terms'                                      => __( 'Terms', 'tainacan' ),

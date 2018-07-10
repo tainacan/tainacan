@@ -1,6 +1,6 @@
 <template>
     <div 
-            v-if="total > 0 && !isLoading"
+            v-if="taxonomies.length > 0 && !isLoading"
             class="table-container">
 
         <div class="selection-control">
@@ -14,7 +14,7 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="taxonomies[0].current_user_can_edit"
+                        v-if="$userCaps.hasCapability('delete_tainacan-taxonomies')"
                         :disabled="!isSelecting"
                         id="bulk-actions-dropdown">
                     <button
