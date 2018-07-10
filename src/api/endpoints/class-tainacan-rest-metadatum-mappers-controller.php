@@ -126,6 +126,14 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	            $response = [];
 	            $saved = [];
     	        foreach ($body['metadata_mappers'] as $metadatum_mapper) {
+    	            $metadatum_mapper['metadatum_id'] = intval($metadatum_mapper['metadatum_id']);
+    	            if(is_array($metadatum_mapper['mapper_metadata'])) {
+	                    foreach ($metadatum_mapper['mapper_metadata'] as $k => $tag) {
+	                        $metadatum_mapper['mapper_metadata'][$k] = esc_attr($tag);
+	                    }
+    	            } else {
+    	                $metadatum_mapper['mapper_metadata'] = sanitize_text_field($metadatum_mapper['mapper_metadata']);
+    	            }
     	            $isSaved = false;
     	            $metadatum = $Tainacan_Metadata->fetch($metadatum_mapper['metadatum_id']);
     	            $exposer_mapping = $metadatum->get('exposer_mapping');

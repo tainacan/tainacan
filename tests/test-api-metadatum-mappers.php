@@ -16,7 +16,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
             ),
             true,
             true
-            );
+        );
         
         $type = $this->tainacan_metadatum_factory->create_metadatum('text');
         
@@ -33,7 +33,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
             ),
             true,
             true
-            );
+        );
         
         $metadatum2 = $this->tainacan_entity_factory->create_entity(
             'metadatum',
@@ -45,7 +45,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
             ),
             true,
             true
-            );
+        );
         
         $item = $this->tainacan_entity_factory->create_entity(
             'item',
@@ -56,7 +56,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
             ),
             true,
             true
-            );
+        );
         $this->collection = $collection;
         $this->item = $item;
         $this->metadatum = $metadatum;
@@ -123,6 +123,38 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	    $db_metadatum = $Tainacan_Metadata->fetch($metadatum2->get_id());
 	    $exposer_mapping = $db_metadatum->get('exposer_mapping');
 	    $this->assertEquals('coverage', $exposer_mapping['dublin-core']);
+	    
+	}
+	
+	/**
+	 * @group new_mapper_metadatum
+	 */
+	public function test_update_metadatum_mappers_new_meta(){
+	    extract($this->create_meta_requirements());
+	    
+	    $dc = new \Tainacan\Exposers\Mappers\Dublin_Core();
+	    
+	    $metadatum_mapper_request = new \WP_REST_Request('POST', $this->namespace . '/metadatum-mappers');
+	    $new_metadatum_mapper = new \stdClass();
+	    $new_metadatum_mapper->slug = 'TesteNewMeta';
+	    $new_metadatum_mapper->uri = 'TesteNewMetaUri.com';
+	    $new_metadatum_mapper->type = 'text';
+	    $metadatum_mapper_json = json_encode([
+	        'metadata_mappers'       => [
+	            ['metadatum_id' => $metadatum->get_id(), 'mapper_metadata' => 'contributor'],
+	            ['metadatum_id' => $metadatum2->get_id(), 'mapper_metadata' => $new_metadatum_mapper ]
+	        ],
+	        'exposer_map'          => $dc->slug
+	    ]);
+	    $metadatum_mapper_request->set_body($metadatum_mapper_json);
+	    $metadatum_mapper_response = $this->server->dispatch($metadatum_mapper_request);
+	    $this->assertEquals(200, $metadatum_mapper_response->get_status());
+	    $data = $metadatum_mapper_response->get_data();
+	    
+	    $this->assertEquals('contributor', $data[0]['exposer_mapping']['dublin-core']);
+	    $this->assertEquals('TesteNewMeta', $data[1]['exposer_mapping']['dublin-core']['slug']);
+	    $this->assertEquals('TesteNewMetaUri.com', $data[1]['exposer_mapping']['dublin-core']['uri']);
+	    $this->assertEquals('text', $data[1]['exposer_mapping']['dublin-core']['type']);
 	    
 	}
 	
