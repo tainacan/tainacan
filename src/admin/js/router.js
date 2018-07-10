@@ -13,6 +13,7 @@ import Page from '../pages/lists/taxonomies-page.vue'
 import TaxonomyPage from '../pages/singles/taxonomy-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 import EventPage from '../pages/singles/event-page.vue'
+import ExportPage from '../pages/singles/export-page.vue'
 
 // Edition Form Components
 import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
