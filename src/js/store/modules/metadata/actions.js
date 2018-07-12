@@ -170,10 +170,11 @@ export const fetchMetadatumMappers = ({commit}) => {
 
 export const updateMetadataMapperMetadata = ({ dispatch }, {metadataMapperMetadata, mapper}) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.post('/metadatum-mappers', {
+        var param = {
                 metadata_mappers: metadataMapperMetadata,
-                exposer_map: mapper
-            }).then((res) => {
+        };
+        param[tainacan_plugin.exposer_mapper_param] = mapper;
+        axios.tainacan.post('/metadatum-mappers', param).then((res) => {
                 resolve(res.data);
             })
             .catch((error) => {

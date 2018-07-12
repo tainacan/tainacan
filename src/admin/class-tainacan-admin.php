@@ -179,6 +179,8 @@ class Admin {
 			'admin_url'              => admin_url(),
 			'custom_header_support'  => get_theme_support('custom-header'),
 			'registered_view_modes'  => \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
+		    'exposer_mapper_param'   => \Tainacan\Exposers\Exposers::MAPPER_PARAM,
+		    'exposer_type_param'     => \Tainacan\Exposers\Exposers::TYPE_PARAM
 		];
 
 		$maps = [

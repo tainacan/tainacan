@@ -217,12 +217,13 @@ export const updateCollection = ({ commit }, {
 
 export const sendCollection = ( { commit }, { name, description, status, mapper }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.post('/collections/', {
+        var param = {
             name: name,
             description: description,
             status: status,
-            exposer_map: mapper
-        })
+        };
+        param[tainacan_plugin.exposer_mapper_param] = mapper;
+        axios.tainacan.post('/collections/', param)
             .then( res => {
                 commit('setCollection', { name: name, description: description, status: status, mapper: mapper });
                 resolve( res.data );

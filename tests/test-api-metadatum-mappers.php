@@ -104,7 +104,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	            ['metadatum_id' => $metadatum->get_id(), 'mapper_metadata' => 'contributor'],
 	            ['metadatum_id' => $metadatum2->get_id(), 'mapper_metadata' => 'coverage']
 	        ],
-	        'exposer_map'          => $dc->slug
+	        \Tainacan\Exposers\Exposers::MAPPER_PARAM          => $dc->slug
 	    ]);
 	    $metadatum_mapper_request->set_body($metadatum_mapper_json);
 	    $metadatum_mapper_response = $this->server->dispatch($metadatum_mapper_request);
@@ -144,7 +144,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	            ['metadatum_id' => $metadatum->get_id(), 'mapper_metadata' => 'contributor'],
 	            ['metadatum_id' => $metadatum2->get_id(), 'mapper_metadata' => $new_metadatum_mapper ]
 	        ],
-	        'exposer_map'          => $dc->slug
+	        \Tainacan\Exposers\Exposers::MAPPER_PARAM          => $dc->slug
 	    ]);
 	    $metadatum_mapper_request->set_body($metadatum_mapper_json);
 	    $metadatum_mapper_response = $this->server->dispatch($metadatum_mapper_request);
@@ -168,7 +168,7 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 	    $this->assertEquals(200, $response->get_status());
 	    
 	    $item_exposer_json = json_encode([
-	        'exposer_type'       => 'OAI-PMH',
+	        \Tainacan\Exposers\Exposers::TYPE_PARAM       => 'OAI-PMH',
 	    ]);
 	    $request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata' );
 	    $request->set_body($item_exposer_json);
