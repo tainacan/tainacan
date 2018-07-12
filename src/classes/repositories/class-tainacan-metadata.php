@@ -531,7 +531,19 @@ class Metadata extends Repository {
             ]
         ];
 
-        if( $collection->get_parent() !== 0 ){
+        if( $collection->get_parent() != 0 ){
+
+        	if(!empty($metadata)){
+		        foreach ( $data_core_metadata as $index => $data_core_metadatum ) {
+		        	foreach ( $metadata as $metadatum ){
+		        		if ( $metadatum->get_metadata_type() === $data_core_metadatum['metadata_type'] ) {
+		        			update_post_meta($metadatum->get_id(), 'metadata_type', 'to_delete', $data_core_metadatum['metadata_type']);
+		        			wp_delete_post($metadatum->get_id(), true);
+		        		}
+		        	}
+		        }
+	        }
+
             return false;
         }
 
