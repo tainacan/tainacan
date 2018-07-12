@@ -37,12 +37,13 @@
                     <taxonomies-list
                             :is-loading="isLoading"
                             :total="total"
+                            :is-on-trash="status == 'trash'"
                             :page="page"
                             :taxonomies-per-page="taxonomiesPerPage"
                             :taxonomies="taxonomies"/>
                     
                     <!-- Empty state image -->
-                    <div v-if="total <= 0 && !isLoading">
+                    <div v-if="taxonomies.length <= 0 && !isLoading">
                         <section class="section">
                             <div class="content has-text-grey has-text-centered">
                                 <p>
@@ -67,7 +68,7 @@
                     <!-- Footer -->
                     <div 
                             class="pagination-area" 
-                            v-if="total > 0">
+                            v-if="taxonomies.length > 0">
                         <div class="shown-items">
                             {{
                                 $i18n.get('info_showing_taxonomies') +

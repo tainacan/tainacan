@@ -24,7 +24,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'item'                                       => __( 'Item', 'tainacan' ),
 	'metadatum'                                  => __( 'Metadata', 'tainacan' ),
 	'filter'                                     => __( 'Filter', 'tainacan' ),
-	'taxonomy'                                   => __( 'Taxonomia', 'tainacan' ),
+	'taxonomy'                                   => __( 'Taxonomy', 'tainacan' ),
 	'event'                                      => __( 'Event', 'tainacan' ),
 	'term'                                       => __( 'Term', 'tainacan' ),
 	'terms'                                      => __( 'Terms', 'tainacan' ),
@@ -372,6 +372,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_type_to_add_metadata'                  => __( 'Add metadata...', 'tainacan' ),
 	'info_visibility_helper'                     => __( 'How the item will be available to visualization.', 'tainacan' ),
 	'info_errors_in_form'                        => __( 'There are errors in the form', 'tainacan' ),
+	'info_no_document_to_item'                   => __( 'No document was uploaded to this item.', 'tainacan' ),
+
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                              => __( 'Text', 'tainacan' ),

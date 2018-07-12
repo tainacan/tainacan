@@ -95,10 +95,11 @@ export const updateImporterURL = ( { commit }, { sessionId, url }) => {
     });
 };
 
-export const updateImporterOptions = ( { commit }, { sessionId, options }) => {
+export const updateImporterOptions = ( { commit }, { sessionId, optionsForm }) => {
     return new Promise(( resolve, reject ) => {
+
         axios.tainacan.put('importers/session/' + sessionId, {
-            options: options
+            options: optionsForm
         })
             .then( res => {
                 let importer = res.data;

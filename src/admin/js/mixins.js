@@ -15,30 +15,20 @@ export const wpAjax = {
     },
     methods: {
         getSamplePermalink(id, newTitle, newSlug){
-            return new Promise((resolve, reject) => {
-                this.axiosWPAjax.post('', qs.stringify({
-                    action: 'sample-permalink',
+            return this.axiosWPAjax.post('', qs.stringify({
+                    action: 'tainacan-sample-permalink',
                     post_id: id,
                     new_title: newTitle,
                     new_slug: newSlug,
-                    samplepermalinknonce: tainacan_plugin.sample_permalink_nonce,
-                }))
-                   .then(res => {
-                       resolve(res.data);
-                   })
-                   .catch(error => {
-                       reject(error)
-                   })
-            });
+                    nonce: tainacan_plugin.nonce,
+                }));
         },
         getDatei18n(dateString){
-            this.axiosWPAjax.post('', qs.stringify({
-                action: 'tainacan_date_i18n',
+            return this.axiosWPAjax.post('', qs.stringify({
+                action: 'tainacan-date-i18n',
                 date_string: dateString,
                 nonce: tainacan_plugin.nonce,
-            })).then(res => {
-                return res.data
-            });
+            }));
         },
     }
 };

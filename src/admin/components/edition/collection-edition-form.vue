@@ -396,7 +396,6 @@
 import { mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import { wpAjax } from '../../js/mixins';
-import htmlToJSON from 'html-to-json'
 
 export default {
     name: 'CollectionEditionForm',
@@ -485,18 +484,8 @@ export default {
             this.isUpdatingSlug = true;
 
             this.getSamplePermalink(this.collectionId, this.form.name, this.form.slug)
-                .then(samplePermalink => {
-
-                    let promise = htmlToJSON.parse(samplePermalink, {
-                        permalink($doc) {
-                            return $doc.find('#editable-post-name-full').text();
-                        }
-                    });
-
-                    promise.done((result) => {
-                        this.form.slug = result.permalink;
-                        //this.$console.info(this.form.slug);
-                    });
+                .then((res) => {
+                    this.form.slug = res.data.slug;
 
                     this.isUpdatingSlug = false;
                     this.formErrorMessage = '';
@@ -807,8 +796,7 @@ export default {
         }
     },
     mounted() {
-
-        if (this.$route.path.split("/").pop() != "new") {
+        if (!this.$route.path.includes("new")) {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
                 this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
             });

@@ -378,13 +378,17 @@
             <div class="footer">
                 <!-- Last Updated Info --> 
                 <div class="update-info-section">     
-                    <p v-if="formErrorMessage == '' || formErrorMessage == undefined">
-                        <em>
-                            <span v-if="isUpdatingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
-                        </em>
+                    <p v-if="!isUpdatingValues">
                         {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
+                    </p>     
+                    <p 
+                            class="update-warning"
+                            v-if="isUpdatingValues">
+                        <b-icon icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
                     </p>
-                    <p class="help is-danger">{{ formErrorMessage }}</p>
+                    
                 </div>  
                 <div 
                         class="form-submission-footer"
@@ -418,7 +422,7 @@
                     <button 
                             @click="onSubmit('draft')"
                             type="button"
-                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_save_as_draft') }}</button>
+                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
                     <button 
                             @click="onSubmit(visibility)"
                             type="button"
@@ -439,7 +443,7 @@
                             :disabled="formErrorMessage != undefined && formErrorMessage != ''"
                             @click="onSubmit(visibility)"
                             type="button"
-                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                            class="button is-secondary">{{ $i18n.get('label_update') }}</button>
                 </div>
             </div>
         </form>
@@ -906,7 +910,7 @@ export default {
     }
 
     .page-container-shrinked {
-        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
+        height: calc(100% - 118px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {
@@ -1078,36 +1082,48 @@ export default {
     }
 
     .footer {
-
-        padding: 24px $page-side-padding;
+        padding: 18px $page-side-padding;
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: white;
-        border-top: 2px solid $secondary;
+        background-color: $primary-lighter;
         width: 100%;
+        height: 65px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
 
         .form-submission-footer {    
-            width: 100%;
-            display: flex;
-            justify-content: end;
-
             .button {
-                margin-left: 6px;
+                margin-left: 16px;
                 margin-right: 6px;
-            }
-            .button.is-outlined {
-                margin-left: 0px;
-                margin-right: auto;
             }
         }
 
+        @keyframes blink {
+            from { color: $tertiary; }
+            to { color: $gray-light; }
+        }
+
+        .update-warning {
+            color: $tertiary;
+            animation-name: blink;
+            animation-duration: 0.5s;
+            animation-delay: 0.5s;
+            align-items: center;
+            display: flex;
+        }
+
         .update-info-section {
-            text-align: center;
-            position: relative;
-            margin-top: -20px;
-            top: 28px;
             color: $gray-light;
+            margin-right: auto;
+        }
+
+        .help {
+            display: inline-block;
+            font-size: 1.0em;
+            margin-top: 0;
+            margin-left: 24px;
         }
     }
 

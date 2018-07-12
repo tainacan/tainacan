@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="extra-margin">
         <collections-filter
                 :open="collapsed"
                 :query="getQuery"
@@ -40,3 +40,9 @@
         }
     }
 </script>
+
+<style>
+    .extra-margin {
+        margin-bottom: 40px;
+    }
+</style>

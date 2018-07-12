@@ -36,6 +36,9 @@
                                 <div v-html="item.document_as_html"/>
                             </div>
                         </div>
+                        <div v-else>
+                            <p>{{ $i18n.get('info_no_document_to_item') }}</p>
+                        </div>
                     </div>
 
                     <!-- Thumbnail -------------------------------- -->
@@ -193,7 +196,8 @@
                 isLoading: false,
                 isMetadataColumnCompressed: false,
                 open: false,
-                collectionName: ''
+                collectionName: '',
+                thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
             }
         },
         components: {
@@ -283,7 +287,7 @@
     }
 
     .page-container-shrinked {
-        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
+        height: calc(100% - 118px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {
@@ -317,16 +321,15 @@
             .field {
                 padding: 10px 0px 10px 30px;
 
-                .collapse .collapse-content {
-                    margin-left: 30px; 
-                }
             }
 
             @media screen and (max-width: 769px) {
                 width: 100%;
             }
         }
-
+            .collapse .collapse-content {
+                margin-left: 30px; 
+            }
     }
 
     .field {
@@ -447,22 +450,21 @@
     }
 
     .footer {
-
-        padding: 24px $page-side-padding;
+        padding: 18px $page-side-padding;
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: white;
-        border-top: 2px solid $secondary;
-        width: 100%;
+        background-color: $primary-lighter;
+        width: 100%;    
+        height: 65px;
 
         .form-submission-footer {    
             width: 100%;
             display: flex;
-            justify-content: end;
+            justify-content: flex-end;
 
             .button {
-                margin-left: 6px;
+                margin-left: 16px;
                 margin-right: 6px;
             }
             .button.is-outlined {
