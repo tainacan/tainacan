@@ -23,7 +23,6 @@ apt:
 services:
 - mysql
 before_install:
-- sudo apt-get update
 - sudo apt-get install  sshpass
 - sudo service mysql restart
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
