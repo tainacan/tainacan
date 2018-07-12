@@ -108,15 +108,13 @@
             <!-- Add button -->
             <div
                     v-show="!advancedSearchResults"
-                    :style="{
-                        'margin-top': '-15px !important',
-                        'padding-left': '25px !important'
-                    }"
+                    :class="{'add-link-advanced-search-header': isHeader, 'add-link-advanced-search': !isHeader }"
                     class="field column is-12">
                 <a
                     @click="addSearchCriteria"
-                    class="is-secondary is-small add-link">
+                    class="is-secondary add-link">
                     <b-icon
+                            class="add-i"
                             icon="plus-circle"
                             size="is-small"
                             type="is-secondary"/>
@@ -568,6 +566,15 @@
                     width: 100% !important;
                 }
             }
+        }
+
+        .add-link-advanced-search {
+            margin-top: -15px !important;
+            padding-left: 25px !important;
+        }
+
+        .add-link-advanced-search-header {
+            margin-top: -20px !important;
         }
     }
 

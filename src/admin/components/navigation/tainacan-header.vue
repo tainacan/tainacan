@@ -165,7 +165,7 @@
                 }
                 .tainacan-logo {
                     max-height: 22px;
-                    padding: 0px 24px;
+                    padding: 0 24px;
                     transition: padding 0.15s;
                     -webkit-transition: padding linear 0.15s;
                 }
@@ -191,7 +191,7 @@
                     .search-header:focus, .search-header:active {
                         width: 220px !important;
                     }
-                    .icon {
+                    .icon:not(.add-i) {
                         pointer-events: all;
                         color: $tertiary;
                         cursor: pointer;
@@ -211,14 +211,14 @@
 
                 .dropdown-item {
                     span.icon:not(.is-right) {
-                        position: -webkit-sticky !important;
+                        position: relative !important;
                     }
                 }
 
-                a {
-                    margin: 0px 12px;
-                    font-size: 12px;
-                }
+                /*a {*/
+                    /*margin: 0px 12px;*/
+                    /*font-size: 12px;*/
+                /*}*/
             }
         }
         &.menu-compressed {
@@ -226,20 +226,20 @@
                 width: 220px;
                 background-color: $secondary;
                 .tainacan-logo {
-                    padding: 0px 42px;
+                    padding: 0 42px;
                 }
             }
 
         }
 
         @media screen and (max-width: 769px) {
-            padding: 0px;
+            padding: 0;
             display: flex;
             .level-left {
                 display: inline-block;
-                margin-left: 0px !important;
+                margin-left: 0 !important;
                 .level-item {
-                    margin-left: 0px;
+                    margin-left: 0;
                 }
             }
             .level-right {
@@ -247,8 +247,8 @@
                 display: inline-block;
             }
 
-            top: 0px;
-            margin-bottom: 0px !important;
+            top: 0;
+            margin-bottom: 0 !important;
         }
 
     }
