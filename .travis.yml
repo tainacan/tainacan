@@ -44,7 +44,7 @@ install:
 - echo '#!/bin/bash' |sudo tee /usr/local/bin/phpunit > /dev/null
 - echo 'if ( php -v|grep -q --only-matching --perl-regexp "5\.\\d+\.\\d+" );then /usr/local/bin/phpunit-5 $@;else /usr/local/bin/phpunit-6 $@;fi;exit $?' |sudo tee -a /usr/local/bin/phpunit > /dev/null
 - sudo chmod +x /usr/local/bin/phpunit
-script: /usr/local/bin/phpunit # phpunit
+script: /usr/local/bin/phpunit # phpunit 
 before_deploy:
 - echo "Seção executada antes do deploy!"
 - openssl aes-256-cbc -K $encrypted_cb93ef43fcd2_key -iv $encrypted_cb93ef43fcd2_iv
