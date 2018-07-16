@@ -54,6 +54,14 @@
                         :style="{color: 'white'}"
                         @click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>
             </div>
+            <button
+                    @click="showProcesses = !showProcesses"
+                    class="button is-small is-secondary level-item">
+                <b-icon icon="swap-vertical"/>
+            </button>
+            <processes-list 
+                    v-show="showProcesses"
+                    @closeProcessesPopup="showProcesses = false"/> 
             <a
                     :style="{color: 'white'}"
                     class="level-item"
@@ -65,8 +73,8 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
     import AdvancedSearch from '../advanced-search/advanced-search.vue';
+    import ProcessesList from '../other/processes-list.vue';
 
     export default {
         name: 'TainacanHeader',
@@ -76,21 +84,16 @@
                 wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
                 searchQuery: '',
                 futureSearchQuery: '',
-            }
-        },
-        computed: {
-            bgProcess() {
-                console.log(this.getProcess());
-                return this.getProcess();
+                showProcesses: false,
+                hasNewProcess: false
             }
         },
         components: {
             AdvancedSearch,
+            ProcessesList
         },
         methods: {
-            ...mapGetters('bgprocess', [
-                'getProcess',
-            ]),
+
             toItemsPage() {
                 if(this.$route.path == '/items') {
                     this.$root.$emit('openAdvancedSearch', true);
