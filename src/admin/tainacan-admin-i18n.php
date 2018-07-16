@@ -227,7 +227,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_view_modes_available'                 => __( 'View modes available on theme', 'tainacan' ),
 	'label_warning'                              => __( 'Warning', 'tainacan' ),
 	'label_error'                                => __( 'Erro', 'tainacan' ),
-	'label_grid'                                 => __( 'Grid', 'tainacan' ),
 	'label_table'                                => __( 'Table', 'tainacan' ),
 	'label_cards'                                => __( 'Cards', 'tainacan' ),
 	'label_records'                              => __( 'Records', 'tainacan' ),

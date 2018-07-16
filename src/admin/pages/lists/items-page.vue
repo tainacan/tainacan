@@ -283,10 +283,10 @@
                                 <span>
                                         <span class="icon is-small gray-icon">
                                         <i 
-                                                :class="{'mdi-table' : ( adminViewMode == 'table' || adminViewMode == undefined),
-                                                        'mdi-view-list' : adminViewMode == 'cards',
-                                                        'mdi-view-grid' : adminViewMode == 'grid',
-                                                        'mdi-view-module' : adminViewMode == 'records'}"
+                                                :class="{'mdi-view-list' : ( adminViewMode == 'table' || adminViewMode == undefined),
+                                                        'mdi-view-module' : adminViewMode == 'cards',
+                                                        'mdi-apps' : adminViewMode == 'grid',
+                                                        'mdi-view-column' : adminViewMode == 'records'}"
                                                 class="mdi"/>
                                     </span>
                                 </span>
@@ -298,7 +298,7 @@
                                     :value="'table'">
                                 <b-icon 
                                         class="gray-icon" 
-                                        icon="table"/>
+                                        icon="view-list"/>
                                 {{ $i18n.get('label_table') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
@@ -306,7 +306,7 @@
                                     :value="'cards'">
                                 <b-icon 
                                         class="gray-icon" 
-                                        icon="view-list"/>
+                                        icon="view-module"/>
                                 {{ $i18n.get('label_cards') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
@@ -314,15 +314,15 @@
                                     :value="'grid'">
                                 <b-icon 
                                         class="gray-icon" 
-                                        icon="view-grid"/>
-                                {{ $i18n.get('label_grid') }}
+                                        icon="apps"/>
+                                {{ $i18n.get('label_thumbnail') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'records' }"
                                     :value="'records'">
                                 <b-icon 
                                         class="gray-icon" 
-                                        icon="view-module"/>
+                                        icon="view-column"/>
                                 {{ $i18n.get('label_records') }}
                             </b-dropdown-item>
                         </b-dropdown>
