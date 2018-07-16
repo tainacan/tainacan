@@ -315,7 +315,7 @@
                                 <b-icon 
                                         class="gray-icon" 
                                         icon="apps"/>
-                                {{ $i18n.get('label_thumbnail') }}
+                                {{ $i18n.get('label_thumbnails') }}
                             </b-dropdown-item>
                             <b-dropdown-item 
                                     :class="{ 'is-active': adminViewMode == 'records' }"

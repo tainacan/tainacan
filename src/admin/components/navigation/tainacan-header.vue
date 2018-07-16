@@ -65,7 +65,7 @@
 </template>
 
 <script>
-
+    import { mapGetters } from 'vuex';
     import AdvancedSearch from '../advanced-search/advanced-search.vue';
 
     export default {
@@ -78,10 +78,19 @@
                 futureSearchQuery: '',
             }
         },
+        computed: {
+            bgProcess() {
+                console.log(this.getProcess());
+                return this.getProcess();
+            }
+        },
         components: {
             AdvancedSearch,
         },
         methods: {
+            ...mapGetters('bgprocess', [
+                'getProcess',
+            ]),
             toItemsPage() {
                 if(this.$route.path == '/items') {
                     this.$root.$emit('openAdvancedSearch', true);
