@@ -311,9 +311,16 @@ export default {
                     font-size: 21px;
                 }
             }
+            .dropdown-item {
+                padding: 0.25rem 1.35rem 0.25rem 0.25rem;
+            }
             .view-mode-icon {
-                margin-right: 8px !important;
-                margin-top: 2px;
+                margin-right: 0px !important;
+                margin-top: 1px;
+
+                &.icon i::before, .gray-icon i::before {
+                    font-size: 19px !important;
+                }
             }
         }
 

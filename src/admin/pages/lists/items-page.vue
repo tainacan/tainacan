@@ -216,12 +216,20 @@
                             </option> -->
                         </b-select>
                         <button
-                                :disabled="totalItems <= 0"
+                                class="button is-white is-small"
+                                :disabled="totalItems <= 0 || order == 'DESC'"
+                                @click="onChangeOrder()">
+                            <span class="icon is-small gray-icon">
+                                <i class="mdi mdi-sort-ascending"/>
+                            </span>
+                        </button>
+                        <button
+                                :disabled="totalItems <= 0 || order == 'ASC'"
                                 class="button is-white is-small"
                                 @click="onChangeOrder()">
-                            <b-icon 
-                                    class="gray-icon"
-                                    :icon="order === 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
+                            <span class="icon is-small gray-icon">
+                                <i class="mdi mdi-sort-descending"/>
+                            </span>
                         </button>
                     </b-field>
                 </div>
@@ -247,6 +255,7 @@
                                 <b-icon icon="menu-down" />
                             </button>
                             <b-dropdown-item 
+                                    :class="{ 'is-active': viewModeOption == viewMode }"
                                     v-for="(viewModeOption, index) of enabledViewModes"
                                     :key="index"
                                     :value="viewModeOption"
@@ -272,38 +281,49 @@
                                     class="button is-white"
                                     slot="trigger">
                                 <span>
-                                    <b-icon
-                                            class="gray-icon view-mode-icon" 
-                                            :icon="(adminViewMode == 'table' || adminViewMode == undefined) ?
-                                                        'table' : (adminViewMode == 'cards' ?
-                                                        'view-list' : 'view-grid')"/>
+                                        <span class="icon is-small gray-icon">
+                                        <i 
+                                                :class="{'mdi-table' : ( adminViewMode == 'table' || adminViewMode == undefined),
+                                                        'mdi-view-list' : adminViewMode == 'cards',
+                                                        'mdi-view-grid' : adminViewMode == 'grid',
+                                                        'mdi-view-module' : adminViewMode == 'records'}"
+                                                class="mdi"/>
+                                    </span>
                                 </span>
                                 &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
                                 <b-icon icon="menu-down" />
                             </button>
-                            <b-dropdown-item :value="'table'">
+                            <b-dropdown-item 
+                                    :class="{ 'is-active': adminViewMode == 'table' }"
+                                    :value="'table'">
                                 <b-icon 
                                         class="gray-icon" 
                                         icon="table"/>
                                 {{ $i18n.get('label_table') }}
                             </b-dropdown-item>
-                            <b-dropdown-item :value="'cards'">
+                            <b-dropdown-item 
+                                    :class="{ 'is-active': adminViewMode == 'cards' }"
+                                    :value="'cards'">
                                 <b-icon 
                                         class="gray-icon" 
                                         icon="view-list"/>
                                 {{ $i18n.get('label_cards') }}
                             </b-dropdown-item>
-                            <b-dropdown-item :value="'records'">
-                                <b-icon 
-                                        class="gray-icon" 
-                                        icon="view-module"/>
-                                {{ $i18n.get('label_records') }}
-                            </b-dropdown-item>
-                            <b-dropdown-item :value="'grid'">
+                            <b-dropdown-item 
+                                    :class="{ 'is-active': adminViewMode == 'grid' }"
+                                    :value="'grid'">
                                 <b-icon 
                                         class="gray-icon" 
                                         icon="view-grid"/>
                                 {{ $i18n.get('label_grid') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item 
+                                    :class="{ 'is-active': adminViewMode == 'records' }"
+                                    :value="'records'">
+                                <b-icon 
+                                        class="gray-icon" 
+                                        icon="view-module"/>
+                                {{ $i18n.get('label_records') }}
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
@@ -1002,8 +1022,9 @@
 
         .gray-icon, .gray-icon .icon {
             color: $tainacan-placeholder-color !important;
+            padding-right: 10px;
         }
-         .gray-icon .icon i::before, .gray-icon i::before {
+        .gray-icon .icon i::before, .gray-icon i::before {
             font-size: 21px !important;
         }
         
@@ -1018,10 +1039,12 @@
             div.dropdown-content {
                 padding: 0;
 
-
                 .metadata-options-container {
                     max-height: 240px;
                     overflow: auto;
+                }
+                .dropdown-item {
+                    padding: 0.25rem 1.0rem 0.25rem 0.75rem;
                 }
                 .dropdown-item span{
                     vertical-align: sub;

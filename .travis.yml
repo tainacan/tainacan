@@ -31,7 +31,7 @@ install:
 - echo -e "Install"
 - sudo mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 - sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest
-  true
+  true 
 - composer install
 - sudo mkdir /tmp/wordpress/wordpress-test/wp-content/uploads
 - sudo chmod -R 777 /tmp/wordpress/wordpress-test/wp-content/uploads
@@ -54,6 +54,7 @@ before_deploy:
 - ssh-add /tmp/deploy_rsa
 - echo -e "Host  $ssh_host\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - ssh-add -l
+#teste Crontab
 deploy:
 - provider: script
   script:  sshpass -p '$ssh_password' ssh $ssh_user@$ssh_host sh /home/l3p/atualiza_git/atualiza_todos.sh      #ssh   $ssh_user@$ssh_host $script_deploy_tainacan
