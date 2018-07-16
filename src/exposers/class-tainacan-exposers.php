@@ -431,7 +431,7 @@ class Exposers {
 	    $types = $Tainacan_Exposers->get_types(\OBJECT);
 	    $urls = [];
 	    foreach ($types as $type) {
-	        $url = $base_url.(strpos($base_url, '?') === false ? '?' : '&').'exposer_type='.$type->slug;
+	        $url = $base_url.(strpos($base_url, '?') === false ? '?' : '&').self::TYPE_PARAM.'='.$type->slug;
 	        $urls[$type->slug] = [$url];
 	        if(is_array($type->get_mappers())) {
 	            $first = true; // first is default, jump
@@ -440,11 +440,11 @@ class Exposers {
 	                    $first = false;
 	                    continue;
 	                }
-	                $urls[$type->slug][] = $url.'&exposer_map='.$type_mapper;
+	                $urls[$type->slug][] = $url.'&'.self::MAPPER_PARAM.'='.$type_mapper;
 	            }
 	        } else {
 	            foreach ($mappers as $mapper) {
-	                $urls[$type->slug][] = $url.'&exposer_map='.$mapper->slug;
+	                $urls[$type->slug][] = $url.'&'.self::MAPPER_PARAM.'='.$mapper->slug;
 	            }
 	        }
 	    }
