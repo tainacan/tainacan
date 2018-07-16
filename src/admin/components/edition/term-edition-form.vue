@@ -92,13 +92,13 @@
                 </button>
             </div>
             <div class="control">
-                <button
+                <a
                         type="button"
                         v-if="editForm.url != undefined && editForm.url!= ''"
                         class="button is-secondary"
                         :href="editForm.url">
                     {{ $i18n.get('see') + ' ' + $i18n.get('term') }}
-                </button>
+                </a>
             </div>
             <div class="control">
                 <button
