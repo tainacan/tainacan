@@ -62,7 +62,7 @@
                         :is-on-trash="status == 'trash'"/> 
 
                 <!-- Empty state image -->
-                <div v-if="totalCollections <= 0 && !isLoading">
+                <div v-if="collections.length <= 0 && !isLoading">
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
@@ -88,7 +88,7 @@
                 <!-- Footer -->
                 <div
                         class="pagination-area"
-                        v-if="totalCollections > 0">
+                        v-if="collections.length > 0">
                     <div class="shown-items"> 
                         {{ 
                             $i18n.get('info_showing_collections') + 

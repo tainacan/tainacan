@@ -343,6 +343,19 @@
                         </div> 
                     </div>-->
 
+                    <!-- Collection -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('collection') }}</label>
+                    </div>
+                    <div class="section-collection">
+                        <div class="field has-addons">
+                            <p>
+                                {{ collectionName }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Metadata from Collection-------------------------------- -->
                     <label class="section-label">{{ $i18n.get('metadata') }}</label>
                     <br>
                     <a
@@ -353,8 +366,6 @@
                                 type="is-gray"
                                 :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
-
-                    <!-- Metadata from Collection-------------------------------- -->
                     <tainacan-form-item
                             v-for="(metadatum, index) of metadatumList"
                             :key="index"
@@ -367,14 +378,17 @@
             <div class="footer">
                 <!-- Last Updated Info --> 
                 <div class="update-info-section">     
-                    <p>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
-                        <em>
-                            <span v-if="isUpdatingValues && !isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_updating_metadata_values') }}</span>
-                            <span v-if="isEditingValues">&nbsp;&nbsp;{{ $i18n.get('info_editing_metadata_values') }}</span>
-                        </em>
+                    <p v-if="!isUpdatingValues">
+                        {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
+                    </p>     
+                    <p 
+                            class="update-warning"
+                            v-if="isUpdatingValues">
+                        <b-icon icon="autorenew" />{{ $i18n.get('info_updating_metadata_values') }}
+                        <span class="help is-danger">{{ formErrorMessage }}</span>
                     </p>
-                    <p class="help is-danger">{{ errorList }}</p>
-                    <p class="help is-danger">{{ formErrorMessage }}</p>
+                    
                 </div>  
                 <div 
                         class="form-submission-footer"
@@ -408,7 +422,7 @@
                     <button 
                             @click="onSubmit('draft')"
                             type="button"
-                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_save_as_draft') }}</button>
+                            class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
                     <button 
                             @click="onSubmit(visibility)"
                             type="button"
@@ -426,9 +440,10 @@
                             type="button"
                             class="button is-secondary">{{ $i18n.get('label_return_to_draft') }}</button>
                     <button 
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
                             @click="onSubmit(visibility)"
                             type="button"
-                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                            class="button is-secondary">{{ $i18n.get('label_update') }}</button>
                 </div>
             </div>
         </form>
@@ -485,8 +500,8 @@ export default {
             urlLink: '',
             isTextModalActive: false,
             textLink: '',
-            isEditingValues: false,
-            isUpdatingValues: false
+            isUpdatingValues: false,
+            collectionName: ''
         }
     },
     computed: {
@@ -498,9 +513,6 @@ export default {
         },
         lastUpdated() {
             return this.getLastUpdated();
-        },
-        errrorList() {
-            return eventBus.errors;
         }
     },
     components: {
@@ -527,6 +539,7 @@ export default {
             'getLastUpdated'
         ]),
         ...mapActions('collection', [
+            'fetchCollectionName',
             'deleteItem',
         ]),
         onSubmit(status) {
@@ -820,6 +833,11 @@ export default {
             this.fetchAttachments(this.itemId);
         }
 
+        // Obtains collection name
+        this.fetchCollectionName(this.collectionId).then((collectionName) => {
+            this.collectionName = collectionName;
+        });
+
         // Sets feedback variables
         eventBus.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
@@ -830,6 +848,12 @@ export default {
                 //         position: 'is-bottom',
                 //     })
                 // }
+        });
+        eventBus.$on('hasErrorsOnForm', (hasErrors) => {
+            if (hasErrors)
+                this.formErrorMessage = this.$i18n.get('info_errors_in_form');
+            else 
+                this.formErrorMessage = '';
         });
         this.cleanLastUpdated();
     },
@@ -886,7 +910,7 @@ export default {
     }
 
     .page-container-shrinked {
-        height: calc(100% - 132px) !important; // Bigger than the others due footer's height
+        height: calc(100% - 118px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {
@@ -1058,36 +1082,48 @@ export default {
     }
 
     .footer {
-
-        padding: 24px $page-side-padding;
+        padding: 18px $page-side-padding;
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: white;
-        border-top: 2px solid $secondary;
+        background-color: $primary-lighter;
         width: 100%;
+        height: 65px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
 
         .form-submission-footer {    
-            width: 100%;
-            display: flex;
-            justify-content: end;
-
             .button {
-                margin-left: 6px;
+                margin-left: 16px;
                 margin-right: 6px;
-            }
-            .button.is-outlined {
-                margin-left: 0px;
-                margin-right: auto;
             }
         }
 
+        @keyframes blink {
+            from { color: $tertiary; }
+            to { color: $gray-light; }
+        }
+
+        .update-warning {
+            color: $tertiary;
+            animation-name: blink;
+            animation-duration: 0.5s;
+            animation-delay: 0.5s;
+            align-items: center;
+            display: flex;
+        }
+
         .update-info-section {
-            text-align: center;
-            position: relative;
-            margin-top: -20px;
-            top: 28px;
             color: $gray-light;
+            margin-right: auto;
+        }
+
+        .help {
+            display: inline-block;
+            font-size: 1.0em;
+            margin-top: 0;
+            margin-left: 24px;
         }
     }
 

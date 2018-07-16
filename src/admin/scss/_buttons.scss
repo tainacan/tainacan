@@ -34,8 +34,11 @@
     &:focus {
         outline: 0px;
     }
-    &[disabled] {
-        border: none;
+    &[disabled], &:hover[disabled] {
+        border: none !important;
+        cursor: not-allowed !important;
+        color: $gray-light !important;
+        background-color: $tainacan-input-background !important;
     }
     &.is-white[disabled] {
         background-color: white !important;

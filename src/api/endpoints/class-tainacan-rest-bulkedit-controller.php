@@ -221,7 +221,6 @@ class REST_Bulkedit_Controller extends REST_Controller {
         }
         
         $group_id = $request['group_id'];
-        var_dump($group_id);
 
         $args = ['id' => $group_id];
 

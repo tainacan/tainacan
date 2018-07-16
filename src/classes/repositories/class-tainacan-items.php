@@ -158,7 +158,7 @@ class Items extends Repository {
 		// register taxonomies
 		if ( is_array( $taxonomies ) && sizeof( $taxonomies ) > 0 ) {
 			foreach ( $taxonomies as $taxonomy ) {
-				$taxonomy->register_taxonomy();
+				$taxonomy->tainacan_register_taxonomy();
 			}
 		}
 	}

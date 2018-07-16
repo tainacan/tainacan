@@ -67,7 +67,7 @@ class CSV extends Importer {
 
             $column = $this->handle_encoding( $values[ $cont ] );
 
-            $processedItem[ $header ] = ( $metadatum->get_multiple() ) ? 
+            $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $column) : $column;
 
             $cont++;

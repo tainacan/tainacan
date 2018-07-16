@@ -260,7 +260,8 @@
                         <b-input
                                 id="tainacan-text-name"
                                 v-model="form.name"
-                                @focus="clearErrors('name')"/>  
+                                @blur="updateSlug"
+                                @focus="clearErrors('name')"/>
                     </b-field>
                         
                     <!-- Description -------------------------------- --> 
@@ -359,6 +360,7 @@
                                 :message="$i18n.getHelperMessage('collections', 'slug')"/>
                         <b-input
                                 id="tainacan-text-slug"
+                                @input="updateSlug"
                                 v-model="form.slug"
                                 @focus="clearErrors('slug')"/>
                     </b-field>
@@ -393,9 +395,11 @@
 <script>
 import { mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
+import { wpAjax } from '../../js/mixins';
 
 export default {
     name: 'CollectionEditionForm',
+    mixins: [ wpAjax ],
     data(){
         return {
             collectionId: Number,
@@ -452,7 +456,8 @@ export default {
             registeredViewModes: tainacan_plugin.registered_view_modes,
             viewModesList: [],
             fromImporter: '',
-            newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page'
+            newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
+            isUpdatingSlug: false,
         }
     },
     methods: {
@@ -471,6 +476,27 @@ export default {
         ...mapActions('metadata', [
             'fetchMetadata'
         ]),
+        updateSlug: _.debounce(function() {
+            if(!this.form.name || this.form.name.length <= 0){
+                return;
+            }
+
+            this.isUpdatingSlug = true;
+
+            this.getSamplePermalink(this.collectionId, this.form.name, this.form.slug)
+                .then((res) => {
+                    this.form.slug = res.data.slug;
+
+                    this.isUpdatingSlug = false;
+                    this.formErrorMessage = '';
+                    this.editFormErrors = {};
+                })
+                .catch(errors => {
+                    this.$console.error(errors);
+
+                    this.isUpdatingSlug = false;
+                });
+        }, 500),
         onSubmit() {
             this.isLoading = true;
 
@@ -770,8 +796,7 @@ export default {
         }
     },
     mounted() {
-
-        if (this.$route.path.split("/").pop() != "new") {
+        if (!this.$route.path.includes("new")) {
             document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
                 this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
             });

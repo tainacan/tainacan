@@ -30,7 +30,7 @@
                 .b-checkbox { width: 100% };
                 &:hover { background-color: $primary-lighter; }
                 .is-small { color: gray; }
-                &.is-active { background-color: white; }
+                &.is-active { background-color: $primary-light; }
             }
         } 
     }

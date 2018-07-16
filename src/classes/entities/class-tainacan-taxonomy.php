@@ -53,7 +53,7 @@ class Taxonomy extends Entity {
 	 *
 	 * @return bool
 	 */
-	function register_taxonomy() {
+	function tainacan_register_taxonomy() {
         $labels = array(
             'name'              => $this->get_name(),
             'singular_name'     => $this->get_name(),

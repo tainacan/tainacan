@@ -133,7 +133,7 @@ class Taxonomies extends Repository {
     public function insert($taxonomy) {
 
     	$new_taxonomy = parent::insert($taxonomy);
-        $new_taxonomy->register_taxonomy();
+        $new_taxonomy->tainacan_register_taxonomy();
         
         // return a brand new object
         return $new_taxonomy;
@@ -187,10 +187,18 @@ class Taxonomies extends Repository {
 	    $permanently    = $args[2];
 
 	    if($permanently == true){
-		    $unregistered = unregister_taxonomy($taxonomy_name);
+	    	/* TODO: Investigate the cause of taxonomies aren't been registered
+	    	 *
+	    	 * This cause a 'invalid taxonomy' exception when try to delete permanently a taxonomy
+	    	 *
+	    	 * This condition is a temporary solution
+		     */
+	    	if(taxonomy_exists($taxonomy_name)) {
+			    $unregistered = unregister_taxonomy( $taxonomy_name );
 
-		    if($unregistered instanceof \WP_Error){
-			    return $unregistered;
+			    if ( $unregistered instanceof \WP_Error ) {
+				    return $unregistered;
+			    }
 		    }
 
     		$deleted = new Entities\Taxonomy(wp_delete_post($taxonomy_id, true));

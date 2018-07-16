@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 language: php
 php:
 - 7.1
@@ -23,16 +23,18 @@ apt:
 services:
 - mysql
 before_install:
-- sudo apt-get install sshpass
+- sudo apt-get update
+- sudo apt-get install  sshpass
 - sudo service mysql restart
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 install:
 - echo -e "Install"
 - sudo mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 - sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest
-  true
+  true 
 - composer install
 - sudo mkdir /tmp/wordpress/wordpress-test/wp-content/uploads
+- sudo chmod -R 777 /tmp/wordpress/wordpress-test/wp-content/uploads
 - sudo wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp 
 - sudo chmod +x /tmp/phpunit-6.5.7.phar
 - sudo mv /tmp/phpunit-6.5.7.phar /usr/local/bin/phpunit-6
@@ -52,6 +54,7 @@ before_deploy:
 - ssh-add /tmp/deploy_rsa
 - echo -e "Host  $ssh_host\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - ssh-add -l
+#teste Crontab
 deploy:
 - provider: script
   script:  sshpass -p '$ssh_password' ssh $ssh_user@$ssh_host sh /home/l3p/atualiza_git/atualiza_todos.sh      #ssh   $ssh_user@$ssh_host $script_deploy_tainacan
