@@ -102,7 +102,7 @@ $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Numeric');
 $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Selectbox');
 $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Relationship');
 $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Taxonomy');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
+//$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
 
 $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
