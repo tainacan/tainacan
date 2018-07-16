@@ -54,7 +54,6 @@ before_deploy:
 - ssh-add /tmp/deploy_rsa
 - echo -e "Host  $ssh_host\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - ssh-add -l
-#teste Crontab2
 deploy:
 - provider: script
   script:  sshpass -p '$ssh_password' ssh $ssh_user@$ssh_host sh /home/l3p/atualiza_git/atualiza_todos.sh      #ssh   $ssh_user@$ssh_host $script_deploy_tainacan
