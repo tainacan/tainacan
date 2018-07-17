@@ -7,16 +7,16 @@ class Item_Metadata_Factory {
 
 	public function create_item_metadata(\Tainacan\Entities\Item $item, \Tainacan\Entities\Metadatum $metadatum, $value = ''){
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
+        $this->item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
         
         if (!empty($value))
-            $item_metadata->set_value($value);
+            $this->item_metadata->set_value($value);
         
-        if ($item_metadata->validate()) {
-            $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
+        if ($this->item_metadata->validate()) {
+            $this->item_metadata = $Tainacan_Item_Metadata->insert($this->item_metadata);
         } 
         
-        return $item_metadata; // If not validated, get_error() method should return the errors. Its up to the tests to use it or not
+        return $this->item_metadata; // If not validated, get_error() method should return the errors. Its up to the tests to use it or not
         
 	}
 }

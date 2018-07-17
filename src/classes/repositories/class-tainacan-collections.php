@@ -265,7 +265,7 @@ class Collections extends Repository {
 		$this->pre_update_moderators( $collection );
 		$new_collection = parent::insert( $collection );
 
-		$Tainacan_Metadata->register_core_metadata( $new_collection );
+		//$Tainacan_Metadata->register_core_metadata( $new_collection );
 		$collection->register_collection_item_post_type();
 		flush_rewrite_rules(false); // needed to activate items post type archive url
 		$this->update_moderators( $new_collection );
