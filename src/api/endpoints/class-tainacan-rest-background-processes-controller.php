@@ -230,8 +230,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $filename = 'bg-' . $action . '-' . $id . $suffix . '.log';
         
         $upload_url = wp_upload_dir();
-		$upload_url = trailingslashit( $upload_url['url'] );
-        $logs_url = $upload_url . 'tainacan';
+		$upload_url = trailingslashit( $upload_url['baseurl'] );
+        $logs_url = $upload_url . 'tainacan/' . $filename;
         
         return $logs_url;
 
