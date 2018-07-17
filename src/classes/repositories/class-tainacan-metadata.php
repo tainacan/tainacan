@@ -38,7 +38,6 @@ class Metadata extends Repository {
         add_filter('pre_trash_post', array( &$this, 'disable_delete_core_metadata' ), 10, 2 );
         add_filter('pre_delete_post', array( &$this, 'force_delete_core_metadata' ), 10, 3 );
 
-        add_action('tainacan-collection-parent-updated', array(&$this, 'update_core_metadata_meta_keys'), 10, 2);
     }
 	
     public function get_map() {
@@ -508,110 +507,51 @@ class Metadata extends Repository {
 	 * @return void
 	 * @throws \Exception
 	 */
-	public function update_core_metadata_meta_keys($collection_old, Entities\Collection $collection_new){
+	public function maybe_update_core_metadata_meta_keys(Entities\Collection $collection_new, Entities\Collection $collection_old, Entities\Metadatum $old_title_metadatum, Entities\Metadatum $old_description_metadatum){
 
 		global $wpdb;
 
-		$wpdb->flush();
-
-		$item_post_type = "%%{$collection_new->get_id()}_item";
+		$item_post_type = $collection_new->get_db_identifier();
 		$parent_collection_id = $collection_new->get_parent();
 
-		if($parent_collection_id != 0){
-
-			$metadata = $this->get_core_metadata( $collection_new );
-
-			$data_core_metadata = $this->get_data_core_metadata($collection_new);
-
-			$parent_collection = new Entities\Collection($parent_collection_id);
-
-			$parent_cores = $this->get_core_metadata($parent_collection);
-
-			if(!empty($metadata)){
-
-				foreach ( $data_core_metadata as $index => $data_core_metadatum ) {
-					foreach ( $metadata as $metadatum ){
-						if ( $metadatum->get_metadata_type() === $data_core_metadatum['metadata_type'] ) {
-							foreach ($parent_cores as $parent_core){
-								if($metadatum->get_metadata_type() === $parent_core->get_metadata_type()){
-
-									$old_metadatum_id = $metadatum->get_id();
-									$new_metadatum_id = $parent_core->get_id();
-
-									$sql_statement = $wpdb->prepare(
-										"UPDATE $wpdb->postmeta
-											SET meta_key = %s
-										 WHERE meta_key = %s AND post_id IN (
-										 	SELECT ID 
-										 	FROM $wpdb->posts 
-										 	WHERE post_type LIKE %s
-										)", $new_metadatum_id, $old_metadatum_id, $item_post_type
-									);
-
-									$res = $wpdb->query($sql_statement);
-
-									wp_cache_flush();
-
-									if($res !== false) {
-										update_post_meta( $metadatum->get_id(), 'metadata_type', 'to_delete', $data_core_metadatum['metadata_type'] );
-										wp_delete_post( $metadatum->get_id(), true);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		} else {
-
-			$old_parent = 0;
-
-			if (!$collection_old) {
-				$this->register_core_metadata($collection_new);
-			} else {
-				$old_parent = $collection_old->get_parent();
-
-				$this->register_core_metadata($collection_new);
-			}
-
-			if($old_parent != 0) {
-				$metadata = $this->get_core_metadata( $collection_new );
-
-				$data_core_metadata = $this->get_data_core_metadata( $collection_new );
-
-				$parent_collection = new Entities\Collection( $old_parent );
-
-				$parent_cores = $this->get_core_metadata( $parent_collection );
-
-				foreach ( $data_core_metadata as $index => $data_core_metadatum ) {
-					foreach ( $metadata as $metadatum ) {
-						if ( $metadatum->get_metadata_type() === $data_core_metadatum['metadata_type'] ) {
-							foreach ( $parent_cores as $parent_core ) {
-								if ( $metadatum->get_metadata_type() === $parent_core->get_metadata_type() ) {
-
-									$old_metadatum_id = $parent_core->get_id();
-									$new_metadatum_id = $metadatum->get_id();
-
-									$sql_statement = $wpdb->prepare(
-										"UPDATE $wpdb->postmeta
-											SET meta_key = %s
-										 WHERE meta_key = %s AND post_id IN (
-										 	SELECT ID 
-										 	FROM $wpdb->posts 
-										 	WHERE post_type LIKE %s
-										)", $new_metadatum_id, $old_metadatum_id, $item_post_type
-									);
-
-									$res = $wpdb->query($sql_statement);
-
-									wp_cache_flush();
-								}
-							}
-						}
-					}
-				}
-			}
+		if ($parent_collection_id != 0 && $collection_old->get_parent() == 0) {
+			update_post_meta( $old_description_metadatum->get_id(), 'metadata_type', 'to_delete', $old_description_metadatum->get_metadata_type() );
+			wp_delete_post( $old_description_metadatum->get_id(), true);
+			update_post_meta( $old_title_metadatum->get_id(), 'metadata_type', 'to_delete', $old_title_metadatum->get_metadata_type() );
+			wp_delete_post( $old_title_metadatum->get_id(), true);
 		}
+
+		$new_title_metadatum = $collection_new->get_core_title_metadatum();
+		$new_description_metadatum = $collection_new->get_core_description_metadatum();
+
+		$sql_statement = $wpdb->prepare(
+			"UPDATE $wpdb->postmeta
+				SET meta_key = %s
+				WHERE meta_key = %s AND post_id IN (
+				SELECT ID 
+				FROM $wpdb->posts 
+				WHERE post_type = %s
+			)", $new_title_metadatum->get_id(), $old_title_metadatum->get_id(), $item_post_type
+		);
+
+		$res = $wpdb->query($sql_statement);
+
+		$sql_statement = $wpdb->prepare(
+			"UPDATE $wpdb->postmeta
+				SET meta_key = %s
+				WHERE meta_key = %s AND post_id IN (
+				SELECT ID 
+				FROM $wpdb->posts 
+				WHERE post_type = %s
+			)", $new_description_metadatum->get_id(), $old_description_metadatum->get_id(), $item_post_type
+		);
+
+		$res = $wpdb->query($sql_statement);
+
+		wp_cache_flush();
+
+		
+
     }
 
 	/**
@@ -655,7 +595,11 @@ class Metadata extends Repository {
 	 */
     public function register_core_metadata( Entities\Collection $collection ){
 
-        $metadata = $this->get_core_metadata( $collection );
+		if ($collection->get_status() == 'auto-draft') {
+			return;
+		}
+		
+		$metadata = $collection->get_core_metadata();
 
 	    $data_core_metadata = $this->get_data_core_metadata($collection);
 
@@ -674,7 +618,7 @@ class Metadata extends Repository {
                     $this->insert_array_metadatum( $data_core_metadatum );
                 }
             }
-        }
+		}
     }
 
 	/**
@@ -722,25 +666,68 @@ class Metadata extends Repository {
 	 * @throws \Exception
 	 */
     public function get_core_metadata( Entities\Collection $collection ){
-        $args = [];
+        
+		return $this->fetch_by_collection($collection, [
+			'meta_query' => [
+				[
+					'key' => 'metadata_type',
+					'value' => $this->core_metadata,
+					'compare' => 'IN'
+				]
+			]
+		], 'OBJECT');
 
-        $meta_query = array(
-            array(
-                'key'     => 'collection_id',
-                'value'   => $collection->get_id(),
-                'compare' => 'IN',
-            ),
-            array(
-                'key'     => 'metadata_type',
-                'value'   => $this->core_metadata,
-                'compare' => 'IN',
-            )
-        );
+	}
+	
+	/**
+	 * Get the Core Title Metadatum for a collection
+	 * 
+	 * @param Entities\Collection $collection
+	 * 
+	 * @return \Tainacan\Entities\Metadatum The Core Title Metadatum
+	 */
+	public function get_core_title_metadatum( Entities\Collection $collection ) {
 
-        $args['meta_query'] = $meta_query;
+		$results = $this->fetch_by_collection($collection, [
+			'meta_query' => [
+				[
+					'key' => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Title',
+				]
+			],
+			'posts_per_page' => 1
+		], 'OBJECT');
 
-        return $this->fetch( $args, 'OBJECT' );
-    }
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum) {
+			return $results[0];
+		}
+		return false;
+	}
+
+	/**
+	 * Get the Core Description Metadatum for a collection
+	 * 
+	 * @param Entities\Collection $collection
+	 * 
+	 * @return \Tainacan\Entities\Metadatum The Core Description Metadatum
+	 */
+	public function get_core_description_metadatum( Entities\Collection $collection ) {
+
+		$results = $this->fetch_by_collection($collection, [
+			'meta_query' => [
+				[
+					'key' => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Description',
+				]
+			],
+			'posts_per_page' => 1
+		], 'OBJECT');
+
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum) {
+			return $results[0];
+		}
+		return false;
+	}
 
 	/**
 	 * create a metadatum entity and insert by an associative array ( attribute => value )

@@ -78,12 +78,7 @@ abstract class Repository {
 		}
 
 		$is_update         = false;
-		$is_updated_parent = false;
 		$old               = '';
-
-		if ( $obj instanceof Entities\Collection && $obj->get_status() != 'auto-draft' ) {
-			$is_updated_parent = true;
-		}
 
 		$diffs = [];
 		if ( $obj->get_id() ) {
@@ -139,10 +134,6 @@ abstract class Repository {
 			if ( $mapped['map'] == 'meta' || $mapped['map'] == 'meta_multi' ) {
 				$diffs = $this->insert_metadata( $obj, $prop, $diffs );
 			}
-		}
-
-		if($is_updated_parent){
-			do_action('tainacan-collection-parent-updated', $old, $obj);
 		}
 
 		// TODO: Logs for header image insert and update

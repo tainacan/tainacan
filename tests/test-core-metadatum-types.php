@@ -210,7 +210,8 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
     }
 
     function test_collection_parent_change_and_update_core_metadata(){
-	    $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+        global $wpdb;
+        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 	    $collection_parent2 = $this->tainacan_entity_factory->create_entity(
 		    'collection',
@@ -219,7 +220,9 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 			    'status' => 'publish'
 		    ),
 		    true
-	    );
+        );
+        
+        $core_metadata_parent2 = $collection_parent2->get_core_metadata();
 
 	    $collection_parent = $this->tainacan_entity_factory->create_entity(
 		    'collection',
@@ -230,26 +233,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-	    $collection_parent_item = $this->tainacan_entity_factory->create_entity(
-		    'item',
-		    array(
-			    'title'       => 'Par',
-			    'description' => 'par',
-			    'status' => 'publish',
-			    'collection'  => $collection_parent,
-		    ),
-		    true
-	    );
-
-	    $core_metadata_parent = $collection_parent->get_core_metadata();
-
-	    $item_metadatum_title0 = $this->tainacan_item_metadata_factory->create_item_metadata(
-	    	$collection_parent_item,
-		    $core_metadata_parent[1], 'Son of son');
-
-	    $item_metadatum_desc0 = $this->tainacan_item_metadata_factory->create_item_metadata(
-	    	$collection_parent_item, $core_metadata_parent[0],
-		    'Desc of son of son');
+        $core_metadata_parent = $collection_parent->get_core_metadata();
 
 	    $collection_son = $this->tainacan_entity_factory->create_entity(
 	    	'collection',
@@ -289,23 +273,30 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 	    # When updated the parent, the item metadata key, have to be update too
 	    $collection_son->set_parent($collection_parent->get_id());
 
-	    $collection_son->validate();
-	    $collection_son = $Tainacan_Collections->update($collection_son);
+        $collection_son->validate();
+        
+        $collection_son = $Tainacan_Collections->update($collection_son);
+        
+        $check_deleted = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(ID) FROM $wpdb->posts WHERE ID = %d", $core_metadata_son[0]->get_id()) );
+        $this->assertEquals(0, $check_deleted);
+        $check_deleted = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(ID) FROM $wpdb->posts WHERE ID = %d", $core_metadata_son[1]->get_id()) );
+        $this->assertEquals(0, $check_deleted);
 
 	    $core_metadata_son = $collection_son->get_core_metadata();
 
 	    $this->assertNotEquals($core_metadata_son[0]->get_id(), $item_metadatum_desc->get_metadatum()->get_id());
 	    $this->assertNotEquals($core_metadata_son[1]->get_id(), $item_metadatum_title->get_metadatum()->get_id());
 
-	    $it = get_post_meta($collection_son_item->get_id());
-
+        $it = get_post_meta($collection_son_item->get_id());
+        
 	    $this->assertArrayHasKey($core_metadata_parent[0]->get_id(), $it);
 	    $this->assertArrayHasKey($core_metadata_parent[1]->get_id(), $it);
 
 	    # Changes parent again
 	    $collection_son->set_parent(0);
 
-	    $collection_son->validate();
+        $collection_son->validate();
+        
 	    $collection_son = $Tainacan_Collections->update($collection_son);
 
 	    $core_metadata_son2 = $collection_son->get_core_metadata();
@@ -321,18 +312,46 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 	    # Changes parent again
 	    $collection_son->set_parent($collection_parent2->get_id());
 
-	    $collection_son->validate();
-	    $collection_son = $Tainacan_Collections->update($collection_son);
+        $collection_son->validate();
+        
+        $collection_son = $Tainacan_Collections->update($collection_son);
+        
+        $check_deleted = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(ID) FROM $wpdb->posts WHERE ID = %d", $core_metadata_son2[0]->get_id()) );
+        $this->assertEquals(0, $check_deleted);
+        $check_deleted = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(ID) FROM $wpdb->posts WHERE ID = %d", $core_metadata_son2[1]->get_id()) );
+        $this->assertEquals(0, $check_deleted);
 
-	    $core_metadata_son3 = $collection_son->get_core_metadata();
+        $core_metadata_son3 = $collection_son->get_core_metadata();
+        
+        $this->assertEquals( $core_metadata_son3[0]->get_id(), $core_metadata_parent2[0]->get_id() );
 
-	    $it3 = get_post_meta($collection_son_item->get_id());
+        $it3 = get_post_meta($collection_son_item->get_id());
 
 	    $this->assertArrayHasKey($core_metadata_son3[0]->get_id(), $it3);
 	    $this->assertArrayHasKey($core_metadata_son3[1]->get_id(), $it3);
 
 	    $this->assertArrayNotHasKey($core_metadata_parent[0]->get_id(), $it3);
-	    $this->assertArrayNotHasKey($core_metadata_parent[1]->get_id(), $it3);
+        $this->assertArrayNotHasKey($core_metadata_parent[1]->get_id(), $it3);
+        
+
+        # Changes parent again to another parent directly
+	    $collection_son->set_parent($collection_parent->get_id());
+
+        $collection_son->validate();
+        
+        $collection_son = $Tainacan_Collections->update($collection_son);
+
+        $core_metadata_son4 = $collection_son->get_core_metadata();
+        
+        $this->assertEquals( $core_metadata_son4[0]->get_id(), $core_metadata_parent[0]->get_id() );
+
+        $it4 = get_post_meta($collection_son_item->get_id());
+
+	    $this->assertArrayHasKey($core_metadata_son4[0]->get_id(), $it4);
+	    $this->assertArrayHasKey($core_metadata_son4[1]->get_id(), $it4);
+
+	    $this->assertArrayNotHasKey($core_metadata_parent2[0]->get_id(), $it4);
+	    $this->assertArrayNotHasKey($core_metadata_parent2[1]->get_id(), $it4);
 
     }
     
