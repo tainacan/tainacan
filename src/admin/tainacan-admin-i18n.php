@@ -264,6 +264,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_no_details_of_process'                => __( 'There are no details about this process', 'tainacan' ),
 	'label_queued_on'			                 => __( 'Queued on:', 'tainacan' ),
 	'label_last_processed_on'	                 => __( 'Last processed on:', 'tainacan' ),
+	'label_progress'			                 => __( 'Progress', 'tainacan' ),
+	'label_process_conpleted'	                 => __( 'Process completed', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

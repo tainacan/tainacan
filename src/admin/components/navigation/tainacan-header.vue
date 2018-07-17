@@ -131,7 +131,7 @@
         },
         created(){
 
-            this.$root.$on('closeAdvancedSearchShortcut', (close) => {
+            this.$root.$on('closeAdvancedSearchShortcut', () => {
                 this.$refs.advancedSearchShortcut.toggle();
             });
 

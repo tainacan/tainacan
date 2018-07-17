@@ -12,7 +12,7 @@
             </a>    
             <a @click="$emit('closeProcessesPopup')">
                 <span class="icon has-text-tertiary">
-                    <i class="mdi  mdi-close"/>
+                    <i class="mdi mdi-close"/>
                 </span>
             </a>       
         </div>
@@ -26,9 +26,7 @@
                             tag="a"
                             :to="$routerHelper.getProcessesPage()"
                             class="is-secondary">
-                        <span class="icon">
-                            <i class="mdi mdi-open-in-new"/>
-                        </span>
+                        {{ $i18n.get('label_see_more') }}
                     </router-link>
                 </li>
                 <li     
@@ -150,8 +148,7 @@ export default {
             else   
                 return this.$i18n.get('info_unknown_date');
         },
-        pauseProcess(index) {
-            
+        pauseProcess() { 
         }
     },
     mounted() {    
@@ -204,9 +201,9 @@ export default {
             }
         }
 
-        .popup-header { padding: 10px 12px 2px 12px; }
+        .popup-header { padding: 6px 12px 4px 12px; }
         .popup-footer { 
-            padding: 4px 10px 6px 10px; 
+            padding: 4px 12px 6px 10px; 
 
             .footer-title { font-size: 0.625rem; }
         }

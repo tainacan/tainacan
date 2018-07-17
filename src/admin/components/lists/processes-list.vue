@@ -47,6 +47,22 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
                         </th>
+                        <!-- Progress -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_progress') }}</div>
+                        </th>
+                        <!-- Queued on -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_queued_on') }}</div>
+                        </th>
+                        <!-- Last Processed on -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_last_processed_on') }}</div>
+                        </th>
+                        <!-- Status -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_status') }}</div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,6 +90,79 @@
                                         placement: 'auto-start'
                                     }">
                                 {{ bgProcess.name }}</p>
+                        </td>
+                        <!-- Progress -->
+                        <td 
+                                class="column-default-width"
+                                :label="$i18n.get('label_progress')" 
+                                :aria-label="$i18n.get('label_progress') + ': ' + bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process')">
+                            <p
+                                    v-tooltip="{
+                                        content: bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process'),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</p>
+                        </td>
+                        <!-- Queued on -->
+                        <td 
+                                class="column-small-width"
+                                :label="$i18n.get('label_queued_on')" 
+                                :aria-label="$i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on)">
+                            <p
+                                    v-tooltip="{
+                                        content: getDate(bgProcess.queued_on),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ getDate(bgProcess.queued_on) }}</p>
+                        </td>
+                        <!-- Last processed on -->
+                        <td 
+                                class="column-small-width"
+                                :label="$i18n.get('label_last_processed_on')" 
+                                :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.last_processed_on)">
+                            <p
+                                    v-tooltip="{
+                                        content: getDate(bgProcess.last_processed_on),
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }">
+                                {{ getDate(bgProcess.last_processed_on) }}</p>
+                        </td>
+                        <!-- Status-->
+                        <td 
+                                class="actions-cell column-small-width" 
+                                :label="$i18n.get('label_status')">
+                            <div class="actions-container">
+                                <span 
+                                        v-if="bgProcess.done <= 0"
+                                        class="icon has-text-success loading-icon">
+                                    <div class="control has-icons-right is-loading is-clearfix" />
+                                </span>
+                                <span
+                                        v-if="bgProcess.done <= 0"
+                                        class="icon has-text-gray action-icon"
+                                        @click="pauseProcess(index)">
+                                    <i class="mdi mdi-24px mdi-pause-circle"/>
+                                </span>
+                                <span 
+                                        v-if="bgProcess.done <= 0"
+                                        class="icon has-text-gray action-icon"
+                                        @click="pauseProcess(index)">
+                                    <i class="mdi mdi-24px mdi-close-circle-outline"/>
+                                </span>
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('label_process_conpleted'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-if="bgProcess.done > 0"
+                                        class="icon has-text-success">
+                                    <i class="mdi mdi-24px mdi-checkbox-marked-circle"/>
+                                </span>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -130,7 +219,7 @@
                 for (let i = 0; i < this.selected.length; i++) 
                     this.selected.splice(i, 1, !this.allOnPageSelected);
             },
-            deleteOneProcess(ProcessId) {
+            deleteOneProcess(processId) {
                 this.$modal.open({
                     parent: this,
                     component: CustomDialog,
@@ -139,7 +228,7 @@
                         title: this.$i18n.get('label_warning'),
                         message: this.$i18n.get('info_warning_Process_delete'),
                         onConfirm: () => {
-                            this.deleteProcess({ ProcessId: taxonomyId })
+                            this.deleteProcess({ processId: processId })
                                 .then(() => {
                                     // this.$toast.open({
                                     //     duration: 3000,
@@ -178,7 +267,7 @@
 
                             for (let i = 0; i < this.processes.length;  i++) {
                                 if (this.selected[i]) {
-                                    this.deleteTaxonomy({ taxonomyId: this.processes[i].id })
+                                    this.deleteTaxonomy({ processId: this.processes[i].id })
                                         .then(() => {
                                             // this.load();
                                             // this.$toast.open({
@@ -203,6 +292,16 @@
                         }
                     }
                 });
+            },
+            getDate(rawDate) {
+                let date = new Date(rawDate);
+
+                if (date instanceof Date && !isNaN(date))
+                    return date.toLocaleString();
+                else   
+                    return this.$i18n.get('info_unknown_date');
+            },
+            pauseProcess() { 
             }
         }
     }
@@ -225,6 +324,12 @@
                 color: $gray-light;
             }
         }
+    }
+
+    .loading-icon .control.is-loading::after {
+        position: relative !important;
+        right: 0;
+        top: 0;
     }
 
 </style>
