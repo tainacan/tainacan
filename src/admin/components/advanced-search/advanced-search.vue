@@ -412,6 +412,8 @@
             searchAdvanced(){
 
                 if(this.isHeader){
+                    this.$root.$emit('closeAdvancedSearchShortcut', true);
+
                     if(this.$route.path == '/items') {
                         this.$root.$emit('openAdvancedSearch', true);
                     }

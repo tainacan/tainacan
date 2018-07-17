@@ -32,6 +32,7 @@
                                 <!--class="mdi mdi-magnify"/>-->
                     <!--</span>-->
                     <b-dropdown
+                            ref="advancedSearchShortcut"
                             class="advanced-search-header-dropdown"
                             position="is-bottom-left">
                         <b-icon
@@ -129,15 +130,20 @@
             isMenuCompressed: false
         },
         created(){
-          this.fetchMetadata({
-              collectionId: false,
-              isRepositoryLevel: true,
-              isContextEdit: false,
-              includeDisabled: false,
-          })
-              .then((metadata) => {
-                  this.metadata = metadata;
-              });
+
+            this.$root.$on('closeAdvancedSearchShortcut', (close) => {
+                this.$refs.advancedSearchShortcut.toggle();
+            });
+
+            this.fetchMetadata({
+                collectionId: false,
+                isRepositoryLevel: true,
+                isContextEdit: false,
+                includeDisabled: false,
+            })
+                .then((metadata) => {
+                      this.metadata = metadata;
+                });
         },
     }
 </script>
