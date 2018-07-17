@@ -30,6 +30,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'terms'                                      => __( 'Terms', 'tainacan' ),
 	'mapping'                                    => __( 'Mapping', 'tainacan' ),
 	'importers'                                  => __( 'Importers', 'tainacan' ),
+	'processes'                                  => __( 'Proceses', 'tainacan' ),
 
 	// Actions
 	'edit'                                       => __( 'Edit', 'tainacan' ),
@@ -76,7 +77,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_items_page'                           => __( 'Items', 'tainacan' ),
 	'title_repository_metadata_page'             => __( 'Repository Metadata', 'tainacan' ),
 	'title_repository_filters_page'              => __( 'Repository Filters', 'tainacan' ),
-	'title_taxonomies_page'                      => __( 'Taxonomies Page', 'tainacan' ),
+	'title_taxonomies_page'                      => __( 'Taxonomies', 'tainacan' ),
 	'title_terms_page'                           => __( 'Terms', 'tainacan' ),
 	'title_repository_events_page'               => __( 'Repository Events', 'tainacan' ),
 	'title_collection_page'                      => __( 'Collection', 'tainacan' ),
@@ -101,8 +102,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_importer_page'                        => __( 'Importer', 'tainacan' ),
 	'title_importers_page'                       => __( 'Importers', 'tainacan' ),
 	'title_export_collection_page'               => __( 'Export Collection Page', 'tainacan' ),
-	'title_export_item_page'                     => __( 'Export Item Page', 'tainacan' ),
-	'title_export_page'                          => __( 'Export Page', 'tainacan' ),
+	'title_export_item_page'                     => __( 'Export Item', 'tainacan' ),
+	'title_export_page'                          => __( 'Export', 'tainacan' ),
+	'title_processes_page'                       => __( 'Processes', 'tainacan' ),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label_clean'                                => __( 'Clear', 'tainacan' ),
@@ -140,6 +142,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_taxonomies_per_page'                  => __( 'Taxonomies per Page:', 'tainacan' ),
 	'label_events_per_page'                      => __( 'Events per Page:', 'tainacan' ),
 	'label_items_per_page'                       => __( 'Items per Page:', 'tainacan' ),
+	'label_processes_per_page'                   => __( 'Processes per Page:', 'tainacan' ),
 	'label_active_metadata'                      => __( 'Active Metadata', 'tainacan' ),
 	'label_available_metadata'                   => __( 'Available Metadata', 'tainacan' ),
 	'label_available_metadata_types'             => __( 'Available Metadata Types', 'tainacan' ),
@@ -216,6 +219,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_select_all_collections_page'          => __( 'Select all collections on page', 'tainacan' ),
 	'label_select_all_items_page'                => __( 'Select all items on page', 'tainacan' ),
 	'label_select_all_taxonomies_page'           => __( 'Select all taxonomies on page', 'tainacan' ),
+	'label_select_all_processes_page'            => __( 'Select all processes on page', 'tainacan' ),
 	'label_edit_attachments'                     => __( 'Edit attachments', 'tainacan' ),
 	'label_blank_collection'                     => __( 'Blank collection', 'tainacan' ),
 	'label_dublin_core'                          => __( 'Dublin Core', 'tainacan' ),
@@ -258,6 +262,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_mapper_metadata'                      => __( 'Mapper Metadata', 'tainacan' ),
 	'label_add_more_mapper_metadata'             => __( 'Add more mapper\'s metadata', 'tainacan' ),
 	'label_no_details_of_process'                => __( 'There are no details about this process', 'tainacan' ),
+	'label_queued_on'			                 => __( 'Queued on:', 'tainacan' ),
+	'label_last_processed_on'	                 => __( 'Last processed on:', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -328,6 +334,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_showing_collections'                   => __( 'Showing collections ', 'tainacan' ),
 	'info_showing_taxonomies'                    => __( 'Showing taxonomies ', 'tainacan' ),
 	'info_showing_events'                        => __( 'Showing events ', 'tainacan' ),
+	'info_showing_processes'                     => __( 'Showing processes ', 'tainacan' ),
 	'info_to'                                    => __( ' to ', 'tainacan' ),
 	'info_of'                                    => __( ' of ', 'tainacan' ),
 	'info_created_by'                            => __( 'Created by: ', 'tainacan' ),
@@ -374,8 +381,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_visibility_helper'                     => __( 'How the item will be available to visualization.', 'tainacan' ),
 	'info_errors_in_form'                        => __( 'There are errors in the form', 'tainacan' ),
 	'info_no_document_to_item'                   => __( 'No document was uploaded to this item.', 'tainacan' ),
-	'info_unfinished_processes'                  => __( 'unfinished processes.', 'tainacan' ),
-	'info_no_process'                  => __( 'There are no processes executing.', 'tainacan' ),
+	'info_unfinished_processes'                  => __( 'unfinished processes', 'tainacan' ),
+	'info_no_process'                  			 => __( 'There are no processes executing.', 'tainacan' ),
+	'info_unknown_date'                  		 => __( 'Unknown date.', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                              => __( 'Text', 'tainacan' ),

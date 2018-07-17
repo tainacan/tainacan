@@ -14,6 +14,7 @@ import TaxonomyPage from '../pages/singles/taxonomy-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 import EventPage from '../pages/singles/event-page.vue'
 import ExportPage from '../pages/singles/export-page.vue'
+import ProcessesPage from '../pages/lists/processes-page.vue'
 
 // Edition Form Components
 import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
@@ -76,6 +77,9 @@ const routes = [
     { path: '/export/item/:itemId', name: 'ExportItem', component: ExportPage, meta: {title: i18nGet('title_export_item_page'), icon: 'export'} },
     { path: '/export', name: 'Export', component: ExportPage, meta: {title: i18nGet('title_export_page'), icon: 'export'} },
     
+    { path: '/processes/', name: 'ProcessesPage', component: ProcessesPage, meta: { title: i18nGet('title_processes_page'), icon: 'swap-vertical'} },
+
+
     { path: '*', redirect: '/'}
 ];
 

@@ -63,8 +63,8 @@
                     class="button is-small is-secondary level-item">
                 <b-icon icon="swap-vertical"/>
             </button>
-            <processes-list
-                    v-show="showProcesses"
+            <processes-popup
+                    v-if="showProcesses"
                     @closeProcessesPopup="showProcesses = false"/>
             <a
                     :style="{color: 'white'}"
@@ -78,7 +78,7 @@
 
 <script>
     import AdvancedSearch from '../advanced-search/advanced-search.vue';
-    import ProcessesList from '../other/processes-list.vue';
+    import ProcessesPopup from '../other/processes-popup.vue';
     import { mapActions } from 'vuex';
 
     export default {
@@ -96,7 +96,7 @@
         },
         components: {
             AdvancedSearch,
-            ProcessesList
+            ProcessesPopup
         },
         methods: {
             ...mapActions('metadata', [

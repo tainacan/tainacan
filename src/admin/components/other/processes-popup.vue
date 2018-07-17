@@ -5,14 +5,14 @@
             <a @click="showProcessesList = !showProcessesList">
                 <span class="icon has-text-tertiary">
                     <i 
-                            :class="{ 'mdi-chevron-up': showProcessesList,  
-                                      'mdi-chevron-down': !showProcessesList }"
+                            :class="{ 'mdi-menu-up': showProcessesList,  
+                                      'mdi-menu-down': !showProcessesList }"
                             class="mdi mdi-18px"/>
                 </span>
             </a>    
             <a @click="$emit('closeProcessesPopup')">
                 <span class="icon has-text-tertiary">
-                    <i class="mdi mdi-close"/>
+                    <i class="mdi  mdi-close"/>
                 </span>
             </a>       
         </div>
@@ -20,33 +20,42 @@
                 v-if="showProcessesList"
                 class="popup-list">
             <ul>
-                <li>
-                    Listing 6 processes
+                <li class="popup-list-subheader">
+                    {{ $i18n.get('label_last_processed_on') + ' ' + getDate(bgProcesses[0].processed_last) }}
                     <router-link 
                             tag="a"
                             :to="$routerHelper.getProcessesPage()"
                             class="is-secondary">
-                        See all
+                        <span class="icon">
+                            <i class="mdi mdi-open-in-new"/>
+                        </span>
                     </router-link>
                 </li>
                 <li     
                         :key="index"
-                        v-for="(bgProcess, index) of bgProcesses.slice(0,6)">
+                        v-for="(bgProcess, index) of bgProcesses">
                     <div class="process-item">
                         <div 
                                 @click="toggleDetails(index)"
                                 class="process-title">
-                            <b-icon
-                                    size="is-small"
-                                    type="is-gray"
-                                    :icon="processesColapses[index] ? 'menu-down' : 'menu-right'" />
-                                Name of Process
+                            <span class="icon has-text-gray">
+                                <i 
+                                        class="mdi mdi-18px"
+                                        :class="{ 'mdi-menu-down': processesColapses[index], 'mdi-menu-right': !processesColapses[index] }" />
+                            </span>  
+                            <p>Name of Process</p>
                         </div>
                         <span 
                                 v-if="bgProcess.done <= 0"
-                                class="icon has-text-gray"
+                                class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
-                            <i class="mdi mdi-24px mdi-pause"/>
+                            <i class="mdi mdi-24px mdi-pause-circle"/>
+                        </span>
+                        <span 
+                                v-if="bgProcess.done <= 0"
+                                class="icon has-text-gray action-icon"
+                                @click="pauseProcess(index)">
+                            <i class="mdi mdi-24px mdi-close-circle-outline"/>
                         </span>
                         <span 
                                 v-if="bgProcess.done > 0"
@@ -55,7 +64,7 @@
                         </span>
                         <span 
                                 v-if="bgProcess.done <= 0"
-                                class="icon has-text-success">
+                                class="icon has-text-success loading-icon">
                             <div class="control has-icons-right is-loading is-clearfix" />
                         </span>
                     </div>
@@ -63,6 +72,10 @@
                             v-if="processesColapses[index]"
                             class="process-label">
                         {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}
+                        <br>
+                        {{ $i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on) }}
+                        <br>
+                        {{ $i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last) }}
                     </div>
                 </li>
             </ul>
@@ -72,7 +85,12 @@
                 v-if="!showProcessesList" />
         <div class="popup-footer">
             <span class="icon has-text-tertiary"><i class="mdi mdi-18px mdi-autorenew"/></span>
-            <p class="footer-title">{{ $i18n.get('info_no_process') }}</p>
+            <p class="footer-title">    
+                {{ hasAnyProcessExecuting ? 
+                    (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + (bgProcesses[0].progress_value ? ' - ' + bgProcesses[0].progress_value : '') : $i18n.get('label_no_details_of_process')): 
+                    $i18n.get('info_no_process') 
+                }}
+            </p>
         </div>
     </div>
 </template>
@@ -81,18 +99,24 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-    name: 'ProcessesList',
+    name: 'ProcessesPopup',
     data() {
         return {
             showProcessesList: false,
-            processesColapses: []
+            processesColapses: [],
+            hasAnyProcessExecuting: false
         }
     },
     watch: {
         bgProcesses() {
             this.processesColapses = [];
-            for (let i = 0; i < this.bgProcesses.length; i++)
+            this.hasAnyProcessExecuting = false;
+
+            for (let i = 0; i < this.bgProcesses.length; i++) {
                 this.$set(this.processesColapses, i , false);
+                if (this.bgProcesses[i].done <= 0)
+                    this.hasAnyProcessExecuting = true;
+            }
         }
     },
     computed: {
@@ -118,12 +142,21 @@ export default {
             }
             return nUnfinishedProcesses;
         },
+        getDate(rawDate) {
+            let date = new Date(rawDate);
+
+            if (date instanceof Date && !isNaN(date))
+                return date.toLocaleString();
+            else   
+                return this.$i18n.get('info_unknown_date');
+        },
         pauseProcess(index) {
             
         }
     },
     mounted() {    
         this.fetchProcesses();
+        this.showProcessesList = false;
     }
 }
 </script>
@@ -147,7 +180,7 @@ export default {
             max-height: 0; 
         }
         to { 
-            max-height: 800px; 
+            max-height: 222px; 
         }
     }
 
@@ -160,7 +193,7 @@ export default {
         border-radius: 5px;
         animation-name: appear;
         animation-duration: 0.3s;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
 
         .popup-header, .popup-footer {
             display: flex;
@@ -173,23 +206,33 @@ export default {
 
         .popup-header { padding: 10px 12px 2px 12px; }
         .popup-footer { 
-            font-size: 0.75rem;
             padding: 4px 10px 6px 10px; 
+
+            .footer-title { font-size: 0.625rem; }
         }
 
         .popup-list {
             background-color: white;
             color: black;
-            overflow: hidden;
-            height: auto; 
+            overflow-y: scroll;
+            overflow-x: hidden;
+            max-height: 222px; 
             animation-name: expand;
             animation-duration: 0.3s;
 
+            .popup-list-subheader {
+                padding: 6px 12px 2px 12px;
+                color: $gray-light;
+                font-size: 0.625rem;
+                a { float: right; }
+            }
+
             .process-item {
-                padding: 6px 12px 2px 6px;
+                padding: 6px 12px 6px 6px;
                 display: flex;
                 justify-content: space-between;
                 cursor: pointer;
+                width: 100%;
 
                 .process-title {
                     margin-right: auto;
@@ -197,9 +240,18 @@ export default {
                     text-overflow: ellipsis;
                     overflow: hidden;
                     max-width: calc(100% - 40px);
-                }
 
-                .control.is-loading::after {
+                    p {
+                        display: inline-block;
+                        position: relative;
+                        top: -2px;
+                    }
+                }
+                .action-icon {
+                    visibility: hidden;
+                    opacity: 0;
+                }
+                .loading-icon .control.is-loading::after {
                     position: relative !important;
                     right: 0;
                     top: 0;
@@ -207,20 +259,25 @@ export default {
             }
             .process-item:hover {
                 background-color: $tainacan-input-background;
+                .action-icon{
+                    visibility: visible;
+                    opacity: 1;
+                }
+                .loading-icon {
+                    display: none;
+                }
             }
             .process-label {
-                padding: 2px 12px 6px 24px;
+                padding: 2px 12px 6px 32px;
                 margin-right: auto;
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
                 max-width: calc(100% - 40px);
+                font-size: 0.625rem;
+                color: $gray-light;
                 animation-name: expand;
                 animation-duration: 0.3s;
-            }
-            .process-label {
-                font-size: 0.75rem;
-                color: $gray-light;
             }
             
         }
