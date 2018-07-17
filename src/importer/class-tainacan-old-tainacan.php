@@ -275,12 +275,12 @@ class Old_Tainacan extends Importer{
         $id = $this->get_transient('item_' . $item_Old->ID . '_id');
 
         if( $id && is_numeric( $id ) ) {
-            $this->add_log('Updating item ' . $item_Old->post_title . ' in collection ');
+            $this->add_log('Updating item ' . $item_Old->post_title );
             $item = new Entities\Item( $id );
         }
 
         $item->set_title( $item_Old->post_title );
-        $this->add_log('Begin insert ' . $item_Old->post_title . ' in collection ' . $collection_id['id'] );
+        $this->add_log('Begin insert ' . $item_Old->ID . ': ' . $item_Old->post_title . ' in collection ' . $collection_id['id'] );
 
         $item->set_description( (isset($item_Old->post_content)) ? $item_Old->post_content : '' );
         $item->set_status('publish');
@@ -293,7 +293,7 @@ class Old_Tainacan extends Importer{
             $this->add_transient('item_' . $item_Old->ID . '_collection', $collection_id['id']); // add collection for relations
 
             if( $insertedItem->get_id() && is_array($processed_item['item']->metadata) ){
-                $this->add_log('Item ' . $insertedItem->get_title() . ' inserted');
+                $this->add_log('Item ' . $insertedItem->get_id() . ': ' . $insertedItem->get_title() . ' inserted. ID in source: ' . $item_Old->ID);
 
                 $this->add_item_metadata(  $insertedItem, $processed_item['item']->metadata, $collection_id );
 

@@ -148,14 +148,13 @@ export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
     });
 };
 
-export const runImporter = ( { commit } , importerId ) => {
+export const runImporter = ( { dispatch } , importerId ) => {
     return new Promise(( resolve, reject ) => {
 
         axios.tainacan.post('importers/session/' + importerId + '/run')
             .then( res => {
                 let backgroundProcessId = res.data;
-                // probably send this a dedicated store to background process
-                //commit('background/addBackgroundProcess', backgroundProcessId);
+                dispatch('bgprocess/fetchProcesses', null, { root: true });
                 resolve( backgroundProcessId );
             })
             .catch(error => {

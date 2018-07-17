@@ -428,13 +428,13 @@ export default {
         },
         finishRunImporter() {
             this.runImporter(this.sessionId)
-                    .then(backgroundProcess => {
-                        this.hasRunImporter = true;    
-                        this.backgroundProcess = backgroundProcess;
-                    })
-                    .catch((errors) => {
-                        this.$console.log(errors);
-                    });
+                .then(backgroundProcess => {
+                    this.hasRunImporter = true;    
+                    this.backgroundProcess = backgroundProcess;
+                })
+                .catch((errors) => {
+                    this.$console.log(errors);
+                });
         },
         onCheckBackgroundProcessStatus() {
             this.fetchProcess(this.backgroundProcess.bg_process_id)

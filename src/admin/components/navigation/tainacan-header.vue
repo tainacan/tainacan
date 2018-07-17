@@ -57,6 +57,14 @@
                         <!--:style="{color: 'white'}"-->
                         <!--@click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>-->
             </div>
+            <button
+                    @click="showProcesses = !showProcesses"
+                    class="button is-small is-secondary level-item">
+                <b-icon icon="swap-vertical"/>
+            </button>
+            <processes-list
+                    v-show="showProcesses"
+                    @closeProcessesPopup="showProcesses = false"/>
             <a
                     :style="{color: 'white'}"
                     class="level-item"
@@ -68,8 +76,8 @@
 </template>
 
 <script>
-
     import AdvancedSearch from '../advanced-search/advanced-search.vue';
+    import ProcessesList from '../other/processes-list.vue';
     import { mapActions } from 'vuex';
 
     export default {
@@ -81,10 +89,13 @@
                 searchQuery: '',
                 futureSearchQuery: '',
                 metadata: Array,
+                showProcesses: false,
+                hasNewProcess: false
             }
         },
         components: {
             AdvancedSearch,
+            ProcessesList
         },
         methods: {
             ...mapActions('metadata', [
