@@ -362,7 +362,7 @@
                             class="collapse-all"
                             @click="toggleCollapseAll()">
                         {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                         <b-icon
+                        <b-icon
                                 type="is-gray"
                                 :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>

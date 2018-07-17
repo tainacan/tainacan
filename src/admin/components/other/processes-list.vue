@@ -1,13 +1,13 @@
 <template>
     <div class="processes-popup">
         <div class="popup-header">
-            <span class="header-title">{{ bgProcesses.length }}</span>
+            <span class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
             <a @click="showProcessesList = !showProcessesList">
                 <span class="icon has-text-tertiary">
                     <i 
                             :class="{ 'mdi-chevron-up': showProcessesList,  
                                       'mdi-chevron-down': !showProcessesList }"
-                            class="mdi"/>
+                            class="mdi mdi-18px"/>
                 </span>
             </a>    
             <a @click="$emit('closeProcessesPopup')">
@@ -20,25 +20,60 @@
                 v-if="showProcessesList"
                 class="popup-list">
             <ul>
+                <li>
+                    Listing 6 processes
+                    <router-link 
+                            tag="a"
+                            :to="$routerHelper.getProcessesPage()"
+                            class="is-secondary">
+                        See all
+                    </router-link>
+                </li>
                 <li     
-                        v-if="bgProcess.progress_label" 
                         :key="index"
-                        v-for="(bgProcess, index) of bgProcesses">
-                    <div class="progress-label">{{ bgProcess.progress_label }}</div>
-                    <span 
-                            v-if="bgProcess.done > 0"
-                            class="icon has-text-success">
-                        <i class="mdi mdi-24px mdi-checkbox-marked-circle"/>
-                    </span>
-                    <span 
-                            v-if="bgProcess.done <= 0"
-                            class="icon has-text-success">
-                        <div class="control has-icons-right is-loading is-clearfix" />
-                    </span>
+                        v-for="(bgProcess, index) of bgProcesses.slice(0,6)">
+                    <div class="process-item">
+                        <div 
+                                @click="toggleDetails(index)"
+                                class="process-title">
+                            <b-icon
+                                    size="is-small"
+                                    type="is-gray"
+                                    :icon="processesColapses[index] ? 'menu-down' : 'menu-right'" />
+                                Name of Process
+                        </div>
+                        <span 
+                                v-if="bgProcess.done <= 0"
+                                class="icon has-text-gray"
+                                @click="pauseProcess(index)">
+                            <i class="mdi mdi-24px mdi-pause"/>
+                        </span>
+                        <span 
+                                v-if="bgProcess.done > 0"
+                                class="icon has-text-success">
+                            <i class="mdi mdi-24px mdi-checkbox-marked-circle"/>
+                        </span>
+                        <span 
+                                v-if="bgProcess.done <= 0"
+                                class="icon has-text-success">
+                            <div class="control has-icons-right is-loading is-clearfix" />
+                        </span>
+                    </div>
+                    <div 
+                            v-if="processesColapses[index]"
+                            class="process-label">
+                        {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}
+                    </div>
                 </li>
             </ul>
         </div>
-        <div class="popup-footer"/>
+        <div   
+                class="separator"
+                v-if="!showProcessesList" />
+        <div class="popup-footer">
+            <span class="icon has-text-tertiary"><i class="mdi mdi-18px mdi-autorenew"/></span>
+            <p class="footer-title">{{ $i18n.get('info_no_process') }}</p>
+        </div>
     </div>
 </template>
 
@@ -49,7 +84,15 @@ export default {
     name: 'ProcessesList',
     data() {
         return {
-            showProcessesList: false
+            showProcessesList: false,
+            processesColapses: []
+        }
+    },
+    watch: {
+        bgProcesses() {
+            this.processesColapses = [];
+            for (let i = 0; i < this.bgProcesses.length; i++)
+                this.$set(this.processesColapses, i , false);
         }
     },
     computed: {
@@ -63,7 +106,21 @@ export default {
         ]),
         ...mapGetters('bgprocess', [
             'getProcesses',
-        ])
+        ]),
+        toggleDetails(index) {
+            this.$set(this.processesColapses, index, !this.processesColapses[index]);
+        },
+        getUnfinishedProcesses() {
+            let nUnfinishedProcesses = 0
+            for(let i = 0; i < this.bgProcesses.length; i++) {
+                if (this.bgProcesses[i].done > 0)
+                    nUnfinishedProcesses++;
+            }
+            return nUnfinishedProcesses;
+        },
+        pauseProcess(index) {
+            
+        }
     },
     mounted() {    
         this.fetchProcesses();
@@ -85,6 +142,15 @@ export default {
         }
     }
 
+    @keyframes expand {
+        from { 
+            max-height: 0; 
+        }
+        to { 
+            max-height: 800px; 
+        }
+    }
+
     .processes-popup{
         background-color: #c1dae0;
         width: 320px;
@@ -92,40 +158,40 @@ export default {
         position: absolute;
         top: 48px;
         border-radius: 5px;
-        box-shadow: 0px 0px 10px -8px #222;
         animation-name: appear;
         animation-duration: 0.3s;
+        font-size: 0.875rem;
 
-        .update-warning {
-            color: $tertiary;
-            animation-name: blink;
-            animation-duration: 0.5s;
-            animation-delay: 0.5s;
+        .popup-header, .popup-footer {
+            display: flex;
             align-items: center;
-            display: flex;
-        }
-
-        .popup-header {
-            display: flex;
-            justify-content: space-between;
             color: $tertiary;
-            padding: 12px;
-
-            .header-title {
+            .header-title, .footer-title {
                 margin-right: auto;
             }
+        }
+
+        .popup-header { padding: 10px 12px 2px 12px; }
+        .popup-footer { 
+            font-size: 0.75rem;
+            padding: 4px 10px 6px 10px; 
         }
 
         .popup-list {
             background-color: white;
             color: black;
+            overflow: hidden;
+            height: auto; 
+            animation-name: expand;
+            animation-duration: 0.3s;
 
-            li {
-                padding: 6px 12px;
+            .process-item {
+                padding: 6px 12px 2px 6px;
                 display: flex;
                 justify-content: space-between;
+                cursor: pointer;
 
-                .progress-label {
+                .process-title {
                     margin-right: auto;
                     white-space: nowrap;
                     text-overflow: ellipsis;
@@ -139,8 +205,22 @@ export default {
                     top: 0;
                 }
             }
-            li:hover {
+            .process-item:hover {
                 background-color: $tainacan-input-background;
+            }
+            .process-label {
+                padding: 2px 12px 6px 24px;
+                margin-right: auto;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                max-width: calc(100% - 40px);
+                animation-name: expand;
+                animation-duration: 0.3s;
+            }
+            .process-label {
+                font-size: 0.75rem;
+                color: $gray-light;
             }
             
         }
@@ -160,6 +240,12 @@ export default {
             border-bottom-width: 8px;
             border-left-width: 8px;
             top: -10px;
+        }
+
+        .separator {
+            margin: 0px 10px;
+            height: 1px;
+            background-color: $secondary; 
         }
     }
 

@@ -257,6 +257,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_update'                               => __( 'Update', 'tainacan' ),
 	'label_mapper_metadata'                      => __( 'Mapper Metadata', 'tainacan' ),
 	'label_add_more_mapper_metadata'             => __( 'Add more mapper\'s metadata', 'tainacan' ),
+	'label_no_details_of_process'                => __( 'There are no details about this process', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),
@@ -373,7 +374,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_visibility_helper'                     => __( 'How the item will be available to visualization.', 'tainacan' ),
 	'info_errors_in_form'                        => __( 'There are errors in the form', 'tainacan' ),
 	'info_no_document_to_item'                   => __( 'No document was uploaded to this item.', 'tainacan' ),
-
+	'info_unfinished_processes'                  => __( 'unfinished processes.', 'tainacan' ),
+	'info_no_process'                  => __( 'There are no processes executing.', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                              => __( 'Text', 'tainacan' ),
