@@ -15,7 +15,9 @@
                         grouped>
 
                     <!-- Metadata (Search criteria) -->
-                    <b-field class="column">
+                    <b-field
+                            :class="{'is-3': isHeader}"
+                            class="column">
                         <b-select
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                 :disabled="advancedSearchQuery.taxquery[searchCriterion] ||
@@ -33,8 +35,9 @@
                     </b-field>
 
                     <!-- Inputs -->
-                    <b-field 
-                            class="column is-two-thirds">
+                    <b-field
+                            :class="{'is-two-thirds': !isHeader}"
+                            class="column">
                         <b-input
                                 v-if="advancedSearchQuery.metaquery[searchCriterion] &&
                                  advancedSearchQuery.metaquery[searchCriterion].ptype != 'date'"
@@ -70,7 +73,8 @@
                     </b-field>
 
                     <!-- Comparators -->
-                    <b-field 
+                    <b-field
+                            :class="{'is-3': isHeader}"
                             class="column">
                         <b-select
                                 v-if="advancedSearchQuery.taxquery[searchCriterion] ||
@@ -104,15 +108,13 @@
             <!-- Add button -->
             <div
                     v-show="!advancedSearchResults"
-                    :style="{
-                        'margin-top': '-15px !important',
-                        'padding-left': '25px !important'
-                    }"
+                    :class="{'add-link-advanced-search-header': isHeader, 'add-link-advanced-search': !isHeader }"
                     class="field column is-12">
                 <a
                     @click="addSearchCriteria"
-                    class="is-secondary is-small add-link">
+                    class="is-secondary add-link">
                     <b-icon
+                            class="add-i"
                             icon="plus-circle"
                             size="is-small"
                             type="is-secondary"/>
@@ -188,6 +190,7 @@
         props: {
             metadata: Array,
             isRepositoryLevel: false,
+            isHeader: false,
             advancedSearchResults: false,
             openFormAdvancedSearch: false,
             isDoSearch: false,
@@ -406,7 +409,20 @@
             addValueToAdvancedSearchQuery: _.debounce(function(value, type, searchCriterion) {
                 this.addToAdvancedSearchQuery(value, type, searchCriterion);
             }, 900),
-            searchAdvanced(){                
+            searchAdvanced(){
+
+                if(this.isHeader){
+                    if(this.$route.path == '/items') {
+                        this.$root.$emit('openAdvancedSearch', true);
+                    }
+
+                    if(this.$route.path != '/items') {
+                        this.$router.push({
+                            path: '/items',
+                        });
+                    }
+                }
+
                 if(Object.keys(this.advancedSearchQuery.taxquery).length > 0 &&
                  Object.keys(this.advancedSearchQuery.metaquery).length > 0){
                     this.advancedSearchQuery.relation = 'AND';
@@ -550,6 +566,15 @@
                     width: 100% !important;
                 }
             }
+        }
+
+        .add-link-advanced-search {
+            margin-top: -15px !important;
+            padding-left: 25px !important;
+        }
+
+        .add-link-advanced-search-header {
+            margin-top: -20px !important;
         }
     }
 

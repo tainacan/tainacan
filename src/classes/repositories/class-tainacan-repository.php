@@ -77,8 +77,15 @@ abstract class Repository {
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
-		$is_update = false;
-		$diffs     = [];
+		$is_update         = false;
+		$is_updated_parent = false;
+		$old               = '';
+
+		if ( $obj instanceof Entities\Collection && $obj->get_status() != 'auto-draft' ) {
+			$is_updated_parent = true;
+		}
+
+		$diffs = [];
 		if ( $obj->get_id() ) {
 
 			$old = $obj->get_repository()->fetch( $obj->get_id() );
@@ -109,15 +116,15 @@ abstract class Repository {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
-		if( $obj instanceof Entities\Item ){
+		if ( $obj instanceof Entities\Item ) {
 			// get collection to determine post type
 			$collection = $obj->get_collection();
 
-			if ( !$collection ) {
+			if ( ! $collection ) {
 				return false;
 			}
 
-			$post_t = $collection->get_db_identifier();
+			$post_t                  = $collection->get_db_identifier();
 			$obj->WP_Post->post_type = $post_t;
 		}
 
@@ -134,8 +141,11 @@ abstract class Repository {
 			}
 		}
 
-		// TODO: Logs for header image insert and update
+		if($is_updated_parent){
+			do_action('tainacan-collection-parent-updated', $old, $obj);
+		}
 
+		// TODO: Logs for header image insert and update
 		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
 		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
 

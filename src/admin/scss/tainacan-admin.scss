@@ -56,7 +56,7 @@ a:hover {
     &.disabled {
         pointer-events: none;
         cursor: default;
-        color: $tainacan-input-background;
+        color: $tainacan-input-background !important;
 
         .icon {
             color: $tainacan-input-background !important;

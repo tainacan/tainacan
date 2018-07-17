@@ -21,38 +21,41 @@
                     <input
                             autocomplete="on"
                             :placeholder="$i18n.get('instruction_search_in_repository')"
-                            class="input is-small"
+                            class="input is-small search-header"
                             type="search"
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
                             @keyup.enter="updateSearch()">
-                    <span class="icon is-right">
-                        <i
-                                @click="updateSearch()"
-                                class="mdi mdi-magnify"/>
-                    </span>
-                    <!--<b-dropdown-->
-                            <!--position="is-bottom-left">-->
-                        <!--<b-icon-->
-                                <!--class="is-right"-->
-                                <!--slot="trigger"-->
-                                <!--size="is-small"-->
-                                <!--icon="menu-down"/>-->
-                        <!--<b-dropdown-item>-->
-                            <!--<p class="is-left">{{ $i18n.get('advanced_search') }}</p>-->
-                            <!--<b-icon-->
-                                    <!--icon="menu-up"-->
-                                    <!--class="is-right" />-->
-                        <!--</b-dropdown-item>-->
-                        <!--<b-dropdown-item-->
-                                <!--:custom="true">-->
-                            <!--<advanced-search />-->
-                        <!--</b-dropdown-item>-->
-                    <!--</b-dropdown>-->
+                    <!--<span class="icon is-right">-->
+                        <!--<i-->
+                                <!--@click="updateSearch()"-->
+                                <!--class="mdi mdi-magnify"/>-->
+                    <!--</span>-->
+                    <b-dropdown
+                            class="advanced-search-header-dropdown"
+                            position="is-bottom-left">
+                        <b-icon
+                                class="is-right"
+                                slot="trigger"
+                                size="is-small"
+                                icon="menu-down"/>
+                        <b-dropdown-item>
+                            <p class="is-left">{{ $i18n.get('advanced_search') }}</p>
+                            <b-icon
+                                    icon="menu-up"
+                                    class="is-right" />
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                :custom="true">
+                            <advanced-search
+                                    :metadata="metadata"
+                                    :is-header="true"/>
+                        </b-dropdown-item>
+                    </b-dropdown>
                 </div>
-                <a
-                        :style="{color: 'white'}"
-                        @click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>
+                <!--<a-->
+                        <!--:style="{color: 'white'}"-->
+                        <!--@click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>-->
             </div>
             <a
                     :style="{color: 'white'}"
@@ -67,6 +70,7 @@
 <script>
 
     import AdvancedSearch from '../advanced-search/advanced-search.vue';
+    import { mapActions } from 'vuex';
 
     export default {
         name: 'TainacanHeader',
@@ -76,26 +80,30 @@
                 wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
                 searchQuery: '',
                 futureSearchQuery: '',
+                metadata: Array,
             }
         },
         components: {
             AdvancedSearch,
         },
         methods: {
-            toItemsPage() {
-                if(this.$route.path == '/items') {
-                    this.$root.$emit('openAdvancedSearch', true);
-                }
-
-                if(this.$route.path != '/items') {
-                    this.$router.push({
-                        path: '/items',
-                        query: {
-                            advancedSearch: true
-                        }
-                    });
-                }
-            },
+            ...mapActions('metadata', [
+                'fetchMetadata'
+            ]),
+            // toItemsPage() {
+            //     if(this.$route.path == '/items') {
+            //         this.$root.$emit('openAdvancedSearch', true);
+            //     }
+            //
+            //     if(this.$route.path != '/items') {
+            //         this.$router.push({
+            //             path: '/items',
+            //             query: {
+            //                 advancedSearch: true
+            //             }
+            //         });
+            //     }
+            // },
             updateSearch() {
                 if (this.$route.path != '/items') {
                     this.$router.push({
@@ -108,7 +116,18 @@
         },
         props: {
             isMenuCompressed: false
-        }
+        },
+        created(){
+          this.fetchMetadata({
+              collectionId: false,
+              isRepositoryLevel: true,
+              isContextEdit: false,
+              includeDisabled: false,
+          })
+              .then((metadata) => {
+                  this.metadata = metadata;
+              });
+        },
     }
 </script>
 
@@ -146,7 +165,7 @@
                 }
                 .tainacan-logo {
                     max-height: 22px;
-                    padding: 0px 24px;
+                    padding: 0 24px;
                     transition: padding 0.15s;
                     -webkit-transition: padding linear 0.15s;
                 }
@@ -159,8 +178,8 @@
                 align-items: center;
                 margin-right: 36px;
 
-                .control:not(.tnc-advanced-search-container) {
-                    input {
+                .control {
+                    .search-header {
                         border-width: 0 !important;
                         height: 27px;
                         font-size: 11px;
@@ -169,10 +188,10 @@
                         -webkit-transition: width linear 0.15s;
                         width: 160px;
                     }
-                    input:focus, input:active {
+                    .search-header:focus, .search-header:active {
                         width: 220px !important;
                     }
-                    .icon {
+                    .icon:not(.add-i) {
                         pointer-events: all;
                         color: $tertiary;
                         cursor: pointer;
@@ -182,18 +201,24 @@
                     }
                 }
 
-                /*.dropdown-content {*/
-                    /*width: 800px !important;*/
-                /*}*/
-
-                /*.dropdown-item:hover {*/
-                    /*background-color: white;*/
-                /*}*/
-
-                a {
-                    margin: 0px 12px;
-                    font-size: 12px;
+                .dropdown-content {
+                    width: 800px !important;
                 }
+
+                .dropdown-item:hover {
+                    background-color: white;
+                }
+
+                .dropdown-item {
+                    span.icon:not(.is-right) {
+                        position: relative !important;
+                    }
+                }
+
+                /*a {*/
+                    /*margin: 0px 12px;*/
+                    /*font-size: 12px;*/
+                /*}*/
             }
         }
         &.menu-compressed {
@@ -201,20 +226,20 @@
                 width: 220px;
                 background-color: $secondary;
                 .tainacan-logo {
-                    padding: 0px 42px;
+                    padding: 0 42px;
                 }
             }
 
         }
 
         @media screen and (max-width: 769px) {
-            padding: 0px;
+            padding: 0;
             display: flex;
             .level-left {
                 display: inline-block;
-                margin-left: 0px !important;
+                margin-left: 0 !important;
                 .level-item {
-                    margin-left: 0px;
+                    margin-left: 0;
                 }
             }
             .level-right {
@@ -222,8 +247,8 @@
                 display: inline-block;
             }
 
-            top: 0px;
-            margin-bottom: 0px !important;
+            top: 0;
+            margin-bottom: 0 !important;
         }
 
     }
