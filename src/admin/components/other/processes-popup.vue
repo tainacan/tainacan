@@ -87,7 +87,7 @@
                     class="icon has-text-tertiary"><i class="mdi mdi-18px mdi-autorenew"/></span>
             <p class="footer-title">    
                 {{ hasAnyProcessExecuting ? 
-                    (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].value >= 0) ? ' - ' + bgProcesses[0].progress_value : '') : $i18n.get('label_no_details_of_process')): 
+                    (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value : '') : $i18n.get('label_no_details_of_process')): 
                     $i18n.get('info_no_process') 
                 }}
             </p>

@@ -20,7 +20,7 @@
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <div class="search-area">
+            <div class="search-area is-hidden-mobile">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <input
                             class="input is-small"
@@ -39,7 +39,7 @@
             </div>
             <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
-                    class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
+                    class="is-size-7 is-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -327,6 +327,28 @@
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
+                </div>
+                <div class="is-hidden-tablet">
+                    <div class="search-control-item">
+                        <div class="control has-icons-right  is-small is-clearfix">
+                            <input
+                                    class="input is-small"
+                                    :placeholder="$i18n.get('instruction_search')"
+                                    type="search"
+                                    autocomplete="on"
+                                    :value="searchQuery"
+                                    @input="futureSearchQuery = $event.target.value"
+                                    @keyup.enter="updateSearch()">
+                                <span
+                                        @click="updateSearch()"
+                                        class="icon is-right">
+                                    <i class="mdi mdi-magnify" />
+                                </span>
+                        </div>
+                    </div>
+                    <a
+                            @click="openAdvancedSearch = !openAdvancedSearch"
+                            class="is-size-7 is-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
                 </div>
             </div>
 
@@ -936,6 +958,15 @@
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;
 
+        @media screen and (max-width: 769px) {
+            width: 100%;
+            top: 92px;
+            
+            h3 {
+                margin-top: 0 !important;
+            }
+        }
+
         h3 {
             font-size: 100%;
             margin-top: 48px;
@@ -998,6 +1029,10 @@
 
     .spaced-to-right {
         margin-left: $filter-menu-width;
+
+        @media screen and (max-width: 769px) {
+            margin-left: 0px !important;
+        }
     }
 
     .search-control {
