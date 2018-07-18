@@ -287,7 +287,8 @@ export default {
         }
 
         .filters-menu {
-            height: auto;
+            // height: auto;
+            position: absolute !important;
             min-width: $filter-menu-width-theme;
             border-right: 0;
             padding: 25px 12px 25px 4.1666667%;
@@ -327,6 +328,10 @@ export default {
         #items-list-area {
             width: 100%;
             overflow-y: unset;
+            margin-left: 0;
+            &.spaced-to-right {
+                margin-left:  $filter-menu-width-theme;
+            }
         }
 
     }
