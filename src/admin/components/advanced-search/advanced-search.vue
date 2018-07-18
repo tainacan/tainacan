@@ -2,6 +2,7 @@
     <div>
         <div
                 :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '47px' }"
+                :class="{ 'padding-in-header': isHeader, 'padding-regular': !isHeader }"
                 class="columns is-multiline tnc-advanced-search-container">
 
             <div
@@ -562,9 +563,17 @@
 
     @import '../../scss/_variables.scss';
 
-    .tnc-advanced-search-container {
+    .padding-in-header {
+        padding-right: 3.3%;
+        padding-left: 3.7%;
+    }
+
+    .padding-regular {
         padding-right: $page-side-padding;
         padding-left: $page-side-padding;
+    }
+
+    .tnc-advanced-search-container {
         padding-bottom: 47px;
 
         .column {

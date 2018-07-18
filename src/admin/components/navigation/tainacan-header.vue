@@ -37,19 +37,22 @@
                         class="advanced-search-header-dropdown"
                         position="is-bottom-left">
                     <a
-                            class="advanced-s-text"
+                            class="advanced-search-text"
                             slot="trigger">
                         {{ $i18n.get('advanced_search') }}
                     </a>
                     <b-dropdown-item>
                         <div :style="{'height': '25px'}">
-                            <p class="is-pulled-left">{{ $i18n.get('advanced_search') }}</p>
+                            <p class="is-pulled-left advanced-search-text-di">{{ $i18n.get('advanced_search') }}</p>
                             <b-icon
+                                    type="is-secondary"
                                     icon="menu-up"
                                     class="is-pulled-right" />
                         </div>
+                        <hr class="advanced-search-hr">
                     </b-dropdown-item>
                     <b-dropdown-item
+                            style="padding-left: 0 !important; padding-right: 0 !important;"
                             :custom="true">
                         <advanced-search
                                 :metadata="metadata"
@@ -239,10 +242,22 @@
                         }
                     }
 
-                    .advanced-s-text {
+                    .advanced-search-text {
                         margin: 0 12px;
                         font-size: 12px;
                         color: white;
+                    }
+
+                    .advanced-search-text-di {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #01295c;
+                    }
+
+                    .advanced-search-hr {
+                        height: 1px;
+                        margin: 8px 0;
+                        background-color: #298596;
                     }
                 }
             }
