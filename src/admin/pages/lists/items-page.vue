@@ -921,6 +921,8 @@
 
     .filters-menu {
         position: relative;
+        z-index: 9;
+        background-color: white;
         width: $filter-menu-width;
         min-width: 180px;
         min-height: 100%;
@@ -974,7 +976,7 @@
     }
     #filter-menu-compress-button {
         position: absolute;
-        z-index: 9;
+        z-index: 99;
         top: 152px;
         left: 0;
         max-width: 23px;
