@@ -228,11 +228,15 @@ class Old_Tainacan extends Importer{
 
         $this->add_log('Proccess item index' . $index . ' in collection OLD ' . $collection_id['source_id'] );
 
-        $info = $this->requester( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page, $args );                    
+        $url_to_fetch = $this->get_url() . $this->tainacan_api_address . "/collections/". 
+                            $collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page
+                            . "&filter[order_by]=ID&filter[order]=ASC";
+
+        $info = $this->requester( $url_to_fetch, $args );                    
         $info = json_decode($info['body']);
 
         if( !isset( $info->items ) ){
-            $this->add_error_log('Error in fetch remote (' . $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page);
+            $this->add_error_log('Error in fetch remote (' . $url_to_fetch . ')');
             $this->abort();
             return false;
         }
@@ -248,7 +252,7 @@ class Old_Tainacan extends Importer{
             $this->add_log('item found ', $the_item->item->ID );  
            return [ 'item' => $item_Old, 'collection_definition' => $collection_id ];
         } else {
-            $this->add_error_log('fetching remote (' . $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page);
+            $this->add_error_log('fetching remote ' . $url_to_fetch);
             $this->add_error_log('proccessing an item empty');
 			$this->abort();
             return false;
