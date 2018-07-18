@@ -45,6 +45,7 @@
                         <div :style="{'height': '25px'}">
                             <p class="is-pulled-left advanced-search-text-di">{{ $i18n.get('advanced_search') }}</p>
                             <b-icon
+                                    style="margin-top: 2px"
                                     type="is-secondary"
                                     icon="menu-up"
                                     class="is-pulled-right" />
@@ -252,6 +253,7 @@
                         font-size: 14px;
                         font-weight: 500;
                         color: #01295c;
+                        margin-top: 4px;
                     }
 
                     .advanced-search-hr {
