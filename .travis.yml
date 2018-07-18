@@ -26,7 +26,7 @@ before_install:
 - sudo apt-get update
 - sudo apt-get install  sshpass
 - sudo service mysql restart
-- mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+- mysql -e 'CREATE DATABASE IF NOT EXISTS test;' 
 install:
 - echo -e "Install" 
 - sudo mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php

@@ -14,13 +14,14 @@
         </button>
         <!-- Side bar with search and filters -->
         <aside
+                :style="{ top: searchControlHeight + 'px' }"
                 v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
                 class="filters-menu tainacan-form">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
 
-            <div class="search-area">
+            <div class="search-area is-hidden-mobile">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <input
                             class="input is-small"
@@ -39,7 +40,7 @@
             </div>
             <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
-                    class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
+                    class="is-size-7 is-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -105,6 +106,7 @@
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
+                    ref="search-control"
                     v-if="!openAdvancedSearch"
                     class="search-control">
                 <b-loading
@@ -251,7 +253,7 @@
                                         class="gray-icon view-mode-icon"
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
-                                    &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
+                                    <span class="is-hidden-mobile">&nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}</span>
                                 <b-icon icon="menu-down" />
                             </button>
                             <b-dropdown-item 
@@ -327,6 +329,28 @@
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
+                </div>
+
+                <!-- Text simple search (used on mobile, instead of the one from filter list)-->
+                <div class="is-hidden-tablet search-control-item">
+                    <div class="control has-icons-right  is-small is-clearfix">
+                        <input
+                                class="input is-small"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                autocomplete="on"
+                                :value="searchQuery"
+                                @input="futureSearchQuery = $event.target.value"
+                                @keyup.enter="updateSearch()">
+                            <span
+                                    @click="updateSearch()"
+                                    class="icon is-right">
+                                <i class="mdi mdi-magnify" />
+                            </span>
+                    </div>
+                    <a
+                            @click="openAdvancedSearch = !openAdvancedSearch"
+                            class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
                 </div>
             </div>
 
@@ -553,6 +577,7 @@
                 openFormAdvancedSearch: false,
                 advancedSearchResults: false,
                 isDoSearch: false,
+                searchControlHeight: 0
             }
         },
         props: {
@@ -653,9 +678,19 @@
             },
             onChangeViewMode(viewMode) {
                 this.$eventBusSearch.setViewMode(viewMode);
+
+                // Updates searchControlHeight before in case we need to adjust filters position on mobile
+                setTimeout(() => {
+                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                }, 500);
             },
             onChangeAdminViewMode(adminViewMode) {
                 this.$eventBusSearch.setAdminViewMode(adminViewMode);
+
+                // Updates searchControlHeight before in case we need to adjust filters position on mobile
+                setTimeout(() => {
+                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                }, 500);
             },
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];
@@ -838,6 +873,7 @@
 
         },
         mounted() {
+            
             this.prepareMetadataAndFilters();
             this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 
@@ -863,6 +899,16 @@
                     this.$emit('onShrinkHeader', this.isHeaderShrinked); 
                 });
             }
+
+            // Watches window resize to adjust filter's top position and compression on mobile 
+            this.$nextTick(() => {
+                this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
+                window.addEventListener('resize', () => {
+                    this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
+                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                });
+            })
         }
     }
 </script>
@@ -921,7 +967,7 @@
 
     .filters-menu {
         position: relative;
-        z-index: 9;
+        z-index: 10;
         background-color: white;
         width: $filter-menu-width;
         min-width: 180px;
@@ -935,6 +981,18 @@
         visibility: visible;
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;
+
+        @media screen and (max-width: 768px) {
+            width: 100%;
+            padding: $page-small-side-padding !important;
+            
+            h3 {
+                margin-top: 0 !important;
+            }
+        }
+        @media screen and (min-width: 769px) {
+            top: 0px !important;
+        }
 
         h3 {
             font-size: 100%;
@@ -998,6 +1056,10 @@
 
     .spaced-to-right {
         margin-left: $filter-menu-width;
+
+        @media screen and (max-width: 768px) {
+            margin-left: 0px !important;
+        }
     }
 
     .search-control {
