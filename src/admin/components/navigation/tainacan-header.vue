@@ -26,37 +26,37 @@
                             :value="searchQuery"
                             @input="futureSearchQuery = $event.target.value"
                             @keyup.enter="updateSearch()">
-                    <!--<span class="icon is-right">-->
-                        <!--<i-->
-                                <!--@click="updateSearch()"-->
-                                <!--class="mdi mdi-magnify"/>-->
-                    <!--</span>-->
-                    <b-dropdown
-                            ref="advancedSearchShortcut"
-                            class="advanced-search-header-dropdown"
-                            position="is-bottom-left">
-                        <b-icon
-                                class="is-right"
-                                slot="trigger"
-                                size="is-small"
-                                icon="menu-down"/>
-                        <b-dropdown-item>
-                            <p class="is-left">{{ $i18n.get('advanced_search') }}</p>
+                    <span class="icon is-right">
+                        <i
+                                @click="updateSearch()"
+                                class="mdi mdi-magnify"/>
+                    </span>
+                </div>
+                <b-dropdown
+                        ref="advancedSearchShortcut"
+                        class="advanced-search-header-dropdown"
+                        position="is-bottom-left">
+                    <a
+                            class="advanced-s-text"
+                            slot="trigger">
+                        {{ $i18n.get('advanced_search') }}
+                    </a>
+                    <b-dropdown-item>
+                        <div :style="{'height': '25px'}">
+                            <p class="is-pulled-left">{{ $i18n.get('advanced_search') }}</p>
                             <b-icon
                                     icon="menu-up"
-                                    class="is-right" />
-                        </b-dropdown-item>
-                        <b-dropdown-item
-                                :custom="true">
-                            <advanced-search
-                                    :metadata="metadata"
-                                    :is-header="true"/>
-                        </b-dropdown-item>
-                    </b-dropdown>
-                </div>
-                <!--<a-->
-                        <!--:style="{color: 'white'}"-->
-                        <!--@click="toItemsPage">{{ $i18n.get('advanced_search') }}</a>-->
+                                    class="is-pulled-right" />
+                        </div>
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            :custom="true">
+                        <advanced-search
+                                :metadata="metadata"
+                                :is-header="true"/>
+                    </b-dropdown-item>
+                </b-dropdown>
+
             </div>
             <button
                     @click="showProcesses = !showProcesses"
@@ -218,24 +218,33 @@
                     }
                 }
 
-                .dropdown-content {
-                    width: 800px !important;
-                }
+                .advanced-search-header-dropdown {
+                    height: 27px !important;
 
-                .dropdown-item:hover {
-                    background-color: white;
-                }
+                    .dropdown-content {
+                        width: 800px !important;
+                    }
 
-                .dropdown-item {
-                    span.icon:not(.is-right) {
-                        position: relative !important;
+                    .dropdown-item:hover {
+                        background-color: unset;
+                    }
+
+                    .dropdown-menu {
+                        top: 0 !important;
+                    }
+
+                    .dropdown-item {
+                        span.icon:not(.is-right) {
+                            position: relative !important;
+                        }
+                    }
+
+                    .advanced-s-text {
+                        margin: 0 12px;
+                        font-size: 12px;
+                        color: white;
                     }
                 }
-
-                /*a {*/
-                    /*margin: 0px 12px;*/
-                    /*font-size: 12px;*/
-                /*}*/
             }
         }
         &.menu-compressed {

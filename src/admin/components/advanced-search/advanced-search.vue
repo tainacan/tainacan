@@ -70,6 +70,11 @@
                                 @add="addValueToAdvancedSearchQuery($event, 'terms', searchCriterion)"
                                 @typing="autoCompleteTerm($event, searchCriterion)"
                                 />
+                        <b-input
+                                class="tainacan-input-disabled"
+                                v-else
+                                type="text"
+                                disabled />
                     </b-field>
 
                     <!-- Comparators -->
@@ -90,6 +95,11 @@
                                     :value="key"
                             >{{ comparator }}</option>
                         </b-select>
+                        <b-input
+                                class="tainacan-input-disabled"
+                                v-else
+                                type="text"
+                                disabled />
                     </b-field>
 
                     <div class="field">
@@ -572,11 +582,17 @@
 
         .add-link-advanced-search {
             margin-top: -15px !important;
-            padding-left: 25px !important;
+            padding-left: 8px !important;
         }
 
         .add-link-advanced-search-header {
             margin-top: -20px !important;
+            padding: 0 !important;
+            margin-left: -5px !important;
+        }
+
+        tainacan-input-disabled {
+            background-color: $gray;
         }
     }
 
