@@ -678,9 +678,19 @@
             },
             onChangeViewMode(viewMode) {
                 this.$eventBusSearch.setViewMode(viewMode);
+
+                // Updates searchControlHeight before in case we need to adjust filters position on mobile
+                setTimeout(() => {
+                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                }, 500);
             },
             onChangeAdminViewMode(adminViewMode) {
                 this.$eventBusSearch.setAdminViewMode(adminViewMode);
+
+                // Updates searchControlHeight before in case we need to adjust filters position on mobile
+                setTimeout(() => {
+                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                }, 500);
             },
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];
@@ -890,10 +900,12 @@
                 });
             }
 
-            // Watches window resize to adjust filter's height on mobile 
+            // Watches window resize to adjust filter's top position and compression on mobile 
             this.$nextTick(() => {
                 this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 window.addEventListener('resize', () => {
+                    this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                     this.searchControlHeight = this.$refs['search-control'].clientHeight;
                 });
             })
