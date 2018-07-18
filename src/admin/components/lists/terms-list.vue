@@ -32,7 +32,8 @@
                 <a
                         class="is-medium"
                         type="button"
-                        @click="addNewChildTerm(term, index)">
+                        @click="addNewChildTerm(term, index)"
+                        :disabled="isEditingTerm">
                     <b-icon icon="plus-circle"/>
                 </a>
                 <span 
@@ -144,6 +145,12 @@ export default {
             this.loadTerms();
         },
         addNewTerm() {
+            if (this.isEditingTerm) {
+                let editingTermIndex = this.orderedTermsList.findIndex(anEditingTerm => anEditingTerm.opened == true);
+                if (editingTermIndex >= 0)
+                    this.onTermEditionCanceled(this.orderedTermsList[editingTermIndex]);
+            }
+
             let newTerm = {
                 taxonomyId: this.taxonomyId,
                 name: this.$i18n.get('label_term_without_name'),
@@ -157,6 +164,12 @@ export default {
             this.editTerm(newTerm, this.orderedTermsList.length - 1);
         },
         addNewChildTerm(parent, parentIndex) {
+            if (this.isEditingTerm) {
+                let editingTermIndex = this.orderedTermsList.findIndex(anEditingTerm => anEditingTerm.opened == true);
+                if (editingTermIndex >= 0)
+                    this.onTermEditionCanceled(this.orderedTermsList[editingTermIndex]);
+            }
+
             let newTerm = {
                 taxonomyId: this.taxonomyId,
                 name:  this.$i18n.get('label_term_without_name'),
