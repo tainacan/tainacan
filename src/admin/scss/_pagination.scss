@@ -7,8 +7,10 @@
     border-top: 1px solid $gray;
     padding-top: 0;
     padding-bottom: 0;
-    padding-left: $page-side-padding;
-    padding-right: $page-side-padding;
+    margin-left: $page-side-padding;
+    margin-right: $page-side-padding;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
     color: $gray-light;
 
     .shown-items { 

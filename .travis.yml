@@ -28,7 +28,7 @@ before_install:
 - sudo service mysql restart
 - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 install:
-- echo -e "Install"
+- echo -e "Install" 
 - sudo mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 - sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest
   true 
