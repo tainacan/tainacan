@@ -291,7 +291,11 @@ export default {
             position: absolute !important;
             min-width: $filter-menu-width-theme;
             border-right: 0;
-            padding: 25px 12px 25px 4.1666667%;
+            padding: 25px 2.0833333% 25px 4.1666667%;
+
+            @media screen and (min-width: 769px) and (max-width: 1023px) {
+                min-width: 25% !important;
+            }
 
             .columns {
                 display: flex;
@@ -318,6 +322,7 @@ export default {
             .view-mode-icon {
                 margin-right: 0px !important;
                 margin-top: 1px;
+                margin-left: 4px;
 
                 &.icon i::before, .gray-icon i::before {
                     font-size: 19px !important;
@@ -331,6 +336,10 @@ export default {
             margin-left: 0;
             &.spaced-to-right {
                 margin-left:  $filter-menu-width-theme;
+
+                @media screen and (min-width: 769px) and (max-width: 1023px) {
+                    margin-left: 25% !important;
+                }
             }
         }
 

@@ -14,6 +14,7 @@
         </button>
         <!-- Side bar with search and filters -->
         <aside
+                :style="{ top: searchControlHeight + 'px' }"
                 v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
                 class="filters-menu tainacan-form">
             <b-loading
@@ -105,6 +106,7 @@
 
             <!-- SEARCH CONTROL ------------------------- -->
             <div
+                    ref="search-control"
                     v-if="!openAdvancedSearch"
                     class="search-control">
                 <b-loading
@@ -251,7 +253,7 @@
                                         class="gray-icon view-mode-icon"
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
-                                    &nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}
+                                    <span class="is-hidden-mobile">&nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}</span>
                                 <b-icon icon="menu-down" />
                             </button>
                             <b-dropdown-item 
@@ -328,27 +330,27 @@
                         </b-dropdown>
                     </b-field>
                 </div>
-                <div class="is-hidden-tablet">
-                    <div class="search-control-item">
-                        <div class="control has-icons-right  is-small is-clearfix">
-                            <input
-                                    class="input is-small"
-                                    :placeholder="$i18n.get('instruction_search')"
-                                    type="search"
-                                    autocomplete="on"
-                                    :value="searchQuery"
-                                    @input="futureSearchQuery = $event.target.value"
-                                    @keyup.enter="updateSearch()">
-                                <span
-                                        @click="updateSearch()"
-                                        class="icon is-right">
-                                    <i class="mdi mdi-magnify" />
-                                </span>
-                        </div>
+
+                <!-- Text simple search (used on mobile, instead of the one from filter list)-->
+                <div class="is-hidden-tablet search-control-item">
+                    <div class="control has-icons-right  is-small is-clearfix">
+                        <input
+                                class="input is-small"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                autocomplete="on"
+                                :value="searchQuery"
+                                @input="futureSearchQuery = $event.target.value"
+                                @keyup.enter="updateSearch()">
+                            <span
+                                    @click="updateSearch()"
+                                    class="icon is-right">
+                                <i class="mdi mdi-magnify" />
+                            </span>
                     </div>
                     <a
                             @click="openAdvancedSearch = !openAdvancedSearch"
-                            class="is-size-7 is-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
+                            class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
                 </div>
             </div>
 
@@ -575,6 +577,7 @@
                 openFormAdvancedSearch: false,
                 advancedSearchResults: false,
                 isDoSearch: false,
+                searchControlHeight: 0
             }
         },
         props: {
@@ -860,6 +863,7 @@
 
         },
         mounted() {
+            
             this.prepareMetadataAndFilters();
             this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 
@@ -885,6 +889,14 @@
                     this.$emit('onShrinkHeader', this.isHeaderShrinked); 
                 });
             }
+
+            // Watches window resize to adjust filter's height on mobile 
+            this.$nextTick(() => {
+                this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                window.addEventListener('resize', () => {
+                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
+                });
+            })
         }
     }
 </script>
@@ -943,7 +955,7 @@
 
     .filters-menu {
         position: relative;
-        z-index: 9;
+        z-index: 10;
         background-color: white;
         width: $filter-menu-width;
         min-width: 180px;
@@ -958,13 +970,16 @@
         display: block;
         transition: visibility ease 0.5s, display ease 0.5s;
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             width: 100%;
-            top: 92px;
+            padding: $page-small-side-padding !important;
             
             h3 {
                 margin-top: 0 !important;
             }
+        }
+        @media screen and (min-width: 769px) {
+            top: 0px !important;
         }
 
         h3 {
@@ -1030,7 +1045,7 @@
     .spaced-to-right {
         margin-left: $filter-menu-width;
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             margin-left: 0px !important;
         }
     }
