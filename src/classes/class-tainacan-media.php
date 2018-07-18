@@ -43,6 +43,23 @@ class Media {
 		return $this->insert_attachment_from_blob($response['body'], basename($url), $post_id);
 		
 	}
+
+	/**
+	 * Insert an attachment from a local file.
+	 *
+	 * @param  String $filename The path to the file 
+	 * @param  Int    $post_id (optional) the post this attachement should be attached to. empty for none
+	 * @return Int|false    Attachment ID. False on failure
+	 */
+	public function insert_attachment_from_file($filename, $post_id = null) {
+		
+		if( !file_exists($filename) ) {
+			return false;
+		}
+		
+		return $this->insert_attachment_from_blob(file_get_contents($filename), basename($filename), $post_id);
+		
+	}
 	
 	/**
 	 * Insert an attachment from an URL address.
