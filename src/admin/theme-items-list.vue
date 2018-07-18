@@ -282,10 +282,6 @@ export default {
             background-color: white;
         }
 
-        #filter-menu-compress-button {
-            top: 70px !important;
-        }
-
         .filters-menu {
             // height: auto;
             position: absolute !important;

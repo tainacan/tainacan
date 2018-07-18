@@ -8,7 +8,7 @@
                 v-if="!openAdvancedSearch"
                 id="filter-menu-compress-button"
                 :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
-                :style="{ top: isHeaderShrinked ? '125px' : '152px'}"
+                :style="{ top: !isOnTheme ? (isHeaderShrinked ? '125px' : '152px') : (searchControlHeight + 6) + 'px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
@@ -333,24 +333,26 @@
 
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">
-                    <div class="control has-icons-right  is-small is-clearfix">
-                        <input
-                                class="input is-small"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                autocomplete="on"
-                                :value="searchQuery"
-                                @input="futureSearchQuery = $event.target.value"
-                                @keyup.enter="updateSearch()">
-                            <span
-                                    @click="updateSearch()"
-                                    class="icon is-right">
-                                <i class="mdi mdi-magnify" />
-                            </span>
+                    <div class="search-area">
+                        <div class="control has-icons-right  is-small is-clearfix">
+                            <input
+                                    class="input is-small"
+                                    :placeholder="$i18n.get('instruction_search')"
+                                    type="search"
+                                    autocomplete="on"
+                                    :value="searchQuery"
+                                    @input="futureSearchQuery = $event.target.value"
+                                    @keyup.enter="updateSearch()">
+                                <span
+                                        @click="updateSearch()"
+                                        class="icon is-right">
+                                    <i class="mdi mdi-magnify" />
+                                </span>
+                        </div>
+                        <a
+                                @click="openAdvancedSearch = !openAdvancedSearch"
+                                class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
                     </div>
-                    <a
-                            @click="openAdvancedSearch = !openAdvancedSearch"
-                            class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
                 </div>
             </div>
 
@@ -1071,10 +1073,18 @@
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
+
+        @media screen and (max-width: 768px) {
+            margin-bottom: $page-small-top-padding;
+        }
     }
 
     .search-control-item {
         display: inline-block;
+
+        &:last-child {
+            flex-grow: 1;
+        }
 
         .button {
             align-items: flex-start;
@@ -1124,6 +1134,29 @@
                 }
             }
         }
+
+        .search-area {
+            display: flex;
+            align-items: center;
+            width: 100%;
+
+            .control {
+                width: 100%;
+                .icon {
+                    pointer-events: all;
+                    cursor: pointer;
+                    color: $tertiary;
+                    height: 27px;
+                    font-size: 18px !important;
+                    height: 2rem !important;
+                }
+            }
+            a {
+                margin-left: 12px;
+                white-space: nowrap; 
+            }
+        }
+
     }
 
     .above-search-control {
