@@ -99,16 +99,19 @@ class CSV extends Importer {
         $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
 
         $form .= '<div class="control">';
-        $form = '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
+        $form .= '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
+        $form .= '</div>';
 
+        $utf8 = ( !$this->get_option('encode') || $this->get_option('encode') === 'utf8' ) ? 'checked' : '';
+        $iso = ( !$this->get_option('encode') && $this->get_option('encode') === 'iso88591' ) ? 'checked' : '';
+
+        $form .= '<div class="control">';
         $form .= '<label class="radio">';
-        $form .= '<input type="radio"  name="encode" value="utf8" ' 
-        . ( !$this->get_option('encode') || $this->get_option('encode') === 'utf8' ) ? 'checked' : '' . ' />';
+        $form .= '<input type="radio"  name="encode" value="utf8" '. $utf8 . ' />';
         $form .=  __('UTF8', 'tainacan') . '</label>';
 
-         $form .= '<label class="radio">';
-        $form .= '<input type="radio"  name="encode" value="iso88591" ' 
-        . ( !$this->get_option('encode') || $this->get_option('encode') === 'iso88591' ) ? 'checked' : '' . ' />';
+        $form .= '<label class="radio">';
+        $form .= '<input type="radio"  name="encode" value="iso88591" '. $iso . ' />';
         $form .=  __('ISO 8859-1', 'tainacan') . '</label>';
 
         $form .= '</div>';
