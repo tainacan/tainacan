@@ -248,3 +248,39 @@ function tainacan_current_view_displays($property) {
 	}
 	return false;
 }
+
+/**
+ * Gets the initials from a name.
+ * 
+ * By default, returns 2 uppercase letters representing the name. The first letter from the first name and the first letter from the last.
+ * 
+ * @param string $string The name to extract the initials from
+ * @param bool $one whether to return only the first letter, instead of two
+ * 
+ * @return string
+ */
+function tainacan_get_initials(string $string, $one = false) {
+	
+	if (empty($string)) {
+		return '';
+	}
+	if (strlen($string) == 1) {
+		return strtoupper($string);
+	}
+
+	$first = strtoupper(substr($string,0,1));
+
+	if ($one) {
+		return $first;
+	}
+
+	$words=explode(" ",$string);
+	
+	if (sizeof($words) < 2) {
+		$second = $string[1];
+	} else {
+		$second = $words[ sizeof($words) - 1 ][0];
+	}
+	
+	return strtoupper($first . $second);	
+}
