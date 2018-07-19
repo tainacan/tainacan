@@ -7,22 +7,20 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-card">
-                    
+                                                
                     <!-- Title -->
-                    <p 
-                            v-tooltip="{
-                                content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
-                                html: true,
-                                autoHide: false,
-                                placement: 'auto-start'
-                            }"
-                            v-for="(column, index) in displayedMetadata"
-                            :key="index"
-                            v-if="column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                            class="metadata-title"
-                            @click="goToItemPage(item)"
-                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
-                    
+                    <div class="metadata-title">
+                        <p 
+                                v-tooltip="{
+                                    content: item.title != undefined ? item.title : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"                               
+                                @click="goToItemPage(item)">
+                            {{ item.title != undefined ? item.title : '' }}
+                        </p>                            
+                    </div>
                     <!-- Remaining metadata -->  
                     <div    
                             class="media"
@@ -33,24 +31,18 @@
                                 :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">  
 
                         <div class="list-metadata media-body">
-                            <!-- Description -->
+                           <!-- Description -->
                             <p 
                                     v-tooltip="{
-                                        content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                        content: item.description != undefined ? item.description : '',
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
-                                    v-if="
-                                        column.metadata_type_object != undefined && 
-                                        (column.metadata_type_object.related_mapped_prop == 'description')"
-                                    v-for="(column, index) in displayedMetadata"
-                                    :key="index"
                                     class="metadata-description"
-                                    v-html="(item.metadata != undefined && item.metadata[column.slug] != undefined) ? getLimitedDescription(item.metadata[column.slug].value_as_string) : ''" /> 
-                            <br>
+                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                                                        <br>
                             <!-- Author and Creation Date-->
-                            <p 
+<!--                            <p 
                                     v-tooltip="{
                                         content: column.metadatum == 'row_author' || column.metadatum == 'row_creation',
                                         html: false,
@@ -62,7 +54,8 @@
                                     v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'"
                                     class="metadata-author-creation">   
                                 {{ column.metadatum == 'row_author' ? $i18n.get('info_created_by') + ' ' + item[column.slug] : $i18n.get('info_date') + ' ' + item[column.slug] }}
-                            </p>                          
+                            </p>   
+-->                       
                         </div>
                     </div>
                
@@ -99,7 +92,7 @@ export default {
             }
         },
         getLimitedDescription(description) {
-            return description.length > 120 ? description.substring(0, 117) + '...' : description;
+            return description.length > 200 ? description.substring(0, 197) + '...' : description;
         }
     }
 }

@@ -94,9 +94,6 @@
                 id="items-list-area"
                 class="items-list-area"
                 :class="{ 'spaced-to-right': !isFiltersMenuCompressed }">
-            <b-loading
-                    :is-full-page="false"
-                    :active.sync="isLoadingItems"/>
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list 
@@ -423,6 +420,13 @@
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div class="above-search-control">
 
+                <div 
+                        v-show="isLoadingItems"
+                        class="loading-container">
+                    <b-loading 
+                            :is-full-page="false"
+                            :active.sync="isLoadingItems"/>
+                </div>
                 <div
                         v-if="openAdvancedSearch && advancedSearchResults">
                     <div class="advanced-search-results-title">
@@ -679,6 +683,8 @@
                 this.$eventBusSearch.setStatus(status);
             },
             onChangeViewMode(viewMode) {
+                // We need to load metadata again as fetch_only might change from view mode
+                this.prepareMetadata();
                 this.$eventBusSearch.setViewMode(viewMode);
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
@@ -687,6 +693,8 @@
                 }, 500);
             },
             onChangeAdminViewMode(adminViewMode) {
+                 // We need to load metadata again as fetch_only might change from view mode
+                this.prepareMetadata();
                 this.$eventBusSearch.setAdminViewMode(adminViewMode);
 
                 // Updates searchControlHeight before in case we need to adjust filters position on mobile
@@ -721,7 +729,7 @@
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
             },
-            prepareMetadataAndFilters() {
+            prepareFilters() {
                 
                 this.isLoadingFilters = true;
 
@@ -733,7 +741,10 @@
                 })
                     .then(() => this.isLoadingFilters = false)
                     .catch(() => this.isLoadingFilters = false);
+            },
+            prepareMetadata() {
 
+                this.$eventBusSearch.cleanFetchOnly();
                 this.isLoadingMetadata = true;
                 
                 // Processing is done inside a local variable
@@ -744,86 +755,107 @@
                     isContextEdit: false
                 })
                     .then(() => {
+                        // Decides if custom meta will be loaded with item.
+                        let shouldLoadMeta = true;
+                        
+                        if (this.isOnTheme)
+                            shouldLoadMeta = this.registeredViewModes[this.viewMode].dynamic_metadata;
+                        else
+                            shouldLoadMeta  = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == undefined;
+                    
+                        if (shouldLoadMeta) {
+                            // Loads user prefs object as we'll need to check if there's something configured by user 
+                            let prefsFetchOnly = !this.isRepositoryLevel ? 'fetch_only_' + this.collectionId : 'fetch_only';
+                            let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly); 
+                            let thumbnailMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['0'] != null) : true;
 
-                        // Loads user prefs object as we'll need to check if there's something configured by user 
-                        let prefsFetchOnly = !this.isRepositoryLevel ? 'fetch_only_' + this.collectionId : 'fetch_only';
-                        let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly); 
-                        let thumbnailMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['0'] != null) : true;
+                            metadata.push({
+                                name: this.$i18n.get('label_thumbnail'),
+                                metadatum: 'row_thumbnail',
+                                metadata_type: undefined,
+                                slug: 'thumbnail',
+                                id: undefined,
+                                display: thumbnailMetadatumDisplay
+                            });
 
-                        metadata.push({
-                            name: this.$i18n.get('label_thumbnail'),
-                            metadatum: 'row_thumbnail',
-                            metadata_type: undefined,
-                            slug: 'thumbnail',
-                            id: undefined,
-                            display: thumbnailMetadatumDisplay
-                        });
+                            let fetchOnlyMetadatumIds = [];
 
-                        let fetchOnlyMetadatumIds = [];
+                            for (let metadatum of this.metadata) {
+                                if (metadatum.display !== 'never') {
 
-                        for (let metadatum of this.metadata) {
-                            if (metadatum.display !== 'never') {
+                                    let display;
 
-                                let display;
+                                    // Deciding display based on collection settings
+                                    if (metadatum.display == 'no')
+                                        display = false;
+                                    else if (metadatum.display == 'yes')
+                                        display = true;
 
-                                // Deciding display based on collection settings
-                                if (metadatum.display == 'no')
-                                    display = false;
-                                else if (metadatum.display == 'yes')
-                                    display = true;
+                                    // // Deciding display based on user prefs
+                                    // if (prefsFetchOnlyObject != undefined && 
+                                    //     prefsFetchOnlyObject.meta != undefined) {
+                                    //     let index = prefsFetchOnlyObject.meta.findIndex(metadatumId => metadatumId == metadatum.id);
+                                    //     if (index >= 0)
+                                    //         display = true;
+                                    //     else
+                                    //         display = false;
+                                    // }
 
-                                // // Deciding display based on user prefs
-                                // if (prefsFetchOnlyObject != undefined && 
-                                //     prefsFetchOnlyObject.meta != undefined) {
-                                //     let index = prefsFetchOnlyObject.meta.findIndex(metadatumId => metadatumId == metadatum.id);
-                                //     if (index >= 0)
-                                //         display = true;
-                                //     else
-                                //         display = false;
-                                // }
-
-                                metadata.push(
-                                    {
-                                        name: metadatum.name,
-                                        metadatum: metadatum.description,
-                                        slug: metadatum.slug,
-                                        metadata_type: metadatum.metadata_type,
-                                        metadata_type_object: metadatum.metadata_type_object,
-                                        id: metadatum.id,
-                                        display: display
-                                    }
-                                );    
-                                if (display)
-                                    fetchOnlyMetadatumIds.push(metadatum.id);                      
+                                    metadata.push(
+                                        {
+                                            name: metadatum.name,
+                                            metadatum: metadatum.description,
+                                            slug: metadatum.slug,
+                                            metadata_type: metadatum.metadata_type,
+                                            metadata_type_object: metadatum.metadata_type_object,
+                                            id: metadatum.id,
+                                            display: display
+                                        }
+                                    );    
+                                    if (display)
+                                        fetchOnlyMetadatumIds.push(metadatum.id);                      
+                                }
                             }
+
+                            let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
+                            let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
+
+                            metadata.push({
+                                name: this.$i18n.get('label_creation_date'),
+                                metadatum: 'row_creation',
+                                metadata_type: undefined,
+                                slug: 'creation_date',
+                                id: undefined,
+                                display: creationDateMetadatumDisplay
+                            });
+                            metadata.push({
+                                name: this.$i18n.get('label_created_by'),
+                                metadatum: 'row_author',
+                                metadata_type: undefined,
+                                slug: 'author_name',
+                                id: undefined,
+                                display: authorNameMetadatumDisplay
+                            });
+                            
+                            this.$eventBusSearch.addFetchOnly({
+                                '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
+                                'meta': fetchOnlyMetadatumIds,
+                                '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
+                                '2': (authorNameMetadatumDisplay ? 'author_name' : null)
+                            });
+                        // Loads only basic attributes necessay to view modes that do not allow custom meta
+                        } else {
+                                                        
+                            this.$eventBusSearch.addFetchOnly({
+                                '0': 'thumbnail',
+                                'meta': [],
+                                '1': 'creation_date',
+                                '2': 'author_name',
+                                '3': 'title',
+                                '4': 'description'
+                            });
                         }
 
-                        let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
-                        let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
-
-                        metadata.push({
-                            name: this.$i18n.get('label_creation_date'),
-                            metadatum: 'row_creation',
-                            metadata_type: undefined,
-                            slug: 'creation_date',
-                            id: undefined,
-                            display: creationDateMetadatumDisplay
-                        });
-                        metadata.push({
-                            name: this.$i18n.get('label_created_by'),
-                            metadatum: 'row_author',
-                            metadata_type: undefined,
-                            slug: 'author_name',
-                            id: undefined,
-                            display: authorNameMetadatumDisplay
-                        });
-                        
-                        this.$eventBusSearch.addFetchOnly({
-                            '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
-                            'meta': fetchOnlyMetadatumIds,
-                            '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
-                            '2': (authorNameMetadatumDisplay ? 'author_name' : null)
-                        });
                         this.isLoadingMetadata = false;
                         this.tableMetadata = metadata;
                     })
@@ -859,7 +891,8 @@
                  */
 
                 if (this.isOnTheme || this.collectionId === to.params.collectionId) {
-                    this.prepareMetadataAndFilters();
+                    this.prepareMetadata();
+                    this.prepareFilters();
                 }
             });
 
@@ -876,7 +909,8 @@
         },
         mounted() {
             
-            this.prepareMetadataAndFilters();
+            this.prepareFilters();
+            this.prepareMetadata();
             this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
 
             // Setting initial view mode on Theme
@@ -1067,6 +1101,7 @@
     .search-control {
         min-height: $subheader-height;
         height: auto;
+        position: relative;
         padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
@@ -1163,6 +1198,13 @@
         margin-bottom: 0;
         margin-top: 0;
         height: calc(100% - 184px);
+        min-height: 200px;
+
+        .loading-container {
+            position: relative;
+            min-height: 200px;
+            height: auto;
+        }
     }
 
     .tabs {
@@ -1183,7 +1225,7 @@
     .table-container {
         padding-left: 4.166666667%;
         padding-right: 4.166666667%;
-        min-height: 200px;
+        min-height: 500px;
         //height: calc(100% - 82px);
     }
 

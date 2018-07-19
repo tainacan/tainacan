@@ -243,7 +243,7 @@ function tainacan_current_view_displays($property) {
 
 	if (is_string($property)) {
 		return in_array($property, $view_mode_displayed_metadata);
-	} elseif (is_integer($property)) {
+	} elseif (is_integer($property) && array_key_exists('meta', $view_mode_displayed_metadata)) {
 		return in_array($property, $view_mode_displayed_metadata['meta']);
 	}
 	return false;

@@ -58,7 +58,6 @@ export default {
         .button {
             height: inherit !important;
             box-shadow: none !important;
-            border: none;
             border-radius: 6px;
             padding: 2px 15px;
             margin-top: 0px;

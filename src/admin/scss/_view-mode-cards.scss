@@ -64,7 +64,7 @@
         }
         img {
             width: 172px;
-            height: auto;
+            height: 172px;
             border-radius: 2px;
         }
         &:hover img {
@@ -100,6 +100,7 @@
                 color: gray;
                 overflow: hidden;
                 width: 100%;
+                height: 172px;
 
                 .metadata-description {
                     margin-bottom: 1.5rem;

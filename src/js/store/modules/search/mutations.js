@@ -163,3 +163,7 @@ export const cleanMetaQueries = (state) => {
 export const cleanTaxQueries = (state) => {
     state.postquery.taxquery = [];
 };
+
+export const cleanFetchOnly = (state) => {
+    state.postquery.fetch_only = undefined;
+};
