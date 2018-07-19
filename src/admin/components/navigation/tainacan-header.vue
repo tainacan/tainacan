@@ -233,8 +233,10 @@
                         background-color: unset;
                     }
 
-                    .dropdown-menu {
-                        top: 0 !important;
+                    @media screen and (min-width: 1087px) {
+                        .dropdown-menu {
+                            top: 0 !important;
+                        }
                     }
 
                     .dropdown-item {
