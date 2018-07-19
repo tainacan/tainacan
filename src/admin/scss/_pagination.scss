@@ -13,6 +13,10 @@
     padding-right: 0.75rem;
     color: $gray-light;
 
+    @media screen and (max-width: 768px) {
+        flex-wrap: wrap;
+    }
+
     .shown-items { 
         flex-grow: 1; 
     }
@@ -20,6 +24,17 @@
     .items-per-page { 
         flex-grow: 5;
         margin-top: 0.35em;
+
+        @media screen and (max-width: 768px) {
+            flex-grow: 2;
+            text-align: center;
+            
+            .field { 
+                display: inline-flex; 
+                align-items: baseline;
+            }
+        }
+
         .field-label {
             flex-grow: 5;
             margin-right: 0.5em;
@@ -36,6 +51,15 @@
 
     .pagination { 
         flex-grow: 1; 
+
+        ul {
+            margin-bottom: 0px;
+            padding: 0px;
+        }
+
+        &.is-small {
+            font-size: 0.85em;
+        }
 
         a[disabled="disabled"] {
             color: $gray-light;
@@ -61,5 +85,11 @@
             content: "\F40A";
             font-size: 17px;
         }
+
+        @media screen and (max-width: 768px) {
+            .pagination-list { order: 2; }
+            .pagination-next { order: 3; }
+        }
+        
     }
 }

@@ -30,7 +30,7 @@
 
                         <img 
                                 v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                                :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">  
 
                         <div class="list-metadata media-body">
                             <!-- Description -->

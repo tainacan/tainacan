@@ -1,6 +1,6 @@
 <template>
     <div class="pagination-area">
-        <div class="shown-items">
+        <div class="shown-items is-hidden-mobile">
             {{ 
                 $i18n.get('info_showing_items') +
                 getFirstItem() +

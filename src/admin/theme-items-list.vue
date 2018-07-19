@@ -34,6 +34,7 @@ export default {
 
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_pagination.scss";
     @import "../admin/scss/_tags.scss";
     @import "../admin/scss/_selects.scss";
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
@@ -184,76 +185,6 @@ export default {
             .label {
                 vertical-align: middle;
                 margin-bottom: 0px;
-            }
-        }
-
-        .pagination-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85em !important;
-            font-weight: normal !important;
-            border-top: 1px solid $gray;
-            padding: 0em 1.0em;
-            color: $gray-light;
-
-            .shown-items { 
-                flex-grow: 1; 
-            }
-
-            .items-per-page { 
-                flex-grow: 3;
-                margin-top: 0.35em;
-                .field-label {
-                    flex-grow: 5;
-                    margin-right: 0.5em;
-                    .label {
-                        font-size: 1em !important;
-                        font-weight: normal !important;
-                        color: $gray-light;
-                    }
-                }
-                select {
-                    font-size: 0.85em;
-                } 
-            }
-
-            .pagination { 
-                flex-grow: 1; 
-
-                ul {
-                    margin-bottom: 0px;
-                    padding: 0px;
-                }
-
-                &.is-small {
-                    font-size: 0.85em;
-                }
-
-                a[disabled="disabled"] {
-                    color: $gray-light;
-                }
-                .pagination-link, .pagination-previous, .pagination-next {
-                    background-color: transparent;
-                    color: $secondary;
-                    border: none;
-                }
-                .pagination-link.is-current {
-                    color: $gray-light;
-                }
-                .pagination-link::after:not(:last-child) {
-                    content: ',';
-                    color: $gray-light;
-                }
-                .mdi-chevron-left::before {
-                    content: "\F40A";
-                    font-size: 17px;
-                    transform: rotate(180deg);
-                }
-                .mdi-chevron-right::before {
-                    content: "\F40A";
-                    font-size: 17px;
-                }
             }
         }
 
