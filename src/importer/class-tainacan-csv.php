@@ -44,21 +44,35 @@ class CSV extends Importer {
     public function process_item( $index, $collection_definition ){
         $processedItem = [];
         $headers = $this->get_source_metadata();
-        
+
+        $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_id['id'] );
         // search the index in the file and get values
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
+        $file->setFlags(\SplFileObject::SKIP_EMPTY);
         $file->seek( $index );
 
         if( $index === 0 ){
             $file->current();
             $file->next();
-            $values = $file->fgetcsv( $this->get_option('delimiter'), $this->get_option('enclosure') );
+
+            $this->add_log(' Line to parse ' . $file->fgets() );
+            $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
+            
+            $values = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
         }else{
-            $values = $file->fgetcsv( $this->get_option('delimiter'), $this->get_option('enclosure')  );
+            $this->add_log(' Line to parse ' . $file->fgets() );
+            $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
+            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
         }
 
         if( count( $headers ) !== count( $values ) ){
-           return false;
+            $string = (is_array($values)) ? implode('::', $values ) : $values;
+
+            $this->add_log(' Mismatch count headers and row columns ');
+            $this->add_log(' Headers count: ' . count( $headers ) );
+            $this->add_log(' Values count: ' . count( $values ) );
+            $this->add_log(' Values string: ' . $string );
+            return false;
         }
         
         $cont = 0;
@@ -73,6 +87,7 @@ class CSV extends Importer {
             $cont++;
         }
         
+        $this->add_log('Success to proccess index: ' . $index  );
         return $processedItem;
     }
 
