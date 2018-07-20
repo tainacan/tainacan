@@ -23,15 +23,15 @@ class Importer_Handler {
 			'class_name' => '\Tainacan\Importer\CSV'
 		]);
 		$this->register_importer([
-			'name' => 'Test Importer',
+			'name' => 'Test',
 			'description' => __('Create 2 test colletions with random items', 'tainacan'),
 			'slug' => 'test',
 			'class_name' => '\Tainacan\Importer\Test_Importer'
 		]);
 
 		$this->register_importer([
-			'name' => 'Tainacan Old',
-			'description' => __('Import structure from previously version of tainacan', 'tainacan'),
+			'name' => 'Tainacan Legacy',
+			'description' => __('Import structure from legacy version of Tainacan', 'tainacan'),
 			'slug' => 'tainacan_old',
 			'class_name' => '\Tainacan\Importer\Old_Tainacan'
 		]);
@@ -42,7 +42,12 @@ class Importer_Handler {
 	
 	function add_to_queue(\Tainacan\Importer\Importer $importer_object) {
 		$data = $importer_object->_to_Array(true);
-		$bg_process = $this->bg_importer->data($data)->save();
+		$importer = $this->get_importer_by_object($importer_object);
+		
+		// Translators: The name of the importer process. E.g. CSV Importer, Legacy Tainacan Importer
+		$importer_name = sprintf( __('%s Importer', 'tainacan'), $importer['name'] );
+		
+		$bg_process = $this->bg_importer->data($data)->set_name($importer_name)->save();
 		if ( is_wp_error($bg_process->dispatch()) ) {
 			return false;
 		}
@@ -75,6 +80,18 @@ class Importer_Handler {
 		$importers = $this->get_registered_importers();
 		if (isset($importers[$importer_slug])) {
 			return $importers[$importer_slug];
+		}
+		return null;
+	}
+
+	function get_importer_by_object(\Tainacan\Importer\Importer $importer_object) {
+		$class_name = get_class($importer_object);
+		// add first bracket
+		$class_name = '\\' . $class_name;
+		$importers = $this->get_registered_importers();
+		foreach ($importers as $importer) {
+			if ($importer['class_name'] == $class_name)
+				return $importer;
 		}
 		return null;
 	}

@@ -359,4 +359,15 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
     }
+
+    /**
+     * @group xis
+     */
+    public function test_get_registered() {
+        global $Tainacan_Importer_Handler;
+        $csv_importer = new Importer\CSV();
+        $registered = $Tainacan_Importer_Handler->get_importer_by_object($csv_importer);
+        $this->assertEquals('csv', $registered['slug']);
+        $this->assertEquals('CSV', $registered['name']);
+    }
 }

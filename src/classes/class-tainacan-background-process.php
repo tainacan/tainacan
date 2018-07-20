@@ -50,13 +50,21 @@ abstract class Background_Process extends \WP_Background_Process {
 	/**
 	 * Action
 	 *
-	 * (default value: 'background_process')
+	 * (default value: 'process')
 	 *
 	 * @var string
 	 * @access protected
 	 */
 	protected $action = 'process';
-	
+
+	/**
+	 * Name
+	 *
+	 * @var string
+	 * @access protected
+	 */
+	protected $name = 'Background Process';
+
 	/**
 	 * Initiate new background process
 	 */
@@ -64,10 +72,34 @@ abstract class Background_Process extends \WP_Background_Process {
 		parent::__construct();
 		global $wpdb;
 		$this->table = $wpdb->prefix . 'tnc_bg_process';
+		$this->set_name( __('Background Process', 'tainacan') );
 	}
 
 	public function get_id() {
 		return $this->ID;
+	}
+
+	/**
+	 * Gets the name of the process.
+	 * 
+	 * Override this method to set a name to the process
+	 * 
+	 * Default "Background Process"
+	 * 
+	 * @return string
+	 */
+	public function get_name() {
+		return $this->name;
+	}
+
+	/**
+	 * Set name
+	 *
+	 * @return $this
+	 */
+	public function set_name($name) {
+		$this->name = $name;
+		return $this;
 	}
 	
 	
@@ -87,6 +119,7 @@ abstract class Background_Process extends \WP_Background_Process {
 					'user_id' => get_current_user_id(),
 					'priority' => $priority,
 					'action' => $this->action,
+					'name' => $this->get_name(),
 					'queued_on' => date('Y-m-d H:i:s')
 				]
 			);
