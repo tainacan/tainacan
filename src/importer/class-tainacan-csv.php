@@ -45,7 +45,7 @@ class CSV extends Importer {
         $processedItem = [];
         $headers = $this->get_source_metadata();
 
-        $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_id['id'] );
+        $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
         // search the index in the file and get values
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
         $file->setFlags(\SplFileObject::SKIP_EMPTY);

@@ -22,3 +22,7 @@ export const setMetadatumTypes = (state, metadatumTypes) => {
 export const setMetadatumMappers = (state, metadatumMappers) => {
     state.metadatumMappers = metadatumMappers;
 }
+
+export const cleanMetadata = (state) => {
+    state.metadata = [];
+}

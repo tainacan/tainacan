@@ -381,7 +381,7 @@
                                 </p>
                                 <p class="control">
                                     <a @click="openAdvancedSearch = false">
-                                        {{ $i18n.get('exit') }}
+                                        {{ $i18n.get('back') }}
                                     </a>
                                 </p>
                             </div>

@@ -1,6 +1,8 @@
 import axios from '../../../axios/axios';
 
 export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled}) => {
+    commit('cleanMetadata');
+
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel)

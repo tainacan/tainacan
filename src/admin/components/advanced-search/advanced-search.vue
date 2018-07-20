@@ -129,7 +129,11 @@
                             icon="plus-circle"
                             size="is-small"
                             type="is-secondary"/>
-                    {{ $i18n.get('add_another_search_criterion') }}</a>
+                    {{ searchCriteria.length &lt;= 0 ?
+                        $i18n.get('add_one_search_criterion') :
+                         $i18n.get('add_another_search_criterion')
+                    }}
+                </a>
             </div>
 
             <!-- Tags -->
@@ -173,7 +177,10 @@
                     v-show="!advancedSearchResults"
                     class="column">
                 <div class="field is-grouped is-pulled-right">
-                    <p class="control">
+                    <p
+                            v-if="Object.keys(this.advancedSearchQuery.taxquery).length > 0 ||
+                 Object.keys(this.advancedSearchQuery.metaquery).length > 0"
+                            class="control">
                         <button
                                 @click="clearSearch"
                                 class="button is-outlined">{{ $i18n.get('clear_search') }}</button>
@@ -600,7 +607,7 @@
             margin-left: -5px !important;
         }
 
-        tainacan-input-disabled {
+        .tainacan-input-disabled {
             background-color: $gray;
         }
     }

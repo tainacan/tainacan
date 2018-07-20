@@ -14,7 +14,7 @@
             </label>
 
             <div
-                    class="block overflow-at">
+                    class="block">
                 <div
                         v-for="(collection, key) in collections"
                         :key="key"
@@ -87,11 +87,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-    .overflow-at {
-        overflow: auto;
-        max-height: 125px;
-    }
-</style>

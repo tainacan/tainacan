@@ -58,10 +58,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'split'                                      => __( 'Split', 'tainacan' ),
 	'unified'                                    => __( 'Unified', 'tainacan' ),
 	'add_another_search_criterion'               => __( 'Add another search criterion', 'tainacan' ),
+	'add_one_search_criterion'                   => __( 'Add one search criterion', 'tainacan' ),
 	'clear_search'                               => __( 'Clear search', 'tainacan' ),
 	'run'                                        => __( 'Run', 'tainacan' ),
 	'edit_search'                                => __( 'Edit search', 'tainacan' ),
-	'exit'                                       => __( 'Exit', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                    => __( 'Publish', 'tainacan' ),
