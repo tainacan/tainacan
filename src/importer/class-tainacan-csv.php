@@ -55,12 +55,9 @@ class CSV extends Importer {
             $file->current();
             $file->next();
 
-            $this->add_log(' Line to parse ' . $file->fgets() );
             $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
-            
             $values = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
         }else{
-            $this->add_log(' Line to parse ' . $file->fgets() );
             $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
             $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
         }
