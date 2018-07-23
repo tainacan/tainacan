@@ -22,6 +22,7 @@
                 </div>
 
                 <b-loading 
+                        :is-full-page="false"
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
                 <events-list
@@ -173,10 +174,13 @@
             ]),
             onChangeTab(tab) {
                 this.tab = tab;
-                if (this.tab == 'processes')
+                if (this.tab == 'processes') {
                     this.loadProcesses();
-                else
+                    this.$router.push({query: {tab: 'processes'}});
+                } else {
                     this.loadEvents();
+                    this.$router.push({query: {}});
+                }
             },
             onChangeEventsPerPage(value) {
                 this.eventsPerPage = value;
@@ -198,7 +202,7 @@
                 .catch(() => {
                     this.$console.log("Error settings user prefs for processes per page")
                 });
-                this.load();
+                this.loadProcesses();
             },
             onPageChange(page) {
                 
@@ -271,17 +275,32 @@
         },
         created() {
             this.eventsPerPage = this.$userPrefs.get('events_per_page');
+            this.processesPerPage = this.$userPrefs.get('processes_per_page');
             this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         },
         mounted(){
-            if (this.eventsPerPage != this.$userPrefs.get('events_per_page'))
-                this.eventsPerPage = this.$userPrefs.get('events_per_page');
+            if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
+                this.tab = 'processes';
 
-            if (!this.eventsPerPage) {
-                this.eventsPerPage = 12;
-                this.$userPrefs.set('events_per_page', 12);
+            if (this.tab != 'processes') {
+                if (this.eventsPerPage != this.$userPrefs.get('events_per_page'))
+                    this.eventsPerPage = this.$userPrefs.get('events_per_page');
+
+                if (!this.eventsPerPage) {
+                    this.eventsPerPage = 12;
+                    this.$userPrefs.set('events_per_page', 12);
+                }
+                this.loadEvents();
+            } else {
+                if (this.processesPerPage != this.$userPrefs.get('processes_per_page'))
+                    this.processesPerPage = this.$userPrefs.get('processes_per_page');
+
+                if (!this.processesPerPage) {
+                    this.processesPerPage = 12;
+                    this.$userPrefs.set('processes_per_page', 12);
+                }
+                this.loadProcesses();
             }
-            this.loadEvents();
 
             if (!this.isRepositoryLevel) {
                 document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {

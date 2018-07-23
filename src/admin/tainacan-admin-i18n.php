@@ -30,7 +30,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'terms'                                          => __( 'Terms', 'tainacan' ),
 	'mapping'                                        => __( 'Mapping', 'tainacan' ),
 	'importers'                                      => __( 'Importers', 'tainacan' ),
-	'processes'                                      => __( 'Proceses', 'tainacan' ),
+	'processes'                                      => __( 'Processes', 'tainacan' ),
 
 	// Actions
 	'edit'                                           => __( 'Edit', 'tainacan' ),
