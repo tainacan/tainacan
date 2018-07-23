@@ -1,7 +1,9 @@
 <template>
     <div class="processes-popup">
         <div class="popup-header">
-            <span class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
+            <span 
+                    @click="showProcessesList = !showProcessesList"
+                    class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
             <a @click="showProcessesList = !showProcessesList">
                 <span class="icon has-text-tertiary">
                     <i 
@@ -47,18 +49,18 @@
                                 v-if="bgProcess.done <= 0"
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
-                            <i class="mdi mdi-24px mdi-pause-circle"/>
+                            <i class="mdi mdi-18px mdi-pause-circle"/>
                         </span>
                         <span 
                                 v-if="bgProcess.done <= 0"
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
-                            <i class="mdi mdi-24px mdi-close-circle-outline"/>
+                            <i class="mdi mdi-18px mdi-close-circle-outline"/>
                         </span>
                         <span 
                                 v-if="bgProcess.done > 0"
                                 class="icon has-text-success">
-                            <i class="mdi mdi-24px mdi-checkbox-marked-circle"/>
+                            <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
                         </span>
                         <span 
                                 v-if="bgProcess.done <= 0"
@@ -183,6 +185,12 @@ export default {
         }
     }
 
+    .control.is-loading::after {
+        border: 2px solid $success;
+        border-right-color: $tainacan-input-background;
+        border-top-color: $tainacan-input-background;
+    }
+
     .processes-popup{
         background-color: #c1dae0;
         width: 320px;
@@ -203,11 +211,19 @@ export default {
             }
         }
 
-        .popup-header { padding: 6px 12px 4px 12px; }
+        .popup-header { 
+            padding: 6px 12px 4px 12px; 
+            .header-title {
+                margin-right: auto;
+                cursor: pointer;
+            }
+        }
         .popup-footer { 
             padding: 4px 12px 6px 10px; 
-
-            .footer-title { font-size: 0.625rem; }
+            .footer-title { 
+                margin-right: auto;
+                font-size: 0.625rem;
+            }
         }
 
         .popup-list {
@@ -220,20 +236,37 @@ export default {
             animation-duration: 0.3s;
 
             .popup-list-subheader {
-                padding: 6px 12px 2px 12px;
+                background-color: white !important;
+                padding: 6px 12px 12px 12px;
                 color: $gray-light;
                 font-size: 0.625rem;
                 a { float: right; }
             }
 
+            li:hover {
+                background-color: $tainacan-input-background;
+
+                .action-icon{
+                    visibility: visible;
+                    opacity: 1;
+                    cursor: pointer;
+                }
+                .loading-icon {
+                    display: none;
+                }
+                .process-item>.process-title .mdi-menu-left, .process-item>.process-title .mdi-menu-right {
+                    color: $gray !important;
+                }
+            }
+
             .process-item {
-                padding: 6px 12px 6px 6px;
+                padding: 5px 12px 5px 5px;
                 display: flex;
                 justify-content: space-between;
-                cursor: pointer;
                 width: 100%;
 
                 .process-title {
+                    cursor: pointer;
                     margin-right: auto;
                     white-space: nowrap;
                     text-overflow: ellipsis;
@@ -244,6 +277,10 @@ export default {
                         display: inline-block;
                         position: relative;
                         top: -2px;
+                    }
+                    
+                    .mdi-menu-left, .mdi-menu-right {
+                        color: $primary-light;
                     }
                 }
                 .action-icon {
@@ -256,18 +293,8 @@ export default {
                     top: 0;
                 }
             }
-            .process-item:hover {
-                background-color: $tainacan-input-background;
-                .action-icon{
-                    visibility: visible;
-                    opacity: 1;
-                }
-                .loading-icon {
-                    display: none;
-                }
-            }
             .process-label {
-                padding: 2px 12px 6px 32px;
+                padding: 0px 12px 6px 32px;
                 margin-right: auto;
                 white-space: nowrap;
                 text-overflow: ellipsis;
