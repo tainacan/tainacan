@@ -191,9 +191,11 @@
                                 <b-icon icon="menu-down"/>
                             </button>
                             <b-dropdown-item
-                                    :class="{ 'is-active': orderBy == metadatum.slug }"
-                                    v-for="metadatum in sortingMetadata"
+                                    :class="{ 'is-active': metadatum != undefined && orderBy == metadatum.slug }"
+                                    v-for="metadatum of sortingMetadata"
                                     v-if="
+                                        totalItems > 0 &&
+                                        metadatum != undefined &&
                                         metadatum.slug === 'creation_date' || (
                                         metadatum.metadata_type_object && 
                                         metadatum.metadata_type_object.related_mapped_prop == 'title'
@@ -205,7 +207,7 @@
                             <!-- Once we have sorting by metadata we can use this -->
                             <!-- <b-dropdown-item
                                     :class="{ 'is-active': orderBy == metadatum.slug }"
-                                    v-for="metadatum in sortingMetadata"
+                                    v-for="metadatum of sortingMetadata"
                                     v-if="
                                         metadatum.slug === 'creation_date' ||
                                         metadatum.slug === 'author_name' || (
