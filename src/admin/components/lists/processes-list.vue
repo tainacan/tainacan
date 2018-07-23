@@ -85,11 +85,11 @@
                                 :aria-label="$i18n.get('label_name') + ': ' + bgProcess.name">
                             <p
                                     v-tooltip="{
-                                        content: bgProcess.name,
+                                        content: bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process'),
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }">
-                                {{ bgProcess.name }}</p>
+                                {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
                         </td>
                         <!-- Progress -->
                         <td 
@@ -144,23 +144,23 @@
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
-                                    <i class="mdi mdi-24px mdi-pause-circle"/>
+                                    <i class="mdi mdi-18px mdi-pause-circle"/>
                                 </span>
                                 <span 
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
-                                    <i class="mdi mdi-24px mdi-close-circle-outline"/>
+                                    <i class="mdi mdi-18px mdi-close-circle-outline"/>
                                 </span>
                                 <span 
                                         v-tooltip="{
-                                            content: $i18n.get('label_process_conpleted'),
+                                            content: $i18n.get('label_process_completed'),
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
                                         v-if="bgProcess.done > 0"
                                         class="icon has-text-success">
-                                    <i class="mdi mdi-24px mdi-checkbox-marked-circle"/>
+                                    <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
                                 </span>
                             </div>
                         </td>

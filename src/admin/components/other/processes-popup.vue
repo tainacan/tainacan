@@ -43,7 +43,7 @@
                                         class="mdi mdi-18px"
                                         :class="{ 'mdi-menu-down': processesColapses[index], 'mdi-menu-right': !processesColapses[index] }" />
                             </span>  
-                            <p>Name of Process</p>
+                            <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
                         </div>
                         <span 
                                 v-if="bgProcess.done <= 0"
@@ -139,7 +139,7 @@ export default {
         getUnfinishedProcesses() {
             let nUnfinishedProcesses = 0
             for(let i = 0; i < this.bgProcesses.length; i++) {
-                if (this.bgProcesses[i].done > 0)
+                if (this.bgProcesses[i].done <= 0)
                     nUnfinishedProcesses++;
             }
             return nUnfinishedProcesses;
@@ -156,7 +156,7 @@ export default {
         }
     },
     mounted() {    
-        this.fetchProcesses();
+        this.fetchProcesses({ page: 1, processesPerPage: 12 });
         this.showProcessesList = false;
     }
 }
