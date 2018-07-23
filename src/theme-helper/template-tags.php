@@ -259,7 +259,7 @@ function tainacan_current_view_displays($property) {
  * 
  * @return string
  */
-function tainacan_get_initials(string $string, $one = false) {
+function tainacan_get_initials($string, $one = false) {
 	
 	if (empty($string)) {
 		return '';
