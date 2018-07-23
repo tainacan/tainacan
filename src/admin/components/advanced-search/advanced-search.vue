@@ -1,6 +1,21 @@
 <template>
     <div>
+        <section
+                v-if="!metadata || metadata.length <= 0"
+                class="field is-grouped-centered section">
+            <div class="content has-text-gray has-text-centered">
+                <p>
+                    <b-icon
+                            icon="format-list-checks"
+                            size="is-large"/>
+                </p>
+                <p>{{ isRepositoryLevel ?
+                    $i18n.get('info_there_are_no_metadata_in_repository_level' ) :
+                     $i18n.get('info_there_are_no_metadata_to_search' ) }}</p>
+            </div>
+        </section>
         <div
+                v-else
                 :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '47px' }"
                 :class="{ 'padding-in-header': isHeader, 'padding-regular': !isHeader }"
                 class="columns is-multiline tnc-advanced-search-container">
@@ -28,7 +43,8 @@
                                   (advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].originalMeta : undefined)"
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriterion)">
                             <option
-                                    v-for="metadatum in metadata"
+                                    v-for="(metadatum, metadatumIndex) in metadata"
+                                    v-if="isRelationship(metadatum, metadatumIndex)"
                                     :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
                                     :key="metadatum.id"
                             >{{ metadatum.name }}</option>
@@ -129,7 +145,11 @@
                             icon="plus-circle"
                             size="is-small"
                             type="is-secondary"/>
-                    {{ $i18n.get('add_another_search_criterion') }}</a>
+                    {{ searchCriteria.length &lt;= 0 ?
+                        $i18n.get('add_one_search_criterion') :
+                         $i18n.get('add_another_search_criterion')
+                    }}
+                </a>
             </div>
 
             <!-- Tags -->
@@ -173,7 +193,10 @@
                     v-show="!advancedSearchResults"
                     class="column">
                 <div class="field is-grouped is-pulled-right">
-                    <p class="control">
+                    <p
+                            v-if="Object.keys(this.advancedSearchQuery.taxquery).length > 0 ||
+                 Object.keys(this.advancedSearchQuery.metaquery).length > 0"
+                            class="control">
                         <button
                                 @click="clearSearch"
                                 class="button is-outlined">{{ $i18n.get('clear_search') }}</button>
@@ -342,6 +365,15 @@
                     throw error;
                 });
             }, 300),
+            isRelationship(metadatum, metadatumIndex){
+                if(metadatum.metadata_type.includes('Relationship')){
+                    this.metadata.splice(metadatumIndex, 1);
+
+                    return false;
+                }
+
+                return true;
+            },
             getComparators(searchCriterion){
                 if(this.advancedSearchQuery.taxquery[searchCriterion]){
                     return this.taxqueryOperators;
@@ -600,7 +632,7 @@
             margin-left: -5px !important;
         }
 
-        tainacan-input-disabled {
+        .tainacan-input-disabled {
             background-color: $gray;
         }
     }

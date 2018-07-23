@@ -45,7 +45,7 @@ class CSV extends Importer {
         $processedItem = [];
         $headers = $this->get_source_metadata();
 
-        $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_id['id'] );
+        $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
         // search the index in the file and get values
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
         $file->setFlags(\SplFileObject::SKIP_EMPTY);
@@ -55,12 +55,9 @@ class CSV extends Importer {
             $file->current();
             $file->next();
 
-            $this->add_log(' Line to parse ' . $file->fgets() );
             $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
-            
             $values = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
         }else{
-            $this->add_log(' Line to parse ' . $file->fgets() );
             $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
             $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
         }

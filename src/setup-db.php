@@ -40,7 +40,7 @@ function tainacan_create_bd_process_db() {
     if(empty($column_exists)) {
 		$wpdb->query("
         ALTER TABLE {$wpdb->prefix}tnc_bg_process
-        ADD name text NOT NULL,
+        ADD name text NOT NULL
         ");
 	}
     

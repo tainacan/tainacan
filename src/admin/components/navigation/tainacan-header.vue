@@ -57,6 +57,7 @@
                             :custom="true">
                         <advanced-search
                                 :metadata="metadata"
+                                :is-repository-level="true"
                                 :is-header="true"/>
                     </b-dropdown-item>
                 </b-dropdown>

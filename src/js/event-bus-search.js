@@ -106,6 +106,7 @@ export default {
                                 //     this.$route.query.orderby = 'meta_value';
                                 //     this.$route.query.meta_key = orderBy.id;
                                 // }
+                                this.$route.query.orderby = orderBy.slug;
 
                             } else {
                                 this.$route.query.orderby = 'date';
