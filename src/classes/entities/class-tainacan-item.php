@@ -551,11 +551,12 @@ class Item extends Entity {
 		$post__not_in = [];
 		$post__name_in = [];
 		if (is_array($args['metadata__in'])) {
+			$post__in[] = -1; // If metadata__in is an empty array, this forces empty result
 			foreach ($args['metadata__in'] as $meta) {
-				if (is_string($meta)) {
-					$post__name_in[] = $meta;
-				} elseif (is_integer($meta)) {
+				if (is_numeric($meta)) {
 					$post__in[] = $meta;
+				} elseif (is_string($meta)) {
+					$post__name_in[] = $meta;
 				}
 			}
 		}
