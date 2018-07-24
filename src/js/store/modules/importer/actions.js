@@ -154,7 +154,7 @@ export const runImporter = ( { dispatch } , importerId ) => {
         axios.tainacan.post('importers/session/' + importerId + '/run')
             .then( res => {
                 let backgroundProcessId = res.data;
-                dispatch('bgprocess/fetchProcesses', null, { root: true });
+                dispatch('bgprocess/fetchProcesses', { }, { root: true });
                 resolve( backgroundProcessId );
             })
             .catch(error => {

@@ -3,7 +3,14 @@ import axios from '../../../axios/axios';
 // Actions related to background processes
 export const fetchProcesses = ({ commit }, {page, processesPerPage}) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/bg-processes?paged=' + page + '&perpage=' + processesPerPage)
+        let endpoint = '/bg-processes?';
+
+        if (page != undefined)
+            endpoint += 'paged=' + page;
+        if (processesPerPage != undefined)
+            endpoint += '&perpage=' + processesPerPage;
+
+        axios.tainacan.get(endpoint)
         .then( res => {
             let processes = res.data;
             commit('setProcesses', processes);

@@ -1,8 +1,7 @@
 <template>
     <div 
             class="primary-page page-container">
-         <div 
-                class="tainacan-page-title">
+         <div class="tainacan-page-title">
             <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
             <a 
                     @click="$router.go(-1)"
@@ -10,21 +9,20 @@
                 {{ $i18n.get('back') }}
             </a>
             <hr>
-            <!-- <nav class="breadcrumbs">
+            <nav class="breadcrumbs">
                 <router-link 
                         tag="a" 
                         :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                <span 
-                        v-for="(pathItem, index) in arrayRealPath" 
-                        :key="index">
-                    <router-link 
-                            tag="a" 
-                            :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
-                        {{ arrayViewPath[index] }}
-                    </router-link>
-                    <span v-if="index != arrayRealPath.length - 1"> > </span>
-                </span>   
-            </nav> -->
+                <router-link 
+                        tag="a" 
+                        :to="$routerHelper.getAvailableImportersPath()">{{ $i18n.get('importers') }}</router-link> > 
+                <router-link 
+                        tag="a" 
+                        :to="$routerHelper.getImporterPath(importerType, sessionId)">{{ importerType }}</router-link> >
+                <router-link 
+                        tag="a" 
+                        :to="$routerHelper.getImporterMappingPath(importerType, sessionId, collectionId)">{{ $i18n.get('label_metadata_mapping') }}</router-link> 
+            </nav>
 
         </div>
         <form 
@@ -146,23 +144,12 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <div 
-                        v-if="!hasRunImporter"
-                        class="control">
+                <div class="control">
                     <button
                             :disabled="sessionId == undefined || importer == undefined"
                             id="button-submit-collection-creation"
                             @click.prevent="onRunImporter"
                             class="button is-success">{{ $i18n.get('run') }}</button>
-                </div>
-                <div 
-                        v-if="hasRunImporter"
-                        class="control">
-                    <button
-                            :disabled="sessionId == undefined || importer == undefined"
-                            id="button-submit-collection-creation"
-                            @click.prevent="onCheckBackgroundProcessStatus"
-                            class="button is-success">Check Status</button>
                 </div>
             </div>
         </form>
@@ -289,7 +276,7 @@ export default {
             }); 
         },
         cancelBack(){
-            this.$router.go(-1);
+            this.$router.go(-2);
         },
         checkIfMetadatumIsAvailable(metadatumId) {
             return this.mappedCollection['mapping'][metadatumId] != undefined;
@@ -402,6 +389,7 @@ export default {
         }
     },
     created() {
+        this.importerType = this.$route.params.importerType;
         this.sessionId = this.$route.params.sessionId;
         this.collectionId = this.$route.params.collectionId;
         this.mappedCollection['id'] = this.collectionId;
@@ -417,6 +405,49 @@ export default {
 
     @import "../../scss/_variables.scss";
 
+    .tainacan-page-title {
+        margin-bottom: 40px;
+
+        h1, h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: $tertiary;
+            display: inline-block;
+        }
+        a.back-link{
+            font-weight: 500;
+            float: right;
+            margin-top: 5px;
+        }
+        hr{
+            margin: 3px 0px 4px 0px; 
+            height: 1px;
+            background-color: $secondary;
+        }
+        .breadcrumbs {
+            font-size: 12px;
+        }
+        .level-left {
+            .level-item {
+                display: inline-block;
+                margin-left: 268px;
+            }  
+        }
+        @media screen and (max-width: 769px) {
+            .level-left {
+                margin-left: 0px !important;
+                .level-item {
+                    margin-left: 30px;
+                }
+            }
+            .level-right {
+                display: none;
+            }
+
+            top: 206px;
+            margin-bottom: 0px !important;
+        }
+    }
 
     .field {
         position: relative;

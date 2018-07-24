@@ -212,19 +212,39 @@ export default {
 
             // Creates draft Importer
             this.sendImporter(this.importerType)
-            .then(res => {
+                .then(res => {
 
-                this.sessionId = res.id;
-                this.importer = JSON.parse(JSON.stringify(res));
+                    this.sessionId = res.id;
+                    this.importer = JSON.parse(JSON.stringify(res));
 
-                this.form = this.importer.options;
-                this.isLoading = false;
+                    this.form = this.importer.options;
+                    this.isLoading = false;
 
-                if (this.importer.manual_collection)
-                    this.loadCollections();
-                
-            })
-            .catch(error => this.$console.error(error));
+                    if (this.importer.manual_collection)
+                        this.loadCollections();
+                    
+                })
+                .catch(error => this.$console.error(error));
+            },
+        loadImporter() {
+            // Puts loading on Draft Importer creation
+            this.isLoading = true;
+
+            // Creates draft Importer
+            this.fetchImporter(this.sessionId)
+                .then(res => {
+
+                    this.sessionId = res.id;
+                    this.importer = JSON.parse(JSON.stringify(res));
+
+                    this.form = this.importer.options;
+                    this.isLoading = false;
+
+                    if (this.importer.manual_collection)
+                        this.loadCollections();
+                    
+                })
+                .catch(error => this.$console.error(error));
         },
         cancelBack(){
             this.$router.go(-1);
@@ -326,7 +346,7 @@ export default {
                 });
         },
         goToMappingPage() {
-            this.$router.push(this.$routerHelper.getImporterMappingPath(this.sessionId, this.collectionId));
+            this.$router.push(this.$routerHelper.getImporterMappingPath(this.importerType, this.sessionId, this.collectionId));
         },
         loadCollections() {
             // Generates options for target collection
@@ -340,17 +360,37 @@ export default {
                 this.$console.error(error);
                 this.isFetchingCollections = false;
             }); 
+        },
+        onSelectCollection(collectionId) {
+            this.collectionId = collectionId;
+            this.mappedCollection['id'] = collectionId;
+
+            // Generates options for metadata listing
+            this.isFetchingCollectionMetadata = true;
+            this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
+            .then((metadata) => {
+                this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
+                this.isFetchingCollectionMetadata = false;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+                this.isFetchingCollectionMetadata = false;
+            });    
         }
     },
     created() {
         this.importerType = this.$route.params.importerSlug;
         this.collectionId = this.$route.query.targetCollection;
+        this.sessionId = this.$route.params.sessionId;
 
         if (this.collectionId != undefined) {
             this.onSelectCollection(this.collectionId);
         }
 
-        this.createImporter();    
+        if (this.sessionId != undefined)
+            this.loadImporter();
+        else
+            this.createImporter();    
     }
 
 }
@@ -374,6 +414,16 @@ export default {
         font-weight: 500 !important;
         color: $tertiary !important;
         line-height: 1.2em;
+    }
+
+    .source-metadatum {
+        padding: 2px 0;
+        border-bottom: 1px solid $tainacan-input-background;
+        width: 100%;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .is-inline .control{
