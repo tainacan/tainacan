@@ -404,7 +404,7 @@ export default {
                 });
             } else {
                 if (this.importer.options_form != undefined && this.importer.options != null && this.importer.options_form != '') {
-                        
+
                     let formElement = document.getElementById('importerOptionsForm');
                     let formData = new FormData(formElement);
                     let formObj = {};
@@ -412,7 +412,7 @@ export default {
                     for (let [key, value] of formData.entries())
                         formObj[key] = value;
 
-                    this.updateImporterOptions({ sessionId: this.sessionId, optionsForm: formObj })
+                    this.updateImporterOptions({ sessionId: this.sessionId, options: formObj })
                     .then(updatedImporter => {    
                         this.importer = updatedImporter;
 
