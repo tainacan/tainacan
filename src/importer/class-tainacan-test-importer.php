@@ -89,8 +89,6 @@ class Test_Importer extends Importer {
 	
 	public function create_taxonomies() {
 		
-		$asd->asdasdasd();
-		
 		$tax1 = new Entities\Taxonomy();
 		$tax1->set_name('Color');
 		$tax1->set_allow_insert('yes');
