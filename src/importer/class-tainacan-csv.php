@@ -5,10 +5,6 @@ use Tainacan;
 
 class CSV extends Importer {
 
-	protected $manual_mapping = true;
-	
-	protected $manual_collection = true;
-	
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 		

@@ -21,31 +21,6 @@ abstract class Importer {
 	 */
 	protected $tmp_file;
 	
-	/**
-	 * Wether Tainacan must present the user with an interface to manually map 
-	 * the metadata from the source to the target collection.
-	 *
-	 * If set to true in the child class, it must implement the method 
-	 * get_source_metadata() to return the metadatum found in the source.
-	 *
-	 * Note that this will only work when importing items to one single collection.
-	 * @var bool
-	 */
-	protected $manual_mapping = false;
-	
-	/**
-	 * Wether Tainacan will let the user choose a destination collection.
-	 *
-	 * If set to true, the API endpoints will handle Collection creation and will assign it to 
-	 * the importer object using add_collection() method.
-	 *
-	 * Otherwise, the child importer class must create the collections and add them to the collections property also 
-	 * using add_collection()
-	 * 
-	 * @var bool
-	 */
-	protected $manual_collection = true;
-	
     
 	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
@@ -188,9 +163,12 @@ abstract class Importer {
 		}
 		$return['class_name'] = get_class($this);
 
+		global $Tainacan_Importer_Handler;
+		$importer_definition = $Tainacan_Importer_Handler->get_importer_by_object($this);
+
 		if ($short === false) {
-			$return['manual_collection'] = $this->manual_collection;
-			$return['manual_mapping'] = $this->manual_mapping;
+			$return['manual_collection'] = $importer_definition['manual_collection'];
+			$return['manual_mapping'] = $importer_definition['manual_mapping'];
 			$return['accepts'] = $this->accepts;
 			$return['options_form'] = $this->options_form();
 		}

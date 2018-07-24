@@ -15,9 +15,6 @@ use \Tainacan\Entities;
 
 class Test_Importer extends Importer {
 	
-	protected $manual_mapping = false;
-	protected $manual_collection = false;
-	
 	protected $steps = [
 		
 		[
