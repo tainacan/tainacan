@@ -163,7 +163,7 @@
                 this.taxonomyMessage = message;
             },
             fetchTaxonomies(){
-                return axios.get('/taxonomies')
+                return axios.get('/taxonomies?nopaging=1')
                     .then(res => {
                         let taxonomies = res.data;
                         this.loading = false;

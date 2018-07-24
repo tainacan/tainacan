@@ -697,7 +697,10 @@
                     parent: this,
                     component: AvailableImportersModal,
                     hasModalCard: true,
-                    props: { targetCollection: this.collectionId }
+                    props: { 
+                        targetCollection: this.collectionId,
+                        hideWhenManualCollection: true
+                    }
                 });
             },
             updateSearch() {
