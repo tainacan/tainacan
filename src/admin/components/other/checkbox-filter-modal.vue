@@ -18,7 +18,7 @@
                                 @click="$parent.close()">Close</button>
                     </div>
                     <div class="control">
-                        <button class="button is-success">Login</button>
+                        <button class="button is-success">Confirm</button>
                     </div>
                 </footer>
             </section>

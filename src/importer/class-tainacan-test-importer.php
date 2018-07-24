@@ -69,12 +69,20 @@ class Test_Importer extends Importer {
 	
 	public function options_form() {
 
-        $form = '<label class="label">' . __('Number of items in collection 1', 'tainacan') . '</label>';
-        $form .= '<input type="text" class="input" name="items_col_1" value="' . $this->get_option('items_col_1') . '" />';
+		$form = '<div class="field">';
+        $form .= '<label class="label">' . __('Number of items in collection 1', 'tainacan') . '</label>';
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="items_col_1" value="' . $this->get_option('items_col_1') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
 
+		$form .= '<div class="field">';
 		$form .= '<label class="label">' . __('Number of items in collection 2', 'tainacan') . '</label>';
-        $form .= '<input type="text" class="input" name="items_col_2" value="' . $this->get_option('items_col_2') . '" />';
-
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="items_col_2" value="' . $this->get_option('items_col_2') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
+		
         return $form;
 
     }

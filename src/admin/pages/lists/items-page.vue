@@ -137,6 +137,16 @@
                         <b-dropdown-item disabled>
                             {{ $i18n.get('add_items_external_source') + ' (Not ready)' }}
                         </b-dropdown-item>
+                        <b-dropdown-item>
+                            <div
+                                    id="a-import-collection"
+                                    tag="div"
+                                    @click="onOpenImportersModal">
+                                {{ $i18n.get('label_import_collection') }}
+                                <br>
+                                <small class="is-small">{{ $i18n.get('info_import_a_collection') }}</small>
+                            </div>
+                        </b-dropdown-item>
                     </b-dropdown>
                 </div>
 
@@ -569,6 +579,7 @@
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
+    import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -681,6 +692,14 @@
                 'getTotalItems',
                 'getAdminViewMode'
             ]),
+            onOpenImportersModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: AvailableImportersModal,
+                    hasModalCard: true,
+                    props: { targetCollection: this.collectionId }
+                });
+            },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  

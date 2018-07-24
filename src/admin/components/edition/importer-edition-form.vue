@@ -557,6 +557,12 @@ export default {
     },
     created() {
         this.importerType = this.$route.params.importerSlug;
+        this.collectionId = this.$route.query.targetCollection;
+
+        if (this.collectionId != undefined) {
+            this.onSelectCollection(this.collectionId);
+        }
+
         this.createImporter();    
     }
 
@@ -570,6 +576,10 @@ export default {
 
     .field {
         position: relative;
+    }
+
+    .form-submit {
+        margin-top: 24px;
     }
 
     .section-label {
