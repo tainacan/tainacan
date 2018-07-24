@@ -171,30 +171,22 @@ export default {
             importerId: Number,
             importer: null,
             isLoading: false,
-            isFetchingCollections: false,
-            form: {
-                
-            },
             mappedCollection: {
                 'id': Number,
                 'mapping': {},
                 'total_items': Number
             },
-            importerTypes: [],
             importerType: '',
-            importerFile: {},
             importerSourceInfo: null,
             collections: [],
             collectionMetadata: [],
             collectionId: undefined,
-            url: '',
             isNewMetadatumModalActive: false,
             isLoadingMetadatumTypes: false,
             selectedMetadatumType: undefined,
             isEditingMetadatum: false,
             metadatum: {},
             editedMetadatum: {},
-            hasRunImporter: false,
             backgroundProcess: undefined
         }
     },

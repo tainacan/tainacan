@@ -138,8 +138,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
+import { mapActions } from 'vuex';
 
 export default {
     name: 'ImporterEditionForm',
@@ -165,21 +164,7 @@ export default {
             collectionMetadata: [],
             collectionId: undefined,
             url: '',
-            isNewMetadatumModalActive: false,
-            isLoadingMetadatumTypes: false,
-            selectedMetadatumType: undefined,
-            isEditingMetadatum: false,
-            metadatum: {},
-            editedMetadatum: {},
             backgroundProcess: undefined
-        }
-    },
-    components: {
-        MetadatumEditionForm
-    },
-    computed: {
-        metadatumTypes() {
-            return this.getMetadatumTypes();
         }
     },
     methods: {
@@ -197,14 +182,6 @@ export default {
         ]),
         ...mapActions('collection', [
             'fetchCollectionsForParent'
-        ]),
-        ...mapActions('metadata', [
-            'fetchMetadata',
-            'fetchMetadatumTypes',
-            'sendMetadatum'
-        ]),
-        ...mapGetters('metadata', [
-            'getMetadatumTypes'
         ]),
         createImporter() {
             // Puts loading on Draft Importer creation
@@ -225,7 +202,7 @@ export default {
                     
                 })
                 .catch(error => this.$console.error(error));
-            },
+        },
         loadImporter() {
             // Puts loading on Draft Importer creation
             this.isLoading = true;
@@ -305,7 +282,7 @@ export default {
             return new Promise((resolve, reject) => {
                 if (this.importer.accepts.file && !this.importer.accepts.url)
                     this.onUploadFile().then(() => { resolve() }).catch((errors) => this.$console.log(errors)); 
-                else if (!this.importer.accepts.file && !this.mporter.accepts.url)
+                else if (!this.importer.accepts.file && !this.importer.accepts.url)
                     this.onInputURL().then(() => { resolve() }).catch((errors) => this.$console.log(errors)); 
                 else if (this.importer.accepts.file && this.importer.accepts.url) {
                     if (this.importerFile)
