@@ -280,6 +280,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getImporterEditionPath(importerType) {
             return '/importers/' + importerType;
         },   
+        getImporterMappingPath(sessionId, collectionId) {
+            return '/importers/' + sessionId + '/mapping/' +  collectionId;
+        },
     }
 }
 

@@ -100,6 +100,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_collection_metadata_edition'              => __( 'Edit Metadata of', 'tainacan' ),
 	'title_collection_filters_edition'               => __( 'Edit Filters of', 'tainacan' ),
 	'title_importer_page'                            => __( 'Importer', 'tainacan' ),
+	'title_importer_mapping_page'                    => __( "Metadata Mapping", 'tainacan' ),
 	'title_importers_page'                           => __( 'Importers', 'tainacan' ),
 	'title_export_collection_page'                   => __( 'Export Collection Page', 'tainacan' ),
 	'title_export_item_page'                         => __( 'Export Item', 'tainacan' ),

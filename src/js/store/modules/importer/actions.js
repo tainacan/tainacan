@@ -16,10 +16,10 @@ export const fetchAvailableImporters = ({ commit }) => {
     });
 };
 
-export const fetchImporter = ( { commit } , { importerId }) => {
+export const fetchImporter = ( { commit }, importerId ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.post('importers/session/' +   importerId)
+        axios.tainacan.get('importers/session/' +  importerId)
             .then( res => {
                 let importer = res.data;
                 commit('setImporter', importer);
