@@ -47,7 +47,15 @@ class REST_Background_Processes_Controller extends REST_Controller {
                     'status' => [
                         'type'        => 'string',
                         'description' => __( '"open" returns only processes currently running. "closed" returns only finished or aborted. "all" returns all. Default "all"', 'tainacan' ),
-                    ]
+                    ],
+                    'perpage' => [
+                        'type'        => 'integer',
+                        'description' => __( 'Number of processes to return per page. Default 10', 'tainacan' ),
+                    ],
+                    'paged' => [
+                        'type'        => 'integer',
+                        'description' => __( 'Page to retrieve. Default 1', 'tainacan' ),
+                    ],
                 ],
 	        ),
         ));
@@ -106,14 +114,27 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
     public function get_items( $request ) {
         global $wpdb;
-        $body = json_decode($request->get_body(), true);
+        //$body = json_decode($request->get_body(), true);
+
+        $perpage = isset($request['perpage']) && is_numeric($request['perpage']) ? $request['perpage'] : 10;
+        if ($perpage < 1) {
+            $perpage = 1;
+        }
+        $paged = isset($request['paged']) && is_numeric($request['paged']) ? $request['paged'] : 1;
+        if ($paged < 1) {
+            $paged = 1;
+        }
+
+        $offset = ($paged - 1) * $perpage;
+
+        $limit_q = "LIMIT $offset,$perpage";
 
         $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
         $status_q = "";
 
         if (current_user_can('edit_users')) {
-            if (isset($body['user_id'])) {
-                $user_q = $wpdb->prepare("AND user_id = %d", $body['user_id']);
+            if (isset($request['user_id'])) {
+                $user_q = $wpdb->prepare("AND user_id = %d", $request['user_id']);
             }
 
             if ( isset($user_q['all_users']) && $user_q['all_users'] ) {
@@ -130,11 +151,22 @@ class REST_Background_Processes_Controller extends REST_Controller {
             }
         }
 
-        $query = "SELECT * FROM $this->table WHERE 1=1 $status_q $user_q ORDER BY priority DESC, queued_on DESC";
+        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q ORDER BY priority DESC, queued_on DESC";
+
+        $query = "SELECT * $base_query $limit_q";
+        $count_query = "SELECT COUNT(ID) $base_query";
 
         $result = $wpdb->get_results($query);
+        $total_items = $wpdb->get_var($count_query);
 
-        return new \WP_REST_Response( $result, 200 );
+        $rest_response = new \WP_REST_Response( $result, 200 );
+
+        $max_pages = ceil($total_items / (int) $perpage);
+
+		$rest_response->header('X-WP-Total', (int) $total_items);
+        $rest_response->header('X-WP-TotalPages', (int) $max_pages);
+        
+        return $rest_response;
 
     }
 

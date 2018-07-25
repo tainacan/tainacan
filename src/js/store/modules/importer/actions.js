@@ -16,10 +16,10 @@ export const fetchAvailableImporters = ({ commit }) => {
     });
 };
 
-export const fetchImporter = ( { commit } , { importerId }) => {
+export const fetchImporter = ( { commit }, importerId ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.post('importers/session/' +   importerId)
+        axios.tainacan.get('importers/session/' +  importerId)
             .then( res => {
                 let importer = res.data;
                 commit('setImporter', importer);
@@ -154,7 +154,7 @@ export const runImporter = ( { dispatch } , importerId ) => {
         axios.tainacan.post('importers/session/' + importerId + '/run')
             .then( res => {
                 let backgroundProcessId = res.data;
-                dispatch('bgprocess/fetchProcesses', null, { root: true });
+                dispatch('bgprocess/fetchProcesses', { }, { root: true });
                 resolve( backgroundProcessId );
             })
             .catch(error => {

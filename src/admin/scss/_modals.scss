@@ -1,4 +1,8 @@
 // Tainacan modals
+.modal .animation-content {
+    width: 100%;
+}
+
 .tainacan-modal-title {
     h1, h2 {
         font-size: 20px;
@@ -21,6 +25,7 @@
 .tainacan-modal-content {
     background-color: white;
     padding: 52px 80px;
+    position: relative;
 
     figure {
         margin: 0;

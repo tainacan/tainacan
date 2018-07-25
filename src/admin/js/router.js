@@ -14,11 +14,11 @@ import TaxonomyPage from '../pages/singles/taxonomy-page.vue'
 import EventsPage from '../pages/lists/events-page.vue'
 import EventPage from '../pages/singles/event-page.vue'
 import ExportPage from '../pages/singles/export-page.vue'
-import ProcessesPage from '../pages/lists/processes-page.vue'
 
 // Edition Form Components
 import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
 import ImporterEditionForm from '../components/edition/importer-edition-form.vue'
+import ImporterMappingForm from '../components/edition/importer-mapping-form.vue'
 import ItemEditionForm from '../components/edition/item-edition-form.vue'
 import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
 import AvailableImportersPage from '../pages/lists/available-importers-page.vue';
@@ -72,13 +72,12 @@ const routes = [
 
     { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: {title: i18nGet('title_importers_page'), icon: 'file-multiple'} },
     { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page'), icon: 'file-multiple'} },
+    { path: '/importers/:importerSlug/:sessionId', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page'), icon: 'file-multiple' } },
+    { path: '/importers/:importerType/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: {title: i18nGet('title_importer_mapping_page'), icon: 'file-multiple'} },
 
     { path: '/export/collection/:collectionId', name: 'ExportCollection', component: ExportPage, meta: {title: i18nGet('title_export_collection_page'), icon: 'export'} },
     { path: '/export/item/:itemId', name: 'ExportItem', component: ExportPage, meta: {title: i18nGet('title_export_item_page'), icon: 'export'} },
     { path: '/export', name: 'Export', component: ExportPage, meta: {title: i18nGet('title_export_page'), icon: 'export'} },
-    
-    { path: '/processes/', name: 'ProcessesPage', component: ProcessesPage, meta: { title: i18nGet('title_processes_page'), icon: 'swap-vertical'} },
-
 
     { path: '*', redirect: '/'}
 ];

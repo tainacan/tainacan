@@ -105,6 +105,8 @@ export default {
                     this.fetchAvailableImporters()
                         .then(importers => { 
                             this.arrayViewPath.splice(i, 1, importers[this.arrayRealPath[i]].name);
+                            if (i != this.arrayRealPath.length - 1)
+                                this.arrayRealPath.pop();
                         })
                         .catch((error) => this.$console.error(error));
                 } else {

@@ -20,20 +20,26 @@ class Importer_Handler {
 			'name' => 'CSV',
 			'description' => __('Import items from a CSV file to a chosen collection', 'tainacan'),
 			'slug' => 'csv',
-			'class_name' => '\Tainacan\Importer\CSV'
+			'class_name' => '\Tainacan\Importer\CSV',
+			'manual_collection' => true,
+			'manual_mapping' => true,
 		]);
 		$this->register_importer([
 			'name' => 'Test',
 			'description' => __('Create 2 test colletions with random items', 'tainacan'),
 			'slug' => 'test',
-			'class_name' => '\Tainacan\Importer\Test_Importer'
+			'class_name' => '\Tainacan\Importer\Test_Importer',
+			'manual_collection' => false,
+			'manual_mapping' => false,
 		]);
 
 		$this->register_importer([
 			'name' => 'Tainacan Legacy',
 			'description' => __('Import structure from legacy version of Tainacan', 'tainacan'),
 			'slug' => 'tainacan_old',
-			'class_name' => '\Tainacan\Importer\Old_Tainacan'
+			'class_name' => '\Tainacan\Importer\Old_Tainacan',
+			'manual_collection' => false,
+			'manual_mapping' => false,
 		]);
 
 		do_action('tainacan_register_importers');
@@ -58,14 +64,48 @@ class Importer_Handler {
 	/**
 	 * Register Importer
 	 * 
-	 * @param array $importer 
-	 * [
-	 *  'slug' => 'example-importer',
-	 *  'class_name' => '\Tainacan\Importer\Test_Importer'
-	 * ]
+	 * 
+	 * 
+	 * @param array $importer {
+	 *     Required. Array or string of arguments describing the importer
+	 * 
+	 * 	   @type string		 $name					The name of the importer. e.g. 'Example Importer'
+	 * 	   @type string		 $slug					A unique slug for the importer. e.g. 'This is an example importer description'
+	 * 	   @type string		 $description			The importer description. e.g. 'example-importer'
+	 * 	   @type string		 $class_name			The Importer Class. e.g. '\Tainacan\Importer\Test_Importer'
+	 * 	   @type bool		 $manual_mapping		Wether Tainacan must present the user with an interface to manually map 
+	 * 												the metadata from the source to the target collection.
+	 *
+	 * 												If set to true, Importer Class must implement the method 
+	 * 												get_source_metadata() to return the metadatum found in the source.
+	 *												
+	 * 												Note that this will only work when importing items to one single collection.
+	 * 
+	 * 	   @type bool		 $manual_collection		Wether Tainacan will let the user choose a destination collection.
+	 *
+	 * 												If set to true, the API endpoints will handle Collection creation and will assign it to 
+	 * 												the importer object using add_collection() method.
+	 *												
+	 * 												Otherwise, the child importer class must create the collections and add them to the collections property also 
+	 * 												using add_collection()
+	 * 
 	 */
 	public function register_importer(array $importer) {
-		$this->registered_importers[$importer['slug']] = $importer;
+		
+		$defaults = [
+			'manual_mapping' => false,
+			'manual_collection' => true
+		];
+
+		$attrs = wp_parse_args($importer, $defaults);
+
+		if (!isset($attrs['slug']) || !isset($attrs['class_name']) || !isset($attrs['name'])) {
+			return false;
+		}
+		
+		$this->registered_importers[$importer['slug']] = $attrs;
+
+		return true;
 	}
 
 	public function unregister_importer($importer_slug) {

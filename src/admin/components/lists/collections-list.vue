@@ -64,7 +64,7 @@
                         </th>
                         <!-- Total Items -->
                         <th v-if="!isOnTrash">
-                            <div class="th-wrap">{{ $i18n.get('label_total_items') }}</div>
+                            <div class="th-wrap total-items-header">{{ $i18n.get('label_total_items') }}</div>
                         </th>
                         <th class="actions-header">
                             &nbsp;
@@ -398,6 +398,10 @@ export default {
 
     img.table-thumb {
         border-radius: 50px !important;
+    }
+
+    .total-items-header {
+        text-align: right;
     }
     
 </style>

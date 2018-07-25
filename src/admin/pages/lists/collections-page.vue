@@ -34,6 +34,16 @@
                             {{ $i18n.get(metadatum_mapper.name) }}
                         </router-link>
                     </b-dropdown-item>
+                    <b-dropdown-item>
+                        <div
+                                id="a-import-collection"
+                                tag="div"
+                                @click="onOpenImportersModal">
+                            {{ $i18n.get('label_import_collection') }}
+                            <br>
+                            <small class="is-small">{{ $i18n.get('info_import_a_collection') }}</small>
+                        </div>
+                    </b-dropdown-item>
                 </b-dropdown>
             </div>
         </div>
@@ -130,6 +140,7 @@
 
 <script>
 import CollectionsList from '../../components/lists/collections-list.vue';
+import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -194,6 +205,13 @@ export default {
             let last = (Number(this.collectionsPerPage*(this.page - 1)) + Number(this.collectionsPerPage));
             
             return last > this.totalCollections ? this.totalCollections : last;
+        },
+        onOpenImportersModal() {
+            this.$modal.open({
+                parent: this,
+                component: AvailableImportersModal,
+                hasModalCard: true
+            });
         }
     },
     computed: {

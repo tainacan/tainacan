@@ -88,6 +88,16 @@ class REST_Importers_Controller extends REST_Controller {
             
         ));
 
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)', array(
+            
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array($this, 'get_item'),
+                'permission_callback' => array($this, 'import_permissions_check'),
+            ),
+            
+        ));
+
         register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/run', array(
             
             array(
@@ -239,6 +249,22 @@ class REST_Importers_Controller extends REST_Controller {
             $response['source_total_items'] = $importer->get_source_number_of_items();
         }
 
+        return new \WP_REST_Response( $response, 200 );
+
+    }
+
+    public function get_item( $request ) {
+        $session_id = $request['session_id'];
+        $importer = $_SESSION['tainacan_importer'][$session_id];
+
+        if(!$importer) {
+            return new \WP_REST_Response([
+		    	'error_message' => __('Importer Session not found', 'tainacan' ),
+			    'session_id' => $session_id
+		    ], 400);
+        }
+
+        $response = $importer->_to_Array();
         return new \WP_REST_Response( $response, 200 );
 
     }

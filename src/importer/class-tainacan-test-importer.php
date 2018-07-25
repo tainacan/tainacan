@@ -15,9 +15,6 @@ use \Tainacan\Entities;
 
 class Test_Importer extends Importer {
 	
-	protected $manual_mapping = false;
-	protected $manual_collection = false;
-	
 	protected $steps = [
 		
 		[
@@ -69,12 +66,20 @@ class Test_Importer extends Importer {
 	
 	public function options_form() {
 
-        $form = '<label class="label">' . __('Number of items in collection 1', 'tainacan') . '</label>';
-        $form .= '<input type="text" class="input" name="items_col_1" value="' . $this->get_option('items_col_1') . '" />';
+		$form = '<div class="field">';
+        $form .= '<label class="label">' . __('Number of items in collection 1', 'tainacan') . '</label>';
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="items_col_1" value="' . $this->get_option('items_col_1') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
 
+		$form .= '<div class="field">';
 		$form .= '<label class="label">' . __('Number of items in collection 2', 'tainacan') . '</label>';
-        $form .= '<input type="text" class="input" name="items_col_2" value="' . $this->get_option('items_col_2') . '" />';
-
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="items_col_2" value="' . $this->get_option('items_col_2') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
+		
         return $form;
 
     }
@@ -167,7 +172,7 @@ class Test_Importer extends Importer {
 		$col1_map[$col1_core_description->get_id()] = 'field2';
 		
 		$metadatum = new Entities\Metadatum();
-		$metadatum->set_name('Colora');
+		$metadatum->set_name('Color');
 		$metadatum->set_collection($col1);
 		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$metadatum->set_metadata_type_options([
@@ -184,11 +189,11 @@ class Test_Importer extends Importer {
 			return false;
 		}
 		$col1_map[$metadatum->get_id()] = 'field3';
-		$this->add_transient('tax_1_field', $metadatum->get_id());
+		$this->add_transient('tax_1_metadatum', $metadatum->get_id());
 		
 		
 		$metadatum = new Entities\Metadatum();
-		$metadatum->set_name('Qualitya');
+		$metadatum->set_name('Quality');
 		$metadatum->set_collection($col1);
 		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$metadatum->set_metadata_type_options([
@@ -205,7 +210,7 @@ class Test_Importer extends Importer {
 			return false;
 		}
 		$col1_map[$metadatum->get_id()] = 'field4';
-		$this->add_transient('tax_2_field', $metadatum->get_id());
+		$this->add_transient('tax_2_metadatum', $metadatum->get_id());
 		
 		$this->add_collection([
 			'id' => $col1->get_id(),
@@ -250,10 +255,13 @@ class Test_Importer extends Importer {
 	
 	public function close_taxonomies() {
 		
+		$this->add_log('closing taxonomies');
+		
 		$tax1 = $this->tax_repo->fetch( $this->get_transient('tax_1_id') );
 		$tax1->set_allow_insert('no');
 		if ($tax1->validate()) {
 			$tax1 = $this->tax_repo->insert($tax1);
+			$this->add_log('tax 1 closed');
 		} else {
 			/**
 			 * This is an example of an error that 
@@ -267,6 +275,7 @@ class Test_Importer extends Importer {
 		$tax2->set_allow_insert('no');
 		if ($tax2->validate()) {
 			$tax2 = $this->tax_repo->insert($tax2);
+			$this->add_log('tax 2 closed');
 		} else {
 			$this->add_error_log('Error closing ' . $tax2->get_name());
 			$this->add_error_log($tax2->get_errors());
@@ -274,26 +283,35 @@ class Test_Importer extends Importer {
 		
 		
 		$metadatum1 = $this->metadata_repo->fetch( $this->get_transient('tax_1_metadatum') );
-		$options = $metadatum1->get_metadata_type_options();
-		$options['allow_new_terms'] = false;
-		$metadatum1->set_metadata_type_options($options);
-		if ($metadatum1->validate()) {
-			$this->metadata_repo->insert($metadatum1);
-		} else {
-			$this->add_error_log('Error closing ' . $metadatum1->get_name());
-			$this->add_error_log($metadatum1->get_errors());
+		if ($metadatum1) {
+			$options = $metadatum1->get_metadata_type_options();
+			$options['allow_new_terms'] = false;
+			$metadatum1->set_metadata_type_options($options);
+			if ($metadatum1->validate()) {
+				$this->metadata_repo->insert($metadatum1);
+				$this->add_log('metadatum 1 closed');
+			} else {
+				$this->add_error_log('Error closing ' . $metadatum1->get_name());
+				$this->add_error_log($metadatum1->get_errors());
+			}
 		}
 		
+		
 		$metadatum2 = $this->metadata_repo->fetch( $this->get_transient('tax_2_metadatum') );
-		$options = $metadatum2->get_metadata_type_options();
-		$options['allow_new_terms'] = false;
-		$metadatum2->set_metadata_type_options($options);
-		if ($metadatum2->validate()) {
-			$this->metadata_repo->insert($metadatum2);
-		} else {
-			$this->add_error_log('Error closing ' . $metadatum2->get_name());
-			$this->add_error_log($metadatum2->get_errors());
+		if ($metadatum2) {
+			$options = $metadatum2->get_metadata_type_options();
+			$options['allow_new_terms'] = false;
+			$metadatum2->set_metadata_type_options($options);
+			if ($metadatum2->validate()) {
+				$this->metadata_repo->insert($metadatum2);
+				$this->add_log('metadatum 2 closed');
+			} else {
+				$this->add_error_log('Error closing ' . $metadatum2->get_name());
+				$this->add_error_log($metadatum2->get_errors());
+			}
 		}
+
+		return false;
 		
 	}
 	
@@ -323,6 +341,15 @@ class Test_Importer extends Importer {
 	
 	
 	
+	public function get_col1_number_of_items() {
+		return $this->get_option('items_col_1');
+	}
+	public function get_col2_number_of_items() {
+		return $this->get_option('items_col_2');
+	}
+
+
+	
 	/**
 	 * Dummy methods
 	 *
@@ -330,12 +357,6 @@ class Test_Importer extends Importer {
 	 *
 	 * Here we are just returning random values
 	 */
-	public function get_col1_number_of_items() {
-		return $this->get_option('items_col_1');
-	}
-	public function get_col2_number_of_items() {
-		return $this->get_option('items_col_2');
-	}
 	public function get_col1_item($index) {
 		
 		$terms1 = [

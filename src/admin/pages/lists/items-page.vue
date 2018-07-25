@@ -137,6 +137,16 @@
                         <b-dropdown-item disabled>
                             {{ $i18n.get('add_items_external_source') + ' (Not ready)' }}
                         </b-dropdown-item>
+                        <b-dropdown-item>
+                            <div
+                                    id="a-import-collection"
+                                    tag="div"
+                                    @click="onOpenImportersModal">
+                                {{ $i18n.get('label_import_collection') }}
+                                <br>
+                                <small class="is-small">{{ $i18n.get('info_import_a_collection') }}</small>
+                            </div>
+                        </b-dropdown-item>
                     </b-dropdown>
                 </div>
 
@@ -157,7 +167,7 @@
                         </button>
                         <div class="metadata-options-container">
                         <b-dropdown-item
-                                v-for="(column, index) in localTableMetadata"
+                                v-for="(column, index) in localDisplayedMetadata"
                                 :key="index"
                                 class="control"
                                 custom>
@@ -181,24 +191,33 @@
                 <!-- Change OrderBy Select and Order Button-->
                 <div class="search-control-item">
                     <b-field>
-                        <b-select
+                        <b-dropdown
                                 :disabled="totalItems <= 0"
-                                @input="onChangeOrderBy($event)"
-                                :placeholder="$i18n.get('label_sorting')">
-                            <option
-                                    v-for="metadatum in tableMetadata"
+                                @input="onChangeOrderBy($event)">
+                            <button
+                                    class="button is-white"
+                                    slot="trigger">
+                                <span>{{ $i18n.get('label_sorting') }}</span>
+                                <b-icon icon="menu-down"/>
+                            </button>
+                            <b-dropdown-item
+                                    :class="{ 'is-active': metadatum != undefined && orderBy == metadatum.slug }"
+                                    v-for="metadatum of sortingMetadata"
                                     v-if="
+                                        totalItems > 0 &&
+                                        metadatum != undefined &&
                                         metadatum.slug === 'creation_date' || (
-                                            metadatum.metadata_type_object && 
-                                            metadatum.metadata_type_object.related_mapped_prop == 'title'
+                                        metadatum.metadata_type_object && 
+                                        metadatum.metadata_type_object.related_mapped_prop == 'title'
                                     )"
                                     :value="metadatum"
                                     :key="metadatum.slug">
                                 {{ metadatum.name }}
-                            </option>
+                            </b-dropdown-item>
                             <!-- Once we have sorting by metadata we can use this -->
-                            <!-- <option 
-                                    v-for="metadatum in tableMetadata"
+                            <!-- <b-dropdown-item
+                                    :class="{ 'is-active': orderBy == metadatum.slug }"
+                                    v-for="metadatum of sortingMetadata"
                                     v-if="
                                         metadatum.slug === 'creation_date' ||
                                         metadatum.slug === 'author_name' || (
@@ -212,8 +231,9 @@
                                     :value="metadatum"
                                     :key="metadatum.slug">
                                 {{ metadatum.name }}
-                            </option> -->
-                        </b-select>
+                            </b-dropdown-item> -->
+                        </b-dropdown>
+                        <!-- Order ASC vs DESC buttons -->
                         <button
                                 class="button is-white is-small"
                                 :disabled="totalItems <= 0 || order == 'DESC'"
@@ -444,7 +464,7 @@
                               advancedSearchResults"
 
                         :collection-id="collectionId"
-                        :table-metadata="tableMetadata"
+                        :table-metadata="displayedMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
@@ -458,7 +478,7 @@
                               !openAdvancedSearch"
 
                         :collection-id="collectionId"
-                        :table-metadata="tableMetadata"
+                        :table-metadata="displayedMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is-on-trash="status == 'trash'"
@@ -483,7 +503,7 @@
                               openAdvancedSearch &&
                               advancedSearchResults"
                         :collection-id="collectionId"
-                        :displayed-metadata="tableMetadata"
+                        :displayed-metadata="displayedMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/> 
@@ -505,7 +525,7 @@
                               registeredViewModes[viewMode].type == 'component' &&
                               !openAdvancedSearch"
                         :collection-id="collectionId"
-                        :displayed-metadata="tableMetadata"
+                        :displayed-metadata="displayedMetadata"
                         :items="items"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
@@ -559,6 +579,7 @@
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
     import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
+    import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
@@ -566,8 +587,8 @@
         data() {
             return {
                 isRepositoryLevel: false,
-                tableMetadata: [],
-                prefTableMetadata: [],
+                displayedMetadata: [],
+                prefDisplayedMetadata: [],
                 isLoadingItems: false,
                 isLoadingFilters: false,
                 isLoadingMetadata: false,
@@ -577,13 +598,14 @@
                 isOnTheme: false,
                 futureSearchQuery: '',
                 isHeaderShrinked: false,
-                localTableMetadata: [],
+                localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
                 openFormAdvancedSearch: false,
                 advancedSearchResults: false,
                 isDoSearch: false,
-                searchControlHeight: 0
+                searchControlHeight: 0,
+                sortingMetadata: []
             }
         },
         props: {
@@ -634,8 +656,8 @@
             AdvancedSearch,
         },
         watch: {
-            tableMetadata() {
-                this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
+            displayedMetadata() {
+                this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
             },
             openAdvancedSearch(newValue){
                 if(newValue == false){
@@ -670,6 +692,17 @@
                 'getTotalItems',
                 'getAdminViewMode'
             ]),
+            onOpenImportersModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: AvailableImportersModal,
+                    hasModalCard: true,
+                    props: { 
+                        targetCollection: this.collectionId,
+                        hideWhenManualCollection: true
+                    }
+                });
+            },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
@@ -705,18 +738,18 @@
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];
 
-                for (let i = 0; i < this.localTableMetadata.length; i++) {
+                for (let i = 0; i < this.localDisplayedMetadata.length; i++) {
 
-                    this.tableMetadata[i].display = this.localTableMetadata[i].display;
-                    if (this.tableMetadata[i].id != undefined) {
-                        if (this.tableMetadata[i].display) {
-                            fetchOnlyMetadatumIds.push(this.tableMetadata[i].id);
+                    this.displayedMetadata[i].display = this.localDisplayedMetadata[i].display;
+                    if (this.displayedMetadata[i].id != undefined) {
+                        if (this.displayedMetadata[i].display) {
+                            fetchOnlyMetadatumIds.push(this.displayedMetadata[i].id);
                         }
                     }
                 }
-                let thumbnailMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'thumbnail');
-                let creationDateMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'creation_date');
-                let authorNameMetadatum = this.localTableMetadata.find(metadatum => metadatum.slug == 'author_name');
+                let thumbnailMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'thumbnail');
+                let creationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'creation_date');
+                let authorNameMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'author_name');
 
                 // Updates Search
                 this.$eventBusSearch.addFetchOnly({
@@ -746,7 +779,7 @@
 
                 this.$eventBusSearch.cleanFetchOnly();
                 this.isLoadingMetadata = true;
-                
+               
                 // Processing is done inside a local variable
                 let metadata = [];
                 this.fetchMetadata({
@@ -755,6 +788,8 @@
                     isContextEdit: false
                 })
                     .then(() => {
+                        this.sortingMetadata = [];
+
                         // Decides if custom meta will be loaded with item.
                         let shouldLoadMeta = true;
                         
@@ -815,6 +850,7 @@
                                     if (display)
                                         fetchOnlyMetadatumIds.push(metadatum.id);                      
                                 }
+                                this.sortingMetadata.push(metadatum);
                             }
 
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
@@ -836,16 +872,35 @@
                                 id: undefined,
                                 display: authorNameMetadatumDisplay
                             });
-                            
+                        
                             this.$eventBusSearch.addFetchOnly({
                                 '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),
                                 'meta': fetchOnlyMetadatumIds,
                                 '1': (creationDateMetadatumDisplay ? 'creation_date' : null),
                                 '2': (authorNameMetadatumDisplay ? 'author_name' : null)
                             });
+
+                            this.sortingMetadata.push({
+                                name: this.$i18n.get('label_creation_date'),
+                                metadatum: 'row_creation',
+                                metadata_type: undefined,
+                                slug: 'creation_date',
+                                id: undefined,
+                                display: creationDateMetadatumDisplay
+                            });
+                            if (authorNameMetadatumDisplay) {
+                                this.sortingMetadata.push({
+                                    name: this.$i18n.get('label_created_by'),
+                                    metadatum: 'row_author',
+                                    metadata_type: undefined,
+                                    slug: 'author_name',
+                                    id: undefined,
+                                    display: authorNameMetadatumDisplay
+                                });
+                            }
                         // Loads only basic attributes necessay to view modes that do not allow custom meta
                         } else {
-                                                        
+                       
                             this.$eventBusSearch.addFetchOnly({
                                 '0': 'thumbnail',
                                 'meta': [],
@@ -854,10 +909,29 @@
                                 '3': 'title',
                                 '4': 'description'
                             });
+                            
+                            this.sortingMetadata.push({
+                                name: this.$i18n.get('label_title'),
+                                metadatum: 'row_title',
+                                metadata_type_object: {core: true, related_mapped_prop: 'title'},
+                                metadata_type: undefined,
+                                slug: 'title',
+                                id: undefined,
+                                display: true
+                            })
+                            this.sortingMetadata.push({
+                                name: this.$i18n.get('label_creation_date'),
+                                metadatum: 'row_creation',
+                                metadata_type: undefined,
+                                slug: 'creation_date',
+                                id: undefined,
+                                display: true
+                            })
+
                         }
 
                         this.isLoadingMetadata = false;
-                        this.tableMetadata = metadata;
+                        this.displayedMetadata = metadata;
                     })
                     .catch(() => {
                         this.isLoadingMetadata = false;
@@ -911,7 +985,7 @@
             
             this.prepareFilters();
             this.prepareMetadata();
-            this.localTableMetadata = JSON.parse(JSON.stringify(this.tableMetadata));
+            this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
             // Setting initial view mode on Theme
             if (this.isOnTheme) {

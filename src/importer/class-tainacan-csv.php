@@ -5,10 +5,6 @@ use Tainacan;
 
 class CSV extends Importer {
 
-	protected $manual_mapping = true;
-	
-	protected $manual_collection = true;
-	
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 		
@@ -33,8 +29,31 @@ class CSV extends Importer {
      */
     public function get_source_metadata(){
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
-        $file->seek(0 );
-        return $file->fgetcsv( $this->get_option('delimiter') );
+        $file->seek(0);
+
+        $columns = [];
+        $rawColumns = $file->fgetcsv( $this->get_option('delimiter') );
+
+        if( $rawColumns ){
+            foreach( $rawColumns as $rawColumn ){
+              
+                if( strpos($rawColumn,'special_') === 0 ){
+                    
+                    if( $rawColumn === 'special_document' ){
+                        //TODO: save the index for column document
+                    } else if( $rawColumn === 'special_attachments' ){
+                       //TODO: save the index for column attachment     
+                    }
+
+                } else {
+                    $columns[] = $rawColumn;
+                }
+            }
+
+            return $columns;
+        }
+
+        return [];
     }
 
 
@@ -76,10 +95,10 @@ class CSV extends Importer {
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
             $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
 
-            $column = $this->handle_encoding( $values[ $cont ] );
+            $valueToInsert = $this->handle_encoding( $values[ $cont ] );
 
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
-                explode( $this->get_option('multivalued_delimiter'), $column) : $column;
+                explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
 
             $cont++;
         }
@@ -104,32 +123,50 @@ class CSV extends Importer {
 
     public function options_form() {
 
-        $form = '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
-        $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
-
-        $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
-        $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
-
+        $form = '<div class="field">';
+        $form .= '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
         $form .= '<div class="control">';
-        $form .= '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
+        $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
+        $form .= '</div>';
         $form .= '</div>';
 
+        $form = '<div class="field">';
+        $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
+        $form .= '<div class="control">';
+        $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
+        $form .= '</div>';
+        $form .= '</div>';
+
+        $form .= '<div class="field">';   
+        $form .= '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
+  
         $utf8 = ( !$this->get_option('encode') || $this->get_option('encode') === 'utf8' ) ? 'checked' : '';
         $iso = ( !$this->get_option('encode') && $this->get_option('encode') === 'iso88591' ) ? 'checked' : '';
 
-        $form .= '<div class="control">';
-        $form .= '<label class="radio">';
+        $form .= '<div class="field">';
+        $form .= '<label class="b-radio radio is-small">';
         $form .= '<input type="radio"  name="encode" value="utf8" '. $utf8 . ' />';
-        $form .=  __('UTF8', 'tainacan') . '</label>';
-
-        $form .= '<label class="radio">';
+        $form .= '<span class="check"></span>';
+        $form .= '<span class="control-label">';
+        $form .=  __('UTF8', 'tainacan') . '</span></label>';
+        $form .= '</div>';
+        
+        $form .= '<div class="field">';
+        $form .= '<label class="b-radio radio is-small">';
         $form .= '<input type="radio"  name="encode" value="iso88591" '. $iso . ' />';
-        $form .=  __('ISO 8859-1', 'tainacan') . '</label>';
+        $form .= '<span class="check"></span>';
+        $form .= '<span class="control-label">';
+        $form .=  __('ISO 8859-1', 'tainacan') . '</span></label>';
+        $form .= '</div>';
 
         $form .= '</div>';
 
+        $form .= '<div class="field">';
         $form .= '<label class="label">' . __('Enclosure character', 'tainacan') . '</label>';
+        $form .= '<div class="control">';
         $form .= '<input type="text" class="input" size="1" name="enclosure" value="' . $this->get_option('enclosure') . '" />';
+        $form .= '</div>';
+        $form .= '</div>';
 
         return $form;
 
