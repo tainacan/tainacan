@@ -149,7 +149,7 @@ export default {
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            color: $tertiary;
+            color: $blue5;
             display: inline-block;
         }
         a.back-link{

@@ -476,7 +476,7 @@ export default {
     .page-title {
         border-bottom: 1px solid $secondary;
         h2 {
-            color: $tertiary;
+            color: $blue5;
             font-weight: 500;
         }
         margin: 1em 0em 2.0em 0em;
@@ -532,7 +532,7 @@ export default {
                 padding-right: 6em;
             }
             .grip-icon { 
-                fill: $gray;
+                fill: $gray3;
                 top: 2px;
                 position: relative;
             }
@@ -550,7 +550,7 @@ export default {
             }
             .label-details {
                 font-weight: normal;
-                color: $gray;
+                color: $gray3;
             }
             .not-saved {
                 font-style: italic;
@@ -574,8 +574,8 @@ export default {
 
             form {
                 padding: 1.0em 2.0em;
-                border-top: 1px solid $draggable-border-color;
-                border-bottom: 1px solid $draggable-border-color;
+                border-top: 1px solid $gray2;
+                border-bottom: 1px solid $gray2;
                 margin-top: 1.0em;
             }
             &.not-sortable-item, &.not-sortable-item:hover {
@@ -583,7 +583,7 @@ export default {
                 background-color: white !important;
 
                 .handle .label-details, .handle .icon {
-                    color: $gray !important;
+                    color: $gray3 !important;
                 }
             } 
             &.not-focusable-item, &.not-focusable-item:hover {
@@ -593,11 +593,11 @@ export default {
                     color: $secondary;
                 }
                 .handle .label-details, .handle .icon {
-                    color: $gray !important;
+                    color: $gray3 !important;
                 }
             }
             &.disabled-metadatum {
-                color: $gray;
+                color: $gray3;
             }    
         }
         .active-filter-item:hover:not(.not-sortable-item) {
@@ -630,7 +630,7 @@ export default {
             }
         }
         .sortable-ghost {
-            border: 1px dashed $draggable-border-color;
+            border: 1px dashed $gray2;
             display: block;
             padding: 0.7em 0.9em;
             margin: 4px;
@@ -638,7 +638,7 @@ export default {
             position: relative;
 
             .grip-icon { 
-                fill: $gray;
+                fill: $gray3;
                 top: 2px;
                 position: relative;
             }
@@ -678,12 +678,12 @@ export default {
             line-height: 1.3em;
             height: 40px;
             position: relative;
-            border: 1px solid $draggable-border-color;
+            border: 1px solid $gray2;
             border-radius: 1px;
             transition: left 0.2s ease;
             
             .grip-icon { 
-                fill: $gray;
+                fill: $gray3;
                 top: -3px;
                 position: relative;
                 display: inline-block;
@@ -721,7 +721,7 @@ export default {
             }
             &:before {
                 top: -1px;
-                border-color: transparent $draggable-border-color transparent transparent;
+                border-color: transparent $gray2 transparent transparent;
                 border-right-width: 16px;
                 border-top-width: 20px;
                 border-bottom-width: 20px;

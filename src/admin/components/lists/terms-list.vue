@@ -383,7 +383,7 @@ export default {
         margin-left: 30px;
 
         .gray-icon, .gray-icon .icon {
-            color: $tainacan-placeholder-color !important;
+            color: $gray4 !important;
         }
         .gray-icon .icon i::before, .gray-icon i::before {
             font-size: 21px !important;
@@ -415,7 +415,7 @@ export default {
         }
         .label-details {
             font-weight: normal;
-            color: $gray;
+            color: $gray3;
         }
         .not-saved {
             font-style: italic;
@@ -452,7 +452,7 @@ export default {
             cursor: default;
             
             .term-name {
-                color: $primary;
+                color: $turquoise3;
             }
         }
   

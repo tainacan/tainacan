@@ -97,7 +97,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     #primary-menu {
-        background-color: $primary;
+        background-color: $turquoise4;
         padding: 100px 0px 0px 0px;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
@@ -113,7 +113,7 @@ export default {
         }
         .separator {
             height: 2px;
-            background-color: $separator-color;
+            background-color: $turquoise5;
             width: 100%;
             margin: 24px 0;
         }
@@ -134,11 +134,11 @@ export default {
             }
 
             a:hover, a.is-active {
-                background-color: $primary;
-                color: $tertiary;
+                background-color: $turquoise4;
+                color: $blue5;
 
                 .activities-icon {
-                    fill: $tertiary;
+                    fill: $blue5;
                 }
             }
             a:focus {

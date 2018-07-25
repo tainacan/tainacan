@@ -85,7 +85,7 @@ export default {
     .importer-types-container {
 
         .importer-type {
-            border-bottom: 1px solid $tainacan-input-background;
+            border-bottom: 1px solid $gray2;
             padding: 15px 8.3333333%;
             cursor: pointer;
         
@@ -96,7 +96,7 @@ export default {
                 border-bottom: none;
             }
             &:hover {
-                background-color: $tainacan-input-background;
+                background-color: $gray2;
             }
         }
     }

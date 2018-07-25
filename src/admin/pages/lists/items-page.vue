@@ -548,7 +548,7 @@
                                 v-if="!hasFiltered && (status == undefined || status == '')"
                                 id="button-create-item"
                                 tag="button"
-                                class="button is-primary"
+                                class="button is-secondary"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
                             {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link>
@@ -1033,7 +1033,7 @@
         h1 {
             font-size: 20px;
             font-weight: 500;
-            color: $tertiary;
+            color: $blue5;
             display: inline-block;
         }
 
@@ -1050,7 +1050,7 @@
         h1 {
             font-size: 20px;
             font-weight: 500;
-            color: $tertiary;
+            color: $blue5;
             display: inline-block;
         }
 
@@ -1119,7 +1119,7 @@
                 .icon {
                     pointer-events: all;
                     cursor: pointer;
-                    color: $tertiary;
+                    color: $blue5;
                     height: 27px;
                     font-size: 18px !important;
                     height: 2rem !important;
@@ -1151,8 +1151,8 @@
         height: 21px;
         width: 23px;
         border: none;
-        background-color: $primary-lighter;
-        color: $tertiary;
+        background-color: $turquoise1;
+        color: $blue5;
         padding: 0;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
@@ -1204,7 +1204,7 @@
         }
 
         .gray-icon, .gray-icon .icon {
-            color: $tainacan-placeholder-color !important;
+            color: $gray4 !important;
             padding-right: 10px;
         }
         .gray-icon .icon i::before, .gray-icon i::before {
@@ -1254,7 +1254,7 @@
                 .icon {
                     pointer-events: all;
                     cursor: pointer;
-                    color: $tertiary;
+                    color: $blue5;
                     height: 27px;
                     font-size: 18px !important;
                     height: 2rem !important;

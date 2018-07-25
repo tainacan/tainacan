@@ -5,7 +5,7 @@
                     @click="showProcessesList = !showProcessesList"
                     class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
             <a @click="showProcessesList = !showProcessesList">
-                <span class="icon has-text-tertiary">
+                <span class="icon has-text-blue5">
                     <i 
                             :class="{ 'mdi-menu-up': showProcessesList,  
                                       'mdi-menu-down': !showProcessesList }"
@@ -13,7 +13,7 @@
                 </span>
             </a>    
             <a @click="$emit('closeProcessesPopup')">
-                <span class="icon has-text-tertiary">
+                <span class="icon has-text-blue5">
                     <i class="mdi mdi-close"/>
                 </span>
             </a>       
@@ -86,7 +86,7 @@
         <div class="popup-footer">
             <span 
                     v-if="hasAnyProcessExecuting"
-                    class="icon has-text-tertiary"><i class="mdi mdi-18px mdi-autorenew"/></span>
+                    class="icon has-text-blue5"><i class="mdi mdi-18px mdi-autorenew"/></span>
             <p class="footer-title">    
                 {{ hasAnyProcessExecuting ? 
                     (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value : '') : $i18n.get('label_no_details_of_process')): 
@@ -187,8 +187,8 @@ export default {
 
     .control.is-loading::after {
         border: 2px solid $success;
-        border-right-color: $tainacan-input-background;
-        border-top-color: $tainacan-input-background;
+        border-right-color: $gray2;
+        border-top-color: $gray2;
     }
 
     .processes-popup{
@@ -205,7 +205,7 @@ export default {
         .popup-header, .popup-footer {
             display: flex;
             align-items: center;
-            color: $tertiary;
+            color: $blue5;
             .header-title, .footer-title {
                 margin-right: auto;
             }
@@ -238,13 +238,13 @@ export default {
             .popup-list-subheader {
                 background-color: white !important;
                 padding: 6px 12px 12px 12px;
-                color: $gray-light;
+                color: $gray4;
                 font-size: 0.625rem;
                 a { float: right; }
             }
 
             li:hover {
-                background-color: $tainacan-input-background;
+                background-color: $gray2;
 
                 .action-icon{
                     visibility: visible;
@@ -255,7 +255,7 @@ export default {
                     display: none;
                 }
                 .process-item>.process-title .mdi-menu-left, .process-item>.process-title .mdi-menu-right {
-                    color: $gray !important;
+                    color: $gray3 !important;
                 }
             }
 
@@ -280,7 +280,7 @@ export default {
                     }
                     
                     .mdi-menu-left, .mdi-menu-right {
-                        color: $primary-light;
+                        color: $turquoise2;
                     }
                 }
                 .action-icon {
@@ -301,7 +301,7 @@ export default {
                 overflow: hidden;
                 max-width: calc(100% - 40px);
                 font-size: 0.625rem;
-                color: $gray-light;
+                color: $gray4;
                 animation-name: expand;
                 animation-duration: 0.3s;
             }
@@ -318,7 +318,7 @@ export default {
             border-style: solid;
         }
         &:before {
-            border-color: transparent transparent $primary-light transparent;
+            border-color: transparent transparent $turquoise2 transparent;
             border-right-width: 8px;
             border-bottom-width: 8px;
             border-left-width: 8px;

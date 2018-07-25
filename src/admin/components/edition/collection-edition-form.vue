@@ -818,7 +818,7 @@ export default {
     .section-label {
         font-size: 16px !important;
         font-weight: 500 !important;
-        color: $tertiary !important;
+        color: $blue5 !important;
         line-height: 1.2em;
     }
 
@@ -854,7 +854,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: gray;
+            color: $gray4;
             
             @media screen and (max-width: 769px) {
                 font-size: 1.2rem;
@@ -892,7 +892,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: gray;
+            color: $gray4;
         }
         .thumbnail-buttons-row {
             position: relative;
@@ -901,7 +901,7 @@ export default {
         }
     }
     .selected-cover-page {
-        border: 1px solid $tainacan-input-background;
+        border: 1px solid $gray2;
         padding: 8px;
         font-size: .75rem;
         .span { vertical-align: middle;}
@@ -915,11 +915,11 @@ export default {
         padding: 4px 6px;
         .icon { font-size: 20px; }
         &.disabled {
-           .icon { color: $tainacan-input-background; }
+           .icon { color: $gray2; }
         }
     }
     .moderators-empty-list { 
-        color: gray;
+        color: $gray4;
         font-size: 0.85rem;
      }
 

@@ -4,14 +4,14 @@
     align-items: center;
     font-size: 0.85em !important;
     font-weight: normal !important;
-    border-top: 1px solid $gray;
+    border-top: 1px solid $gray3;
     padding-top: 0;
     padding-bottom: 0;
     margin-left: $page-side-padding;
     margin-right: $page-side-padding;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
-    color: $gray-light;
+    color: $gray4;
 
     @media screen and (max-width: 768px) {
         flex-wrap: wrap;
@@ -41,7 +41,7 @@
             .label {
                 font-size: 1em !important;
                 font-weight: normal !important;
-                color: $gray-light;
+                color: $gray4;
             }
         }
         select {
@@ -62,7 +62,7 @@
         }
 
         a[disabled="disabled"] {
-            color: $gray-light;
+            color: $gray4;
         }
         .pagination-link, .pagination-previous, .pagination-next {
             background-color: transparent;
@@ -70,11 +70,11 @@
             border: none;
         }
         .pagination-link.is-current {
-            color: $gray-light;
+            color: $gray4;
         }
         .pagination-link::after:not(:last-child) {
             content: ',';
-            color: $gray-light;
+            color: $gray4;
         }
         .mdi-chevron-left::before {
             content: "\F40A";

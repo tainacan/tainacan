@@ -45,7 +45,7 @@
             }
             // Only to be used in case we can implement Column resizing
             // th:not(:last-child) {
-            //     border-right: 1px solid $tainacan-input-background !important;
+            //     border-right: 1px solid $gray2 !important;
             // }
     
             .thumbnail-cell {
@@ -57,7 +57,7 @@
                 min-width: 80px;
                 max-width: 80px;
                 p {
-                    color: $gray-light;
+                    color: $gray4;
                     font-size: 11px;
                     line-height: 1.5;
                 }
@@ -66,7 +66,7 @@
                 min-width: 80px;
                 max-width: 160px;
                 p {
-                    color: $gray-light;
+                    color: $gray4;
                     font-size: 11px;
                     line-height: 1.5;
                 }
@@ -75,7 +75,7 @@
                 min-width: 120px;
                 max-width: 200px;
                 p {
-                    color: $gray-light;
+                    color: $gray4;
                     font-size: 11px;
                     line-height: 1.5;
                 }
@@ -84,7 +84,7 @@
                 min-width: 120px;
                 max-width: 240px;
                 p {
-                    color: $gray-light;
+                    color: $gray4;
                     font-size: 11px;
                     line-height: 1.5;
                 }
@@ -109,7 +109,7 @@
                 position: sticky;
                 position: -webkit-sticky;
                 background-color: white;
-                border-bottom: 1px solid $tainacan-input-background;
+                border-bottom: 1px solid $gray2;
                 top: 0px;
                 z-index: 9;
                 padding: 10px;
@@ -117,7 +117,7 @@
     
                 .th-wrap {
                     font-size: 12px !important;
-                    color: $gray-light;
+                    color: $gray4;
                     font-weight: normal !important;
                     text-overflow: ellipsis;
                     overflow-x: hidden;
@@ -130,9 +130,9 @@
                     background-color: transparent;
     
                     &.selected-row { 
-                        background-color: $primary-lighter; 
+                        background-color: $turquoise1; 
                         .checkbox-cell .checkbox, .actions-cell .actions-container {
-                            background-color: $primary-lighter-hover;
+                            background-color: $turquoise2;
                         }
                     }
                     td {
@@ -187,21 +187,21 @@
                     }
     
                     &:hover {
-                        background-color: $tainacan-input-background !important;
+                        background-color: $gray1 !important;
                         cursor: pointer;
     
                         .checkbox-cell {
                             position: sticky !important;
                             position: -webkit-sticky !important;
-                            background-color: $gray-hover;
+                            background-color: $gray2;
                             
                             .checkbox { 
-                                background-color: $gray-hover !important; 
+                                background-color: $gray2 !important; 
                             }
                         }
                         .actions-cell {
                             .actions-container {
-                                background: $gray-hover !important;
+                                background: $gray2 !important;
                             }
                         }
     

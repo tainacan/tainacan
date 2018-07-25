@@ -8,9 +8,9 @@
     justify-content: center;
 
     .selected-record {
-        background-color: $primary-lighter;
+        background-color: $turquoise1;
         .metadata-title {
-            background-color: $primary-lighter-hover;
+            background-color: $turquoise2;
         }
     }
 
@@ -29,7 +29,7 @@
         }
 
         &:hover {
-            background-color: $tainacan-input-background !important;
+            background-color: $gray2 !important;
         }
 
         .record-checkbox {
@@ -56,7 +56,7 @@
 
         .record-line {
             height: 1px;
-            background-color: $tainacan-input-background;
+            background-color: $gray2;
             margin-left: -44px;
             margin-right: -44px;
             opacity: 0;
@@ -87,7 +87,7 @@
             }
         }
         &:hover .metadata-title {
-            background-color: $gray-hover !important;
+            background-color: $gray3 !important;
         }
 
         .media {
@@ -97,7 +97,7 @@
                 padding: 0.75rem 1.375rem;
                 flex: 1;
                 font-size: 0.6875rem;
-                color: gray;
+                color: $gray4;
                 overflow: hidden;
                 width: 100%;
             
@@ -108,7 +108,7 @@
                     white-space: nowrap;
                     overflow: hidden;
                     font-weight: 500;
-                    color: $gray-light;
+                    color: $gray4;
                 }
 
                 .metadata-value {

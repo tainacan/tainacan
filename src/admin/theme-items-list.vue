@@ -70,7 +70,7 @@ export default {
                 background: $secondary !important;
             }
             &.is-primary:hover, &.is-primary:focus {
-                background: $primary !important;
+                background: $turquoise3 !important;
             }
             &.is-success:hover, &.is-success:focus {
                 background: $success !important;
@@ -85,7 +85,7 @@ export default {
             &.is-outlined {
                 color: #150e38 !important;
                 background-color: white;
-                border-color: $gray-light !important;
+                border-color: $gray4 !important;
             }
             &:focus {
                 outline: 0px;
@@ -102,7 +102,7 @@ export default {
         }
         .input, .textarea {
             font-size: 14px;
-            border: 1px solid $tainacan-input-background;
+            border: 1px solid $gray2;
             border-radius: 1px !important;
             background-color: white;
             box-shadow: none !important;
@@ -110,7 +110,7 @@ export default {
             &:focus, &:active {
                 box-shadow: none !important;
                 background-color: white;
-                border: 1px solid $tainacan-input-background !important;
+                border: 1px solid $gray2 !important;
             }    
         }
         .dropdown {
@@ -134,7 +134,7 @@ export default {
                 height: 1.0em;
                 flex-shrink: 0;
                 border-radius: 0;
-                border: 1px solid $gray-light;
+                border: 1px solid $gray4;
                 transition: background 150ms ease-out;
                 box-shadow: none !important;
             }
@@ -143,11 +143,11 @@ export default {
             &:active input[type="checkbox"] + .check, 
             &:hover input[type="checkbox"] + .check {
                 box-shadow: none !important;
-                border-color: $gray-light !important;
+                border-color: $gray4 !important;
             }
             input[type="checkbox"]:checked + .check {
                 background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:%23000' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important;
-                border-color: $gray-light !important;
+                border-color: $gray4 !important;
             }
         }
         .b-radio.radio {
@@ -155,7 +155,7 @@ export default {
             input[type="radio"] + .check {
                 width: 13px !important;
                 height: 13px !important;
-                border: 1px solid $gray-light !important;    
+                border: 1px solid $gray4 !important;    
             }
             input[type="radio"] + .check::before {
                 background: black !important;
@@ -168,7 +168,7 @@ export default {
                 box-shadow: none !important;
             }
             input[type="radio"]:checked + .check {
-                border-color: $gray-light !important;
+                border-color: $gray4 !important;
             }
             &:focus input[type="radio"]:checked + .check {
                 box-shadow: none !important;
@@ -197,8 +197,8 @@ export default {
                 }
             }
             li.is-active a {
-                border-bottom: 5px solid $primary;
-                color: $primary; 
+                border-bottom: 5px solid $turquoise3;
+                color: $turquoise3; 
             }
         }
 
@@ -237,7 +237,7 @@ export default {
         .search-control {
 
             .gray-icon, .gray-icon .icon {
-                color: $tainacan-placeholder-color !important;
+                color: $gray4 !important;
                 i::before {
                     font-size: 21px;
                 }

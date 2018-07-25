@@ -273,7 +273,7 @@
         height: 36px;
         width: 36px;
         border: none;
-        background-color: $tainacan-input-background;
+        background-color: $gray2;
         color: $secondary;
         padding: 0px;
         border-top-left-radius: 2px;
@@ -333,7 +333,7 @@
     }
 
     .field {
-        border-bottom: 1px solid $draggable-border-color;
+        border-bottom: 1px solid $gray2;
         padding: 10px 25px;
 
         .label {
@@ -352,7 +352,7 @@
         label {
             font-size: 16px !important;
             font-weight: 500 !important;
-            color: $tertiary !important;
+            color: $blue5 !important;
             line-height: 1.2em;
         }
     }
@@ -381,11 +381,11 @@
                     height: 72px;
                     width: 72px;
                     border: none;
-                    background-color: $tainacan-input-background;
+                    background-color: $gray2;
                     color: $secondary;
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: $primary-light;
+                        background-color: $turquoise2;
                         cursor: pointer;
                     }
                 }
@@ -404,12 +404,12 @@
 
             .icon  {
                 font-size: 18px !important; 
-                color: $gray;
+                color: $gray3;
             }
         }
     }
     .section-attachments {
-        border: 1px solid $draggable-border-color;
+        border: 1px solid $gray2;
         height: 250px;
         max-width: 100%;
         resize: vertical;
@@ -443,7 +443,7 @@
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: gray;
+            color: $gray4;
             top: 70px;
             max-width: 90px;
         }
@@ -454,7 +454,7 @@
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: $primary-lighter;
+        background-color: $turquoise1;
         width: 100%;    
         height: 65px;
 

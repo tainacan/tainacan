@@ -96,13 +96,13 @@ export default {
 </script>
 
 <style  lang="scss" scoped>
-    $primary-lighter: #e6f6f8;
-    $primary-lighter-hover: #d1e6e6;
+    $turquoise1: #e6f6f8;
+    $turquoise2: #d1e6e6;
     $tainacan-input-color: #1d1d1d;
-    $tainacan-input-background: #e5e5e5;
-    $tainacan-placeholder-color: #898d8f;
-    $gray-hover: #dcdcdc;
-    $gray-light: #898d8f; 
+    $gray2: #e5e5e5;
+    $gray4: #898d8f;
+    $gray3: #dcdcdc;
+    $gray4: #898d8f; 
 
     @import "../../src/admin/scss/_view-mode-records.scss";
 

@@ -58,7 +58,7 @@
                                         v-if="status == undefined || status == ''"
                                         id="button-create-taxonomy"
                                         tag="button"
-                                        class="button is-primary"
+                                        class="button is-secondary"
                                         :to="{ path: $routerHelper.getNewTaxonomyPath() }">
                                     {{ $i18n.getFrom('taxonomies', 'new_item') }}
                                 </router-link>

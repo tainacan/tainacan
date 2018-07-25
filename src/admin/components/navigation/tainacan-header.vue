@@ -205,7 +205,7 @@
                         border-width: 0 !important;
                         height: 27px;
                         font-size: 11px;
-                        color: $gray-light;
+                        color: $gray4;
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
                         width: 160px;
@@ -215,7 +215,7 @@
                     }
                     .icon:not(.add-i) {
                         pointer-events: all;
-                        color: $tertiary;
+                        color: $blue5;
                         cursor: pointer;
                         height: 27px;
                         font-size: 18px;

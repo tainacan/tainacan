@@ -403,7 +403,7 @@ export default {
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            color: $tertiary;
+            color: $blue5;
             display: inline-block;
         }
         a.back-link{
@@ -452,13 +452,13 @@ export default {
     .section-label {
         font-size: 16px !important;
         font-weight: 500 !important;
-        color: $tertiary !important;
+        color: $blue5 !important;
         line-height: 1.2em;
     }
 
     .source-metadatum {
         padding: 2px 0;
-        border-bottom: 1px solid $tainacan-input-background;
+        border-bottom: 1px solid $gray2;
         width: 100%;
         margin-bottom: 6px;
         display: flex;
@@ -474,7 +474,7 @@ export default {
     }
 
     .mapping-header-label {
-        color: $gray-light;
+        color: $gray4;
         margin: 12px 0 6px 0;
     }
 

@@ -212,7 +212,7 @@ export default {
     
     // Tainacan Header
     #tainacan-subheader {
-        background-color: $primary-lighter;
+        background-color: $turquoise1;
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
@@ -252,7 +252,7 @@ export default {
         h1 {
             font-size: 18px;
             font-weight: 500;
-            color: $tertiary;
+            color: $blue5;
             line-height: 22px;
             margin-bottom: 12px; 
             max-width: 450px;
@@ -281,7 +281,7 @@ export default {
             -webkit-transition: height 0.5s linear, padding 0.5s linear;
 
             a {
-                color: $tertiary;
+                color: $blue5;
                 text-align: center;
                 white-space: nowrap;
                 overflow: hidden;

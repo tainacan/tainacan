@@ -46,8 +46,8 @@ export default {
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        color: $tertiary;
-        background-color: $primary-light;
+        color: $blue5;
+        background-color: $turquoise2;
         border: none;
         display: block;
         border-radius: 5px;
@@ -86,7 +86,7 @@ export default {
             border-style: solid;
         }
         &:before {
-            border-color: $primary-light transparent transparent transparent;
+            border-color: $turquoise2 transparent transparent transparent;
             border-right-width: 18px;
             border-top-width: 12px;
             border-left-width: 18px;

@@ -245,7 +245,7 @@
 
     form {
         padding: 2.0rem 0rem 1rem 3rem;
-        border-left: 1px solid $draggable-border-color;
+        border-left: 1px solid $gray2;
         margin-top: 1.0em;
 
         .tainacan-page-title {
@@ -254,7 +254,7 @@
             h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: $tertiary;
+                color: $blue5;
                 display: inline-block;
             }
             hr{
@@ -283,7 +283,7 @@
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;
-                color: gray;
+                color: $gray4;
             }
             #button-delete-header,
             #button-edit-header {

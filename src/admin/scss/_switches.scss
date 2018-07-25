@@ -1,8 +1,8 @@
 
 .switch {
     input[type="checkbox"] + .check {
-        background-color: $gray-light;
-        border: 2px solid $gray-light;
+        background-color: $gray4;
+        border: 2px solid $gray4;
         width: 2.7em;
         height: 1.7em;
         transition: none;
@@ -13,7 +13,7 @@
         }
     } 
     &:hover input[type="checkbox"]:checked + .check {
-        background-color: $primary-light;
+        background-color: $turquoise2;
     }
 
     input[type="checkbox"]:checked + .check {
@@ -26,7 +26,7 @@
         }
     }
     &:hover input[type="checkbox"] + .check {
-        background-color: $gray-light;
+        background-color: $gray4;
     }
 
     &:focus input[type="checkbox"] + .check,
@@ -38,7 +38,7 @@
         font-size: 9px;
 
         input[type="checkbox"] + .check {
-            border: 1.5px solid $gray-light;
+            border: 1.5px solid $gray4;
             width: 2.55em;
             height: 1.7em;
 

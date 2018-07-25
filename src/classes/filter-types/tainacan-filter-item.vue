@@ -196,7 +196,7 @@
                 transform: none;
                 margin-top: -0.6em;
                 right: 0.95em;
-                color: $primary;
+                color: $turquoise3;
             }
         }
 
@@ -221,7 +221,7 @@
                 border: none !important;
             }    
             input, input:active, input:focus {
-                border: 1px solid $tainacan-input-background !important;
+                border: 1px solid $gray2 !important;
             }
             .control.has-icons-left .icon {
                 top: 0px !important;

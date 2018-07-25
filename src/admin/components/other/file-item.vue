@@ -110,7 +110,7 @@ export default {
             overflow: hidden;
             position: relative;
             display: inline-block;
-            background-color: $tainacan-input-background; 
+            background-color: $gray2; 
 
             &.rounded {
                 border-bottom-left-radius: 5px;
@@ -144,7 +144,7 @@ export default {
         }
 
         figcaption {
-            background-color: $tainacan-input-background;
+            background-color: $gray2;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
             padding: 8px 15px;

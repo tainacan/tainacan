@@ -633,7 +633,7 @@
         }
 
         .tainacan-input-disabled {
-            background-color: $gray;
+            background-color: $gray3;
         }
     }
 

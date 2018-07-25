@@ -87,7 +87,7 @@
                                     v-if="status == undefined || status == ''"
                                     id="button-create-collection"
                                     tag="button"
-                                    class="button is-primary"
+                                    class="button is-secondary"
                                     :to="{ path: $routerHelper.getNewCollectionPath() }">
                                 {{ $i18n.getFrom('collections', 'new_item') }}
                             </router-link>

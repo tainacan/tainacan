@@ -8,7 +8,7 @@
     justify-content: center;
 
     .selected-grid-item {
-        background-color: $primary-lighter;
+        background-color: $turquoise1;
     }
 
     .tainacan-grid-item {
@@ -18,7 +18,7 @@
         text-align: center;
 
         &:hover {
-            background-color: $tainacan-input-background;
+            background-color: $gray2;
         }
 
         .grid-item-checkbox {
@@ -37,7 +37,7 @@
             padding: 8px;
             transition: visibility 0.2s, opacity 0.2s;
             margin-top: -43px;
-            background-color: $tainacan-input-background;
+            background-color: $gray2;
             border-bottom-left-radius: 2px;
             border-bottom-right-radius: 2px;
 
@@ -51,7 +51,7 @@
         }
         &.selected-grid-item {
             .actions-area {
-                background-color: $primary-lighter;
+                background-color: $turquoise1;
             }
         }
 
