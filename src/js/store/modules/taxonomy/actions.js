@@ -197,3 +197,32 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
             });
     });
 };
+
+export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, search, all, order }) => {
+
+    let query = '';
+    if (order == undefined) {
+        order = 'asc';
+    }
+
+    if (fetchOnly && search && !all) {
+        query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+    } else if (fetchOnly && search && all) {
+        query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+    } else {
+        query = `?hideempty=0&order=${order}`;
+    }
+    query += '&parent=' + parentId;
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
+            .then(res => {
+                let terms = res.data;
+                commit('setChildTerms', { terms: terms, parent: parentId });
+                resolve(terms);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};

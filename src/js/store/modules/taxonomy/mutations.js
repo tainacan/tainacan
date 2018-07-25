@@ -36,6 +36,24 @@ export const setTerms = (state, terms) => {
     state.terms = terms;
 };
 
+export const setChildTerms = (state, { terms, parent }) => {
+    let index = state.terms.findIndex(aTerm => aTerm.id == parent);
+    if (index >= 0) {
+        let newIndex = 1;
+        for (let i = 0; i < terms.length; i++) {
+            let termIndex = state.terms.findIndex(aTerm => aTerm.id == terms[i].id);
+            if (termIndex >= 0) {
+                state.terms[termIndex] = terms[i];
+            } else {
+                state.terms.splice(index + newIndex, 0, terms[i]);
+                newIndex++;
+            }
+        }
+    } else {
+        state.terms = terms;
+    }
+};
+
 export const deleteTerm = ( state, termId ) => {
     let index = state.terms.findIndex(deletedTerm => deletedTerm.id === termId);
     if (index >= 0) {

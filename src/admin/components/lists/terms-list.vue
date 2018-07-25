@@ -28,13 +28,16 @@
                     }" 
                     :style="{'margin-left': (term.depth * 40) + 'px'}"
                     v-for="(term, index) in orderedTermsList"
-                    :key="term.id"> 
+                    :key="term.id"
+                    @click.prevent="isEditingTerm ? null : loadTerms(term.id)"> 
                 <a
-                        class="is-medium"
+                        class="is-small"
                         type="button"
                         @click="addNewChildTerm(term, index)"
                         :disabled="isEditingTerm">
-                    <b-icon icon="plus-circle"/>
+                    <b-icon 
+                            size="is-small"
+                            icon="plus-circle"/>
                 </a>
                 <span 
                         class="term-name" 
@@ -125,7 +128,7 @@ export default {
             this.generateOrderedTerms();
         },
         taxonomyId() {
-            this.loadTerms();
+            this.loadTerms(0);
         }
     },
     components: {
@@ -135,6 +138,7 @@ export default {
         ...mapActions('taxonomy', [
             'updateTerm',
             'deleteTerm',
+            'fetchChildTerms',
             'fetchTerms'
         ]),
         ...mapGetters('taxonomy',[
@@ -142,7 +146,7 @@ export default {
         ]),
         onChangeOrder() {
             this.order == 'asc' ? this.order = 'desc' : this.order = 'asc';
-            this.loadTerms();
+            this.loadTerms(0);
         },
         addNewTerm() {
             if (this.isEditingTerm) {
@@ -214,18 +218,20 @@ export default {
             } else {
                 let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === term.id);
                 if (originalIndex >= 0) {
+
                     let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
                     originalTerm.saved = term.saved;
                     originalTerm.opened = term.opened;
-                    if (JSON.stringify(term) != JSON.stringify(originalTerm)) {
 
+                    if (JSON.stringify(term) != JSON.stringify(originalTerm))
                         term.saved = false;
-                    } else {
+                    else 
                         term.saved = true;
-                    }
+                    
                 } else {
                     term.saved = false;
                 }
+                this.isEditingTerm = false;
             }
             
             term.opened = !term.opened;
@@ -343,9 +349,10 @@ export default {
             else 
                 return term.name;
         },
-        loadTerms() {
+        loadTerms(parentId) {
+            
             this.isLoadingTerms = true;
-            this.fetchTerms({ taxonomyId: this.taxonomyId, fetchOnly: '', search: '', all: '', order: this.order})
+            this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: '', all: '', order: this.order})
                 .then(() => {
                     // Fill this.form data with current data.
                     this.isLoadingTerms = false;
@@ -358,7 +365,7 @@ export default {
     },
     created() {
         if (this.taxonomyId !== String) {
-            this.loadTerms();
+            this.loadTerms(0);
         }
     }
     
@@ -424,7 +431,7 @@ export default {
                 position: relative;
                 i, i:before { font-size: 20px; }
                 .mdi-plus-circle, .mdi-plus-circle:before{
-                    font-size: 18px;
+                    font-size: 14px;
                 }
                 a {
                     margin-right: 8px;
