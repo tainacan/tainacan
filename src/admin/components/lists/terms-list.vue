@@ -47,6 +47,7 @@
                 <span   
                         v-if="term.id != undefined"
                         class="label-details">
+                        {{ term.total_children > 0 ? '(' + term.total_children + ')' : '' }}
                     <span 
                             class="not-saved" 
                             v-if="!term.saved"> 
