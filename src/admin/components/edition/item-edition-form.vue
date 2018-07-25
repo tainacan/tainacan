@@ -416,9 +416,9 @@
                             class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
                     <button 
                             v-if="form.status == 'auto-draft'"
-                            @click="onDiscart()"
+                            @click="onDiscard()"
                             type="button"
-                            class="button is-outlined">{{ $i18n.get('label_discart') }}</button>
+                            class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
                     <button 
                             @click="onSubmit('draft')"
                             type="button"
@@ -581,7 +581,7 @@ export default {
                 this.isLoading = false;
             });
         },
-        onDiscart() {
+        onDiscard() {
             this.$router.go(-1);
         },
         createNewItem() {

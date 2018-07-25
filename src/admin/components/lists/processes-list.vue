@@ -154,7 +154,7 @@
                                 </span>
                                 <span 
                                         v-tooltip="{
-                                            content: $i18n.get('label_process_conpleted'),
+                                            content: $i18n.get('label_process_completed'),
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"

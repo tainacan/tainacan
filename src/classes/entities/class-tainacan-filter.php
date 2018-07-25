@@ -16,6 +16,7 @@ class Filter extends Entity {
         $order,
         $color,
         $metadatum,
+	    $max_options,
         $filter_type,
         $filter_type_options;
 
@@ -80,6 +81,23 @@ class Filter extends Entity {
      */
     function get_color() {
         return $this->get_mapped_property('color');
+    }
+
+	/**
+	 * Return max number of options to be showed
+	 * @return mixed|null
+	 */
+	function get_max_options(){
+    	return $this->get_mapped_property('max_options');
+    }
+
+	/**
+	 * Set max number of options to be showed
+	 *
+	 * @param $max_options
+	 */
+	function set_max_options($max_options){
+		$this->set_mapped_property('max_options', $max_options);
     }
 
 	/**

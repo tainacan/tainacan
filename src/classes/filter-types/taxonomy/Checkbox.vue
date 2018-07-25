@@ -1,7 +1,7 @@
 <template>
     <div class="block">
         <div
-                v-for="(option,index) in getOptions(0)"
+                v-for="(option, index) in getOptions(0)"
                 :key="index"
                 :value="index"
                 class="control">
@@ -10,12 +10,18 @@
                     v-model="selected"
                     :native-value="option.id"
             >{{ option.name }}</b-checkbox>
+            <div
+                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
+                    v-if="option.seeMoreLink"
+                    @click="openCheckboxModal(option.parent)"
+                    v-html="option.seeMoreLink"/>
         </div>
     </div>
 </template>
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
+    import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue';
 
     export default {
         created(){
@@ -64,7 +70,8 @@
                 collection: '',
                 metadatum: '',
                 selected: [],
-                taxonomy: ''
+                taxonomy: '',
+                taxonomy_id: Number,
             }
         },
         props: {
@@ -87,7 +94,7 @@
         },
         methods: {
             getValuesTaxonomy( taxonomy ){
-                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
+                return axios.get(`/taxonomy/${taxonomy}/terms?hideempty=0&order=asc&childrencounts=1&parent=0&number=${this.filter.max_options}`).then( res => {
                     for (let item of res.data) {
                         this.taxonomy = item.taxonomy;
                         this.options.push(item);
@@ -104,6 +111,8 @@
                 axios.get('/collection/'+ this.collection +'/metadata/' + this.metadatum)
                     .then( res => {
                         let metadatum = res.data;
+                        this.taxonomy_id = metadatum.metadata_type_options.taxonomy_id;
+
                         promise = this.getValuesTaxonomy( metadatum.metadata_type_options.taxonomy_id );
 
                         promise.then( () => {
@@ -124,14 +133,20 @@
                 if ( this.options ){
                     for( let term of this.options ){
                         if( term.parent == parent ){
-                            term['level'] = level;
+                            //term['level'] = level;
                             result.push( term );
-                            const levelTerm =  level + 1;
-                            const children =  this.getOptions( term.id, levelTerm);
-                            result = result.concat( children );
+                            //const levelTerm =  level + 1;
+                            //const children =  this.getOptions( term.id, levelTerm);
+                            //result = result.concat( children );
                         }
                     }
+
+                    if(this.filter.max_options && result.length >= this.filter.max_options){
+                        let seeMoreLink = `<a class="add-link"> ${ this.$i18n.get('label_see_more') } </a>`;
+                        result[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                    }
                 }
+
                 return result;
             },
             selectedValues(){
@@ -166,6 +181,21 @@
                 this.$eventBusSearch.$emit("sendValuesToTags", {
                     filterId: this.filter.id,
                     value: onlyLabels
+                });
+            },
+            openCheckboxModal(parent) {
+                this.$modal.open({
+                    parent: this,
+                    component: CheckboxFilterModal,
+                    props: {
+                        parent: parent,
+                        filter: this.filter,
+                        taxonomy_id: this.taxonomy_id,
+                        optionsLevel0: this.options,
+                        selected: this.selected,
+                        metadatum_id: this.metadatum,
+                        collection_id: this.collection,
+                    }
                 });
             }
         }

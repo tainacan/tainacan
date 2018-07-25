@@ -25,66 +25,73 @@ class Filters extends Repository {
     }
 
     public function get_map() {
-    	return apply_filters('tainacan-get-map-'.$this->get_name(),  [
-            'name'                => [
-                'map'        => 'post_title',
-                'title'       => __('Name', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Name of the filter', 'tainacan'),
-                'on_error'   => __('The filter name should be a text value and not empty', 'tainacan'),
-                'validation' => v::stringType()->notEmpty(),
-            ],
-            'order'               => [
-                'map'        => 'menu_order',
-                'title'       => __('Order', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('Filter order. This metadata is used if filters were manually ordered.', 'tainacan'),
-                'validation' => ''
-            ],
-            'description'         => [
-                'map'        => 'post_content',
-                'title'      => __('Description', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The filter description', 'tainacan'),
-                'validation'  => '',
-				'default'	 => '',
-            ],
-            'filter_type_options' => [
-                'map'        => 'meta',
-                'title'      => __('Filter type options', 'tainacan'),
-                'type'       => 'array/object/string',
-                'items'      => ['type' => 'array/string/integer/object'],
-                'description'=> __('The filter type options', 'tainacan'),
-                'validation' => ''
-            ],
-            'filter_type'         => [
-                'map'        => 'meta',
-                'title'      => __('Type', 'tainacan'),
-                'type'       => 'string',
-                'description'=> __('The filter type', 'tainacan'),
-                'validation' => ''
-            ],
-            'collection_id'       => [
-                'map'        => 'meta',
-                'title'      => __('Collection', 'tainacan'),
-                'type'       => 'integer/string',
-                'description'=> __('The collection ID', 'tainacan'),
-                'validation' => ''
-            ],
-            'color'               => [
-                'map'        => 'meta',
-                'title'      => __('Color', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('Filter color', 'tainacan'),
-                'validation' => ''
-            ],
-            'metadatum'               => [
-                'map'        => 'meta',
-                'title'      => __('Metadata', 'tainacan'),
-                'type'       => 'integer',
-                'description'=> __('Filter metadata', 'tainacan'),
-                'validation' => ''
-            ],
+	    return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
+		    'name'                => [
+			    'map'         => 'post_title',
+			    'title'       => __( 'Name', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'Name of the filter', 'tainacan' ),
+			    'on_error'    => __( 'The filter name should be a text value and not empty', 'tainacan' ),
+			    'validation'  => v::stringType()->notEmpty(),
+		    ],
+		    'order'               => [
+			    'map'         => 'menu_order',
+			    'title'       => __( 'Order', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'Filter order. This metadata is used if filters were manually ordered.', 'tainacan' ),
+			    'validation'  => ''
+		    ],
+		    'description'         => [
+			    'map'         => 'post_content',
+			    'title'       => __( 'Description', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The filter description', 'tainacan' ),
+			    'validation'  => '',
+			    'default'     => '',
+		    ],
+		    'filter_type_options' => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Filter type options', 'tainacan' ),
+			    'type'        => 'array/object/string',
+			    'items'       => [ 'type' => 'array/string/integer/object' ],
+			    'description' => __( 'The filter type options', 'tainacan' ),
+			    'validation'  => ''
+		    ],
+		    'filter_type'         => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Type', 'tainacan' ),
+			    'type'        => 'string',
+			    'description' => __( 'The filter type', 'tainacan' ),
+			    'validation'  => ''
+		    ],
+		    'collection_id'       => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Collection', 'tainacan' ),
+			    'type'        => 'integer/string',
+			    'description' => __( 'The collection ID', 'tainacan' ),
+			    'validation'  => ''
+		    ],
+		    'color'               => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Color', 'tainacan' ),
+			    'type'        => 'integer',
+			    'description' => __( 'Filter color', 'tainacan' ),
+			    'validation'  => ''
+		    ],
+		    'metadatum'           => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Metadata', 'tainacan' ),
+			    'type'        => 'integer',
+			    'description' => __( 'Filter metadata', 'tainacan' ),
+			    'validation'  => ''
+		    ],
+		    'max_options'         => [
+			    'map'         => 'meta',
+			    'title'       => __( 'Max of options', 'tainacan' ),
+			    'type'        => 'integer/string',
+			    'description' => __( 'The max number of options to be showed in filter sidebar.', 'tainacan' ),
+			    'validation'  => ''
+		    ]
         ]);
     }
 	

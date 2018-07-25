@@ -30,7 +30,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'terms'                                          => __( 'Terms', 'tainacan' ),
 	'mapping'                                        => __( 'Mapping', 'tainacan' ),
 	'importers'                                      => __( 'Importers', 'tainacan' ),
-	'processes'                                      => __( 'Proceses', 'tainacan' ),
+	'processes'                                      => __( 'Processes', 'tainacan' ),
 
 	// Actions
 	'edit'                                           => __( 'Edit', 'tainacan' ),
@@ -62,6 +62,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'clear_search'                                   => __( 'Clear search', 'tainacan' ),
 	'run'                                            => __( 'Run', 'tainacan' ),
 	'edit_search'                                    => __( 'Edit search', 'tainacan' ),
+	'apply'                                          => __( 'Apply', 'tainacan' ),
 
 	// Wordpress Status
 	'publish'                                        => __( 'Publish', 'tainacan' ),
@@ -230,7 +231,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_enabled_view_modes'                       => __( 'Enabled view modes', 'tainacan' ),
 	'label_view_modes_available'                     => __( 'View modes available on theme', 'tainacan' ),
 	'label_warning'                                  => __( 'Warning', 'tainacan' ),
-	'label_error'                                    => __( 'Erro', 'tainacan' ),
+	'label_error'                                    => __( 'Error', 'tainacan' ),
 	'label_thumbnails'                               => __( 'Thumbnails', 'tainacan' ),
 	'label_table'                                    => __( 'Table', 'tainacan' ),
 	'label_cards'                                    => __( 'Cards', 'tainacan' ),
@@ -253,7 +254,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_see_more'                                 => __( 'See more', 'tainacan' ),
 	'label_until'                                    => __( 'until', 'tainacan' ),
 	'label_visibility'                               => __( 'Visibility', 'tainacan' ),
-	'label_discart'                                  => __( 'Discart', 'tainacan' ),
+	'label_discard'                                  => __( 'Discard', 'tainacan' ),
 	'label_save_as_draft'                            => __( 'Save as draft', 'tainacan' ),
 	'label_update_draft'                             => __( 'Update draft', 'tainacan' ),
 	'label_return_to_draft'                          => __( 'Return to draft', 'tainacan' ),
@@ -265,7 +266,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_queued_on'                                => __( 'Queued on:', 'tainacan' ),
 	'label_last_processed_on'                        => __( 'Last processed on:', 'tainacan' ),
 	'label_progress'                                 => __( 'Progress', 'tainacan' ),
-	'label_process_conpleted'                        => __( 'Process completed', 'tainacan' ),
+	'label_process_completed'                        => __( 'Process completed', 'tainacan' ),
+	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -296,6 +298,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_metadatum_type'              => __( 'Select a metadatum type.', 'tainacan' ),
 	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum.', 'tainacan' ),
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
+	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_search_results'                            => __( 'Search Results', 'tainacan' ),

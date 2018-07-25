@@ -72,6 +72,57 @@
             </div>
         </b-field>
 
+        <b-field
+                :addons="false"
+                v-if="editForm.filter_type_object && editForm.filter_type_object.component.includes('checkbox')">
+            <label class="label is-inline">
+                {{ $i18n.get('label_max_options_to_show') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('filters', 'max_options')"
+                        :message="$i18n.getHelperMessage('filters', 'max_options')"/>
+            </label>
+
+            <div
+                    v-if="!showEditMaxOptions"
+                    class="is-flex">
+                <b-select
+                        name="max_options"
+                        v-model="editForm.max_options"
+                        :placeholder="$i18n.get('instruction_select_max_options_to_show')">
+                    <option value="4">4</option>
+                    <option value="7">7</option>
+                    <option value="10">10</option>
+                    <option value="17">17</option>
+                </b-select>
+                <button
+                        class="button is-white is-pulled-right"
+                        :aria-label="$i18n.getFrom('items','edit_item')"
+                        @click.prevent="showEditMaxOptions = true">
+                    <b-icon
+                            size="is-small"
+                            type="is-secondary"
+                            icon="pencil"/>
+                </button>
+            </div>
+            <div
+                    v-if="showEditMaxOptions"
+                    class="is-flex">
+                <b-input
+                        name="max_options"
+                        v-model="editForm.max_options"
+                        type="number"
+                        step="1" />
+                <button
+                        @click.prevent="showEditMaxOptions = false"
+                        class="button is-white is-pulled-right">
+                    <b-icon
+                            size="is-small"
+                            type="is-secondary"
+                            icon="close"/>
+                </button>
+            </div>
+        </b-field>
+
         <component
                 :errors="formErrors['filter_type_options']"
                 v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component) || editForm.edit_form == ''"
@@ -111,7 +162,8 @@ export default {
             oldForm: {},
             formErrors: {},
             formErrorMessage: '',
-            closedByForm: false
+            closedByForm: false,
+            showEditMaxOptions: false,
         }
     }, 
     props: {
@@ -168,11 +220,12 @@ export default {
             } else {
                 let formElement = document.getElementById('filterEditForm');
                 let formData = new FormData(formElement); 
-                let formObj = {}
+                let formObj = {};
 
-                for (let [key, value] of formData.entries())  
+                for (let [key, value] of formData.entries()) {
                     formObj[key] = value;
-                
+                }
+
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
                     .then(() => {
                         this.editForm = {};

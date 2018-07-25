@@ -10,18 +10,18 @@
                 {{ option.label }}
             </b-checkbox>
         </div>
-        <!-- <a 
+        <a
                 @click="openCheckboxModal()"
                 class="add-link">
             {{ $i18n.get('label_see_more') }}
-        </a> -->
+        </a>
     </div>
 </template>
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
-    import { filter_type_mixin } from '../filter-types-mixin'
-    // import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue'
+    import { filter_type_mixin } from '../filter-types-mixin';
+    import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue';
 
     export default {
         created(){
@@ -146,15 +146,15 @@
                     return false;
                 }
             },
-            // openCheckboxModal() {
-            //     this.$modal.open({
-            //         parent: this,
-            //         component: CheckboxFilterModal,
-            //         props: {
-            //             title: this.filter.name
-            //         }
-            //     });
-            // }
+            openCheckboxModal() {
+                this.$modal.open({
+                    parent: this,
+                    component: CheckboxFilterModal,
+                    props: {
+                        title: this.filter.name
+                    }
+                });
+            }
         }
     }
 </script>
