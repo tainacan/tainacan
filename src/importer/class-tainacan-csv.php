@@ -29,8 +29,31 @@ class CSV extends Importer {
      */
     public function get_source_metadata(){
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
-        $file->seek(0 );
-        return $file->fgetcsv( $this->get_option('delimiter') );
+        $file->seek(0);
+
+        $columns = [];
+        $rawColumns = $file->fgetcsv( $this->get_option('delimiter') );
+
+        if( $rawColumns ){
+            foreach( $rawColumns as $rawColumn ){
+              
+                if( strpos($rawColumn,'special_') === 0 ){
+                    
+                    if( $rawColumn === 'special_document' ){
+                        //TODO: save the index for column document
+                    } else if( $rawColumn === 'special_attachments' ){
+                       //TODO: save the index for column attachment     
+                    }
+
+                } else {
+                    $columns[] = $rawColumn;
+                }
+            }
+
+            return $columns;
+        }
+
+        return [];
     }
 
 
@@ -72,10 +95,10 @@ class CSV extends Importer {
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
             $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
 
-            $column = $this->handle_encoding( $values[ $cont ] );
+            $valueToInsert = $this->handle_encoding( $values[ $cont ] );
 
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
-                explode( $this->get_option('multivalued_delimiter'), $column) : $column;
+                explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
 
             $cont++;
         }

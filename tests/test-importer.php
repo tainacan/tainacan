@@ -370,4 +370,55 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $this->assertEquals('csv', $registered['slug']);
         $this->assertEquals('CSV', $registered['name']);
     }
+
+    /**
+     * @group importer_csv_special_fields
+     */
+    public function test_special_fields(){
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $file_name = 'demosaved.csv';
+        $csv_importer = new Importer\CSV();
+        $id = $csv_importer->get_id();
+
+        // open the file "demosaved.csv" for writing
+        $file = fopen($file_name, 'w');
+
+        // save the column headers
+        fputcsv($file, array('Column 1', 'special_ID', 'Column 3', 'special_attachments', 'special_document'));
+
+        // Sample data
+        $data = array(
+            array('Data 11', '456', 'Data 13||TESTE', 'file:https://www.w3schools.com/w3css/img_lights.jpg', 'text:Vou dormir mais tarde'),
+            array('Data 21', '457', 'Data 23', 'file:photos/unnamed.jpg', 'url:https://www.youtube.com/watch?v=V8dpmD4HG5s&start_radio=1&list=RDEMZS6OrHEAut8dOA38mVtVpg'),
+            array(
+                'Data 31', 
+                '458', 
+                utf8_decode( 'Data 33||Rééço' ), 
+                'file:https://d33wubrfki0l68.cloudfront.net/1dbc465f56f3a812f09666f522fa226efd947cfa/a4d9f/images/smashing-cat/newsletter-fish-cat.svg||file:https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/58f72418-b5ee-4765-8e80-e463623a921d/01-httparchive-opt-small.png', 
+                'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&h=350'),
+            array('Data 41', '459', 'Data 43||limbbo', 'file:photos/SamplePNGImage_100kbmb.png||file:audios/SampleAudio_0.4mb.mp3', 'url:http://www.pdf995.com/samples/pdf.pdf'),
+            array('Data 51', '500', 'Data 53', 'file:http://techslides.com/demos/samples/sample.mp4', '')
+        );
+
+        // save each row of the data
+        foreach ($data as $row){
+            fputcsv($file, $row);
+        }
+
+        // Close the file
+        fclose($file);
+
+        $_SESSION['tainacan_importer'][$id]->set_tmp_file( $file_name );
+		
+        // file isset on importer
+        $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
+
+        // count total items
+        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
+
+        // get metadata to mapping AVOIDING special fields
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
+        $this->assertEquals( $headers[1], 'Column 3' );
+    }
 }
