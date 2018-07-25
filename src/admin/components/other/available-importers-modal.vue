@@ -14,6 +14,7 @@
                             class="importer-type"
                             v-for="importerType in availableImporters"
                             :key="importerType.slug"
+                            v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
                             @click="onSelectImporter(importerType)">
                         <h4>{{ importerType.name }}</h4>
                         <p>{{ importerType.description }}</p>            
@@ -45,7 +46,8 @@ import { mapActions } from 'vuex';
 export default {
     name: 'AvailableImportersModal',
     props: {
-        targetCollection: Number
+        targetCollection: Number,
+        hideWhenManualCollection: false
     },
     data(){
         return {
@@ -94,7 +96,7 @@ export default {
                 border-bottom: none;
             }
             &:hover {
-                background-color: $primary-lighter;
+                background-color: $tainacan-input-background;
             }
         }
     }
