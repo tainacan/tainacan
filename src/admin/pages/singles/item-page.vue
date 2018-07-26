@@ -285,11 +285,6 @@
             margin-right: 8px;
         }
     }
-
-    .page-container-shrinked {
-        height: calc(100% - 118px) !important; // Bigger than the others due footer's height
-    }
-
     .page-container {
         padding: 25px 0px;
 

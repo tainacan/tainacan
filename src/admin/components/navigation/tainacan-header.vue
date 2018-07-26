@@ -1,8 +1,7 @@
 <template>
     <div
             id="tainacan-header"
-            class="level"
-            :class="{'menu-compressed': isMenuCompressed}">
+            class="level">
         <div class="level-left">
             <div class="level-item">
                 <router-link
@@ -65,14 +64,13 @@
             </div>
             <button
                     @click="showProcesses = !showProcesses"
-                    class="button is-small is-secondary level-item">
+                    class="button is-small is-gray1 level-item">
                 <b-icon icon="swap-vertical"/>
             </button>
             <processes-popup
                     v-if="showProcesses"
                     @closeProcessesPopup="showProcesses = false"/>
             <a
-                    :style="{color: 'white'}"
                     class="level-item"
                     :href="wordpressAdmin">
                 <b-icon icon="wordpress"/>
@@ -131,9 +129,6 @@
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },
         },
-        props: {
-            isMenuCompressed: false
-        },
         created(){
 
             this.$root.$on('closeAdvancedSearchShortcut', () => {
@@ -159,7 +154,7 @@
 
     // Tainacan Header
     #tainacan-header {
-        background-color: $secondary;
+        background-color: $gray1;
         height: $header-height;
         max-height: $header-height;
         width: 100%;
@@ -169,49 +164,51 @@
         right: 0;
         position: absolute;
         z-index: 999;
-        color: white;
+        color: $blue5;
 
         .level-left {
             margin-left: -12px;
 
             .level-item {
                 height: $header-height;
-                width: 180px;
-                transition: width 0.15s, background-color 0.2s;
-                -webkit-transition: width 0.15s background-color 0.2s;
+                width: $side-menu-width;
                 cursor: pointer;
-                background-color: #257787;
 
                 &:focus {
                     box-shadow: none;
                 }
                 .tainacan-logo {
-                    max-height: 22px;
-                    padding: 0 24px;
-                    transition: padding 0.15s;
-                    -webkit-transition: padding linear 0.15s;
+                    height: 24px;
+                    padding: 0px;
+                    margin-left: 19px;
                 }
             }
         }
         .level-right {
-            padding-right: 12px;
+            padding-right: 14px;
+
+            .button, a {
+                color: $blue5 !important;
+            }
+            .button:hover, .button:active, .button:focus {
+                background-color: $gray1 !important;
+            }
+            
             .search-area {
                 display: flex;
                 align-items: center;
-                margin-right: 36px;
-
+                margin-right: 28px;
                 .control {
                     .search-header {
-                        border-width: 0 !important;
+                        border: 1px solid $gray2 !important;
                         height: 27px;
                         font-size: 11px;
-                        color: $gray4;
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
-                        width: 160px;
+                        width: 220px;
                     }
                     .search-header:focus, .search-header:active {
-                        width: 220px !important;
+                        width: 372px !important;
                     }
                     .icon:not(.add-i) {
                         pointer-events: all;
@@ -249,7 +246,7 @@
                     .advanced-search-text {
                         margin: 0 12px;
                         font-size: 12px;
-                        color: white;
+                        color: $blue5;
                     }
 
                     .advanced-search-text-di {
@@ -267,20 +264,11 @@
                 }
             }
         }
-        &.menu-compressed {
-            .level-left .level-item {
-                width: 220px;
-                background-color: $secondary;
-                .tainacan-logo {
-                    padding: 0 42px;
-                }
-            }
-
-        }
 
         @media screen and (max-width: 769px) {
             padding: 0;
-            display: flex;
+            height: 104px;
+
             .level-left {
                 display: inline-block;
                 margin-left: 0 !important;

@@ -4,7 +4,6 @@
             class="level secondary-page">
         <div class="level-left">
             <div class="level-item">
-                <h1>{{ getCollectionName() }}</h1>
                 <nav class="breadcrumbs">
                     <router-link 
                             tag="a" 
@@ -34,7 +33,6 @@
                     <b-icon 
                             size="is-small" 
                             icon="file-multiple"/>
-                    <br>
                     <span class="menu-text">{{ $i18n.get('items') }}</span>
                 </router-link>
             </li>
@@ -47,7 +45,6 @@
                     <b-icon 
                             size="is-small" 
                             icon="settings"/>
-                    <br>
                     <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
                 </router-link>
             </li>
@@ -60,7 +57,6 @@
                     <b-icon 
                         size="is-small" 
                         icon="format-list-bulleted-type"/>
-                    <br>
                     <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                 </router-link>
             </li>
@@ -73,7 +69,6 @@
                     <b-icon 
                             size="is-small" 
                             icon="filter"/>
-                    <br>
                     <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                 </router-link>
             </li>
@@ -84,7 +79,6 @@
                         :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
                         :aria-label="$i18n.get('label_collection_events')">
                     <activities-icon />
-                    <br>
                     <span class="menu-text">{{ $i18n.get('events') }}</span>
                 </router-link>
             </li>
@@ -98,7 +92,7 @@ import { mapActions, mapGetters } from 'vuex';
 import ActivitiesIcon from '../other/activities-icon.vue';
 
 export default {
-    name: 'TainacanSubheader',
+    name: 'TainacanCollectionSubheader',
     data(){
         return {
             activeRoute: 'ItemsList',
@@ -212,7 +206,7 @@ export default {
     
     // Tainacan Header
     #tainacan-subheader {
-        background-color: $turquoise1;
+        background-color: $gray1;
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
@@ -227,27 +221,6 @@ export default {
         right: 0;
         z-index: 9;
         transition: padding 0.3s, height 0.3s;
-
-        &.is-shrink {
-            height: $header-height;
-            max-height: $header-height;
-            padding-top: 12px;
-            padding-bottom: 12px;
-
-            h1 { margin-bottom: 4px;  }
-            li a {
-                line-height: 20px;
-                .menu-text { 
-                    visibility: hidden; 
-                    opacity: 0; 
-                    font-size: 0;
-                    line-height: 0;
-                    display: block;
-                    width: 0;
-                    height: 0;
-                }
-            }
-        }
 
         h1 {
             font-size: 18px;
@@ -281,7 +254,7 @@ export default {
             -webkit-transition: height 0.5s linear, padding 0.5s linear;
 
             a {
-                color: $blue5;
+                color: $gray4;
                 text-align: center;
                 white-space: nowrap;
                 overflow: hidden;
@@ -294,7 +267,8 @@ export default {
             }
             a:hover, 
             a.is-active {
-                background-color: #d1f1f2;
+                background-color: $turquoise4;
+                color: white;
                 text-decoration: none;
             }
             a:focus{

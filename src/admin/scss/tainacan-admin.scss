@@ -66,7 +66,7 @@ a:hover {
 
 // Page settings
 .primary-page {
-    margin-top: $header-height; 
+    margin-top: 94px; 
     height: $page-height !important;
 
     @media screen and (max-width: 769px) {
@@ -82,13 +82,9 @@ a:hover {
 }
 // Used for pages with collection subheader
 .page-container-small {
-    height: calc(100% - 82px);
+    height: calc(100% - 42px);
     overflow-y: auto;
     transition: height 0.6s;
-}
-// Used for pages with shrinked collection subheader
-.page-container-shrinked {
-    height: calc(100% - 53px) !important;
 }
 // Used for pages with subheader in mobile
 .page-container-narrow{
