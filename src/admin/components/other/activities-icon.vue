@@ -4,8 +4,8 @@
 xmlns="http://www.w3.org/2000/svg" 
 x="0px" 
 y="0px"
-width="20" 
-height="20" 
+width="22" 
+height="22" 
 viewBox="0 0 24 24" 
 class="activities-icon" 
 xml:space="preserve">
@@ -26,7 +26,7 @@ export default {
 
 	svg.activities-icon {
         margin-bottom: -5px;
-        fill:#1E2F56;
+        fill: #898d8f;
     }
     
 </style>

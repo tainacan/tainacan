@@ -136,7 +136,7 @@ export default {
                 color: white;
                 white-space: nowrap;
                 overflow: hidden;
-                padding: 13px 15px;
+                padding: 9px 15px;
                 line-height: 1.5em;
                 border-radius: 0px;
                 -webkit-transition: padding 0.2s linear; /* Safari */

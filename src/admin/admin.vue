@@ -108,7 +108,7 @@
     #menu-compress-button {
         position: absolute;
         z-index: 99;
-        top: 208px;
+        top: 192px;
         max-width: 25px;
         height: 20px;
         width: 25px;

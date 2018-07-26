@@ -64,7 +64,7 @@
             </div>
             <button
                     @click="showProcesses = !showProcesses"
-                    class="button is-small is-gray1 level-item">
+                    class="button is-small is-gray2 level-item">
                 <b-icon icon="swap-vertical"/>
             </button>
             <processes-popup
@@ -154,7 +154,7 @@
 
     // Tainacan Header
     #tainacan-header {
-        background-color: $gray1;
+        background-color: $gray2;
         height: $header-height;
         max-height: $header-height;
         width: 100%;
@@ -191,7 +191,7 @@
                 color: $blue5 !important;
             }
             .button:hover, .button:active, .button:focus {
-                background-color: $gray1 !important;
+                background-color: $gray2 !important;
             }
             
             .search-area {

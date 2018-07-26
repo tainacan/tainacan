@@ -4,6 +4,15 @@
             class="level secondary-page">
         <div class="level-left">
             <div class="level-item">
+                <div class="back-button">
+                    <button     
+                            @click="$router.go(-1)"
+                            class="button is-turquoise4">
+                        <span class="icon">
+                            <i class="mdi mdi-chevron-left"/>
+                        </span>
+                    </button>
+                </div>
                 <nav class="breadcrumbs">
                     <router-link 
                             tag="a" 
@@ -24,59 +33,64 @@
             </div>
         </div>
         <ul class="menu-list level-right">
-            <li class="level-item">
+            <li 
+                    :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
+                    class="level-item">
                 <router-link  
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
-                        :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
                         :aria-label="$i18n.get('label_collection_items')">
-                    <b-icon 
-                            size="is-small" 
-                            icon="file-multiple"/>
+                    <span class="icon">
+                        <i class="mdi mdi-file-multiple"/>
+                    </span>
                     <span class="menu-text">{{ $i18n.get('items') }}</span>
                 </router-link>
             </li>
-            <li class="level-item">
+            <li 
+                    :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
+                    class="level-item">
                 <router-link
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
-                        :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
                         :aria-label="$i18n.get('label_settings')">
-                    <b-icon 
-                            size="is-small" 
-                            icon="settings"/>
+                    <span class="icon">
+                        <i class="mdi mdi-settings"/>
+                    </span>
                     <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
                 </router-link>
             </li>
-            <li class="level-item">
+            <li 
+                    :class="activeRoute == 'MetadataList' ? 'is-active':''"
+                    class="level-item">
                 <router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionMetadataPath(id) }"
-                        :class="activeRoute == 'MetadataList' ? 'is-active':''"
                         :aria-label="$i18n.get('label_collection_metadata')">
-                    <b-icon 
-                        size="is-small" 
-                        icon="format-list-bulleted-type"/>
+                    <span class="icon">
+                        <i class="mdi mdi-format-list-bulleted-type"/>
+                    </span>
                     <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                 </router-link>
             </li>
-            <li class="level-item">
+            <li 
+                    :class="activeRoute == 'FiltersList' ? 'is-active':''" 
+                    class="level-item">
                 <router-link
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
-                        :class="activeRoute == 'FiltersList' ? 'is-active':''" 
                         :aria-label="$i18n.get('label_collection_filters')">
-                    <b-icon 
-                            size="is-small" 
-                            icon="filter"/>
+                    <span class="icon">
+                        <i class="mdi mdi-filter"/>
+                    </span>
                     <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                 </router-link>
             </li>
-            <li class="level-item">
+            <li 
+                    :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
+                    class="level-item">
                 <router-link 
                         tag="a" 
                         :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
-                        :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
                         :aria-label="$i18n.get('label_collection_events')">
                     <activities-icon />
                     <span class="menu-text">{{ $i18n.get('events') }}</span>
@@ -206,7 +220,7 @@ export default {
     
     // Tainacan Header
     #tainacan-subheader {
-        background-color: $gray1;
+        background-color: $gray2;
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
@@ -214,7 +228,7 @@ export default {
         padding-top: 18px;
         padding-bottom: 18px;
         padding-right: $page-side-padding;
-        padding-left: $page-side-padding;
+        padding-left: 0;
         margin: 0px;
         vertical-align: middle; 
         left: 0;
@@ -236,67 +250,98 @@ export default {
             transition: margin-bottom 0.2s linear; 
         }
 
+        .back-button {
+            padding: 0;
+            margin: 0 12px 0 0;
+            height: 42px;
+            width: 42px;
+            background-color: $turquoise4;
+            color: white;
+            display: flex;
+            align-items: center;
+
+            button, 
+            button:hover, 
+            button:focus, 
+            button:active{
+                color: white;
+                background-color: transparent !important;
+                border: none;
+                .icon i {
+                    font-size: 34px;
+                }
+            }
+        }
+
         .breadcrumbs {
             font-size: 12px;
             line-height: 12px;
             color: #1d1d1d;
         }
 
-        .level-left {
-            .level-item {
-                display: inline-block;
-            }  
-        }
-
         li{
             margin-right: 0px;
-            transition: height 0.5s linear, padding 0.5s linear;
-            -webkit-transition: height 0.5s linear, padding 0.5s linear;
+            transition: max-width 0.4s linear, width 0.4s linear;
+            -webkit-transition: max-width 0.4s linear, width 0.4s linear;
+            overflow: hidden;
+            max-width: 50px;
 
+            &.is-active {
+                background-color: $turquoise4;
+                a { 
+                    background-color: $turquoise4;
+                    color: white;
+                    text-decoration: none;
+                }
+                svg.activities-icon {
+                    fill: white !important;
+                }
+            }
+            &:hover {
+                max-width: 100%;
+                transition: max-width 0.4s linear, width 0.4s linear;
+                -webkit-transition: max-width 0.4s linear, width 0.4s linear;
+                 a {
+                     background-color: transparent;
+                     text-decoration: none; 
+                 }
+                .menu-text {
+                    opacity: 1.0;
+                    width: 100%;
+                    visibility: visible;
+                    transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
+                    -webkit-transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
+                }
+            }
             a {
                 color: $gray4;
                 text-align: center;
                 white-space: nowrap;
-                overflow: hidden;
                 padding: 1.0em 10px;
-                min-width: 75px;
-                line-height: 1.5em;
+                min-width: 50px;
+                line-height: 22px;
                 border-radius: 0px;
                 position: relative;
-                overflow: inherit;
-            }
-            a:hover, 
-            a.is-active {
-                background-color: $turquoise4;
-                color: white;
-                text-decoration: none;
             }
             a:focus{
                 box-shadow: none;
             }
-            a.is-active:after {
-                position: absolute;
-                content: '';
-                width: 0;
-                height: 0;
-                bottom: -1px;
-                border-left: 10px solid transparent;
-                border-right: 10px solid transparent;
-                border-bottom: 11px solid white;
-                left: calc(50% - 10px);
-                -moz-transform: scale(0.999);
-                -webkit-backface-visibility: hidden;   
-            }
             .icon {
                 margin: 0;
                 padding: 0;
+
+                i {
+                    font-size: 19px !important;
+                }
             }
             .menu-text {
                 font-size: 14px;
-                opacity: 1;
-                visibility: visible;
-                transition: opacity 0.5s linear, visibility 0.5s linear, height 0.5s linear;
-                -webkit-transition: opacity 0.5s linear, visibility 0.5s linear, height 0.5s linear;
+                display: inline-flex;
+                width: 0px;
+                opacity: 0.0;
+                visibility: hidden;
+                transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
+                -webkit-transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
             }
         }
 
