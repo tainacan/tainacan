@@ -210,6 +210,15 @@ class Metadatum extends Entity {
     public function get_exposer_mapping() {
     	return $this->get_mapped_property('exposer_mapping');
     }
+    
+    /**
+     * Return the semantic_uri
+     *
+     * @return string
+     */
+    function get_semantic_uri(){
+        return $this->get_mapped_property('semantic_uri');
+    }
 
     /**
      * Set the metadatum name
@@ -361,7 +370,16 @@ class Metadatum extends Entity {
     public function set_exposer_mapping( $value ) {
     	$this->set_mapped_property('exposer_mapping', $value);
     }
-	
+    
+    /**
+     * Set Semantic URI for the metadatum
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_semantic_uri( $value ){
+        $this->set_mapped_property('semantic_uri', $value);
+    }
 	
 	/**
 	 * Transient property used to store the status of the metadatum for a particular collection

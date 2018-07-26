@@ -403,7 +403,7 @@ class Exposers {
 	                   $metadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 	               }
 	               $metadatum->set_name($mapper_metadatum['label']);
-	               $metadatum->set_description($mapper_metadatum['URI']);
+	               $metadatum->set_semantic_uri($mapper_metadatum['URI']);
 	               $metadatum->set_exposer_mapping([
 	                   $mapper->slug => $slug
 	               ]);

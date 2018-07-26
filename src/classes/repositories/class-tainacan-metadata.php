@@ -40,6 +40,10 @@ class Metadata extends Repository {
 
     }
 	
+    /**
+     * {@inheritDoc}
+     * @see \Tainacan\Repositories\Repository::get_map()
+     */
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
 		    'name'               => [
@@ -182,7 +186,15 @@ class Metadata extends Repository {
 			    'validation'  => v::stringType()->in( [ 'yes', 'no', 'never' ] ),
 			    'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 			    'default'     => 'yes'
-		    ]
+		    ],
+    	    'semantic_uri'    => [
+    	        'map'         => 'meta',
+    	        'title'       => __( 'The semantic metadatum description URI' ),
+    	        'type'        => __( 'url' ),
+    	        'validation'  => v::optional(v::url()),
+    	        'description' => __( 'The semantic metadatum description URI like: ', 'tainacan' ).'https://schema.org/URL',
+    	        'default'     => ''
+    	    ]
 	    ] );
     }
 	
