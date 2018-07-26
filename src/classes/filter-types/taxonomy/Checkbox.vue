@@ -9,6 +9,7 @@
                     :style="{ paddingLeft: (option.level * 30) + 'px' }"
                     v-model="selected"
                     :native-value="option.id"
+                    v-if="!option.isChild"
             >{{ option.name }}</b-checkbox>
             <div
                     :style="{ paddingLeft: (option.level * 30) + 'px' }"
@@ -61,6 +62,12 @@
                     }
                 }
             });
+
+            this.$root.$on('appliedCheckBoxModal', (labels) => {
+                if(labels.length){
+                    this.selectedValues();
+                }
+            });
         },
         data(){
             return {
@@ -94,7 +101,7 @@
         },
         methods: {
             getValuesTaxonomy( taxonomy ){
-                return axios.get(`/taxonomy/${taxonomy}/terms?hideempty=0&order=asc&childrencounts=1&parent=0&number=${this.filter.max_options}`).then( res => {
+                return axios.get(`/taxonomy/${taxonomy}/terms?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}`).then( res => {
                     for (let item of res.data) {
                         this.taxonomy = item.taxonomy;
                         this.options.push(item);
@@ -175,9 +182,25 @@
                 let onlyLabels = [];
                 for(let selected of this.selected) {
                     let valueIndex = this.options.findIndex(option => option.id == selected );
-                    if (valueIndex >= 0)
-                        onlyLabels.push(this.options[valueIndex].name)   
+
+                    if (valueIndex >= 0) {
+                        onlyLabels.push(this.options[valueIndex].name)
+                    } else {
+                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/${selected}?fetch_only[0]=name&fetch_only[1]=id`)
+                            .then( res => {
+                                onlyLabels.push(res.data.name);
+                                this.options.push({
+                                    isChild: true,
+                                    name: res.data.name,
+                                    id: res.data.id
+                                })
+                            })
+                                .catch(error => {
+                                    this.$console.log(error);
+                                });
+                    }
                 }
+
                 this.$eventBusSearch.$emit("sendValuesToTags", {
                     filterId: this.filter.id,
                     value: onlyLabels
@@ -191,9 +214,9 @@
                         parent: parent,
                         filter: this.filter,
                         taxonomy_id: this.taxonomy_id,
-                        optionsLevel0: this.options,
                         selected: this.selected,
                         metadatum_id: this.metadatum,
+                        taxonomy: this.taxonomy,
                         collection_id: this.collection,
                     }
                 });
