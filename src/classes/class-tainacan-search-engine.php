@@ -30,7 +30,7 @@ class Search_Engine {
 		$this->ajax_request = $ajax_query ? true : false;
 		$this->options = [];
 
-        if (!defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE') || TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE !== false) {
+        if (!defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE') || TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE !== true) {
             $this->search_hooks();
         }
 	}
@@ -76,7 +76,7 @@ class Search_Engine {
     
     function init_tainacan_search_vars() {
 
-        if (!$this->query_instance->is_search()) {
+		if (!$this->query_instance->is_search() || empty($this->query_instance->query_vars['s']) ) {
             $this->is_tainacan_search = false;
             return;
         }
