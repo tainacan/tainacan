@@ -258,6 +258,10 @@ class Search_Engine {
 		global $wpdb;
 		$vars = $this->query_instance->query_vars;
 
+		if (empty($this->taxonomies)) {
+			return '';
+		}
+
 		$s = $vars['s'];
 		$search_terms = $this->get_search_terms();
 		$exact = isset( $vars['exact'] ) ? $vars['exact'] : '';
@@ -325,7 +329,7 @@ class Search_Engine {
 	function terms_join( $join ) {
 		global $wpdb;
 
-		if ( !empty( $this->query_instance->query_vars['s'] ) ) {
+		if ( !empty( $this->query_instance->query_vars['s'] ) && !empty( $this->taxonomies ) ) {
 
             foreach ( $this->taxonomies as $taxonomy ) {
                 $on[] = "ttax.taxonomy = '" . addslashes( $taxonomy )."'";
