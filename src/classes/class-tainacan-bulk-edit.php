@@ -299,7 +299,7 @@ class Bulk_Edit  {
 
 		// restore status
 
-		$query_restore = "UPDATE $wpdb->posts SET post_status = (SELECT meta_value FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_status' AND post_id = ID) WHERE ID IN ($select_q)";
+		$query_restore = "UPDATE $wpdb->posts SET post_status = (SELECT meta_value FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_status' AND post_id = ID) WHERE ID IN ($select_q) AND post_status = 'trash'";
 		$query_delete_meta1 = "DELETE FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_status' AND post_id IN ( SELECT implicitTemp.post_id FROM ($select_q) implicitTemp )";
 		$query_delete_meta2 = "DELETE FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_time' AND post_id IN ( SELECT implicitTemp.post_id FROM ($select_q) implicitTemp )";
 
