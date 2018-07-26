@@ -857,11 +857,6 @@ export default {
         });
         this.cleanLastUpdated();
     },
-    mounted() {
-        document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-            this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
-        });
-    },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$modal.open({
@@ -907,10 +902,6 @@ export default {
             margin-top: 2px;
             margin-right: 8px;
         }
-    }
-
-    .page-container-shrinked {
-        height: calc(100% - 118px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {

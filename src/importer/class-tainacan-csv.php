@@ -35,14 +35,14 @@ class CSV extends Importer {
         $rawColumns = $file->fgetcsv( $this->get_option('delimiter') );
 
         if( $rawColumns ){
-            foreach( $rawColumns as $rawColumn ){
+            foreach( $rawColumns as $index => $rawColumn ){
               
                 if( strpos($rawColumn,'special_') === 0 ){
                     
                     if( $rawColumn === 'special_document' ){
-                        //TODO: save the index for column document
+                        $this->set_option('document_index', $index);
                     } else if( $rawColumn === 'special_attachments' ){
-                       //TODO: save the index for column attachment     
+                        $this->set_option('attachment_index', $index);    
                     }
 
                 } else {
@@ -56,13 +56,22 @@ class CSV extends Importer {
         return [];
     }
 
+    /**
+     * 
+     * returns all header including special
+     */
+    public function raw_source_metadata(){
+        $file =  new \SplFileObject( $this->tmp_file, 'r' );
+        $file->seek(0);
+        return $file->fgetcsv( $this->get_option('delimiter') );
+    }
 
     /**
      * @inheritdoc
      */
     public function process_item( $index, $collection_definition ){
         $processedItem = [];
-        $headers = $this->get_source_metadata();
+        $headers = $this->raw_source_metadata();
 
         $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
         // search the index in the file and get values
@@ -91,16 +100,22 @@ class CSV extends Importer {
             return false;
         }
         
-        $cont = 0;
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
             $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
 
-            $valueToInsert = $this->handle_encoding( $values[ $cont ] );
+            foreach ( $headers as $indexRaw => $headerRaw ) {
+               if( $headerRaw === $header ){
+                    $index = $indexRaw;
+               }
+            }
+            
+            if(!isset($index))
+                continue;
+
+            $valueToInsert = $this->handle_encoding( $values[ $index ] );
 
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
-
-            $cont++;
         }
         
         $this->add_log('Success to proccess index: ' . $index  );

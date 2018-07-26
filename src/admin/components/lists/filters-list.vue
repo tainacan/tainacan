@@ -458,13 +458,6 @@ export default {
             .catch(() => {
                 this.isLoadingFilters = false;
             });
-    },
-    mounted() {
-        if (!this.isRepositoryLevel) {
-            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
-            });
-        }
     }
 }
 </script>

@@ -301,12 +301,6 @@
                 }
                 this.loadProcesses();
             }
-
-            if (!this.isRepositoryLevel) {
-                document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                    this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
-                });
-            }
         }
     }
 </script>
@@ -319,8 +313,6 @@
         height: $header-height;
         margin-left: -$page-small-side-padding;
         margin-right: -$page-small-side-padding;
-        margin-top: -$page-small-top-padding;
-        padding-top: $page-small-top-padding;
         padding-left: $page-small-side-padding;
         padding-right: $page-small-side-padding;
         border-bottom: 1px solid #ddd;

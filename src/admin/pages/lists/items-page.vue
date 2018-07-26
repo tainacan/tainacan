@@ -8,7 +8,7 @@
                 v-if="!openAdvancedSearch"
                 id="filter-menu-compress-button"
                 :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
-                :style="{ top: !isOnTheme ? (isHeaderShrinked ? '125px' : '152px') : (searchControlHeight + 6) + 'px' }"
+                :style="{ top: !isOnTheme ? '152px' : (searchControlHeight + 6) + 'px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
@@ -597,7 +597,6 @@
                 collapseAll: true,
                 isOnTheme: false,
                 futureSearchQuery: '',
-                isHeaderShrinked: false,
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
@@ -1000,14 +999,6 @@
                     this.$eventBusSearch.setInitialAdminViewMode('table');
                 else 
                     this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
-            }
-            
-            // Watch Scroll for shrinking header, only on Admin at collection level
-            if (!this.isRepositoryLevel && !this.isOnTheme) {
-                document.getElementById('items-list-area').addEventListener('scroll', ($event) => {
-                    this.isHeaderShrinked = ($event.target.scrollTop > 53);
-                    this.$emit('onShrinkHeader', this.isHeaderShrinked); 
-                });
             }
 
             // Watches window resize to adjust filter's top position and compression on mobile 

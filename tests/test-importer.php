@@ -420,5 +420,69 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         // get metadata to mapping AVOIDING special fields
         $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
         $this->assertEquals( $headers[1], 'Column 3' );
+
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('attachment_index'), 3 );
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('document_index'), 4 );
+
+        // inserting the collection
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'          => 'Other',
+                'description'   => 'adasdasdsa',
+                'default_order' => 'DESC',
+                'status'		=> 'publish'
+            ),
+            true
+        );
+
+        $metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data multiplo',
+				'description' => 'Descreve o dado do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple'    => 'yes'
+			),
+			true
+        );
+        
+        $metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Texto simples',
+				'description' => 'Descreve o dado do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple'    => 'no'
+			),
+			true
+		);
+		
+		$collection_definition = [
+			'id' => $collection->get_id(),
+			'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
+        ];
+        
+        // get collection metadata to map
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+
+        //create a random mapping
+        $map = [];
+        foreach ( $metadata as $index => $metadatum ){
+            if(isset($headers[$index]))
+                $map[$metadatum->get_id()] = $headers[$index];
+        }
+
+        $collection_definition['mapping'] = $map;
+
+        // add the collection
+        $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
+        $_SESSION['tainacan_importer'][$id]->set_option('encode','iso88591');
+
+        $this->assertEquals(1, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 1 item');
     }
 }
