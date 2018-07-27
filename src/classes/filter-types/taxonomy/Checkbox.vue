@@ -6,13 +6,12 @@
                 :value="index"
                 class="control">
             <b-checkbox
-                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
                     v-model="selected"
                     :native-value="option.id"
                     v-if="!option.isChild"
             >{{ option.name }}</b-checkbox>
             <div
-                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
+                    :style="{ 'padding-left': '18px' }"
                     v-if="option.seeMoreLink"
                     @click="openCheckboxModal(option.parent)"
                     v-html="option.seeMoreLink"/>
@@ -101,15 +100,17 @@
         },
         methods: {
             getValuesTaxonomy( taxonomy ){
-                return axios.get(`/taxonomy/${taxonomy}/terms?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}`).then( res => {
-                    for (let item of res.data) {
-                        this.taxonomy = item.taxonomy;
-                        this.options.push(item);
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
+                return axios.get(`/taxonomy/${taxonomy}/terms?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}`)
+                    .then( res => {
+                        for (let item of res.data) {
+                            this.taxonomy = item.taxonomy;
+                            this.options.push(item);
+                        }
+
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    });
             },
             loadOptions(){
                 let promise = null;

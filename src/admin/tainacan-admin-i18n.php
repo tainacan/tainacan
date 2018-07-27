@@ -395,6 +395,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_there_are_no_metadata_to_search'           => __( 'There are no metadata to search', 'tainacan' ),
 	'info_there_are_no_metadata_in_repository_level' => __( 'There are no metadata in repository level', 'tainacan' ),
 	'info_import_a_collection'						 => __( 'Import a collection from external sources', 'tainacan' ),
+	'info_no_more_options'                           => __( 'No more options', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),

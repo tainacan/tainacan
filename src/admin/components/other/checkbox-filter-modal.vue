@@ -6,42 +6,48 @@
             <h2>{{ this.$i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <hr>
         </header>
-        <section class="tainacan-form">
+        <div class="tainacan-form">
             <div class="is-clearfix tainacan-checkbox-search-section">
                 <input
-                        disabled
                         autocomplete="on"
                         :placeholder="$i18n.get('instruction_search')"
+                        v-model="optionName"
+                        @input="autoComplete"
                         class="input">
                 <span class="icon is-right">
                     <i
                             class="mdi mdi-magnify"/>
                 </span>
             </div>
-            <section
+            <div
+                    v-if="!isSearching"
                     class="modal-card-body tainacan-finder-columns-container">
                 <ul
                         class="tainacan-finder-column"
                         v-for="(finderColumn, key) in finderColumns"
                         :key="key">
                     <li
+                            v-if="finderColumn.length"
                             class="tainacan-li-checkbox-modal"
                             v-for="(option, index) in finderColumn"
+                            :id="`${key}.${index}-tainacan-li-checkbox-model`"
+                            :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                             :key="index">
                         <b-checkbox
                                 v-model="selected"
                                 :native-value="option.id">
-                            {{ `${option.name} (${option.total_children})` }}
+                            {{ `${option.name}` }}
                         </b-checkbox>
-                        <a @click="getOptionChildren(option, key)">
+                        <a @click="getOptionChildren(option, key, index)">
                             <b-icon
                                     class="is-pulled-right"
                                     icon="menu-right"
-                                    />
+                            />
                         </a>
                     </li>
-                    <li>
+                    <li v-if="finderColumn.length">
                         <div
+                                v-if="finderColumn.length < totalRemaining[key].remaining"
                                 @click="getMoreOptions(finderColumn, key)"
                                 class="tainacan-show-more">
                             <b-icon
@@ -49,12 +55,45 @@
                                     icon="chevron-down"/>
                         </div>
                     </li>
+                    <li
+                            v-else
+                            class="tainacan-li-no-children">
+                        <section
+                                class="field is-grouped-centered">
+                            <div class="content has-text-gray has-text-centered">
+                                <p>
+                                    <b-icon
+                                            icon="format-list-checks"
+                                            size="is-medium"/>
+                                </p>
+                                <p>{{ $i18n.get('info_no_more_options') }}</p>
+                            </div>
+                        </section>
+                    </li>
                     <b-loading
                             :is-full-page="false"
                             :active.sync="isColumnLoading"/>
                 </ul>
+                <!--<pre>{{ hierarchicalPath }}</pre>-->
+                <!--<pre>{{ totalRemaining }}</pre>-->
                 <!--<pre>{{ selected }}</pre>-->
-            </section>
+            </div>
+
+            <div
+                    v-if="isSearching"
+                    class="modal-card-body tainacan-search-results-container">
+                <ul class="tainacan-modal-checkbox-search-results-body">
+                    <li
+                            v-for="(option, key) in searchResults"
+                            :key="key">
+                        <b-checkbox
+                                v-model="selected"
+                                :native-value="option.id">
+                            {{ `${option.name}` }}
+                        </b-checkbox>
+                    </li>
+                </ul>
+            </div>
 
             <footer class="field is-grouped form-submit">
                 <div class="control">
@@ -72,7 +111,7 @@
                     </button>
                 </div>
             </footer>
-        </section>
+        </div>
     </div>
 </template>
 
@@ -97,33 +136,80 @@
                 itemActive: false,
                 isColumnLoading: false,
                 loadingComponent: undefined,
+                totalRemaining: {},
+                hierarchicalPath: [],
+                searchResults: [],
+                optionName: '',
+                isSearching: false,
             }
         },
         created() {
             this.getOptionChildren();
         },
         methods: {
+            autoComplete: _.debounce( function () {
+
+                this.isSearching = !!this.optionName.length;
+
+                let query = `?hideempty=0&order=asc&number=10&searchterm=${this.optionName}`;
+
+                axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
+                    .then((res) => {
+                        this.searchResults = res.data;
+                    }).catch((error) => {
+                        this.$console.log(error);
+                    })
+            }, 300),
+            highlightHierarchyPath(){
+                for(let [index, el] of this.hierarchicalPath.entries()){
+                    let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`];
+
+                    console.log(this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`].classList);
+
+                    if(index == this.hierarchicalPath.length-1){
+                        htmlEl.classList.add('tainacan-li-checkbox-last-active')
+                    } else {
+                        htmlEl.classList.add('tainacan-li-checkbox-parent-active')
+                    }
+                }
+            },
+            addToHierarchicalPath(column, element){
+                this.hierarchicalPath.push({
+                    column: column,
+                    element: element
+                });
+
+                this.highlightHierarchyPath();
+            },
             removeLevelsAfter(key){
                 if(key != undefined){
                     this.finderColumns.splice(key+1);
                 }
             },
-            createColumn(children) {
-                if (children.length > 0) {
-                    let first = undefined;
+            createColumn(res, column) {
+                let children = res.data;
 
+                this.totalRemaining = Object.assign({}, this.totalRemaining, {
+                    [`${column == undefined ? 0 : column+1}`]: {
+                        remaining: res.headers['x-wp-total'],
+                    }
+                });
+
+                let first = undefined;
+
+                if (children.length > 0) {
                     for (let f in this.finderColumns) {
                         if (this.finderColumns[f][0].id == children[0].id) {
                             first = f;
                             break;
                         }
                     }
+                }
 
-                    if (first != undefined) {
-                        this.finderColumns.splice(first, 1, children);
-                    } else {
-                        this.finderColumns.push(children);
-                    }
+                if (first != undefined) {
+                    this.finderColumns.splice(first, 1, children);
+                } else {
+                    this.finderColumns.push(children);
                 }
             },
             appendMore(options, key) {
@@ -131,21 +217,26 @@
                     this.finderColumns[key].push(option)
                 }
             },
-            getOptionChildren(option, key) {
+            getOptionChildren(option, key, index) {
+
+                // if(key != undefined) {
+                //     this.addToHierarchicalPath(key, index);
+                // }
+
                 let parent = 0;
 
                 if (option) {
                     parent = option.id;
                 }
 
-                let query = `?hideempty=0&order=asc&parent=${parent}&number=100`;
+                let query = `?hideempty=0&order=asc&parent=${parent}&number=100&offset=0`;
 
                 this.isColumnLoading = true;
 
                 axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
                     .then(res => {
                         this.removeLevelsAfter(key);
-                        this.createColumn(res.data);
+                        this.createColumn(res, key);
 
                         this.isColumnLoading = false;
                     })
@@ -223,18 +314,18 @@
         display: flex;
         justify-content: center;
         cursor: pointer;
-        border: 1px solid #f2f2f2;
+        border: 1px solid $gray1;
         margin-top: 10px;
         margin-bottom: 0.2rem;
     }
 
     .tainacan-li-checkbox-modal:hover {
-        background-color: #e6f4ff;
+        background-color: $blue1;
     }
 
     .tainacan-finder-columns-container {
         background-color: white;
-        border: solid 1px #f2f2f2;
+        border: solid 1px $gray1;
         display: flex;
         overflow: auto;
         padding: 0 !important;
@@ -245,7 +336,7 @@
     }
 
     .tainacan-finder-column {
-        border-right: solid 1px #f2f2f2;
+        border-right: solid 1px $gray1;
         max-height: 400px;
         min-height: inherit;
         min-width: 200px;
@@ -274,6 +365,27 @@
             position: absolute;
             right: 0;
         }
+    }
+
+    .tainacan-search-results-container {
+        padding: 0 20px !important;
+    }
+
+    .tainacan-modal-checkbox-search-results-body {
+        columns: 2;
+        list-style: none;
+    }
+
+    .tainacan-li-no-children {
+        padding: 3rem 1.5rem 3rem 0.5rem;
+    }
+
+    .tainacan-li-checkbox-last-active {
+        background-color: $blue1;
+    }
+
+    .tainacan-li-checkbox-parent-active {
+        background-color: $gray2;
     }
 
 </style>
