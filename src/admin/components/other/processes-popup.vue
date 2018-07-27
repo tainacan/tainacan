@@ -192,7 +192,7 @@ export default {
     }
 
     .processes-popup{
-        background-color: $turquoise2;
+        background-color: $blue2;
         width: 320px;
         max-width: 100%;
         position: absolute;
@@ -220,6 +220,7 @@ export default {
         }
         .popup-footer { 
             padding: 4px 12px 6px 10px; 
+            min-height: 29px;
             .footer-title { 
                 margin-right: auto;
                 font-size: 0.625rem;
@@ -244,7 +245,7 @@ export default {
             }
 
             li:hover {
-                background-color: $gray2;
+                background-color: $gray1;
 
                 .action-icon{
                     visibility: visible;
@@ -318,7 +319,7 @@ export default {
             border-style: solid;
         }
         &:before {
-            border-color: transparent transparent $turquoise2 transparent;
+            border-color: transparent transparent $blue2 transparent;
             border-right-width: 8px;
             border-bottom-width: 8px;
             border-left-width: 8px;

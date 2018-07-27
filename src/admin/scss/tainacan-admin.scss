@@ -75,9 +75,11 @@ a:hover {
 
     .is-primary, .is-primary:hover, .is-primary:focus {
         background-color: $blue4 !important;
+        color: white !important;
     }
     .is-secondary, .is-secondary:hover, .is-secondary:focus {
         background-color: $blue5 !important;
+        color: white !important;
     }
     .has-text-primary, .has-text-primary:hover, .is-has-text-primary:focus {
         color: $blue4 !important;
@@ -97,6 +99,40 @@ a:hover {
 
         option:checked, option:hover {
             background-color: $gray1 !important;
+        }
+    }
+    .tainacan-table {
+        tr.selected-row { 
+            background-color: $blue1 !important; 
+            .checkbox-cell .checkbox, .actions-cell .actions-container {
+                background-color: $blue2 !important;
+            }
+        }
+    }
+    .dropdown-trigger {
+        .button .icon {
+            color: $blue5;
+        }
+    }
+    .dropdown-menu .dropdown-content {
+        .dropdown-item.is-active { background-color: $blue2; }
+    }
+
+    .switch {
+        &:hover input[type="checkbox"]:checked + .check {
+            background-color: $blue2;
+        }
+        input[type="checkbox"]:checked + .check {
+            border: 2px solid $blue5;
+    
+            &::before {
+                background-color: $blue5;
+            }
+        }
+        &.is-small {
+            input[type="checkbox"]:checked + .check {
+                border: 1.5px solid $blue5;
+            }
         }
     }
 }

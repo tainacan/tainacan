@@ -3,7 +3,7 @@
             id="tainacan-repository-subheader" 
             class="level secondary-page"
             :class="{'is-menu-compressed': isMenuCompressed, 'is-repository-level' : isRepositoryLevel}">
-        <h1 v-if="isRepositoryLevel">Nome do Site</h1>
+        <h1 v-if="isRepositoryLevel">{{ repositoryName }}</h1>
         <h1 v-else>{{ $i18n.get('collection') + '' }} <span class="has-text-weight-bold">{{ collectionName }}</span></h1>
     </div>
 </template>
@@ -13,6 +13,11 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'TainacanRepositorySubheader',
+    data() {
+        return {
+            repositoryName: tainacan_plugin.repository_name
+        }
+    },
     props: {
         isMenuCompressed: false,
         isRepositoryLevel: true

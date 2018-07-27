@@ -293,6 +293,7 @@ export default {
 
         li{
             margin-right: 0px;
+            transition: background-color 0.2s ease;
             // transition: max-width 0.4s ease-in , width 0.4s ease-in ;
             // -webkit-transition: max-width 0.4s ease-in, width 0.4s ease-in ;
             // overflow: hidden;
@@ -302,10 +303,12 @@ export default {
                 background-color: $turquoise4;
                 a { 
                     background-color: $turquoise4;
+                    transition: background-color 0.2s ease;
                     color: white;
                     text-decoration: none;
                 }
                 svg.activities-icon {
+                    transition: fill 0.2s ease;
                     fill: white !important;
                 }
             }
@@ -335,11 +338,13 @@ export default {
                 color: $gray4;
                 text-align: center;
                 white-space: nowrap;
-                padding: 1.0em 10px;
+                padding: 10px;
                 min-width: 50px;
                 line-height: 22px;
                 border-radius: 0px;
                 position: relative;
+                align-items: center;
+                display: flex;
             }
             a:focus{
                 box-shadow: none;
@@ -347,12 +352,12 @@ export default {
             .icon {
                 margin: 0;
                 padding: 0;
-
                 i {
                     font-size: 19px !important;
                 }
             }
             .menu-text {
+                margin-left: 8px;
                 font-size: 14px;
                 display: inline-flex;
                 // width: 0px;
