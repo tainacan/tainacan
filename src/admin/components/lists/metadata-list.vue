@@ -41,7 +41,8 @@
                                     :class="{
                                         'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' ,
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
-                                        'disabled-metadatum': metadatum.enabled == false
+                                        'disabled-metadatum': metadatum.enabled == false,
+                                        'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel
                                     }" 
                                     v-for="(metadatum, index) in activeMetadatumList"
                                     :key="index">
@@ -124,7 +125,7 @@
                                 <div 
                                         @click.prevent="addMetadatumViaButton(metadatum)"
                                         class="available-metadatum-item"
-                                        :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name }"
+                                        :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
                                 <grip-icon/>  
@@ -1091,6 +1092,33 @@ export default {
                 fill: white;
             }
             
+        }
+    }
+    .inherited-metadatum {
+        &.active-metadatum-item:hover:not(.not-sortable-item) {
+            background-color: $blue5;
+            border-color: $blue5;
+            
+            .switch.is-small {
+                input[type="checkbox"] + .check {
+                    background-color: $blue5 !important;
+                } 
+                &:hover input[type="checkbox"] + .check {
+                    background-color: $blue5 !important;
+                }
+            }
+        }
+        &.available-metadatum-item:hover {
+            background-color: $blue5 !important;
+            border-color: $blue5 !important;
+        
+            &:after {
+                border-color: transparent $blue5 transparent transparent !important;
+            }
+            &:before {
+                border-color: transparent $blue5 transparent transparent !important;
+            }
+
         }
     }
     #mappers-options-dropdown {

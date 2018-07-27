@@ -37,7 +37,8 @@
                             :class="{
                                 'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name,
                                 'not-focusable-item': openedFilterId == filter.id, 
-                                'disabled-filter': filter.enabled == false
+                                'disabled-filter': filter.enabled == false,
+                                'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
                             }" 
                             v-for="(filter, index) in activeFilterList" 
                             :key="index">
@@ -130,7 +131,7 @@
             </div>
             <div class="column available-metadata-area">
                 <div class="field" >
-                    <h3 class="label has-text-primary"> {{ $i18n.get('label_available_metadata') }}</h3>
+                    <h3 class="label has-text-secondary"> {{ $i18n.get('label_available_metadata') }}</h3>
                     <draggable
                             v-if="availableMetadatumList.length > 0"
                             v-model="availableMetadatumList"
@@ -141,6 +142,7 @@
                             }">
                         <div 
                                 class="available-metadatum-item"
+                                :class="{'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel}"
                                 v-if="metadatum.enabled"
                                 v-for="(metadatum, index) in availableMetadatumList"
                                 :key="index"
@@ -730,6 +732,37 @@ export default {
             .grip-icon {
                 fill: white !important;
             }
+        }
+    }
+
+   .inherited-filter {
+        &.active-filter-item:hover:not(.not-sortable-item) {
+            background-color: $blue5;
+            border-color: $blue5;
+            
+            .switch.is-small {
+                input[type="checkbox"] + .check {
+                    background-color: $blue5 !important;
+                } 
+                &:hover input[type="checkbox"] + .check {
+                    background-color: $blue5 !important;
+                }
+            }
+        }
+    }
+    .inherited-metadatum {
+
+        &.available-metadatum-item:hover {
+            background-color: $blue5 !important;
+            border-color: $blue5 !important;
+        
+            &:after {
+                border-color: transparent $blue5 transparent transparent !important;
+            }
+            &:before {
+                border-color: transparent $blue5 transparent transparent !important;
+            }
+
         }
     }
 

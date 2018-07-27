@@ -254,8 +254,6 @@ export default {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;  
-            -webkit-transition: margin-bottom 0.2s linear; /* Safari */
-            transition: margin-bottom 0.2s linear; 
         }
 
         .back-button {
@@ -295,10 +293,10 @@ export default {
 
         li{
             margin-right: 0px;
-            transition: max-width 0.4s linear, width 0.4s linear;
-            -webkit-transition: max-width 0.4s linear, width 0.4s linear;
-            overflow: hidden;
-            max-width: 50px;
+            // transition: max-width 0.4s ease-in , width 0.4s ease-in ;
+            // -webkit-transition: max-width 0.4s ease-in, width 0.4s ease-in ;
+            // overflow: hidden;
+            // max-width: 50px;
 
             &.is-active {
                 background-color: $turquoise4;
@@ -312,20 +310,26 @@ export default {
                 }
             }
             &:hover {
-                max-width: 100%;
-                transition: max-width 0.4s linear, width 0.4s linear;
-                -webkit-transition: max-width 0.4s linear, width 0.4s linear;
-                 a {
-                     background-color: transparent;
-                     text-decoration: none; 
-                 }
-                .menu-text {
-                    opacity: 1.0;
-                    width: 100%;
-                    visibility: visible;
-                    transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
-                    -webkit-transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
+                background-color: $turquoise3;
+                // max-width: 100%;
+                // transition: max-width 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s;
+                // -webkit-transition: max-width 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s;
+                a {
+                    background-color: transparent;
+                    text-decoration: none; 
+                    color: white;
                 }
+                svg.activities-icon {
+                    fill: white !important;
+                }
+                // .menu-text {
+                //     opacity: 1.0;
+                //     width: 100%;
+                //     right: 0%;
+                //     visibility: visible;
+                //     transition: opacity 0.4s ease-out 0.2s, visibility 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s, right 0.4s ease-out  0.2s;
+                //     -webkit-transition: opacity 0.4s ease-out  0.2s , visibility 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s, right 0.4s ease-out  0.2s;
+                // }
             }
             a {
                 color: $gray4;
@@ -351,11 +355,12 @@ export default {
             .menu-text {
                 font-size: 14px;
                 display: inline-flex;
-                width: 0px;
-                opacity: 0.0;
-                visibility: hidden;
-                transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
-                -webkit-transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
+                // width: 0px;
+                // right: 100%;
+                // opacity: 0.0;
+                // visibility: hidden;
+                // transition: opacity 0.4s ease-in, visibility 0.4s ease-in , width 0.2s ease-in, right 0.2s ease-in;
+                // -webkit-transition: opacity 0.4s ease-in, visibility 0.4s ease-in, width 0.2s ease-in, right 0.2s ease-in;
             }
         }
 

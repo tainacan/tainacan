@@ -200,7 +200,7 @@
                 margin-right: 28px;
                 .control {
                     .search-header {
-                        border: 1px solid $gray3 !important;
+                        border: 1px solid $gray2 !important;
                         height: 27px;
                         font-size: 11px;
                         transition: width linear 0.15s;
