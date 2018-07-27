@@ -1,6 +1,6 @@
 <template>
     <div 
-            :class="{'primary-page': isRepositoryLevel}">
+            :class="{'repository-level-page': isRepositoryLevel}">
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
@@ -40,7 +40,7 @@
             </div>
             <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
-                    class="is-size-7 is-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
+                    class="is-size-7 has-text-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
 
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
@@ -368,7 +368,7 @@
                         </div>
                         <a
                                 @click="openAdvancedSearch = !openAdvancedSearch"
-                                class="is-size-7 is-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
+                                class="is-size-7 has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
                     </div>
                 </div>
             </div>

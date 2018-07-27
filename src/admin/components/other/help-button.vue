@@ -1,6 +1,6 @@
 <template>
     <span class="help-wrapper">
-        <a class="help-button">
+        <a class="help-button has-text-secondary">
             <b-icon 
                     size="is-small" 
                     icon="help-circle-outline"/></a>

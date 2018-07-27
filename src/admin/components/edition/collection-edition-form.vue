@@ -1,7 +1,7 @@
 <template>
     <div 
             class="page-container"
-            :class="{'primary-page' : isNewCollection }">
+            :class="{'repository-level-page' : isNewCollection }">
         <tainacan-title />
         <form 
                 v-if="collection != null && collection != undefined" 
