@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="is-fullheight">
-            <div class="page-container primary-page">
+            <div class="page-container repository-level-page">
                 <tainacan-title/>
                 <h1 class="event-titles">{{ event.description }}</h1>
                 <div

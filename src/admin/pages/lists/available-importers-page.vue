@@ -1,5 +1,5 @@
 <template>
-    <div class="primary-page page-container">
+    <div class="repository-level-page page-container">
         <tainacan-title />
 
         <h3>{{ $i18n.get('label_available_importers') }}</h3>

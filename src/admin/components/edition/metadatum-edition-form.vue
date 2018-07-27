@@ -40,6 +40,21 @@
                     v-model="editForm.description"
                     @focus="clearErrors('description')"/>
         </b-field>
+            
+        <b-field
+                :addons="false">
+            <label class="label is-inline">
+                {{ $i18n.get('label_semantic_uri') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('metadata', 'semantic_uri')"
+                        :message="$i18n.getHelperMessage('metadata', 'semantic_uri')"/>
+            </label>
+            <b-input
+                    v-model="editForm.semantic_uri"
+                    name="semantic_uri"
+                    type="url"
+                    @focus="clearErrors('semantic_uri')"/>
+        </b-field>
 
         <b-field
                 :addons="false"

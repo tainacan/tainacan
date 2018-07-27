@@ -37,9 +37,9 @@
                             tag="a"
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="format-list-bulleted-type"/>
+                        <span class="icon">
+                            <i class="mdi mdi-format-list-bulleted-type"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
                 </li>
@@ -48,9 +48,9 @@
                             tag="a"
                             to="/filters"
                             :class="activeRoute == 'FiltersPage' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="filter"/>
+                        <span class="icon">
+                            <i class="mdi mdi-filter"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
                 </li>
@@ -59,9 +59,7 @@
                             tag="a"
                             to="/taxonomies"
                             :class="activeRoute == 'Page' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="shape"/>
+                        <taxonomies-icon />
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
                 </li>
@@ -81,6 +79,8 @@
 
 <script>
 import ActivitiesIcon from '../other/activities-icon.vue';
+import TaxonomiesIcon from '../other/taxonomies-icon.vue';
+
 export default {
     name: 'PrimaryMenu',
     props: {
@@ -88,7 +88,8 @@ export default {
         activeRoute: '/collections'
     },
     components: {
-        ActivitiesIcon
+        ActivitiesIcon,
+        TaxonomiesIcon
     },
 }
 </script>
@@ -144,6 +145,18 @@ export default {
 
                 .activities-icon {
                     fill: white;
+                    margin-bottom: -4px;
+                }
+                .taxonomies-icon {
+                    fill: white;
+                    margin-bottom: -2px;
+                }
+                .icon {
+                    height: auto;
+                    width: auto;
+                    i {
+                        font-size: 18px !important;
+                    }
                 }
             }
 

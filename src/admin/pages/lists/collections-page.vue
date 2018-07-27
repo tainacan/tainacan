@@ -1,5 +1,5 @@
 <template>
-    <div class="primary-page page-container">
+    <div class="repository-level-page page-container">
         <b-loading :active.sync="isLoadingMetadatumMappers"/>
         <tainacan-title />
         <div

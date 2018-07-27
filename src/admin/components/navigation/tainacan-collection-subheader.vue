@@ -1,18 +1,20 @@
 <template>
     <div
             id="tainacan-subheader" 
-            class="level secondary-page">
-        <div class="level-left">
+            class="secondary-page">
+           
+        <div class="back-button">
+            <button     
+                    @click="$router.go(-1)"
+                    class="button is-turquoise4">
+                <span class="icon">
+                    <i class="mdi mdi-chevron-left"/>
+                </span>
+            </button>
+        </div>
+        <div class="level">      
+                                        <div class="level-left">
             <div class="level-item">
-                <div class="back-button">
-                    <button     
-                            @click="$router.go(-1)"
-                            class="button is-turquoise4">
-                        <span class="icon">
-                            <i class="mdi mdi-chevron-left"/>
-                        </span>
-                    </button>
-                </div>
                 <nav class="breadcrumbs">
                     <router-link 
                             tag="a" 
@@ -32,6 +34,7 @@
                 </nav>
             </div>
         </div>
+   
         <ul class="menu-list level-right">
             <li 
                     :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
@@ -98,6 +101,7 @@
             </li>
           
         </ul>
+        </div>
     </div>
 </template>
 
@@ -220,7 +224,7 @@ export default {
     
     // Tainacan Header
     #tainacan-subheader {
-        background-color: $gray2;
+        background-color: $gray1;
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
@@ -234,6 +238,10 @@ export default {
         left: 0;
         right: 0;
         z-index: 9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
         transition: padding 0.3s, height 0.3s;
 
         h1 {
@@ -246,25 +254,25 @@ export default {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;  
-            -webkit-transition: margin-bottom 0.2s linear; /* Safari */
-            transition: margin-bottom 0.2s linear; 
         }
 
         .back-button {
             padding: 0;
-            margin: 0 12px 0 0;
+            margin: 0;
             height: 42px;
-            width: 42px;
-            background-color: $turquoise4;
-            color: white;
+            width: $page-side-padding;
+            min-width: $page-side-padding;
+            background-color: $gray1;
+            color: $turquoise4;
             display: flex;
             align-items: center;
 
             button, 
             button:hover, 
             button:focus, 
-            button:active{
-                color: white;
+            button:active {
+                width: 100%;
+                color: $turquoise4;
                 background-color: transparent !important;
                 border: none;
                 .icon i {
@@ -279,49 +287,64 @@ export default {
             color: #1d1d1d;
         }
 
+        .level {
+            width: 100%;
+        }
+
         li{
             margin-right: 0px;
-            transition: max-width 0.4s linear, width 0.4s linear;
-            -webkit-transition: max-width 0.4s linear, width 0.4s linear;
-            overflow: hidden;
-            max-width: 50px;
+            transition: background-color 0.2s ease;
+            // transition: max-width 0.4s ease-in , width 0.4s ease-in ;
+            // -webkit-transition: max-width 0.4s ease-in, width 0.4s ease-in ;
+            // overflow: hidden;
+            // max-width: 50px;
 
             &.is-active {
                 background-color: $turquoise4;
                 a { 
                     background-color: $turquoise4;
+                    transition: background-color 0.2s ease;
                     color: white;
                     text-decoration: none;
                 }
                 svg.activities-icon {
+                    transition: fill 0.2s ease;
                     fill: white !important;
                 }
             }
             &:hover {
-                max-width: 100%;
-                transition: max-width 0.4s linear, width 0.4s linear;
-                -webkit-transition: max-width 0.4s linear, width 0.4s linear;
-                 a {
-                     background-color: transparent;
-                     text-decoration: none; 
-                 }
-                .menu-text {
-                    opacity: 1.0;
-                    width: 100%;
-                    visibility: visible;
-                    transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
-                    -webkit-transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
+                background-color: $turquoise3;
+                // max-width: 100%;
+                // transition: max-width 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s;
+                // -webkit-transition: max-width 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s;
+                a {
+                    background-color: transparent;
+                    text-decoration: none; 
+                    color: white;
                 }
+                svg.activities-icon {
+                    fill: white !important;
+                }
+                // .menu-text {
+                //     opacity: 1.0;
+                //     width: 100%;
+                //     right: 0%;
+                //     visibility: visible;
+                //     transition: opacity 0.4s ease-out 0.2s, visibility 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s, right 0.4s ease-out  0.2s;
+                //     -webkit-transition: opacity 0.4s ease-out  0.2s , visibility 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s, right 0.4s ease-out  0.2s;
+                // }
             }
             a {
                 color: $gray4;
                 text-align: center;
                 white-space: nowrap;
-                padding: 1.0em 10px;
+                padding: 10px;
                 min-width: 50px;
                 line-height: 22px;
                 border-radius: 0px;
                 position: relative;
+                align-items: center;
+                display: flex;
             }
             a:focus{
                 box-shadow: none;
@@ -329,19 +352,20 @@ export default {
             .icon {
                 margin: 0;
                 padding: 0;
-
                 i {
                     font-size: 19px !important;
                 }
             }
             .menu-text {
+                margin-left: 8px;
                 font-size: 14px;
                 display: inline-flex;
-                width: 0px;
-                opacity: 0.0;
-                visibility: hidden;
-                transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
-                -webkit-transition: opacity 0.2s linear, visibility 0.2s linear, width 0.4s linear;
+                // width: 0px;
+                // right: 100%;
+                // opacity: 0.0;
+                // visibility: hidden;
+                // transition: opacity 0.4s ease-in, visibility 0.4s ease-in , width 0.2s ease-in, right 0.2s ease-in;
+                // -webkit-transition: opacity 0.4s ease-in, visibility 0.4s ease-in, width 0.2s ease-in, right 0.2s ease-in;
             }
         }
 

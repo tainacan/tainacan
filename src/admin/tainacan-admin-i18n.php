@@ -271,6 +271,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 	'label_unamed_process'                       	 => __( 'Unamed process', 'tainacan' ),
 	'label_import_collection'                      	 => __( 'Import collection', 'tainacan' ),
+    'label_semantic_uri'                      	     => __( 'Semantic Uri', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

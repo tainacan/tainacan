@@ -2,7 +2,7 @@
     <div>
         <div
                 :class="{
-                    'primary-page': isRepositoryLevel,
+                    'repository-level-page': isRepositoryLevel,
                     'page-container': isRepositoryLevel
                 }">
             <tainacan-title />
