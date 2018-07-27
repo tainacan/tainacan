@@ -794,13 +794,6 @@ export default {
                 this.createNewCollection();
             }
         }
-    },
-    mounted() {
-        if (!this.$route.path.includes("new")) {
-            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
-            });
-        }
     }
 
 }

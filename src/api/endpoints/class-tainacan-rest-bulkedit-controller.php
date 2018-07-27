@@ -56,6 +56,33 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				),
 			)
         );
+        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/trash',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'trash_items'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+				),
+			)
+        );
+        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/untrash',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'untrash_items'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+				),
+			)
+        );
+        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/delete_items',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'delete_items'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+				),
+			)
+        );
         register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set',
 			array(
 				array(
@@ -193,6 +220,63 @@ class REST_Bulkedit_Controller extends REST_Controller {
     public function replace_value($request) {
         
         return $this->generic_action('replace_value', $request, ['old_value', 'new_value']);
+
+    }
+
+    public function trash_items($request) {
+        $group_id = $request['group_id'];
+
+        $args = ['id' => $group_id];
+
+        $bulk = new \Tainacan\Bulk_Edit($args);
+
+        $action = $bulk->trash_items();
+
+        if ( is_wp_error($action) ) {
+            return new \WP_REST_Response([
+                'error_message' => $action->get_error_message(),
+            ], 400);
+        } else {
+            return new \WP_REST_Response($action, 200);
+        }
+
+    }
+
+    public function untrash_items($request) {
+        $group_id = $request['group_id'];
+
+        $args = ['id' => $group_id];
+
+        $bulk = new \Tainacan\Bulk_Edit($args);
+
+        $action = $bulk->untrash_items();
+
+        if ( is_wp_error($action) ) {
+            return new \WP_REST_Response([
+                'error_message' => $action->get_error_message(),
+            ], 400);
+        } else {
+            return new \WP_REST_Response($action, 200);
+        }
+
+    }
+
+    public function delete_items($request) {
+        $group_id = $request['group_id'];
+
+        $args = ['id' => $group_id];
+
+        $bulk = new \Tainacan\Bulk_Edit($args);
+
+        $action = $bulk->delete_items();
+
+        if ( is_wp_error($action) ) {
+            return new \WP_REST_Response([
+                'error_message' => $action->get_error_message(),
+            ], 400);
+        } else {
+            return new \WP_REST_Response($action, 200);
+        }
 
     }
 

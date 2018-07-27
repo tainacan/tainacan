@@ -842,6 +842,104 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	/**
+	 * @group trash
+	 */
+	function test_trash() {
+
+		$ids = array_slice($this->items_ids, 2, 17);
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $ids,
+		]);
+
+		
+		$this->assertEquals( 17, $bulk->trash_items() );
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$trashed = $Tainacan_Items->fetch_ids(['post_status' => 'trash', 'posts_per_page' => -1]);
+		$rest = $Tainacan_Items->fetch_ids(['posts_per_page' => -1]);
+
+		
+		$this->assertEquals(17, sizeof($trashed));
+		$this->assertEquals(40 - 17, sizeof($rest));
+		
+
+	}
+
+	/**
+	 * @group trash
+	 */
+	function test_untrash() {
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$items = $Tainacan_Items->fetch(['posts_per_page' => -1], [], 'OBJECT');
+
+		// Lets set 17 as private
+		$i = 1;
+		foreach ($items as $item) {
+			
+			If ($i > 17) break;
+			
+			$item->set_status('private');
+			$item->validate();
+			$Tainacan_Items->update($item);
+			
+			$i++;
+		}
+
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $this->items_ids,
+		]);
+		
+		$this->assertEquals( 40, $bulk->trash_items() ); // trash all items
+
+		$trashed = $Tainacan_Items->fetch_ids(['post_status' => 'trash', 'posts_per_page' => -1]);
+		$rest = $Tainacan_Items->fetch_ids(['posts_per_page' => -1]);
+
+		$this->assertEquals(40, sizeof($trashed));
+		$this->assertEquals(0, sizeof($rest));
+
+		$this->assertEquals( 40, $bulk->untrash_items() ); // untrash all items
+		
+		$trashed = $Tainacan_Items->fetch_ids(['post_status' => 'trash', 'posts_per_page' => -1]);
+		$private = $Tainacan_Items->fetch_ids(['post_status' => 'private', 'posts_per_page' => -1]);
+		$public = $Tainacan_Items->fetch_ids(['post_status' => 'publish', 'posts_per_page' => -1]);
+
+		$this->assertEquals(0, sizeof($trashed));
+		$this->assertEquals(17, sizeof($private));
+		$this->assertEquals(40 - 17, sizeof($public));
+		
+
+	}
+
+	/**
+	 * @group trash
+	 */
+	function test_delete_items() {
+
+		$ids = array_slice($this->items_ids, 2, 17);
+		
+		$bulk = new \Tainacan\Bulk_Edit([
+			'items_ids' => $ids,
+		]);
+
+		$this->assertEquals( 17, $bulk->delete_items() );
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$trashed = $Tainacan_Items->fetch_ids(['post_status' => 'trash', 'posts_per_page' => -1]);
+		$rest = $Tainacan_Items->fetch_ids(['posts_per_page' => -1]);
+
+		
+		$this->assertEquals(0, sizeof($trashed));
+		$this->assertEquals(40 - 17, sizeof($rest));
+		
+
+	}
 
 
 }

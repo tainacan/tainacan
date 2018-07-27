@@ -13,4 +13,12 @@
         color: $gray4;
         background-color: $gray2;
     }
+    &::placeholder,
+    &::-ms-input-placeholder,
+    &:-ms-input-placeholder,
+    &:-moz-placeholder,
+    &::-moz-placeholder,
+    &::-webkit-input-placeholder {
+        color: $gray4 !important;
+    }
 }
