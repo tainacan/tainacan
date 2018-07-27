@@ -14,6 +14,29 @@ abstract class Repository {
 	public $entities_type = '\Tainacan\Entities\Entity';
 
 	/**
+	 * If set to false, no logs will be generated upon insertion or update
+	 * 
+	 * use enable_logs() and disable_logs() to set the values
+	 * @var bool
+	 */
+	private $use_logs = true;
+
+	/**
+	 * Disable creation of logs while inerting and updating entities
+	 */
+	public function disable_logs() {
+		$this->use_logs = false;
+	}
+
+	/**
+	 * Enable creation of logs while inerting and updating entities
+	 * if it was disabled
+	 */
+	public function enable_logs() {
+		$this->use_logs = true;
+	}
+
+	/**
 	 * Register hooks
 	 */
 	protected function __construct() {
@@ -81,19 +104,22 @@ abstract class Repository {
 		$old               = '';
 
 		$diffs = [];
-		if ( $obj->get_id() ) {
-
-			$old = $obj->get_repository()->fetch( $obj->get_id() );
-
-			if ( method_exists( $old, 'get_status' ) && $old->get_status() === 'auto-draft' ) {
-				$is_update = false;
-			} else {
-				$is_update = true;
+		
+		if ($this->use_logs) {
+			if ( $obj->get_id() ) {
+	
+				$old = $obj->get_repository()->fetch( $obj->get_id() );
+	
+				if ( method_exists( $old, 'get_status' ) && $old->get_status() === 'auto-draft' ) {
+					$is_update = false;
+				} else {
+					$is_update = true;
+				}
+	
+				$diffs = $this->diff( $old, $obj );
 			}
-
-			$diffs = $this->diff( $old, $obj );
 		}
-
+		
 		$map = $this->get_map();
 
 		// First iterate through the native post properties
@@ -137,9 +163,10 @@ abstract class Repository {
 		}
 
 		// TODO: Logs for header image insert and update
-		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
-		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
-
+		if ($this->use_logs) {
+			do_action( 'tainacan-insert', $obj, $diffs, $is_update );
+			do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
+		}
 		// return a brand new object
 		return new $this->entities_type( $obj->WP_Post );
 	}
