@@ -430,7 +430,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    foreach ($metadata as $metadatum) {
 	        $this->assertTrue(array_key_exists($metadatum->get_slug(), $mapper->metadata));
 	        if(! array_key_exists('core_metadatum', $mapper->metadata[$metadatum->get_slug()]) || $mapper->metadata[$metadatum->get_slug()]['core_metadatum'] == false) {
-	           $this->assertEquals($mapper->metadata[$metadatum->get_slug()]['URI'], $metadatum->get_description());
+	            $this->assertEquals($mapper->metadata[$metadatum->get_slug()]['URI'], $metadatum->get_semantic_uri());
 	        }
 	        $this->assertEquals($mapper->metadata[$metadatum->get_slug()]['label'], $metadatum->get_name());
 	    }
