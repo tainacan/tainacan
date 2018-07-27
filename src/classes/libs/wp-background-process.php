@@ -59,9 +59,15 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 
 			$this->cron_hook_identifier     = $this->identifier . '_cron';
 			$this->cron_interval_identifier = $this->identifier . '_cron_interval';
+			$this->cron_hook_check_identifier = $this->identifier . '_cron_check';
 
 			add_action( $this->cron_hook_identifier, array( $this, 'handle_cron_healthcheck' ) );
+			add_action( $this->cron_hook_check_identifier, array( $this, 'handle_cron_healthcheck_check' ) );
 			add_filter( 'cron_schedules', array( $this, 'schedule_cron_healthcheck' ) );
+
+			if ( ! wp_next_scheduled( $this->cron_hook_check_identifier ) ) {
+				wp_schedule_event( time(), $this->cron_interval_identifier, $this->cron_hook_check_identifier );
+			}
 		}
 
 		/**
@@ -449,6 +455,28 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 			$this->handle();
 
 			exit;
+		}
+
+		/**
+		 * Checks the healthcheck
+		 * 
+		 * If there is an open process, not running, and not scheduled. schedule it.
+		 *
+		 */
+		public function handle_cron_healthcheck_check() {
+			if ( $this->is_process_running() ) {
+				// Background process already running.
+				exit;
+			}
+
+			if ( $this->is_queue_empty() ) {
+				// No data to process.
+				$this->clear_scheduled_event();
+				exit;
+			}
+
+			$this->schedule_event();
+
 		}
 
 		/**
