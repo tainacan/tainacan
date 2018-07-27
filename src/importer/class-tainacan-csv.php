@@ -6,7 +6,8 @@ use Tainacan;
 class CSV extends Importer {
 
 	public function __construct($attributes = array()) {
-		parent::__construct($attributes);
+        parent::__construct($attributes);
+        $this->items_repo = \Tainacan\Repositories\Items::get_instance();
 		
 		$this->set_default_options([
             'delimiter' => ',',
@@ -119,7 +120,43 @@ class CSV extends Importer {
         }
         
         $this->add_log('Success to proccess index: ' . $index  );
+        $this->add_transient('actual_index', $index); // add reference for insert
         return $processedItem;
+    }
+
+    /**
+     * insert processed item from source to Tainacan, adapted to insert their attachments and document
+     *
+     * @param array $processed_item Associative array with metadatum source's as index with
+     *                              its value or values
+     * @param integer $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+     * 
+     * @return Tainacan\Entities\Item Item inserted
+     */
+    public function insert( $processed_item, $collection_index ) {
+        $inserted_item = super::insert( $processed_item, $collection_index );
+
+        $column_document = $this->get_option('document_index');
+        $column_attachment = $this->get_option('attachment_index');
+
+        if( !empty($column_document) || !empty( $column_attachment ) ){
+            
+            $index = $this->get_transient('actual_index');
+            $file =  new \SplFileObject( $this->tmp_file, 'r' );
+            $file->setFlags(\SplFileObject::SKIP_EMPTY);
+            $file->seek( $index );
+            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
+
+            if( is_array($values) && !empty($column_document) ){
+                $this->handle_document( $values[$column_document], $inserted_item);
+            }
+
+            if( is_array($values) && !empty($column_attachment) ){
+                $this->handle_attachment( $values[$column_attachment], $inserted_item);
+            }
+        }
+
+        return $inserted_item;
     }
 
     /**
@@ -203,5 +240,74 @@ class CSV extends Importer {
             default:
                 return $string;
         }
+    }
+
+    /**
+     * method responsible to insert the item document
+     */
+    private function handle_document($column_value, $item_inserted){
+        $TainacanMedia = \Tainacan\Media::get_instance();
+
+        if( strpos($column_value,'url:') === 0 ){
+            $correct_value = substr($column_value, 4);
+            $item_inserted->set_document( $correct_value );
+            $item_inserted->set_document_type( 'url' );
+
+            if( $item_inserted->validate() )
+                $this->items_repo->update($item_inserted);
+
+        } else if( strpos($column_value,'text:') === 0 ){
+            $correct_value = substr($column_value, 5);
+            $item_inserted->set_document( $correct_value );
+            $item_inserted->set_document_type( 'text' );
+            
+            if( $item_inserted->validate() )
+                $this->items_repo->update($item_inserted);
+
+        } else if( strpos($column_value,'file:') === 0 ){
+            $correct_value = substr($column_value, 5);
+            
+            if( filter_var($correct_value, FILTER_VALIDATE_URL) ){
+                $id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
+
+                if(!$id){
+                    $this->add_log('Error in Document file imported from URL ' . $correct_value);
+                    return false;
+                }
+
+                $item_inserted->set_document( $id );
+                $item_inserted->set_document_type( 'attachment' );
+                $this->add_log('Document file URL imported from ' . $correct_value);
+
+                if( $item_inserted->validate() )
+                    $this->items_repo->update($item_inserted);
+
+                return true;
+            } 
+
+            $server_path_files = $this->get_option('server_path');
+            $id = $TainacanMedia->insert_attachment_from_file($correct_value, $item_inserted->get_id());
+
+            if(!$id){
+                $this->add_log('Error in Document file imported from server ' . $correct_value);
+                return false;
+            }
+
+            $item_inserted->set_document( $id );
+            $item_inserted->set_document_type( 'attachment' );
+            $this->add_log('Document file in Server imported from ' . $correct_value);
+
+            if( $item_inserted->validate() )
+                $this->items_repo->update($item_inserted);
+
+            return true;
+        }
+    }
+
+    /**
+     * method responsible to insert the item document
+     */
+    private function handle_attachment( $column_value, $item_inserted){
+
     }
 }
