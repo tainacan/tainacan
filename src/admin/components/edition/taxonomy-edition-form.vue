@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="page-container primary-page">
+        <div class="page-container repository-level-page">
             <tainacan-title />
             <b-tabs v-model="activeTab">    
                 <b-tab-item :label="$i18n.get('taxonomy')">

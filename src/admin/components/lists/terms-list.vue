@@ -31,7 +31,7 @@
                     :key="term.id"
                     @click.prevent="isEditingTerm ? null : loadTerms(term.id)"> 
                 <a
-                        class="is-small"
+                        class="is-small has-text-secondary"
                         type="button"
                         @click="addNewChildTerm(term, index)"
                         :disabled="isEditingTerm">

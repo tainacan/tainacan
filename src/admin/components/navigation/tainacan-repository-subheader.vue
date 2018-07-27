@@ -4,7 +4,7 @@
             class="level secondary-page"
             :class="{'is-menu-compressed': isMenuCompressed, 'is-repository-level' : isRepositoryLevel}">
         <h1 v-if="isRepositoryLevel">Nome do Site</h1>
-        <h1 v-else>{{ collectionName }}</h1>
+        <h1 v-else>{{ $i18n.get('collection') + '' }} <span class="has-text-weight-bold">{{ collectionName }}</span></h1>
     </div>
 </template>
 
@@ -70,7 +70,6 @@ export default {
 
         h1 {
             font-size: 18px;
-            font-weight: 500;
             color: white;
             line-height: 18px;
             max-width: 100%;

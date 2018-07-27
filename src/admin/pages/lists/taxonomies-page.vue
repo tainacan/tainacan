@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="primary-page page-container">
+        <div class="repository-level-page page-container">
             <tainacan-title />
             <div 
                     class="sub-header" 

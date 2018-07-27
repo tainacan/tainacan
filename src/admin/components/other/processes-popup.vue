@@ -192,7 +192,7 @@ export default {
     }
 
     .processes-popup{
-        background-color: #c1dae0;
+        background-color: $turquoise2;
         width: 320px;
         max-width: 100%;
         position: absolute;
