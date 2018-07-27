@@ -134,7 +134,7 @@ class CSV extends Importer {
      * @return Tainacan\Entities\Item Item inserted
      */
     public function insert( $processed_item, $collection_index ) {
-        $inserted_item = super::insert( $processed_item, $collection_index );
+        $inserted_item = parent::insert( $processed_item, $collection_index );
 
         $column_document = $this->get_option('document_index');
         $column_attachment = $this->get_option('attachment_index');
