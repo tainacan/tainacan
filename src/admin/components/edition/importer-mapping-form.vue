@@ -1,11 +1,11 @@
 <template>
     <div 
-            class="primary-page page-container">
+            class="repository-level-page page-container">
          <div class="tainacan-page-title">
             <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
             <a 
                     @click="$router.go(-1)"
-                    class="back-link is-secondary">
+                    class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
             </a>
             <hr>
@@ -119,7 +119,7 @@
                     </b-modal>
                     <a
                             v-if="collectionId != null && collectionId != undefined"
-                            class="is-inline is-pulled-right add-link"
+                            class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
                         <b-icon
                                 icon="plus-circle"

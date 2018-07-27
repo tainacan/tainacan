@@ -1,18 +1,20 @@
 <template>
     <div
             id="tainacan-subheader" 
-            class="level secondary-page">
-        <div class="level-left">
+            class="secondary-page">
+           
+        <div class="back-button">
+            <button     
+                    @click="$router.go(-1)"
+                    class="button is-turquoise4">
+                <span class="icon">
+                    <i class="mdi mdi-chevron-left"/>
+                </span>
+            </button>
+        </div>
+        <div class="level">      
+                                        <div class="level-left">
             <div class="level-item">
-                <div class="back-button">
-                    <button     
-                            @click="$router.go(-1)"
-                            class="button is-turquoise4">
-                        <span class="icon">
-                            <i class="mdi mdi-chevron-left"/>
-                        </span>
-                    </button>
-                </div>
                 <nav class="breadcrumbs">
                     <router-link 
                             tag="a" 
@@ -32,6 +34,7 @@
                 </nav>
             </div>
         </div>
+   
         <ul class="menu-list level-right">
             <li 
                     :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
@@ -98,6 +101,7 @@
             </li>
           
         </ul>
+        </div>
     </div>
 </template>
 
@@ -220,7 +224,7 @@ export default {
     
     // Tainacan Header
     #tainacan-subheader {
-        background-color: $gray2;
+        background-color: $gray1;
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
@@ -234,6 +238,10 @@ export default {
         left: 0;
         right: 0;
         z-index: 9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
         transition: padding 0.3s, height 0.3s;
 
         h1 {
@@ -252,19 +260,21 @@ export default {
 
         .back-button {
             padding: 0;
-            margin: 0 12px 0 0;
+            margin: 0;
             height: 42px;
-            width: 42px;
-            background-color: $turquoise4;
-            color: white;
+            width: $page-side-padding;
+            min-width: $page-side-padding;
+            background-color: $gray1;
+            color: $turquoise4;
             display: flex;
             align-items: center;
 
             button, 
             button:hover, 
             button:focus, 
-            button:active{
-                color: white;
+            button:active {
+                width: 100%;
+                color: $turquoise4;
                 background-color: transparent !important;
                 border: none;
                 .icon i {
@@ -277,6 +287,10 @@ export default {
             font-size: 12px;
             line-height: 12px;
             color: #1d1d1d;
+        }
+
+        .level {
+            width: 100%;
         }
 
         li{

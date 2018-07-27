@@ -64,13 +64,40 @@ a:hover {
     }
 }
 
-// Page settings
-.primary-page {
+// Repository-level pages
+.repository-level-page {
     margin-top: 94px; 
     height: $page-height !important;
 
     @media screen and (max-width: 769px) {
         margin-top: 0; 
+    }
+
+    .is-primary, .is-primary:hover, .is-primary:focus {
+        background-color: $blue4 !important;
+    }
+    .is-secondary, .is-secondary:hover, .is-secondary:focus {
+        background-color: $blue5 !important;
+    }
+    .has-text-primary, .has-text-primary:hover, .is-has-text-primary:focus {
+        color: $blue4 !important;
+    }
+    a, a:hover,
+    .has-text-secondary, .has-text-secondary:hover, .is-has-text-secondary:focus {
+        color: $blue5 !important;
+    }
+    .tabs {
+        li.is-active a {
+            border-bottom: 5px solid $blue5;
+            color: $blue5; 
+        }
+    }
+    .select:not(.is-multiple)::after {
+        color: $blue5;
+
+        option:checked, option:hover {
+            background-color: $gray1 !important;
+        }
     }
 }
 // Generic page container

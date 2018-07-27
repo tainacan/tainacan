@@ -4,7 +4,7 @@
         <h1>{{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
         <a 
                 @click="$router.go(-1)"
-                class="back-link is-secondary">
+                class="back-link has-text-secondary">
             {{ $i18n.get('back') }}
         </a>
         <hr>

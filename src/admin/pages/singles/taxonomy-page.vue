@@ -1,6 +1,6 @@
 <template>
     <div class="columns is-fullheight">
-        <div class="page-container primary-page">
+        <div class="page-container repository-level-page">
             <div class="card">
                 <div class="card-content">
                     <p class="title">

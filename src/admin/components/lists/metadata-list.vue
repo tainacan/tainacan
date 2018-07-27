@@ -113,7 +113,7 @@
                 
                     <div class="column available-metadata-area" >
                         <div class="field">
-                            <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
+                            <h3 class="label has-text-secondary">{{ $i18n.get('label_available_metadata_types') }}</h3>
                             <draggable 
                                     v-model="availableMetadatumList"
                                     :options="{ 
@@ -935,7 +935,6 @@ export default {
         }
 
         h3 {
-            color: $secondary;
             margin: 0.2em 0em 1em -1.2em;
             font-weight: 500;
         }

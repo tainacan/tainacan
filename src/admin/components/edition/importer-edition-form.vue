@@ -1,6 +1,6 @@
 <template>
     <div 
-            class="primary-page page-container">
+            class="repository-level-page page-container">
         <tainacan-title />
         <form 
                 class="tainacan-form" 

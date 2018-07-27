@@ -130,7 +130,7 @@
             </div>
             <div class="column available-metadata-area">
                 <div class="field" >
-                    <h3 class="label"> {{ $i18n.get('label_available_metadata') }}</h3>
+                    <h3 class="label has-text-primary"> {{ $i18n.get('label_available_metadata') }}</h3>
                     <draggable
                             v-if="availableMetadatumList.length > 0"
                             v-model="availableMetadatumList"
@@ -466,15 +466,6 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .page-title {
-        border-bottom: 1px solid $secondary;
-        h2 {
-            color: $blue5;
-            font-weight: 500;
-        }
-        margin: 1em 0em 2.0em 0em;
-    }
-
     .loading-spinner {
         animation: spinAround 500ms infinite linear;
         border: 2px solid #dbdbdb;
@@ -657,7 +648,6 @@ export default {
         }
 
         h3 {
-            color: $secondary;
             margin: 0.2em 0em 1em -1.2em;
             font-weight: 500;
         }
