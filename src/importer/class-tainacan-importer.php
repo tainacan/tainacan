@@ -827,6 +827,8 @@ abstract class Importer {
 			
             if($insertedItem->validate()) {
 				$insertedItem = $Tainacan_Items->update( $insertedItem );
+
+				$this->after_inserted_item(  $insertedItem, $collection_index );
             } else {
 	            $this->add_error_log( 'Error publishing Item'  ); 
 	            $this->add_error_log( $insertedItem->get_errors() ); 
@@ -840,7 +842,15 @@ abstract class Importer {
             return false;
         }
 
-    }
+	}
+	
+	/**
+	 * allow importers executes process after item is insertes
+	 * @param array $insertedItem Associative array with inserted item
+     * @param integer $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+	 * 
+	 */
+	public function after_inserted_item($insertedItem, $collection_index){}
 
     /**
      * runs one iteration
