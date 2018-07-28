@@ -254,33 +254,35 @@ abstract class Background_Process extends \WP_Background_Process {
 		// while we are debugging performance
 		$newRequest = true;
 		
-		
-		do {
-			$batch = $this->get_batch();
+		$batch = $this->get_batch();
 
-			if ($newRequest) {
-				$this->write_log($batch->key, ['New Request']);
-				$newRequest = false;
-			}
-			
-			// TODO: find a way to catch and log PHP errors as
+		if ($newRequest) {
+			$this->write_log($batch->key, ['New Request']);
+			$newRequest = false;
+		}
+		
+		// TODO: find a way to catch and log PHP errors as
+
+		$task = $batch;
+
+		do {
 			try {
-				$task = $this->task( $batch );
+				$task = $this->task( $task );
 			} catch (\Exception $e) {
 				// TODO: Add Stacktrace
 				$this->write_error_log($batch->key, ['Fatal Error: ' . $e->getMessage()]);
 				$this->write_error_log($batch->key, ['Process aborted']);
 				$task = false;
 			}
-			
+		} while ( false !== $task && ! $this->time_exceeded() && ! $this->memory_exceeded() );
 
-			// Update or close current batch.
-			if ( false !== $task )  {
-				$this->update( $batch->key, $task );
-			} else {
-				$this->close( $batch->key );
-			}
-		} while ( ! $this->time_exceeded() && ! $this->memory_exceeded() && ! $this->is_queue_empty() );
+		
+
+		if ( false !== $task )  {
+			$this->update( $batch->key, $task );
+		} else {
+			$this->close( $batch->key );
+		}
 
 		$this->unlock_process();
 
@@ -389,5 +391,5 @@ abstract class Background_Process extends \WP_Background_Process {
 		return $return;
 		
 	}
-	
+
 }

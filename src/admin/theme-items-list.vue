@@ -24,16 +24,17 @@ export default {
 
     // Buefy imports
     @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
-    $speed-slow: 0.5s;
-    @import "../../node_modules/buefy/src/scss/utils/_functions.scss";
+    @import "../../node_modules/buefy/src/scss/utils/_all.scss";
     @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../node_modules/buefy/src/scss/components/_tag.scss";
     @import "../../node_modules/buefy/src/scss/components/_loading.scss";
     @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
+    @import "../../node_modules/buefy/src/scss/components/_modal.scss";
 
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
+    @import "../admin/scss/_modals.scss";
     @import "../admin/scss/_pagination.scss";
     @import "../admin/scss/_tags.scss";
     @import "../admin/scss/_selects.scss";
@@ -265,6 +266,34 @@ export default {
 
                 @media screen and (min-width: 769px) and (max-width: 1023px) {
                     margin-left: 25% !important;
+                }
+            }
+        }
+
+        .filters-mobile-modal {
+            // top: 95px;
+
+            .modal-close {
+                right: calc(8.3333333% + 20px);
+                background-color: $gray1;
+
+                &:hover {
+                    background-color: $gray1;   
+                }
+                &::before, &::after {
+                    background-color: $secondary;
+                }
+            }
+            .modal-content {
+                margin: 0 8.3333333% 0 0;
+                padding: 24px $page-side-padding;
+                border-radius: 0;
+                height: 100%;
+                max-height: 100%;
+                overflow-y: auto;
+
+                h3 {
+                    font-size: 100%;
                 }
             }
         }

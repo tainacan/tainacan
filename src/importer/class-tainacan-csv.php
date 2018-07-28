@@ -15,7 +15,7 @@ class CSV extends Importer {
             'encode' => 'utf8',
             'enclosure' => '"'
 		]);
-		
+        
     }
 
     /**
@@ -125,17 +125,9 @@ class CSV extends Importer {
     }
 
     /**
-     * insert processed item from source to Tainacan, adapted to insert their attachments and document
-     *
-     * @param array $processed_item Associative array with metadatum source's as index with
-     *                              its value or values
-     * @param integer $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
-     * 
-     * @return Tainacan\Entities\Item Item inserted
+     * @inheritdoc
      */
-    public function insert( $processed_item, $collection_index ) {
-        $inserted_item = parent::insert( $processed_item, $collection_index );
-
+    public function after_inserted_item( $inserted_item, $collection_index ) {
         $column_document = $this->get_option('document_index');
         $column_attachment = $this->get_option('attachment_index');
 
@@ -155,8 +147,6 @@ class CSV extends Importer {
                 $this->handle_attachment( $values[$column_attachment], $inserted_item);
             }
         }
-
-        return $inserted_item;
     }
 
     /**
@@ -308,6 +298,44 @@ class CSV extends Importer {
      * method responsible to insert the item document
      */
     private function handle_attachment( $column_value, $item_inserted){
+        $TainacanMedia = \Tainacan\Media::get_instance();
 
+        $attachments = explode( $this->get_option('multivalued_delimiter'), $column_value);
+
+        if( $attachments ){
+            foreach( $attachments as $attachment ){
+
+                if(  strpos($column_value,'file:') !== 0 ){
+                    $this->add_log('Attachment must have "file:" previously the path or url ');
+                    continue;
+                }
+
+                
+                $correct_value = substr($column_value, 5);
+            
+                if( filter_var($correct_value, FILTER_VALIDATE_URL) ){
+                    $id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
+
+                    if(!$id){
+                        $this->add_log('Error in Attachment file imported from URL ' . $correct_value);
+                        return false;
+                    }
+
+                    $this->add_log('Attachment file URL imported from ' . $correct_value);
+
+                    continue;
+                } 
+
+                $server_path_files = $this->get_option('server_path');
+                $id = $TainacanMedia->insert_attachment_from_file($correct_value, $item_inserted->get_id());
+
+                if(!$id){
+                    $this->add_log('Error in Attachment file imported from server ' . $correct_value);
+                    continue;
+                }
+
+                $this->add_log('Attachment file in Server imported from ' . $correct_value);
+            }
+       }
     }
 }

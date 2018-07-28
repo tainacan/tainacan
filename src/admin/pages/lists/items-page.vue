@@ -6,6 +6,7 @@
         <!-- Filter menu compress button -->
         <button
                 v-if="!openAdvancedSearch"
+                class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
                 :style="{ top: !isOnTheme ? '152px' : (searchControlHeight + 6) + 'px' }"
@@ -16,7 +17,7 @@
         <aside
                 :style="{ top: searchControlHeight + 'px' }"
                 v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
-                class="filters-menu tainacan-form">
+                class="filters-menu tainacan-form is-hidden-mobile">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingFilters"/>
@@ -41,12 +42,12 @@
             <a
                     @click="openAdvancedSearch = !openAdvancedSearch"
                     class="is-size-7 has-text-secondary is-pulled-right is-hidden-mobile">{{ $i18n.get('advanced_search') }}</a>
-
+            
             <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
             <a
                     v-if="!isLoadingFilters &&
                     ((filters.length >= 0 &&
-                     isRepositoryLevel) || filters.length > 0)"
+                    isRepositoryLevel) || filters.length > 0)"
                     class="collapse-all is-size-7"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -62,7 +63,7 @@
             <filters-items-list
                     v-if="!isLoadingFilters &&
                     ((filters.length >= 0 &&
-                     isRepositoryLevel) || filters.length > 0)"
+                    isRepositoryLevel) || filters.length > 0)"
                     :filters="filters"
                     :collapsed="collapseAll"
                     :is-repository-level="isRepositoryLevel"/>
@@ -87,6 +88,7 @@
                     </router-link>
                 </div>
             </section>
+
         </aside>
         
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
@@ -348,6 +350,13 @@
                     </b-field>
                 </div>
 
+                <!-- Filters mobile modal button -->
+                <div class="search-control-item is-hidden-tablet">
+                    <button 
+                            @click="isFilterModalActive = !isFilterModalActive"
+                            class="button is-secondary">{{ $i18n.get('filters') }}</button>
+                </div>
+
                 <!-- Text simple search (used on mobile, instead of the one from filter list)-->
                 <div class="is-hidden-tablet search-control-item">
                     <div class="search-area">
@@ -569,7 +578,58 @@
                           !openAdvancedSearch"/>
             </div>
         </div>
-        
+        <b-modal
+                class="tainacan-form filters-mobile-modal is-hidden-tablet"                
+                :active.sync="isFilterModalActive"
+                :width="736">
+            <div class="modal-inner-content">
+                <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
+                <a
+                        v-if="!isLoadingFilters &&
+                        ((filters.length >= 0 &&
+                        isRepositoryLevel) || filters.length > 0)"
+                        class="collapse-all is-size-7"
+                        @click="collapseAll = !collapseAll">
+                    {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                    <b-icon
+                            type="is-secondary"
+                            size="is-small"
+                            :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
+                </a>
+
+                <br>
+                <br>
+
+                <filters-items-list
+                        v-if="!isLoadingFilters &&
+                        ((filters.length >= 0 &&
+                        isRepositoryLevel) || filters.length > 0)"
+                        :filters="filters"
+                        :collapsed="collapseAll"
+                        :is-repository-level="isRepositoryLevel"/>
+
+                <section
+                        v-else
+                        class="is-grouped-centered section">
+                    <div class="content has-text-gray has-text-centered">
+                        <p>
+                            <b-icon
+                                    icon="filter"
+                                    size="is-large"/>
+                        </p>
+                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
+                        <router-link
+                                v-if="!isOnTheme"
+                                id="button-create-filter"
+                                :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
+                                tag="button"
+                                class="button is-secondary is-centered">
+                            {{ $i18n.getFrom('filters', 'new_item') }}
+                        </router-link>
+                    </div>
+                </section>
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -604,7 +664,8 @@
                 advancedSearchResults: false,
                 isDoSearch: false,
                 searchControlHeight: 0,
-                sortingMetadata: []
+                sortingMetadata: [],
+                isFilterModalActive: false
             }
         },
         props: {
@@ -1298,6 +1359,7 @@
         margin-left: $page-side-padding;
         margin-right: $page-side-padding;
     }
+
 
 
 </style>

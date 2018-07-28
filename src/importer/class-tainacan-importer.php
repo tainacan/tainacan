@@ -757,7 +757,7 @@ abstract class Importer {
      */
     public function insert( $processed_item, $collection_index ) {
 		
-        $collections = $this->get_collections();
+		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
 		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
 			$this->add_error_log('Collection misconfigured');
@@ -768,11 +768,14 @@ abstract class Importer {
 		
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$Tainacan_Items->disable_logs();
+		$Tainacan_Metadata->disable_logs();
 
         $item = new Entities\Item();
-        $itemMetadataArray = [];
-
+		$itemMetadataArray = [];
+		
         if( is_array( $processed_item ) ){
             foreach ( $processed_item as $metadatum_source => $values ){
                 $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
@@ -788,23 +791,23 @@ abstract class Importer {
 
             }
         }
-
+		
         if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
             $item->set_collection( $collection );
 
             if( $item->validate() ){
-                $insertedItem = $Tainacan_Items->insert( $item );
+				$insertedItem = $Tainacan_Items->insert( $item );
             } else {
                 $this->add_error_log( 'Error inserting item' );
                 $this->add_error_log( $item->get_errors() );
                 return false;
             }
-
+			
             foreach ( $itemMetadataArray as $itemMetadata ) {
                 $itemMetadata->set_item( $insertedItem );  // *I told you
 
                 if( $itemMetadata->validate() ){
-                    $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+					$result = $Tainacan_Item_Metadata->insert( $itemMetadata );
                 } else {
                     $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
                     $this->add_error_log($itemMetadata->get_errors());
@@ -818,18 +821,20 @@ abstract class Importer {
                 //} else {
                 //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
                 //}
-            }
-
-            $insertedItem->set_status('publish' );
-
+			}
+			
+			$insertedItem->set_status('publish' );
+			
             if($insertedItem->validate()) {
-	            $insertedItem = $Tainacan_Items->update( $insertedItem );
+				$insertedItem = $Tainacan_Items->update( $insertedItem );
+
+				$this->after_inserted_item(  $insertedItem, $collection_index );
             } else {
 	            $this->add_error_log( 'Error publishing Item'  ); 
 	            $this->add_error_log( $insertedItem->get_errors() ); 
 	            return false;
-            }
-
+			}
+			
             return $insertedItem;
 			
         } else {
@@ -837,7 +842,15 @@ abstract class Importer {
             return false;
         }
 
-    }
+	}
+	
+	/**
+	 * allow importers executes process after item is insertes
+	 * @param array $insertedItem Associative array with inserted item
+     * @param integer $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+	 * 
+	 */
+	public function after_inserted_item($insertedItem, $collection_index){}
 
     /**
      * runs one iteration
