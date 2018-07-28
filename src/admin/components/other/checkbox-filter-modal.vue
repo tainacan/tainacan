@@ -26,7 +26,8 @@
                         class="tainacan-finder-column"
                         v-for="(finderColumn, key) in finderColumns"
                         :key="key">
-                    <li
+                    <b-field
+                            :addons="false"
                             v-if="finderColumn.length"
                             class="tainacan-li-checkbox-modal"
                             v-for="(option, index) in finderColumn"
@@ -44,7 +45,7 @@
                                     icon="menu-right"
                             />
                         </a>
-                    </li>
+                    </b-field>
                     <li v-if="finderColumn.length">
                         <div
                                 v-if="finderColumn.length < totalRemaining[key].remaining"
@@ -74,10 +75,10 @@
                             :is-full-page="false"
                             :active.sync="isColumnLoading"/>
                 </ul>
-                <!--<pre>{{ hierarchicalPath }}</pre>-->
-                <!--<pre>{{ totalRemaining }}</pre>-->
-                <!--<pre>{{ selected }}</pre>-->
             </div>
+            <!--<pre>{{ hierarchicalPath }}</pre>-->
+            <!--<pre>{{ totalRemaining }}</pre>-->
+            <!--<pre>{{ selected }}</pre>-->
 
             <div
                     v-if="isSearching"
@@ -162,9 +163,7 @@
             }, 300),
             highlightHierarchyPath(){
                 for(let [index, el] of this.hierarchicalPath.entries()){
-                    let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`];
-
-                    console.log(this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`].classList);
+                    let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0].$el;
 
                     if(index == this.hierarchicalPath.length-1){
                         htmlEl.classList.add('tainacan-li-checkbox-last-active')
@@ -174,12 +173,40 @@
                 }
             },
             addToHierarchicalPath(column, element){
-                this.hierarchicalPath.push({
+
+                let found = undefined;
+                let toBeAdded = {
                     column: column,
                     element: element
-                });
+                };
+
+                for (let f in this.hierarchicalPath) {
+                    if (this.hierarchicalPath[f].column == column) {
+                        found = f;
+                        break;
+                    }
+                }
+
+                if (found != undefined) {
+                    this.removeHighlightNotSelectedLevels();
+
+                    this.hierarchicalPath.splice(found);
+                    this.hierarchicalPath.splice(found, 1, toBeAdded);
+                } else {
+                    this.hierarchicalPath.push(toBeAdded);
+                }
 
                 this.highlightHierarchyPath();
+            },
+            removeHighlightNotSelectedLevels(){
+                for(let el of this.hierarchicalPath){
+                    if(!!this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0]) {
+                        let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0].$el;
+
+                        htmlEl.classList.remove('tainacan-li-checkbox-last-active');
+                        htmlEl.classList.remove('tainacan-li-checkbox-parent-active');
+                    }
+                }
             },
             removeLevelsAfter(key){
                 if(key != undefined){
@@ -219,9 +246,9 @@
             },
             getOptionChildren(option, key, index) {
 
-                // if(key != undefined) {
-                //     this.addToHierarchicalPath(key, index);
-                // }
+                if(key != undefined) {
+                    this.addToHierarchicalPath(key, index);
+                }
 
                 let parent = 0;
 
@@ -349,6 +376,10 @@
         margin-top: 0.7rem;
     }
 
+    .field:not(:last-child) {
+        margin-bottom: 0 !important;
+    }
+
     .tainacan-checkbox-search-section {
         margin-bottom: 40px;
         display: flex;
@@ -381,7 +412,7 @@
     }
 
     .tainacan-li-checkbox-last-active {
-        background-color: $blue1;
+        background-color: $blue2;
     }
 
     .tainacan-li-checkbox-parent-active {
