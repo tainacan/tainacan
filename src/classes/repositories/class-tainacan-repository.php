@@ -333,6 +333,14 @@ abstract class Repository {
 		}
 
 		$args['meta_query'] = $meta_query;
+		
+		// Map orderby parameter
+		if ( isset($args['orderby']) ) {
+			if ( array_key_exists($args['orderby'], $map) ) {
+				$args['orderby'] = $map[ $args['orderby'] ]['map'];
+			}
+		}
+		
 
 		return $args;
 

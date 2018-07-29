@@ -172,7 +172,9 @@ class Taxonomies extends Repository {
 
             $args['post_type'] = Entities\Taxonomy::get_post_type();
 
-            $wp_query = new \WP_Query($args);
+			$args = apply_filters('tainacan_fetch_args', $args, 'taxonomies');
+			
+			$wp_query = new \WP_Query($args);
             return $this->fetch_output($wp_query, $output);
         }
     }
