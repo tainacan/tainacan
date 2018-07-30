@@ -172,7 +172,7 @@ class CSV extends Importer {
         $form .= '</div>';
         $form .= '</div>';
 
-        $form = '<div class="field">';
+        $form .= '<div class="field">';
         $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
         $form .= '<div class="control">';
         $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
@@ -207,6 +207,13 @@ class CSV extends Importer {
         $form .= '<label class="label">' . __('Enclosure character', 'tainacan') . '</label>';
         $form .= '<div class="control">';
         $form .= '<input type="text" class="input" size="1" name="enclosure" value="' . $this->get_option('enclosure') . '" />';
+        $form .= '</div>';
+        $form .= '</div>';
+
+        $form .= '<div class="field">';
+        $form .= '<label class="label">' . __('Server path', 'tainacan') . '</label>';
+        $form .= '<div class="control">';
+        $form .= '<input type="text" class="input" size="1" name="server_path" value="' . $this->get_option('server_path') . '" />';
         $form .= '</div>';
         $form .= '</div>';
 
