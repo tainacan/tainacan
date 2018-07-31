@@ -106,14 +106,14 @@ class CSV extends Importer {
 
             foreach ( $headers as $indexRaw => $headerRaw ) {
                if( $headerRaw === $header ){
-                    $index = $indexRaw;
+                    $column = $indexRaw;
                }
             }
             
-            if(!isset($index))
+            if(!isset($column))
                 continue;
 
-            $valueToInsert = $this->handle_encoding( $values[ $index ] );
+            $valueToInsert = $this->handle_encoding( $values[ $column ] );
 
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
@@ -137,8 +137,14 @@ class CSV extends Importer {
             $file =  new \SplFileObject( $this->tmp_file, 'r' );
             $file->setFlags(\SplFileObject::SKIP_EMPTY);
             $file->seek( $index );
-            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
 
+            if( $index === 0 ){
+                $file->current();
+                $file->next();
+            }
+
+            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
+            
             if( is_array($values) && !empty($column_document) ){
                 $this->handle_document( $values[$column_document], $inserted_item);
             }

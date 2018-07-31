@@ -483,6 +483,16 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
         $_SESSION['tainacan_importer'][$id]->set_option('encode','iso88591');
 
-        $this->assertEquals(1, $_SESSION['tainacan_importer'][$id]->run(), 'first step should import 1 item');
+        while($_SESSION['tainacan_importer'][$id]->run()){
+            continue;
+        }
+
+        $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
+
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
+
+        // test row 5
+        $document_id = $items[0]->get_document();
+        $this->assertFalse( is_numeric($document_id) );
     }
 }
