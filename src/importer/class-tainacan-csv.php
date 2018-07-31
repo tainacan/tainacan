@@ -318,17 +318,17 @@ class CSV extends Importer {
         if( $attachments ){
             foreach( $attachments as $attachment ){
 
-                if(  strpos($column_value,'file:') !== 0 ){
+                if(  strpos($attachment,'file:') !== 0 ){
                     $this->add_log('Attachment must have "file:" previously the path or url ');
                     continue;
                 }
 
                 
-                $correct_value = substr($column_value, 5);
+                $correct_value = substr($attachment, 5);
             
                 if( filter_var($correct_value, FILTER_VALIDATE_URL) ){
                     $id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
-
+                       
                     if(!$id){
                         $this->add_log('Error in Attachment file imported from URL ' . $correct_value);
                         return false;

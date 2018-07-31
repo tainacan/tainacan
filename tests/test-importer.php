@@ -395,7 +395,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
                 'Data 31', 
                 '458', 
                 utf8_decode( 'Data 33||Rééço' ), 
-                'file:https://d33wubrfki0l68.cloudfront.net/1dbc465f56f3a812f09666f522fa226efd947cfa/a4d9f/images/smashing-cat/newsletter-fish-cat.svg||file:https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/58f72418-b5ee-4765-8e80-e463623a921d/01-httparchive-opt-small.png', 
+                'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg||file:https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/58f72418-b5ee-4765-8e80-e463623a921d/01-httparchive-opt-small.png', 
                 'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg'),
             array('Data 41', '459', 'Data 43||limbbo', 'file:photos/SamplePNGImage_100kbmb.png||file:audios/SampleAudio_0.4mb.mp3', 'url:http://www.pdf995.com/samples/pdf.pdf'),
             array('Data 51', '500', 'Data 53', 'file:http://techslides.com/demos/samples/sample.mp4', '')
@@ -487,12 +487,27 @@ class ImporterTests extends TAINACAN_UnitTestCase {
             continue;
         }
 
-        $items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
+        $items = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $collection, 'OBJECT' );
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
 
-        // test row 5
+        // test rows
         $document_id = $items[0]->get_document();
         $this->assertFalse( is_numeric($document_id) );
+
+        $attachments = $items[0]->get_attachments();
+        $this->assertEquals( 1, count( $attachments ) );
+
+        $this->assertTrue( count($items[2]->get_attachments()) > 0 );
+
+        $document_id = $items[2]->get_document();
+        $this->assertTrue( is_numeric($document_id) );
+
+        $document = $items[3]->get_document();
+        $this->assertTrue( wp_http_validate_url($document) !== false );
+
+        $document_id = $items[4]->get_document();
+        $this->assertFalse( is_numeric($document_id) );
+
     }
 }
