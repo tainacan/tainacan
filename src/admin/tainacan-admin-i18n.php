@@ -303,6 +303,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum.', 'tainacan' ),
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
+	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fecth items', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_search_results'                            => __( 'Search Results', 'tainacan' ),
