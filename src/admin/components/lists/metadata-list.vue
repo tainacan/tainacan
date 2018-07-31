@@ -48,6 +48,11 @@
                                     :key="index">
                                 <div class="handle">
                                     <grip-icon/>
+                                    <span class="icon icon-level-identifier">
+                                        <i 
+                                            :class="{ 'mdi-folder has-text-turquoise5': metadatum.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId }"
+                                            class="mdi" />
+                                    </span>  
                                     <span 
                                             class="metadatum-name"
                                             :class="{'is-danger': formWithErrors == metadatum.id }">
@@ -128,7 +133,7 @@
                                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
-                                <grip-icon/>  
+                                    <grip-icon/>
                                     <span class="metadatum-name">{{ metadatum.name }}</span>
                                     <span 
                                             class="loading-spinner" 
@@ -813,7 +818,7 @@ export default {
             }
             .grip-icon { 
                 fill: $gray3; 
-                top: 2px;
+                top: 1px;
                 position: relative;
             }
             .metadatum-name {
@@ -856,7 +861,7 @@ export default {
                 cursor: default;
                 background-color: white !important;
 
-                .handle .label-details, .handle .icon {
+                .handle .label-details, .handle .icon, {
                     color: $gray3 !important;
                 }
             } 
@@ -879,7 +884,7 @@ export default {
             border-color: $secondary;
             color: white !important;
 
-            .label-details, .icon, .not-saved {
+            .label-details, .icon, .not-saved, .icon-level-identifier>i {
                 color: white !important;
             }
 

@@ -44,6 +44,11 @@
                             :key="index">
                         <div class="handle">
                             <grip-icon/>
+                            <span class="icon icon-level-identifier">
+                                <i 
+                                    :class="{ 'mdi-folder has-text-turquoise5': filter.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': filter.collection_id != collectionId }"
+                                    class="mdi" />
+                            </span> 
                             <span 
                                     class="filter-name"
                                     :class="{'is-danger': formWithErrors == filter.id }">
@@ -148,7 +153,12 @@
                                 :key="index"
                                 @click.prevent="addMetadatumViaButton(metadatum, index)">
                             <grip-icon/> 
-                              <span class="metadatum-name">{{ metadatum.name }}</span>
+                            <span class="icon icon-level-identifier">
+                                <i 
+                                    :class="{ 'mdi-folder has-text-turquoise5': metadatum.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId }"
+                                    class="mdi" />
+                            </span>  
+                            <span class="metadatum-name">{{ metadatum.name }}</span>
                         </div>
                     </draggable>   
                 
@@ -519,7 +529,7 @@ export default {
             }
             .grip-icon { 
                 fill: $gray3;
-                top: 2px;
+                top: 1px;
                 position: relative;
             }
             .filter-name {
@@ -595,7 +605,7 @@ export default {
                 fill: $white;
             }
 
-            .label-details, .icon {
+            .label-details, .icon, .icon-level-identifier>i {
                 color: white !important;
             }
 
@@ -728,6 +738,9 @@ export default {
             }
             &:before {
                 border-color: transparent $secondary transparent transparent;
+            }
+            .icon-level-identifier>i {
+                color: white !important;
             }
             .grip-icon {
                 fill: white !important;

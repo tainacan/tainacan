@@ -89,6 +89,11 @@ a:hover {
     .has-text-secondary, .has-text-secondary:hover, .is-has-text-secondary:focus {
         color: $blue5 !important;
     }
+    .tainacan-page-title {
+        h1 {
+            color: $blue5 !important;
+        }
+    }
     .tabs {
         li.is-active a {
             border-bottom: 5px solid $blue5;

@@ -1077,7 +1077,7 @@ export default {
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: $turquoise1;
+        background-color: $gray1;
         width: 100%;
         height: 65px;
         display: flex;

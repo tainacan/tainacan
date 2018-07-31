@@ -303,7 +303,7 @@ export default {
                 background-color: $turquoise4;
                 a { 
                     background-color: $turquoise4;
-                    transition: background-color 0.2s ease;
+                    transition: color 0.2s ease;
                     color: white;
                     text-decoration: none;
                 }
@@ -312,18 +312,17 @@ export default {
                     fill: white !important;
                 }
             }
-            &:hover {
-                background-color: $turquoise3;
+            &:hover:not(.is-active) {
                 // max-width: 100%;
                 // transition: max-width 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s;
                 // -webkit-transition: max-width 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s;
                 a {
                     background-color: transparent;
                     text-decoration: none; 
-                    color: white;
+                    color: $turquoise5;
                 }
                 svg.activities-icon {
-                    fill: white !important;
+                    fill: $turquoise5 !important;
                 }
                 // .menu-text {
                 //     opacity: 1.0;
