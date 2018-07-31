@@ -92,7 +92,7 @@ export default {
             }
         },
         getLimitedDescription(description) {
-            return description.length > 200 ? description.substring(0, 197) + '...' : description;
+            return description.length > 300 ? description.substring(0, 297) + '...' : description;
         }
     }
 }

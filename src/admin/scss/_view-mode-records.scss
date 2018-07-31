@@ -5,7 +5,7 @@
     flex-wrap: wrap;
     flex-grow: 1;
     flex-shrink: 1;
-    justify-content: center;
+    justify-content: space-evenly;
 
     .selected-record {
         background-color: $turquoise1;
@@ -29,7 +29,7 @@
         }
 
         &:hover {
-            background-color: $gray2 !important;
+            background-color: #f2f2f2 !important;
         }
 
         .record-checkbox {
@@ -87,7 +87,7 @@
             }
         }
         &:hover .metadata-title {
-            background-color: $gray3 !important;
+            background-color: $gray2 !important;
         }
 
         .media {

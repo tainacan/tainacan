@@ -130,7 +130,7 @@ export default {
         this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
         document.title = this.$route.meta.title;
         this.pageTitle = document.title;
-
+        
         this.arrayRealPath = this.$route.path.split("/");
         this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
         

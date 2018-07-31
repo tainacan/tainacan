@@ -5,7 +5,7 @@
     flex-wrap: wrap;
     flex-grow: 1;
     flex-shrink: 1;
-    justify-content: center;
+    justify-content: space-evenly;
 
     .selected-card {
         background-color: $turquoise1;
@@ -29,7 +29,7 @@
         }
 
         &:hover {
-            background-color: $gray2 !important;
+            background-color: #f2f2f2 !important;
         }
 
         .card-checkbox {
@@ -84,10 +84,11 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
+                margin-bottom: 0;
             }
         }
         &:hover .metadata-title {
-            background-color: $gray3 !important;
+            background-color: $gray2 !important;
         }
 
         .media {
@@ -96,17 +97,18 @@
             .list-metadata {
                 padding: 0.75rem 1.375rem;
                 flex: 1;
-                font-size: 0.6875rem;
-                color: $gray4;
-                overflow: hidden;
                 width: 100%;
                 height: 172px;
+                color: $gray4;
 
-                .metadata-description {
+                p.metadata-description {
+                    font-size: 0.6875rem !important;
+                    overflow: hidden;
                     margin-bottom: 1.5rem;
                 }
 
                 .metadata-author-creation {
+                    font-size: 0.6875rem !important;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;

@@ -5,7 +5,7 @@
     flex-wrap: wrap;
     flex-grow: 1;
     flex-shrink: 1;
-    justify-content: center;
+    justify-content: space-evenly;
 
     .selected-grid-item {
         background-color: $turquoise1;
@@ -18,7 +18,7 @@
         text-align: center;
 
         &:hover {
-            background-color: $gray2;
+            background-color: $gray1;
         }
 
         .grid-item-checkbox {
