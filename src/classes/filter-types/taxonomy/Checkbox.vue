@@ -11,7 +11,7 @@
                     v-if="!option.isChild"
             >{{ option.name }}</b-checkbox>
             <div
-                    :style="{ 'padding-left': '18px' }"
+                    class="see-more-container"
                     v-if="option.seeMoreLink"
                     @click="openCheckboxModal(option.parent)"
                     v-html="option.seeMoreLink"/>
@@ -150,7 +150,7 @@
                     }
 
                     if(this.filter.max_options && result.length >= this.filter.max_options){
-                        let seeMoreLink = `<a class="add-link"> ${ this.$i18n.get('label_see_more') } </a>`;
+                        let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_see_more') } </a>`;
                         result[this.filter.max_options-1].seeMoreLink = seeMoreLink;
                     }
                 }
@@ -225,3 +225,10 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .see-more-container {
+        display: flex;
+        padding-left: 18px;
+    }
+</style>

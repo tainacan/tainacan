@@ -1,7 +1,7 @@
 <template>
     <div
             class="tainacan-modal-content"
-            style="width: auto">
+            style="width: auto; min-height: 600px;">
         <header class="tainacan-modal-title">
             <h2>{{ this.$i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <hr>
@@ -152,7 +152,7 @@
 
                 this.isSearching = !!this.optionName.length;
 
-                let query = `?hideempty=0&order=asc&number=10&searchterm=${this.optionName}`;
+                let query = `?hideempty=0&order=asc&number=18&searchterm=${this.optionName}`;
 
                 axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
                     .then((res) => {
@@ -356,6 +356,7 @@
         display: flex;
         overflow: auto;
         padding: 0 !important;
+        min-height: 253px;
     }
 
     .tainacan-finder-columns-container:focus {
@@ -400,6 +401,7 @@
 
     .tainacan-search-results-container {
         padding: 0 20px !important;
+        min-height: 253px;
     }
 
     .tainacan-modal-checkbox-search-results-body {

@@ -53,7 +53,6 @@
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <b-icon
                         type="is-secondary"
-                        size="is-small"
                         :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
             </a>
 
@@ -1080,6 +1079,11 @@
 
     @import '../../scss/_variables.scss';
 
+    .collapse-all {
+        display: inline-flex;
+        align-items: center;
+    }
+
     .advanced-search-criteria-title {
         padding: 0;
 
@@ -1091,7 +1095,7 @@
         }
 
         hr {
-            margin: 3px 0px 4px 0px;
+            margin: 3px 0 4px 0;
             height: 1px;
             background-color: $secondary;
         }
@@ -1108,7 +1112,7 @@
         }
 
         hr {
-            margin: 3px 0px 4px 0px;
+            margin: 3px 0 4px 0;
             height: 1px;
             background-color: $secondary;
         }
@@ -1125,7 +1129,7 @@
     }
 
     .page-container {
-        padding: 0px;   
+        padding: 0;
     }
 
     .filters-menu {
@@ -1136,7 +1140,6 @@
         min-width: 180px;
         min-height: 100%;
         height: 100%;
-        background-color: white;
         padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;
