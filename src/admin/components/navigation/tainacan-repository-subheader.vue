@@ -5,18 +5,31 @@
             :class="{'is-menu-compressed': isMenuCompressed, 'is-repository-level' : isRepositoryLevel}">
         <h1 v-if="isRepositoryLevel">{{ repositoryName }}</h1>
         <h1 v-else>{{ $i18n.get('collection') + '' }} <span class="has-text-weight-bold">{{ collectionName }}</span></h1>
+        <a
+                :href="collectionURL"
+                target="_blank"
+                v-if="!isRepositoryLevel"
+                class="button"
+                id="see-collection-button">
+            <eye-icon /> {{ $i18n.get('label_see_collection') }}
+        </a>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import EyeIcon from '../other/eye-icon.vue';
 
 export default {
     name: 'TainacanRepositorySubheader',
     data() {
         return {
-            repositoryName: tainacan_plugin.repository_name
+            repositoryName: tainacan_plugin.repository_name,
+            collectionId: ''
         }
+    },
+    components: {
+        EyeIcon
     },
     props: {
         isMenuCompressed: false,
@@ -25,18 +38,25 @@ export default {
     computed: {
         collectionName() {
             return this.getCollectionName();
+        },
+        collectionURL() {
+            return this.getCollectionURL();
         }
     },
     methods: {
         ...mapActions('collection', [
-            'fetchCollectionName'
+            'fetchCollectionNameAndURL'
         ]),
         ...mapGetters('collection', [
             'getCollectionName',
+            'getCollectionURL'
         ])
     },
     mounted() {
-        this.fetchCollectionName();
+        if (!this.isRepositoryLevel) {
+            this.collectionId = this.$route.params.collectionId;
+            this.fetchCollectionNameAndURL(this.collectionId);
+        }
     }
 }
 </script>
@@ -54,7 +74,7 @@ export default {
         overflow-y: hidden;
         padding-top: 10px;
         padding-bottom: 10px;
-        padding-right: $page-side-padding;
+        padding-right: 0;
         padding-left: calc((4.166666667% - 6.666666667px) + 160px);
         margin: 0px;
         vertical-align: middle; 
@@ -67,6 +87,7 @@ export default {
 
         &.is-repository-level {
             background-color: $blue5;
+            padding-right: $page-side-padding;
         }
 
         &.is-menu-compressed {     
@@ -74,14 +95,28 @@ export default {
         }
 
         h1 {
-            font-size: 18px;
+            font-size: 1.125rem;
             color: white;
-            line-height: 18px;
+            line-height: 1.125rem;
             max-width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;  
             transition: all 0.2s linear;
+        }
+
+        #see-collection-button {
+            border: none;
+            border-radius: 0px !important;
+            height: 42px !important;
+            right: 0;
+            position: relative;
+            background-color: $turquoise4;
+            color: white;
+            
+            .eye-icon {
+                margin-right: 0.75rem;
+            }
         }
     }
 </style>

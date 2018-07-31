@@ -45,6 +45,10 @@ export const setCollectionName = (state, collectionName) => {
     state.collectionName = collectionName;
 }
 
+export const setCollectionURL = (state, collectionURL) => {
+    state.collectionURL = collectionURL;
+}
+
 export const cleanCollectionName = (state) => {
     state.collectionName = '';
 }

@@ -18,6 +18,10 @@ export const getCollectionName = state => {
     return state.collectionName;
 }
 
+export const getCollectionURL = state => {
+    return state.collectionURL;
+}
+
 export const getAttachments =  state => {
     return state.attachments;
 }

@@ -9,12 +9,20 @@
             </button>
             <b-field class="order-area">
                 <button
-                        :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm"
+                        :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
                         class="button is-white is-small"
-                        @click="onChangeOrder()">
+                        @click="onChangeOrder('asc')">
                     <b-icon 
                             class="gray-icon"
-                            :icon="order === 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
+                            icon="sort-ascending"/>
+                </button>
+                <button
+                        :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
+                        class="button is-white is-small"
+                        @click="onChangeOrder('desc')">
+                    <b-icon 
+                            class="gray-icon"
+                            icon="sort-descending"/>
                 </button>
             </b-field>
 
@@ -147,8 +155,8 @@ export default {
         ...mapGetters('taxonomy',[
             'getTerms'
         ]),
-        onChangeOrder() {
-            this.order == 'asc' ? this.order = 'desc' : this.order = 'asc';
+        onChangeOrder(newOrder) {
+            this.order = newOrder;
             this.loadTerms(0);
         },
         addNewTerm() {
@@ -388,7 +396,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     .order-area {
-        display: inline-block;
+        display: inline-flex !important;
         padding: 4px;
         margin-left: 30px;
 
