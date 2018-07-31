@@ -41,8 +41,8 @@ export default {
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
     @import "../admin/scss/_tainacan-form.scss";
+    @import "../admin/scss/_filters-menu-modal.scss";
     
-
     .theme-items-list {
         position: relative;
         display: flex;
@@ -271,7 +271,7 @@ export default {
             }
         }
 
-        .filters-mobile-modal {
+        #filters-mobile-modal {
             // top: 95px;
             @keyframes slide-menu {
                 from {

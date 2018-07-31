@@ -579,7 +579,8 @@
             </div>
         </div>
         <b-modal
-                class="tainacan-form filters-mobile-modal is-hidden-tablet"                
+                id="filters-mobile-modal"
+                class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
                 :width="736">
             <div class="modal-inner-content">
