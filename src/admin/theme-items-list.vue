@@ -41,6 +41,7 @@ export default {
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
     @import "../admin/scss/_tainacan-form.scss";
+    @import "../admin/scss/_filters-menu-modal.scss";
     
     .theme-items-list {
         position: relative;
@@ -270,8 +271,41 @@ export default {
             }
         }
 
-        .filters-mobile-modal {
+        #filters-mobile-modal {
             // top: 95px;
+            @keyframes slide-menu {
+                from {
+                    -ms-transform: translate(-100%, 0); /* IE 9 */
+                    -webkit-transform: translate(-100%, 0); /* Safari */
+                    transform: translate(-100%, 0);
+                }
+                to {
+                    -ms-transform: translate(0, 0); /* IE 9 */
+                    -webkit-transform: translate(0, 0); /* Safari */
+                    transform: translate(0, 0);
+                }
+            }
+
+            animation-name: slide-menu;
+            animation-duration: 0.3s;
+            animation-timing-function: ease-out;
+
+            @keyframes appear {
+                from {
+                    opacity: 0.0;
+                    visibility: hidden;
+                }
+                to {
+                    opacity: 1.0;
+                    visibility: visible;
+                }
+            }
+
+            .modal-background {
+                animation-name: appear;
+                animation-duration: 0.6s;
+                animation-timing-function: ease-in;
+            }
 
             .modal-close {
                 right: calc(8.3333333% + 20px);

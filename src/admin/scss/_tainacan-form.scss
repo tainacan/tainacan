@@ -16,6 +16,12 @@
             justify-content: end !important;
         }
     }
+    .field:not(:last-child) {
+        margin-bottom: 1.125rem;
+    }
+    .field>.field:not(:last-child) {
+        margin-bottom: 0.5rem;
+    }
     .label { 
         font-weight: bold;
         font-size: 14px; 

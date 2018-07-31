@@ -324,11 +324,31 @@ class Metadata extends Repository {
 			$args = $this->parse_fetch_args($args);
 			
             $args['post_type'] = Entities\Metadatum::get_post_type();
+			
+			$args = apply_filters('tainacan_fetch_args', $args, 'metadata');
 
             $wp_query = new \WP_Query($args);
             return $this->fetch_output($wp_query, $output);
         }
     }
+	
+	/**
+	 * fetch metadata IDs based on WP_Query args
+	 *
+	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+	 * appropriate WP_Query argument
+	 *
+	 * @param array $args WP_Query args || int $args the item id
+	 *
+	 * @return Array array of IDs;
+	 */
+	public function fetch_ids( $args = [] ) {
+		
+		$args['fields'] = 'ids';
+		
+		return $this->fetch( $args )->get_posts();
+	}
 
 	/**
 	 * fetch metadatum by collection, considering inheritance

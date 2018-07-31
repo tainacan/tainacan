@@ -252,6 +252,8 @@ class Items extends Repository {
 
 		$args['post_type'] = $cpt;
 
+		$args = apply_filters('tainacan_fetch_args', $args, 'items');
+
 		$wp_query = new \WP_Query( $args );
 
 		return $this->fetch_output( $wp_query, $output );

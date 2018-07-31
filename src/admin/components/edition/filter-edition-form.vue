@@ -7,7 +7,7 @@
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
                 :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_name') }} 
                 <span 
                         class="required-metadatum-asterisk"
@@ -26,7 +26,7 @@
                 :addons="false" 
                 :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
                 :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_description') }} 
                 <help-button 
                         :title="$i18n.getHelperTitle('filters', 'description')" 
@@ -43,7 +43,7 @@
                 :addons="false"
                 :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
                 :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_status') }} 
                 <help-button 
                         :title="$i18n.getHelperTitle('filters', 'status')" 
@@ -75,7 +75,7 @@
         <b-field
                 :addons="false"
                 v-if="editForm.filter_type_object && editForm.filter_type_object.component.includes('checkbox')">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_max_options_to_show') }}
                 <help-button
                         :title="$i18n.getHelperTitle('filters', 'max_options')"

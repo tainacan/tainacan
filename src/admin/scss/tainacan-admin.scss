@@ -22,6 +22,7 @@
 @import "../scss/_modals.scss";
 @import "../scss/_tags.scss";
 @import "../scss/_notices.scss";
+@import "../scss/_filters-menu-modal.scss";
 
 // Clears wordpress content
 body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
@@ -162,3 +163,4 @@ a:hover {
 .notices {
     z-index: 99999999999999 !important;
 }
+

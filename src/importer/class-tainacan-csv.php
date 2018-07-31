@@ -106,14 +106,14 @@ class CSV extends Importer {
 
             foreach ( $headers as $indexRaw => $headerRaw ) {
                if( $headerRaw === $header ){
-                    $index = $indexRaw;
+                    $column = $indexRaw;
                }
             }
             
-            if(!isset($index))
+            if(!isset($column))
                 continue;
 
-            $valueToInsert = $this->handle_encoding( $values[ $index ] );
+            $valueToInsert = $this->handle_encoding( $values[ $column ] );
 
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
                 explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
@@ -137,8 +137,14 @@ class CSV extends Importer {
             $file =  new \SplFileObject( $this->tmp_file, 'r' );
             $file->setFlags(\SplFileObject::SKIP_EMPTY);
             $file->seek( $index );
-            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
 
+            if( $index === 0 ){
+                $file->current();
+                $file->next();
+            }
+
+            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
+            
             if( is_array($values) && !empty($column_document) ){
                 $this->handle_document( $values[$column_document], $inserted_item);
             }
@@ -172,7 +178,7 @@ class CSV extends Importer {
         $form .= '</div>';
         $form .= '</div>';
 
-        $form = '<div class="field">';
+        $form .= '<div class="field">';
         $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
         $form .= '<div class="control">';
         $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
@@ -207,6 +213,13 @@ class CSV extends Importer {
         $form .= '<label class="label">' . __('Enclosure character', 'tainacan') . '</label>';
         $form .= '<div class="control">';
         $form .= '<input type="text" class="input" size="1" name="enclosure" value="' . $this->get_option('enclosure') . '" />';
+        $form .= '</div>';
+        $form .= '</div>';
+
+        $form .= '<div class="field">';
+        $form .= '<label class="label">' . __('Server path', 'tainacan') . '</label>';
+        $form .= '<div class="control">';
+        $form .= '<input type="text" class="input" size="1" name="server_path" value="' . $this->get_option('server_path') . '" />';
         $form .= '</div>';
         $form .= '</div>';
 

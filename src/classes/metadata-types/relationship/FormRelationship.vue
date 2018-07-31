@@ -6,19 +6,18 @@
                 :type="collectionType"
                 :message="collectionMessage">
             <label class="label is-inline">
-                {{ $i18n.get('label_related_collection') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
                         :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')"/>
             </label>
             <b-select
                     name="metadata_type_relationship[collection_id]"
-                    placeholder="Select the collection to fetch items"
+                    :placeholder="$i18n.get('instruction_select_collection_fetch_items' )"
                     v-model="collection"
                     @change.native="emitValues()"
                     @focus="clear()"
                     :loading="loading">
-                <option value="">Select...</option>
                 <option
                         v-for="option in collections"
                         :value="option.id"
