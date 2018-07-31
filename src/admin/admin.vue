@@ -14,7 +14,9 @@
         <tainacan-repository-subheader 
                 :is-repository-level="isRepositoryLevel"
                 :is-menu-compressed="isMenuCompressed"/>
-        <div class="column is-main-content">  
+        <div 
+                id="repository-container"
+                class="column is-main-content">  
             <router-view /> 
         </div>
     </div>

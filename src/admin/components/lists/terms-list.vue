@@ -24,7 +24,7 @@
                     class="term-item"
                     :class="{
                         'not-sortable-item': term.opened || !term.saved, 
-                        'not-focusable-item': term.opened
+                        'opened-term': term.opened
                     }" 
                     :style="{'margin-left': (term.depth * 40) + 'px'}"
                     v-for="(term, index) in orderedTermsList"
@@ -81,11 +81,12 @@
             </div>
         </div>
         <div 
-                class="column" 
+                class="column edit-forms-list" 
                 :key="index"
                 v-for="(term, index) in orderedTermsList"
                 v-show="term.opened">
             <term-edition-form 
+                    :style="{ 'top': termEditionFormTop + 'px'}"
                     :taxonomy-id="taxonomyId"
                     @onEditionFinished="onTermEditionFinished()"
                     @onEditionCanceled="onTermEditionCanceled(term)"
@@ -113,7 +114,8 @@ export default {
             isEditingTerm: false,
             formWithErrors: '',
             orderedTermsList: [],
-            order: 'asc'
+            order: 'asc',
+            termEditionFormTop: 0
         }
     },
     props: {
@@ -188,7 +190,15 @@ export default {
             this.editTerm(newTerm, parentIndex + 1);
         },
         editTerm(term, index) {
+            
+            let container = document.getElementById('repository-container');
+            if (container && container.scrollTop && container.scrollTop > 80)
+                this.termEditionFormTop = container.scrollTop - 80;
+            else
+                this.termEditionFormTop = 0;
+            
             this.isEditingTerm = true;
+
             if (!term.opened) {
 
                 for (let i = 0; i < this.orderedTermsList.length; i++) {
@@ -397,6 +407,10 @@ export default {
         min-height: 40px;
         display: block; 
         position: relative;
+
+        &:hover {
+            background-color: $gray1 !important;
+        }
         
         .handle {
             padding-right: 6em;
@@ -443,33 +457,37 @@ export default {
             }
         }
 
-        &.not-sortable-item, &.not-sortable-item:hover {
+        &.opened-term {
             cursor: default;
-            background-color: white !important;
+            background-color: $blue1;
 
-        } 
-        &.not-focusable-item, &.not-focusable-item:hover {
-            cursor: default;
-            
             .term-name {
-                color: $turquoise3;
+                color: $blue3;
+            }
+            &:before {
+                content: '';
+                display: block;
+                position: absolute;
+                left: 100%;
+                right: -20px;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-color: transparent transparent transparent $blue1;
+                border-left-width: 16px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                top: 0;
+            }
+            &:hover:before {
+                border-color: transparent transparent transparent $gray1;
             }
         }
   
     }
-    // .term-item:hover:not(.not-sortable-item) {
-    //     background-color: $secondary;
-    //     border-color: $secondary;
-    //     color: white !important;
-
-    //     .label-details, .icon, .not-saved {
-    //         color: white !important;
-    //     }
-
-    //     .grip-icon { 
-    //         fill: white; 
-    //     }
-    // }
+    .edit-forms-list {
+        padding-left: 0;
+    }
 
 </style>
 

@@ -243,10 +243,24 @@
         }
     }    
 
+    @keyframes enter {
+        from {
+            opacity: 0;
+            transform: translate(-40px,0);
+        }
+        to {
+            opacity: 1;
+            transform: translate(0px,0);
+        }
+    }
+
     form {
         padding: 2.0rem 0rem 1rem 3rem;
         border-left: 1px solid $gray2;
         margin-top: 1.0em;
+        position: relative;
+        animation-name: enter;
+        animation-duration: 0.5s;
 
         .tainacan-page-title {
             margin-bottom: 40px;
