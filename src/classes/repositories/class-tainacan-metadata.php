@@ -860,7 +860,7 @@ class Metadata extends Repository {
 						  	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 					  	  	FROM $wpdb->postmeta $search_query
 				  		) metas
-			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d",
+			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue",
 						$item_post_type, $post_status, $metadatum_id
 					);
 				} else {
@@ -875,7 +875,7 @@ class Metadata extends Repository {
 						  	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 					  	  	FROM $wpdb->postmeta $search_query
 				  		) metas
-			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d",
+			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue",
 						$post_status, $metadatum_id
 					);
 				}
@@ -906,7 +906,7 @@ class Metadata extends Repository {
 					    	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 							FROM $wpdb->postmeta $search_query
 					  	) metas
-					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d",
+					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue",
 						$item_post_type, $post_status, $metadatum_id
 					);
 				} else {
@@ -921,7 +921,7 @@ class Metadata extends Repository {
 					    	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 							FROM $wpdb->postmeta $search_query
 					  	) metas
-					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d",
+					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue",
 						$post_status, $metadatum_id
 					);
 				}
