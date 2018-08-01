@@ -1,5 +1,6 @@
 <template>
     <div 
+            v-hammer:swipe.right="onSwipeFiltersMenuRight"
             :class="{'repository-level-page': isRepositoryLevel}">
 
         <!-- SEARCH AND FILTERS --------------------- -->
@@ -575,11 +576,15 @@
                           !openAdvancedSearch"/>
             </div>
         </div>
+       
         <b-modal
                 id="filters-mobile-modal"
+                ref="filters-mobile-modal"
                 class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
-                :width="736">
+                :width="736"
+                animation="slide-menu"
+                v-hammer:swipe.left="onSwipeFiltersMenuLeft">
             <div class="modal-inner-content">
                 <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
                 <a
@@ -750,6 +755,16 @@
                 'getTotalItems',
                 'getAdminViewMode'
             ]),
+            onSwipeFiltersMenuRight() {
+                let screenWidth = 400;//window.screen.width;
+
+                if (!this.isFilterModalActive && screenWidth <= 768)
+                    this.isFilterModalActive = true;
+            },
+            onSwipeFiltersMenuLeft() {
+                if (this.isFilterModalActive)
+                    this.isFilterModalActive = false;
+            },
             onOpenImportersModal() {
                 this.$modal.open({
                     parent: this,
