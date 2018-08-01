@@ -33,7 +33,7 @@ class CSV extends Importer {
         $file->seek(0);
 
         $columns = [];
-        $rawColumns = $file->fgetcsv( $this->get_option('delimiter') );
+        $rawColumns = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
 
         if( $rawColumns ){
             foreach( $rawColumns as $index => $rawColumn ){
