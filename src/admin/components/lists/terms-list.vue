@@ -33,7 +33,8 @@
                         type="search"
                         autocomplete="on"
                         v-model="searchQuery"
-                        @keyup.enter="loadTerms(0)">
+                        @keyup.enter="loadTerms(0)"
+                        :disabled="isEditingTerm">
                     <span
                             @click="loadTerms(0)"
                             class="icon is-right">
@@ -415,18 +416,50 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .order-area {
-        display: inline-flex !important;
-        padding: 4px;
-        margin-left: 30px;
+    .terms-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
 
-        .gray-icon, .gray-icon .icon {
-            color: $gray4 !important;
+        .order-area {
+            display: inline-flex !important;
+            padding: 4px;
+            margin-left: auto;
+
+            .gray-icon, .gray-icon .icon {
+                color: $gray4 !important;
+            }
+            .gray-icon .icon i::before, .gray-icon i::before {
+                font-size: 21px !important;
+            }
         }
-        .gray-icon .icon i::before, .gray-icon i::before {
-            font-size: 21px !important;
+
+        .search-area {
+            display: inline-flex;
+            align-items: center;
+
+            .input {
+                border: 1px solid $gray2;
+            }
+            .control {
+                width: 100%;
+                .icon {
+                    pointer-events: all;
+                    cursor: pointer;
+                    color: $blue5;
+                    height: 27px;
+                    font-size: 18px !important;
+                    height: 2rem !important;
+                }
+            }
+            a {
+                margin-left: 12px;
+                white-space: nowrap; 
+            }
         }
     }
+
+    
 
     .term-item {
         font-size: 14px;
