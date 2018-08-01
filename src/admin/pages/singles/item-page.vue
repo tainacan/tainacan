@@ -275,7 +275,7 @@
         border: none;
         background-color: $gray2;
         color: $secondary;
-        padding: 0px;
+        padding: 0;
         border-top-left-radius: 2px;
         border-bottom-left-radius: 2px;
         cursor: pointer;
@@ -285,8 +285,9 @@
             margin-right: 8px;
         }
     }
+
     .page-container {
-        padding: 25px 0px;
+        padding: 25px 0;
 
         .tainacan-page-title {
             padding-left: $page-side-padding;
@@ -314,7 +315,7 @@
             transition: all 0.6s;
 
             .field {
-                padding: 10px 0px 10px 30px;
+                padding: 10px 0 10px 30px;
 
             }
 
@@ -335,6 +336,8 @@
             font-size: 14px;
             font-weight: 500;
             margin-bottom: 0.5em;
+            display: inline-flex;
+            align-items: center;
 
             span {
                 margin-right: 18px;
@@ -354,6 +357,9 @@
 
     .collapse-all {
         font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+
         .icon {
             vertical-align: bottom;
         }

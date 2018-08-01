@@ -19,8 +19,37 @@
                             class="mdi mdi-magnify"/>
                 </span>
             </div>
+
             <div
-                    v-if="!isSearching"
+                    v-if="!isSearching && !isTaxonomy"
+                    class="modal-card-body tainacan-checkbox-list-container">
+                <a
+                        class="tainacan-checkbox-list-page-changer"
+                        @click="beforePage">
+                    <b-icon
+                            icon="chevron-left"/>
+                </a>
+                <ul class="tainacan-modal-checkbox-list-body">
+                    <li
+                            v-for="(option, key) in options"
+                            :key="key">
+                        <b-checkbox
+                                v-model="selected"
+                                :native-value="option.value">
+                            {{ `${option.label}` }}
+                        </b-checkbox>
+                    </li>
+                </ul>
+                <a
+                        class="tainacan-checkbox-list-page-changer"
+                        @click="nextPage">
+                    <b-icon
+                            icon="chevron-right"/>
+                </a>
+            </div>
+
+            <div
+                    v-if="!isSearching && isTaxonomy"
                     class="modal-card-body tainacan-finder-columns-container">
                 <ul
                         class="tainacan-finder-column"
@@ -79,6 +108,8 @@
             <!--<pre>{{ hierarchicalPath }}</pre>-->
             <!--<pre>{{ totalRemaining }}</pre>-->
             <!--<pre>{{ selected }}</pre>-->
+            <!--<pre>{{ options }}</pre>-->
+            <!--<pre>{{ searchResults }}</pre>-->
 
             <div
                     v-if="isSearching"
@@ -89,8 +120,8 @@
                             :key="key">
                         <b-checkbox
                                 v-model="selected"
-                                :native-value="option.id">
-                            {{ `${option.name}` }}
+                                :native-value="option.id ? option.id : option.value">
+                            {{ `${option.name ? option.name : option.label}` }}
                         </b-checkbox>
                     </li>
                 </ul>
@@ -119,9 +150,11 @@
 <script>
 
     import {tainacan as axios} from '../../../js/axios/axios';
+    import { filter_type_mixin } from '../../../classes/filter-types/filter-types-mixin';
 
     export default {
         name: 'CheckboxFilterModal',
+        mixins: [ filter_type_mixin ],
         props: {
             filter: '',
             parent: Number,
@@ -130,6 +163,10 @@
             collection_id: Number,
             metadatum_id: Number,
             selected: Array,
+            isTaxonomy: false,
+            metadatum_type: String,
+            metadatum_object: Object,
+            isRepositoryLevel: Boolean,
         },
         data() {
             return {
@@ -142,24 +179,60 @@
                 searchResults: [],
                 optionName: '',
                 isSearching: false,
+                options: [],
+                maxNumOptionsCheckboxList: 20,
+                maxNumSearchResultsShow: 18,
+                maxNumOptionsCheckboxFinderColumns: 100,
+                checkboxListOffset: 0,
+                collection: this.collection_id,
             }
         },
         created() {
-            this.getOptionChildren();
+            if(this.isTaxonomy) {
+                this.getOptionChildren();
+            } else {
+                this.getOptions(0);
+            }
         },
         methods: {
+            beforePage(){
+                this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
+
+                this.getOptions(this.checkboxListOffset);
+            },
+            nextPage(){
+                this.checkboxListOffset = this.options.length;
+
+                this.getOptions(this.checkboxListOffset);
+            },
+            getOptions(offset){
+                if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                    let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
+                        this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
+
+                    this.getValuesRelationship( collectionTarget, this.optionName, [], offset, this.maxNumOptionsCheckboxList, true);
+                } else {
+                    this.getValuesPlainText( this.metadatum_id, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
+                }
+            },
             autoComplete: _.debounce( function () {
 
-                this.isSearching = !!this.optionName.length;
+                if(this.isTaxonomy) {
+                    this.isSearching = !!this.optionName.length;
 
-                let query = `?hideempty=0&order=asc&number=18&searchterm=${this.optionName}`;
+                    let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}`;
 
-                axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
-                    .then((res) => {
-                        this.searchResults = res.data;
-                    }).catch((error) => {
+                    axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
+                        .then((res) => {
+                            this.searchResults = res.data;
+                        }).catch((error) => {
                         this.$console.log(error);
                     })
+                } else {
+                    this.isSearching = !!this.optionName.length;
+
+                    this.getOptions(0);
+                }
             }, 300),
             highlightHierarchyPath(){
                 for(let [index, el] of this.hierarchicalPath.entries()){
@@ -256,7 +329,7 @@
                     parent = option.id;
                 }
 
-                let query = `?hideempty=0&order=asc&parent=${parent}&number=100&offset=0`;
+                let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0`;
 
                 this.isColumnLoading = true;
 
@@ -279,7 +352,7 @@
                     let parent = finderColumn[0].parent;
                     let offset = finderColumn.length;
 
-                    let query = `?hideempty=0&order=asc&parent=${parent}&number=100&offset=${offset}`;
+                    let query = `?hideempty=0&order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}`;
 
                     this.isColumnLoading = true;
 
@@ -299,32 +372,60 @@
             applyFilter() {
                 this.$parent.close();
 
-                this.$eventBusSearch.$emit('input', {
-                    filter: 'checkbox',
-                    taxonomy: this.taxonomy,
-                    compare: 'IN',
-                    metadatum_id: this.metadatum_id,
-                    collection_id: this.collection_id,
-                    terms: this.selected
-                });
-
                 let onlyLabels = [];
 
-                for (let selected of this.selected) {
+                if(this.isTaxonomy){
+                    this.$eventBusSearch.$emit('input', {
+                        filter: 'checkbox',
+                        taxonomy: this.taxonomy,
+                        compare: 'IN',
+                        metadatum_id: this.metadatum_id,
+                        collection_id: this.collection_id,
+                        terms: this.selected
+                    });
 
-                    for(let i in this.finderColumns){
-                        let valueIndex = this.finderColumns[i].findIndex(option => option.id == selected);
 
-                        if (valueIndex >= 0) {
-                            onlyLabels.push(this.finderColumns[i][valueIndex].name);
+                    for (let selected of this.selected) {
+
+                        for(let i in this.finderColumns){
+                            let valueIndex = this.finderColumns[i].findIndex(option => option.id == selected);
+
+                            if (valueIndex >= 0) {
+                                onlyLabels.push(this.finderColumns[i][valueIndex].name);
+                            }
                         }
                     }
-                }
 
-                this.$eventBusSearch.$emit('sendValuesToTags', {
-                    filterId: this.filter.id,
-                    value: onlyLabels,
-                });
+                    this.$eventBusSearch.$emit('sendValuesToTags', {
+                        filterId: this.filter.id,
+                        value: onlyLabels,
+                    });
+                } else {
+                    this.$eventBusSearch.$emit('input', {
+                        filter: 'checkbox',
+                        compare: 'IN',
+                        metadatum_id: this.metadatum_id,
+                        collection_id: this.collection_id ? this.collection_id : this.filter.collection_id,
+                        value: this.selected,
+                    });
+
+                    if(!isNaN(this.selected[0])){
+                        for (let option of this.options) {
+                            let valueIndex = this.selected.findIndex(item => item == option.value);
+
+                            if (valueIndex >= 0) {
+                                onlyLabels.push(this.options[valueIndex].label);
+                            }
+                        }
+                    }
+
+                    onlyLabels = onlyLabels.length ? onlyLabels : this.selected;
+
+                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                        filterId: this.filter.id,
+                        value: onlyLabels,
+                    });
+                }
 
                 this.$root.$emit('appliedCheckBoxModal', onlyLabels);
             }
@@ -397,6 +498,34 @@
             position: absolute;
             right: 0;
         }
+    }
+
+    .tainacan-checkbox-list-container {
+        padding: 0 20px !important;
+        min-height: 253px;
+        display: flex;
+        align-items: center;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    .tainacan-checkbox-list-page-changer {
+        height: 253px;
+        align-items: center;
+        display: flex;
+        background-color: $gray1;
+        margin: 0 10px;
+
+        &:hover {
+            background-color: $blue1;
+        }
+    }
+
+    .tainacan-modal-checkbox-list-body {
+        columns: 2;
+        list-style: none;
+        width: 100%;
+        align-self: baseline;
     }
 
     .tainacan-search-results-container {

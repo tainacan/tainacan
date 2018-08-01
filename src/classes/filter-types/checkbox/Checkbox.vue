@@ -6,15 +6,14 @@
                 class="metadatum">
             <b-checkbox
                     v-model="selected"
-                    :native-value="option.value">
-                {{ option.label }}
-            </b-checkbox>
+                    :native-value="option.value"
+            >{{ option.label }}</b-checkbox>
+            <div
+                    class="see-more-container"
+                    v-if="option.seeMoreLink"
+                    @click="openCheckboxModal()"
+                    v-html="option.seeMoreLink"/>
         </div>
-        <a
-                @click="openCheckboxModal()"
-                class="add-link">
-            {{ $i18n.get('label_see_more') }}
-        </a>
     </div>
 </template>
 
@@ -52,7 +51,9 @@
                 if (filterTag.filterId == this.filter.id) {
 
                     let selectedIndex = this.selected.findIndex(option => option == filterTag.singleValue);
-                    if (selectedIndex >= 0) {
+                    let alternativeIndex = this.options.findIndex(option => option.label == filterTag.singleValue);
+
+                    if (selectedIndex >= 0 || alternativeIndex >= 0) {
 
                         let newSelected = this.selected.slice();
                         newSelected.splice(selectedIndex, 1); 
@@ -72,6 +73,12 @@
 
                         this.selectedValues();
                     }
+                }
+            });
+
+            this.$root.$on('appliedCheckBoxModal', (labels) => {
+                if(labels.length){
+                    this.selectedValues();
                 }
             });
         },
@@ -104,10 +111,10 @@
                 if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
-                    promise = this.getValuesRelationship( collectionTarget );
 
+                    promise = this.getValuesRelationship( collectionTarget, null, null, 0, this.filter.max_options);
                 } else {
-                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel );
+                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, 0, this.filter.max_options );
                 }
 
                 promise.then(() => {
@@ -128,9 +135,21 @@
                     value: this.selected
                 });
 
+                let onlyLabels = [];
+
+                if(!isNaN(this.selected[0])){
+                    for (let option of this.options) {
+                        let valueIndex = this.selected.findIndex(item => item == option.value);
+
+                        if (valueIndex >= 0) {
+                            onlyLabels.push(this.options[valueIndex].label);
+                        }
+                    }
+                }
+
                 this.$eventBusSearch.$emit( 'sendValuesToTags', {
                     filterId: this.filter.id,
-                    value: this.selected
+                    value: onlyLabels.length ? onlyLabels : this.selected,
                 });
             },
             selectedValues(){
@@ -151,10 +170,26 @@
                     parent: this,
                     component: CheckboxFilterModal,
                     props: {
-                        title: this.filter.name
+                        //parent: parent,
+                        filter: this.filter,
+                        //taxonomy_id: this.taxonomy_id,
+                        selected: this.selected,
+                        metadatum_id: this.metadatum,
+                        //taxonomy: this.taxonomy,
+                        collection_id: this.collection,
+                        metadatum_type: this.type,
+                        metadatum_object: this.metadatum_object,
+                        isRepositoryLevel: this.isRepositoryLevel,
                     }
                 });
             }
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .see-more-container {
+        display: flex;
+        padding-left: 18px;
+    }
+</style>

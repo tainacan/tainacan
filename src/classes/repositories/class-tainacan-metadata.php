@@ -796,10 +796,13 @@ class Metadata extends Repository {
 	 *
 	 * @param string $search
 	 *
+	 * @param int $offset
+	 * @param string $number
+	 *
 	 * @return array|null|object
 	 * @throws \Exception
 	 */
-	public function fetch_all_metadatum_values($collection_id, $metadatum_id, $search = ''){
+	public function fetch_all_metadatum_values($collection_id, $metadatum_id, $search = '', $offset = 0, $number = ''){
 		global $wpdb;
 
 		// Clear the result cache
@@ -855,6 +858,11 @@ class Metadata extends Repository {
 			$search_query = $wpdb->prepare( "WHERE meta_value LIKE %s", $search_param );
 		}
 
+		$pagination = '';
+		if($offset >= 0 && $number >= 1){
+			$pagination = $wpdb->prepare("LIMIT %d, %d", (int) $offset, (int) $number);
+		}
+
 		// If no has logged user or actual user can not read private posts
 		if(get_current_user_id() === 0 || !current_user_can( $capabilities->read_private_posts)) {
 			$args = [
@@ -880,7 +888,7 @@ class Metadata extends Repository {
 						  	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 					  	  	FROM $wpdb->postmeta $search_query
 				  		) metas
-			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue",
+			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
 						$item_post_type, $post_status, $metadatum_id
 					);
 				} else {
@@ -895,7 +903,7 @@ class Metadata extends Repository {
 						  	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 					  	  	FROM $wpdb->postmeta $search_query
 				  		) metas
-			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue",
+			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
 						$post_status, $metadatum_id
 					);
 				}
@@ -926,7 +934,7 @@ class Metadata extends Repository {
 					    	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 							FROM $wpdb->postmeta $search_query
 					  	) metas
-					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue",
+					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
 						$item_post_type, $post_status, $metadatum_id
 					);
 				} else {
@@ -941,7 +949,7 @@ class Metadata extends Repository {
 					    	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 							FROM $wpdb->postmeta $search_query
 					  	) metas
-					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue",
+					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
 						$post_status, $metadatum_id
 					);
 				}

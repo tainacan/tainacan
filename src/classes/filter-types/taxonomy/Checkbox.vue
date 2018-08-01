@@ -136,7 +136,7 @@
                         this.$console.log(error);
                     });
             },
-            getOptions( parent, level = 0 ){ // retrieve only ids
+            getOptions( parent/*, level = 0*/ ){ // retrieve only ids
                 let result = [];
                 if ( this.options ){
                     for( let term of this.options ){
@@ -219,6 +219,7 @@
                         metadatum_id: this.metadatum,
                         taxonomy: this.taxonomy,
                         collection_id: this.collection,
+                        isTaxonomy: true,
                     }
                 });
             }

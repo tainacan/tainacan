@@ -90,9 +90,12 @@
                         v-model="editForm.max_options"
                         :placeholder="$i18n.get('instruction_select_max_options_to_show')">
                     <option value="4">4</option>
-                    <option value="7">7</option>
-                    <option value="10">10</option>
-                    <option value="17">17</option>
+                    <option value="8">8</option>
+                    <option value="12">12</option>
+                    <option
+                            v-if="editForm.max_options && !![4,8,12].find( (element) => element == editForm.max_options )"
+                            :value="editForm.max_options">
+                        {{ editForm.max_options }}</option>
                 </b-select>
                 <button
                         class="button is-white is-pulled-right"

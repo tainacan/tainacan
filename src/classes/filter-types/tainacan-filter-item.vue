@@ -200,6 +200,13 @@
             }
         }
 
+        .collapse {
+            .label {
+                display: inline-flex;
+                align-items: center;
+            }
+        }
+
         .label {
             font-weight: normal !important;
             font-size: 14px;

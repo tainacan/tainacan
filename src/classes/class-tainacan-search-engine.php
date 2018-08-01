@@ -67,7 +67,14 @@ class Search_Engine {
 				$search_terms = array( $s );
 			} else {
 				preg_match_all( '/".*?("|$)|((?<=[\\s",+])|^)[^\\s",+]+/', $s, $matches );
-				$search_terms = array_filter(array_map( create_function( '$a', 'return trim($a, "\\"\'\\n\\r ");' ), $matches[0] ));
+
+				// The method create_function is deprecated in PHP 7.2, then it was changed to anonymous functions
+				$search_terms = array_filter(array_map(
+					function($a) {
+						return trim($a, '\\"\'\\n\\r ');
+					},
+					$matches[0]
+				));
 			}
 		}
 
