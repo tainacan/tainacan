@@ -236,7 +236,7 @@ export default {
             }
         }
 
-        .search-control {
+        .search-control {   
 
             .gray-icon, .gray-icon .icon {
                 color: $gray4 !important;

@@ -9,7 +9,7 @@
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
-                :style="{ top: !isOnTheme ? '152px' : (searchControlHeight + 6) + 'px' }"
+                :style="{ top: !isOnTheme ? '120px' : (searchControlHeight + 6) + 'px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
@@ -1201,7 +1201,7 @@
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
-        top: 152px;
+        top: 120px;
         left: 0;
         max-width: 23px;
         height: 21px;
@@ -1233,11 +1233,13 @@
         height: auto;
         position: relative;
         padding-top: $page-small-top-padding;
+        padding-bottom: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
+
 
         @media screen and (max-width: 768px) {
             margin-bottom: $page-small-top-padding;
@@ -1338,7 +1340,7 @@
     }
 
     .tabs {
-        padding-top: 20px;
+        padding-top: 12px;
         margin-bottom: 20px;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
