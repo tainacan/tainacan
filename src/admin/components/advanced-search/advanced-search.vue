@@ -18,13 +18,13 @@
                 v-else
                 :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '47px' }"
                 :class="{ 'padding-in-header': isHeader, 'padding-regular': !isHeader }"
-                class="columns is-multiline tnc-advanced-search-container">
+                class="tnc-advanced-search-container">
 
             <div
                     v-show="!advancedSearchResults"
                     v-for="searchCriterion in searchCriteria"
                     :key="searchCriterion"
-                    class="field column is-12 tainacan-form">
+                    class="field is-12 tainacan-form">
 
                 <b-field
                         class="columns"
@@ -88,7 +88,6 @@
                                 @typing="autoCompleteTerm($event, searchCriterion)"
                                 />
                         <b-input
-                                class="tainacan-input-disabled"
                                 v-else
                                 type="text"
                                 disabled />
@@ -113,7 +112,6 @@
                             >{{ comparator }}</option>
                         </b-select>
                         <b-input
-                                class="tainacan-input-disabled"
                                 v-else
                                 type="text"
                                 disabled />
@@ -609,7 +607,7 @@
         padding-bottom: 47px;
 
         .column {
-            padding: 0 0.3rem 0.3rem !important;
+            padding: 0 0.5rem 0.75rem !important;
         }
 
         .control {
@@ -632,9 +630,16 @@
             margin-left: -5px !important;
         }
 
-        .tainacan-input-disabled {
-            background-color: $gray3;
+        @media screen and (max-width: 768px) {
+            .is-12>.columns {
+                flex-wrap: wrap;
+            }
+            .is-two-thirds {
+                order: 3;
+                flex-basis: 100%;
+            }
         }
+
     }
 
 </style>

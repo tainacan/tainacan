@@ -35,6 +35,9 @@ export default {
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
     @import "../admin/scss/_modals.scss";
+    @import "../admin/scss/_buttons.scss";
+    @import "../admin/scss/_inputs.scss";
+    @import "../admin/scss/_checkboxes.scss";
     @import "../admin/scss/_pagination.scss";
     @import "../admin/scss/_tags.scss";
     @import "../admin/scss/_selects.scss";
@@ -56,65 +59,6 @@ export default {
             list-style: none;
         }
 
-        // Some components have a different style in listing pages
-        .button {
-            height: inherit !important;
-            box-shadow: none !important;
-            border-radius: 6px;
-            padding: 2px 15px;
-            margin-top: 0px;
-            margin-bottom: 0px;
-            display: inline-flex;
-            font-weight: normal;
-            cursor: pointer;
-
-            &.is-secondary:hover, &.is-secondary:focus {
-                background: $secondary !important;
-            }
-            &.is-primary:hover, &.is-primary:focus {
-                background: $turquoise3 !important;
-            }
-            &.is-success:hover, &.is-success:focus {
-                background: $success !important;
-            }
-            &.is-white:hover, &.is-white:focus, &.is-outlined:hover, &.is-outlined:focus {
-                background: $white !important;
-            }
-            &:active {
-                -webkit-transform: none !important;
-                transform: none !important;
-            }
-            &.is-outlined {
-                color: #150e38 !important;
-                background-color: white;
-                border-color: $gray4 !important;
-            }
-            &:focus {
-                outline: 0px;
-            }
-        }
-        .button.is-small {
-            height: 26px !important;
-            line-height: 12px;
-        }
-        .button:not(.is-small):not(.is-medium):not(.is-large) {
-            height: 30px !important;
-            line-height: 20px !important;
-            font-size: 14px !important;
-        }
-        .input, .textarea {
-            font-size: 14px;
-            border: 1px solid $gray2;
-            border-radius: 1px !important;
-            background-color: white;
-            box-shadow: none !important;
-
-            &:focus, &:active {
-                box-shadow: none !important;
-                background-color: white;
-                border: 1px solid $gray2 !important;
-            }    
-        }
         .dropdown {
             display: inline-flex;
             position: relative;
@@ -122,35 +66,6 @@ export default {
         }
         .dropdown-menu {
             display: block;
-        }
-        .b-checkbox.checkbox {
-            align-items: baseline;
-            margin-bottom: 5px;
-
-            input[type="checkbox"] {
-                box-shadow: none !important;
-            }
-
-            input[type="checkbox"] + .check {
-                width: 1.0em;
-                height: 1.0em;
-                flex-shrink: 0;
-                border-radius: 0;
-                border: 1px solid $gray4;
-                transition: background 150ms ease-out;
-                box-shadow: none !important;
-            }
-
-            &:focus input[type="checkbox"] + .check, 
-            &:active input[type="checkbox"] + .check, 
-            &:hover input[type="checkbox"] + .check {
-                box-shadow: none !important;
-                border-color: $gray4 !important;
-            }
-            input[type="checkbox"]:checked + .check {
-                background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:%23000' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important;
-                border-color: $gray4 !important;
-            }
         }
         .b-radio.radio {
 

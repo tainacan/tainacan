@@ -94,7 +94,7 @@
         <div 
                 id="items-list-area"
                 class="items-list-area"
-                :class="{ 'spaced-to-right': !isFiltersMenuCompressed }">
+                :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch }">
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list 
@@ -382,17 +382,15 @@
             </div>
 
             <!-- ADVANCED SEARCH -->
-            <div
-                    v-if="openAdvancedSearch">
+            <div v-if="openAdvancedSearch">
 
-                <div class="columns tnc-advanced-search-close">
-                    <div class="column">
-                        <div class="advanced-search-criteria-title">
+                <div class="tnc-advanced-search-close"> 
+                    <div class="advanced-search-criteria-title">
+                        <div class="is-flex">
                             <h1>{{ $i18n.get('info_search_criteria') }}</h1>
-
                             <div
                                     :style="{'margin-bottom': 'auto'}"
-                                    class="field is-grouped is-pulled-right">
+                                    class="field is-grouped">
                                 <p
                                         v-if="advancedSearchResults"
                                         class="control">
@@ -413,8 +411,8 @@
                                     </a>
                                 </p>
                             </div>
-                            <hr>
                         </div>
+                        <hr>
                     </div>
 
                 </div>
@@ -1087,6 +1085,10 @@
     .advanced-search-criteria-title {
         padding: 0;
 
+        &>.is-flex {
+            justify-content: space-between;
+        }
+
         h1 {
             font-size: 20px;
             font-weight: 500;
@@ -1307,6 +1309,9 @@
             align-items: center;
             width: 100%;
 
+            .input {
+                border: 1px solid $gray2;
+            }
             .control {
                 width: 100%;
                 .icon {

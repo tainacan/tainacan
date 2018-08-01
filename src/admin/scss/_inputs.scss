@@ -10,8 +10,8 @@
         border: 1px solid $gray2 !important;
     }    
     &[disabled] {
-        color: $gray4;
-        background-color: $gray2;
+        color: $gray4 !important;
+        background-color: $gray2 !important;
     }
     &::placeholder,
     &::-ms-input-placeholder,
