@@ -35,6 +35,7 @@
         } 
     }
 }
+
 .taginput-container {
     padding: 0 !important;
     background-color: white !important;
@@ -42,7 +43,10 @@
     &:focus, &:active {
         border: none !important;
     }
-    .input { margin-bottom: 0px !important; }
+    .input { 
+        margin-bottom: 0px !important; 
+        height: 1.85rem !important;
+    }
     .input.has-selected, .input:focus, .input:active {
         background-color: white;
         border: 1px solid $gray2 !important;

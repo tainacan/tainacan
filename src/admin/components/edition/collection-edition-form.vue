@@ -908,6 +908,9 @@ export default {
         padding: 4px 6px;
         .icon { font-size: 20px; }
         &.disabled {
+            pointer-events: none;
+            cursor: not-allowed;
+           
            .icon { color: $gray2; }
         }
     }

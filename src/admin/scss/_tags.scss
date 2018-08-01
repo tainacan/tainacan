@@ -7,8 +7,8 @@
     max-width: 100%;
     overflow: hidden;
 
-    &:hover{
-        background-color: $gray2;
+    &:hover, &:hover .tag {
+        background-color: $gray1;
     }
 
     .tag {
@@ -20,5 +20,14 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+
+        &.is-delete {
+            border-radius: 50px !important;
+            border-radius: 50px !important;
+
+            &:hover {
+                background-color: white !important;
+            }
+        }
     }
 }

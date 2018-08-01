@@ -1,32 +1,49 @@
 <template>
+<div>
+    <div class="terms-list-header">
+        <button
+                class="button is-secondary"
+                type="button"
+                @click="addNewTerm()">
+            {{ $i18n.get('label_new_term') }}
+        </button>
+        <b-field class="order-area">
+            <button
+                    :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
+                    class="button is-white is-small"
+                    @click="onChangeOrder('asc')">
+                <b-icon 
+                        class="gray-icon"
+                        icon="sort-ascending"/>
+            </button>
+            <button
+                    :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
+                    class="button is-white is-small"
+                    @click="onChangeOrder('desc')">
+                <b-icon 
+                        class="gray-icon"
+                        icon="sort-descending"/>
+            </button>
+        </b-field>
+        <div class="search-area is-hidden-mobile">
+            <div class="control has-icons-right  is-small is-clearfix">
+                <input
+                        class="input is-small"
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        autocomplete="on"
+                        v-model="searchQuery"
+                        @keyup.enter="loadTerms(0)">
+                    <span
+                            @click="loadTerms(0)"
+                            class="icon is-right">
+                        <i class="mdi mdi-magnify" />
+                    </span>
+            </div>
+        </div>
+    </div>
     <div class="columns">
         <div class="column">
-            <button
-                    class="button is-secondary"
-                    type="button"
-                    @click="addNewTerm()">
-                {{ $i18n.get('label_new_term') }}
-            </button>
-            <b-field class="order-area">
-                <button
-                        :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
-                        class="button is-white is-small"
-                        @click="onChangeOrder('asc')">
-                    <b-icon 
-                            class="gray-icon"
-                            icon="sort-ascending"/>
-                </button>
-                <button
-                        :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
-                        class="button is-white is-small"
-                        @click="onChangeOrder('desc')">
-                    <b-icon 
-                            class="gray-icon"
-                            icon="sort-descending"/>
-                </button>
-            </b-field>
-
-            <br>
             <br>
             <div    
                     class="term-item"
@@ -107,6 +124,7 @@
                 :active.sync="isLoadingTerms" 
                 :can-cancel="false"/>
     </div>
+</div>
 </template>
 
 <script>
@@ -123,7 +141,8 @@ export default {
             formWithErrors: '',
             orderedTermsList: [],
             order: 'asc',
-            termEditionFormTop: 0
+            termEditionFormTop: 0,
+            searchQuery: ''
         }
     },
     props: {
@@ -371,7 +390,8 @@ export default {
         loadTerms(parentId) {
             
             this.isLoadingTerms = true;
-            this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: '', all: '', order: this.order})
+            let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
+            this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: search, all: '', order: this.order})
                 .then(() => {
                     // Fill this.form data with current data.
                     this.isLoadingTerms = false;
