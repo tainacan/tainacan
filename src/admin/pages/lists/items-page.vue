@@ -1,6 +1,6 @@
 <template>
     <div 
-            v-hammer:swipe.right="onSwipeFiltersMenuRight"
+            v-hammer:swipe="onSwipeFiltersMenu"
             :class="{'repository-level-page': isRepositoryLevel}">
 
         <!-- SEARCH AND FILTERS --------------------- -->
@@ -583,8 +583,7 @@
                 class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
                 :width="736"
-                animation="slide-menu"
-                v-hammer:swipe.left="onSwipeFiltersMenuLeft">
+                animation="slide-menu">
             <div class="modal-inner-content">
                 <h3 class="has-text-weight-semibold">{{ $i18n.get('filters') }}</h3>
                 <a
@@ -755,8 +754,19 @@
                 'getTotalItems',
                 'getAdminViewMode'
             ]),
+            onSwipeFiltersMenu($event) {
+                let screenWidth = window.screen.width;
+
+                if ($event.offsetDirection == 4 && screenWidth <= 768) {
+                    if (!this.isFilterModalActive)
+                        this.isFilterModalActive = true;
+                } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
+                    if (this.isFilterModalActive)
+                        this.isFilterModalActive = false;
+                }
+            },
             onSwipeFiltersMenuRight() {
-                let screenWidth = 400;//window.screen.width;
+                let screenWidth = window.screen.width;
 
                 if (!this.isFilterModalActive && screenWidth <= 768)
                     this.isFilterModalActive = true;
@@ -1258,7 +1268,7 @@
         flex-wrap: wrap;
 
 
-        @media screen and (max-width: 768px) {
+        @media screen and (min-width: 768px) {
             margin-bottom: $page-small-top-padding;
         }
     }
