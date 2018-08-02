@@ -24,6 +24,7 @@
                     v-if="!isSearching && !isTaxonomy"
                     class="modal-card-body tainacan-checkbox-list-container">
                 <a
+                        role="button"
                         class="tainacan-checkbox-list-page-changer"
                         @click="beforePage">
                     <b-icon
@@ -31,6 +32,7 @@
                 </a>
                 <ul class="tainacan-modal-checkbox-list-body">
                     <li
+                            class="tainacan-li-checkbox-list"
                             v-for="(option, key) in options"
                             :key="key">
                         <b-checkbox
@@ -39,8 +41,12 @@
                             {{ `${option.label}` }}
                         </b-checkbox>
                     </li>
+                    <b-loading
+                            :is-full-page="false"
+                            :active.sync="isCheckboxListLoading"/>
                 </ul>
                 <a
+                        role="button"
                         class="tainacan-checkbox-list-page-changer"
                         @click="nextPage">
                     <b-icon
@@ -124,6 +130,9 @@
                             {{ `${option.name ? option.name : option.label}` }}
                         </b-checkbox>
                     </li>
+                    <b-loading
+                            :is-full-page="false"
+                            :active.sync="isSearchingLoading"/>
                 </ul>
             </div>
 
@@ -185,6 +194,8 @@
                 maxNumOptionsCheckboxFinderColumns: 100,
                 checkboxListOffset: 0,
                 collection: this.collection_id,
+                isCheckboxListLoading: false,
+                isSearchingLoading: false,
             }
         },
         created() {
@@ -198,38 +209,71 @@
             beforePage(){
                 this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
 
+                if(this.checkboxListOffset < 0){
+                    this.checkboxListOffset = 0;
+                    return;
+                }
+
+                this.isCheckboxListLoading = true;
+
                 this.getOptions(this.checkboxListOffset);
             },
             nextPage(){
                 this.checkboxListOffset = this.options.length;
 
+                this.isCheckboxListLoading = true;
+
                 this.getOptions(this.checkboxListOffset);
             },
             getOptions(offset){
+                let promise = '';
+
                 if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    this.getValuesRelationship( collectionTarget, this.optionName, [], offset, this.maxNumOptionsCheckboxList, true);
+                    promise = this.getValuesRelationship( collectionTarget, this.optionName, [], offset, this.maxNumOptionsCheckboxList, true);
+
+                    promise
+                        .then(() => {
+                            this.isCheckboxListLoading = false;
+                            this.isSearchingLoading = false;
+                        })
+                        .catch(error => {
+                            this.$console.log(error);
+                        })
                 } else {
-                    this.getValuesPlainText( this.metadatum_id, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
+                    promise = this.getValuesPlainText( this.metadatum_id, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
+
+                    promise
+                        .then(() => {
+                            this.isCheckboxListLoading = false;
+                            this.isSearchingLoading = false;
+                        })
+                        .catch(error => {
+                            this.$console.log(error);
+                        })
                 }
             },
             autoComplete: _.debounce( function () {
 
                 if(this.isTaxonomy) {
                     this.isSearching = !!this.optionName.length;
+                    this.isSearchingLoading = true;
 
                     let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}`;
 
                     axios.get(`/taxonomy/${this.taxonomy_id}/terms${query}`)
                         .then((res) => {
                             this.searchResults = res.data;
+                            this.isSearchingLoading = false;
                         }).catch((error) => {
                         this.$console.log(error);
                     })
                 } else {
                     this.isSearching = !!this.optionName.length;
+
+                    this.isSearchingLoading = true;
 
                     this.getOptions(0);
                 }
@@ -437,6 +481,33 @@
 
     @import "../../scss/variables.scss";
 
+    @media screen and (max-width: 735px) {
+        .tainacan-modal-content {
+            flex-direction: column;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 10px !important;
+        }
+    }
+
+    .tainacan-modal-title {
+        align-self: baseline;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    // In theme, the bootstrap removes the style of <a> without href
+    a {
+        cursor: pointer;
+        color: $turquoise5 !important;
+    }
+
+    .tainacan-form {
+        max-width: 100%;
+    }
+
     .tainacan-show-more {
         width: 100%;
         display: flex;
@@ -445,10 +516,21 @@
         border: 1px solid $gray1;
         margin-top: 10px;
         margin-bottom: 0.2rem;
+
+        &:hover {
+            background-color: $blue1;
+        }
     }
 
-    .tainacan-li-checkbox-modal:hover {
-        background-color: $blue1;
+    .tainacan-li-checkbox-modal {
+        &:hover {
+            background-color: $blue1;
+        }
+    }
+
+    .tainacan-li-checkbox-list{
+        flex-grow: 1;
+        flex-shrink: 1;
     }
 
     .tainacan-finder-columns-container {
@@ -458,10 +540,10 @@
         overflow: auto;
         padding: 0 !important;
         min-height: 253px;
-    }
 
-    .tainacan-finder-columns-container:focus {
-        outline: none;
+        &:focus {
+            outline: none;
+        }
     }
 
     .tainacan-finder-column {
@@ -514,7 +596,6 @@
         align-items: center;
         display: flex;
         background-color: $gray1;
-        margin: 0 10px;
 
         &:hover {
             background-color: $blue1;
@@ -522,10 +603,14 @@
     }
 
     .tainacan-modal-checkbox-list-body {
-        columns: 2;
         list-style: none;
         width: 100%;
         align-self: baseline;
+        margin: 0 10px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        padding: 0 !important;
     }
 
     .tainacan-search-results-container {
@@ -534,8 +619,10 @@
     }
 
     .tainacan-modal-checkbox-search-results-body {
-        columns: 2;
         list-style: none;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
     }
 
     .tainacan-li-no-children {

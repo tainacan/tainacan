@@ -60,7 +60,7 @@
     }
     .radio, .checkbox {
         margin-bottom: 5px;
-        align-items: baseline;
+        align-items: center;
 
         &.is-danger {
             border-color: $danger;

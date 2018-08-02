@@ -35,10 +35,10 @@ export const filter_type_mixin = {
 
             return axios.get(url)
                 .then(res => {
-                    if (res.data && res.data[0]) {
-                        let sResults = [];
-                        let opts = [];
+                    let sResults = [];
+                    let opts = [];
 
+                    if (res.data && res.data[0]) {
                         for (let metadata of res.data[0]) {
                             if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                                 let indexToIgnore = valuesToIgnore.findIndex(value => value == metadata.mvalue);
@@ -70,18 +70,19 @@ export const filter_type_mixin = {
 
 
                         }
-
-                        this.searchResults = sResults;
-
-                        if(opts.length){
-                            this.options = opts;
-                        }
-                        
-                        if(this.filter.max_options && this.options.length >= this.filter.max_options){
-                            let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_see_more') } </a>`;
-                            this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
-                        }
                     }
+
+                    this.searchResults = sResults;
+
+                    if (opts.length) {
+                        this.options = opts;
+                    }
+
+                    if (this.filter.max_options && this.options.length >= this.filter.max_options) {
+                        let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_see_more') } </a>`;
+                        this.options[this.filter.max_options - 1].seeMoreLink = seeMoreLink;
+                    }
+
                 })
                 .catch(error => {
                     this.$console.error(error);
@@ -102,15 +103,15 @@ export const filter_type_mixin = {
 
             return axios.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id')
                 .then(res => {
-                    if (res.data.length > 0) {
-                        let sResults = [];
-                        let opts = [];
+                    let sResults = [];
+                    let opts = [];
 
+                    if (res.data.length > 0) {
                         for (let item of res.data) {
                             if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                                 let indexToIgnore = valuesToIgnore.findIndex(value => value == item.id);
 
-                                if(search && isInCheckboxModal){
+                                if (search && isInCheckboxModal) {
                                     sResults.push({
                                         label: metadata.mvalue,
                                         value: metadata.mvalue
@@ -123,7 +124,7 @@ export const filter_type_mixin = {
                                     });
                                 }
                             } else {
-                                if(search && isInCheckboxModal){
+                                if (search && isInCheckboxModal) {
                                     sResults.push({
                                         label: item.title,
                                         value: item.id,
@@ -136,20 +137,21 @@ export const filter_type_mixin = {
                                         img: (item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath)
                                     });
                                 }
-                            }  
-                        }
-
-                        this.searchResults = sResults;
-
-                        if(opts.length){
-                            this.options = opts;
-                        }
-
-                        if(this.filter.max_options && this.options.length >= this.filter.max_options){
-                            let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_see_more') } </a>`;
-                            this.options[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                            }
                         }
                     }
+
+                    this.searchResults = sResults;
+
+                    if (opts.length) {
+                        this.options = opts;
+                    }
+
+                    if (this.filter.max_options && this.options.length >= this.filter.max_options) {
+                        let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_see_more') } </a>`;
+                        this.options[this.filter.max_options - 1].seeMoreLink = seeMoreLink;
+                    }
+
                 })
                 .catch(error => {
                     this.$console.error(error);

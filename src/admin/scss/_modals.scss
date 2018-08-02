@@ -20,9 +20,10 @@
         margin-top: 5px;
     }
     hr{
-        margin: 3px 0px 4px 0px; 
+        margin: 3px 0 4px 0;
         height: 1px;
         background-color: $secondary;
+        border-top: 0;
     }
     margin-bottom: 40px;
 }

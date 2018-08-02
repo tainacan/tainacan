@@ -30,7 +30,6 @@
     "babel-preset-stage-3": "^6.24.1",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
-    "cypress": "^3.0.3",
     "element-theme-chalk": "^2.4.5",
     "eslint": "^5.2.0",
     "eslint-loader": "^2.1.0",

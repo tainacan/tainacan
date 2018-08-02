@@ -93,7 +93,7 @@
                     <option value="8">8</option>
                     <option value="12">12</option>
                     <option
-                            v-if="editForm.max_options && !![4,8,12].find( (element) => element == editForm.max_options )"
+                            v-if="editForm.max_options && ![4,8,12].find( (element) => element == editForm.max_options )"
                             :value="editForm.max_options">
                         {{ editForm.max_options }}</option>
                 </b-select>
