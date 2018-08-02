@@ -295,6 +295,7 @@ export default {
             this.runImporter(this.sessionId)
                 .then(backgroundProcess => {
                     this.backgroundProcess = backgroundProcess;
+                    this.$router.push(this.$routerHelper.getProcessesPage());
                 })
                 .catch((errors) => {
                     this.$console.log(errors);

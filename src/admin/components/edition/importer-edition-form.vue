@@ -161,7 +161,6 @@ export default {
             importerFile: null,
             importerSourceInfo: null,
             collections: [],
-            collectionMetadata: [],
             collectionId: undefined,
             url: '',
             backgroundProcess: undefined
@@ -317,6 +316,7 @@ export default {
             this.runImporter(this.sessionId)
                 .then(backgroundProcess => {  
                     this.backgroundProcess = backgroundProcess;
+                    this.$router.push(this.$routerHelper.getProcessesPage());
                 })
                 .catch((errors) => {
                     this.$console.log(errors);
@@ -340,19 +340,7 @@ export default {
         },
         onSelectCollection(collectionId) {
             this.collectionId = collectionId;
-            this.mappedCollection['id'] = collectionId;
-
-            // Generates options for metadata listing
-            this.isFetchingCollectionMetadata = true;
-            this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
-            .then((metadata) => {
-                this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
-                this.isFetchingCollectionMetadata = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
-                this.isFetchingCollectionMetadata = false;
-            });    
+            this.mappedCollection['id'] = collectionId;    
         }
     },
     created() {
