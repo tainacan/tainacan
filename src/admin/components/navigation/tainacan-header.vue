@@ -148,7 +148,7 @@
     }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
 
@@ -217,49 +217,6 @@
                         height: 27px;
                         font-size: 18px;
                         width: 30px !important;
-                    }
-                }
-
-                .advanced-search-header-dropdown {
-                    height: 27px !important;
-
-                    .dropdown-content {
-                        width: 800px !important;
-                    }
-
-                    .dropdown-item:hover {
-                        background-color: unset;
-                    }
-
-                    @media screen and (min-width: 1087px) {
-                        .dropdown-menu {
-                            top: 0 !important;
-                        }
-                    }
-
-                    .dropdown-item {
-                        span.icon:not(.is-right) {
-                            position: relative !important;
-                        }
-                    }
-
-                    .advanced-search-text {
-                        margin: 0 12px;
-                        font-size: 12px;
-                        color: $blue5;
-                    }
-
-                    .advanced-search-text-di {
-                        font-size: 14px;
-                        font-weight: 500;
-                        color: #01295c;
-                        margin-top: 4px;
-                    }
-
-                    .advanced-search-hr {
-                        height: 1px;
-                        margin: 8px 0;
-                        background-color: #298596;
                     }
                 }
             }

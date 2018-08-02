@@ -152,3 +152,76 @@ $family-sans-serif: 'Roboto', sans-serif;
  
 // Bulma's modal (needs to be greather than taincan-admin-app)
 $modal-z: 9999999;
+
+// Animations for Slide Menu
+@keyframes slide-menu-in {
+    from {
+        -ms-transform: translate(-100%, 0); /* IE 9 */
+        -webkit-transform: translate(-100%, 0); /* Safari */
+        transform: translate(-100%, 0);
+    }
+    to {
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes slide-menu-out {
+    from {
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        -ms-transform: translate(-100%, 0); /* IE 9 */
+        -webkit-transform: translate(-100%, 0); /* Safari */
+        transform: translate(-100%, 0);
+    }
+}
+
+@keyframes appear {
+    from {
+        opacity: 0.0;
+        visibility: hidden;
+    }
+    to {
+        opacity: 1.0;
+        visibility: visible;
+    }
+}
+
+@keyframes disappear {
+    from {
+        opacity: 0.3;
+        visibility: visible;
+    }
+    to {
+        opacity: 0.0;
+        visibility: hidden;
+    }
+}
+
+.slide-menu-enter-active {
+    animation-name: slide-menu-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;   
+    
+    .modal-background {
+        animation-name: appear;
+        animation-duration: 0.6s;
+        animation-timing-function: ease-out;
+    } 
+}
+.slide-menu-leave-active {
+    animation-name: slide-menu-out;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in;    
+
+    .modal-background {
+        opacity: 0.0;
+        animation-name: disappear;
+        animation-duration: 0.2s;
+        animation-timing-function: ease-in;
+    } 
+}

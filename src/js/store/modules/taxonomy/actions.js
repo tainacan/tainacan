@@ -181,6 +181,8 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
         query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
     } else if(fetchOnly && search && all ){ 
         query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+    } else if(search && !all && !fetchOnly){ 
+        query = `?hideempty=0&order=${order}&${qs.stringify(search)}`;
     } else {
         query =`?hideempty=0&order=${order}`;
     }
@@ -205,12 +207,15 @@ export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, s
         order = 'asc';
     }
 
-    if (fetchOnly && search && !all) {
+    if(fetchOnly && search && !all ){
         query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    } else if (fetchOnly && search && all) {
+    } else if(fetchOnly && search && all ){ 
         query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
+    } else if(search && !all && !fetchOnly){ 
+        console.log(search)
+        query = `?hideempty=0&order=${order}&${qs.stringify(search)}`;
     } else {
-        query = `?hideempty=0&order=${order}`;
+        query =`?hideempty=0&order=${order}`;
     }
     query += '&parent=' + parentId;
 

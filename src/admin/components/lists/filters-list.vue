@@ -694,7 +694,7 @@ export default {
                 font-weight: bold;
                 margin-left: 0.4em;
                 display: inline-block;
-                max-width: 200px;
+                max-width: 180px;
             }
             &:after,
             &:before {
