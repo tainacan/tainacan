@@ -13,94 +13,94 @@
             </button>
         </div>
         <div class="level">      
-                                        <div class="level-left">
-            <div class="level-item">
-                <nav class="breadcrumbs">
+            <div class="level-left">
+                <div class="level-item">
+                    <nav class="breadcrumbs">
+                        <router-link 
+                                tag="a" 
+                                :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
+                        <span 
+                                v-for="(pathItem, index) in arrayRealPath" 
+                                :key="index">
+                            <router-link
+                                    v-if="index < arrayRealPath.length - 1" 
+                                    tag="a" 
+                                    :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
+                                {{ arrayViewPath[index] }}
+                            </router-link>
+                            <span v-if="index == arrayRealPath.length - 1">{{ arrayViewPath[index] }}</span>
+                            <span v-if="index != arrayRealPath.length - 1 && arrayViewPath[index]"> > </span>
+                        </span>   
+                    </nav>
+                </div>
+            </div>
+    
+            <ul class="menu-list level-right">
+                <li 
+                        :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
+                        class="level-item">
+                    <router-link  
+                            tag="a" 
+                            :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
+                            :aria-label="$i18n.get('label_collection_items')">
+                        <span class="icon">
+                            <i class="mdi mdi-file-multiple"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.get('items') }}</span>
+                    </router-link>
+                </li>
+                <li 
+                        :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
+                        class="level-item">
+                    <router-link
+                            tag="a" 
+                            :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
+                            :aria-label="$i18n.get('label_settings')">
+                        <span class="icon">
+                            <i class="mdi mdi-settings"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
+                    </router-link>
+                </li>
+                <li 
+                        :class="activeRoute == 'MetadataList' ? 'is-active':''"
+                        class="level-item">
                     <router-link 
                             tag="a" 
-                            :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                    <span 
-                            v-for="(pathItem, index) in arrayRealPath" 
-                            :key="index">
-                        <router-link
-                                v-if="index < arrayRealPath.length - 1" 
-                                tag="a" 
-                                :to="'/' + arrayRealPath.slice(0, index + 1).join('/')">
-                            {{ arrayViewPath[index] }}
-                        </router-link>
-                        <span v-if="index == arrayRealPath.length - 1">{{ arrayViewPath[index] }}</span>
-                        <span v-if="index != arrayRealPath.length - 1 && arrayViewPath[index]"> > </span>
-                    </span>   
-                </nav>
-            </div>
-        </div>
-   
-        <ul class="menu-list level-right">
-            <li 
-                    :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
-                    class="level-item">
-                <router-link  
-                        tag="a" 
-                        :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
-                        :aria-label="$i18n.get('label_collection_items')">
-                    <span class="icon">
-                        <i class="mdi mdi-file-multiple"/>
-                    </span>
-                    <span class="menu-text">{{ $i18n.get('items') }}</span>
-                </router-link>
-            </li>
-            <li 
-                    :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
-                    class="level-item">
-                <router-link
-                        tag="a" 
-                        :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
-                        :aria-label="$i18n.get('label_settings')">
-                    <span class="icon">
-                        <i class="mdi mdi-settings"/>
-                    </span>
-                    <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
-                </router-link>
-            </li>
-            <li 
-                    :class="activeRoute == 'MetadataList' ? 'is-active':''"
-                    class="level-item">
-                <router-link 
-                        tag="a" 
-                        :to="{ path: $routerHelper.getCollectionMetadataPath(id) }"
-                        :aria-label="$i18n.get('label_collection_metadata')">
-                    <span class="icon">
-                        <i class="mdi mdi-format-list-bulleted-type"/>
-                    </span>
-                    <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
-                </router-link>
-            </li>
-            <li 
-                    :class="activeRoute == 'FiltersList' ? 'is-active':''" 
-                    class="level-item">
-                <router-link
-                        tag="a" 
-                        :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
-                        :aria-label="$i18n.get('label_collection_filters')">
-                    <span class="icon">
-                        <i class="mdi mdi-filter"/>
-                    </span>
-                    <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
-                </router-link>
-            </li>
-            <li 
-                    :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
-                    class="level-item">
-                <router-link 
-                        tag="a" 
-                        :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
-                        :aria-label="$i18n.get('label_collection_events')">
-                    <activities-icon />
-                    <span class="menu-text">{{ $i18n.get('events') }}</span>
-                </router-link>
-            </li>
-          
-        </ul>
+                            :to="{ path: $routerHelper.getCollectionMetadataPath(id) }"
+                            :aria-label="$i18n.get('label_collection_metadata')">
+                        <span class="icon">
+                            <i class="mdi mdi-format-list-bulleted-type"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
+                    </router-link>
+                </li>
+                <li 
+                        :class="activeRoute == 'FiltersList' ? 'is-active':''" 
+                        class="level-item">
+                    <router-link
+                            tag="a" 
+                            :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
+                            :aria-label="$i18n.get('label_collection_filters')">
+                        <span class="icon">
+                            <i class="mdi mdi-filter"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+                    </router-link>
+                </li>
+                <li 
+                        :class="activeRoute == 'CollectionEventsPage' ? 'is-active':''"
+                        class="level-item">
+                    <router-link 
+                            tag="a" 
+                            :to="{ path: $routerHelper.getCollectionEventsPath(id) }" 
+                            :aria-label="$i18n.get('label_collection_events')">
+                        <activities-icon />
+                        <span class="menu-text">{{ $i18n.get('events') }}</span>
+                    </router-link>
+                </li>
+            
+            </ul>
         </div>
     </div>
 </template>
@@ -141,7 +141,7 @@ export default {
     },
     methods: {
         ...mapActions('collection', [
-            'fetchCollectionName'
+            'fetchCollectionNameAndURL'
         ]),
         ...mapGetters('collection', [
             'getCollectionName',
@@ -172,8 +172,8 @@ export default {
                     
                     switch(this.arrayRealPath[i-1]) {
                         case 'collections':
-                            this.fetchCollectionName(this.arrayRealPath[i])
-                                .then(collectionName => this.arrayViewPath.splice(i, 1, collectionName))
+                            this.fetchCollectionNameAndURL(this.arrayRealPath[i])
+                                .then(collection => this.arrayViewPath.splice(i, 1, collection.name))
                                 .catch((error) => this.$console.error(error));
 
                             break;
