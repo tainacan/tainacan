@@ -85,19 +85,22 @@
                                 class="tainacan-modal-content">
                             <div class="tainacan-modal-title">
                                 <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
+                                <a 
+                                        class="back-link"
+                                        @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">{{ $i18n.get('exit') }}</a>
                                 <hr>
                             </div>
-                            <b-select
-                                    :value="selectedMetadatumType"
-                                    @input="onSelectMetadatumType($event)"
-                                    :placeholder="$i18n.get('label_select_metadatum_type')">
-                                <option
-                                        v-for="(metadatumType, index) of metadatumTypes"
-                                        :key="index"
-                                        :value="metadatumType">
-                                    {{ metadatumType.name }}
-                                </option>
-                            </b-select>
+                            <section class="tainacan-form">
+                                <div class="metadata-types-container">
+                                    <div
+                                            class="metadata-type"
+                                            v-for="(metadatumType, index) of metadatumTypes"
+                                            :key="index"
+                                            @click="onSelectMetadatumType(metadatumType)">
+                                        <h4>{{ metadatumType.name }}</h4>           
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                         <div 
                                 v-if="isEditingMetadatum"
@@ -487,6 +490,26 @@ export default {
             background-color: white;
         }
     }
+
+    .metadata-types-container {
+
+        .metadata-type {
+            border-bottom: 1px solid $gray2;
+            padding: 15px 8.3333333%;
+            cursor: pointer;
+        
+            &:first-child {
+                margin-top: 15px;
+            }
+            &:last-child {
+                border-bottom: none;
+            }
+            &:hover {
+                background-color: $gray1;
+            }
+        }
+    }
+
 
 
 </style>

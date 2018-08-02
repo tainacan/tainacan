@@ -46,7 +46,7 @@ export default {
     },
     methods: {
         ...mapActions('collection', [
-            'fetchCollectionName'
+            'fetchCollectionNameAndURL'
         ]),
         ...mapGetters('collection', [
             'getCollectionName'
@@ -79,8 +79,8 @@ export default {
                     
                     switch(this.arrayRealPath[i-1]) {
                         case 'collections':
-                            this.fetchCollectionName(this.arrayRealPath[i])
-                                .then(collectionName => { this.arrayViewPath.splice(i, 1, collectionName); this.entityName = collectionName; })
+                            this.fetchCollectionNameAndURL(this.arrayRealPath[i])
+                                .then(collection => { this.arrayViewPath.splice(i, 1, collection.name); this.entityName = collection.name; })
                                 .catch((error) => this.$console.error(error));
                             break;
                         case 'items':

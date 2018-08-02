@@ -6,91 +6,107 @@
                 class="tainacan-form" 
                 label-width="120px"
                 v-if="importer != undefined && importer != null">
-
-
-            <!-- Target collection selection -------------------------------- --> 
-            <b-field
-                    v-if="importer.manual_collection"
-                    :addons="false" 
-                    :label="$i18n.get('label_target_collection')">
-                <help-button 
-                        :title="$i18n.get('label_target_collection')" 
-                        :message="$i18n.get('info_target_collection_helper')"/>
-                <br>
-                <div class="is-inline">
-                    <b-select
-                            id="tainacan-select-target-collection"
-                            :value="collectionId"
-                            @input="onSelectCollection($event)"
-                            :loading="isFetchingCollections"
-                            :placeholder="$i18n.get('instruction_select_a_target_collection')">
-                        <option
-                                v-for="collection of collections"
-                                :key="collection.id"
-                                :value="collection.id">{{ collection.name }}
-                        </option>
-                    </b-select>
-                    <router-link
-                            tag="a" 
-                            class="is-inline add-link"     
-                            :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
-                        <b-icon
-                                icon="plus-circle"
-                                size="is-small"
-                                type="is-secondary"/>
-                            {{ $i18n.get('new_blank_collection') }}</router-link>
+            <div class="columns is-gapless">
+                <div 
+                        v-if="importer.options_form != undefined && importer.options_form != null && importer.options_form != ''"
+                        class="column">
+                    <!-- Importer custom options -->
+                    <form id="importerOptionsForm">
+                        <div v-html="importer.options_form"/>
+                    </form>
                 </div>
-            </b-field>
-
-            <!-- Importer custom options -->
-            <form 
-                    id="importerOptionsForm"
-                    v-if="importer.options_form != undefined && importer.options_form != null && importer.options_form != ''">
-                <div v-html="importer.options_form"/>
-            </form>
-
-            <!-- File Source input -->
-            <b-field
-                    v-if="importer.accepts.file"
-                    :addons="false">
-                <label class="label">{{ $i18n.get('label_source_file') }}</label>
-                <help-button 
-                        :title="$i18n.get('label_source_file')" 
-                        :message="$i18n.get('info_source_file_upload')"/>
-                <br>
-                <b-upload
-                        v-if="importer.tmp_file == undefined" 
-                        v-model="importerFile"
-                        drag-drop>
-                    <section class="drop-inner">
-                        <div class="content has-text-centered">
-                            <p>
+                <div class="column">
+                    <!-- Target collection selection -------------------------------- --> 
+                    <b-field
+                            v-if="importer.manual_collection"
+                            :addons="false" 
+                            :label="$i18n.get('label_target_collection')">
+                        <help-button 
+                                :title="$i18n.get('label_target_collection')" 
+                                :message="$i18n.get('info_target_collection_helper')"/>
+                        <br>
+                        <div class="is-inline">
+                            <b-select
+                                    expanded
+                                    id="tainacan-select-target-collection"
+                                    :value="collectionId"
+                                    @input="onSelectCollection($event)"
+                                    :loading="isFetchingCollections"
+                                    :placeholder="$i18n.get('instruction_select_a_target_collection')">
+                                <option
+                                        v-for="collection of collections"
+                                        :key="collection.id"
+                                        :value="collection.id">{{ collection.name }}
+                                </option>
+                            </b-select>
+                            <router-link
+                                    tag="a" 
+                                    class="is-inline add-link"     
+                                    :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
                                 <b-icon
-                                        icon="upload"
-                                        size="is-large"/>
-                            </p>
-                            <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
+                                        icon="plus-circle"
+                                        size="is-small"
+                                        type="is-secondary"/>
+                                    {{ $i18n.get('new_blank_collection') }}</router-link>
                         </div>
-                    </section>
-                </b-upload>
-                <div v-if="importerFile != undefined">{{ importerFile[0].name }}</div>
-            </b-field>
+                    </b-field>
+                    <!-- File Source input -->
+                    <b-field
+                            v-if="importer.accepts.file"
+                            :addons="false">
+                        <label class="label">{{ $i18n.get('label_source_file') }}</label>
+                        <help-button 
+                                :title="$i18n.get('label_source_file')" 
+                                :message="$i18n.get('info_source_file_upload')"/>
+                        <br>
+                        <b-upload
+                                v-if="importer.tmp_file == undefined && (importerFile == undefined || importerFile == null || importerFile == '')" 
+                                v-model="importerFile"
+                                drag-drop
+                                class="source-file-upload">
+                            <section class="drop-inner">
+                                <div class="content has-text-centered">
+                                    <p>
+                                        <b-icon
+                                                icon="upload"
+                                                size="is-large"/>
+                                    </p>
+                                    <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
+                                </div>
+                            </section>
+                        </b-upload>
+                        <div 
+                                class="control selected-source-file"
+                                v-if="importerFile != undefined">
+                            <span>{{ importerFile[0].name }}</span>
+                            <a 
+                                    target="_blank"
+                                    @click.prevent="importerFile = undefined">
+                                <span class="icon">
+                                    <i class="mdi mdi-18px mdi-close"/>
+                                </span>
+                            </a>
+                        </div>
+                    </b-field>
 
-            <!-- URL source input -------------------------------- --> 
-            <b-field 
-                    v-if="importer.accepts.url"
-                    :addons="false"
-                    :label="$i18n.get('label_url_source_link')">
-                <help-button 
-                        :title="$i18n.get('label_url_source_link')" 
-                        :message="$i18n.get('info_url_source_link_helper')"/>
-                <b-input
-                        id="tainacan-url-link-source"
-                        v-model="url"/>  
-            </b-field>
+                    <!-- URL source input -------------------------------- --> 
+                    <b-field 
+                            v-if="importer.accepts.url"
+                            :addons="false"
+                            :label="$i18n.get('label_url_source_link')">
+                        <help-button 
+                                :title="$i18n.get('label_url_source_link')" 
+                                :message="$i18n.get('info_url_source_link_helper')"/>
+                        <b-input
+                                id="tainacan-url-link-source"
+                                v-model="url"/>  
+                    </b-field>
+                            
                     
+                </div>
+            </div>
             <!-- Form submit -------------------------------- --> 
-            <div class="field is-grouped form-submit">
+            <div class="columns is-gapless field is-grouped form-submit">
                 <div class="control">
                     <button
                             id="button-cancel-collection-creation"
@@ -130,7 +146,6 @@
                 </div>
             </div>
         </form>
-
         <b-loading 
                 :active.sync="isLoading" 
                 :can-cancel="false"/>
@@ -365,6 +380,14 @@ export default {
 
     @import "../../scss/_variables.scss";
 
+    .columns.is-gapless {
+        padding-left: $page-side-padding;
+        padding-right: $page-side-padding;
+
+        .column:not(:first-child) {
+            margin-left: $page-side-padding;
+        }
+    }
 
     .field {
         position: relative;
@@ -410,6 +433,20 @@ export default {
         #metadatumEditForm {
             background-color: white;
         }
+    }
+
+    .source-file-upload {
+        width: 100%;
+        display: grid;
+    }
+
+    .selected-source-file {
+        border: 1px solid $gray2;
+        padding: 2px 10px;
+        font-size: .75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
 

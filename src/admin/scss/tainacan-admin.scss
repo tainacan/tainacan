@@ -74,7 +74,7 @@ a:hover {
         margin-top: 0; 
     }
 
-    .is-primary, .is-primary:hover, .is-primary:focus {
+    .is-primary:not(.upload-draggable), .is-primary:hover, .is-primary:focus {
         background-color: $blue4 !important;
         color: white !important;
     }
@@ -93,6 +93,12 @@ a:hover {
         h1 {
             color: $blue5 !important;
         }
+    }
+    .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
+        border: none !important;
+        cursor: not-allowed !important;
+        color: $gray4 !important;
+        background-color: $gray2 !important;
     }
     .tabs {
         li.is-active a {
