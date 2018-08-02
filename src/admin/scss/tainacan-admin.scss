@@ -74,7 +74,7 @@ a:hover {
         margin-top: 0; 
     }
 
-    .is-primary, .is-primary:hover, .is-primary:focus {
+    .is-primary:not(.upload-draggable), .is-primary:hover, .is-primary:focus {
         background-color: $blue4 !important;
         color: white !important;
     }
