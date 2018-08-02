@@ -152,6 +152,7 @@
                             :disabled="sessionId == undefined || importer == undefined"
                             id="button-submit-collection-creation"
                             @click.prevent="onRunImporter"
+                            :class="{'is-loading': isLoadingRun }"
                             class="button is-success">{{ $i18n.get('run') }}</button>
                 </div>
             </div>
@@ -174,6 +175,7 @@ export default {
             importerId: Number,
             importer: null,
             isLoading: false,
+            isLoadingRun: false,
             mappedCollection: {
                 'id': Number,
                 'mapping': {},
@@ -284,12 +286,14 @@ export default {
             return undefined;
         },
         onRunImporter() {
+            this.isLoadingRun = true;
             this.updateImporterCollection({ sessionId: this.sessionId, collection: this.mappedCollection })
                 .then(updatedImporter => {    
                     this.importer = updatedImporter;
                     this.finishRunImporter();
                 })
                 .catch((errors) => {
+                    this.isLoadingRun = false;
                     this.$console.log(errors);
                 });
 
@@ -298,27 +302,27 @@ export default {
             this.runImporter(this.sessionId)
                 .then(backgroundProcess => {
                     this.backgroundProcess = backgroundProcess;
+                    this.isLoadingRun = false;
                     this.$router.push(this.$routerHelper.getProcessesPage());
                 })
                 .catch((errors) => {
+                    this.isLoadingRun = false;
                     this.$console.log(errors);
                 });
         },
         onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum) {
-
-            if (selectedMetadatum)
-                this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
-            else {
-                let removedKey = '';
-                for (let key in this.mappedCollection['mapping']) {
-                    if(this.mappedCollection['mapping'][key] == sourceMetadatum)
-                        removedKey = key;
-                }
-
-                if (removedKey != '')
-                    delete this.mappedCollection['mapping'][removedKey];
+     
+            let removedKey = '';
+            for (let key in this.mappedCollection['mapping']) {
+                if(this.mappedCollection['mapping'][key] == sourceMetadatum)
+                    removedKey = key;
             }
-            
+
+            if (removedKey != '')
+                delete this.mappedCollection['mapping'][removedKey];
+                
+            this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
+
             // Necessary for causing reactivity to re-check if metadata remains available
             this.collectionMetadata.push("");
             this.collectionMetadata.pop();

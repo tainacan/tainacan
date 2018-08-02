@@ -67,7 +67,7 @@
                 </thead>
                 <tbody>
                     <tr     
-                            :class="{ 'selected-row': selected[index] }"
+                            :class="{ 'selected-row': selected[index], 'highlighted-process': highlightedProcess == bgProcess.ID }"
                             :key="index"
                             v-for="(bgProcess, index) of processes">
                         <!-- Checking list -->
@@ -140,7 +140,7 @@
                                         class="icon has-text-success loading-icon">
                                     <div class="control has-icons-right is-loading is-clearfix" />
                                 </span>
-                                <span
+                                <!-- <span
                                         v-if="bgProcess.done <= 0"
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
@@ -151,7 +151,7 @@
                                         class="icon has-text-gray action-icon"
                                         @click="pauseProcess(index)">
                                     <i class="mdi mdi-18px mdi-close-circle-outline"/>
-                                </span>
+                                </span> -->
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('label_process_completed'),
@@ -181,7 +181,8 @@
             return {
                 selected: [],
                 allOnPageSelected: false,
-                isSelecting: false
+                isSelecting: false,
+                highlightedProcess: ''
             }
         },
         props: {
@@ -303,6 +304,11 @@
             },
             pauseProcess() { 
             }
+        },
+        mounted() {
+            if (this.$route.query.highlight) {
+                this.highlightedProcess = this.$route.query.highlight;
+            }
         }
     }
 </script>
@@ -330,6 +336,24 @@
         position: relative !important;
         right: 0;
         top: 0;
+    }
+
+    @keyframes highlight {
+        from {
+            background-color: $blue1; 
+        }
+        to {
+            background-color: $white; 
+        }
+    }
+
+    .highlighted-process {
+        td, .checkbox-cell .checkbox, .actions-cell .actions-container { 
+            transition: background-color 0.5s; 
+            animation-name: highlight;
+            animation-duration: 1s;
+            animation-iteration-count: 2;
+        }
     }
 
 </style>

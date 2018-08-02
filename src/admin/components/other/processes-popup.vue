@@ -45,7 +45,7 @@
                             </span>  
                             <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
                         </div>
-                        <span 
+                        <!-- <span 
                                 v-if="bgProcess.done <= 0"
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
@@ -56,7 +56,7 @@
                                 class="icon has-text-gray action-icon"
                                 @click="pauseProcess(index)">
                             <i class="mdi mdi-18px mdi-close-circle-outline"/>
-                        </span>
+                        </span> -->
                         <span 
                                 v-if="bgProcess.done > 0"
                                 class="icon has-text-success">

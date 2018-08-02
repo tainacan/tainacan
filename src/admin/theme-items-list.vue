@@ -40,6 +40,7 @@ export default {
     @import "../admin/scss/_checkboxes.scss";
     @import "../admin/scss/_pagination.scss";
     @import "../admin/scss/_tags.scss";
+    // @import "../admin/scss/_tabs.scss";
     @import "../admin/scss/_selects.scss";
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
@@ -104,31 +105,6 @@ export default {
             }
         }
 
-        // Tabs 
-        .tabs {
-            a {
-                font-size: 13px;
-                margin-bottom: -3px;
-                &:hover{
-                    border-bottom-color: transparent;
-                }
-            }
-            li.is-active a {
-                border-bottom: 5px solid $turquoise3;
-                color: $turquoise3; 
-            }
-        }
-
-        .select select{
-            border-radius: 1;
-            padding: 4px 16px;
-            color: #1d1d1d;
-            font-size: 1.0em;
-            font-weight: normal;
-            cursor: pointer;
-            background-color: white;
-        }
-
         .filters-menu {
             // height: auto;
             position: absolute !important;
@@ -153,6 +129,10 @@ export default {
 
         .search-control {   
 
+            @media screen and (min-width: 768px) {
+                margin-bottom: $page-small-top-padding;
+            }
+
             .gray-icon, .gray-icon .icon {
                 color: $gray4 !important;
                 i::before {
@@ -175,7 +155,7 @@ export default {
 
         #items-list-area {
             width: 100%;
-            overflow-y: unset;
+            overflow-y: hidden;
             margin-left: 0;
             &.spaced-to-right {
                 margin-left:  $filter-menu-width-theme;

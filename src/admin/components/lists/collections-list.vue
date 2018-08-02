@@ -396,10 +396,6 @@ export default {
         }
     }
 
-    img.table-thumb {
-        border-radius: 50px !important;
-    }
-
     .total-items-header {
         text-align: right;
     }
