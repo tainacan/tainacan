@@ -112,9 +112,9 @@
                     let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-                    promise = this.getValuesRelationship( collectionTarget, null, null, 0, this.filter.max_options);
+                    promise = this.getValuesRelationship( collectionTarget, null, [], 0, this.filter.max_options);
                 } else {
-                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, 0, this.filter.max_options );
+                    promise = this.getValuesPlainText( this.metadatum, null, this.isRepositoryLevel, [], 0, this.filter.max_options );
                 }
 
                 promise.then(() => {

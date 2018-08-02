@@ -24,13 +24,19 @@
                     v-if="!isSearching && !isTaxonomy"
                     class="modal-card-body tainacan-checkbox-list-container">
                 <a
+                        v-if="checkboxListOffset"
                         role="button"
                         class="tainacan-checkbox-list-page-changer"
                         @click="beforePage">
                     <b-icon
                             icon="chevron-left"/>
                 </a>
-                <ul class="tainacan-modal-checkbox-list-body">
+                <ul
+                        :class="{
+                            'tainacan-modal-checkbox-list-body-dynamic-m-l': !checkboxListOffset,
+                            'tainacan-modal-checkbox-list-body-dynamic-m-r': noMorePage,
+                        }"
+                        class="tainacan-modal-checkbox-list-body">
                     <li
                             class="tainacan-li-checkbox-list"
                             v-for="(option, key) in options"
@@ -46,6 +52,7 @@
                             :active.sync="isCheckboxListLoading"/>
                 </ul>
                 <a
+                        v-if="!noMorePage"
                         role="button"
                         class="tainacan-checkbox-list-page-changer"
                         @click="nextPage">
@@ -196,6 +203,7 @@
                 collection: this.collection_id,
                 isCheckboxListLoading: false,
                 isSearchingLoading: false,
+                noMorePage: 0,
             }
         },
         created() {
@@ -208,10 +216,12 @@
         methods: {
             beforePage(){
                 this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
+                this.noMorePage = 0;
+
+                //console.log(this.checkboxListOffset, this.maxNumOptionsCheckboxList);
 
                 if(this.checkboxListOffset < 0){
                     this.checkboxListOffset = 0;
-                    return;
                 }
 
                 this.isCheckboxListLoading = true;
@@ -219,7 +229,12 @@
                 this.getOptions(this.checkboxListOffset);
             },
             nextPage(){
-                this.checkboxListOffset = this.options.length;
+                if(!this.noMorePage) {
+                    this.checkboxListOffset += this.maxNumOptionsCheckboxList - 1;
+                }
+
+                // 0 20 / 19 20 / 39 20 / 59 20
+                //console.log(this.checkboxListOffset, this.maxNumOptionsCheckboxList);
 
                 this.isCheckboxListLoading = true;
 
@@ -611,6 +626,15 @@
         flex-direction: column;
         flex-wrap: wrap;
         padding: 0 !important;
+        max-height: 253px;
+    }
+
+    .tainacan-modal-checkbox-list-body-dynamic-m-l {
+        margin-left: 34px !important;
+    }
+
+    .tainacan-modal-checkbox-list-body-dynamic-m-r {
+        margin-right: 34px !important;
     }
 
     .tainacan-search-results-container {
@@ -623,6 +647,7 @@
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
+        max-height: 253px;
     }
 
     .tainacan-li-no-children {

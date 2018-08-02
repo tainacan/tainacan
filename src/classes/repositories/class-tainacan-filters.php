@@ -90,7 +90,8 @@ class Filters extends Repository {
 			    'title'       => __( 'Max of options', 'tainacan' ),
 			    'type'        => 'integer/string',
 			    'description' => __( 'The max number of options to be showed in filter sidebar.', 'tainacan' ),
-			    'validation'  => ''
+			    'validation'  => '',
+			    'default'     => 4
 		    ]
         ]);
     }

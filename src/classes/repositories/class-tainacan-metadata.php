@@ -860,7 +860,7 @@ class Metadata extends Repository {
 
 		$pagination = '';
 		if($offset >= 0 && $number >= 1){
-			$pagination = $wpdb->prepare("LIMIT %d, %d", (int) $offset, (int) $number);
+			$pagination = $wpdb->prepare("LIMIT %d,%d", (int) $offset, (int) $number);
 		}
 
 		// If no has logged user or actual user can not read private posts

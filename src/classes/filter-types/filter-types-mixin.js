@@ -76,6 +76,8 @@ export const filter_type_mixin = {
 
                     if (opts.length) {
                         this.options = opts;
+                    } else {
+                        this.noMorePage = 1;
                     }
 
                     if (this.filter.max_options && this.options.length >= this.filter.max_options) {
@@ -145,6 +147,8 @@ export const filter_type_mixin = {
 
                     if (opts.length) {
                         this.options = opts;
+                    } else {
+                        this.noMorePage = 1;
                     }
 
                     if (this.filter.max_options && this.options.length >= this.filter.max_options) {
