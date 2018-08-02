@@ -482,13 +482,24 @@ export default {
             });
         },
         removeMetadatum(removedMetadatum) {
-            this.deleteMetadatum({ collectionId: this.collectionId, metadatumId: removedMetadatum.id, isRepositoryLevel: this.isRepositoryLevel})
-            .then(() => {
-                if (!this.isRepositoryLevel)
-                    this.updateMetadataOrder();
-            })
-            .catch(() => {
-            });
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_metadatum_delete'),
+                    onConfirm: () => { 
+                        this.deleteMetadatum({ collectionId: this.collectionId, metadatumId: removedMetadatum.id, isRepositoryLevel: this.isRepositoryLevel})
+                            .then(() => {
+                                if (!this.isRepositoryLevel)
+                                    this.updateMetadataOrder();
+                            })
+                            .catch(() => {
+                            });
+                    },
+                }
+            }); 
         },
         editMetadatum(metadatum) {
             // Closing collapse

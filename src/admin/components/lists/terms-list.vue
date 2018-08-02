@@ -305,38 +305,49 @@ export default {
         },
         removeTerm(term) {
 
-            // If all checks passed, term can be deleted
-            if (term.id == 'new') {
-                let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
-                if (index >= 0) {
-                    this.orderedTermsList.splice(index, 1);
-                }
-            } else {
-                
-                this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id})
-                .then(() => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_selected_term_delete'),
+                    onConfirm: () => { 
+                        // If all checks passed, term can be deleted
+                        if (term.id == 'new') {
+                            let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
+                            if (index >= 0) {
+                                this.orderedTermsList.splice(index, 1);
+                            }
+                        } else {
+                            
+                            this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id})
+                            .then(() => {
 
-                })
-                .catch((error) => {
-                    this.$console.log(error);
-                });
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            });
 
-                // Updates parent IDs for orphans
-                for (let orphanTerm of this.termsList) {
-                    if (orphanTerm.parent == term.id) {
-                        this.updateTerm({
-                            taxonomyId: this.taxonomyId, 
-                            termId: orphanTerm.id, 
-                            name: orphanTerm.name,
-                            description: orphanTerm.description,
-                            parent: term.parent
-                        })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
-                    }
+                            // Updates parent IDs for orphans
+                            for (let orphanTerm of this.termsList) {
+                                if (orphanTerm.parent == term.id) {
+                                    this.updateTerm({
+                                        taxonomyId: this.taxonomyId, 
+                                        termId: orphanTerm.id, 
+                                        name: orphanTerm.name,
+                                        description: orphanTerm.description,
+                                        parent: term.parent
+                                    })
+                                    .catch((error) => {
+                                        this.$console.log(error);
+                                    });
+                                }
+                            }
+                        }   
+                    },
                 }
-            }   
+            });  
         },
         onTermEditionFinished() {   
             this.isEditingTerm = false;
