@@ -252,29 +252,31 @@ class CSV extends Importer {
         $TainacanMedia = \Tainacan\Media::get_instance();
 
         if( strpos($column_value,'url:') === 0 ){
-            $correct_value = substr($column_value, 4);
+            $correct_value = trim(substr($column_value, 4));
             $item_inserted->set_document( $correct_value );
             $item_inserted->set_document_type( 'url' );
 
-            if( $item_inserted->validate() )
-                $this->items_repo->update($item_inserted);
+            if( $item_inserted->validate() ) {
+                $item_inserted = $this->items_repo->update($item_inserted);
+            }
 
         } else if( strpos($column_value,'text:') === 0 ){
-            $correct_value = substr($column_value, 5);
+            $correct_value = trim(substr($column_value, 5));
             $item_inserted->set_document( $correct_value );
             $item_inserted->set_document_type( 'text' );
             
-            if( $item_inserted->validate() )
-                $this->items_repo->update($item_inserted);
+            if( $item_inserted->validate() ) {
+                $item_inserted = $this->items_repo->update($item_inserted);
+            }
 
         } else if( strpos($column_value,'file:') === 0 ){
-            $correct_value = substr($column_value, 5);
+            $correct_value = trim(substr($column_value, 5));
             
             if( filter_var($correct_value, FILTER_VALIDATE_URL) ){
-                $id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
+                $id = $TainacanMedia->insert_attachment_from_url($correct_value);
 
                 if(!$id){
-                    $this->add_log('Error in Document file imported from URL ' . $correct_value);
+                    $this->add_error_log('Error in Document file imported from URL ' . $correct_value);
                     return false;
                 }
 
@@ -282,29 +284,39 @@ class CSV extends Importer {
                 $item_inserted->set_document_type( 'attachment' );
                 $this->add_log('Document file URL imported from ' . $correct_value);
 
-                if( $item_inserted->validate() )
-                    $this->items_repo->update($item_inserted);
+                if( $item_inserted->validate() ) {
+                    $item_inserted = $this->items_repo->update($item_inserted);
+                }
+            } else {
+                $server_path_files = trailingslashit($this->get_option('server_path'));
+                $id = $TainacanMedia->insert_attachment_from_file($server_path_files . $correct_value);
 
-                return true;
-            } 
+                if(!$id){
+                    $this->add_error_log('Error in Document file imported from server ' . $correct_value);
+                    return false;
+                }
 
-            $server_path_files = $this->get_option('server_path');
-            $id = $TainacanMedia->insert_attachment_from_file($correct_value, $item_inserted->get_id());
+                $item_inserted->set_document( $id );
+                $item_inserted->set_document_type( 'attachment' );
+                $this->add_log('Document file in Server imported from ' . $correct_value);
 
-            if(!$id){
-                $this->add_log('Error in Document file imported from server ' . $correct_value);
-                return false;
+                if( $item_inserted->validate() ) {
+                    $item_inserted = $this->items_repo->update($item_inserted);
+                }
+
             }
 
-            $item_inserted->set_document( $id );
-            $item_inserted->set_document_type( 'attachment' );
-            $this->add_log('Document file in Server imported from ' . $correct_value);
-
-            if( $item_inserted->validate() )
-                $this->items_repo->update($item_inserted);
-
-            return true;
         }
+
+        $thumb_id = $this->items_repo->get_thumbnail_id_from_document($item_inserted);
+        
+        if (!is_null($thumb_id)) {
+            $this->add_log('Setting item thumbnail: ' . $thumb_id);
+            set_post_thumbnail( $item_inserted->get_id(), (int) $thumb_id );
+        }
+
+        return true;
+
     }
 
     /**
@@ -318,36 +330,28 @@ class CSV extends Importer {
         if( $attachments ){
             foreach( $attachments as $attachment ){
 
-                if(  strpos($attachment,'file:') !== 0 ){
-                    $this->add_log('Attachment must have "file:" previously the path or url ');
-                    continue;
-                }
-
-                
-                $correct_value = substr($attachment, 5);
-            
-                if( filter_var($correct_value, FILTER_VALIDATE_URL) ){
-                    $id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
+                if( filter_var($attachment, FILTER_VALIDATE_URL) ){
+                    $id = $TainacanMedia->insert_attachment_from_url($attachment, $item_inserted->get_id());
                        
                     if(!$id){
-                        $this->add_log('Error in Attachment file imported from URL ' . $correct_value);
+                        $this->add_error_log('Error in Attachment file imported from URL ' . $attachment);
                         return false;
                     }
 
-                    $this->add_log('Attachment file URL imported from ' . $correct_value);
+                    $this->add_log('Attachment file URL imported from ' . $attachment);
 
                     continue;
                 } 
 
-                $server_path_files = $this->get_option('server_path');
-                $id = $TainacanMedia->insert_attachment_from_file($correct_value, $item_inserted->get_id());
+                $server_path_files = trailingslashit($this->get_option('server_path'));
+                $id = $TainacanMedia->insert_attachment_from_file($server_path_files . $attachment, $item_inserted->get_id());
 
                 if(!$id){
-                    $this->add_log('Error in Attachment file imported from server ' . $correct_value);
+                    $this->add_log('Error in Attachment file imported from server ' . $attachment);
                     continue;
                 }
 
-                $this->add_log('Attachment file in Server imported from ' . $correct_value);
+                $this->add_log('Attachment file in Server imported from ' . $attachment);
             }
        }
     }
