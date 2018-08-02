@@ -205,8 +205,11 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getAvailableImportersPath() {
             return '/importers/new';
         },
-        getProcessesPage() {
-            return '/events?tab=processes';
+        getProcessesPage(highlightedProcess) {
+            if (highlightedProcess)
+                return '/events?tab=processes&highlight=' + highlightedProcess;
+            else 
+                return '/events?tab=processes';
         },
         // Singles
         getCollectionPath(id) {

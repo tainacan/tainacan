@@ -127,6 +127,7 @@
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
                             id="button-submit-collection-creation"
                             @click.prevent="onFinishImporter()"
+                            :class="{'is-loading': isLoadingRun }"
                             class="button is-success">{{ $i18n.get('run') }}</button>
                 </div>
                 <div 
@@ -142,7 +143,7 @@
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
                             id="button-submit-collection-creation"
                             @click.prevent="onFinishImporter()"
-                            class="button is-success">{{ $i18n.get('label_metadata_mapping') }}</button>
+                            class="button is-success">{{ $i18n.get('next') }}</button>
                 </div>
             </div>
         </form>
@@ -162,6 +163,7 @@ export default {
             importerId: Number,
             importer: null,
             isLoading: false,
+            isLoadingRun: false,
             isFetchingCollections: false,
             form: {
                 
@@ -310,19 +312,23 @@ export default {
             });
         },
         onFinishImporter() {
-
+            this.isLoadingRun = true;
             this.onUpdateOptions().then(() => {
                 this.uploadSource()
                     .then(() => { 
-                        if (this.importer.manual_mapping)    
+                        if (this.importer.manual_mapping) {   
                             this.goToMappingPage();
-                        else
+                            this.isLoadingRun = false;
+                        } else {
                             this.onRunImporter();
+                        }
                     }).catch((errors) => {
+                        this.isLoadingRun = false;
                         this.$console.log(errors);
                     });   
             })
             .catch((errors) => {
+                this.isLoadingRun = false;
                 this.$console.log(errors);
             });
           
@@ -331,9 +337,11 @@ export default {
             this.runImporter(this.sessionId)
                 .then(backgroundProcess => {  
                     this.backgroundProcess = backgroundProcess;
-                    this.$router.push(this.$routerHelper.getProcessesPage());
+                    this.isLoadingRun = false;
+                    this.$router.push(this.$routerHelper.getProcessesPage(backgroundProcess.bg_process_id));
                 })
                 .catch((errors) => {
+                    this.isLoadingRun = false;
                     this.$console.log(errors);
                 });
         },
