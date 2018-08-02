@@ -75,14 +75,14 @@ class Bulk_Edit  {
 			add_filter('posts_pre_query', '__return_empty_array');
 			
 			// this adds the meta key and meta value to the SELECT query so it can be used directly in the INSERT below
-			add_filter('posts_fields_request', [&$this, 'add_fields_to_query'], 10, 2);
+			add_filter('posts_fields_request', [$this, 'add_fields_to_query'], 10, 2);
 			
 			$itemsRepo = Repositories\Items::get_instance();
 			$params['query']['fields'] = 'ids';
 			$items_query = $itemsRepo->fetch($params['query'], $params['collection_id']);
 			
 			remove_filter('posts_pre_query', '__return_empty_array');
-			remove_filter('posts_fields_request', [&$this, 'add_fields_to_query']);
+			remove_filter('posts_fields_request', [$this, 'add_fields_to_query']);
 			
 			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) {$items_query->request}" );
 			

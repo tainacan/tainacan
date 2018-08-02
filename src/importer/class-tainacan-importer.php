@@ -600,7 +600,7 @@ abstract class Importer {
 	 * the current progress of the process.
 	 * 
 	 */
-	protected function set_current_step_total(int $value) {
+	protected function set_current_step_total($value) {
 		$this->set_step_total($this->get_current_step(), $value);
 	}
 
@@ -613,7 +613,7 @@ abstract class Importer {
 	 * the current progress of the process.
 	 * 
 	 */
-	protected function set_step_total(int $step, int $value) {
+	protected function set_step_total($step, $value) {
 		$steps = $this->get_steps();
 		if (isset($steps[$step]) && is_array($steps[$step])) {
 			$steps[$step]['total'] = $value;

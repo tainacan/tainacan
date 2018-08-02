@@ -5,4 +5,6 @@ echo 'W is Warning'
 echo 'E is Error'
 
 ./src/vendor/bin/phpcs -p . --standard=PHPCompatibility --extensions=php --ignore=*/node_modules/*,*/src/vendor/* --report-file=./report.txt --runtime-set testVersion 5.6
+echo 'Done'
+echo 'Results are in ./report.txt'
 

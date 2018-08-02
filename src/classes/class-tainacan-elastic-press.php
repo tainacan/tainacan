@@ -13,7 +13,7 @@ namespace Tainacan;
 class Elastic_Press {
 
 	function __construct($ajax_query=false) {
-		add_action('init', [&$this, 'init']);
+		add_action('init', [$this, 'init']);
 		
 	}
 	
@@ -21,7 +21,7 @@ class Elastic_Press {
 		if (!class_exists('EP_API')) {
 			return; // ElasticPress not active
 		}
-		add_filter('tainacan_fetch_args', [&$this, 'filter_args'], 10, 2);
+		add_filter('tainacan_fetch_args', [$this, 'filter_args'], 10, 2);
 	}
 	
 	function filter_args($args, $type) {
