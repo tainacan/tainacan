@@ -179,6 +179,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_collection_metadata'                      => __( 'Collection Metadata', 'tainacan' ),
 	'label_collection_filters'                       => __( 'Collection Filters', 'tainacan' ),
 	'label_parent_term'                              => __( 'Parent Term', 'tainacan' ),
+	'label_children_terms'                           => __( 'children terms', 'tainacan' ),
 	'label_new_term'                                 => __( 'New Term', 'tainacan' ),
 	'label_new_child'                                => __( 'New Child', 'tainacan' ),
 	'label_taxonomy_terms'                           => __( 'Taxonomy Terms', 'tainacan' ),
@@ -252,7 +253,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_remove_value'                             => __( 'Remove value', 'tainacan' ),
 	'label_create_new_page'                          => __( 'Create new page', 'tainacan' ),
 	'label_total_items'                              => __( 'Total items', 'tainacan' ),
-	'label_see_more'                                 => __( 'See more', 'tainacan' ),
+	'label_see_more'                                 => __( 'View more', 'tainacan' ),
 	'label_until'                                    => __( 'until', 'tainacan' ),
 	'label_visibility'                               => __( 'Visibility', 'tainacan' ),
 	'label_discard'                                  => __( 'Discard', 'tainacan' ),
@@ -272,7 +273,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_unamed_process'                       	 => __( 'Unamed process', 'tainacan' ),
 	'label_import_collection'                      	 => __( 'Import collection', 'tainacan' ),
     'label_semantic_uri'                      	     => __( 'Semantic Uri', 'tainacan' ),
-    'label_see_collection'                     	     => __( 'See collection', 'tainacan' ),
+    'label_view_collection'                     	     => __( 'View collection', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

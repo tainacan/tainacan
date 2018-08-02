@@ -4,7 +4,8 @@
         <button
                 class="button is-secondary"
                 type="button"
-                @click="addNewTerm()">
+                @click="addNewTerm()"
+                :disabled="isEditingTerm">
             {{ $i18n.get('label_new_term') }}
         </button>
         <b-field class="order-area">
@@ -54,17 +55,7 @@
                     }" 
                     :style="{'margin-left': (term.depth * 40) + 'px'}"
                     v-for="(term, index) in orderedTermsList"
-                    :key="term.id"
-                    @click.prevent="isEditingTerm ? null : loadTerms(term.id)"> 
-                <a
-                        class="is-small has-text-secondary"
-                        type="button"
-                        @click="addNewChildTerm(term, index)"
-                        :disabled="isEditingTerm">
-                    <b-icon 
-                            size="is-small"
-                            icon="plus-circle"/>
-                </a>
+                    :key="term.id"> 
                 <span 
                         class="term-name" 
                         :class="{'is-danger': formWithErrors == term.id }">
@@ -72,8 +63,9 @@
                 </span>
                 <span   
                         v-if="term.id != undefined"
-                        class="label-details">
-                        {{ term.total_children > 0 ? '(' + term.total_children + ')' : '' }}
+                        class="label-details"  
+                        @click.prevent="isEditingTerm && term.total_children > 0 ? null : loadTerms(term.id)">
+                        {{ term.total_children > 0 ? term.total_children + ' ' + $i18n.get('label_children_terms') : '' }}
                     <span 
                             class="not-saved" 
                             v-if="!term.saved"> 
@@ -82,15 +74,13 @@
                 </span>
             
                 <span class="controls" >
-                <!--
-                    <button
-                            class="button is-success is-small"
-                            type="button"
-                            :href="taxonomyPath + '/' + term.slug">
-                        {{ $i18n.get('label_view_term') }}
-                    </button>
-                -->
-
+                    <a 
+                            @click="addNewChildTerm(term, index)"
+                            :disabled="isEditingTerm">
+                        <b-icon 
+                                size="is-small"
+                                icon="plus-circle"/>
+                    </a>
                     <a @click.prevent="editTerm(term, index)">
                         <b-icon 
                                 type="is-secondary" 
@@ -474,14 +464,21 @@ export default {
 
     .term-item {
         font-size: 14px;
-        padding: 0.7em 0.9em;
-        margin: 4px;
+        padding: 0 0.75rem;
         min-height: 40px;
-        display: block; 
+        display: flex; 
         position: relative;
+        align-items: center;
 
         &:hover {
             background-color: $gray1 !important;
+            .controls {
+                visibility: visible;
+                opacity: 1.0;
+            }
+            &::before {
+                border-color: transparent transparent transparent $gray2 !important;
+            }
         }
         
         .handle {
@@ -494,6 +491,8 @@ export default {
             font-weight: bold;
             margin-left: 0.4em;
             margin-right: 0.4em;
+            display: inline-block;
+            max-width: 73%; 
 
             &.is-danger {
                 color: $danger !important;
@@ -510,23 +509,24 @@ export default {
         }
         .controls { 
             position: absolute;
-            right: 5px;
-            top: 10px;
+            right: 0;
+            visibility: hidden;
+            opacity: 0.0;
+            background-color: $gray2;
+            padding: 0.4375rem 0.875rem;
+            margin-left: auto;
 
-            .icon {
-                bottom: 1px;   
-                position: relative;
-                i, i:before { font-size: 20px; }
-                .mdi-plus-circle, .mdi-plus-circle:before{
-                    font-size: 14px;
+            a {
+                margin: 0 0.375rem;
+                .icon {
+                    bottom: 1px;   
+                    position: relative;
+                    i, i:before { font-size: 20px; }
+                    a {
+                        margin-right: 8px;
+                    }
                 }
-                a {
-                    margin-right: 8px;
-                }
-            }
-            .button {
-                margin-right: 1em;
-            }
+            }            
         }
 
         &.opened-term {
@@ -546,7 +546,7 @@ export default {
                 height: 0;
                 border-style: solid;
                 border-color: transparent transparent transparent $blue1;
-                border-left-width: 16px;
+                border-left-width: 24px;
                 border-top-width: 20px;
                 border-bottom-width: 20px;
                 top: 0;

@@ -10,8 +10,8 @@
                 target="_blank"
                 v-if="!isRepositoryLevel"
                 class="button"
-                id="see-collection-button">
-            <eye-icon /> {{ $i18n.get('label_see_collection') }}
+                id="view-collection-button">
+            <eye-icon /> {{ $i18n.get('label_view_collection') }}
         </a>
     </div>
 </template>
@@ -105,7 +105,7 @@ export default {
             transition: all 0.2s linear;
         }
 
-        #see-collection-button {
+        #view-collection-button {
             border: none;
             border-radius: 0px !important;
             height: 42px !important;

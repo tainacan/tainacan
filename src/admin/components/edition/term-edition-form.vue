@@ -255,9 +255,9 @@
     }
 
     form {
-        padding: 2.0rem 0rem 1rem 3rem;
+        padding: 1.7rem 0 1.5rem 1.5rem;
         border-left: 1px solid $gray2;
-        margin-top: 1.0em;
+        margin-left: 0.75rem;
         position: relative;
         animation-name: enter;
         animation-duration: 0.5s;

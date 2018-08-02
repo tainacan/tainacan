@@ -94,6 +94,12 @@ a:hover {
             color: $blue5 !important;
         }
     }
+    .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
+        border: none !important;
+        cursor: not-allowed !important;
+        color: $gray4 !important;
+        background-color: $gray2 !important;
+    }
     .tabs {
         li.is-active a {
             border-bottom: 5px solid $blue5;
