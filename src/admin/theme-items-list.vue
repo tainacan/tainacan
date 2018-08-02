@@ -129,6 +129,10 @@ export default {
 
         .search-control {   
 
+            @media screen and (min-width: 768px) {
+                margin-bottom: $page-small-top-padding;
+            }
+
             .gray-icon, .gray-icon .icon {
                 color: $gray4 !important;
                 i::before {

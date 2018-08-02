@@ -1266,11 +1266,6 @@
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
-
-
-        @media screen and (min-width: 768px) {
-            margin-bottom: $page-small-top-padding;
-        }
     }
 
     .search-control-item {
