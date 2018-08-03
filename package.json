@@ -19,6 +19,7 @@
     "vue-router": "^3.0.1",
     "vue-the-mask": "^0.11.1",
     "vue2-hammer": "^1.0.7",
+    "vue-masonry-css": "^1.0.2",
     "vuedraggable": "^2.16.0",
     "vuex": "^3.0.1"
   },
@@ -41,7 +42,6 @@
     "uglifyjs-webpack-plugin": "^1.2.7",
     "vue-custom-element": "^3.2.3",
     "vue-loader": "^15.2.6",
-    "vue-masonry-css": "^1.0.2",
     "vue-template-compiler": "^2.5.17",
     "webpack": "^4.16.3",
     "webpack-cli": "^3.1.0",
