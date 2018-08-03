@@ -74,8 +74,7 @@ export default {
     @import "../../src/admin/scss/_view-mode-masonry.scss";
 
     .tainacan-masonry-container .tainacan-masonry-item .metadata-title {
-        padding: 0.75rem;
-        margin-bottom: 0px;
+        margin: 0px 6px;
     }
 </style>
 

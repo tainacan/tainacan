@@ -239,6 +239,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_table'                                    => __( 'Table', 'tainacan' ),
 	'label_cards'                                    => __( 'Cards', 'tainacan' ),
 	'label_records'                                  => __( 'Records', 'tainacan' ),
+	'label_masonry'                                  => __( 'Masonry', 'tainacan' ),
 	'label_visualization'                            => __( 'Visualization', 'tainacan' ),
 	'label_available_importers'                      => __( 'Available Importers', 'tainacan' ),
 	'label_target_collection'                        => __( 'Target Collection', 'tainacan' ),

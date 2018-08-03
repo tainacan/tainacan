@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
 import { VueHammer } from 'vue2-hammer';
+import VueMasonry from 'vue-masonry-css';
 
 // Custom elements
 import Text from '../../classes/metadata-types/text/Text.vue';
@@ -34,7 +35,6 @@ import ViewModeTable from '../../theme-helper/view-mode-table.vue';
 import ViewModeCards from '../../theme-helper/view-mode-cards.vue';
 import ViewModeRecords from '../../theme-helper/view-mode-records.vue';
 import ViewModeMasonry from '../../theme-helper/view-mode-masonry.vue';
-import VueMasonry from 'vue-masonry-css';
 
 // Remaining imports
 import HelpButton from '../components/other/help-button.vue';

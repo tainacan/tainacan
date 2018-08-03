@@ -101,6 +101,71 @@
                 </div>
             </div>
 
+            <!-- MASONRY VIEW MODE -->
+            <masonry 
+                    v-if="viewMode == 'masonry'"
+                    :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
+                    :gutter="30"
+                    class="tainacan-masonry-container">
+                <div
+                        :key="index"
+                        v-for="(item, index) of items"
+                        :class="{ 'selected-masonry-item': selectedItems[index] }"
+                        class="tainacan-masonry-item">
+
+                    <!-- Checkbox -->
+                    <div 
+                            :class="{ 'is-selecting': isSelectingItems }"
+                            class="masonry-item-checkbox">
+                        <label 
+                                tabindex="0" 
+                                class="b-checkbox checkbox is-small">
+                            <input 
+                                    type="checkbox"
+                                    v-model="selectedItems[index]"> 
+                                <span class="check" /> 
+                                <span class="control-label" />
+                        </label>
+                    </div>
+
+                    <!-- Title -->
+                    <div 
+                            @click="goToItemPage(item)"
+                            class="metadata-title">
+                        <p>{{ item.title != undefined ? item.title : '' }}</p>                             
+                    </div>
+
+                    <!-- Thumbnail -->  
+                    <img 
+                            @click="goToItemPage(item)"
+                            v-if="item.thumbnail != undefined"
+                            :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                    
+                    <!-- Actions -->
+                    <div 
+                            v-if="item.current_user_can_edit"
+                            class="actions-area"
+                            :label="$i18n.get('label_actions')">
+                        <a 
+                                id="button-edit"   
+                                :aria-label="$i18n.getFrom('items','edit_item')" 
+                                @click.prevent.stop="goToItemEditPage(item)">
+                            <b-icon
+                                    type="is-secondary" 
+                                    icon="pencil"/>
+                        </a>
+                        <a 
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click.prevent.stop="deleteOneItem(item.id)">
+                            <b-icon 
+                                    type="is-secondary" 
+                                    :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                        </a>
+                    </div>
+                </div>
+            </masonry>
+
             <!-- CARDS VIEW MODE -->
             <div
                     class="tainacan-cards-container"
@@ -596,6 +661,7 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_view-mode-masonry.scss";
     @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-records.scss";
