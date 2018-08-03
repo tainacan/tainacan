@@ -298,7 +298,7 @@ export default {
             return new Promise((resolve, reject) => {
                 if (this.importer.accepts.file && !this.importer.accepts.url)
                     this.onUploadFile().then(() => { resolve() }).catch((errors) => this.$console.log(errors)); 
-                else if (!this.importer.accepts.file && !this.importer.accepts.url)
+                else if (!this.importer.accepts.file && this.importer.accepts.url)
                     this.onInputURL().then(() => { resolve() }).catch((errors) => this.$console.log(errors)); 
                 else if (this.importer.accepts.file && this.importer.accepts.url) {
                     if (this.importerFile)
