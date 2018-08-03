@@ -80,6 +80,10 @@ export const filter_type_mixin = {
                         this.noMorePage = 1;
                     }
 
+                    if(this.options.length < this.maxNumOptionsCheckboxList){
+                        this.noMorePage = 1;
+                    }
+
                     if (this.filter.max_options && this.options.length >= this.filter.max_options) {
                         let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_see_more') } </a>`;
                         this.options[this.filter.max_options - 1].seeMoreLink = seeMoreLink;
@@ -148,6 +152,10 @@ export const filter_type_mixin = {
                     if (opts.length) {
                         this.options = opts;
                     } else {
+                        this.noMorePage = 1;
+                    }
+
+                    if(this.options.length < this.maxNumOptionsCheckboxList){
                         this.noMorePage = 1;
                     }
 

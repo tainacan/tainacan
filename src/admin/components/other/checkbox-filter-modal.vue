@@ -218,8 +218,6 @@
                 this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
                 this.noMorePage = 0;
 
-                //console.log(this.checkboxListOffset, this.maxNumOptionsCheckboxList);
-
                 if(this.checkboxListOffset < 0){
                     this.checkboxListOffset = 0;
                 }
@@ -230,11 +228,13 @@
             },
             nextPage(){
                 if(!this.noMorePage) {
-                    this.checkboxListOffset += this.maxNumOptionsCheckboxList - 1;
+                    // LIMIT 0, 20 / LIMIT 19, 20 / LIMIT 39, 20 / LIMIT 59, 20
+                    if(this.checkboxListOffset === this.maxNumOptionsCheckboxList){
+                        this.checkboxListOffset += this.maxNumOptionsCheckboxList-1;
+                    } else {
+                        this.checkboxListOffset += this.maxNumOptionsCheckboxList;
+                    }
                 }
-
-                // 0 20 / 19 20 / 39 20 / 59 20
-                //console.log(this.checkboxListOffset, this.maxNumOptionsCheckboxList);
 
                 this.isCheckboxListLoading = true;
 
