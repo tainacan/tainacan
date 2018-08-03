@@ -64,6 +64,12 @@ class Old_Tainacan extends Importer{
      * 
      */
     public function create_taxonomies() {
+
+        if(!$this->get_url()){
+            $this->add_error_log('Site url not found');
+            $this->abort();
+            return false;
+        }
         
         $this->add_log('Creating taxonomies');
 		
