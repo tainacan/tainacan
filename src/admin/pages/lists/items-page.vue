@@ -1053,8 +1053,6 @@
                 }
             });
 
-            this.$eventBusSearch.setViewMode(this.defaultViewMode);
-
             if(this.$route.query && this.$route.query.advancedSearch) {
                 this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
@@ -1266,6 +1264,7 @@
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
+
     }
 
     .search-control-item {

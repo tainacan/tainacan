@@ -165,7 +165,7 @@ export default {
 <style lang="scss">
     @import "../../scss/_variables.scss";
 
-    @keyframes appear {
+    @keyframes appear-from-top {
         from { 
             top: 24px;
             opacity: 0; 
@@ -198,7 +198,7 @@ export default {
         position: absolute;
         top: 48px;
         border-radius: 5px;
-        animation-name: appear;
+        animation-name: appear-from-top;
         animation-duration: 0.3s;
         font-size: 0.75rem;
 
