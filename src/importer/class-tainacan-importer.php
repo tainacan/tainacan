@@ -112,6 +112,8 @@ abstract class Importer {
 	private $log = [];
 	
 	private $error_log = [];
+
+	private $author = 0;
 	
 	/**
 	 * Wether to abort importer execution.
@@ -141,7 +143,9 @@ abstract class Importer {
             @session_start();
         }
 
-        $this->id = uniqid();
+		$this->id = uniqid();
+		$this->author = get_current_user_id();
+
         $_SESSION['tainacan_importer'][$this->get_id()] = $this;
 		
 		if (!empty($attributess)) {
@@ -793,7 +797,7 @@ abstract class Importer {
         }
 		
         if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
-            $item->set_collection( $collection );
+			$item->set_collection( $collection );
 
             if( $item->validate() ){
 				$insertedItem = $Tainacan_Items->insert( $item );
@@ -866,6 +870,8 @@ abstract class Importer {
 		$method_name = $steps[$current_step]['callback'];
 
 		if (method_exists($this, $method_name)) {
+			$this->add_log('User in process: ' . $this->author);
+			wp_set_current_user($this->author);
 			$result = $this->$method_name();
 		} else {
 			$this->add_error_log( 'Callback not found for step ' . $steps[$current_step]['name']);
