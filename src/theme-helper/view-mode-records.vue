@@ -73,7 +73,12 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false
+        isLoading: false,
+    },
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+        }
     },
     methods: {
         goToItemPage(item) {

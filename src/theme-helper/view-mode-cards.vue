@@ -75,6 +75,11 @@ export default {
         items: Array,
         isLoading: false
     },
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+        }
+    },
     methods: {
         goToItemPage(item) {
             window.location.href = item.url;   

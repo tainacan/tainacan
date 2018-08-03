@@ -74,7 +74,7 @@
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
-                                        :src="item[column.slug].thumb">
+                                        :src="item[column.slug].thumb ? item[column.slug].thumb : thumbPlaceholderPath">
                             </span> 
                             <p 
                                     v-tooltip="{
@@ -104,6 +104,11 @@ export default {
         displayedMetadata: Array,
         items: Array,
         isLoading: false
+    },
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+        }
     },
     methods: {
         goToItemPage(item) {
