@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
 import { VueHammer } from 'vue2-hammer';
+import VueMasonry from 'vue-masonry-css';
 
 // Custom elements
 import Text from '../../classes/metadata-types/text/Text.vue';
@@ -33,6 +34,7 @@ import ItemsPage from '../pages/lists/items-page.vue';
 import ViewModeTable from '../../theme-helper/view-mode-table.vue';
 import ViewModeCards from '../../theme-helper/view-mode-cards.vue';
 import ViewModeRecords from '../../theme-helper/view-mode-records.vue';
+import ViewModeMasonry from '../../theme-helper/view-mode-masonry.vue';
 
 // Remaining imports
 import HelpButton from '../components/other/help-button.vue';
@@ -46,6 +48,7 @@ import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin } from '
 Vue.use(Buefy);
 Vue.use(VTooltip);
 Vue.use(VueHammer);
+Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
@@ -85,6 +88,7 @@ Vue.component('items-page', ItemsPage);
 Vue.component('view-mode-table', ViewModeTable);
 Vue.component('view-mode-cards', ViewModeCards);
 Vue.component('view-mode-records', ViewModeRecords);
+Vue.component('view-mode-masonry', ViewModeMasonry);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 

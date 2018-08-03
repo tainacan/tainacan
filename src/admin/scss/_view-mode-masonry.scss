@@ -1,0 +1,90 @@
+.tainacan-masonry-container {
+    min-height: 50vh;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: space-evenly;
+
+    .selected-masonry-item {
+        background-color: $turquoise1;
+    }
+
+    .tainacan-masonry-item {
+        animation-name: item-appear;
+        display: block;
+        animation-duration: 0.5s;
+        width: 100%;
+        flex-basis: 0;
+        margin-bottom: 30px;
+        text-align: center;
+
+        &:hover {
+            background-color: $gray1;
+        }
+
+        .masonry-item-checkbox {
+            position: absolute;
+            margin-top: 8px;
+            margin-left: 1rem;
+        }
+        .actions-area {
+            position: relative;
+            float: right;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            visibility: hidden;
+            opacity: 0;
+            padding: 8px;
+            transition: visibility 0.2s, opacity 0.2s;
+            margin-top: -43px;
+            background-color: $gray2;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+
+            a {
+                margin-left: 12px;
+            }
+        }
+        &:hover .actions-area { 
+            visibility: visible;
+            opacity: 1.0;
+        }
+        &.selected-grid-item {
+            .actions-area {
+                background-color: $turquoise1;
+            }
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 2px;
+            margin-bottom: -5px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .metadata-title {
+            flex-shrink: 0;
+            margin: 0px 6px 0px 24px;
+            padding: 10px 1rem;
+            min-height: 41px;
+            cursor: pointer;
+
+            p { 
+                font-size: 0.875rem !important;
+                color: black !important; 
+                text-align: left !important;
+                margin-bottom: 0 !important;
+            }
+        } 
+    
+    }
+}
+
+

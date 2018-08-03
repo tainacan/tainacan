@@ -307,7 +307,8 @@
                                                 :class="{'mdi-view-list' : ( adminViewMode == 'table' || adminViewMode == undefined),
                                                         'mdi-view-module' : adminViewMode == 'cards',
                                                         'mdi-apps' : adminViewMode == 'grid',
-                                                        'mdi-view-column' : adminViewMode == 'records'}"
+                                                        'mdi-view-column' : adminViewMode == 'records',
+                                                        'mdi-view-dashboard' : adminViewMode == 'masonry'}"
                                                 class="mdi"/>
                                     </span>
                                 </span>
@@ -345,6 +346,14 @@
                                         class="gray-icon" 
                                         icon="view-column"/>
                                 {{ $i18n.get('label_records') }}
+                            </b-dropdown-item>
+                            <b-dropdown-item 
+                                    :class="{ 'is-active': adminViewMode == 'masonry' }"
+                                    :value="'masonry'">
+                                <b-icon 
+                                        class="gray-icon" 
+                                        icon="view-dashboard"/>
+                                {{ $i18n.get('label_masonry') }}
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-field>
