@@ -9,10 +9,13 @@
         width: 100%;
         height: calc(100% - 40px);
         border-collapse: separate;
-        overflow: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
         margin-bottom: 0px !important;
 
         table.tainacan-table {
+            animation-name: appear;
+            animation-duration: 0.5s;
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;

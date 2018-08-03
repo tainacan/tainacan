@@ -225,3 +225,17 @@ $modal-z: 9999999;
         animation-timing-function: ease-in;
     } 
 }
+
+// Animations for Item Appear in Items List
+@keyframes item-appear {
+    from {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(0, 12px);
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(0, 0px);
+    }
+}

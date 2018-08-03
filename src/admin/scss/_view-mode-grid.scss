@@ -12,6 +12,8 @@
     }
 
     .tainacan-grid-item {
+        animation-name: item-appear;
+        animation-duration: 0.5s;
         max-width: 258px;
         flex-basis: 0;
         margin: 1rem 1.5rem 1.5rem 1.5rem;
