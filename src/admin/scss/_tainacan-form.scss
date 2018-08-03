@@ -59,8 +59,9 @@
         }
     }
     .radio, .checkbox {
-        margin-bottom: 5px;
         align-items: center;
+        margin-bottom: 0;
+
         width: 100%;
         
         &.is-danger {

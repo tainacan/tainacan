@@ -80,7 +80,9 @@
                                 :native-value="option.id">
                             {{ `${option.name}` }}
                         </b-checkbox>
-                        <a @click="getOptionChildren(option, key, index)">
+                        <a
+                                v-if="option.total_children > 0"
+                                @click="getOptionChildren(option, key, index)">
                             <b-icon
                                     class="is-pulled-right"
                                     icon="menu-right"
@@ -96,21 +98,6 @@
                                     size="is-small"
                                     icon="chevron-down"/>
                         </div>
-                    </li>
-                    <li
-                            v-else
-                            class="tainacan-li-no-children">
-                        <section
-                                class="field is-grouped-centered">
-                            <div class="content has-text-gray has-text-centered">
-                                <p>
-                                    <b-icon
-                                            icon="format-list-checks"
-                                            size="is-medium"/>
-                                </p>
-                                <p>{{ $i18n.get('info_no_more_options') }}</p>
-                            </div>
-                        </section>
                     </li>
                     <b-loading
                             :is-full-page="false"
@@ -508,7 +495,9 @@
     }
 
     .tainacan-modal-content {
-        width: auto; min-height: 600px;
+        width: auto;
+        min-height: 600px;
+        border-radius: 10px;
     }
 
     .tainacan-modal-title {
@@ -544,18 +533,30 @@
 
     .tainacan-li-checkbox-modal {
         display: flex;
+
+        .b-checkbox {
+            max-width: 86%;
+            margin-left: 0.7rem;
+            height: 24px;
+        }
+
         &:hover {
             background-color: $blue1;
         }
+
     }
 
-    .tainacan-li-checkbox-list{
+    .tainacan-li-checkbox-list {
         flex-grow: 1;
         flex-shrink: 1;
         max-width: 366px;
 
         .b-checkbox {
             margin-right: 10px;
+        }
+
+        &:hover {
+            background-color: $blue1;
         }
     }
 
@@ -580,11 +581,13 @@
         min-width: 200px;
         overflow-y: auto;
         list-style: none;
-        padding: 0 0.2rem 0 1rem;
 
-        .b-checkbox {
-            max-width: 86%;
-        }
+        // For Safari
+        -webkit-margin-after: 0;
+        -webkit-margin-start: 0;
+        -webkit-margin-end: 0;
+        -webkit-padding-start: 0;
+        -webkit-margin-before: 0;
     }
 
     .tainacan-li-checkbox-modal:first-child {
