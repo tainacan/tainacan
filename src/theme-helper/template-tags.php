@@ -62,18 +62,13 @@ function tainacan_the_metadata($args = array()) {
  * 
  * Return the item document as a HTML string to be used as output.
  *
- * @param  int|string|Tainacan\Entities\Metadatum $metadatum Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata
- * @param bool $hide_empty Wether to hide or not metadata the item has no value to
  * @return string        The HTML output
  */
 function tainacan_get_the_document() {
-	$post = get_post();
-	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+	$item = tainacan_get_item();
 	
-	if (!$theme_helper->is_post_an_item($post))
+	if (!$item)
 		return;
-	
-	$item = new Entities\Item($post);
 	
 	return $item->get_document_html();
 	
@@ -81,6 +76,25 @@ function tainacan_get_the_document() {
 
 function tainacan_the_document() {
 	echo tainacan_get_the_document();
+}
+
+/**
+ * To be used inside The Loop
+ * 
+ * Check whether the current item has a document or not
+ *
+ * @return bool True if item has document, false if it does not
+ */
+function tainacan_has_document() {
+	$item = tainacan_get_item();
+	
+	if (!$item)
+		return;
+	
+	$document = $item->get_document();
+
+	return ! empty($document);
+	
 }
 
 /**
