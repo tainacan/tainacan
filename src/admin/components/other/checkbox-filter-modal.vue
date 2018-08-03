@@ -538,6 +538,7 @@
     }
 
     .tainacan-li-checkbox-modal {
+        display: flex;
         &:hover {
             background-color: $blue1;
         }

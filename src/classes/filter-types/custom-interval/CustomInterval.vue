@@ -9,7 +9,7 @@
                     @focus="isTouched = true"
                     @input="validate_values()"
                     icon="calendar-today"/>
-            <p class="is-size-7 has-text-centered">{{ $i18n.get('label_until') }}</p>
+            <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-datepicker
                     :placeholder="$i18n.get('label_selectbox_init')"
                     v-model="date_end"

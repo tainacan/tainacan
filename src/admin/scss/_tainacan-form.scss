@@ -61,7 +61,8 @@
     .radio, .checkbox {
         margin-bottom: 5px;
         align-items: center;
-
+        width: 100%;
+        
         &.is-danger {
             border-color: $danger;
         }   
@@ -70,6 +71,9 @@
         color: $tainacan-input-color;
         padding-left: 0.8em;
         font-size: 12px;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
     }
     .select {
         
