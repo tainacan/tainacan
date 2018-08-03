@@ -28,7 +28,7 @@
                             tag="a"
                             :to="$routerHelper.getProcessesPage()"
                             class="is-secondary">
-                        {{ $i18n.get('label_see_more') }}
+                        {{ $i18n.get('label_view_more') }}
                     </router-link>
                 </li>
                 <li     
@@ -44,6 +44,7 @@
                                         :class="{ 'mdi-menu-down': processesColapses[index], 'mdi-menu-right': !processesColapses[index] }" />
                             </span>  
                             <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
+                            <span class="process-title-value">{{ (bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? '(' + bgProcesses[0].progress_value + '%)' : '' }}</span>
                         </div>
                         <!-- <span 
                                 v-if="bgProcess.done <= 0"
@@ -89,7 +90,7 @@
                     class="icon has-text-blue5"><i class="mdi mdi-18px mdi-autorenew"/></span>
             <p class="footer-title">    
                 {{ hasAnyProcessExecuting ? 
-                    (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value : '') : $i18n.get('label_no_details_of_process')): 
+                    (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value + '%' : '') : $i18n.get('label_no_details_of_process')): 
                     $i18n.get('info_no_process') 
                 }}
             </p>
@@ -278,6 +279,10 @@ export default {
                         display: inline-block;
                         position: relative;
                         top: -2px;
+                    }
+                    span.process-title-value {
+                        font-style: italic;
+                        color: $gray3;
                     }
                     
                     .mdi-menu-left, .mdi-menu-right {

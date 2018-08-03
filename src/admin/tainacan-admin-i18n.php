@@ -276,6 +276,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_import_collection'                      	 => __( 'Import collection', 'tainacan' ),
     'label_semantic_uri'                      	     => __( 'Semantic Uri', 'tainacan' ),
     'label_view_collection'                     	 => __( 'View collection', 'tainacan' ),
+    'label_view_more'		                     	 => __( 'View more', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
