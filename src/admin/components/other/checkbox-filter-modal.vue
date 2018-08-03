@@ -69,6 +69,7 @@
                         v-for="(finderColumn, key) in finderColumns"
                         :key="key">
                     <b-field
+                            role="li"
                             :addons="false"
                             v-if="finderColumn.length"
                             class="tainacan-li-checkbox-modal"
@@ -210,6 +211,8 @@
             if(this.isTaxonomy) {
                 this.getOptionChildren();
             } else {
+                this.isCheckboxListLoading = true;
+
                 this.getOptions(0);
             }
         },
@@ -499,7 +502,7 @@
     @media screen and (max-width: 735px) {
         .tainacan-modal-content {
             flex-direction: column;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: space-around;
             padding: 0 10px !important;
@@ -547,6 +550,11 @@
     .tainacan-li-checkbox-list{
         flex-grow: 1;
         flex-shrink: 1;
+        max-width: 366px;
+
+        b-checkbox {
+            margin-right: 10px;
+        }
     }
 
     .tainacan-finder-columns-container {
@@ -565,11 +573,16 @@
     .tainacan-finder-column {
         border-right: solid 1px $gray1;
         max-height: 400px;
+        max-width: 25%;
         min-height: inherit;
         min-width: 200px;
         overflow-y: auto;
         list-style: none;
         padding: 0 0.2rem 0 1rem;
+
+        b-checkbox {
+            max-width: 86%;
+        }
     }
 
     .tainacan-li-checkbox-modal:first-child {
@@ -628,6 +641,7 @@
         flex-wrap: wrap;
         padding: 0 !important;
         max-height: 253px;
+        overflow: auto;
     }
 
     .tainacan-modal-checkbox-list-body-dynamic-m-l {
