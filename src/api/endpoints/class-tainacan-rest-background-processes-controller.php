@@ -159,7 +159,13 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $result = $wpdb->get_results($query);
         $total_items = $wpdb->get_var($count_query);
 
-        $rest_response = new \WP_REST_Response( $result, 200 );
+        $response = [];
+
+        foreach ($result as $r) {
+            $response[] = $this->prepare_item_for_response($r, $request);
+        }
+
+        $rest_response = new \WP_REST_Response( $response, 200 );
 
         $max_pages = ceil($total_items / (int) $perpage);
 
@@ -188,11 +194,16 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         $result = $wpdb->get_row($query);
 
-        $result->log = $this->get_log_url($id, $result->action);
-        $result->error_log = $this->get_log_url($id, $result->action, 'error');
+        $result = $this->prepare_item_for_response($result, $request);
 
         return new \WP_REST_Response( $result, 200 );
 
+    }
+
+    public function prepare_item_for_response($item, $request) {
+        $item->log = $this->get_log_url($item->ID, $item->action);
+        $item->error_log = $this->get_log_url($item->ID, $item->action, 'error');
+        return $item;
     }
 
     public function update_item( $request ) {
@@ -262,6 +273,11 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $filename = 'bg-' . $action . '-' . $id . $suffix . '.log';
         
         $upload_url = wp_upload_dir();
+
+        if (!file_exists( $upload_url['basedir'] . '/tainacan/' . $filename )) {
+            return null;
+        }
+
 		$upload_url = trailingslashit( $upload_url['baseurl'] );
         $logs_url = $upload_url . 'tainacan/' . $filename;
         
