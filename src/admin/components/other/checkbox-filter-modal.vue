@@ -1,7 +1,5 @@
 <template>
-    <div
-            class="tainacan-modal-content"
-            style="width: auto; min-height: 600px;">
+    <div class="tainacan-modal-content">
         <header class="tainacan-modal-title">
             <h2>{{ this.$i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <hr>
@@ -509,6 +507,10 @@
         }
     }
 
+    .tainacan-modal-content {
+        width: auto; min-height: 600px;
+    }
+
     .tainacan-modal-title {
         align-self: baseline;
         display: flex;
@@ -552,7 +554,7 @@
         flex-shrink: 1;
         max-width: 366px;
 
-        b-checkbox {
+        .b-checkbox {
             margin-right: 10px;
         }
     }
@@ -580,7 +582,7 @@
         list-style: none;
         padding: 0 0.2rem 0 1rem;
 
-        b-checkbox {
+        .b-checkbox {
             max-width: 86%;
         }
     }

@@ -254,7 +254,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_remove_value'                             => __( 'Remove value', 'tainacan' ),
 	'label_create_new_page'                          => __( 'Create new page', 'tainacan' ),
 	'label_total_items'                              => __( 'Total items', 'tainacan' ),
-	'label_see_more'                                 => __( 'View more', 'tainacan' ),
+	'label_view_all'                                 => __( 'View all', 'tainacan' ),
 	'label_until'                                    => __( 'until', 'tainacan' ),
 	'label_visibility'                               => __( 'Visibility', 'tainacan' ),
 	'label_discard'                                  => __( 'Discard', 'tainacan' ),
@@ -274,7 +274,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_unamed_process'                       	 => __( 'Unamed process', 'tainacan' ),
 	'label_import_collection'                      	 => __( 'Import collection', 'tainacan' ),
     'label_semantic_uri'                      	     => __( 'Semantic Uri', 'tainacan' ),
-    'label_view_collection'                     	     => __( 'View collection', 'tainacan' ),
+    'label_view_collection'                     	 => __( 'View collection', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -335,7 +335,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_collection_trash'                  => __( 'Do you really want to trash this collection?', 'tainacan' ),
 	'info_warning_item_delete'                       => __( 'Do you really want to permanently delete this item?', 'tainacan' ),
 	'info_warning_item_trash'                        => __( 'Do you really want to trash this item?', 'tainacan' ),
-	'info_warning_metadatum_delete'                       => __( 'Do you really want to permanently delete this metadatum?', 'tainacan' ),
+	'info_warning_metadatum_delete'                  => __( 'Do you really want to permanently delete this metadatum?', 'tainacan' ),
 	'info_warning_taxonomy_delete'                   => __( 'Do you really want to delete this taxonomy?', 'tainacan' ),
 	'info_warning_selected_collections_delete'       => __( 'Do you really want to permanently delete the selected collections?', 'tainacan' ),
 	'info_warning_selected_collections_trash'        => __( 'Do you really want to trash the selected collections?', 'tainacan' ),
