@@ -484,13 +484,12 @@
 
     @import "../../scss/variables.scss";
 
-    @media screen and (max-width: 735px) {
+    @media screen and (max-width: 768px) {
         .tainacan-modal-content {
             flex-direction: column;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            padding: 0 10px !important;
         }
     }
 
@@ -533,6 +532,7 @@
 
     .tainacan-li-checkbox-modal {
         display: flex;
+        padding: 0.25rem 0.125rem;
 
         .b-checkbox {
             max-width: 86%;
@@ -541,13 +541,13 @@
         }
 
         &:hover {
-            background-color: $blue1;
+            background-color: $gray1;
         }
 
     }
 
     .tainacan-li-checkbox-list {
-        flex-grow: 1;
+        flex-grow: 0;
         flex-shrink: 1;
         max-width: 366px;
 
@@ -581,6 +581,8 @@
         min-width: 200px;
         overflow-y: auto;
         list-style: none;
+        margin: 0;
+        padding: 0rem;
 
         // For Safari
         -webkit-margin-after: 0;
@@ -675,11 +677,11 @@
     }
 
     .tainacan-li-checkbox-last-active {
-        background-color: $blue2;
+        background-color: $turquoise1;
     }
 
     .tainacan-li-checkbox-parent-active {
-        background-color: $gray2;
+        background-color: $turquoise2;
     }
 
 </style>

@@ -49,9 +49,7 @@
                                         class="mdi mdi-18px"
                                         :class="{ 'mdi-menu-down': processesColapses[index], 'mdi-menu-right': !processesColapses[index] }" />
                             </span>  
-                            <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}
-                                <span class="process-title-value">{{ (bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? '(' + bgProcesses[0].progress_value + '%)' : '' }}</span>
-                            </p>
+                            <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
                         </div>
                         <!-- <span 
                                 v-if="bgProcess.done <= 0"
@@ -85,6 +83,7 @@
                             v-if="processesColapses[index]"
                             class="process-label">
                         {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}
+                        <span class="process-label-value">{{ (bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? '(' + bgProcesses[0].progress_value + '%)' : '' }}</span>
                         <br>
                         {{ $i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on) }}
                         <br>
@@ -93,6 +92,7 @@
                         <a 
                                 v-if="bgProcess.log"
                                 :href="bgProcess.log">{{ $i18n.get('label_log_file') }}</a>
+                        <span v-if="bgProcess.error_log"> | </span>
                         <a 
                                 v-if="bgProcess.error_log"
                                 class="has-text-danger"
@@ -311,10 +311,6 @@ export default {
                         position: relative;
                         top: -2px;
                     }
-                    span.process-title-value {
-                        font-style: italic;
-                        color: $gray3;
-                    }
                     
                     .mdi-menu-left, .mdi-menu-right {
                         color: $turquoise2;
@@ -341,6 +337,10 @@ export default {
                 color: $gray4;
                 animation-name: expand;
                 animation-duration: 0.3s;
+            }
+            span.process-label-value {
+                font-style: italic;
+                font-weight: bold;
             }
             
         }
