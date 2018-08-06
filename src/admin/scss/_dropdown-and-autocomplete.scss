@@ -31,6 +31,14 @@
                 &:hover { background-color: $gray1; }
                 .is-small { color: $gray4; }
                 &.is-active { background-color: $turquoise2; }
+
+                max-width: 150px;
+
+                .media-content {
+                    overflow-x: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
             }
         } 
     }

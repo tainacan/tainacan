@@ -38,39 +38,38 @@ export const filter_type_mixin = {
                     let sResults = [];
                     let opts = [];
 
-                    if (res.data && res.data[0]) {
-                        for (let metadata of res.data[0]) {
-                            if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
-                                let indexToIgnore = valuesToIgnore.findIndex(value => value == metadata.mvalue);
+                    for (let metadata of res.data) {
+                        if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
+                            let indexToIgnore = valuesToIgnore.findIndex(value => value == metadata.mvalue);
 
-                                if (search && isInCheckboxModal) {
-                                    sResults.push({
-                                        label: metadata.mvalue,
-                                        value: metadata.mvalue
-                                    });
-                                } else if (indexToIgnore < 0) {
-                                    opts.push({
-                                        label: metadata.mvalue,
-                                        value: metadata.mvalue
-                                    });
-                                }
-                            } else {
-                                if (search && isInCheckboxModal) {
-                                    sResults.push({
-                                        label: metadata.mvalue,
-                                        value: metadata.mvalue
-                                    });
-                                } else {
-                                    opts.push({
-                                        label: metadata.mvalue,
-                                        value: metadata.mvalue
-                                    });
-                                }
+                            if (search && isInCheckboxModal) {
+                                sResults.push({
+                                    label: metadata.mvalue,
+                                    value: metadata.mvalue
+                                });
+                            } else if (indexToIgnore < 0) {
+                                opts.push({
+                                    label: metadata.mvalue,
+                                    value: metadata.mvalue
+                                });
                             }
-
-
+                        } else {
+                            if (search && isInCheckboxModal) {
+                                sResults.push({
+                                    label: metadata.mvalue,
+                                    value: metadata.mvalue
+                                });
+                            } else {
+                                opts.push({
+                                    label: metadata.mvalue,
+                                    value: metadata.mvalue
+                                });
+                            }
                         }
+
+
                     }
+
 
                     this.searchResults = sResults;
 

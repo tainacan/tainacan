@@ -822,29 +822,22 @@ class Metadata extends Repository {
                 	$title = $item->get_title();
 
 	                if(!empty($search) && stristr($title, $search) !== false) {
-		                $return[] = [ 'item_id' => $item->get_id(), 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
+		                $return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
 	                } elseif (empty($search)) {
-		                $return[] = [ 'item_id' => $item->get_id(), 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
+		                $return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
 	                }
                 } else {
                 	$description = $item->get_description();
 
                 	if(!empty($search) && stristr($description, $search) !== false) {
-		                $return[] = [ 'item_id' => $item->get_id(), 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
+		                $return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
 	                } elseif (empty($search)) {
-		                $return[] = [ 'item_id' => $item->get_id(), 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
+		                $return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
 	                }
                 }
             }
 
-            $results = [];
-            if (!empty($return)) {
-	            $return = $this->unique_multidimensional_array($return, 'mvalue');
-
-	            $results[] = $return;
-            }
-
-            return $results;
+            return $return;
         }
 
 		$item_post_type = "%%{$collection_id}_item";
@@ -880,7 +873,7 @@ class Metadata extends Repository {
 
 				if($collection_id) {
 					$sql_string = $wpdb->prepare(
-						"SELECT item_id, metadatum_id, mvalue 
+						"SELECT DISTINCT metadatum_id, mvalue 
 				  		FROM (
 			  				SELECT ID as item_id
 		  					FROM $wpdb->posts
@@ -895,7 +888,7 @@ class Metadata extends Repository {
 					);
 				} else {
 					$sql_string = $wpdb->prepare(
-						"SELECT item_id, metadatum_id, mvalue 
+						"SELECT DISTINCT metadatum_id, mvalue 
 				  		FROM (
 			  				SELECT ID as item_id
 		  					FROM $wpdb->posts
@@ -912,10 +905,10 @@ class Metadata extends Repository {
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
 
-				$pre_result = $this->unique_multidimensional_array($pre_result, 'mvalue');
-
 				if (!empty($pre_result)) {
-					$results[] = $pre_result;
+					foreach ($pre_result as $pre){
+						$results[] = $pre;
+					}
 				}
 			}
 		} elseif ( current_user_can( $capabilities->read_private_posts) ) {
@@ -929,7 +922,7 @@ class Metadata extends Repository {
 
 				if($collection_id) {
 					$sql_string = $wpdb->prepare(
-						"SELECT item_id, metadatum_id, mvalue 
+						"SELECT DISTINCT metadatum_id, mvalue 
 		  	        	FROM (
 	  	  		        	SELECT ID as item_id
   	  			        	FROM $wpdb->posts
@@ -944,7 +937,7 @@ class Metadata extends Repository {
 					);
 				} else {
 					$sql_string = $wpdb->prepare(
-						"SELECT item_id, metadatum_id, mvalue 
+						"SELECT DISTINCT metadatum_id, mvalue 
 		  	        	FROM (
 	  	  		        	SELECT ID as item_id
   	  			        	FROM $wpdb->posts
@@ -961,15 +954,16 @@ class Metadata extends Repository {
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
 
-				$pre_result = $this->unique_multidimensional_array($pre_result, 'mvalue');
-
 				if (!empty($pre_result)) {
-					$results[] = $pre_result;
+					foreach ($pre_result as $pre){
+						$results[] = $pre;
+					}
 				}
 			}
 		}
 
-		return $results;
+		//return $results;
+		return $this->unique_multidimensional_array($results, 'mvalue');
 	}
 	
 	/**
