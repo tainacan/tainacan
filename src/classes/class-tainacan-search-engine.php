@@ -251,6 +251,11 @@ class Search_Engine {
 	}
 	
 	function build_search_relationships(){
+		
+		if ( empty( $this->relationships ) ) {
+			return '';
+		}
+		
 		global $wpdb;
 		$s = $this->query_instance->query_vars['s'];
 		$search_terms = $this->get_search_terms();
