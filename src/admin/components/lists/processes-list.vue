@@ -125,14 +125,14 @@
                         <td 
                                 class="column-small-width"
                                 :label="$i18n.get('label_last_processed_on')" 
-                                :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.last_processed_on)">
+                                :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last)">
                             <p
                                     v-tooltip="{
-                                        content: getDate(bgProcess.last_processed_on),
+                                        content: getDate(bgProcess.processed_last),
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }">
-                                {{ getDate(bgProcess.last_processed_on) }}</p>
+                                {{ getDate(bgProcess.processed_last) }}</p>
                         </td>
                         <!-- Logs -->
                         <td 
