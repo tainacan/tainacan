@@ -1,10 +1,16 @@
 <template>
+<div>
+    <div 
+            @click="$emit('closeProcessesPopup')"
+            class="processes-popup-backdrop" />
     <div class="processes-popup">
         <div class="popup-header">
             <span 
-                    @click="showProcessesList = !showProcessesList"
+                    @click="bgProcesses.length > 0 ? showProcessesList = !showProcessesList : null"
                     class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
-            <a @click="showProcessesList = !showProcessesList">
+            <a 
+                    v-if="bgProcesses.length > 0"
+                    @click="showProcessesList = !showProcessesList">
                 <span class="icon has-text-blue5">
                     <i 
                             :class="{ 'mdi-menu-up': showProcessesList,  
@@ -110,6 +116,7 @@
             </p>
         </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -205,13 +212,23 @@ export default {
         border-right-color: $gray2;
         border-top-color: $gray2;
     }
-
+    .processes-popup-backdrop {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        border: 0;
+        width: 100%;
+        height: 100vh;
+        right: 26px;
+    }
     .processes-popup{
         background-color: $blue2;
         width: 320px;
         max-width: 100%;
         position: absolute;
         top: 48px;
+        right: 26px;
         border-radius: 5px;
         animation-name: appear-from-top;
         animation-duration: 0.3s;
