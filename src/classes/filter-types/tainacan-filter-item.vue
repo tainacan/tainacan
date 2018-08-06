@@ -179,27 +179,6 @@
             padding: 0.75rem 1px 0.75rem 0 !important;
         }
 
-        .select {
-            padding-top: 0px !important;
-            select {
-                font-size: 14px;
-                border-radius: 1px !important;
-                font-weight: normal;
-                height: 30px !important;
-                padding: 2px 25px 2px 15px !important;
-                margin-top: 0px !important;
-                margin-bottom: 0px !important;
-            }
-            &:not(.is-multiple)::after {
-                content: "\F35D" !important;
-                font: normal normal normal 24px/1 "Material Design Icons" !important;
-                transform: none;
-                margin-top: -0.6em;
-                right: 0.95em;
-                color: $turquoise3;
-            }
-        }
-
         .collapse {
             .label {
                 display: inline-flex;
@@ -213,7 +192,7 @@
             width: 100%;
         }
 
-        .input, .textarea, .taginput-container {
+        .taginput-container {
             font-size: 14px;
             border-radius: 1px !important;
             box-shadow: none !important;
