@@ -716,6 +716,30 @@ abstract class Repository {
 	}
 
 	/**
+	 * Removes duplicates from multidimensional array
+	 *
+	 * @param $array
+	 * @param $key
+	 *
+	 * @return array
+	 */
+	function unique_multidimensional_array($array, $key) {
+		$temp_array = array();
+		$i = 0;
+		$key_array = array();
+
+		foreach($array as $val) {
+			if (!in_array($val[$key], $key_array)) {
+				$key_array[$i] = $val[$key];
+				$temp_array[$i] = $val;
+			}
+			$i++;
+		}
+
+		return $temp_array;
+	}
+
+	/**
 	 * Compare two repository entities
 	 *
 	 * @param Entity|integer|\WP_Post $old default ($which = 0) to self compare with stored entity

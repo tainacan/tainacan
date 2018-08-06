@@ -839,7 +839,9 @@ class Metadata extends Repository {
 
             $results = [];
             if (!empty($return)) {
-                $results[] = $return;
+	            $return = $this->unique_multidimensional_array($return, 'mvalue');
+
+	            $results[] = $return;
             }
 
             return $results;
@@ -909,6 +911,9 @@ class Metadata extends Repository {
 				}
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+
+				$pre_result = $this->unique_multidimensional_array($pre_result, 'mvalue');
+
 				if (!empty($pre_result)) {
 					$results[] = $pre_result;
 				}
@@ -955,6 +960,8 @@ class Metadata extends Repository {
 				}
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+
+				$pre_result = $this->unique_multidimensional_array($pre_result, 'mvalue');
 
 				if (!empty($pre_result)) {
 					$results[] = $pre_result;
