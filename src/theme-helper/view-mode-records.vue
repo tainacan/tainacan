@@ -27,14 +27,13 @@
                         <div    
                                 class="media"
                                 @click="goToItemPage(item)">
+                            <a 
+                                    v-if="item.thumbnail != undefined"
+                                    @click="goToItemPage(item)">
+                                <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                            </a>
 
                             <div class="list-metadata media-body">
-                                <a 
-                                        v-if="item.thumbnail != undefined"
-                                        @click="goToItemPage(item)">
-                                    <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
-                                </a>
-
                                 <span 
                                         v-for="(column, index) in displayedMetadata"
                                         :key="index"
