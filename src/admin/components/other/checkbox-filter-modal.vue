@@ -549,7 +549,8 @@
     .tainacan-li-checkbox-list {
         flex-grow: 0;
         flex-shrink: 1;
-        max-width: 366px;
+        max-width: calc(50% - 8.3333333%);
+        padding: 0.25rem 0.625rem;
 
         .b-checkbox {
             margin-right: 10px;
@@ -652,11 +653,11 @@
     }
 
     .tainacan-modal-checkbox-list-body-dynamic-m-l {
-        margin-left: 34px !important;
+        margin-left: $page-side-padding !important;
     }
 
     .tainacan-modal-checkbox-list-body-dynamic-m-r {
-        margin-right: 34px !important;
+        margin-right: $page-side-padding !important;
     }
 
     .tainacan-search-results-container {

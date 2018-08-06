@@ -1,6 +1,7 @@
 // Input components used in forms are gray in Tainacan
 .tainacan-form {
     color: $tainacan-input-color;
+    width: 100%;
 
     .form-submit {
         justify-content: space-between !important;
