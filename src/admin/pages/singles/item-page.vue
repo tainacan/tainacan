@@ -83,7 +83,9 @@
                             <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                         </div>
                     </div>
-
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_exposer_urls') }}</label>
+                    </div>
                 </div>
                 <div 
                         v-show="!isMetadataColumnCompressed"
