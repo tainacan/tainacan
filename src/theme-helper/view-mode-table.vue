@@ -1,7 +1,22 @@
 <template>
     <div class="table-container">
         <div class="table-wrapper">
-            <table class="tainacan-table">
+             <!-- Empty result placeholder -->
+            <section
+                    v-if="!isLoading && items.length <= 0"
+                    class="section">
+                <div class="content has-text-gray4 has-text-centered">
+                    <p>
+                        <b-icon
+                                icon="file-multiple"
+                                size="is-large"/>
+                    </p>
+                    <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created') }}</p>
+                </div>
+            </section>
+            <table 
+                    v-show="items.length > 0"
+                    class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Displayed Metadata -->
@@ -92,7 +107,8 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false
+        isLoading: false,
+        hasFiltered: false
     },
     data () {
         return {
