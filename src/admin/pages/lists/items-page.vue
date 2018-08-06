@@ -948,22 +948,25 @@
                             let creationDateMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['1'] != null) : true;
                             let authorNameMetadatumDisplay = prefsFetchOnlyObject != undefined ? (prefsFetchOnlyObject['2'] != null) : true;
 
-                            metadata.push({
-                                name: this.$i18n.get('label_creation_date'),
-                                metadatum: 'row_creation',
-                                metadata_type: undefined,
-                                slug: 'creation_date',
-                                id: undefined,
-                                display: creationDateMetadatumDisplay
-                            });
-                            metadata.push({
-                                name: this.$i18n.get('label_created_by'),
-                                metadatum: 'row_author',
-                                metadata_type: undefined,
-                                slug: 'author_name',
-                                id: undefined,
-                                display: authorNameMetadatumDisplay
-                            });
+                            if (!this.isOnTheme) {
+                             
+                                metadata.push({
+                                    name: this.$i18n.get('label_creation_date'),
+                                    metadatum: 'row_creation',
+                                    metadata_type: undefined,
+                                    slug: 'creation_date',
+                                    id: undefined,
+                                    display: creationDateMetadatumDisplay
+                                });
+                                metadata.push({
+                                    name: this.$i18n.get('label_created_by'),
+                                    metadatum: 'row_author',
+                                    metadata_type: undefined,
+                                    slug: 'author_name',
+                                    id: undefined,
+                                    display: authorNameMetadatumDisplay
+                                });
+                            }
                         
                             this.$eventBusSearch.addFetchOnly({
                                 '0': (thumbnailMetadatumDisplay ? 'thumbnail' : null),

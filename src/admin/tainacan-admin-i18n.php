@@ -271,12 +271,15 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_last_processed_on'                        => __( 'Last processed on:', 'tainacan' ),
 	'label_progress'                                 => __( 'Progress', 'tainacan' ),
 	'label_process_completed'                        => __( 'Process completed', 'tainacan' ),
+	'label_process_failed'	                         => __( 'Process failed', 'tainacan' ),
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 	'label_unamed_process'                       	 => __( 'Unamed process', 'tainacan' ),
 	'label_import_collection'                      	 => __( 'Import collection', 'tainacan' ),
     'label_semantic_uri'                      	     => __( 'Semantic Uri', 'tainacan' ),
     'label_view_collection'                     	 => __( 'View collection', 'tainacan' ),
     'label_view_more'		                     	 => __( 'View more', 'tainacan' ),
+    'label_log_file'		                     	 => __( 'Log file', 'tainacan' ),
+	'label_error_log_file'	                     	 => __( 'Error Log file', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

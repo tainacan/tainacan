@@ -76,17 +76,6 @@
                                         class="table-thumb" 
                                         :src="item[column.slug].thumb ? item[column.slug].thumb : thumbPlaceholderPath">
                             </span> 
-                            <p 
-                                    v-tooltip="{
-                                        content: item[column.slug],
-                                        html: true,
-                                        autoHide: false,
-                                        placement: 'auto-start'
-                                    }"
-                                    v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'">
-                                    {{ item[column.slug] }}
-                            </p>
-
                         </td>
                     </tr>
                 </tbody>

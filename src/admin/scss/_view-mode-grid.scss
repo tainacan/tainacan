@@ -6,14 +6,14 @@
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-evenly;
+    animation-name: item-appear;
+    animation-duration: 0.5s;
 
     .selected-grid-item {
         background-color: $turquoise1;
     }
 
     .tainacan-grid-item {
-        animation-name: item-appear;
-        animation-duration: 0.5s;
         max-width: 258px;
         flex-basis: 0;
         margin: 1rem 1.5rem 1.5rem 1.5rem;

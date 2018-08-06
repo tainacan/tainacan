@@ -6,6 +6,8 @@
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-evenly;
+    animation-name: item-appear;
+    animation-duration: 0.5s;
 
     .selected-record {
         background-color: $turquoise1;
@@ -15,8 +17,6 @@
     }
 
     .tainacan-record {
-        animation-name: item-appear;
-        animation-duration: 0.5s;
         padding: 0px;
         flex-basis: 0;
         margin: 0.75rem;

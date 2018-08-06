@@ -1,10 +1,16 @@
 <template>
+<div>
+    <div 
+            @click="$emit('closeProcessesPopup')"
+            class="processes-popup-backdrop" />
     <div class="processes-popup">
         <div class="popup-header">
             <span 
-                    @click="showProcessesList = !showProcessesList"
+                    @click="bgProcesses.length > 0 ? showProcessesList = !showProcessesList : null"
                     class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
-            <a @click="showProcessesList = !showProcessesList">
+            <a 
+                    v-if="bgProcesses.length > 0"
+                    @click="showProcessesList = !showProcessesList">
                 <span class="icon has-text-blue5">
                     <i 
                             :class="{ 'mdi-menu-up': showProcessesList,  
@@ -44,7 +50,6 @@
                                         :class="{ 'mdi-menu-down': processesColapses[index], 'mdi-menu-right': !processesColapses[index] }" />
                             </span>  
                             <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
-                            <span class="process-title-value">{{ (bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? '(' + bgProcesses[0].progress_value + '%)' : '' }}</span>
                         </div>
                         <!-- <span 
                                 v-if="bgProcess.done <= 0"
@@ -59,9 +64,14 @@
                             <i class="mdi mdi-18px mdi-close-circle-outline"/>
                         </span> -->
                         <span 
-                                v-if="bgProcess.done > 0"
+                                v-if="bgProcess.done > 0 && !bgProcess.error_log"
                                 class="icon has-text-success">
                             <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
+                        </span>
+                        <span 
+                                v-if="bgProcess.done > 0 && bgProcess.error_log"
+                                class="icon has-text-danger">
+                            <i class="mdi mdi-18px mdi-sync-alert" />
                         </span>
                         <span 
                                 v-if="bgProcess.done <= 0"
@@ -73,10 +83,20 @@
                             v-if="processesColapses[index]"
                             class="process-label">
                         {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}
+                        <span class="process-label-value">{{ (bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? '(' + bgProcesses[0].progress_value + '%)' : '' }}</span>
                         <br>
                         {{ $i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on) }}
                         <br>
                         {{ $i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last) }}
+                        <br>
+                        <a 
+                                v-if="bgProcess.log"
+                                :href="bgProcess.log">{{ $i18n.get('label_log_file') }}</a>
+                        <span v-if="bgProcess.error_log"> | </span>
+                        <a 
+                                v-if="bgProcess.error_log"
+                                class="has-text-danger"
+                                :href="bgProcess.error_log">{{ $i18n.get('label_error_log_file') }}</a>
                     </div>
                 </li>
             </ul>
@@ -96,6 +116,7 @@
             </p>
         </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -191,13 +212,23 @@ export default {
         border-right-color: $gray2;
         border-top-color: $gray2;
     }
-
+    .processes-popup-backdrop {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        border: 0;
+        width: 100%;
+        height: 100vh;
+        right: 26px;
+    }
     .processes-popup{
         background-color: $blue2;
         width: 320px;
         max-width: 100%;
         position: absolute;
         top: 48px;
+        right: 26px;
         border-radius: 5px;
         animation-name: appear-from-top;
         animation-duration: 0.3s;
@@ -231,7 +262,7 @@ export default {
         .popup-list {
             background-color: white;
             color: black;
-            overflow-y: scroll;
+            overflow-y: auto;
             overflow-x: hidden;
             max-height: 222px; 
             animation-name: expand;
@@ -280,10 +311,6 @@ export default {
                         position: relative;
                         top: -2px;
                     }
-                    span.process-title-value {
-                        font-style: italic;
-                        color: $gray3;
-                    }
                     
                     .mdi-menu-left, .mdi-menu-right {
                         color: $turquoise2;
@@ -310,6 +337,10 @@ export default {
                 color: $gray4;
                 animation-name: expand;
                 animation-duration: 0.3s;
+            }
+            span.process-label-value {
+                font-style: italic;
+                font-weight: bold;
             }
             
         }

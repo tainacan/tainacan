@@ -10,7 +10,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-masonry-item"
-                        @click="goToItemPage(item)">
+                        :href="item.url">
 
                     <!-- Title -->
                     <div class="metadata-title">
