@@ -50,6 +50,7 @@ export default {
     .theme-items-list {
         position: relative;
         display: flex;
+        -webkit-overflow-scrolling: touch;
 
         a{ color: $secondary !important }
         a:hover {
@@ -156,6 +157,7 @@ export default {
         #items-list-area {
             width: 100%;
             overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
             margin-left: 0;
             &.spaced-to-right {
                 margin-left:  $filter-menu-width-theme;
