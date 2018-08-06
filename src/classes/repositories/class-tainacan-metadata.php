@@ -351,7 +351,7 @@ class Metadata extends Repository {
 	}
 
 	/**
-	 * fetch metadatum by collection, considering inheritance
+	 * fetch metadatum by collection, considering inheritance and order
 	 * 
 	 * @param Entities\Collection $collection
 	 * @param array $args WP_Query args plus disabled_metadata
@@ -393,6 +393,53 @@ class Metadata extends Repository {
             $collection,
             isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
         );
+    }
+	
+	/**
+	 * fetch metadata IDs by collection, considering inheritance
+	 * 
+	 * @param Entities\Collection|int $collection object or ID
+	 * @param array $args WP_Query args plus disabled_metadata
+	 *
+	 * @return array List of metadata IDs
+	 * @throws \Exception
+	 */
+    public function fetch_ids_by_collection($collection, $args = []){
+        
+		if ($collection instanceof Entities\Collection) {
+			$collection_id = $collection->get_id();
+		} elseif (is_integer($collection)) {
+			$collection_id = $collection;
+		} else {
+			throw new \InvalidArgumentException('fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . gettype($collection) . ' given');
+		}
+
+        //get parent collections
+        $parents = get_post_ancestors( $collection_id );
+
+        //insert the actual collection
+        $parents[] = $collection_id;
+
+        //search for default metadatum
+        $parents[] = $this->get_default_metadata_attribute();
+
+        $meta_query = array(
+            'key'     => 'collection_id',
+            'value'   => $parents,
+            'compare' => 'IN',
+        );
+		
+		$args = array_merge([
+			'parent' => 0
+		], $args);
+
+        if( isset( $args['meta_query'] ) ){
+            $args['meta_query'][] = $meta_query;
+        } elseif(is_array($args)){
+            $args['meta_query'] = array( $meta_query );
+        }
+
+        return $this->fetch_ids( $args );
     }
 
     /**
