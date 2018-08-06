@@ -2,7 +2,7 @@
     <div 
             v-if="processes.length > 0 && !isLoading"
             class="table-container">
-
+<!--
         <div class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
@@ -33,16 +33,16 @@
                 </b-dropdown>
             </div>
         </div>
-
+-->
         <div class="table-wrapper">
             <table class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th>
-                            &nbsp;
+                        <!-- <th> -->
+                            <!-- &nbsp; -->
                             <!-- nothing to show on header -->
-                        </th>
+                        <!-- </th> -->
                         <!-- Name -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
@@ -59,6 +59,10 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_last_processed_on') }}</div>
                         </th>
+                        <!-- Logs -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_log_file') }}</div>
+                        </th>
                         <!-- Status -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_status') }}</div>
@@ -71,13 +75,13 @@
                             :key="index"
                             v-for="(bgProcess, index) of processes">
                         <!-- Checking list -->
-                        <td 
+                        <!-- <td 
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
                                     size="is-small"
                                     v-model="selected[index]"/> 
-                        </td>
+                        </td> -->
                         <!-- Name -->
                         <td 
                                 class="column-default-width column-main-content"
@@ -95,14 +99,14 @@
                         <td 
                                 class="column-default-width"
                                 :label="$i18n.get('label_progress')" 
-                                :aria-label="$i18n.get('label_progress') + ': ' + bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process')">
+                                :aria-label="$i18n.get('label_progress') + ': ' + bgProcess.progress_label ? bgProcess.progress_label + (bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '') : $i18n.get('label_no_details_of_process')">
                             <p
                                     v-tooltip="{
                                         content: bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process'),
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }">
-                                {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</p>
+                                {{ bgProcess.progress_label ? bgProcess.progress_label + (bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '') : $i18n.get('label_no_details_of_process') }}</p>
                         </td>
                         <!-- Queued on -->
                         <td 
@@ -129,6 +133,22 @@
                                         placement: 'auto-start'
                                     }">
                                 {{ getDate(bgProcess.last_processed_on) }}</p>
+                        </td>
+                        <!-- Logs -->
+                        <td 
+                                class="column-small-width"
+                                :label="$i18n.get('label_log_file')" 
+                                :aria-label="$i18n.get('label_log_gile')">
+                            <p>
+                                <a 
+                                        v-if="bgProcess.log"
+                                        :href="bgProcess.log">{{ $i18n.get('label_log_file') }}</a>
+                                <span v-if="bgProcess.error_log"> | </span>
+                                <a 
+                                        v-if="bgProcess.error_log"
+                                        class="has-text-danger"
+                                        :href="bgProcess.error_log">{{ $i18n.get('label_error_log_file') }}</a>
+                            </p>
                         </td>
                         <!-- Status-->
                         <td 
@@ -158,9 +178,19 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="bgProcess.done > 0"
+                                        v-if="bgProcess.done > 0 && !bgProcess.error_log"
                                         class="icon has-text-success">
                                     <i class="mdi mdi-18px mdi-checkbox-marked-circle"/>
+                                </span>
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('label_process_failed'),
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-if="bgProcess.done > 0 && bgProcess.error_log"
+                                        class="icon has-text-danger">
+                                    <i class="mdi mdi-18px mdi-sync-alert" />
                                 </span>
                             </div>
                         </td>
