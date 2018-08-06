@@ -95,9 +95,8 @@
         height: calc(100% - 94px);
 
         @media screen and (max-width: 769px) {
-            
             overflow-y: visible;
-            margin: 0 auto;
+            margin: 40px auto 0 auto;
             
         } 
 

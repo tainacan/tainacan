@@ -1,7 +1,7 @@
 <template>
     <div
             id="tainacan-header"
-            class="level">
+            class="level is-mobile">
         <div class="level-left">
             <div class="level-item">
                 <router-link
@@ -227,7 +227,6 @@
             height: 104px;
 
             .level-left {
-                display: inline-block;
                 margin-left: 0 !important;
                 .level-item {
                     margin-left: 0;
@@ -235,7 +234,6 @@
             }
             .level-right {
                 margin-top: 0;
-                display: inline-block;
             }
 
             top: 0;

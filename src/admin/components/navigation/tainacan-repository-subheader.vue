@@ -77,6 +77,7 @@ export default {
         padding-right: 0;
         padding-left: calc((4.166666667% - 6.666666667px) + 160px);
         margin: 0px;
+        display: flex;
         vertical-align: middle; 
         left: 0;
         right: 0;
@@ -117,6 +118,11 @@ export default {
             .eye-icon {
                 margin-right: 0.75rem;
             }
+        }
+
+        @media screen and (max-width: 769px) {
+            top: 102px;
+            padding-left: 4.166666667% !important;
         }
     }
 </style>

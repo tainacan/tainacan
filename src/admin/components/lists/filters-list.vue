@@ -35,7 +35,7 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder,
+                                'not-sortable-item': (filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
                                 'not-focusable-item': openedFilterId == filter.id, 
                                 'disabled-filter': filter.enabled == false,
                                 'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
@@ -318,8 +318,8 @@ export default {
             filtersOrder[index].enabled = $event;
             this.isUpdatingFiltersOrder = true;
             this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder })
-                .then(() => this.isUpdatingFiltersOrder = false)
-                .catch(() => this.isUpdatingFiltersOrder = false);
+                .then(() => { this.isUpdatingFiltersOrder = false; })
+                .catch(() => { this.isUpdatingFiltersOrder = false; });
         },
         addMetadatumViaButton(metadatumType, metadatumIndex) {
             this.availableMetadatumList.splice(metadatumIndex, 1);

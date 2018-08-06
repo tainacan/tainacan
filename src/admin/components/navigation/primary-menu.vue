@@ -186,7 +186,8 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
-            padding-top: $header-height;
+            padding-top: 52px;
+
             .menu {
                 padding-top: 0px;
             }

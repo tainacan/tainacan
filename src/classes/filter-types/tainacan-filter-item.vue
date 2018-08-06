@@ -161,6 +161,9 @@
                 }
             }
         }
+        .select:not(.is-loading)::after {
+            margin-top: -12px !important;
+        }
 
         .collapse-trigger {
             margin-left: -5px;

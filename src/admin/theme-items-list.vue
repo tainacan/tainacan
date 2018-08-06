@@ -134,6 +134,10 @@ export default {
                 margin-bottom: $page-small-top-padding;
             }
 
+            .search-control-item:first-child>div {
+                margin-left: -8.3333333%;
+            }
+
             .gray-icon, .gray-icon .icon {
                 color: $gray4 !important;
                 i::before {
