@@ -861,7 +861,17 @@ class Metadata extends Repository {
 		if( strpos( $metadatum->get_metadata_type(), 'Core') !== false && $search){
 		    $collection = new Entities\Collection( $collection_id );
 		    $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-            $items = $Tainacan_Items->fetch( ['s' => $search], $collection, 'OBJECT');
+
+		    if($number >= 1 && $offset >=0){
+			    $items = $Tainacan_Items->fetch( [
+			    	's' => $search,
+				    'offset' => $offset,
+				    'posts_per_page' => $number
+			    ], $collection, 'OBJECT');
+		    } else {
+			    $items = $Tainacan_Items->fetch( ['s' => $search], $collection, 'OBJECT');
+		    }
+
             $return = [];
 
             foreach ($items as $item) {

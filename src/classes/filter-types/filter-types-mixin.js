@@ -75,11 +75,11 @@ export const filter_type_mixin = {
 
                     if (opts.length) {
                         this.options = opts;
-                    } else {
+                    } else if(!search) {
                         this.noMorePage = 1;
                     }
 
-                    if(this.options.length < this.maxNumOptionsCheckboxList){
+                    if(this.options.length < this.maxNumOptionsCheckboxList && !search){
                         this.noMorePage = 1;
                     }
 

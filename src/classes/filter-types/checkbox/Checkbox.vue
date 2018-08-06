@@ -9,7 +9,7 @@
                     :native-value="option.value"
             >{{ option.label }}</b-checkbox>
             <div
-                    class="see-more-container"
+                    class="view-all-button-container"
                     v-if="option.seeMoreLink"
                     @click="openCheckboxModal()"
                     v-html="option.seeMoreLink"/>
@@ -188,7 +188,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .see-more-container {
+    .view-all-button-container {
         display: flex;
         padding-left: 18px;
     }

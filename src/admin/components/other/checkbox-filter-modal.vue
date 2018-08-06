@@ -115,6 +115,7 @@
                     class="modal-card-body tainacan-search-results-container">
                 <ul class="tainacan-modal-checkbox-search-results-body">
                     <li
+                            class="tainacan-li-search-results"
                             v-for="(option, key) in searchResults"
                             :key="key">
                         <b-checkbox
@@ -182,8 +183,8 @@
                 optionName: '',
                 isSearching: false,
                 options: [],
-                maxNumOptionsCheckboxList: 20,
-                maxNumSearchResultsShow: 18,
+                maxNumOptionsCheckboxList: 21,
+                maxNumSearchResultsShow: 20,
                 maxNumOptionsCheckboxFinderColumns: 100,
                 checkboxListOffset: 0,
                 collection: this.collection_id,
@@ -259,9 +260,13 @@
                 }
             },
             autoComplete: _.debounce( function () {
+                this.isSearching = !!this.optionName.length;
+
+                if(!this.isSearching){
+                    return;
+                }
 
                 if(this.isTaxonomy) {
-                    this.isSearching = !!this.optionName.length;
                     this.isSearchingLoading = true;
 
                     let query = `?hideempty=0&order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.optionName}`;
@@ -274,8 +279,6 @@
                         this.$console.log(error);
                     })
                 } else {
-                    this.isSearching = !!this.optionName.length;
-
                     this.isSearchingLoading = true;
 
                     this.getOptions(0);
@@ -530,6 +533,22 @@
         }
     }
 
+    .tainacan-li-search-results {
+        flex-grow: 0;
+        flex-shrink: 1;
+        max-width: calc(50% - 8.3333333%);
+        padding: 0.25rem 0.625rem;
+
+        .b-checkbox {
+            max-width: 86%;
+            margin-right: 10px;
+        }
+
+        &:hover {
+            background-color: $gray1;
+        }
+    }
+
     .tainacan-li-checkbox-modal {
         display: flex;
         padding: 0.25rem 0.125rem;
@@ -557,7 +576,7 @@
         }
 
         &:hover {
-            background-color: $blue1;
+            background-color: $gray1;
         }
     }
 
