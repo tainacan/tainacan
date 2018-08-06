@@ -24,6 +24,14 @@ export const setFilters = (state, filters) => {
     state.filters = filters;
 }
 
+export const updateFiltersOrderFromCollection = (state, filtersOrder) => {
+    for (let i = 0; i < state.filters.length; i++) {
+        let updatedFilterIndex = filtersOrder.findIndex(aFilter => aFilter.id == state.filters[i].id);
+        if (updatedFilterIndex >= 0)
+            state.filters[i].enabled = filtersOrder[updatedFilterIndex].enabled;  
+    }
+}
+
 export const setFilterTypes = (state, filterTypes) => {
     state.filterTypes = filterTypes;
 }

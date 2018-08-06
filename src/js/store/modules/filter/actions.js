@@ -89,8 +89,7 @@ export const deleteFilter = ({ commit }, filterId ) => {
         .then( res => {
             commit('deleteFilter', res.data );
             resolve( res.data );
-        }).catch((error) => { 
-            console.log(error);
+        }).catch((error) => {
             reject( error );
         });
 
@@ -111,6 +110,7 @@ export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filters
             filters_order: filtersOrder
         }).then( res => {
             commit('collection/setCollection', res.data, { root: true });
+            commit('updateFiltersOrderFromCollection', res.data.filters_order);
             resolve( res.data );
         }).catch( error => { 
             reject( error.response );

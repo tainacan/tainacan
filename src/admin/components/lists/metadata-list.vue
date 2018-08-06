@@ -39,7 +39,7 @@
                             <div  
                                     class="active-metadatum-item"
                                     :class="{
-                                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' ,
+                                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
                                         'disabled-metadatum': metadatum.enabled == false,
                                         'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel
@@ -75,6 +75,7 @@
                                             class="controls" 
                                             v-if="metadatum.id !== undefined">
                                         <b-switch 
+                                                :disabled="isUpdatingMetadataOrder"
                                                 size="is-small" 
                                                 :value="metadatum.enabled"
                                                 @input="onChangeEnable($event, index)"/>
@@ -351,6 +352,7 @@ export default {
             isLoadingMetadatumTypes: true,
             isLoadingMetadata: false,
             isLoadingMetadatum: false,
+            isUpdatingMetadataOrder: false,
             openedMetadatumId: '',
             formWithErrors: '',
             hightlightedMetadatum: '',
@@ -449,7 +451,10 @@ export default {
             for (let metadatum of this.activeMetadatumList) {
                 metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
             }
-            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder });
+            this.isUpdatingMetadataOrder = true;
+            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder })
+                .then(() => this.isUpdatingMetadataOrder = false)
+                .catch(() => this.isUpdatingMetadataOrder = false);
         },
         onChangeEnable($event, index) {
             let metadataOrder = [];
@@ -457,7 +462,10 @@ export default {
                 metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
             }
             metadataOrder[index].enabled = $event;
-            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder });
+            this.isUpdatingMetadataOrder = true;
+            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder })
+                .then(() => this.isUpdatingMetadataOrder = false)
+                .catch(() => this.isUpdatingMetadataOrder = false);
         },
         addMetadatumViaButton(metadatumType) {
             let lastIndex = this.activeMetadatumList.length;

@@ -35,7 +35,7 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name,
+                                'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder,
                                 'not-focusable-item': openedFilterId == filter.id, 
                                 'disabled-filter': filter.enabled == false,
                                 'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
@@ -70,7 +70,8 @@
                             <span 
                                     class="controls" 
                                     v-if="filter.filter_type != undefined">
-                                <b-switch 
+                                <b-switch
+                                        :disabled="isUpdatingFiltersOrder" 
                                         size="is-small" 
                                         :value="filter.enabled" 
                                         @input="onChangeEnable($event, index)"/>
@@ -203,6 +204,7 @@ export default {
             isLoadingFilters: false,
             isLoadingFilterTypes: false,
             isLoadingFilter: false,
+            iisUpdatingFiltersOrder: false,
             openedFilterId: '',
             formWithErrors: '',
             editForms: {},
@@ -288,7 +290,10 @@ export default {
             for (let filter of this.activeFilterList) {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
-            this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
+            this.isUpdatingFiltersOrder = true;
+            this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder })
+                .then(() => this.isUpdatingFiltersOrder = false)
+                .catch(() => this.isUpdatingFiltersOrder = false);
         },
         updateListOfMetadata() {
 
@@ -311,7 +316,10 @@ export default {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             filtersOrder[index].enabled = $event;
-            this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
+            this.isUpdatingFiltersOrder = true;
+            this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder })
+                .then(() => this.isUpdatingFiltersOrder = false)
+                .catch(() => this.isUpdatingFiltersOrder = false);
         },
         addMetadatumViaButton(metadatumType, metadatumIndex) {
             this.availableMetadatumList.splice(metadatumIndex, 1);

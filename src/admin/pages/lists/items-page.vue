@@ -774,16 +774,6 @@
                         this.isFilterModalActive = false;
                 }
             },
-            onSwipeFiltersMenuRight() {
-                let screenWidth = window.screen.width;
-
-                if (!this.isFilterModalActive && screenWidth <= 768)
-                    this.isFilterModalActive = true;
-            },
-            onSwipeFiltersMenuLeft() {
-                if (this.isFilterModalActive)
-                    this.isFilterModalActive = false;
-            },
             onOpenImportersModal() {
                 this.$modal.open({
                     parent: this,
