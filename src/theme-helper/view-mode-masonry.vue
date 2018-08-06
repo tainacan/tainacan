@@ -1,6 +1,19 @@
 <template>
     <div class="table-container">
         <div class="table-wrapper">
+            <!-- Empty result placeholder -->
+            <section
+                    v-if="!isLoading && items.length <= 0"
+                    class="section">
+                <div class="content has-text-gray4 has-text-centered">
+                    <p>
+                        <b-icon
+                                icon="file-multiple"
+                                size="is-large"/>
+                    </p>
+                    <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created') }}</p>
+                </div>
+            </section>
             <!-- RECORDS VIEW MODE -->
             <masonry 
                     :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
@@ -36,6 +49,7 @@ export default {
         displayedMetadata: Array,
         items: Array,
         isLoading: false,
+        hasFiltered: false
     },
     data () {
         return {

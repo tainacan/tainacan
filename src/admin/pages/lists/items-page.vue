@@ -543,6 +543,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
+                        :has-filtered="hasFiltered"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
 
