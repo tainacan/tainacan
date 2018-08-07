@@ -3,7 +3,7 @@
             id="tainacan-subheader" 
             class="secondary-page">
            
-        <div class="back-button">
+        <div class="back-button is-hidden-mobile">
             <button     
                     @click="$router.go(-1)"
                     class="button is-turquoise4">
@@ -14,6 +14,15 @@
         </div>
         <div class="level">      
             <div class="level-left">
+                <div class="back-button is-hidden-tablet level-item">
+                    <button     
+                            @click="$router.go(-1)"
+                            class="button is-turquoise4">
+                        <span class="icon">
+                            <i class="mdi mdi-chevron-left"/>
+                        </span>
+                    </button>
+                </div>
                 <div class="level-item">
                     <nav class="breadcrumbs">
                         <router-link 
@@ -371,30 +380,39 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
-            height: 143px;
-            max-height: 143px;
+            height: 85px;
+            max-height: 85px;
+            padding: 0;
+            top: 206px;
+            margin-bottom: 0px !important;
             
-            ul { 
-                margin-top: 12px;
+            .level-left {
+                margin-left: 0px !important;
+                display: flex;
+                padding: 0 1rem;
+                .level-item {
+                    display: inline-flex;
+                }
+            }
+
+            .level-right { 
+                margin-top: 0px;
                 flex-flow: wrap;
                 display: flex;
                 align-items: baseline;
                 justify-content: space-between;
 
-                a { 
-                    padding: 0.5em 0.7em !important; 
-                    text-align: center;
-                }
-                .menu-text {
-                    padding-left: 0.3em !important;
+                .level-item {
+                    margin-bottom: 0;
+                    a { 
+                        padding: 0.5em 0.7em !important; 
+                        text-align: center;
+                    }
+                    .menu-text {
+                        display: none;
+                    }
                 }
             }
-      
-            .level-left {
-                margin-left: 0px !important;
-            }
-            top: 206px;
-            margin-bottom: 0px !important;
         }
 
     }

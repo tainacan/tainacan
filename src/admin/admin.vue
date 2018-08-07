@@ -6,6 +6,7 @@
                 :active-route="activeRoute"
                 :is-menu-compressed="isMenuCompressed"/>
         <button 
+                class="is-hidden-mobile"
                 id="menu-compress-button"
                 @click="isMenuCompressed = !isMenuCompressed">
             <b-icon :icon="isMenuCompressed ? 'menu-right' : 'menu-left'" />
