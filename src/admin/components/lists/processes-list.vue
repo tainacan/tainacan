@@ -106,7 +106,9 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }">
-                                {{ bgProcess.progress_label ? bgProcess.progress_label + (bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '') : $i18n.get('label_no_details_of_process') }}</p>
+                                <span class="occluding-content">{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
+                                <span>{{ bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '' }}</span>
+                            </p>
                         </td>
                         <!-- Queued on -->
                         <td 
@@ -136,7 +138,7 @@
                         </td>
                         <!-- Logs -->
                         <td 
-                                class="column-small-width"
+                                class="column-needed-width"
                                 :label="$i18n.get('label_log_file')" 
                                 :aria-label="$i18n.get('label_log_gile')">
                             <p>
@@ -384,6 +386,15 @@
             animation-duration: 1s;
             animation-iteration-count: 2;
         }
+    }
+
+    .occluding-content {
+        width: calc(100% - 40px);
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        top: 4px;
+        position: relative;
     }
 
 </style>
