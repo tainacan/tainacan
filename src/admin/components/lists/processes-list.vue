@@ -106,7 +106,7 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }">
-                                <span class="occluding-content">{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
+                                <span :class="{'occluding-content': bgProcess.progress_value }">{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
                                 <span>{{ bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '' }}</span>
                             </p>
                         </td>
