@@ -285,7 +285,7 @@
                             this.isSearchingLoading = false;
                         }).catch((error) => {
                         this.$console.log(error);
-                    })
+                    });
                 } else {
                     this.isSearchingLoading = true;
 
