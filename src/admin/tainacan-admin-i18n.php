@@ -258,6 +258,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_mapper_metadata'                      => __( 'Mapper Metadata', 'tainacan' ),
 	'label_add_more_mapper_metadata'             => __( 'Add more mapper\'s metadata', 'tainacan' ),
     'label_exposer_urls'                         => __( 'Exposer URLs' ),
+    'label_exposer_mapper_values'                => __( 'Values only, no metadata scheme' ),
+    'label_exposer'                              => __( 'exposer' ),
+    'label_mapper'                               => __( 'mapper' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'    => __( 'Delete selected collections', 'tainacan' ),

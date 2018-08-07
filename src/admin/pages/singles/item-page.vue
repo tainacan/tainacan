@@ -83,8 +83,50 @@
                             <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                         </div>
                     </div>
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_exposer_urls') }}</label>
+                    <div>
+                        <b-loading :active.sync="isLoadingMetadatumMappers"/>
+                        <div v-if="!isLoadingMetadatumMappers">
+                            <div class="section-label">
+                                <label>{{ $i18n.get('label_exposer_urls') }}</label>
+                            </div>
+                            <br>
+                            <a
+                                    class="collapse-all"
+                                    @click="urls_open = !urls_open">
+                                {{ urls_open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                                <b-icon
+                                        type="is-secondary"
+                                        :icon=" urls_open ? 'menu-down' : 'menu-right'"/>
+                            </a>
+                            <div>
+                                <div
+                                        v-for="(exposer, index) of item.exposer_urls"
+                                        :key="index"
+                                        class="field">
+                                    <b-collapse :open="urls_open">
+                                        <label
+                                                class="label"
+                                                slot="trigger"
+                                                slot-scope="props">
+                                            <b-icon
+                                                    type="is-secondary"
+                                                    :icon="props.open ? 'menu-down' : 'menu-right'"
+                                            />
+                                            {{ index }}
+                                        </label>
+                                        <div
+                                                v-for="(url, index2) of exposer"
+                                                :key="index2">
+                                            <div>
+                                                <a :href="url" >
+                                                    {{ extractExposerLabel(url, index) }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </b-collapse>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div 
@@ -196,10 +238,12 @@
                 collectionId: Number,
                 itemId: Number,
                 isLoading: false,
+                isLoadingMetadatumMappers: false,
                 isMetadataColumnCompressed: false,
                 open: false,
                 collectionName: '',
-                thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+                thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+                urls_open: false
             }
         },
         components: {
@@ -219,12 +263,36 @@
                 'getMetadata',
                 'getAttachments'
             ]),
+            ...mapGetters('metadata',[
+                'getMetadatumMappers'
+            ]),
+            ...mapActions('metadata', [
+                'fetchMetadatumMappers',
+            ]),
             loadMetadata() {
                 // Obtains Item Metadatum
                 this.fetchMetadata(this.itemId).then(() => {
                     this.isLoading = false;
                 });
             },
+            extractExposerLabel(urlString, typeSlug) {
+                var url = new URL(urlString);
+                var mapperParam = url.searchParams.get(tainacan_plugin.exposer_mapper_param);
+                if(mapperParam != 'undefined' && mapperParam != null) {
+                    var mapper = this.metadatum_mappers.find(obj => {
+                        return obj.slug === mapperParam;
+                    });
+                    if(mapper != 'undefined' && mapper != null) {
+                        return this.$i18n.get('label_exposer')+": "+typeSlug+', '+this.$i18n.get('label_mapper')+": "+mapper.name;
+                    } else {
+                        if(mapperParam == 'value') {
+                            return this.$i18n.get('label_exposer')+": "+typeSlug+', '+this.$i18n.get('label_exposer_mapper_values');
+                        }
+                    }
+                }
+                return this.$i18n.get('label_exposer')+": "+typeSlug;
+            },
+            
         },
         computed: {
             item() {
@@ -235,7 +303,12 @@
             },
             attachmentsList() {
                 return this.getAttachments();
-            }
+            },
+            metadatum_mappers: {
+                get() {
+                    return this.getMetadatumMappers();
+                }
+            },
         },
         created() {
             // Obtains item and collection ID
@@ -245,6 +318,15 @@
             // Puts loading on Item Loading
             this.isLoading = true;
 
+            this.isLoadingMetadatumMappers = true;
+            this.fetchMetadatumMappers()
+            .then(() => {
+                this.isLoadingMetadatumMappers = false;
+            })
+            .catch(() => {
+                this.isLoadingMetadatumMappers = false;
+            });
+            
             // Obtains Item
             this.fetchItem(this.itemId).then(() => {
                 this.loadMetadata();
@@ -257,6 +339,7 @@
 
             // Get attachments
             this.fetchAttachments(this.itemId);
+            
         }
 
     }
