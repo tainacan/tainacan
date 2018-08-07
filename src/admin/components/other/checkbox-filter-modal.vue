@@ -712,6 +712,13 @@
         flex-direction: column;
         flex-wrap: wrap;
         max-height: 253px;
+
+        // For Safari
+        -webkit-margin-after: 0;
+        -webkit-margin-start: 0;
+        -webkit-margin-end: 0;
+        -webkit-padding-start: 0;
+        -webkit-margin-before: 0;
     }
 
     .tainacan-li-no-children {
