@@ -143,6 +143,7 @@
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
                             id="button-submit-collection-creation"
                             @click.prevent="onFinishImporter()"
+                            :class="{'is-loading': isLoadingUpload }"
                             class="button is-success">{{ $i18n.get('next') }}</button>
                 </div>
             </div>
@@ -164,6 +165,7 @@ export default {
             importer: null,
             isLoading: false,
             isLoadingRun: false,
+            isLoadingUpload: false,
             isFetchingCollections: false,
             form: {
                 
@@ -295,20 +297,33 @@ export default {
             });
         },
         uploadSource() {
+            this.isLoadingUpload = true;
             return new Promise((resolve, reject) => {
-                if (this.importer.accepts.file && !this.importer.accepts.url)
-                    this.onUploadFile().then(() => { resolve() }).catch((errors) => this.$console.log(errors)); 
-                else if (!this.importer.accepts.file && this.importer.accepts.url)
-                    this.onInputURL().then(() => { resolve() }).catch((errors) => this.$console.log(errors)); 
-                else if (this.importer.accepts.file && this.importer.accepts.url) {
-                    if (this.importerFile)
-                        this.onUploadFile().then(() => { resolve() }).catch((errors) => this.$console.log(errors)); 
-                    else if (this.url)
-                        this.onInputURL().then(() => { resolve() }).catch((errors) => this.$console.log(errors)); 
-                    else
+                if (this.importer.accepts.file && !this.importer.accepts.url) {
+                    this.onUploadFile()
+                        .then(() => { this.isLoadingUpload = false; resolve(); })
+                        .catch((errors) => { this.isLoadingUpload = false; this.$console.log(errors) }); 
+                } else if (!this.importer.accepts.file && this.importer.accepts.url) {
+                    this.onInputURL()
+                        .then(() => { this.isLoadingUpload = false; resolve() })
+                        .catch((errors) => { this.isLoadingUpload = false; this.$console.log(errors); }); 
+                } else if (this.importer.accepts.file && this.importer.accepts.url) {
+                    if (this.importerFile) {
+                        this.onUploadFile()
+                            .then(() => { this.isLoadingUpload = false; resolve(); })
+                            .catch((errors) => { this.isLoadingUpload = false; this.$console.log(errors) });
+                    } else if (this.url) {
+                        this.onInputURL()
+                            .then(() => { this.isLoadingUpload = false; resolve() })
+                            .catch((errors) => { this.isLoadingUpload = false; this.$console.log(errors); }); 
+                    } else {
+                        this.isLoadingUpload = false;
                         reject('No source file given');
-                } else
+                    }
+                } else {
+                    this.isLoadingUpload = false;
                     resolve();
+                }
             });
         },
         onFinishImporter() {

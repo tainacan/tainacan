@@ -6,8 +6,9 @@
                 class="metadatum">
             <b-checkbox
                     v-model="selected"
-                    :native-value="option.value"
-            >{{ option.label }}</b-checkbox>
+                    :native-value="option.value">
+                {{ option.label }}
+            </b-checkbox>
             <div
                     class="view-all-button-container"
                     v-if="option.seeMoreLink"

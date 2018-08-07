@@ -11,7 +11,7 @@
                                 icon="file-multiple"
                                 size="is-large"/>
                     </p>
-                    <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created') }}</p>
+                    <p>{{ $i18n.get('info_no_item_found') }}</p>
                 </div>
             </section>
             <!-- RECORDS VIEW MODE -->
@@ -48,8 +48,7 @@ export default {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false,
-        hasFiltered: false
+        isLoading: false
     },
     data () {
         return {

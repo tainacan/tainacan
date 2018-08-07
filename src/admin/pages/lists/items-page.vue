@@ -543,7 +543,6 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
-                        :has-filtered="hasFiltered"
                         :is-loading="isLoadingItems"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
 
@@ -557,7 +556,7 @@
                                     icon="inbox"
                                     size="is-large"/>
                         </p>
-                        <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created') }}</p>
+                        <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : $i18n.get('info_no_item_created') }}</p>
                         <p v-if="status == 'draft'">{{ $i18n.get('info_no_item_draft') }}</p>
                         <p v-if="status == 'trash'">{{ $i18n.get('info_no_item_trash') }}</p>
 
