@@ -9,10 +9,13 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	protected $item;
 	protected $collection;
 	/**
-	 * 
 	 * @var \Tainacan\Entities\Metadatum
 	 */
 	protected $metadatum;
+	/**
+	 * @var \Tainacan\Entities\Metadatum
+	 */
+	protected $metadatum2;
 	
 	protected function create_meta_requirements() {
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -42,6 +45,21 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 			true
 		);
 		
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+		    'metadatum',
+		    array(
+		        'name'              => 'space meta',
+		        'description'       => 'meta with space',
+		        'collection'        => $collection,
+		        'metadata_type'		=> $type,
+		        'exposer_mapping'	=> [
+		            'dublin-core' => 'subject'
+		        ]
+		    ),
+		    true,
+		    true
+		);
+		
 		$item = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
@@ -55,7 +73,8 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->collection = $collection;
 		$this->item = $item;
 		$this->metadatum = $metadatum;
-		return ['collection' => $collection, 'item' => $item, 'metadatum' => $metadatum];
+		$this->metadatum2 = $metadatum2;
+		return ['collection' => $collection, 'item' => $item, 'metadatum' => $metadatum, 'metadatum2' => $metadatum2];
 	}
 	
 	/**
@@ -128,11 +147,30 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals($this->item->get_id(), $data['item']['id']);
 		$this->assertEquals('TestValues_exposers', $data['value']);
 		
+		$item__metadata_json = json_encode([
+		    'values'       => '',
+		]);
+		
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/' . $this->metadatum2->get_id() );
+		$request->set_body($item__metadata_json);
+		
+		$response = $this->server->dispatch($request);
+		
+		$this->assertEquals(200, $response->get_status());
+		
 		$item_exposer_json = json_encode([
 			\Tainacan\Exposers\Exposers::TYPE_PARAM       => 'Xml',
 		]);
 		
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum->get_id() );
+		$request->set_body($item_exposer_json);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data();
+		
+		$this->assertInstanceOf('SimpleXMLElement', @simplexml_load_string($data));
+		
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/item/' . $this->item->get_id() . '/metadata/'. $this->metadatum2->get_id() );
 		$request->set_body($item_exposer_json);
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
@@ -167,6 +205,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('adasdasdsa', $dc->description);
 		$this->assertEquals('item_teste_Expose', $dc->title);
 		$this->assertEquals('TestValues_exposers', $dc->language);
+		$this->assertEquals('', $dc->subject);
 		
 	}
 	
@@ -321,7 +360,6 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data();
-		file_put_contents('/tmp/1.csv', $data);
 		
 		$lines = explode(PHP_EOL, $data);
 		$csv_lines = [];
@@ -329,12 +367,13 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 			$csv_lines[] = str_getcsv($line, ';');
 		}
 		array_walk($csv_lines, function(&$a) use ($csv_lines) {
-			if(count($a) == count($csv_lines)) {
+			if(count($a) == count($csv_lines[0])) {
 				$a = array_combine($csv_lines[0], $a);
+			} else {
+			    
 			}
 		});
 		array_shift($csv_lines);
-		
 		$this->assertEquals('adasdasdsa', $csv_lines[0]['Description']);
 		$this->assertEquals('TestValues_exposers', $csv_lines[0]['teste_Expose']);
 		$this->assertEquals('item_teste_Expose', $csv_lines[0]['Title']);
@@ -490,6 +529,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    $id = $item->get_id();
 	    $base_url = "{$this->namespace}/items/{$id}/";
 	    $urls = \Tainacan\Exposers\Exposers::get_exposer_urls($base_url);
+	    var_dump($urls);return;
 	    foreach ($urls as $type => $type_urls) {
 	        foreach ($type_urls as $url) {
     	        $request = new \WP_REST_Request('GET', $url);
@@ -497,7 +537,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
     	        $this->assertEquals(200, $response->get_status(), $url);
 	        }
 	    }
-	}*/ // TODO automate test this
+	} */// TODO automate test this
 	
 }
 
