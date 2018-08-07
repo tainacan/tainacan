@@ -71,7 +71,7 @@ a:hover {
     height: $page-height !important;
 
     @media screen and (max-width: 769px) {
-        margin-top: 0; 
+        margin-top: 42px;
     }
 
     .is-primary:not(.upload-draggable), .is-primary:hover, .is-primary:focus {

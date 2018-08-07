@@ -15,7 +15,16 @@
             </div>
         </div>
         <div class="level-right">
-            <div class="search-area">
+            <div class="is-hidden-tablet">
+                <button
+                    @click="$router.push($routerHelper.getItemsPath())"
+                    class="button is-small is-white level-item">
+                    <span class="icon is-right">
+                        <i class="mdi mdi-24px mdi-magnify"/>
+                    </span>
+                </button>
+            </div>
+            <div class="search-area is-hidden-mobile">
                 <div class="control has-icons-right is-small is-clearfix">
                     <input
                             autocomplete="on"

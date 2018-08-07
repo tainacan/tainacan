@@ -1022,6 +1022,12 @@
                     .catch(() => {
                         this.isLoadingMetadata = false;
                     });
+            },
+            adjustSearchControlHeight() {
+                this.$nextTick(() => {
+                    this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight : 0;
+                    this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
+                });
             }
         },
         created() {
@@ -1087,14 +1093,11 @@
             }
 
             // Watches window resize to adjust filter's top position and compression on mobile 
-            this.$nextTick(() => {
-                this.searchControlHeight = this.$refs['search-control'].clientHeight;
-                this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
-                window.addEventListener('resize', () => {
-                    this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
-                    this.searchControlHeight = this.$refs['search-control'].clientHeight;
-                });
-            })
+            window.addEventListener('resize', this.adjustSearchControlHeight());
+        },
+        beforeDestroy() {
+            this.$off();
+            window.removeEventListener('resize', this.adjustSearchControlHeight());
         }
     }
 </script>
