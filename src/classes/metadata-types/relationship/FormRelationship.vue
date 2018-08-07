@@ -40,7 +40,6 @@
                             :title="$i18n.getHelperTitle('tainacan-relationship', 'search')"
                             :message="$i18n.getHelperMessage('tainacan-relationship', 'search')"/>
                 </label>
-                <div class="block">
                     <div
                         v-for="(option, index) in metadata"
                         :key="index"
@@ -52,7 +51,6 @@
                             {{ option.name }}
                         </b-checkbox>
                     </div>
-                </div>
             </b-field>
 
         </transition>
