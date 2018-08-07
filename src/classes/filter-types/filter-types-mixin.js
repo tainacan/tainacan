@@ -17,64 +17,156 @@ export const filter_type_mixin = {
         query: {}
     },
     methods: {
-        getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore) {
+        getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal) {
 
-            let url = '/collection/' + this.collection + '/metadata/' + metadatumId + '?fetch=all_metadatum_values&nopaging=1';
+            let url = `/collection/${this.collection}/metadata/${metadatumId}?fetch=all_metadatum_values`;
 
-            if(isRepositoryLevel){
-                url = '/metadata/' + metadatumId + '?fetch=all_metadatum_values&nopaging=1';
+            if(offset != undefined && number != undefined){
+                url += `&offset=${offset}&number=${number}`;
             }
 
-            if( search ){
-                url += "&search=" + search;
+            if(isRepositoryLevel){
+                url = `/metadata/${metadatumId}?fetch=all_metadatum_values`;
+            }
+
+            if(search){
+                url += `&search=${search}`;
             }
 
             return axios.get(url)
                 .then(res => {
-                    if (res.data && res.data[0]) {
-                        for (let metadata of res.data[0]) {
-                            let index = this.options.findIndex(itemMetadata => itemMetadata.value === metadata.mvalue);
-                            if (index < 0 && metadata.mvalue !== '') {
-                                if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
-                                    let indexToIgnore = valuesToIgnore.findIndex(value => value == metadata.mvalue);
-                                    if (indexToIgnore < 0)
-                                        this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
-                                } else {
-                                    this.options.push({ label: metadata.mvalue, value: metadata.mvalue })
-                                }                                   
-                            }
+                    let sResults = [];
+                    let opts = [];
 
+                    for (let metadata of res.data) {
+                        if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
+                            let indexToIgnore = valuesToIgnore.findIndex(value => value == metadata.mvalue);
+
+                            if (search && isInCheckboxModal) {
+                                sResults.push({
+                                    label: metadata.mvalue,
+                                    value: metadata.mvalue
+                                });
+                            } else if (indexToIgnore < 0) {
+                                opts.push({
+                                    label: metadata.mvalue,
+                                    value: metadata.mvalue
+                                });
+                            }
+                        } else {
+                            if (search && isInCheckboxModal) {
+                                sResults.push({
+                                    label: metadata.mvalue,
+                                    value: metadata.mvalue
+                                });
+                            } else {
+                                opts.push({
+                                    label: metadata.mvalue,
+                                    value: metadata.mvalue
+                                });
+                            }
                         }
+
+
                     }
+
+
+                    this.searchResults = sResults;
+
+                    if (opts.length) {
+                        this.options = opts;
+                    } else if(!search) {
+                        this.noMorePage = 1;
+                    }
+
+                    if(this.options.length < this.maxNumOptionsCheckboxList && !search){
+                        this.noMorePage = 1;
+                    }
+
+                    if (this.filter.max_options && this.options.length >= this.filter.max_options) {
+                        let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                        this.options[this.filter.max_options - 1].seeMoreLink = seeMoreLink;
+                    }
+
                 })
                 .catch(error => {
                     this.$console.error(error);
                 });
         },
-        getValuesRelationship(collectionTarget, search, valuesToIgnore) {
+        getValuesRelationship(collectionTarget, search, valuesToIgnore, offset, number, isInCheckboxModal) {
             let url = '/collection/' + collectionTarget + '/items?';
 
-            if( search ){
-                url += "search=" + search;
+            if(offset != undefined && number != undefined){
+                url += `offset=${offset}&perpage=${number}`;
+            } else {
+                url += `nopaging=1`
             }
 
-            return axios.get(url + '&nopaging=1&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id')
+            if(search){
+                url += `&search=${search}`;
+            }
+
+            return axios.get(url + '&fetch_only[0]=thumbnail&fetch_only[1]=title&fetch_only[2]=id')
                 .then(res => {
+                    let sResults = [];
+                    let opts = [];
+
                     if (res.data.length > 0) {
                         for (let item of res.data) {
                             if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                                 let indexToIgnore = valuesToIgnore.findIndex(value => value == item.id);
-                                if (indexToIgnore < 0)
-                                    this.options.push({ label: item.title, value: item.id, img: (item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath) });
+
+                                if (search && isInCheckboxModal) {
+                                    sResults.push({
+                                        label: metadata.mvalue,
+                                        value: metadata.mvalue
+                                    });
+                                } else if (indexToIgnore < 0) {
+                                    opts.push({
+                                        label: item.title,
+                                        value: item.id,
+                                        img: (item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath)
+                                    });
+                                }
                             } else {
-                                this.options.push({ label: item.title, value: item.id, img: (item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath) });
-                            }  
+                                if (search && isInCheckboxModal) {
+                                    sResults.push({
+                                        label: item.title,
+                                        value: item.id,
+                                        img: (item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath)
+                                    });
+                                } else {
+                                    opts.push({
+                                        label: item.title,
+                                        value: item.id,
+                                        img: (item.thumbnail.thumb ? item.thumbnail.thumb : this.thumbPlaceholderPath)
+                                    });
+                                }
+                            }
                         }
                     }
+
+                    this.searchResults = sResults;
+
+                    if (opts.length) {
+                        this.options = opts;
+                    } else {
+                        this.noMorePage = 1;
+                    }
+
+                    if(this.options.length < this.maxNumOptionsCheckboxList){
+                        this.noMorePage = 1;
+                    }
+
+                    if (this.filter.max_options && this.options.length >= this.filter.max_options) {
+                        let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                        this.options[this.filter.max_options - 1].seeMoreLink = seeMoreLink;
+                    }
+
                 })
                 .catch(error => {
                     this.$console.error(error);
                 });
         }
     }
-}
+};

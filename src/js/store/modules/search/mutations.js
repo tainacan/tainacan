@@ -120,7 +120,11 @@ export const setTotalItems = ( state, total ) => {
 };
 
 export const setSearchQuery = ( state, searchQuery ) => {
-    state.postquery.search = searchQuery;
+    
+    if (searchQuery != '')
+        state.postquery.search = searchQuery;
+    else    
+        state.postquery.search = undefined;
 };
 
 export const setStatus = ( state, status ) => {
@@ -162,4 +166,8 @@ export const cleanMetaQueries = (state) => {
 
 export const cleanTaxQueries = (state) => {
     state.postquery.taxquery = [];
+};
+
+export const cleanFetchOnly = (state) => {
+    state.postquery.fetch_only = undefined;
 };

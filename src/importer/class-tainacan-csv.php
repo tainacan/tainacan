@@ -5,12 +5,9 @@ use Tainacan;
 
 class CSV extends Importer {
 
-	protected $manual_mapping = true;
-	
-	protected $manual_collection = true;
-	
 	public function __construct($attributes = array()) {
-		parent::__construct($attributes);
+        parent::__construct($attributes);
+        $this->items_repo = \Tainacan\Repositories\Items::get_instance();
 		
 		$this->set_default_options([
             'delimiter' => ',',
@@ -18,7 +15,7 @@ class CSV extends Importer {
             'encode' => 'utf8',
             'enclosure' => '"'
 		]);
-		
+        
     }
 
     /**
@@ -33,47 +30,129 @@ class CSV extends Importer {
      */
     public function get_source_metadata(){
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
-        $file->seek(0 );
-        return $file->fgetcsv( $this->get_option('delimiter') );
+        $file->seek(0);
+
+        $columns = [];
+        $rawColumns = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
+
+        if( $rawColumns ){
+            foreach( $rawColumns as $index => $rawColumn ){
+              
+                if( strpos($rawColumn,'special_') === 0 ){
+                    
+                    if( $rawColumn === 'special_document' ){
+                        $this->set_option('document_index', $index);
+                    } else if( $rawColumn === 'special_attachments' ){
+                        $this->set_option('attachment_index', $index);    
+                    }
+
+                } else {
+                    $columns[] = $rawColumn;
+                }
+            }
+
+            return $columns;
+        }
+
+        return [];
     }
 
+    /**
+     * 
+     * returns all header including special
+     */
+    public function raw_source_metadata(){
+        $file =  new \SplFileObject( $this->tmp_file, 'r' );
+        $file->seek(0);
+        return $file->fgetcsv( $this->get_option('delimiter') );
+    }
 
     /**
      * @inheritdoc
      */
     public function process_item( $index, $collection_definition ){
         $processedItem = [];
-        $headers = $this->get_source_metadata();
-        
+        $headers = $this->raw_source_metadata();
+
+        $this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
         // search the index in the file and get values
         $file =  new \SplFileObject( $this->tmp_file, 'r' );
+        $file->setFlags(\SplFileObject::SKIP_EMPTY);
         $file->seek( $index );
 
         if( $index === 0 ){
             $file->current();
             $file->next();
-            $values = $file->fgetcsv( $this->get_option('delimiter'), $this->get_option('enclosure') );
+
+            $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
+            $values = str_getcsv( $file->fgets(), $this->get_option('delimiter'), $this->get_option('enclosure') );
         }else{
-            $values = $file->fgetcsv( $this->get_option('delimiter'), $this->get_option('enclosure')  );
+            $this->add_log(' Delimiter to parse' . $this->get_option('delimiter') );
+            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
         }
 
         if( count( $headers ) !== count( $values ) ){
-           return false;
+            $string = (is_array($values)) ? implode('::', $values ) : $values;
+
+            $this->add_log(' Mismatch count headers and row columns ');
+            $this->add_log(' Headers count: ' . count( $headers ) );
+            $this->add_log(' Values count: ' . count( $values ) );
+            $this->add_log(' Values string: ' . $string );
+            return false;
         }
         
-        $cont = 0;
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
             $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
 
-            $column = $this->handle_encoding( $values[ $cont ] );
+            foreach ( $headers as $indexRaw => $headerRaw ) {
+               if( $headerRaw === $header ){
+                    $column = $indexRaw;
+               }
+            }
+            
+            if(!isset($column))
+                continue;
+
+            $valueToInsert = $this->handle_encoding( $values[ $column ] );
 
             $processedItem[ $header ] = ( $metadatum->is_multiple() ) ? 
-                explode( $this->get_option('multivalued_delimiter'), $column) : $column;
-
-            $cont++;
+                explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
         }
         
+        $this->add_log('Success to proccess index: ' . $index  );
+        $this->add_transient('actual_index', $index); // add reference for insert
         return $processedItem;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function after_inserted_item( $inserted_item, $collection_index ) {
+        $column_document = $this->get_option('document_index');
+        $column_attachment = $this->get_option('attachment_index');
+
+        if( !empty($column_document) || !empty( $column_attachment ) ){
+            
+            $index = $this->get_transient('actual_index');
+            $file =  new \SplFileObject( $this->tmp_file, 'r' );
+            $file->setFlags(\SplFileObject::SKIP_EMPTY);
+            $file->seek( $index );
+
+            if( $index === 0 ){
+                $file->current();
+                $file->next();
+            }
+
+            $values = str_getcsv( rtrim($file->fgets()), $this->get_option('delimiter'), $this->get_option('enclosure')  );
+            
+            if( is_array($values) && !empty($column_document) ){
+                $this->handle_document( $values[$column_document], $inserted_item);
+            }
+
+            if( is_array($values) && !empty($column_attachment) ){
+                $this->handle_attachment( $values[$column_attachment], $inserted_item);
+            }
+        }
     }
 
     /**
@@ -92,29 +171,57 @@ class CSV extends Importer {
 
     public function options_form() {
 
-        $form = '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
-        $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
-
-        $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
-        $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
-
+        $form = '<div class="field">';
+        $form .= '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
         $form .= '<div class="control">';
-        $form = '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
+        $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
+        $form .= '</div>';
+        $form .= '</div>';
 
-        $form .= '<label class="radio">';
-        $form .= '<input type="radio"  name="encode" value="utf8" ' 
-        . ( !$this->get_option('encode') || $this->get_option('encode') === 'utf8' ) ? 'checked' : '' . ' />';
-        $form .=  __('UTF8', 'tainacan') . '</label>';
+        $form .= '<div class="field">';
+        $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
+        $form .= '<div class="control">';
+        $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
+        $form .= '</div>';
+        $form .= '</div>';
 
-         $form .= '<label class="radio">';
-        $form .= '<input type="radio"  name="encode" value="iso88591" ' 
-        . ( !$this->get_option('encode') || $this->get_option('encode') === 'iso88591' ) ? 'checked' : '' . ' />';
-        $form .=  __('ISO 8859-1', 'tainacan') . '</label>';
+        $form .= '<div class="field">';   
+        $form .= '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
+  
+        $utf8 = ( !$this->get_option('encode') || $this->get_option('encode') === 'utf8' ) ? 'checked' : '';
+        $iso = ( !$this->get_option('encode') && $this->get_option('encode') === 'iso88591' ) ? 'checked' : '';
+
+        $form .= '<div class="field">';
+        $form .= '<label class="b-radio radio is-small">';
+        $form .= '<input type="radio"  name="encode" value="utf8" '. $utf8 . ' />';
+        $form .= '<span class="check"></span>';
+        $form .= '<span class="control-label">';
+        $form .=  __('UTF8', 'tainacan') . '</span></label>';
+        $form .= '</div>';
+        
+        $form .= '<div class="field">';
+        $form .= '<label class="b-radio radio is-small">';
+        $form .= '<input type="radio"  name="encode" value="iso88591" '. $iso . ' />';
+        $form .= '<span class="check"></span>';
+        $form .= '<span class="control-label">';
+        $form .=  __('ISO 8859-1', 'tainacan') . '</span></label>';
+        $form .= '</div>';
 
         $form .= '</div>';
 
+        $form .= '<div class="field">';
         $form .= '<label class="label">' . __('Enclosure character', 'tainacan') . '</label>';
+        $form .= '<div class="control">';
         $form .= '<input type="text" class="input" size="1" name="enclosure" value="' . $this->get_option('enclosure') . '" />';
+        $form .= '</div>';
+        $form .= '</div>';
+
+        $form .= '<div class="field">';
+        $form .= '<label class="label">' . __('Server path', 'tainacan') . '</label>';
+        $form .= '<div class="control">';
+        $form .= '<input type="text" class="input" size="1" name="server_path" value="' . $this->get_option('server_path') . '" />';
+        $form .= '</div>';
+        $form .= '</div>';
 
         return $form;
 
@@ -136,5 +243,116 @@ class CSV extends Importer {
             default:
                 return $string;
         }
+    }
+
+    /**
+     * method responsible to insert the item document
+     */
+    private function handle_document($column_value, $item_inserted){
+        $TainacanMedia = \Tainacan\Media::get_instance();
+
+        if( strpos($column_value,'url:') === 0 ){
+            $correct_value = trim(substr($column_value, 4));
+            $item_inserted->set_document( $correct_value );
+            $item_inserted->set_document_type( 'url' );
+
+            if( $item_inserted->validate() ) {
+                $item_inserted = $this->items_repo->update($item_inserted);
+            }
+
+        } else if( strpos($column_value,'text:') === 0 ){
+            $correct_value = trim(substr($column_value, 5));
+            $item_inserted->set_document( $correct_value );
+            $item_inserted->set_document_type( 'text' );
+            
+            if( $item_inserted->validate() ) {
+                $item_inserted = $this->items_repo->update($item_inserted);
+            }
+
+        } else if( strpos($column_value,'file:') === 0 ){
+            $correct_value = trim(substr($column_value, 5));
+            
+            if( filter_var($correct_value, FILTER_VALIDATE_URL) ){
+                $id = $TainacanMedia->insert_attachment_from_url($correct_value);
+
+                if(!$id){
+                    $this->add_error_log('Error in Document file imported from URL ' . $correct_value);
+                    return false;
+                }
+
+                $item_inserted->set_document( $id );
+                $item_inserted->set_document_type( 'attachment' );
+                $this->add_log('Document file URL imported from ' . $correct_value);
+
+                if( $item_inserted->validate() ) {
+                    $item_inserted = $this->items_repo->update($item_inserted);
+                }
+            } else {
+                $server_path_files = trailingslashit($this->get_option('server_path'));
+                $id = $TainacanMedia->insert_attachment_from_file($server_path_files . $correct_value);
+
+                if(!$id){
+                    $this->add_error_log('Error in Document file imported from server ' . $correct_value);
+                    return false;
+                }
+
+                $item_inserted->set_document( $id );
+                $item_inserted->set_document_type( 'attachment' );
+                $this->add_log('Document file in Server imported from ' . $correct_value);
+
+                if( $item_inserted->validate() ) {
+                    $item_inserted = $this->items_repo->update($item_inserted);
+                }
+
+            }
+
+        }
+
+        $thumb_id = $this->items_repo->get_thumbnail_id_from_document($item_inserted);
+        
+        if (!is_null($thumb_id)) {
+            $this->add_log('Setting item thumbnail: ' . $thumb_id);
+            set_post_thumbnail( $item_inserted->get_id(), (int) $thumb_id );
+        }
+
+        return true;
+
+    }
+
+    /**
+     * method responsible to insert the item document
+     */
+    private function handle_attachment( $column_value, $item_inserted){
+        $TainacanMedia = \Tainacan\Media::get_instance();
+
+        $attachments = explode( $this->get_option('multivalued_delimiter'), $column_value);
+
+        if( $attachments ){
+            foreach( $attachments as $attachment ){
+
+                if( filter_var($attachment, FILTER_VALIDATE_URL) ){
+                    $id = $TainacanMedia->insert_attachment_from_url($attachment, $item_inserted->get_id());
+                       
+                    if(!$id){
+                        $this->add_error_log('Error in Attachment file imported from URL ' . $attachment);
+                        return false;
+                    }
+
+                    $this->add_log('Attachment file URL imported from ' . $attachment);
+
+                    continue;
+                } 
+
+                $server_path_files = trailingslashit($this->get_option('server_path'));
+                $id = $TainacanMedia->insert_attachment_from_file($server_path_files . $attachment, $item_inserted->get_id());
+
+                if(!$id){
+                    $this->add_log('Error in Attachment file imported from server ' . $attachment);
+                    continue;
+                }
+
+                $this->add_log('Attachment file in Server imported from ' . $attachment);
+            }
+       }
     }
 }

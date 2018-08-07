@@ -6,13 +6,19 @@
                 :active-route="activeRoute"
                 :is-menu-compressed="isMenuCompressed"/>
         <button 
+                class="is-hidden-mobile"
                 id="menu-compress-button"
                 @click="isMenuCompressed = !isMenuCompressed">
             <b-icon :icon="isMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
-        <tainacan-header :is-menu-compressed="isMenuCompressed"/>
-        <div class="column is-main-content">  
-            <router-view/> 
+        <tainacan-header />
+        <tainacan-repository-subheader 
+                :is-repository-level="isRepositoryLevel"
+                :is-menu-compressed="isMenuCompressed"/>
+        <div 
+                id="repository-container"
+                class="column is-main-content">  
+            <router-view /> 
         </div>
     </div>
 </template>
@@ -20,28 +26,33 @@
 <script>
     import PrimaryMenu from './components/navigation/primary-menu.vue';
     import TainacanHeader from './components/navigation/tainacan-header.vue';
+    import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
 
     export default {
         name: "AdminPage",
         data(){
             return {
                 isMenuCompressed: false,
+                isRepositoryLevel : true,
                 activeRoute: '/collections'
             }
         },
         components: {
             PrimaryMenu,
-            TainacanHeader
+            TainacanHeader,
+            TainacanRepositorySubheader
         },
         created() {
             this.$userPrefs.init();
             this.isMenuCompressed = (this.$route.params.collectionId != undefined);
             this.activeRoute = this.$route.name;
+            this.isRepositoryLevel = this.$route.params.collectionId == undefined;
         },
         watch: {
             '$route' (to) {
                 this.isMenuCompressed = (to.params.collectionId != undefined);
                 this.activeRoute = to.name;
+                this.isRepositoryLevel = this.$route.params.collectionId == undefined;
             }
         }
     }
@@ -55,7 +66,6 @@
         height: 100%;
         margin-bottom: 0px;
         margin-top: 0px;
-
 
         @media screen and (max-width: 769px) {
             height: auto;
@@ -80,15 +90,14 @@
 
     .is-secondary-content {
         padding: 0px;
-        margin: $header-height auto 0 auto;
+        margin: 94px auto 0 auto;
         position: relative;
         overflow-y: hidden;
-        height: calc(100% - 53px);
+        height: calc(100% - 94px);
 
         @media screen and (max-width: 769px) {
-            
             overflow-y: visible;
-            margin: 0 auto;
+            margin: 40px auto 0 auto;
             
         } 
 
@@ -101,20 +110,20 @@
     #menu-compress-button {
         position: absolute;
         z-index: 99;
-        top: 70px;
-        max-width: 23px;
-        height: 21px;
-        width: 23px;
+        top: 192px;
+        max-width: 25px;
+        height: 20px;
+        width: 25px;
         border: none;
-        background-color: #c1dae0;
-        color: $secondary;
+        background-color: $blue5;
+        color: white;
         padding: 0px;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
         cursor: pointer;
 
         .icon {
-            margin-top: -1px;
+            margin-top: -2px;
         }
     }
 

@@ -8,14 +8,14 @@ export const cleanProcesses = ( state ) => {
     state.bg_processes = [];
 }
 
-export const setProcess = ( state, process ) => {
-    let index = state.bg_processes.findIndex(newProcess => newProcess.id === process.id);
+export const setProcess = ( state, bgProcess ) => {
+    let index = state.bg_processes.findIndex(newProcess => newProcess.id == bgProcess.id);
     if ( index >= 0){
-        Vue.set( state.bg_processes, index, process );
+        Vue.set(state.bg_processes, index, bgProcess);
     } else {
-        state.bg_processes.push( process );
+        state.bg_processes.push(bgProcess);
     }
-    state.bg_process = process;
+    state.bg_process = bgProcess;
 }
 
 export const setProcessLog = ( state, log ) => {

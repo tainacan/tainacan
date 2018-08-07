@@ -1,21 +1,39 @@
 <template>
     <div>
+        <section
+                v-if="!metadata || metadata.length <= 0"
+                class="field is-grouped-centered section">
+            <div class="content has-text-gray has-text-centered">
+                <p>
+                    <b-icon
+                            icon="format-list-checks"
+                            size="is-large"/>
+                </p>
+                <p>{{ isRepositoryLevel ?
+                    $i18n.get('info_there_are_no_metadata_in_repository_level' ) :
+                     $i18n.get('info_there_are_no_metadata_to_search' ) }}</p>
+            </div>
+        </section>
         <div
+                v-else
                 :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '47px' }"
-                class="columns is-multiline tnc-advanced-search-container">
+                :class="{ 'padding-in-header': isHeader, 'padding-regular': !isHeader }"
+                class="tnc-advanced-search-container">
 
             <div
                     v-show="!advancedSearchResults"
                     v-for="searchCriterion in searchCriteria"
                     :key="searchCriterion"
-                    class="field column is-12 tainacan-form">
+                    class="field is-12 tainacan-form">
 
                 <b-field
                         class="columns"
                         grouped>
 
                     <!-- Metadata (Search criteria) -->
-                    <b-field class="column">
+                    <b-field
+                            :class="{'is-3': isHeader}"
+                            class="column">
                         <b-select
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                 :disabled="advancedSearchQuery.taxquery[searchCriterion] ||
@@ -25,7 +43,8 @@
                                   (advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].originalMeta : undefined)"
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriterion)">
                             <option
-                                    v-for="metadatum in metadata"
+                                    v-for="(metadatum, metadatumIndex) in metadata"
+                                    v-if="isRelationship(metadatum, metadatumIndex)"
                                     :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
                                     :key="metadatum.id"
                             >{{ metadatum.name }}</option>
@@ -33,8 +52,9 @@
                     </b-field>
 
                     <!-- Inputs -->
-                    <b-field 
-                            class="column is-two-thirds">
+                    <b-field
+                            :class="{'is-two-thirds': !isHeader}"
+                            class="column">
                         <b-input
                                 v-if="advancedSearchQuery.metaquery[searchCriterion] &&
                                  advancedSearchQuery.metaquery[searchCriterion].ptype != 'date'"
@@ -67,10 +87,15 @@
                                 @add="addValueToAdvancedSearchQuery($event, 'terms', searchCriterion)"
                                 @typing="autoCompleteTerm($event, searchCriterion)"
                                 />
+                        <b-input
+                                v-else
+                                type="text"
+                                disabled />
                     </b-field>
 
                     <!-- Comparators -->
-                    <b-field 
+                    <b-field
+                            :class="{'is-3': isHeader}"
                             class="column">
                         <b-select
                                 v-if="advancedSearchQuery.taxquery[searchCriterion] ||
@@ -86,6 +111,10 @@
                                     :value="key"
                             >{{ comparator }}</option>
                         </b-select>
+                        <b-input
+                                v-else
+                                type="text"
+                                disabled />
                     </b-field>
 
                     <div class="field">
@@ -104,19 +133,22 @@
             <!-- Add button -->
             <div
                     v-show="!advancedSearchResults"
-                    :style="{
-                        'margin-top': '-15px !important',
-                        'padding-left': '25px !important'
-                    }"
+                    :class="{'add-link-advanced-search-header': isHeader, 'add-link-advanced-search': !isHeader }"
                     class="field column is-12">
                 <a
                     @click="addSearchCriteria"
-                    class="is-secondary is-small add-link">
+                    style="font-size: 12px;"
+                    class="is-secondary">
                     <b-icon
+                            class="add-i"
                             icon="plus-circle"
                             size="is-small"
                             type="is-secondary"/>
-                    {{ $i18n.get('add_another_search_criterion') }}</a>
+                    {{ searchCriteria.length &lt;= 0 ?
+                        $i18n.get('add_one_search_criterion') :
+                         $i18n.get('add_another_search_criterion')
+                    }}
+                </a>
             </div>
 
             <!-- Tags -->
@@ -160,7 +192,10 @@
                     v-show="!advancedSearchResults"
                     class="column">
                 <div class="field is-grouped is-pulled-right">
-                    <p class="control">
+                    <p
+                            v-if="Object.keys(this.advancedSearchQuery.taxquery).length > 0 ||
+                 Object.keys(this.advancedSearchQuery.metaquery).length > 0"
+                            class="control">
                         <button
                                 @click="clearSearch"
                                 class="button is-outlined">{{ $i18n.get('clear_search') }}</button>
@@ -188,6 +223,7 @@
         props: {
             metadata: Array,
             isRepositoryLevel: false,
+            isHeader: false,
             advancedSearchResults: false,
             openFormAdvancedSearch: false,
             isDoSearch: false,
@@ -328,6 +364,15 @@
                     throw error;
                 });
             }, 300),
+            isRelationship(metadatum, metadatumIndex){
+                if(metadatum.metadata_type.includes('Relationship')){
+                    this.metadata.splice(metadatumIndex, 1);
+
+                    return false;
+                }
+
+                return true;
+            },
             getComparators(searchCriterion){
                 if(this.advancedSearchQuery.taxquery[searchCriterion]){
                     return this.taxqueryOperators;
@@ -406,7 +451,22 @@
             addValueToAdvancedSearchQuery: _.debounce(function(value, type, searchCriterion) {
                 this.addToAdvancedSearchQuery(value, type, searchCriterion);
             }, 900),
-            searchAdvanced(){                
+            searchAdvanced(){
+
+                if(this.isHeader){
+                    this.$root.$emit('closeAdvancedSearchShortcut', true);
+
+                    if(this.$route.path == '/items') {
+                        this.$root.$emit('openAdvancedSearch', true);
+                    }
+
+                    if(this.$route.path != '/items') {
+                        this.$router.push({
+                            path: '/items',
+                        });
+                    }
+                }
+
                 if(Object.keys(this.advancedSearchQuery.taxquery).length > 0 &&
                  Object.keys(this.advancedSearchQuery.metaquery).length > 0){
                     this.advancedSearchQuery.relation = 'AND';
@@ -534,13 +594,21 @@
 
     @import '../../scss/_variables.scss';
 
-    .tnc-advanced-search-container {
+    .padding-in-header {
+        padding-right: 3.3%;
+        padding-left: 3.7%;
+    }
+
+    .padding-regular {
         padding-right: $page-side-padding;
         padding-left: $page-side-padding;
+    }
+
+    .tnc-advanced-search-container {
         padding-bottom: 47px;
 
         .column {
-            padding: 0 0.3rem 0.3rem !important;
+            padding: 0 0.5rem 0.75rem !important;
         }
 
         .control {
@@ -550,6 +618,71 @@
                     width: 100% !important;
                 }
             }
+        }
+
+        .add-link-advanced-search {
+            margin-top: -15px !important;
+            padding-left: 8px !important;
+        }
+
+        .add-link-advanced-search-header {
+            margin-top: -20px !important;
+            padding: 0 !important;
+            margin-left: -5px !important;
+        }
+
+        @media screen and (max-width: 768px) {
+            .is-12>.columns {
+                flex-wrap: wrap;
+            }
+            .is-two-thirds {
+                order: 3;
+                flex-basis: 100%;
+            }
+        }
+
+    }
+
+    .advanced-search-header-dropdown {
+        height: 27px !important;
+
+        .dropdown-content {
+            width: 800px !important;
+        }
+
+        .dropdown-item:hover {
+            background-color: unset !important;
+        }
+
+        @media screen and (min-width: 1087px) {
+            .dropdown-menu {
+                top: 0 !important;
+            }
+        }
+
+        .dropdown-item {
+            span.icon:not(.is-right) {
+                position: relative !important;
+            }
+        }
+
+        .advanced-search-text {
+            margin: 0 12px;
+            font-size: 12px;
+            color: $blue5;
+        }
+
+        .advanced-search-text-di {
+            font-size: 14px;
+            font-weight: 500;
+            color: #01295c;
+            margin-top: 4px;
+        }
+
+        .advanced-search-hr {
+            height: 1px;
+            margin: 8px 0;
+            background-color: #298596;
         }
     }
 

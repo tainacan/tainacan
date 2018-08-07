@@ -1,6 +1,8 @@
 import axios from '../../../axios/axios';
 
 export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled}) => {
+    commit('cleanMetadata');
+
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel)
@@ -120,12 +122,13 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
     });
 };
 
-export const updateCollectionMetadataOrder = ({ dispatch }, {collectionId, metadataOrder}) => {
+export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder}) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId, {
             metadata_order: metadataOrder
         }).then(res => {
-            //dispatch('collection/setCollection', res.data, {root: true});
+            commit('collection/setCollection', res.data, { root: true });
+            commit('updateMetadataOrderFromCollection', res.data.metadata_order);
             resolve(res.data);
         }).catch(error => {
             reject(error.response);

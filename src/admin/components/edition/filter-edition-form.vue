@@ -7,7 +7,7 @@
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
                 :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_name') }} 
                 <span 
                         class="required-metadatum-asterisk"
@@ -26,7 +26,7 @@
                 :addons="false" 
                 :type="formErrors['description'] != undefined ? 'is-danger' : ''" 
                 :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_description') }} 
                 <help-button 
                         :title="$i18n.getHelperTitle('filters', 'description')" 
@@ -43,7 +43,7 @@
                 :addons="false"
                 :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
                 :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_status') }} 
                 <help-button 
                         :title="$i18n.getHelperTitle('filters', 'status')" 
@@ -69,6 +69,60 @@
                         native-value="private">
                     {{ $i18n.get('private_visibility') }}
                 </b-radio>
+            </div>
+        </b-field>
+
+        <b-field
+                :addons="false"
+                v-if="editForm.filter_type_object && editForm.filter_type_object.component.includes('checkbox')">
+            <label class="label is-inline-block">
+                {{ $i18n.get('label_max_options_to_show') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('filters', 'max_options')"
+                        :message="$i18n.getHelperMessage('filters', 'max_options')"/>
+            </label>
+
+            <div
+                    v-if="!showEditMaxOptions"
+                    class="is-flex">
+                <b-select
+                        name="max_options"
+                        v-model="editForm.max_options"
+                        :placeholder="$i18n.get('instruction_select_max_options_to_show')">
+                    <option value="4">4</option>
+                    <option value="8">8</option>
+                    <option value="12">12</option>
+                    <option
+                            v-if="editForm.max_options && ![4,8,12].find( (element) => element == editForm.max_options )"
+                            :value="editForm.max_options">
+                        {{ editForm.max_options }}</option>
+                </b-select>
+                <button
+                        class="button is-white is-pulled-right"
+                        :aria-label="$i18n.getFrom('items','edit_item')"
+                        @click.prevent="showEditMaxOptions = true">
+                    <b-icon
+                            size="is-small"
+                            type="is-secondary"
+                            icon="pencil"/>
+                </button>
+            </div>
+            <div
+                    v-if="showEditMaxOptions"
+                    class="is-flex">
+                <b-input
+                        name="max_options"
+                        v-model="editForm.max_options"
+                        type="number"
+                        step="1" />
+                <button
+                        @click.prevent="showEditMaxOptions = false"
+                        class="button is-white is-pulled-right">
+                    <b-icon
+                            size="is-small"
+                            type="is-secondary"
+                            icon="close"/>
+                </button>
             </div>
         </b-field>
 
@@ -111,7 +165,8 @@ export default {
             oldForm: {},
             formErrors: {},
             formErrorMessage: '',
-            closedByForm: false
+            closedByForm: false,
+            showEditMaxOptions: false,
         }
     }, 
     props: {
@@ -168,11 +223,12 @@ export default {
             } else {
                 let formElement = document.getElementById('filterEditForm');
                 let formData = new FormData(formElement); 
-                let formObj = {}
+                let formObj = {};
 
-                for (let [key, value] of formData.entries())  
+                for (let [key, value] of formData.entries()) {
                     formObj[key] = value;
-                
+                }
+
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
                     .then(() => {
                         this.editForm = {};
@@ -211,8 +267,8 @@ export default {
  
     form {
         padding: 1.0em 2.0em;
-        border-top: 1px solid $draggable-border-color;
-        border-bottom: 1px solid $draggable-border-color;
+        border-top: 1px solid $gray2;
+        border-bottom: 1px solid $gray2;
         margin-top: 1.0em;
     }
 

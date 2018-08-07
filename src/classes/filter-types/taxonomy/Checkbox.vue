@@ -1,21 +1,27 @@
 <template>
     <div class="block">
         <div
-                v-for="(option,index) in getOptions(0)"
+                v-for="(option, index) in getOptions(0)"
                 :key="index"
                 :value="index"
                 class="control">
             <b-checkbox
-                    :style="{ paddingLeft: (option.level * 30) + 'px' }"
                     v-model="selected"
                     :native-value="option.id"
+                    v-if="!option.isChild"
             >{{ option.name }}</b-checkbox>
+            <div
+                    class="see-more-container"
+                    v-if="option.seeMoreLink"
+                    @click="openCheckboxModal(option.parent)"
+                    v-html="option.seeMoreLink"/>
         </div>
     </div>
 </template>
 
 <script>
     import { tainacan as axios } from '../../../js/axios/axios';
+    import CheckboxFilterModal from '../../../admin/components/other/checkbox-filter-modal.vue';
 
     export default {
         created(){
@@ -55,6 +61,12 @@
                     }
                 }
             });
+
+            this.$root.$on('appliedCheckBoxModal', (labels) => {
+                if(labels.length){
+                    this.selectedValues();
+                }
+            });
         },
         data(){
             return {
@@ -64,7 +76,8 @@
                 collection: '',
                 metadatum: '',
                 selected: [],
-                taxonomy: ''
+                taxonomy: '',
+                taxonomy_id: Number,
             }
         },
         props: {
@@ -87,15 +100,17 @@
         },
         methods: {
             getValuesTaxonomy( taxonomy ){
-                return axios.get('/taxonomy/' + taxonomy + '/terms?hideempty=0&order=asc' ).then( res => {
-                    for (let item of res.data) {
-                        this.taxonomy = item.taxonomy;
-                        this.options.push(item);
-                    }
-                })
-                .catch(error => {
-                    this.$console.log(error);
-                });
+                return axios.get(`/taxonomy/${taxonomy}/terms?hideempty=0&order=asc&parent=0&number=${this.filter.max_options}`)
+                    .then( res => {
+                        for (let item of res.data) {
+                            this.taxonomy = item.taxonomy;
+                            this.options.push(item);
+                        }
+
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    });
             },
             loadOptions(){
                 let promise = null;
@@ -104,6 +119,8 @@
                 axios.get('/collection/'+ this.collection +'/metadata/' + this.metadatum)
                     .then( res => {
                         let metadatum = res.data;
+                        this.taxonomy_id = metadatum.metadata_type_options.taxonomy_id;
+
                         promise = this.getValuesTaxonomy( metadatum.metadata_type_options.taxonomy_id );
 
                         promise.then( () => {
@@ -119,19 +136,25 @@
                         this.$console.log(error);
                     });
             },
-            getOptions( parent, level = 0 ){ // retrieve only ids
+            getOptions( parent/*, level = 0*/ ){ // retrieve only ids
                 let result = [];
                 if ( this.options ){
                     for( let term of this.options ){
                         if( term.parent == parent ){
-                            term['level'] = level;
+                            //term['level'] = level;
                             result.push( term );
-                            const levelTerm =  level + 1;
-                            const children =  this.getOptions( term.id, levelTerm);
-                            result = result.concat( children );
+                            //const levelTerm =  level + 1;
+                            //const children =  this.getOptions( term.id, levelTerm);
+                            //result = result.concat( children );
                         }
                     }
+
+                    if(this.filter.max_options && result.length >= this.filter.max_options){
+                        let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
+                        result[this.filter.max_options-1].seeMoreLink = seeMoreLink;
+                    }
                 }
+
                 return result;
             },
             selectedValues(){
@@ -160,14 +183,53 @@
                 let onlyLabels = [];
                 for(let selected of this.selected) {
                     let valueIndex = this.options.findIndex(option => option.id == selected );
-                    if (valueIndex >= 0)
-                        onlyLabels.push(this.options[valueIndex].name)   
+
+                    if (valueIndex >= 0) {
+                        onlyLabels.push(this.options[valueIndex].name)
+                    } else {
+                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/${selected}?fetch_only[0]=name&fetch_only[1]=id`)
+                            .then( res => {
+                                onlyLabels.push(res.data.name);
+                                this.options.push({
+                                    isChild: true,
+                                    name: res.data.name,
+                                    id: res.data.id
+                                })
+                            })
+                                .catch(error => {
+                                    this.$console.log(error);
+                                });
+                    }
                 }
+
                 this.$eventBusSearch.$emit("sendValuesToTags", {
                     filterId: this.filter.id,
                     value: onlyLabels
+                });
+            },
+            openCheckboxModal(parent) {
+                this.$modal.open({
+                    parent: this,
+                    component: CheckboxFilterModal,
+                    props: {
+                        parent: parent,
+                        filter: this.filter,
+                        taxonomy_id: this.taxonomy_id,
+                        selected: this.selected,
+                        metadatum_id: this.metadatum,
+                        taxonomy: this.taxonomy,
+                        collection_id: this.collection,
+                        isTaxonomy: true,
+                    }
                 });
             }
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .see-more-container {
+        display: flex;
+        padding-left: 18px;
+    }
+</style>

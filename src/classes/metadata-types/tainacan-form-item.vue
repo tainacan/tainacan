@@ -218,7 +218,7 @@
     }
 
     .field {
-        border-bottom: 1px solid $draggable-border-color;
+        border-bottom: 1px solid $gray2;
         padding: 10px 25px;
 
         .label {
@@ -230,7 +230,7 @@
         .metadata-type {
             font-size: 13px;
             font-weight: 400;
-            color: $gray;
+            color: $gray3;
             top: -0.2em;
             position: relative;
         }

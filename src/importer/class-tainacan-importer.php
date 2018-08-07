@@ -21,31 +21,6 @@ abstract class Importer {
 	 */
 	protected $tmp_file;
 	
-	/**
-	 * Wether Tainacan must present the user with an interface to manually map 
-	 * the metadata from the source to the target collection.
-	 *
-	 * If set to true in the child class, it must implement the method 
-	 * get_source_metadata() to return the metadatum found in the source.
-	 *
-	 * Note that this will only work when importing items to one single collection.
-	 * @var bool
-	 */
-	protected $manual_mapping = false;
-	
-	/**
-	 * Wether Tainacan will let the user choose a destination collection.
-	 *
-	 * If set to true, the API endpoints will handle Collection creation and will assign it to 
-	 * the importer object using add_collection() method.
-	 *
-	 * Otherwise, the child importer class must create the collections and add them to the collections property also 
-	 * using add_collection()
-	 * 
-	 * @var bool
-	 */
-	protected $manual_collection = true;
-	
     
 	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
@@ -166,7 +141,13 @@ abstract class Importer {
             @session_start();
         }
 
-        $this->id = uniqid();
+		$this->id = uniqid();
+
+		$author = get_current_user_id();
+		if($author){
+			$this->add_transient('author', $author);
+		}
+
         $_SESSION['tainacan_importer'][$this->get_id()] = $this;
 		
 		if (!empty($attributess)) {
@@ -188,9 +169,12 @@ abstract class Importer {
 		}
 		$return['class_name'] = get_class($this);
 
+		global $Tainacan_Importer_Handler;
+		$importer_definition = $Tainacan_Importer_Handler->get_importer_by_object($this);
+
 		if ($short === false) {
-			$return['manual_collection'] = $this->manual_collection;
-			$return['manual_mapping'] = $this->manual_mapping;
+			$return['manual_collection'] = $importer_definition['manual_collection'];
+			$return['manual_mapping'] = $importer_definition['manual_mapping'];
 			$return['accepts'] = $this->accepts;
 			$return['options_form'] = $this->options_form();
 		}
@@ -622,7 +606,7 @@ abstract class Importer {
 	 * the current progress of the process.
 	 * 
 	 */
-	protected function set_current_step_total(int $value) {
+	protected function set_current_step_total($value) {
 		$this->set_step_total($this->get_current_step(), $value);
 	}
 
@@ -635,7 +619,7 @@ abstract class Importer {
 	 * the current progress of the process.
 	 * 
 	 */
-	protected function set_step_total(int $step, int $value) {
+	protected function set_step_total($step, $value) {
 		$steps = $this->get_steps();
 		if (isset($steps[$step]) && is_array($steps[$step])) {
 			$steps[$step]['total'] = $value;
@@ -779,7 +763,7 @@ abstract class Importer {
      */
     public function insert( $processed_item, $collection_index ) {
 		
-        $collections = $this->get_collections();
+		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
 		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
 			$this->add_error_log('Collection misconfigured');
@@ -790,11 +774,14 @@ abstract class Importer {
 		
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$Tainacan_Items->disable_logs();
+		$Tainacan_Metadata->disable_logs();
 
         $item = new Entities\Item();
-        $itemMetadataArray = [];
-
+		$itemMetadataArray = [];
+		
         if( is_array( $processed_item ) ){
             foreach ( $processed_item as $metadatum_source => $values ){
                 $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
@@ -810,23 +797,23 @@ abstract class Importer {
 
             }
         }
-
+		
         if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
-            $item->set_collection( $collection );
+			$item->set_collection( $collection );
 
             if( $item->validate() ){
-                $insertedItem = $Tainacan_Items->insert( $item );
+				$insertedItem = $Tainacan_Items->insert( $item );
             } else {
                 $this->add_error_log( 'Error inserting item' );
                 $this->add_error_log( $item->get_errors() );
                 return false;
             }
-
+			
             foreach ( $itemMetadataArray as $itemMetadata ) {
                 $itemMetadata->set_item( $insertedItem );  // *I told you
 
                 if( $itemMetadata->validate() ){
-                    $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+					$result = $Tainacan_Item_Metadata->insert( $itemMetadata );
                 } else {
                     $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
                     $this->add_error_log($itemMetadata->get_errors());
@@ -840,18 +827,20 @@ abstract class Importer {
                 //} else {
                 //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
                 //}
-            }
-
-            $insertedItem->set_status('publish' );
-
+			}
+			
+			$insertedItem->set_status('publish' );
+			
             if($insertedItem->validate()) {
-	            $insertedItem = $Tainacan_Items->update( $insertedItem );
+				$insertedItem = $Tainacan_Items->update( $insertedItem );
+
+				$this->after_inserted_item(  $insertedItem, $collection_index );
             } else {
 	            $this->add_error_log( 'Error publishing Item'  ); 
 	            $this->add_error_log( $insertedItem->get_errors() ); 
 	            return false;
-            }
-
+			}
+			
             return $insertedItem;
 			
         } else {
@@ -859,7 +848,15 @@ abstract class Importer {
             return false;
         }
 
-    }
+	}
+	
+	/**
+	 * allow importers executes process after item is insertes
+	 * @param array $insertedItem Associative array with inserted item
+     * @param integer $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+	 * 
+	 */
+	public function after_inserted_item($insertedItem, $collection_index){}
 
     /**
      * runs one iteration
@@ -875,6 +872,9 @@ abstract class Importer {
 		$method_name = $steps[$current_step]['callback'];
 
 		if (method_exists($this, $method_name)) {
+			$author = $this->get_transient('author');
+			$this->add_log('User in process: ' . $author);
+			wp_set_current_user($author);
 			$result = $this->$method_name();
 		} else {
 			$this->add_error_log( 'Callback not found for step ' . $steps[$current_step]['name']);

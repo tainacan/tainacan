@@ -261,6 +261,15 @@ class REST_Terms_Controller extends REST_Controller {
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
 				}
+
+				$children =  get_terms([
+					'taxonomy' => $item_arr['taxonomy'],
+					'parent' => $item_arr['id'],
+					'fields' => 'ids',
+					'hide_empty' => false,
+				]);
+
+				$item_arr['total_children'] = count($children);
 			} else {
 				$attributes_to_filter = $request['fetch_only'];
 
@@ -277,6 +286,7 @@ class REST_Terms_Controller extends REST_Controller {
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];

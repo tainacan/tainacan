@@ -9,8 +9,8 @@
     }
 
     .tooltip-inner {
-        background: $primary-lighter;
-        color: $gray-light;
+        background: $turquoise1;
+        color: $gray4;
         font-size: 11px;
         border-radius: 5px;
         padding: 20px;
@@ -24,7 +24,7 @@
         border-style: solid;
         position: absolute;
         margin: 5px;
-        border-color: $primary-lighter;
+        border-color: $turquoise1;
         z-index: 1;
     }
     &[x-placement^="top"] {

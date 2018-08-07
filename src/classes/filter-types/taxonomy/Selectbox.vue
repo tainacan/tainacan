@@ -65,7 +65,7 @@ export default {
   methods: {
     getValuesTaxonomy(taxonomy) {
       return axios
-        .get("/taxonomy/" + taxonomy + "/terms?hideempty=0")
+        .get("/taxonomy/" + taxonomy + "/terms?hideempty=0&order=asc")
         .then(res => {
           for (let item of res.data) {
             this.taxonomy = item.taxonomy;

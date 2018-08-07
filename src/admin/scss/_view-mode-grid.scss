@@ -1,14 +1,16 @@
 .tainacan-grid-container {
-    min-height: 200px;
+    min-height: 50vh;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
     flex-grow: 1;
     flex-shrink: 1;
-    justify-content: center;
+    justify-content: space-evenly;
+    animation-name: item-appear;
+    animation-duration: 0.5s;
 
     .selected-grid-item {
-        background-color: $primary-lighter;
+        background-color: $turquoise1;
     }
 
     .tainacan-grid-item {
@@ -18,7 +20,7 @@
         text-align: center;
 
         &:hover {
-            background-color: $tainacan-input-background;
+            background-color: $gray2;
         }
 
         .grid-item-checkbox {
@@ -37,7 +39,7 @@
             padding: 8px;
             transition: visibility 0.2s, opacity 0.2s;
             margin-top: -43px;
-            background-color: $tainacan-input-background;
+            background-color: $gray2;
             border-bottom-left-radius: 2px;
             border-bottom-right-radius: 2px;
 
@@ -51,7 +53,7 @@
         }
         &.selected-grid-item {
             .actions-area {
-                background-color: $primary-lighter;
+                background-color: $turquoise1;
             }
         }
 

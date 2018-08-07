@@ -135,3 +135,7 @@ export const cleanMetaQueries = ( { commit } ) => {
 export const cleanTaxQueries = ({ commit }) => {
     commit('cleanTaxQueries');
 };
+
+export const cleanFetchOnly = ({ commit }) => {
+    commit('cleanFetchOnly');
+};

@@ -129,20 +129,27 @@ class REST_Metadata_Controller extends REST_Controller {
 		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : false;
 		$metadatum_id = $request['metadatum_id'];
 
+		$offset = '';
+		$number = '';
+		if($request['offset'] >= 0 && $request['number'] >= 1){
+			$offset = $request['offset'];
+			$number = $request['number'];
+		}
+
 		if($request['fetch'] === 'all_metadatum_values' && $request['search']){
 			if($collection_id) {
-				$results = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, $request['search'] );
+				$results = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, $request['search'], $offset, $number );
 			} else {
-				$results = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, $request['search']);
+				$results = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, $request['search'], $offset, $number);
 			}
 
 			return new \WP_REST_Response($results, 200);
 
 		} elseif($request['fetch'] === 'all_metadatum_values') {
 			if($collection_id) {
-				$results = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id );
+				$results = $this->metadatum_repository->fetch_all_metadatum_values( $collection_id, $metadatum_id, '', $offset, $number);
 			} else {
-				$results = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id);
+				$results = $this->metadatum_repository->fetch_all_metadatum_values( null, $metadatum_id, '', $offset, $number);
 			}
 
 			return new \WP_REST_Response($results, 200);

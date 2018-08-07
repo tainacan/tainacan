@@ -34,21 +34,14 @@
             <div class="tainacan-modal-content">
                 <div class="tainacan-modal-title">
                     <h2>{{ file.title.rendered }}</h2>
+                    <a 
+                            @click="isPreviewModalActive = false"
+                            class="back-link">{{ $i18n.get('exit') }}</a>
                     <hr>
                 </div>
                 <div    
-                        class="is-flex"
+                        class="is-flex rendered-content"
                         v-html="file.description.rendered" />
-                <div class="field is-grouped form-submit">
-                    <div class="control">
-                        <button
-                                id="button-cancel-url-link-selection"
-                                class="button is-outlined"
-                                type="button"
-                                @click="isPreviewModalActive = false">
-                            {{ $i18n.get('cancel') }}</button>
-                    </div>
-                </div>
             </div>
         </b-modal>
     </div>
@@ -110,7 +103,7 @@ export default {
             overflow: hidden;
             position: relative;
             display: inline-block;
-            background-color: $tainacan-input-background; 
+            background-color: $gray2; 
 
             &.rounded {
                 border-bottom-left-radius: 5px;
@@ -144,7 +137,7 @@ export default {
         }
 
         figcaption {
-            background-color: $tainacan-input-background;
+            background-color: $gray2;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
             padding: 8px 15px;
@@ -156,8 +149,8 @@ export default {
             text-align: center;
         }
     }
-    .is-flex {
-        justify-content: center;
+    .rendered-content {
+        justify-content: center !important;
     }
     
 </style>

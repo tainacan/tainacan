@@ -5,7 +5,9 @@
 // Main imports
 import Vue from 'vue';
 import Buefy from 'buefy';
-import VTooltip from 'v-tooltip'
+import VTooltip from 'v-tooltip';
+import { VueHammer } from 'vue2-hammer';
+import VueMasonry from 'vue-masonry-css';
 
 // Custom elements
 import Text from '../../classes/metadata-types/text/Text.vue';
@@ -42,17 +44,19 @@ import store from '../../js/store/store'
 import router from './router'
 import eventBusSearch from '../../js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin } from './utilities';
-import VueMask from 'v-mask';
+import VueTheMask from 'vue-the-mask';
 
 // Configure and Register Plugins
 Vue.use(Buefy);
 Vue.use(VTooltip);
+Vue.use(VueHammer);
+Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
 Vue.use(UserCapabilitiesPlugin);
 Vue.use(ConsolePlugin, {visual: false});
-Vue.use(VueMask);
+Vue.use(VueTheMask);
 
 /* Metadata */
 Vue.component('tainacan-text', Text);

@@ -8,6 +8,11 @@ class Background_Importer extends Background_Process {
 	 * @var string
 	 */
 	protected $action = 'import';
+
+	public function __construct() {
+		parent::__construct();
+		$this->set_name( __('Importer', 'tainacan') );
+	}
 	
 	function task($batch) {
 

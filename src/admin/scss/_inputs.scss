@@ -7,10 +7,18 @@
     &:focus, &:active {
         box-shadow: none !important;
         background-color: white;
-        border: 1px solid $tainacan-input-background !important;
+        border: 1px solid $gray2 !important;
     }    
     &[disabled] {
-        color: $tainacan-placeholder-color;
-        background-color: $tainacan-input-background;
+        color: $gray4 !important;
+        background-color: $gray2 !important;
+    }
+    &::placeholder,
+    &::-ms-input-placeholder,
+    &:-ms-input-placeholder,
+    &:-moz-placeholder,
+    &::-moz-placeholder,
+    &::-webkit-input-placeholder {
+        color: $gray4 !important;
     }
 }

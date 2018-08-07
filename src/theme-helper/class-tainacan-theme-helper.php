@@ -52,21 +52,28 @@ class Theme_Helper {
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
 			'dynamic_metadata' => true,
-			'icon' => '<span class="icon"><i class="mdi mdi-table mdi-24px"></i></span>',
+			'icon' => '<span class="icon"><i class="mdi mdi-view-list mdi-24px"></i></span>',
 			'type' => 'component',
 		]);
 		$this->register_view_mode('cards', [
-			'label' => __('Cards view', 'tainacan'),
+			'label' => __('Cards', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A cards view, displaying title, description, author name and creation date.',
-			'icon' => '<span class="icon"><i class="mdi mdi-view-list mdi-24px"></i></span>',
+			'icon' => '<span class="icon"><i class="mdi mdi-view-module mdi-24px"></i></span>',
 			'type' => 'component'
 		]);
 		$this->register_view_mode('records', [
-			'label' => __('Records view', 'tainacan'),
+			'label' => __('Records', 'tainacan'),
 			'dynamic_metadata' => true,
 			'description' => 'A records view, similiar to cards, but flexible for metadata',
-			'icon' => '<span class="icon"><i class="mdi mdi-view-module mdi-24px"></i></span>',
+			'icon' => '<span class="icon"><i class="mdi mdi-view-column mdi-24px"></i></span>',
+			'type' => 'component'
+		]);
+		$this->register_view_mode('masonry', [
+			'label' => __('Masonry', 'tainacan'),
+			'dynamic_metadata' => false,
+			'description' => 'A masonry view, similar to pinterest, which will display images without cropping.',
+			'icon' => '<span class="icon"><i class="mdi mdi-view-dashboard mdi-24px"></i></span>',
 			'type' => 'component'
 		]);
 	}

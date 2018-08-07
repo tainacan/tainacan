@@ -50,13 +50,21 @@ abstract class Background_Process extends \WP_Background_Process {
 	/**
 	 * Action
 	 *
-	 * (default value: 'background_process')
+	 * (default value: 'process')
 	 *
 	 * @var string
 	 * @access protected
 	 */
 	protected $action = 'process';
-	
+
+	/**
+	 * Name
+	 *
+	 * @var string
+	 * @access protected
+	 */
+	protected $name = 'Background Process';
+
 	/**
 	 * Initiate new background process
 	 */
@@ -64,10 +72,34 @@ abstract class Background_Process extends \WP_Background_Process {
 		parent::__construct();
 		global $wpdb;
 		$this->table = $wpdb->prefix . 'tnc_bg_process';
+		$this->set_name( __('Background Process', 'tainacan') );
 	}
 
 	public function get_id() {
 		return $this->ID;
+	}
+
+	/**
+	 * Gets the name of the process.
+	 * 
+	 * Override this method to set a name to the process
+	 * 
+	 * Default "Background Process"
+	 * 
+	 * @return string
+	 */
+	public function get_name() {
+		return $this->name;
+	}
+
+	/**
+	 * Set name
+	 *
+	 * @return $this
+	 */
+	public function set_name($name) {
+		$this->name = $name;
+		return $this;
 	}
 	
 	
@@ -87,6 +119,7 @@ abstract class Background_Process extends \WP_Background_Process {
 					'user_id' => get_current_user_id(),
 					'priority' => $priority,
 					'action' => $this->action,
+					'name' => $this->get_name(),
 					'queued_on' => date('Y-m-d H:i:s')
 				]
 			);
@@ -221,33 +254,35 @@ abstract class Background_Process extends \WP_Background_Process {
 		// while we are debugging performance
 		$newRequest = true;
 		
-		
-		do {
-			$batch = $this->get_batch();
+		$batch = $this->get_batch();
 
-			if ($newRequest) {
-				$this->write_log($batch->key, ['New Request']);
-				$newRequest = false;
-			}
-			
-			// TODO: find a way to catch and log PHP errors as
+		if ($newRequest) {
+			$this->write_log($batch->key, ['New Request']);
+			$newRequest = false;
+		}
+		
+		// TODO: find a way to catch and log PHP errors as
+
+		$task = $batch;
+
+		do {
 			try {
-				$task = $this->task( $batch );
+				$task = $this->task( $task );
 			} catch (\Exception $e) {
 				// TODO: Add Stacktrace
 				$this->write_error_log($batch->key, ['Fatal Error: ' . $e->getMessage()]);
 				$this->write_error_log($batch->key, ['Process aborted']);
 				$task = false;
 			}
-			
+		} while ( false !== $task && ! $this->time_exceeded() && ! $this->memory_exceeded() );
 
-			// Update or close current batch.
-			if ( false !== $task )  {
-				$this->update( $batch->key, $task );
-			} else {
-				$this->close( $batch->key );
-			}
-		} while ( ! $this->time_exceeded() && ! $this->memory_exceeded() && ! $this->is_queue_empty() );
+		
+
+		if ( false !== $task )  {
+			$this->update( $batch->key, $task );
+		} else {
+			$this->close( $batch->key );
+		}
 
 		$this->unlock_process();
 
@@ -356,5 +391,5 @@ abstract class Background_Process extends \WP_Background_Process {
 		return $return;
 		
 	}
-	
+
 }

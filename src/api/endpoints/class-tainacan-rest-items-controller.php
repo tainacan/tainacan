@@ -217,8 +217,12 @@ class REST_Items_Controller extends REST_Controller {
 		if($request['collection_id']) {
 			$collection_id = $request['collection_id'];
 		}
-
+		
+		$query_start = microtime(true);
+		
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
+		
+		$query_end = microtime(true);
 		
 		$response = [];
 
@@ -242,9 +246,9 @@ class REST_Items_Controller extends REST_Controller {
 
 			global $wp_query, $view_mode_displayed_metadata;
 			$wp_query = $items;
-			$displayed_metadata = array_map(function($el) { return (int) $el; }, $request['fetch_only']['meta']);
+
 			$view_mode_displayed_metadata = $request['fetch_only'];
-			$view_mode_displayed_metadata['meta'] = $displayed_metadata;
+			$view_mode_displayed_metadata['meta'] = array_map(function($el) { return (int) $el; }, array_key_exists('meta', $request['fetch_only']) ? $request['fetch_only']['meta'] : array());
 			
 			include $view_mode['template'];
 			
@@ -275,6 +279,8 @@ class REST_Items_Controller extends REST_Controller {
 
 		$rest_response->header('X-WP-Total', (int) $total_items);
 		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
+		$rest_response->header('X-Tainacan-Query-Time', $query_end - $query_start);
+		$rest_response->header('X-Tainacan-Elapsed-Time', microtime(true) - $query_start);
 
 		return $rest_response;
 	}

@@ -362,7 +362,7 @@
                             class="collapse-all"
                             @click="toggleCollapseAll()">
                         {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                         <b-icon
+                        <b-icon
                                 type="is-gray"
                                 :icon=" collapseAll ? 'menu-down' : 'menu-right'" />
                     </a>
@@ -416,9 +416,9 @@
                             class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
                     <button 
                             v-if="form.status == 'auto-draft'"
-                            @click="onDiscart()"
+                            @click="onDiscard()"
                             type="button"
-                            class="button is-outlined">{{ $i18n.get('label_discart') }}</button>
+                            class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
                     <button 
                             @click="onSubmit('draft')"
                             type="button"
@@ -581,7 +581,7 @@ export default {
                 this.isLoading = false;
             });
         },
-        onDiscart() {
+        onDiscard() {
             this.$router.go(-1);
         },
         createNewItem() {
@@ -857,11 +857,6 @@ export default {
         });
         this.cleanLastUpdated();
     },
-    mounted() {
-        document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-            this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
-        });
-    },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$modal.open({
@@ -896,7 +891,7 @@ export default {
         height: 36px;
         width: 36px;
         border: none;
-        background-color: $tainacan-input-background;
+        background-color: $gray2;
         color: $secondary;
         padding: 0px;
         border-top-left-radius: 2px;
@@ -907,10 +902,6 @@ export default {
             margin-top: 2px;
             margin-right: 8px;
         }
-    }
-
-    .page-container-shrinked {
-        height: calc(100% - 118px) !important; // Bigger than the others due footer's height
     }
 
     .page-container {
@@ -954,7 +945,7 @@ export default {
         label {
             font-size: 16px !important;
             font-weight: 500 !important;
-            color: $tertiary !important;
+            color: $blue5 !important;
             line-height: 1.2em;
         }
     }
@@ -983,11 +974,11 @@ export default {
                     height: 72px;
                     width: 72px;
                     border: none;
-                    background-color: $tainacan-input-background;
+                    background-color: $gray2;
                     color: $secondary;
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: $primary-light;
+                        background-color: $turquoise2;
                         cursor: pointer;
                     }
                 }
@@ -1001,12 +992,12 @@ export default {
             margin-right: 24px;
             .icon  {
                 font-size: 18px !important; 
-                color: $gray;
+                color: $gray3;
             }
         }
     }
     .section-attachments {
-        border: 1px solid $draggable-border-color;
+        border: 1px solid $gray2;
         height: 250px;
         max-width: 100%;
         resize: vertical;
@@ -1069,7 +1060,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: gray;
+            color: $gray4;
             top: 70px;
             max-width: 90px;
         }
@@ -1086,7 +1077,7 @@ export default {
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: $primary-lighter;
+        background-color: $gray1;
         width: 100%;
         height: 65px;
         display: flex;
@@ -1101,12 +1092,12 @@ export default {
         }
 
         @keyframes blink {
-            from { color: $tertiary; }
-            to { color: $gray-light; }
+            from { color: $blue5; }
+            to { color: $gray4; }
         }
 
         .update-warning {
-            color: $tertiary;
+            color: $blue5;
             animation-name: blink;
             animation-duration: 0.5s;
             animation-delay: 0.5s;
@@ -1115,7 +1106,7 @@ export default {
         }
 
         .update-info-section {
-            color: $gray-light;
+            color: $gray4;
             margin-right: auto;
         }
 

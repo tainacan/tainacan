@@ -1,5 +1,5 @@
 <template>
-    <div class="primary-page page-container">
+    <div class="repository-level-page page-container">
         <tainacan-title />
 
         <h3>{{ $i18n.get('label_available_importers') }}</h3>
@@ -66,7 +66,7 @@ export default {
         flex: wrap;
 
         .importer-type {
-            border: 1px solid $tainacan-input-background;
+            border: 1px solid $gray2;
             padding: 15px;
             margin: 20px;
             cursor: pointer;

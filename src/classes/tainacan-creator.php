@@ -135,4 +135,7 @@ require_once(__DIR__ . '/../theme-helper/class-tainacan-theme-helper.php');
 require_once(__DIR__ . '/../theme-helper/template-tags.php');
 $Tainacan_Theme_Helper = \Tainacan\Theme_Helper::get_instance();
 
+$Tainacan_Search_Engine = new \Tainacan\Search_Engine();
+$Tainacan_Elastic_press = new \Tainacan\Elastic_Press();
+
 ?>

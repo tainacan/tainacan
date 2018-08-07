@@ -1,5 +1,5 @@
 <template>
-    <div class="primary-page page-container">
+    <div class="repository-level-page page-container">
         <b-loading :active.sync="isLoadingMetadatumMappers"/>
         <tainacan-title />
         <div
@@ -33,6 +33,16 @@
                                 :to="{ path: $routerHelper.getNewMappedCollectionPath(metadatum_mapper.slug) }">
                             {{ $i18n.get(metadatum_mapper.name) }}
                         </router-link>
+                    </b-dropdown-item>
+                    <b-dropdown-item>
+                        <div
+                                id="a-import-collection"
+                                tag="div"
+                                @click="onOpenImportersModal">
+                            {{ $i18n.get('label_import_collection') }}
+                            <br>
+                            <small class="is-small">{{ $i18n.get('info_import_a_collection') }}</small>
+                        </div>
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
@@ -77,7 +87,7 @@
                                     v-if="status == undefined || status == ''"
                                     id="button-create-collection"
                                     tag="button"
-                                    class="button is-primary"
+                                    class="button is-secondary"
                                     :to="{ path: $routerHelper.getNewCollectionPath() }">
                                 {{ $i18n.getFrom('collections', 'new_item') }}
                             </router-link>
@@ -130,6 +140,7 @@
 
 <script>
 import CollectionsList from '../../components/lists/collections-list.vue';
+import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -194,6 +205,13 @@ export default {
             let last = (Number(this.collectionsPerPage*(this.page - 1)) + Number(this.collectionsPerPage));
             
             return last > this.totalCollections ? this.totalCollections : last;
+        },
+        onOpenImportersModal() {
+            this.$modal.open({
+                parent: this,
+                component: AvailableImportersModal,
+                hasModalCard: true
+            });
         }
     },
     computed: {
@@ -237,11 +255,9 @@ export default {
 
     .sub-header {
         min-height: $subheader-height;
-        height: $subheader-height;
+        height: $header-height;
         margin-left: -$page-side-padding;
         margin-right: -$page-side-padding;
-        margin-top: -$page-top-padding;
-        padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
         border-bottom: 1px solid #ddd;

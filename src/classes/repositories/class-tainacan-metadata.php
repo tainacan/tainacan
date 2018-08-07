@@ -37,8 +37,13 @@ class Metadata extends Repository {
         parent::__construct();
         add_filter('pre_trash_post', array( &$this, 'disable_delete_core_metadata' ), 10, 2 );
         add_filter('pre_delete_post', array( &$this, 'force_delete_core_metadata' ), 10, 3 );
+
     }
 	
+    /**
+     * {@inheritDoc}
+     * @see \Tainacan\Repositories\Repository::get_map()
+     */
     public function get_map() {
     	return apply_filters('tainacan-get-map-'.$this->get_name(), [
 		    'name'               => [
@@ -181,7 +186,15 @@ class Metadata extends Repository {
 			    'validation'  => v::stringType()->in( [ 'yes', 'no', 'never' ] ),
 			    'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 			    'default'     => 'yes'
-		    ]
+		    ],
+    	    'semantic_uri'    => [
+    	        'map'         => 'meta',
+    	        'title'       => __( 'The semantic metadatum description URI' ),
+    	        'type'        => __( 'url' ),
+    	        'validation'  => v::optional(v::url()),
+    	        'description' => __( 'The semantic metadatum description URI like: ', 'tainacan' ).'https://schema.org/URL',
+    	        'default'     => ''
+    	    ]
 	    ] );
     }
 	
@@ -311,14 +324,34 @@ class Metadata extends Repository {
 			$args = $this->parse_fetch_args($args);
 			
             $args['post_type'] = Entities\Metadatum::get_post_type();
+			
+			$args = apply_filters('tainacan_fetch_args', $args, 'metadata');
 
             $wp_query = new \WP_Query($args);
             return $this->fetch_output($wp_query, $output);
         }
     }
+	
+	/**
+	 * fetch metadata IDs based on WP_Query args
+	 *
+	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+	 * appropriate WP_Query argument
+	 *
+	 * @param array $args WP_Query args || int $args the item id
+	 *
+	 * @return Array array of IDs;
+	 */
+	public function fetch_ids( $args = [] ) {
+		
+		$args['fields'] = 'ids';
+		
+		return $this->fetch( $args )->get_posts();
+	}
 
 	/**
-	 * fetch metadatum by collection, considering inheritance
+	 * fetch metadatum by collection, considering inheritance and order
 	 * 
 	 * @param Entities\Collection $collection
 	 * @param array $args WP_Query args plus disabled_metadata
@@ -360,6 +393,53 @@ class Metadata extends Repository {
             $collection,
             isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
         );
+    }
+	
+	/**
+	 * fetch metadata IDs by collection, considering inheritance
+	 * 
+	 * @param Entities\Collection|int $collection object or ID
+	 * @param array $args WP_Query args plus disabled_metadata
+	 *
+	 * @return array List of metadata IDs
+	 * @throws \Exception
+	 */
+    public function fetch_ids_by_collection($collection, $args = []){
+        
+		if ($collection instanceof Entities\Collection) {
+			$collection_id = $collection->get_id();
+		} elseif (is_integer($collection)) {
+			$collection_id = $collection;
+		} else {
+			throw new \InvalidArgumentException('fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . gettype($collection) . ' given');
+		}
+
+        //get parent collections
+        $parents = get_post_ancestors( $collection_id );
+
+        //insert the actual collection
+        $parents[] = $collection_id;
+
+        //search for default metadatum
+        $parents[] = $this->get_default_metadata_attribute();
+
+        $meta_query = array(
+            'key'     => 'collection_id',
+            'value'   => $parents,
+            'compare' => 'IN',
+        );
+		
+		$args = array_merge([
+			'parent' => 0
+		], $args);
+
+        if( isset( $args['meta_query'] ) ){
+            $args['meta_query'][] = $meta_query;
+        } elseif(is_array($args)){
+            $args['meta_query'] = array( $meta_query );
+        }
+
+        return $this->fetch_ids( $args );
     }
 
     /**
@@ -496,6 +576,95 @@ class Metadata extends Repository {
         return $this->metadata_types;
     }
 
+
+	/**
+	 * That function update the core metadatum meta key, in case of changing the collection parent
+	 *
+	 * @param Entities\Collection $collection
+	 * @param $parent_collection_id
+	 *
+	 * @return void
+	 * @throws \Exception
+	 */
+	public function maybe_update_core_metadata_meta_keys(Entities\Collection $collection_new, Entities\Collection $collection_old, Entities\Metadatum $old_title_metadatum, Entities\Metadatum $old_description_metadatum){
+
+		global $wpdb;
+
+		$item_post_type = $collection_new->get_db_identifier();
+		$parent_collection_id = $collection_new->get_parent();
+
+		if ($parent_collection_id != 0 && $collection_old->get_parent() == 0) {
+			update_post_meta( $old_description_metadatum->get_id(), 'metadata_type', 'to_delete', $old_description_metadatum->get_metadata_type() );
+			wp_delete_post( $old_description_metadatum->get_id(), true);
+			update_post_meta( $old_title_metadatum->get_id(), 'metadata_type', 'to_delete', $old_title_metadatum->get_metadata_type() );
+			wp_delete_post( $old_title_metadatum->get_id(), true);
+		}
+
+		$new_title_metadatum = $collection_new->get_core_title_metadatum();
+		$new_description_metadatum = $collection_new->get_core_description_metadatum();
+
+		$sql_statement = $wpdb->prepare(
+			"UPDATE $wpdb->postmeta
+				SET meta_key = %s
+				WHERE meta_key = %s AND post_id IN (
+				SELECT ID 
+				FROM $wpdb->posts 
+				WHERE post_type = %s
+			)", $new_title_metadatum->get_id(), $old_title_metadatum->get_id(), $item_post_type
+		);
+
+		$res = $wpdb->query($sql_statement);
+
+		$sql_statement = $wpdb->prepare(
+			"UPDATE $wpdb->postmeta
+				SET meta_key = %s
+				WHERE meta_key = %s AND post_id IN (
+				SELECT ID 
+				FROM $wpdb->posts 
+				WHERE post_type = %s
+			)", $new_description_metadatum->get_id(), $old_description_metadatum->get_id(), $item_post_type
+		);
+
+		$res = $wpdb->query($sql_statement);
+
+		wp_cache_flush();
+
+		
+
+    }
+
+	/**
+	 * @param Entities\Collection $collection
+	 *
+	 * @return array
+	 */
+	private function get_data_core_metadata(Entities\Collection $collection){
+
+		return $data_core_metadata = [
+			'core_description' => [
+				'name'          => 'Description',
+				'description'   => 'description',
+				'collection_id' => $collection->get_id(),
+				'metadata_type'    => 'Tainacan\Metadata_Types\Core_Description',
+				'status'        => 'publish',
+				'exposer_mapping'	=> [
+					'dublin-core' => 'description'
+				]
+			],
+			'core_title'       => [
+				'name'          => 'Title',
+				'description'   => 'title',
+				'collection_id' => $collection->get_id(),
+				'metadata_type'    => 'Tainacan\Metadata_Types\Core_Title',
+				'status'        => 'publish',
+				'exposer_mapping'	=> [
+					'dublin-core' => 'title'
+				]
+			]
+		];
+
+    }
+
 	/**
 	 * @param Entities\Collection $collection
 	 *
@@ -505,47 +674,13 @@ class Metadata extends Repository {
 	 */
     public function register_core_metadata( Entities\Collection $collection ){
 
-        $metadata = $this->get_core_metadata( $collection );
+		if ($collection->get_status() == 'auto-draft') {
+			return;
+		}
+		
+		$metadata = $collection->get_core_metadata();
 
-        // TODO: create a better way to retrieve this data
-        $data_core_metadata = [
-            'core_description' => [
-                'name'          => 'Description',
-                'description'   => 'description',
-                'collection_id' => $collection->get_id(),
-                'metadata_type'    => 'Tainacan\Metadata_Types\Core_Description',
-                'status'        => 'publish',
-            	'exposer_mapping'	=> [
-            		'dublin-core' => 'description'
-            	]
-            ],
-            'core_title'       => [
-                'name'          => 'Title',
-                'description'   => 'title',
-                'collection_id' => $collection->get_id(),
-                'metadata_type'    => 'Tainacan\Metadata_Types\Core_Title',
-                'status'        => 'publish',
-            	'exposer_mapping'	=> [
-            		'dublin-core' => 'title'
-            	]
-            ]
-        ];
-
-        if( $collection->get_parent() != 0 ){
-
-        	if(!empty($metadata)){
-		        foreach ( $data_core_metadata as $index => $data_core_metadatum ) {
-		        	foreach ( $metadata as $metadatum ){
-		        		if ( $metadatum->get_metadata_type() === $data_core_metadatum['metadata_type'] ) {
-		        			update_post_meta($metadatum->get_id(), 'metadata_type', 'to_delete', $data_core_metadatum['metadata_type']);
-		        			wp_delete_post($metadatum->get_id(), true);
-		        		}
-		        	}
-		        }
-	        }
-
-            return false;
-        }
+	    $data_core_metadata = $this->get_data_core_metadata($collection);
 
         foreach ( $data_core_metadata as $index => $data_core_metadatum ) {
             if( empty( $metadata ) ){
@@ -562,7 +697,7 @@ class Metadata extends Repository {
                     $this->insert_array_metadatum( $data_core_metadatum );
                 }
             }
-        }
+		}
     }
 
 	/**
@@ -610,25 +745,68 @@ class Metadata extends Repository {
 	 * @throws \Exception
 	 */
     public function get_core_metadata( Entities\Collection $collection ){
-        $args = [];
+        
+		return $this->fetch_by_collection($collection, [
+			'meta_query' => [
+				[
+					'key' => 'metadata_type',
+					'value' => $this->core_metadata,
+					'compare' => 'IN'
+				]
+			]
+		], 'OBJECT');
 
-        $meta_query = array(
-            array(
-                'key'     => 'collection_id',
-                'value'   => $collection->get_id(),
-                'compare' => 'IN',
-            ),
-            array(
-                'key'     => 'metadata_type',
-                'value'   => $this->core_metadata,
-                'compare' => 'IN',
-            )
-        );
+	}
+	
+	/**
+	 * Get the Core Title Metadatum for a collection
+	 * 
+	 * @param Entities\Collection $collection
+	 * 
+	 * @return \Tainacan\Entities\Metadatum The Core Title Metadatum
+	 */
+	public function get_core_title_metadatum( Entities\Collection $collection ) {
 
-        $args['meta_query'] = $meta_query;
+		$results = $this->fetch_by_collection($collection, [
+			'meta_query' => [
+				[
+					'key' => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Title',
+				]
+			],
+			'posts_per_page' => 1
+		], 'OBJECT');
 
-        return $this->fetch( $args, 'OBJECT' );
-    }
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum) {
+			return $results[0];
+		}
+		return false;
+	}
+
+	/**
+	 * Get the Core Description Metadatum for a collection
+	 * 
+	 * @param Entities\Collection $collection
+	 * 
+	 * @return \Tainacan\Entities\Metadatum The Core Description Metadatum
+	 */
+	public function get_core_description_metadatum( Entities\Collection $collection ) {
+
+		$results = $this->fetch_by_collection($collection, [
+			'meta_query' => [
+				[
+					'key' => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Description',
+				]
+			],
+			'posts_per_page' => 1
+		], 'OBJECT');
+
+		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum) {
+			return $results[0];
+		}
+		return false;
+	}
 
 	/**
 	 * create a metadatum entity and insert by an associative array ( attribute => value )
@@ -665,10 +843,13 @@ class Metadata extends Repository {
 	 *
 	 * @param string $search
 	 *
+	 * @param int $offset
+	 * @param string $number
+	 *
 	 * @return array|null|object
 	 * @throws \Exception
 	 */
-	public function fetch_all_metadatum_values($collection_id, $metadatum_id, $search = ''){
+	public function fetch_all_metadatum_values($collection_id, $metadatum_id, $search = '', $offset = 0, $number = ''){
 		global $wpdb;
 
 		// Clear the result cache
@@ -680,7 +861,17 @@ class Metadata extends Repository {
 		if( strpos( $metadatum->get_metadata_type(), 'Core') !== false && $search){
 		    $collection = new Entities\Collection( $collection_id );
 		    $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-            $items = $Tainacan_Items->fetch( ['s' => $search], $collection, 'OBJECT');
+
+		    if($number >= 1 && $offset >=0){
+			    $items = $Tainacan_Items->fetch( [
+			    	's' => $search,
+				    'offset' => $offset,
+				    'posts_per_page' => $number
+			    ], $collection, 'OBJECT');
+		    } else {
+			    $items = $Tainacan_Items->fetch( ['s' => $search], $collection, 'OBJECT');
+		    }
+
             $return = [];
 
             foreach ($items as $item) {
@@ -688,27 +879,22 @@ class Metadata extends Repository {
                 	$title = $item->get_title();
 
 	                if(!empty($search) && stristr($title, $search) !== false) {
-		                $return[] = [ 'item_id' => $item->get_id(), 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
+		                $return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
 	                } elseif (empty($search)) {
-		                $return[] = [ 'item_id' => $item->get_id(), 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
+		                $return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $title ];
 	                }
                 } else {
                 	$description = $item->get_description();
 
                 	if(!empty($search) && stristr($description, $search) !== false) {
-		                $return[] = [ 'item_id' => $item->get_id(), 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
+		                $return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
 	                } elseif (empty($search)) {
-		                $return[] = [ 'item_id' => $item->get_id(), 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
+		                $return[] = [ 'metadatum_id' => $metadatum_id, 'mvalue' => $description ];
 	                }
                 }
             }
 
-            $results = [];
-            if (!empty($return)) {
-                $results[] = $return;
-            }
-
-            return $results;
+            return $return;
         }
 
 		$item_post_type = "%%{$collection_id}_item";
@@ -722,6 +908,11 @@ class Metadata extends Repository {
 		if ($search) {
 			$search_param = '%' . $search . '%';
 			$search_query = $wpdb->prepare( "WHERE meta_value LIKE %s", $search_param );
+		}
+
+		$pagination = '';
+		if($offset >= 0 && $number >= 1){
+			$pagination = $wpdb->prepare("LIMIT %d,%d", (int) $offset, (int) $number);
 		}
 
 		// If no has logged user or actual user can not read private posts
@@ -739,7 +930,7 @@ class Metadata extends Repository {
 
 				if($collection_id) {
 					$sql_string = $wpdb->prepare(
-						"SELECT item_id, metadatum_id, mvalue 
+						"SELECT DISTINCT metadatum_id, mvalue 
 				  		FROM (
 			  				SELECT ID as item_id
 		  					FROM $wpdb->posts
@@ -749,12 +940,12 @@ class Metadata extends Repository {
 						  	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 					  	  	FROM $wpdb->postmeta $search_query
 				  		) metas
-			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d",
+			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
 						$item_post_type, $post_status, $metadatum_id
 					);
 				} else {
 					$sql_string = $wpdb->prepare(
-						"SELECT item_id, metadatum_id, mvalue 
+						"SELECT DISTINCT metadatum_id, mvalue 
 				  		FROM (
 			  				SELECT ID as item_id
 		  					FROM $wpdb->posts
@@ -764,14 +955,17 @@ class Metadata extends Repository {
 						  	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 					  	  	FROM $wpdb->postmeta $search_query
 				  		) metas
-			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d",
+			  			ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
 						$post_status, $metadatum_id
 					);
 				}
 
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
+
 				if (!empty($pre_result)) {
-					$results[] = $pre_result;
+					foreach ($pre_result as $pre){
+						$results[] = $pre;
+					}
 				}
 			}
 		} elseif ( current_user_can( $capabilities->read_private_posts) ) {
@@ -785,7 +979,7 @@ class Metadata extends Repository {
 
 				if($collection_id) {
 					$sql_string = $wpdb->prepare(
-						"SELECT item_id, metadatum_id, mvalue 
+						"SELECT DISTINCT metadatum_id, mvalue 
 		  	        	FROM (
 	  	  		        	SELECT ID as item_id
   	  			        	FROM $wpdb->posts
@@ -795,12 +989,12 @@ class Metadata extends Repository {
 					    	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 							FROM $wpdb->postmeta $search_query
 					  	) metas
-					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d",
+					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
 						$item_post_type, $post_status, $metadatum_id
 					);
 				} else {
 					$sql_string = $wpdb->prepare(
-						"SELECT item_id, metadatum_id, mvalue 
+						"SELECT DISTINCT metadatum_id, mvalue 
 		  	        	FROM (
 	  	  		        	SELECT ID as item_id
   	  			        	FROM $wpdb->posts
@@ -810,7 +1004,7 @@ class Metadata extends Repository {
 					    	SELECT meta_key as metadatum_id, meta_value as mvalue, post_id
 							FROM $wpdb->postmeta $search_query
 					  	) metas
-					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d",
+					  	ON items.item_id = metas.post_id AND metas.metadatum_id = %d ORDER BY mvalue $pagination",
 						$post_status, $metadatum_id
 					);
 				}
@@ -818,12 +1012,15 @@ class Metadata extends Repository {
 				$pre_result = $wpdb->get_results( $sql_string, ARRAY_A );
 
 				if (!empty($pre_result)) {
-					$results[] = $pre_result;
+					foreach ($pre_result as $pre){
+						$results[] = $pre;
+					}
 				}
 			}
 		}
 
-		return $results;
+		//return $results;
+		return $this->unique_multidimensional_array($results, 'mvalue');
 	}
 	
 	/**

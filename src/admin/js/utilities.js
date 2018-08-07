@@ -205,6 +205,12 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getAvailableImportersPath() {
             return '/importers/new';
         },
+        getProcessesPage(highlightedProcess) {
+            if (highlightedProcess)
+                return '/events?tab=processes&highlight=' + highlightedProcess;
+            else 
+                return '/events?tab=processes';
+        },
         // Singles
         getCollectionPath(id) {
             return '/collections/' + id;
@@ -223,6 +229,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getEventPath(id) {
             return '/events/' + id;
+        },
+        getImporterPath(importerType, sessionId) {
+            return '/importers/' + importerType + '/' + sessionId;
         },
         // New
         getNewCollectionPath() {
@@ -277,6 +286,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getImporterEditionPath(importerType) {
             return '/importers/' + importerType;
         },   
+        getImporterMappingPath(importerType, sessionId, collectionId) {
+            return '/importers/' + importerType + '/' + sessionId + '/mapping/' +  collectionId;
+        },
     }
 }
 

@@ -1,9 +1,17 @@
 // Tainacan modals
+.modal .animation-content {
+    width: 100%;
+}
+
+.modal {
+    display: inline-block;
+}
+
 .tainacan-modal-title {
     h1, h2 {
         font-size: 20px;
         font-weight: 500;
-        color: $tertiary;
+        color: $blue5;
         display: inline-block;
     }
     a.back-link{
@@ -12,15 +20,17 @@
         margin-top: 5px;
     }
     hr{
-        margin: 3px 0px 4px 0px; 
+        margin: 3px 0 4px 0;
         height: 1px;
         background-color: $secondary;
+        border-top: 0;
     }
     margin-bottom: 40px;
 }
 .tainacan-modal-content {
     background-color: white;
-    padding: 52px 80px;
+    padding: 52px 8.3333333%;
+    position: relative;
 
     figure {
         margin: 0;
@@ -31,16 +41,16 @@
     }
 
     .form-submit {
-        padding: 80px 0em 0.4em 0em !important;
+        padding: 40px 0em 0.4em 0em !important;
     }
 }
 // Bulma modals customized for Tainacan
-.dialog{
+.dialog {
     .modal-background {
         background-color: rgba(0, 0, 0, 0.70);
     }
     .modal-card {
-        background-color: $modal-backgound-color;
+        background-color: $turquoise2;
         color: $secondary;
         border-radius: 10px;
         flex-wrap: wrap;
@@ -49,7 +59,7 @@
         margin: 0 auto !important;
 
         .modal-card-head, .modal-card-body, .modal-card-foot {
-            background-color: $modal-backgound-color;
+            background-color: $turquoise2;
             color: $secondary;
             border: none;
             padding-bottom: 12px;
@@ -97,8 +107,8 @@
             }
             .button:not(.is-success) {
                 background-color: white;
-                color: $tertiary;
-                border: 1px solid $gray-light;
+                color: $blue5;
+                border: 1px solid $gray4;
             }
         }
     }
@@ -141,7 +151,7 @@
 //         h1, h2 {
 //             font-size: 20px;
 //             font-weight: 500;
-//             color: $tertiary;
+//             color: $blue5;
 //             display: inline-block;
 //             margin-bottom: 3px;
 //         }
@@ -153,7 +163,7 @@
 //             border-top: none;
 //             border-left: none;
 //             border-right: none;
-//             border-bottom: 3px solid $primary;
+//             border-bottom: 3px solid $turquoise3;
 //         }
 //     }
 
@@ -174,11 +184,11 @@
 //                 padding: 12px;
 //             }
 //             .attachment.details {
-//                 box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 14px $primary-light;
+//                 box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 14px $turquoise2;
 //             }
 //             .attachment.details .check, .wp-core-ui .attachment.selected .check:focus, .wp-core-ui .media-frame.mode-grid .attachment.selected .check {
-//                 background-color: $primary-light;
-//                 box-shadow: 0 0 0 1px #fff,0 0 0 2px $primary-light;
+//                 background-color: $turquoise2;
+//                 box-shadow: 0 0 0 1px #fff,0 0 0 2px $turquoise2;
 //             }
 //         }
 //         .media-sidebar {
@@ -217,7 +227,7 @@
 //         cursor: default;
 //     }
 //     .media-button.button-secondary {
-//         color: $tertiary;
+//         color: $blue5;
 //         border-color: #999;
 //         background: white;
 //         box-shadow: none;

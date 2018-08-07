@@ -28,13 +28,21 @@
                 label { margin-bottom: 0; }
                 &.control { font-size: 13px !important; }
                 .b-checkbox { width: 100% };
-                &:hover { background-color: $primary-lighter; }
-                .is-small { color: gray; }
-                &.is-active { background-color: $primary-light; }
+                &:hover { background-color: $gray1; }
+                .is-small { color: $gray4; }
+                &.is-active { background-color: $turquoise2; }
+
+                .media-content {
+                    overflow-x: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    max-width: 150px;
+                }
             }
         } 
     }
 }
+
 .taginput-container {
     padding: 0 !important;
     background-color: white !important;
@@ -42,10 +50,13 @@
     &:focus, &:active {
         border: none !important;
     }
-    .input { margin-bottom: 0px !important; }
+    .input { 
+        margin-bottom: 0px !important; 
+        height: 1.85rem !important;
+    }
     .input.has-selected, .input:focus, .input:active {
         background-color: white;
-        border: 1px solid $tainacan-input-background !important;
+        border: 1px solid $gray2 !important;
     }
     .tag {
         background: white;
@@ -53,7 +64,7 @@
         padding-left: 0.5em;
 
         &.is-delete {
-            color: $gray-light;
+            color: $gray4;
             &::after {
                 height: 30% !important;
                 width: 1px !important;
@@ -71,7 +82,7 @@
 }
 .selected-list-box {
     padding: 4px 0px;
-    border: 1px solid $tainacan-input-background;
+    border: 1px solid $gray2;
     background-color: white;
     display: flex;
     font-size: 12px;
@@ -85,7 +96,7 @@
         padding-left: 0.5em;
 
         &.is-delete {
-            color: $gray-light;
+            color: $gray4;
             &::after {
                 height: 30% !important;
                 width: 1px !important;

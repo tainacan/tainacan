@@ -14,7 +14,7 @@
         background: $secondary !important;
     }
     &.is-primary:hover, &.is-primary:focus {
-        background: $primary !important;
+        background: $turquoise3 !important;
     }
     &.is-success:hover, &.is-success:focus {
         background: $success !important;
@@ -27,9 +27,9 @@
         transform: none !important;
     }
     &.is-outlined {
-        color: #150e38 !important;
+        color: $turquoise5 !important;
         background-color: white !important;
-        border-color: $gray-light !important;
+        border-color: $gray4 !important;
     }
     &:focus {
         outline: 0px;
@@ -37,8 +37,8 @@
     &[disabled], &:hover[disabled] {
         border: none !important;
         cursor: not-allowed !important;
-        color: $gray-light !important;
-        background-color: $tainacan-input-background !important;
+        color: $gray4 !important;
+        background-color: $gray2 !important;
     }
     &.is-white[disabled] {
         background-color: white !important;

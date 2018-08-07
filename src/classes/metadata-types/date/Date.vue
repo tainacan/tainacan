@@ -10,7 +10,7 @@
                     :value="dateValue"
                     @blur="onBlur"
                     @input="onInput"
-                    :placeholder="dateFormat">
+                    :placeholder="dateFormat.toLowerCase()">
             <!--<b-collapse-->
                     <!--position="is-bottom-right">-->
                 <!--<b-icon-->

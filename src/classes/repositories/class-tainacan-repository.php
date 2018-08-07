@@ -14,6 +14,29 @@ abstract class Repository {
 	public $entities_type = '\Tainacan\Entities\Entity';
 
 	/**
+	 * If set to false, no logs will be generated upon insertion or update
+	 * 
+	 * use enable_logs() and disable_logs() to set the values
+	 * @var bool
+	 */
+	private $use_logs = true;
+
+	/**
+	 * Disable creation of logs while inerting and updating entities
+	 */
+	public function disable_logs() {
+		$this->use_logs = false;
+	}
+
+	/**
+	 * Enable creation of logs while inerting and updating entities
+	 * if it was disabled
+	 */
+	public function enable_logs() {
+		$this->use_logs = true;
+	}
+
+	/**
 	 * Register hooks
 	 */
 	protected function __construct() {
@@ -77,21 +100,26 @@ abstract class Repository {
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
-		$is_update = false;
-		$diffs     = [];
-		if ( $obj->get_id() ) {
+		$is_update         = false;
+		$old               = '';
 
-			$old = $obj->get_repository()->fetch( $obj->get_id() );
-
-			if ( method_exists( $old, 'get_status' ) && $old->get_status() === 'auto-draft' ) {
-				$is_update = false;
-			} else {
-				$is_update = true;
+		$diffs = [];
+		
+		if ($this->use_logs) {
+			if ( $obj->get_id() ) {
+	
+				$old = $obj->get_repository()->fetch( $obj->get_id() );
+	
+				if ( method_exists( $old, 'get_status' ) && $old->get_status() === 'auto-draft' ) {
+					$is_update = false;
+				} else {
+					$is_update = true;
+				}
+	
+				$diffs = $this->diff( $old, $obj );
 			}
-
-			$diffs = $this->diff( $old, $obj );
 		}
-
+		
 		$map = $this->get_map();
 
 		// First iterate through the native post properties
@@ -109,15 +137,15 @@ abstract class Repository {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
-		if( $obj instanceof Entities\Item ){
+		if ( $obj instanceof Entities\Item ) {
 			// get collection to determine post type
 			$collection = $obj->get_collection();
 
-			if ( !$collection ) {
+			if ( ! $collection ) {
 				return false;
 			}
 
-			$post_t = $collection->get_db_identifier();
+			$post_t                  = $collection->get_db_identifier();
 			$obj->WP_Post->post_type = $post_t;
 		}
 
@@ -135,10 +163,10 @@ abstract class Repository {
 		}
 
 		// TODO: Logs for header image insert and update
-
-		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
-		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
-
+		if ($this->use_logs) {
+			do_action( 'tainacan-insert', $obj, $diffs, $is_update );
+			do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
+		}
 		// return a brand new object
 		return new $this->entities_type( $obj->WP_Post );
 	}
@@ -305,6 +333,14 @@ abstract class Repository {
 		}
 
 		$args['meta_query'] = $meta_query;
+		
+		// Map orderby parameter
+		if ( isset($args['orderby']) ) {
+			if ( array_key_exists($args['orderby'], $map) ) {
+				$args['orderby'] = $map[ $args['orderby'] ]['map'];
+			}
+		}
+		
 
 		return $args;
 
@@ -677,6 +713,30 @@ abstract class Repository {
 		}
 
 		return user_can( $user, $entity_cap->publish_posts, $entity->get_id() );
+	}
+
+	/**
+	 * Removes duplicates from multidimensional array
+	 *
+	 * @param $array
+	 * @param $key
+	 *
+	 * @return array
+	 */
+	function unique_multidimensional_array($array, $key) {
+		$temp_array = array();
+		$i = 0;
+		$key_array = array();
+
+		foreach($array as $val) {
+			if (!in_array($val[$key], $key_array)) {
+				$key_array[$i] = $val[$key];
+				$temp_array[$i] = $val;
+			}
+			$i++;
+		}
+
+		return $temp_array;
 	}
 
 	/**

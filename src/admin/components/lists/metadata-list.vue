@@ -39,14 +39,20 @@
                             <div  
                                     class="active-metadatum-item"
                                     :class="{
-                                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' ,
+                                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
-                                        'disabled-metadatum': metadatum.enabled == false
+                                        'disabled-metadatum': metadatum.enabled == false,
+                                        'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel
                                     }" 
                                     v-for="(metadatum, index) in activeMetadatumList"
                                     :key="index">
                                 <div class="handle">
                                     <grip-icon/>
+                                    <span class="icon icon-level-identifier">
+                                        <i 
+                                            :class="{ 'mdi-folder has-text-turquoise5': metadatum.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId }"
+                                            class="mdi" />
+                                    </span>  
                                     <span 
                                             class="metadatum-name"
                                             :class="{'is-danger': formWithErrors == metadatum.id }">
@@ -69,6 +75,7 @@
                                             class="controls" 
                                             v-if="metadatum.id !== undefined">
                                         <b-switch 
+                                                :disabled="isUpdatingMetadataOrder"
                                                 size="is-small" 
                                                 :value="metadatum.enabled"
                                                 @input="onChangeEnable($event, index)"/>
@@ -113,7 +120,7 @@
                 
                     <div class="column available-metadata-area" >
                         <div class="field">
-                            <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
+                            <h3 class="label has-text-secondary">{{ $i18n.get('label_available_metadata_types') }}</h3>
                             <draggable 
                                     v-model="availableMetadatumList"
                                     :options="{ 
@@ -124,10 +131,10 @@
                                 <div 
                                         @click.prevent="addMetadatumViaButton(metadatum)"
                                         class="available-metadatum-item"
-                                        :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name }"
+                                        :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
                                         v-for="(metadatum, index) in availableMetadatumList"
                                         :key="index">
-                                <grip-icon/>  
+                                    <grip-icon/>
                                     <span class="metadatum-name">{{ metadatum.name }}</span>
                                     <span 
                                             class="loading-spinner" 
@@ -345,6 +352,7 @@ export default {
             isLoadingMetadatumTypes: true,
             isLoadingMetadata: false,
             isLoadingMetadatum: false,
+            isUpdatingMetadataOrder: false,
             openedMetadatumId: '',
             formWithErrors: '',
             hightlightedMetadatum: '',
@@ -443,7 +451,10 @@ export default {
             for (let metadatum of this.activeMetadatumList) {
                 metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
             }
-            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder });
+            this.isUpdatingMetadataOrder = true;
+            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder })
+                .then(() => this.isUpdatingMetadataOrder = false)
+                .catch(() => this.isUpdatingMetadataOrder = false);
         },
         onChangeEnable($event, index) {
             let metadataOrder = [];
@@ -451,7 +462,10 @@ export default {
                 metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
             }
             metadataOrder[index].enabled = $event;
-            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder });
+            this.isUpdatingMetadataOrder = true;
+            this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder })
+                .then(() => this.isUpdatingMetadataOrder = false)
+                .catch(() => this.isUpdatingMetadataOrder = false);
         },
         addMetadatumViaButton(metadatumType) {
             let lastIndex = this.activeMetadatumList.length;
@@ -476,13 +490,24 @@ export default {
             });
         },
         removeMetadatum(removedMetadatum) {
-            this.deleteMetadatum({ collectionId: this.collectionId, metadatumId: removedMetadatum.id, isRepositoryLevel: this.isRepositoryLevel})
-            .then(() => {
-                if (!this.isRepositoryLevel)
-                    this.updateMetadataOrder();
-            })
-            .catch(() => {
-            });
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_metadatum_delete'),
+                    onConfirm: () => { 
+                        this.deleteMetadatum({ collectionId: this.collectionId, metadatumId: removedMetadatum.id, isRepositoryLevel: this.isRepositoryLevel})
+                            .then(() => {
+                                if (!this.isRepositoryLevel)
+                                    this.updateMetadataOrder();
+                            })
+                            .catch(() => {
+                            });
+                    },
+                }
+            }); 
         },
         editMetadatum(metadatum) {
             // Closing collapse
@@ -734,13 +759,6 @@ export default {
             .catch(() => {
                 this.isLoadingMetadatumMappers = false;
             });
-    },
-    mounted() {
-        if (!this.isRepositoryLevel) {
-            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
-            });
-        }
     }
 }
 </script>
@@ -752,7 +770,7 @@ export default {
     .page-title {
         border-bottom: 1px solid $secondary;
         h2 {
-            color: $tertiary;
+            color: $blue5;
             font-weight: 500;
         }
         margin: 1em 0em 2.0em 0em;
@@ -818,8 +836,8 @@ export default {
                 padding-right: 6em;
             }
             .grip-icon { 
-                fill: $gray; 
-                top: 2px;
+                fill: $gray3; 
+                top: 1px;
                 position: relative;
             }
             .metadatum-name {
@@ -836,7 +854,7 @@ export default {
             }
             .label-details {
                 font-weight: normal;
-                color: $gray;
+                color: $gray3;
             }
             .not-saved {
                 font-style: italic;
@@ -862,8 +880,8 @@ export default {
                 cursor: default;
                 background-color: white !important;
 
-                .handle .label-details, .handle .icon {
-                    color: $gray !important;
+                .handle .label-details, .handle .icon, {
+                    color: $gray3 !important;
                 }
             } 
             &.not-focusable-item, &.not-focusable-item:hover {
@@ -873,11 +891,11 @@ export default {
                     color: $secondary;
                 }
                 .handle .label-details, .handle .icon {
-                    color: $gray !important;
+                    color: $gray3 !important;
                 }
             }
             &.disabled-metadatum {
-                color: $gray;
+                color: $gray3;
             }    
         }
         .active-metadatum-item:hover:not(.not-sortable-item) {
@@ -885,7 +903,7 @@ export default {
             border-color: $secondary;
             color: white !important;
 
-            .label-details, .icon, .not-saved {
+            .label-details, .icon, .not-saved, .icon-level-identifier>i {
                 color: white !important;
             }
 
@@ -910,7 +928,7 @@ export default {
             }
         }
         .sortable-ghost {
-            border: 1px dashed $draggable-border-color;
+            border: 1px dashed $gray2;
             display: block;
             padding: 0.7em 0.9em;
             margin: 4px;
@@ -942,7 +960,6 @@ export default {
         }
 
         h3 {
-            color: $secondary;
             margin: 0.2em 0em 1em -1.2em;
             font-weight: 500;
         }
@@ -956,12 +973,12 @@ export default {
             line-height: 1.3em;
             height: 40px;
             position: relative;
-            border: 1px solid $draggable-border-color;
+            border: 1px solid $gray2;
             border-radius: 1px;
             transition: left 0.2s ease;
             
             .grip-icon { 
-                fill: $gray;
+                fill: $gray3;
                 top: -3px;
                 position: relative;
                 display: inline-block;
@@ -999,7 +1016,7 @@ export default {
             }
             &:before {
                 top: -1px;
-                border-color: transparent $draggable-border-color transparent transparent;
+                border-color: transparent $gray2 transparent transparent;
                 border-right-width: 16px;
                 border-top-width: 20px;
                 border-bottom-width: 20px;
@@ -1099,6 +1116,33 @@ export default {
                 fill: white;
             }
             
+        }
+    }
+    .inherited-metadatum {
+        &.active-metadatum-item:hover:not(.not-sortable-item) {
+            background-color: $blue5;
+            border-color: $blue5;
+            
+            .switch.is-small {
+                input[type="checkbox"] + .check {
+                    background-color: $blue5 !important;
+                } 
+                &:hover input[type="checkbox"] + .check {
+                    background-color: $blue5 !important;
+                }
+            }
+        }
+        &.available-metadatum-item:hover {
+            background-color: $blue5 !important;
+            border-color: $blue5 !important;
+        
+            &:after {
+                border-color: transparent $blue5 transparent transparent !important;
+            }
+            &:before {
+                border-color: transparent $blue5 transparent transparent !important;
+            }
+
         }
     }
     #mappers-options-dropdown {

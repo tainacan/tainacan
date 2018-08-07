@@ -9,7 +9,7 @@
                 :addons="false"
                 :type="formErrors['name'] != undefined ? 'is-danger' : ''"
                 :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_name') }}
                 <span
                         class="required-metadatum-asterisk"
@@ -28,7 +28,7 @@
                 :addons="false"
                 :type="formErrors['description'] != undefined ? 'is-danger' : ''"
                 :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_description') }}
                 <help-button
                         :title="$i18n.getHelperTitle('metadata', 'description')"
@@ -40,12 +40,27 @@
                     v-model="editForm.description"
                     @focus="clearErrors('description')"/>
         </b-field>
+            
+        <b-field
+                :addons="false">
+            <label class="label is-inline-block">
+                {{ $i18n.get('label_semantic_uri') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('metadata', 'semantic_uri')"
+                        :message="$i18n.getHelperMessage('metadata', 'semantic_uri')"/>
+            </label>
+            <b-input
+                    v-model="editForm.semantic_uri"
+                    name="semantic_uri"
+                    type="url"
+                    @focus="clearErrors('semantic_uri')"/>
+        </b-field>
 
         <b-field
                 :addons="false"
                 :type="formErrors['status'] != undefined ? 'is-danger' : ''"
                 :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_status') }}
                 <help-button
                         :title="$i18n.getHelperTitle('metadata', 'status')"
@@ -80,7 +95,7 @@
                 :type="formErrors['display'] != undefined ? 'is-danger' : ''"
                 :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
                 :addons="false">
-            <label class="label is-inline">
+            <label class="label is-inline-block">
                 {{ $i18n.get('label_display') }}
                 <help-button
                         :title="$i18n.getHelperTitle('metadata', 'display')"
@@ -124,7 +139,7 @@
         </b-field>
 
         <b-field :addons="false">
-            <label class="label is-inline">{{ $i18n.get('label_options') }}</label>
+            <label class="label is-inline-block">{{ $i18n.get('label_options') }}</label>
             <b-field
                     :type="formErrors['required'] != undefined ? 'is-danger' : ''"
                     :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
@@ -134,7 +149,7 @@
                         v-model="editForm.required"
                         true-value="yes"
                         false-value="no"
-                        class="is-inline"
+                        class="is-inline-block"
                         name="required">
                     {{ $i18n.get('label_required') }}
                     <help-button
@@ -153,7 +168,7 @@
                         v-model="editForm.multiple"
                         true-value="yes"
                         false-value="no"
-                        class="is-inline"
+                        class="is-inline-block"
                         name="multiple">
                     {{ $i18n.get('label_allow_multiple') }}
                     <help-button
@@ -171,7 +186,7 @@
                         v-model="editForm.unique"
                         true-value="yes"
                         false-value="no"
-                        class="is-inline"
+                        class="is-inline-block"
                         name="collecion_key">
                     {{ $i18n.get('label_unique_value') }}
                     <help-button
@@ -338,8 +353,8 @@
 
     form.inCollapse {
         padding: 1.0em 2.0em;
-        border-top: 1px solid $draggable-border-color;
-        border-bottom: 1px solid $draggable-border-color;
+        border-top: 1px solid $gray2;
+        border-bottom: 1px solid $gray2;
         margin-top: 1.0em;
     }
 

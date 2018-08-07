@@ -35,14 +35,20 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name,
+                                'not-sortable-item': (filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
                                 'not-focusable-item': openedFilterId == filter.id, 
-                                'disabled-filter': filter.enabled == false
+                                'disabled-filter': filter.enabled == false,
+                                'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
                             }" 
                             v-for="(filter, index) in activeFilterList" 
                             :key="index">
                         <div class="handle">
                             <grip-icon/>
+                            <span class="icon icon-level-identifier">
+                                <i 
+                                    :class="{ 'mdi-folder has-text-turquoise5': filter.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': filter.collection_id != collectionId }"
+                                    class="mdi" />
+                            </span> 
                             <span 
                                     class="filter-name"
                                     :class="{'is-danger': formWithErrors == filter.id }">
@@ -64,7 +70,8 @@
                             <span 
                                     class="controls" 
                                     v-if="filter.filter_type != undefined">
-                                <b-switch 
+                                <b-switch
+                                        :disabled="isUpdatingFiltersOrder" 
                                         size="is-small" 
                                         :value="filter.enabled" 
                                         @input="onChangeEnable($event, index)"/>
@@ -130,7 +137,7 @@
             </div>
             <div class="column available-metadata-area">
                 <div class="field" >
-                    <h3 class="label"> {{ $i18n.get('label_available_metadata') }}</h3>
+                    <h3 class="label has-text-secondary"> {{ $i18n.get('label_available_metadata') }}</h3>
                     <draggable
                             v-if="availableMetadatumList.length > 0"
                             v-model="availableMetadatumList"
@@ -141,12 +148,18 @@
                             }">
                         <div 
                                 class="available-metadatum-item"
+                                :class="{'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel}"
                                 v-if="metadatum.enabled"
                                 v-for="(metadatum, index) in availableMetadatumList"
                                 :key="index"
                                 @click.prevent="addMetadatumViaButton(metadatum, index)">
                             <grip-icon/> 
-                              <span class="metadatum-name">{{ metadatum.name }}</span>
+                            <span class="icon icon-level-identifier">
+                                <i 
+                                    :class="{ 'mdi-folder has-text-turquoise5': metadatum.collection_id == collectionId, 'mdi-folder-multiple has-text-blue5': metadatum.collection_id != collectionId }"
+                                    class="mdi" />
+                            </span>  
+                            <span class="metadatum-name">{{ metadatum.name }}</span>
                         </div>
                     </draggable>   
                 
@@ -191,6 +204,7 @@ export default {
             isLoadingFilters: false,
             isLoadingFilterTypes: false,
             isLoadingFilter: false,
+            iisUpdatingFiltersOrder: false,
             openedFilterId: '',
             formWithErrors: '',
             editForms: {},
@@ -276,7 +290,10 @@ export default {
             for (let filter of this.activeFilterList) {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
-            this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
+            this.isUpdatingFiltersOrder = true;
+            this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder })
+                .then(() => this.isUpdatingFiltersOrder = false)
+                .catch(() => this.isUpdatingFiltersOrder = false);
         },
         updateListOfMetadata() {
 
@@ -299,7 +316,10 @@ export default {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             filtersOrder[index].enabled = $event;
-            this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder });
+            this.isUpdatingFiltersOrder = true;
+            this.updateCollectionFiltersOrder({ collectionId: this.collectionId, filtersOrder: filtersOrder })
+                .then(() => { this.isUpdatingFiltersOrder = false; })
+                .catch(() => { this.isUpdatingFiltersOrder = false; });
         },
         addMetadatumViaButton(metadatumType, metadatumIndex) {
             this.availableMetadatumList.splice(metadatumIndex, 1);
@@ -458,13 +478,6 @@ export default {
             .catch(() => {
                 this.isLoadingFilters = false;
             });
-    },
-    mounted() {
-        if (!this.isRepositoryLevel) {
-            document.getElementById('collection-page-container').addEventListener('scroll', ($event) => {
-                this.$emit('onShrinkHeader', ($event.target.scrollTop > 53)); 
-            });
-        }
     }
 }
 </script>
@@ -472,15 +485,6 @@ export default {
 <style lang="scss">
 
     @import "../../scss/_variables.scss";
-
-    .page-title {
-        border-bottom: 1px solid $secondary;
-        h2 {
-            color: $tertiary;
-            font-weight: 500;
-        }
-        margin: 1em 0em 2.0em 0em;
-    }
 
     .loading-spinner {
         animation: spinAround 500ms infinite linear;
@@ -532,8 +536,8 @@ export default {
                 padding-right: 6em;
             }
             .grip-icon { 
-                fill: $gray;
-                top: 2px;
+                fill: $gray3;
+                top: 1px;
                 position: relative;
             }
             .filter-name {
@@ -550,7 +554,7 @@ export default {
             }
             .label-details {
                 font-weight: normal;
-                color: $gray;
+                color: $gray3;
             }
             .not-saved {
                 font-style: italic;
@@ -574,8 +578,8 @@ export default {
 
             form {
                 padding: 1.0em 2.0em;
-                border-top: 1px solid $draggable-border-color;
-                border-bottom: 1px solid $draggable-border-color;
+                border-top: 1px solid $gray2;
+                border-bottom: 1px solid $gray2;
                 margin-top: 1.0em;
             }
             &.not-sortable-item, &.not-sortable-item:hover {
@@ -583,7 +587,7 @@ export default {
                 background-color: white !important;
 
                 .handle .label-details, .handle .icon {
-                    color: $gray !important;
+                    color: $gray3 !important;
                 }
             } 
             &.not-focusable-item, &.not-focusable-item:hover {
@@ -593,11 +597,11 @@ export default {
                     color: $secondary;
                 }
                 .handle .label-details, .handle .icon {
-                    color: $gray !important;
+                    color: $gray3 !important;
                 }
             }
             &.disabled-metadatum {
-                color: $gray;
+                color: $gray3;
             }    
         }
         .active-filter-item:hover:not(.not-sortable-item) {
@@ -609,7 +613,7 @@ export default {
                 fill: $white;
             }
 
-            .label-details, .icon {
+            .label-details, .icon, .icon-level-identifier>i {
                 color: white !important;
             }
 
@@ -630,7 +634,7 @@ export default {
             }
         }
         .sortable-ghost {
-            border: 1px dashed $draggable-border-color;
+            border: 1px dashed $gray2;
             display: block;
             padding: 0.7em 0.9em;
             margin: 4px;
@@ -638,7 +642,7 @@ export default {
             position: relative;
 
             .grip-icon { 
-                fill: $gray;
+                fill: $gray3;
                 top: 2px;
                 position: relative;
             }
@@ -664,7 +668,6 @@ export default {
         }
 
         h3 {
-            color: $secondary;
             margin: 0.2em 0em 1em -1.2em;
             font-weight: 500;
         }
@@ -678,12 +681,12 @@ export default {
             line-height: 1.3em;
             height: 40px;
             position: relative;
-            border: 1px solid $draggable-border-color;
+            border: 1px solid $gray2;
             border-radius: 1px;
             transition: left 0.2s ease;
             
             .grip-icon { 
-                fill: $gray;
+                fill: $gray3;
                 top: -3px;
                 position: relative;
                 display: inline-block;
@@ -699,7 +702,7 @@ export default {
                 font-weight: bold;
                 margin-left: 0.4em;
                 display: inline-block;
-                max-width: 200px;
+                max-width: 180px;
             }
             &:after,
             &:before {
@@ -721,7 +724,7 @@ export default {
             }
             &:before {
                 top: -1px;
-                border-color: transparent $draggable-border-color transparent transparent;
+                border-color: transparent $gray2 transparent transparent;
                 border-right-width: 16px;
                 border-top-width: 20px;
                 border-bottom-width: 20px;
@@ -744,9 +747,43 @@ export default {
             &:before {
                 border-color: transparent $secondary transparent transparent;
             }
+            .icon-level-identifier>i {
+                color: white !important;
+            }
             .grip-icon {
                 fill: white !important;
             }
+        }
+    }
+
+   .inherited-filter {
+        &.active-filter-item:hover:not(.not-sortable-item) {
+            background-color: $blue5;
+            border-color: $blue5;
+            
+            .switch.is-small {
+                input[type="checkbox"] + .check {
+                    background-color: $blue5 !important;
+                } 
+                &:hover input[type="checkbox"] + .check {
+                    background-color: $blue5 !important;
+                }
+            }
+        }
+    }
+    .inherited-metadatum {
+
+        &.available-metadatum-item:hover {
+            background-color: $blue5 !important;
+            border-color: $blue5 !important;
+        
+            &:after {
+                border-color: transparent $blue5 transparent transparent !important;
+            }
+            &:before {
+                border-color: transparent $blue5 transparent transparent !important;
+            }
+
         }
     }
 

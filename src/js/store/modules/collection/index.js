@@ -9,6 +9,7 @@ const state = {
     collections: [],
     collection: null,
     collectionName: '',
+    collectionURL: '',
     attachments: []
 };
 

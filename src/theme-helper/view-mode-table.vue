@@ -1,7 +1,22 @@
 <template>
     <div class="table-container">
         <div class="table-wrapper">
-            <table class="tainacan-table">
+             <!-- Empty result placeholder -->
+            <section
+                    v-if="!isLoading && items.length <= 0"
+                    class="section">
+                <div class="content has-text-gray4 has-text-centered">
+                    <p>
+                        <b-icon
+                                icon="file-multiple"
+                                size="is-large"/>
+                    </p>
+                    <p>{{ $i18n.get('info_no_item_found') }}</p>
+                </div>
+            </section>
+            <table 
+                    v-show="items.length > 0"
+                    class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Displayed Metadata -->
@@ -74,19 +89,8 @@
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img 
                                         class="table-thumb" 
-                                        :src="item[column.slug].thumb">
+                                        :src="item[column.slug].thumb ? item[column.slug].thumb : thumbPlaceholderPath">
                             </span> 
-                            <p 
-                                    v-tooltip="{
-                                        content: item[column.slug],
-                                        html: true,
-                                        autoHide: false,
-                                        placement: 'auto-start'
-                                    }"
-                                    v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'">
-                                    {{ item[column.slug] }}
-                            </p>
-
                         </td>
                     </tr>
                 </tbody>
@@ -104,6 +108,11 @@ export default {
         displayedMetadata: Array,
         items: Array,
         isLoading: false
+    },
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+        }
     },
     methods: {
         goToItemPage(item) {

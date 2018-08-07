@@ -1,6 +1,7 @@
 // Input components used in forms are gray in Tainacan
 .tainacan-form {
     color: $tainacan-input-color;
+    width: 100%;
 
     .form-submit {
         justify-content: space-between !important;
@@ -16,6 +17,12 @@
             justify-content: end !important;
         }
     }
+    .field:not(:last-child) {
+        margin-bottom: 1.125rem;
+    }
+    .field>.field:not(:last-child) {
+        margin-bottom: 0.5rem;
+    }
     .label { 
         font-weight: bold;
         font-size: 14px; 
@@ -25,14 +32,14 @@
         overflow: hidden;
     }
     .required-metadatum-asterisk {
-        color: $gray;
+        color: $gray3;
         &.is-danger {
             color: $danger;
         }
     }
     .input, .textarea {
         background-color: white;
-        border: 1px solid $tainacan-input-background;
+        border: 1px solid $gray2;
         color: $tainacan-input-color;
         transition: background-color 0.1s;
 
@@ -53,9 +60,11 @@
         }
     }
     .radio, .checkbox {
-        margin-bottom: 5px;
-        align-items: baseline;
+        align-items: center;
+        margin-bottom: 0;
 
+        width: 100%;
+        
         &.is-danger {
             border-color: $danger;
         }   
@@ -64,15 +73,18 @@
         color: $tainacan-input-color;
         padding-left: 0.8em;
         font-size: 12px;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
     }
     .select {
         
         select {
             color: $tainacan-input-color;
             background-color: white !important;
-            border: 1px solid $tainacan-input-background !important;
+            border: 1px solid $gray2 !important;
             &:focus>option:checked, &:focus>option:hover {
-                background-color: $primary-lighter !important;
+                background-color: $turquoise1 !important;
             }
         }   
     }
@@ -82,7 +94,7 @@
         .button {
             justify-content: space-between;
             width: 100%;
-            border: 1px solid $tainacan-input-background !important;
+            border: 1px solid $gray2 !important;
             border-radius: 0 !important;
             padding: 2px 14px 2px 18px !important
         }

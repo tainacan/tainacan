@@ -129,7 +129,6 @@
                     // let collectionTarget = ( this.metadatum_object && this.metadatum_object.metadata_type_options.collection_id ) ?
                         // this.metadatum_object.metadata_type_options.collection_id : this.collection_id;
 
-
                     if ( this.type === 'Tainacan\\Metadata_Types\\Relationship' ) {
                         // let query = qs.stringify({ postin: metadata.value  });
                         

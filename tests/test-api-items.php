@@ -179,7 +179,83 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('SCRUM e XP', $data['title']);
 	}
 
-	function test_fetch_only() {
+	public function test_get_items_with_metadata_not_filled(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Agile',
+				'description' => 'Agile methods',
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'metadatum',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			),
+			true
+		);
+
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Lean Startup',
+				'description' => 'Um processo ágil para validação de ideias.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'SCRUM',
+				'description' => 'Um framework ágil para gerenciamento de produto.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$itemMetaRepo = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $metadatum);
+
+		// Fills item metadata only for item 1
+		$newMeta->set_value('test');
+		$newMeta->validate();
+
+		$itemMetaRepo->insert($newMeta);
+
+		$attributes = [
+			'metaquery' => [
+				'key'     => $metadatum->get_id(),
+				'compare' => 'NOT EXISTS'
+			],
+		];
+
+		$request = new \WP_REST_Request(
+			'GET', $this->namespace . '/collection/'. $collection->get_id() .'/items'
+		);
+
+		$request->set_query_params($attributes);
+
+		$response = $this->server->dispatch($request);
+
+		$data = $response->get_data();
+
+		$this->assertCount(1, $data);
+		$this->assertEquals('SCRUM', $data[0]['title']);
+		$this->assertEquals($item2->get_id(), $data[0]['id']);
+	}
+
+	public function test_fetch_only() {
 
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -195,7 +271,6 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    'metadatum',
 		    array(
 			    'name'   => 'private_meta',
-			    'status' => 'publish',
 			    'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 				'status' => 'private'
@@ -207,7 +282,6 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    'metadatum',
 		    array(
 			    'name'   => 'public_meta',
-			    'status' => 'publish',
 			    'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 				'status' => 'publish'
@@ -219,7 +293,6 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    'metadatum',
 		    array(
 			    'name'   => 'discarded',
-			    'status' => 'publish',
 			    'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 				'status' => 'publish'

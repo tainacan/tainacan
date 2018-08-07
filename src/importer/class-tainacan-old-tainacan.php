@@ -5,9 +5,6 @@ use \Tainacan\Entities;
 
 class Old_Tainacan extends Importer{
 
-    protected $manual_mapping = false;
-    protected $manual_collection = false;
-
     protected $steps = [
 		
 		[
@@ -67,6 +64,12 @@ class Old_Tainacan extends Importer{
      * 
      */
     public function create_taxonomies() {
+
+        if(!$this->get_url()){
+            $this->add_error_log('Site url not found');
+            $this->abort();
+            return false;
+        }
         
         $this->add_log('Creating taxonomies');
 		
@@ -228,11 +231,15 @@ class Old_Tainacan extends Importer{
 
         $this->add_log('Proccess item index' . $index . ' in collection OLD ' . $collection_id['source_id'] );
 
-        $info = $this->requester( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page, $args );                    
+        $url_to_fetch = $this->get_url() . $this->tainacan_api_address . "/collections/". 
+                            $collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page
+                            . "&filter[order_by]=ID&filter[order]=ASC";
+
+        $info = $this->requester( $url_to_fetch, $args );                    
         $info = json_decode($info['body']);
 
         if( !isset( $info->items ) ){
-            $this->add_error_log('Error in fetch remote (' . $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page);
+            $this->add_error_log('Error in fetch remote (' . $url_to_fetch . ')');
             $this->abort();
             return false;
         }
@@ -248,7 +255,7 @@ class Old_Tainacan extends Importer{
             $this->add_log('item found ', $the_item->item->ID );  
            return [ 'item' => $item_Old, 'collection_definition' => $collection_id ];
         } else {
-            $this->add_error_log('fetching remote (' . $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id['source_id']."/items?includeMetadata=1&filter[items_per_page]=1&filter[page]=" . $page);
+            $this->add_error_log('fetching remote ' . $url_to_fetch);
             $this->add_error_log('proccessing an item empty');
 			$this->abort();
             return false;
@@ -275,12 +282,12 @@ class Old_Tainacan extends Importer{
         $id = $this->get_transient('item_' . $item_Old->ID . '_id');
 
         if( $id && is_numeric( $id ) ) {
-            $this->add_log('Updating item ' . $item_Old->post_title . ' in collection ');
+            $this->add_log('Updating item ' . $item_Old->post_title );
             $item = new Entities\Item( $id );
         }
 
         $item->set_title( $item_Old->post_title );
-        $this->add_log('Begin insert ' . $item_Old->post_title . ' in collection ' . $collection_id['id'] );
+        $this->add_log('Begin insert ' . $item_Old->ID . ': ' . $item_Old->post_title . ' in collection ' . $collection_id['id'] );
 
         $item->set_description( (isset($item_Old->post_content)) ? $item_Old->post_content : '' );
         $item->set_status('publish');
@@ -293,7 +300,7 @@ class Old_Tainacan extends Importer{
             $this->add_transient('item_' . $item_Old->ID . '_collection', $collection_id['id']); // add collection for relations
 
             if( $insertedItem->get_id() && is_array($processed_item['item']->metadata) ){
-                $this->add_log('Item ' . $insertedItem->get_title() . ' inserted');
+                $this->add_log('Item ' . $insertedItem->get_id() . ': ' . $insertedItem->get_title() . ' inserted. ID in source: ' . $item_Old->ID);
 
                 $this->add_item_metadata(  $insertedItem, $processed_item['item']->metadata, $collection_id );
 

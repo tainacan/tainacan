@@ -25,8 +25,7 @@ export default {
 <style type="text/scss">
 
 	svg.activities-icon {
-        margin-bottom: -5px;
-        fill:#1E2F56;
+        fill: #898d8f;
     }
     
 </style>

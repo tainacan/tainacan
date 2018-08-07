@@ -106,6 +106,7 @@ export default {
                                 //     this.$route.query.orderby = 'meta_value';
                                 //     this.$route.query.meta_key = orderBy.id;
                                 // }
+                                this.$route.query.orderby = orderBy.slug;
 
                             } else {
                                 this.$route.query.orderby = 'date';
@@ -199,6 +200,9 @@ export default {
                     this.$store.dispatch('search/add_fetchonly', metadatum );
                     this.updateURLQueries();   
                 },
+                cleanFetchOnly() {
+                    this.$store.dispatch('search/cleanFetchOnly');
+                },
                 removeFetchOnlyMeta( metadatum ){
                     this.$store.dispatch('search/remove_fetchonly_meta', metadatum );
                     this.updateURLQueries();             
@@ -274,7 +278,7 @@ export default {
                         this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
                             .catch(() => { });
                     }
-                    
+
                     this.$store.dispatch('search/setAdminViewMode', adminViewMode);
                     this.updateURLQueries();  
                 },

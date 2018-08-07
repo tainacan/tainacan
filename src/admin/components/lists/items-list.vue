@@ -59,17 +59,15 @@
                     <div class="metadata-title">
                         <p 
                                 v-tooltip="{
-                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start'
-                                }"
-                                v-for="(column, index) in tableMetadata"
-                                :key="index"
-                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="goToItemPage(item)"
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"/>                             
-                        </div>
+                                }"                               
+                                @click="goToItemPage(item)">
+                            {{ item.title != undefined ? item.title : '' }}
+                        </p>                            
+                    </div>
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
@@ -103,6 +101,71 @@
                 </div>
             </div>
 
+            <!-- MASONRY VIEW MODE -->
+            <masonry 
+                    v-if="viewMode == 'masonry'"
+                    :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
+                    :gutter="30"
+                    class="tainacan-masonry-container">
+                <div
+                        :key="index"
+                        v-for="(item, index) of items"
+                        :class="{ 'selected-masonry-item': selectedItems[index] }"
+                        class="tainacan-masonry-item">
+
+                    <!-- Checkbox -->
+                    <div 
+                            :class="{ 'is-selecting': isSelectingItems }"
+                            class="masonry-item-checkbox">
+                        <label 
+                                tabindex="0" 
+                                class="b-checkbox checkbox is-small">
+                            <input 
+                                    type="checkbox"
+                                    v-model="selectedItems[index]"> 
+                                <span class="check" /> 
+                                <span class="control-label" />
+                        </label>
+                    </div>
+
+                    <!-- Title -->
+                    <div 
+                            @click="goToItemPage(item)"
+                            class="metadata-title">
+                        <p>{{ item.title != undefined ? item.title : '' }}</p>                             
+                    </div>
+
+                    <!-- Thumbnail -->  
+                    <img 
+                            @click="goToItemPage(item)"
+                            v-if="item.thumbnail != undefined"
+                            :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                    
+                    <!-- Actions -->
+                    <div 
+                            v-if="item.current_user_can_edit"
+                            class="actions-area"
+                            :label="$i18n.get('label_actions')">
+                        <a 
+                                id="button-edit"   
+                                :aria-label="$i18n.getFrom('items','edit_item')" 
+                                @click.prevent.stop="goToItemEditPage(item)">
+                            <b-icon
+                                    type="is-secondary" 
+                                    icon="pencil"/>
+                        </a>
+                        <a 
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click.prevent.stop="deleteOneItem(item.id)">
+                            <b-icon 
+                                    type="is-secondary" 
+                                    :icon="!isOnTrash ? 'delete' : 'delete-forever'"/>
+                        </a>
+                    </div>
+                </div>
+            </masonry>
+
             <!-- CARDS VIEW MODE -->
             <div
                     class="tainacan-cards-container"
@@ -126,16 +189,14 @@
                     <div class="metadata-title">
                         <p 
                                 v-tooltip="{
-                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start'
-                                }"
-                                v-for="(column, index) in tableMetadata"
-                                :key="index"
-                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                @click="goToItemPage(item)"
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
+                                }"                               
+                                @click="goToItemPage(item)">
+                            {{ item.title != undefined ? item.title : '' }}
+                        </p>                            
                     </div>
                     <!-- Actions -->
                     <div 
@@ -167,38 +228,41 @@
                       
                         <img 
                                 v-if="item.thumbnail != undefined"
-                                :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                                :src="item['thumbnail'].medium ? item['thumbnail'].medium : thumbPlaceholderPath">  
                     
                         <div class="list-metadata media-body">
                             <!-- Description -->
                             <p 
                                     v-tooltip="{
-                                        content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                        content: item.description != undefined ? item.description : '',
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
-                                    v-if="
-                                        column.metadata_type_object != undefined && 
-                                        (column.metadata_type_object.related_mapped_prop == 'description')"
-                                    v-for="(column, index) in tableMetadata"
-                                    :key="index"
                                     class="metadata-description"
-                                    v-html="(item.metadata != undefined && item.metadata[column.slug] != undefined) ? getLimitedDescription(item.metadata[column.slug].value_as_string) : ''" />                             
+                                    v-html="item.description != undefined ? getLimitedDescription(item.description) : ''" />                             
                             <br>
-                            <!-- Author and Creation Date-->
+                            <!-- Author-->
                             <p 
                                     v-tooltip="{
-                                        content: column.metadatum == 'row_author' || column.metadatum == 'row_creation',
+                                        content: item.author_name != undefined ? item.author_name : '',
                                         html: false,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
-                                    v-for="(column, index) in tableMetadata"
-                                    :key="index"
-                                    v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'"
                                     class="metadata-author-creation">   
-                                {{ column.metadatum == 'row_author' ? $i18n.get('info_created_by') + ' ' + item[column.slug] : $i18n.get('info_date') + ' ' + item[column.slug] }}
+                                {{ $i18n.get('info_created_by') + ' ' + (item.author_name != undefined ? item.author_name : '') }}
+                            </p>  
+                            <!-- Creation Date-->
+                            <p 
+                                    v-tooltip="{
+                                        content: item.creation_date != undefined ? item.creation_date : '',
+                                        html: false,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"   
+                                    class="metadata-author-creation">   
+                                {{ $i18n.get('info_date') + ' ' + (item.creation_date != undefined ? item.creation_date : '') }}
                             </p>   
                         </div>
                     </div>
@@ -597,6 +661,7 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_view-mode-masonry.scss";
     @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-records.scss";
@@ -608,10 +673,10 @@ export default {
         height: 40px;
 
         .select-all {
-            color: $gray-light;
+            color: $gray4;
             font-size: 14px;
             &:hover {
-                color: $gray-light;
+                color: $gray4;
             }
         }
     }

@@ -243,10 +243,24 @@
         }
     }    
 
+    @keyframes enter {
+        from {
+            opacity: 0;
+            transform: translate(-40px,0);
+        }
+        to {
+            opacity: 1;
+            transform: translate(0px,0);
+        }
+    }
+
     form {
-        padding: 2.0rem 0rem 1rem 3rem;
-        border-left: 1px solid $draggable-border-color;
-        margin-top: 1.0em;
+        padding: 1.7rem 0 1.5rem 1.5rem;
+        border-left: 1px solid $gray2;
+        margin-left: 0.75rem;
+        position: relative;
+        animation-name: enter;
+        animation-duration: 0.5s;
 
         .tainacan-page-title {
             margin-bottom: 40px;
@@ -254,7 +268,7 @@
             h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: $tertiary;
+                color: $blue5;
                 display: inline-block;
             }
             hr{
@@ -283,7 +297,7 @@
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;
-                color: gray;
+                color: $gray4;
             }
             #button-delete-header,
             #button-edit-header {

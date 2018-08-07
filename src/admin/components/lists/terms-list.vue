@@ -1,40 +1,61 @@
 <template>
+<div>
+    <div class="terms-list-header">
+        <button
+                class="button is-secondary"
+                type="button"
+                @click="addNewTerm()"
+                :disabled="isEditingTerm">
+            {{ $i18n.get('label_new_term') }}
+        </button>
+        <b-field class="order-area">
+            <button
+                    :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'asc'"
+                    class="button is-white is-small"
+                    @click="onChangeOrder('asc')">
+                <b-icon 
+                        class="gray-icon"
+                        icon="sort-ascending"/>
+            </button>
+            <button
+                    :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm || order == 'desc'"
+                    class="button is-white is-small"
+                    @click="onChangeOrder('desc')">
+                <b-icon 
+                        class="gray-icon"
+                        icon="sort-descending"/>
+            </button>
+        </b-field>
+        <div class="search-area is-hidden-mobile">
+            <div class="control has-icons-right  is-small is-clearfix">
+                <input
+                        class="input is-small"
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        autocomplete="on"
+                        v-model="searchQuery"
+                        @keyup.enter="loadTerms(0)"
+                        :disabled="isEditingTerm">
+                    <span
+                            @click="loadTerms(0)"
+                            class="icon is-right">
+                        <i class="mdi mdi-magnify" />
+                    </span>
+            </div>
+        </div>
+    </div>
     <div class="columns">
         <div class="column">
-            <button
-                    class="button is-secondary"
-                    type="button"
-                    @click="addNewTerm()">
-                {{ $i18n.get('label_new_term') }}
-            </button>
-            <b-field class="order-area">
-                <button
-                        :disabled="orderedTermsList.length <= 0 || isLoadingTerms || isEditingTerm"
-                        class="button is-white is-small"
-                        @click="onChangeOrder()">
-                    <b-icon 
-                            class="gray-icon"
-                            :icon="order === 'ASC' ? 'sort-ascending' : 'sort-descending'"/>
-                </button>
-            </b-field>
-
-            <br>
             <br>
             <div    
                     class="term-item"
                     :class="{
                         'not-sortable-item': term.opened || !term.saved, 
-                        'not-focusable-item': term.opened
+                        'opened-term': term.opened
                     }" 
                     :style="{'margin-left': (term.depth * 40) + 'px'}"
                     v-for="(term, index) in orderedTermsList"
                     :key="term.id"> 
-                <a
-                        class="is-medium"
-                        type="button"
-                        @click="addNewChildTerm(term, index)">
-                    <b-icon icon="plus-circle"/>
-                </a>
                 <span 
                         class="term-name" 
                         :class="{'is-danger': formWithErrors == term.id }">
@@ -42,7 +63,9 @@
                 </span>
                 <span   
                         v-if="term.id != undefined"
-                        class="label-details">
+                        class="label-details"  
+                        @click.prevent="isEditingTerm && term.total_children > 0 ? null : loadTerms(term.id)">
+                        {{ term.total_children > 0 ? term.total_children + ' ' + $i18n.get('label_children_terms') : '' }}
                     <span 
                             class="not-saved" 
                             v-if="!term.saved"> 
@@ -51,15 +74,13 @@
                 </span>
             
                 <span class="controls" >
-                <!--
-                    <button
-                            class="button is-success is-small"
-                            type="button"
-                            :href="taxonomyPath + '/' + term.slug">
-                        {{ $i18n.get('label_view_term') }}
-                    </button>
-                -->
-
+                    <a 
+                            @click="addNewChildTerm(term, index)"
+                            :disabled="isEditingTerm">
+                        <b-icon 
+                                size="is-small"
+                                icon="plus-circle"/>
+                    </a>
                     <a @click.prevent="editTerm(term, index)">
                         <b-icon 
                                 type="is-secondary" 
@@ -76,11 +97,12 @@
             </div>
         </div>
         <div 
-                class="column" 
+                class="column edit-forms-list" 
                 :key="index"
                 v-for="(term, index) in orderedTermsList"
                 v-show="term.opened">
             <term-edition-form 
+                    :style="{ 'top': termEditionFormTop + 'px'}"
                     :taxonomy-id="taxonomyId"
                     @onEditionFinished="onTermEditionFinished()"
                     @onEditionCanceled="onTermEditionCanceled(term)"
@@ -93,6 +115,7 @@
                 :active.sync="isLoadingTerms" 
                 :can-cancel="false"/>
     </div>
+</div>
 </template>
 
 <script>
@@ -108,7 +131,9 @@ export default {
             isEditingTerm: false,
             formWithErrors: '',
             orderedTermsList: [],
-            order: 'asc'
+            order: 'asc',
+            termEditionFormTop: 0,
+            searchQuery: ''
         }
     },
     props: {
@@ -124,7 +149,7 @@ export default {
             this.generateOrderedTerms();
         },
         taxonomyId() {
-            this.loadTerms();
+            this.loadTerms(0);
         }
     },
     components: {
@@ -134,16 +159,23 @@ export default {
         ...mapActions('taxonomy', [
             'updateTerm',
             'deleteTerm',
+            'fetchChildTerms',
             'fetchTerms'
         ]),
         ...mapGetters('taxonomy',[
             'getTerms'
         ]),
-        onChangeOrder() {
-            this.order == 'asc' ? this.order = 'desc' : this.order = 'asc';
-            this.loadTerms();
+        onChangeOrder(newOrder) {
+            this.order = newOrder;
+            this.loadTerms(0);
         },
         addNewTerm() {
+            if (this.isEditingTerm) {
+                let editingTermIndex = this.orderedTermsList.findIndex(anEditingTerm => anEditingTerm.opened == true);
+                if (editingTermIndex >= 0)
+                    this.onTermEditionCanceled(this.orderedTermsList[editingTermIndex]);
+            }
+
             let newTerm = {
                 taxonomyId: this.taxonomyId,
                 name: this.$i18n.get('label_term_without_name'),
@@ -157,6 +189,12 @@ export default {
             this.editTerm(newTerm, this.orderedTermsList.length - 1);
         },
         addNewChildTerm(parent, parentIndex) {
+            if (this.isEditingTerm) {
+                let editingTermIndex = this.orderedTermsList.findIndex(anEditingTerm => anEditingTerm.opened == true);
+                if (editingTermIndex >= 0)
+                    this.onTermEditionCanceled(this.orderedTermsList[editingTermIndex]);
+            }
+
             let newTerm = {
                 taxonomyId: this.taxonomyId,
                 name:  this.$i18n.get('label_term_without_name'),
@@ -170,7 +208,15 @@ export default {
             this.editTerm(newTerm, parentIndex + 1);
         },
         editTerm(term, index) {
+            
+            let container = document.getElementById('repository-container');
+            if (container && container.scrollTop && container.scrollTop > 80)
+                this.termEditionFormTop = container.scrollTop - 80;
+            else
+                this.termEditionFormTop = 0;
+            
             this.isEditingTerm = true;
+
             if (!term.opened) {
 
                 for (let i = 0; i < this.orderedTermsList.length; i++) {
@@ -201,18 +247,20 @@ export default {
             } else {
                 let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id === term.id);
                 if (originalIndex >= 0) {
+
                     let originalTerm = JSON.parse(JSON.stringify(this.termsList[originalIndex]));
                     originalTerm.saved = term.saved;
                     originalTerm.opened = term.opened;
-                    if (JSON.stringify(term) != JSON.stringify(originalTerm)) {
 
+                    if (JSON.stringify(term) != JSON.stringify(originalTerm))
                         term.saved = false;
-                    } else {
+                    else 
                         term.saved = true;
-                    }
+                    
                 } else {
                     term.saved = false;
                 }
+                this.isEditingTerm = false;
             }
             
             term.opened = !term.opened;
@@ -247,38 +295,49 @@ export default {
         },
         removeTerm(term) {
 
-            // If all checks passed, term can be deleted
-            if (term.id == 'new') {
-                let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
-                if (index >= 0) {
-                    this.orderedTermsList.splice(index, 1);
-                }
-            } else {
-                
-                this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id})
-                .then(() => {
+            this.$modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_selected_term_delete'),
+                    onConfirm: () => { 
+                        // If all checks passed, term can be deleted
+                        if (term.id == 'new') {
+                            let index = this.orderedTermsList.findIndex(deletedTerm => deletedTerm.id == 'new');
+                            if (index >= 0) {
+                                this.orderedTermsList.splice(index, 1);
+                            }
+                        } else {
+                            
+                            this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id})
+                            .then(() => {
 
-                })
-                .catch((error) => {
-                    this.$console.log(error);
-                });
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            });
 
-                // Updates parent IDs for orphans
-                for (let orphanTerm of this.termsList) {
-                    if (orphanTerm.parent == term.id) {
-                        this.updateTerm({
-                            taxonomyId: this.taxonomyId, 
-                            termId: orphanTerm.id, 
-                            name: orphanTerm.name,
-                            description: orphanTerm.description,
-                            parent: term.parent
-                        })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
-                    }
+                            // Updates parent IDs for orphans
+                            for (let orphanTerm of this.termsList) {
+                                if (orphanTerm.parent == term.id) {
+                                    this.updateTerm({
+                                        taxonomyId: this.taxonomyId, 
+                                        termId: orphanTerm.id, 
+                                        name: orphanTerm.name,
+                                        description: orphanTerm.description,
+                                        parent: term.parent
+                                    })
+                                    .catch((error) => {
+                                        this.$console.log(error);
+                                    });
+                                }
+                            }
+                        }   
+                    },
                 }
-            }   
+            });  
         },
         onTermEditionFinished() {   
             this.isEditingTerm = false;
@@ -330,9 +389,11 @@ export default {
             else 
                 return term.name;
         },
-        loadTerms() {
+        loadTerms(parentId) {
+            
             this.isLoadingTerms = true;
-            this.fetchTerms({ taxonomyId: this.taxonomyId, fetchOnly: '', search: '', all: '', order: this.order})
+            let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
+            this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: search, all: '', order: this.order})
                 .then(() => {
                     // Fill this.form data with current data.
                     this.isLoadingTerms = false;
@@ -345,7 +406,7 @@ export default {
     },
     created() {
         if (this.taxonomyId !== String) {
-            this.loadTerms();
+            this.loadTerms(0);
         }
     }
     
@@ -356,26 +417,69 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .order-area {
-        display: inline-block;
-        padding: 4px;
-        margin-left: 30px;
+    .terms-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
 
-        .gray-icon, .gray-icon .icon {
-            color: $tainacan-placeholder-color !important;
+        .order-area {
+            display: inline-flex !important;
+            padding: 4px;
+            margin-left: auto;
+
+            .gray-icon, .gray-icon .icon {
+                color: $gray4 !important;
+            }
+            .gray-icon .icon i::before, .gray-icon i::before {
+                font-size: 21px !important;
+            }
         }
-        .gray-icon .icon i::before, .gray-icon i::before {
-            font-size: 21px !important;
+
+        .search-area {
+            display: inline-flex;
+            align-items: center;
+
+            .input {
+                border: 1px solid $gray2;
+            }
+            .control {
+                width: 100%;
+                .icon {
+                    pointer-events: all;
+                    cursor: pointer;
+                    color: $blue5;
+                    height: 27px;
+                    font-size: 18px !important;
+                    height: 2rem !important;
+                }
+            }
+            a {
+                margin-left: 12px;
+                white-space: nowrap; 
+            }
         }
     }
 
+    
+
     .term-item {
         font-size: 14px;
-        padding: 0.7em 0.9em;
-        margin: 4px;
+        padding: 0 0.75rem;
         min-height: 40px;
-        display: block; 
+        display: flex; 
         position: relative;
+        align-items: center;
+
+        &:hover {
+            background-color: $gray1 !important;
+            .controls {
+                visibility: visible;
+                opacity: 1.0;
+            }
+            &::before {
+                border-color: transparent transparent transparent $gray2 !important;
+            }
+        }
         
         .handle {
             padding-right: 6em;
@@ -387,6 +491,8 @@ export default {
             font-weight: bold;
             margin-left: 0.4em;
             margin-right: 0.4em;
+            display: inline-block;
+            max-width: 73%; 
 
             &.is-danger {
                 color: $danger !important;
@@ -394,7 +500,7 @@ export default {
         }
         .label-details {
             font-weight: normal;
-            color: $gray;
+            color: $gray3;
         }
         .not-saved {
             font-style: italic;
@@ -403,52 +509,57 @@ export default {
         }
         .controls { 
             position: absolute;
-            right: 5px;
-            top: 10px;
+            right: 0;
+            visibility: hidden;
+            opacity: 0.0;
+            background-color: $gray2;
+            padding: 0.4375rem 0.875rem;
+            margin-left: auto;
 
-            .icon {
-                bottom: 1px;   
-                position: relative;
-                i, i:before { font-size: 20px; }
-                .mdi-plus-circle, .mdi-plus-circle:before{
-                    font-size: 18px;
+            a {
+                margin: 0 0.375rem;
+                .icon {
+                    bottom: 1px;   
+                    position: relative;
+                    i, i:before { font-size: 20px; }
+                    a {
+                        margin-right: 8px;
+                    }
                 }
-                a {
-                    margin-right: 8px;
-                }
-            }
-            .button {
-                margin-right: 1em;
-            }
+            }            
         }
 
-        &.not-sortable-item, &.not-sortable-item:hover {
+        &.opened-term {
             cursor: default;
-            background-color: white !important;
+            background-color: $blue1;
 
-        } 
-        &.not-focusable-item, &.not-focusable-item:hover {
-            cursor: default;
-            
             .term-name {
-                color: $primary;
+                color: $blue3;
+            }
+            &:before {
+                content: '';
+                display: block;
+                position: absolute;
+                left: 100%;
+                right: -20px;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-color: transparent transparent transparent $blue1;
+                border-left-width: 24px;
+                border-top-width: 20px;
+                border-bottom-width: 20px;
+                top: 0;
+            }
+            &:hover:before {
+                border-color: transparent transparent transparent $gray1;
             }
         }
   
     }
-    // .term-item:hover:not(.not-sortable-item) {
-    //     background-color: $secondary;
-    //     border-color: $secondary;
-    //     color: white !important;
-
-    //     .label-details, .icon, .not-saved {
-    //         color: white !important;
-    //     }
-
-    //     .grip-icon { 
-    //         fill: white; 
-    //     }
-    // }
+    .edit-forms-list {
+        padding-left: 0;
+    }
 
 </style>
 

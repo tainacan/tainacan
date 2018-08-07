@@ -147,6 +147,22 @@ export const fetchCollectionName = ({ commit }, id) => {
     });
 };
 
+export const fetchCollectionNameAndURL = ({ commit }, id) => {
+    //commit('cleanCollectionName');
+    return new Promise((resolve, reject) =>{ 
+        axios.tainacan.get('/collections/' + id + '?fetch_only[0]=name&fetch_only[1]=url')
+        .then(res => {
+            let collection = res.data;
+            commit('setCollectionName', collection.name);
+            commit('setCollectionURL', collection.url);
+            resolve( collection );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+};
+
 export const deleteCollection = ({ commit }, { collectionId, isPermanently }) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId;
@@ -207,6 +223,8 @@ export const updateCollection = ({ commit }, {
                 enabled_view_modes: enabled_view_modes,
                 default_view_mode: default_view_mode
             });
+            commit('setCollectionName', res.data.name);
+            commit('setCollectionURL', res.data.url);
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });

@@ -439,6 +439,17 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
+		$item3 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'No name3',
+				'description' => 'No description3',
+				'status'      => 'private',
+				'collection'  => $collection
+			),
+			true
+		);
+
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -463,6 +474,13 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$item_metadata2->validate();
 		$Tainacan_Item_Metadata->insert($item_metadata2);
 
+		// Is repeated for test return of duplicates
+		$item_metadata3 = new \Tainacan\Entities\Item_Metadata_Entity($item3, $metadatum);
+		$item_metadata3->set_value('12/12/2017');
+
+		$item_metadata3->validate();
+		$Tainacan_Item_Metadata->insert($item_metadata3);
+
 		//=======================
 
 		$query = [
@@ -485,7 +503,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$data1 = $response1->get_data();
 
 		$this->assertCount(1, $data1);
-		$this->assertEquals('12/12/2017', $data1[0][0]['mvalue']);
+		$this->assertEquals('12/12/2017', $data1[0]['mvalue']);
 
 		//=======================
 
@@ -497,7 +515,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$data1 = $response1->get_data();
 
 		$this->assertCount(1, $data1);
-		$this->assertEquals('12/12/2017', $data1[0][0]['mvalue']);
+		$this->assertEquals('12/12/2017', $data1[0]['mvalue']);
 
 		//=======================
 
@@ -508,9 +526,10 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data2 = $response2->get_data();
 
+		// Only two without duplicates
 		$this->assertCount(2, $data2);
-		$this->assertEquals('12/12/2017', $data2[0][0]['mvalue']);
-		$this->assertEquals('02/03/2018', $data2[1][0]['mvalue']);
+		$this->assertEquals('12/12/2017', $data2[0]['mvalue']);
+		$this->assertEquals('02/03/2018', $data2[1]['mvalue']);
 	}
 }
 

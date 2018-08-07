@@ -4,12 +4,18 @@
     align-items: center;
     font-size: 0.85em !important;
     font-weight: normal !important;
-    border-top: 1px solid $gray;
+    border-top: 1px solid $gray3;
     padding-top: 0;
     padding-bottom: 0;
-    padding-left: $page-side-padding;
-    padding-right: $page-side-padding;
-    color: $gray-light;
+    margin-left: $page-side-padding;
+    margin-right: $page-side-padding;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    color: $gray4;
+
+    @media screen and (max-width: 768px) {
+        flex-wrap: wrap;
+    }
 
     .shown-items { 
         flex-grow: 1; 
@@ -18,13 +24,24 @@
     .items-per-page { 
         flex-grow: 5;
         margin-top: 0.35em;
+
+        @media screen and (max-width: 768px) {
+            flex-grow: 2;
+            text-align: center;
+            
+            .field { 
+                display: inline-flex; 
+                align-items: baseline;
+            }
+        }
+
         .field-label {
             flex-grow: 5;
             margin-right: 0.5em;
             .label {
                 font-size: 1em !important;
                 font-weight: normal !important;
-                color: $gray-light;
+                color: $gray4;
             }
         }
         select {
@@ -35,8 +52,17 @@
     .pagination { 
         flex-grow: 1; 
 
+        ul {
+            margin-bottom: 0px;
+            padding: 0px;
+        }
+
+        &.is-small {
+            font-size: 0.85em;
+        }
+
         a[disabled="disabled"] {
-            color: $gray-light;
+            color: $gray4;
         }
         .pagination-link, .pagination-previous, .pagination-next {
             background-color: transparent;
@@ -44,11 +70,11 @@
             border: none;
         }
         .pagination-link.is-current {
-            color: $gray-light;
+            color: $gray4;
         }
         .pagination-link::after:not(:last-child) {
             content: ',';
-            color: $gray-light;
+            color: $gray4;
         }
         .mdi-chevron-left::before {
             content: "\F40A";
@@ -59,5 +85,11 @@
             content: "\F40A";
             font-size: 17px;
         }
+
+        @media screen and (max-width: 768px) {
+            .pagination-list { order: 2; }
+            .pagination-next { order: 3; }
+        }
+        
     }
 }

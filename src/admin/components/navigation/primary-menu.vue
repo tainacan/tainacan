@@ -8,6 +8,7 @@
         <aside class="menu">
 
             <ul class="menu-list">
+                <li class="repository-label"><span>{{ $i18n.get('repository') }}</span></li>
                 <li>
                     <router-link
                             tag="a"
@@ -36,9 +37,9 @@
                             tag="a"
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="format-list-bulleted-type"/>
+                        <span class="icon">
+                            <i class="mdi mdi-format-list-bulleted-type"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
                 </li>
@@ -47,9 +48,9 @@
                             tag="a"
                             to="/filters"
                             :class="activeRoute == 'FiltersPage' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="filter"/>
+                        <span class="icon">
+                            <i class="mdi mdi-filter"/>
+                        </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
                 </li>
@@ -58,9 +59,7 @@
                             tag="a"
                             to="/taxonomies"
                             :class="activeRoute == 'Page' ? 'is-active':''">
-                        <b-icon
-                                size="is-small"
-                                icon="shape"/>
+                        <taxonomies-icon />
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
                 </li>
@@ -80,6 +79,8 @@
 
 <script>
 import ActivitiesIcon from '../other/activities-icon.vue';
+import TaxonomiesIcon from '../other/taxonomies-icon.vue';
+
 export default {
     name: 'PrimaryMenu',
     props: {
@@ -87,7 +88,8 @@ export default {
         activeRoute: '/collections'
     },
     components: {
-        ActivitiesIcon
+        ActivitiesIcon,
+        TaxonomiesIcon
     },
 }
 </script>
@@ -97,8 +99,8 @@ export default {
     @import "../../scss/_variables.scss";
 
     #primary-menu {
-        background-color: $primary;
-        padding: 100px 0px 0px 0px;
+        background-color: $blue4;
+        padding: 52px 0px 0px 0px;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
         max-width: $side-menu-width;
@@ -109,11 +111,24 @@ export default {
         }
 
         .menu {
-            padding-top: 10px;
+            padding-top: 0px;
+        }
+        .repository-label {
+            background-color: $blue5;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: white;
+            padding: 11px;
+            text-align: center;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.2s linear, visibility 0.2s linear;
+            -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;
         }
         .separator {
             height: 2px;
-            background-color: $separator-color;
+            background-color: transparent;
             width: 100%;
             margin: 24px 0;
         }
@@ -122,7 +137,7 @@ export default {
                 color: white;
                 white-space: nowrap;
                 overflow: hidden;
-                padding: 0.75em 1.8em;
+                padding: 9px 15px;
                 line-height: 1.5em;
                 border-radius: 0px;
                 -webkit-transition: padding 0.2s linear; /* Safari */
@@ -130,16 +145,23 @@ export default {
 
                 .activities-icon {
                     fill: white;
+                    margin-bottom: -4px;
+                }
+                .taxonomies-icon {
+                    fill: white;
+                    margin-bottom: -2px;
+                }
+                .icon {
+                    height: auto;
+                    width: auto;
+                    i {
+                        font-size: 18px !important;
+                    }
                 }
             }
 
             a:hover, a.is-active {
-                background-color: $primary;
-                color: $tertiary;
-
-                .activities-icon {
-                    fill: $tertiary;
-                }
+                background-color: $blue3;
             }
             a:focus {
                 box-shadow: none;
@@ -154,12 +176,8 @@ export default {
         }
 
         &.is-compressed {
-            max-width: 45px;
-            a {
-                padding-left: 0.8em;
-                padding-right: 0.8em;
-            }
-            .menu-text {
+            max-width: 50px;
+            .menu-text, .repository-label>span {
                 visibility: hidden;
                 opacity: 0;
             }
@@ -168,7 +186,8 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
-            padding-top: $header-height;
+            padding-top: 52px;
+
             .menu {
                 padding-top: 0px;
             }
@@ -177,7 +196,7 @@ export default {
                 display: flex;
                 align-items: stretch;
                 justify-content: space-evenly;
-                .separator {
+                .separator, .repository-label {
                     display: none;
                 }
                 a {

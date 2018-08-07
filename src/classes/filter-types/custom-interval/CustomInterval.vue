@@ -9,7 +9,7 @@
                     @focus="isTouched = true"
                     @input="validate_values()"
                     icon="calendar-today"/>
-            <p class="is-size-7 has-text-centered">{{ $i18n.get('label_until') }}</p>
+            <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
             <b-datepicker
                     :placeholder="$i18n.get('label_selectbox_init')"
                     v-model="date_end"
@@ -115,7 +115,7 @@
         },
         methods: {
             // only validate if the first value is higher than first
-            validate_values(){
+            validate_values: _.debounce( function (){
                 if( this.type === 'date' ){
                     if (this.date_init ===  undefined)
                         this.date_init = new Date();
@@ -141,7 +141,7 @@
                     }
                 }
                 this.emit( this );
-            },
+            }, 1000),
             // message for error
             error_message(){
                 if ( !this.isTouched ) return false;
@@ -172,11 +172,11 @@
                     }
 
                     if (metadata.value[0] != undefined && metadata.value[1] != undefined) {
-                    this.$eventBusSearch.$emit( 'sendValuesToTags', {
-                        filterId: this.filter.id,
-                        value: metadata.value[0] + ' - ' + metadata.value[1]
-                    });
-                }
+                        this.$eventBusSearch.$emit( 'sendValuesToTags', {
+                            filterId: this.filter.id,
+                            value: metadata.value[0] + ' - ' + metadata.value[1]
+                        });
+                    }
 
                 } else {
                     return false;
@@ -246,23 +246,19 @@
                 } else {
                     if( vm.value_init === null || vm.value_end === null
                       || vm.value_init === '' || vm.value_end === ''){
-                        values = [];
-                        type = 'DECIMAL';
-                        //vm.isValid = false;
-                        //vm.clear = true;
-
-                        vm.clearSearch();
-
                         return;
                     } else {
                         values =  [ vm.value_init, vm.value_end ];
 
-                        if(vm.value_init !== vm.value_end &&
-                            vm.value_init % 1 !== 0 ||
+                        if(vm.value_init !== vm.value_end && (vm.value_init % 1 !== 0 && vm.value_end % 1 == 0)) {
+                            type = 'DECIMAL';
+                        } else if(vm.value_init !== vm.value_end &&
+                            vm.value_init % 1 !== 0 &&
                             vm.value_end % 1 !== 0) {
 
-                            type = 'NUMERIC';
-                        } else if(vm.value_init !== vm.value_end){
+                            type = '';
+                        } else if(vm.value_init !== vm.value_end &&
+                            !(vm.value_init % 1 == 0 && vm.value_end % 1 !== 0)){
                             type = 'DECIMAL';
                         } else {
                             type = '';

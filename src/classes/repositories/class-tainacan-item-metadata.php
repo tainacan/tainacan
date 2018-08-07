@@ -52,8 +52,8 @@ class Item_Metadata extends Repository {
 		if ($metadata_type->get_core()) {
 			$this->save_core_metadatum_value($item_metadata);
 			// Core metadata are also stored as regular metadata (in the code following below)
-			// This is usefull to create queries via filters, advanced search or apis
-			// si you can search for title and content with meta_query as if they were regular metadata
+			// This is useful to create queries via filters, advanced search or APIs
+			// if you can search for title and content with meta_query as if they were regular metadata
 		} 
 		
 		if ($metadata_type->get_primitive_type() == 'term') {
@@ -122,11 +122,14 @@ class Item_Metadata extends Repository {
 
     public function save_core_metadatum_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
         $metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+
         if ($metadata_type->get_core()) {
             $item = $item_metadata->get_item();
             $set_method = 'set_' . $metadata_type->get_related_mapped_prop();
+
             $value = $item_metadata->get_value();
             $item->$set_method( is_array( $value ) ? $value[0] : $value );
+
             if ($item->validate_core_metadata()) {
                 $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
                 $Tainacan_Items->insert($item);

@@ -1,64 +1,77 @@
 <template>
     <div class="table-container">
         <div class="table-wrapper">
+            <!-- Empty result placeholder -->
+            <section
+                    v-if="!isLoading && items.length <= 0"
+                    class="section">
+                <div class="content has-text-gray4 has-text-centered">
+                    <p>
+                        <b-icon
+                                icon="file-multiple"
+                                size="is-large"/>
+                    </p>
+                    <p>{{ $i18n.get('info_no_item_found') }}</p>
+                </div>
+            </section>
             <!-- RECORDS VIEW MODE -->
             <div class="tainacan-records-container">
                 <div 
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-record">
+                    <!-- <a :href="item.url"> -->
+                        <!-- Title -->           
+                        <p 
+                                v-tooltip="{
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                v-for="(column, index) in displayedMetadata"
+                                :key="index"
+                                class="metadata-title"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                @click="goToItemPage(item)"
+                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
                     
-                    <!-- Title -->
-                    <p 
-                            v-tooltip="{
-                                content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
-                                html: true,
-                                autoHide: false,
-                                placement: 'auto-start'
-                            }"
-                            v-for="(column, index) in displayedMetadata"
-                            :key="index"
-                            v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                            class="metadata-title"
-                            @click="goToItemPage(item)"
-                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                             
-                    
-                    <!-- Remaining metadata -->  
-                    <div    
-                            class="media"
-                            @click="goToItemPage(item)">
-                        <a 
-                                v-if="item.thumbnail != undefined"
+                        <!-- Remaining metadata -->  
+                        <div    
+                                class="media"
                                 @click="goToItemPage(item)">
-                            <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
-                        </a>
+                            <a 
+                                    v-if="item.thumbnail != undefined"
+                                    @click="goToItemPage(item)">
+                                <img :src="item['thumbnail'].medium_large ? item['thumbnail'].medium_large : thumbPlaceholderPath">  
+                            </a>
 
-                        <div class="list-metadata media-body">
-                            <span 
-                                    v-for="(column, index) in displayedMetadata"
-                                    :key="index"
-                                    v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
-                                <h3 
-                                        v-tooltip="{
-                                            content: column.name,
-                                            html: false,
-                                            autoHide: false,
-                                            placement: 'auto-start'
-                                        }"
-                                        class="metadata-label">{{ column.name }}</h3>
-                                <p 
-                                        v-tooltip="{
-                                            content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
-                                            html: true,
-                                            autoHide: false,
-                                            placement: 'auto-start'
-                                        }"
-                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
-                                        class="metadata-value"/>
-                            </span>
+                            <div class="list-metadata media-body">
+                                <span 
+                                        v-for="(column, index) in displayedMetadata"
+                                        :key="index"
+                                        v-if="column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                    <h3 
+                                            v-tooltip="{
+                                                content: column.name,
+                                                html: false,
+                                                autoHide: false,
+                                                placement: 'auto-start'
+                                            }"
+                                            class="metadata-label">{{ column.name }}</h3>
+                                    <p 
+                                            v-tooltip="{
+                                                content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                                html: true,
+                                                autoHide: false,
+                                                placement: 'auto-start'
+                                            }"
+                                            v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''"
+                                            class="metadata-value"/>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-               
+                    <!-- </a> -->
                 </div>
             </div>
         </div> 
@@ -74,6 +87,11 @@ export default {
         displayedMetadata: Array,
         items: Array,
         isLoading: false
+    },
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+        }
     },
     methods: {
         goToItemPage(item) {
@@ -96,13 +114,13 @@ export default {
 </script>
 
 <style  lang="scss" scoped>
-    $primary-lighter: #e6f6f8;
-    $primary-lighter-hover: #d1e6e6;
+    $turquoise1: #e6f6f8;
+    $turquoise2: #d1e6e6;
     $tainacan-input-color: #1d1d1d;
-    $tainacan-input-background: #e5e5e5;
-    $tainacan-placeholder-color: #898d8f;
-    $gray-hover: #dcdcdc;
-    $gray-light: #898d8f; 
+    $gray2: #e5e5e5;
+    $gray4: #898d8f;
+    $gray3: #dcdcdc;
+    $gray4: #898d8f; 
 
     @import "../../src/admin/scss/_view-mode-records.scss";
 

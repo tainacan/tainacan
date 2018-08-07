@@ -359,4 +359,155 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
     }
+
+    /**
+     * @group xis
+     */
+    public function test_get_registered() {
+        global $Tainacan_Importer_Handler;
+        $csv_importer = new Importer\CSV();
+        $registered = $Tainacan_Importer_Handler->get_importer_by_object($csv_importer);
+        $this->assertEquals('csv', $registered['slug']);
+        $this->assertEquals('CSV', $registered['name']);
+    }
+
+    /**
+     * @group importer_csv_special_fields
+     */
+    public function test_special_fields(){
+        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $file_name = 'demosaved.csv';
+        $csv_importer = new Importer\CSV();
+        $id = $csv_importer->get_id();
+
+        // open the file "demosaved.csv" for writing
+        $file = fopen($file_name, 'w');
+
+        // save the column headers
+        fputcsv($file, array('Column 1', 'special_ID', 'Column 3', 'special_attachments', 'special_document'));
+
+        // Sample data
+        $data = array(
+            array('Data 11', '456', 'Data 13||TESTE', 'https://www.w3schools.com/w3css/img_lights.jpg', 'text:Vou dormir mais tarde'),
+            array('Data 21', '457', 'Data 23', 'photos/unnamed.jpg', 'url:https://www.youtube.com/watch?v=V8dpmD4HG5s&start_radio=1&list=RDEMZS6OrHEAut8dOA38mVtVpg'),
+            array(
+                'Data 31', 
+                '458', 
+                utf8_decode( 'Data 33||Rééço' ), 
+                'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg||https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/58f72418-b5ee-4765-8e80-e463623a921d/01-httparchive-opt-small.png', 
+                'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg'),
+            array('Data 41', '459', 'Data 43||limbbo', 'photos/SamplePNGImage_100kbmb.png||audios/SampleAudio_0.4mb.mp3', 'url:http://www.pdf995.com/samples/pdf.pdf'),
+            array('Data 51', '500', 'Data 53', 'http://techslides.com/demos/samples/sample.mp4', '')
+        );
+
+        // save each row of the data
+        foreach ($data as $row){
+            fputcsv($file, $row);
+        }
+
+        // Close the file
+        fclose($file);
+
+        $_SESSION['tainacan_importer'][$id]->set_tmp_file( $file_name );
+		
+        // file isset on importer
+        $this->assertTrue( !empty( $_SESSION['tainacan_importer'][$id]->get_tmp_file() ) );
+
+        // count total items
+        $this->assertEquals( 5, $_SESSION['tainacan_importer'][$id]->get_source_number_of_items() );
+
+        // get metadata to mapping AVOIDING special fields
+        $headers =  $_SESSION['tainacan_importer'][$id]->get_source_metadata();
+        $this->assertEquals( $headers[1], 'Column 3' );
+
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('attachment_index'), 3 );
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_option('document_index'), 4 );
+
+        // inserting the collection
+        $collection = $this->tainacan_entity_factory->create_entity(
+            'collection',
+            array(
+                'name'          => 'Other',
+                'description'   => 'adasdasdsa',
+                'default_order' => 'DESC',
+                'status'		=> 'publish'
+            ),
+            true
+        );
+
+        $metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data multiplo',
+				'description' => 'Descreve o dado do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple'    => 'yes'
+			),
+			true
+        );
+        
+        $metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Texto simples',
+				'description' => 'Descreve o dado do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple'    => 'no'
+			),
+			true
+		);
+		
+		$collection_definition = [
+			'id' => $collection->get_id(),
+			'total_items' => $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(),
+        ];
+        
+        // get collection metadata to map
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+
+        //create a random mapping
+        $map = [];
+        foreach ( $metadata as $index => $metadatum ){
+            if(isset($headers[$index]))
+                $map[$metadatum->get_id()] = $headers[$index];
+        }
+
+        $collection_definition['mapping'] = $map;
+
+        // add the collection
+        $_SESSION['tainacan_importer'][$id]->add_collection( $collection_definition );
+        $_SESSION['tainacan_importer'][$id]->set_option('encode','iso88591');
+
+        while($_SESSION['tainacan_importer'][$id]->run()){
+            continue;
+        }
+
+        $items = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $collection, 'OBJECT' );
+
+        $this->assertEquals( $_SESSION['tainacan_importer'][$id]->get_source_number_of_items(), count( $items ) );
+
+        // test rows
+        $document_id = $items[0]->get_document();
+        $this->assertFalse( is_numeric($document_id) );
+
+        $attachments = $items[0]->get_attachments();
+        $this->assertEquals( 1, count( $attachments ) );
+
+        $this->assertTrue( count($items[2]->get_attachments()) > 0 );
+
+        $document_id = $items[2]->get_document();
+        $this->assertTrue( is_numeric($document_id) );
+
+        $document = $items[3]->get_document();
+        $this->assertTrue( wp_http_validate_url($document) !== false );
+
+        $document_id = $items[4]->get_document();
+        $this->assertFalse( is_numeric($document_id) );
+
+    }
 }

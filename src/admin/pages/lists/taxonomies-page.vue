@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="primary-page page-container">
+        <div class="repository-level-page page-container">
             <tainacan-title />
             <div 
                     class="sub-header" 
@@ -58,7 +58,7 @@
                                         v-if="status == undefined || status == ''"
                                         id="button-create-taxonomy"
                                         tag="button"
-                                        class="button is-primary"
+                                        class="button is-secondary"
                                         :to="{ path: $routerHelper.getNewTaxonomyPath() }">
                                     {{ $i18n.getFrom('taxonomies', 'new_item') }}
                                 </router-link>
@@ -198,11 +198,9 @@
 
     .sub-header {
         max-height: $subheader-height;
-        height: $subheader-height;
+        height: $header-height;
         margin-left: -$page-side-padding;
         margin-right: -$page-side-padding;
-        margin-top: -$page-top-padding;
-        padding-top: $page-small-top-padding;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
         border-bottom: 1px solid #ddd;

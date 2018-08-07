@@ -4,7 +4,7 @@
         <h1>{{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
         <a 
                 @click="$router.go(-1)"
-                class="back-link is-secondary">
+                class="back-link has-text-secondary">
             {{ $i18n.get('back') }}
         </a>
         <hr>
@@ -46,7 +46,7 @@ export default {
     },
     methods: {
         ...mapActions('collection', [
-            'fetchCollectionName'
+            'fetchCollectionNameAndURL'
         ]),
         ...mapGetters('collection', [
             'getCollectionName'
@@ -79,8 +79,8 @@ export default {
                     
                     switch(this.arrayRealPath[i-1]) {
                         case 'collections':
-                            this.fetchCollectionName(this.arrayRealPath[i])
-                                .then(collectionName => { this.arrayViewPath.splice(i, 1, collectionName); this.entityName = collectionName; })
+                            this.fetchCollectionNameAndURL(this.arrayRealPath[i])
+                                .then(collection => { this.arrayViewPath.splice(i, 1, collection.name); this.entityName = collection.name; })
                                 .catch((error) => this.$console.error(error));
                             break;
                         case 'items':
@@ -105,6 +105,8 @@ export default {
                     this.fetchAvailableImporters()
                         .then(importers => { 
                             this.arrayViewPath.splice(i, 1, importers[this.arrayRealPath[i]].name);
+                            if (i != this.arrayRealPath.length - 1)
+                                this.arrayRealPath.pop();
                         })
                         .catch((error) => this.$console.error(error));
                 } else {
@@ -128,7 +130,7 @@ export default {
         this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
         document.title = this.$route.meta.title;
         this.pageTitle = document.title;
-
+        
         this.arrayRealPath = this.$route.path.split("/");
         this.arrayRealPath = this.arrayRealPath.filter((item) => item.length != 0);
         
@@ -147,7 +149,7 @@ export default {
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            color: $tertiary;
+            color: $gray5;
             display: inline-block;
         }
         a.back-link{

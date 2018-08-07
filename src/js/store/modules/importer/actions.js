@@ -16,10 +16,10 @@ export const fetchAvailableImporters = ({ commit }) => {
     });
 };
 
-export const fetchImporter = ( { commit } , { importerId }) => {
+export const fetchImporter = ( { commit }, importerId ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.post('importers/session/' +   importerId)
+        axios.tainacan.get('importers/session/' +  importerId)
             .then( res => {
                 let importer = res.data;
                 commit('setImporter', importer);
@@ -95,11 +95,11 @@ export const updateImporterURL = ( { commit }, { sessionId, url }) => {
     });
 };
 
-export const updateImporterOptions = ( { commit }, { sessionId, optionsForm }) => {
+export const updateImporterOptions = ( { commit }, { sessionId, options }) => {
     return new Promise(( resolve, reject ) => {
 
         axios.tainacan.put('importers/session/' + sessionId, {
-            options: optionsForm
+            options
         })
             .then( res => {
                 let importer = res.data;
@@ -148,14 +148,13 @@ export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
     });
 };
 
-export const runImporter = ( { commit } , importerId ) => {
+export const runImporter = ( { dispatch } , importerId ) => {
     return new Promise(( resolve, reject ) => {
 
         axios.tainacan.post('importers/session/' + importerId + '/run')
             .then( res => {
                 let backgroundProcessId = res.data;
-                // probably send this a dedicated store to background process
-                //commit('background/addBackgroundProcess', backgroundProcessId);
+                dispatch('bgprocess/fetchProcesses', { }, { root: true });
                 resolve( backgroundProcessId );
             })
             .catch(error => {

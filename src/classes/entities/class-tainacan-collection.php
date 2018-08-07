@@ -462,15 +462,8 @@ class Collection extends Entity {
 	function get_core_metadata() {
 		$repo = \Tainacan\Repositories\Metadata::get_instance();
 
-		return $repo->fetch_by_collection($this, [
-			'meta_query' => [
-				[
-					'key' => 'metadata_type',
-					'value' => ['Tainacan\Metadata_Types\Core_Title', 'Tainacan\Metadata_Types\Core_Description'],
-					'compare' => 'IN'
-				]
-			]
-		], 'OBJECT');
+		return $repo->get_core_metadata($this);
+
 	}
 
 	/**
@@ -481,20 +474,7 @@ class Collection extends Entity {
 	function get_core_title_metadatum() {
 		$repo = \Tainacan\Repositories\Metadata::get_instance();
 
-		$results = $repo->fetch_by_collection($this, [
-			'meta_query' => [
-				[
-					'key' => 'metadata_type',
-					'value' => 'Tainacan\Metadata_Types\Core_Title',
-				]
-			],
-			'posts_per_page' => 1
-		], 'OBJECT');
-
-		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum) {
-			return $results[0];
-		}
-		return false;
+		return $repo->get_core_title_metadatum($this);
 	}
 
 	/**
@@ -505,20 +485,7 @@ class Collection extends Entity {
 	function get_core_description_metadatum() {
 		$repo = \Tainacan\Repositories\Metadata::get_instance();
 
-		$results = $repo->fetch_by_collection($this, [
-			'meta_query' => [
-				[
-					'key' => 'metadata_type',
-					'value' => 'Tainacan\Metadata_Types\Core_Description',
-				]
-			],
-			'posts_per_page' => 1
-		], 'OBJECT');
-
-		if (is_array($results) && sizeof($results) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum) {
-			return $results[0];
-		}
-		return false;
+		return $repo->get_core_description_metadatum($this);
 	}
 
 	/**

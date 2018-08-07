@@ -11,7 +11,7 @@
         margin-bottom: 0px !important;
         color: $tainacan-input-color;
         option:checked, option:hover {
-            background-color: $primary-lighter !important;
+            background-color: $gray1 !important;
         }
         &:focus, &:active {
             box-shadow: none !important;
@@ -21,15 +21,18 @@
             background-color: white !important;
         }
     }
-    &:not(.is-multiple)::after {
+    &:not(.is-loading)::after {
         content: "\F35D" !important;
         font: normal normal normal 24px/1 "Material Design Icons" !important;
         border: none !important;
         transform: none !important;
         margin-top: -15px !important;
         right: 15px !important;
-        color: $secondary;
+        color: $secondary !important;
         display: flex !important;
         align-items: initial;
-    }       
+    }  
+    &.is-loading.is-small::after {
+        font-size: 0.875rem;
+    }     
 }

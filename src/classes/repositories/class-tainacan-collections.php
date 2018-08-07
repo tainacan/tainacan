@@ -260,12 +260,13 @@ class Collections extends Repository {
 	 * @see \Tainacan\Repositories\Repository::insert()
 	 */
 	public function insert( $collection ) {
-		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
-		$this->pre_update_moderators( $collection );
+		$this->pre_process( $collection );
+		
 		$new_collection = parent::insert( $collection );
 
-		$Tainacan_Metadata->register_core_metadata( $new_collection );
+		$this->handle_core_metadata( $new_collection );
+
 		$collection->register_collection_item_post_type();
 		flush_rewrite_rules(false); // needed to activate items post type archive url
 		$this->update_moderators( $new_collection );
@@ -335,6 +336,8 @@ class Collections extends Repository {
 
 			// TODO: Pegar coleções registradas via código
 
+			$args = apply_filters('tainacan_fetch_args', $args, 'collections');
+
 			$wp_query = new \WP_Query( $args );
 
 			return $this->fetch_output( $wp_query, $output );
@@ -358,10 +361,15 @@ class Collections extends Repository {
 		return false;
 	}
 
-	function pre_update_moderators( $collection ) {
+	function pre_process( $collection ) {
 		// make sure we get the current value from database
 		$current_moderators       = $this->get_mapped_property( $collection, 'moderators_ids' );
 		$this->current_moderators = is_array( $current_moderators ) ? $current_moderators : [];
+
+		$this->old_collection = $this->fetch( $collection->get_id() );
+		$this->old_core_title = $collection->get_core_title_metadatum();
+		$this->old_core_description = $collection->get_core_description_metadatum();
+
 
 	}
 
@@ -373,6 +381,16 @@ class Collections extends Repository {
 
 		do_action( 'tainacan-add-collection-moderators', $collection, $added );
 		do_action( 'tainacan-remove-collection-moderators', $collection, $deleted );
+	}
+
+	function handle_core_metadata ( $collection ) {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+
+		$Tainacan_Metadata->register_core_metadata( $collection );
+		
+		if ( $this->old_collection instanceof Entities\Collection && $this->old_collection->get_parent() != $collection->get_parent() ) {
+			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description  );
+		}
 	}
 
 	/**

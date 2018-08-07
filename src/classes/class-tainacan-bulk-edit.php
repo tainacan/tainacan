@@ -75,14 +75,14 @@ class Bulk_Edit  {
 			add_filter('posts_pre_query', '__return_empty_array');
 			
 			// this adds the meta key and meta value to the SELECT query so it can be used directly in the INSERT below
-			add_filter('posts_fields_request', [&$this, 'add_fields_to_query'], 10, 2);
+			add_filter('posts_fields_request', [$this, 'add_fields_to_query'], 10, 2);
 			
 			$itemsRepo = Repositories\Items::get_instance();
 			$params['query']['fields'] = 'ids';
 			$items_query = $itemsRepo->fetch($params['query'], $params['collection_id']);
 			
 			remove_filter('posts_pre_query', '__return_empty_array');
-			remove_filter('posts_fields_request', [&$this, 'add_fields_to_query']);
+			remove_filter('posts_fields_request', [$this, 'add_fields_to_query']);
 			
 			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) {$items_query->request}" );
 			
@@ -258,6 +258,73 @@ class Bulk_Edit  {
 			return new \WP_Error( 'invalid_value', __( 'Invalid Value', 'tainacan' ) );
 		}
 
+
+	}
+
+	public function trash_items() {
+		if (!$this->get_id()) {
+			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
+		}
+
+		global $wpdb;
+
+		$select_q = $this->_build_select( 'post_id' );
+		
+		$select_insert = "SELECT ID, '_wp_trash_meta_status', post_status FROM $wpdb->posts WHERE ID IN ($select_q)";
+		$select_insert_time = $wpdb->prepare("SELECT ID, '_wp_trash_meta_time', %s FROM $wpdb->posts WHERE ID IN ($select_q)", time());
+
+		$query_original_status = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) $select_insert";
+		$query_trash_time = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) $select_insert_time";
+
+		$wpdb->query($query_original_status);
+		$wpdb->query($query_trash_time);
+
+		
+		$query = "UPDATE $wpdb->posts SET post_status = 'trash' WHERE ID IN ($select_q)";
+
+		// TODO trash comments?
+
+		return $wpdb->query($query);
+
+	}
+
+	public function untrash_items() {
+		if (!$this->get_id()) {
+			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
+		}
+
+		global $wpdb;
+
+		$select_q = $this->_build_select( 'post_id' );
+
+		// restore status
+
+		$query_restore = "UPDATE $wpdb->posts SET post_status = (SELECT meta_value FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_status' AND post_id = ID) WHERE ID IN ($select_q) AND post_status = 'trash'";
+		$query_delete_meta1 = "DELETE FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_status' AND post_id IN ( SELECT implicitTemp.post_id FROM ($select_q) implicitTemp )";
+		$query_delete_meta2 = "DELETE FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_time' AND post_id IN ( SELECT implicitTemp.post_id FROM ($select_q) implicitTemp )";
+
+		$affected = $wpdb->query( $query_restore );
+		$wpdb->query( $query_delete_meta1 );
+		$wpdb->query( $query_delete_meta2 );
+
+		// TODO untrash comments?
+
+		return $affected;
+
+	}
+
+	public function delete_items() {
+		if (!$this->get_id()) {
+			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
+		}
+
+		global $wpdb;
+
+		$select_q = $this->_build_select( 'post_id' );
+
+		$query_delete = "DELETE FROM $wpdb->posts WHERE ID IN ($select_q)";
+
+		return $wpdb->query($query_delete);
 
 	}
 

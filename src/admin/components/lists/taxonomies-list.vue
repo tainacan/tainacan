@@ -275,10 +275,10 @@
         height: 40px;
 
         .select-all {
-            color: $gray-light;
+            color: $gray4;
             font-size: 14px;
             &:hover {
-                color: $gray-light;
+                color: $gray4;
             }
         }
     }

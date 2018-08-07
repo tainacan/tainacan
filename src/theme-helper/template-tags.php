@@ -62,18 +62,13 @@ function tainacan_the_metadata($args = array()) {
  * 
  * Return the item document as a HTML string to be used as output.
  *
- * @param  int|string|Tainacan\Entities\Metadatum $metadatum Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata
- * @param bool $hide_empty Wether to hide or not metadata the item has no value to
  * @return string        The HTML output
  */
 function tainacan_get_the_document() {
-	$post = get_post();
-	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+	$item = tainacan_get_item();
 	
-	if (!$theme_helper->is_post_an_item($post))
+	if (!$item)
 		return;
-	
-	$item = new Entities\Item($post);
 	
 	return $item->get_document_html();
 	
@@ -81,6 +76,25 @@ function tainacan_get_the_document() {
 
 function tainacan_the_document() {
 	echo tainacan_get_the_document();
+}
+
+/**
+ * To be used inside The Loop
+ * 
+ * Check whether the current item has a document or not
+ *
+ * @return bool True if item has document, false if it does not
+ */
+function tainacan_has_document() {
+	$item = tainacan_get_item();
+	
+	if (!$item)
+		return;
+	
+	$document = $item->get_document();
+
+	return ! empty($document);
+	
 }
 
 /**
@@ -243,8 +257,44 @@ function tainacan_current_view_displays($property) {
 
 	if (is_string($property)) {
 		return in_array($property, $view_mode_displayed_metadata);
-	} elseif (is_integer($property)) {
+	} elseif (is_integer($property) && array_key_exists('meta', $view_mode_displayed_metadata)) {
 		return in_array($property, $view_mode_displayed_metadata['meta']);
 	}
 	return false;
+}
+
+/**
+ * Gets the initials from a name.
+ * 
+ * By default, returns 2 uppercase letters representing the name. The first letter from the first name and the first letter from the last.
+ * 
+ * @param string $string The name to extract the initials from
+ * @param bool $one whether to return only the first letter, instead of two
+ * 
+ * @return string
+ */
+function tainacan_get_initials($string, $one = false) {
+	
+	if (empty($string)) {
+		return '';
+	}
+	if (strlen($string) == 1) {
+		return strtoupper($string);
+	}
+
+	$first = strtoupper(substr($string,0,1));
+
+	if ($one) {
+		return $first;
+	}
+
+	$words=explode(" ",$string);
+	
+	if (sizeof($words) < 2) {
+		$second = $string[1];
+	} else {
+		$second = $words[ sizeof($words) - 1 ][0];
+	}
+	
+	return strtoupper($first . $second);	
 }
