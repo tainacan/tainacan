@@ -150,7 +150,7 @@
                     }
 
                     if(this.filter.max_options && result.length >= this.filter.max_options){
-                        this.options.splice(this.filter.max_options);
+                        result.splice(this.filter.max_options);
 
                         let seeMoreLink = `<a style="font-size: 12px;"> ${ this.$i18n.get('label_view_all') } </a>`;
                         result[this.filter.max_options-1].seeMoreLink = seeMoreLink;
