@@ -42,7 +42,7 @@
                         <b-checkbox
                                 v-model="selected"
                                 :native-value="option.value">
-                            {{ `${option.label}` }}
+                            {{ `${ limitChars(option.label) }` }}
                         </b-checkbox>
                     </li>
                     <b-loading
@@ -121,7 +121,7 @@
                         <b-checkbox
                                 v-model="selected"
                                 :native-value="option.id ? option.id : option.value">
-                            {{ `${option.name ? option.name : option.label}` }}
+                            {{ `${ option.name ? limitChars(option.name) : limitChars(option.label) }` }}
                         </b-checkbox>
                     </li>
                     <b-loading
@@ -183,7 +183,7 @@
                 optionName: '',
                 isSearching: false,
                 options: [],
-                maxNumOptionsCheckboxList: 21,
+                maxNumOptionsCheckboxList: 20,
                 maxNumSearchResultsShow: 20,
                 maxNumOptionsCheckboxFinderColumns: 100,
                 checkboxListOffset: 0,
@@ -191,6 +191,7 @@
                 isCheckboxListLoading: false,
                 isSearchingLoading: false,
                 noMorePage: 0,
+                maxTextToShow: 47,
             }
         },
         created() {
@@ -203,6 +204,13 @@
             }
         },
         methods: {
+            limitChars(label){
+                if(label.length > this.maxTextToShow){
+                    return label.slice(0, this.maxTextToShow)+'...';
+                }
+
+                return label;
+            },
             beforePage(){
                 this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
                 this.noMorePage = 0;
@@ -494,6 +502,22 @@
             align-items: center;
             justify-content: space-around;
         }
+
+        .tainacan-modal-checkbox-list-body {
+            flex-wrap: nowrap !important;
+        }
+
+        .tainacan-modal-checkbox-search-results-body {
+            flex-wrap: nowrap !important;
+        }
+
+        .tainacan-li-search-results {
+            max-width: calc(100% - 8.3333333%) !important;
+        }
+
+        .tainacan-li-checkbox-list {
+            max-width: calc(100% - 8.3333333%) !important;
+        }
     }
 
     .tainacan-modal-content {
@@ -537,7 +561,6 @@
         flex-grow: 0;
         flex-shrink: 1;
         max-width: calc(50% - 8.3333333%);
-        padding: 0.25rem 0.625rem;
 
         .b-checkbox {
             max-width: 86%;
@@ -551,7 +574,7 @@
 
     .tainacan-li-checkbox-modal {
         display: flex;
-        padding: 0.25rem 0.125rem;
+        padding: 0;
 
         .b-checkbox {
             max-width: 86%;
@@ -569,7 +592,6 @@
         flex-grow: 0;
         flex-shrink: 1;
         max-width: calc(50% - 8.3333333%);
-        padding: 0.25rem 0.625rem;
 
         .b-checkbox {
             margin-right: 10px;
