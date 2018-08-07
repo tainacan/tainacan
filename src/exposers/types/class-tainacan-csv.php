@@ -42,7 +42,6 @@ class Csv extends Type {
 	 * @return string
 	 */
 	protected function array_to_csv( $data, $csv ) {
-		$values = [];
 		fputcsv($csv, array_keys($data), apply_filters('tainacan-exposer-csv-delimiter', ';') );
 		fputcsv($csv, array_values($data), apply_filters('tainacan-exposer-csv-delimiter', ';') );
 		return $csv;
