@@ -10,7 +10,7 @@
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :class="{'filter-menu-compress-button-top-repo': isRepositoryLevel}"
-                :style="{ top: !isOnTheme ? '120px' : (searchControlHeight + 6) + 'px' }"
+                :style="{ top: !isOnTheme ? '120px' : (searchControlHeight - 15) + 'px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <b-icon :icon="isFiltersMenuCompressed ? 'menu-right' : 'menu-left'" />
         </button>
@@ -272,7 +272,7 @@
                                         class="gray-icon view-mode-icon"
                                         v-if="registeredViewModes[viewMode] != undefined"
                                         v-html="registeredViewModes[viewMode].icon"/>
-                                    <span class="is-hidden-mobile">&nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}</span>
+                                    <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ $i18n.get('label_visualization') }}</span>
                                 <b-icon icon="menu-down" />
                             </button>
                             <b-dropdown-item 

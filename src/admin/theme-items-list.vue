@@ -129,11 +129,19 @@ export default {
         }
 
         .search-control {   
+            justify-content: flex-start !important;
 
-            @media screen and (min-width: 768px) {
-                margin-bottom: $page-small-top-padding;
+            @media screen and (min-width: 769px) {
+                margin-bottom: $page-small-top-padding !important;
+                
+                .search-control-item {
+                    margin-right: $page-side-padding !important;
+                }
             }
 
+            @media screen and (max-width: 768px) {
+                justify-content: space-between !important;
+            }
             .search-control-item:first-child>div {
                 margin-left: -8.3333333%;
             }
