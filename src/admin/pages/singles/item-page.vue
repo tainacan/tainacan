@@ -129,7 +129,9 @@
                                                     v-for="(url, index2) of exposer"
                                                     :key="index2">
                                                 <div>
-                                                    <a :href="url" >
+                                                    <a
+                                                            :href="url"
+                                                            target="_blank">
                                                         {{ extractExposerLabel(url, index) }}
                                                     </a>
                                                 </div>
