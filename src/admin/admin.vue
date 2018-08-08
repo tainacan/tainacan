@@ -111,6 +111,7 @@
         position: absolute;
         z-index: 99;
         top: 192px;
+        left: 0px;
         max-width: 25px;
         height: 20px;
         width: 25px;
