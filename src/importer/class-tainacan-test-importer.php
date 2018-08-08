@@ -33,6 +33,11 @@ class Test_Importer extends Importer {
 			'callback' => 'process_collections'
 		],
 		[
+			'name' => 'Link relationship',
+			'progress_label' => 'Link relationship',
+			'callback' => 'link_relationship'
+		],
+		[
 			'name' => 'Post-configure taxonomies',
 			'progress_label' => 'post processing taxonomies',
 			'callback' => 'close_taxonomies'
@@ -48,6 +53,30 @@ class Test_Importer extends Importer {
 	
 	protected $selectbox_values = [
 		'good', 'awesome', 'disgusting', 'bad', 'horrible', 'regular'
+	];
+
+	protected $date_values = [
+		'03/04/1993', '03/12/1998', '10/09/2001', '03/01/2018', '13/11/2016', '22/04/1993'
+	];
+
+	protected $numeric_values = [
+		10, 99.9, 0.189, 76543.90, 20000, 900
+	];
+
+	protected $text_values = [
+		'rice', 'beans', 'tomatoes', 'pasta', 'sushi'
+	];
+
+	protected $textarea_values = [
+		'value 1 lorem ipsum lorem ipsum', 
+		'value 2 lorem ipsum lorem ipsum', 
+		'value 3 lorem ipsum lorem ipsum', 
+		'value 4 lorem ipsum lorem ipsum', 
+		'value 5 lorem ipsum lorem ipsumsushi'
+	];
+
+	protected $extra_values = [
+		'extra val 1', 'extra val 2', 'extra val 3', 'extra val 4', 'extra val 5'
 	];
 	
 	public function __construct($attributes = array()) {
@@ -220,6 +249,65 @@ class Test_Importer extends Importer {
 			return false;
 
 		$col1_map[$metadatum->get_id()] = 'field4';
+
+		// Date type
+		$metadatum = $this->create_metadata( [
+			'name' => 'Date type',
+			'type' => 'Tainacan\Metadata_Types\Date'
+		], $col1 );
+		
+		if(!$metadatum)
+			return false;
+
+		$col1_map[$metadatum->get_id()] = 'field5';
+
+		// Numeric type
+		$metadatum = $this->create_metadata( [
+			'name' => 'Numeric type',
+			'type' => 'Tainacan\Metadata_Types\Numeric'
+		], $col1 );
+		
+		if(!$metadatum)
+			return false;
+
+		$col1_map[$metadatum->get_id()] = 'field6';
+
+		// Text type
+		$metadatum = $this->create_metadata( [
+			'name' => 'Text type',
+			'type' => 'Tainacan\Metadata_Types\Text'
+		], $col1 );
+		
+		if(!$metadatum)
+			return false;
+
+		$col1_map[$metadatum->get_id()] = 'field7';
+
+		// Textarea type
+		$metadatum = $this->create_metadata( [
+			'name' => 'Textarea type',
+			'type' => 'Tainacan\Metadata_Types\Textarea'
+		], $col1 );
+		
+		if(!$metadatum)
+			return false;
+
+		$col1_map[$metadatum->get_id()] = 'field8';
+
+		if($this->get_option('additonal_metadata')){
+			$total_extra = absint($this->get_option('additonal_metadata'));
+			$counter = 0;
+
+			while( $counter < $total_extra ){
+				$metadatum = $this->create_metadata( [
+					'name' => 'Extra Metadata ' . ($counter + 1),
+					'type' => 'Tainacan\Metadata_Types\Text'
+				], $col1 );	
+				$col1_map[$metadatum->get_id()] = 'field' . ($counter + 9);
+
+				$counter++;
+			}
+		}
 		
 		// insert map in collection
 		$this->add_collection([
@@ -274,9 +362,60 @@ class Test_Importer extends Importer {
 				'total_items' => $this->get_col2_number_of_items(),
 				'source_id' => 'col2'
 			]);
+
+			// Create Relationship
+			$metadatum = $this->create_metadata( [
+				'name' => 'Relationship type',
+				'type' => 'Tainacan\Metadata_Types\Relationship',
+				'options' => [
+				'collection_id' => $col2->get_id(),
+				'repeated' => 'yes'
+				]
+			], $col1 );
+
+			$this->add_transient('relationship_id', $metadatum->get_id());
 		}	
 		
 		return false;
+	}
+
+	/**
+	 * link relationship metadata in first collection with a random item in second collection
+	 */
+	public function link_relationship(){
+        if( $this->get_transient('relationship_id') ){
+			$this->add_log('linking relationship');	
+
+			$collections = $this->get_collections();
+
+			if ( isset($collections[0]) && $collections[0]['source_id'] === 'col1' ) {
+
+				$col1 = new Entities\Collection($collections[0]['id']);
+				$items_first = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $col1, 'OBJECT' );
+
+				$col2 = new Entities\Collection($collections[1]['id']);
+				$items_second = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $col1, 'OBJECT' );
+
+				$metadatum = new Entities\Metadatum($this->get_transient('relationship_id'));
+
+				// iterate over all items in first collection and randomly finds
+				//  an item in second collection
+				
+				if( $metadatum && $items_first && count($items_first) > 0 && count($items_second) > 0 ){
+					foreach ($items_first as $item_first) {
+						
+						$item_metadata = new Entities\Item_Metadata_Entity($item_first, $metadatum);
+						$rand_item = $items_second[array_rand($items_second)];	
+						
+						$item_metadata->set_value($rand_item->get_id());
+
+						if($item_metadata->validate()){
+							$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public function close_taxonomies() {
@@ -385,12 +524,30 @@ class Test_Importer extends Importer {
 			'orange', 'red', 'purple', 'blue', 'black', 'yellow'
 		];
 		
-		return [
+		$array = [
 			'field1' => 'Title ' . $index,
 			'field2' => 'Description ' . $index,
 			'field3' => $terms_for_taxonomy1[array_rand($terms_for_taxonomy1)],
 			'field4' => $this->selectbox_values[array_rand($this->selectbox_values)],
+			'field5' => $this->date_values[array_rand($this->date_values)],
+			'field6' => $this->numeric_values[array_rand($this->numeric_values)],
+			'field7' => $this->text_values[array_rand($this->text_values)],
+			'field8' => $this->textarea_values[array_rand($this->textarea_values)]
 		];
+
+		if(is_numeric($this->get_option('additonal_metadata'))){
+			$total_extra = absint($this->get_option('additonal_metadata'));
+			$counter = 0;
+
+			while( $counter < $total_extra ){
+				$array['field' . ($counter + 9) ] = $this->extra_values[array_rand($this->extra_values)];
+				$counter++; 
+			}
+
+			$this->add_log('extra metadata mapped' );
+		}
+
+		return $array;
 	}
 	public function get_col2_item($index) {
 		return [
