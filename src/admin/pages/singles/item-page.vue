@@ -83,49 +83,61 @@
                             <p v-if="attachmentsList.length <= 0"><br>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                         </div>
                     </div>
+                    <!-- Exposers --------------------------------------------- -->
                     <div>
                         <b-loading :active.sync="isLoadingMetadatumMappers"/>
                         <div v-if="!isLoadingMetadatumMappers">
-                            <div class="section-label">
-                                <label>{{ $i18n.get('label_exposer_urls') }}</label>
-                            </div>
-                            <br>
-                            <a
-                                    class="collapse-all"
-                                    @click="urls_open = !urls_open">
-                                {{ urls_open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                                <b-icon
-                                        type="is-secondary"
-                                        :icon=" urls_open ? 'menu-down' : 'menu-right'"/>
-                            </a>
-                            <div>
-                                <div
-                                        v-for="(exposer, index) of item.exposer_urls"
-                                        :key="index"
-                                        class="field">
-                                    <b-collapse :open="urls_open">
-                                        <label
-                                                class="label"
-                                                slot="trigger"
-                                                slot-scope="props">
-                                            <b-icon
-                                                    type="is-secondary"
-                                                    :icon="props.open ? 'menu-down' : 'menu-right'"
-                                            />
-                                            {{ index }}
-                                        </label>
-                                        <div
-                                                v-for="(url, index2) of exposer"
-                                                :key="index2">
-                                            <div>
-                                                <a :href="url" >
-                                                    {{ extractExposerLabel(url, index) }}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </b-collapse>
+                            <b-collapse :open="false">
+                                <div    
+                                        class="section-label" 
+                                        slot="trigger"
+                                        slot-scope="session_props">
+                                    <label>
+                                        {{ $i18n.get('label_exposer_urls') }}
+                                        <b-icon
+                                                type="is-secondary"
+                                                :icon="session_props.open ? 'menu-down' : 'menu-right'"
+                                        />
+                                    </label>
                                 </div>
-                            </div>
+                                <br>
+                                <a
+                                        class="collapse-all"
+                                        @click="urls_open = !urls_open">
+                                    {{ urls_open ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                                    <b-icon
+                                            type="is-secondary"
+                                            :icon=" urls_open ? 'menu-down' : 'menu-right'"/>
+                                </a>
+                                <div>
+                                    <div
+                                            v-for="(exposer, index) of item.exposer_urls"
+                                            :key="index"
+                                            class="field">
+                                        <b-collapse :open="urls_open">
+                                            <label
+                                                    class="label"
+                                                    slot="trigger"
+                                                    slot-scope="props">
+                                                <b-icon
+                                                        type="is-secondary"
+                                                        :icon="props.open ? 'menu-down' : 'menu-right'"
+                                                />
+                                                {{ index }}
+                                            </label>
+                                            <div
+                                                    v-for="(url, index2) of exposer"
+                                                    :key="index2">
+                                                <div>
+                                                    <a :href="url" >
+                                                        {{ extractExposerLabel(url, index) }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </b-collapse>
+                                    </div>
+                                </div>
+                            </b-collapse>
                         </div>
                     </div>
                 </div>
