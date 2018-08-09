@@ -10,6 +10,7 @@ class Html extends Type {
 	
 	public $mappers = ['Value'];
 	public $slug = 'html'; // type slug for url safe
+	public $name = 'HyperText Markup Language';
 	
 	/**
 	 * 

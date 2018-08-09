@@ -14,6 +14,7 @@ class Csv extends Type {
 	 */
 	public $mappers = ['Value'];
 	public $slug = 'csv'; // type slug for url safe
+	public $name = 'Comma-separated values';
 	
 	/**
 	 * 
@@ -36,7 +37,7 @@ class Csv extends Type {
 	}
 	
 	/**
-	 * Convert Array to Txt
+	 * Convert Array to Csv
 	 * @param array $data
 	 * @param string $csv
 	 * @return string
