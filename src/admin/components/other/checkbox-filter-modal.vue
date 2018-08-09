@@ -194,6 +194,11 @@
                 maxTextToShow: 47,
             }
         },
+        updated(){
+            if(!this.isSearching){
+                this.highlightHierarchyPath();
+            }
+        },
         created() {
             if(this.isTaxonomy) {
                 this.getOptionChildren();
@@ -726,11 +731,11 @@
     }
 
     .tainacan-li-checkbox-last-active {
-        background-color: $turquoise1;
+        background-color: $turquoise2;
     }
 
     .tainacan-li-checkbox-parent-active {
-        background-color: $turquoise2;
+        background-color: $turquoise1;
     }
 
 </style>

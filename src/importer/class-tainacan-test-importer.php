@@ -33,6 +33,11 @@ class Test_Importer extends Importer {
 			'callback' => 'process_collections'
 		],
 		[
+			'name' => 'Link relationship',
+			'progress_label' => 'Link relationship',
+			'callback' => 'link_relationship'
+		],
+		[
 			'name' => 'Post-configure taxonomies',
 			'progress_label' => 'post processing taxonomies',
 			'callback' => 'close_taxonomies'
@@ -49,6 +54,30 @@ class Test_Importer extends Importer {
 	protected $selectbox_values = [
 		'good', 'awesome', 'disgusting', 'bad', 'horrible', 'regular'
 	];
+
+	protected $date_values = [
+		'03/04/1993', '03/12/1998', '10/09/2001', '03/01/2018', '13/11/2016', '22/04/1993'
+	];
+
+	protected $numeric_values = [
+		10, 99.9, 0.189, 76543.90, 20000, 900
+	];
+
+	protected $text_values = [
+		'rice', 'beans', 'tomatoes', 'pasta', 'sushi'
+	];
+
+	protected $textarea_values = [
+		'value 1 lorem ipsum lorem ipsum', 
+		'value 2 lorem ipsum lorem ipsum', 
+		'value 3 lorem ipsum lorem ipsum', 
+		'value 4 lorem ipsum lorem ipsum', 
+		'value 5 lorem ipsum lorem ipsumsushi'
+	];
+
+	protected $extra_values = [
+		'extra val 1', 'extra val 2', 'extra val 3', 'extra val 4', 'extra val 5'
+	];
 	
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
@@ -57,12 +86,15 @@ class Test_Importer extends Importer {
 		$this->col_repo = \Tainacan\Repositories\Collections::get_instance();
 		$this->items_repo = \Tainacan\Repositories\Items::get_instance();
 		$this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
+		$this->item_metadata_repo = \Tainacan\Repositories\Item_Metadata::get_instance();
 		
 		$this->remove_import_method('file');
 		$this->remove_import_method('url');
 		
 		$this->set_default_options([
-            'items_col_1' => 20
+			'items_col_1' => 20,
+			'horizontal_image_size' => 0,
+			'vertical_image_size' => 0,
 		]);
 		
 	}
@@ -113,6 +145,54 @@ class Test_Importer extends Importer {
 		$form .= '<input type="text" class="input" name="items_col_2" value="' . $this->get_option('items_col_2') . '" />';
 		$form .= '</div>';
 		$form .= '</div>';
+
+		$form .= '<hr>';
+		$form .= '<h2>'. __('Images', 'tainacan') . '</h2><br>';
+		
+		$form .= '<div class="field">';   
+        $form .= '<label class="label">' . __('Add random images from flickr using [https://loremflickr.com/] in first collection', 'tainacan') . '</label>';
+  
+        $not_add = ( !$this->get_option('add_random_images') || $this->get_option('add_random_images') === 'no' ) ? 'checked' : '';
+        $add = ( !$this->get_option('add_random_images') && $this->get_option('add_random_images') === 'yes' ) ? 'checked' : '';
+
+        $form .= '<div class="field">';
+        $form .= '<label class="b-radio radio is-small">';
+        $form .= '<input type="radio"  name="add_random_images" value="yes" '. $add . ' />';
+        $form .= '<span class="check"></span>';
+        $form .= '<span class="control-label">';
+        $form .=  __('Yes', 'tainacan') . '</span></label>';
+		$form .= '</div>';
+        
+        $form .= '<div class="field">';
+        $form .= '<label class="b-radio radio is-small">';
+        $form .= '<input type="radio"  name="add_random_images" value="no" '. $not_add . ' />';
+        $form .= '<span class="check"></span>';
+        $form .= '<span class="control-label">';
+        $form .=  __('No', 'tainacan') . '</span></label>';
+        $form .= '</div>';
+
+		$form .= '</div>';
+		
+		$form .= '<div class="field">';
+		$form .= '<label class="label">' . __('Horizontal image size ( 0 for random size )', 'tainacan') . '</label>';
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="horizontal_image_size" value="' . $this->get_option('horizontal_image_size') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
+
+		$form .= '<div class="field">';
+		$form .= '<label class="label">' . __('Vertical image size ( 0 for random size )', 'tainacan') . '</label>';
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="vertical_image_size" value="' . $this->get_option('vertical_image_size') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
+
+		$form .= '<div class="field">';
+		$form .= '<label class="label">' . __('Type one keyword which it will be used to find images in flickr', 'tainacan') . '</label>';
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="keyword_images" value="' . $this->get_option('keyword_images') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
 		
         return $form;
 
@@ -144,22 +224,6 @@ class Test_Importer extends Importer {
 		}
 		
 		$this->add_transient('tax_1_id', $tax1->get_id());
-		
-		$tax2 = new Entities\Taxonomy();
-		$tax2->set_name('Quality');
-		$tax2->set_allow_insert('yes');
-		$tax2->set_status('publish');
-		if ($tax2->validate()) {
-			$tax2 = $this->tax_repo->insert($tax2);
-		} else {
-			$this->add_error_log('Error creating taxonomy Quality');
-			$this->add_error_log($tax2->get_errors());
-			$this->abort();
-			return false;
-			
-		}
-		
-		$this->add_transient('tax_2_id', $tax2->get_id());
 		
 		return false;
 		
@@ -220,6 +284,65 @@ class Test_Importer extends Importer {
 			return false;
 
 		$col1_map[$metadatum->get_id()] = 'field4';
+
+		// Date type
+		$metadatum = $this->create_metadata( [
+			'name' => 'Date type',
+			'type' => 'Tainacan\Metadata_Types\Date'
+		], $col1 );
+		
+		if(!$metadatum)
+			return false;
+
+		$col1_map[$metadatum->get_id()] = 'field5';
+
+		// Numeric type
+		$metadatum = $this->create_metadata( [
+			'name' => 'Numeric type',
+			'type' => 'Tainacan\Metadata_Types\Numeric'
+		], $col1 );
+		
+		if(!$metadatum)
+			return false;
+
+		$col1_map[$metadatum->get_id()] = 'field6';
+
+		// Text type
+		$metadatum = $this->create_metadata( [
+			'name' => 'Text type',
+			'type' => 'Tainacan\Metadata_Types\Text'
+		], $col1 );
+		
+		if(!$metadatum)
+			return false;
+
+		$col1_map[$metadatum->get_id()] = 'field7';
+
+		// Textarea type
+		$metadatum = $this->create_metadata( [
+			'name' => 'Textarea type',
+			'type' => 'Tainacan\Metadata_Types\Textarea'
+		], $col1 );
+		
+		if(!$metadatum)
+			return false;
+
+		$col1_map[$metadatum->get_id()] = 'field8';
+
+		if($this->get_option('additonal_metadata')){
+			$total_extra = absint($this->get_option('additonal_metadata'));
+			$counter = 0;
+
+			while( $counter < $total_extra ){
+				$metadatum = $this->create_metadata( [
+					'name' => 'Extra Metadata ' . ($counter + 1),
+					'type' => 'Tainacan\Metadata_Types\Text'
+				], $col1 );	
+				$col1_map[$metadatum->get_id()] = 'field' . ($counter + 9);
+
+				$counter++;
+			}
+		}
 		
 		// insert map in collection
 		$this->add_collection([
@@ -274,8 +397,61 @@ class Test_Importer extends Importer {
 				'total_items' => $this->get_col2_number_of_items(),
 				'source_id' => 'col2'
 			]);
+
+			// Create Relationship
+			$metadatum = $this->create_metadata( [
+				'name' => 'Relationship type',
+				'type' => 'Tainacan\Metadata_Types\Relationship',
+				'options' => [
+				'collection_id' => $col2->get_id(),
+				'repeated' => 'yes'
+				]
+			], $col1 );
+
+			$this->add_transient('relationship_id', $metadatum->get_id());
 		}	
 		
+		return false;
+	}
+
+	/**
+	 * link relationship metadata in first collection with a random item in second collection
+	 */
+	public function link_relationship(){
+        if( $this->get_transient('relationship_id') ){
+			$this->add_log('linking relationship');	
+
+			$collections = $this->get_collections();
+
+			if ( isset($collections[0]) && $collections[0]['source_id'] === 'col1' ) {
+
+				$col1 = new Entities\Collection($collections[0]['id']);
+				$items_first = $this->items_repo->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $col1, 'OBJECT' );
+
+				$col2 = new Entities\Collection($collections[1]['id']);
+				$items_second = $this->items_repo->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $col2, 'OBJECT' );
+
+				$metadatum = new Entities\Metadatum($this->get_transient('relationship_id'));
+
+				// iterate over all items in first collection and randomly finds
+				//  an item in second collection
+				
+				if( $metadatum && $items_first && count($items_first) > 0 && count($items_second) > 0 ){
+					foreach ($items_first as $item_first) {
+						
+						$item_metadata = new Entities\Item_Metadata_Entity($item_first, $metadatum);
+						$rand_item = $items_second[array_rand($items_second)];	
+						
+						$item_metadata->set_value($rand_item->get_id());
+
+						if($item_metadata->validate()){
+							$item_metadata = $this->item_metadata_repo->insert($item_metadata);
+						}
+					}
+				}
+			}
+		}
+
 		return false;
 	}
 	
@@ -318,12 +494,13 @@ class Test_Importer extends Importer {
 	
 	public function finish_processing() {
 		
+		$this->add_log('finish_processing');
 		// Lets just pretend we are doing something really important
 		$important_stuff = 5;
 		$current = $this->get_in_step_count();
 		if ($current <= $important_stuff) {
 			// This is very important
-			sleep(5);
+			sleep(3);
 			$current ++;
 			return $current;
 		} else {
@@ -339,6 +516,49 @@ class Test_Importer extends Importer {
 		return $item;
 		
 	}
+
+	/**
+     * @inheritdoc
+     */
+    public function after_inserted_item( $inserted_item, $collection_index ) {
+		$TainacanMedia = \Tainacan\Media::get_instance();
+
+		$collections = $this->get_collections();
+		$collection_definition = $collections[$collection_index];
+		
+		if( $collection_definition['source_id'] === 'col1' && $this->get_option('add_random_images') === 'yes' ){
+
+			$horizontal_size = ( $this->get_option('horizontal_image_size') > 0 ) ? $this->get_option('horizontal_image_size') : rand ( 100 , 600 );
+			$vertical_size = ( $this->get_option('vertical_image_size') > 0 ) ? $this->get_option('vertical_image_size') : rand ( 100 , 600 );
+			$keyword = ( $this->get_option('keyword_images') ) ? $this->get_option('keyword_images') : '';
+
+			$url = "https://loremflickr.com/$horizontal_size/$vertical_size/$keyword";
+			
+			$id = $TainacanMedia->insert_attachment_from_url($url);
+
+			if(!$id){
+				$this->add_error_log('Error in imported URL ' . $url);
+				return false;
+			}
+
+			$inserted_item->set_document( $id );
+			$inserted_item->set_document_type( 'attachment' );
+			$this->add_log('Document  URL imported from ' . $correct_value);
+
+			if( $inserted_item->validate() ) {
+				$inserted_item = $this->items_repo->update($inserted_item);
+
+				$thumb_id = $this->items_repo->get_thumbnail_id_from_document($inserted_item);
+        
+				if (!is_null($thumb_id)) {
+					$this->add_log('Setting item thumbnail: ' . $thumb_id);
+					set_post_thumbnail( $inserted_item->get_id(), (int) $thumb_id );
+				}
+
+				return true;
+			}
+		}
+    }
 	
 	public function get_col1_number_of_items() {
 		return $this->get_option('items_col_1');
@@ -353,6 +573,7 @@ class Test_Importer extends Importer {
 	 * 
 	 */
 	private function create_metadata( $args, $collection ){
+
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name($args['name']);
 		$metadatum->set_collection($collection);
@@ -385,13 +606,33 @@ class Test_Importer extends Importer {
 			'orange', 'red', 'purple', 'blue', 'black', 'yellow'
 		];
 		
-		return [
+		$array = [
 			'field1' => 'Title ' . $index,
 			'field2' => 'Description ' . $index,
 			'field3' => $terms_for_taxonomy1[array_rand($terms_for_taxonomy1)],
 			'field4' => $this->selectbox_values[array_rand($this->selectbox_values)],
+			'field5' => $this->date_values[array_rand($this->date_values)],
+			'field6' => $this->numeric_values[array_rand($this->numeric_values)],
+			'field7' => $this->text_values[array_rand($this->text_values)],
+			'field8' => $this->textarea_values[array_rand($this->textarea_values)]
 		];
+
+		if(is_numeric($this->get_option('additonal_metadata'))){
+			$total_extra = absint($this->get_option('additonal_metadata'));
+			$counter = 0;
+
+			while( $counter < $total_extra ){
+				$array['field' . ($counter + 9) ] = $this->extra_values[array_rand($this->extra_values)];
+				$counter++; 
+			}
+
+			$this->add_log('extra metadata mapped' );
+		}
+
+		return $array;
 	}
+
+
 	public function get_col2_item($index) {
 		return [
 			'field1' => 'Collection 2 item ' . $index,
