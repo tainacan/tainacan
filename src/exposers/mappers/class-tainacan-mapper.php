@@ -7,6 +7,7 @@ abstract class Mapper {
 	public $name = null; // Public name do mapper
 	public $allow_extra_metadata = true; // Allow more metadatum to be register
 	public $context_url = null; // URL of mapper documentation
+	public $type = ''; // The Class of the ontology that this mapping refers to. For example `CreativeWork`, which is a class of Schema.org if applied
 	
 	/**
 	 * array of supported metadata, false for not validade the list format:

@@ -10,6 +10,7 @@ class JSON_LD extends Type {
 	
 	public $mappers = ['value', 'dublin-core'];
 	public $slug = 'json-ld'; // type slug for url safe
+	public $name = 'JavaScript Object Notation for Linked Data';
 	
 	protected $contexts = [];
 	

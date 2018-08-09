@@ -38,7 +38,19 @@ Exposers are also really easy to develop and can be added to your Tainacan insta
 
 ## Exposing API
 
-Using exposing API is easy, need only to set some parameters to API call, for example to expose an Item with id 123 using XML format on site URI http://example.com, so we need to call API with this URI: http://example.com/wp-json/tainacan/v2/items/123 with this URI the Tainacan will return the Item 123 data, but with we send this parameter at body, exposer=xml, It will return a WordPress JSON with XML formatted in data propriety. Or with we want only the XML data, without JSON respond  for example, we need only to put the expose parameter at URI, like:
+Using exposing API is easy, need only to set some parameters to API call, for example to expose an Item with id 123 using XML format on site URI http://example.com, so we need to call API with this URI: http://example.com/wp-json/tainacan/v2/items/123 with this URI the Tainacan will return the Item 123 data, but with we send this parameter at body, exposer=xml, It will return a WordPress JSON with XML formatted in data propriety.
+Example using WordPress rest server:
+
+	$item_exposer_json = json_encode([
+				'exposer'  => 'Xml',
+				'mapper'  => 'Dublin Core',
+			]);
+			$request = new \WP_REST_Request('GET', '/wp-json/tainacan/v2/items/123' );
+			$request->set_body($item_exposer_json);
+			$response = $this->server->dispatch($request);
+
+
+Or with we want only the XML data, without JSON respond  for example, we need only to put the expose parameter at URI, like:
 http://example.com/wp-json/tainacan/v2/items/123?exposer=xml
 Tainacan have support to metadata mapping, the parameter for using the mapper is  mapper=[mapper], so for our last example, if we want a CSV, using dublin-core mapper exposing the content at CSV format, not JSON:
 http://example.com/wp-json/tainacan/v2/items/123?exposer=xml&mapper=dublin-core

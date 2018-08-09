@@ -14,6 +14,7 @@ class Xml extends Type {
 	 */
 	protected $extension = 'xml';
 	public $slug = 'xml'; // type slug for url safe
+	public $name = 'Extensible Markup Language';
 	
 	/**
 	 * 

@@ -35,10 +35,10 @@ class Exposers {
 		$this->register_exposer_type('Tainacan\Exposers\Types\Csv');
 		$this->register_exposer_type('Tainacan\Exposers\Types\OAI_PMH');
 		$this->register_exposer_type('Tainacan\Exposers\Types\JSON_LD');
-		do_action('tainacan-register-exposer-types');
+		do_action('tainacan-register-exposer-types', $this);
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Dublin_Core');
 		$this->register_exposer_mapper('Tainacan\Exposers\Mappers\Value');
-		do_action('tainacan-register-exposer-mappers');
+		do_action('tainacan-register-exposer-mappers', $this);
 		
 		
 		add_filter( 'rest_request_after_callbacks', [$this, 'rest_request_after_callbacks'], 10, 3 ); //exposer types
