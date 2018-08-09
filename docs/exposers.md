@@ -43,6 +43,15 @@ Every exposer have to implement PHP methods that will build the API response and
 
 Using this method an exposer can also print data in the `HEAD` section of the HTML when visiting an item page. For example, JSON-LD exposer can add a JSON-LD object to the head of the page of every item in your collection, modifing the rest server ($handler).
 
+### Registering a new exposer
+For register a new exposer, the action need to be added to `tainacan-register-exposer-types` hook, like:
+```
+	function myNewExposer($exposers) {
+		$exposers->register_exposer_type('Tainacan\Exposers\Types\NewExposer');
+	}
+	add_action('tainacan-register-exposer-types', 'myNewExposer');
+```
+
 ### Example
 
 	<?php
@@ -57,6 +66,7 @@ Using this method an exposer can also print data in the `HEAD` section of the HT
 		
 		public $mappers = ['Value'];
 		public $slug = 'txt'; // type slug for url safe
+		public $name = 'TXT';
 		
 		/**
 		 * 
