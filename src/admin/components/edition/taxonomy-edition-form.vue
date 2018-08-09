@@ -121,7 +121,7 @@
                 
                 <b-tab-item :label="$i18n.get('terms')">
                     <!-- Terms List -->    
-                    <terms-list :taxonomy-id="taxonomyId"/>       
+                    <terms-list :taxonomy-id="taxonomyId"/>
                 </b-tab-item>
 
                 <b-loading 

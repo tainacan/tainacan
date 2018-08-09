@@ -1,6 +1,8 @@
 <template>
 <div>
-    <div class="terms-list-header">
+    <div 
+            v-if="termsList.length > 0 && !isLoadingTerms"
+            class="terms-list-header">
         <button
                 class="button is-secondary"
                 type="button"
@@ -45,34 +47,48 @@
         </div>
     </div>
     <div class="columns">
-        <div class="column">
+        <div 
+                :class="{ 'is-12': !isEditingTerm, 'is-8': isEditingTerm }"
+                class="column">
             <br>
+            
             <div    
                     class="term-item"
                     :class="{
                         'not-sortable-item': term.opened || !term.saved, 
-                        'opened-term': term.opened
+                        'opened-term': term.opened,
+                        'collapsed-term': term.collapsed ? term.collapsed : false
                     }" 
-                    :style="{'margin-left': (term.depth * 40) + 'px'}"
+                    :style="{'margin-left': (term.depth * 40) + 'px', 'border-left-color': term.depth > 0 ? '#f2f2f2' : 'transparent'}"
                     v-for="(term, index) in orderedTermsList"
-                    :key="term.id"> 
+                    :key="term.id">
+                <span 
+                        v-if="term.depth > 0"
+                        class="icon children-icon">
+                    <i class="mdi mdi-24px mdi-subdirectory-arrow-right"/>
+                </span> 
                 <span 
                         class="term-name" 
                         :class="{'is-danger': formWithErrors == term.id }">
                     {{ term.saved && !term.opened ? term.name : getUnsavedTermName(term) }}
                 </span>
+                <span class="has-text-gray">
+                    {{ String(term.hasLoadedChildren) + ' | ' + String(term.hasCollapsedChildren) }}
+                </span>
                 <span   
                         v-if="term.id != undefined"
-                        class="label-details"  
-                        @click.prevent="isEditingTerm && term.total_children > 0 ? null : loadTerms(term.id)">
-                        {{ term.total_children > 0 ? term.total_children + ' ' + $i18n.get('label_children_terms') : '' }}
+                        class="label-details">
                     <span 
                             class="not-saved" 
                             v-if="!term.saved"> 
                         {{ $i18n.get('info_not_saved') }}
                     </span>
                 </span>
-            
+                <span 
+                        class="children-dropdown"
+                        v-if="!isEditingTerm && term.total_children > 0"
+                        @click.prevent="(term.hasLoadedChildren != undefined && term.hasLoadedChildren) ? collapseTermChildren(term.id, index) : loadTerms(term.id, index)">
+                    {{ term.total_children + ' ' + $i18n.get('label_children_terms') }}</span>
                 <span class="controls" >
                     <a 
                             @click="addNewChildTerm(term, index)"
@@ -95,9 +111,10 @@
                 </span>
                 
             </div>
+        
         </div>
         <div 
-                class="column edit-forms-list" 
+                class="column is-4 edit-forms-list" 
                 :key="index"
                 v-for="(term, index) in orderedTermsList"
                 v-show="term.opened">
@@ -108,13 +125,30 @@
                     @onEditionCanceled="onTermEditionCanceled(term)"
                     @onErrorFound="formWithErrors = term.id"
                     :edit-form="term"/>
-
-
         </div>
-        <b-loading 
-                :active.sync="isLoadingTerms" 
-                :can-cancel="false"/>
     </div>
+    <!-- Empty state image -->
+    <div v-if="termsList.length <= 0 && !isLoadingTerms && !isEditingTerm">
+        <section class="section">
+            <div class="content has-text-grey has-text-centered">
+                <p>
+                    <b-icon
+                            icon="inbox"
+                            size="is-large"/>
+                </p>
+                <p>{{ $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
+                <button
+                        id="button-create-term"
+                        class="button is-secondary"
+                        @click="addNewTerm()">
+                    {{ $i18n.get('label_new_term') }}
+                </button>
+            </div>
+        </section>
+    </div>       
+    <b-loading 
+            :active.sync="isLoadingTerms" 
+            :can-cancel="false"/>
 </div>
 </template>
 
@@ -133,7 +167,8 @@ export default {
             orderedTermsList: [],
             order: 'asc',
             termEditionFormTop: 0,
-            searchQuery: ''
+            searchQuery: '',
+            termsColapses: []
         }
     },
     props: {
@@ -372,13 +407,21 @@ export default {
                     term.opened = (this.orderedTermsList[term.id].opened === undefined ? false : this.orderedTermsList[term.id].opened);
                     term.saved = (this.orderedTermsList[term.id].saved === undefined ? true : this.orderedTermsList[term.id].saved);
                 }
-                if (term.taxonomy != null)
+                if (term.taxonomy != null) {
+                    let termCollapseIndex = this.termsColapses.findIndex(aTerm => aTerm.id == term.id);
+                    if (termCollapseIndex >= 0) {
+                        term.collapsed = this.termsColapses[termCollapseIndex].collapsed;
+                        term.hasLoadedChildren = this.termsColapses[termCollapseIndex].hasLoadedChildren;
+                        term.hasCollapsedChildren = this.termsColapses[termCollapseIndex].hasCollapsedChildren;
+                    }
                     this.orderedTermsList.push(JSON.parse(JSON.stringify(term)));
+                }
 
                 this.buildOrderedTermsList(term.id, termDepth + 1);
             }
         },
         generateOrderedTerms() {
+            this.termsColapses = JSON.parse(JSON.stringify(this.orderedTermsList));
             this.orderedTermsList = new Array();
             this.buildOrderedTermsList(0, 0);
         },
@@ -389,17 +432,41 @@ export default {
             else 
                 return term.name;
         },
-        loadTerms(parentId) {
-            
+        collapseTermChildren(parentId, parentIndex) {
+            console.log(this.orderedTermsList[parentIndex].hasCollapsedChildren )
+            if (this.orderedTermsList[parentIndex].hasCollapsedChildren != undefined && !this.orderedTermsList[parentIndex].hasCollapsedChildren) {
+                for (let i = 0; i < this.orderedTermsList.length; i++) {
+                    if (this.orderedTermsList[i].parent == parentId) {
+                        this.$set(this.orderedTermsList[i], 'collapsed', false);
+                        this.collapseTermChildren(this.orderedTermsList[i].id, i);
+                    }
+                }
+                this.$set(this.orderedTermsList[parentIndex], 'hasCollapsedChildren', true);
+            } else {
+                for (let i = 0; i < this.orderedTermsList.length; i++) {
+                    if (this.orderedTermsList[i].parent == parentId) {
+                        this.$set(this.orderedTermsList[i], 'collapsed', true);
+                        this.collapseTermChildren(this.orderedTermsList[i].id, i);
+                    }
+                }
+                this.$set(this.orderedTermsList[parentIndex], 'hasCollapsedChildren', false);
+            }
+        },
+        loadTerms(parentId, parentIndex) {
+
             this.isLoadingTerms = true;
             let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
             this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: search, all: '', order: this.order})
                 .then(() => {
-                    // Fill this.form data with current data.
-                    this.isLoadingTerms = false;
+                                 
+                    if (parentIndex != undefined && parentIndex > 0) {
+                        this.orderedTermsList[parentIndex].hasLoadedChildren = true;
+                    }
                     this.generateOrderedTerms();
+                    this.isLoadingTerms = false;   
                 })
                 .catch((error) => {
+                    this.isLoadingTerms = false;   
                     this.$console.log(error);
                 });
         }
@@ -460,15 +527,15 @@ export default {
         }
     }
 
-    
-
     .term-item {
         font-size: 14px;
-        padding: 0 0.75rem;
+        padding: 0 0 0 0.75rem;
         min-height: 40px;
         display: flex; 
         position: relative;
         align-items: center;
+        justify-content: space-between;
+        border-left: 1px solid transparent;
 
         &:hover {
             background-color: $gray1 !important;
@@ -481,14 +548,16 @@ export default {
             }
         }
         
-        .handle {
-            padding-right: 6em;
+        .children-icon {
+            color: $blue2;
+            position: absolute;
+            left: -25px;
         }
+
         .term-name {
             text-overflow: ellipsis;
             overflow-x: hidden;
             white-space: nowrap;
-            font-weight: bold;
             margin-left: 0.4em;
             margin-right: 0.4em;
             display: inline-block;
@@ -501,20 +570,26 @@ export default {
         .label-details {
             font-weight: normal;
             color: $gray3;
+            margin-right: auto;
         }
         .not-saved {
             font-style: italic;
             font-weight: bold;
             color: $danger;
         }
+        .children-dropdown {
+            margin-left: auto;
+            color: $blue4;
+            cursor: pointer;
+            padding-right: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+        }
         .controls { 
-            position: absolute;
-            right: 0;
             visibility: hidden;
             opacity: 0.0;
             background-color: $gray2;
             padding: 0.4375rem 0.875rem;
-            margin-left: auto;
 
             a {
                 margin: 0 0.375rem;
@@ -533,9 +608,6 @@ export default {
             cursor: default;
             background-color: $blue1;
 
-            .term-name {
-                color: $blue3;
-            }
             &:before {
                 content: '';
                 display: block;
@@ -554,6 +626,10 @@ export default {
             &:hover:before {
                 border-color: transparent transparent transparent $gray1;
             }
+        }
+
+        &.collapsed-term {
+            display: none;
         }
   
     }
