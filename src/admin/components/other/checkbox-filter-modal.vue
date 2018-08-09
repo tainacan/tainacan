@@ -200,7 +200,6 @@
             }
         },
         created() {
-            console.log(this);
             if(this.isTaxonomy) {
                 this.getOptionChildren();
             } else {
