@@ -83,7 +83,7 @@ export default {
         right: 0;
         top: $header-height;
         position: absolute;
-        z-index: 99;
+        z-index: 9999;
         transition: padding-left 0.2s linear, background-color 0.2s linear;
 
         &.is-repository-level {

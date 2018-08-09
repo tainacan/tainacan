@@ -17,7 +17,8 @@
             </div>
 
             <div class="above-subheader">
-                <b-loading 
+                <b-loading
+                        :is-full-page="true" 
                         :active.sync="isLoading" 
                         :can-cancel="false"/>
                 <div class="tabs">

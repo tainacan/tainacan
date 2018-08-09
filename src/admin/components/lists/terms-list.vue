@@ -47,19 +47,22 @@
         </div>
     </div>
     <div class="columns">
+        <b-loading 
+                :is-full-page="false"
+                :active.sync="isLoadingTerms" 
+                :can-cancel="false"/>
         <div 
                 :class="{ 'is-12': !isEditingTerm, 'is-8': isEditingTerm }"
                 class="column">
             <br>
-            
+
             <div    
                     class="term-item"
                     :class="{
-                        'not-sortable-item': term.opened || !term.saved, 
                         'opened-term': term.opened,
                         'collapsed-term': term.collapsed ? term.collapsed : false
                     }" 
-                    :style="{'margin-left': (term.depth * 40) + 'px', 'border-left-color': term.depth > 0 ? '#f2f2f2' : 'transparent'}"
+                    :style="{'margin-left': (term.depth * 55) + 'px', 'border-left-color': term.depth > 0 ? '#f2f2f2' : 'transparent'}"
                     v-for="(term, index) in orderedTermsList"
                     :key="term.id">
                 <span 
@@ -88,7 +91,15 @@
                         class="children-dropdown"
                         v-if="!isEditingTerm && term.total_children > 0"
                         @click.prevent="(term.hasLoadedChildren != undefined && term.hasLoadedChildren) ? collapseTermChildren(term.id, index) : loadTerms(term.id, index)">
-                    {{ term.total_children + ' ' + $i18n.get('label_children_terms') }}</span>
+                    <span class="icon">
+                        <i 
+                                :class="{ 
+                                    'mdi-menu-right': !term.hasLoadedChildren || (term.hasCollapsedChildren && term.hasLoadedChildren),  
+                                    'mdi-menu-down': (!term.hasCollapsedChildren && term.hasLoadedChildren) || (term.hasCollapsedChildren != undefined && term.hasCollapsedChildren) }"
+                                class="mdi mdi-24px"/>
+                    </span>
+                    <span>{{ term.total_children + ' ' + $i18n.get('label_children_terms') }}</span>
+                </span>
                 <span class="controls" >
                     <a 
                             @click="addNewChildTerm(term, index)"
@@ -146,9 +157,6 @@
             </div>
         </section>
     </div>       
-    <b-loading 
-            :active.sync="isLoadingTerms" 
-            :can-cancel="false"/>
 </div>
 </template>
 
@@ -168,7 +176,8 @@ export default {
             order: 'asc',
             termEditionFormTop: 0,
             searchQuery: '',
-            termsColapses: []
+            termsColapses: [],
+            isGeneratingOrderedTerms: false
         }
     },
     props: {
@@ -413,6 +422,8 @@ export default {
                         term.collapsed = this.termsColapses[termCollapseIndex].collapsed;
                         term.hasLoadedChildren = this.termsColapses[termCollapseIndex].hasLoadedChildren;
                         term.hasCollapsedChildren = this.termsColapses[termCollapseIndex].hasCollapsedChildren;
+                        term.opened = this.termsColapses[termCollapseIndex].opened;
+                        term.saved = this.termsColapses[termCollapseIndex].saved;
                     }
                     this.orderedTermsList.push(JSON.parse(JSON.stringify(term)));
                 }
@@ -422,8 +433,10 @@ export default {
         },
         generateOrderedTerms() {
             this.termsColapses = JSON.parse(JSON.stringify(this.orderedTermsList));
+            this.isGeneratingOrderedTerms = true;
             this.orderedTermsList = new Array();
             this.buildOrderedTermsList(0, 0);
+            this.isGeneratingOrderedTerms = false;
         },
         getUnsavedTermName(term) {
             let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id == term.id);
@@ -433,11 +446,11 @@ export default {
                 return term.name;
         },
         collapseTermChildren(parentId, parentIndex) {
-            console.log(this.orderedTermsList[parentIndex].hasCollapsedChildren )
             if (this.orderedTermsList[parentIndex].hasCollapsedChildren != undefined && !this.orderedTermsList[parentIndex].hasCollapsedChildren) {
                 for (let i = 0; i < this.orderedTermsList.length; i++) {
                     if (this.orderedTermsList[i].parent == parentId) {
-                        this.$set(this.orderedTermsList[i], 'collapsed', false);
+                        this.$set(this.orderedTermsList[i], 'collapsed', true);
+                        this.$set(this.orderedTermsList[i], 'hasCollapsedChildren', false);
                         this.collapseTermChildren(this.orderedTermsList[i].id, i);
                     }
                 }
@@ -445,7 +458,7 @@ export default {
             } else {
                 for (let i = 0; i < this.orderedTermsList.length; i++) {
                     if (this.orderedTermsList[i].parent == parentId) {
-                        this.$set(this.orderedTermsList[i], 'collapsed', true);
+                        this.$set(this.orderedTermsList[i], 'collapsed', false);
                         this.collapseTermChildren(this.orderedTermsList[i].id, i);
                     }
                 }
@@ -459,8 +472,9 @@ export default {
             this.fetchChildTerms({ parentId: parentId, taxonomyId: this.taxonomyId, fetchOnly: '', search: search, all: '', order: this.order})
                 .then(() => {
                                  
-                    if (parentIndex != undefined && parentIndex > 0) {
+                    if (parentId != undefined && parentId > 0) {
                         this.orderedTermsList[parentIndex].hasLoadedChildren = true;
+                        this.orderedTermsList[parentIndex].hasCollapsedChildren = false;
                     }
                     this.generateOrderedTerms();
                     this.isLoadingTerms = false;   
@@ -483,6 +497,10 @@ export default {
 <style lang="scss">
 
     @import "../../scss/_variables.scss";
+
+    .columns {
+        position: relative;
+    }
 
     .terms-list-header {
         display: flex;
@@ -529,13 +547,16 @@ export default {
 
     .term-item {
         font-size: 14px;
-        padding: 0 0 0 0.75rem;
+        padding: 0 0 0 1.75rem;
         min-height: 40px;
         display: flex; 
         position: relative;
         align-items: center;
         justify-content: space-between;
         border-left: 1px solid transparent;
+        visibility: visible;
+        opacity: 1;
+        transition: display 0.3s, visibility 0.3s, opacity 0.3s;
 
         &:hover {
             background-color: $gray1 !important;
@@ -584,6 +605,8 @@ export default {
             padding-right: 1rem;
             white-space: nowrap;
             overflow: hidden;
+            display: flex;
+            align-items: center;
         }
         .controls { 
             visibility: hidden;
@@ -630,6 +653,9 @@ export default {
 
         &.collapsed-term {
             display: none;
+            visibility: hidden;
+            opacity: 0;
+            transition: display 0.3s, visibility 0.3s, opacity 0.3s;
         }
   
     }
