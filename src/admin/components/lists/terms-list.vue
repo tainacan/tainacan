@@ -176,8 +176,7 @@ export default {
             order: 'asc',
             termEditionFormTop: 0,
             searchQuery: '',
-            termsColapses: [],
-            isGeneratingOrderedTerms: false
+            termsColapses: []
         }
     },
     props: {
@@ -433,10 +432,8 @@ export default {
         },
         generateOrderedTerms() {
             this.termsColapses = JSON.parse(JSON.stringify(this.orderedTermsList));
-            this.isGeneratingOrderedTerms = true;
             this.orderedTermsList = new Array();
             this.buildOrderedTermsList(0, 0);
-            this.isGeneratingOrderedTerms = false;
         },
         getUnsavedTermName(term) {
             let originalIndex = this.termsList.findIndex(anOriginalTerm => anOriginalTerm.id == term.id);
