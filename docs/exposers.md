@@ -41,4 +41,54 @@ Every exposer have to implement PHP methods that will build the API response and
 		 */
 		public function rest_request_after_callbacks( $response, $handler, $request ); 
 
-Optionally, an exposer can also implement a method to print data in the `HEAD` section of the HTML when visiting an item page. For example, JSON-LD exposer can add a JSON-LD object to the head of the page of every item in your collection.
+Using this method an exposer can also print data in the `HEAD` section of the HTML when visiting an item page. For example, JSON-LD exposer can add a JSON-LD object to the head of the page of every item in your collection, modifing the rest server ($handler).
+
+### Example
+
+	<?php
+	
+	namespace Tainacan\Exposers\Types;
+	
+	/**
+	 * Generate a text formated response
+	 *
+	 */
+	class Txt extends Type {
+		
+		public $mappers = ['Value'];
+		public $slug = 'txt'; // type slug for url safe
+		
+		/**
+		 * 
+		 * {@inheritDoc}
+		 * @see \Tainacan\Exposers\Types\Type::rest_request_after_callbacks()
+		 */
+		public function rest_request_after_callbacks( $response, $handler, $request ) {
+			$response->set_headers( ['Content-Type: text/plain; charset=' . get_option( 'blog_charset' )] );
+			$txt = '';
+			$txt = $this->array_to_txt($response->get_data(), apply_filters('tainacan-exposer-txt', $txt));
+			$response->set_data($txt);
+			return $response;
+		}
+		
+		/**
+		 * Convert Array to Txt
+		 * @param array $data
+		 * @param string $txt
+		 * @return string
+		 */
+		protected function array_to_txt( $data, $txt ) {
+			foreach( $data as $key => $value ) {
+				if( is_numeric($key) ){
+					$key = apply_filters('tainacan-exposer-numeric-item-prefix', __('item', 'tainacan').'-', get_class($this)).$key; //dealing with giving a key prefix
+				}
+				if( is_array($value) ) {
+					$txt .= $key.": ".$this->array_to_txt($value, '['.$txt.']\n');
+				} else {
+					$txt .= $key.": ".$value .'\n';
+				}
+			}
+			return $txt;
+		}
+	}
+		
