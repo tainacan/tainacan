@@ -86,12 +86,15 @@ class Test_Importer extends Importer {
 		$this->col_repo = \Tainacan\Repositories\Collections::get_instance();
 		$this->items_repo = \Tainacan\Repositories\Items::get_instance();
 		$this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
+		$this->item_metadata_repo = \Tainacan\Repositories\Item_Metadata::get_instance();
 		
 		$this->remove_import_method('file');
 		$this->remove_import_method('url');
 		
 		$this->set_default_options([
-            'items_col_1' => 20
+			'items_col_1' => 20,
+			'horizontal_image_size' => 0,
+			'vertical_image_size' => 0,
 		]);
 		
 	}
@@ -142,6 +145,54 @@ class Test_Importer extends Importer {
 		$form .= '<input type="text" class="input" name="items_col_2" value="' . $this->get_option('items_col_2') . '" />';
 		$form .= '</div>';
 		$form .= '</div>';
+
+		$form .= '<hr>';
+		$form .= '<h2>'. __('Images', 'tainacan') . '</h2><br>';
+		
+		$form .= '<div class="field">';   
+        $form .= '<label class="label">' . __('Add random images from flickr using [https://loremflickr.com/] in first collection', 'tainacan') . '</label>';
+  
+        $not_add = ( !$this->get_option('add_random_images') || $this->get_option('add_random_images') === 'no' ) ? 'checked' : '';
+        $add = ( !$this->get_option('add_random_images') && $this->get_option('add_random_images') === 'yes' ) ? 'checked' : '';
+
+        $form .= '<div class="field">';
+        $form .= '<label class="b-radio radio is-small">';
+        $form .= '<input type="radio"  name="add_random_images" value="yes" '. $add . ' />';
+        $form .= '<span class="check"></span>';
+        $form .= '<span class="control-label">';
+        $form .=  __('Yes', 'tainacan') . '</span></label>';
+		$form .= '</div>';
+        
+        $form .= '<div class="field">';
+        $form .= '<label class="b-radio radio is-small">';
+        $form .= '<input type="radio"  name="add_random_images" value="no" '. $not_add . ' />';
+        $form .= '<span class="check"></span>';
+        $form .= '<span class="control-label">';
+        $form .=  __('No', 'tainacan') . '</span></label>';
+        $form .= '</div>';
+
+		$form .= '</div>';
+		
+		$form .= '<div class="field">';
+		$form .= '<label class="label">' . __('Horizontal image size ( 0 for random size )', 'tainacan') . '</label>';
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="horizontal_image_size" value="' . $this->get_option('horizontal_image_size') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
+
+		$form .= '<div class="field">';
+		$form .= '<label class="label">' . __('Vertical image size ( 0 for random size )', 'tainacan') . '</label>';
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="vertical_image_size" value="' . $this->get_option('vertical_image_size') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
+
+		$form .= '<div class="field">';
+		$form .= '<label class="label">' . __('Type one keyword which it will be used to find images in flickr', 'tainacan') . '</label>';
+		$form .= '<div class="control">';
+		$form .= '<input type="text" class="input" name="keyword_images" value="' . $this->get_option('keyword_images') . '" />';
+		$form .= '</div>';
+		$form .= '</div>';
 		
         return $form;
 
@@ -173,22 +224,6 @@ class Test_Importer extends Importer {
 		}
 		
 		$this->add_transient('tax_1_id', $tax1->get_id());
-		
-		$tax2 = new Entities\Taxonomy();
-		$tax2->set_name('Quality');
-		$tax2->set_allow_insert('yes');
-		$tax2->set_status('publish');
-		if ($tax2->validate()) {
-			$tax2 = $this->tax_repo->insert($tax2);
-		} else {
-			$this->add_error_log('Error creating taxonomy Quality');
-			$this->add_error_log($tax2->get_errors());
-			$this->abort();
-			return false;
-			
-		}
-		
-		$this->add_transient('tax_2_id', $tax2->get_id());
 		
 		return false;
 		
@@ -391,10 +426,10 @@ class Test_Importer extends Importer {
 			if ( isset($collections[0]) && $collections[0]['source_id'] === 'col1' ) {
 
 				$col1 = new Entities\Collection($collections[0]['id']);
-				$items_first = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $col1, 'OBJECT' );
+				$items_first = $this->items_repo->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $col1, 'OBJECT' );
 
 				$col2 = new Entities\Collection($collections[1]['id']);
-				$items_second = $Tainacan_Items->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $col1, 'OBJECT' );
+				$items_second = $this->items_repo->fetch( ['order'=> 'DESC', 'orderby' => 'ID'], $col2, 'OBJECT' );
 
 				$metadatum = new Entities\Metadatum($this->get_transient('relationship_id'));
 
@@ -410,12 +445,14 @@ class Test_Importer extends Importer {
 						$item_metadata->set_value($rand_item->get_id());
 
 						if($item_metadata->validate()){
-							$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
+							$item_metadata = $this->item_metadata_repo->insert($item_metadata);
 						}
 					}
 				}
 			}
 		}
+
+		return false;
 	}
 	
 	public function close_taxonomies() {
@@ -457,12 +494,13 @@ class Test_Importer extends Importer {
 	
 	public function finish_processing() {
 		
+		$this->add_log('finish_processing');
 		// Lets just pretend we are doing something really important
 		$important_stuff = 5;
 		$current = $this->get_in_step_count();
 		if ($current <= $important_stuff) {
 			// This is very important
-			sleep(5);
+			sleep(3);
 			$current ++;
 			return $current;
 		} else {
@@ -478,6 +516,49 @@ class Test_Importer extends Importer {
 		return $item;
 		
 	}
+
+	/**
+     * @inheritdoc
+     */
+    public function after_inserted_item( $inserted_item, $collection_index ) {
+		$TainacanMedia = \Tainacan\Media::get_instance();
+
+		$collections = $this->get_collections();
+		$collection_definition = $collections[$collection_index];
+		
+		if( $collection_definition['source_id'] === 'col1' && $this->get_option('add_random_images') === 'yes' ){
+
+			$horizontal_size = ( $this->get_option('horizontal_image_size') > 0 ) ? $this->get_option('horizontal_image_size') : rand ( 100 , 600 );
+			$vertical_size = ( $this->get_option('vertical_image_size') > 0 ) ? $this->get_option('vertical_image_size') : rand ( 100 , 600 );
+			$keyword = ( $this->get_option('keyword_images') ) ? $this->get_option('keyword_images') : '';
+
+			$url = "https://loremflickr.com/$horizontal_size/$vertical_size/$keyword";
+			
+			$id = $TainacanMedia->insert_attachment_from_url($url);
+
+			if(!$id){
+				$this->add_error_log('Error in imported URL ' . $url);
+				return false;
+			}
+
+			$inserted_item->set_document( $id );
+			$inserted_item->set_document_type( 'attachment' );
+			$this->add_log('Document  URL imported from ' . $correct_value);
+
+			if( $inserted_item->validate() ) {
+				$inserted_item = $this->items_repo->update($inserted_item);
+
+				$thumb_id = $this->items_repo->get_thumbnail_id_from_document($inserted_item);
+        
+				if (!is_null($thumb_id)) {
+					$this->add_log('Setting item thumbnail: ' . $thumb_id);
+					set_post_thumbnail( $inserted_item->get_id(), (int) $thumb_id );
+				}
+
+				return true;
+			}
+		}
+    }
 	
 	public function get_col1_number_of_items() {
 		return $this->get_option('items_col_1');
@@ -492,6 +573,7 @@ class Test_Importer extends Importer {
 	 * 
 	 */
 	private function create_metadata( $args, $collection ){
+
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name($args['name']);
 		$metadatum->set_collection($collection);
@@ -549,6 +631,8 @@ class Test_Importer extends Importer {
 
 		return $array;
 	}
+
+
 	public function get_col2_item($index) {
 		return [
 			'field1' => 'Collection 2 item ' . $index,
