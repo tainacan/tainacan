@@ -212,7 +212,6 @@ export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, s
     } else if(fetchOnly && search && all ){ 
         query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
     } else if(search && !all && !fetchOnly){ 
-        console.log(search)
         query = `?hideempty=0&order=${order}&${qs.stringify(search)}`;
     } else {
         query =`?hideempty=0&order=${order}`;

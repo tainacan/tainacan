@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import t from 't';
 
 // TAXONOMIES
 export const setTaxonomy = (state, taxonomy) => {
@@ -37,20 +38,28 @@ export const setTerms = (state, terms) => {
 };
 
 export const setChildTerms = (state, { terms, parent }) => {
-    let index = state.terms.findIndex(aTerm => aTerm.id == parent);
-    if (index >= 0) {
-        let newIndex = 1;
-        for (let i = 0; i < terms.length; i++) {
-            let termIndex = state.terms.findIndex(aTerm => aTerm.id == terms[i].id);
-            if (termIndex >= 0) {
-                state.terms[termIndex] = terms[i];
-            } else {
-                state.terms.splice(index + newIndex, 0, terms[i]);
-                newIndex++;
+    
+    if (parent > 0 ) {
+        for (let term of state.terms) {
+            let parentTerm = t.find(term, [], (node, par) => { return node.id == parent; });
+            if (parentTerm != undefined) {
+                if (parentTerm['children'] == undefined)
+                    Vue.set(parentTerm, 'children', []);
+
+                for (let term of terms){
+                    parentTerm['children'].push(term);
+                }     
             }
         }
     } else {
-        state.terms = terms;
+        if (state.terms != undefined) {
+            
+            for (let term of terms)
+                state.terms.push(term);
+
+        } else {    
+            state.terms = terms;
+        }
     }
 };
 
