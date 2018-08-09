@@ -222,13 +222,28 @@ export default {
         height: 100vh;
         right: 26px;
     }
+
+    @media screen and (max-width: 768px) {
+        .processes-popup {
+            right: 27px !important;
+        }
+    }
+
+    // For iPhone SE
+    @media screen and (max-width: 320px) {
+        .processes-popup {
+            right: 20px !important;
+            width: 280px !important;
+        }
+    }
+
     .processes-popup{
         background-color: $blue2;
         width: 320px;
         max-width: 100%;
         position: absolute;
         top: 48px;
-        right: 26px;
+        right: 40px;
         border-radius: 5px;
         animation-name: appear-from-top;
         animation-duration: 0.3s;

@@ -365,7 +365,9 @@
                 });
             }, 300),
             isRelationship(metadatum, metadatumIndex){
-                if(metadatum.metadata_type.includes('Relationship')){
+                if(!metadatum){
+                    return false;
+                } else if(metadatum.metadata_type.includes('Relationship')){
                     this.metadata.splice(metadatumIndex, 1);
 
                     return false;
