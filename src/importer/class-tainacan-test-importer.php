@@ -46,7 +46,7 @@ class Test_Importer extends Importer {
 			'name' => 'Finalize',
 			'progress_label' => 'Finalizing',
 			'callback' => 'finish_processing',
-			'total' => 5
+			'total' => 6
 		]
 		
 	];
@@ -522,6 +522,7 @@ class Test_Importer extends Importer {
      */
     public function after_inserted_item( $inserted_item, $collection_index ) {
 		$TainacanMedia = \Tainacan\Media::get_instance();
+		$this->add_log('after inserted' . $inserted_item->get_id());
 
 		$collections = $this->get_collections();
 		$collection_definition = $collections[$collection_index];
@@ -534,7 +535,7 @@ class Test_Importer extends Importer {
 
 			$url = "https://loremflickr.com/$horizontal_size/$vertical_size/$keyword";
 			
-			$id = $TainacanMedia->insert_attachment_from_url($url);
+			$id = $TainacanMedia->insert_attachment_from_blob(file_get_contents($url), time() . '.jpg', null);
 
 			if(!$id){
 				$this->add_error_log('Error in imported URL ' . $url);

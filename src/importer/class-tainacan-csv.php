@@ -168,90 +168,65 @@ class CSV extends Importer {
         return false;
         
     }
+
+    
     public function options_form() {
 
-       
-        ob_start();
-        ?>
-        
-        <span class="help-wrapper">
-                <a class="help-button has-text-secondary">
-                    <span class="icon is-small">
-                        <i class="mdi mdi-help-circle-outline" />
-                    </span>
-                </a>
-                <div class="help-tooltip">
-                    <div class="help-tooltip-header">
-                        <h5>Sooper Looper</h5>
-                    </div>
-                    <div class="help-tooltip-body">
-                        <p>alou alou</p>
-                    </div>
-                </div>
-        </span>
-        
-        <?php
-        
-        
-        return ob_get_clean();
-    }
-    // public function options_form() {
+         $form = '<div class="field">';
+         $form .= '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
+         $form .= '<div class="control">';
+         $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
+         $form .= '</div>';
+         $form .= '</div>';
 
-    //     $form = '<div class="field">';
-    //     $form .= '<label class="label">' . __('Delimiter', 'tainacan') . '</label>';
-    //     $form .= '<div class="control">';
-    //     $form .= '<input type="text" class="input" name="delimiter" value="' . $this->get_option('delimiter') . '" />';
-    //     $form .= '</div>';
-    //     $form .= '</div>';
+         $form .= '<div class="field">';
+         $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
+         $form .= '<div class="control">';
+         $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
+         $form .= '</div>';
+         $form .= '</div>';
 
-    //     $form .= '<div class="field">';
-    //     $form .= '<label class="label">' . __('Multivalued metadata delimiter', 'tainacan') . '</label>';
-    //     $form .= '<div class="control">';
-    //     $form .= '<input type="text" class="input" name="multivalued_delimiter" value="' . $this->get_option('multivalued_delimiter') . '" />';
-    //     $form .= '</div>';
-    //     $form .= '</div>';
-
-    //     $form .= '<div class="field">';   
-    //     $form .= '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
+         $form .= '<div class="field">';   
+         $form .= '<label class="label">' . __('Encoding', 'tainacan') . '</label>';
   
-    //     $utf8 = ( !$this->get_option('encode') || $this->get_option('encode') === 'utf8' ) ? 'checked' : '';
-    //     $iso = ( !$this->get_option('encode') && $this->get_option('encode') === 'iso88591' ) ? 'checked' : '';
+         $utf8 = ( !$this->get_option('encode') || $this->get_option('encode') === 'utf8' ) ? 'checked' : '';
+         $iso = ( !$this->get_option('encode') && $this->get_option('encode') === 'iso88591' ) ? 'checked' : '';
 
-    //     $form .= '<div class="field">';
-    //     $form .= '<label class="b-radio radio is-small">';
-    //     $form .= '<input type="radio"  name="encode" value="utf8" '. $utf8 . ' />';
-    //     $form .= '<span class="check"></span>';
-    //     $form .= '<span class="control-label">';
-    //     $form .=  __('UTF8', 'tainacan') . '</span></label>';
-    //     $form .= '</div>';
+         $form .= '<div class="field">';
+         $form .= '<label class="b-radio radio is-small">';
+         $form .= '<input type="radio"  name="encode" value="utf8" '. $utf8 . ' />';
+         $form .= '<span class="check"></span>';
+         $form .= '<span class="control-label">';
+         $form .=  __('UTF8', 'tainacan') . '</span></label>';
+         $form .= '</div>';
         
-    //     $form .= '<div class="field">';
-    //     $form .= '<label class="b-radio radio is-small">';
-    //     $form .= '<input type="radio"  name="encode" value="iso88591" '. $iso . ' />';
-    //     $form .= '<span class="check"></span>';
-    //     $form .= '<span class="control-label">';
-    //     $form .=  __('ISO 8859-1', 'tainacan') . '</span></label>';
-    //     $form .= '</div>';
+         $form .= '<div class="field">';
+         $form .= '<label class="b-radio radio is-small">';
+         $form .= '<input type="radio"  name="encode" value="iso88591" '. $iso . ' />';
+         $form .= '<span class="check"></span>';
+         $form .= '<span class="control-label">';
+         $form .=  __('ISO 8859-1', 'tainacan') . '</span></label>';
+         $form .= '</div>';
 
-    //     $form .= '</div>';
+         $form .= '</div>';
 
-    //     $form .= '<div class="field">';
-    //     $form .= '<label class="label">' . __('Enclosure character', 'tainacan') . '</label>';
-    //     $form .= '<div class="control">';
-    //     $form .= '<input type="text" class="input" size="1" name="enclosure" value="' . $this->get_option('enclosure') . '" />';
-    //     $form .= '</div>';
-    //     $form .= '</div>';
+         $form .= '<div class="field">';
+         $form .= '<label class="label">' . __('Enclosure character', 'tainacan') . '</label>';
+         $form .= '<div class="control">';
+         $form .= '<input type="text" class="input" size="1" name="enclosure" value="' . $this->get_option('enclosure') . '" />';
+         $form .= '</div>';
+         $form .= '</div>';
 
-    //     $form .= '<div class="field">';
-    //     $form .= '<label class="label">' . __('Server path', 'tainacan') . '</label>';
-    //     $form .= '<div class="control">';
-    //     $form .= '<input type="text" class="input" size="1" name="server_path" value="' . $this->get_option('server_path') . '" />';
-    //     $form .= '</div>';
-    //     $form .= '</div>';
+         $form .= '<div class="field">';
+         $form .= '<label class="label">' . __('Server path', 'tainacan') . '</label>';
+         $form .= '<div class="control">';
+         $form .= '<input type="text" class="input" size="1" name="server_path" value="' . $this->get_option('server_path') . '" />';
+         $form .= '</div>';
+         $form .= '</div>';
 
-    //     return $form;
+         return $form;
 
-    // }
+    }
 
     /**
      * get the encode option and return as expected
