@@ -75,9 +75,6 @@
                         :class="{'is-danger': formWithErrors == term.id }">
                     {{ term.saved && !term.opened ? term.name : getUnsavedTermName(term) }}
                 </span>
-                <span class="has-text-gray">
-                    {{ String(term.hasLoadedChildren) + ' | ' + String(term.hasCollapsedChildren) }}
-                </span>
                 <span   
                         v-if="term.id != undefined"
                         class="label-details">
