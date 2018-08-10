@@ -278,12 +278,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_process_failed'	                         => __( 'Process failed', 'tainacan' ),
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 	'label_unamed_process'                       	 => __( 'Unamed process', 'tainacan' ),
-	'label_import_collection'                      	 => __( 'Import collection', 'tainacan' ),
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
 	'label_view_collection'                     	 => __( 'View collection', 'tainacan' ),
 	'label_view_more'                                => __( 'View more', 'tainacan' ),
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),
 	'label_error_log_file'	                     	 => __( 'Error Log file', 'tainacan' ),
+	'label_import_items'	                     	 => __( 'Import items', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -412,7 +412,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_unknown_date'                              => __( 'Unknown date.', 'tainacan' ),
 	'info_there_are_no_metadata_to_search'           => __( 'There are no metadata to search', 'tainacan' ),
 	'info_there_are_no_metadata_in_repository_level' => __( 'There are no metadata in repository level', 'tainacan' ),
-	'info_import_a_collection'						 => __( 'Import a collection from external sources', 'tainacan' ),
+	'info_import_collection'						 => __( 'Import from external sources.', 'tainacan' ),
+	'info_import_items'								 => __( 'Import items from external sources.', 'tainacan' ),
 
 	// Tainacan Metadatum Types
 	'tainacan-text'                                  => __( 'Text', 'tainacan' ),
