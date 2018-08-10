@@ -4,7 +4,7 @@ Plugin Name: Tainacan
 Plugin URI: https://tainacan.org/new
 Description: powerfull and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional respository platform.
 Author: Media Lab / UFG
-Version: 0.2
+Version: 0.3
 Text Domain: tainacan
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -16,8 +16,7 @@ const TAINACAN_API_DIR     = __DIR__ . '/api/';
 const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 require_once(TAINACAN_CLASSES_DIR . 'tainacan-creator.php');
 require_once(TAINACAN_API_DIR     . 'tainacan-rest-creator.php');
-require_once('setup-db.php');
-require_once('migrate-post-type.php');
+require_once('migrations.php');
 
 // DEV Interface, used for debugging
 function tnc_enable_dev_wp_interface() {
@@ -43,5 +42,5 @@ add_action( 'after_setup_theme', function() {
 
 $Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
 register_activation_hook( __FILE__, array( $Tainacan_Capabilities, 'init' ) );
-register_activation_hook( __FILE__, 'tainacan_create_bd_process_db' );
-register_activation_hook( __FILE__, 'tainacan_migrate_post_type_field_to_metadatum');
+
+add_action('init', ['Tainacan\Migrations', 'run_migrations']);
