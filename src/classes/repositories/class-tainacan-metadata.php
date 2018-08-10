@@ -538,16 +538,38 @@ class Metadata extends Repository {
 		return $this->insert($object);
     }
 
-    public function delete($metadatum_id){
-		$this->delete_taxonomy_metadatum($metadatum_id);
+	/**
+	 * @param $metadatum_id
+	 *
+	 * @return mixed|void
+	 * @throws \Exception
+	 */
+	public function delete($metadatum_id){
+		$deleted = new Entities\Metadatum( wp_delete_post( $metadatum_id, true ) );
 
-		$deleted =  new Entities\Metadatum( wp_trash_post( $metadatum_id ) );
-
-		if($deleted) {
+		if ( $deleted ) {
 			do_action( 'tainacan-deleted', $deleted, [], false, true );
 		}
 
 		return $deleted;
+	}
+
+	/**
+	 * @param $metadatum_id
+	 *
+	 * @return mixed|Entities\Metadatum
+	 * @throws \Exception
+	 */
+	public function trash($metadatum_id){
+	    $this->delete_taxonomy_metadatum($metadatum_id);
+
+	    $trashed = new Entities\Metadatum( wp_trash_post( $metadatum_id ) );
+
+	    if($trashed) {
+		    do_action( 'tainacan-trashed', $trashed, [],  false, false, true );
+	    }
+
+	    return $trashed;
     }
 
     /**
@@ -628,8 +650,6 @@ class Metadata extends Repository {
 		$res = $wpdb->query($sql_statement);
 
 		wp_cache_flush();
-
-		
 
     }
 
@@ -757,13 +777,14 @@ class Metadata extends Repository {
 		], 'OBJECT');
 
 	}
-	
+
 	/**
 	 * Get the Core Title Metadatum for a collection
-	 * 
+	 *
 	 * @param Entities\Collection $collection
-	 * 
+	 *
 	 * @return \Tainacan\Entities\Metadatum The Core Title Metadatum
+	 * @throws \Exception
 	 */
 	public function get_core_title_metadatum( Entities\Collection $collection ) {
 
@@ -785,10 +806,11 @@ class Metadata extends Repository {
 
 	/**
 	 * Get the Core Description Metadatum for a collection
-	 * 
+	 *
 	 * @param Entities\Collection $collection
-	 * 
+	 *
 	 * @return \Tainacan\Entities\Metadatum The Core Description Metadatum
+	 * @throws \Exception
 	 */
 	public function get_core_description_metadatum( Entities\Collection $collection ) {
 
@@ -1019,7 +1041,6 @@ class Metadata extends Repository {
 			}
 		}
 
-		//return $results;
 		return $this->unique_multidimensional_array($results, 'mvalue');
 	}
 	

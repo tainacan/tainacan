@@ -194,7 +194,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertContains($collection->get_id(), $checkTax2->get_collections_ids(), 'Collection must be added to taxonomy when metadatum is updated');
 		$this->assertNotContains($collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be removed from taxonomy when metadatum is updated');
 		
-		$metadatum = $Tainacan_Metadata->delete($metadatum->get_id());
+		$metadatum = $Tainacan_Metadata->trash($metadatum->get_id());
 		
 		$checkTax2 = $Tainacan_Taxonomies->fetch($tax2->get_id());
 		

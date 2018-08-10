@@ -150,7 +150,8 @@ class REST_Terms_Controller extends REST_Controller {
 		$term_id = $request['term_id'];
 		$taxonomy_id = $request['taxonomy_id'];
 
-		$taxonomy_name = $this->taxonomy_repository->fetch( $taxonomy_id )->get_db_identifier();
+		$taxonomy = $this->taxonomy_repository->fetch( $taxonomy_id );
+		$taxonomy_name = $taxonomy->get_db_identifier();
 
 		if(!$taxonomy_name){
 			return new \WP_REST_Response([
@@ -158,9 +159,9 @@ class REST_Terms_Controller extends REST_Controller {
 			]);
 		}
 
-		$args = [$term_id, $taxonomy_name];
+		$delete_args = ['term_id' => $term_id, 'taxonomy' => $taxonomy_name];
 
-		$is_deleted = $this->terms_repository->delete($args);
+		$is_deleted = $this->terms_repository->delete($delete_args);
 
 		return new \WP_REST_Response($is_deleted, 200);
 	}

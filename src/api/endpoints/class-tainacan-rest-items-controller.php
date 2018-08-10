@@ -411,9 +411,11 @@ class REST_Items_Controller extends REST_Controller {
 		$item_id     = $request['item_id'];
 		$permanently = $request['permanently'];
 
-		$args = [$item_id, $permanently];
-
-		$item = $this->items_repository->delete($args);
+		if($permanently == true) {
+			$item = $this->items_repository->delete($item_id);
+		} else {
+			$item = $this->items_repository->trash($item_id);
+		}
 
 		$prepared_item = $this->prepare_item_for_response($item, $request);
 

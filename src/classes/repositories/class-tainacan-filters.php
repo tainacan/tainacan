@@ -187,28 +187,31 @@ class Filters extends Repository {
         return new Entities\Filter($metadatum->WP_Post);
     }*/
 
-    /**
-     * @param array $args
-     * @return Entities\Filter
-     *
-     */
-    public function delete($args){
-	    if(!empty($args[1]) && $args[1] == true){
+	/**
+	 * @param $filter_id
+	 *
+	 * @return Entities\Filter
+	 */
+    public function delete($filter_id){
+	    $deleted = new Entities\Filter( wp_delete_post( $filter_id, true ) );
 
-	    	$deleted = new Entities\Filter(wp_delete_post($args[0], $args[1]));
-
-	    	if($deleted){
-	    		do_action('tainacan-deleted', $deleted, [], false, true);
-		    }
-
-		    return $deleted;
+	    if ( $deleted ) {
+		    do_action( 'tainacan-deleted', $deleted, [], false, true );
 	    }
 
+	    return $deleted;
+    }
 
-	    $trashed = new Entities\Filter(wp_trash_post($args[0]));
+	/**
+	 * @param $filter_id
+	 *
+	 * @return mixed|Entities\Filter
+	 */
+	public function trash($filter_id){
+	    $trashed = new Entities\Filter(wp_trash_post($filter_id));
 
 	    if($trashed){
-	    	do_action('tainacan-trashed', $trashed, [], false, false, true);
+		    do_action('tainacan-trashed', $trashed, [], false, false, true);
 	    }
 
 	    return $trashed;

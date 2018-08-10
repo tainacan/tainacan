@@ -234,17 +234,29 @@ class Terms extends Repository {
     	return $this->insert($object);
     }
 
-    public function delete($args){
-    	$deleted = wp_delete_term($args[0], $args[1]);
+	/**
+	 * @param Array $delete_args has ['term_id', 'taxonomy']
+	 *
+	 * @return bool|int|mixed|\WP_Error
+	 */
+	public function delete($delete_args){
+    	$deleted = wp_delete_term($delete_args['term_id'], $delete_args['taxonomy']);
 
     	if($deleted) {
-    		$deleted_term_tainacan = new Entities\Term($args[0], $args[1]);
+    		$deleted_term_tainacan = new Entities\Term($delete_args['term_id'], $delete_args['taxonomy']);
 
 		    do_action( 'tainacan-deleted', $deleted_term_tainacan, [], false, true );
 	    }
 
     	return $deleted;
     }
+
+	/**
+	 * @param $term_id
+	 *
+	 * @return mixed|void
+	 */
+	public function trash($term_id){}
     
     public function register_post_type() { }
 }

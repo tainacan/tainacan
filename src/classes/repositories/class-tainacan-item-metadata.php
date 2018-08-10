@@ -23,7 +23,13 @@ class Item_Metadata extends Repository {
         return self::$instance;
     }
 
-    public function insert($item_metadata) {
+	/**
+	 * @param Entities\Entity $item_metadata
+	 *
+	 * @return Entities\Entity|Entities\Item_Metadata_Entity
+	 * @throws \Exception
+	 */
+	public function insert($item_metadata) {
 
 		if ( ! $item_metadata->get_validated() ) {
 			throw new \Exception( 'Entities must be validated before you can save them' );
@@ -114,13 +120,25 @@ class Item_Metadata extends Repository {
     }
 
 	/**
-	 * @param $item_metadata
+	 * @param $item_metadata_id
 	 *
 	 * @return mixed|void
 	 */
-	public function delete($item_metadata){}
+	public function delete($item_metadata_id){}
 
-    public function save_core_metadatum_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+	/**
+	 * @param $item_metadata_id
+	 *
+	 * @return mixed|void
+	 */
+	public function trash($item_metadata_id){}
+
+	/**
+	 * @param Entities\Item_Metadata_Entity $item_metadata
+	 *
+	 * @throws \Exception
+	 */
+	public function save_core_metadatum_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
         $metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
 
         if ($metadata_type->get_core()) {
@@ -138,7 +156,12 @@ class Item_Metadata extends Repository {
             }
         }
     }
-	
+
+	/**
+	 * @param $item_metadata
+	 *
+	 * @throws \Exception
+	 */
 	public function save_terms_metadatum_value($item_metadata) {
 		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
 		if ($metadata_type->get_primitive_type() == 'term') {

@@ -390,7 +390,7 @@ class REST_Metadata_Controller extends REST_Controller {
 	public function delete_item( $request ) {
 		$metadatum_id = $request['metadatum_id'];
 
-		$metadatum_trashed = $this->metadatum_repository->delete($metadatum_id);
+		$metadatum_trashed = $this->metadatum_repository->trash($metadatum_id);
 
 		$prepared = $this->prepare_item_for_response($metadatum_trashed, $request);
 

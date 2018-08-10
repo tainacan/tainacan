@@ -183,48 +183,50 @@ class Taxonomies extends Repository {
     	return $this->insert($object);
     }
 
-    public function delete($args){
-	    $taxonomy_id    = $args[0];
-	    $taxonomy_name  = $args[1];
-	    $permanently    = $args[2];
+    public function delete($taxonomy_id){
+	    $taxonomy_name  = $this->fetch($taxonomy_id)->get_db_identifier();
 
-	    if($permanently == true){
-	    	/* TODO: Investigate the cause of taxonomies aren't been registered
-	    	 *
-	    	 * This cause a 'invalid taxonomy' exception when try to delete permanently a taxonomy
-	    	 *
-	    	 * This condition is a temporary solution
-		     */
-	    	if(taxonomy_exists($taxonomy_name)) {
-			    $unregistered = unregister_taxonomy( $taxonomy_name );
+	    /* TODO: Investigate the cause of taxonomies aren't been registered
+		 *
+		 * This cause a 'invalid taxonomy' exception when try to delete permanently a taxonomy
+		 *
+		 * This condition is a temporary solution
+		 */
+	    if ( taxonomy_exists( $taxonomy_name ) ) {
+		    $unregistered = unregister_taxonomy( $taxonomy_name );
 
-			    if ( $unregistered instanceof \WP_Error ) {
-				    return $unregistered;
-			    }
+		    if ( $unregistered instanceof \WP_Error ) {
+			    return $unregistered;
 		    }
-
-    		$deleted = new Entities\Taxonomy(wp_delete_post($taxonomy_id, true));
-
-    		if(!$deleted){
-    			return $deleted;
-		    }
-
-		    do_action('tainacan-deleted', $deleted, [], false, true);
-
-    		return $deleted;
 	    }
 
+	    $deleted = new Entities\Taxonomy( wp_delete_post( $taxonomy_id, true ) );
+
+	    if ( ! $deleted ) {
+		    return $deleted;
+	    }
+
+	    do_action( 'tainacan-deleted', $deleted, [], false, true );
+
+	    return $deleted;
+    }
+
+	/**
+	 * @param $taxonomy_id
+	 *
+	 * @return mixed|Entities\Taxonomy
+	 */
+	public function trash($taxonomy_id){
 	    $trashed = new Entities\Taxonomy(wp_trash_post($taxonomy_id));
 
-    	if(!$trashed){
-    		return $trashed;
+	    if(!$trashed){
+		    return $trashed;
 	    }
 
 	    do_action('tainacan-trashed',  $trashed, [], false, false, true );
 
-    	return $trashed;
+	    return $trashed;
     }
-	
 	
 	public function added_collection($taxonomy_id, $collection) {
 		$id = $taxonomy_id;
@@ -247,6 +249,6 @@ class Taxonomies extends Repository {
 			}
 		}
 	}
-	
-	
+
+
 }

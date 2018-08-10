@@ -86,7 +86,7 @@ abstract class Repository {
 	 *
 	 * @param \Tainacan\Entities\Entity $obj
 	 *
-	 * @return \Tainacan\Entities\Entity
+	 * @return \Tainacan\Entities\Entity | bool
 	 * @throws \Exception
 	 */
 	public function insert( $obj ) {
@@ -585,6 +585,13 @@ abstract class Repository {
 	 * @return mixed
 	 */
 	public abstract function delete( $object );
+
+	/**
+	 * @param $object
+	 *
+	 * @return mixed
+	 */
+	public abstract function trash( $object );
 
 	/**
 	 * @param $args

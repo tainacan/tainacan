@@ -286,23 +286,27 @@ class Items extends Repository {
 	}
 
 	/**
-	 * @param $args ( is a array like [post_id, [is_permanently => bool]] )
+	 * @param $item_id
 	 *
-	 * @return mixed|Entities\Item
+	 * @return mixed|Item
 	 */
-	public function delete( $args ) {
-		if ( ! empty( $args[1] ) && $args[1] == true ) {
+	public function delete( $item_id ) {
+		$deleted = new Entities\Item( wp_delete_post( $item_id, true ) );
 
-			$deleted = new Entities\Item( wp_delete_post( $args[0], $args[1] ) );
-
-			if($deleted) {
-				do_action( 'tainacan-deleted', $deleted, false, true );
-			}
-
-			return $deleted;
+		if ( $deleted ) {
+			do_action( 'tainacan-deleted', $deleted, false, true );
 		}
 
-		$trashed = new Entities\Item( wp_trash_post( $args[0] ) );
+		return $deleted;
+	}
+
+	/**
+	 * @param $item_id
+	 *
+	 * @return mixed|Item
+	 */
+	public function trash($item_id){
+		$trashed = new Entities\Item( wp_trash_post( $item_id ) );
 
 		if($trashed) {
 			do_action( 'tainacan-trashed',  $trashed, [], false, false, true );

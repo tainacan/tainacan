@@ -279,22 +279,27 @@ class Collections extends Repository {
 	}
 
 	/**
-	 * @param $args ( is a array like [post_id, [is_permanently => bool]] )
+	 * @param $collection_id
 	 *
 	 * @return mixed|Collection
 	 */
-	public function delete( $args ) {
-		if ( ! empty( $args[1] ) && $args[1] == true ) {
-			$deleted = new Entities\Collection( wp_delete_post( $args[0], $args[1] ) );
+	public function delete( $collection_id ) {
+		$deleted = new Entities\Collection( wp_delete_post( $collection_id, true ) );
 
-			if($deleted) {
-				do_action( 'tainacan-deleted', $deleted, [], false, true );
-			}
-
-			return $deleted;
+		if ( $deleted ) {
+			do_action( 'tainacan-deleted', $deleted, [], false, true );
 		}
 
-		$trashed = new Entities\Collection( wp_trash_post( $args[0] ) );
+		return $deleted;
+	}
+
+	/**
+	 * @param $collection_id
+	 *
+	 * @return mixed|Collection
+	 */
+	public function trash( $collection_id ) {
+		$trashed = new Entities\Collection( wp_trash_post( $collection_id ) );
 
 		if($trashed) {
 			do_action( 'tainacan-trashed', $trashed, [], false, false, true );

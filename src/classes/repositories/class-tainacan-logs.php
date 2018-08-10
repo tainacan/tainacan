@@ -208,9 +208,8 @@ class Logs extends Repository {
 		}
 	}
 
-	public function delete( $object ) {
-
-	}
+	public function delete( $object ){}
+	public function trash( $object ){}
 
 	public function update( $object, $new_values = null ) {
 		return $this->insert($object);
@@ -282,7 +281,7 @@ class Logs extends Repository {
 	 * @param bool $is_delete
 	 * @param bool $is_trash
 	 *
-	 * @return Entities\Log new created log
+	 * @return Entities\Log|bool new created log
 	 */
 	public function insert_log( $new_value, $diffs = [], $is_update = false, $is_delete = false, $is_trash = false ) {
 		$msn         = null;
@@ -323,7 +322,6 @@ class Logs extends Repository {
 				// was created
 				$msn = $this->prepare_event_message($new_value, $name, $class_name, 'created');
 				$description = $msn;
-
 			} elseif( $is_trash ) {
 				// was trashed
 				$msn = $this->prepare_event_message($new_value, $name, $class_name, 'trashed');
@@ -368,17 +366,14 @@ class Logs extends Repository {
 	private function prepare_event_message($object, $name, $class_name, $action_message){
 		if ( $object instanceof Entities\Metadatum || $object instanceof Entities\Item || $object instanceof Entities\Filter) {
 			$collection = $object->get_collection();
-			$parent     = $collection;
 
 			if ( $collection ) {
-				$parent = $collection->get_name();
-
-				if ( ! $parent ) {
-					$parent = $collection->get_status();
-				}
+				$parent = '(parent '. $collection->get_name() .')';
+			} else {
+				$parent = '(on repository level)';
 			}
 
-			$description = sprintf( __( "The \"%s\" %s has been %s (parent %s).", 'tainacan' ), $name, strtolower( $class_name ), $action_message, $parent );
+			$description = sprintf( __( "The \"%s\" %s has been %s %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message, $parent );
 		} else {
 			$description = sprintf( __( "The \"%s\" %s has been %s.", 'tainacan' ), $name, strtolower( $class_name ), $action_message );
 		}

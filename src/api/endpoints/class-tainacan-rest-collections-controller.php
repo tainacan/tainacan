@@ -328,9 +328,11 @@ class REST_Collections_Controller extends REST_Controller {
 	    $collection_id = $request['collection_id'];
 		$permanently = $request['permanently'];
 
-		$args = [$collection_id, $permanently];
-
-		$collection = $this->collections_repository->delete($args);
+		if($permanently == true) {
+			$collection = $this->collections_repository->delete($collection_id);
+		} else {
+			$collection = $this->collections_repository->trash($collection_id);
+		}
 
 		$prepared_collection = $this->prepare_item_for_response($collection, $request);
 

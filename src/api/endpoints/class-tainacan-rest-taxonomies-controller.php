@@ -167,33 +167,24 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$taxonomy_id = $request['taxonomy_id'];
 		$permanently = $request['permanently'];
 
-		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
-
-		if(!empty($taxonomy)) {
-			$taxonomy_name = $taxonomy->get_db_identifier();
-
-			$args = [ $taxonomy_id, $taxonomy_name, $permanently ];
-
-			$deleted = $this->taxonomy_repository->delete( $args );
-
-			if($deleted instanceof \WP_Error) {
-				return new \WP_REST_Response( $deleted->get_error_message(), 400 );
-			} elseif(!$deleted){
-				return new \WP_REST_Response( [
-					'error_message' => __('Failed to delete', 'tainacan'),
-					'deleted'       => $deleted
-				], 400 );
-			} elseif (!$deleted){
-				return new \WP_REST_Response($deleted, 400);
-			}
-
-			return new \WP_REST_Response($this->prepare_item_for_response($deleted, $request), 200);
+		if($permanently == true){
+			$deleted = $this->taxonomy_repository->delete($taxonomy_id);
+		} else {
+			$deleted = $this->taxonomy_repository->trash($taxonomy_id);
 		}
 
-		return new \WP_REST_Response([
-			'error_message' => __('A taxonomy with the ID "'. $taxonomy_id .'" was not found.', 'tainacan'),
-			'taxonomy'      => $this->prepare_item_for_response($taxonomy, $request)
-		], 400);
+		if ( $deleted instanceof \WP_Error ) {
+			return new \WP_REST_Response( $deleted->get_error_message(), 400 );
+		} elseif ( ! $deleted ) {
+			return new \WP_REST_Response( [
+				'error_message' => __( 'Failed to delete', 'tainacan' ),
+				'deleted'       => $deleted
+			], 400 );
+		} elseif ( ! $deleted ) {
+			return new \WP_REST_Response( $deleted, 400 );
+		}
+
+		return new \WP_REST_Response( $this->prepare_item_for_response( $deleted, $request ), 200 );
 	}
 
 	/**
@@ -216,6 +207,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
 		$args = $this->prepare_filters($request);

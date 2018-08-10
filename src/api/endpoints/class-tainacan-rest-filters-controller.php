@@ -226,9 +226,11 @@ class REST_Filters_Controller extends REST_Controller {
 		$filter_id = $request['filter_id'];
 		$permanently = $request['permanently'];
 
-		$args = [$filter_id, $permanently];
-
-		$filter = $this->filter_repository->delete($args);
+		if($permanently == true) {
+			$filter = $this->filter_repository->delete($filter_id);
+		} else {
+			$filter = $this->filter_repository->trash($filter_id);
+		}
 
 		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
 	}
